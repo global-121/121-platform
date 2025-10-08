@@ -17,6 +17,7 @@ import {
 } from '@angular/router';
 
 import {
+  MutationCache,
   provideTanStackQuery,
   QueryClient,
 } from '@tanstack/angular-query-experimental';
@@ -29,6 +30,19 @@ import { CustomPageTitleStrategy } from '~/app.title-strategy';
 import { AuthService } from '~/services/auth.service';
 import { TrackingService } from '~/services/tracking.service';
 import { Locale } from '~/utils/locale';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    },
+  },
+  mutationCache: new MutationCache({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries();
+    },
+  }),
+});
 
 export const getAppConfig = (locale: Locale): ApplicationConfig => ({
   providers: [
@@ -61,15 +75,7 @@ export const getAppConfig = (locale: Locale): ApplicationConfig => ({
         clear: $localize`:@@generic-clear:Clear`,
       },
     }),
-    provideTanStackQuery(
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            staleTime: 1000 * 60 * 5, // 5 minutes
-          },
-        },
-      }),
-    ),
+    provideTanStackQuery(queryClient),
     ...AuthService.APP_PROVIDERS,
     ...TrackingService.APP_PROVIDERS,
     { provide: TitleStrategy, useClass: CustomPageTitleStrategy },

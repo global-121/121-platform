@@ -105,8 +105,6 @@ export class AddUserDialogComponent {
           ? $localize`User updated`
           : $localize`User added`,
       });
-
-      void this.userApiService.invalidateCache();
     },
   }));
 

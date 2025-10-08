@@ -91,9 +91,6 @@ export class AddNoteDialogComponent {
       this.toastService.showToast({
         detail: $localize`Note successfully added.`,
       });
-      void this.registrationApiService.invalidateCache({
-        projectId: this.projectId,
-      });
     },
   }));
 

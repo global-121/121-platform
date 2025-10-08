@@ -127,9 +127,6 @@ export class ProjectSettingsBasicInformationComponent {
       this.toastService.showToast({
         detail: $localize`Basic information details saved successfully.`,
       });
-
-      void this.projectApiService.invalidateCache(this.projectId);
-      void this.registrationsTableColumnService.invalidateCache(this.projectId);
     },
   }));
 

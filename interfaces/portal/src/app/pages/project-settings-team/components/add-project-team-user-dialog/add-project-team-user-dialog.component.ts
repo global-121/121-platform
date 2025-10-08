@@ -197,8 +197,6 @@ export class AddProjectTeamUserDialogComponent {
           ? $localize`User updated`
           : $localize`User added`,
       });
-
-      void this.projectApiService.invalidateCache(this.projectId);
     },
   }));
 

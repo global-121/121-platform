@@ -112,7 +112,6 @@ export class ProjectMonitoringFilesPageComponent {
         attachmentId,
       }),
     onSuccess: () => {
-      void this.projectApiService.invalidateCache(this.projectId);
       this.toastService.showToast({
         detail: $localize`File deleted successfully`,
       });
