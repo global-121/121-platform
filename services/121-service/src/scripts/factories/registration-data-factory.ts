@@ -5,6 +5,7 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { BaseDataFactory } from '@121-service/src/scripts/factories/base-data-factory';
+import { RegistrationAttributeDataFactory } from '@121-service/src/scripts/factories/registration-attribute-data-factory';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 export interface RegistrationFactoryOptions {
@@ -17,79 +18,76 @@ export interface RegistrationFactoryOptions {
 
 @Injectable()
 export class RegistrationDataFactory extends BaseDataFactory<RegistrationEntity> {
+  private readonly attributeDataFactory: RegistrationAttributeDataFactory;
   constructor(dataSource: DataSource) {
     super(dataSource, dataSource.getRepository(RegistrationEntity));
+    this.attributeDataFactory = new RegistrationAttributeDataFactory(
+      dataSource,
+    );
   }
 
   /**
    * Duplicate existing registrations (similar to the SQL approach)
    */
-  public async duplicateExistingRegistrations(
-    multiplier: number,
-  ): Promise<RegistrationEntity[]> {
-    console.log(`Duplicating existing registrations ${multiplier} times`);
+  public async duplicateExistingRegistrations(): Promise<void> {
+    console.log(`Duplicating existing registrations`);
 
     // Get all existing registrations
     const existingRegistrations = await this.repository.find();
 
     if (existingRegistrations.length === 0) {
       console.warn('No existing registrations found to duplicate');
-      return [];
+      return;
     }
 
-    const allNewRegistrations: RegistrationEntity[] = [];
+    // Get current max IDs for each program
+    const programMaxIds = new Map<number, number>();
+    const programs = [
+      ...new Set(existingRegistrations.map((r) => r.programId)),
+    ];
 
-    for (let iteration = 1; iteration <= multiplier; iteration++) {
-      console.log(`Creating duplication ${iteration} of ${multiplier}`);
-
-      // Get current max IDs for each program
-      const programMaxIds = new Map<number, number>();
-      const programs = [
-        ...new Set(existingRegistrations.map((r) => r.programId)),
-      ];
-
-      for (const programId of programs) {
-        const maxResult = await this.repository
-          .createQueryBuilder('registration')
-          .select('MAX(registration.registrationProgramId)', 'max')
-          .where('registration.programId = :programId', { programId })
-          .getRawOne();
-        programMaxIds.set(programId, maxResult?.max || 0);
-      }
-
-      const newRegistrationsData: DeepPartial<RegistrationEntity>[] =
-        existingRegistrations.map((registration) => {
-          const currentMax = programMaxIds.get(registration.programId) || 0;
-          const newRegistrationProgramId = currentMax + 1;
-          programMaxIds.set(registration.programId, newRegistrationProgramId);
-
-          return {
-            programId: registration.programId,
-            registrationStatus: registration.registrationStatus,
-            referenceId: this.generateUniqueReferenceId(),
-            phoneNumber: registration.phoneNumber,
-            preferredLanguage: registration.preferredLanguage,
-            inclusionScore: registration.inclusionScore,
-            paymentAmountMultiplier: registration.paymentAmountMultiplier,
-            registrationProgramId: newRegistrationProgramId,
-            maxPayments: registration.maxPayments,
-            paymentCount: registration.paymentCount,
-            scope:
-              registration.programId === 2
-                ? Math.random() < 0.5
-                  ? 'kisumu.kisumu-west'
-                  : 'turkana.turkana-north'
-                : registration.scope,
-            programFspConfigurationId: registration.programFspConfigurationId,
-          };
-        });
-
-      const newRegistrations =
-        await this.createEntitiesBatch(newRegistrationsData);
-      allNewRegistrations.push(...newRegistrations);
+    for (const programId of programs) {
+      const maxResult = await this.repository
+        .createQueryBuilder('registration')
+        .select('MAX(registration.registrationProgramId)', 'max')
+        .where('registration.programId = :programId', { programId })
+        .getRawOne();
+      programMaxIds.set(programId, maxResult?.max || 0);
     }
 
-    return allNewRegistrations;
+    const newRegistrationsData: DeepPartial<RegistrationEntity>[] =
+      existingRegistrations.map((registration) => {
+        const currentMax = programMaxIds.get(registration.programId) || 0;
+        const newRegistrationProgramId = currentMax + 1;
+        programMaxIds.set(registration.programId, newRegistrationProgramId);
+
+        return {
+          programId: registration.programId,
+          registrationStatus: registration.registrationStatus,
+          referenceId: this.generateUniqueReferenceId(),
+          phoneNumber: registration.phoneNumber,
+          preferredLanguage: registration.preferredLanguage,
+          inclusionScore: registration.inclusionScore,
+          paymentAmountMultiplier: registration.paymentAmountMultiplier,
+          registrationProgramId: newRegistrationProgramId,
+          maxPayments: registration.maxPayments,
+          paymentCount: registration.paymentCount,
+          scope:
+            registration.programId === 2
+              ? Math.random() < 0.5
+                ? 'kisumu.kisumu-west'
+                : 'turkana.turkana-north'
+              : registration.scope,
+          programFspConfigurationId: registration.programFspConfigurationId,
+        };
+      });
+
+    const newRegistrations =
+      await this.createEntitiesBatch(newRegistrationsData);
+
+    await this.attributeDataFactory.duplicateAttributeDataForRegistrations(
+      newRegistrations,
+    );
   }
 
   /**

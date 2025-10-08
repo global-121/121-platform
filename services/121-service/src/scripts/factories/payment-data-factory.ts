@@ -21,12 +21,12 @@ interface TransactionFactoryOptions {
 }
 
 @Injectable()
-export class PaymentDataFactory extends BaseDataFactory<PaymentEntity> {
-  private readonly transactionRepository: Repository<TransactionEntity>;
+export class PaymentDataFactory extends BaseDataFactory<TransactionEntity> {
+  private readonly paymentRepository: Repository<PaymentEntity>;
 
   constructor(dataSource: DataSource) {
-    super(dataSource, dataSource.getRepository(PaymentEntity));
-    this.transactionRepository = dataSource.getRepository(TransactionEntity);
+    super(dataSource, dataSource.getRepository(TransactionEntity));
+    this.paymentRepository = dataSource.getRepository(PaymentEntity);
   }
 
   /**
@@ -41,7 +41,7 @@ export class PaymentDataFactory extends BaseDataFactory<PaymentEntity> {
       programId,
     };
 
-    return await this.createEntity(paymentData);
+    return await this.paymentRepository.save(paymentData);
   }
 
   /**
@@ -97,8 +97,8 @@ export class PaymentDataFactory extends BaseDataFactory<PaymentEntity> {
         errorMessage: null,
       }));
 
-    const entities = this.transactionRepository.create(transactionsData);
-    return await this.transactionRepository.save(entities);
+    const entities = this.createEntitiesBatch(transactionsData);
+    return entities;
   }
 
   /**
@@ -124,7 +124,8 @@ export class PaymentDataFactory extends BaseDataFactory<PaymentEntity> {
 
     const transactionsData: DeepPartial<TransactionEntity>[] =
       registrations.map((registration) => ({
-        paymentId: registrations[0].transactions[0]?.paymentId, // Use paymentId from existing transaction
+        paymentId: registrations.find((r) => r.transactions.length > 0)
+          ?.transactions[0]?.paymentId, // Use paymentId from existing transaction
         registrationId: registration.id,
         programFspConfigurationId:
           registration.programFspConfigurationId ||
@@ -138,51 +139,8 @@ export class PaymentDataFactory extends BaseDataFactory<PaymentEntity> {
         errorMessage: null,
       }));
 
-    const entities = this.transactionRepository.create(transactionsData);
-    return await this.transactionRepository.save(entities);
-  }
-
-  /**
-   * Create transactions for one registration per existing registration (replaces mock-transactions-one-per-registration.sql)
-   */
-  public async createTransactionsOnePerRegistration(
-    paymentId: number,
-    options: Partial<TransactionFactoryOptions> = {},
-  ): Promise<TransactionEntity[]> {
-    console.log(
-      `Creating one transaction per registration for payment ${paymentId}`,
-    );
-
-    // Get all existing registrations
-    const registrationRepository =
-      this.dataSource.getRepository(RegistrationEntity);
-    const registrations = await registrationRepository.find({
-      select: ['id', 'programFspConfigurationId'],
-    });
-
-    if (registrations.length === 0) {
-      console.warn('No registrations found');
-      return [];
-    }
-
-    const transactionsData: DeepPartial<TransactionEntity>[] =
-      registrations.map((registration) => ({
-        paymentId,
-        registrationId: registration.id,
-        programFspConfigurationId:
-          registration.programFspConfigurationId ||
-          options.programFspConfigurationId ||
-          1,
-        userId: options.userId || 1, // Provide fallback userId
-        amount: options.amount || 100,
-        status: options.status || 'success',
-        transactionStep: 1,
-        customData: {},
-        errorMessage: null,
-      }));
-
-    const entities = this.transactionRepository.create(transactionsData);
-    return await this.transactionRepository.save(entities);
+    const entities = this.createEntitiesBatch(transactionsData);
+    return entities;
   }
 
   /**

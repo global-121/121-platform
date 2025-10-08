@@ -31,50 +31,38 @@ export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntit
    * Duplicate existing messages (replaces mock-messages.sql)
    */
   public async duplicateExistingMessages(
-    multiplier: number,
     options?: TwilioMessageFactoryOptions,
-  ): Promise<TwilioMessageEntity[]> {
-    console.log(`Duplicating existing messages ${multiplier} times`);
+  ): Promise<void> {
+    console.log(`Duplicating existing messages`);
 
     // Get all existing messages
     const existingMessages = await this.repository.find();
 
     if (existingMessages.length === 0) {
       console.warn('No existing messages found to duplicate');
-      return [];
+      return;
     }
 
-    const allNewMessages: TwilioMessageEntity[] = [];
+    const newMessagesData: DeepPartial<TwilioMessageEntity>[] =
+      existingMessages.map((message) => ({
+        accountSid: message.accountSid || options?.accountSid || 'ACdefault',
+        body: message.body || 'Mock message body',
+        mediaUrl: message.mediaUrl,
+        to: message.to || '+31600000000',
+        from: message.from || options?.from || '+31600000001',
+        sid: this.generateTwilioSid(), // Generate new unique SID
+        status: message.status || TwilioStatus.delivered,
+        type: message.type || NotificationType.Sms,
+        dateCreated: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000), // Random recent date
+        registrationId: message.registrationId,
+        userId: message.userId || options?.userId || 1,
+        processType: message.processType || MessageProcessType.sms,
+        contentType: message.contentType || MessageContentType.custom,
+        errorCode: message.errorCode,
+        errorMessage: message.errorMessage,
+      }));
 
-    for (let iteration = 1; iteration <= multiplier; iteration++) {
-      console.log(`Creating message duplication ${iteration} of ${multiplier}`);
-
-      const newMessagesData: DeepPartial<TwilioMessageEntity>[] =
-        existingMessages.map((message) => ({
-          accountSid: message.accountSid || options?.accountSid || 'ACdefault',
-          body: message.body || 'Mock message body',
-          mediaUrl: message.mediaUrl,
-          to: message.to || '+31600000000',
-          from: message.from || options?.from || '+31600000001',
-          sid: this.generateTwilioSid(), // Generate new unique SID
-          status: message.status || TwilioStatus.delivered,
-          type: message.type || NotificationType.Sms,
-          dateCreated: new Date(
-            Date.now() - Math.random() * 24 * 60 * 60 * 1000,
-          ), // Random recent date
-          registrationId: message.registrationId,
-          userId: message.userId || options?.userId || 1,
-          processType: message.processType || MessageProcessType.sms,
-          contentType: message.contentType || MessageContentType.custom,
-          errorCode: message.errorCode,
-          errorMessage: message.errorMessage,
-        }));
-
-      const newMessages = await this.createEntitiesBatch(newMessagesData);
-      allNewMessages.push(...newMessages);
-    }
-
-    return allNewMessages;
+    await this.createEntitiesBatch(newMessagesData);
   }
 
   /**
