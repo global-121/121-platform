@@ -90,8 +90,14 @@ export class ExportRegistrationsComponent {
   });
 
   dataChangesFormGroup = new FormGroup({
-    fromDate: new FormControl<Date | undefined>(undefined, {}),
-    toDate: new FormControl<Date | undefined>(undefined, {}),
+    fromDate: new FormControl<Date | undefined>(
+      { value: undefined, disabled: false },
+      {},
+    ),
+    toDate: new FormControl<Date | undefined>(
+      { value: undefined, disabled: false },
+      {},
+    ),
   });
 
   exportByTypeMutation = injectMutation(() =>

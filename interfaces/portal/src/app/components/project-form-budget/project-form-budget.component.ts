@@ -50,23 +50,35 @@ export class ProjectFormBudgetComponent {
     .sort((a, b) => a.label.localeCompare(b.label));
 
   formGroup = new FormGroup({
-    budget: new FormControl<number | undefined>(undefined, {
-      nonNullable: true,
-      validators: [Validators.min(0)],
-    }),
-    currency: new FormControl<CurrencyCode | undefined>(undefined, {
-      nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-      validators: [Validators.required],
-    }),
-    distributionFrequency: new FormControl<string | undefined>(undefined, {
-      nonNullable: true,
-      validators: [],
-    }),
-    distributionDuration: new FormControl<number | undefined>(undefined, {
-      nonNullable: true,
-      validators: [Validators.min(0)],
-    }),
+    budget: new FormControl<number | undefined>(
+      { value: undefined, disabled: false },
+      {
+        nonNullable: true,
+        validators: [Validators.min(0)],
+      },
+    ),
+    currency: new FormControl<CurrencyCode | undefined>(
+      { value: undefined, disabled: false },
+      {
+        nonNullable: true,
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+        validators: [Validators.required],
+      },
+    ),
+    distributionFrequency: new FormControl<string | undefined>(
+      { value: undefined, disabled: false },
+      {
+        nonNullable: true,
+        validators: [],
+      },
+    ),
+    distributionDuration: new FormControl<number | undefined>(
+      { value: undefined, disabled: false },
+      {
+        nonNullable: true,
+        validators: [Validators.min(0)],
+      },
+    ),
     fixedTransferValue: new FormControl(0, {
       nonNullable: true,
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
