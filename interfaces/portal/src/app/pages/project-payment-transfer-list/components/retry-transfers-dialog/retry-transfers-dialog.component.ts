@@ -10,7 +10,6 @@ import {
 import {
   injectMutation,
   injectQuery,
-  QueryClient,
 } from '@tanstack/angular-query-experimental';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
@@ -32,7 +31,6 @@ export class RetryTransfersDialogComponent {
 
   readonly metricApiService = inject(MetricApiService);
   readonly paymentApiService = inject(PaymentApiService);
-  readonly queryClient = inject(QueryClient);
   readonly toastService = inject(ToastService);
 
   paymentStatus = injectQuery(
@@ -51,11 +49,8 @@ export class RetryTransfersDialogComponent {
         paymentId: this.paymentId(),
         referenceIds,
       }),
-    onSuccess: () => {
-      setTimeout(() => {
-        // invalidate the cache again after a delay to try and make the changes reflected in the UI
-        void this.queryClient.invalidateQueries();
-      }, 500);
+    meta: {
+      invalidateCacheAgainAfterDelay: 500,
     },
   }));
 

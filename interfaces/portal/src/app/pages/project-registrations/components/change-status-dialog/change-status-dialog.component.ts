@@ -15,7 +15,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   injectMutation,
   injectQuery,
-  QueryClient,
 } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -81,7 +80,6 @@ export class ChangeStatusDialogComponent
 
   private messagingService = inject(MessagingService);
   private registrationApiService = inject(RegistrationApiService);
-  private queryClient = inject(QueryClient);
   private toastService = inject(ToastService);
 
   readonly dryRunWarningDialog = viewChild.required<FormDialogComponent>(
@@ -213,6 +211,9 @@ export class ChangeStatusDialogComponent
         dryRun,
       });
     },
+    meta: {
+      invalidateCacheAgainAfterDelay: 500,
+    },
     onSuccess: (data, variables) => {
       if (data.nonApplicableCount === 0) {
         // case #1: the change can be applied to all registrations
@@ -228,11 +229,6 @@ export class ChangeStatusDialogComponent
           showSpinner: true,
         });
         this.actionComplete.emit();
-
-        setTimeout(() => {
-          // invalidate the cache again after a delay to try and make the changes reflected in the UI
-          void this.queryClient.invalidateQueries();
-        }, 500);
         return;
       }
 

@@ -31,6 +31,14 @@ import { AuthService } from '~/services/auth.service';
 import { TrackingService } from '~/services/tracking.service';
 import { Locale } from '~/utils/locale';
 
+declare module '@tanstack/angular-query-experimental' {
+  interface Register {
+    mutationMeta: {
+      invalidateCacheAgainAfterDelay?: number;
+    };
+  }
+}
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -38,8 +46,21 @@ const queryClient = new QueryClient({
     },
   },
   mutationCache: new MutationCache({
-    onSuccess: async () => {
+    // eslint-disable-next-line max-params -- we don't control this function signature
+    onSuccess: async (_data, _variables, _context, mutation) => {
       await queryClient.invalidateQueries();
+
+      if (!mutation.options.meta?.invalidateCacheAgainAfterDelay) {
+        return;
+      }
+
+      // Some requests have a slight delay between a mutation
+      // response and the moment the updated data is available in queries.
+      // To accommodate for this, we invalidate queries a second time after
+      // a short delay.
+      setTimeout(() => {
+        void queryClient.invalidateQueries();
+      }, mutation.options.meta.invalidateCacheAgainAfterDelay);
     },
   }),
 });

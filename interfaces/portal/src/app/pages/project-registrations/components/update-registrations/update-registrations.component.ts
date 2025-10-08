@@ -18,7 +18,6 @@ import {
 import {
   injectMutation,
   injectQuery,
-  QueryClient,
 } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -86,7 +85,6 @@ export class UpdateRegistrationsComponent {
   readonly exportService = inject(ExportService);
   readonly registrationApiService = inject(RegistrationApiService);
   readonly registrationAttributeService = inject(RegistrationAttributeService);
-  readonly queryClient = inject(QueryClient);
   readonly toastService = inject(ToastService);
   readonly translatableStringService = inject(TranslatableStringService);
   readonly metricApiService = inject(MetricApiService);
@@ -176,6 +174,9 @@ export class UpdateRegistrationsComponent {
         reason,
       });
     },
+    meta: {
+      invalidateCacheAgainAfterDelay: 500,
+    },
     onSuccess: () => {
       this.exportCSVFormGroup.reset();
       this.updateRegistrationsFormGroup.reset();
@@ -187,10 +188,6 @@ export class UpdateRegistrationsComponent {
         showSpinner: true,
       });
 
-      setTimeout(() => {
-        // invalidate the cache again after a delay to try and make the changes reflected in the UI
-        void this.queryClient.invalidateQueries();
-      }, 500);
       this.updateSuccess.emit();
     },
   }));
