@@ -62,6 +62,11 @@ export class PaginateQueryService {
       currentStatusFilter = currentStatusFilter.join(',');
     }
 
+    // Prevent adding the deleted exclusion multiple times
+    if (currentStatusFilter.includes(deletedStatus)) {
+      return currentStatusFilter;
+    }
+
     return `${currentStatusFilter},${deletedStatus}`;
   };
 
