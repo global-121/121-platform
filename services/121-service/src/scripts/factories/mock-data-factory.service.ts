@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import fs from 'fs';
+import path from 'path';
 import { DataSource } from 'typeorm';
 
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
@@ -20,6 +22,13 @@ export interface MockDataGenerationOptions {
   readonly messageOptions: TwilioMessageFactoryOptions;
   readonly paymentOptions: PaymentFactoryOptions;
 }
+
+const readSqlFile = (filepath: string): string => {
+  return fs
+    .readFileSync(path.join(__dirname, filepath))
+    .toString()
+    .replace(/\r?\n|\r/g, ' ');
+};
 
 /**
  * Service that orchestrates type-safe mock data generation using factories.
@@ -246,38 +255,23 @@ export class MockDataFactoryService {
   public async introduceDuplicates(): Promise<void> {
     console.log('**INTRODUCING DUPLICATES**');
 
-    const programRegistrationAttributeRepository =
-      this.dataSource.getRepository(ProgramRegistrationAttributeEntity);
-
-    const attributesWithDuplicateCheck =
-      await programRegistrationAttributeRepository
-        .createQueryBuilder('attribute')
-        .select('attribute.id')
-        .where('attribute.duplicateCheck = true')
-        .getMany();
+    const attributesWithDuplicateCheck = await this.dataSource.manager
+      .getRepository(ProgramRegistrationAttributeEntity)
+      .createQueryBuilder('program_registration_attribute')
+      .select('id')
+      .where('"duplicateCheck" = true')
+      .getRawMany();
 
     for (const attribute of attributesWithDuplicateCheck) {
-      // Create duplicates by updating some registration attribute data to have the same value
-      await this.dataSource.query(
-        `
-        UPDATE "121-service"."registration_attribute_data"
-        SET value = (
-          SELECT value
-          FROM "121-service"."registration_attribute_data"
-          WHERE "programRegistrationAttributeId" = $1
-          LIMIT 1
-        )
-        WHERE "programRegistrationAttributeId" = $1
-        AND id IN (
-          SELECT id
-          FROM "121-service"."registration_attribute_data"
-          WHERE "programRegistrationAttributeId" = $1
-          ORDER BY RANDOM()
-          LIMIT 3
-        )
-      `,
-        [attribute.id],
+      const queryIntroduceDuplicates = readSqlFile(
+        '../../../src/scripts/sql/mock-introduce-duplicates.sql',
       );
+      // TODO: Could not get proper parameter to work here so resorted to string replace
+      const qWithParam = queryIntroduceDuplicates.replace(
+        '$1',
+        `${attribute.id}`,
+      );
+      await this.dataSource.query(qWithParam);
     }
 
     console.log('**COMPLETED INTRODUCING DUPLICATES**');
