@@ -50,13 +50,8 @@ test('[30579] All Charts of Monitoring Dashboard tab display correct data', asyn
     await projectMonitoring.navigateToProgramPage('Monitoring');
     await projectMonitoring.selectTab({ tabName: 'Dashboard' });
   });
-
+  // In this step we can now validate most of all the data displayed in charts
   await test.step('Check if all charts data is correct', async () => {
-    const defaultMaxTransferValue = registrationsOCW.reduce((output, pa) => {
-      return output + pa.paymentAmountMultiplier * defaultTransferValue;
-    }, 0);
-    await projectMonitoring.assertDashboardChartsPresentByType({
-      paymentAmountToValidate: defaultMaxTransferValue,
-    });
+    await projectMonitoring.assertDashboardChartsPresentByType();
   });
 });

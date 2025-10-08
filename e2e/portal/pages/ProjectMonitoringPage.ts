@@ -195,9 +195,7 @@ class ProjectMonitoring extends BasePage {
     await this.deleteFileButton.click();
   }
 
-  async assertDashboardChartsPresentByType({
-    paymentAmountToValidate,
-  }: { paymentAmountToValidate?: number } = {}) {
+  async assertDashboardChartsPresentByType() {
     const barChartCanvas = this.page.locator('p-chart[type="bar"] canvas');
     const lineChartCanvas = this.page.locator('p-chart[type="line"] canvas');
     await expect(barChartCanvas).toHaveCount(5);
@@ -208,7 +206,6 @@ class ProjectMonitoring extends BasePage {
     // transfers per payment
     // amount sent per payment
     // amount sent per month
-    console.log(paymentAmountToValidate);
   }
 }
 
