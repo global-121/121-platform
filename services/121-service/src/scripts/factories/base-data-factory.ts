@@ -25,7 +25,7 @@ export abstract class BaseDataFactory<T extends Base121Entity> {
    */
   protected async createEntitiesBatch(
     entitiesData: DeepPartial<T>[],
-    batchSize = 100,
+    batchSize = 2500,
   ): Promise<T[]> {
     const results: T[] = [];
 

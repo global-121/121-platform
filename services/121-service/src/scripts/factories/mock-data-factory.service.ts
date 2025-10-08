@@ -6,7 +6,6 @@ import {
   PaymentDataFactory,
   PaymentFactoryOptions,
 } from '@121-service/src/scripts/factories/payment-data-factory';
-import { RegistrationAttributeDataFactory } from '@121-service/src/scripts/factories/registration-attribute-data-factory';
 import {
   RegistrationDataFactory,
   RegistrationFactoryOptions,
@@ -29,15 +28,11 @@ export interface MockDataGenerationOptions {
 @Injectable()
 export class MockDataFactoryService {
   private readonly registrationFactory: RegistrationDataFactory;
-  private readonly attributeDataFactory: RegistrationAttributeDataFactory;
   private readonly messageFactory: TwilioMessageDataFactory;
   private readonly paymentFactory: PaymentDataFactory;
 
   constructor(private readonly dataSource: DataSource) {
     this.registrationFactory = new RegistrationDataFactory(dataSource);
-    this.attributeDataFactory = new RegistrationAttributeDataFactory(
-      dataSource,
-    );
     this.messageFactory = new TwilioMessageDataFactory(dataSource);
     this.paymentFactory = new PaymentDataFactory(dataSource);
   }
@@ -63,33 +58,21 @@ export class MockDataFactoryService {
 
         // 2. Create transactions for each program (following original logic)
         for (const programId of options.paymentOptions.programIds) {
-          // Since there already is 1 transaction, we need (powerNr - 1) additional payments
-          const additionalPayments = powerNr - 1;
-
-          for (let i = 1; i <= additionalPayments; i++) {
-            // Create transactions for all registrations of this program
-            await this.paymentFactory.createTransactionsOnePerRegistrationForProgram(
-              programId,
-              { userId: options.paymentOptions.defaultUserId || 1 },
-            );
-          }
+          // Create transactions for all registrations of this program
+          await this.paymentFactory.createTransactionsOnePerRegistrationForProgram(
+            programId,
+            { userId: options.paymentOptions.defaultUserId || 1 },
+          );
         }
 
         // 3. Create messages for all registrations
-        for (let i = 1; i <= powerNr; i++) {
-          console.log(
-            `Creating messages for registrations: iteration ${i} of ${powerNr}`,
-          );
-
-          // Get all registrations to create messages for
-          const registrationRepository =
-            manager.getRepository('RegistrationEntity');
-          const registrations = await registrationRepository.find();
-          await this.messageFactory.generateMessagesForRegistrations(
-            registrations as any[],
-            options.messageOptions,
-          );
-        }
+        const registrationRepository =
+          manager.getRepository('RegistrationEntity');
+        const registrations = await registrationRepository.find();
+        await this.messageFactory.generateMessagesForRegistrations(
+          registrations as any[],
+          options.messageOptions,
+        );
 
         // 4. Handle FSP-specific data (vouchers, wallets, etc.)
         await this.createFspSpecificData();
@@ -115,14 +98,7 @@ export class MockDataFactoryService {
     for (let i = 1; i <= powerNr; i++) {
       console.log(`Creating registration duplication ${i} of ${powerNr}`);
 
-      // First: Duplicate existing registrations
-      const newRegistrations =
-        await this.registrationFactory.duplicateExistingRegistrations(1);
-
-      // Second: Duplicate existing registration attribute data, ensuring it references the new registrations
-      await this.attributeDataFactory.duplicateAttributeDataForRegistrations(
-        newRegistrations,
-      );
+      await this.registrationFactory.duplicateExistingRegistrations();
     }
 
     // Make phone numbers unique
@@ -135,11 +111,11 @@ export class MockDataFactoryService {
    * Multiply transactions for specific programs (replaces multiplyTransactions)
    */
   public async multiplyTransactions(
-    nr: number,
+    nrPayments: number,
     programIds: number[],
   ): Promise<void> {
     console.log(
-      `**MULTIPLYING TRANSACTIONS: ${nr} times for programs ${programIds.join(', ')}**`,
+      `**MULTIPLYING TRANSACTIONS: Extending to ${nrPayments} for programs ${programIds.join(', ')}**`,
     );
 
     await this.dataSource.transaction(async (manager) => {
@@ -147,7 +123,7 @@ export class MockDataFactoryService {
 
       try {
         for (const programId of programIds) {
-          await this.multiplyTransactionsPerProgram(nr, programId);
+          await this.multiplyTransactionsPerProgram(nrPayments, programId);
         }
 
         // Update payment counts
@@ -170,19 +146,19 @@ export class MockDataFactoryService {
    * Multiply transactions for a specific program (replaces multiplyTransactionsPerProgram)
    */
   public async multiplyTransactionsPerProgram(
-    powerNr: number,
+    nrPayments: number,
     programId: number,
   ): Promise<void> {
     console.log(
-      `**MULTIPLYING TRANSACTIONS for program ${programId}: ${powerNr} payments**`,
+      `**MULTIPLYING TRANSACTIONS for program ${programId}: ${nrPayments} payments**`,
     );
 
-    // Since there's already 1 transaction, create powerNr - 1 additional payments
-    const nr = powerNr - 1;
+    // Since there's already 1 transaction, create nrPayments - 1 additional payments
+    const nr = nrPayments - 1;
 
     for (let i = 1; i <= nr; i++) {
       console.log(
-        `Creating payment ${i + 1} of ${powerNr} for program ${programId}`,
+        `Creating payment ${i + 1} of ${nrPayments} for program ${programId}`,
       );
 
       // Create a new payment
@@ -213,7 +189,7 @@ export class MockDataFactoryService {
       console.log(`Creating message duplication ${i} of ${powerNr}`);
 
       // Duplicate existing messages
-      await this.messageFactory.duplicateExistingMessages(1, options);
+      await this.messageFactory.duplicateExistingMessages(options);
     }
 
     // Update latest messages

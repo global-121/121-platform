@@ -81,7 +81,7 @@ export class SeedMockHelperServiceTyped {
       powerNrMessages > maxPowerNrMessages
     ) {
       throw new HttpException(
-        `squareNumberBulkMessage must be a number between ${min} and ${maxPowerNrMessages}`,
+        `mockPowerNumberMessages must be a number between ${min} and ${maxPowerNrMessages}`,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -114,10 +114,10 @@ export class SeedMockHelperServiceTyped {
    * Multiply transactions using type-safe factories
    */
   public async multiplyTransactions(
-    nr: number,
+    nrPayments: number,
     programIds: number[],
   ): Promise<void> {
-    await this.mockDataFactory.multiplyTransactions(nr, programIds);
+    await this.mockDataFactory.multiplyTransactions(nrPayments, programIds);
   }
 
   /**
