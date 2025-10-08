@@ -8,4 +8,5 @@ export interface GenericEmailPayload {
   email: string;
   subject: string;
   body: string;
+  attachment?: { filename: string; content: Buffer };
 }
