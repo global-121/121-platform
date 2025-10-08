@@ -18,18 +18,18 @@ export class EmailsApiService {
     const emailClient = new EmailClient(env.AZURE_EMAIL_API_URL);
 
     const emailMessage = {
-      sender: supportEmail,
+      senderAddress: supportEmail,
       content: {
         subject,
         plainText,
       },
       recipients: {
-        to: [{ email }],
+        to: [{ address: email }],
       },
     };
 
     try {
-      await emailClient.send(emailMessage);
+      await emailClient.beginSend(emailMessage);
     } catch (error) {
       console.error('Error sending email:', error);
       throw new Error('Failed to send email through client');
