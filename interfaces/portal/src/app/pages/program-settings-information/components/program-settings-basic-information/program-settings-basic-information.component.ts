@@ -139,9 +139,6 @@ export class ProgramSettingsBasicInformationComponent {
       this.toastService.showToast({
         detail: $localize`Basic information details saved successfully.`,
       });
-
-      void this.programApiService.invalidateCache(this.programId);
-      void this.registrationsTableColumnService.invalidateCache(this.programId);
     },
   }));
 

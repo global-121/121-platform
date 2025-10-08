@@ -445,16 +445,4 @@ export class ProgramApiService extends DomainApiService {
       });
     };
   }
-
-  public invalidateCache(programId?: Signal<number | string>): Promise<void> {
-    const path: (Signal<number | string> | string)[] = [BASE_ENDPOINT];
-
-    if (programId) {
-      path.push(programId);
-    }
-
-    return this.queryClient.invalidateQueries({
-      queryKey: this.pathToQueryKey(path),
-    });
-  }
 }

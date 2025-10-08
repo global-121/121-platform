@@ -221,19 +221,4 @@ export class PaymentApiService extends DomainApiService {
       blobResult,
     };
   }
-
-  public invalidateCache(
-    programId: Signal<number | string>,
-    paymentId?: Signal<number | string>,
-  ): Promise<void> {
-    const path = [...BASE_ENDPOINT(programId)];
-
-    if (paymentId) {
-      path.push(paymentId);
-    }
-
-    return this.queryClient.invalidateQueries({
-      queryKey: this.pathToQueryKey(path),
-    });
-  }
 }

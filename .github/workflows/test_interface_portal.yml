@@ -42,6 +42,15 @@ jobs:
           cache: 'npm'
           cache-dependency-path: '${{ env.interfacePath }}/package-lock.json'
 
+      # XXX: remove this check once all invalidateCache/Queries usages are removed and this PR is ready to be merged
+      - name: Check for no "invalidateCache" or "invalidateQueries" usage
+        working-directory: ${{ env.interfacePath }}
+        run: |
+          if grep -r --exclude='app.config.ts' -E 'invalidate(Cache|Queries)\s*\(' src/; then
+            echo "Error: Found usage of invalidateCache or invalidateQueries. Please use global invalidation instead.";
+            exit 1;
+          fi
+
       - name: Install
         working-directory: ${{ env.interfacePath }}
         run: 'npm ci'
