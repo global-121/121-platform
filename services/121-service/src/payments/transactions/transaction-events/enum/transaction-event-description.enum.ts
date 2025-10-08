@@ -18,8 +18,12 @@ export enum TransactionEventDescription {
   // Commercial Bank Ethiopia processing-step events
   commercialBankEthiopiaRequestSent = 'Commercial Bank Ethiopia request sent',
   // Intersolve Voucher processing-step events
+
   intersolveVoucherCreationRequest = 'AH voucher creation',
   intersolveVoucherInitialMessageSent = 'Notification to claim voucher',
   intersolveVoucherVoucherMessageSent = 'Voucher message sending',
   intersolveVoucherMessageCallback = 'Message delivery', // ##TODO: do we want to distinguish between callback on initial vs voucher message? Also: don't store separate events for delivered/read/etc.
+  // Excel fsp processing-step events
+  excelFilePreparedForExport = 'File prepared for export',
+  excelFileReconciled = 'Reconciliation file has been uploaded',
 }

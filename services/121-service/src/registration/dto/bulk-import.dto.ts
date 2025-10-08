@@ -66,13 +66,11 @@ export class ImportResult {
   public importResult?: BulkImportResult[];
 }
 
+// TODO: move this to excel-reconciliation folder as is only used there
 export class AggregateImportResultDto {
-  public countImported?: number;
-  public countExistingPhoneNr?: number;
-  public countInvalidPhoneNr?: number;
-  public countNotFound?: number;
-  public countPaymentSuccess?: number;
-  public countPaymentFailed?: number;
+  public countNotFound: number;
+  public countPaymentSuccess: number;
+  public countPaymentFailed: number;
 }
 export class ImportRegistrationsDto extends BulkImportDto {
   @ApiProperty({

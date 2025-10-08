@@ -30,6 +30,7 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
     super(RegistrationViewEntity, dataSource);
   }
 
+  // TODO: get rid of this method and use the generic ones
   public getQueryBuilderForFspInstructions({
     programId,
     paymentId,
@@ -53,7 +54,7 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
     }
     if (programFspConfigurationId) {
       query.andWhere(
-        'transaction.programFspConfigurationId = :programFspConfigurationId',
+        'transaction."programFspConfigurationId" = :programFspConfigurationId',
         { programFspConfigurationId },
       );
     }
@@ -63,7 +64,7 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
           'transaction.programFspConfiguration',
           'programFspConfiguration',
         )
-        .andWhere('programFspConfiguration.fspName = :fspName', { fspName });
+        .andWhere('programFspConfiguration."fspName" = :fspName', { fspName });
     }
     return query;
   }
@@ -75,13 +76,41 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
       // Always false condition to return no results
       return this.createQueryBuilder('registration').andWhere('1=0');
     }
-    return this.createQueryBuilder('registration')
-      .andWhere('registration.status IS DISTINCT FROM :deletedStatus', {
-        deletedStatus: RegistrationStatusEnum.deleted, // The not opereator does not work with null values so we use IS DISTINCT FROM
-      })
-      .andWhere('registration.referenceId IN (:...referenceIds)', {
+    return this.queryBuilderFilterDeleted().andWhere(
+      'registration.referenceId IN (:...referenceIds)',
+      {
         referenceIds,
+      },
+    );
+  }
+
+  public createQueryBuilderToGetByRegistrationDataValues({
+    programId,
+    programRegistrationAttributeId,
+    registrationDataValues,
+  }: {
+    programId: number;
+    programRegistrationAttributeId: number;
+    registrationDataValues: string[];
+  }): ScopedQueryBuilder<RegistrationViewEntity> {
+    return this.queryBuilderFilterDeleted()
+      .andWhere('registration.programId = :programId', { programId })
+      .leftJoin('registration.data', 'registrationDataFilter')
+      .andWhere('registrationDataFilter.id = :id', {
+        id: programRegistrationAttributeId,
+      })
+      .andWhere('registrationDataFilter.value IN (:...values)', {
+        values: registrationDataValues,
       });
+  }
+
+  private queryBuilderFilterDeleted(): ScopedQueryBuilder<RegistrationViewEntity> {
+    return this.createQueryBuilder('registration').andWhere(
+      'registration.status IS DISTINCT FROM :deletedStatus',
+      {
+        deletedStatus: RegistrationStatusEnum.deleted, // The not opereator does not work with null values so we use IS DISTINCT FROM
+      },
+    );
   }
 
   public addSearchToQueryBuilder(
@@ -215,5 +244,97 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
         });
     }
     return queryBuilder;
+  }
+
+  public async getUniqueFspConfigIdsByPaymentAndRegistrationData({
+    paymentId,
+    programRegistrationAttributeId,
+    dataValues,
+  }: {
+    paymentId: number;
+    programRegistrationAttributeId: number;
+    dataValues: (string | number | boolean | undefined)[];
+  }): Promise<number[]> {
+    const result = await this.createQueryBuilder('registration')
+      .select('registration."programFspConfigurationId"')
+      .innerJoin('registration.transactions', 'transaction')
+      .leftJoin('registration.data', 'registrationData')
+      .andWhere('transaction."paymentId" = :paymentId', { paymentId })
+      .andWhere(
+        '"registrationData"."programRegistrationAttributeId" = :attributeId',
+        {
+          attributeId: programRegistrationAttributeId,
+        },
+      )
+      .andWhere('"registrationData".value = ANY(:dataValues)', {
+        // Use = ANY(...) to prevent query being too long
+        dataValues,
+      })
+      .groupBy('registration."programFspConfigurationId"')
+      .getRawMany();
+    const uniqueFspConfigIds = result.map((r) => r.programFspConfigurationId);
+    return uniqueFspConfigIds;
+  }
+
+  public async getTransactionIdsByPaymentAndRegistrationData({
+    paymentId,
+    programRegistrationAttributeId,
+    dataValues,
+  }: {
+    paymentId: number;
+    programRegistrationAttributeId: number;
+    dataValues: (string | number | boolean | undefined)[];
+  }): Promise<number[]> {
+    const result = await this.createQueryBuilder('registration')
+      .select('transaction.id', 'transactionId')
+      .innerJoin('registration.transactions', 'transaction')
+      .leftJoin('registration.data', 'registrationData')
+      .andWhere('transaction."paymentId" = :paymentId', { paymentId })
+      .andWhere(
+        '"registrationData"."programRegistrationAttributeId" = :attributeId',
+        {
+          attributeId: programRegistrationAttributeId,
+        },
+      )
+      .andWhere('"registrationData".value = ANY(:dataValues)', {
+        // Use = ANY(...) to prevent query being too long
+        dataValues,
+      })
+      .getRawMany();
+    const transactionIds = result.map((r) => r.transactionId);
+    return transactionIds;
+  }
+
+  public async getReferenceIdsAndStatusesByPaymentForRegistrationData({
+    paymentId,
+    programRegistrationAttributeId,
+    dataValues,
+  }: {
+    paymentId: number;
+    programRegistrationAttributeId: number;
+    dataValues: (string | number | boolean | undefined)[];
+  }): Promise<
+    { referenceId: string; status: TransactionStatusEnum; value: string }[]
+  > {
+    return await this.createQueryBuilder('registration')
+      .select([
+        'registration."referenceId" as "referenceId"',
+        'transaction.status as "status"',
+        '"registrationData".value as "value"',
+      ])
+      .innerJoin('registration.transactions', 'transaction')
+      .leftJoin('registration.data', 'registrationData')
+      .andWhere('transaction."paymentId" = :paymentId', { paymentId })
+      .andWhere(
+        '"registrationData"."programRegistrationAttributeId" = :attributeId',
+        {
+          attributeId: programRegistrationAttributeId,
+        },
+      )
+      .andWhere('"registrationData".value = ANY(:dataValues)', {
+        // Use = ANY(...) to prevent query being too long
+        dataValues,
+      })
+      .getRawMany();
   }
 }

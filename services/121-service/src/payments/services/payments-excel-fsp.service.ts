@@ -1,18 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Equal, In } from 'typeorm';
 
-import { AdditionalActionType } from '@121-service/src/actions/action.entity';
-import { ActionsService } from '@121-service/src/actions/actions.service';
-import { FspIntegrationType } from '@121-service/src/fsps/enums/fsp-integration-type.enum';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
-import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
+import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 
 // The functionality in this service was meant a generic implementation of FSPs that work by importing and exporting files like vodacash
@@ -22,18 +18,21 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 @Injectable()
 export class PaymentsExcelFspService {
   public constructor(
-    private readonly actionService: ActionsService,
-    private readonly transactionsService: TransactionsService,
     private readonly excelService: ExcelService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
+    private readonly paymentsReportingService: PaymentsReportingService,
+    private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
   ) {}
 
   public async getFspInstructions(
     programId: number,
     paymentId: number,
-    userId: number,
   ): Promise<FspInstructions[]> {
+    /////////////////////////////////////
+    // Validation & preparation
+    /////////////////////////////////////
+
     if (
       await this.paymentsProgressHelperService.isPaymentInProgress(programId)
     ) {
@@ -43,34 +42,52 @@ export class PaymentsExcelFspService {
       );
     }
 
-    const transactions = await this.transactionsService.getLastTransactions({
+    // Check if payment exists and belongs to program (also ensure that user has access to the payment as endpoint is protected by programId)
+    await this.paymentsReportingService.findPaymentOrThrow(
       programId,
       paymentId,
-    });
+    );
 
     const programFspConfigEntitiesWithFspInstruction =
       await this.programFspConfigurationRepository.find({
         where: {
           programId: Equal(programId),
-          fspName: In(this.getFspNamesThatRequireInstructions()),
+          fspName: Equal(Fsps.excel),
         },
         order: {
           name: 'ASC',
         },
       });
 
-    const transactionsWithFspInstruction =
-      this.filterTransactionsWithFspInstructionBasedOnStatus(
-        transactions,
-        programFspConfigEntitiesWithFspInstruction,
+    if (programFspConfigEntitiesWithFspInstruction.length === 0) {
+      throw new HttpException(
+        'No program FSP configuration with Excel FSP found for this program',
+        HttpStatus.NOT_FOUND,
       );
+    }
 
-    if (transactionsWithFspInstruction.length === 0) {
+    const transactions = await this.transactionViewScopedRepository.find({
+      where: {
+        paymentId: Equal(paymentId),
+        status: Equal(TransactionStatusEnum.waiting),
+        programFspConfigurationName: In(
+          programFspConfigEntitiesWithFspInstruction.map((p) => p.name),
+        ), //##TODO should this be filtered on programFspConfiguration from registration?
+      },
+      relations: {
+        registration: true,
+      },
+    });
+    if (transactions.length === 0) {
       throw new HttpException(
         'No transactions found for this payment with FSPs that require to download payment instructions.',
         HttpStatus.NOT_FOUND,
       );
     }
+
+    /////////////////////////////////////
+    // Generate FSP instructions
+    /////////////////////////////////////
 
     /// Separate transactionsWithFspInstruction based on their programFspConfigurationName
     const allFspInstructions: FspInstructions[] = [];
@@ -78,84 +95,37 @@ export class PaymentsExcelFspService {
       const fspInstructions =
         await this.getFspInstructionsPerProgramFspConfiguration({
           programId,
-          paymentId,
-          transactions: transactionsWithFspInstruction.filter(
+          transactions: transactions.filter(
             (t) => t.programFspConfigurationName === fspConfigEntity.name,
           ),
           programFspConfigurationName: fspConfigEntity.name,
           programFspConfigurationId: fspConfigEntity.id,
-          fspName: fspConfigEntity.fspName,
         });
       // Should we exclude empty instructions where fspInstructions.data.length is empty, I think it is clearer for the user if they than get an empty file
       allFspInstructions.push(fspInstructions);
     }
 
-    await this.actionService.saveAction(
-      userId,
-      programId,
-      AdditionalActionType.exportFspInstructions,
-    );
     return allFspInstructions;
-  }
-
-  private getFspNamesThatRequireInstructions(): string[] {
-    return FSP_SETTINGS.filter((fsp) =>
-      [FspIntegrationType.csv].includes(fsp.integrationType),
-    ).map((fsp) => fsp.name);
-  }
-
-  private filterTransactionsWithFspInstructionBasedOnStatus(
-    transactions: TransactionReturnDto[],
-    programFspConfigEntitiesWithFspInstruction: ProgramFspConfigurationEntity[],
-  ): TransactionReturnDto[] {
-    const programFspConfigNamesThatRequireInstructions =
-      programFspConfigEntitiesWithFspInstruction.map((c) => c.name);
-
-    const transactionsWithFspInstruction = transactions.filter((t) =>
-      programFspConfigNamesThatRequireInstructions.includes(
-        t.programFspConfigurationName,
-      ),
-    );
-
-    const result: TransactionReturnDto[] = [];
-    for (const transaction of transactionsWithFspInstruction) {
-      if (
-        // Only export waiting transactions, as others have already been reconciliated
-        transaction.status === TransactionStatusEnum.waiting
-      ) {
-        result.push(transaction);
-      }
-    }
-    return result;
   }
 
   private async getFspInstructionsPerProgramFspConfiguration({
     transactions,
     programId,
-    paymentId,
     programFspConfigurationName,
     programFspConfigurationId,
-    fspName,
   }: {
-    transactions: TransactionReturnDto[];
+    transactions: TransactionEntity[];
     programId: number;
-    paymentId: number;
     programFspConfigurationName: string;
     programFspConfigurationId: number;
-    fspName: Fsps;
   }): Promise<FspInstructions> {
-    if (fspName === Fsps.excel) {
-      return {
-        data: await this.excelService.getFspInstructions({
-          transactions,
-          programId,
-          paymentId,
-          programFspConfigurationId,
-        }),
-        fileNamePrefix: programFspConfigurationName,
-      };
-    }
-    // Is this the best way to prevent a TypeError on the return type?
-    throw new Error(`FspName ${fspName} not supported in fsp export`);
+    return {
+      data: await this.excelService.getFspInstructions({
+        transactions,
+        programId,
+        programFspConfigurationId,
+      }),
+      fileNamePrefix: programFspConfigurationName,
+    };
   }
 }

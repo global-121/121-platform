@@ -245,7 +245,7 @@ export class PaymentsReportingService {
     return this.paymentEventsService.getPaymentEvents(paymentId);
   }
 
-  private async findPaymentOrThrow(
+  public async findPaymentOrThrow(
     programId: number,
     paymentId: number,
   ): Promise<void> {

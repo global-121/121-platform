@@ -24,7 +24,10 @@ graph LR
   ExcelReconcilicationModule-->ActionsModule
   ExcelReconcilicationModule-->ExcelModule
   ExcelReconcilicationModule-->PaymentsModule
+  ExcelReconcilicationModule-->ProgramFspConfigurationsModule
+  ExcelReconcilicationModule-->ProgramModule
   ExcelReconcilicationModule-->RegistrationsModule
+  ExcelReconcilicationModule-->TransactionEventsModule
   ExcelReconcilicationModule-->TransactionsModule
   ExchangeRatesModule-->UserModule
   FspsModule-->UserModule

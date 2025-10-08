@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Reconciliate excel FSP data Should give an error when importing over 10.000 records 1`] = `
+[
+  "Too many records. Maximum number of records is 10000. You have 10001 records.",
+]
+`;
+
+exports[`Reconciliate excel FSP data Should give an error when match there is more than one match column in the import 1`] = `
+{
+  "errors": "Multiple match columns found in the import file. Please only use one of the following match columns: phoneNumber, accountId.",
+}
+`;
+
+exports[`Reconciliate excel FSP data Should give an error when status column has invalid values 1`] = `
+{
+  "message": "Invalid status value 'invalid-status'. Allowed values are: success, error",
+  "statusCode": 400,
+}
+`;
+
+exports[`Reconciliate excel FSP data Should give an error when status column is missing 1`] = `
+{
+  "message": "The status column is missing. Please make sure the column is named 'status'",
+  "statusCode": 400,
+}
+`;
+
+exports[`Reconciliate excel FSP data Should throw an error when a payment is in progress 1`] = `
+{
+  "message": "Cannot import FSP reconciliation data while payment is in progress",
+  "statusCode": 400,
+}
+`;
+
+exports[`Reconciliate excel FSP data Should throw an error when importing data that is related to registrations that do not have the same Fsp config 1`] = `
+{
+  "message": "Expected imported reconciliation to be related only to one FSP configuration, but found multiple",
+  "statusCode": 400,
+}
+`;
+
+exports[`Reconciliate excel FSP data Should throw an error when no transactions are found for the the import 1`] = `
+{
+  "message": "No matches found in relation to imported reconciliation",
+  "statusCode": 400,
+}
+`;
+
+exports[`Reconciliate excel FSP data Should throw an error when there are duplicate values in the match column 1`] = `
+{
+  "errors": "The match column 'phoneNumber' contains duplicate values.",
+}
+`;
