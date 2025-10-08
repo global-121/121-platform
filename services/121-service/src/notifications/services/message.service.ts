@@ -169,7 +169,7 @@ export class MessageService {
     }
 
     // Try to delete the pending message, if it was already deleted by another worker we do not need to process it
-    // This should solve any possible as record in a db cannot be delete twice
+    // This should solve any possible race conditions as a record in a db cannot be deleted twice
     const deleteResult =
       await this.whatsappPendingMessageRepo.delete(pendingMessageId);
     if (deleteResult?.affected !== 1) {
