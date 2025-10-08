@@ -27,6 +27,10 @@ export class RegistrationsUpdateJobsProcessor {
         email: job.data.request.email,
         subject: 'Registration update - some records failed',
         body: `Some records failed to be updated. Please see the attached file for details.`,
+        attachment: {
+          filename: 'failed-updates.json',
+          content: [JSON.stringify(failedValidations, null, 2)],
+        },
       });
     }
   }
