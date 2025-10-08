@@ -1,18 +1,11 @@
 import { emailBody } from '@121-service/src/emails/templates/body.helper';
 
 /**
- * Create a basic e-mail message, including default salutation and signature.
- * @param subject The e-mail subject.
+ * Create e-mail message body, including default salutation and signature.
  * @param bodyMessage Text-only message.
  */
-export const genericTemplate = (
-  subject: string,
-  bodyMessage: string,
-): {
-  subject: string;
-  body: string;
-} => {
-  const body = emailBody(`
+export const getEmailBody = (bodyMessage: string): string =>
+  emailBody(`
     <p>Dear madam/sir,</p>
     <p>
       ${bodyMessage}
@@ -22,9 +15,3 @@ export const genericTemplate = (
       121 Support Team
     </p>
   `);
-
-  return {
-    subject,
-    body,
-  };
-};
