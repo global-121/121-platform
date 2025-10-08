@@ -49,14 +49,4 @@ export class NotificationApiService extends DomainApiService {
       enabled: () => !!projectId(),
     });
   }
-
-  public invalidateMessageTemplates(
-    projectId: Signal<number | string>,
-  ): Promise<void> {
-    const path = [...BASE_ENDPOINT(projectId), 'message-templates'];
-
-    return this.queryClient.invalidateQueries({
-      queryKey: this.pathToQueryKey(path),
-    });
-  }
 }

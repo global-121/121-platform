@@ -133,11 +133,8 @@ export class CreateProjectDialogComponent {
         validation,
       }),
     onSuccess: async (result) => {
-      await Promise.all([
-        this.projectApiService.invalidateCache(),
-        // The keys of the user permissions determine which projects a user can see
-        this.authService.refreshUserPermissions(),
-      ]);
+      // The keys of the user permissions determine which projects a user can see
+      await this.authService.refreshUserPermissions();
 
       await this.router.navigate([
         '/',

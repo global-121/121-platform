@@ -26,7 +26,6 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
-import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import {
   REGISTRATION_STATUS_ICON,
@@ -82,7 +81,6 @@ export class ChangeStatusDialogComponent
   private messagingService = inject(MessagingService);
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
-  private metricApiService = inject(MetricApiService);
 
   readonly dryRunWarningDialog = viewChild.required<FormDialogComponent>(
     'dryRunWarningDialog',
@@ -213,6 +211,9 @@ export class ChangeStatusDialogComponent
         dryRun,
       });
     },
+    meta: {
+      invalidateCacheAgainAfterDelay: 500,
+    },
     onSuccess: (data, variables) => {
       if (data.nonApplicableCount === 0) {
         // case #1: the change can be applied to all registrations
@@ -228,18 +229,6 @@ export class ChangeStatusDialogComponent
           showSpinner: true,
         });
         this.actionComplete.emit();
-        void this.registrationApiService.invalidateCache({
-          projectId: this.projectId,
-        });
-
-        void this.metricApiService.invalidateCache(this.projectId);
-
-        setTimeout(() => {
-          // invalidate the cache again after a delay to try and make the status change reflected in the UI
-          void this.registrationApiService.invalidateCache({
-            projectId: this.projectId,
-          });
-        }, 500);
         return;
       }
 

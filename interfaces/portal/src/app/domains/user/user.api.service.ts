@@ -113,10 +113,4 @@ export class UserApiService extends DomainApiService {
       },
     });
   }
-
-  public invalidateCache(): Promise<void> {
-    return this.queryClient.invalidateQueries({
-      queryKey: [BASE_ENDPOINT],
-    });
-  }
 }
