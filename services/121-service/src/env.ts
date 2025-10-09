@@ -29,6 +29,10 @@ export const env = createEnv({
    *
    */
   server: {
+    //TODO: remove after testing
+    MY_EMAIL_ADDRESS: z.string(),
+    AZURE_SENDING_EMAILS_WITH_ATTACHMENT_RESOURCE_URL: z.string(),
+
     // Environment/Instance specifics
     ENV_NAME: z.string().optional(),
     ENV_ICON: z.url().or(z.string().startsWith('data:')).optional(),
