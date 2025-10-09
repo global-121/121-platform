@@ -28,6 +28,7 @@ import { ProgramAttachmentsService } from '@121-service/src/programs/program-att
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { nameConstraintQuestionsArray } from '@121-service/src/shared/const';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
@@ -121,12 +122,16 @@ export class ProgramService {
   }
 
   private async validateProgram(programData: CreateProgramDto): Promise<void> {
-    const programAttributeNames = this.getProgramRegistrationAttributes(
-      programData.programRegistrationAttributes,
-    ).map((ca) => ca.name);
+    const programAttributeNames = this.validateAttributesAndNamingConvention({
+      attributesData: programData.programRegistrationAttributes,
+      namingConventionData: programData.fullnameNamingConvention,
+    }).programRegistrationAttributes.map((ca) => ca.name);
 
     for (const name of Object.values(
-      this.getFullNameNamingConvention(programData.fullnameNamingConvention),
+      this.validateAttributesAndNamingConvention({
+        attributesData: programData.programRegistrationAttributes,
+        namingConventionData: programData.fullnameNamingConvention,
+      }).fullnameNamingConvention,
     )) {
       if (!programAttributeNames.includes(name)) {
         const errors = `Element '${name}' of fullnameNamingConvention is not found in program registration attributes`;
@@ -153,29 +158,31 @@ export class ProgramService {
 
     await this.validateProgram(programData);
     const program = new ProgramEntity();
-    program.validation = programData.validation;
-    program.location = programData.location;
-    program.ngo = programData.ngo;
+    program.validation = !!programData.validation;
+    program.location = programData.location ?? null;
+    program.ngo = programData.ngo ?? null;
     program.titlePortal = programData.titlePortal;
     program.description = programData.description ?? null;
-    program.startDate = programData.startDate;
-    program.endDate = programData.endDate;
+    program.startDate = programData.startDate ?? null;
+    program.endDate = programData.endDate ?? null;
     program.currency = programData.currency;
-    program.distributionFrequency = programData.distributionFrequency;
-    program.distributionDuration = programData.distributionDuration;
-    program.fixedTransferValue = programData.fixedTransferValue;
+    program.distributionFrequency = programData.distributionFrequency ?? null;
+    program.distributionDuration = programData.distributionDuration ?? null;
+    program.fixedTransferValue = programData.fixedTransferValue ?? null;
     program.paymentAmountMultiplierFormula =
       programData.paymentAmountMultiplierFormula ?? null;
-    program.targetNrRegistrations = programData.targetNrRegistrations;
-    program.tryWhatsAppFirst = programData.tryWhatsAppFirst;
-    program.aboutProgram = programData.aboutProgram;
-    program.fullnameNamingConvention = this.getFullNameNamingConvention(
-      programData.fullnameNamingConvention,
-    );
-    program.languages = programData.languages;
-    program.enableMaxPayments = programData.enableMaxPayments;
-    program.enableScope = programData.enableScope;
-    program.allowEmptyPhoneNumber = programData.allowEmptyPhoneNumber;
+    program.targetNrRegistrations = programData.targetNrRegistrations ?? null;
+    program.tryWhatsAppFirst = !!programData.tryWhatsAppFirst;
+    program.aboutProgram = programData.aboutProgram ?? null;
+    program.fullnameNamingConvention =
+      this.validateAttributesAndNamingConvention({
+        attributesData: programData.programRegistrationAttributes,
+        namingConventionData: programData.fullnameNamingConvention,
+      }).fullnameNamingConvention;
+    program.languages = programData.languages ?? [LanguageEnum.en];
+    program.enableMaxPayments = !!programData.enableMaxPayments;
+    program.enableScope = !!programData.enableScope;
+    program.allowEmptyPhoneNumber = !!programData.allowEmptyPhoneNumber;
     program.monitoringDashboardUrl = programData.monitoringDashboardUrl ?? null;
     program.budget = programData.budget ?? null;
 
@@ -193,9 +200,12 @@ export class ProgramService {
       savedProgram = await programRepository.save(program);
 
       savedProgram.programRegistrationAttributes = [];
-      for (const programRegistrationAttribute of this.getProgramRegistrationAttributes(
-        programData.programRegistrationAttributes,
-      )) {
+      for (const programRegistrationAttribute of this.validateAttributesAndNamingConvention(
+        {
+          attributesData: programData.programRegistrationAttributes,
+          namingConventionData: programData.fullnameNamingConvention,
+        },
+      ).programRegistrationAttributes) {
         const attributeReturn =
           await this.createProgramRegistrationAttributeEntity({
             programId: savedProgram.id,
@@ -543,34 +553,55 @@ export class ProgramService {
     return wallets;
   }
 
-  private getProgramRegistrationAttributes(
-    programRegistrationAttributes: ProgramRegistrationAttributeDto[],
-  ): ProgramRegistrationAttributeDto[] {
-    if (!programRegistrationAttributes) {
-      return [
-        {
-          name: 'fullName',
-          type: RegistrationAttributeTypes.text,
-          options: undefined,
-          includeInTransactionExport: true,
-          scoring: {},
-          showInPeopleAffectedTable: true,
-          editableInPortal: false,
-          label: {
-            en: 'First Name',
-          },
-        },
-      ];
-    }
-    return programRegistrationAttributes;
-  }
+  private validateAttributesAndNamingConvention({
+    attributesData,
+    namingConventionData,
+  }: {
+    attributesData: ProgramRegistrationAttributeDto[] | undefined;
+    namingConventionData: string[] | undefined;
+  }): {
+    programRegistrationAttributes: ProgramRegistrationAttributeDto[];
+    fullnameNamingConvention: string[];
+  } {
+    const programRegistrationAttributes = attributesData ?? [];
+    const fullnameNamingConvention = namingConventionData ?? [];
 
-  private getFullNameNamingConvention(
-    fullnameNamingConvention: string[],
-  ): string[] {
-    if (!fullnameNamingConvention) {
-      return ['fullName'];
+    if (fullnameNamingConvention.length === 0) {
+      fullnameNamingConvention.push('fullName');
     }
-    return fullnameNamingConvention;
+
+    if (
+      !programRegistrationAttributes.find((attr) => attr.name === 'phoneNumber')
+    ) {
+      programRegistrationAttributes.push({
+        name: 'phoneNumber',
+        type: RegistrationAttributeTypes.text,
+        label: { en: 'Phone number' },
+      });
+    }
+
+    const registrationAttributesNames = programRegistrationAttributes.map(
+      (attr) => attr.name,
+    );
+    const missingNamingConventions = fullnameNamingConvention.filter(
+      (attr) => !registrationAttributesNames.includes(attr),
+    );
+
+    if (missingNamingConventions.length > 0) {
+      for (const missingNaminConvention of missingNamingConventions) {
+        programRegistrationAttributes.push({
+          name: missingNaminConvention,
+          type: RegistrationAttributeTypes.text,
+          label: {
+            en:
+              missingNaminConvention === 'fullName'
+                ? 'Full name'
+                : missingNaminConvention,
+          },
+        });
+      }
+    }
+
+    return { programRegistrationAttributes, fullnameNamingConvention };
   }
 }
