@@ -3,7 +3,6 @@ import { Test } from '@nestjs/testing';
 import { GenericEmailPayload } from '@121-service/src/emails/dto/create-emails.dto';
 import { EmailsModule } from '@121-service/src/emails/emails.module';
 import { EmailsService } from '@121-service/src/emails/services/emails.service';
-import { getEmailBody } from '@121-service/src/emails/templates/genericTemplate';
 import { env } from '@121-service/src/env';
 
 describe('EmailsService - sendGenericEmail Integration', () => {
@@ -27,27 +26,16 @@ describe('EmailsService - sendGenericEmail Integration', () => {
     const emailObject: GenericEmailPayload = {
       email,
       subject: 'Test: Registration update - some records failed',
-      body: getEmailBody(
-        'This is a test email. Some records failed to be updated. Please see the attached file for details.',
-      ),
+      body: 'This is a test email. Some records failed to be updated. Please see the attached file for details.',
       attachment: {
         name: 'test-report.csv',
         contentBytes: base64Content,
       },
     };
 
-    console.log(
-      '🔍 Testing with URL:',
-      env.AZURE_SENDING_EMAILS_WITH_ATTACHMENT_RESOURCE_URL,
-    );
-    console.log('📧 Sending to email:', email);
-    console.log('📦 Payload:', JSON.stringify(emailObject, null, 2));
-
     // Act & Assert - Should not throw an error if Azure resource is working
     await expect(
       emailsService.sendGenericEmail(emailObject),
     ).resolves.not.toThrow();
-
-    console.log(`✅ Test email sent successfully to ${email}`);
   }, 30000); // 30 second timeout for external API call
 });
