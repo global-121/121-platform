@@ -1,6 +1,7 @@
 import { Process } from '@nestjs/bull';
 import { Scope } from '@nestjs/common';
 import { Job } from 'bull';
+import { readFileSync } from 'fs';
 
 import { EmailsService } from '@121-service/src/emails/services/emails.service';
 import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
@@ -17,6 +18,12 @@ export class RegistrationsUpdateJobsProcessor {
 
   @Process(ProcessNameRegistration.update)
   public async handleUpdate(job: Job): Promise<void> {
+    //TODO: refactor after testing
+    // 1. Read and encode the CSV file
+    const filePath = './report.csv';
+    const fileContent: Buffer = readFileSync(filePath);
+    const base64Content: string = fileContent.toString('base64');
+
     const failedValidations =
       await this.registrationsUpdateJobsService.processRegistrationsUpdateJob(
         job.data,
@@ -28,8 +35,8 @@ export class RegistrationsUpdateJobsProcessor {
         subject: 'Registration update - some records failed',
         body: `Some records failed to be updated. Please see the attached file for details.`,
         attachment: {
-          filename: 'failed-updates.json',
-          content: [JSON.stringify(failedValidations, null, 2)],
+          name: 'report.csv',
+          contentBytes: base64Content,
         },
       });
     }
