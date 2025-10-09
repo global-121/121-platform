@@ -1,50 +1,41 @@
 import { Process } from '@nestjs/bull';
 import { Scope } from '@nestjs/common';
-//import { Job } from 'bull';
-import { readFileSync } from 'fs';
+import { Job } from 'bull';
 
 import { EmailsService } from '@121-service/src/emails/services/emails.service';
-import { getEmailBody } from '@121-service/src/emails/templates/genericTemplate';
-import { env } from '@121-service/src/env';
 import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { RegisteredProcessor } from '@121-service/src/queues-registry/register-processor.decorator';
 import { ProcessNameRegistration } from '@121-service/src/registration/enum/process-name-registration.enum';
-//import { RegistrationsUpdateJobsService } from '@121-service/src/registrations-update-jobs/services/registrations-update-jobs.service'; // send email about failed validations
+import { RegistrationsUpdateJobsService } from '@121-service/src/registrations-update-jobs/services/registrations-update-jobs.service'; // send email about failed validations
 
 @RegisteredProcessor(QueueNames.registration, Scope.REQUEST)
 export class RegistrationsUpdateJobsProcessor {
   constructor(
-    //private readonly registrationsUpdateJobsService: RegistrationsUpdateJobsService,
+    private readonly registrationsUpdateJobsService: RegistrationsUpdateJobsService,
     private readonly emailsService: EmailsService,
   ) {}
 
   @Process(ProcessNameRegistration.update)
-  public async handleUpdate(/*job: Job*/): Promise<void> {
-    //TODO: refactor after testing
-    const filePath = './report.csv';
-    const fileContent: Buffer = readFileSync(filePath);
-    const base64Content: string = fileContent.toString('base64');
-    const email = env.MY_EMAIL_ADDRESS;
-    const emailobject = {
-      email,
-      subject: 'Registration update - some records failed',
-      body: getEmailBody(
-        'Some records failed to be updated. Please see the attached file for details.',
-      ),
-      attachment: {
-        name: 'report.csv',
-        contentBytes: base64Content,
-      },
-    };
+  public async handleUpdate(job: Job): Promise<void> {
+    const failedValidations =
+      await this.registrationsUpdateJobsService.processRegistrationsUpdateJob(
+        job.data,
+      );
 
-    // const failedValidations =
-    //   await this.registrationsUpdateJobsService.processRegistrationsUpdateJob(
-    //     job.data,
-    //   );
+    if (failedValidations.length) {
+      const validationsString = failedValidations.join(', ');
 
-    //TODO: parse failedValidations to CSV and attach to email
-    //if (failedValidations.length) {
-    await this.emailsService.sendGenericEmail(emailobject);
-    //}
+      await this.emailsService.sendGenericEmail({
+        email: job.data.request.email,
+        subject: 'Registration update - some records failed',
+        body: 'Some records failed to be updated. Please see the attached file for details.',
+        attachment: {
+          name: 'attachment.csv',
+          contentBytes: Buffer.from(validationsString, 'utf8').toString(
+            'base64',
+          ),
+        },
+      });
+    }
   }
 }
