@@ -33,7 +33,6 @@ describe('EmailsService - sendGenericEmail Integration', () => {
       },
     };
 
-    // Act & Assert - Should not throw an error if Azure resource is working
     await expect(
       emailsService.sendGenericEmail(emailObject),
     ).resolves.not.toThrow();

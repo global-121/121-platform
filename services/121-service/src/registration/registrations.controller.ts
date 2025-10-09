@@ -188,7 +188,7 @@ export class RegistrationsController {
     @Req() req: ScopedUserRequest,
   ): Promise<void> {
     const userId = RequestHelper.getUserId(req);
-    console.log('AYYEE');
+
     return await this.registrationsService.patchBulk(
       csvFile,
       programId,

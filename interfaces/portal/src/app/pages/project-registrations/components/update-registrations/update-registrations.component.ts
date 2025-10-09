@@ -25,8 +25,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
-//TODO: disabled because it is not needed anymore
-//import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
