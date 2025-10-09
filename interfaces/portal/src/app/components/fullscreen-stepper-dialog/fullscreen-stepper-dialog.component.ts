@@ -49,6 +49,7 @@ export class FullscreenStepperDialogComponent implements OnInit, OnDestroy {
   readonly goBack = output();
 
   readonly header = contentChild<TemplateRef<unknown>>('header');
+  readonly illustration = contentChild<TemplateRef<unknown>>('illustration');
   readonly steps = contentChildren<TemplateRef<unknown>>('step');
 
   readonly dialogVisible$ = toObservable(this.dialogVisible);
