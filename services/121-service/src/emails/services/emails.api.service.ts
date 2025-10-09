@@ -9,7 +9,10 @@ export class EmailsApiService {
 
   public async sendEmail(payload: unknown): Promise<void> {
     try {
-      await this.httpService.post<unknown>(env.AZURE_EMAIL_API_URL, payload);
+      await this.httpService.post<unknown>(
+        env.AZURE_SENDING_EMAILS_WITH_ATTACHMENT_RESOURCE_URL,
+        payload,
+      );
     } catch (error) {
       console.error('Failed to send email through API', error);
       throw new Error('Failed to send email through API');
