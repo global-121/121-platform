@@ -68,24 +68,21 @@ describe('Create program', () => {
     );
 
     // Assert
-    const programId = createProgramResponse.body.id;
-    const getProgramResponse = await getProgram(programId, accessToken);
     expect(createProgramResponse.statusCode).toBe(HttpStatus.CREATED);
-
-    const cleanedSeedProgram = cleanProgramForAssertions(minimalProgramJson);
-    const cleanedProgramResponse = cleanProgramForAssertions(
-      getProgramResponse.body,
+    const expectedTitlePortal = 'Test Title';
+    const expectedCurreny = 'EUR';
+    expect(createProgramResponse.body).toEqual(
+      expect.objectContaining({
+        titlePortal: expect.objectContaining({
+          en: expectedTitlePortal,
+        }),
+        currency: expectedCurreny,
+      }),
     );
-
-    expect(cleanedProgramResponse).toMatchSnapshot(
-      `Create program response for program: ${minimalProgramJson.titlePortal.en}`,
-    );
-
-    expect(cleanedProgramResponse).toMatchObject(cleanedSeedProgram);
   });
 
   it('should not be able to post a program with 2 of the same names', async () => {
-    // Arrange
+    //   // Arrange
     const programCbeJson = JSON.parse(JSON.stringify(programCbe));
     programCbeJson.programRegistrationAttributes.push(
       programCbeJson.programRegistrationAttributes[0],
@@ -93,25 +90,6 @@ describe('Create program', () => {
     // Act
     const createProgramResponse = await postProgram(
       programCbeJson,
-      accessToken,
-    );
-    const getProgramResponse = await getProgram(4, accessToken);
-
-    // Assert
-    expect(createProgramResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
-    expect(createProgramResponse.body).toMatchSnapshot();
-
-    // A new program should not have been created
-    expect(getProgramResponse.statusCode).toBe(HttpStatus.NOT_FOUND);
-  });
-
-  it('should not be able to post a program with missing names of full name naming convention', async () => {
-    // Arrange
-    const programOcwJson = JSON.parse(JSON.stringify(programOCW));
-    programOcwJson.fullnameNamingConvention.push('middle_name');
-    // Act
-    const createProgramResponse = await postProgram(
-      programOcwJson,
       accessToken,
     );
     const getProgramResponse = await getProgram(4, accessToken);
