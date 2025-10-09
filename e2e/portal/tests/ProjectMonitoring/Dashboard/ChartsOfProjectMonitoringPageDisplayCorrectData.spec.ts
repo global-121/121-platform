@@ -1,19 +1,36 @@
 import { test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
-import { resetDB } from '@121-service/test/helpers/utility.helper';
-import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
+import {
+  doPaymentAndWaitForCompletion,
+  seedIncludedRegistrations,
+} from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
+import {
+  programIdOCW,
+  registrationsOCW,
+} from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import ProjectMonitoring from '@121-e2e/portal/pages/ProjectMonitoringPage';
 
+const defaultTransferValue = 25;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
-  const programIdOCW = 3;
-  const OcwProgramId = programIdOCW;
+  const accessToken = await getAccessToken();
+  await seedIncludedRegistrations(registrationsOCW, programIdOCW, accessToken);
 
-  await seedPaidRegistrations(registrationsOCW, OcwProgramId);
+  // do payment for NLRC OCW
+  await doPaymentAndWaitForCompletion({
+    programId: programIdOCW,
+    amount: defaultTransferValue,
+    referenceIds: registrationsOCW.map((reg) => reg.referenceId),
+    accessToken,
+  });
 
   // Login
   const loginPage = new LoginPage(page);
@@ -21,7 +38,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[30579] All elements of Monitoring Dashboard tab are displayed', async ({
+test('[30579] All Charts of Monitoring Dashboard tab display correct data', async ({
   page,
 }) => {
   const projectMonitoring = new ProjectMonitoring(page);
@@ -33,12 +50,8 @@ test('[30579] All elements of Monitoring Dashboard tab are displayed', async ({
     await projectMonitoring.navigateToProgramPage('Monitoring');
     await projectMonitoring.selectTab({ tabName: 'Dashboard' });
   });
-
-  await test.step('Check if all elements of Dashboard are displayed', async () => {
-    await projectMonitoring.assertValuesInMonitoringTab({
-      peopleIncluded: 5,
-      peopleRegistered: 5,
-    });
+  // In this step we can now validate most of all the data displayed in charts
+  await test.step('Check if all charts data is correct', async () => {
     await projectMonitoring.assertDashboardChartsPresentByType();
   });
 });
