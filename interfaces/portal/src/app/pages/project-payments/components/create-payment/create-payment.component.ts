@@ -257,12 +257,6 @@ export class CreatePaymentComponent {
       // this.dialogVisible.set(false);
       const paymentId = result.id;
       if (paymentId) {
-        void this.metricApiService.invalidateCache(this.projectId);
-        await this.paymentApiService.invalidateCache(
-          this.projectId,
-          signal(paymentId),
-        );
-
         await this.router.navigate([
           '/',
           AppRoutes.project,

@@ -345,16 +345,4 @@ export class RegistrationApiService extends DomainApiService {
       },
     });
   }
-
-  public async invalidateCache({
-    projectId,
-  }: {
-    projectId: Signal<number | string>;
-  }): Promise<void> {
-    const path = [...BASE_ENDPOINT(projectId)];
-
-    return this.queryClient.invalidateQueries({
-      queryKey: this.pathToQueryKey(path),
-    });
-  }
 }

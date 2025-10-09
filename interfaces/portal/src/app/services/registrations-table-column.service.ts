@@ -237,12 +237,6 @@ export class RegistrationsTableColumnService {
       });
   }
 
-  invalidateCache(projectId: Signal<number | string>) {
-    return this.queryClient.invalidateQueries({
-      queryKey: this.getColumns(projectId)().queryKey,
-    });
-  }
-
   private mapAttributeTypeToQueryTableColumnType(
     attribute: NormalizedRegistrationAttribute,
   ) {
