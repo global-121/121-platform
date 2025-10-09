@@ -136,7 +136,7 @@ You can also leave the body empty.`,
   @Post()
   public async create(
     @Body()
-    programData: CreateProgramDto | Partial<CreateProgramDto>,
+    programData: Partial<CreateProgramDto>,
 
     @Query(
       'importFromKobo',

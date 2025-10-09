@@ -12,7 +12,7 @@ export class KoboConnectService {
     koboToken: string,
     koboAssetId: string,
     overrideProgramData?: Partial<CreateProgramDto>,
-  ): Promise<CreateProgramDto | Partial<CreateProgramDto>> {
+  ): Promise<Partial<CreateProgramDto>> {
     const result = await this.koboConnectApiService.create121Program(
       koboToken,
       koboAssetId,
@@ -24,7 +24,7 @@ export class KoboConnectService {
         return merge(result, overrideProgramData);
       }
 
-      return result as CreateProgramDto | Partial<CreateProgramDto>;
+      return result as Partial<CreateProgramDto>;
     }
 
     const errors: unknown[] = [];
