@@ -73,7 +73,6 @@ export class RegistrationsImportService {
     // Do initial validation of the input without the checks that are slow
     // So the user gets some feedback immediately after upload
     // The rest of the checks will be done in the queue (the user will get no feedback of this)
-    //TODO: this is the reason Twilio lookup is done before adding to the queue
     await this.validateBulkUpdateInput(bulkUpdateRecords, programId, userId);
 
     const REGISTRATIONS_PER_JOB = 100;
