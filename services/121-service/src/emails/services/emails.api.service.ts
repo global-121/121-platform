@@ -10,6 +10,7 @@ export class EmailsApiService {
   public async sendEmail(payload: unknown): Promise<void> {
     try {
       await this.httpService.post<unknown>(
+        //TODO: this should be one URL for both and without attachment
         env.AZURE_SENDING_EMAILS_WITH_ATTACHMENT_RESOURCE_URL,
         payload,
       );

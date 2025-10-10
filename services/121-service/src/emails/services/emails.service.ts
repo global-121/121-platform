@@ -7,7 +7,7 @@ import {
 import { EmailsApiService } from '@121-service/src/emails/services/emails.api.service';
 import { createNonSSOUserTemplate } from '@121-service/src/emails/templates/createNonSsoUserTemplate';
 import { createSSOUserTemplate } from '@121-service/src/emails/templates/createSsoUserTemplate';
-import { getEmailBody } from '@121-service/src/emails/templates/genericTemplate';
+import { genericTemplate } from '@121-service/src/emails/templates/genericTemplate';
 import { passwordResetTemplate } from '@121-service/src/emails/templates/passwordResetTemplate';
 
 @Injectable()
@@ -62,15 +62,13 @@ export class EmailsService {
   }
 
   public async sendGenericEmail(payload: GenericEmailPayload): Promise<void> {
-    const { email, subject, body, attachment } = payload;
-
-    const emailBody = getEmailBody(body);
+    const { subject, body } = genericTemplate(payload.subject, payload.body);
 
     await this.emailsApiService.sendEmail({
-      email,
+      email: payload.email,
       subject,
-      body: emailBody,
-      attachment,
+      body,
+      attachment: payload.attachment,
     });
   }
 }
