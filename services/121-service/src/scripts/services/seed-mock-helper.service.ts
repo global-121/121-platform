@@ -10,12 +10,12 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
 
 @Injectable()
 export class SeedMockHelperService {
-  private readonly mockDataFactory: MockSeedFactoryService;
+  private readonly mockSeedFactoryService: MockSeedFactoryService;
   private readonly httpService: CustomHttpService;
   private readonly axiosCallsService: AxiosCallsService;
 
   constructor(private readonly dataSource: DataSource) {
-    this.mockDataFactory = new MockSeedFactoryService(dataSource);
+    this.mockSeedFactoryService = new MockSeedFactoryService(dataSource);
     this.httpService = new CustomHttpService(new HttpService());
     this.axiosCallsService = new AxiosCallsService();
   }
@@ -75,14 +75,14 @@ export class SeedMockHelperService {
   }
 
   public async multiplyRegistrations(powerNr: number): Promise<void> {
-    await this.mockDataFactory.multiplyRegistrations(powerNr);
+    await this.mockSeedFactoryService.multiplyRegistrations(powerNr);
   }
 
   public async extendRelatedDataToAllRegistrations(
     powerNr: number,
     programIds: number[],
   ): Promise<void> {
-    await this.mockDataFactory.extendRelatedDataToAllRegistrations(
+    await this.mockSeedFactoryService.extendRelatedDataToAllRegistrations(
       powerNr,
       programIds,
     );
@@ -92,26 +92,26 @@ export class SeedMockHelperService {
     nrPayments: number,
     programIds: number[],
   ): Promise<void> {
-    await this.mockDataFactory.extendPaymentsAndRelatedData(
+    await this.mockSeedFactoryService.extendPaymentsAndRelatedData(
       nrPayments,
       programIds,
     );
   }
 
   public async multiplyMessages(powerNr: number): Promise<void> {
-    await this.mockDataFactory.multiplyMessages(powerNr);
+    await this.mockSeedFactoryService.multiplyMessages(powerNr);
   }
 
   public updateDerivedData(): Promise<void> {
-    return this.mockDataFactory.updateDerivedData();
+    return this.mockSeedFactoryService.updateDerivedData();
   }
 
   public async updateSequenceNumbers(): Promise<void> {
-    await this.mockDataFactory.updateSequenceNumbers();
+    await this.mockSeedFactoryService.updateSequenceNumbers();
   }
 
   public async introduceDuplicates(): Promise<void> {
-    await this.mockDataFactory.introduceDuplicates();
+    await this.mockSeedFactoryService.introduceDuplicates();
   }
 
   public async importRegistrations(
@@ -126,6 +126,9 @@ export class SeedMockHelperService {
     return await this.httpService.post(url, body, headers);
   }
 
+  /**
+   * Change PA status (unchanged - uses HTTP API)
+   */
   public async awaitChangePaStatus(
     programId: number,
     referenceIds: string[],
@@ -165,6 +168,9 @@ export class SeedMockHelperService {
     return result;
   }
 
+  /**
+   * Wait for status change to complete (unchanged)
+   */
   public async waitForStatusChangeToComplete(
     programId: number,
     amountOfRegistrations: number,
@@ -196,6 +202,9 @@ export class SeedMockHelperService {
     }
   }
 
+  /**
+   * Get registrations (unchanged - uses HTTP API)
+   */
   public async getRegistrations(
     programId: number,
     attributes: string[],
@@ -216,6 +225,9 @@ export class SeedMockHelperService {
     return await this.httpService.get(url, headers);
   }
 
+  /**
+   * Do payment (unchanged - uses HTTP API)
+   */
   public async doPayment(
     programId: number,
     amount: number,
