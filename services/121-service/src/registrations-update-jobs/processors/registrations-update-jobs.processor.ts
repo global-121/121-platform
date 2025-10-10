@@ -25,10 +25,9 @@ export class RegistrationsUpdateJobsProcessor {
     if (failedValidations.length) {
       const validationsString = failedValidations.join(', ');
 
-      await this.emailsService.sendGenericEmail({
+      await this.emailsService.sendPhoneNumberValidationFailedEmail({
         email: job.data.request.email,
-        subject: 'Registration update - some records failed',
-        body: 'Some records failed to be updated. Please see the attached file for details.',
+        displayName: job.data.request.displayName,
         attachment: {
           name: 'attachment.csv',
           contentBytes: Buffer.from(validationsString, 'utf8').toString(
