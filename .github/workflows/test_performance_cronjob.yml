@@ -36,7 +36,7 @@ jobs:
         run: |
           npm ci --omit=optional
 
-      - name: Run performance tests with full load (overnight)
+      - name: Run performance tests with full load
         working-directory: ${{ env.workingDirectory }}
         run: |
           ./run-performance-tests.sh
