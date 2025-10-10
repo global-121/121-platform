@@ -545,7 +545,7 @@ export class PaymentsExecutionService {
     return transactionsToRetry.map((t) => {
       return {
         transactionId: t.id,
-        programFspConfigurationName: t.programFspConfigurationName, // Use the fsp currently on the registration and not the one on the transaction
+        programFspConfigurationName: t.programFspConfigurationName,
       };
     });
   }
