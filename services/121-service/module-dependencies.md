@@ -87,6 +87,7 @@ graph LR
   PaymentsModule-->ActionsModule
   PaymentsModule-->ExcelModule
   PaymentsModule-->FspsModule
+  PaymentsModule-->MessageTemplateModule
   PaymentsModule-->PaymentEventsModule
   PaymentsModule-->ProgramFspConfigurationsModule
   PaymentsModule-->ProgramModule

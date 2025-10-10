@@ -372,18 +372,4 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
       .getMany();
     return registrationsToComplete;
   }
-
-  public async updateRegistrationsToCompleted(
-    registrationIds: number[],
-    chunkSize: number,
-  ): Promise<void> {
-    for (const chunkIds of chunk(registrationIds, chunkSize)) {
-      await this.repository
-        .createQueryBuilder('registration')
-        .update()
-        .set({ registrationStatus: RegistrationStatusEnum.completed })
-        .whereInIds(chunkIds)
-        .execute();
-    }
-  }
 }

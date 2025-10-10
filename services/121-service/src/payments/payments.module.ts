@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { FspsModule } from '@121-service/src/fsps/fsp.module';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
+import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { ExcelModule } from '@121-service/src/payments/fsp-integration/excel/excel.module';
 import { PaymentEventsModule } from '@121-service/src/payments/payment-events/payment-events.module';
@@ -51,6 +52,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     PaymentEventsModule,
     RegistrationEventsModule,
     TransactionEventsModule,
+    MessageTemplateModule,
   ],
   providers: [
     PaymentsExecutionService,

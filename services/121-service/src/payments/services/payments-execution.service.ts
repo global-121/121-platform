@@ -7,6 +7,9 @@ import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { getFspConfigurationRequiredProperties } from '@121-service/src/fsps/fsp-settings.helpers';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { MessageContentDetails } from '@121-service/src/notifications/interfaces/message-content-details.interface';
+import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
@@ -27,7 +30,6 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
@@ -49,7 +51,8 @@ export class PaymentsExecutionService {
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly programRepository: ProgramRepository,
-    private readonly registrationEventsService: RegistrationEventsService,
+    private readonly messageTemplateService: MessageTemplateService,
+    private readonly registrationBulkService: RegistrationsBulkService,
   ) {}
 
   public async createPayment({
@@ -226,7 +229,7 @@ export class PaymentsExecutionService {
       2000,
     );
 
-    await this.setStatusToCompletedIfApplicable(programId);
+    await this.setStatusToCompletedIfApplicable(programId, userId);
 
     return transactionIds;
   }
@@ -234,6 +237,7 @@ export class PaymentsExecutionService {
   // TODO: we will likely need to move this to a later stage (upon initiating the payment after approval)
   private async setStatusToCompletedIfApplicable(
     programId: number,
+    userId: number,
   ): Promise<void> {
     const program = await this.programRepository.findByIdOrFail(programId);
     if (!program.enableMaxPayments) {
@@ -244,29 +248,32 @@ export class PaymentsExecutionService {
       await this.registrationScopedRepository.getRegistrationsToComplete(
         programId,
       );
-
-    // update those to completed
-    await this.registrationScopedRepository.updateRegistrationsToCompleted(
-      registrationsToComplete.map((r) => r.id),
-      2000,
-    );
-
-    // create registration events for the status changes
-    for (const reg of registrationsToComplete) {
-      await this.registrationEventsService.createFromRegistrationViews(
-        {
-          id: reg.id,
-          status: reg.registrationStatus!,
-        },
-        {
-          id: reg.id,
-          status: RegistrationStatusEnum.completed,
-        },
-        {
-          explicitRegistrationPropertyNames: ['status'],
-        },
-      );
+    if (registrationsToComplete.length === 0) {
+      return;
     }
+
+    const isTemplateAvailable =
+      await this.messageTemplateService.isTemplateAvailable(
+        programId,
+        RegistrationStatusEnum.completed,
+      );
+    const messageContentDetails: MessageContentDetails = isTemplateAvailable
+      ? {
+          messageTemplateKey: RegistrationStatusEnum.completed,
+          messageContentType: MessageContentType.completed,
+          message: '',
+        }
+      : {};
+
+    await this.registrationBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds(
+      {
+        referenceIds: registrationsToComplete.map((r) => r.referenceId),
+        programId,
+        registrationStatus: RegistrationStatusEnum.completed,
+        userId,
+        messageContentDetails,
+      },
+    );
   }
 
   private async checkFspConfigurationsOrThrow(
