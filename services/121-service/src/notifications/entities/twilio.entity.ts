@@ -5,14 +5,13 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   Relation,
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { MessageProcessType } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
@@ -80,7 +79,7 @@ export class TwilioMessageEntity extends Base121Entity {
   @Column({ type: 'int', default: 0 })
   public retryCount: number;
 
-  @OneToOne(() => TransactionEntity, {
+  @ManyToOne(() => TransactionEntity, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'transactionId' })

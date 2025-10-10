@@ -2,6 +2,7 @@ import { TestBed } from '@automock/jest';
 
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { TransactionJobsIntersolveVoucherService } from '@121-service/src/transaction-jobs/services/transaction-jobs-intersolve-voucher.service';
@@ -10,7 +11,7 @@ import { IntersolveVoucherTransactionJobDto } from '@121-service/src/transaction
 const mockedIntersolveVoucherTransactionJob: IntersolveVoucherTransactionJobDto =
   {
     programId: 3,
-    paymentId: 3,
+    transactionId: 3,
     referenceId: 'ref-123',
     transactionAmount: 25,
     isRetry: false,
@@ -26,6 +27,7 @@ describe('TransactionJobsIntersolveVoucherService', () => {
   let intersolveVoucherService: jest.Mocked<IntersolveVoucherService>;
   let programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
   let transactionJobsHelperService: jest.Mocked<TransactionJobsHelperService>;
+  let transactionsService: jest.Mocked<TransactionsService>;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -43,6 +45,7 @@ describe('TransactionJobsIntersolveVoucherService', () => {
     transactionJobsHelperService = unitRef.get<TransactionJobsHelperService>(
       TransactionJobsHelperService,
     );
+    transactionsService = unitRef.get<TransactionsService>(TransactionsService);
   });
 
   it('should be defined', () => {
@@ -52,8 +55,8 @@ describe('TransactionJobsIntersolveVoucherService', () => {
   describe('processIntersolveVoucherTransactionJob', () => {
     it('should process intersolveVoucherTransactionJob successfully', async () => {
       (
-        transactionJobsHelperService.getRegistrationOrThrow as jest.Mock
-      ).mockResolvedValue({ id: 10 });
+        transactionJobsHelperService.createInitiatedOrRetryTransactionEvent as jest.Mock
+      ).mockImplementation();
       (
         programFspConfigurationRepository.getUsernamePasswordProperties as jest.Mock
       ).mockResolvedValue({ username: 'user', password: 'pass' });
@@ -66,12 +69,10 @@ describe('TransactionJobsIntersolveVoucherService', () => {
       );
 
       expect(
-        transactionJobsHelperService.getRegistrationOrThrow,
-      ).toHaveBeenCalledWith(mockedIntersolveVoucherTransactionJob.referenceId);
-      expect(intersolveVoucherService.sendIndividualPayment).toHaveBeenCalled();
-      expect(
-        transactionJobsHelperService.createTransactionAndUpdateRegistration,
+        transactionJobsHelperService.createInitiatedOrRetryTransactionEvent,
       ).toHaveBeenCalled();
+      expect(intersolveVoucherService.sendIndividualPayment).toHaveBeenCalled();
+      expect(transactionsService.saveTransactionProgress).toHaveBeenCalled();
     });
   });
 });

@@ -18,8 +18,8 @@ import {
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
-  getEvents,
   getMessageHistory,
+  getRegistrationEvents,
   getRegistrations,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
@@ -118,7 +118,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       expect(getRegistration!.paymentCount).toBe(1);
 
       const statusChangeToCompleted = (
-        await getEvents({
+        await getRegistrationEvents({
           programId,
           accessToken,
           referenceId: registrationAh.referenceId,

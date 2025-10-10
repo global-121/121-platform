@@ -3,6 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { getTransactionsIntersolveVoucher } from '@121-service/test/helpers/intersolve-voucher.helper';
@@ -15,6 +16,7 @@ import {
 import {
   doPaymentAndWaitForCompletion,
   getMessageHistory,
+  getTransactionEventDescriptions,
   seedIncludedRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -92,6 +94,22 @@ describe('Do payment to 1 PA', () => {
       );
       expect(getTransactionsBody[0].status).toBe(TransactionStatusEnum.success);
       expect(getTransactionsBody[0].errorMessage).toBe(null);
+
+      const transactionEventDescriptions =
+        await getTransactionEventDescriptions({
+          programId,
+          transactionId: getTransactionsBody[0].id,
+          accessToken,
+        });
+      // ##TODO: this breaks because the callback is not in yet, as the transaction moves to 'success' on 'intersolveVoucherVoucherMessageSent'
+      expect(transactionEventDescriptions).toEqual([
+        TransactionEventDescription.created,
+        TransactionEventDescription.initiated,
+        TransactionEventDescription.intersolveVoucherCreationRequest,
+        TransactionEventDescription.intersolveVoucherInitialMessageSent,
+        TransactionEventDescription.intersolveVoucherVoucherMessageSent,
+        TransactionEventDescription.intersolveVoucherMessageCallback,
+      ]);
 
       await waitForMessagesToComplete({
         programId,

@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
@@ -195,11 +195,11 @@ export class RegistrationViewEntity {
   public dataSearchBy: RegistrationAttributeDataEntity[];
 
   @OneToMany(
-    () => LatestTransactionEntity,
-    (latestTransactions) => latestTransactions.registration,
+    () => TransactionEntity,
+    (transactions) => transactions.registration,
     {
       eager: true,
     },
   )
-  public latestTransactions: LatestTransactionEntity[];
+  public transactions: TransactionEntity[];
 }

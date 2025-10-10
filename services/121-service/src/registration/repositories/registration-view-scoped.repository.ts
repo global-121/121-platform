@@ -44,8 +44,7 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
     status?: TransactionStatusEnum;
   }): ScopedQueryBuilder<RegistrationViewEntity> {
     const query = this.createQueryBuilder('registration')
-      .innerJoin('registration.latestTransactions', 'latestTransaction')
-      .innerJoin('latestTransaction.transaction', 'transaction')
+      .innerJoin('registration.transactions', 'transaction')
       .andWhere('registration.programId = :programId', { programId })
       .andWhere('transaction.paymentId = :paymentId', { paymentId })
       .orderBy('registration.referenceId', 'ASC');

@@ -20,6 +20,8 @@ export class TransactionReturnDto {
   })
   public updated: Date;
   @ApiProperty({ example: 2, type: 'number' })
+  public transactionId: number;
+  @ApiProperty({ example: 2, type: 'number' })
   public paymentId: number;
   @ApiProperty({ example: '2982g82bdsf89sdsd', type: 'string' })
   public referenceId: string;

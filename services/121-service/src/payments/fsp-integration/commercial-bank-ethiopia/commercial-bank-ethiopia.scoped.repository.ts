@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { CbeTransferEntity } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-transfer.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
@@ -16,24 +16,23 @@ export class CbeTransferScopedRepository extends ScopedRepository<CbeTransferEnt
     super(request, repository);
   }
 
-  public async getExistingCbeTransferOrFail(
-    paymentId: number,
-    registrationId: number,
-  ): Promise<CbeTransferEntity> {
-    const existingCbeTransfer = await this.createQueryBuilder('cbeTransfer')
-      .leftJoinAndSelect('cbeTransfer.transaction', 'transaction')
-      .andWhere('transaction.paymentId = :paymentId', {
-        paymentId,
-      })
-      .andWhere('transaction.registrationId = :registrationId', {
-        registrationId,
-      })
-      .orderBy('transaction.created', 'DESC')
-      .getOne();
+  public async getExistingCbeTransferOrFail({
+    transactionId,
+  }: {
+    transactionId: number;
+  }): Promise<CbeTransferEntity> {
+    const existingCbeTransfer = await this.findOne({
+      where: {
+        transactionId: Equal(transactionId),
+      },
+      order: {
+        created: 'DESC',
+      },
+    });
 
     if (!existingCbeTransfer) {
       throw new Error(
-        `No existing CBE transfer found for paymentId ${paymentId} and registrationId ${registrationId} while processing retry.`,
+        `No existing CBE transfer found for transactionId ${transactionId} while processing retry.`,
       );
     }
     return existingCbeTransfer;
