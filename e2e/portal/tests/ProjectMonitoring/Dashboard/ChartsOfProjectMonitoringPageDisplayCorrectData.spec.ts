@@ -1,36 +1,25 @@
 import { test } from '@playwright/test';
+import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import {
-  doPaymentAndWaitForCompletion,
-  seedIncludedRegistrations,
-} from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
-import {
-  programIdOCW,
-  registrationsOCW,
-} from '@121-service/test/registrations/pagination/pagination-data';
+import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
+import { resetDB } from '@121-service/test/helpers/utility.helper';
+import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import ProjectMonitoring from '@121-e2e/portal/pages/ProjectMonitoringPage';
 
-const defaultTransferValue = 25;
+const currentDate = new Date();
+const registrationByCreationDate = format(currentDate, 'yyyy-MM-dd');
+const formattedDate = format(currentDate, 'dd/MM/yyyy');
+const formattedMonth = format(currentDate, 'yyyy-MM');
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
-  const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsOCW, programIdOCW, accessToken);
+  const programIdOCW = 3;
+  const OcwProgramId = programIdOCW;
 
-  // do payment for NLRC OCW
-  await doPaymentAndWaitForCompletion({
-    programId: programIdOCW,
-    amount: defaultTransferValue,
-    referenceIds: registrationsOCW.map((reg) => reg.referenceId),
-    accessToken,
-  });
+  await seedPaidRegistrations(registrationsOCW, OcwProgramId);
 
   // Login
   const loginPage = new LoginPage(page);
@@ -50,8 +39,33 @@ test('[30579] All Charts of Monitoring Dashboard tab display correct data', asyn
     await projectMonitoring.navigateToProgramPage('Monitoring');
     await projectMonitoring.selectTab({ tabName: 'Dashboard' });
   });
-  // In this step we can now validate most of all the data displayed in charts
-  await test.step('Check if all charts data is correct', async () => {
-    await projectMonitoring.assertDashboardChartsPresentByType();
+
+  await test.step('Check if all elements of Dashboard are displayed', async () => {
+    await projectMonitoring.assertDashboardCharts({
+      regPerStatus: 'Included: 5',
+      regPerDuplicateStatus: {
+        duplicate: 2,
+        unique: 3,
+      },
+      regByCreationDate: `${registrationByCreationDate}: 5`,
+      statusPerPayment: {
+        date: formattedDate,
+        failed: 0,
+        successful: 5,
+        pending: 0,
+      },
+      amountPerStatus: {
+        date: formattedDate,
+        failed: 0,
+        successful: 200,
+        pending: 0,
+      },
+      amountPerMonth: {
+        date: formattedMonth,
+        failed: 0,
+        successful: 200,
+        pending: 0,
+      },
+    });
   });
 });

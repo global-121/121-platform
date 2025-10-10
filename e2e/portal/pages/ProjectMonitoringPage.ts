@@ -195,15 +195,69 @@ class ProjectMonitoring extends BasePage {
     await this.deleteFileButton.click();
   }
 
-  // For now the assertion is very general as we cannot check the type and the data of the charts
-  //  Untill we can read the labels of the charts inside the canvas elements this assertion should stay more or less this way
-  // Also the titles of the groups of the charts are outside of the div that contains the charts so we cannot check them together
-  // Charts are therefore only counted by their types 5 bar charts and 1 line chart = 6 charts in total
-  async assertDashboardChartsPresentByType() {
-    const barChartCanvas = this.page.locator('p-chart[type="bar"] canvas');
-    const lineChartCanvas = this.page.locator('p-chart[type="line"] canvas');
-    await expect(barChartCanvas).toHaveCount(5);
-    await expect(lineChartCanvas).toHaveCount(1);
+  // Charts assertions only registrations per status are checked by string because the chart is responsive
+  // And if we would like to check every possible status it make the assertion very complicated
+  async assertDashboardCharts({
+    regPerStatus,
+    regPerDuplicateStatus,
+    regByCreationDate,
+    statusPerPayment,
+    amountPerStatus,
+    amountPerMonth,
+  }: {
+    regPerStatus: string;
+    regPerDuplicateStatus: {
+      duplicate: number;
+      unique: number;
+    };
+    regByCreationDate: string;
+    statusPerPayment: {
+      date: string;
+      failed: number;
+      successful: number;
+      pending: number;
+    };
+    amountPerStatus: {
+      date: string;
+      failed: number;
+      successful: number;
+      pending: number;
+    };
+    amountPerMonth: {
+      date: string;
+      failed: number;
+      successful: number;
+      pending: number;
+    };
+  }) {
+    const barChartCanvas = this.page.locator('p-chart[type="bar"]');
+    const lineChartCanvas = this.page.locator('p-chart[type="line"]');
+    // Selectors for each chart type
+    const registrationsPerStatus = barChartCanvas.getByLabel(
+      `Registrations per status ${regPerStatus}`,
+    );
+    const registrationsPerDuplicateStatus = barChartCanvas.getByLabel(
+      `Registrations per duplicate status Duplicate: ${regPerDuplicateStatus.duplicate} Unique: ${regPerDuplicateStatus.unique}`,
+    );
+    const registrationsByCreationDate = lineChartCanvas.getByLabel(
+      `Registrations by creation date (last 2 weeks) ${regByCreationDate}`,
+    );
+    const transfersPerPayment = barChartCanvas.getByLabel(
+      `Transfers per payment ${statusPerPayment.date}: Failed: ${statusPerPayment.failed.toString()}, Successful: ${statusPerPayment.successful.toString()}, Pending: ${statusPerPayment.pending.toString()}`,
+    );
+    const amountSentPerPayment = barChartCanvas.getByLabel(
+      `Amount sent per payment ${amountPerStatus.date}: Failed: ${amountPerStatus.failed.toString()}, Successful: ${amountPerStatus.successful.toString()}, Pending: ${amountPerStatus.pending.toString()}`,
+    );
+    const amountSentPerMonth = barChartCanvas.getByLabel(
+      `Amount sent per month ${amountPerMonth.date}: Failed: ${amountPerMonth.failed.toString()}, Successful: ${amountPerMonth.successful.toString()}, Pending: ${amountPerMonth.pending.toString()}`,
+    );
+    // Validate charts data
+    await expect(registrationsPerStatus).toBeVisible();
+    await expect(registrationsPerDuplicateStatus).toBeVisible();
+    await expect(registrationsByCreationDate).toBeVisible();
+    await expect(transfersPerPayment).toBeVisible();
+    await expect(amountSentPerPayment).toBeVisible();
+    await expect(amountSentPerMonth).toBeVisible();
   }
 }
 
