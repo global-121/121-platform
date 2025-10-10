@@ -46,7 +46,7 @@ export class TransactionEventEntity extends Base121OptionalAuditedEntity {
 
   @ManyToOne(
     (_type) => ProgramFspConfigurationEntity,
-    (programFspConfiguration) => programFspConfiguration.transactions,
+    (programFspConfiguration) => programFspConfiguration.transactionEvents,
     { onDelete: 'SET NULL' },
   )
   @JoinColumn({
