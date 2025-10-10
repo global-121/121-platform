@@ -6,20 +6,6 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/transa
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { BaseDataFactory } from '@121-service/src/scripts/factories/base-data-factory';
 
-export interface PaymentFactoryOptions {
-  readonly programIds: number[]; // Changed from single programId to array
-  readonly defaultUserId?: number; // Default user ID for transactions
-}
-
-interface TransactionFactoryOptions {
-  readonly paymentId: number;
-  readonly registrationId: number;
-  readonly programFspConfigurationId: number;
-  readonly userId?: number;
-  readonly amount?: number;
-  readonly status?: string;
-}
-
 @Injectable()
 export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
   private readonly paymentRepository: Repository<PaymentEntity>;
@@ -30,8 +16,56 @@ export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
   }
 
   /**
-   * Create payment for a program (replaces mock-create-payment.sql)
+   * Create transactions for one registration per existing registration for a specific program
    */
+  public async extendTransactionsFirstPaymentToAllRegistrations(
+    programId: number,
+  ): Promise<TransactionEntity[]> {
+    const registrationRepo = this.dataSource.getRepository(RegistrationEntity);
+    const transactionRepo = this.dataSource.getRepository(TransactionEntity);
+
+    // Find the initial seeded registrations and its transactions
+    const initialRegistration = await registrationRepo.findOne({
+      where: { programId: Equal(programId) },
+      order: { id: 'ASC' },
+    });
+    if (!initialRegistration) {
+      console.warn(`No initial registration found for program ${programId}`);
+      return [];
+    }
+
+    const initialTransactions = await transactionRepo.find({
+      where: { registration: Equal(initialRegistration.id) },
+    });
+
+    // Find all registrations
+    const registrations = await registrationRepo.find({
+      where: { programId: Equal(programId) },
+      relations: { transactions: true },
+    });
+    const transactionsData: DeepPartial<TransactionEntity>[] = [];
+    for (const registration of registrations.filter(
+      (r) => r.id !== initialRegistration.id, // Do not insert the initial registration's transactions again
+    )) {
+      // Replicate each transaction for this registration as a new entity
+      for (const transaction of initialTransactions) {
+        // Omit id and registration, copy all other properties
+        const {
+          id: _id,
+          registration: _omit,
+          ...transactionData
+        } = transaction;
+        transactionsData.push({
+          ...transactionData,
+          registration,
+          registrationId: registration.id,
+        });
+      }
+    }
+    const entities = this.createEntitiesBatch(transactionsData);
+    return entities;
+  }
+
   public async createPaymentForProgram(
     programId: number,
   ): Promise<PaymentEntity> {
@@ -44,108 +78,42 @@ export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
     return await this.paymentRepository.save(paymentData);
   }
 
-  /**
-   * Get the max payment ID (replaces mock-get-max-payment-id.sql)
-   */
-  public async getMaxPaymentId(): Promise<number> {
-    const result = await this.repository
-      .createQueryBuilder('payment')
-      .select('MAX(payment.id)', 'id')
-      .getRawOne();
-
-    return result?.id || 0;
-  }
-
-  /**
-   * Create transactions for a payment (replaces mock-payment-transactions.sql)
-   */
-  public async createTransactionsForPayment(
+  public async extendTransactionsForPayment(
+    programId: number,
     paymentId: number,
-    programId: number,
-    options: Partial<TransactionFactoryOptions> = {},
   ): Promise<TransactionEntity[]> {
-    console.log(
-      `Creating transactions for payment ${paymentId} in program ${programId}`,
-    );
+    const paymentRepo = this.dataSource.getRepository(PaymentEntity);
+    const transactionRepo = this.dataSource.getRepository(TransactionEntity);
 
-    // Get registrations for this program
-    const registrationRepository =
-      this.dataSource.getRepository(RegistrationEntity);
-    const registrations = await registrationRepository.find({
+    // Find the initial payment and its transactions
+    const initialPayment = await paymentRepo.findOne({
       where: { programId: Equal(programId) },
-      select: ['id', 'programFspConfigurationId'],
+      order: { id: 'ASC' },
     });
-
-    if (registrations.length === 0) {
-      console.warn(`No registrations found for program ${programId}`);
+    if (!initialPayment) {
+      console.warn(`No initial payment found for program ${programId}`);
       return [];
     }
 
-    const transactionsData: DeepPartial<TransactionEntity>[] =
-      registrations.map((registration) => ({
+    const initialTransactions = await transactionRepo.find({
+      where: { payment: Equal(initialPayment.id) },
+    });
+
+    const transactionsData: DeepPartial<TransactionEntity>[] = [];
+    // Replicate each transaction for this new payment as a new entity
+    for (const transaction of initialTransactions) {
+      // Omit id and payment, copy all other properties
+      const { id: _id, payment: _omit, ...transactionData } = transaction;
+      transactionsData.push({
+        ...transactionData,
         paymentId,
-        registrationId: registration.id,
-        programFspConfigurationId:
-          registration.programFspConfigurationId ||
-          options.programFspConfigurationId ||
-          1,
-        userId: options.userId || 1, // Provide fallback userId
-        amount: options.amount || 100,
-        status: options.status || 'success',
-        transactionStep: 1,
-        customData: {},
-        errorMessage: null,
-      }));
-
-    const entities = this.createEntitiesBatch(transactionsData);
-    return entities;
-  }
-
-  /**
-   * Create transactions for one registration per existing registration for a specific program
-   */
-  public async createTransactionsOnePerRegistrationForProgram(
-    // paymentId: number,
-    programId: number,
-    options: Partial<TransactionFactoryOptions> = {},
-  ): Promise<TransactionEntity[]> {
-    // Get all existing registrations for this specific program
-    const registrationRepository =
-      this.dataSource.getRepository(RegistrationEntity);
-    const registrations = await registrationRepository.find({
-      where: { programId: Equal(programId) },
-      relations: { transactions: true },
-    });
-
-    if (registrations.length === 0) {
-      console.warn(`No registrations found for program ${programId}`);
-      return [];
+      });
     }
 
-    const transactionsData: DeepPartial<TransactionEntity>[] =
-      registrations.map((registration) => ({
-        paymentId: registrations.find((r) => r.transactions.length > 0)
-          ?.transactions[0]?.paymentId, // Use paymentId from existing transaction
-        registrationId: registration.id,
-        programFspConfigurationId:
-          registration.programFspConfigurationId ||
-          options.programFspConfigurationId ||
-          1,
-        userId: options.userId || 1, // Provide fallback userId
-        amount: options.amount || 100,
-        status: options.status || 'success',
-        transactionStep: 1,
-        customData: {},
-        errorMessage: null,
-      }));
-
     const entities = this.createEntitiesBatch(transactionsData);
     return entities;
   }
 
-  /**
-   * Update payment count for registrations (replaces mock-update-payment-count.sql)
-   */
   public async updatePaymentCounts(): Promise<void> {
     console.log('Updating payment counts for registrations');
 
@@ -165,9 +133,6 @@ export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
     console.log('Payment counts updated successfully');
   }
 
-  /**
-   * Update latest transactions table (replaces mock-latest-transactions.sql)
-   */
   public async updateLatestTransactions(): Promise<void> {
     console.log('Updating latest transactions table');
 

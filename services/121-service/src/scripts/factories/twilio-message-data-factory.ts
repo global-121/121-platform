@@ -11,16 +11,6 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { BaseDataFactory } from '@121-service/src/scripts/factories/base-data-factory';
 
-export interface TwilioMessageFactoryOptions {
-  readonly accountSid: string;
-  readonly from: string;
-  readonly userId?: number;
-  readonly status?: TwilioStatus;
-  readonly type?: NotificationType;
-  readonly processType?: MessageProcessType;
-  readonly contentType?: MessageContentType;
-}
-
 @Injectable()
 export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntity> {
   constructor(dataSource: DataSource) {
@@ -30,9 +20,7 @@ export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntit
   /**
    * Duplicate existing messages (replaces mock-messages.sql)
    */
-  public async duplicateExistingMessages(
-    options?: TwilioMessageFactoryOptions,
-  ): Promise<void> {
+  public async duplicateExistingMessages(): Promise<void> {
     console.log(`Duplicating existing messages`);
 
     // Get all existing messages
@@ -43,19 +31,21 @@ export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntit
       return;
     }
 
+    const options = this.getDefaultMessageOptions();
+
     const newMessagesData: DeepPartial<TwilioMessageEntity>[] =
       existingMessages.map((message) => ({
-        accountSid: message.accountSid || options?.accountSid || 'ACdefault',
+        accountSid: message.accountSid || options.accountSid || 'ACdefault',
         body: message.body || 'Mock message body',
         mediaUrl: message.mediaUrl,
         to: message.to || '+31600000000',
-        from: message.from || options?.from || '+31600000001',
+        from: message.from || options.from || '+31600000001',
         sid: this.generateTwilioSid(), // Generate new unique SID
         status: message.status || TwilioStatus.delivered,
         type: message.type || NotificationType.Sms,
         dateCreated: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000), // Random recent date
         registrationId: message.registrationId,
-        userId: message.userId || options?.userId || 1,
+        userId: message.userId || 1,
         processType: message.processType || MessageProcessType.sms,
         contentType: message.contentType || MessageContentType.custom,
         errorCode: message.errorCode,
@@ -66,15 +56,20 @@ export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntit
   }
 
   /**
-   * Generate messages for each registration (replaces mock-messages-one-per-registration.sql)
+   * Generate 1 message for each registration
+   * NOTE: this generates instead of duplicates, so also inserts for the initial registration again. This does not matter here.
    */
-  public async generateMessagesForRegistrations(
-    registrations: RegistrationEntity[],
-    options: TwilioMessageFactoryOptions,
-  ): Promise<TwilioMessageEntity[]> {
+  public async generateMessagesForRegistrations(): Promise<
+    TwilioMessageEntity[]
+  > {
+    const registrationRepository =
+      this.dataSource.getRepository(RegistrationEntity);
+    const registrations = await registrationRepository.find();
     console.log(
       `Generating messages for ${registrations.length} registrations`,
     );
+
+    const options = this.getDefaultMessageOptions();
 
     const messagesData: DeepPartial<TwilioMessageEntity>[] = registrations.map(
       (registration) => ({
@@ -88,7 +83,7 @@ export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntit
         type: options.type || NotificationType.Sms,
         dateCreated: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000),
         registrationId: registration.id,
-        userId: options.userId || 1,
+        userId: 1,
         processType: options.processType || MessageProcessType.sms,
         contentType: options.contentType || MessageContentType.custom,
         errorCode: null,
@@ -99,9 +94,17 @@ export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntit
     return await this.createEntitiesBatch(messagesData);
   }
 
-  /**
-   * Update latest messages table (replaces truncate + mock-latest-message.sql logic)
-   */
+  private getDefaultMessageOptions() {
+    return {
+      accountSid: 'AC_test_account_sid',
+      from: '+1234567890',
+      status: TwilioStatus.delivered,
+      type: NotificationType.Sms,
+      processType: MessageProcessType.sms,
+      contentType: MessageContentType.custom,
+    };
+  }
+
   public async updateLatestMessages(): Promise<void> {
     console.log('Updating latest messages table');
 
@@ -124,16 +127,10 @@ export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntit
     console.log('Latest messages table updated successfully');
   }
 
-  /**
-   * Generate a unique Twilio SID
-   */
   private generateTwilioSid(): string {
     return `SM${Math.random().toString(36).substring(2, 34)}`;
   }
 
-  /**
-   * Generate sample message body
-   */
   private generateMessageBody(): string {
     const messages = [
       'Your payment has been processed successfully.',

@@ -3,18 +3,8 @@ import { DataSource, DeepPartial } from 'typeorm';
 
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { BaseDataFactory } from '@121-service/src/scripts/factories/base-data-factory';
 import { RegistrationAttributeDataFactory } from '@121-service/src/scripts/factories/registration-attribute-data-factory';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-
-export interface RegistrationFactoryOptions {
-  readonly programId: number;
-  readonly programFspConfigurationId?: number;
-  readonly registrationStatus?: RegistrationStatusEnum;
-  readonly preferredLanguage?: LanguageEnum;
-  readonly scope?: string;
-}
 
 @Injectable()
 export class RegistrationDataFactory extends BaseDataFactory<RegistrationEntity> {

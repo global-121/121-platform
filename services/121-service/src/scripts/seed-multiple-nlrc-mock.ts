@@ -5,7 +5,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
 import { SeedHelperService } from '@121-service/src/scripts/services/seed-helper.service';
-import { SeedMockHelperServiceTyped } from '@121-service/src/scripts/services/seed-mock-helper-typed.service';
+import { SeedMockHelperService } from '@121-service/src/scripts/services/seed-mock-helper.service';
 import { registrationAHWhatsapp } from '@121-service/src/seed-data/mock/registration-pv.data';
 import {
   amountVisa,
@@ -17,7 +17,7 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 @Injectable()
 export class SeedMultipleNLRCMockData implements InterfaceScript {
   public constructor(
-    private readonly seedMockHelper: SeedMockHelperServiceTyped,
+    private readonly seedMockHelper: SeedMockHelperService,
     private axiosCallsService: AxiosCallsService,
     private seedHelper: SeedHelperService,
   ) {}
@@ -43,13 +43,12 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
         nrPaymentsString,
         powerNrMessagesString,
       });
-    // ************************
 
-    // Set up organization and program
+    // 0. Set up program data
     await this.seedHelper.seedData(seedConfig!, isApiTests);
 
+    // 1. Set up 1 registration with 1 payment and 1 message via the API for each program
     const programIds: number[] = [];
-    // Set up 1 registration with 1 payment and 1 message
     if (mockOcw) {
       const programIdOcw = 3;
       programIds.push(programIdOcw);
@@ -66,16 +65,27 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
 
     await waitFor(4_000);
 
-    // Blow up data given the parameters - now using type-safe factories
-    console.log('**USING TYPE-SAFE FACTORIES FOR DATA MULTIPLICATION**');
-    await this.seedMockHelper.multiplyRegistrationsAndRelatedPaymentData(
+    // 2. Multiply registrations
+    await this.seedMockHelper.multiplyRegistrations(powerNrRegistrations);
+
+    // 3. Extend all data to all registrations (transactions and related data for payment 1, messages, etc.)
+    await this.seedMockHelper.extendRelatedDataToAllRegistrations(
       powerNrRegistrations,
+      programIds,
     );
+
+    // 4. Extend all payment-related data to multiple payments
     await this.seedMockHelper.multiplyTransactions(nrPayments, programIds);
+
+    // 5. Extend all message-related data to multiple messages
     await this.seedMockHelper.multiplyMessages(powerNrMessages);
-    await this.seedMockHelper.updateSequenceNumbers();
+
+    // 6. Update all derived data (latest message, payment count, etc.)
+    await this.seedMockHelper.updateDerivedData();
     await this.seedMockHelper.introduceDuplicates();
-    console.log('**TYPE-SAFE FACTORY DATA MULTIPLICATION COMPLETED**');
+
+    // 7. Final clean-up: update sequence numbers and introduce duplicates
+    await this.seedMockHelper.updateSequenceNumbers();
   }
 
   private async seedRegistrationForProgram(

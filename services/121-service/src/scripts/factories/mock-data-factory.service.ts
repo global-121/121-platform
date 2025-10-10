@@ -13,24 +13,9 @@ import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integrati
 import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/entities/image-code-export-vouchers.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
-import {
-  RegistrationDataFactory,
-  RegistrationFactoryOptions,
-} from '@121-service/src/scripts/factories/registration-data-factory';
-import {
-  PaymentFactoryOptions,
-  TransactionDataFactory,
-} from '@121-service/src/scripts/factories/transaction-data-factory';
-import {
-  TwilioMessageDataFactory,
-  TwilioMessageFactoryOptions,
-} from '@121-service/src/scripts/factories/twilio-message-data-factory';
-
-export interface MockDataGenerationOptions {
-  readonly registrationOptions: RegistrationFactoryOptions;
-  readonly messageOptions: TwilioMessageFactoryOptions;
-  readonly paymentOptions: PaymentFactoryOptions;
-}
+import { RegistrationDataFactory } from '@121-service/src/scripts/factories/registration-data-factory';
+import { TransactionDataFactory } from '@121-service/src/scripts/factories/transaction-data-factory';
+import { TwilioMessageDataFactory } from '@121-service/src/scripts/factories/twilio-message-data-factory';
 
 const readSqlFile = (filepath: string): string => {
   return fs
@@ -55,61 +40,7 @@ export class MockDataFactoryService {
     this.transactionFactory = new TransactionDataFactory(dataSource);
   }
 
-  /**
-   * Multiply registrations and related payment data (replaces multiplyRegistrationsAndRelatedPaymentData)
-   */
-  public async multiplyRegistrationsAndRelatedPaymentData(
-    powerNr: number,
-    options: MockDataGenerationOptions,
-  ): Promise<void> {
-    console.log(
-      `**MULTIPLYING REGISTRATIONS AND RELATED DATA: ${powerNr} times**`,
-    );
-
-    await this.dataSource.transaction(async (manager) => {
-      // Set the data source for all factories to use the transaction manager
-      this.setTransactionManager(manager);
-
-      try {
-        // 1. Multiply registrations
-        await this.multiplyRegistrations(powerNr, options.registrationOptions);
-
-        // 2. Create transactions for each program (following original logic)
-        for (const programId of options.paymentOptions.programIds) {
-          // Create transactions for all registrations of this program
-          await this.transactionFactory.createTransactionsOnePerRegistrationForProgram(
-            programId,
-            { userId: options.paymentOptions.defaultUserId || 1 },
-          );
-        }
-
-        // 3. Create messages for all registrations
-        const registrationRepository =
-          manager.getRepository('RegistrationEntity');
-        const registrations = await registrationRepository.find();
-        await this.messageFactory.generateMessagesForRegistrations(
-          registrations as any[],
-          options.messageOptions,
-        );
-
-        // 4. Handle FSP-specific data (vouchers, wallets, etc.)
-        await this.createFspSpecificData(powerNr);
-      } finally {
-        // Reset the data source
-        this.resetDataSource();
-      }
-    });
-
-    console.log('**COMPLETED MULTIPLYING REGISTRATIONS AND RELATED DATA**');
-  }
-
-  /**
-   * Multiply registrations (replaces multiplyRegistrations)
-   */
-  public async multiplyRegistrations(
-    powerNr: number,
-    _options: RegistrationFactoryOptions,
-  ): Promise<void> {
+  public async multiplyRegistrations(powerNr: number): Promise<void> {
     console.log(`**MULTIPLYING REGISTRATIONS: ${powerNr} times**`);
 
     // Duplicate registrations and their attribute data together to maintain relationships
@@ -125,10 +56,29 @@ export class MockDataFactoryService {
     console.log('**COMPLETED MULTIPLYING REGISTRATIONS**');
   }
 
-  /**
-   * Multiply transactions for specific programs (replaces multiplyTransactions)
-   */
-  public async multiplyTransactions(
+  public async extendRelatedDataToAllRegistrations(
+    powerNr: number,
+    programIds: number[],
+  ): Promise<void> {
+    console.log(`**EXTENDING RELATED DATA TO ALL REGISTRATIONS**`);
+
+    // 1. Extend transactions for all registrations in each program
+    for (const programId of programIds) {
+      await this.transactionFactory.extendTransactionsFirstPaymentToAllRegistrations(
+        programId,
+      );
+    }
+
+    // 2. Create messages for all registrations
+    await this.messageFactory.generateMessagesForRegistrations();
+
+    // 3. Handle FSP-specific data (vouchers, wallets, etc.)
+    await this.createFspSpecificData(powerNr);
+
+    console.log('**COMPLETED EXTENDING RELATED DATA TO ALL REGISTRATIONS**');
+  }
+
+  public async extendPaymentsAndRelatedData(
     nrPayments: number,
     programIds: number[],
   ): Promise<void> {
@@ -136,31 +86,14 @@ export class MockDataFactoryService {
       `**MULTIPLYING TRANSACTIONS: Extending to ${nrPayments} for programs ${programIds.join(', ')}**`,
     );
 
-    await this.dataSource.transaction(async (manager) => {
-      this.setTransactionManager(manager);
-
-      try {
-        for (const programId of programIds) {
-          await this.multiplyTransactionsPerProgram(nrPayments, programId);
-        }
-
-        // Update payment counts
-        await this.transactionFactory.updatePaymentCounts();
-
-        // Update latest transactions
-        await this.transactionFactory.updateLatestTransactions();
-      } finally {
-        this.resetDataSource();
-      }
-    });
+    for (const programId of programIds) {
+      await this.extendPaymentsAndRelatedDataPerProgram(nrPayments, programId);
+    }
 
     console.log('**COMPLETED MULTIPLYING TRANSACTIONS**');
   }
 
-  /**
-   * Multiply transactions for a specific program (replaces multiplyTransactionsPerProgram)
-   */
-  public async multiplyTransactionsPerProgram(
+  public async extendPaymentsAndRelatedDataPerProgram(
     nrPayments: number,
     programId: number,
   ): Promise<void> {
@@ -180,35 +113,26 @@ export class MockDataFactoryService {
       const payment =
         await this.transactionFactory.createPaymentForProgram(programId);
 
-      // Create transactions for all registrations in this program
-      await this.transactionFactory.createTransactionsForPayment(
-        payment.id,
+      // Extend transactions for the new payment
+      await this.transactionFactory.extendTransactionsForPayment(
         programId,
+        payment.id,
       );
 
       // Create FSP-specific data for this payment
-      await this.createFspSpecificDataForPayment(payment.id, programId);
+      await this.extendFspSpecificDataForPayment(payment.id, programId);
     }
   }
 
-  /**
-   * Multiply messages (replaces multiplyMessages)
-   */
-  public async multiplyMessages(
-    powerNr: number,
-    options: TwilioMessageFactoryOptions,
-  ): Promise<void> {
+  public async multiplyMessages(powerNr: number): Promise<void> {
     console.log(`**MULTIPLYING MESSAGES: ${powerNr} times**`);
 
     for (let i = 1; i <= powerNr; i++) {
       console.log(`Creating message duplication ${i} of ${powerNr}`);
 
       // Duplicate existing messages
-      await this.messageFactory.duplicateExistingMessages(options);
+      await this.messageFactory.duplicateExistingMessages();
     }
-
-    // Update latest messages
-    await this.messageFactory.updateLatestMessages();
 
     console.log('**COMPLETED MULTIPLYING MESSAGES**');
   }
@@ -287,28 +211,24 @@ export class MockDataFactoryService {
    * Create FSP-specific data (vouchers, wallets, etc.)
    */
   private async createFspSpecificData(powerNr: number): Promise<void> {
-    console.log('Creating FSP-specific data (vouchers, wallets, etc.)');
-
-    // --- TYPE-SAFE LOGIC FOR VISA CUSTOMERS, PARENT WALLETS, CHILD WALLETS ---
+    console.log(
+      `**CREATING MOCK DATA match Visa customer and wallet data to registrations**`,
+    );
     await this.createMockVisaCustomersAndWallets();
 
     for (let i = 1; i <= powerNr; i++) {
       console.log(
-        `**CREATING MOCK DATA match AH vouchers registrations: duplication ${i} of ${powerNr}**`,
+        `**CREATING MOCK DATA match AH vouchers to registrations: duplication ${i} of ${powerNr}**`,
       );
       await this.duplicateIntersolveVouchersInBatches();
     }
 
-    // --- TYPE-SAFE LOGIC FOR IMAGECODE EXPORT VOUCHERS ---
     console.log(
-      `**CREATING MOCK DATA match imagecode export vouchers to registrations: (type-safe)**`,
+      `**CREATING MOCK DATA match imagecode export vouchers to registrations**`,
     );
     await this.createMockImagecodeExportVouchers();
   }
 
-  /**
-   * Type-safe creation of mock Visa customers, parent wallets, and child wallets
-   */
   private async createMockVisaCustomersAndWallets(): Promise<void> {
     const registrationRepo = this.dataSource.getRepository(RegistrationEntity);
     const customerRepo = this.dataSource.getRepository(
@@ -490,10 +410,7 @@ export class MockDataFactoryService {
     }
   }
 
-  /**
-   * Create FSP-specific data for a specific payment
-   */
-  private async createFspSpecificDataForPayment(
+  private async extendFspSpecificDataForPayment(
     paymentId: number,
     programId: number,
   ): Promise<void> {
@@ -504,29 +421,8 @@ export class MockDataFactoryService {
     const imagecodeExportVoucherRepo = this.dataSource.getRepository(
       ImageCodeExportVouchersEntity,
     );
-    // Find the first payment for this program
-    const firstPayment = await paymentRepo.findOne({
-      where: { programId: Equal(programId) },
-      order: { id: 'ASC' },
-    });
-    if (!firstPayment) {
-      console.warn(`No payment found for program ${programId}`);
-      return;
-    }
-    // Get all vouchers for the first payment
-    // We need to get the registrationId for each voucher. This is not a property on the entity, so we must get it from the logic that created the vouchers.
-    // Assume that the vouchers were created in the same order as the registrations for the program/FSP.
-    const vouchers = await voucherRepo.find({
-      where: { paymentId: Equal(firstPayment.id) },
-      order: { id: 'ASC' },
-    });
-    if (vouchers.length === 0) {
-      console.warn(
-        `No vouchers found for first payment in program ${programId}`,
-      );
-      return;
-    }
-    // Get registrations for this program, in the same order as vouchers were created
+
+    // Get all Intersolve-voucher registrations for this program
     const voucherRegistrations = await registrationRepo.find({
       where: {
         programId: Equal(programId),
@@ -545,6 +441,31 @@ export class MockDataFactoryService {
       console.warn('No registrations found for Intersolve-voucher FSP');
       return;
     }
+
+    // Find the first payment for this program
+    const firstPayment = await paymentRepo.findOne({
+      where: { programId: Equal(programId) },
+      order: { id: 'ASC' },
+    });
+    if (!firstPayment) {
+      console.warn(`No payment found for program ${programId}`);
+      return;
+    }
+
+    // Get all vouchers for the first payment
+    // We need to get the registrationId for each voucher. This is not a property on the entity, so we must get it from the logic that created the vouchers.
+    // Assume that the vouchers were created in the same order as the registrations for the program/FSP.
+    const vouchers = await voucherRepo.find({
+      where: { paymentId: Equal(firstPayment.id) },
+      order: { id: 'ASC' },
+    });
+    if (vouchers.length === 0) {
+      console.warn(
+        `No vouchers found for first payment in program ${programId}`,
+      );
+      return;
+    }
+
     // Map each voucher to its registrationId by index
     const voucherToRegistrationId = new Map<number, number>();
     for (let i = 0; i < vouchers.length; i++) {
@@ -552,6 +473,7 @@ export class MockDataFactoryService {
         voucherToRegistrationId.set(vouchers[i].id, voucherRegistrations[i].id);
       }
     }
+
     // Duplicate vouchers for the new payment, track registrationId
     const duplicatedVouchers: (DeepPartial<IntersolveVoucherEntity> & {
       __registrationId?: number;
@@ -566,10 +488,11 @@ export class MockDataFactoryService {
       );
       duplicatedVouchers.push(newVoucher);
     }
-    const batchSize = 2500;
+
     const savedVouchers: (IntersolveVoucherEntity & {
       __registrationId?: number;
     })[] = [];
+    const batchSize = 2500;
     for (const batch of chunk(duplicatedVouchers, batchSize)) {
       const saved = await voucherRepo.save(batch);
       // Re-attach __registrationId for mapping
@@ -579,43 +502,32 @@ export class MockDataFactoryService {
       savedVouchers.push(...saved);
     }
 
-    const whatsappRegistrationIds = new Set(
+    const voucherRegistrationIds = new Set(
       voucherRegistrations.map((r) => r.id),
     );
-    // 1-to-1 mapping: for each new voucher, if its registrationId is in the whatsapp set, create an export voucher
+
+    // 1-to-1 mapping: for each new voucher, if its registrationId is in the whatsapp set, create an imagecode-export-voucher
     const newExportVouchers: DeepPartial<ImageCodeExportVouchersEntity>[] = [];
     for (const voucher of savedVouchers) {
       const regId = (voucher as any).__registrationId;
-      if (regId && whatsappRegistrationIds.has(regId)) {
+      if (regId && voucherRegistrationIds.has(regId)) {
         newExportVouchers.push({
           registrationId: regId,
           voucher,
         });
       }
     }
-    // Prevent duplicates: check for existing export vouchers for these voucher/registration pairs
-    const existingExportVouchers = await imagecodeExportVoucherRepo.find({
-      where: {},
-    });
-    const existingPairs = new Set(
-      existingExportVouchers.map(
-        (ev) =>
-          `${ev.registrationId}-${
-            ev.voucher && (ev.voucher as IntersolveVoucherEntity).id
-          }`,
-      ),
-    );
-    const exportVouchersToCreate = newExportVouchers.filter(
-      (ev) =>
-        ev.registrationId &&
-        ev.voucher &&
-        !existingPairs.has(
-          `${ev.registrationId}-${(ev.voucher as IntersolveVoucherEntity).id}`,
-        ),
-    );
-    for (const batch of chunk(exportVouchersToCreate, batchSize)) {
+
+    for (const batch of chunk(newExportVouchers, batchSize)) {
       await imagecodeExportVoucherRepo.save(batch);
     }
+  }
+
+  public async updateDerivedData(): Promise<void> {
+    console.log('**UPDATING DERIVED DATA**');
+    await this.transactionFactory.updatePaymentCounts();
+    await this.transactionFactory.updateLatestTransactions();
+    await this.messageFactory.updateLatestMessages();
 
     // TODO: migrate to typed approach
     console.log(`**Updating voucher attributes**`);
@@ -630,21 +542,7 @@ export class MockDataFactoryService {
     );
     console.log(`**CREATING MOCK DATA unused vouchers**`);
     await this.dataSource.query(queryUnusedVouchers);
-  }
 
-  /**
-   * Set transaction manager for all factories
-   */
-  private setTransactionManager(_manager: any): void {
-    // This would set the transaction manager for all factories
-    // For now, we'll keep the simple implementation
-  }
-
-  /**
-   * Reset data source for all factories
-   */
-  private resetDataSource(): void {
-    // This would reset the data source for all factories
-    // For now, we'll keep the simple implementation
+    console.log('**COMPLETED UPDATING DERIVED DATA**');
   }
 }
