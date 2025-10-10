@@ -50,3 +50,13 @@ jobs:
         with:
           name: performance-test-logs
           path: ${{ env.workingDirectory }}/logs/
+      
+      - name: Microsoft Teams Notification
+        if: always()
+        uses: tlolkema/simple-teams-message@main
+        env:
+          JOB_STATUS_WITH_NICE_EMOJI: ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}
+        with:
+          message_title: 'Performance Test Cronjob'
+          message_description: 'Job status: ${{ env.JOB_STATUS_WITH_NICE_EMOJI }}'
+          webhook: ${{ secrets.MSTEAMS_WEBHOOK }}
