@@ -47,7 +47,6 @@ export class ScriptsService {
     }
 
     if (seedConfig.includeMockData) {
-      // For now equate boolean includeMockData to NLRC mock. Use separate script and return early.
       await this.seedMultipleNlrcMockData.run(
         isApiTests,
         powerNrRegistrationsString,

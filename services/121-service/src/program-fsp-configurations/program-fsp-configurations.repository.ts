@@ -66,14 +66,15 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
   ): Promise<UsernamePasswordInterface> {
     const programFspConfig = await this.baseRepository
       .createQueryBuilder('configuration')
-      .leftJoin('configuration.transactions', 'transactions')
-      .leftJoin('transactions.registration', 'registration')
+      .leftJoin('configuration.transactionEvents', 'events')
+      .leftJoin('events.transaction', 'transaction')
+      .leftJoin('transaction.registration', 'registration')
       .leftJoin('registration.images', 'images')
       .leftJoin('images.voucher', 'voucher')
       .where('voucher.id = :intersolveVoucherId', {
         intersolveVoucherId,
       })
-      .andWhere('voucher."paymentId" = transactions."paymentId"') // TODO: REFACTOR: this filter is needed as it is not taken care of by the joins above. Better to refactor the entity relations here, probably together with whole Voucher refactor. Also look at module responsibility then.
+      .andWhere('voucher."paymentId" = transaction."paymentId"') // TODO: REFACTOR: this filter is needed as it is not taken care of by the joins above. Better to refactor the entity relations here, probably together with whole Voucher refactor. Also look at module responsibility then.
       .select('configuration.id AS id')
       .getRawOne(); // use getRawOne (+select) instead of getOne for performance reasons
 

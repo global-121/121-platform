@@ -43,13 +43,12 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
         nrPaymentsString,
         powerNrMessagesString,
       });
-    // ************************
 
-    // Set up organization and program
+    // 0. Set up program data
     await this.seedHelper.seedData(seedConfig!, isApiTests);
 
+    // 1. Set up 1 registration with 1 payment and 1 message via the API for each program
     const programIds: number[] = [];
-    // Set up 1 registration with 1 payment and 1 message
     if (mockOcw) {
       const programIdOcw = 3;
       programIds.push(programIdOcw);
@@ -66,14 +65,29 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
 
     await waitFor(4_000);
 
-    // Blow up data given the parameters
-    await this.seedMockHelper.multiplyRegistrationsAndRelatedPaymentData(
+    // 2. Multiply registrations
+    await this.seedMockHelper.multiplyRegistrations(powerNrRegistrations);
+
+    // 3. Extend all data to all registrations (transactions and related data for payment 1, messages, etc.)
+    await this.seedMockHelper.extendRelatedDataToAllRegistrations(
       powerNrRegistrations,
+      programIds,
     );
+
+    // 4. Extend all payment-related data to multiple payments
     await this.seedMockHelper.multiplyTransactions(nrPayments, programIds);
+
+    // 5. Extend all message-related data to multiple messages
     await this.seedMockHelper.multiplyMessages(powerNrMessages);
-    await this.seedMockHelper.updateSequenceNumbers();
+
+    // 6. Update all derived data (latest message, payment count, etc.)
+    await this.seedMockHelper.updateDerivedData();
     await this.seedMockHelper.introduceDuplicates();
+
+    // 7. Final clean-up: update sequence numbers and introduce duplicates
+    await this.seedMockHelper.updateSequenceNumbers();
+
+    console.log('**SEEDING MULTIPLE NLRC MOCK DATA COMPLETED**');
   }
 
   private async seedRegistrationForProgram(
