@@ -15,12 +15,9 @@ export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
     this.paymentRepository = dataSource.getRepository(PaymentEntity);
   }
 
-  /**
-   * Create transactions for one registration per existing registration for a specific program
-   */
   public async extendTransactionsFirstPaymentToAllRegistrations(
     programId: number,
-  ): Promise<TransactionEntity[]> {
+  ): Promise<void> {
     const registrationRepo = this.dataSource.getRepository(RegistrationEntity);
     const transactionRepo = this.dataSource.getRepository(TransactionEntity);
 
@@ -31,7 +28,7 @@ export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
     });
     if (!initialRegistration) {
       console.warn(`No initial registration found for program ${programId}`);
-      return [];
+      return;
     }
 
     const initialTransactions = await transactionRepo.find({
@@ -62,8 +59,9 @@ export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
         });
       }
     }
-    const entities = this.createEntitiesBatch(transactionsData);
-    return entities;
+
+    await this.insertEntitiesBatch(transactionsData);
+    return;
   }
 
   public async createPaymentForProgram(
@@ -81,7 +79,7 @@ export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
   public async extendTransactionsForPayment(
     programId: number,
     paymentId: number,
-  ): Promise<TransactionEntity[]> {
+  ): Promise<void> {
     const paymentRepo = this.dataSource.getRepository(PaymentEntity);
     const transactionRepo = this.dataSource.getRepository(TransactionEntity);
 
@@ -92,7 +90,7 @@ export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
     });
     if (!initialPayment) {
       console.warn(`No initial payment found for program ${programId}`);
-      return [];
+      return;
     }
 
     const initialTransactions = await transactionRepo.find({
@@ -110,8 +108,7 @@ export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
       });
     }
 
-    const entities = this.createEntitiesBatch(transactionsData);
-    return entities;
+    await this.insertEntitiesBatch(transactionsData);
   }
 
   public async updatePaymentCounts(): Promise<void> {

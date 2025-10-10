@@ -1,48 +1,61 @@
+import chunk from 'lodash/chunk';
 import { DataSource, DeepPartial, Repository } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
 
-/**
- * Base class for type-safe data factories that generate mock entities.
- * Provides common functionality for batch operations and entity creation.
- */
 export abstract class BaseDataFactory<T extends Base121Entity> {
   protected constructor(
     protected readonly dataSource: DataSource,
     protected readonly repository: Repository<T>,
   ) {}
 
-  /**
-   * Create a single entity with the provided data
-   */
-  protected async createEntity(entityData: DeepPartial<T>): Promise<T> {
-    const entity = this.repository.create(entityData);
-    return await this.repository.save(entity);
+  private logBatchProgress(
+    processedSoFar: number,
+    total: number,
+    label: string,
+  ) {
+    if (total > 0) {
+      const done = Math.min(processedSoFar, total);
+      console.log(`${label} ${done} of ${total} entities`);
+    }
   }
 
   /**
-   * Create multiple entities in batches for better performance
+   * Insert multiple entities in batches for best performance (returns ids)
    */
-  protected async createEntitiesBatch(
+  protected async insertEntitiesBatch(
+    entitiesData: DeepPartial<T>[],
+    batchSize = 2500,
+  ): Promise<number[]> {
+    const insertedIds: number[] = [];
+    let processedSoFar = 0;
+    for (const batch of chunk(entitiesData, batchSize)) {
+      const result = await this.repository.insert(batch as any[]);
+      if (result && Array.isArray(result.identifiers)) {
+        insertedIds.push(...result.identifiers.map((idObj) => idObj.id));
+      }
+      processedSoFar += batch.length;
+      this.logBatchProgress(processedSoFar, entitiesData.length, 'Inserted');
+    }
+    return insertedIds;
+  }
+
+  /**
+   * Save multiple entities in batches (returns full entities, runs hooks/relations)
+   */
+  protected async saveEntitiesBatch(
     entitiesData: DeepPartial<T>[],
     batchSize = 2500,
   ): Promise<T[]> {
     const results: T[] = [];
-
-    for (let i = 0; i < entitiesData.length; i += batchSize) {
-      const batch = entitiesData.slice(i, i + batchSize);
+    let processedSoFar = 0;
+    for (const batch of chunk(entitiesData, batchSize)) {
       const entities = this.repository.create(batch);
       const savedEntities = await this.repository.save(entities);
       results.push(...savedEntities);
-
-      // Log progress for large batches
-      if (entitiesData.length > batchSize) {
-        console.log(
-          `Created ${Math.min(i + batchSize, entitiesData.length)} of ${entitiesData.length} entities`,
-        );
-      }
+      processedSoFar += batch.length;
+      this.logBatchProgress(processedSoFar, entitiesData.length, 'Saved');
     }
-
     return results;
   }
 

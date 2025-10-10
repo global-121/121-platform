@@ -19,11 +19,7 @@ export class RegistrationAttributeDataFactory extends BaseDataFactory<Registrati
     );
   }
 
-  /**
-   * Generate mock registration attribute data for specific registrations
-   */
   public async generateMockData(
-    count: number,
     registrationIds: number[],
     attributeData: RegistrationAttributeDataFactoryOptions[],
   ): Promise<RegistrationAttributeDataEntity[]> {
@@ -44,73 +40,17 @@ export class RegistrationAttributeDataFactory extends BaseDataFactory<Registrati
       }
     }
 
-    return await this.createEntitiesBatch(attributeDataEntries);
-  }
-
-  /**
-   * Duplicate existing registration attribute data (replaces mock-registration-data.sql)
-   */
-  public async duplicateExistingAttributeData(
-    multiplier: number,
-  ): Promise<RegistrationAttributeDataEntity[]> {
-    console.log(
-      `Duplicating existing registration attribute data ${multiplier} times`,
-    );
-
-    // Get all existing attribute data
-    const existingAttributeData = await this.repository.find();
-
-    if (existingAttributeData.length === 0) {
-      console.warn(
-        'No existing registration attribute data found to duplicate',
-      );
-      return [];
-    }
-
-    const allNewAttributeData: RegistrationAttributeDataEntity[] = [];
-
-    for (let iteration = 1; iteration <= multiplier; iteration++) {
-      console.log(
-        `Creating registration attribute data duplication ${iteration} of ${multiplier}`,
-      );
-
-      // Get the current max registrationId from registration_attribute_data table
-      // This follows the original SQL logic: registrationId + (SELECT max(registrationId) FROM registration_attribute_data)
-      const maxRegistrationIdResult = await this.repository
-        .createQueryBuilder('rad')
-        .select('MAX(rad.registrationId)', 'max')
-        .getRawOne();
-
-      const maxRegistrationId = maxRegistrationIdResult?.max || 0;
-
-      const newAttributeDataEntries: DeepPartial<RegistrationAttributeDataEntity>[] =
-        existingAttributeData.map((attributeData) => ({
-          registrationId: attributeData.registrationId + maxRegistrationId,
-          programRegistrationAttributeId:
-            attributeData.programRegistrationAttributeId,
-          value: attributeData.value,
-        }));
-
-      const newAttributeData = await this.createEntitiesBatch(
-        newAttributeDataEntries,
-      );
-      allNewAttributeData.push(...newAttributeData);
-    }
-
-    console.log(
-      `Created ${allNewAttributeData.length} new registration attribute data entries`,
-    );
-    return allNewAttributeData;
+    return await this.saveEntitiesBatch(attributeDataEntries);
   }
 
   /**
    * Duplicate attribute data for specific new registrations (maintains relationships)
    */
   public async duplicateAttributeDataForRegistrations(
-    newRegistrations: RegistrationEntity[],
-  ): Promise<RegistrationAttributeDataEntity[]> {
+    newRegistrationIds: number[],
+  ): Promise<void> {
     console.log(
-      `Creating registration attribute data for ${newRegistrations.length} new registrations`,
+      `Creating registration attribute data for ${newRegistrationIds.length} new registrations`,
     );
 
     // Get all existing attribute data
@@ -120,7 +60,7 @@ export class RegistrationAttributeDataFactory extends BaseDataFactory<Registrati
       console.warn(
         'No existing registration attribute data found to duplicate',
       );
-      return [];
+      return;
     }
 
     // Create mapping of old registration IDs to new registration IDs
@@ -132,10 +72,10 @@ export class RegistrationAttributeDataFactory extends BaseDataFactory<Registrati
     const registrationIdMapping = new Map<number, number>();
     for (
       let i = 0;
-      i < oldRegistrationIds.length && i < newRegistrations.length;
+      i < oldRegistrationIds.length && i < newRegistrationIds.length;
       i++
     ) {
-      registrationIdMapping.set(oldRegistrationIds[i], newRegistrations[i].id);
+      registrationIdMapping.set(oldRegistrationIds[i], newRegistrationIds[i]);
     }
 
     // Create new attribute data entries
@@ -157,17 +97,15 @@ export class RegistrationAttributeDataFactory extends BaseDataFactory<Registrati
 
     if (newAttributeDataEntries.length === 0) {
       console.warn('No attribute data entries to create');
-      return [];
+      return;
     }
 
-    const newAttributeData = await this.createEntitiesBatch(
-      newAttributeDataEntries,
-    );
+    const insertedIds = await this.insertEntitiesBatch(newAttributeDataEntries);
 
     console.log(
-      `Created ${newAttributeData.length} new registration attribute data entries`,
+      `Created ${insertedIds.length} new registration attribute data entries`,
     );
-    return newAttributeData;
+    return;
   }
 
   /**

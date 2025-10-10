@@ -8,6 +8,7 @@ import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
+import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-card-status.enum';
 import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-token-status.enum';
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/entities/intersolve-voucher.entity';
 import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/entities/image-code-export-vouchers.entity';
@@ -62,15 +63,15 @@ export class MockDataFactoryService {
   ): Promise<void> {
     console.log(`**EXTENDING RELATED DATA TO ALL REGISTRATIONS**`);
 
-    // 1. Extend transactions for all registrations in each program
     for (const programId of programIds) {
+      // 1. Extend transactions for all registrations in each program
       await this.transactionFactory.extendTransactionsFirstPaymentToAllRegistrations(
         programId,
       );
-    }
 
-    // 2. Create messages for all registrations
-    await this.messageFactory.generateMessagesForRegistrations();
+      // 2. Create messages for all registrations
+      await this.messageFactory.extendMessagesToAllRegistrations(programId);
+    }
 
     // 3. Handle FSP-specific data (vouchers, wallets, etc.)
     await this.createFspSpecificData(powerNr);
@@ -179,9 +180,6 @@ export class MockDataFactoryService {
     console.log('**COMPLETED UPDATING SEQUENCE NUMBERS**');
   }
 
-  /**
-   * Introduce duplicates for duplicate check attributes (replaces introduceDuplicates)
-   */
   public async introduceDuplicates(): Promise<void> {
     console.log('**INTRODUCING DUPLICATES**');
 
@@ -207,9 +205,6 @@ export class MockDataFactoryService {
     console.log('**COMPLETED INTRODUCING DUPLICATES**');
   }
 
-  /**
-   * Create FSP-specific data (vouchers, wallets, etc.)
-   */
   private async createFspSpecificData(powerNr: number): Promise<void> {
     console.log(
       `**CREATING MOCK DATA match Visa customer and wallet data to registrations**`,
@@ -275,10 +270,12 @@ export class MockDataFactoryService {
     }
     // Batch insert customers
     const batchSize = 2500;
-    let savedCustomers: IntersolveVisaCustomerEntity[] = [...existingCustomers];
+    let savedCustomerIds: number[] = [...existingCustomers.map((c) => c.id)];
     for (const batch of chunk(customers, batchSize)) {
-      const saved = await customerRepo.save(batch);
-      savedCustomers = savedCustomers.concat(saved);
+      const insertResult = await customerRepo.insert(batch as any[]);
+      savedCustomerIds = savedCustomerIds.concat(
+        insertResult.identifiers.map((idObj) => idObj.id),
+      );
     }
 
     // Get all existing parent wallets and their customer IDs
@@ -288,25 +285,28 @@ export class MockDataFactoryService {
     );
 
     const parentWallets: DeepPartial<IntersolveVisaParentWalletEntity>[] = [];
-    for (const customer of savedCustomers) {
-      if (!customer.id) {
+    for (const customerId of savedCustomerIds) {
+      if (!customerId) {
         continue;
       }
-      if (!existingParentWalletCustomerIds.has(customer.id)) {
+      if (!existingParentWalletCustomerIds.has(customerId)) {
         parentWallets.push({
-          intersolveVisaCustomerId: customer.id,
-          tokenCode: `PARENT-${customer.id}`,
+          intersolveVisaCustomerId: customerId,
+          tokenCode: `PARENT-${customerId}`,
           isLinkedToVisaCustomer: true,
+          lastExternalUpdate: new Date(),
         });
       }
     }
     // Batch insert parent wallets
-    let savedParentWallets: IntersolveVisaParentWalletEntity[] = [
-      ...existingParentWallets,
+    let savedParentWalletIds: number[] = [
+      ...existingParentWallets.map((w) => w.id),
     ];
     for (const batch of chunk(parentWallets, batchSize)) {
-      const saved = await parentWalletRepo.save(batch);
-      savedParentWallets = savedParentWallets.concat(saved);
+      const saved = await parentWalletRepo.insert(batch as any[]);
+      savedParentWalletIds = savedParentWalletIds.concat(
+        saved.identifiers.map((idObj) => idObj.id),
+      );
     }
 
     // Get all existing child wallets and their parent wallet IDs
@@ -316,25 +316,26 @@ export class MockDataFactoryService {
     );
 
     const childWallets: DeepPartial<IntersolveVisaChildWalletEntity>[] = [];
-    for (const parentWallet of savedParentWallets) {
-      if (!parentWallet.id) {
+    for (const parentWalletId of savedParentWalletIds) {
+      if (!parentWalletId) {
         continue;
       }
-      if (!existingChildWalletParentIds.has(parentWallet.id)) {
+      if (!existingChildWalletParentIds.has(parentWalletId)) {
         childWallets.push({
-          intersolveVisaParentWalletId: parentWallet.id,
-          tokenCode: `CHILD-${parentWallet.id}`,
-          walletStatus: IntersolveVisaTokenStatus.Active,
-          cardStatus: null,
+          intersolveVisaParentWalletId: parentWalletId,
+          tokenCode: `CHILD-${parentWalletId}`,
+          walletStatus: IntersolveVisaTokenStatus.Inactive,
+          cardStatus: IntersolveVisaCardStatus.CardOk,
           isLinkedToParentWallet: true,
           isTokenBlocked: false,
-          isDebitCardCreated: false,
+          isDebitCardCreated: true,
+          lastExternalUpdate: new Date(),
         });
       }
     }
     // Batch insert child wallets
     for (const batch of chunk(childWallets, batchSize)) {
-      await childWalletRepo.save(batch);
+      await childWalletRepo.insert(batch as any);
     }
   }
 
@@ -381,7 +382,7 @@ export class MockDataFactoryService {
     }
     const batchSize = 2500;
     for (const batch of chunk(exportVouchers, batchSize)) {
-      await imagecodeExportVoucherRepo.save(batch);
+      await imagecodeExportVoucherRepo.insert(batch as any[]);
     }
   }
 
@@ -406,7 +407,7 @@ export class MockDataFactoryService {
     }
     const batchSize = 2500;
     for (const batch of chunk(duplicatedVouchers, batchSize)) {
-      await voucherRepo.save(batch);
+      await voucherRepo.insert(batch as any[]);
     }
   }
 
@@ -519,7 +520,7 @@ export class MockDataFactoryService {
     }
 
     for (const batch of chunk(newExportVouchers, batchSize)) {
-      await imagecodeExportVoucherRepo.save(batch);
+      await imagecodeExportVoucherRepo.insert(batch as any[]);
     }
   }
 

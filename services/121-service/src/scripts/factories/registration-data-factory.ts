@@ -72,11 +72,11 @@ export class RegistrationDataFactory extends BaseDataFactory<RegistrationEntity>
         };
       });
 
-    const newRegistrations =
-      await this.createEntitiesBatch(newRegistrationsData);
+    const newRegistrationIds =
+      await this.insertEntitiesBatch(newRegistrationsData);
 
     await this.attributeDataFactory.duplicateAttributeDataForRegistrations(
-      newRegistrations,
+      newRegistrationIds,
     );
   }
 
