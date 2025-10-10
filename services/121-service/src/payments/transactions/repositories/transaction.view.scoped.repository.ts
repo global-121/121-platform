@@ -6,6 +6,7 @@ import { Equal, Repository } from 'typeorm';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
+import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import {
@@ -15,16 +16,16 @@ import {
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { EntityClass } from '@121-service/src/shared/types/entity-class.type';
 
-export class TransactionScopedRepository extends ScopedRepository<TransactionEntity> {
+export class TransactionViewScopedRepository extends ScopedRepository<TransactionViewEntity> {
   constructor(
     @Inject(REQUEST) request: ScopedUserRequest,
-    @InjectRepository(TransactionEntity)
-    repository: Repository<TransactionEntity>,
+    @InjectRepository(TransactionViewEntity)
+    repository: Repository<TransactionViewEntity>,
   ) {
     super(request, repository);
   }
 
-  async getLatestTransactionsByRegistrationIdAndProgramId(
+  public async getLatestTransactionsByRegistrationIdAndProgramId(
     registrationId: number,
     programId: number,
   ) {
@@ -36,6 +37,36 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       .addSelect('user.id', 'userId')
       .addSelect('user.username', 'username');
     return await query.getRawMany<GetAuditedTransactionDto>(); // Leaving this as getRawMany for now, as it is not a plain entity. It's a concatenation of multiple entities.
+  }
+
+  public async getFailedTransactionDetailsForRetry({
+    programId,
+    paymentId,
+  }: {
+    programId: number;
+    paymentId: number;
+  }): Promise<
+    {
+      id: number;
+      registrationReferenceId: string;
+      programFspConfigurationName: string;
+    }[]
+  > {
+    return await this.createQueryBuilder('transaction')
+      .addSelect('transaction.id', 'id')
+      .addSelect('registration.referenceId', 'registrationReferenceId')
+      .addSelect('programFspConfiguration.name', 'programFspConfigurationName')
+      .leftJoin('transaction.registration', 'registration')
+      .leftJoin(
+        'registration.programFspConfiguration',
+        'programFspConfiguration', // Selecting the FSP configuration assigned to the registration at the time of retry not of the last transaction event
+      )
+      .andWhere('transaction.paymentId = :paymentId', { paymentId })
+      .andWhere('registration.programId = :programId', { programId })
+      .andWhere('transaction.status = :status', {
+        status: TransactionStatusEnum.error,
+      })
+      .getRawMany();
   }
 
   public async getTransactions({
@@ -71,7 +102,6 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       programFspConfigurationName: string;
     } & Record<string, unknown>)[]
   > {
-    // TODO: create a transaction-view that encapsulates all these joins and selects and can be used at multiple places.
     const query = this.createQueryBuilder('transaction')
       .select([
         'transaction.paymentId AS "paymentId"',
@@ -79,21 +109,18 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         'transaction.id AS "id"',
         'transaction.created AS "created"',
         'transaction.updated AS "updated"',
-        'r."registrationProgramId"',
-        'r."referenceId" as "registrationReferenceId"',
-        'r."id" as "registrationId"',
-        'r."registrationStatus"',
+        'r.registrationProgramId AS "registrationProgramId"',
+        'r.referenceId AS "registrationReferenceId"',
+        'r.id AS "registrationId"',
+        'r.registrationStatus AS "registrationStatus"',
         'transaction.status AS "status"',
-        'transaction."transferValue" AS "amount"',
-        'event."errorMessage" as "errorMessage"',
-        'fspconfig.name as "programFspConfigurationName"',
+        'transaction.transferValue AS "amount"',
+        'transaction.errorMessage AS "errorMessage"',
+        'transaction.programFspConfigurationName AS "programFspConfigurationName"',
       ])
-      .innerJoin('transaction.lastTransactionEvent', 'lte')
-      .leftJoin('lte.transactionEvent', 'event')
-      .leftJoin('event.programFspConfiguration', 'fspconfig')
       .leftJoin('transaction.registration', 'r')
       .leftJoin('transaction.payment', 'p')
-      .andWhere('p."programId" = :programId', {
+      .andWhere('p.programId = :programId', {
         programId,
       });
 
@@ -126,7 +153,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
     return query.getRawMany();
   }
 
-  // Make this private when all 'querying code' has been moved to this repository
+  // ##TODO: refactor out this method once we refactor excel fsp
   public getLastTransactionsQuery({
     programId,
     paymentId,
@@ -144,25 +171,23 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
   }): ScopedQueryBuilder<TransactionEntity> {
     let transactionQuery = this.createQueryBuilder('transaction')
       .select([
-        'transaction.id AS "transactionId"',
-        'transaction.created AS "paymentDate"',
-        'transaction.updated AS updated',
         'transaction.paymentId AS "paymentId"',
-        'r."referenceId"',
-        'status',
+        'p.created AS "paymentDate"',
+        'transaction.id AS "id"',
+        'transaction.created AS "created"',
+        'transaction.updated AS "updated"',
+        'r.registrationProgramId AS "registrationProgramId"',
+        'r.referenceId AS "registrationReferenceId"',
+        'r.id AS "registrationId"',
+        'r.registrationStatus AS "registrationStatus"',
+        'transaction.status AS "status"',
         'transaction.transferValue AS "amount"',
-        'event."errorMessage" as "errorMessage"',
-        'fspconfig.fspName as "fspName"',
-        'event."programFspConfigurationId" as "programFspConfigurationId"',
-        'fspconfig.label as "programFspConfigurationLabel"',
-        'fspconfig.name as "programFspConfigurationName"',
+        'transaction.errorMessage AS "errorMessage"',
+        'transaction.programFspConfigurationName AS "programFspConfigurationName"',
       ])
-      .innerJoin('transaction.lastTransactionEvent', 'lte')
-      .leftJoin('lte.transactionEvent', 'event')
-      .leftJoin('event.programFspConfiguration', 'fspconfig')
       .leftJoin('transaction.registration', 'r')
       .leftJoin('transaction.payment', 'p')
-      .andWhere('p."programId" = :programId', {
+      .andWhere('p.programId = :programId', {
         programId,
       });
     if (paymentId) {
@@ -199,7 +224,9 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
     return transactionQuery;
   }
 
-  public async getTransactionCreationDetails(transactionIds: number[]): Promise<
+  public async getTransactionJobCreationDetails(
+    transactionIds: number[],
+  ): Promise<
     {
       transactionId: number;
       transferValue: number;
@@ -215,7 +242,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         'transaction.id as "transactionId"',
         'transaction.transferValue as "transferValue"',
         'registration."referenceId" as "referenceId"',
-        '"fspConfig"."fspName" as "fspName"',
+        '"fspConfig"."fspName" as "fspName"', // Uses the current FSP assigned to the registration instead of the one assigned to the last transaction event
       ])
       .getRawMany<{
         transactionId: number;
@@ -247,5 +274,36 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       select: { id: true },
     });
     return transaction.id;
+  }
+
+  public async aggregateTransactionsByStatus({
+    programId,
+    paymentId,
+  }: {
+    programId: number;
+    paymentId: number;
+  }): Promise<
+    {
+      status: TransactionStatusEnum;
+      count: string;
+      totalamount: string;
+    }[]
+  > {
+    return await this.createQueryBuilder('transaction')
+      .select('transaction.status', 'status')
+      .leftJoin('transaction.payment', 'p')
+      .addSelect('COUNT(*)', 'count')
+      .addSelect(
+        'SUM(ROUND(transaction."transferValue"::numeric, 2))',
+        'totalamount',
+      )
+      .andWhere('p."programId" = :programId', {
+        programId,
+      })
+      .andWhere('transaction."paymentId" = :paymentId', {
+        paymentId,
+      })
+      .groupBy('transaction.status')
+      .getRawMany();
   }
 }

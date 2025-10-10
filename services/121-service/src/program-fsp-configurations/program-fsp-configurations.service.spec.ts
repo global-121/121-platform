@@ -7,7 +7,6 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
@@ -41,7 +40,6 @@ const validPropertyDto: CreateProgramFspConfigurationPropertyDto = {
 // Declaring mocks here so they are accessible through all files
 let mockProgramFspConfigurationRepository;
 let mockProgramFspConfigurationPropertyRepository;
-let mockTransactionScopedRepository;
 
 describe('ProgramFspConfigurationsService', () => {
   let service: ProgramFspConfigurationsService;
@@ -92,18 +90,6 @@ describe('ProgramFspConfigurationsService', () => {
       }),
     };
 
-    mockTransactionScopedRepository = {
-      count: jest.fn().mockImplementation((criteria) => {
-        const programFspConfigurationIdOfWhere =
-          criteria.where.programFspConfigurationId._value;
-
-        if (programFspConfigurationIdOfWhere === 1) {
-          return 0;
-        }
-        return 1;
-      }),
-    };
-
     const moduleRef = await Test.createTestingModule({
       providers: [
         ProgramFspConfigurationsService,
@@ -114,10 +100,6 @@ describe('ProgramFspConfigurationsService', () => {
         {
           provide: getRepositoryToken(ProgramFspConfigurationPropertyEntity),
           useValue: mockProgramFspConfigurationPropertyRepository,
-        },
-        {
-          provide: TransactionScopedRepository,
-          useValue: mockTransactionScopedRepository,
         },
       ],
     }).compile();

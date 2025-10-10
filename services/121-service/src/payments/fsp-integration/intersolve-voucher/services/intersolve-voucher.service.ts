@@ -26,7 +26,7 @@ import { IntersolveVoucherApiService } from '@121-service/src/payments/fsp-integ
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
@@ -63,7 +63,7 @@ export class IntersolveVoucherService {
     private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
     private readonly imageCodeService: ImageCodeService,
     private readonly transactionsService: TransactionsService,
-    private readonly transactionScopedRepository: TransactionScopedRepository,
+    private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
     public readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
@@ -104,7 +104,7 @@ export class IntersolveVoucherService {
     paResult.calculatedAmount = calculatedAmount;
 
     const paymentId =
-      await this.transactionScopedRepository.getPaymentIdByTransactionId(
+      await this.transactionViewScopedRepository.getPaymentIdByTransactionId(
         transactionId,
       );
     const voucher = await this.getReusableVoucher({
@@ -421,9 +421,10 @@ export class IntersolveVoucherService {
     }
 
     // Do not create 2 events for delivered+read.
-    const transaction = await this.transactionScopedRepository.findOneOrFail({
-      where: { id: Equal(transactionId) },
-    });
+    const transaction =
+      await this.transactionViewScopedRepository.findOneOrFail({
+        where: { id: Equal(transactionId) },
+      });
     if (
       transaction.status === TransactionStatusEnum.success &&
       newTransactionStatus === TransactionStatusEnum.success

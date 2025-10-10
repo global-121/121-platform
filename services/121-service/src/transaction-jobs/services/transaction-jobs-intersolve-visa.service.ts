@@ -6,7 +6,7 @@ import { DoTransferOrIssueCardResult } from '@121-service/src/payments/fsp-integ
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
@@ -20,7 +20,8 @@ export class TransactionJobsIntersolveVisaService {
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
-    private readonly transactionScopedRepository: TransactionScopedRepository,
+
+    private readonly transactionRepository: TransactionRepository,
     private readonly transactionsService: TransactionsService,
   ) {}
 
@@ -166,7 +167,7 @@ export class TransactionJobsIntersolveVisaService {
   }
 
   private async updateTransferAmount({ transactionId, value }) {
-    await this.transactionScopedRepository.updateUnscoped(
+    await this.transactionRepository.update(
       { id: transactionId },
       { transferValue: value },
     );
