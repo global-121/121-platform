@@ -158,7 +158,6 @@ export class RegistrationAttributeDataFactory extends BaseDataFactory<Registrati
 
       if (patterns.length > 0) {
         const attributeData = await this.generateMockData(
-          1,
           [registration.id],
           patterns,
         );
