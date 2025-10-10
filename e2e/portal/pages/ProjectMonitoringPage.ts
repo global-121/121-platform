@@ -67,9 +67,9 @@ class ProjectMonitoring extends BasePage {
 
     const iframe = await this.monitoringIframe.locator('iframe').all();
     if (shouldHaveIframe) {
-      await expect(iframe.length).toBe(1);
+      expect(iframe.length).toBe(1);
     } else {
-      await expect(iframe.length).toBe(0);
+      expect(iframe.length).toBe(0);
       await expect(this.monitoringIframe).toContainText(
         'No PowerBI dashboard has been configured for this project, please contact support@121.global to set this up',
       );
@@ -79,9 +79,19 @@ class ProjectMonitoring extends BasePage {
   async assertValuesInMonitoringTab({
     peopleRegistered,
     peopleIncluded,
+    lastPaymentAmount,
+    remainingBudget,
+    cashDisbursed,
+    paymentsDone,
+    newRegistrations,
   }: {
     peopleRegistered: number;
     peopleIncluded: number;
+    lastPaymentAmount?: string;
+    remainingBudget: string;
+    cashDisbursed: string;
+    paymentsDone: number;
+    newRegistrations?: number;
   }) {
     const registrationsTileLocator = this.peopleRegisteredTile.getByTestId(
       'metric-tile-component',
@@ -89,11 +99,44 @@ class ProjectMonitoring extends BasePage {
     const includedTileLocator = this.peopleIncludedTile.getByTestId(
       'metric-tile-component',
     );
-
+    const remainingBudgetTileLocator = this.remainingBudgetTile.getByTestId(
+      'metric-tile-component',
+    );
+    const cashDisbursedTileLocator = this.cashDisbursedTile.getByTestId(
+      'metric-tile-component',
+    );
+    const paymentsDoneChip = this.remainingBudgetTile.getByLabel(
+      `${paymentsDone.toString()} payment(s) done`,
+    );
+    const newPeopleRegisteredChip = this.peopleRegisteredTile.getByLabel(
+      `${newRegistrations} new`,
+    );
+    // Validate metrics "Chips"
+    if (lastPaymentAmount) {
+      const cashDisbursedInLastPayment = this.cashDisbursedTile.getByLabel(
+        `+ ${lastPaymentAmount}`,
+      );
+      await expect(cashDisbursedInLastPayment).toContainText(
+        lastPaymentAmount ?? '',
+      );
+    }
+    if (newRegistrations) {
+      await expect(newPeopleRegisteredChip).toHaveText(
+        `${newRegistrations.toString()} new`,
+      );
+    }
+    await expect(paymentsDoneChip).toHaveText(
+      `${paymentsDone.toString()} payment(s) done`,
+    );
+    // Validate metrics values
     await expect(registrationsTileLocator).toHaveText(
       peopleRegistered.toString(),
     );
     await expect(includedTileLocator).toHaveText(peopleIncluded.toString());
+    await expect(remainingBudgetTileLocator).toHaveText(
+      remainingBudget.toString(),
+    );
+    await expect(cashDisbursedTileLocator).toHaveText(cashDisbursed.toString());
   }
 
   async selectTab({ tabName }: { tabName: string }) {
