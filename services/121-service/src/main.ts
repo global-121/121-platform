@@ -116,7 +116,7 @@ function generateSwaggerSummaryJson(app: INestApplication<any>): void {
 }
 
 async function bootstrap(): Promise<void> {
-  console.log(`Bootstrapping ${APP_TITLE} - ${APP_VERSION}`);
+  console.warn(`Bootstrapping ${APP_TITLE} - ${APP_VERSION}`);
 
   const app = await NestFactory.create(ApplicationModule);
 
