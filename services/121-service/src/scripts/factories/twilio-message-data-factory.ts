@@ -114,7 +114,7 @@ export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntit
       'TRUNCATE TABLE "121-service"."latest_message"',
     );
 
-    // Insert latest messages using a more efficient query
+    // TODO: migrate to typed approach
     await this.dataSource.query(`
       INSERT INTO "121-service"."latest_message" ("registrationId", "messageId")
       SELECT DISTINCT ON ("registrationId")

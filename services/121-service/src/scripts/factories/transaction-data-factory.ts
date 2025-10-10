@@ -133,7 +133,7 @@ export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
       'TRUNCATE TABLE "121-service"."latest_transaction"',
     );
 
-    // Insert latest transactions using a more efficient query
+    // TODO: migrate to typed approach
     await this.dataSource.query(`
       INSERT INTO "121-service"."latest_transaction" ("paymentId", "registrationId", "transactionId")
       SELECT t."paymentId", t."registrationId", t.id AS transactionId

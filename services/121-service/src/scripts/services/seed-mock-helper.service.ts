@@ -102,6 +102,10 @@ export class SeedMockHelperService {
     await this.mockDataFactory.multiplyMessages(powerNr);
   }
 
+  public updateDerivedData(): Promise<void> {
+    return this.mockDataFactory.updateDerivedData();
+  }
+
   public async updateSequenceNumbers(): Promise<void> {
     await this.mockDataFactory.updateSequenceNumbers();
   }
@@ -122,9 +126,6 @@ export class SeedMockHelperService {
     return await this.httpService.post(url, body, headers);
   }
 
-  /**
-   * Change PA status (unchanged - uses HTTP API)
-   */
   public async awaitChangePaStatus(
     programId: number,
     referenceIds: string[],
@@ -164,9 +165,6 @@ export class SeedMockHelperService {
     return result;
   }
 
-  /**
-   * Wait for status change to complete (unchanged)
-   */
   public async waitForStatusChangeToComplete(
     programId: number,
     amountOfRegistrations: number,
@@ -198,9 +196,6 @@ export class SeedMockHelperService {
     }
   }
 
-  /**
-   * Get registrations (unchanged - uses HTTP API)
-   */
   public async getRegistrations(
     programId: number,
     attributes: string[],
@@ -221,9 +216,6 @@ export class SeedMockHelperService {
     return await this.httpService.get(url, headers);
   }
 
-  /**
-   * Do payment (unchanged - uses HTTP API)
-   */
   public async doPayment(
     programId: number,
     amount: number,
@@ -252,9 +244,5 @@ export class SeedMockHelperService {
     };
 
     return await this.httpService.post(url, body, headers);
-  }
-
-  public updateDerivedData(): Promise<void> {
-    return this.mockDataFactory.updateDerivedData();
   }
 }

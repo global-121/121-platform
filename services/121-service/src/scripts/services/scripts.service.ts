@@ -47,8 +47,6 @@ export class ScriptsService {
     }
 
     if (seedConfig.includeMockData) {
-      // Use the type-safe factory approach (now integrated into the main class)
-      console.log('**USING TYPE-SAFE FACTORY APPROACH**');
       await this.seedMultipleNlrcMockData.run(
         isApiTests,
         powerNrRegistrationsString,

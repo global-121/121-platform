@@ -89,6 +89,7 @@ describe('Mock registrations', () => {
           registration.referenceId,
           accessToken,
         );
+        // ##TODO: this assertion is flaky, sometimes it yields 14 message instead of 10 for the PV registrations. Something like this might very well have been pre-existing though..
         const expected = programId === programIdOCW ? 8 : 10;
         expect(messageHistoryResponse.body.length).toBe(expected);
       }

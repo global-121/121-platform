@@ -25,10 +25,6 @@ const readSqlFile = (filepath: string): string => {
     .replace(/\r?\n|\r/g, ' ');
 };
 
-/**
- * Service that orchestrates type-safe mock data generation using factories.
- * Replaces the raw SQL approach with ORM-based operations.
- */
 @Injectable()
 export class MockDataFactoryService {
   private readonly registrationFactory: RegistrationDataFactory;
@@ -44,14 +40,12 @@ export class MockDataFactoryService {
   public async multiplyRegistrations(powerNr: number): Promise<void> {
     console.log(`**MULTIPLYING REGISTRATIONS: ${powerNr} times**`);
 
-    // Duplicate registrations and their attribute data together to maintain relationships
     for (let i = 1; i <= powerNr; i++) {
       console.log(`Creating registration duplication ${i} of ${powerNr}`);
 
       await this.registrationFactory.duplicateExistingRegistrations();
     }
 
-    // Make phone numbers unique
     await this.registrationFactory.makePhoneNumbersUnique();
 
     console.log('**COMPLETED MULTIPLYING REGISTRATIONS**');

@@ -16,12 +16,7 @@ export class RegistrationDataFactory extends BaseDataFactory<RegistrationEntity>
     );
   }
 
-  /**
-   * Duplicate existing registrations (similar to the SQL approach)
-   */
   public async duplicateExistingRegistrations(): Promise<void> {
-    console.log(`Duplicating existing registrations`);
-
     // Get all existing registrations
     const existingRegistrations = await this.repository.find();
 
@@ -80,9 +75,6 @@ export class RegistrationDataFactory extends BaseDataFactory<RegistrationEntity>
     );
   }
 
-  /**
-   * Make phone numbers unique (replaces mock-make-phone-unique.sql)
-   */
   public async makePhoneNumbersUnique(): Promise<void> {
     console.log('Making phone numbers unique');
 
@@ -113,9 +105,6 @@ export class RegistrationDataFactory extends BaseDataFactory<RegistrationEntity>
     await this.updatePhoneNumbersInAttributeData();
   }
 
-  /**
-   * Update phone numbers in registration_attribute_data table
-   */
   private async updatePhoneNumbersInAttributeData(): Promise<void> {
     console.log('Updating phone numbers in registration attribute data');
 
@@ -169,5 +158,13 @@ export class RegistrationDataFactory extends BaseDataFactory<RegistrationEntity>
     }
 
     console.log(`Updated ${updates.length} phone numbers in attribute data`);
+  }
+
+  private generateUniqueReferenceId(): string {
+    return Math.random().toString(36).substring(2, 15);
+  }
+
+  private generatePhoneNumber(): string {
+    return `+254${Math.floor(Math.random() * 900000000) + 100000000}`;
   }
 }
