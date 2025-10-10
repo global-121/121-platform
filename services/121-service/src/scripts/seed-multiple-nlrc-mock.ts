@@ -86,6 +86,8 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
 
     // 7. Final clean-up: update sequence numbers and introduce duplicates
     await this.seedMockHelper.updateSequenceNumbers();
+
+    console.log('**SEEDING MULTIPLE NLRC MOCK DATA COMPLETED**');
   }
 
   private async seedRegistrationForProgram(

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, DeepPartial, Equal } from 'typeorm';
+import { DataSource, DeepPartial, Equal, In } from 'typeorm';
 
 import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
@@ -54,36 +54,49 @@ export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntit
     await this.insertEntitiesBatch(messagesData);
   }
 
-  public async duplicateExistingMessages(): Promise<void> {
-    console.log(`Duplicating existing messages`);
+  public async duplicateExistingMessages(batchSize = 2500): Promise<void> {
+    console.log(`Duplicating existing messages in batches of ${batchSize}`);
 
-    const existingMessages = await this.repository.find();
-    if (existingMessages.length === 0) {
+    // Fetch all original message IDs at the start
+    const originalIds: number[] = (
+      await this.repository.find({ select: { id: true }, order: { id: 'ASC' } })
+    ).map((m) => m.id);
+    if (originalIds.length === 0) {
       console.warn('No existing messages found to duplicate');
       return;
     }
 
     const defaultOptions = this.getDefaultMessageOptions();
-    const newMessagesData: DeepPartial<TwilioMessageEntity>[] =
-      existingMessages.map((message) => ({
-        accountSid: message.accountSid || defaultOptions.accountSid, // has 'select: false' in entity
-        body: message.body,
-        mediaUrl: message.mediaUrl,
-        to: message.to,
-        from: message.from || defaultOptions.from, // has 'select: false' in entity
-        sid: this.generateTwilioSid(), // Generate new unique SID
-        status: message.status,
-        type: message.type,
-        dateCreated: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000), // Random recent date
-        registrationId: message.registrationId,
-        userId: message.userId || 1,
-        processType: message.processType,
-        contentType: message.contentType,
-        errorCode: message.errorCode,
-        errorMessage: message.errorMessage,
-      }));
-
-    await this.insertEntitiesBatch(newMessagesData);
+    // Additional batching is needed here to not create too large array in memory to pass to insertEntitiesBatch
+    let totalProcessed = 0;
+    for (let offset = 0; offset < originalIds.length; offset += batchSize) {
+      const batchIds = originalIds.slice(offset, offset + batchSize);
+      const batch = await this.repository.find({ where: { id: In(batchIds) } });
+      const newMessagesData: DeepPartial<TwilioMessageEntity>[] = batch.map(
+        (message) => ({
+          accountSid: message.accountSid || defaultOptions.accountSid,
+          body: message.body,
+          mediaUrl: message.mediaUrl,
+          to: message.to,
+          from: message.from || defaultOptions.from,
+          sid: this.generateTwilioSid(),
+          status: message.status,
+          type: message.type,
+          dateCreated: new Date(
+            Date.now() - Math.random() * 24 * 60 * 60 * 1000,
+          ),
+          registrationId: message.registrationId,
+          userId: message.userId || 1,
+          processType: message.processType,
+          contentType: message.contentType,
+          errorCode: message.errorCode,
+          errorMessage: message.errorMessage,
+        }),
+      );
+      await this.insertEntitiesBatch(newMessagesData, batchSize);
+      totalProcessed += batch.length;
+      console.log(`Duplicated ${totalProcessed} messages so far...`);
+    }
   }
 
   private getDefaultMessageOptions() {
@@ -117,16 +130,5 @@ export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntit
 
   private generateTwilioSid(): string {
     return `SM${Math.random().toString(36).substring(2, 34)}`;
-  }
-
-  private generateMessageBody(): string {
-    const messages = [
-      'Your payment has been processed successfully.',
-      'Thank you for registering with our program.',
-      'Your account has been updated.',
-      'Payment confirmation: Your transaction is complete.',
-      'Welcome to the program. Please check your status.',
-    ];
-    return messages[Math.floor(Math.random() * messages.length)];
   }
 }

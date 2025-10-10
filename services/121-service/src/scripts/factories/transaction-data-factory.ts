@@ -21,25 +21,20 @@ export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
     const registrationRepo = this.dataSource.getRepository(RegistrationEntity);
     const transactionRepo = this.dataSource.getRepository(TransactionEntity);
 
-    // Find the initial seeded registrations and its transactions
-    const initialRegistration = await registrationRepo.findOne({
-      where: { programId: Equal(programId) },
-      order: { id: 'ASC' },
-    });
-    if (!initialRegistration) {
-      console.warn(`No initial registration found for program ${programId}`);
-      return;
-    }
-
-    const initialTransactions = await transactionRepo.find({
-      where: { registration: Equal(initialRegistration.id) },
-    });
-
-    // Find all registrations
     const registrations = await registrationRepo.find({
       where: { programId: Equal(programId) },
       relations: { transactions: true },
     });
+    console.log(
+      `Generating messages for ${registrations.length} registrations`,
+    );
+
+    // Find the initial seeded registrations and its transactions
+    const initialRegistration = registrations[0];
+    const initialTransactions = await transactionRepo.find({
+      where: { registration: Equal(initialRegistration.id) },
+    });
+
     const transactionsData: DeepPartial<TransactionEntity>[] = [];
     for (const registration of registrations.filter(
       (r) => r.id !== initialRegistration.id, // Do not insert the initial registration's transactions again
