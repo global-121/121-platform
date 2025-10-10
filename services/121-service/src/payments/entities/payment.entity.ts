@@ -14,7 +14,7 @@ import { ProgramEntity } from '@121-service/src/programs/entities/program.entity
 
 @Entity('payment')
 export class PaymentEntity extends Base121Entity {
-  @OneToMany(() => TransactionEntity, (transactions) => transactions.paymentId)
+  @OneToMany(() => TransactionEntity, (transactions) => transactions.payment)
   public transactions: Relation<TransactionEntity[]>;
 
   @OneToMany(
