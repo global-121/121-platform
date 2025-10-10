@@ -39,7 +39,7 @@ export class SeedMockHelperService {
 
     const min = 1;
     const maxPowerNrRegistrations = 17;
-    const maxPowerNrMessages = 6;
+    const maxPowerNrMessages = 6; // NOTE: There is a trade-off with maxPowerNrRegistrations here. If that is on 17, then this can be max. 1.
     const maxNrPayments = 30;
 
     if (
