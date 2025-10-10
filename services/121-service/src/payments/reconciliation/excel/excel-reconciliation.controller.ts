@@ -5,7 +5,6 @@ import {
   Param,
   ParseIntPipe,
   Post,
-  Req,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -24,10 +23,9 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
 import { ImportReconciliationResponseDto } from '@121-service/src/payments/dto/import-reconciliation-response.dto';
-import { ExcelReconciliationService } from '@121-service/src/payments/reconciliation/excel/excel-reconciliation.service';
+import { ExcelReconciliationService } from '@121-service/src/payments/reconciliation/excel/services/excel-reconciliation.service';
 import { FILE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('payments')
@@ -84,14 +82,11 @@ export class ExcelReconciliationController {
     programId: number,
     @Param('paymentId', ParseIntPipe)
     paymentId: number,
-    @Req() req,
   ): Promise<ImportReconciliationResponseDto> {
-    const userId = RequestHelper.getUserId(req);
-    return await this.excelReconciliationService.upsertFspReconciliationData(
+    return await this.excelReconciliationService.upsertFspReconciliationData({
       file,
       programId,
       paymentId,
-      userId,
-    );
+    });
   }
 }

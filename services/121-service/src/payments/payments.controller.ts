@@ -255,14 +255,10 @@ export class PaymentsController {
     programId: number,
     @Param('paymentId', ParseIntPipe)
     paymentId: number,
-    @Req() req: ScopedUserRequest,
   ): Promise<FspInstructions[]> {
-    const userId = RequestHelper.getUserId(req);
-
     return await this.paymentsExcelFspService.getFspInstructions(
       programId,
       paymentId,
-      userId,
     );
   }
 

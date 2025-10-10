@@ -12,6 +12,7 @@ import { Equal, Repository } from 'typeorm';
 
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
+import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import {
   AllowedFiltersNumber,
   AllowedFiltersString,
@@ -42,6 +43,7 @@ export class RegistrationsPaginationService {
   public constructor(
     private readonly programService: ProgramService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
+    private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
   ) {}
 
   public async getPaginate(
@@ -250,6 +252,56 @@ export class RegistrationsPaginationService {
       const querybuilder =
         this.registrationViewScopedRepository.createQueryBuilderToGetRegistrationViewsByReferenceIds(
           currentChunk,
+        );
+      const chunkResults = await this.getFirstPageOfPaginatedRegistrations({
+        paginateQuery: { select, limit: effectiveChunkSize, path: '' },
+        limit: effectiveChunkSize,
+        programId,
+        baseQuery: querybuilder,
+      });
+      allResults.push(...chunkResults);
+    }
+
+    return allResults;
+  }
+
+  public async getRegistrationsChunkedByDataValues({
+    programId,
+    registrationAttributeName,
+    registrationDataValues,
+    select,
+    chunkSize,
+  }: {
+    programId: number;
+    registrationAttributeName: string;
+    registrationDataValues: string[];
+    select?: string[];
+    chunkSize?: number;
+  }): Promise<MappedPaginatedRegistrationDto[]> {
+    const defaultChunkSize = 20000;
+    const effectiveChunkSize = chunkSize || defaultChunkSize;
+
+    const programRegistrationAttributeId = (
+      await this.programRegistrationAttributeRepository.findOneOrFail({
+        where: {
+          programId: Equal(programId),
+          name: Equal(registrationAttributeName),
+        },
+      })
+    ).id;
+
+    // Ensure that the a new queryBuilder is created for a chunk of dataA because limited query length
+    const allResults: MappedPaginatedRegistrationDto[] = [];
+
+    const chunks = chunk(registrationDataValues, effectiveChunkSize);
+    for (const currentChunk of chunks) {
+      const querybuilder =
+        this.registrationViewScopedRepository.createQueryBuilderToGetByRegistrationDataValues(
+          {
+            programId,
+            programRegistrationAttributeId,
+            registrationDataValues: currentChunk,
+          },
         );
       const chunkResults = await this.getFirstPageOfPaginatedRegistrations({
         paginateQuery: { select, limit: effectiveChunkSize, path: '' },

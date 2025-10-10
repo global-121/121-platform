@@ -4,11 +4,9 @@ import { Equal, Repository } from 'typeorm';
 
 import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { ExcelFspInstructions } from '@121-service/src/payments/fsp-integration/excel/dto/excel-fsp-instructions.dto';
-import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
-import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 
 @Injectable()
@@ -17,46 +15,35 @@ export class ExcelService {
   private readonly programRepository: Repository<ProgramEntity>;
 
   public constructor(
+    //TODO: This should be refactored to not use the registrationPaginationService, maybe this entire service/module should be deleted and moved to the PaymentsExcelFspService
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
-    private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
   ) {}
 
   public async getFspInstructions({
     transactions,
     programId,
-    paymentId,
     programFspConfigurationId,
   }: {
-    transactions: TransactionReturnDto[];
+    transactions: TransactionEntity[];
     programId: number;
-    paymentId: number;
     programFspConfigurationId: number;
   }): Promise<ExcelFspInstructions[]> {
     const exportColumns = await this.getExportColumnsForProgramFspConfig(
       programFspConfigurationId,
       programId,
     );
-    // TODO: Think about refactoring it's probably better use the transaction ids instead of the referenceIds not sure what the original reasoning was
-    // Creating a new query builder since it is impossible to do a where in query if there are more than 500000 referenceIds
-    // TODO: Also refactor this so that the excel service does not know about transactions, so than this query should be moved to a repository and be called in another service
-    const qb =
-      this.registrationViewScopedRepository.getQueryBuilderForFspInstructions({
-        programId,
-        paymentId,
-        programFspConfigurationId,
-        status: TransactionStatusEnum.waiting,
-      });
-    const chunkSize = 400000;
+    const referenceIds = transactions.map((t) => t.registration.referenceId);
+
+    const chunkSize = 10_000;
     const registrations =
-      await this.registrationsPaginationService.getRegistrationViewsChunkedByPaginateQuery(
-        programId,
+      await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
         {
+          programId,
           select: [...new Set(exportColumns.concat(['referenceId']))], // add referenceId (and deduplicate) to join transaction amount later
-          path: '',
+          referenceIds,
+          chunkSize,
         },
-        chunkSize,
-        qb,
       );
 
     return this.joinRegistrationsAndTransactions(
@@ -109,7 +96,7 @@ export class ExcelService {
         RegistrationsPaginationService['getRegistrationViewsChunkedByPaginateQuery']
       >
     >,
-    transactions: TransactionReturnDto[],
+    transactions: TransactionEntity[],
     exportColumns: string[],
   ): ExcelFspInstructions[] {
     // # of transactions and registrations should be the same or throw
@@ -122,7 +109,7 @@ export class ExcelService {
     // Both arrays are assumed to be sorted by referenceId. This allows us to use a two-pointer
     // technique to join the arrays, which is more efficient than using a nested loop or the find method.
     const transactionsOrdered = transactions.sort((a, b) =>
-      a.referenceId.localeCompare(b.referenceId),
+      a.registration.referenceId.localeCompare(b.registration.referenceId),
     );
     let j = 0;
     const excelFspInstructions = orderedRegistrations.map((registration) => {
@@ -140,16 +127,18 @@ export class ExcelService {
       // This way performance is O(n) instead of O(n^2)
       while (
         transactionsOrdered[j] &&
-        transactionsOrdered[j].referenceId < registration.referenceId
+        transactionsOrdered[j].registration.referenceId <
+          registration.referenceId
       ) {
         j++;
       }
 
       if (
         transactionsOrdered[j] &&
-        transactionsOrdered[j].referenceId === registration.referenceId
+        transactionsOrdered[j].registration.referenceId ===
+          registration.referenceId
       ) {
-        fspInstructions.amount = transactionsOrdered[j].amount;
+        fspInstructions.amount = transactionsOrdered[j].transferValue!;
       }
 
       return fspInstructions;
