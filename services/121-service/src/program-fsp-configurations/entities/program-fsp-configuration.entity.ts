@@ -49,7 +49,7 @@ export class ProgramFspConfigurationEntity extends Base121Entity {
     (_type) => TransactionEventEntity,
     (transactionEvent) => transactionEvent.programFspConfiguration,
   )
-  public transactions: Relation<TransactionEventEntity[]>;
+  public transactionEvents: Relation<TransactionEventEntity[]>;
 
   @OneToMany(
     (_type) => RegistrationEntity,

@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import chunk from 'lodash/chunk';
 import { DataSource, DeepPartial, Equal, Repository } from 'typeorm';
 
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
+import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { BaseSeedFactory } from '@121-service/src/scripts/factories/base-seed-factory';
 
@@ -49,7 +51,6 @@ export class TransactionSeedFactory extends BaseSeedFactory<TransactionEntity> {
         } = transaction;
         transactionsData.push({
           ...transactionData,
-          registration,
           registrationId: registration.id,
         });
       }
@@ -59,15 +60,45 @@ export class TransactionSeedFactory extends BaseSeedFactory<TransactionEntity> {
     return;
   }
 
+  public async extendTransactionEventsToAllTransactions(
+    programId: number,
+  ): Promise<void> {
+    const transactionRepo = this.dataSource.getRepository(TransactionEntity);
+    const eventRepo = this.dataSource.getRepository(TransactionEventEntity);
+
+    // Find all transactions (for all payments)
+    const allTransactions = await transactionRepo.find({
+      where: { payment: { programId: Equal(programId) } },
+      relations: { payment: true },
+      order: { id: 'ASC' },
+    });
+    // Find the initial seeded transaction and its events
+    const initialTransaction = allTransactions[0];
+    const initialEvents = await eventRepo.find({
+      where: { transaction: Equal(initialTransaction.id) },
+    });
+
+    for (const transaction of allTransactions.filter(
+      (t) => t.id !== initialTransaction.id, // Do not insert the initial transaction's events again
+    )) {
+      // Replicate each event for this transaction as a new entity
+      for (const event of initialEvents) {
+        // Omit id and transaction, copy all other properties
+        const { id: _id, transaction: _omit, ...eventData } = event;
+        await eventRepo.save({
+          ...eventData,
+          transaction,
+        });
+      }
+    }
+  }
+
   public async createPaymentForProgram(
     programId: number,
   ): Promise<PaymentEntity> {
-    console.log(`Creating payment for program ${programId}`);
-
     const paymentData: DeepPartial<PaymentEntity> = {
       programId,
     };
-
     return await this.paymentRepository.save(paymentData);
   }
 
@@ -102,6 +133,43 @@ export class TransactionSeedFactory extends BaseSeedFactory<TransactionEntity> {
     await this.insertEntitiesBatch(transactionsData);
   }
 
+  // public async extendTransactionEventsForPayment(
+  //   programId: number,
+  //   paymentId: number,
+  // ): Promise<void> {
+  //   // const paymentRepo = this.dataSource.getRepository(PaymentEntity);
+  //   const transactionRepo = this.dataSource.getRepository(TransactionEntity);
+  //   const eventRepo = this.dataSource.getRepository(TransactionEventEntity);
+
+  //   // Find the initial payment and its transactions
+  //   const initialPayment = await paymentRepo.findOne({
+  //     where: { programId: Equal(programId) },
+  //     order: { id: 'ASC' },
+  //   });
+  //   if (!initialPayment) {
+  //     console.warn(`No initial payment found for program ${programId}`);
+  //     return;
+  //   }
+
+  //   const initialTransactionEvents = await eventRepo.find({
+  //     where: { transaction: { payment: Equal(initialPayment.id) } },
+  //     relations: { transaction: true },
+  //   });
+
+  //   const transactionEventsData: DeepPartial<TransactionEventEntity>[] = [];
+  //   // Replicate each transaction for this new payment as a new entity
+  //   for (const event of initialTransactionEvents) {
+  //     // Omit id and payment, copy all other properties
+  //     const { id: _id, transaction: _omit, ...eventData } = event;
+  //     transactionEventsData.push({
+  //       ...eventData,
+  //       transactionId: ,
+  //     });
+  //   }
+
+  //   await this.insertEntitiesBatch(transactionsData);
+  // }
+
   public async updatePaymentCounts(): Promise<void> {
     console.log('Updating payment counts for registrations');
 
@@ -121,30 +189,37 @@ export class TransactionSeedFactory extends BaseSeedFactory<TransactionEntity> {
     console.log('Payment counts updated successfully');
   }
 
-  public async updateLatestTransactions(): Promise<void> {
-    console.log('Updating latest transactions table');
+  public async updateLastTransactionEvents(): Promise<void> {
+    console.log('Updating last transaction events table');
 
-    // Clear existing latest transactions
+    // Clear existing last transaction events
     await this.dataSource.query(
-      'TRUNCATE TABLE "121-service"."latest_transaction"',
+      'TRUNCATE TABLE "121-service"."last_transaction_event"',
     );
 
-    // TODO: migrate to typed approach
-    await this.dataSource.query(`
-      INSERT INTO "121-service"."latest_transaction" ("paymentId", "registrationId", "transactionId")
-      SELECT t."paymentId", t."registrationId", t.id AS transactionId
-      FROM (
-        SELECT "paymentId", "registrationId", MAX(id) AS max_id
-        FROM "121-service"."transaction"
-        WHERE status = 'success'
-        GROUP BY "paymentId", "registrationId"
-      ) AS latest_transactions
-      INNER JOIN "121-service"."transaction" AS t
-      ON t."paymentId" = latest_transactions."paymentId"
-      AND t."registrationId" = latest_transactions."registrationId"
-      AND t.id = latest_transactions.max_id;
-    `);
+    const lastEvents = await this.dataSource
+      .createQueryBuilder()
+      .select('"transactionId"')
+      .addSelect('MAX(id)', 'transactionEventId')
+      .from('121-service.transaction_event', 'te')
+      .groupBy('"transactionId"')
+      .getRawMany();
 
-    console.log('Latest transactions table updated successfully');
+    const BATCH_SIZE = 2500;
+    for (const batch of chunk(lastEvents, BATCH_SIZE)) {
+      await this.dataSource
+        .createQueryBuilder()
+        .insert()
+        .into('121-service.last_transaction_event')
+        .values(
+          batch.map((e) => ({
+            transactionId: e.transactionId,
+            transactionEventId: e.transactionEventId,
+          })),
+        )
+        .execute();
+    }
+
+    console.log('Last transaction events table updated successfully');
   }
 }

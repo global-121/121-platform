@@ -70,6 +70,7 @@ export class MockSeedFactoryService {
       await this.transactionFactory.extendTransactionsFirstPaymentToAllRegistrations(
         programId,
       );
+      // NOTE: we do not extend transaction events here. Instead we extend all at once across all payments later.
 
       // 2. Create messages for all registrations
       await this.messageFactory.extendMessagesToAllRegistrations(programId);
@@ -108,14 +109,16 @@ export class MockSeedFactoryService {
     const nr = nrPayments - 1;
 
     for (let i = 1; i <= nr; i++) {
+      // Create a new payment
       console.log(
         `Creating payment ${i + 1} of ${nrPayments} for program ${programId}`,
       );
-
-      // Create a new payment
       const payment =
         await this.transactionFactory.createPaymentForProgram(programId);
 
+      console.log(
+        `Extending transactions for payment ${i + 1} of ${nrPayments} to all registrations for program ${programId}`,
+      );
       // Extend transactions for the new payment
       await this.transactionFactory.extendTransactionsForPayment(
         programId,
@@ -123,8 +126,18 @@ export class MockSeedFactoryService {
       );
 
       // Create FSP-specific data for this payment
+      console.log(
+        `Extending FSP-specific-data for payment ${i + 1} of ${nrPayments} to all registrations for program ${programId}`,
+      );
       await this.extendFspSpecificDataForPayment(payment.id, programId);
     }
+
+    console.log(
+      `Extending transaction-events to all transactions for program ${programId}`,
+    );
+    await this.transactionFactory.extendTransactionEventsToAllTransactions(
+      programId,
+    );
   }
 
   public async multiplyMessages(powerNr: number): Promise<void> {
@@ -520,7 +533,7 @@ export class MockSeedFactoryService {
   public async updateDerivedData(): Promise<void> {
     console.log('**UPDATING DERIVED DATA**');
     await this.transactionFactory.updatePaymentCounts();
-    await this.transactionFactory.updateLatestTransactions();
+    await this.transactionFactory.updateLastTransactionEvents();
     await this.messageFactory.updateLatestMessages();
 
     // TODO: migrate to typed approach
