@@ -39,9 +39,14 @@ export class MetricApiService extends DomainApiService {
   }: {
     projectId: Signal<number | string>;
     type: ExportType;
-    params: HttpParamsOptions['fromObject'];
+    params: Exclude<HttpParamsOptions['fromObject'], undefined>; // `params` should/will always have a value
   }) {
-    if (params?.format === 'json') {
+    params['filter.status'] =
+      this.paginateQueryService.extendStatusFilterToExcludeDeleted(
+        params['filter.status'] as string,
+      );
+
+    if (params.format === 'json') {
       return this.generateQueryOptions<Dto<FileDto>, Blob>({
         path: [...BASE_ENDPOINT(projectId), 'export-list', type],
         params,
