@@ -12,7 +12,7 @@ import InitializePaymentModel from '../models/initalize-payment.js';
 
 const initializePayment = new InitializePaymentModel();
 
-const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '5'); // '17' leads to 131k registrations
+const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '17'); // '17' leads to 131k registrations
 const resetScript = 'safari-program';
 const programId = 1;
 const maxRetryDuration = 4000; // seconds

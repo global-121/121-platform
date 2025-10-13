@@ -14,7 +14,7 @@ const loginPage = new loginModel();
 const programsPage = new programsModel();
 const metricsPage = new metricstsModel();
 
-const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '5');
+const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '15');
 const programId = 3;
 const maxRetryDuration = 3000; // seconds
 const minPassRatePercentage = 50;
