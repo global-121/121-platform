@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, DeepPartial, Equal, In } from 'typeorm';
 
+import { env } from '@121-service/src/env';
 import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { BaseSeedFactory } from '@121-service/src/scripts/factories/base-seed-factory';
@@ -102,8 +103,8 @@ export class MessageSeedFactory extends BaseSeedFactory<TwilioMessageEntity> {
 
   private getDefaultMessageOptions() {
     return {
-      accountSid: 'AC_test_account_sid',
-      from: '+1234567890',
+      accountSid: env.TWILIO_SID,
+      from: env.TWILIO_MESSAGING_SID,
     };
   }
 

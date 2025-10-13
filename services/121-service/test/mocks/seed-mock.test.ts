@@ -1,4 +1,5 @@
 /* eslint-disable jest/no-conditional-expect */
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { getVoucherBalance } from '@121-service/test/helpers/intersolve-voucher.helper';
@@ -77,12 +78,16 @@ describe('Mock registrations', () => {
         registration.referenceId,
         accessToken,
       );
-      const expected = 10;
       // TODO: this assertion is flaky, sometimes it yields 14 message instead of 10 for the PV registrations. Use a method similar to waitForMessagesToComplete after 1st payment.
+      // const expected = 10;
       // expect(messageHistoryResponse.body.length).toBe(expected);
-      expect(messageHistoryResponse.body.length).toBeGreaterThanOrEqual(
-        expected,
-      );
+      // The following assertion is not flaky and does at least test that message extension across all registration & message duplication works
+      expect(
+        messageHistoryResponse.body.filter(
+          (m) =>
+            m.attributes.contentType === MessageContentType.paymentTemplated,
+        ).length,
+      ).toBe(2); // Assert 2 payment messages per registration
     }
 
     // TODO: add more assertions on: paymentCount / duplicates / uniques / registrationData / sequenceNumbers / duplication-endpoint.

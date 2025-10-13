@@ -74,11 +74,8 @@ export class SeedMockHelperService {
     return { powerNrRegistrations, nrPayments, powerNrMessages };
   }
 
-  public async multiplyRegistrations(
-    powerNr: number,
-    programIds: number[],
-  ): Promise<void> {
-    await this.mockDataFactory.multiplyRegistrations(powerNr, programIds);
+  public async multiplyRegistrations(powerNr: number): Promise<void> {
+    await this.mockDataFactory.multiplyRegistrations(powerNr);
   }
 
   public async extendRelatedDataToAllRegistrations(

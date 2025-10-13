@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import fs from 'fs';
 import chunk from 'lodash/chunk';
 import path from 'path';
-import { DataSource, DeepPartial, Equal, In } from 'typeorm';
+import { DataSource, DeepPartial, Equal, In, Repository } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
@@ -12,6 +12,7 @@ import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integrat
 import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-token-status.enum';
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/entities/intersolve-voucher.entity';
 import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/entities/image-code-export-vouchers.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { MessageSeedFactory } from '@121-service/src/scripts/factories/message-seed-factory';
@@ -30,25 +31,25 @@ export class MockSeedFactoryService {
   private readonly registrationFactory: RegistrationSeedFactory;
   private readonly messageFactory: MessageSeedFactory;
   private readonly transactionFactory: TransactionSeedFactory;
+  private readonly programRepository: Repository<ProgramEntity>;
 
   constructor(private readonly dataSource: DataSource) {
     this.registrationFactory = new RegistrationSeedFactory(dataSource);
     this.messageFactory = new MessageSeedFactory(dataSource);
     this.transactionFactory = new TransactionSeedFactory(dataSource);
+    this.programRepository = dataSource.getRepository(ProgramEntity);
   }
 
-  public async multiplyRegistrations(
-    powerNr: number,
-    programIds: number[],
-  ): Promise<void> {
+  public async multiplyRegistrations(powerNr: number): Promise<void> {
     console.log(`**MULTIPLYING REGISTRATIONS: ${powerNr} times**`);
 
-    for (const programId of programIds) {
+    const programs = await this.programRepository.find();
+    for (const program of programs) {
       for (let i = 1; i <= powerNr; i++) {
         console.log(`Creating registration duplication ${i} of ${powerNr}`);
 
         await this.registrationFactory.duplicateExistingRegistrationsForProgram(
-          programId,
+          program.id,
         );
       }
     }
