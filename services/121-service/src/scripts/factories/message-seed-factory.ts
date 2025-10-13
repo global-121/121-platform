@@ -3,10 +3,10 @@ import { DataSource, DeepPartial, Equal, In } from 'typeorm';
 
 import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
-import { BaseDataFactory } from '@121-service/src/scripts/factories/base-data-factory';
+import { BaseSeedFactory } from '@121-service/src/scripts/factories/base-seed-factory';
 
 @Injectable()
-export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntity> {
+export class MessageSeedFactory extends BaseSeedFactory<TwilioMessageEntity> {
   constructor(dataSource: DataSource) {
     super(dataSource, dataSource.getRepository(TwilioMessageEntity));
   }
@@ -54,7 +54,8 @@ export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntit
     await this.insertEntitiesBatch(messagesData);
   }
 
-  public async duplicateExistingMessages(batchSize = 2500): Promise<void> {
+  public async duplicateExistingMessages(): Promise<void> {
+    const batchSize = 2500;
     console.log(`Duplicating existing messages in batches of ${batchSize}`);
 
     // Fetch all original message IDs at the start
@@ -93,7 +94,7 @@ export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntit
           errorMessage: message.errorMessage,
         }),
       );
-      await this.insertEntitiesBatch(newMessagesData, batchSize);
+      await this.insertEntitiesBatch(newMessagesData);
       totalProcessed += batch.length;
       console.log(`Duplicated ${totalProcessed} messages so far...`);
     }

@@ -4,18 +4,18 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { MockDataFactoryService } from '@121-service/src/scripts/factories/mock-data-factory.service';
+import { MockSeedFactoryService } from '@121-service/src/scripts/factories/mock-seed-factory.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
 @Injectable()
 export class SeedMockHelperService {
-  private readonly mockDataFactory: MockDataFactoryService;
+  private readonly mockDataFactory: MockSeedFactoryService;
   private readonly httpService: CustomHttpService;
   private readonly axiosCallsService: AxiosCallsService;
 
   constructor(private readonly dataSource: DataSource) {
-    this.mockDataFactory = new MockDataFactoryService(dataSource);
+    this.mockDataFactory = new MockSeedFactoryService(dataSource);
     this.httpService = new CustomHttpService(new HttpService());
     this.axiosCallsService = new AxiosCallsService();
   }
@@ -74,8 +74,11 @@ export class SeedMockHelperService {
     return { powerNrRegistrations, nrPayments, powerNrMessages };
   }
 
-  public async multiplyRegistrations(powerNr: number): Promise<void> {
-    await this.mockDataFactory.multiplyRegistrations(powerNr);
+  public async multiplyRegistrations(
+    powerNr: number,
+    programIds: number[],
+  ): Promise<void> {
+    await this.mockDataFactory.multiplyRegistrations(powerNr, programIds);
   }
 
   public async extendRelatedDataToAllRegistrations(

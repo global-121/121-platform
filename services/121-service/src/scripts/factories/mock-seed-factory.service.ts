@@ -14,9 +14,9 @@ import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integrati
 import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/entities/image-code-export-vouchers.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
-import { RegistrationDataFactory } from '@121-service/src/scripts/factories/registration-data-factory';
-import { TransactionDataFactory } from '@121-service/src/scripts/factories/transaction-data-factory';
-import { TwilioMessageDataFactory } from '@121-service/src/scripts/factories/twilio-message-data-factory';
+import { MessageSeedFactory } from '@121-service/src/scripts/factories/message-seed-factory';
+import { RegistrationSeedFactory } from '@121-service/src/scripts/factories/registration-seed-factory';
+import { TransactionSeedFactory } from '@121-service/src/scripts/factories/transaction-seed-factory';
 
 const readSqlFile = (filepath: string): string => {
   return fs
@@ -26,24 +26,31 @@ const readSqlFile = (filepath: string): string => {
 };
 
 @Injectable()
-export class MockDataFactoryService {
-  private readonly registrationFactory: RegistrationDataFactory;
-  private readonly messageFactory: TwilioMessageDataFactory;
-  private readonly transactionFactory: TransactionDataFactory;
+export class MockSeedFactoryService {
+  private readonly registrationFactory: RegistrationSeedFactory;
+  private readonly messageFactory: MessageSeedFactory;
+  private readonly transactionFactory: TransactionSeedFactory;
 
   constructor(private readonly dataSource: DataSource) {
-    this.registrationFactory = new RegistrationDataFactory(dataSource);
-    this.messageFactory = new TwilioMessageDataFactory(dataSource);
-    this.transactionFactory = new TransactionDataFactory(dataSource);
+    this.registrationFactory = new RegistrationSeedFactory(dataSource);
+    this.messageFactory = new MessageSeedFactory(dataSource);
+    this.transactionFactory = new TransactionSeedFactory(dataSource);
   }
 
-  public async multiplyRegistrations(powerNr: number): Promise<void> {
+  public async multiplyRegistrations(
+    powerNr: number,
+    programIds: number[],
+  ): Promise<void> {
     console.log(`**MULTIPLYING REGISTRATIONS: ${powerNr} times**`);
 
-    for (let i = 1; i <= powerNr; i++) {
-      console.log(`Creating registration duplication ${i} of ${powerNr}`);
+    for (const programId of programIds) {
+      for (let i = 1; i <= powerNr; i++) {
+        console.log(`Creating registration duplication ${i} of ${powerNr}`);
 
-      await this.registrationFactory.duplicateExistingRegistrations();
+        await this.registrationFactory.duplicateExistingRegistrationsForProgram(
+          programId,
+        );
+      }
     }
 
     await this.registrationFactory.makePhoneNumbersUnique();
@@ -438,14 +445,10 @@ export class MockDataFactoryService {
     }
 
     // Find the first payment for this program
-    const firstPayment = await paymentRepo.findOne({
+    const firstPayment = await paymentRepo.findOneOrFail({
       where: { programId: Equal(programId) },
       order: { id: 'ASC' },
     });
-    if (!firstPayment) {
-      console.warn(`No payment found for program ${programId}`);
-      return;
-    }
 
     // Get all vouchers for the first payment
     // We need to get the registrationId for each voucher. This is not a property on the entity, so we must get it from the logic that created the vouchers.
@@ -484,31 +487,30 @@ export class MockDataFactoryService {
       duplicatedVouchers.push(newVoucher);
     }
 
-    const savedVouchers: (IntersolveVoucherEntity & {
-      __registrationId?: number;
-    })[] = [];
+    // Insert duplicated vouchers in batches, using insert (returns ids only)
+    const insertedVoucherIds: number[] = [];
     const batchSize = 2500;
     for (const batch of chunk(duplicatedVouchers, batchSize)) {
-      const saved = await voucherRepo.save(batch);
-      // Re-attach __registrationId for mapping
-      for (let i = 0; i < saved.length; i++) {
-        (saved[i] as any).__registrationId = (batch[i] as any).__registrationId;
+      const insertResult = await voucherRepo.insert(batch as any[]);
+      if (insertResult && Array.isArray(insertResult.identifiers)) {
+        insertedVoucherIds.push(
+          ...insertResult.identifiers.map((idObj) => idObj.id),
+        );
       }
-      savedVouchers.push(...saved);
     }
 
     const voucherRegistrationIds = new Set(
       voucherRegistrations.map((r) => r.id),
     );
 
-    // 1-to-1 mapping: for each new voucher, if its registrationId is in the whatsapp set, create an imagecode-export-voucher
+    // Map inserted IDs to registrationIds for export voucher creation
     const newExportVouchers: DeepPartial<ImageCodeExportVouchersEntity>[] = [];
-    for (const voucher of savedVouchers) {
-      const regId = (voucher as any).__registrationId;
+    for (let i = 0; i < insertedVoucherIds.length; i++) {
+      const regId = (duplicatedVouchers[i] as any).__registrationId;
       if (regId && voucherRegistrationIds.has(regId)) {
         newExportVouchers.push({
           registrationId: regId,
-          voucher,
+          voucher: { id: insertedVoucherIds[i] },
         });
       }
     }

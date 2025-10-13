@@ -4,10 +4,10 @@ import { DataSource, DeepPartial, Equal, Repository } from 'typeorm';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
-import { BaseDataFactory } from '@121-service/src/scripts/factories/base-data-factory';
+import { BaseSeedFactory } from '@121-service/src/scripts/factories/base-seed-factory';
 
 @Injectable()
-export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
+export class TransactionSeedFactory extends BaseSeedFactory<TransactionEntity> {
   private readonly paymentRepository: Repository<PaymentEntity>;
 
   constructor(dataSource: DataSource) {
@@ -79,14 +79,10 @@ export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
     const transactionRepo = this.dataSource.getRepository(TransactionEntity);
 
     // Find the initial payment and its transactions
-    const initialPayment = await paymentRepo.findOne({
+    const initialPayment = await paymentRepo.findOneOrFail({
       where: { programId: Equal(programId) },
       order: { id: 'ASC' },
     });
-    if (!initialPayment) {
-      console.warn(`No initial payment found for program ${programId}`);
-      return;
-    }
 
     const initialTransactions = await transactionRepo.find({
       where: { payment: Equal(initialPayment.id) },

@@ -3,19 +3,16 @@ import { DataSource, DeepPartial, Repository } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
 
-export abstract class BaseDataFactory<T extends Base121Entity> {
+export abstract class BaseSeedFactory<T extends Base121Entity> {
   protected constructor(
     protected readonly dataSource: DataSource,
     protected readonly repository: Repository<T>,
   ) {}
 
-  /**
-   * Insert multiple entities in batches for best performance (returns ids)
-   */
   protected async insertEntitiesBatch(
     entitiesData: DeepPartial<T>[],
-    batchSize = 2500,
   ): Promise<number[]> {
+    const batchSize = 2500;
     const insertedIds: number[] = [];
     let processedSoFar = 0;
     for (const batch of chunk(entitiesData, batchSize)) {

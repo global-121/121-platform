@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { DataSource, DeepPartial } from 'typeorm';
 
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
-import { BaseDataFactory } from '@121-service/src/scripts/factories/base-data-factory';
+import { BaseSeedFactory } from '@121-service/src/scripts/factories/base-seed-factory';
 
 @Injectable()
-export class RegistrationAttributeDataFactory extends BaseDataFactory<RegistrationAttributeDataEntity> {
+export class RegistrationAttributeSeedFactory extends BaseSeedFactory<RegistrationAttributeDataEntity> {
   constructor(dataSource: DataSource) {
     super(
       dataSource,
