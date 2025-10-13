@@ -122,22 +122,13 @@ export class ProgramService {
   }
 
   private async validateProgram(programData: CreateProgramDto): Promise<void> {
-    const programAttributeNames = this.validateAttributesAndNamingConvention({
-      attributesData: programData.programRegistrationAttributes,
-      namingConventionData: programData.fullnameNamingConvention,
-    }).programRegistrationAttributes.map((ca) => ca.name);
-
-    for (const name of Object.values(
-      this.validateAttributesAndNamingConvention({
-        attributesData: programData.programRegistrationAttributes,
-        namingConventionData: programData.fullnameNamingConvention,
-      }).fullnameNamingConvention,
-    )) {
-      if (!programAttributeNames.includes(name)) {
-        const errors = `Element '${name}' of fullnameNamingConvention is not found in program registration attributes`;
-        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-      }
+    if (!programData.programRegistrationAttributes) {
+      return;
     }
+    const programAttributeNames = programData.programRegistrationAttributes.map(
+      (attr) => attr.name,
+    );
+
     // Check if programAttributeNames has duplicate values
     const duplicateNames = programAttributeNames.filter(
       (item, index) => programAttributeNames.indexOf(item) !== index,
@@ -157,6 +148,17 @@ export class ProgramService {
     let newProgram;
 
     await this.validateProgram(programData);
+
+    const fullnameNamingConvention =
+      this.applyFullnameNamingConventionFallbackIfNecessary({
+        namingConventionData: programData.fullnameNamingConvention,
+      });
+    const programRegistrationAttributes =
+      this.applyProgramRegistrationAttributesFallbackIfNecessary({
+        attributesData: programData.programRegistrationAttributes,
+        namingConventionData: fullnameNamingConvention,
+      });
+
     const program = new ProgramEntity();
     program.validation = !!programData.validation;
     program.location = programData.location ?? null;
@@ -174,11 +176,7 @@ export class ProgramService {
     program.targetNrRegistrations = programData.targetNrRegistrations ?? null;
     program.tryWhatsAppFirst = !!programData.tryWhatsAppFirst;
     program.aboutProgram = programData.aboutProgram ?? null;
-    program.fullnameNamingConvention =
-      this.validateAttributesAndNamingConvention({
-        attributesData: programData.programRegistrationAttributes,
-        namingConventionData: programData.fullnameNamingConvention,
-      }).fullnameNamingConvention;
+    program.fullnameNamingConvention = fullnameNamingConvention;
     program.languages = programData.languages ?? [LanguageEnum.en];
     program.enableMaxPayments = !!programData.enableMaxPayments;
     program.enableScope = !!programData.enableScope;
@@ -200,20 +198,16 @@ export class ProgramService {
       savedProgram = await programRepository.save(program);
 
       savedProgram.programRegistrationAttributes = [];
-      for (const programRegistrationAttribute of this.validateAttributesAndNamingConvention(
-        {
-          attributesData: programData.programRegistrationAttributes,
-          namingConventionData: programData.fullnameNamingConvention,
-        },
-      ).programRegistrationAttributes) {
-        const attributeReturn =
+      for (const programRegistrationAttribute of programRegistrationAttributes) {
+        const createdAttribute =
           await this.createProgramRegistrationAttributeEntity({
+            // we save the program twice because we need a program id to create program registrations attributes
             programId: savedProgram.id,
             createProgramRegistrationAttributeDto: programRegistrationAttribute,
             repository: programRegistrationAttributeRepository,
           });
-        if (attributeReturn) {
-          savedProgram.programRegistrationAttributes.push(attributeReturn);
+        if (createdAttribute) {
+          savedProgram.programRegistrationAttributes.push(createdAttribute);
         }
       }
 
@@ -553,22 +547,28 @@ export class ProgramService {
     return wallets;
   }
 
-  private validateAttributesAndNamingConvention({
+  private applyFullnameNamingConventionFallbackIfNecessary({
+    namingConventionData,
+  }: {
+    namingConventionData: string[] | undefined;
+  }): string[] {
+    if (!namingConventionData || namingConventionData.length === 0) {
+      return ['fullName'];
+    }
+
+    return namingConventionData;
+  }
+
+  private applyProgramRegistrationAttributesFallbackIfNecessary({
     attributesData,
     namingConventionData,
   }: {
     attributesData: ProgramRegistrationAttributeDto[] | undefined;
-    namingConventionData: string[] | undefined;
-  }): {
-    programRegistrationAttributes: ProgramRegistrationAttributeDto[];
-    fullnameNamingConvention: string[];
-  } {
+    namingConventionData: string[];
+  }): ProgramRegistrationAttributeDto[] {
     const programRegistrationAttributes = attributesData ?? [];
-    const fullnameNamingConvention = namingConventionData ?? [];
 
-    if (fullnameNamingConvention.length === 0) {
-      fullnameNamingConvention.push('fullName');
-    }
+    // make sure phoneNumber is in programRegistrationAttributes
 
     if (
       !programRegistrationAttributes.find((attr) => attr.name === 'phoneNumber')
@@ -580,28 +580,30 @@ export class ProgramService {
       });
     }
 
+    // make sure all fullnameNamingConventions are in programRegistrationAttributes
+
     const registrationAttributesNames = programRegistrationAttributes.map(
       (attr) => attr.name,
     );
-    const missingNamingConventions = fullnameNamingConvention.filter(
+    const missingNamingConventions = namingConventionData.filter(
       (attr) => !registrationAttributesNames.includes(attr),
     );
 
     if (missingNamingConventions.length > 0) {
-      for (const missingNaminConvention of missingNamingConventions) {
+      for (const missingNamingConvention of missingNamingConventions) {
         programRegistrationAttributes.push({
-          name: missingNaminConvention,
+          name: missingNamingConvention,
           type: RegistrationAttributeTypes.text,
           label: {
             en:
-              missingNaminConvention === 'fullName'
+              missingNamingConvention === 'fullName'
                 ? 'Full name'
-                : missingNaminConvention,
+                : missingNamingConvention,
           },
         });
       }
     }
 
-    return { programRegistrationAttributes, fullnameNamingConvention };
+    return programRegistrationAttributes;
   }
 }
