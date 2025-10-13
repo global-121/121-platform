@@ -1138,9 +1138,6 @@
       <trans-unit id="5452570589103987928" datatype="html">
         <source>Payment status chart.</source>
       </trans-unit>
-      <trans-unit id="2982203751444563776" datatype="html">
-        <source>There are no registrations in this project yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> For information about importing registrations to your project check out the <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; class=&quot;p-button p-button-link gap-1&quot; &gt;" id="START_LINK"/> 121 Manual <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon pi pi-external-link text-sm&quot;&gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</source>
-      </trans-unit>
       <trans-unit id="37959892232763790" datatype="html">
         <source>Welcome to <x equiv-text="{{ project.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></source>
       </trans-unit>
@@ -1574,9 +1571,6 @@
       <trans-unit id="7088714514100361567" datatype="html">
         <source>Equal to</source>
       </trans-unit>
-      <trans-unit id="4874025357079324070" datatype="html">
-        <source>Only the columns that are currently visible in the table will be included. You can learn how to show or hide columns in the</source>
-      </trans-unit>
       <trans-unit id="1053772170616919441" datatype="html">
         <source>You&apos;re about to download an Excel file with all of the registrations included in payments.</source>
       </trans-unit>
@@ -1684,9 +1678,6 @@
       </trans-unit>
       <trans-unit id="9048541856160254605" datatype="html">
         <source>Add user to 121</source>
-      </trans-unit>
-      <trans-unit id="info-in-manual" datatype="html">
-        <source>For more information see the <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; class=&quot;p-button p-button-link gap-1&quot; &gt;" id="START_LINK"/> 121 Manual <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon pi pi-external-link text-sm&quot;&gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</source>
       </trans-unit>
       <trans-unit id="3063750609223607355" datatype="html">
         <source>Add to team</source>
@@ -1846,6 +1837,18 @@
       </trans-unit>
       <trans-unit id="1581201431976430187" datatype="html">
         <source>This field cannot be more than <x equiv-text="max" id="PH"/>.</source>
+      </trans-unit>
+      <trans-unit id="generic-121-manual-title" datatype="html">
+        <source>121 Manual</source>
+      </trans-unit>
+      <trans-unit id="3671758184194478074" datatype="html">
+        <source>Only the columns that are currently visible in the table will be included. You can learn how to show or hide columns in the <x ctype="x-ng_container" equiv-text="&lt;ng-container [ngTemplateOutlet]=&quot;manualLink&quot;&gt;" id="START_TAG_NG_CONTAINER"/><x ctype="x-ng_container" equiv-text="&lt;/ng-container&gt;" id="CLOSE_TAG_NG_CONTAINER"/>.</source>
+      </trans-unit>
+      <trans-unit id="6912528976135991062" datatype="html">
+        <source>There are no registrations in this project yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> For information about importing registrations to your project check out the <x ctype="x-ng_container" equiv-text="&lt;ng-container [ngTemplateOutlet]=&quot;manualLink&quot;&gt;" id="START_TAG_NG_CONTAINER"/><x ctype="x-ng_container" equiv-text="&lt;/ng-container&gt;" id="CLOSE_TAG_NG_CONTAINER"/>.</source>
+      </trans-unit>
+      <trans-unit id="generic-more-info-in-manual" datatype="html">
+        <source>For more information see the <x ctype="x-ng_container" equiv-text="&lt;ng-container [ngTemplateOutlet]=&quot;manualLink&quot;&gt;" id="START_TAG_NG_CONTAINER"/><x ctype="x-ng_container" equiv-text="&lt;/ng-container&gt;" id="CLOSE_TAG_NG_CONTAINER"/>.</source>
       </trans-unit>
     </body>
   </file>

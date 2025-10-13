@@ -19,18 +19,21 @@
         your project team.</ng-container
       >
     }
-    <br /><ng-container i18n="@@info-in-manual">
-      For more information see the
+    <br />
+    <ng-template #manualLink>
       <a
         href="https://manual.121.global/"
         target="_blank"
         title="Opens in a new window"
         i18n-title="@@generic-opens-in-new-window"
         class="p-button p-button-link gap-1"
-      >
-        121 Manual
-        <span class="p-button-icon pi pi-external-link text-sm"></span> </a
-      >.
+        ><span i18n="@@generic-121-manual-title">121 Manual</span>
+        <span class="p-button-icon pi pi-external-link text-sm"></span
+      ></a>
+    </ng-template>
+    <ng-container i18n="@@generic-more-info-in-manual">
+      For more information see the
+      <ng-container [ngTemplateOutlet]="manualLink"></ng-container>.
     </ng-container>
   </p>
   <app-form-field-wrapper
