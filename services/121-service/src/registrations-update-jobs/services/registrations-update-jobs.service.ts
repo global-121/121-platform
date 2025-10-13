@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
+import { FailedPhoneNumberValidationEmailPayload } from '@121-service/src/emails/dto/create-emails.dto';
+import { EmailsService } from '@121-service/src/emails/services/emails.service';
 import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
+import { UserService } from '@121-service/src/user/user.service';
 
 export interface RegistrationsUpdateJobResult {
   readonly referenceId: string;
@@ -12,7 +15,11 @@ export interface RegistrationsUpdateJobResult {
 
 @Injectable()
 export class RegistrationsUpdateJobsService {
-  constructor(private readonly registrationsService: RegistrationsService) {}
+  constructor(
+    private readonly registrationsService: RegistrationsService,
+    private readonly emailsService: EmailsService,
+    private readonly userService: UserService,
+  ) {}
 
   public async processRegistrationsUpdateJob(
     job: RegistrationsUpdateJobDto,
@@ -41,5 +48,46 @@ export class RegistrationsUpdateJobsService {
     }
 
     return results;
+  }
+
+  public async handleJobCompletion(
+    results: RegistrationsUpdateJobResult[],
+    jobData: RegistrationsUpdateJobDto,
+  ): Promise<void> {
+    const failedResults = results.filter((result) => result.error);
+
+    if (failedResults.length > 0) {
+      await this.sendValidationFailureNotification(failedResults, jobData);
+    }
+  }
+
+  private async sendValidationFailureNotification(
+    failedResults: RegistrationsUpdateJobResult[],
+    jobData: RegistrationsUpdateJobDto,
+  ): Promise<void> {
+    const csvHeader = 'referenceId,error\n';
+    const csvRows = failedResults
+      .map((result) => `${result.referenceId}, ${result.error}`)
+      .join('\n');
+    const csvContent = csvHeader + csvRows;
+
+    const user = await this.userService.findById(jobData.request.userId);
+
+    if (!user || !user.username) {
+      throw new Error(
+        'User not found or has no email address for validation failure notification',
+      );
+    }
+
+    const emailPayload: FailedPhoneNumberValidationEmailPayload = {
+      email: user.username,
+      displayName: user.displayName || 'sir/madam',
+      attachment: {
+        name: 'failed-phone-number-validations.csv',
+        contentBytes: Buffer.from(csvContent, 'utf8').toString('base64'),
+      },
+    };
+
+    await this.emailsService.sendPhoneNumberValidationFailedEmail(emailPayload);
   }
 }
