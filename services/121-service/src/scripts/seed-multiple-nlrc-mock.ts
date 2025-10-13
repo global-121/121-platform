@@ -66,10 +66,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     await waitFor(4_000);
 
     // 2. Multiply registrations
-    await this.seedMockHelper.multiplyRegistrations(
-      powerNrRegistrations,
-      programIds,
-    );
+    await this.seedMockHelper.multiplyRegistrations(powerNrRegistrations);
 
     // 3. Extend all data to all registrations (transactions and related data for payment 1, messages, etc.)
     await this.seedMockHelper.extendRelatedDataToAllRegistrations(
