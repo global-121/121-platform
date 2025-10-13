@@ -8,12 +8,6 @@ import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { UserService } from '@121-service/src/user/user.service';
 
-export interface RegistrationsUpdateJobResult {
-  readonly referenceId: string;
-  readonly data: Record<string, string | number | undefined | boolean>;
-  readonly error?: string;
-}
-
 @Injectable()
 export class RegistrationsUpdateJobsService {
   constructor(
@@ -57,7 +51,7 @@ export class RegistrationsUpdateJobsService {
     jobData: RegistrationsUpdateJobDto,
   ): Promise<void> {
     const failedResults = results.filter((result) => result.error);
-    console.log('Failed results:', failedResults);
+
     if (failedResults.length > 0) {
       await this.sendValidationFailureNotification(failedResults, jobData);
     }
@@ -85,7 +79,7 @@ export class RegistrationsUpdateJobsService {
       email: env.MY_EMAIL_ADDRESS ?? '' /*user.username*/,
       displayName: user.displayName || 'sir/madam',
       attachment: {
-        name: 'failed-phone-number-validations.csv',
+        name: 'failed-validations.csv',
         contentBytes: Buffer.from(csvContent, 'utf8').toString('base64'),
       },
     };
