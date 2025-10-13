@@ -13,7 +13,7 @@ export const failedValidationTemplate = (
   const subject = 'Registration Import - Validation Failed';
 
   const body = emailBody(`
-    <p>Dear ${displayName},</p>
+    <p>Dear ${displayName ?? 'Sir/Madam'},</p>
     <p>
       During your recent registration import, some registrations could not be validated.
     </p>
