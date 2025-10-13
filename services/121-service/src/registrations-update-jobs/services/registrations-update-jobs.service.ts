@@ -10,7 +10,7 @@ import { UserService } from '@121-service/src/user/user.service';
 export interface RegistrationsUpdateJobResult {
   readonly referenceId: string;
   readonly data: Record<string, string | number | undefined | boolean>;
-  readonly error: string;
+  readonly error?: string;
 }
 
 @Injectable()
@@ -23,27 +23,28 @@ export class RegistrationsUpdateJobsService {
 
   public async processRegistrationsUpdateJob(
     job: RegistrationsUpdateJobDto,
-  ): Promise<RegistrationsUpdateJobResult[]> {
-    const results: RegistrationsUpdateJobResult[] = [];
+  ): Promise<RegistrationsUpdateJobDto['data']> {
+    const results: RegistrationsUpdateJobDto['data'] = [];
 
     for (const record of job.data) {
       const dto: UpdateRegistrationDto = {
         data: record,
         reason: job.reason,
       };
+
       try {
-        await this.registrationsService.validateInputAndUpdateRegistration({
-          programId: job.programId,
-          referenceId: record.referenceId as string,
-          updateRegistrationDto: dto,
-          userId: job.request.userId,
-        });
+        const result =
+          await this.registrationsService.validateInputAndUpdateRegistration({
+            programId: job.programId,
+            referenceId: record.referenceId as string,
+            updateRegistrationDto: dto,
+            userId: job.request.userId,
+          });
+        if (result) {
+          results.push(record);
+        }
       } catch (error) {
-        results.push({
-          referenceId: record.referenceId as string,
-          data: record,
-          error: error.message,
-        });
+        throw new Error(error);
       }
     }
 
@@ -51,7 +52,7 @@ export class RegistrationsUpdateJobsService {
   }
 
   public async handleJobCompletion(
-    results: RegistrationsUpdateJobResult[],
+    results: RegistrationsUpdateJobDto['data'],
     jobData: RegistrationsUpdateJobDto,
   ): Promise<void> {
     const failedResults = results.filter((result) => result.error);
@@ -62,12 +63,12 @@ export class RegistrationsUpdateJobsService {
   }
 
   private async sendValidationFailureNotification(
-    failedResults: RegistrationsUpdateJobResult[],
+    failedResults: RegistrationsUpdateJobDto['data'],
     jobData: RegistrationsUpdateJobDto,
   ): Promise<void> {
     const csvHeader = 'referenceId,error\n';
     const csvRows = failedResults
-      .map((result) => `${result.referenceId}, ${result.error}`)
+      .map((result) => `${result.id}, ${result.error}`)
       .join('\n');
     const csvContent = csvHeader + csvRows;
 
