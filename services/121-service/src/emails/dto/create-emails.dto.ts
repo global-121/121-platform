@@ -4,7 +4,7 @@ export interface CreateUserEmailPayload {
   password?: string;
 }
 
-export interface FailedPhoneNumberValidationEmailPayload {
+export interface FailedValidationEmailPayload {
   email: string;
   displayName: string;
   attachment?: { name: string; contentBytes: string };

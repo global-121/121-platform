@@ -2,13 +2,13 @@ import { Test } from '@nestjs/testing';
 
 import {
   CreateUserEmailPayload,
-  FailedPhoneNumberValidationEmailPayload,
+  FailedValidationEmailPayload,
 } from '@121-service/src/emails/dto/create-emails.dto';
 import { EmailsApiService } from '@121-service/src/emails/services/emails.api.service';
 import { EmailsService } from '@121-service/src/emails/services/emails.service';
 import { createNonSSOUserTemplate } from '@121-service/src/emails/templates/createNonSsoUserTemplate';
 import { createSSOUserTemplate } from '@121-service/src/emails/templates/createSsoUserTemplate';
-import { failedPhoneNumberValidationTemplate } from '@121-service/src/emails/templates/failedPhoneNumberValidationTemplate';
+import { failedValidationTemplate } from '@121-service/src/emails/templates/failedValidationTemplate';
 import { passwordResetTemplate } from '@121-service/src/emails/templates/passwordResetTemplate';
 
 // Mock for EmailsApiService
@@ -107,8 +107,8 @@ describe('EmailsService', () => {
     );
   });
 
-  it('should call sendEmail with correct payload for failedPhoneNumberValidationEmail', async () => {
-    const payload: FailedPhoneNumberValidationEmailPayload = {
+  it('should call sendEmail with correct payload for failedValidationEmail', async () => {
+    const payload: FailedValidationEmailPayload = {
       email: 'test@example.com',
       displayName: 'testuser',
       attachment: {
@@ -119,11 +119,9 @@ describe('EmailsService', () => {
       },
     };
 
-    const { subject, body } = failedPhoneNumberValidationTemplate(
-      payload.displayName,
-    );
+    const { subject, body } = failedValidationTemplate(payload.displayName);
 
-    await emailsService.sendPhoneNumberValidationFailedEmail(payload);
+    await emailsService.sendValidationFailedEmail(payload);
 
     expect(mockEmailsApiService.sendEmail).toHaveBeenCalledWith(
       expect.objectContaining({

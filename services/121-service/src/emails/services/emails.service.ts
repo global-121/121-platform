@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 
 import {
   CreateUserEmailPayload,
-  FailedPhoneNumberValidationEmailPayload,
+  FailedValidationEmailPayload,
 } from '@121-service/src/emails/dto/create-emails.dto';
 import { EmailsApiService } from '@121-service/src/emails/services/emails.api.service';
 import { createNonSSOUserTemplate } from '@121-service/src/emails/templates/createNonSsoUserTemplate';
 import { createSSOUserTemplate } from '@121-service/src/emails/templates/createSsoUserTemplate';
-import { failedPhoneNumberValidationTemplate } from '@121-service/src/emails/templates/failedPhoneNumberValidationTemplate';
+import { failedValidationTemplate } from '@121-service/src/emails/templates/failedValidationTemplate';
 import { passwordResetTemplate } from '@121-service/src/emails/templates/passwordResetTemplate';
 
 @Injectable()
@@ -61,12 +61,10 @@ export class EmailsService {
     });
   }
 
-  public async sendPhoneNumberValidationFailedEmail(
-    payload: FailedPhoneNumberValidationEmailPayload,
+  public async sendValidationFailedEmail(
+    payload: FailedValidationEmailPayload,
   ): Promise<void> {
-    const { subject, body } = failedPhoneNumberValidationTemplate(
-      payload.displayName,
-    );
+    const { subject, body } = failedValidationTemplate(payload.displayName);
 
     await this.emailsApiService.sendEmail({
       email: payload.email,

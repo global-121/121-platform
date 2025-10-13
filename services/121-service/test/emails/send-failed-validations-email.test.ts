@@ -1,11 +1,11 @@
 import { Test } from '@nestjs/testing';
 
-import { GenericEmailPayload } from '@121-service/src/emails/dto/create-emails.dto';
+import { FailedValidationEmailPayload } from '@121-service/src/emails/dto/create-emails.dto';
 import { EmailsModule } from '@121-service/src/emails/emails.module';
 import { EmailsService } from '@121-service/src/emails/services/emails.service';
 import { env } from '@121-service/src/env';
 
-describe('EmailsService - sendGenericEmail Integration', () => {
+describe('EmailsService - send validation failed email', () => {
   let emailsService: EmailsService;
 
   beforeEach(async () => {
@@ -16,17 +16,16 @@ describe('EmailsService - sendGenericEmail Integration', () => {
     emailsService = moduleRef.get<EmailsService>(EmailsService);
   });
 
-  it('should successfully send generic email with attachment to Azure', async () => {
+  it('should successfully send a failed validation email with attachment to Azure', async () => {
     const csvContent =
       'referenceId,error\ntest-123,Invalid phone number\ntest-456,Missing name';
     const base64Content: string = Buffer.from(csvContent, 'utf8').toString(
       'base64',
     );
     const email = env.MY_EMAIL_ADDRESS;
-    const emailObject: GenericEmailPayload = {
+    const emailObject: FailedValidationEmailPayload = {
       email,
-      subject: 'Test: Registration update - some records failed',
-      body: 'This is a test email. Some records failed to be updated. Please see the attached file for details.',
+      displayName: 'Test User',
       attachment: {
         name: 'test-report.csv',
         contentBytes: base64Content,
@@ -34,7 +33,7 @@ describe('EmailsService - sendGenericEmail Integration', () => {
     };
 
     await expect(
-      emailsService.sendGenericEmail(emailObject),
+      emailsService.sendValidationFailedEmail(emailObject),
     ).resolves.not.toThrow();
   }, 30000); // 30 second timeout for external API call
 });
