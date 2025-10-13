@@ -29,7 +29,7 @@ import { TransactionEvent } from '~/domains/transaction/transaction.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DatePipe],
 })
-export class TableCellTransactionEventOverviewComponent
+export class TableCellTransferHistoryOverviewComponent
   implements TableCellComponent<TransactionEvent>
 {
   readonly value = input.required<TransactionEvent>();

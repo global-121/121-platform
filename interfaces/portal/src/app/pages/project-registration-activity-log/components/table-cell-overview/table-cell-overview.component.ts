@@ -175,8 +175,8 @@ export class TableCellOverviewComponent
     }
     return {
       projectId: this.context().projectId(),
-      transactionId: Number(item.attributes.transactionId),
-      paymentId: item.attributes.paymentId,
+      transactionId: item.attributes.transactionId,
+      paymentDate: item.attributes.paymentDate,
     };
   });
 

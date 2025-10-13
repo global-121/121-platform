@@ -1,9 +1,11 @@
+import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   inject,
   input,
+  LOCALE_ID,
   model,
   Signal,
 } from '@angular/core';
@@ -21,8 +23,7 @@ import {
 } from '~/components/query-table/query-table.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { TransactionEvent } from '~/domains/transaction/transaction.model';
-import { TableCellTransactionEventOverviewComponent } from '~/pages/project-registration-activity-log/components/activity-log-transfer-history-dialog/components/table-cell-transfer-history-overview.component';
-import { RtlHelperService } from '~/services/rtl-helper.service';
+import { TableCellTransferHistoryOverviewComponent } from '~/pages/project-registration-activity-log/components/activity-log-transfer-history-dialog/components/table-cell-transfer-history-overview.component';
 import { getUniqueUserOptions } from '~/utils/unique-users';
 
 interface TransferHistoryTableCellContext {
@@ -44,26 +45,30 @@ interface TransferHistoryTableCellContext {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ActivityLogTransferHistoryDialogComponent {
-  readonly rtlHelper = inject(RtlHelperService);
+  private locale = inject(LOCALE_ID);
   readonly projectId = input.required<string>();
   readonly transactionId = input.required<number>();
-  readonly paymentId = input.required<number>();
+  readonly paymentDate = input.required<string>();
 
   private readonly projectApiService = inject(ProjectApiService);
 
   readonly dialogVisible = model(false);
 
-  readonly dialogHeader = computed(
-    () => $localize`Transfer #${this.paymentId()} - transfer history`,
-  );
+  readonly dialogHeader = computed(() => {
+    const formattedDate =
+      new DatePipe(this.locale).transform(this.paymentDate(), 'short') ?? '';
+    return $localize`Transfer ${formattedDate} - transfer history`;
+  });
 
-  project = injectQuery(this.projectApiService.getProject(this.projectId));
+  readonly project = injectQuery(
+    this.projectApiService.getProject(this.projectId),
+  );
   readonly tableCellContext = computed<TransferHistoryTableCellContext>(() => ({
     projectId: this.projectId,
     currencyCode: this.currencyCode,
   }));
 
-  transferEventLog = injectQuery(() => ({
+  readonly transferEventLog = injectQuery(() => ({
     ...this.projectApiService.getTransactionEvents({
       projectId: this.projectId,
       transactionId: this.transactionId,
@@ -79,7 +84,7 @@ export class ActivityLogTransferHistoryDialogComponent {
     {
       header: $localize`Overview`,
       field: 'COMPUTED_FIELD',
-      component: TableCellTransactionEventOverviewComponent,
+      component: TableCellTransferHistoryOverviewComponent,
     },
     {
       field: 'user.username',
