@@ -237,7 +237,7 @@ describe('Create program', () => {
     // Assert
     expect(createProgramResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(createProgramResponse.body.errors).toBe(
-      "The following names: 'fullName' are used more than once program registration attributes",
+      "The following names: 'fullName' are used more than once in program registration attributes",
     );
 
     // A new program should not have been created

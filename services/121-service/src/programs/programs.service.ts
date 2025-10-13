@@ -136,7 +136,7 @@ export class ProgramService {
     if (duplicateNames.length > 0) {
       const errors = `The following names: '${duplicateNames.join(
         ', ',
-      )}' are used more than once program registration attributes`;
+      )}' are used more than once in program registration attributes`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
   }
