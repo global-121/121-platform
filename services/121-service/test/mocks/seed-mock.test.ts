@@ -37,9 +37,18 @@ describe('Mock registrations', () => {
       programId,
       accessToken,
     });
-
     // Assert 4 registrations per program
     expect(registrationsResponse.body.data.length).toBe(4);
+
+    // Assert unique phone numbers and whatsapp phone numbers
+    const uniquePhoneNumbers = new Set(
+      registrationsResponse.body.data.map((r) => r.phoneNumber),
+    );
+    const uniqueWhatsappPhoneNumbers = new Set(
+      registrationsResponse.body.data.map((r) => r.whatsappPhoneNumber),
+    );
+    expect(uniquePhoneNumbers.size).toBe(4);
+    expect(uniqueWhatsappPhoneNumbers.size).toBe(4);
 
     const paymentsResponse = await getPayments(programId, accessToken);
     for (const paymentData of paymentsResponse.body) {
@@ -90,7 +99,7 @@ describe('Mock registrations', () => {
       ).toBe(2); // Assert 2 payment messages per registration
     }
 
-    // TODO: add more assertions on: paymentCount / duplicates / uniques / registrationData / sequenceNumbers / duplication-endpoint.
+    // TODO: add more assertions on: paymentCount / duplicates / registrationData / sequenceNumbers / duplication-endpoint.
   });
 
   it('should additionally mock OCW-specific data correctly for OCW program', async () => {

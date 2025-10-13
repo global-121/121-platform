@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, DeepPartial } from 'typeorm';
+import { DataSource, DeepPartial, Equal } from 'typeorm';
 
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { BaseSeedFactory } from '@121-service/src/scripts/factories/base-seed-factory';
@@ -15,13 +15,16 @@ export class RegistrationAttributeSeedFactory extends BaseSeedFactory<Registrati
 
   public async duplicateAttributeDataForRegistrations(
     newRegistrationIds: number[],
+    programId: number,
   ): Promise<void> {
     console.log(
       `Creating registration attribute data for ${newRegistrationIds.length} new registrations`,
     );
 
     // Get all existing attribute data
-    const existingAttributeData = await this.repository.find();
+    const existingAttributeData = await this.repository.find({
+      where: { registration: { programId: Equal(programId) } },
+    });
 
     if (existingAttributeData.length === 0) {
       console.warn(

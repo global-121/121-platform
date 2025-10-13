@@ -4,6 +4,7 @@ import { DataSource, DeepPartial, Equal } from 'typeorm';
 
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { BaseSeedFactory } from '@121-service/src/scripts/factories/base-seed-factory';
 import { RegistrationAttributeSeedFactory } from '@121-service/src/scripts/factories/registration-attribute-data-seed-factory';
 
@@ -47,7 +48,7 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
           programId: registration.programId,
           registrationStatus: registration.registrationStatus,
           referenceId: this.generateUniqueReferenceId(),
-          phoneNumber: `254${programId}${currentMax.toString().padStart(7, '0')}`, // Ensure unique phone number
+          phoneNumber: `254${programId}${currentMax.toString().padStart(8, '0')}`, // Ensure unique phone number
           preferredLanguage: registration.preferredLanguage,
           inclusionScore: registration.inclusionScore,
           paymentAmountMultiplier: registration.paymentAmountMultiplier,
@@ -69,6 +70,7 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
 
     await this.attributeDataFactory.duplicateAttributeDataForRegistrations(
       newRegistrationIds,
+      programId,
     );
   }
 
@@ -82,20 +84,22 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
     // Find phone number attributes
     const phoneAttributeRecords = await attributeDataRepository
       .createQueryBuilder('rad')
+      .select('rad.id AS id')
       .innerJoin('rad.programRegistrationAttribute', 'pra')
       .leftJoin('rad.registration', 'r')
+      .addSelect('pra.name AS "attributeName"')
       .addSelect('r.phoneNumber AS "phoneNumber"')
       .where('pra.name IN (:...phoneNames)', {
         phoneNames: ['phoneNumber', 'whatsappPhoneNumber'],
       })
-      .getMany();
+      .getRawMany();
 
     // Update each phone attribute with a new unique number
     const dataToUpdate: { id: number; value: string }[] = [];
     for (const record of phoneAttributeRecords) {
       let newPhoneNumber = '';
-      if (record.programRegistrationAttribute?.name === 'phoneNumber') {
-        newPhoneNumber = record.registration.phoneNumber!;
+      if (record.attributeName === GenericRegistrationAttributes.phoneNumber) {
+        newPhoneNumber = record.phoneNumber!;
       } else {
         newPhoneNumber = this.generatePhoneNumber();
       }
@@ -125,6 +129,6 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
   }
 
   private generatePhoneNumber(): string {
-    return `+254${Math.floor(Math.random() * 900000000) + 100000000}`;
+    return `254${Math.floor(Math.random() * 900000000) + 100000000}`;
   }
 }
