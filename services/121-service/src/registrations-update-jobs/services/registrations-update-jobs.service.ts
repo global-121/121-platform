@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { env } from 'process';
 
-import { FailedPhoneNumberValidationEmailPayload } from '@121-service/src/emails/dto/create-emails.dto';
+import { FailedValidationEmailPayload } from '@121-service/src/emails/dto/create-emails.dto';
 import { EmailsService } from '@121-service/src/emails/services/emails.service';
 import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
@@ -56,7 +57,7 @@ export class RegistrationsUpdateJobsService {
     jobData: RegistrationsUpdateJobDto,
   ): Promise<void> {
     const failedResults = results.filter((result) => result.error);
-
+    console.log('Failed results:', failedResults);
     if (failedResults.length > 0) {
       await this.sendValidationFailureNotification(failedResults, jobData);
     }
@@ -80,8 +81,8 @@ export class RegistrationsUpdateJobsService {
       );
     }
 
-    const emailPayload: FailedPhoneNumberValidationEmailPayload = {
-      email: user.username,
+    const emailPayload: FailedValidationEmailPayload = {
+      email: env.MY_EMAIL_ADDRESS ?? '' /*user.username*/,
       displayName: user.displayName || 'sir/madam',
       attachment: {
         name: 'failed-phone-number-validations.csv',
@@ -89,6 +90,6 @@ export class RegistrationsUpdateJobsService {
       },
     };
 
-    await this.emailsService.sendPhoneNumberValidationFailedEmail(emailPayload);
+    await this.emailsService.sendValidationFailedEmail(emailPayload);
   }
 }
