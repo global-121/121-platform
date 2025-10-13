@@ -47,7 +47,7 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
           programId: registration.programId,
           registrationStatus: registration.registrationStatus,
           referenceId: this.generateUniqueReferenceId(),
-          phoneNumber: `+254${programId}0000${currentMax.toString().padStart(6, '0')}`, // Ensure unique phone number
+          phoneNumber: `254${programId}${currentMax.toString().padStart(7, '0')}`, // Ensure unique phone number
           preferredLanguage: registration.preferredLanguage,
           inclusionScore: registration.inclusionScore,
           paymentAmountMultiplier: registration.paymentAmountMultiplier,
@@ -80,7 +80,7 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
     );
 
     // Find phone number attributes
-    const phoneAttributes = await attributeDataRepository
+    const phoneAttributeRecords = await attributeDataRepository
       .createQueryBuilder('rad')
       .innerJoin('rad.programRegistrationAttribute', 'pra')
       .leftJoin('rad.registration', 'r')
@@ -91,23 +91,23 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
       .getMany();
 
     // Update each phone attribute with a new unique number
-    const updates: { id: number; value: string }[] = [];
-    for (const attribute of phoneAttributes) {
+    const dataToUpdate: { id: number; value: string }[] = [];
+    for (const record of phoneAttributeRecords) {
       let newPhoneNumber = '';
-      if (attribute.programRegistrationAttribute?.name === 'phoneNumber') {
-        newPhoneNumber = attribute.registration.phoneNumber!;
+      if (record.programRegistrationAttribute?.name === 'phoneNumber') {
+        newPhoneNumber = record.registration.phoneNumber!;
       } else {
         newPhoneNumber = this.generatePhoneNumber();
       }
-      updates.push({
-        id: attribute.id,
+      dataToUpdate.push({
+        id: record.id,
         value: newPhoneNumber,
       });
     }
 
     // Update in batches
     const batchSize = 100;
-    for (const batch of chunk(phoneAttributes, batchSize)) {
+    for (const batch of chunk(dataToUpdate, batchSize)) {
       await Promise.all(
         batch.map(({ id, value }) =>
           attributeDataRepository.update(id, { value }),
@@ -115,7 +115,9 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
       );
     }
 
-    console.log(`Updated ${updates.length} phone numbers in attribute data`);
+    console.log(
+      `Updated ${dataToUpdate.length} phone numbers in attribute data`,
+    );
   }
 
   private generateUniqueReferenceId(): string {
