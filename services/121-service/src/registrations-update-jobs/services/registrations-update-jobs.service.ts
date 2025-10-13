@@ -36,10 +36,13 @@ export class RegistrationsUpdateJobsService {
             userId: job.request.userId,
           });
         if (result) {
-          results.push(record);
+          results.push({ ...record, error: undefined });
         }
       } catch (error) {
-        throw new Error(error);
+        results.push({
+          ...record,
+          error: error instanceof Error ? error.message : String(error),
+        });
       }
     }
 
