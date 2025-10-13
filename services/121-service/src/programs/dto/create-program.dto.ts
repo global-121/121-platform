@@ -100,13 +100,11 @@ export class CreateProgramDto {
 
   @ApiProperty({ example: 'Nederland' })
   @IsOptional()
-  @IsNotEmpty()
   @IsString()
   public readonly location?: string;
 
   @ApiProperty({ example: 'NLRC' })
   @IsOptional()
-  @IsNotEmpty()
   @IsString()
   public readonly ngo?: string;
 
@@ -120,13 +118,11 @@ export class CreateProgramDto {
 
   @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsOptional()
-  @IsNotEmpty()
   @IsDateString()
   public readonly startDate?: Date;
 
   @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsOptional()
-  @IsNotEmpty()
   @IsDateString()
   public readonly endDate?: Date;
 
@@ -177,7 +173,6 @@ export class CreateProgramDto {
 
   @ApiProperty({ example: { en: 'about program' } })
   @IsOptional()
-  @IsNotEmpty()
   public readonly aboutProgram?: LocalizedString;
 
   @ApiProperty({
