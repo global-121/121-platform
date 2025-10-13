@@ -64,9 +64,9 @@ export class RegistrationsUpdateJobsService {
     failedResults: RegistrationsUpdateJobDto['data'],
     jobData: RegistrationsUpdateJobDto,
   ): Promise<void> {
-    const csvHeader = 'referenceId,error\n';
+    const csvHeader = 'referenceId, error\n';
     const csvRows = failedResults
-      .map((result) => `${result.id}, ${result.error}`)
+      .map((result) => `${result.referenceId}, ${result.error}`)
       .join('\n');
     const csvContent = csvHeader + csvRows;
 
@@ -79,8 +79,9 @@ export class RegistrationsUpdateJobsService {
     }
 
     const emailPayload: FailedValidationEmailPayload = {
-      email: env.MY_EMAIL_ADDRESS ?? '' /*user.username*/,
-      displayName: user.displayName || 'sir/madam',
+      //todo: change back to user.username before merging
+      email: env.MY_EMAIL_ADDRESS,
+      displayName: user.displayName,
       attachment: {
         name: 'failed-validations.csv',
         contentBytes: Buffer.from(csvContent, 'utf8').toString('base64'),
