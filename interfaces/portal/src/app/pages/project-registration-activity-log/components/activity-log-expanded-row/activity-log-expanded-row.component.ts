@@ -155,8 +155,12 @@ export class ActivityLogExpandedRowComponent
       case ActivityTypeEnum.Transaction: {
         const list: DataListItem[] = [
           {
-            label: $localize`Payment`,
-            value: $localize`Go to payment page`,
+            label: $localize`Part of payment`,
+            value:
+              new DatePipe(this.locale).transform(
+                attributes.paymentDate,
+                'short',
+              ) ?? '',
             type: 'text',
             routerLink: paymentLink({
               projectId: this.context().projectId(),
@@ -164,7 +168,7 @@ export class ActivityLogExpandedRowComponent
             }),
           },
           {
-            label: $localize`Transfer status updated`,
+            label: $localize`Last updated`,
             value:
               new DatePipe(this.locale).transform(
                 attributes.updatedDate,
