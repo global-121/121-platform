@@ -55,7 +55,9 @@ export class ExcelReconciliationService {
           fspName: Equal(Fsps.excel),
         },
       },
-      relations: ['programFspConfigurations'],
+      relations: {
+        programFspConfigurations: true,
+      },
       order: {
         programFspConfigurations: {
           name: 'ASC',
@@ -107,7 +109,9 @@ export class ExcelReconciliationService {
       where: {
         id: Equal(programId),
       },
-      relations: ['programFspConfigurations'],
+      relations: {
+        programFspConfigurations: true,
+      },
     });
 
     if (

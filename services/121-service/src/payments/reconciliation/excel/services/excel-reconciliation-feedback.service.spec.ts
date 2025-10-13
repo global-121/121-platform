@@ -7,6 +7,11 @@ import { ProgramRegistrationAttributeRepository } from '@121-service/src/program
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 
+const referenceId1 = '123';
+const referenceId2 = '456';
+const matchColumnA = 'A';
+const matchColumnB = 'B';
+
 const mockRegistrationViewScopedRepository = {
   getReferenceIdsAndStatusesByPaymentForRegistrationData: jest.fn(),
 };
@@ -53,14 +58,14 @@ describe('ExcelReconciliationFeedbackService', () => {
       mockRegistrationViewScopedRepository.getReferenceIdsAndStatusesByPaymentForRegistrationData.mockResolvedValue(
         [
           {
-            referenceId: '123',
+            referenceId: referenceId1,
             status: TransactionStatusEnum.success,
-            value: 'A',
+            value: matchColumnA,
           },
           {
-            referenceId: '456',
+            referenceId: referenceId2,
             status: TransactionStatusEnum.error,
-            value: 'B',
+            value: matchColumnB,
           },
         ],
       );
@@ -68,7 +73,10 @@ describe('ExcelReconciliationFeedbackService', () => {
         [],
       );
 
-      const csvContents = [{ matchCol: 'A' }, { matchCol: 'B' }];
+      const csvContents = [
+        { matchCol: matchColumnA },
+        { matchCol: matchColumnB },
+      ];
 
       const result = await service.createFeedbackDto({
         programId: 1,
@@ -79,14 +87,14 @@ describe('ExcelReconciliationFeedbackService', () => {
 
       expect(result.importResult).toEqual([
         {
-          matchCol: 'A',
+          matchCol: matchColumnA,
           importStatus: ImportStatus.paymentSuccess,
-          referenceId: '123',
+          referenceId: referenceId1,
         },
         {
-          matchCol: 'B',
+          matchCol: matchColumnB,
           importStatus: ImportStatus.paymentFailed,
-          referenceId: '456',
+          referenceId: referenceId2,
         },
       ]);
       expect(result.aggregateImportResult).toEqual({
@@ -103,17 +111,20 @@ describe('ExcelReconciliationFeedbackService', () => {
       mockRegistrationViewScopedRepository.getReferenceIdsAndStatusesByPaymentForRegistrationData.mockResolvedValue(
         [
           {
-            referenceId: '123',
+            referenceId: referenceId1,
             status: TransactionStatusEnum.success,
-            value: 'A',
+            value: matchColumnA,
           },
         ],
       );
       mockExcelReconciliationValidationService.getMatchColumnsValuesThatAreNotFound.mockReturnValue(
-        ['B'],
+        [matchColumnB],
       );
 
-      const csvContents = [{ matchCol: 'A' }, { matchCol: 'B' }];
+      const csvContents = [
+        { matchCol: matchColumnA },
+        { matchCol: matchColumnB },
+      ];
 
       const result = await service.createFeedbackDto({
         programId: 1,
@@ -124,12 +135,12 @@ describe('ExcelReconciliationFeedbackService', () => {
 
       expect(result.importResult).toEqual([
         {
-          matchCol: 'A',
+          matchCol: matchColumnA,
           importStatus: ImportStatus.paymentSuccess,
-          referenceId: '123',
+          referenceId: referenceId1,
         },
         {
-          matchCol: 'B',
+          matchCol: matchColumnB,
           importStatus: ImportStatus.notFound,
           referenceId: null,
         },

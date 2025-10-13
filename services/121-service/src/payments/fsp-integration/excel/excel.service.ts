@@ -7,6 +7,7 @@ import { ExcelFspInstructions } from '@121-service/src/payments/fsp-integration/
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 
 @Injectable()
@@ -40,7 +41,11 @@ export class ExcelService {
       await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
         {
           programId,
-          select: [...new Set(exportColumns.concat(['referenceId']))], // add referenceId (and deduplicate) to join transaction amount later
+          select: [
+            ...new Set(
+              exportColumns.concat([GenericRegistrationAttributes.referenceId]),
+            ),
+          ], // add referenceId (and deduplicate) to join transaction amount later
           referenceIds,
           chunkSize,
         },
