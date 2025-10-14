@@ -1859,6 +1859,9 @@
       <trans-unit id="3578644052206125685" datatype="html">
         <source>Ukrainian</source>
       </trans-unit>
+      <trans-unit id="4034832711447871121" datatype="html">
+        <source>Max. 60 characters</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
