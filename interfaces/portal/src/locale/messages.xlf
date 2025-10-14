@@ -1856,6 +1856,99 @@
       <trans-unit id="7750731471522839997" datatype="html">
         <source>Editing in <x equiv-text="{{ languageName }}" id="INTERPOLATION"/>.</source>
       </trans-unit>
+      <trans-unit id="1669185263898985643" datatype="html">
+        <source>Question</source>
+      </trans-unit>
+      <trans-unit id="173881015099071159" datatype="html">
+        <source>Add another FSP</source>
+      </trans-unit>
+      <trans-unit id="2330756841114483977" datatype="html">
+        <source>Choose another FSP:</source>
+      </trans-unit>
+      <trans-unit id="2371108148642786887" datatype="html">
+        <source>For more information about how to integrate this FSP see manual.</source>
+      </trans-unit>
+      <trans-unit id="2409672154570643758" datatype="html">
+        <source>Display name</source>
+      </trans-unit>
+      <trans-unit id="3366674803315613002" datatype="html">
+        <source>Column to match</source>
+      </trans-unit>
+      <trans-unit id="3443268590750127257" datatype="html">
+        <source>Unique key</source>
+      </trans-unit>
+      <trans-unit id="4151726167516719564" datatype="html">
+        <source>Select 1 or more</source>
+      </trans-unit>
+      <trans-unit id="4578833766272403833" datatype="html">
+        <source>Cover letter code</source>
+      </trans-unit>
+      <trans-unit id="4624691512001831810" datatype="html">
+        <source>Corporate code</source>
+      </trans-unit>
+      <trans-unit id="4725718925572069565" datatype="html">
+        <source>Click to integrate</source>
+      </trans-unit>
+      <trans-unit id="4814285799071780083" datatype="html">
+        <source>Remove</source>
+      </trans-unit>
+      <trans-unit id="5248717555542428023" datatype="html">
+        <source>Username</source>
+      </trans-unit>
+      <trans-unit id="5473276629033556345" datatype="html">
+        <source>Funding token code</source>
+      </trans-unit>
+      <trans-unit id="5568900620756681669" datatype="html">
+        <source>Your form must include the following required fields in this <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>exact format<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> for this FSP integration in the data column name:</source>
+      </trans-unit>
+      <trans-unit id="5951235042771324221" datatype="html">
+        <source>&quot;<x equiv-text="text" id="PH"/>&quot; copied to clipboard</source>
+      </trans-unit>
+      <trans-unit id="6667753881469228179" datatype="html">
+        <source>Financial Service Providerss</source>
+      </trans-unit>
+      <trans-unit id="6934327342922154604" datatype="html">
+        <source>Choose an FSP from the FSPs integrated to this instance. You can add multiple FSPs to the same project. If you with the integrate a new FSP, contact the 121 support team or talk to the account manager.</source>
+      </trans-unit>
+      <trans-unit id="6964415671113324026" datatype="html">
+        <source>FSP notes</source>
+      </trans-unit>
+      <trans-unit id="7014051207286040747" datatype="html">
+        <source>Data column name</source>
+      </trans-unit>
+      <trans-unit id="7022921536845926478" datatype="html">
+        <source>Payment reference prefix</source>
+      </trans-unit>
+      <trans-unit id="7313006626571837182" datatype="html">
+        <source>There are no specific fields needed for this integration</source>
+      </trans-unit>
+      <trans-unit id="7705041759167938933" datatype="html">
+        <source>FSP integrated successfully.</source>
+      </trans-unit>
+      <trans-unit id="7799902377740606724" datatype="html">
+        <source>Select 1</source>
+      </trans-unit>
+      <trans-unit id="8270214591182392971" datatype="html">
+        <source>Brand code</source>
+      </trans-unit>
+      <trans-unit id="8609049781453361060" datatype="html">
+        <source>You&apos;re about to remove <x equiv-text="{{ configuration().name | translatableString }}" id="INTERPOLATION"/> FSP from your project. Payments with this FSP will not go through, Registrations with this FSP will not be paid unless changed to an integrated FSP.</source>
+      </trans-unit>
+      <trans-unit id="8738732372986673558" datatype="html">
+        <source>Copy to clipboard</source>
+      </trans-unit>
+      <trans-unit id="9190469470269882637" datatype="html">
+        <source>Integrate FSP</source>
+      </trans-unit>
+      <trans-unit id="9202925211917001608" datatype="html">
+        <source>Columns to export</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-settings-fsps" datatype="html">
+        <source>FSPs</source>
+      </trans-unit>
+      <trans-unit id="remove-fsp" datatype="html">
+        <source>Remove FSP</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

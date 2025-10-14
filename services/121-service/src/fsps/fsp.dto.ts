@@ -2,7 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import { FspIntegrationType } from '@121-service/src/fsps/enums/fsp-integration-type.enum';
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import {
+  FspConfigurationProperties,
+  Fsps,
+} from '@121-service/src/fsps/enums/fsp-name.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
@@ -33,5 +36,8 @@ export class FspDto {
       { name: 'columnToMatch', isRequired: true },
     ],
   })
-  readonly configurationProperties: { name: string; isRequired: boolean }[];
+  readonly configurationProperties: {
+    name: FspConfigurationProperties;
+    isRequired: boolean;
+  }[];
 }
