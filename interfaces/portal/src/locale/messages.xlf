@@ -1847,9 +1847,6 @@
       <trans-unit id="7750731471522839997" datatype="html">
         <source>Editing in <x equiv-text="{{ languageName }}" id="INTERPOLATION"/>.</source>
       </trans-unit>
-      <trans-unit id="4212114108576265691" datatype="html">
-        <source>Explanation for users</source>
-      </trans-unit>
       <trans-unit id="4312496512919678092" datatype="html">
         <source>Add a name and description to your project to help your users find it.</source>
       </trans-unit>
@@ -1861,6 +1858,12 @@
       </trans-unit>
       <trans-unit id="4034832711447871121" datatype="html">
         <source>Max. 60 characters</source>
+      </trans-unit>
+      <trans-unit id="3423420597317106513" datatype="html">
+        <source>Budget</source>
+      </trans-unit>
+      <trans-unit id="5036339937977262552" datatype="html">
+        <source>Project information</source>
       </trans-unit>
     </body>
   </file>
