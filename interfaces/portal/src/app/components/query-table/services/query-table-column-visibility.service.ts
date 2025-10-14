@@ -3,7 +3,9 @@ import { effect, signal, WritableSignal } from '@angular/core';
 import { QueryTableColumn } from '~/components/query-table/query-table.component';
 
 export class QueryTableColumnVisibilityService<TData> {
-  readonly visibleColumns: WritableSignal<QueryTableColumn<TData>[]> = signal([]);
+  readonly visibleColumns: WritableSignal<QueryTableColumn<TData>[]> = signal(
+    [],
+  );
 
   private getStoredColumns(stateKey: string): null | QueryTableColumn<TData>[] {
     const storedColumns = localStorage.getItem(stateKey);
