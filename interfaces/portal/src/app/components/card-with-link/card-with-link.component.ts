@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { CardModule } from 'primeng/card';
@@ -13,7 +18,8 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardWithLinkComponent {
-  readonly href = input.required<RouterLink['routerLink']>();
+  readonly href = input<RouterLink['routerLink']>();
   readonly title = input.required<string>();
   readonly loading = input<boolean>(false);
+  readonly cardClicked = output();
 }

@@ -4,7 +4,8 @@
   <ng-template pTemplate="title">
     <a
       [routerLink]="href()"
-      class="group-focus-within:text-purple group-hover:text-purple transition-colors after:absolute after:inset-0 after:block"
+      (click)="cardClicked.emit()"
+      class="group-focus-within:text-purple group-hover:text-purple cursor-pointer transition-colors after:absolute after:inset-0 after:block"
     >
       @if (loading()) {
         <app-skeleton-inline />

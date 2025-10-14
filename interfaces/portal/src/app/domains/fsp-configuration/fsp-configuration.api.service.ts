@@ -1,7 +1,10 @@
 import { Injectable, Signal } from '@angular/core';
 
+import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
+
 import { DomainApiService } from '~/domains/domain-api.service';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
+import { Dto } from '~/utils/dto-type';
 
 const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
   'programs',
@@ -16,6 +19,36 @@ export class FspConfigurationApiService extends DomainApiService {
   getFspConfigurations(projectId: Signal<number | string>) {
     return this.generateQueryOptions<FspConfiguration[]>({
       path: BASE_ENDPOINT(projectId),
+    });
+  }
+
+  createFspConfiguration(
+    projectId: Signal<number | string>,
+    configuration: Dto<CreateProgramFspConfigurationDto>,
+  ) {
+    return this.httpWrapperService.perform121ServiceRequest<FspConfiguration>({
+      method: 'POST',
+      endpoint: this.pathToQueryKey([...BASE_ENDPOINT(projectId)]).join('/'),
+      body: configuration,
+    });
+  }
+
+  deleteFspConfiguration(
+    projectId: Signal<number | string>,
+    configurationName: string,
+  ) {
+    return this.httpWrapperService.perform121ServiceRequest<undefined>({
+      method: 'DELETE',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(projectId),
+        configurationName,
+      ]).join('/'),
+    });
+  }
+
+  public invalidateCache(projectId: Signal<number | string>): Promise<void> {
+    return this.queryClient.invalidateQueries({
+      queryKey: this.pathToQueryKey(BASE_ENDPOINT(projectId)),
     });
   }
 }

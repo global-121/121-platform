@@ -1,0 +1,160 @@
+<app-page-layout-project-settings [projectId]="projectId()">
+  <p-card styleClass="[&_.p-card]:border-grey-300 [&_.p-card]:border">
+    <h2
+      i18n
+      class="mb-4"
+    >
+      Financial Service Providerss
+    </h2>
+
+    <p
+      i18n
+      class="mb-6"
+    >
+      Choose an FSP from the FSPs integrated to this instance. You can add
+      multiple FSPs to the same project. If you with the integrate a new FSP,
+      contact the 121 support team or talk to the account manager.
+    </p>
+
+    @if (fspConfigurations.isPending()) {
+      <app-skeleton-inline />
+    } @else if (fspConfigurations.isError()) {
+      <app-form-error
+        [error]="fspConfigurations.failureReason()"
+        i18n-error
+      />
+    } @else if (fspConfigurations.isSuccess()) {
+      @let fspConfigs = fspConfigurations.data();
+
+      @if (fspConfigs.length > 0) {
+        <div class="space-y-4">
+          @for (fspConfiguration of fspConfigs; track fspConfiguration.name) {
+            <app-fsp-configuration
+              [projectId]="projectId()"
+              [configuration]="fspConfiguration"
+              class="block"
+            />
+          }
+        </div>
+      }
+
+      @if (!forceAddAnotherFsp() && fspConfigs.length > 0) {
+        <p-button
+          label="Add another FSP"
+          i18n-label
+          icon="pi pi-plus"
+          (click)="forceAddAnotherFsp.set(true)"
+          outlined
+          rounded
+          styleClass="mt-6"
+        />
+      }
+
+      @if (forceAddAnotherFsp() || fspConfigs.length === 0) {
+        @if (forceAddAnotherFsp()) {
+          <p
+            i18n
+            class="mt-8 mb-4 font-bold"
+          >
+            Choose another FSP:
+          </p>
+        }
+
+        <div class="space-y-4">
+          @for (fsp of FSP_SETTINGS; track fsp.name) {
+            @if (!hasFspConfiguration(fsp.name) || fsp.name === Fsps.excel) {
+              <app-card-with-link
+                [title]="fsp.defaultLabel | translatableString"
+                (cardClicked)="showFspConfigurationDialog(fsp.name)"
+                class="block"
+              >
+                <ng-container card-content>
+                  <span i18n>Click to integrate</span>
+                </ng-container>
+              </app-card-with-link>
+            }
+          }
+        </div>
+      }
+    }
+  </p-card>
+</app-page-layout-project-settings>
+
+@let fspToEdit = currentlyEditedFsp();
+@let fspSetting = getFspSettingByName(fspToEdit);
+
+<app-form-dialog
+  #fspConfigurationDialog
+  [formGroup]="formGroups[fspToEdit]"
+  [mutation]="createFinancialServiceProvidersConfiguration"
+  [mutationData]="formGroups[fspToEdit].getRawValue()"
+  [header]="fspSetting?.defaultLabel | translatableString"
+  headerIcon="pi pi-money-bill"
+  submitButtonText="Integrate FSP"
+  i18n-submitButtonText
+>
+  <p
+    i18n
+    class="mb-4"
+  >
+    For more information about how to integrate this FSP see manual.
+  </p>
+
+  <app-form-field-wrapper
+    label="Display name"
+    i18n-label
+    [errorMessage]="
+      getFspConfigurationPropertyErrorMessage(formGroups[fspToEdit], {
+        name: 'displayName',
+        isRequired: true,
+      })
+    "
+    [isRequired]="true"
+  >
+    <input
+      pInputText
+      formControlName="displayName"
+      autocomplete="off"
+    />
+  </app-form-field-wrapper>
+
+  @for (property of fspSetting?.configurationProperties; track property.name) {
+    <app-form-field-wrapper
+      [label]="FSP_CONFIGURATION_PROPERTY_LABELS[property.name]"
+      [errorMessage]="
+        getFspConfigurationPropertyErrorMessage(formGroups[fspToEdit], property)
+      "
+      [isRequired]="property.isRequired"
+    >
+      @if (property.name === 'columnsToExport') {
+        <p-multiselect
+          [options]="projectAttributes.data()"
+          [formControlName]="property.name"
+          [optionLabel]="'name'"
+          [optionValue]="'name'"
+          placeholder="Select 1 or more"
+          i18n-placeholder
+          [filter]="true"
+          [showClear]="false"
+        />
+      } @else if (property.name === 'columnToMatch') {
+        <p-select
+          [options]="projectAttributes.data()"
+          [formControlName]="property.name"
+          [optionLabel]="'name'"
+          [optionValue]="'name'"
+          placeholder="Select 1"
+          i18n-placeholder
+          [filter]="true"
+          [showClear]="false"
+        />
+      } @else {
+        <input
+          pInputText
+          [formControlName]="property.name"
+          autocomplete="off"
+        />
+      }
+    </app-form-field-wrapper>
+  }
+</app-form-dialog>

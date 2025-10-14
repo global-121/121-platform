@@ -1,0 +1,90 @@
+<p-card styleClass="relative">
+  <h2>
+    {{ configuration().label | translatableString }}
+  </h2>
+  <p-button
+    text
+    plain
+    icon="pi pi-ellipsis-h"
+    class="absolute end-4 top-2"
+    (click)="menu.toggle($event)"
+  />
+  <p-menu
+    #menu
+    [model]="menuItems()"
+    [popup]="true"
+    appendTo="body"
+  />
+
+  <p
+    i18n
+    class="mt-4 font-bold"
+  >
+    FSP notes
+  </p>
+
+  @if (requiredDataColumns().length > 0) {
+    <p
+      i18n
+      class="mb-4"
+    >
+      Your form must include the following required fields in this
+      <b>exact format</b>
+      for this FSP integration in the data column name:
+    </p>
+    <p-table [value]="requiredDataColumns()">
+      <ng-template #header>
+        <tr>
+          <th
+            i18n
+            class="txt-body-s text-grey-700 font-semibold uppercase"
+          >
+            Question
+          </th>
+          <th
+            i18n
+            class="txt-body-s text-grey-700 font-semibold uppercase"
+          >
+            Data column name
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template
+        #body
+        let-column
+      >
+        <tr>
+          <td>{{ column.label }}</td>
+          <td>
+            {{ column.name }}
+            <p-button
+              icon="pi pi-copy"
+              (click)="copyToClipboard(column.name)"
+              text
+              rounded
+              ariaLabel="Copy to clipboard"
+              i18n-ariaLabel
+            />
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  } @else {
+    <p i18n>There are no specific fields needed for this integration</p>
+  }
+</p-card>
+
+<app-form-dialog
+  #deleteConfigurationDialog
+  [header]="deleteConfigurationDialogTitle()"
+  headerIcon="pi pi-trash"
+  proceedLabel="Remove FSP"
+  i18n-proceedLabel="@@remove-fsp"
+  [mutation]="deleteConfigurationMutation"
+  [mutationData]="undefined"
+  i18n
+>
+  You're about to remove {{ configuration().name | translatableString }} FSP
+  from your project. Payments with this FSP will not go through, Registrations
+  with this FSP will not be paid unless changed to an integrated FSP.
+</app-form-dialog>
