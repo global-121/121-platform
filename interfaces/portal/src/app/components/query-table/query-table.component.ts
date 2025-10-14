@@ -6,9 +6,11 @@ import {
   Component,
   computed,
   contentChild,
+  effect,
   inject,
   input,
   LOCALE_ID,
+  model,
   output,
   TemplateRef,
   Type,
@@ -291,8 +293,8 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   /**
    * ROW SELECTION
    */
-  readonly selectedItems = this.selectionService.selectedItems;
-  readonly selectAll = this.selectionService.selectAll;
+  readonly selectedItems = model<TData[]>([]);
+  readonly selectAll = model<boolean>(false);
   readonly tableSelection = this.selectionService.tableSelection;
   readonly selectedItemsCount = this.selectionService.selectedItemsCount;
 
@@ -352,7 +354,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   /**
    * COLUMN VISIBILITY
    */
-  readonly visibleColumns = this.columnVisibilityService.visibleColumns;
+  readonly visibleColumns = model<QueryTableColumn<TData>[]>([]);
 
   updateColumnVisibility = (revertToDefault = false) => {
     this.columnVisibilityService.updateColumnVisibility({
@@ -377,5 +379,33 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     this.paginationService.setServerSideTotalRecordsProvider(() =>
       this.serverSideTotalRecords(),
     );
+    
+    // Sync models with service signals
+    this.syncModelsWithServices();
+  }
+  
+  private syncModelsWithServices() {
+    // Sync visibleColumns model with service signal
+    effect(() => {
+      this.visibleColumns.set(this.columnVisibilityService.visibleColumns());
+    });
+    effect(() => {
+      this.columnVisibilityService.visibleColumns.set(this.visibleColumns());
+    });
+    
+    // Sync selection models with service signals  
+    effect(() => {
+      this.selectedItems.set(this.selectionService.selectedItems());
+    });
+    effect(() => {
+      this.selectionService.selectedItems.set(this.selectedItems());
+    });
+    
+    effect(() => {
+      this.selectAll.set(this.selectionService.selectAll());
+    });
+    effect(() => {
+      this.selectionService.selectAll.set(this.selectAll());
+    });
   }
 }
