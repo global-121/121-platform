@@ -1,4 +1,4 @@
-import { computed, inject, model, signal } from '@angular/core';
+import { computed, inject, signal, WritableSignal } from '@angular/core';
 
 import { TableSelectAllChangeEvent } from 'primeng/table';
 
@@ -16,8 +16,8 @@ export class QueryTableSelectionService<TData extends { id: PropertyKey }> {
   private readonly paginateQueryService = inject(PaginateQueryService);
   private readonly toastService = inject(ToastService);
 
-  readonly selectedItems = model<TData[]>([]);
-  readonly selectAll = model<boolean>(false);
+  readonly selectedItems: WritableSignal<TData[]> = signal([]);
+  readonly selectAll: WritableSignal<boolean> = signal(false);
   readonly tableSelection = signal<QueryTableSelectionEvent<TData>>([]);
 
   // Function to get server side total records from parent
