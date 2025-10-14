@@ -1,11 +1,6 @@
 /* eslint-disable sort-class-members/sort-class-members -- Disabling this rule in this file because the class members are grouped logically */
 
-import {
-  DatePipe,
-  NgClass,
-  NgComponentOutlet,
-  NgTemplateOutlet,
-} from '@angular/common';
+import { NgClass, NgComponentOutlet, NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -54,6 +49,7 @@ import { ChipData } from '~/components/colored-chip/colored-chip.helper';
 import { QueryTableColumnManagementComponent } from '~/components/query-table/components/query-table-column-management/query-table-column-management.component';
 import { QueryTableGlobalSearchComponent } from '~/components/query-table/components/query-table-global-search/query-table-global-search.component';
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
+import { QueryTableCellFormatterService } from '~/components/query-table/services/query-table-cell-formatter.service';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import {
   PaginateQuery,
@@ -144,6 +140,9 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   toastService = inject(ToastService);
   readonly rtlHelper = inject(RtlHelperService);
   readonly trackingService = inject(TrackingService);
+  private readonly cellFormatterService = inject(
+    QueryTableCellFormatterService,
+  );
 
   readonly items = input.required<TData[]>();
   readonly isPending = input.required<boolean>();
@@ -212,6 +211,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   }
 
   getCellText(column: QueryTableColumn<TData>, item: TData) {
+    // Handle custom cell text function for non-multiselect columns
     if (
       column.type !== QueryTableColumnType.MULTISELECT &&
       column.getCellText
@@ -219,46 +219,14 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       return column.getCellText(item);
     }
 
+    // Handle computed fields
     if (column.field === 'COMPUTED_FIELD') {
       return;
     }
 
-    const text = this.getCellValue(column, item);
-
-    if (!text) {
-      return;
-    }
-
-    if (column.type === QueryTableColumnType.MULTISELECT) {
-      const correspondingLabel = column.options.find(
-        (option) => option.value === text,
-      )?.label;
-
-      if (correspondingLabel) {
-        return correspondingLabel;
-      }
-    }
-
-    if (column.type === QueryTableColumnType.DATE) {
-      if (
-        !(text instanceof Date) &&
-        typeof text !== 'string' &&
-        typeof text !== 'number'
-      ) {
-        throw new Error(
-          `Expected field ${column.field} to be a Date or string, but got ${typeof text}`,
-        );
-      }
-      return new DatePipe(this.locale).transform(new Date(text), 'short');
-    }
-
-    if (typeof text !== 'string' && typeof text !== 'number') {
-      throw new Error(
-        `Expected field ${column.field} to be a string or number, but got ${typeof text}`,
-      );
-    }
-
-    return text.toString();
+    // Get the cell value and format it using the service
+    const cellValue = this.getCellValue(column, item);
+    return this.cellFormatterService.formatCellText(column, cellValue);
   }
 
   getMultiSelectCellIcon(
