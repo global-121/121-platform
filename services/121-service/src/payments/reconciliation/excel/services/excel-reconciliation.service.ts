@@ -89,10 +89,12 @@ export class ExcelReconciliationService {
     file,
     programId,
     paymentId,
+    userId,
   }: {
     file: Express.Multer.File;
     programId: number;
     paymentId: number;
+    userId: number;
   }): Promise<{
     importResult: ReconciliationFeedbackDto[];
     aggregateImportResult: {
@@ -181,6 +183,7 @@ export class ExcelReconciliationService {
         csvContents,
         transactionStatus: status,
         programFspConfigurationId: fspConfigIdForImport,
+        userId,
       });
     }
 
@@ -203,6 +206,7 @@ export class ExcelReconciliationService {
     csvContents,
     transactionStatus,
     programFspConfigurationId,
+    userId,
   }: {
     programId: number;
     paymentId: number;
@@ -210,6 +214,7 @@ export class ExcelReconciliationService {
     csvContents: CsvContents;
     transactionStatus: TransactionStatusEnum;
     programFspConfigurationId: number;
+    userId: number;
   }) {
     const programRegistrationAttributeId =
       await this.programRegistrationAttributeRepository.getIdByNameAndProgramId(
@@ -245,6 +250,7 @@ export class ExcelReconciliationService {
       transactionIds: transactionIdsToUpdate,
       transactionStatus,
       programFspConfigurationId,
+      userId,
     });
   }
 
@@ -252,10 +258,12 @@ export class ExcelReconciliationService {
     transactionIds,
     transactionStatus,
     programFspConfigurationId,
+    userId,
   }: {
     transactionIds: number[];
     transactionStatus: TransactionStatusEnum;
     programFspConfigurationId: number;
+    userId: number;
   }): Promise<void> {
     const userId: number = this.request!.user!['id']!; // Should always be defined because this method is called from a context where a user is logged in
     const transactionEvents: TransactionEventEntity[] = transactionIds.map(
