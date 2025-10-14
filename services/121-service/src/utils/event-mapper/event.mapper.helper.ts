@@ -30,13 +30,3 @@ export function mapUserToDto(user?: {
     return null;
   }
 }
-
-export function getCountByType<T extends { type: string | number }>(
-  entities: T[],
-): Partial<Record<T['type'], number>> {
-  const count: Partial<Record<T['type'], number>> = {};
-  for (const event of entities) {
-    count[event.type] = (count[event.type] ?? 0) + 1;
-  }
-  return count;
-}

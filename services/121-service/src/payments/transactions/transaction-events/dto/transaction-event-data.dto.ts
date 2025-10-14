@@ -6,11 +6,11 @@ export interface TransactionEventInterface {
   user?: {
     id: number;
     username: string;
-  };
+  } | null;
   created: Date;
   type: TransactionEventType;
   description: TransactionEventDescription;
-  errorMessage?: string;
+  errorMessage?: string | null;
   isSuccessfullyCompleted: boolean;
   programFspConfigurationId: number;
 }
