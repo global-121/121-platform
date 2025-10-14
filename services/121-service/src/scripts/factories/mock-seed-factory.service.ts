@@ -217,13 +217,13 @@ export class MockSeedFactoryService {
       console.log(
         `**CREATING MOCK DATA match AH vouchers to registrations: duplication ${i} of ${powerNr}**`,
       );
-      await this.duplicateIntersolveVouchersInBatches();
+      await this.duplicateIntersolveVouchersForFirstPayment();
     }
 
     console.log(
       `**CREATING MOCK DATA match imagecode export vouchers to registrations**`,
     );
-    await this.createMockImagecodeExportVouchers();
+    await this.createImagecodeExportVouchersForFirstPayment();
   }
 
   private async createMockVisaCustomersAndWallets(): Promise<void> {
@@ -341,16 +341,14 @@ export class MockSeedFactoryService {
     }
   }
 
-  /**
-   * Type-safe creation of mock imagecode export vouchers
-   */
-  private async createMockImagecodeExportVouchers(): Promise<void> {
+  private async createImagecodeExportVouchersForFirstPayment(): Promise<void> {
     const registrationRepo = this.dataSource.getRepository(RegistrationEntity);
     const voucherRepo = this.dataSource.getRepository(IntersolveVoucherEntity);
     const imagecodeExportVoucherRepo = this.dataSource.getRepository(
       ImageCodeExportVouchersEntity,
     );
 
+    // Fetch registrations for relevant FSPs, ordered by id
     const voucherRegistrations = await registrationRepo.find({
       relations: { programFspConfiguration: true },
       where: {
@@ -361,8 +359,10 @@ export class MockSeedFactoryService {
           ]),
         },
       },
+      order: { id: 'ASC' },
     });
-    const vouchers = await voucherRepo.find();
+    // Fetch vouchers, ordered by id
+    const vouchers = await voucherRepo.find({ order: { id: 'ASC' } });
 
     if (voucherRegistrations.length === 0 || vouchers.length === 0) {
       console.warn(
@@ -371,14 +371,13 @@ export class MockSeedFactoryService {
       return;
     }
 
+    // Map registrationId to voucherId explicitly, skipping the first record if needed
     const minCount = Math.min(voucherRegistrations.length, vouchers.length);
     const exportVouchers: DeepPartial<ImageCodeExportVouchersEntity>[] = [];
-    for (let i = 0; i < minCount; i++) {
-      if (i === 0) {
-        continue; // Skip the first record to avoid duplicate
-      }
+    for (let i = 1; i < minCount; i++) {
+      // start at 1 to not insert the first record again
       exportVouchers.push({
-        registration: voucherRegistrations[i],
+        registrationId: voucherRegistrations[i].id,
         voucher: vouchers[i],
       });
     }
@@ -388,10 +387,7 @@ export class MockSeedFactoryService {
     }
   }
 
-  /**
-   * Type-safe duplication of Intersolve vouchers in batches
-   */
-  private async duplicateIntersolveVouchersInBatches(): Promise<void> {
+  private async duplicateIntersolveVouchersForFirstPayment(): Promise<void> {
     const voucherRepo = this.dataSource.getRepository(IntersolveVoucherEntity);
     const vouchers = await voucherRepo.find();
     if (vouchers.length === 0) {
