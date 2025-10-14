@@ -72,7 +72,7 @@ export class PaymentsExcelFspService {
         status: Equal(TransactionStatusEnum.waiting),
         programFspConfigurationName: In(
           programFspConfigEntitiesWithFspInstruction.map((p) => p.name),
-        ), //##TODO should this be filtered on programFspConfiguration from registration?
+        ), // TODO should this be filtered on programFspConfiguration from registration to take into account that a registration can switch after transaction have been created
       },
       relations: {
         registration: true,

@@ -34,7 +34,7 @@ export class TransactionJobsExcelService {
     await this.transactionsService.saveTransactionProgress({
       context: transactionEventContext,
       newTransactionStatus: TransactionStatusEnum.waiting,
-      description: TransactionEventDescription.excelFilePreparedForExport,
+      description: TransactionEventDescription.excelPreparationForExport,
     });
   }
 }

@@ -189,9 +189,9 @@ describe('Do payment with Excel FSP', () => {
       expect(transactionEvents).toEqual([
         TransactionEventDescription.created,
         TransactionEventDescription.initiated,
-        TransactionEventDescription.excelFilePreparedForExport,
-        TransactionEventDescription.excelFileReconciled,
-        TransactionEventDescription.excelFileReconciled,
+        TransactionEventDescription.excelPreparationForExport,
+        TransactionEventDescription.excelReconciliationFileUpload,
+        TransactionEventDescription.excelReconciliationFileUpload,
       ]);
     });
   });

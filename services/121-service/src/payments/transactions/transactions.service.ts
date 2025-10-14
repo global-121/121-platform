@@ -3,7 +3,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
@@ -16,7 +15,6 @@ import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/cr
 @Injectable()
 export class TransactionsService {
   public constructor(
-    private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
     private readonly transactionEventsScopedRepository: TransactionEventsScopedRepository,
@@ -99,6 +97,35 @@ export class TransactionsService {
         status: newTransactionStatus,
       });
     }
+  }
+
+  public async saveTransactionProgressBulk({
+    newTransactionStatus,
+    transactionIds,
+    description,
+    userId,
+    programFspConfigurationId,
+  }: {
+    newTransactionStatus: TransactionStatusEnum;
+    transactionIds: number[];
+    description: TransactionEventDescription;
+    userId: number;
+    programFspConfigurationId: number;
+  }): Promise<void> {
+    await this.transactionScopedRepository.update(transactionIds, {
+      status: newTransactionStatus,
+    });
+    const eventsAreSuccessful =
+      newTransactionStatus !== TransactionStatusEnum.error;
+
+    await this.transactionEventsService.createEventsBulk({
+      transactionIds,
+      programFspConfigurationId,
+      userId,
+      type: TransactionEventType.processingStep,
+      description,
+      isSuccessfullyCompleted: eventsAreSuccessful,
+    });
   }
 
   public async updateTransactionStatus({

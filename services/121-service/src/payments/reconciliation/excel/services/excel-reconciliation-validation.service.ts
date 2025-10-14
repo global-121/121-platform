@@ -89,9 +89,33 @@ export class ExcelReconciliationValidationService {
     return fspConfigsExcel;
   }
 
-  public validateExactlyOneFspConfigRelatedToImport(
-    uniqueFspConfigIds: number[],
-  ): void {
+  public async validateExactlyOneFspConfigAndReturnIt({
+    matchColumn,
+    csvContents,
+    paymentId,
+    programId,
+  }: {
+    matchColumn: string;
+    csvContents: CsvContents;
+    paymentId: number;
+    programId: number;
+  }): Promise<number> {
+    const matchColumnValues = csvContents.map((r) => r[matchColumn]);
+    const programRegistrationAttributeId =
+      await this.programRegistrationAttributeRepository.getIdByNameAndProgramId(
+        {
+          name: matchColumn,
+          programId,
+        },
+      );
+    const uniqueFspConfigIds =
+      await this.registrationViewScopedRepository.getUniqueFspConfigIdsByPaymentAndRegistrationData(
+        {
+          paymentId,
+          programRegistrationAttributeId,
+          dataValues: matchColumnValues,
+        },
+      );
     if (uniqueFspConfigIds.length > 1) {
       throw new HttpException(
         `Expected imported reconciliation to be related only to one FSP configuration, but found multiple`,
@@ -104,36 +128,7 @@ export class ExcelReconciliationValidationService {
         HttpStatus.BAD_REQUEST,
       );
     }
-  }
-
-  public async getUniqueFspConfigIdsRelatedToImport({
-    matchColumn,
-    csvContents,
-    paymentId,
-    programId,
-  }: {
-    matchColumn: string;
-    csvContents: CsvContents;
-    paymentId: number;
-    programId: number;
-  }): Promise<number[]> {
-    const matchColumnValues = csvContents.map((r) => r[matchColumn]);
-
-    const programRegistrationAttributeId =
-      await this.programRegistrationAttributeRepository.getIdByNameAndProgramId(
-        {
-          name: matchColumn,
-          programId,
-        },
-      );
-
-    return await this.registrationViewScopedRepository.getUniqueFspConfigIdsByPaymentAndRegistrationData(
-      {
-        paymentId,
-        programRegistrationAttributeId,
-        dataValues: matchColumnValues,
-      },
-    );
+    return uniqueFspConfigIds[0]; // There is exactly one, so take the first
   }
 
   public validateStatusColumn(csvContents: CsvContents): void {

@@ -1,5 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { REQUEST } from '@nestjs/core';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
@@ -12,15 +11,12 @@ import { ExcelReconciliationFeedbackService } from '@121-service/src/payments/re
 import { ExcelReconciliationValidationService } from '@121-service/src/payments/reconciliation/excel/services/excel-reconciliation-validation.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
-import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
-import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
-import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import {
   CsvContents,
   FileImportService,
@@ -37,11 +33,11 @@ export class ExcelReconciliationService {
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
     private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
-    private readonly transactionRepository: TransactionRepository,
+
+    private readonly transactionsService: TransactionsService,
     private readonly transactionEventsScopedRepository: TransactionEventsScopedRepository,
     private readonly excelReconciliationValidationService: ExcelReconciliationValidationService,
     private readonly excelReconciliationFeedbackService: ExcelReconciliationFeedbackService,
-    @Inject(REQUEST) private request: ScopedUserRequest,
   ) {}
 
   public async getImportInstructionsTemplate(
@@ -152,8 +148,8 @@ export class ExcelReconciliationService {
       },
     );
 
-    const uniqueFspConfigIds =
-      await this.excelReconciliationValidationService.getUniqueFspConfigIdsRelatedToImport(
+    const fspConfigIdForImport =
+      await this.excelReconciliationValidationService.validateExactlyOneFspConfigAndReturnIt(
         {
           matchColumn,
           csvContents,
@@ -161,11 +157,6 @@ export class ExcelReconciliationService {
           programId,
         },
       );
-
-    this.excelReconciliationValidationService.validateExactlyOneFspConfigRelatedToImport(
-      uniqueFspConfigIds,
-    );
-    const fspConfigIdForImport = uniqueFspConfigIds[0]; // There is exactly one, so take the first
 
     ////////////////////////////////////////////////////////////////////////////
     // Actually processing
@@ -239,48 +230,13 @@ export class ExcelReconciliationService {
     if (transactionIdsToUpdate.length === 0) {
       return; // Nothing to do no transactions to update and no events to create
     }
-    // Does not need to be scoped because we already used the scoped repository to get the transaction ids
-    await this.transactionRepository.update(transactionIdsToUpdate, {
-      status: transactionStatus,
-    });
 
-    // We create transaction events regardless of whether the transaction status was changed or not
-    // Creating the same event multiple times is by design, to have a complete history of reconciliations
-    await this.createAndSaveTransactionEvents({
+    await this.transactionsService.saveTransactionProgressBulk({
+      newTransactionStatus: transactionStatus,
       transactionIds: transactionIdsToUpdate,
-      transactionStatus,
-      programFspConfigurationId,
+      description: TransactionEventDescription.excelReconciliationFileUpload,
       userId,
-    });
-  }
-
-  private async createAndSaveTransactionEvents({
-    transactionIds,
-    transactionStatus,
-    programFspConfigurationId,
-    userId,
-  }: {
-    transactionIds: number[];
-    transactionStatus: TransactionStatusEnum;
-    programFspConfigurationId: number;
-    userId: number;
-  }): Promise<void> {
-    const userId: number = this.request!.user!['id']!; // Should always be defined because this method is called from a context where a user is logged in
-    const transactionEvents: TransactionEventEntity[] = transactionIds.map(
-      (id) =>
-        this.transactionEventsScopedRepository.create({
-          type: TransactionEventType.processingStep,
-          description: TransactionEventDescription.excelFileReconciled,
-          isSuccessfullyCompleted:
-            transactionStatus !== TransactionStatusEnum.error,
-          errorMessage: null,
-          transactionId: id,
-          userId,
-          programFspConfigurationId,
-        }),
-    );
-    await this.transactionEventsScopedRepository.save(transactionEvents, {
-      chunk: 1000,
+      programFspConfigurationId,
     });
   }
 }
