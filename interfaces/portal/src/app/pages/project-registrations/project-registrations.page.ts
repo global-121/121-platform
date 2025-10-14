@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -55,6 +56,7 @@ import { getOriginUrl } from '~/utils/url-helper';
     RegistrationsTableComponent,
     TranslatableStringPipe,
     ImportRegistrationsMenuComponent,
+    NgTemplateOutlet,
   ],
   providers: [ToastService],
   templateUrl: './project-registrations.page.html',

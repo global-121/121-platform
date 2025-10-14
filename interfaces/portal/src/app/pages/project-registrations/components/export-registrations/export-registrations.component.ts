@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -47,6 +48,7 @@ import {
     ReactiveFormsModule,
     FormFieldWrapperComponent,
     RadioButtonModule,
+    NgTemplateOutlet,
   ],
   templateUrl: './export-registrations.component.html',
   styles: ``,

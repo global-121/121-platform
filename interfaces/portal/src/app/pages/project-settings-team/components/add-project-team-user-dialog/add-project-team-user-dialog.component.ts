@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -46,6 +47,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
     MultiSelectModule,
     InputTextModule,
     ReactiveFormsModule,
+    NgTemplateOutlet,
   ],
 })
 export class AddProjectTeamUserDialogComponent {

@@ -123,23 +123,24 @@
           </span>
         </div>
 
-        <p
-          i18n
-          class="mt-4"
-        >
-          There are no registrations in this project yet.<br />
-          For information about importing registrations to your project check
-          out the
+        <ng-template #manualLink>
           <a
             href="https://manual.121.global/"
             target="_blank"
             title="Opens in a new window"
             i18n-title="@@generic-opens-in-new-window"
             class="p-button p-button-link gap-1"
-          >
-            121 Manual
-            <span class="p-button-icon pi pi-external-link text-sm"></span> </a
-          >.
+            ><span i18n="@@generic-121-manual-title">121 Manual</span>
+            <span class="p-button-icon pi pi-external-link text-sm"></span
+          ></a>
+        </ng-template>
+        <p
+          i18n
+          class="mt-4"
+        >
+          There are no registrations in this project yet.<br />
+          For information about importing registrations to your project check
+          out the <ng-container [ngTemplateOutlet]="manualLink"></ng-container>.
         </p></ng-template
       >
     </app-registrations-table>

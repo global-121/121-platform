@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -39,6 +40,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
     FormFieldWrapperComponent,
     InputTextModule,
     ReactiveFormsModule,
+    NgTemplateOutlet,
   ],
 })
 export class AddUserDialogComponent {
