@@ -107,10 +107,6 @@ test('[38155] Edit Project Information', async ({ page }) => {
     );
     await projectSettings.selectCurrency(budgetInfo.currency);
     await projectSettings.editInformationFieldByLabel(
-      'Payment frequency',
-      budgetInfo.paymentFrequency,
-    );
-    await projectSettings.editInformationFieldByLabel(
       'Default transfers per registration',
       budgetInfo.defaultTransferAmount,
     );
@@ -129,7 +125,6 @@ test('[38155] Edit Project Information', async ({ page }) => {
       expect(budgetData).toEqual({
         'Funds available': budgetInfo.fundsAvailable,
         '*Currency': budgetInfo.currency,
-        'Payment frequency': budgetInfo.paymentFrequency,
         'Default transfers per registration': budgetInfo.defaultTransferAmount,
         '*Fixed transfer value': budgetInfo.fixedTransferValue,
       });

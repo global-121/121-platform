@@ -75,7 +75,6 @@ test('[29635] Create project successfully', async ({ page }) => {
     expect(budgetData).toEqual({
       'Funds available': projectInfo.fundsAvailable,
       '*Currency': projectInfo.currency,
-      'Payment frequency': projectInfo.paymentFrequency,
       'Default transfers per registration': projectInfo.defaultTransferAmount,
       '*Fixed transfer value': projectInfo.fixedTransferValue,
     });

@@ -412,9 +412,6 @@
       <trans-unit id="6885844978916799621" datatype="html">
         <source>Budget</source>
       </trans-unit>
-      <trans-unit id="1194881950571757496" datatype="html">
-        <source>Payment frequency</source>
-      </trans-unit>
       <trans-unit id="7410432243549869948" datatype="html">
         <source>Duration</source>
       </trans-unit>

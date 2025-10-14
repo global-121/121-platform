@@ -60,13 +60,11 @@ class CreateProjectDialog {
   async fillInStep3({
     fundsAvailable,
     currency,
-    paymentFrequency,
     defaultTransferAmount,
     fixedTransferValue,
   }: {
     fundsAvailable: string;
     currency: string;
-    paymentFrequency: string;
     defaultTransferAmount: string;
     fixedTransferValue: string;
   }) {
@@ -75,7 +73,6 @@ class CreateProjectDialog {
     await this.page
       .getByRole('option', { name: currency, exact: true })
       .click();
-    await this.page.getByLabel('Payment frequency').fill(paymentFrequency);
     await this.page
       .getByLabel('Default transfers per registration')
       .fill(defaultTransferAmount);

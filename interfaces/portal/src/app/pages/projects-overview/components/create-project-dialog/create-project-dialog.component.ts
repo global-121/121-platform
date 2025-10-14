@@ -105,7 +105,6 @@ export class CreateProjectDialogComponent {
         budget,
         currency,
         distributionDuration,
-        distributionFrequency,
         fixedTransferValue,
       },
     }: ReturnType<
@@ -125,7 +124,6 @@ export class CreateProjectDialogComponent {
         budget,
         currency,
         distributionDuration,
-        distributionFrequency,
         fixedTransferValue,
         startDate: startDate ? startDate.toISOString() : undefined,
         endDate: endDate ? endDate.toISOString() : undefined,
