@@ -190,7 +190,7 @@ export async function getTransactions({
 }: {
   programId: number;
   paymentId: number;
-  registrationReferenceId: string | null;
+  registrationReferenceId?: string | null;
   accessToken: string;
 }): Promise<request.Response> {
   const response = await getServer()
@@ -288,18 +288,20 @@ export async function importFspReconciliationData(
 }
 
 function jsonArrayToCsv(json: object[]): string {
-  const fields = Object.keys(json[0]);
+  const columnHeaders = Array.from(
+    new Set(json.flatMap((obj) => Object.keys(obj))),
+  );
   const replacer = function (_key, value): string | number {
     return value === null ? '' : value;
   };
   const csv = json.map(function (row): string {
-    return fields
+    return columnHeaders
       .map(function (fieldName): string {
         return JSON.stringify(row[fieldName], replacer);
       })
       .join(',');
   });
-  csv.unshift(fields.join(',')); // add header column
+  csv.unshift(columnHeaders.join(',')); // add header column
   return csv.join('\r\n');
 }
 

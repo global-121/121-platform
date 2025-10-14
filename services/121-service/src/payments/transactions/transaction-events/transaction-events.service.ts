@@ -64,4 +64,38 @@ export class TransactionEventsService {
       transactionEventEntities,
     );
   }
+
+  public async createEventsBulk({
+    transactionIds,
+    programFspConfigurationId,
+    userId,
+    type,
+    description,
+    isSuccessfullyCompleted,
+    errorMessage,
+  }: {
+    transactionIds: number[];
+    programFspConfigurationId: number;
+    userId: number;
+    type: TransactionEventType;
+    description: TransactionEventDescription;
+    isSuccessfullyCompleted: boolean;
+    errorMessage?: string;
+  }): Promise<void> {
+    const transactionEvents = transactionIds.map((transactionId) =>
+      this.transactionEventScopedRepository.create({
+        transactionId,
+        programFspConfigurationId,
+        userId,
+        type,
+        description,
+        isSuccessfullyCompleted,
+        errorMessage,
+      }),
+    );
+
+    await this.transactionEventScopedRepository.save(transactionEvents, {
+      chunk: 1000,
+    });
+  }
 }

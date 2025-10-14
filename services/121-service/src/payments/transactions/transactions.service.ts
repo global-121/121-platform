@@ -1,14 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import chunk from 'lodash/chunk';
-import { Equal } from 'typeorm';
 
-import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
-import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
-import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
@@ -16,85 +10,17 @@ import { TransactionEventCreationContext } from '@121-service/src/payments/trans
 import { LastTransactionEventRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/last-transaction-event.repository';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
-import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 @Injectable()
 export class TransactionsService {
   public constructor(
-    private readonly registrationScopedRepository: RegistrationScopedRepository,
-    private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
     private readonly transactionEventsScopedRepository: TransactionEventsScopedRepository,
     private readonly transactionEventsService: TransactionEventsService,
     private readonly lastTransactionEventRepository: LastTransactionEventRepository,
   ) {}
-
-  // ##TODO: refactor out this method once we refactor excel fsp
-  public async getLastTransactions({
-    programId,
-    paymentId,
-    referenceId,
-    status,
-    programFspConfigId,
-  }: {
-    programId: number;
-    paymentId?: number;
-    referenceId?: string;
-    status?: TransactionStatusEnum;
-    programFspConfigId?: number;
-  }): Promise<TransactionReturnDto[]> {
-    return this.transactionViewScopedRepository
-      .getLastTransactionsQuery({
-        programId,
-        paymentId,
-        referenceId,
-        status,
-        programFspConfigId,
-      })
-      .getRawMany();
-  }
-
-  public async storeReconciliationTransactionsBulk(
-    transactionResults: PaTransactionResultDto[],
-    transactionRelationDetails: TransactionRelationDetailsDto,
-  ): Promise<void> {
-    // NOTE: this method is currently only used for the import-excel-reconciliation use case and assumes:
-    // 1: only 1 program fsp id
-    // 2: no notifications to send
-    // 3: no payment count to update (as it is reconciliation of existing payment)
-    // 4: no twilio message to relate to
-
-    const transactionsToSave = await Promise.all(
-      transactionResults.map(async (transactionResponse) => {
-        // Get registrationId from referenceId if it is not defined
-        // TODO find out when this is needed it seems to make more sense if the registrationId is always known and than referenceId is not needed
-        if (!transactionResponse.registrationId) {
-          const registration =
-            await this.registrationScopedRepository.findOneOrFail({
-              where: { referenceId: Equal(transactionResponse.referenceId) },
-            });
-          transactionResponse.registrationId = registration.id;
-        }
-
-        const transaction = new TransactionEntity();
-        transaction.transferValue = transactionResponse.calculatedAmount;
-        transaction.registrationId = transactionResponse.registrationId;
-        transaction.paymentId = transactionRelationDetails.paymentId;
-        transaction.userId = transactionRelationDetails.userId;
-        transaction.status = transactionResponse.status;
-        return transaction;
-      }),
-    );
-
-    const BATCH_SIZE = 2500;
-    const transactionChunks = chunk(transactionsToSave, BATCH_SIZE);
-
-    for (const chunkedTransactions of transactionChunks) {
-      await this.transactionScopedRepository.save(chunkedTransactions);
-    }
-  }
 
   public async createTransactionsAndEvents({
     transactionCreationDetails,
@@ -171,6 +97,35 @@ export class TransactionsService {
         status: newTransactionStatus,
       });
     }
+  }
+
+  public async saveTransactionProgressBulk({
+    newTransactionStatus,
+    transactionIds,
+    description,
+    userId,
+    programFspConfigurationId,
+  }: {
+    newTransactionStatus: TransactionStatusEnum;
+    transactionIds: number[];
+    description: TransactionEventDescription;
+    userId: number;
+    programFspConfigurationId: number;
+  }): Promise<void> {
+    await this.transactionScopedRepository.update(transactionIds, {
+      status: newTransactionStatus,
+    });
+    const eventsAreSuccessful =
+      newTransactionStatus !== TransactionStatusEnum.error;
+
+    await this.transactionEventsService.createEventsBulk({
+      transactionIds,
+      programFspConfigurationId,
+      userId,
+      type: TransactionEventType.processingStep,
+      description,
+      isSuccessfullyCompleted: eventsAreSuccessful,
+    });
   }
 
   public async updateTransactionStatus({

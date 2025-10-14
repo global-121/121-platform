@@ -1,18 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconciliation-feedback.dto';
-import { AggregateImportResultDto } from '@121-service/src/registration/dto/bulk-import.dto';
+import { ExcelAggregateImportResultDto } from '@121-service/src/payments/reconciliation/excel/dtos/excel-aggregate-import-result.dto';
 
 export class ImportReconciliationResponseDto {
   @ApiProperty({
     type: [ReconciliationFeedbackDto],
     description: 'The import result',
   })
-  importResult: ReconciliationFeedbackDto[];
+  readonly importResult: ReconciliationFeedbackDto[];
 
   @ApiProperty({
-    type: AggregateImportResultDto,
+    type: ExcelAggregateImportResultDto,
     description: 'The aggregate import result',
   })
-  aggregateImportResult: AggregateImportResultDto;
+  readonly aggregateImportResult: ExcelAggregateImportResultDto;
 }

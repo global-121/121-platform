@@ -30,4 +30,24 @@ export class ProgramRegistrationAttributeRepository extends Repository<ProgramRe
       where,
     });
   }
+
+  public async getIdByNameAndProgramId({
+    name,
+    programId,
+  }: {
+    name: string;
+    programId: number;
+  }): Promise<number> {
+    const result = await this.findOneOrFail({
+      where: {
+        programId: Equal(programId),
+        name: Equal(name),
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return result.id;
+  }
 }
