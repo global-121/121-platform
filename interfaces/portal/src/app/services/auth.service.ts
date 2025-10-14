@@ -212,6 +212,10 @@ export class AuthService {
     const currentUser = await this.queryClient.fetchQuery(
       this.userApiService.getCurrent()(),
     );
-    setUserInLocalStorage(currentUser.user);
+    setUserInLocalStorage({
+      // we merge the existing user (to keep e.g. the token expiration), with the refreshed data from the backend
+      ...this.user,
+      ...currentUser.user,
+    });
   }
 }
