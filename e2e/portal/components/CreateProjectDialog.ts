@@ -8,6 +8,7 @@ class CreateProjectDialog {
   readonly submitButton: Locator;
   readonly dateRangeStartInput: PrimeNGDatePicker;
   readonly dateRangeEndInput: PrimeNGDatePicker;
+  readonly currencyDropdown: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -23,6 +24,7 @@ class CreateProjectDialog {
       page: this.page,
       datePicker: this.page.getByLabel('End date'),
     });
+    this.currencyDropdown = this.page.locator(`[formControlName="currency"]`);
   }
 
   async fillInStep1({
@@ -69,7 +71,10 @@ class CreateProjectDialog {
     fixedTransferValue: string;
   }) {
     await this.page.getByLabel('Funds available').fill(fundsAvailable);
-    await this.page.getByLabel('Currency').fill(currency);
+    await this.currencyDropdown.click();
+    await this.page
+      .getByRole('option', { name: currency, exact: true })
+      .click();
     await this.page.getByLabel('Payment frequency').fill(paymentFrequency);
     await this.page
       .getByLabel('Default transfers per registration')
