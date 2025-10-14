@@ -431,14 +431,14 @@ export class MetricsService {
   }): Promise<RegistrationCountByDate> {
     const query = this.registrationScopedRepository
       .createQueryBuilder('registration')
-      .select(`to_char("created", 'yyyy-mm-dd') as "created"`)
+      .select(`to_char(registration.created, 'yyyy-mm-dd') as "created"`)
       .addSelect(`COUNT(*)`)
       .andWhere({ programId })
-      .groupBy(`to_char("created", 'yyyy-mm-dd')`)
-      .orderBy(`to_char("created", 'yyyy-mm-dd')`);
+      .groupBy(`to_char(registration.created, 'yyyy-mm-dd')`)
+      .orderBy(`to_char(registration.created, 'yyyy-mm-dd')`);
 
     if (startDate) {
-      query.andWhere('created >= :startDate', { startDate });
+      query.andWhere('registration.created >= :startDate', { startDate });
     }
     const res = (await query.getRawMany()).reduce(
       (dates: Record<string, number>, r) => {
