@@ -90,6 +90,32 @@ export function importRegistrationsCSV(
     .attach('file', filePath);
 }
 
+export function duplicateRegistrations(
+  powerNumberRegistration: number,
+  accessToken: string,
+  body: object = {},
+): Promise<request.Response> {
+  return getServer()
+    .post(
+      `/scripts/duplicate-registrations?mockPowerNumberRegistrations=${powerNumberRegistration}`,
+    )
+    .set('Cookie', [accessToken])
+    .send(body);
+}
+
+export function exportRegistrations(
+  programId: number,
+  filter: string,
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer()
+    .get(
+      `/programs/${programId}/metrics/export-list/registrations?sortBy=registrationProgramId:DESC&select=referenceId,${filter}&format=json`,
+    )
+    .set('Cookie', [accessToken])
+    .send();
+}
+
 export function bulkUpdateRegistrationsCSV(
   programId: number,
   filePath: string,
