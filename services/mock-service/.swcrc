@@ -5,8 +5,10 @@
     "parser": {
       "syntax": "typescript",
       "decorators": true,
-      "dynamicImport": true
+      "dynamicImport": true,
+      "topLevelAwait": true
     },
+    "target": "es2022",
     "transform": {
       "legacyDecorator": true,
       "decoratorMetadata": true
@@ -16,10 +18,23 @@
       "@mock-service/*": ["./*"]
     },
     "externalHelpers": false,
-    "keepClassNames": true
+    "keepClassNames": true,
+    "experimental": {
+      "plugins": [
+        [
+          "@swc/plugin-transform-imports",
+          {
+            "^(.*?)(\\.ts)$": {
+              "skipDefaultConversion": true,
+              "transform": "{{matches.[1]}}.js"
+            }
+          }
+        ]
+      ]
+    }
   },
   "module": {
-    "type": "commonjs",
+    "type": "es6",
     "strict": true,
     "noInterop": false
   },

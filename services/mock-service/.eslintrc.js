@@ -2,7 +2,7 @@
 module.exports = {
   overrides: [
     {
-      files: ['*.js'],
+      files: ['*.js', '*.mjs'],
       extends: [
         'eslint:recommended',
         'plugin:eslint-comments/recommended',
@@ -14,7 +14,7 @@ module.exports = {
         node: true,
       },
       parserOptions: {
-        sourceType: 'script',
+        sourceType: 'module',
         ecmaVersion: 2022,
       },
       rules: {
