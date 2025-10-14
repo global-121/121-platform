@@ -379,11 +379,11 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     this.paginationService.setServerSideTotalRecordsProvider(() =>
       this.serverSideTotalRecords(),
     );
-    
+
     // Sync models with service signals
     this.syncModelsWithServices();
   }
-  
+
   private syncModelsWithServices() {
     // Sync visibleColumns model with service signal
     effect(() => {
@@ -392,15 +392,15 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     effect(() => {
       this.columnVisibilityService.visibleColumns.set(this.visibleColumns());
     });
-    
-    // Sync selection models with service signals  
+
+    // Sync selection models with service signals
     effect(() => {
       this.selectedItems.set(this.selectionService.selectedItems());
     });
     effect(() => {
       this.selectionService.selectedItems.set(this.selectedItems());
     });
-    
+
     effect(() => {
       this.selectAll.set(this.selectionService.selectAll());
     });
