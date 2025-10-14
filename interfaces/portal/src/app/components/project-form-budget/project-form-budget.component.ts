@@ -59,13 +59,6 @@ export class ProjectFormBudgetComponent {
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
     }),
-    distributionFrequency: new FormControl<string | undefined>(
-      { value: undefined, disabled: false },
-      {
-        nonNullable: true,
-        validators: [],
-      },
-    ),
     distributionDuration: new FormControl<number | undefined>(
       { value: undefined, disabled: false },
       {
@@ -92,7 +85,6 @@ export class ProjectFormBudgetComponent {
     this.formGroup.patchValue({
       budget: projectData.budget,
       currency: projectData.currency ?? CurrencyCode.EUR,
-      distributionFrequency: projectData.distributionFrequency ?? undefined,
       distributionDuration: projectData.distributionDuration,
       fixedTransferValue: projectData.fixedTransferValue ?? 0,
     });

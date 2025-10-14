@@ -137,10 +137,6 @@ export class PageLayoutMonitoringComponent {
         currencyCode: projectData?.currency,
       },
       {
-        label: $localize`Payment frequency`,
-        value: projectData?.distributionFrequency,
-      },
-      {
         label: $localize`Duration`,
         value: projectData?.distributionDuration
           ? $localize`${projectData.distributionDuration}:count: disbursements`

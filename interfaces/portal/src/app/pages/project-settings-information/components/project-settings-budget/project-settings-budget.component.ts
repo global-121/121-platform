@@ -67,7 +67,6 @@ export class ProjectSettingsBudgetComponent {
     mutationFn: async ({
       budget,
       currency,
-      distributionFrequency,
       distributionDuration,
       fixedTransferValue,
     }: ReturnType<ProjectBudgetFormGroup['getRawValue']>) =>
@@ -76,7 +75,6 @@ export class ProjectSettingsBudgetComponent {
         projectPatch: {
           budget,
           currency,
-          distributionFrequency,
           distributionDuration,
           fixedTransferValue,
         },
@@ -104,12 +102,6 @@ export class ProjectSettingsBudgetComponent {
         value: projectData?.currency,
         tooltip: PROJECT_FORM_TOOLTIPS.currency,
         type: 'text',
-      },
-      {
-        label: $localize`Payment frequency`,
-        value: projectData?.distributionFrequency,
-        type: 'text',
-        fullWidth: true,
       },
       {
         label: $localize`Default transfers per registration`,
