@@ -10,12 +10,12 @@ export interface TransactionActivity extends BaseActivity {
     transactionId: number;
     paymentId: number;
     status: TransactionStatusEnum;
-    amount: number;
+    amount: number | null;
     paymentDate: Date;
     updatedDate: Date;
-    fspName: Fsps;
-    fspConfigurationLabel: LocalizedString;
-    fspConfigurationName: string;
-    errorMessage?: string;
+    fspName: Fsps | null;
+    fspConfigurationLabel: LocalizedString | null;
+    fspConfigurationName: string | null;
+    errorMessage: string | null;
   };
 }

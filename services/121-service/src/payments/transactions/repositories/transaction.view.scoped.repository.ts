@@ -4,15 +4,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
-import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import {
-  ScopedQueryBuilder,
-  ScopedRepository,
-} from '@121-service/src/scoped.repository';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { EntityClass } from '@121-service/src/shared/types/entity-class.type';
 
@@ -25,18 +20,41 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
     super(request, repository);
   }
 
-  public async getLatestTransactionsByRegistrationIdAndProgramId(
-    registrationId: number,
-    programId: number,
-  ) {
-    const query = this.getLastTransactionsQuery({
-      programId,
-      registrationId,
-    })
-      .leftJoin('transaction.user', 'user')
-      .addSelect('user.id', 'userId')
-      .addSelect('user.username', 'username');
-    return await query.getRawMany<GetAuditedTransactionDto>(); // Leaving this as getRawMany for now, as it is not a plain entity. It's a concatenation of multiple entities.
+  public async getAuditedTransactionViews({
+    registrationId,
+    programId,
+  }: {
+    registrationId: number;
+    programId: number;
+  }) {
+    return await this.find({
+      where: {
+        registration: {
+          id: Equal(registrationId),
+          programId: Equal(programId),
+        },
+      },
+      order: { created: 'DESC' },
+      select: {
+        id: true,
+        paymentId: true,
+        status: true,
+        transferValue: true,
+        errorMessage: true,
+        programFspConfigurationName: true,
+        programFspConfigurationLabel: {}, // for some reason using true here gave a type error
+        fspName: true,
+        created: true,
+        updated: true,
+        user: {
+          id: true,
+          username: true,
+        },
+      },
+      relations: {
+        user: true,
+      },
+    });
   }
 
   public async getFailedTransactionDetailsForRetry({
@@ -151,79 +169,6 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
     }
 
     return query.getRawMany();
-  }
-
-  // ##TODO: refactor out this method once we refactor excel fsp
-  public getLastTransactionsQuery({
-    programId,
-    paymentId,
-    registrationId,
-    referenceId,
-    status,
-    programFspConfigId,
-  }: {
-    programId: number;
-    paymentId?: number;
-    registrationId?: number;
-    referenceId?: string;
-    status?: TransactionStatusEnum;
-    programFspConfigId?: number;
-  }): ScopedQueryBuilder<TransactionEntity> {
-    let transactionQuery = this.createQueryBuilder('transaction')
-      .select([
-        'transaction.id AS "transactionId"',
-        'transaction.paymentId AS "paymentId"',
-        'p.created AS "paymentDate"',
-        'transaction.id AS "id"',
-        'transaction.created AS "created"',
-        'transaction.updated AS "updated"',
-        'r.registrationProgramId AS "registrationProgramId"',
-        'r.referenceId AS "registrationReferenceId"',
-        'r.id AS "registrationId"',
-        'r.registrationStatus AS "registrationStatus"',
-        'transaction.status AS "status"',
-        'transaction.transferValue AS "amount"',
-        'transaction.errorMessage AS "errorMessage"',
-        'transaction.programFspConfigurationLabel AS "programFspConfigurationLabel"',
-        'transaction.programFspConfigurationName AS "programFspConfigurationName"',
-      ])
-      .leftJoin('transaction.registration', 'r')
-      .leftJoin('transaction.payment', 'p')
-      .andWhere('p.programId = :programId', {
-        programId,
-      });
-    if (paymentId) {
-      transactionQuery = transactionQuery.andWhere(
-        'transaction.paymentId = :paymentId',
-        { paymentId },
-      );
-    }
-    if (referenceId) {
-      transactionQuery = transactionQuery.andWhere(
-        'r."referenceId" = :referenceId',
-        { referenceId },
-      );
-    }
-    if (registrationId) {
-      transactionQuery = transactionQuery.andWhere('r."id" = :registrationId', {
-        registrationId,
-      });
-    }
-    if (status) {
-      transactionQuery = transactionQuery.andWhere(
-        'transaction.status = :status',
-        { status },
-      );
-    }
-    if (programFspConfigId) {
-      transactionQuery = transactionQuery.andWhere(
-        'fspconfig.id = :programFspConfigId',
-        {
-          programFspConfigId,
-        },
-      );
-    }
-    return transactionQuery;
   }
 
   public async getTransactionJobCreationDetails(

@@ -11,12 +11,15 @@ import {
 } from 'typeorm';
 
 import { Base121AuditedEntity } from '@121-service/src/base-audited.entity';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LastTransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/last-transaction-event.entity';
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
+import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
 @ViewEntity({
@@ -28,6 +31,7 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
       .addSelect('event.programFspConfigurationId', 'programFspConfigurationId')
       .addSelect('fspconfig.label', 'programFspConfigurationLabel')
       .addSelect('fspconfig.name', 'programFspConfigurationName')
+      .addSelect('fspconfig.fspName', 'fspName')
       .from(TransactionEntity, 't')
       .innerJoin(LastTransactionEventEntity, 'lte', 't.id = lte.transactionId')
       .leftJoin(
@@ -51,7 +55,7 @@ export class TransactionViewEntity extends Base121AuditedEntity {
 
   @ViewColumn()
   @Index()
-  public status: string;
+  public status: TransactionStatusEnum;
 
   @ManyToOne((_type) => PaymentEntity, (payment) => payment.transactions, {
     onDelete: 'CASCADE',
@@ -96,8 +100,11 @@ export class TransactionViewEntity extends Base121AuditedEntity {
   public programFspConfigurationId: number | null; // can be null if program fsp config was deleted
 
   @ViewColumn()
-  public programFspConfigurationLabel: string | null; // can be null if program fsp config was deleted
+  public programFspConfigurationLabel: LocalizedString | null; // can be null if program fsp config was deleted
 
   @ViewColumn()
   public programFspConfigurationName: string | null; // can be null if program fsp config was deleted
+
+  @ViewColumn()
+  public fspName: Fsps | null; // can be null if program fsp config was deleted
 }
