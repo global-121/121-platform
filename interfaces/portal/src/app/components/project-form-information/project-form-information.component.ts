@@ -80,7 +80,7 @@ export class ProjectFormInformationComponent {
 
     const { startDate, endDate } = projectData;
 
-    this.formGroup.setValue({
+    this.formGroup.patchValue({
       startDate: startDate ? new Date(startDate) : undefined,
       endDate: endDate ? new Date(endDate) : undefined,
       location: projectData.location,

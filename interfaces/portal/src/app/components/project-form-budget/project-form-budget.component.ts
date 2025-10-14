@@ -89,7 +89,7 @@ export class ProjectFormBudgetComponent {
       return;
     }
 
-    this.formGroup.setValue({
+    this.formGroup.patchValue({
       budget: projectData.budget,
       currency: projectData.currency ?? CurrencyCode.EUR,
       distributionFrequency: projectData.distributionFrequency ?? undefined,
