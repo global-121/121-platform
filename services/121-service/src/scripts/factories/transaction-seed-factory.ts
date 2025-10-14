@@ -133,43 +133,6 @@ export class TransactionSeedFactory extends BaseSeedFactory<TransactionEntity> {
     await this.insertEntitiesBatch(transactionsData);
   }
 
-  // public async extendTransactionEventsForPayment(
-  //   programId: number,
-  //   paymentId: number,
-  // ): Promise<void> {
-  //   // const paymentRepo = this.dataSource.getRepository(PaymentEntity);
-  //   const transactionRepo = this.dataSource.getRepository(TransactionEntity);
-  //   const eventRepo = this.dataSource.getRepository(TransactionEventEntity);
-
-  //   // Find the initial payment and its transactions
-  //   const initialPayment = await paymentRepo.findOne({
-  //     where: { programId: Equal(programId) },
-  //     order: { id: 'ASC' },
-  //   });
-  //   if (!initialPayment) {
-  //     console.warn(`No initial payment found for program ${programId}`);
-  //     return;
-  //   }
-
-  //   const initialTransactionEvents = await eventRepo.find({
-  //     where: { transaction: { payment: Equal(initialPayment.id) } },
-  //     relations: { transaction: true },
-  //   });
-
-  //   const transactionEventsData: DeepPartial<TransactionEventEntity>[] = [];
-  //   // Replicate each transaction for this new payment as a new entity
-  //   for (const event of initialTransactionEvents) {
-  //     // Omit id and payment, copy all other properties
-  //     const { id: _id, transaction: _omit, ...eventData } = event;
-  //     transactionEventsData.push({
-  //       ...eventData,
-  //       transactionId: ,
-  //     });
-  //   }
-
-  //   await this.insertEntitiesBatch(transactionsData);
-  // }
-
   public async updatePaymentCounts(): Promise<void> {
     console.log('Updating payment counts for registrations');
 
