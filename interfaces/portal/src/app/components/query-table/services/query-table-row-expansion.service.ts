@@ -3,6 +3,11 @@ import { computed, signal } from '@angular/core';
 export class QueryTableRowExpansionService<TData extends { id: PropertyKey }> {
   readonly expandedRowKeys = signal<Record<PropertyKey, boolean>>({});
 
+  readonly areAllRowsExpanded = computed(
+    () => (items: TData[]) =>
+      items.length > 0 &&
+      items.every((item) => this.expandedRowKeys()[item.id]),
+  );
   expandAll(items: TData[]) {
     this.expandedRowKeys.set(
       items.reduce((acc, p) => ({ ...acc, [p.id]: true }), {}),
@@ -13,16 +18,11 @@ export class QueryTableRowExpansionService<TData extends { id: PropertyKey }> {
     this.expandedRowKeys.set({});
   }
 
-  readonly areAllRowsExpanded = computed(() => (items: TData[]) =>
-    items.length > 0 &&
-    items.every((item) => this.expandedRowKeys()[item.id] === true),
-  );
-
   updateExpandedRowKeys(expandedRowKeys: Record<PropertyKey, boolean>) {
     this.expandedRowKeys.set({
       // clone to make sure to trigger change detection
       // https://stackoverflow.com/a/77532370
-      ...(expandedRowKeys ?? {}),
+      ...expandedRowKeys,
     });
   }
 }
