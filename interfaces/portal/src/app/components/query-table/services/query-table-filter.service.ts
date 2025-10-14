@@ -1,8 +1,12 @@
 import { computed, inject, signal } from '@angular/core';
+
 import { FilterMatchMode, FilterMetadata } from 'primeng/api';
 import { ColumnFilter } from 'primeng/table';
 
-import { QueryTableColumn, QueryTableColumnType } from '../query-table.component';
+import {
+  QueryTableColumn,
+  QueryTableColumnType,
+} from '~/components/query-table/query-table.component';
 import {
   TrackingAction,
   TrackingCategory,
@@ -149,18 +153,18 @@ export class QueryTableFilterService<TData> {
     });
   }
 
-  clearAllFilters(
-    clearTable: () => void,
-    localStorageKey: string | undefined,
-    resetSelection: () => void,
-  ) {
-    clearTable();
-    if (localStorageKey) {
-      localStorage.removeItem(localStorageKey);
+  clearAllFilters(options: {
+    clearTable: () => void;
+    localStorageKey: string | undefined;
+    resetSelection: () => void;
+  }) {
+    options.clearTable();
+    if (options.localStorageKey) {
+      localStorage.removeItem(options.localStorageKey);
     }
     this.globalFilterVisible.set(false);
     this.tableFilters.set({});
-    resetSelection();
+    options.resetSelection();
 
     this.trackingService.trackEvent({
       category: TrackingCategory.manageTableSettings,
@@ -168,11 +172,13 @@ export class QueryTableFilterService<TData> {
     });
   }
 
-  updateTableFilters(filters: Record<string, FilterMetadata | FilterMetadata[] | undefined>) {
+  updateTableFilters(
+    filters: Record<string, FilterMetadata | FilterMetadata[] | undefined>,
+  ) {
     this.tableFilters.set({
       // clone to make sure to trigger change detection
       // https://stackoverflow.com/a/77532370
-      ...(filters ?? {}),
+      ...filters,
     });
   }
 }
