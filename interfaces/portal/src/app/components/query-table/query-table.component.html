@@ -149,17 +149,15 @@
                         let-option
                         #item
                       >
-                        <span
-                          class="inline-flex shrink-0 items-center gap-1 overflow-visible"
-                        >
-                          @if (option.icon) {
-                            <i [ngClass]="option.icon"></i>
-                          }
-                          {{ option.label }}
-                          @if (option.count !== undefined) {
-                            ({{ option.count }})
-                          }
-                        </span>
+                      <span class="inline-flex shrink-0 items-center gap-1 overflow-visible">
+                        @if (option.icon) {
+                          <i [ngClass]="option.icon"></i>
+                        }
+                        {{ option.label }}
+                        @if (option.count !== undefined) {
+                          ({{ option.count }})
+                        }
+                      </span>
                       </ng-template>
                     </p-multiSelect>
                   </ng-template>
@@ -188,12 +186,7 @@
     let-item
     let-expanded="expanded"
   >
-    <tr
-      [pContextMenuRow]="item"
-      [ngClass]="{
-        'bg-purple-50': expanded,
-      }"
-    >
+    <tr [pContextMenuRow]="item" [ngClass]="{ 'bg-purple-50': expanded }">
       @if (enableSelection()) {
         <td style="width: 0">
           @if (selectAll()) {
@@ -240,41 +233,32 @@
             @let cellText = getCellText(column, item);
             @if (column.type === 'multiselect') {
               @if (column.displayAsChip) {
-                @if (column.getCellChipData) {
-                  @let chipData = column.getCellChipData(item);
+                @let chipData = column.getCellChipData?.(item);
+                @if (chipData) {
                   <app-colored-chip
                     [label]="chipData.chipLabel"
                     [variant]="chipData.chipVariant"
                   />
                 } @else if (cellText) {
-                  <app-colored-chip
-                    [label]="cellText"
-                    [variant]="'blue'"
-                  />
+                  <app-colored-chip [label]="cellText" [variant]="'blue'" />
                 }
               } @else {
                 <span class="inline-flex items-center">
                   @let icon = getMultiSelectCellIcon(column, item);
                   @if (icon) {
-                    <span class="me-2 inline leading-0"
-                      ><i [ngClass]="[icon, 'mt-0.25 text-xl']"></i>
+                    <span class="me-2 inline leading-0">
+                      <i [ngClass]="[icon, 'mt-0.25 text-xl']"></i>
                     </span>
                   }
                   <span>{{ cellText }}</span>
                 </span>
               }
             } @else {
-              @let routerLink =
-                column.getCellRouterLink
-                  ? column.getCellRouterLink(item)
-                  : undefined;
-
+              @let routerLink = column.getCellRouterLink?.(item);
               @if (routerLink) {
-                <a
-                  [routerLink]="routerLink"
-                  class="hover:underline focus:underline"
-                  >{{ cellText }}</a
-                >
+                <a [routerLink]="routerLink" class="hover:underline focus:underline">
+                  {{ cellText }}
+                </a>
               } @else {
                 {{ cellText }}
               }
@@ -334,18 +318,10 @@
             <div class="flex items-center">
               <i class="pi pi-filter me-2 inline text-xl"></i>
 
-              <span
-                i18n
-                class="font-bold"
-              >
-                No results found
-              </span>
+              <span i18n class="font-bold">No results found</span>
             </div>
 
-            <p
-              i18n
-              class="my-4"
-            >
+            <p i18n class="my-4">
               There are no records that match the selected filters, clear some
               or all filters to continue.
             </p>
@@ -366,20 +342,10 @@
               <div class="flex items-center">
                 <i class="pi pi-exclamation-circle me-2 inline text-xl"></i>
 
-                <span
-                  i18n
-                  class="font-bold"
-                >
-                  No results
-                </span>
+                <span i18n class="font-bold">No results</span>
               </div>
 
-              <p
-                i18n
-                class="mt-4"
-              >
-                There are no records to display.
-              </p>
+              <p i18n class="mt-4">There are no records to display.</p>
             }
           }
         </div>
