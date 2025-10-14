@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test file requires any types for mocking */
 import { TestBed } from '@angular/core/testing';
 
 import { QueryTableColumnVisibilityService } from '~/components/query-table/services/query-table-column-visibility.service';

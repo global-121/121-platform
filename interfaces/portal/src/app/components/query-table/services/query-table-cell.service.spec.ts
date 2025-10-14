@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/restrict-template-expressions -- Test file requires any types for mocking */
 import { LOCALE_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
