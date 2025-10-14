@@ -5,7 +5,6 @@ import { queryOptions } from '@tanstack/angular-query-experimental';
 import { unique } from 'radashi';
 
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
-import { TransactionEventsReturnDto } from '@121-service/src/payments/transactions/transaction-events/dto/transaction-events-return.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
@@ -24,6 +23,7 @@ import {
   isGenericAttribute,
 } from '~/domains/project/project-attribute.helpers';
 import { Role } from '~/domains/role/role.model';
+import { TransactionEventsResponse } from '~/domains/transaction/transaction.model';
 import { AuthService } from '~/services/auth.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Dto } from '~/utils/dto-type';
@@ -414,7 +414,7 @@ export class ProjectApiService extends DomainApiService {
     projectId: Signal<number | string>;
     transactionId: Signal<number | string>;
   }) {
-    return this.generateQueryOptions<Dto<TransactionEventsReturnDto>>({
+    return this.generateQueryOptions<TransactionEventsResponse>({
       path: [BASE_ENDPOINT, projectId, 'transactions', transactionId, 'events'],
     });
   }

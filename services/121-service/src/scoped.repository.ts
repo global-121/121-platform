@@ -57,6 +57,8 @@ export const indirectRelationConfig: EntityRelations = {
   OnafriqTransactionEntity: ['transaction', 'registration'],
   RegistrationEventAttributeEntity: ['event', 'registration'],
   CbeTransferEntity: ['transaction', 'registration'],
+  TransactionEventEntity: ['transaction', 'registration'],
+  LastTransactionEventEntity: ['transaction', 'registration'],
 };
 
 export function hasUserScope(
