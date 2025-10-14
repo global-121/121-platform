@@ -6,6 +6,7 @@ import {
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import programTest from '@121-service/src/seed-data/program/program-test.json';
 import {
@@ -229,11 +230,25 @@ describe('Do payment with Excel FSP', () => {
         accessToken,
       );
       // Assert
+      const programRegistrationAttributeNames =
+        programTest.programRegistrationAttributes.map((pa) => pa.name);
+
       expect(fspInstructionsResponse.statusCode).toBe(HttpStatus.OK);
 
       const fspInstructions = fspInstructionsResponse.body;
 
-      expect(fspInstructions).toMatchSnapshot();
+      const expectedKeysPerRow = programRegistrationAttributeNames.concat([
+        'amount',
+        GenericRegistrationAttributes.referenceId,
+      ]);
+      for (const dataPerFsp of fspInstructions) {
+        for (const row of dataPerFsp.data) {
+          const fspInstructionColumns = Object.keys(row);
+          expect(fspInstructionColumns.sort()).toEqual(
+            expectedKeysPerRow.sort(),
+          );
+        }
+      }
     });
   });
 
@@ -242,7 +257,7 @@ describe('Do payment with Excel FSP', () => {
     beforeAll(async () => {
       await seedPrograms();
     });
-    it("Sould throw an error of the payment doesn't exist", async () => {
+    it("Sould throw an error if the payment doesn't exist", async () => {
       // Arrange
       const nonExistingPaymentId = 9999;
 

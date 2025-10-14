@@ -14,7 +14,7 @@ exports[`Do payment with Excel FSP Error cases Should throw an error if program 
 }
 `;
 
-exports[`Do payment with Excel FSP Error cases Sould throw an error of the payment doesn't exist 1`] = `
+exports[`Do payment with Excel FSP Error cases Sould throw an error if the payment doesn't exist 1`] = `
 {
   "message": "Payment with ID 9999 not found in program 2",
   "statusCode": 404,

@@ -4,6 +4,7 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { ExcelStatusColumn } from '@121-service/src/payments/reconciliation/excel/excel-status-column.const';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
@@ -21,10 +22,10 @@ export class ExcelReconciliationValidationService {
 
   public async validateOnlyOneMatchColumnIsUsedAndReturnIt({
     fspConfigs,
-    importColumnsNames,
+    importColumnNames,
   }: {
     fspConfigs: ProgramFspConfigurationEntity[];
-    importColumnsNames: string[];
+    importColumnNames: string[];
   }): Promise<string> {
     const matchColumnsFromProgramFsps: string[] = [];
     for (const fspConfig of fspConfigs) {
@@ -38,7 +39,7 @@ export class ExcelReconciliationValidationService {
     const uniqueMatchColumns = new Set(matchColumnsFromProgramFsps);
 
     // validate that only one match column is used in the import file
-    const matchColumnsInImportFile = importColumnsNames.filter((column) =>
+    const matchColumnsInImportFile = importColumnNames.filter((column) =>
       matchColumnsFromProgramFsps.includes(column),
     );
     if (matchColumnsInImportFile.length > 1) {
@@ -73,9 +74,9 @@ export class ExcelReconciliationValidationService {
     }
   }
 
-  public async validateProgramHasExcelFspConfigs(
+  public validateProgramHasExcelFspConfigs(
     fspConfigs: ProgramFspConfigurationEntity[],
-  ): Promise<ProgramFspConfigurationEntity[]> {
+  ): ProgramFspConfigurationEntity[] {
     const fspConfigsExcel = fspConfigs.filter(
       (config) => config.fspName === Fsps.excel,
     );
@@ -88,7 +89,7 @@ export class ExcelReconciliationValidationService {
     return fspConfigsExcel;
   }
 
-  public validateExactlyOneFspConfigForImport(
+  public validateExactlyOneFspConfigRelatedToImport(
     uniqueFspConfigIds: number[],
   ): void {
     if (uniqueFspConfigIds.length > 1) {
@@ -137,24 +138,24 @@ export class ExcelReconciliationValidationService {
 
   public validateStatusColumn(csvContents: CsvContents): void {
     // Validate status exists
-    const columnNanme = 'status';
-    if (!csvContents[0][columnNanme]) {
+    const columnName = ExcelStatusColumn;
+    if (!csvContents[0][columnName]) {
       throw new HttpException(
-        `The status column is missing. Please make sure the column is named '${columnNanme}'`,
+        `The status column is missing. Please make sure the column is named '${columnName}'`,
         HttpStatus.BAD_REQUEST,
       );
     }
 
     // Validate status values
-    const statusValues = csvContents.map((row) => row[columnNanme]);
-    const allowedStatus = [
+    const statusValues = csvContents.map((row) => row[columnName]);
+    const allowedStatusValues = [
       String(TransactionStatusEnum.success),
       String(TransactionStatusEnum.error),
     ];
     for (const status of statusValues) {
-      if (!allowedStatus.includes(String(status))) {
+      if (!allowedStatusValues.includes(String(status))) {
         throw new HttpException(
-          `Invalid status value '${status}'. Allowed values are: ${allowedStatus.join(', ')}`,
+          `Invalid status value '${status}'. Allowed values are: ${allowedStatusValues.join(', ')}`,
           HttpStatus.BAD_REQUEST,
         );
       }

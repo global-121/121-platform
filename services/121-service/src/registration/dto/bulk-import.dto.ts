@@ -62,16 +62,12 @@ class BulkImportResult extends BulkImportDto {
 }
 
 export class ImportResult {
-  public aggregateImportResult: AggregateImportResultDto;
+  public aggregateImportResult: {
+    countImported: number;
+  };
   public importResult?: BulkImportResult[];
 }
 
-// TODO: move this to excel-reconciliation folder as is only used there
-export class AggregateImportResultDto {
-  public countNotFound: number;
-  public countPaymentSuccess: number;
-  public countPaymentFailed: number;
-}
 export class ImportRegistrationsDto extends BulkImportDto {
   @ApiProperty({
     example: fspArray.join(' | '),

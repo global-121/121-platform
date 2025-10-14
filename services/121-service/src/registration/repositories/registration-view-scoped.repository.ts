@@ -76,7 +76,7 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
       // Always false condition to return no results
       return this.createQueryBuilder('registration').andWhere('1=0');
     }
-    return this.queryBuilderFilterDeleted().andWhere(
+    return this.queryBuilderFilterOutDeleted().andWhere(
       'registration.referenceId IN (:...referenceIds)',
       {
         referenceIds,
@@ -93,7 +93,7 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
     programRegistrationAttributeId: number;
     registrationDataValues: string[];
   }): ScopedQueryBuilder<RegistrationViewEntity> {
-    return this.queryBuilderFilterDeleted()
+    return this.queryBuilderFilterOutDeleted()
       .andWhere('registration.programId = :programId', { programId })
       .leftJoin('registration.data', 'registrationDataFilter')
       .andWhere('registrationDataFilter.id = :id', {
@@ -104,7 +104,7 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
       });
   }
 
-  private queryBuilderFilterDeleted(): ScopedQueryBuilder<RegistrationViewEntity> {
+  private queryBuilderFilterOutDeleted(): ScopedQueryBuilder<RegistrationViewEntity> {
     return this.createQueryBuilder('registration').andWhere(
       'registration.status IS DISTINCT FROM :deletedStatus',
       {
@@ -285,24 +285,15 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
     programRegistrationAttributeId: number;
     dataValues: (string | number | boolean | undefined)[];
   }): Promise<number[]> {
-    const result = await this.createQueryBuilder('registration')
-      .select('transaction.id', 'transactionId')
-      .innerJoin('registration.transactions', 'transaction')
-      .leftJoin('registration.data', 'registrationData')
-      .andWhere('transaction."paymentId" = :paymentId', { paymentId })
-      .andWhere(
-        '"registrationData"."programRegistrationAttributeId" = :attributeId',
-        {
-          attributeId: programRegistrationAttributeId,
-        },
-      )
-      .andWhere('"registrationData".value = ANY(:dataValues)', {
-        // Use = ANY(...) to prevent query being too long
+    const result = await this.getQueryBuilderFilterByPaymentAndRegistrationData(
+      {
+        paymentId,
+        programRegistrationAttributeId,
         dataValues,
-      })
-      .getRawMany();
-    const transactionIds = result.map((r) => r.transactionId);
-    return transactionIds;
+        select: ['transaction.id as "transactionId"'],
+      },
+    );
+    return result.map((r: any) => r.transactionId);
   }
 
   public async getReferenceIdsAndStatusesByPaymentForRegistrationData({
@@ -316,12 +307,31 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
   }): Promise<
     { referenceId: string; status: TransactionStatusEnum; value: string }[]
   > {
-    return await this.createQueryBuilder('registration')
-      .select([
+    return await this.getQueryBuilderFilterByPaymentAndRegistrationData({
+      paymentId,
+      programRegistrationAttributeId,
+      dataValues,
+      select: [
         'registration."referenceId" as "referenceId"',
         'transaction.status as "status"',
         '"registrationData".value as "value"',
-      ])
+      ],
+    });
+  }
+
+  private async getQueryBuilderFilterByPaymentAndRegistrationData({
+    paymentId,
+    programRegistrationAttributeId,
+    dataValues,
+    select,
+  }: {
+    paymentId: number;
+    programRegistrationAttributeId: number;
+    dataValues: (string | number | boolean | undefined)[];
+    select: string[];
+  }): Promise<any[]> {
+    return await this.createQueryBuilder('registration')
+      .select(select)
       .innerJoin('registration.transactions', 'transaction')
       .leftJoin('registration.data', 'registrationData')
       .andWhere('transaction."paymentId" = :paymentId', { paymentId })

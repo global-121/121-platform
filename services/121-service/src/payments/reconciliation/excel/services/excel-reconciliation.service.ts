@@ -7,6 +7,7 @@ import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
 import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconciliation-feedback.dto';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
+import { ExcelStatusColumn } from '@121-service/src/payments/reconciliation/excel/excel-status-column.const';
 import { ExcelReconciliationFeedbackService } from '@121-service/src/payments/reconciliation/excel/services/excel-reconciliation-feedback.service';
 import { ExcelReconciliationValidationService } from '@121-service/src/payments/reconciliation/excel/services/excel-reconciliation-validation.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
@@ -29,8 +30,6 @@ import {
 export class ExcelReconciliationService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-
-  private statusColumnName = 'status';
 
   public constructor(
     private readonly excelService: ExcelService,
@@ -79,7 +78,7 @@ export class ExcelReconciliationService {
       );
       templates.push({
         name: fspConfig.name,
-        template: [matchColumn, 'status'],
+        template: [matchColumn, ExcelStatusColumn],
       });
     }
 
@@ -105,15 +104,6 @@ export class ExcelReconciliationService {
     ////////////////////////////////////////////////////////////////////////////
     // Preparing
     ////////////////////////////////////////////////////////////////////////////
-    const program = await this.programRepository.findOneOrFail({
-      where: {
-        id: Equal(programId),
-      },
-      relations: {
-        programFspConfigurations: true,
-      },
-    });
-
     if (
       await this.paymentsProgressHelperService.isPaymentInProgress(programId)
     ) {
@@ -123,8 +113,17 @@ export class ExcelReconciliationService {
       );
     }
 
+    const program = await this.programRepository.findOneOrFail({
+      where: {
+        id: Equal(programId),
+      },
+      relations: {
+        programFspConfigurations: true,
+      },
+    });
+
     const fspConfigsExcel =
-      await this.excelReconciliationValidationService.validateProgramHasExcelFspConfigs(
+      this.excelReconciliationValidationService.validateProgramHasExcelFspConfigs(
         program.programFspConfigurations,
       );
 
@@ -140,7 +139,7 @@ export class ExcelReconciliationService {
       await this.excelReconciliationValidationService.validateOnlyOneMatchColumnIsUsedAndReturnIt(
         {
           fspConfigs: fspConfigsExcel,
-          importColumnsNames: Object.keys(csvContents[0]),
+          importColumnNames: Object.keys(csvContents[0]),
         },
       );
 
@@ -161,7 +160,7 @@ export class ExcelReconciliationService {
         },
       );
 
-    this.excelReconciliationValidationService.validateExactlyOneFspConfigForImport(
+    this.excelReconciliationValidationService.validateExactlyOneFspConfigRelatedToImport(
       uniqueFspConfigIds,
     );
     const fspConfigIdForImport = uniqueFspConfigIds[0]; // There is exactly one, so take the first
@@ -221,7 +220,7 @@ export class ExcelReconciliationService {
       );
 
     const matchColumnValuesForCurrentStatus = csvContents
-      .filter((r) => r[this.statusColumnName] === transactionStatus)
+      .filter((r) => r[ExcelStatusColumn] === transactionStatus)
       .map((r) => r[matchColumn]); // So a list of phone numbers or nationalIds
     const transactionIdsToUpdate: number[] =
       await this.registrationViewScopedRepository.getTransactionIdsByPaymentAndRegistrationData(

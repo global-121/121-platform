@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
-import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
@@ -24,31 +23,6 @@ export class TransactionsService {
     private readonly transactionEventsService: TransactionEventsService,
     private readonly lastTransactionEventRepository: LastTransactionEventRepository,
   ) {}
-
-  // ##TODO: refactor out this method once we refactor excel fsp
-  public async getLastTransactions({
-    programId,
-    paymentId,
-    referenceId,
-    status,
-    programFspConfigId,
-  }: {
-    programId: number;
-    paymentId?: number;
-    referenceId?: string;
-    status?: TransactionStatusEnum;
-    programFspConfigId?: number;
-  }): Promise<TransactionReturnDto[]> {
-    return this.transactionViewScopedRepository
-      .getLastTransactionsQuery({
-        programId,
-        paymentId,
-        referenceId,
-        status,
-        programFspConfigId,
-      })
-      .getRawMany();
-  }
 
   public async createTransactionsAndEvents({
     transactionCreationDetails,

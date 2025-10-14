@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { ImportReconciliationResponseDto } from '@121-service/src/payments/dto/import-reconciliation-response.dto';
 import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconciliation-feedback.dto';
+import { ImportReconciliationResponseDto } from '@121-service/src/payments/reconciliation/excel/dtos/import-reconciliation-response.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
@@ -55,14 +55,12 @@ export class ExcelReconciliationFeedbackService {
       });
     }
 
-    const notFoundMatchColumnValues = this.getMatchColumnsValuesThatAreNotFound(
-      {
-        matchColumnsValuesInImportFile: csvContents.map((r) =>
-          String(r[matchColumn]),
-        ),
-        matchColumnsValuesInDatabase: resultObjects.map((r) => r.value),
-      },
-    );
+    const notFoundMatchColumnValues = this.getNotFoundMatchColumnValues({
+      matchColumnsValuesInImportFile: csvContents.map((r) =>
+        String(r[matchColumn]),
+      ),
+      matchColumnsValuesInDatabase: resultObjects.map((r) => r.value),
+    });
 
     for (const notFoundValue of notFoundMatchColumnValues) {
       feedback.push({
@@ -79,7 +77,7 @@ export class ExcelReconciliationFeedbackService {
     };
   }
 
-  private getMatchColumnsValuesThatAreNotFound({
+  private getNotFoundMatchColumnValues({
     matchColumnsValuesInImportFile,
     matchColumnsValuesInDatabase,
   }: {

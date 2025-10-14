@@ -19,7 +19,7 @@ const mockProgramRegistrationAttributeRepository = {
   getIdByNameAndProgramId: jest.fn(),
 };
 const mockExcelReconciliationValidationService = {
-  getMatchColumnsValuesThatAreNotFound: jest.fn(),
+  getNotFoundMatchColumnValues: jest.fn(),
 };
 
 describe('ExcelReconciliationFeedbackService', () => {
@@ -69,7 +69,7 @@ describe('ExcelReconciliationFeedbackService', () => {
           },
         ],
       );
-      mockExcelReconciliationValidationService.getMatchColumnsValuesThatAreNotFound.mockReturnValue(
+      mockExcelReconciliationValidationService.getNotFoundMatchColumnValues.mockReturnValue(
         [],
       );
 
@@ -117,7 +117,7 @@ describe('ExcelReconciliationFeedbackService', () => {
           },
         ],
       );
-      mockExcelReconciliationValidationService.getMatchColumnsValuesThatAreNotFound.mockReturnValue(
+      mockExcelReconciliationValidationService.getNotFoundMatchColumnValues.mockReturnValue(
         [matchColumnB],
       );
 
