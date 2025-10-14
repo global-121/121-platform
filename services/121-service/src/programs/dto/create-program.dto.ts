@@ -94,18 +94,19 @@ const exampleAttributes: ProgramRegistrationAttributeDto[] = [
 
 export class CreateProgramDto {
   @ApiProperty({ example: false })
+  @IsOptional()
   @IsBoolean()
-  public readonly validation: boolean;
+  public readonly validation?: boolean;
 
   @ApiProperty({ example: 'Nederland' })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  public readonly location: string;
+  public readonly location?: string;
 
   @ApiProperty({ example: 'NLRC' })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  public readonly ngo: string;
+  public readonly ngo?: string;
 
   @ApiProperty({ example: { en: 'title' } })
   @IsNotEmpty()
@@ -116,14 +117,14 @@ export class CreateProgramDto {
   public readonly description?: LocalizedString;
 
   @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
-  @IsNotEmpty()
+  @IsOptional()
   @IsDateString()
-  public readonly startDate: Date;
+  public readonly startDate?: Date;
 
   @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
-  @IsNotEmpty()
+  @IsOptional()
   @IsDateString()
-  public readonly endDate: Date;
+  public readonly endDate?: Date;
 
   @ApiProperty({ example: 'MWK' })
   @IsNotEmpty()
@@ -131,16 +132,19 @@ export class CreateProgramDto {
   public readonly currency: WrapperType<CurrencyCode>;
 
   @ApiProperty({ example: 'week', enum: ['week', 'month'] })
+  @IsOptional()
   @IsString()
-  public readonly distributionFrequency: string;
+  public readonly distributionFrequency?: string;
 
   @ApiProperty({ example: 10 })
+  @IsOptional()
   @IsNumber()
-  public readonly distributionDuration: number;
+  public readonly distributionDuration?: number;
 
   @ApiProperty({ example: 500 })
+  @IsOptional()
   @IsNumber()
-  public readonly fixedTransferValue: number;
+  public readonly fixedTransferValue?: number;
 
   @ApiProperty({ example: '0 + 1 * nrOfHouseHoldMembers' })
   @IsOptional()
@@ -148,49 +152,57 @@ export class CreateProgramDto {
   public readonly paymentAmountMultiplierFormula?: string;
 
   @ApiProperty({ example: 250 })
+  @IsOptional()
   @IsNumber()
-  public readonly targetNrRegistrations: number;
+  public readonly targetNrRegistrations?: number;
 
   @ApiProperty({ example: true })
+  @IsOptional()
   @IsBoolean()
-  public readonly tryWhatsAppFirst: boolean;
+  public readonly tryWhatsAppFirst?: boolean;
 
   @ApiProperty({
     example: exampleAttributes,
   })
+  @IsOptional()
   @IsArray()
   @ValidateNested()
   @IsDefined()
   @Type(() => ProgramRegistrationAttributeDto)
-  public readonly programRegistrationAttributes: ProgramRegistrationAttributeDto[];
+  public readonly programRegistrationAttributes?: ProgramRegistrationAttributeDto[];
 
   @ApiProperty({ example: { en: 'about program' } })
-  @IsNotEmpty()
-  public readonly aboutProgram: LocalizedString;
+  @IsOptional()
+  public readonly aboutProgram?: LocalizedString;
 
   @ApiProperty({
     example: ['nameFirst', 'nameLast'],
     description:
       'Should be array of name-related program-registration-attributes.',
   })
+  @IsOptional()
   @IsArray()
-  public readonly fullnameNamingConvention: string[];
+  public readonly fullnameNamingConvention?: string[];
 
   @ApiProperty({ example: ['en', 'nl'] })
+  @IsOptional()
   @IsArray()
-  public readonly languages: WrapperType<LanguageEnum[]>;
+  public readonly languages?: WrapperType<LanguageEnum[]>;
 
   @ApiProperty({ example: false })
+  @IsOptional()
   @IsBoolean()
-  public readonly enableMaxPayments: boolean;
+  public readonly enableMaxPayments?: boolean;
 
   @ApiProperty({ example: false })
+  @IsOptional()
   @IsBoolean()
-  public readonly enableScope: boolean;
+  public readonly enableScope?: boolean;
 
   @ApiProperty({ example: false })
+  @IsOptional()
   @IsBoolean()
-  public readonly allowEmptyPhoneNumber: boolean;
+  public readonly allowEmptyPhoneNumber?: boolean;
 
   @ApiProperty({ example: 'example.org' })
   @IsOptional()

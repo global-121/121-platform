@@ -1,16 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Create program should not be able to post a program with 2 of the same names 1`] = `
-{
-  "errors": "The following names: 'fullName' are used more than once program registration attributes",
-}
-`;
-
-exports[`Create program should not be able to post a program with missing names of full name naming convention 1`] = `
-{
-  "errors": "Element 'middle_name' of fullnameNamingConvention is not found in program registration attributes",
-}
-`;
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Create program should post a program: Create program response for program: CBE Program 1`] = `
 {

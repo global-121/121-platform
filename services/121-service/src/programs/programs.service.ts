@@ -26,7 +26,9 @@ import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/en
 import { ProgramRegistrationAttributeMapper } from '@121-service/src/programs/mappers/program-registration-attribute.mapper';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { nameConstraintQuestionsArray } from '@121-service/src/shared/const';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
@@ -120,25 +122,13 @@ export class ProgramService {
   }
 
   private async validateProgram(programData: CreateProgramDto): Promise<void> {
-    if (
-      !programData.programRegistrationAttributes ||
-      !programData.fullnameNamingConvention
-    ) {
-      const errors =
-        'Required properties missing: `programRegistrationAttributes` or `fullnameNamingConvention`';
-      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    if (!programData.programRegistrationAttributes) {
+      return;
     }
-
     const programAttributeNames = programData.programRegistrationAttributes.map(
-      (ca) => ca.name,
+      (attr) => attr.name,
     );
 
-    for (const name of Object.values(programData.fullnameNamingConvention)) {
-      if (!programAttributeNames.includes(name)) {
-        const errors = `Element '${name}' of fullnameNamingConvention is not found in program registration attributes`;
-        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-      }
-    }
     // Check if programAttributeNames has duplicate values
     const duplicateNames = programAttributeNames.filter(
       (item, index) => programAttributeNames.indexOf(item) !== index,
@@ -146,7 +136,7 @@ export class ProgramService {
     if (duplicateNames.length > 0) {
       const errors = `The following names: '${duplicateNames.join(
         ', ',
-      )}' are used more than once program registration attributes`;
+      )}' are used more than once in program registration attributes`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
   }
@@ -158,28 +148,39 @@ export class ProgramService {
     let newProgram;
 
     await this.validateProgram(programData);
+
+    const fullnameNamingConvention =
+      this.applyFullnameNamingConventionFallbackIfNecessary({
+        namingConventionData: programData.fullnameNamingConvention,
+      });
+    const programRegistrationAttributes =
+      this.applyProgramRegistrationAttributesFallbackIfNecessary({
+        attributesData: programData.programRegistrationAttributes,
+        namingConventionData: fullnameNamingConvention,
+      });
+
     const program = new ProgramEntity();
-    program.validation = programData.validation;
-    program.location = programData.location;
-    program.ngo = programData.ngo;
+    program.validation = !!programData.validation;
+    program.location = programData.location ?? null;
+    program.ngo = programData.ngo ?? null;
     program.titlePortal = programData.titlePortal;
     program.description = programData.description ?? null;
-    program.startDate = programData.startDate;
-    program.endDate = programData.endDate;
+    program.startDate = programData.startDate ?? null;
+    program.endDate = programData.endDate ?? null;
     program.currency = programData.currency;
-    program.distributionFrequency = programData.distributionFrequency;
-    program.distributionDuration = programData.distributionDuration;
-    program.fixedTransferValue = programData.fixedTransferValue;
+    program.distributionFrequency = programData.distributionFrequency ?? null;
+    program.distributionDuration = programData.distributionDuration ?? null;
+    program.fixedTransferValue = programData.fixedTransferValue ?? null;
     program.paymentAmountMultiplierFormula =
       programData.paymentAmountMultiplierFormula ?? null;
-    program.targetNrRegistrations = programData.targetNrRegistrations;
-    program.tryWhatsAppFirst = programData.tryWhatsAppFirst;
-    program.aboutProgram = programData.aboutProgram;
-    program.fullnameNamingConvention = programData.fullnameNamingConvention;
-    program.languages = programData.languages;
-    program.enableMaxPayments = programData.enableMaxPayments;
-    program.enableScope = programData.enableScope;
-    program.allowEmptyPhoneNumber = programData.allowEmptyPhoneNumber;
+    program.targetNrRegistrations = programData.targetNrRegistrations ?? null;
+    program.tryWhatsAppFirst = !!programData.tryWhatsAppFirst;
+    program.aboutProgram = programData.aboutProgram ?? null;
+    program.fullnameNamingConvention = fullnameNamingConvention;
+    program.languages = programData.languages ?? [LanguageEnum.en];
+    program.enableMaxPayments = !!programData.enableMaxPayments;
+    program.enableScope = !!programData.enableScope;
+    program.allowEmptyPhoneNumber = !!programData.allowEmptyPhoneNumber;
     program.monitoringDashboardUrl = programData.monitoringDashboardUrl ?? null;
     program.budget = programData.budget ?? null;
 
@@ -197,15 +198,16 @@ export class ProgramService {
       savedProgram = await programRepository.save(program);
 
       savedProgram.programRegistrationAttributes = [];
-      for (const programRegistrationAttribute of programData.programRegistrationAttributes) {
-        const attributeReturn =
+      for (const programRegistrationAttribute of programRegistrationAttributes) {
+        const createdAttribute =
           await this.createProgramRegistrationAttributeEntity({
+            // we save the program twice because we need a program id to create program registrations attributes
             programId: savedProgram.id,
             createProgramRegistrationAttributeDto: programRegistrationAttribute,
             repository: programRegistrationAttributeRepository,
           });
-        if (attributeReturn) {
-          savedProgram.programRegistrationAttributes.push(attributeReturn);
+        if (createdAttribute) {
+          savedProgram.programRegistrationAttributes.push(createdAttribute);
         }
       }
 
@@ -543,5 +545,65 @@ export class ProgramService {
       }
     }
     return wallets;
+  }
+
+  private applyFullnameNamingConventionFallbackIfNecessary({
+    namingConventionData,
+  }: {
+    namingConventionData: string[] | undefined;
+  }): string[] {
+    if (!namingConventionData || namingConventionData.length === 0) {
+      return ['fullName'];
+    }
+
+    return namingConventionData;
+  }
+
+  private applyProgramRegistrationAttributesFallbackIfNecessary({
+    attributesData,
+    namingConventionData,
+  }: {
+    attributesData: ProgramRegistrationAttributeDto[] | undefined;
+    namingConventionData: string[];
+  }): ProgramRegistrationAttributeDto[] {
+    const programRegistrationAttributes = attributesData ?? [];
+
+    // make sure phoneNumber is in programRegistrationAttributes
+
+    if (
+      !programRegistrationAttributes.find((attr) => attr.name === 'phoneNumber')
+    ) {
+      programRegistrationAttributes.push({
+        name: 'phoneNumber',
+        type: RegistrationAttributeTypes.text,
+        label: { en: 'Phone number' },
+      });
+    }
+
+    // make sure all fullnameNamingConventions are in programRegistrationAttributes
+
+    const registrationAttributesNames = programRegistrationAttributes.map(
+      (attr) => attr.name,
+    );
+    const missingNamingConventions = namingConventionData.filter(
+      (attr) => !registrationAttributesNames.includes(attr),
+    );
+
+    if (missingNamingConventions.length > 0) {
+      for (const missingNamingConvention of missingNamingConventions) {
+        programRegistrationAttributes.push({
+          name: missingNamingConvention,
+          type: RegistrationAttributeTypes.text,
+          label: {
+            en:
+              missingNamingConvention === 'fullName'
+                ? 'Full name'
+                : missingNamingConvention,
+          },
+        });
+      }
+    }
+
+    return programRegistrationAttributes;
   }
 }
