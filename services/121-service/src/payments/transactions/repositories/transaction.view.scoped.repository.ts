@@ -171,6 +171,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
   }): ScopedQueryBuilder<TransactionEntity> {
     let transactionQuery = this.createQueryBuilder('transaction')
       .select([
+        'transaction.id AS "transactionId"',
         'transaction.paymentId AS "paymentId"',
         'p.created AS "paymentDate"',
         'transaction.id AS "id"',
@@ -183,6 +184,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
         'transaction.status AS "status"',
         'transaction.transferValue AS "amount"',
         'transaction.errorMessage AS "errorMessage"',
+        'transaction.programFspConfigurationLabel AS "programFspConfigurationLabel"',
         'transaction.programFspConfigurationName AS "programFspConfigurationName"',
       ])
       .leftJoin('transaction.registration', 'r')
