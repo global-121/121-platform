@@ -1,7 +1,11 @@
 import { computed, inject, model, signal } from '@angular/core';
+
 import { TableSelectAllChangeEvent } from 'primeng/table';
 
-import { QueryTableColumn, QueryTableSelectionEvent } from '../query-table.component';
+import {
+  QueryTableColumn,
+  QueryTableSelectionEvent,
+} from '~/components/query-table/query-table.component';
 import {
   PaginateQuery,
   PaginateQueryService,
@@ -16,14 +20,18 @@ export class QueryTableSelectionService<TData extends { id: PropertyKey }> {
   readonly selectAll = model<boolean>(false);
   readonly tableSelection = signal<QueryTableSelectionEvent<TData>>([]);
 
+  // Function to get server side total records from parent
+  private getServerSideTotalRecords: () => number | undefined = () => undefined;
+
   readonly selectedItemsCount = computed(() =>
     this.selectAll()
-      ? this.serverSideTotalRecords()
+      ? this.getServerSideTotalRecords()
       : this.selectedItems().length,
   );
 
-  // These need to be injected from the parent component
-  serverSideTotalRecords = signal<number | undefined>(undefined);
+  setServerSideTotalRecordsProvider(provider: () => number | undefined) {
+    this.getServerSideTotalRecords = provider;
+  }
 
   onSelectionChange(items: TData[]) {
     this.selectedItems.set(items);
@@ -67,7 +75,7 @@ export class QueryTableSelectionService<TData extends { id: PropertyKey }> {
     triggeredFromContextMenu?: boolean;
     contextMenuItem?: TData;
     serverSideFiltering: boolean;
-    tableFilteredValue: TData[] | null;
+    tableFilteredValue: null | TData[];
     items: TData[];
     totalRecords: number;
     visibleColumns: QueryTableColumn<TData>[];
