@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument, @typescript-eslint/unbound-method -- Test file requires any types for mocking */
 import { TestBed } from '@angular/core/testing';
 
 import { QueryTableSelectionService } from '~/components/query-table/services/query-table-selection.service';

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment -- Test file requires any types for mocking */
 import { TestBed } from '@angular/core/testing';
 
 import { QueryTableFilterService } from '~/components/query-table/services/query-table-filter.service';
@@ -55,9 +56,11 @@ describe('QueryTableFilterService', () => {
     });
 
     expect(clearTableSpy).toHaveBeenCalled();
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Mocking localStorage in tests
     expect(localStorage.removeItem).toHaveBeenCalledWith('test-key');
     expect(service.globalFilterVisible()).toBe(false);
     expect(resetSelectionSpy).toHaveBeenCalled();
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Mocking service methods in tests
     expect(trackingService.trackEvent).toHaveBeenCalled();
   });
 });
