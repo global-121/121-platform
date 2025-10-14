@@ -1,10 +1,10 @@
-import { computed, effect, model, signal } from '@angular/core';
+import { effect, model } from '@angular/core';
 
-import { QueryTableColumn } from '../query-table.component';
+import { QueryTableColumn } from '~/components/query-table/query-table.component';
 
 export class QueryTableColumnVisibilityService<TData> {
   readonly visibleColumns = model<QueryTableColumn<TData>[]>([]);
-  
+
   private getStoredColumns(stateKey: string): null | QueryTableColumn<TData>[] {
     const storedColumns = localStorage.getItem(stateKey);
     if (!storedColumns) return null;
@@ -21,15 +21,22 @@ export class QueryTableColumnVisibilityService<TData> {
       .filter((column) => column !== undefined);
   }
 
-  private getDefaultColumns(columns: QueryTableColumn<TData>[]): QueryTableColumn<TData>[] {
+  private getDefaultColumns(
+    columns: QueryTableColumn<TData>[],
+  ): QueryTableColumn<TData>[] {
     return columns.filter((column) => !column.defaultHidden);
   }
 
-  updateColumnVisibility(
-    columns: QueryTableColumn<TData>[],
-    selectedColumnsStateKey: string | undefined,
-    revertToDefault = false,
-  ): void {
+  updateColumnVisibility(options: {
+    columns: QueryTableColumn<TData>[];
+    selectedColumnsStateKey: string | undefined;
+    revertToDefault?: boolean;
+  }): void {
+    const {
+      columns,
+      selectedColumnsStateKey,
+      revertToDefault = false,
+    } = options;
     const stateKey = selectedColumnsStateKey;
     if (!stateKey) {
       this.visibleColumns.set(this.getDefaultColumns(columns));
@@ -50,17 +57,22 @@ export class QueryTableColumnVisibilityService<TData> {
     );
   }
 
-  createColumnVisibilityEffect(
-    columns: () => QueryTableColumn<TData>[],
-    enableColumnManagement: () => boolean,
-    selectedColumnsStateKey: () => string | undefined,
-  ) {
+  createColumnVisibilityEffect(options: {
+    columns: () => QueryTableColumn<TData>[];
+    enableColumnManagement: () => boolean;
+    selectedColumnsStateKey: () => string | undefined;
+  }) {
+    const { columns, enableColumnManagement, selectedColumnsStateKey } =
+      options;
     return effect(() => {
       if (
         (!enableColumnManagement() || this.visibleColumns().length === 0) &&
         columns().length > 0
       ) {
-        this.updateColumnVisibility(columns(), selectedColumnsStateKey());
+        this.updateColumnVisibility({
+          columns: columns(),
+          selectedColumnsStateKey: selectedColumnsStateKey(),
+        });
       }
     });
   }

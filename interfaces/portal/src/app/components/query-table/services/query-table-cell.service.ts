@@ -1,9 +1,13 @@
 import { DatePipe } from '@angular/common';
 import { inject, LOCALE_ID } from '@angular/core';
+
 import { get } from 'radashi';
 
 import { ChipData } from '~/components/colored-chip/colored-chip.helper';
-import { QueryTableColumn, QueryTableColumnType } from '../query-table.component';
+import {
+  QueryTableColumn,
+  QueryTableColumnType,
+} from '~/components/query-table/query-table.component';
 import { Locale } from '~/utils/locale';
 
 export class QueryTableCellService<TData> {
@@ -80,10 +84,10 @@ export class QueryTableCellService<TData> {
   }
 
   getCellChipData(
-    column: QueryTableColumn<TData> & {
+    column: {
       type: QueryTableColumnType.MULTISELECT;
       getCellChipData?: (item: TData) => ChipData;
-    },
+    } & QueryTableColumn<TData>,
     item: TData,
   ) {
     if (column.getCellChipData) {
