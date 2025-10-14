@@ -12,14 +12,18 @@ export class PrimeNGDatePicker {
     this.datePickerPanel = this.page.locator('.p-datepicker-panel');
   }
 
-  async selectDate({ targetDate }: { targetDate: Date }) {
-    // start by emptying the date picker input field
-    // to make it start with the current date
+  async clearDate() {
     await this.datePickerField.click();
     await expect(this.datePickerPanel).toBeVisible();
     await this.datePickerField.fill('');
     await this.page.keyboard.press('Escape');
     await expect(this.datePickerPanel).not.toBeVisible();
+  }
+
+  async selectDate({ targetDate }: { targetDate: Date }) {
+    // start by emptying the date picker input field
+    // to make it start with the current date
+    await this.clearDate();
 
     // open the date picker
     await this.datePickerField.click();
