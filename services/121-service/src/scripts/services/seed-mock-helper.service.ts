@@ -1,24 +1,24 @@
 import { HttpService } from '@nestjs/axios';
+import { Injectable } from '@nestjs/common';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import fs from 'fs';
-import path from 'path';
+import { DataSource } from 'typeorm';
 
-import { AppDataSource } from '@121-service/src/appdatasource';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { MockSeedFactoryService } from '@121-service/src/scripts/factories/mock-seed-factory.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
-const readSqlFile = (filepath: string): string => {
-  return fs
-    .readFileSync(path.join(__dirname, filepath))
-    .toString()
-    .replace(/\r?\n|\r/g, ' ');
-};
+@Injectable()
 export class SeedMockHelperService {
-  private httpService = new CustomHttpService(new HttpService());
-  private axiosCallsService = new AxiosCallsService();
-  private dataSource = AppDataSource;
+  private readonly mockDataFactory: MockSeedFactoryService;
+  private readonly httpService: CustomHttpService;
+  private readonly axiosCallsService: AxiosCallsService;
+
+  constructor(private readonly dataSource: DataSource) {
+    this.mockDataFactory = new MockSeedFactoryService(dataSource);
+    this.httpService = new CustomHttpService(new HttpService());
+    this.axiosCallsService = new AxiosCallsService();
+  }
 
   public async validateParametersForDataDuplication({
     powerNrRegistrationsString,
@@ -39,7 +39,7 @@ export class SeedMockHelperService {
 
     const min = 1;
     const maxPowerNrRegistrations = 17;
-    const maxPowerNrMessages = 6;
+    const maxPowerNrMessages = 6; // NOTE: There is a trade-off with maxPowerNrRegistrations here. If that is on 17, then this can be max. 1.
     const maxNrPayments = 30;
 
     if (
@@ -66,7 +66,7 @@ export class SeedMockHelperService {
       powerNrMessages > maxPowerNrMessages
     ) {
       throw new HttpException(
-        `squareNumberBulkMessage must be a number between ${min} and ${maxPowerNrMessages}`,
+        `mockPowerNumberMessages must be a number between ${min} and ${maxPowerNrMessages}`,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -75,271 +75,43 @@ export class SeedMockHelperService {
   }
 
   public async multiplyRegistrations(powerNr: number): Promise<void> {
-    const queryRegistrations = readSqlFile(
-      '../../../src/scripts/sql/mock-registrations.sql',
-    );
-    for (let i = 1; i <= powerNr; i++) {
-      console.log(
-        `**CREATING MOCK DATA registrations: duplication ${i} of ${powerNr} **`,
-      );
-      await this.dataSource.query(queryRegistrations);
-    }
-    const queryRegistrationData = readSqlFile(
-      '../../../src/scripts/sql/mock-registration-data.sql',
-    );
-    for (let i = 1; i <= powerNr; i++) {
-      console.log(
-        `**CREATING MOCK DATA registration data: duplication ${i} of ${powerNr} **`,
-      );
-      await this.dataSource.query(queryRegistrationData);
-    }
-
-    const queryPhoneUnique = readSqlFile(
-      '../../../src/scripts/sql/mock-make-phone-unique.sql',
-    );
-    console.log(`**CREATING MOCK DATA making phoneNr unique**`);
-    await this.dataSource.query(queryPhoneUnique);
+    await this.mockDataFactory.multiplyRegistrations(powerNr);
   }
 
-  public async multiplyRegistrationsAndRelatedPaymentData(
+  public async extendRelatedDataToAllRegistrations(
     powerNr: number,
+    programIds: number[],
   ): Promise<void> {
-    await this.multiplyRegistrations(powerNr);
-    const queryTransactionsOnePerRegistration = readSqlFile(
-      '../../../src/scripts/sql/mock-transactions-one-per-registration.sql',
+    await this.mockDataFactory.extendRelatedDataToAllRegistrations(
+      powerNr,
+      programIds,
     );
-    for (let i = 1; i <= powerNr; i++) {
-      console.log(
-        `**CREATING MOCK DATA match transactions to registrations: duplication ${i} of ${powerNr}**`,
-      );
-      await this.dataSource.query(queryTransactionsOnePerRegistration);
-    }
-
-    const queryMessagesOnePerRegistration = readSqlFile(
-      '../../../src/scripts/sql/mock-messages-one-per-registration.sql',
-    );
-    for (let i = 1; i <= powerNr; i++) {
-      console.log(
-        `**CREATING MOCK DATA match messages to registrations: duplication ${i} of ${powerNr}**`,
-      );
-      await this.dataSource.query(queryMessagesOnePerRegistration);
-    }
-
-    const queryAllVisaCustomers = readSqlFile(
-      '../../../src/scripts/sql/mock-visa-customers.sql',
-    );
-    console.log(`**CREATING MOCK DATA match Visa customers to registrations**`);
-    await this.dataSource.query(queryAllVisaCustomers);
-
-    const queryAllVisaParentWallets = readSqlFile(
-      '../../../src/scripts/sql/mock-visa-parent-wallets.sql',
-    );
-    console.log(
-      `**CREATING MOCK DATA match Visa parent wallets to registrations**`,
-    );
-    await this.dataSource.query(queryAllVisaParentWallets);
-
-    const queryAllVisaChildWallets = readSqlFile(
-      '../../../src/scripts/sql/mock-visa-child-wallets.sql',
-    );
-    console.log(
-      `**CREATING MOCK DATA match Visa child wallets to registrations**`,
-    );
-    await this.dataSource.query(queryAllVisaChildWallets);
-
-    const queryDuplicateVouchers = readSqlFile(
-      '../../../src/scripts/sql/mock-intersolve-voucher.sql',
-    );
-    for (let i = 1; i <= powerNr; i++) {
-      console.log(
-        `**CREATING MOCK DATA match AH vouchers registrations: duplication ${i} of ${powerNr}**`,
-      );
-      await this.dataSource.query(queryDuplicateVouchers);
-    }
-
-    const queryDuplicateImageCodeExportVoucher = readSqlFile(
-      '../../../src/scripts/sql/mock-imagecode-export-vouchers.sql',
-    );
-    for (let i = 1; i <= powerNr; i++) {
-      console.log(
-        `**CREATING MOCK DATA match imagecode export vouchers to registrations: duplication ${i} of ${powerNr}**`,
-      );
-      await this.dataSource.query(queryDuplicateImageCodeExportVoucher);
-    }
-
-    console.log(`**Updating voucher attributes**`);
-    const queryUpdateVoucherAttributes = readSqlFile(
-      '../../../src/scripts/sql/mock-intersolve-voucher-attributes.sql',
-    );
-    await this.dataSource.query(queryUpdateVoucherAttributes);
-    console.log(`**Done updating voucher attributes**`);
   }
 
   public async multiplyTransactions(
-    nr: number,
+    nrPayments: number,
     programIds: number[],
   ): Promise<void> {
-    for (const programId of programIds) {
-      await this.multiplyTransactionsPerProgram(nr, programId);
-    }
-
-    console.log(`**Updating payment count**`);
-    const queryUpdatePaymentCount = readSqlFile(
-      '../../../src/scripts/sql/mock-update-payment-count.sql',
+    await this.mockDataFactory.extendPaymentsAndRelatedData(
+      nrPayments,
+      programIds,
     );
-    await this.dataSource.query(queryUpdatePaymentCount);
-
-    console.log(`**Updating latest transactions. This can take a minute..** `);
-    await this.dataSource.query(
-      `truncate table "121-service"."latest_transaction"`,
-    );
-    const queryUpdateLatestTransaction = readSqlFile(
-      '../../../src/scripts/sql/mock-latest-transactions.sql',
-    );
-    await this.dataSource.query(queryUpdateLatestTransaction);
-    console.log(`**Done updating latest transactions**`);
-
-    const queryUnusedVouchers = readSqlFile(
-      '../../../src/scripts/sql/mock-unused-vouchers.sql',
-    );
-    console.log(`**CREATING MOCK DATA unused vouchers**`);
-    await this.dataSource.query(queryUnusedVouchers);
-  }
-
-  public async multiplyTransactionsPerProgram(
-    powerNr: number,
-    programId: number,
-  ): Promise<void> {
-    // Since there already is 1 transaction
-    const nr = powerNr - 1;
-    const getMaxPaymentIdQuery = readSqlFile(
-      '../../../src/scripts/sql/mock-get-max-payment-id.sql',
-    );
-
-    const createPaymentQuery = readSqlFile(
-      '../../../src/scripts/sql/mock-create-payment.sql',
-    );
-    const queryTransactions = readSqlFile(
-      '../../../src/scripts/sql/mock-payment-transactions.sql',
-    );
-    const queryVoucherPerPayment = readSqlFile(
-      '../../../src/scripts/sql/mock-intersolve-voucher-per-payment.sql',
-    );
-    const queryImageCodeExportVoucherPerPayment = readSqlFile(
-      '../../../src/scripts/sql/mock-imagecode-export-vouchers-per-payment.sql',
-    );
-
-    for (let i = 1; i <= nr; i++) {
-      const maxPaymentId = await this.dataSource.query(getMaxPaymentIdQuery);
-      const newPaymentId = maxPaymentId[0].id + 1;
-
-      await this.dataSource.query(createPaymentQuery, [
-        newPaymentId,
-        programId,
-      ]);
-
-      console.log(
-        `**CREATING MOCK DATA programId ${programId} transactions payment ${i + 1} of ${
-          nr + 1
-        } payments**`,
-      );
-      await this.dataSource.query(queryTransactions, [newPaymentId, programId]);
-      console.log(
-        `**CREATING MOCK DATA programId ${programId} vouchers payment ${i + 1} of ${
-          nr + 1
-        } payments**`,
-      );
-      await this.dataSource.query(queryVoucherPerPayment, [
-        newPaymentId,
-        programId,
-      ]);
-      console.log(
-        `**CREATING MOCK DATA programId ${programId} imagecode payment ${i + 1} of ${
-          nr + 1
-        } payments**`,
-      );
-      await this.dataSource.query(queryImageCodeExportVoucherPerPayment);
-    }
   }
 
   public async multiplyMessages(powerNr: number): Promise<void> {
-    const queryNrMessageBulk = readSqlFile(
-      '../../../src/scripts/sql/mock-messages.sql',
-    );
-    for (let i = 1; i <= powerNr; i++) {
-      console.log(
-        `**CREATING MOCK DATA messages: duplication ${i} of ${powerNr}**`,
-      );
-      await this.dataSource.query(queryNrMessageBulk);
-    }
+    await this.mockDataFactory.multiplyMessages(powerNr);
+  }
 
-    console.log(`**Updating latest messages. This can take a minute..** `);
-    await this.dataSource.query(
-      `truncate table "121-service"."latest_message"`,
-    );
-    const queryUpdateLatestMessage = readSqlFile(
-      '../../../src/scripts/sql/mock-latest-message.sql',
-    );
-    await this.dataSource.query(queryUpdateLatestMessage);
-    console.log(`**Done updating latest message**`);
+  public updateDerivedData(): Promise<void> {
+    return this.mockDataFactory.updateDerivedData();
   }
 
   public async updateSequenceNumbers(): Promise<void> {
-    console.log('**Updating sequence numbers.**');
-    const tables = await this.dataSource.query(`
-      SELECT c.table_name
-      FROM information_schema.columns c
-      JOIN information_schema.tables t
-      ON t.table_name = c.table_name
-      AND t.table_schema = c.table_schema
-      WHERE c.table_schema = '121-service'
-      AND c.column_name = 'id'
-      AND t.table_type = 'BASE TABLE'
-    `);
-    for (const table of tables) {
-      const tableName = table.table_name;
-      if (!['custom_migration', 'typeorm_metadata'].includes(tableName)) {
-        let sequenceName = `${tableName}_id_seq`;
-        // this sequences is created with an abbreviated name automatically, so this exception is needed here
-        if (tableName === 'program_fsp_configuration_property') {
-          sequenceName = 'program_financial_service_pro_id_seq';
-        }
-
-        const maxIdQuery = `SELECT MAX(id) FROM "121-service"."${tableName}"`;
-
-        const maxIdResult = await this.dataSource.query(maxIdQuery);
-        const maxId = maxIdResult[0].max;
-        if (maxId && maxId > 0) {
-          const nextId = maxId + 1;
-          const updateSequenceQuery = `SELECT setval('121-service.${sequenceName}', ${nextId}) from "121-service"."${tableName}"`;
-          await this.dataSource.query(updateSequenceQuery);
-        }
-      }
-    }
-    console.log('**Done updating sequence numbers.**');
+    await this.mockDataFactory.updateSequenceNumbers();
   }
 
   public async introduceDuplicates(): Promise<void> {
-    console.log('**Introducing duplicates **');
-    const selectProgramRegistrationAttributesWithDuplicateCheck =
-      await this.dataSource.manager
-        .getRepository(ProgramRegistrationAttributeEntity)
-        .createQueryBuilder('program_registration_attribute')
-        .select('id')
-        .where('"duplicateCheck" = true')
-        .getRawMany();
-
-    for (const {
-      id,
-    } of selectProgramRegistrationAttributesWithDuplicateCheck) {
-      const queryIntroduceDuplicates = readSqlFile(
-        '../../../src/scripts/sql/mock-introduce-duplicates.sql',
-      );
-      // TODO: Could not get proper parameter to work here so resorted to string replace
-      const qWithParam = queryIntroduceDuplicates.replace('$1', id);
-      await this.dataSource.query(qWithParam);
-    }
-    console.log('**Done introducing duplicates**');
+    await this.mockDataFactory.introduceDuplicates();
   }
 
   public async importRegistrations(
@@ -402,7 +174,6 @@ export class SeedMockHelperService {
   ): Promise<void> {
     const startTime = Date.now();
     while (Date.now() - startTime < maxWaitTimeMs) {
-      // Get payment transactions
       const paginatedRegistrations = await this.getRegistrations(
         programId,
         ['status'],
@@ -413,7 +184,7 @@ export class SeedMockHelperService {
           'filter.status': `$in:${status}`,
         },
       );
-      // If not all transactions are successful, wait for a short interval before checking again
+
       if (
         paginatedRegistrations &&
         paginatedRegistrations.data &&
