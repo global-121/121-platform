@@ -56,7 +56,7 @@ describe('QueryTablePaginationService', () => {
   it('should throw error when server-side filtering enabled but no total records provider set', () => {
     const totalRecordsFunction = service.totalRecords();
 
-    expect(() => totalRecordsFunction([], true)).toThrow(
+    expect(() => totalRecordsFunction([], true)).toThrowError(
       'Server side filtering requires totalRecords to be set',
     );
   });
