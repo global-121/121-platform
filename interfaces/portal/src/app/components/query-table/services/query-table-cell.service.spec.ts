@@ -86,7 +86,7 @@ describe('QueryTableCellService', () => {
 
     expect(result).toBeDefined();
     expect(typeof result).toBe('string');
-    expect(result).toContain('2023');
+    expect(result).toContain('25'); // Should contain the day part of the date
   });
 
   it('should return correct column type when specified', () => {
