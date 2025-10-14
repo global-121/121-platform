@@ -1,11 +1,6 @@
 /* eslint-disable sort-class-members/sort-class-members -- Disabling this rule in this file because the class members are grouped logically */
 
-import {
-  DatePipe,
-  NgClass,
-  NgComponentOutlet,
-  NgTemplateOutlet,
-} from '@angular/common';
+import { NgClass, NgComponentOutlet, NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -14,9 +9,7 @@ import {
   inject,
   input,
   LOCALE_ID,
-  model,
   output,
-  signal,
   TemplateRef,
   Type,
   viewChild,
@@ -24,10 +17,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
-import {
-  MenuItem,
-  TableState,
-} from 'primeng/api';
+import { MenuItem, TableState } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ContextMenuModule } from 'primeng/contextmenu';
@@ -37,23 +27,19 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Menu, MenuModule } from 'primeng/menu';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SkeletonModule } from 'primeng/skeleton';
-import {
-  Table,
-  TableLazyLoadEvent,
-  TableModule,
-} from 'primeng/table';
+import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { ChipData } from '~/components/colored-chip/colored-chip.helper';
 import { QueryTableColumnManagementComponent } from '~/components/query-table/components/query-table-column-management/query-table-column-management.component';
 import { QueryTableGlobalSearchComponent } from '~/components/query-table/components/query-table-global-search/query-table-global-search.component';
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
-import { QueryTableCellService } from './services/query-table-cell.service';
-import { QueryTableColumnVisibilityService } from './services/query-table-column-visibility.service';
-import { QueryTableFilterService } from './services/query-table-filter.service';
-import { QueryTablePaginationService } from './services/query-table-pagination.service';
-import { QueryTableRowExpansionService } from './services/query-table-row-expansion.service';
-import { QueryTableSelectionService } from './services/query-table-selection.service';
+import { QueryTableCellService } from '~/components/query-table/services/query-table-cell.service';
+import { QueryTableColumnVisibilityService } from '~/components/query-table/services/query-table-column-visibility.service';
+import { QueryTableFilterService } from '~/components/query-table/services/query-table-filter.service';
+import { QueryTablePaginationService } from '~/components/query-table/services/query-table-pagination.service';
+import { QueryTableRowExpansionService } from '~/components/query-table/services/query-table-row-expansion.service';
+import { QueryTableSelectionService } from '~/components/query-table/services/query-table-selection.service';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import {
   PaginateQuery,
@@ -158,7 +144,9 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   readonly selectionService = inject(QueryTableSelectionService<TData>);
   readonly rowExpansionService = inject(QueryTableRowExpansionService<TData>);
   readonly cellService = inject(QueryTableCellService<TData>);
-  readonly columnVisibilityService = inject(QueryTableColumnVisibilityService<TData>);
+  readonly columnVisibilityService = inject(
+    QueryTableColumnVisibilityService<TData>,
+  );
   readonly paginationService = inject(QueryTablePaginationService<TData>);
 
   readonly items = input.required<TData[]>();
@@ -190,11 +178,6 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     return key ? `${key}-selected-columns` : undefined;
   });
 
-  readonly selectedColumnsStateKey = computed(() => {
-    const key = this.localStorageKey();
-    return key ? `${key}-selected-columns` : undefined;
-  });
-
   /**
    * DISPLAY
    */
@@ -218,7 +201,9 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
 
   getCellText = this.cellService.getCellText.bind(this.cellService);
 
-  getMultiSelectCellIcon = this.cellService.getMultiSelectCellIcon.bind(this.cellService);
+  getMultiSelectCellIcon = this.cellService.getMultiSelectCellIcon.bind(
+    this.cellService,
+  );
 
   getColumnType = this.cellService.getColumnType.bind(this.cellService);
 
@@ -247,21 +232,39 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   readonly isFiltered = this.filterService.isFiltered;
 
   clearAllFilters = () => {
-    this.filterService.clearAllFilters(
-      () => this.table().clear(),
-      this.localStorageKey(),
-      () => this.selectionService.resetSelection(),
-    );
+    this.filterService.clearAllFilters({
+      clearTable: () => {
+        this.table().clear();
+      },
+      localStorageKey: this.localStorageKey(),
+      resetSelection: () => {
+        this.selectionService.resetSelection();
+      },
+    });
   };
 
-  getColumnFilterField = this.filterService.getColumnFilterField.bind(this.filterService);
-  getIsColumnFiltered = this.filterService.getIsColumnFiltered.bind(this.filterService);
-  getColumnMatchMode = this.filterService.getColumnMatchMode.bind(this.filterService);
-  getColumnMatchModeOptions = this.filterService.getColumnMatchModeOptions.bind(this.filterService);
-  onShowColumnFilter = this.filterService.onShowColumnFilter.bind(this.filterService);
-  clearColumnFilter = this.filterService.clearColumnFilter.bind(this.filterService);
+  getColumnFilterField = this.filterService.getColumnFilterField.bind(
+    this.filterService,
+  );
+  getIsColumnFiltered = this.filterService.getIsColumnFiltered.bind(
+    this.filterService,
+  );
+  getColumnMatchMode = this.filterService.getColumnMatchMode.bind(
+    this.filterService,
+  );
+  getColumnMatchModeOptions = this.filterService.getColumnMatchModeOptions.bind(
+    this.filterService,
+  );
+  onShowColumnFilter = this.filterService.onShowColumnFilter.bind(
+    this.filterService,
+  );
+  clearColumnFilter = this.filterService.clearColumnFilter.bind(
+    this.filterService,
+  );
 
-  getColumnSortField = this.cellService.getColumnSortField.bind(this.cellService);
+  getColumnSortField = this.cellService.getColumnSortField.bind(
+    this.cellService,
+  );
 
   /**
    * LAZY LOADING
@@ -272,13 +275,18 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     });
   }
 
-  readonly totalRecords = computed(() => {
-    return this.paginationService.totalRecords()(this.items(), this.serverSideFiltering());
-  });
+  readonly totalRecords = computed(() =>
+    this.paginationService.totalRecords()(
+      this.items(),
+      this.serverSideFiltering(),
+    ),
+  );
 
-  readonly currentPageReportTemplate = computed(() => {
-    return this.paginationService.currentPageReportTemplate()(this.selectionService.selectedItemsCount());
-  });
+  readonly currentPageReportTemplate = computed(() =>
+    this.paginationService.currentPageReportTemplate()(
+      this.selectionService.selectedItemsCount(),
+    ),
+  );
 
   /**
    * ROW SELECTION
@@ -288,8 +296,12 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   readonly tableSelection = this.selectionService.tableSelection;
   readonly selectedItemsCount = this.selectionService.selectedItemsCount;
 
-  onSelectionChange = this.selectionService.onSelectionChange.bind(this.selectionService);
-  onSelectAllChange = this.selectionService.onSelectAllChange.bind(this.selectionService);
+  onSelectionChange = this.selectionService.onSelectionChange.bind(
+    this.selectionService,
+  );
+  onSelectAllChange = this.selectionService.onSelectAllChange.bind(
+    this.selectionService,
+  );
 
   resetSelection = () => {
     this.selectionService.resetSelection();
@@ -315,7 +327,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       triggeredFromContextMenu,
       contextMenuItem,
       serverSideFiltering: this.serverSideFiltering(),
-      tableFilteredValue: this.table().filteredValue as TData[] | null,
+      tableFilteredValue: this.table().filteredValue as null | TData[],
       items: this.items(),
       totalRecords: this.totalRecords(),
       visibleColumns: this.columnVisibilityService.visibleColumns(),
@@ -329,10 +341,12 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     this.rowExpansionService.expandAll(this.items());
   };
 
-  collapseAll = this.rowExpansionService.collapseAll.bind(this.rowExpansionService);
+  collapseAll = this.rowExpansionService.collapseAll.bind(
+    this.rowExpansionService,
+  );
 
-  readonly areAllRowsExpanded = computed(
-    () => this.rowExpansionService.areAllRowsExpanded()(this.items()),
+  readonly areAllRowsExpanded = computed(() =>
+    this.rowExpansionService.areAllRowsExpanded()(this.items()),
   );
 
   /**
@@ -341,22 +355,27 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   readonly visibleColumns = this.columnVisibilityService.visibleColumns;
 
   updateColumnVisibility = (revertToDefault = false) => {
-    this.columnVisibilityService.updateColumnVisibility(
-      this.columns(),
-      this.selectedColumnsStateKey(),
+    this.columnVisibilityService.updateColumnVisibility({
+      columns: this.columns(),
+      selectedColumnsStateKey: this.selectedColumnsStateKey(),
       revertToDefault,
-    );
+    });
   };
 
-  columnVisibilityEffect = this.columnVisibilityService.createColumnVisibilityEffect(
-    this.columns,
-    this.enableColumnManagement,
-    this.selectedColumnsStateKey,
-  );
+  columnVisibilityEffect =
+    this.columnVisibilityService.createColumnVisibilityEffect({
+      columns: this.columns,
+      enableColumnManagement: this.enableColumnManagement,
+      selectedColumnsStateKey: this.selectedColumnsStateKey,
+    });
 
   constructor() {
-    // Set up service dependencies
-    this.selectionService.serverSideTotalRecords = this.serverSideTotalRecords;
-    this.paginationService.serverSideTotalRecords = this.serverSideTotalRecords;
+    // Set up service dependencies with provider functions
+    this.selectionService.setServerSideTotalRecordsProvider(() =>
+      this.serverSideTotalRecords(),
+    );
+    this.paginationService.setServerSideTotalRecordsProvider(() =>
+      this.serverSideTotalRecords(),
+    );
   }
 }
