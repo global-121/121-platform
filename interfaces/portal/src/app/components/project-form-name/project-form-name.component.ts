@@ -63,7 +63,7 @@ export class ProjectFormNameComponent {
       return;
     }
 
-    this.formGroup.setValue({
+    this.formGroup.patchValue({
       name:
         this.translatableStringService.translate(projectData.titlePortal) ?? '',
       description: this.translatableStringService.translate(
