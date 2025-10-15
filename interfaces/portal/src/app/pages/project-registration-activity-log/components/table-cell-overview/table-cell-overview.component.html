@@ -53,7 +53,7 @@
     <app-activity-log-voucher-dialog
       [projectId]="voucherDialogData.projectId"
       [paymentId]="voucherDialogData.paymentId"
-      [totalTransfers]="voucherDialogData.totalTransfers"
+      [totalTransfers]="voucherDialogData.totalTransfers ?? 0"
       [voucherReferenceId]="voucherDialogData.voucherReferenceId"
     />
   }

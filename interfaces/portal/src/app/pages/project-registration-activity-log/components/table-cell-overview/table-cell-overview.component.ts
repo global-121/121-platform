@@ -153,9 +153,13 @@ export class TableCellOverviewComponent
       return;
     }
 
+    if (item.type !== ActivityTypeEnum.Transaction) {
+      return;
+    }
+    const fspName = item.attributes.fspName;
     if (
-      item.type !== ActivityTypeEnum.Transaction ||
-      !FSPS_WITH_VOUCHER_SUPPORT.includes(item.attributes.fspName)
+      typeof fspName !== 'string' ||
+      !FSPS_WITH_VOUCHER_SUPPORT.includes(fspName)
     ) {
       return;
     }

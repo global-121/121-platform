@@ -68,10 +68,13 @@ export class ActivityLogExpandedRowComponent
 
   readonly isIntersolveVoucher = computed(() => {
     const activity = this.value();
-
+    if (activity.type !== ActivityTypeEnum.Transaction) {
+      return false;
+    }
+    const fspName = activity.attributes.fspName;
+    // Only call includes if fspName is a string and a valid Fsps value
     return (
-      activity.type === ActivityTypeEnum.Transaction &&
-      FSPS_WITH_VOUCHER_SUPPORT.includes(activity.attributes.fspName)
+      typeof fspName === 'string' && FSPS_WITH_VOUCHER_SUPPORT.includes(fspName)
     );
   });
 
