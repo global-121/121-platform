@@ -28,15 +28,13 @@ export class AssertIso8601Pipe implements PipeTransform<string> {
   }
 
   public transform(value?: string): string | undefined {
-    if (isNil(value) && this.options.optional) {
-      return value;
-    }
+    if (isNil(value)) {
+      if (this.options.optional) {
+        return value;
+      }
 
-    if (!this.options.optional && isNil(value)) {
       throw this.exceptionFactory('Validation failed (date string expected)');
     }
-
-    value = value as string;
 
     if (!isISO8601(value)) {
       throw this.exceptionFactory(
