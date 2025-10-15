@@ -5,7 +5,10 @@ import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/p
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
-import { postProgramRegistrationAttribute } from '@121-service/test/helpers/program.helper';
+import {
+  getProgram,
+  postProgramRegistrationAttribute,
+} from '@121-service/test/helpers/program.helper';
 import {
   duplicateRegistrations,
   importRegistrations,
@@ -72,14 +75,9 @@ describe('Get program with many attributes within time threshold', () => {
     // Assert
     // Get program with registrations and validate load time is less than 200ms
     const startTime = performance.now();
-    const getProgramResponse = await importRegistrations(
-      programIdOCW,
-      [],
-      accessToken,
-    );
+    const getProgramResponse = await getProgram(programIdOCW, accessToken);
     const elapsedTime = performance.now() - startTime;
-    expect(getProgramResponse.statusCode).toBe(HttpStatus.CREATED);
-    expect(elapsedTime).toBeLessThan(20); // 200 ms = 0.2 seconds
-    console.log('elapsedTime: ', elapsedTime);
+    expect(getProgramResponse.statusCode).toBe(HttpStatus.OK);
+    expect(elapsedTime).toBeLessThan(20); // 20 ms = 0.02 seconds
   });
 });
