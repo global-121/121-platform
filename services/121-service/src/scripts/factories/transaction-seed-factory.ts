@@ -25,7 +25,6 @@ export class TransactionSeedFactory extends BaseSeedFactory<TransactionEntity> {
 
     const registrations = await registrationRepo.find({
       where: { programId: Equal(programId) },
-      relations: { transactions: true },
     });
     console.log(
       `Generating messages for ${registrations.length} registrations`,
@@ -66,30 +65,55 @@ export class TransactionSeedFactory extends BaseSeedFactory<TransactionEntity> {
     const transactionRepo = this.dataSource.getRepository(TransactionEntity);
     const eventRepo = this.dataSource.getRepository(TransactionEventEntity);
 
-    // Find all transactions (for all payments)
-    const allTransactions = await transactionRepo.find({
+    // Find the initial seeded transaction and its events
+    const initialTransaction = await transactionRepo.findOneOrFail({
       where: { payment: { programId: Equal(programId) } },
-      relations: { payment: true },
       order: { id: 'ASC' },
     });
-    // Find the initial seeded transaction and its events
-    const initialTransaction = allTransactions[0];
     const initialEvents = await eventRepo.find({
       where: { transaction: Equal(initialTransaction.id) },
     });
 
-    for (const transaction of allTransactions.filter(
-      (t) => t.id !== initialTransaction.id, // Do not insert the initial transaction's events again
-    )) {
-      // Replicate each event for this transaction as a new entity
-      for (const event of initialEvents) {
-        // Omit id and transaction, copy all other properties
-        const { id: _id, transaction: _omit, ...eventData } = event;
-        await eventRepo.save({
-          ...eventData,
-          transaction,
-        });
+    const findBatchSize = 100000;
+    let offset = 0;
+    let totalProcessed = 0;
+    let hasMore = true;
+    while (hasMore) {
+      // Fetch a batch of transactions (excluding the initial one)
+      const transactionBatch = await transactionRepo.find({
+        where: { payment: { programId: Equal(programId) } },
+        order: { id: 'ASC' },
+        skip: offset,
+        take: findBatchSize,
+      });
+      // Remove the initial transaction if present in the first batch
+      const filteredBatch =
+        offset === 0
+          ? transactionBatch.filter((t) => t.id !== initialTransaction.id)
+          : transactionBatch;
+      if (filteredBatch.length === 0) {
+        hasMore = false;
+        break;
       }
+      const eventsData: DeepPartial<TransactionEventEntity>[] = [];
+      for (const transaction of filteredBatch) {
+        for (const event of initialEvents) {
+          const { id: _id, transaction: _omit, ...eventData } = event;
+          eventsData.push({
+            ...eventData,
+            transactionId: transaction.id,
+          });
+        }
+      }
+      const insertBatchSize = 2500;
+      for (const batch of chunk(eventsData, insertBatchSize)) {
+        await eventRepo.insert(batch as any[]);
+      }
+      totalProcessed += filteredBatch.length;
+      console.log(
+        `Inserted event data for ${totalProcessed} transactions so far...`,
+      );
+      offset += findBatchSize;
     }
   }
 

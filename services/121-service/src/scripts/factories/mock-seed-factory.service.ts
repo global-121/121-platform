@@ -251,18 +251,11 @@ export class MockSeedFactoryService {
       IntersolveVisaChildWalletEntity,
     );
 
-    const registrations = await registrationRepo.find({
-      relations: { programFspConfiguration: true },
+    const visaRegistrations = await registrationRepo.find({
+      where: {
+        programFspConfiguration: { fspName: In([Fsps.intersolveVisa]) },
+      },
     });
-    if (registrations.length === 0) {
-      console.warn('No registrations found for Visa customer creation');
-      return;
-    }
-
-    // Only process registrations for visa registrations
-    const visaRegistrations = registrations.filter(
-      (r) => r.programFspConfiguration.fspName === Fsps.intersolveVisa,
-    );
     if (visaRegistrations.length === 0) {
       console.warn('No Visa registrations found for Visa customer creation');
       return;
@@ -363,7 +356,6 @@ export class MockSeedFactoryService {
 
     // Fetch registrations for relevant FSPs, ordered by id
     const voucherRegistrations = await registrationRepo.find({
-      relations: { programFspConfiguration: true },
       where: {
         programFspConfiguration: {
           fspName: In([
@@ -446,7 +438,6 @@ export class MockSeedFactoryService {
         },
       },
       order: { id: 'ASC' },
-      relations: { programFspConfiguration: true },
     });
     // Only create export vouchers for registrations with FSP Intersolve-voucher-whatsapp
     if (voucherRegistrations.length === 0) {
