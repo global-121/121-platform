@@ -68,6 +68,7 @@ describe('Bulk update 32k registrations', () => {
     const elapsedTime = Date.now() - startTime;
     // clean up temp file
     fs.unlinkSync(tempFilePath);
+    // Assert
     expect(elapsedTime).toBeLessThan(15714); // 15714 ms = 15.714 seconds
     expect(bulkUpdate.statusCode).toBe(HttpStatus.OK);
   });
