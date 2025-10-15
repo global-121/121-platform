@@ -1,0 +1,36 @@
+<app-form-field-wrapper
+  [label]="label()"
+  [errorMessage]="errorMessage()"
+  [isRequired]="property().isRequired"
+  [formGroup]="formGroup()"
+>
+  @if (fieldType() === 'select-multiple') {
+    <p-multiselect
+      [options]="projectAttributes.data()"
+      [formControlName]="property().name"
+      [optionLabel]="'label'"
+      [optionValue]="'name'"
+      placeholder="Select 1 or more"
+      i18n-placeholder
+      [filter]="true"
+      [showClear]="false"
+    />
+  } @else if (fieldType() === 'select') {
+    <p-select
+      [options]="projectAttributes.data()"
+      [formControlName]="property().name"
+      [optionLabel]="'label'"
+      [optionValue]="'name'"
+      placeholder="Select 1"
+      i18n-placeholder
+      [filter]="true"
+      [showClear]="false"
+    />
+  } @else {
+    <input
+      pInputText
+      [formControlName]="property().name"
+      autocomplete="off"
+    />
+  }
+</app-form-field-wrapper>
