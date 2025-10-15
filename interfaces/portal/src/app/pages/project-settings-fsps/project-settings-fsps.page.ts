@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
   signal,
@@ -84,16 +85,18 @@ export class ProjectSettingsFspsPageComponent {
   readonly FSP_CONFIGURATION_PROPERTY_LABELS =
     FSP_CONFIGURATION_PROPERTY_LABELS;
   readonly Fsps = Fsps;
-  readonly getFspSettingByName = getFspSettingByName;
 
-  readonly currentlyEditedFsp = signal<Fsps>(Fsps.excel);
   readonly forceAddAnotherFsp = signal(false);
+  private readonly currentlyConfiguredFsp = signal<Fsps>(Fsps.excel);
+  private readonly fspConfigurationNameToReconfigure = signal<
+    string | undefined
+  >(undefined);
 
   readonly fspConfigurationDialog = viewChild.required<FormDialogComponent>(
     'fspConfigurationDialog',
   );
 
-  formGroups = FSP_SETTINGS.reduce<Record<Fsps, FormGroup>>(
+  private formGroupPerFspSetting = FSP_SETTINGS.reduce<Record<Fsps, FormGroup>>(
     (acc, fsp) => ({
       ...acc,
       [fsp.name]: new FormGroup<Record<string, FormControl<string>>>(
@@ -130,10 +133,18 @@ export class ProjectSettingsFspsPageComponent {
     }),
   );
 
+  readonly formGroup = computed(
+    () => this.formGroupPerFspSetting[this.currentlyConfiguredFsp()],
+  );
+  readonly formFspSetting = computed(() =>
+    getFspSettingByName(this.currentlyConfiguredFsp()),
+  );
+
+  // XXX: duplicate this for reconfigure scenario
   createFinancialServiceProvidersConfiguration = injectMutation(() => ({
     mutationFn: async (formGroupData: Record<string, string | undefined>) => {
       const fspSettings = FSP_SETTINGS.find(
-        (fsp) => fsp.name === this.currentlyEditedFsp(),
+        (fsp) => fsp.name === this.currentlyConfiguredFsp(),
       );
 
       if (!fspSettings) {
@@ -178,8 +189,15 @@ export class ProjectSettingsFspsPageComponent {
     },
   }));
 
-  showFspConfigurationDialog(fspName: Fsps) {
-    this.currentlyEditedFsp.set(fspName);
+  showFspConfigurationDialog({
+    fsp,
+    fspConfigurationName,
+  }: {
+    fsp: Fsps;
+    fspConfigurationName?: string;
+  }) {
+    this.currentlyConfiguredFsp.set(fsp);
+    this.fspConfigurationNameToReconfigure.set(fspConfigurationName);
     this.fspConfigurationDialog().show({
       resetMutation: true,
     });
