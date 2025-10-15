@@ -270,7 +270,6 @@ When considering upgrading the (LTS) version of the Node.js runtime, take into a
 - The (specific) version supported by Microsoft Azure App Services,  
   in their Node.js Support Timeline: <https://github.com/Azure/app-service-linux-docs/blob/master/Runtime_Support/node_support.md>
 - Angular's Actively supported versions: <https://angular.io/guide/versions#actively-supported-versions>
-- Ionic Framework's supported Node.js versions: <https://ionicframework.com/docs/intro/environment#Node--npm>
 
 ### Updated/new Node.js dependencies
 
