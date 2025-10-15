@@ -420,18 +420,6 @@ export class IntersolveVoucherService {
       return;
     }
 
-    // Do not create 2 events for delivered+read.
-    const transaction =
-      await this.transactionViewScopedRepository.findOneOrFail({
-        where: { id: Equal(transactionId) },
-      });
-    if (
-      transaction.status === TransactionStatusEnum.success &&
-      newTransactionStatus === TransactionStatusEnum.success
-    ) {
-      return;
-    }
-
     await this.transactionsService.saveTransactionProgressFromExternalSource({
       transactionId,
       description: TransactionEventDescription.intersolveVoucherMessageCallback,
