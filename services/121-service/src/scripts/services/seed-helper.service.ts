@@ -360,7 +360,7 @@ export class SeedHelperService {
     fspConfigEntity.name = fspConfigFromJson.name
       ? fspConfigFromJson.name
       : fspObject.name;
-    fspConfigEntity.transactions = [];
+    fspConfigEntity.transactionEvents = [];
     fspConfigEntity.programId = programId;
     return fspConfigEntity;
   }
