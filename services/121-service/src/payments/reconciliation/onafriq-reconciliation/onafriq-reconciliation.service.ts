@@ -174,6 +174,10 @@ export class OnafriqReconciliationService {
         programId,
         fspName: Fsps.onafriq,
       });
+    if (fspConfigs.length === 0) {
+      // No Onafriq FSP configured for this program, so nothing to send. Without this, the cronjobs.test API-test breaks.
+      return [];
+    }
     const programFspConfigProperties =
       await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
         programFspConfigurationId: fspConfigs[0].id, // There will be just 1 fspConfig per program for Onafriq

@@ -43,7 +43,6 @@ export class OnafriqApiService {
       return; // No need to subscribe to webhook in mock mode
     }
 
-    await this;
     const webhookSubscribeUrl = `${onafriqApiUrl}/api/webhook/subscribe`;
     const payload = {
       corporateCode,
