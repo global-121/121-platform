@@ -731,16 +731,19 @@
   },
   {
     "method": "post",
-    "path": "/api/fsps/onafriq/reconciliation-report",
+    "path": "/api/fsps/onafriq/reconciliation-report/{programId}",
     "params": [
+      "programId",
       "fromDate",
       "toDate"
     ]
   },
   {
     "method": "post",
-    "path": "/api/fsps/onafriq/webhook/subscribe",
-    "params": []
+    "path": "/api/fsps/onafriq/webhook/subscribe/programs/{programId}",
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "get",

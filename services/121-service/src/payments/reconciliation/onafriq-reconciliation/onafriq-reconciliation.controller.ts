@@ -3,12 +3,15 @@ import {
   HttpCode,
   HttpException,
   HttpStatus,
+  Param,
+  ParseIntPipe,
   Post,
   Query,
 } from '@nestjs/common';
 import {
   ApiBody,
   ApiOperation,
+  ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
@@ -61,6 +64,7 @@ export class OnafriqReconciliationController {
     description: 'Reconciliation report generated and sent successfully.',
   })
   @HttpCode(HttpStatus.OK)
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({
     name: 'fromDate',
     required: false,
@@ -73,8 +77,9 @@ export class OnafriqReconciliationController {
     description: `Use format: ${new Date().toISOString()}`,
     type: 'string',
   })
-  @Post('reconciliation-report')
+  @Post('reconciliation-report/:programId')
   public async generateReconciliationReport(
+    @Param('programId', ParseIntPipe) programId: number,
     @Query('fromDate') fromDate: Date,
     @Query('toDate') toDate: Date,
   ): Promise<OnafriqReconciliationReport[]> {
@@ -83,6 +88,7 @@ export class OnafriqReconciliationController {
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
     return await this.onafriqReconciliationService.generateAndSendReconciliationReportYesterday(
+      programId,
       toDate,
       fromDate,
     );

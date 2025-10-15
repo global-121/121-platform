@@ -67,9 +67,11 @@ graph LR
   OnafriqReconciliationModule-->OnafriqModule
   OnafriqModule-->RedisModule
   OnafriqModule-->QueuesRegistryModule
+  OnafriqModule-->ProgramFspConfigurationsModule
   OnafriqReconciliationModule-->RedisModule
   OnafriqReconciliationModule-->TransactionsModule
   OnafriqReconciliationModule-->QueuesRegistryModule
+  OnafriqReconciliationModule-->ProgramFspConfigurationsModule
   CronjobModule-->ExchangeRatesModule
   ExchangeRatesModule-->UserModule
   MessageModule-->WhatsappModule

@@ -1,6 +1,8 @@
+import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integration/onafriq/entities/onafriq-transaction.entity';
 import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.service';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { TransactionJobsOnafriqService } from '@121-service/src/transaction-jobs/services/transaction-jobs-onafriq.service';
@@ -14,6 +16,7 @@ describe('TransactionJobsOnafriqService', () => {
   >;
   let transactionScopedRepository: jest.Mocked<TransactionScopedRepository>;
   let transactionJobsHelperService: jest.Mocked<TransactionJobsHelperService>;
+  let programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
 
   beforeEach(async () => {
     onafriqService = { createTransaction: jest.fn() } as any;
@@ -29,12 +32,16 @@ describe('TransactionJobsOnafriqService', () => {
       getRegistrationOrThrow: jest.fn(),
       createTransactionAndUpdateRegistration: jest.fn(),
     } as any;
+    programFspConfigurationRepository = {
+      getPropertiesByNamesOrThrow: jest.fn(),
+    } as any;
 
     service = new TransactionJobsOnafriqService(
       onafriqService,
       onafriqTransactionScopedRepository,
       transactionScopedRepository,
       transactionJobsHelperService,
+      programFspConfigurationRepository,
     );
   });
 
@@ -57,6 +64,10 @@ describe('TransactionJobsOnafriqService', () => {
         firstName: 'John',
         lastName: 'Doe',
       };
+      const mockCorporateCode = 'mocked_corporate_code';
+      const mockPassword = 'mocked_password';
+      const mockUniqueKey = 'mocked_unique_key';
+
       const registration = { id: 10 };
       const existingOnafriqTransaction = { transactionId: 99 };
       (
@@ -69,6 +80,22 @@ describe('TransactionJobsOnafriqService', () => {
       (onafriqService.createTransaction as jest.Mock).mockResolvedValue(
         undefined,
       );
+      (
+        programFspConfigurationRepository.getPropertiesByNamesOrThrow as jest.Mock
+      ).mockResolvedValue([
+        {
+          name: FspConfigurationProperties.corporateCodeOnafriq,
+          value: mockCorporateCode,
+        },
+        {
+          name: FspConfigurationProperties.passwordOnafriq,
+          value: mockPassword,
+        },
+        {
+          name: FspConfigurationProperties.uniqueKeyOnafriq,
+          value: mockUniqueKey,
+        },
+      ]);
 
       await service.processOnafriqTransactionJob(transactionJob);
 
@@ -82,6 +109,11 @@ describe('TransactionJobsOnafriqService', () => {
         firstName: 'John',
         lastName: 'Doe',
         thirdPartyTransId: expect.any(String),
+        credentials: {
+          corporateCode: mockCorporateCode,
+          password: mockPassword,
+          uniqueKey: mockUniqueKey,
+        },
       });
     });
   });

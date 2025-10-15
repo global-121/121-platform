@@ -79,7 +79,21 @@
   "allowEmptyPhoneNumber": false,
   "programFspConfigurations": [
     {
-      "fsp": "Onafriq"
+      "fsp": "Onafriq",
+      "properties": [
+        {
+          "name": "corporateCodeOnafriq",
+          "value": "CORPORATE_CODE_ONAFRIQ"
+        },
+        {
+          "name": "passwordOnafriq",
+          "value": "PASSWORD_ONAFRIQ"
+        },
+        {
+          "name": "uniqueKeyOnafriq",
+          "value": "UNIQUE_KEY_ONAFRIQ"
+        }
+      ]
     }
   ]
 }
