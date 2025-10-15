@@ -9,7 +9,11 @@
       "severity": "info"
     }
   ],
-  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
     "source.removeUnusedImports": "explicit"
@@ -17,7 +21,9 @@
   "regexrobin.rules": [
     {
       "regex": "AB#(\\d+)",
-      "tree": { "group": "Azure DevOps backlog items" },
+      "tree": {
+        "group": "Azure DevOps backlog items"
+      },
       "editor": [
         {
           "link": "https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/$1",
