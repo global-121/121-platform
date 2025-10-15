@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -82,10 +83,8 @@ export class ProgramAttachmentsController {
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       'application/pdf',
     ];
-    // Accept extra parameters after MIME type
-    // const mimetypeBase = file.mimetype.split(';')[0].trim();
     if (!allowedMimeTypes.includes(file.mimetype)) {
-      throw new Error(`Invalid file type: ${file.mimetype}`);
+      throw new BadRequestException(`Invalid file type: ${file.mimetype}`);
     }
 
     const userId = RequestHelper.getUserId(req);
