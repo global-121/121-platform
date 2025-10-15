@@ -15,6 +15,7 @@ import { FocusTrapModule } from 'primeng/focustrap';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { RtlHelperService } from '~/services/rtl-helper.service';
+import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-card-editable',
@@ -28,6 +29,7 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
   templateUrl: './card-editable.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [ToastService],
 })
 export class CardEditableComponent<TMutationData = unknown> {
   readonly header = input.required<string>();
@@ -45,6 +47,7 @@ export class CardEditableComponent<TMutationData = unknown> {
   readonly formGroup = input<FormGroup>();
 
   readonly rtlHelper = inject(RtlHelperService);
+  readonly toastService = inject(ToastService);
 
   // TODO: this should become redundant once "mutation" is required (see above)
   readonly isSaveable = computed(() => !!this.mutation());
@@ -56,6 +59,10 @@ export class CardEditableComponent<TMutationData = unknown> {
       formGroup.markAllAsTouched();
 
       if (!formGroup.valid) {
+        this.toastService.showToast({
+          severity: 'error',
+          detail: $localize`Please fill out all required fields.`,
+        });
         return;
       }
     }

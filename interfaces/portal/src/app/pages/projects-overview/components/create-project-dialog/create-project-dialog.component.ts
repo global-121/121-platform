@@ -188,6 +188,10 @@ export class CreateProjectDialogComponent {
 
     formGroupToValidate.markAllAsTouched();
     if (!formGroupToValidate.valid) {
+      this.toastService.showToast({
+        severity: 'error',
+        detail: $localize`Please fill out all required fields.`,
+      });
       return;
     }
 
