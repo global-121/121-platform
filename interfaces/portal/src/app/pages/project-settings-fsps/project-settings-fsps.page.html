@@ -95,7 +95,7 @@
   [formGroup]="formGroup()"
   [mutation]="createFinancialServiceProvidersConfiguration"
   [mutationData]="formGroup().getRawValue()"
-  [header]="formFspSetting()?.defaultLabel | translatableString"
+  [header]="fspSettingToConfigure().defaultLabel | translatableString"
   headerIcon="pi pi-money-bill"
   submitButtonText="Integrate FSP"
   i18n-submitButtonText
@@ -107,64 +107,23 @@
     For more information about how to integrate this FSP see manual.
   </p>
 
-  <app-form-field-wrapper
-    label="Display name"
-    i18n-label
-    [errorMessage]="
-      getFspConfigurationPropertyErrorMessage(formGroup(), {
-        name: 'displayName',
-        isRequired: true,
-      })
-    "
-    [isRequired]="true"
-  >
-    <input
-      pInputText
-      formControlName="displayName"
-      autocomplete="off"
-    />
-  </app-form-field-wrapper>
+  <app-fsp-configuration-property-form-field
+    [projectId]="projectId()"
+    [formGroup]="formGroup()"
+    [property]="{
+      name: 'displayName',
+      isRequired: true,
+    }"
+  />
 
   @for (
-    property of formFspSetting()?.configurationProperties;
+    property of fspSettingToConfigure().configurationProperties;
     track property.name
   ) {
-    <app-form-field-wrapper
-      [label]="FSP_CONFIGURATION_PROPERTY_LABELS[property.name]"
-      [errorMessage]="
-        getFspConfigurationPropertyErrorMessage(formGroup(), property)
-      "
-      [isRequired]="property.isRequired"
-    >
-      @if (property.name === 'columnsToExport') {
-        <p-multiselect
-          [options]="projectAttributes.data()"
-          [formControlName]="property.name"
-          [optionLabel]="'name'"
-          [optionValue]="'name'"
-          placeholder="Select 1 or more"
-          i18n-placeholder
-          [filter]="true"
-          [showClear]="false"
-        />
-      } @else if (property.name === 'columnToMatch') {
-        <p-select
-          [options]="projectAttributes.data()"
-          [formControlName]="property.name"
-          [optionLabel]="'name'"
-          [optionValue]="'name'"
-          placeholder="Select 1"
-          i18n-placeholder
-          [filter]="true"
-          [showClear]="false"
-        />
-      } @else {
-        <input
-          pInputText
-          [formControlName]="property.name"
-          autocomplete="off"
-        />
-      }
-    </app-form-field-wrapper>
+    <app-fsp-configuration-property-form-field
+      [projectId]="projectId()"
+      [formGroup]="formGroup()"
+      [property]="property"
+    />
   }
 </app-form-dialog>
