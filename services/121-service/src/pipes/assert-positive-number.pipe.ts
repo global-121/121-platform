@@ -8,9 +8,7 @@ import {
   ErrorHttpStatusCode,
   HttpErrorByCode,
 } from '@nestjs/common/utils/http-error-by-code.util';
-import { isNil } from 'lodash';
-
-import { toTypeHelper } from '@121-service/src/utils/to-type.helper';
+import { isNil, isNumber } from 'lodash';
 
 interface Options {
   errorHttpStatusCode?: ErrorHttpStatusCode;
@@ -38,14 +36,11 @@ export class AssertPositiveNumberPipe implements PipeTransform<number> {
     }
 
     // we only allow using this pipe with numbers
-    if (toTypeHelper(value) !== 'number') {
+    if (!isNumber(value)) {
       throw this.exceptionFactory(
         'Validation failed (numeric value is expected)',
       );
     }
-
-    // We know better than TypeScript here.
-    value = value as number;
 
     if (Number(value) <= 0) {
       throw this.exceptionFactory(

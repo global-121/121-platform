@@ -3,9 +3,7 @@ import {
   ErrorHttpStatusCode,
   HttpErrorByCode,
 } from '@nestjs/common/utils/http-error-by-code.util';
-import { isNil } from 'lodash';
-
-import { toTypeHelper } from '@121-service/src/utils/to-type.helper';
+import { isDate, isNil } from 'lodash';
 
 interface Options {
   errorHttpStatusCode?: ErrorHttpStatusCode;
@@ -51,12 +49,9 @@ export class AssertDatePipe implements PipeTransform<Date> {
       return value;
     }
 
-    if (toTypeHelper(value) !== 'date') {
+    if (!isDate(value)) {
       throw this.exceptionFactory('Validation failed (date value is expected)');
     }
-
-    // We know better than TypeScript here.
-    value = value as Date;
 
     if (Object.keys(this.options).includes('allowFuture')) {
       // We know better than TypeScript here.
