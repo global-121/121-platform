@@ -16,7 +16,7 @@ const metricsPage = new metricstsModel();
 
 const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '15');
 const programId = 3;
-const maxRetryDuration = 6000; // seconds
+const maxRetryDuration = 6000; // seconds // TODO: this is really long, but is needed to fix the further test. Instead look into setting up this test differently.
 const minPassRatePercentage = 50;
 const amount = 11.11;
 
