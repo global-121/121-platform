@@ -1,5 +1,17 @@
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "eslint.enable": true,
   "eslint.format.enable": true,
   "eslint.rules.customizations": [
@@ -17,7 +29,9 @@
   "regexrobin.rules": [
     {
       "regex": "AB#(\\d+)",
-      "tree": { "group": "Azure DevOps backlog items" },
+      "tree": {
+        "group": "Azure DevOps backlog items"
+      },
       "editor": [
         {
           "link": "https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/$1",
