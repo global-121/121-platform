@@ -78,6 +78,7 @@ export class ProgramAttachmentsController {
     @Param('programId', ParseIntPipe) programId: number,
     @Req() req: ScopedUserRequest,
   ): Promise<CreateProgramAttachmentResponseDto> {
+    console.log('Uploaded file mimetype:', file.mimetype);
     const userId = RequestHelper.getUserId(req);
 
     return await this.programAttachmentsService.createProgramAttachment({
