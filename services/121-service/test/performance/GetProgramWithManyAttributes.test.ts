@@ -1,0 +1,85 @@
+import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
+import { performance } from 'node:perf_hooks';
+
+import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
+import { postProgramRegistrationAttribute } from '@121-service/test/helpers/program.helper';
+import {
+  duplicateRegistrations,
+  importRegistrations,
+} from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
+import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
+
+describe('Get program with many attributes within time threshold', () => {
+  let accessToken: string;
+
+  it('Should get program with many attributes within time threshold', async () => {
+    // Arrange
+    await resetDB(SeedScript.nlrcMultiple, __filename);
+    accessToken = await getAccessToken();
+    // Add 50 attributes
+    for (let i = 0; i < 50; i++) {
+      const programRegistrationAttribute: ProgramRegistrationAttributeDto = {
+        name: `attribute${i}`,
+        options: [],
+        scoring: {},
+        pattern: 'string',
+        showInPeopleAffectedTable: true,
+        editableInPortal: true,
+        includeInTransactionExport: true,
+        label: {
+          en: `Attribute ${i}`,
+        },
+        placeholder: {
+          en: '+31 6 00 00 00 00',
+        },
+        duplicateCheck: false,
+        type: RegistrationAttributeTypes.text,
+        isRequired: false,
+      };
+
+      const postProgramRegistrationAttributeResponse =
+        await postProgramRegistrationAttribute(
+          programRegistrationAttribute,
+          programIdOCW,
+          accessToken,
+        );
+      expect(postProgramRegistrationAttributeResponse.statusCode).toBe(201);
+    }
+    // Upload registration
+    const importRegistrationResponse = await importRegistrations(
+      programIdOCW,
+      [registrationVisa],
+      accessToken,
+    );
+    expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
+    // Duplicate registration to be more than 100k
+    const duplicateRegistrationsResponse = await duplicateRegistrations(
+      5,
+      accessToken,
+      {
+        secret: 'fill_in_secret',
+      },
+    ); // 2^5 = 32
+    expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
+
+    // Assert
+    // Get program with registrations and validate load time is less than 200ms
+    const startTime = performance.now();
+    const getProgramResponse = await importRegistrations(
+      programIdOCW,
+      [],
+      accessToken,
+    );
+    const elapsedTime = performance.now() - startTime;
+    expect(getProgramResponse.statusCode).toBe(HttpStatus.CREATED);
+    expect(elapsedTime).toBeLessThan(20); // 200 ms = 0.2 seconds
+    console.log('elapsedTime: ', elapsedTime);
+  });
+});
