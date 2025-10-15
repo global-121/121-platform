@@ -1736,9 +1736,6 @@
       <trans-unit id="7243649521435718104" datatype="html">
         <source>Use &quot;scope&quot; in this project</source>
       </trans-unit>
-      <trans-unit id="7307016430178924629" datatype="html">
-        <source>Hint text...</source>
-      </trans-unit>
       <trans-unit id="3033425005384068594" datatype="html">
         <source>Budget details saved successfully.</source>
       </trans-unit>
