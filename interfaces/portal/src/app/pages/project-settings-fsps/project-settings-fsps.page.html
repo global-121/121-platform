@@ -32,6 +32,12 @@
             <app-fsp-configuration
               [projectId]="projectId()"
               [configuration]="fspConfiguration"
+              (reconfigureFsp)="
+                showFspConfigurationDialog({
+                  fsp: $event.fspName,
+                  fspConfigurationName: $event.name,
+                })
+              "
               class="block"
             />
           }
@@ -65,7 +71,11 @@
             @if (!hasFspConfiguration(fsp.name) || fsp.name === Fsps.excel) {
               <app-card-with-link
                 [title]="fsp.defaultLabel | translatableString"
-                (cardClicked)="showFspConfigurationDialog(fsp.name)"
+                (cardClicked)="
+                  showFspConfigurationDialog({
+                    fsp: fsp.name,
+                  })
+                "
                 class="block"
               >
                 <ng-container card-content>
@@ -80,15 +90,12 @@
   </p-card>
 </app-page-layout-project-settings>
 
-@let fspToEdit = currentlyEditedFsp();
-@let fspSetting = getFspSettingByName(fspToEdit);
-
 <app-form-dialog
   #fspConfigurationDialog
-  [formGroup]="formGroups[fspToEdit]"
+  [formGroup]="formGroup()"
   [mutation]="createFinancialServiceProvidersConfiguration"
-  [mutationData]="formGroups[fspToEdit].getRawValue()"
-  [header]="fspSetting?.defaultLabel | translatableString"
+  [mutationData]="formGroup().getRawValue()"
+  [header]="formFspSetting()?.defaultLabel | translatableString"
   headerIcon="pi pi-money-bill"
   submitButtonText="Integrate FSP"
   i18n-submitButtonText
@@ -104,7 +111,7 @@
     label="Display name"
     i18n-label
     [errorMessage]="
-      getFspConfigurationPropertyErrorMessage(formGroups[fspToEdit], {
+      getFspConfigurationPropertyErrorMessage(formGroup(), {
         name: 'displayName',
         isRequired: true,
       })
@@ -118,11 +125,14 @@
     />
   </app-form-field-wrapper>
 
-  @for (property of fspSetting?.configurationProperties; track property.name) {
+  @for (
+    property of formFspSetting()?.configurationProperties;
+    track property.name
+  ) {
     <app-form-field-wrapper
       [label]="FSP_CONFIGURATION_PROPERTY_LABELS[property.name]"
       [errorMessage]="
-        getFspConfigurationPropertyErrorMessage(formGroups[fspToEdit], property)
+        getFspConfigurationPropertyErrorMessage(formGroup(), property)
       "
       [isRequired]="property.isRequired"
     >

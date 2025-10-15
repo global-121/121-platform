@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   input,
+  output,
   viewChild,
 } from '@angular/core';
 
@@ -43,6 +44,7 @@ import { ToastService } from '~/services/toast.service';
 export class FspConfigurationComponent {
   readonly projectId = input.required<string>();
   readonly configuration = input.required<FspConfiguration>();
+  readonly reconfigureFsp = output<FspConfiguration>();
 
   fspConfigurationApiService = inject(FspConfigurationApiService);
   projectApiService = inject(ProjectApiService);
@@ -80,17 +82,13 @@ export class FspConfigurationComponent {
   }));
 
   readonly menuItems = computed<MenuItem[]>(() => [
-    // {
-    //   label: 'Edit',
-    //   icon: 'pi pi-pencil',
-    //   command: () => {
-    //     this.toastService.showToast({
-    //       severity: 'info',
-    //       summary: 'Edit',
-    //       detail: `One day you will be able to edit ${this.configuration().name}`,
-    //     });
-    //   },
-    // },
+    {
+      label: 'Reconfigure',
+      icon: 'pi pi-pencil',
+      command: () => {
+        this.reconfigureFsp.emit(this.configuration());
+      },
+    },
     {
       label: 'Delete',
       icon: 'pi pi-trash',
