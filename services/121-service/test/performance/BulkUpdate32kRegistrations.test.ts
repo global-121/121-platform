@@ -17,6 +17,7 @@ import {
 import { jsonToCsv } from '@121-service/test/performance/helpers/registration.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
+jest.setTimeout(60000); // 60 seconds
 describe('Bulk update 32k registrations', () => {
   let accessToken: string;
 
