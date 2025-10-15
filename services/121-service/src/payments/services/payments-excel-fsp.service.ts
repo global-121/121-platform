@@ -98,10 +98,10 @@ export class PaymentsExcelFspService {
     return allFspInstructions;
   }
 
-  private getFspNamesThatRequireInstructions(): string[] {
-    return FSP_SETTINGS.filter((fsp) =>
-      [FspIntegrationType.csv].includes(fsp.integrationType),
-    ).map((fsp) => fsp.name);
+  private getFspNamesThatRequireInstructions(): Fsps[] {
+    return Object.values(FSP_SETTINGS)
+      .filter((fsp) => [FspIntegrationType.csv].includes(fsp.integrationType))
+      .map((fsp) => fsp.name);
   }
 
   private filterTransactionsWithFspInstructionBasedOnStatus(

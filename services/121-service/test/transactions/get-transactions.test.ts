@@ -1,4 +1,4 @@
-import { getFspSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -35,9 +35,8 @@ describe('Registrations - [Scoped]', () => {
   it('should return transactions with all expected fields and correct data types', async () => {
     // Arrange
     const accessToken = await getAccessToken();
-    const fspConfig = getFspSettingByNameOrThrow(
-      registrationScopedKisumuWestPv.programFspConfigurationName,
-    );
+    const fspConfig =
+      FSP_SETTINGS[registrationScopedKisumuWestPv.programFspConfigurationName];
 
     // Act
     const transactionsResponse = await getTransactions({

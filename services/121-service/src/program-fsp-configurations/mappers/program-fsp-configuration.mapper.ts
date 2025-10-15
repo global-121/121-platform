@@ -2,7 +2,7 @@ import {
   FspConfigPropertyValueVisibility,
   FspConfigurationProperties,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { getFspSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 import { ProgramFspConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-property-response.dto';
@@ -27,7 +27,7 @@ export class ProgramFspConfigurationMapper {
       configurationProperties: _configurationProperties,
       defaultLabel: _defaultLabel,
       ...fsp
-    } = getFspSettingByNameOrThrow(entity.fspName);
+    } = FSP_SETTINGS[entity.fspName];
 
     const dto: ProgramFspConfigurationResponseDto = {
       programId: entity.programId,

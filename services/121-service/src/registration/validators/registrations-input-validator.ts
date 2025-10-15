@@ -836,10 +836,10 @@ export class RegistrationsInputValidator {
       (programFspConfig) =>
         programFspConfig.name === programFspConfigurationName,
     )?.fspName;
-    const foundFsp = FSP_SETTINGS.find((fsp) => fsp.name === fspName);
-    if (!foundFsp) {
+    if (!fspName) {
       return [];
     }
+    const foundFsp = FSP_SETTINGS[fspName];
     const requiredAttributes = foundFsp.attributes.filter(
       (attribute) => attribute.isRequired,
     );
