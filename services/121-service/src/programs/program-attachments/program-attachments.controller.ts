@@ -76,6 +76,7 @@ export class ProgramAttachmentsController {
   ): Promise<CreateProgramAttachmentResponseDto> {
     const allowedMimeTypes = [
       'image/jpeg',
+      'image/jpg',
       'image/png',
       'image/gif',
       'image/webp',
