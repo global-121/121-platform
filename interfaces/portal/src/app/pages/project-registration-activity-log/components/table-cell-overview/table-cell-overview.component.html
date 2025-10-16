@@ -17,9 +17,6 @@
     }
   </div>
 
-  @let voucherDialogData = getVoucherDialogData();
-  @let transferHistoryDialogData = getTransferHistoryDialogData();
-
   @if (isIgnoreDuplicationType()) {
     <a
       [routerLink]="duplicateLink()"
@@ -38,32 +35,11 @@
 
   @if (canRetryTransfer()) {
     <p-button
-      [ngClass]="{
-        'me-1': !!voucherDialogData,
-      }"
       label="Retry transfer"
       i18n-label="@@retry-transfer"
       rounded
       size="small"
       (click)="retryTransfer()"
-    />
-  }
-
-  @if (voucherDialogData) {
-    <app-activity-log-voucher-dialog
-      [projectId]="voucherDialogData.projectId"
-      [paymentId]="voucherDialogData.paymentId"
-      [totalTransfers]="voucherDialogData.totalTransfers ?? 0"
-      [voucherReferenceId]="voucherDialogData.voucherReferenceId"
-    />
-  }
-
-  <!-- ##TODO this (and voucher dialog button) should move to expanded-row component-->
-  @if (transferHistoryDialogData) {
-    <app-activity-log-transfer-history-dialog
-      [projectId]="transferHistoryDialogData.projectId"
-      [transactionId]="transferHistoryDialogData.transactionId"
-      [paymentDate]="transferHistoryDialogData.paymentDate"
     />
   }
 </div>

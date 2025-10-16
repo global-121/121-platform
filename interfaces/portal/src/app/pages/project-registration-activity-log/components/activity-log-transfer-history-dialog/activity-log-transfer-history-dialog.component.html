@@ -10,9 +10,9 @@
   [header]="dialogHeader()"
   [modal]="true"
   [dismissableMask]="true"
-  [closeOnEscape]="false"
   [(visible)]="dialogVisible"
   [style]="{ width: '70rem' }"
+  appendTo="body"
 >
   @defer {
     @if (transferEventLog.isSuccess()) {

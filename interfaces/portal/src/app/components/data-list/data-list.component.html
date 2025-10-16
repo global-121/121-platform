@@ -7,15 +7,16 @@
   @for (item of data(); track $index) {
     <p
       [attr.data-testid]="dataTestId() + '-personal-information'"
-      class="border-grey-300 border-b px-2 py-4"
+      class="border-grey-300 flex items-center border-b px-2 py-4"
       [ngClass]="{
         'col-span-2': item.fullWidth,
       }"
     >
       @if (item.loading) {
-        <div class="py-1">
-          <p-skeleton [width]="skeletonWidth()" />
-        </div>
+        <p-skeleton
+          [width]="skeletonWidth()"
+          class="py-1"
+        />
       } @else {
         <strong class="me-1">{{ item.label | translatableString }}:</strong>
         @if (item.tooltip) {
@@ -28,7 +29,7 @@
           />
         }
         @if (item.value !== undefined && item.value !== null) {
-          <span>
+          <span class="me-1">
             @switch (item.type) {
               @case ('boolean') {
                 @if (item.value) {
@@ -78,6 +79,16 @@
               }
             }
           </span>
+          @if (item.detailAction && item.detailAction.component) {
+            <span class="ms-auto">
+              <ng-container
+                *ngComponentOutlet="
+                  item.detailAction.component;
+                  inputs: item.detailAction.inputs
+                "
+              ></ng-container>
+            </span>
+          }
         } @else if (!item.chipLabel) {
           —
         }
