@@ -1,0 +1,37 @@
+<app-form-dialog
+  #formDialog
+  [formGroup]="formGroup()"
+  [mutation]="configureFsp"
+  [mutationData]="formGroup().getRawValue()"
+  [header]="fspSettingToConfigure().defaultLabel | translatableString"
+  headerIcon="pi pi-money-bill"
+  submitButtonText="Integrate FSP"
+  i18n-submitButtonText
+>
+  <p
+    i18n
+    class="mb-4"
+  >
+    For more information about how to integrate this FSP see manual.
+  </p>
+
+  <app-fsp-configuration-property-form-field
+    [projectId]="projectId()"
+    [formGroup]="formGroup()"
+    [property]="{
+      name: 'displayName',
+      isRequired: true,
+    }"
+  />
+
+  @for (
+    property of fspSettingToConfigure().configurationProperties;
+    track property.name
+  ) {
+    <app-fsp-configuration-property-form-field
+      [projectId]="projectId()"
+      [formGroup]="formGroup()"
+      [property]="property"
+    />
+  }
+</app-form-dialog>

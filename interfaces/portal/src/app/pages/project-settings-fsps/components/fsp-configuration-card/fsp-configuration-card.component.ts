@@ -69,10 +69,10 @@ export class FspConfigurationCardComponent {
 
   deleteConfigurationMutation = injectMutation(() => ({
     mutationFn: () =>
-      this.fspConfigurationApiService.deleteFspConfiguration(
-        this.projectId,
-        this.configuration().name,
-      ),
+      this.fspConfigurationApiService.deleteFspConfiguration({
+        projectId: this.projectId,
+        configurationName: this.configuration().name,
+      }),
     onSuccess: () => {
       void this.projectApiService.invalidateCache(this.projectId);
       void this.fspConfigurationApiService.invalidateCache(this.projectId);
