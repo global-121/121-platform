@@ -23,6 +23,13 @@
       data-testid="project-basic-information-data-list"
     />
   } @else {
+    <p class="mb-4">
+      <span i18n
+        >Editing in <strong>{{ languageName }}</strong
+        >.</span
+      ><br />
+      <small i18n>Please switch language to translate relevant details.</small>
+    </p>
     <app-project-form-name
       #projectFormName
       [project]="project.data()"

@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   input,
+  LOCALE_ID,
   signal,
   viewChild,
 } from '@angular/core';
@@ -34,6 +35,12 @@ import { PROJECT_FORM_TOOLTIPS } from '~/domains/project/project.helper';
 import { AuthService } from '~/services/auth.service';
 import { RegistrationsTableColumnService } from '~/services/registrations-table-column.service';
 import { ToastService } from '~/services/toast.service';
+import { TranslatableStringService } from '~/services/translatable-string.service';
+import {
+  getLanguageEnumFromLocale,
+  getLocaleLabel,
+  Locale,
+} from '~/utils/locale';
 
 @Component({
   selector: 'app-project-settings-basic-information',
@@ -49,6 +56,10 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectSettingsBasicInformationComponent {
+  private locale = inject<Locale>(LOCALE_ID);
+  private currentLocale = getLanguageEnumFromLocale(this.locale);
+  languageName = getLocaleLabel(this.locale);
+
   readonly projectId = input.required<string>();
 
   readonly isEditing = signal(false);
@@ -57,6 +68,7 @@ export class ProjectSettingsBasicInformationComponent {
   projectApiService = inject(ProjectApiService);
   registrationsTableColumnService = inject(RegistrationsTableColumnService);
   toastService = inject(ToastService);
+  translatableStringService = inject(TranslatableStringService);
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
 
@@ -110,10 +122,10 @@ export class ProjectSettingsBasicInformationComponent {
         projectId: this.projectId,
         projectPatch: {
           titlePortal: {
-            en: name,
+            [this.currentLocale]: name,
           },
           description: {
-            en: description,
+            [this.currentLocale]: description,
           },
           startDate: startDate?.toISOString(),
           endDate: endDate?.toISOString(),
@@ -139,12 +151,16 @@ export class ProjectSettingsBasicInformationComponent {
     const listData: DataListItem[] = [
       {
         label: '*' + $localize`Project name`,
-        value: projectData?.titlePortal?.en ?? '',
+        value: this.translatableStringService.translate(
+          projectData?.titlePortal,
+        ),
         fullWidth: true,
       },
       {
         label: $localize`Project description`,
-        value: projectData?.description?.en,
+        value: this.translatableStringService.translate(
+          projectData?.description,
+        ),
         fullWidth: true,
       },
       {
