@@ -17,6 +17,12 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MenuModule } from 'primeng/menu';
 import { TableModule } from 'primeng/table';
+import { unique } from 'radashi';
+
+import {
+  FspConfigurationProperties,
+  Fsps,
+} from '@121-service/src/fsps/enums/fsp-name.enum';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
@@ -100,20 +106,46 @@ export class FspConfigurationCardComponent {
     },
   ]);
 
-  readonly fspSetting = computed(() =>
-    getFspSettingByName(this.configuration().fspName),
-  );
+  readonly fspSetting = computed(() => {
+    const fspSetting = getFspSettingByName(this.configuration().fspName);
 
-  readonly requiredAttributes = computed(
-    () =>
-      this.fspSetting()
-        ?.attributes.filter((property) => property.isRequired)
-        .map((property) =>
-          this.projectAttributes
-            .data()
-            ?.find((attr) => attr.name === property.name.toString()),
-        ) ?? [],
-  );
+    if (!fspSetting) {
+      throw new Error('Should never happen but keeps TS happy');
+    }
+
+    return fspSetting;
+  });
+
+  readonly requiredAttributes = computed(() => {
+    const fspSetting = this.fspSetting();
+
+    let requiredAttributes: string[] = this.fspSetting()
+      .attributes.filter((property) => property.isRequired)
+      .map((property) => property.name);
+
+    if (fspSetting.name === Fsps.excel) {
+      // For Excel FSP, the required attributes are stored in configuration properties
+      // instead of attributes
+
+      const excelConfigurationProperties = this.configuration().properties;
+
+      const columnsToExport = excelConfigurationProperties.find(
+        (prop) => prop.name === FspConfigurationProperties.columnsToExport,
+      )?.value as string[];
+
+      const columnToMatch = excelConfigurationProperties.find(
+        (prop) => prop.name === FspConfigurationProperties.columnToMatch,
+      )?.value as string;
+
+      requiredAttributes = unique([...columnsToExport, columnToMatch]);
+    }
+
+    return requiredAttributes.map((requiredAttributeName) =>
+      this.projectAttributes
+        .data()
+        ?.find((attr) => attr.name === requiredAttributeName),
+    );
+  });
 
   copyToClipboard(text: string) {
     void navigator.clipboard.writeText(text);
