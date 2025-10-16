@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -49,6 +50,7 @@ type FspConfigurationControls = {
     FspConfigurationPropertyFormFieldComponent,
     TranslatableStringPipe,
     ReactiveFormsModule,
+    NgTemplateOutlet,
   ],
   templateUrl: './fsp-configuration-form-dialog.component.html',
   styles: ``,

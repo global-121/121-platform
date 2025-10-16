@@ -8,11 +8,23 @@
   proceedLabel="Integrate FSP"
   i18n-proceedLabel
 >
+  <ng-template #manualLink>
+    <a
+      href="https://manual.121.global/"
+      target="_blank"
+      title="Opens in a new window"
+      i18n-title="@@generic-opens-in-new-window"
+      class="p-button p-button-link gap-1"
+      ><span i18n="@@generic-121-manual-title">121 Manual</span>
+      <span class="p-button-icon pi pi-external-link text-sm"></span
+    ></a>
+  </ng-template>
   <p
     i18n
     class="mb-4"
   >
-    For more information about how to integrate this FSP see manual.
+    For more information about how to integrate this FSP see the
+    <ng-container [ngTemplateOutlet]="manualLink"></ng-container>.
   </p>
 
   <app-fsp-configuration-property-form-field
@@ -64,7 +76,19 @@
       </li>
     }
   </ol>
+  <ng-template #manualLink>
+    <a
+      href="https://manual.121.global/"
+      target="_blank"
+      title="Opens in a new window"
+      i18n-title="@@generic-opens-in-new-window"
+      class="p-button p-button-link gap-1"
+      ><span i18n="@@generic-121-manual-title">121 Manual</span>
+      <span class="p-button-icon pi pi-external-link text-sm"></span
+    ></a>
+  </ng-template>
   <p i18n>
-    To learn more about how to integrate Kobo forms see the 121 manual.
+    To learn more about how to integrate Kobo forms see the
+    <ng-container [ngTemplateOutlet]="manualLink"></ng-container>.
   </p>
 </app-form-dialog>
