@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { merge } from 'lodash';
 import { DataSource, Equal, QueryFailedError, Repository } from 'typeorm';
 
 import { ActionEntity } from '@121-service/src/actions/action.entity';
@@ -255,17 +256,13 @@ export class ProgramService {
       );
     }
 
-    // Overwrite any non-nested attributes of the program with the new supplied values.
-    for (const attribute in updateProgramDto) {
-      // Skip attribute fsps, or all configured FSPs will be deleted. See processing of fsps below.
-      if (attribute !== 'programFspConfigurations') {
-        program[attribute] = updateProgramDto[attribute];
-      }
-    }
+    // XXX: Skip attribute fsps, or all configured FSPs will be deleted. See processing of fsps below.
+    delete updateProgramDto['programFspConfigurations'];
+    const updatedProgram = merge(program, updateProgramDto);
 
     let savedProgram: ProgramEntity;
     try {
-      savedProgram = await this.programRepository.save(program);
+      savedProgram = await this.programRepository.save(updatedProgram);
     } catch (err) {
       console.log('Error updating program ', err);
       throw new HttpException(
