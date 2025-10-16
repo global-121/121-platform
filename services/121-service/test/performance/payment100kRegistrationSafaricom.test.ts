@@ -2,7 +2,6 @@ import { HttpStatus } from '@nestjs/common';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { doPayment } from '@121-service/test/helpers/program.helper';
 import {
   changeRegistrationStatus,
@@ -15,24 +14,30 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { getPaymentResults } from '@121-service/test/performance/helpers/performance.helper';
-import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
+import { registrationSafaricom } from '@121-service/test/registrations/pagination/pagination-data';
+
+// For now we decided to test only Safaricom and IntersolveVisa
+// The reasoning behind this is that IntersolveVisa has the most complex logic and most API calls
+// Safaricom is one of the payment providers which uses callbacks and therefore also has heavier/more complex
+// The other FSPs are simpler or similar to Safaricom so we decided to not test them
 
 const duplicateCount = 17; // 2^17 = 131072
 const duplicateTarget = Math.pow(2, duplicateCount);
+const programId = 1;
 
 jest.setTimeout(4_800_000); // 80 minutes
-describe('Do payment for 100k registrations with Intersolve within expected range and successful rate threshold', () => {
+describe('Do payment for 100k registrations with Safaricom within expected range and successful rate threshold', () => {
   let accessToken: string;
 
   it('Setup and do payment', async () => {
     // Arrange
     const startTime = Date.now();
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB(SeedScript.safaricomProgram, __filename);
     accessToken = await getAccessToken();
     // Upload registration
     const importRegistrationResponse = await importRegistrations(
-      programIdOCW,
-      [registrationVisa],
+      programId,
+      [registrationSafaricom],
       accessToken,
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
@@ -47,14 +52,14 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
     // Change status of all registrations to 'included'
     const changeStatusResponse = await changeRegistrationStatus({
-      programId: programIdOCW,
+      programId,
       status: RegistrationStatusEnum.included,
       accessToken,
     });
     expect(changeStatusResponse.statusCode).toBe(HttpStatus.ACCEPTED);
     // Wait for all status changes to be processed
     await waitForStatusChangeToComplete(
-      programIdOCW,
+      programId,
       duplicateTarget,
       accessToken,
       240_000,
@@ -62,7 +67,7 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
     );
     // Do payment
     const doPaymentResponse = await doPayment({
-      programId: programIdOCW,
+      programId,
       amount: 25,
       referenceIds: [],
       accessToken,
@@ -71,7 +76,7 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
     // Assert
     // Check payment results have at least 10% success rate within 80 minutes
     await getPaymentResults({
-      programId: programIdOCW,
+      programId,
       paymentId: 1,
       accessToken,
       totalAmountPowerOfTwo: duplicateCount,
