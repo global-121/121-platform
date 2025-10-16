@@ -185,6 +185,9 @@ export class MessageIncomingService {
       }
     }
 
+    // Do this before message-updating to avoid duplicate storing on delivered + read.
+    await this.updateIntersolveVoucherTransactionIfApplicable(callbackData);
+
     // Update message status
     await this.twilioMessageRepository.update(
       {
@@ -197,8 +200,11 @@ export class MessageIncomingService {
         errorMessage: callbackData.ErrorMessage,
       },
     );
+  }
 
-    // Update intersolve voucher transaction status if applicable
+  private async updateIntersolveVoucherTransactionIfApplicable(
+    callbackData: TwilioStatusCallbackDto,
+  ) {
     const relevantStatuses = [
       TwilioStatus.delivered,
       TwilioStatus.read,
@@ -212,9 +218,16 @@ export class MessageIncomingService {
             sid: Equal(callbackData.MessageSid),
             transactionId: Not(IsNull()),
           },
-          select: ['transactionId', 'processType'],
+          select: { transactionId: true, processType: true, status: true },
         },
       );
+      // Do not update transaction & create event twice for delivered + read
+      if (
+        messageWithTransaction?.status === TwilioStatus.delivered &&
+        callbackData.MessageStatus === TwilioStatus.read
+      ) {
+        return;
+      }
       if (messageWithTransaction?.transactionId) {
         await this.intersolveVoucherService.processMessageStatusCallback(
           callbackData,
