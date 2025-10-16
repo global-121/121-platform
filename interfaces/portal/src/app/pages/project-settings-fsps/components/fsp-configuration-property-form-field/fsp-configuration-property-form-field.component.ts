@@ -37,6 +37,7 @@ export class FspConfigurationPropertyFormFieldComponent {
   readonly property = input.required<{
     name: 'displayName' | FspConfigurationProperties;
     isRequired: boolean;
+    isSensitive: boolean;
   }>();
   readonly formGroup = input.required<FormGroup>();
 
@@ -56,6 +57,12 @@ export class FspConfigurationPropertyFormFieldComponent {
     }
     return FSP_CONFIGURATION_PROPERTY_LABELS[propertyName];
   });
+
+  readonly labelTooltip = computed(() =>
+    this.property().isSensitive
+      ? $localize`This is a sensitive property, therefore its value needs to be re-entered upon reconfiguration.`
+      : undefined,
+  );
 
   readonly fieldType = computed(() => {
     switch (this.property().name) {
