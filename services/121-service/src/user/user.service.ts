@@ -8,7 +8,9 @@ import * as jwt from 'jsonwebtoken';
 import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
-import { CreateUserEmailPayload } from '@121-service/src/emails/dto/create-emails.dto';
+import { EmailType } from '@121-service/src/emails/enum/email-type.enum';
+import { EmailPayloadData } from '@121-service/src/emails/interfaces/email-payload-data.interface';
+import { EmailRecipient } from '@121-service/src/emails/interfaces/email-recipient.interface';
 import { EmailsService } from '@121-service/src/emails/services/emails.service';
 import { env } from '@121-service/src/env';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -271,17 +273,27 @@ export class UserService {
         UserType.aidWorker,
       );
 
-      const emailPayload: CreateUserEmailPayload = {
+      const emailRecipient: EmailRecipient = {
         email: userEntity.username ?? '',
         displayName: userEntity.displayName ?? '',
+      };
+
+      const emailPayload: EmailPayloadData = {
+        emailRecipient,
         password,
       };
 
       // Send SSO template if SSO is enabled
       if (env.USE_SSO_AZURE_ENTRA) {
-        await this.emailsService.sendCreateSSOUserEmail(emailPayload);
+        await this.emailsService.sendEmail(
+          EmailType.registrationCreationSSO,
+          emailPayload,
+        );
       } else {
-        await this.emailsService.sendCreateNonSSOUserEmail(emailPayload);
+        await this.emailsService.sendEmail(
+          EmailType.registrationCreation,
+          emailPayload,
+        );
       }
     }
   }
@@ -929,13 +941,18 @@ export class UserService {
     const password = this.generateStrongPassword();
     user.password = this.hashPassword(password, user.salt);
     await this.userRepository.save(user);
-    const emailPayload = {
+
+    const emailRecipient: EmailRecipient = {
       email: user.username ?? '',
       displayName: user.displayName ?? '',
+    };
+
+    const emailPayload: EmailPayloadData = {
+      emailRecipient,
       password,
     };
 
-    await this.emailsService.sendPasswordResetEmail(emailPayload);
+    await this.emailsService.sendEmail(EmailType.passwordReset, emailPayload);
   }
 
   private generateSalt(): string {

@@ -1,73 +1,38 @@
 import { Injectable } from '@nestjs/common';
 
-import {
-  CreateUserEmailPayload,
-  GenericEmailPayload,
-} from '@121-service/src/emails/dto/create-emails.dto';
-import { EmailsApiService } from '@121-service/src/emails/services/emails.api.service';
-import { createNonSSOUserTemplate } from '@121-service/src/emails/templates/createNonSsoUserTemplate';
-import { createSSOUserTemplate } from '@121-service/src/emails/templates/createSsoUserTemplate';
-import { genericTemplate } from '@121-service/src/emails/templates/genericTemplate';
-import { passwordResetTemplate } from '@121-service/src/emails/templates/passwordResetTemplate';
+import { EmailType } from '@121-service/src/emails/enum/email-type.enum';
+import { getEmailBody } from '@121-service/src/emails/helpers/get-body.helper';
+import { getEmailSubject } from '@121-service/src/emails/helpers/get-subject.helper';
+import { EmailData } from '@121-service/src/emails/interfaces/email-data.interface';
+import { EmailPayloadData } from '@121-service/src/emails/interfaces/email-payload-data.interface';
+import { env } from '@121-service/src/env';
+import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
 export class EmailsService {
-  public constructor(private readonly emailsApiService: EmailsApiService) {}
+  public constructor(private readonly httpService: CustomHttpService) {}
 
-  public async sendCreateNonSSOUserEmail(
-    payload: CreateUserEmailPayload,
+  public async sendEmail(
+    emailType: EmailType,
+    payloadData: EmailPayloadData,
   ): Promise<void> {
-    const { subject, body } = createNonSSOUserTemplate(
-      payload.displayName,
-      payload.email,
-      payload.password || '',
-    );
+    const {
+      emailRecipient: { email },
+      attachment,
+    } = payloadData;
 
-    await this.emailsApiService.sendEmail({
-      email: payload.email,
-      subject,
-      body,
-    });
-  }
+    const emailData: EmailData = {
+      email,
+      subject: getEmailSubject(emailType),
+      body: getEmailBody(emailType, payloadData),
+      attachment,
+    };
 
-  public async sendPasswordResetEmail(
-    payload: CreateUserEmailPayload,
-  ): Promise<void> {
-    const { subject, body } = passwordResetTemplate(
-      payload.displayName,
-      payload.email,
-      payload.password || '',
-    );
-
-    await this.emailsApiService.sendEmail({
-      email: payload.email,
-      subject,
-      body,
-    });
-  }
-
-  public async sendCreateSSOUserEmail(
-    payload: CreateUserEmailPayload,
-  ): Promise<void> {
-    const { subject, body } = createSSOUserTemplate(
-      payload.email,
-      payload.displayName,
-    );
-
-    await this.emailsApiService.sendEmail({
-      email: payload.email,
-      subject,
-      body,
-    });
-  }
-
-  public async sendGenericEmail(payload: GenericEmailPayload): Promise<void> {
-    const { subject, body } = genericTemplate(payload.subject, payload.body);
-
-    await this.emailsApiService.sendEmail({
-      email: payload.email,
-      subject,
-      body,
-    });
+    try {
+      await this.httpService.post<unknown>(env.AZURE_EMAIL_API_URL, emailData);
+    } catch (error) {
+      console.error('Failed to send email through API', error);
+      throw new Error('Failed to send email through API');
+    }
   }
 }
