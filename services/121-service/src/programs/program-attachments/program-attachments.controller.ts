@@ -1,8 +1,8 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
-  FileTypeValidator,
   Get,
   HttpCode,
   HttpStatus,
@@ -66,10 +66,6 @@ export class ProgramAttachmentsController {
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: 100000000 }), // 100MB
-          new FileTypeValidator({
-            fileType:
-              /^(image\/(jpeg|png|gif|webp)|application\/(msword|vnd\.openxmlformats-officedocument\.wordprocessingml\.document|pdf))$/,
-          }),
         ],
       }),
     )
@@ -78,6 +74,20 @@ export class ProgramAttachmentsController {
     @Param('programId', ParseIntPipe) programId: number,
     @Req() req: ScopedUserRequest,
   ): Promise<CreateProgramAttachmentResponseDto> {
+    const allowedMimeTypes = [
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/gif',
+      'image/webp',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/pdf',
+    ];
+    if (!allowedMimeTypes.includes(file.mimetype)) {
+      throw new BadRequestException('Something went wrong: Validation failed');
+    }
+
     const userId = RequestHelper.getUserId(req);
 
     return await this.programAttachmentsService.createProgramAttachment({
