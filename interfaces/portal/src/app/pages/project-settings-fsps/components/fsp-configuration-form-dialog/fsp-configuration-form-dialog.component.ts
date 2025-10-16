@@ -151,6 +151,9 @@ export class FspConfigurationFormDialogComponent {
     mutationFn: async (
       formGroupData: ReturnType<FspConfigurationFormGroup['getRawValue']>,
     ) => {
+      // TODO: AB#35944 - Once we have implemented KOBO integration via the UI, this should become
+      // if (this.missingIntegrationAttributes().length > 0 && this.hasKoboIntegration()) {
+      // TODO: AB#35935 - Once we have implemented automatic registration attribute creation, this check should disappear altogether
       if (this.missingIntegrationAttributes().length > 0) {
         this.configurationDialog().hide({ resetFormGroup: false });
         this.integrationErrorDialog().show();
