@@ -256,8 +256,6 @@ export class ProgramService {
       );
     }
 
-    // XXX: Skip attribute fsps, or all configured FSPs will be deleted. See processing of fsps below.
-    delete updateProgramDto['programFspConfigurations'];
     merge(program, updateProgramDto);
 
     let savedProgram: ProgramEntity;
