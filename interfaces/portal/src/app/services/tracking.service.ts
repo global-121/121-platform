@@ -25,6 +25,7 @@ import { environment } from '~environment';
  */
 export enum TrackingCategory {
   export = 'Export',
+  hiddenFeatures = 'Hidden Features',
   manageRegistrations = 'Manage Registrations',
   manageTableSettings = 'Manage Table-settings',
 }
@@ -52,6 +53,7 @@ export enum TrackingAction {
   selectDropdownOption = 'select: Dropdown Option',
   showColumnFilter = 'show: Column-filter',
   showContextMenu = 'show: Context Menu',
+  showHenryDunant = 'show: Henry Dunant!',
 }
 
 /**

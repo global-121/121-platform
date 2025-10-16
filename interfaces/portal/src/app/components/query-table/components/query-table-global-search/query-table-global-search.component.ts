@@ -86,4 +86,11 @@ export class QueryTableGlobalSearchComponent {
       action: TrackingAction.clickGlobalFilterButton,
     });
   }
+
+  trackFilterSpecialValue(): void {
+    this.trackingService.trackEvent({
+      category: TrackingCategory.hiddenFeatures,
+      action: TrackingAction.showHenryDunant,
+    });
+  }
 }
