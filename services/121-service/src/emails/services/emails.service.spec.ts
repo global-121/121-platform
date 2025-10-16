@@ -6,6 +6,7 @@ import { getEmailSubject } from '@121-service/src/emails/helpers/get-subject.hel
 import { EmailPayloadData } from '@121-service/src/emails/interfaces/email-payload-data.interface';
 import { EmailRecipient } from '@121-service/src/emails/interfaces/email-recipient.interface';
 import { EmailsService } from '@121-service/src/emails/services/emails.service';
+import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 // Mock for EmailsApiService
 const mockEmailsApiService = {
@@ -20,7 +21,7 @@ describe('EmailsService', () => {
       providers: [
         EmailsService,
         {
-          provide: EmailsService,
+          provide: CustomHttpService,
           useValue: mockEmailsApiService,
         },
       ],
