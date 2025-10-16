@@ -308,7 +308,7 @@ export async function changeRegistrationStatus({
   } = {},
 }: {
   programId: number;
-  referenceIds: string[];
+  referenceIds?: string[];
   status: RegistrationStatusEnum;
   accessToken: string;
   options?: {
@@ -759,7 +759,7 @@ export async function seedRegistrationsWithStatus(
   programId: number,
   accessToken: string,
   status: RegistrationStatusEnum,
-): Promise<void> {
+): Promise<any> {
   const response = await importRegistrations(
     programId,
     registrations,
@@ -776,12 +776,14 @@ export async function seedRegistrationsWithStatus(
     return;
   }
 
-  await awaitChangeRegistrationStatus({
+  const statusChangeResponse = await awaitChangeRegistrationStatus({
     programId,
     referenceIds: registrations.map((r) => r.referenceId),
     status,
     accessToken,
   });
+
+  return statusChangeResponse;
 }
 
 export async function getEvents({

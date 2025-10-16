@@ -14,7 +14,7 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { jsonToCsv } from '@121-service/test/performance/helpers/registration.helper';
+import { jsonToCsv } from '@121-service/test/performance/helpers/performance.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 jest.setTimeout(60000); // 60 seconds
