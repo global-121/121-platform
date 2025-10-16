@@ -48,7 +48,7 @@ describe('EmailsService', () => {
 
     expect(mockEmailsApiService.sendEmail).toHaveBeenCalledWith(
       expect.objectContaining({
-        email: payload.emailRecipient.email,
+        email: emailRecipient.email,
         subject: getEmailSubject(EmailType.registrationCreation),
         body: getEmailBody(EmailType.registrationCreation, payload),
       }),
@@ -69,7 +69,7 @@ describe('EmailsService', () => {
 
     expect(mockEmailsApiService.sendEmail).toHaveBeenCalledWith(
       expect.objectContaining({
-        email: payload.emailRecipient.email,
+        email: emailRecipient.email,
         subject: getEmailSubject(EmailType.passwordReset),
         body: getEmailBody(EmailType.passwordReset, payload),
       }),
@@ -89,7 +89,7 @@ describe('EmailsService', () => {
 
     expect(mockEmailsApiService.sendEmail).toHaveBeenCalledWith(
       expect.objectContaining({
-        email: payload.emailRecipient.email,
+        email: emailRecipient.email,
         subject: getEmailSubject(EmailType.registrationCreationSSO),
         body: getEmailBody(EmailType.registrationCreationSSO, payload),
       }),
