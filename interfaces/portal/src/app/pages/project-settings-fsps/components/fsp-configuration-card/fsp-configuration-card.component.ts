@@ -27,7 +27,7 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
-  selector: 'app-fsp-configuration',
+  selector: 'app-fsp-configuration-card',
   imports: [
     CardModule,
     TranslatableStringPipe,
@@ -36,12 +36,12 @@ import { ToastService } from '~/services/toast.service';
     FormDialogComponent,
     TableModule,
   ],
-  templateUrl: './fsp-configuration.component.html',
+  templateUrl: './fsp-configuration-card.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ToastService],
 })
-export class FspConfigurationComponent {
+export class FspConfigurationCardComponent {
   readonly projectId = input.required<string>();
   readonly configuration = input.required<FspConfiguration>();
   readonly reconfigureFsp = output<FspConfiguration>();

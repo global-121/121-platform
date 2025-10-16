@@ -36,7 +36,7 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
 import { getFspSettingByName } from '~/domains/fsp/fsp.helper';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import { FspConfigurationComponent } from '~/pages/project-settings-fsps/components/fsp-configuration/fsp-configuration.component';
+import { FspConfigurationCardComponent } from '~/pages/project-settings-fsps/components/fsp-configuration-card/fsp-configuration-card.component';
 import { FspConfigurationPropertyFormFieldComponent } from '~/pages/project-settings-fsps/components/fsp-configuration-property-form-field/fsp-configuration-property-form-field.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
@@ -60,7 +60,7 @@ type FspConfigurationFormGroupControls = {
     ReactiveFormsModule,
     SkeletonInlineComponent,
     FormErrorComponent,
-    FspConfigurationComponent,
+    FspConfigurationCardComponent,
     CardWithLinkComponent,
     FspConfigurationPropertyFormFieldComponent,
   ],
