@@ -1,5 +1,4 @@
 import { HttpStatus } from '@nestjs/common';
-import { env } from 'process';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
