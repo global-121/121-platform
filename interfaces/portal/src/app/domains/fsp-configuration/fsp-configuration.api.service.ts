@@ -1,6 +1,7 @@
 import { Injectable, Signal } from '@angular/core';
 
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
+import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
@@ -22,10 +23,13 @@ export class FspConfigurationApiService extends DomainApiService {
     });
   }
 
-  createFspConfiguration(
-    projectId: Signal<number | string>,
-    configuration: Dto<CreateProgramFspConfigurationDto>,
-  ) {
+  createFspConfiguration({
+    projectId,
+    configuration,
+  }: {
+    projectId: Signal<number | string>;
+    configuration: Dto<CreateProgramFspConfigurationDto>;
+  }) {
     return this.httpWrapperService.perform121ServiceRequest<FspConfiguration>({
       method: 'POST',
       endpoint: this.pathToQueryKey([...BASE_ENDPOINT(projectId)]).join('/'),
@@ -33,10 +37,32 @@ export class FspConfigurationApiService extends DomainApiService {
     });
   }
 
-  deleteFspConfiguration(
-    projectId: Signal<number | string>,
-    configurationName: string,
-  ) {
+  updateFspConfiguration({
+    projectId,
+    configurationName,
+    configuration,
+  }: {
+    projectId: Signal<number | string>;
+    configurationName: string;
+    configuration: Dto<UpdateProgramFspConfigurationDto>;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<FspConfiguration>({
+      method: 'PATCH',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(projectId),
+        configurationName,
+      ]).join('/'),
+      body: configuration,
+    });
+  }
+
+  deleteFspConfiguration({
+    projectId,
+    configurationName,
+  }: {
+    projectId: Signal<number | string>;
+    configurationName: string;
+  }) {
     return this.httpWrapperService.perform121ServiceRequest<undefined>({
       method: 'DELETE',
       endpoint: this.pathToQueryKey([

@@ -1,0 +1,185 @@
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+
+import { injectMutation } from '@tanstack/angular-query-experimental';
+
+import {
+  FspConfigurationProperties,
+  Fsps,
+} from '@121-service/src/fsps/enums/fsp-name.enum';
+import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
+
+import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
+import { getFspSettingByName } from '~/domains/fsp/fsp.helper';
+import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
+import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
+import { FspConfigurationPropertyFormFieldComponent } from '~/pages/project-settings-fsps/components/fsp-configuration-property-form-field/fsp-configuration-property-form-field.component';
+import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
+import { ToastService } from '~/services/toast.service';
+
+type FspConfigurationFormGroup = FormGroup<
+  {
+    displayName: FormControl<string>;
+  } & Partial<
+    Record<
+      FspConfigurationProperties,
+      FormControl<string | string[] | undefined>
+    >
+  >
+>;
+
+@Component({
+  selector: 'app-fsp-configuration-form-dialog',
+  imports: [
+    FormDialogComponent,
+    FspConfigurationPropertyFormFieldComponent,
+    TranslatableStringPipe,
+    ReactiveFormsModule,
+  ],
+  templateUrl: './fsp-configuration-form-dialog.component.html',
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [ToastService],
+})
+export class FspConfigurationFormDialogComponent {
+  readonly projectId = input.required<string>();
+  readonly configurationCompleted = output();
+
+  readonly fspConfigurationApiService = inject(FspConfigurationApiService);
+  readonly toastService = inject(ToastService);
+
+  // XXX: save the FSP setting directly once the FSP_SETTINGS business is in order
+  private readonly fspToConfigure = signal<Fsps>(Fsps.excel);
+  private readonly fspConfigurationToReconfigure = signal<
+    FspConfiguration | undefined
+  >(undefined);
+
+  readonly formDialog = viewChild.required<FormDialogComponent>('formDialog');
+
+  readonly formGroup = computed<FspConfigurationFormGroup>(() => {
+    const fspSetting = this.fspSettingToConfigure();
+
+    const existingFspConfiguration = this.fspConfigurationToReconfigure();
+
+    const defaultDisplayNameValue = existingFspConfiguration
+      ? (existingFspConfiguration.label.en ?? '')
+      : (fspSetting.defaultLabel.en ?? '');
+
+    const displayNameFormControl = new FormControl(defaultDisplayNameValue, {
+      nonNullable: true,
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+      validators: [Validators.required],
+    });
+
+    return new FormGroup(
+      fspSetting.configurationProperties.reduce(
+        (acc, property) => ({
+          ...acc,
+          [property.name]: new FormControl<string | string[]>('', {
+            nonNullable: true,
+            // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+            validators: property.isRequired ? [Validators.required] : [],
+          }),
+        }),
+        {
+          displayName: displayNameFormControl,
+        },
+      ),
+    );
+  });
+
+  readonly fspSettingToConfigure = computed(() => {
+    const fspSetting = getFspSettingByName(this.fspToConfigure());
+
+    if (!fspSetting) {
+      throw new Error('Should never happen but keeps TS happy');
+    }
+
+    return fspSetting;
+  });
+
+  // XXX: duplicate this for reconfigure scenario
+  configureFsp = injectMutation(() => ({
+    mutationFn: async (
+      formGroupData: ReturnType<FspConfigurationFormGroup['getRawValue']>,
+    ) => {
+      const { configurationProperties, name: fspName } =
+        this.fspSettingToConfigure();
+
+      const properties = configurationProperties
+        .map(({ name }) => ({
+          name,
+          value: formGroupData[name],
+        }))
+        .filter(
+          (property): property is CreateProgramFspConfigurationPropertyDto =>
+            property.value !== undefined,
+        );
+
+      const fspConfiguration = {
+        // XXX: add TODO to be able to configure this in the UI
+        name: formGroupData.displayName,
+        label: {
+          en: formGroupData.displayName,
+        },
+        fspName,
+        properties,
+      };
+
+      const existingFspConfiguration = this.fspConfigurationToReconfigure();
+
+      if (existingFspConfiguration) {
+        // set name to the existing value to avoid changing it
+        fspConfiguration.name = existingFspConfiguration.name;
+
+        return this.fspConfigurationApiService.updateFspConfiguration({
+          projectId: this.projectId,
+          configurationName: existingFspConfiguration.name,
+          configuration: fspConfiguration,
+        });
+      }
+
+      return this.fspConfigurationApiService.createFspConfiguration({
+        projectId: this.projectId,
+        configuration: fspConfiguration,
+      });
+    },
+    onSuccess: () => {
+      this.configurationCompleted.emit();
+    },
+    onError: (error) => {
+      this.toastService.showToast({
+        severity: 'error',
+        detail: error.message,
+      });
+    },
+  }));
+
+  show({
+    fsp,
+    fspConfiguration,
+  }: {
+    fsp: Fsps;
+    fspConfiguration?: FspConfiguration;
+  }) {
+    this.fspToConfigure.set(fsp);
+    this.fspConfigurationToReconfigure.set(fspConfiguration);
+    this.formDialog().show({
+      resetMutation: true,
+    });
+  }
+}
