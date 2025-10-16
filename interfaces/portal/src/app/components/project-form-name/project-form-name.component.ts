@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   effect,
+  inject,
   input,
 } from '@angular/core';
 import {
@@ -16,6 +17,7 @@ import { TextareaModule } from 'primeng/textarea';
 
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { Project } from '~/domains/project/project.model';
+import { TranslatableStringService } from '~/services/translatable-string.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
 export type ProjectNameFormGroup =
@@ -35,6 +37,8 @@ export type ProjectNameFormGroup =
 })
 export class ProjectFormNameComponent {
   readonly project = input<Project>();
+
+  private translatableStringService = inject(TranslatableStringService);
 
   formGroup = new FormGroup({
     name: new FormControl('', {
@@ -60,8 +64,11 @@ export class ProjectFormNameComponent {
     }
 
     this.formGroup.setValue({
-      name: projectData.titlePortal?.en ?? '',
-      description: projectData.description?.en,
+      name:
+        this.translatableStringService.translate(projectData.titlePortal) ?? '',
+      description: this.translatableStringService.translate(
+        projectData.description,
+      ),
     });
   });
 }

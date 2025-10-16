@@ -4,10 +4,12 @@
   "location": "Nederland",
   "ngo": "NLRC",
   "titlePortal": {
-    "en": "NLRC Direct Digital Aid Program (PV)"
+    "en": "NLRC Direct Digital Aid Program (PV)",
+    "nl": "NLRC Programma Voedsel"
   },
   "description": {
-    "en": ""
+    "en": "",
+    "nl": "Een beschrijving."
   },
   "startDate": "2021-01-11T12:00:00Z",
   "endDate": "2022-12-31T12:00:00Z",
