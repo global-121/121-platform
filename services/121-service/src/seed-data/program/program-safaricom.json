@@ -119,7 +119,7 @@
       "label": {
         "en": "ID number (MPESA)"
       },
-      "type": "numeric",
+      "type": "text",
       "options": null,
       "scoring": {},
       "pattern": null,

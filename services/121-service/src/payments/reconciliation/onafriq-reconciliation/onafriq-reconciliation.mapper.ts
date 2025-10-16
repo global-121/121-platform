@@ -5,6 +5,7 @@ import { OnafriqReconciliationReport } from '@121-service/src/payments/reconcili
 export class OnafriqReconciliationMapper {
   public static mapTransactionToReportItem(
     onafriqTransaction: OnafriqTransactionEntity,
+    corporateCode: string,
   ): OnafriqReconciliationReport {
     return {
       Datestamp: onafriqTransaction.transaction.created.toISOString(),
@@ -23,8 +24,8 @@ export class OnafriqReconciliationMapper {
       Balance_before: null, // leave empty for now, take up again if requested
       Balance_after: null, // leave empty for now, take up again if requested
       Related_Transaction_ID: null, // N.A. for Transaction_Type = 'Transfer'
-      Wallet_Identifier: env.ONAFRIQ_CORPORATE_CODE,
-      Partner_name: env.ONAFRIQ_CORPORATE_CODE,
+      Wallet_Identifier: corporateCode,
+      Partner_name: corporateCode,
     };
   }
 }

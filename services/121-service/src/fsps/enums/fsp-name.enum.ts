@@ -20,6 +20,10 @@ export enum FspConfigurationProperties {
   coverLetterCode = 'coverLetterCode',
   fundingTokenCode = 'fundingTokenCode',
   paymentReferencePrefix = 'paymentReferencePrefix',
+  //onafriq
+  corporateCodeOnafriq = 'corporateCodeOnafriq',
+  passwordOnafriq = 'passwordOnafriq',
+  uniqueKeyOnafriq = 'uniqueKeyOnafriq',
 }
 
 export const FspConfigPropertyValueVisibility: Record<
@@ -34,4 +38,8 @@ export const FspConfigPropertyValueVisibility: Record<
   [FspConfigurationProperties.coverLetterCode]: true,
   [FspConfigurationProperties.fundingTokenCode]: true,
   [FspConfigurationProperties.paymentReferencePrefix]: true,
+  //onafriq
+  [FspConfigurationProperties.corporateCodeOnafriq]: true,
+  [FspConfigurationProperties.passwordOnafriq]: true,
+  [FspConfigurationProperties.uniqueKeyOnafriq]: true,
 };

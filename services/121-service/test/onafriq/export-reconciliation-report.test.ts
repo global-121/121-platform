@@ -47,7 +47,7 @@ describe('Export reconciliation report', () => {
 
     // Act
     const response = await getServer()
-      .post(`/fsps/onafriq/reconciliation-report`)
+      .post(`/fsps/onafriq/reconciliation-report/${programId}`)
       .set('Cookie', [accessToken])
       .query({ toDate: new Date() }) // Use toDate to generate report with transactions from today
       .send();
@@ -65,8 +65,8 @@ describe('Export reconciliation report', () => {
       Receive_amount: amount,
       Receive_Currency: env.ONAFRIQ_CURRENCY_CODE,
       From_MSISDN: env.ONAFRIQ_SENDER_MSISDN,
-      Wallet_Identifier: env.ONAFRIQ_CORPORATE_CODE,
-      Partner_name: env.ONAFRIQ_CORPORATE_CODE,
+      Wallet_Identifier: expect.any(String),
+      Partner_name: expect.any(String),
       Datestamp: expect.any(String),
       'Transaction ID': expect.any(String),
       'Onafriq Transaction ID': expect.any(String),

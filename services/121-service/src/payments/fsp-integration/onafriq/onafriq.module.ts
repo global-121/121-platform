@@ -8,6 +8,7 @@ import { OnafriqApiHelperService } from '@121-service/src/payments/fsp-integrati
 import { OnafriqApiService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.api.service';
 import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.service';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
+import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
@@ -17,6 +18,7 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
     TypeOrmModule.forFeature([OnafriqTransactionEntity]),
     RedisModule,
     QueuesRegistryModule,
+    ProgramFspConfigurationsModule,
   ],
   providers: [
     OnafriqService,

@@ -217,6 +217,19 @@ export const FSP_SETTINGS: FspDto[] = [
         isRequired: true,
       },
     ],
-    configurationProperties: [],
+    configurationProperties: [
+      {
+        name: FspConfigurationProperties.corporateCodeOnafriq,
+        isRequired: true,
+      },
+      {
+        name: FspConfigurationProperties.passwordOnafriq,
+        isRequired: true,
+      },
+      {
+        name: FspConfigurationProperties.uniqueKeyOnafriq,
+        isRequired: true,
+      },
+    ],
   },
 ];

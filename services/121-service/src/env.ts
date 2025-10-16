@@ -225,9 +225,6 @@ export const env = createEnv({
 
     // FSP: Onafriq
     MOCK_ONAFRIQ: z.stringbool().default(false),
-    ONAFRIQ_CORPORATE_CODE: z.string().optional(),
-    ONAFRIQ_PASSWORD: z.string().optional(),
-    ONAFRIQ_UNIQUE_KEY: z.string().optional(),
     ONAFRIQ_API_URL: z
       .url()
       .pipe(z.transform((url) => withoutTrailingSlash(url)))
