@@ -3,7 +3,7 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 
 import { get } from 'radashi';
 
-export const genericValidationMessage = (control: AbstractControl) => {
+const genericValidationMessage = (control: AbstractControl) => {
   if (!control.invalid) {
     return;
   }
