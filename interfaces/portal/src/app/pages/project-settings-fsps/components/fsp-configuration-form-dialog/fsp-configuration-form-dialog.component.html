@@ -21,6 +21,7 @@
     [property]="{
       name: 'displayName',
       isRequired: true,
+      isSensitive: false,
     }"
   />
 
@@ -31,7 +32,11 @@
     <app-fsp-configuration-property-form-field
       [projectId]="projectId()"
       [formGroup]="formGroup()"
-      [property]="property"
+      [property]="{
+        name: property.name,
+        isRequired: property.isRequired,
+        isSensitive: isSensitiveProperty()(property.name),
+      }"
     />
   }
 </app-form-dialog>

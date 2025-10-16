@@ -24,6 +24,7 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
@@ -35,15 +36,10 @@ import { FspConfigurationPropertyFormFieldComponent } from '~/pages/project-sett
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { ToastService } from '~/services/toast.service';
 
-type FspConfigurationFormGroup = FormGroup<
-  {
-    displayName: FormControl<string>;
-  } & Partial<
-    Record<
-      FspConfigurationProperties,
-      FormControl<string | string[] | undefined>
-    >
-  >
+type FspConfigurationControls = {
+  displayName: FormControl<string>;
+} & Partial<
+  Record<FspConfigurationProperties, FormControl<string | string[] | undefined>>
 >;
 
 @Component({
@@ -87,7 +83,7 @@ export class FspConfigurationFormDialogComponent {
     'integrationErrorDialog',
   );
 
-  readonly formGroup = computed<FspConfigurationFormGroup>(() => {
+  readonly formGroup = computed<FormGroup<FspConfigurationControls>>(() => {
     const fspSetting = this.fspSettingToConfigure();
 
     const existingFspConfiguration = this.fspConfigurationToReconfigure();
@@ -96,27 +92,34 @@ export class FspConfigurationFormDialogComponent {
       ? (existingFspConfiguration.label.en ?? '')
       : (fspSetting.defaultLabel.en ?? '');
 
-    const displayNameFormControl = new FormControl(defaultDisplayNameValue, {
-      nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-      validators: [Validators.required],
+    const formGroupControls: FspConfigurationControls = {
+      displayName: new FormControl(defaultDisplayNameValue, {
+        nonNullable: true,
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+        validators: [Validators.required],
+      }),
+    };
+
+    fspSetting.configurationProperties.forEach((property) => {
+      let existingPropertyValue = existingFspConfiguration?.properties.find(
+        (p) => p.name === property.name,
+      )?.value;
+
+      if (this.isSensitiveProperty()(property.name)) {
+        existingPropertyValue = '';
+      }
+
+      formGroupControls[property.name] = new FormControl<string | string[]>(
+        existingPropertyValue ?? '',
+        {
+          nonNullable: true,
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+          validators: property.isRequired ? [Validators.required] : [],
+        },
+      );
     });
 
-    return new FormGroup(
-      fspSetting.configurationProperties.reduce(
-        (acc, property) => ({
-          ...acc,
-          [property.name]: new FormControl<string | string[]>('', {
-            nonNullable: true,
-            // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-            validators: property.isRequired ? [Validators.required] : [],
-          }),
-        }),
-        {
-          displayName: displayNameFormControl,
-        },
-      ),
-    );
+    return new FormGroup(formGroupControls);
   });
 
   readonly fspSettingToConfigure = computed(() => {
@@ -147,9 +150,18 @@ export class FspConfigurationFormDialogComponent {
     );
   });
 
+  readonly isSensitiveProperty = computed(
+    () => (propertyName: FspConfigurationProperties) =>
+      this.fspConfigurationToReconfigure()?.properties.find(
+        (p) => p.name === propertyName,
+      )?.value === sensitivePropertyString,
+  );
+
   configureFsp = injectMutation(() => ({
     mutationFn: async (
-      formGroupData: ReturnType<FspConfigurationFormGroup['getRawValue']>,
+      formGroupData: ReturnType<
+        FormGroup<FspConfigurationControls>['getRawValue']
+      >,
     ) => {
       // TODO: AB#35944 - Once we have implemented KOBO integration via the UI, this should become
       // if (this.missingIntegrationAttributes().length > 0 && this.hasKoboIntegration()) {
