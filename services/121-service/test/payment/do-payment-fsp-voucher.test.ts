@@ -95,22 +95,6 @@ describe('Do payment to 1 PA', () => {
       expect(getTransactionsBody[0].status).toBe(TransactionStatusEnum.success);
       expect(getTransactionsBody[0].errorMessage).toBe(null);
 
-      const transactionEventDescriptions =
-        await getTransactionEventDescriptions({
-          programId,
-          transactionId: getTransactionsBody[0].id,
-          accessToken,
-        });
-      // ##TODO: this breaks because the callback is not in yet, as the transaction moves to 'success' on 'intersolveVoucherVoucherMessageSent'
-      expect(transactionEventDescriptions).toEqual([
-        TransactionEventDescription.created,
-        TransactionEventDescription.initiated,
-        TransactionEventDescription.intersolveVoucherCreationRequest,
-        TransactionEventDescription.intersolveVoucherInitialMessageSent,
-        TransactionEventDescription.intersolveVoucherVoucherMessageSent,
-        TransactionEventDescription.intersolveVoucherMessageCallback,
-      ]);
-
       await waitForMessagesToComplete({
         programId,
         referenceIds: [registrationAhCopy.referenceId],
@@ -120,6 +104,21 @@ describe('Do payment to 1 PA', () => {
           values: [MessageContentType.paymentInstructions],
         },
       });
+
+      const transactionEventDescriptions =
+        await getTransactionEventDescriptions({
+          programId,
+          transactionId: getTransactionsBody[0].id,
+          accessToken,
+        });
+      expect(transactionEventDescriptions).toEqual([
+        TransactionEventDescription.created,
+        TransactionEventDescription.initiated,
+        TransactionEventDescription.intersolveVoucherCreationRequest,
+        TransactionEventDescription.intersolveVoucherInitialMessageSent,
+        TransactionEventDescription.intersolveVoucherVoucherMessageSent,
+        TransactionEventDescription.intersolveVoucherMessageCallback,
+      ]);
 
       const { body: messages } = await getMessageHistory(
         programId,
