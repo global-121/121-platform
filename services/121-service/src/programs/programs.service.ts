@@ -258,11 +258,11 @@ export class ProgramService {
 
     // XXX: Skip attribute fsps, or all configured FSPs will be deleted. See processing of fsps below.
     delete updateProgramDto['programFspConfigurations'];
-    const updatedProgram = merge(program, updateProgramDto);
+    merge(program, updateProgramDto);
 
     let savedProgram: ProgramEntity;
     try {
-      savedProgram = await this.programRepository.save(updatedProgram);
+      savedProgram = await this.programRepository.save(program);
     } catch (err) {
       console.log('Error updating program ', err);
       throw new HttpException(
