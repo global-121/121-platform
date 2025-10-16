@@ -29,7 +29,7 @@
     FSP notes
   </p>
 
-  @if (requiredDataColumns().length > 0) {
+  @if (requiredAttributes().length > 0) {
     <p
       i18n
       class="mb-4"
@@ -38,7 +38,7 @@
       <b>exact format</b>
       for this FSP integration in the data column name:
     </p>
-    <p-table [value]="requiredDataColumns()">
+    <p-table [value]="requiredAttributes()">
       <ng-template #header>
         <tr>
           <th
