@@ -22,6 +22,7 @@ describe('Update program', () => {
     // Test with a few possibly to be changed attributes, not all attributes of a program
     const program: UpdateProgramDto = {
       titlePortal: { en: 'new title' },
+      description: { en: 'new description' },
       distributionDuration: 100,
       fixedTransferValue: 500,
       budget: 50000,
@@ -39,9 +40,14 @@ describe('Update program', () => {
     // Assert
     // Check the response to see if the attributes were actually updated
     expect(updateProgramResponse.statusCode).toBe(HttpStatus.OK);
-    expect(updateProgramResponse.body.titlePortal).toMatchObject(
-      program.titlePortal!,
-    );
+    expect(updateProgramResponse.body.titlePortal).toStrictEqual({
+      en: program.titlePortal!.en!,
+      nl: 'NLRC Programma Voedsel',
+    });
+    expect(updateProgramResponse.body.description).toStrictEqual({
+      en: program.description!.en!,
+      nl: 'Een beschrijving.',
+    });
     expect(updateProgramResponse.body.distributionDuration).toBe(
       program.distributionDuration,
     );
