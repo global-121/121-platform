@@ -1853,8 +1853,8 @@
       <trans-unit id="1673983593103079803" datatype="html">
         <source>Editing in <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ languageName }}" id="INTERPOLATION"/><x ctype="x-strong" equiv-text="&lt;/strong &gt;" id="CLOSE_TAG_STRONG"/>.</source>
       </trans-unit>
-      <trans-unit id="2208894525133767287" datatype="html">
-        <source>Please switch language to translate relevant details.</source>
+      <trans-unit id="574910377369158209" datatype="html">
+        <source>Save and switch language to translate relevant details.</source>
       </trans-unit>
     </body>
   </file>
