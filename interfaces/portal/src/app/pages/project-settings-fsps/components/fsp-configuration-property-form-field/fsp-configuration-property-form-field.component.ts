@@ -13,11 +13,11 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
 
 import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { FSP_CONFIGURATION_PROPERTY_LABELS } from '~/domains/fsp/fsp.helper';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import { genericValidationMessage } from '~/utils/form-validation';
 
 @Component({
   selector: 'app-fsp-configuration-property-form-field',
@@ -64,6 +64,10 @@ export class FspConfigurationPropertyFormFieldComponent {
       : undefined,
   );
 
+  readonly inputTextPlaceholder = computed(() =>
+    this.property().isSensitive ? sensitivePropertyString : '',
+  );
+
   readonly fieldType = computed(() => {
     switch (this.property().name) {
       case FspConfigurationProperties.columnsToExport:
@@ -75,19 +79,10 @@ export class FspConfigurationPropertyFormFieldComponent {
     }
   });
 
-  readonly errorMessage = computed(() => {
-    const { name, isRequired } = this.property();
-
-    if (!isRequired) {
-      return undefined;
-    }
-
-    const control = this.formGroup().get(name);
-
-    if (!control?.touched) {
-      return undefined;
-    }
-
-    return genericValidationMessage(control);
-  });
+  // We can't use the generic function here because of how ReactiveForms don't play well with signals,
+  // so the workaround is to access the control in the template,
+  // where reactivity on checking invalid/touched works as expected.
+  readonly errorMessage = computed(
+    () => $localize`:@@generic-required-field:This field is required.`,
+  );
 }

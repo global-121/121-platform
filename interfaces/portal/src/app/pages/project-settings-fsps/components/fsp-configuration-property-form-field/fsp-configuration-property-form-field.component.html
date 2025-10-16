@@ -1,7 +1,10 @@
+@let formControl = formGroup().get(property().name);
 <app-form-field-wrapper
   [label]="label()"
   [labelTooltip]="labelTooltip()"
-  [errorMessage]="errorMessage()"
+  [errorMessage]="
+    formControl?.invalid && formControl?.touched && errorMessage()
+  "
   [isRequired]="property().isRequired"
   [formGroup]="formGroup()"
 >
@@ -31,6 +34,7 @@
     <input
       pInputText
       [formControlName]="property().name"
+      [placeholder]="inputTextPlaceholder()"
       autocomplete="off"
     />
   }
