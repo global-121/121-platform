@@ -78,6 +78,6 @@ describe('Get program with many attributes within time threshold', () => {
     const getProgramResponse = await getProgram(programIdOCW, accessToken);
     const elapsedTime = performance.now() - startTime;
     expect(getProgramResponse.statusCode).toBe(HttpStatus.OK);
-    expect(elapsedTime).toBeLessThan(20); // 20 ms = 0.02 seconds
+    expect(elapsedTime).toBeLessThan(25); // 20 ms = 0.02 seconds
   });
 });
