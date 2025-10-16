@@ -1,0 +1,80 @@
+<p-card styleClass="[&_.p-card]:border-grey-300 [&_.p-card]:border">
+  <h2
+    i18n
+    class="mb-4"
+  >
+    Financial Service Providerss
+  </h2>
+
+  <p
+    i18n
+    class="mb-6"
+  >
+    Choose an FSP from the FSPs integrated to this instance. You can add
+    multiple FSPs to the same project. If you with the integrate a new FSP,
+    contact the 121 support team or talk to the account manager.
+  </p>
+
+  @if (fspConfigurations.isPending()) {
+    <app-skeleton-inline />
+  } @else if (fspConfigurations.isError()) {
+    <app-form-error
+      [error]="fspConfigurations.failureReason()"
+      i18n-error
+    />
+  } @else if (fspConfigurations.isSuccess()) {
+    @let fspConfigs = fspConfigurations.data();
+
+    @if (fspConfigs.length > 0) {
+      <div class="space-y-4">
+        @for (fspConfiguration of fspConfigs; track fspConfiguration.name) {
+          <app-fsp-configuration-card
+            [projectId]="projectId()"
+            [configuration]="fspConfiguration"
+            (reconfigureFsp)="
+              reconfigureFspConfiguration.emit(fspConfiguration)
+            "
+            class="block"
+          />
+        }
+      </div>
+    }
+
+    @if (showNewFspList()) {
+      @if (forceShowNewFspList()) {
+        <p
+          i18n
+          class="txt-body-m mt-8 mb-3 font-bold"
+        >
+          Choose another FSP:
+        </p>
+      }
+
+      <div class="space-y-4">
+        @for (fsp of FSP_SETTINGS; track fsp.name) {
+          @if (!hasFspConfiguration(fsp.name) || fsp.name === Fsps.excel) {
+            <app-card-with-link
+              [title]="fsp.defaultLabel | translatableString"
+              (cardClicked)="addFspConfiguration.emit(fsp.name)"
+              class="block"
+            >
+              <ng-container card-content>
+                <span i18n>Click to integrate</span>
+              </ng-container>
+            </app-card-with-link>
+          }
+        }
+      </div>
+    } @else {
+      <p-button
+        label="Add another FSP"
+        i18n-label
+        icon="pi pi-plus"
+        (click)="forceShowNewFspList.set(true)"
+        outlined
+        rounded
+        styleClass="mt-6"
+      />
+    }
+  }
+</p-card>

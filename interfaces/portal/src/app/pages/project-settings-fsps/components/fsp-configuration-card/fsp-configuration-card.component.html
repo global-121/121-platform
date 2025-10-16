@@ -1,10 +1,16 @@
 <p-card styleClass="relative">
   <h2>
-    {{ configuration().label | translatableString }}
+    <span class="me-2">{{ configuration().label | translatableString }}</span>
+    <app-colored-chip
+      label="Integrated"
+      i18n-label
+      variant="green"
+    />
   </h2>
   <p-button
     text
     plain
+    rounded
     icon="pi pi-ellipsis-h"
     class="absolute end-4 top-2"
     (click)="menu.toggle($event)"
