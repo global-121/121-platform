@@ -54,6 +54,7 @@ export enum TrackingAction {
   showColumnFilter = 'show: Column-filter',
   showContextMenu = 'show: Context Menu',
   showHenryDunant = 'show: Henry Dunant!',
+  showSnakeGameOver = 'show: Snake Game Over',
 }
 
 /**
