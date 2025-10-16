@@ -15,7 +15,10 @@ import {
   Validators,
 } from '@angular/forms';
 
-import { injectMutation } from '@tanstack/angular-query-experimental';
+import {
+  injectMutation,
+  injectQuery,
+} from '@tanstack/angular-query-experimental';
 
 import {
   FspConfigurationProperties,
@@ -27,6 +30,7 @@ import { FormDialogComponent } from '~/components/form-dialog/form-dialog.compon
 import { getFspSettingByName } from '~/domains/fsp/fsp.helper';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
+import { ProjectApiService } from '~/domains/project/project.api.service';
 import { FspConfigurationPropertyFormFieldComponent } from '~/pages/project-settings-fsps/components/fsp-configuration-property-form-field/fsp-configuration-property-form-field.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { ToastService } from '~/services/toast.service';
@@ -61,6 +65,14 @@ export class FspConfigurationFormDialogComponent {
 
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
   readonly toastService = inject(ToastService);
+  readonly projectApiService = inject(ProjectApiService);
+
+  projectAttributes = injectQuery(
+    this.projectApiService.getProjectAttributes({
+      projectId: this.projectId,
+      includeProgramRegistrationAttributes: true,
+    }),
+  );
 
   // XXX: save the FSP setting directly once the FSP_SETTINGS business is in order
   private readonly fspToConfigure = signal<Fsps>(Fsps.excel);
@@ -68,7 +80,12 @@ export class FspConfigurationFormDialogComponent {
     FspConfiguration | undefined
   >(undefined);
 
-  readonly formDialog = viewChild.required<FormDialogComponent>('formDialog');
+  readonly configurationDialog = viewChild.required<FormDialogComponent>(
+    'configurationDialog',
+  );
+  readonly integrationErrorDialog = viewChild.required<FormDialogComponent>(
+    'integrationErrorDialog',
+  );
 
   readonly formGroup = computed<FspConfigurationFormGroup>(() => {
     const fspSetting = this.fspSettingToConfigure();
@@ -112,11 +129,36 @@ export class FspConfigurationFormDialogComponent {
     return fspSetting;
   });
 
-  // XXX: duplicate this for reconfigure scenario
+  readonly missingIntegrationAttributes = computed(() => {
+    const fspSetting = this.fspSettingToConfigure();
+
+    const requiredAttributes = fspSetting.attributes.filter(
+      (property) => property.isRequired,
+    );
+
+    return requiredAttributes.filter(
+      (attribute) =>
+        !this.projectAttributes
+          .data()
+          ?.some(
+            (projectAttribute) =>
+              projectAttribute.name === attribute.name.toString(),
+          ),
+    );
+  });
+
   configureFsp = injectMutation(() => ({
     mutationFn: async (
       formGroupData: ReturnType<FspConfigurationFormGroup['getRawValue']>,
     ) => {
+      if (this.missingIntegrationAttributes().length > 0) {
+        this.configurationDialog().hide({ resetFormGroup: false });
+        this.integrationErrorDialog().show();
+        throw new Error(
+          $localize`Missing required attributes for FSP integration. Please add them to the project registration form before trying again.`,
+        );
+      }
+
       const { configurationProperties, name: fspName } =
         this.fspSettingToConfigure();
 
@@ -161,11 +203,12 @@ export class FspConfigurationFormDialogComponent {
     onSuccess: () => {
       this.configurationCompleted.emit();
     },
-    onError: (error) => {
-      this.toastService.showToast({
-        severity: 'error',
-        detail: error.message,
-      });
+  }));
+
+  retryConfigureFsp = injectMutation(() => ({
+    mutationFn: () => {
+      this.configurationDialog().show({ resetFormGroup: false });
+      return Promise.resolve();
     },
   }));
 
@@ -178,8 +221,6 @@ export class FspConfigurationFormDialogComponent {
   }) {
     this.fspToConfigure.set(fsp);
     this.fspConfigurationToReconfigure.set(fspConfiguration);
-    this.formDialog().show({
-      resetMutation: true,
-    });
+    this.configurationDialog().show();
   }
 }

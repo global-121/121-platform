@@ -104,7 +104,7 @@ export class FspConfigurationCardComponent {
     getFspSettingByName(this.configuration().fspName),
   );
 
-  readonly requiredDataColumns = computed(
+  readonly requiredAttributes = computed(
     () =>
       this.fspSetting()
         ?.attributes.filter((property) => property.isRequired)
