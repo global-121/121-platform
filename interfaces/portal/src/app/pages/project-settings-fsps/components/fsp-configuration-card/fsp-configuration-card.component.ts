@@ -18,6 +18,7 @@ import { CardModule } from 'primeng/card';
 import { MenuModule } from 'primeng/menu';
 import { TableModule } from 'primeng/table';
 
+import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { getFspSettingByName } from '~/domains/fsp/fsp.helper';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
@@ -35,6 +36,7 @@ import { ToastService } from '~/services/toast.service';
     MenuModule,
     FormDialogComponent,
     TableModule,
+    ColoredChipComponent,
   ],
   templateUrl: './fsp-configuration-card.component.html',
   styles: ``,

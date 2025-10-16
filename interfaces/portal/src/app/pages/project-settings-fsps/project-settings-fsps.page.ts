@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   input,
+  model,
   signal,
   viewChild,
 } from '@angular/core';
@@ -14,33 +15,22 @@ import {
   Validators,
 } from '@angular/forms';
 
-import {
-  injectMutation,
-  injectQuery,
-} from '@tanstack/angular-query-experimental';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
+import { injectMutation } from '@tanstack/angular-query-experimental';
 
 import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 
-import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
-import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { PageLayoutProjectSettingsComponent } from '~/components/page-layout-project-settings/page-layout-project-settings.component';
-import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { getFspSettingByName } from '~/domains/fsp/fsp.helper';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import { FspConfigurationCardComponent } from '~/pages/project-settings-fsps/components/fsp-configuration-card/fsp-configuration-card.component';
+import { FspConfigurationListComponent } from '~/pages/project-settings-fsps/components/fsp-configuration-list/fsp-configuration-list.component';
 import { FspConfigurationPropertyFormFieldComponent } from '~/pages/project-settings-fsps/components/fsp-configuration-property-form-field/fsp-configuration-property-form-field.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
-import { RegistrationAttributeService } from '~/services/registration-attribute.service';
-import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
 type FspConfigurationFormGroupControls = {
@@ -53,16 +43,11 @@ type FspConfigurationFormGroupControls = {
   selector: 'app-project-settings-fsps',
   imports: [
     PageLayoutProjectSettingsComponent,
-    CardModule,
-    ButtonModule,
     TranslatableStringPipe,
     FormDialogComponent,
     ReactiveFormsModule,
-    SkeletonInlineComponent,
-    FormErrorComponent,
-    FspConfigurationCardComponent,
-    CardWithLinkComponent,
     FspConfigurationPropertyFormFieldComponent,
+    FspConfigurationListComponent,
   ],
   templateUrl: './project-settings-fsps.page.html',
   styles: ``,
@@ -74,14 +59,9 @@ export class ProjectSettingsFspsPageComponent {
 
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
   readonly projectApiService = inject(ProjectApiService);
-  readonly registrationAttributeService = inject(RegistrationAttributeService);
-  readonly rtlHelper = inject(RtlHelperService);
   readonly toastService = inject(ToastService);
 
-  readonly FSP_SETTINGS = FSP_SETTINGS;
-  readonly Fsps = Fsps;
-
-  readonly forceAddAnotherFsp = signal(false);
+  readonly forceShowNewFspList = model(false);
   private readonly fspToConfigure = signal<Fsps>(Fsps.excel);
   private readonly fspConfigurationNameToReconfigure = signal<
     string | undefined
@@ -89,10 +69,6 @@ export class ProjectSettingsFspsPageComponent {
 
   readonly fspConfigurationDialog = viewChild.required<FormDialogComponent>(
     'fspConfigurationDialog',
-  );
-
-  fspConfigurations = injectQuery(
-    this.fspConfigurationApiService.getFspConfigurations(this.projectId),
   );
 
   readonly formGroup = computed(() => {
@@ -172,7 +148,7 @@ export class ProjectSettingsFspsPageComponent {
 
       await this.projectApiService.invalidateCache();
 
-      this.forceAddAnotherFsp.set(false);
+      this.forceShowNewFspList.set(false);
     },
     onError: (error) => {
       this.toastService.showToast({
@@ -194,11 +170,5 @@ export class ProjectSettingsFspsPageComponent {
     this.fspConfigurationDialog().show({
       resetMutation: true,
     });
-  }
-
-  hasFspConfiguration(fspName: Fsps) {
-    return this.fspConfigurations
-      .data()
-      ?.some((fspConfiguration) => fspConfiguration.fspName === fspName);
   }
 }
