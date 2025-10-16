@@ -1850,11 +1850,11 @@
       <trans-unit id="generic-more-info-in-manual" datatype="html">
         <source>For more information see the <x ctype="x-ng_container" equiv-text="&lt;ng-container [ngTemplateOutlet]=&quot;manualLink&quot;&gt;" id="START_TAG_NG_CONTAINER"/><x ctype="x-ng_container" equiv-text="&lt;/ng-container&gt;" id="CLOSE_TAG_NG_CONTAINER"/>.</source>
       </trans-unit>
-      <trans-unit id="1673983593103079803" datatype="html">
-        <source>Editing in <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ languageName }}" id="INTERPOLATION"/><x ctype="x-strong" equiv-text="&lt;/strong &gt;" id="CLOSE_TAG_STRONG"/>.</source>
-      </trans-unit>
       <trans-unit id="574910377369158209" datatype="html">
         <source>Save and switch language to translate relevant details.</source>
+      </trans-unit>
+      <trans-unit id="7750731471522839997" datatype="html">
+        <source>Editing in <x equiv-text="{{ languageName }}" id="INTERPOLATION"/>.</source>
       </trans-unit>
     </body>
   </file>
