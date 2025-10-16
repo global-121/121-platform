@@ -33,10 +33,15 @@ import { FspConfigurationPropertyFormFieldComponent } from '~/pages/project-sett
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { ToastService } from '~/services/toast.service';
 
-type FspConfigurationFormGroupControls = {
-  displayName: FormControl<string>;
-} & Partial<
-  Record<FspConfigurationProperties, FormControl<string | string[] | undefined>>
+type FspConfigurationFormGroup = FormGroup<
+  {
+    displayName: FormControl<string>;
+  } & Partial<
+    Record<
+      FspConfigurationProperties,
+      FormControl<string | string[] | undefined>
+    >
+  >
 >;
 
 @Component({
@@ -71,7 +76,7 @@ export class ProjectSettingsFspsPageComponent {
     'fspConfigurationDialog',
   );
 
-  readonly formGroup = computed(() => {
+  readonly formGroup = computed<FspConfigurationFormGroup>(() => {
     const fspSetting = this.fspSettingToConfigure();
 
     // Every fsp-specific formGroup needs to have a displayName field...
@@ -83,7 +88,7 @@ export class ProjectSettingsFspsPageComponent {
       }),
     };
 
-    return new FormGroup<FspConfigurationFormGroupControls>(
+    return new FormGroup(
       // ...and on top of the displayName, we add each configuration property
       fspSetting.configurationProperties.reduce(
         (acc, property) => ({
@@ -112,9 +117,7 @@ export class ProjectSettingsFspsPageComponent {
   // XXX: duplicate this for reconfigure scenario
   createFinancialServiceProvidersConfiguration = injectMutation(() => ({
     mutationFn: async (
-      formGroupData: ReturnType<
-        FormGroup<FspConfigurationFormGroupControls>['getRawValue']
-      >,
+      formGroupData: ReturnType<FspConfigurationFormGroup['getRawValue']>,
     ) => {
       const { configurationProperties, name: fspName } =
         this.fspSettingToConfigure();
