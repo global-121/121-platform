@@ -176,7 +176,7 @@ export class FspConfigurationFormDialogComponent {
         );
 
       const fspConfiguration = {
-        // XXX: add TODO to be able to configure this in the UI
+        // TODO: AB#38589 - edit name separately from display name
         name: formGroupData.displayName,
         label: {
           en: formGroupData.displayName,
