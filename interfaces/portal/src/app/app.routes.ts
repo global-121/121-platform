@@ -196,6 +196,9 @@ export const routes: Routes = [
               import(
                 '~/pages/project-settings-fsps/project-settings-fsps.page'
               ).then((x) => x.ProjectSettingsFspsPageComponent),
+            canActivate: [
+              authCapabilitiesGuard((authService) => authService.isAdmin),
+            ],
           },
           {
             path: AppRoutes.projectSettingsTeam,
