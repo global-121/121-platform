@@ -1,4 +1,7 @@
+import * as request from 'supertest';
+
 import { getPaymentSummary } from '@121-service/test/helpers/program.helper';
+import { getServer } from '@121-service/test/helpers/utility.helper';
 
 export type JsonRecord = Readonly<Record<string, unknown>>;
 
@@ -37,6 +40,10 @@ interface PaymentResultsResult {
   readonly attempts: number;
   readonly elapsedTimeMs: number;
   readonly lastResponse?: any;
+}
+
+interface Kill121ServiceParams {
+  readonly secret?: string;
 }
 
 function sleep(ms: number): Promise<void> {
@@ -253,4 +260,21 @@ export async function getPaymentResults({
     elapsedTimeMs,
     lastResponse,
   );
+}
+
+export async function kill121Service({
+  secret = 'fill_in_secret',
+}: Kill121ServiceParams = {}): Promise<request.Response> {
+  const body = { secret };
+
+  return await getServer()
+    .post(`/test/kill-service`)
+    .set('Content-Type', 'application/json')
+    .send(body);
+}
+
+export async function isServiceUp(): Promise<request.Response> {
+  return await getServer()
+    .get(`/health/health`)
+    .set('Accept', 'application/json');
 }
