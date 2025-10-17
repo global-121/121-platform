@@ -2,22 +2,13 @@
   <app-fsp-configuration-list
     [projectId]="projectId()"
     [(forceShowNewFspList)]="forceShowNewFspList"
-    (addFspConfiguration)="
-      showFspConfigurationDialog({
-        fsp: $event,
-      })
-    "
-    (reconfigureFspConfiguration)="
-      showFspConfigurationDialog({
-        fsp: $event.fspName,
-        fspConfiguration: $event,
-      })
-    "
+    (addFspConfiguration)="addFspConfiguration($event)"
+    (reconfigureFspConfiguration)="reconfigureFspConfiguration($event)"
   />
 </app-page-layout-project-settings>
 
 <app-fsp-configuration-form-dialog
   #fspConfigurationFormDialog
   [projectId]="projectId()"
-  (configurationCompleted)="configurationCompleted()"
+  (configurationCompleted)="configurationCompleted($event)"
 />

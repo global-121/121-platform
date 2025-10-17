@@ -18,6 +18,7 @@ import { sensitivePropertyString } from '@121-service/src/program-fsp-configurat
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { FSP_CONFIGURATION_PROPERTY_LABELS } from '~/domains/fsp-configuration/fsp-configuration.helper';
 import { ProjectApiService } from '~/domains/project/project.api.service';
+import { FspConfigurationService } from '~/services/fsp-configuration.service';
 
 @Component({
   selector: 'app-fsp-configuration-property-form-field',
@@ -34,13 +35,14 @@ import { ProjectApiService } from '~/domains/project/project.api.service';
 })
 export class FspConfigurationPropertyFormFieldComponent {
   readonly projectId = input.required<number | string>();
+  readonly formGroup = input.required<FormGroup>();
   readonly property = input.required<{
     name: 'displayName' | FspConfigurationProperties;
     isRequired: boolean;
     isSensitive: boolean;
   }>();
-  readonly formGroup = input.required<FormGroup>();
 
+  readonly fspConfigurationService = inject(FspConfigurationService);
   readonly projectApiService = inject(ProjectApiService);
 
   projectAttributes = injectQuery(
@@ -68,19 +70,12 @@ export class FspConfigurationPropertyFormFieldComponent {
     this.property().isSensitive ? sensitivePropertyString : '',
   );
 
-  readonly fieldType = computed(() => {
-    switch (this.property().name) {
-      case FspConfigurationProperties.columnsToExport:
-        return 'select-multiple';
-      case FspConfigurationProperties.columnToMatch:
-        return 'select';
-      default:
-        return 'string';
-    }
-  });
+  readonly fieldType = computed(() =>
+    this.fspConfigurationService.getPropertyFieldType(this.property().name),
+  );
 
   // We can't use the generic function here because of how ReactiveForms don't play well with signals,
-  // so the workaround is to access the control in the template,
+  // so the workaround is to access the control state in the template,
   // where reactivity on checking invalid/touched works as expected.
   readonly errorMessage = computed(
     () => $localize`:@@generic-required-field:This field is required.`,

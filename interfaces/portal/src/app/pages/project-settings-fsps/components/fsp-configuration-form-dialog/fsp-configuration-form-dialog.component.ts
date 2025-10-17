@@ -9,24 +9,16 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
 
-import {
-  FspConfigurationProperties,
-  Fsps,
-} from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FspDto } from '@121-service/src/fsps/fsp.dto';
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
-import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
@@ -34,21 +26,18 @@ import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-conf
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { FspConfigurationPropertyFormFieldComponent } from '~/pages/project-settings-fsps/components/fsp-configuration-property-form-field/fsp-configuration-property-form-field.component';
-import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
+import {
+  FspConfigurationFormGroup,
+  FspConfigurationService,
+} from '~/services/fsp-configuration.service';
 import { ToastService } from '~/services/toast.service';
-
-type FspConfigurationControls = {
-  displayName: FormControl<string>;
-} & Partial<
-  Record<FspConfigurationProperties, FormControl<string | string[] | undefined>>
->;
+import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Component({
   selector: 'app-fsp-configuration-form-dialog',
   imports: [
     FormDialogComponent,
     FspConfigurationPropertyFormFieldComponent,
-    TranslatableStringPipe,
     ReactiveFormsModule,
     NgTemplateOutlet,
   ],
@@ -59,11 +48,13 @@ type FspConfigurationControls = {
 })
 export class FspConfigurationFormDialogComponent {
   readonly projectId = input.required<string>();
-  readonly configurationCompleted = output();
+  readonly configurationCompleted = output<FspConfiguration>();
 
+  readonly fspConfigurationService = inject(FspConfigurationService);
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
-  readonly toastService = inject(ToastService);
   readonly projectApiService = inject(ProjectApiService);
+  readonly translatableStringService = inject(TranslatableStringService);
+  readonly toastService = inject(ToastService);
 
   projectAttributes = injectQuery(
     this.projectApiService.getProjectAttributes({
@@ -72,12 +63,6 @@ export class FspConfigurationFormDialogComponent {
     }),
   );
 
-  // XXX: save the FSP setting directly once the FSP_SETTINGS business is in order
-  private readonly fspToConfigure = signal<Fsps>(Fsps.excel);
-  private readonly fspConfigurationToReconfigure = signal<
-    FspConfiguration | undefined
-  >(undefined);
-
   readonly configurationDialog = viewChild.required<FormDialogComponent>(
     'configurationDialog',
   );
@@ -85,85 +70,50 @@ export class FspConfigurationFormDialogComponent {
     'integrationErrorDialog',
   );
 
-  readonly formGroup = computed<FormGroup<FspConfigurationControls>>(() => {
-    const fspSetting = this.fspSettingToConfigure();
-
-    const existingFspConfiguration = this.fspConfigurationToReconfigure();
-
-    const defaultDisplayNameValue = existingFspConfiguration
-      ? (existingFspConfiguration.label.en ?? '')
-      : (fspSetting.defaultLabel.en ?? '');
-
-    const formGroupControls: FspConfigurationControls = {
-      displayName: new FormControl(defaultDisplayNameValue, {
-        nonNullable: true,
-        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-        validators: [Validators.required],
-      }),
-    };
-
-    fspSetting.configurationProperties.forEach((property) => {
-      let existingPropertyValue = existingFspConfiguration?.properties.find(
-        (p) => p.name === property.name,
-      )?.value;
-
-      if (this.isSensitiveProperty()(property.name)) {
-        existingPropertyValue = '';
-      }
-
-      if (property.name === FspConfigurationProperties.columnsToExport) {
-        existingPropertyValue = existingPropertyValue
-          ? (existingPropertyValue as string).split(',')
-          : [];
-      }
-
-      formGroupControls[property.name] = new FormControl<string | string[]>(
-        existingPropertyValue ?? '',
-        {
-          nonNullable: true,
-          // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-          validators: property.isRequired ? [Validators.required] : [],
-        },
-      );
-    });
-
-    return new FormGroup(formGroupControls);
-  });
-
-  readonly fspSettingToConfigure = computed(
-    () => FSP_SETTINGS[this.fspToConfigure()],
+  readonly fspSetting = signal<FspDto>(FSP_SETTINGS[Fsps.excel]);
+  readonly existingFspConfiguration = signal<FspConfiguration | undefined>(
+    undefined,
   );
 
-  readonly missingIntegrationAttributes = computed(() => {
-    const fspSetting = this.fspSettingToConfigure();
+  readonly fspLabel = computed(
+    () =>
+      this.translatableStringService.translate(
+        this.fspSetting().defaultLabel,
+      ) ?? '',
+  );
 
-    const requiredAttributes = fspSetting.attributes.filter(
-      (property) => property.isRequired,
-    );
+  readonly configurationDialogHeader = computed(() => {
+    const title = this.existingFspConfiguration()
+      ? $localize`Reconfigure`
+      : $localize`Configure`;
 
-    return requiredAttributes.filter(
-      (attribute) =>
-        !this.projectAttributes
-          .data()
-          ?.some(
-            (projectAttribute) =>
-              projectAttribute.name === attribute.name.toString(),
-          ),
-    );
+    return `${title} ${this.fspLabel()}`;
   });
 
-  readonly isSensitiveProperty = computed(
-    () => (propertyName: FspConfigurationProperties) =>
-      this.fspConfigurationToReconfigure()?.properties.find(
-        (p) => p.name === propertyName,
-      )?.value === sensitivePropertyString,
+  readonly missingIntegrationAttributes = computed(() =>
+    this.fspConfigurationService.getMissingRequiredAttributes({
+      fspSetting: this.fspSetting(),
+      projectAttributes: this.projectAttributes.data() ?? [],
+    }),
+  );
+
+  readonly formGroup = computed<FspConfigurationFormGroup>(() =>
+    this.fspConfigurationService.fspSettingToFormGroup({
+      fspSetting: this.fspSetting(),
+      existingFspConfiguration: this.existingFspConfiguration(),
+    }),
+  );
+
+  readonly formFields = computed(() =>
+    this.fspConfigurationService.fspSettingToFormFields({
+      fspSetting: this.fspSetting(),
+      existingFspConfiguration: this.existingFspConfiguration(),
+    }),
   );
 
   configureFsp = injectMutation(() => ({
     mutationFn: async (
-      formGroupData: ReturnType<
-        FormGroup<FspConfigurationControls>['getRawValue']
-      >,
+      formGroupData: ReturnType<FspConfigurationFormGroup['getRawValue']>,
     ) => {
       // TODO: AB#35944 - Once we have implemented KOBO integration via the UI, this should become
       // if (this.missingIntegrationAttributes().length > 0 && this.hasKoboIntegration()) {
@@ -176,18 +126,7 @@ export class FspConfigurationFormDialogComponent {
         );
       }
 
-      const { configurationProperties, name: fspName } =
-        this.fspSettingToConfigure();
-
-      const properties = configurationProperties
-        .map(({ name }) => ({
-          name,
-          value: formGroupData[name],
-        }))
-        .filter(
-          (property): property is CreateProgramFspConfigurationPropertyDto =>
-            property.value !== undefined,
-        );
+      const { configurationProperties, name: fspName } = this.fspSetting();
 
       const fspConfiguration = {
         // TODO: AB#38589 - edit name separately from display name
@@ -196,10 +135,18 @@ export class FspConfigurationFormDialogComponent {
           en: formGroupData.displayName,
         },
         fspName,
-        properties,
+        properties: configurationProperties
+          .map(({ name }) => ({
+            name,
+            value: formGroupData[name],
+          }))
+          .filter(
+            (property): property is CreateProgramFspConfigurationPropertyDto =>
+              property.value !== undefined,
+          ),
       };
 
-      const existingFspConfiguration = this.fspConfigurationToReconfigure();
+      const existingFspConfiguration = this.existingFspConfiguration();
 
       if (existingFspConfiguration) {
         // set name to the existing value to avoid changing it
@@ -217,8 +164,8 @@ export class FspConfigurationFormDialogComponent {
         configuration: fspConfiguration,
       });
     },
-    onSuccess: () => {
-      this.configurationCompleted.emit();
+    onSuccess: (fspConfiguration) => {
+      this.configurationCompleted.emit(fspConfiguration);
     },
   }));
 
@@ -230,14 +177,14 @@ export class FspConfigurationFormDialogComponent {
   }));
 
   show({
-    fsp,
+    fspSetting,
     fspConfiguration,
   }: {
-    fsp: Fsps;
+    fspSetting: FspDto;
     fspConfiguration?: FspConfiguration;
   }) {
-    this.fspToConfigure.set(fsp);
-    this.fspConfigurationToReconfigure.set(fspConfiguration);
+    this.fspSetting.set(fspSetting);
+    this.existingFspConfiguration.set(fspConfiguration);
     this.configurationDialog().show();
   }
 }

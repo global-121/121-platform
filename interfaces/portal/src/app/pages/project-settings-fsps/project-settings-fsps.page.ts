@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 
 import { PageLayoutProjectSettingsComponent } from '~/components/page-layout-project-settings/page-layout-project-settings.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
@@ -16,6 +17,7 @@ import { ProjectApiService } from '~/domains/project/project.api.service';
 import { FspConfigurationFormDialogComponent } from '~/pages/project-settings-fsps/components/fsp-configuration-form-dialog/fsp-configuration-form-dialog.component';
 import { FspConfigurationListComponent } from '~/pages/project-settings-fsps/components/fsp-configuration-list/fsp-configuration-list.component';
 import { ToastService } from '~/services/toast.service';
+import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Component({
   selector: 'app-project-settings-fsps',
@@ -34,6 +36,7 @@ export class ProjectSettingsFspsPageComponent {
 
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
   readonly projectApiService = inject(ProjectApiService);
+  readonly translatableStringService = inject(TranslatableStringService);
   readonly toastService = inject(ToastService);
 
   readonly forceShowNewFspList = model(false);
@@ -43,21 +46,29 @@ export class ProjectSettingsFspsPageComponent {
       'fspConfigurationFormDialog',
     );
 
-  configurationCompleted() {
+  addFspConfiguration(fsp: Fsps) {
+    this.fspConfigurationFormDialog().show({ fspSetting: FSP_SETTINGS[fsp] });
+  }
+
+  reconfigureFspConfiguration(configuration: FspConfiguration) {
+    this.fspConfigurationFormDialog().show({
+      fspSetting: FSP_SETTINGS[configuration.fspName],
+      fspConfiguration: configuration,
+    });
+  }
+
+  configurationCompleted(fspConfiguration: FspConfiguration) {
+    const fspDisplayName = this.translatableStringService.translate(
+      fspConfiguration.label,
+    );
+
     this.toastService.showToast({
-      detail: $localize`FSP integrated successfully.`,
+      detail: $localize`FSP "${fspDisplayName}" integrated successfully.`,
     });
 
     void this.fspConfigurationApiService.invalidateCache(this.projectId);
     void this.projectApiService.invalidateCache(this.projectId);
 
     this.forceShowNewFspList.set(false);
-  }
-
-  showFspConfigurationDialog(opts: {
-    fsp: Fsps;
-    fspConfiguration?: FspConfiguration;
-  }) {
-    this.fspConfigurationFormDialog().show(opts);
   }
 }

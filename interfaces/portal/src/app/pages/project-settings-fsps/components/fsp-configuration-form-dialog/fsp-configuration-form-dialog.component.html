@@ -1,10 +1,10 @@
 <app-form-dialog
   #configurationDialog
+  [header]="configurationDialogHeader()"
+  headerIcon="pi pi-money-bill"
   [formGroup]="formGroup()"
   [mutation]="configureFsp"
   [mutationData]="formGroup().getRawValue()"
-  [header]="fspSettingToConfigure().defaultLabel | translatableString"
-  headerIcon="pi pi-money-bill"
   proceedLabel="Integrate FSP"
   i18n-proceedLabel
 >
@@ -27,28 +27,11 @@
     <ng-container [ngTemplateOutlet]="manualLink"></ng-container>.
   </p>
 
-  <app-fsp-configuration-property-form-field
-    [projectId]="projectId()"
-    [formGroup]="formGroup()"
-    [property]="{
-      name: 'displayName',
-      isRequired: true,
-      isSensitive: false,
-    }"
-  />
-
-  @for (
-    property of fspSettingToConfigure().configurationProperties;
-    track property.name
-  ) {
+  @for (property of formFields(); track property.name) {
     <app-fsp-configuration-property-form-field
       [projectId]="projectId()"
       [formGroup]="formGroup()"
-      [property]="{
-        name: property.name,
-        isRequired: property.isRequired,
-        isSensitive: isSensitiveProperty()(property.name),
-      }"
+      [property]="property"
     />
   }
 </app-form-dialog>
@@ -71,8 +54,8 @@
   <ol class="my-4 list-inside list-decimal ps-4">
     @for (attribute of missingIntegrationAttributes(); track attribute.name) {
       <li i18n>
-        FSP "{{ fspSettingToConfigure().defaultLabel | translatableString }}" is
-        missing required field <b>"{{ attribute.name }}"</b>
+        FSP "{{ fspLabel() }}" is missing required field
+        <b>"{{ attribute.name }}"</b>
       </li>
     }
   </ol>
