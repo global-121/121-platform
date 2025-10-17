@@ -27,7 +27,6 @@ export type ProjectUserWithRolesLabel = {
 
 export type Attribute = Dto<AttributeFrom121Service>;
 
-export type AttributeWithTranslatedLabel = { label: string } & Omit<
-  Attribute,
-  'label'
->;
+export type AttributeWithTranslatedLabel = {
+  translatedLabel: string;
+} & Attribute;

@@ -1,0 +1,67 @@
+<app-card-editable
+  header="Personal information"
+  i18n-header
+  editPencilTitle="Edit personal information"
+  i18n-editPencilTitle
+  [canEdit]="true"
+  [(isEditing)]="isEditing"
+  [formGroup]="formGroup"
+  [mutation]="updateAttributesMutation"
+  [mutationData]="formGroup.getRawValue()"
+>
+  <p
+    i18n
+    class="mb-4"
+  >
+    Below are the {{ projectAttributes.data()?.length }} questions from the
+    integrated Kobo form. Please edit each column name to a shorter version that
+    will be displayed in the data table and on the profile page.
+  </p>
+
+  <app-project-language-tabs
+    [projectId]="projectId()"
+    [(currentLanguage)]="currentLanguage"
+  >
+    <ng-template #languageTemplate>
+      @let attributes = sortedAttributes();
+
+      <p-table [value]="attributes">
+        <ng-template #header>
+          <tr>
+            <th
+              i18n
+              class="w-1/2"
+            >
+              Data column name
+            </th>
+            <th
+              i18n
+              class="w-1/2"
+            >
+              Question label
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template
+          #body
+          let-attribute
+        >
+          <tr [formGroupName]="attribute.name">
+            <td>{{ attribute.name }}</td>
+            @if (isEditing()) {
+              <td>
+                <input
+                  type="text"
+                  pInputText
+                  [formControlName]="currentLanguage()"
+                />
+              </td>
+            } @else {
+              <td>{{ attribute.label[currentLanguage()] }}</td>
+            }
+          </tr>
+        </ng-template>
+      </p-table>
+    </ng-template>
+  </app-project-language-tabs>
+</app-card-editable>
