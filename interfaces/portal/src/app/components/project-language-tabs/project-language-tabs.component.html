@@ -1,0 +1,23 @@
+@let languages = projectLanguages();
+
+@if (languages.length > 1) {
+  <p-tabs [(value)]="currentLanguage">
+    <p-tablist>
+      @for (language of languages; track language) {
+        <p-tab [value]="language">
+          <i class="pi pi-globe"></i>
+          {{ LANGUAGE_ENUM_LABEL[language] }}</p-tab
+        >
+      }
+    </p-tablist>
+    <p-tabpanels>
+      @for (language of languages; track language) {
+        <p-tabpanel [value]="language">
+          <ng-container *ngTemplateOutlet="languageTemplate()"></ng-container>
+        </p-tabpanel>
+      }
+    </p-tabpanels>
+  </p-tabs>
+} @else {
+  <ng-container *ngTemplateOutlet="languageTemplate()"></ng-container>
+}

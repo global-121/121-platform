@@ -195,6 +195,9 @@ const AppTheme = definePreset(Aura, {
         hoverColor: colors.grey[700],
         hoverBorderColor: colors.grey[700],
       },
+      tabpanel: {
+        padding: '1rem 0 0',
+      },
     },
     toast: {
       colorScheme: {

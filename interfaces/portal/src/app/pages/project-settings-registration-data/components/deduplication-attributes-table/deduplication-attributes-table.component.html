@@ -1,0 +1,53 @@
+<app-card-editable
+  header="De-duplication"
+  i18n-header
+  editPencilTitle="Edit de-duplication attributes"
+  i18n-editPencilTitle
+  [canEdit]="true"
+  [(isEditing)]="isEditing"
+  [formGroup]="formGroup"
+  [mutation]="updateAttributesMutation"
+  [mutationData]="formGroup.getRawValue()"
+>
+  <p
+    i18n
+    class="mb-4"
+  >
+    Select the fields you would like to use as duplication indicators - if these
+    fields are found to match the registrations will be flagged as duplicates.
+    Note that some FSPs may require specific fields to be unique, check for
+    notes in the FSP page.
+  </p>
+
+  @if (!isEditing()) {
+    <p-table [value]="duplicateCheckAttributes()">
+      <ng-template #header>
+        <tr>
+          <th i18n>Duplication fields</th>
+        </tr>
+      </ng-template>
+      <ng-template
+        #body
+        let-attribute
+      >
+        <tr>
+          <td>{{ attribute.translatedLabel }}</td>
+        </tr>
+      </ng-template>
+      <ng-template #emptymessage>
+        <tr>
+          <td i18n>No attributes selected.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  } @else {
+    <p-multiselect
+      [options]="project.data()?.programRegistrationAttributes"
+      formControlName="deduplicationAttributes"
+      [optionLabel]="'translatedLabel'"
+      placeholder="Select Attributes"
+      i18n-placeholder
+      styleClass="mt-4 w-full"
+    />
+  }
+</app-card-editable>
