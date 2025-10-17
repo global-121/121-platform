@@ -109,7 +109,7 @@ describe('TransactionJobsOnafriqService', () => {
         firstName: 'John',
         lastName: 'Doe',
         thirdPartyTransId: expect.any(String),
-        credentials: {
+        requestIdentity: {
           corporateCode: mockCorporateCode,
           password: mockPassword,
           uniqueKey: mockUniqueKey,

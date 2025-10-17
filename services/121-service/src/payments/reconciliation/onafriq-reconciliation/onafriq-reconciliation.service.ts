@@ -1,9 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import * as fs from 'fs';
 import { Redis } from 'ioredis';
 import SftpClient from 'ssh2-sftp-client';
-import { Between, Equal, Repository } from 'typeorm';
+import { Between, Equal } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { IS_PRODUCTION } from '@121-service/src/config';
@@ -27,7 +26,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
@@ -36,8 +35,6 @@ import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/cr
 @Injectable()
 export class OnafriqReconciliationService {
   private sftp: SftpClient;
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
 
   public constructor(
     @Inject(getScopedRepositoryProviderName(OnafriqTransactionEntity))
@@ -47,6 +44,7 @@ export class OnafriqReconciliationService {
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly programRepository: ProgramRepository,
   ) {}
 
   public async processTransactionCallback(
@@ -132,27 +130,29 @@ export class OnafriqReconciliationService {
     const programs = await this.programRepository.find();
     let result = 0;
     for (const program of programs) {
-      const report = await this.generateAndSendReconciliationReportYesterday(
-        program.id,
-      );
+      const report = await this.generateAndSendReconciliationReportYesterday({
+        programId: program.id,
+      });
       result += report.length;
     }
     return result;
   }
 
-  public async generateAndSendReconciliationReportYesterday(
-    programId: number,
-    toDate?: Date,
-    fromDate?: Date,
-  ): Promise<OnafriqReconciliationReport[]> {
-    const where = {
-      transaction: { payment: { programId: Equal(programId) } },
-    };
+  public async generateAndSendReconciliationReportYesterday({
+    programId,
+    toDate,
+    fromDate,
+  }: {
+    programId: number;
+    toDate?: Date;
+    fromDate?: Date;
+  }): Promise<OnafriqReconciliationReport[]> {
+    let createdFilter: any;
     if (fromDate || toDate) {
       // if at least one provided, assume date range with open on the other end
       const fromDateFilter = fromDate || new Date(2000, 1, 1);
       const toDateFilter = toDate || new Date();
-      where.transaction['created'] = Between(fromDateFilter, toDateFilter);
+      createdFilter = Between(fromDateFilter, toDateFilter);
     } else {
       // if no date range provide, assume yesterday. This is the cron/production scenario.
       const yesterdayStart = new Date();
@@ -160,8 +160,14 @@ export class OnafriqReconciliationService {
       yesterdayStart.setUTCHours(0, 0, 0, 0);
       const yesterdayEnd = new Date(yesterdayStart);
       yesterdayEnd.setUTCHours(23, 59, 59, 999);
-      where.transaction['created'] = Between(yesterdayStart, yesterdayEnd);
+      createdFilter = Between(yesterdayStart, yesterdayEnd);
     }
+    const where = {
+      transaction: {
+        payment: { programId: Equal(programId) },
+        created: createdFilter,
+      },
+    };
 
     const onafriqTransactions =
       await this.onafriqTransactionScopedRepository.find({
@@ -196,7 +202,6 @@ export class OnafriqReconciliationService {
     // Only send to SFTP if transactions, and only on production (staging also has IS_PRODUCTION, but also MOCK_ONAFRIQ=true. // REFACTOR: this is not full-proof)
     // NOTE: If you need to touch this code and test locally, make sure to clean up any test results on sftp location.
     if (report.length > 0 && IS_PRODUCTION && !env.MOCK_ONAFRIQ) {
-      const corporateCode = programFspConfigProperties[0].value as string;
       const csvContent =
         report.length === 0
           ? ''

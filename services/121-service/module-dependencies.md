@@ -72,6 +72,7 @@ graph LR
   OnafriqReconciliationModule-->TransactionsModule
   OnafriqReconciliationModule-->QueuesRegistryModule
   OnafriqReconciliationModule-->ProgramFspConfigurationsModule
+  OnafriqReconciliationModule-->ProgramModule
   CronjobModule-->ExchangeRatesModule
   ExchangeRatesModule-->UserModule
   MessageModule-->WhatsappModule

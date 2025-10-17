@@ -88,9 +88,11 @@ export class OnafriqReconciliationController {
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
     return await this.onafriqReconciliationService.generateAndSendReconciliationReportYesterday(
-      programId,
-      toDate,
-      fromDate,
+      {
+        programId,
+        toDate,
+        fromDate,
+      },
     );
   }
 }
