@@ -41,6 +41,6 @@ export const FspConfigPropertyValueVisibility: Record<
   [FspConfigurationProperties.paymentReferencePrefix]: true,
   //onafriq
   [FspConfigurationProperties.corporateCodeOnafriq]: true,
-  [FspConfigurationProperties.passwordOnafriq]: true,
-  [FspConfigurationProperties.uniqueKeyOnafriq]: true,
+  [FspConfigurationProperties.passwordOnafriq]: false,
+  [FspConfigurationProperties.uniqueKeyOnafriq]: false,
 };

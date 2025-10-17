@@ -17,19 +17,19 @@ export class OnafriqApiHelperService {
     firstName,
     lastName,
     thirdPartyTransId,
-    credentials,
+    requestIdentity,
   }): OnafriqApiCallServiceRequestBody {
     const batchId = uuid(); // Generate a new batch ID for each request
     const mfsSign = this.generateMfsSign(
-      credentials.password,
+      requestIdentity.password,
       batchId,
-      credentials.uniqueKey,
+      requestIdentity.uniqueKey,
     );
     const currencyCode = env.ONAFRIQ_CURRENCY_CODE;
     const countryCode = env.ONAFRIQ_COUNTRY_CODE;
     const callServicePayload: OnafriqApiCallServiceRequestBody = {
-      corporateCode: credentials.corporateCode,
-      password: credentials.password,
+      corporateCode: requestIdentity.corporateCode,
+      password: requestIdentity.password,
       mfsSign,
       batchId,
       requestBody: [

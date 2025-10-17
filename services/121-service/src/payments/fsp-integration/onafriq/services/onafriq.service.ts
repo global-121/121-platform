@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import {
   FspConfigurationProperties,
@@ -26,6 +26,13 @@ export class OnafriqService {
         programId,
         fspName: Fsps.onafriq,
       });
+    if (fspConfigs.length === 0) {
+      throw new HttpException(
+        `No Onafriq program fsp config properties found for program with id ${programId}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     const programFspConfigProperties =
       await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
         programFspConfigurationId: fspConfigs[0].id, // There will be just 1 fspConfig per program for Onafriq
@@ -53,7 +60,7 @@ export class OnafriqService {
     firstName,
     lastName,
     thirdPartyTransId,
-    credentials,
+    requestIdentity,
   }: CreateTransactionParams): Promise<void> {
     // Simulate timeout, use this to test unintended Redis job re-attempt, by restarting 121-service during this timeout
     // 1. Simulate crash before API-call
@@ -65,7 +72,7 @@ export class OnafriqService {
       firstName,
       lastName,
       thirdPartyTransId,
-      credentials,
+      requestIdentity,
     });
 
     if (mappedResponse.status !== OnafriqApiResponseStatusType.success) {

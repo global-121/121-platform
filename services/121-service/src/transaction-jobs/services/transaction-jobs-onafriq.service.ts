@@ -86,7 +86,7 @@ export class TransactionJobsOnafriqService {
 
     // 4. Start the transfer, if failure: update to error transaction and return early
     try {
-      const credentials = await this.getOnafriqFspConfig(
+      const requestIdentity = await this.getOnafriqFspConfig(
         transactionJob.programFspConfigurationId,
       );
       await this.onafriqService.createTransaction({
@@ -95,7 +95,7 @@ export class TransactionJobsOnafriqService {
         firstName: transactionJob.firstName,
         lastName: transactionJob.lastName,
         thirdPartyTransId,
-        credentials,
+        requestIdentity,
       });
     } catch (error) {
       if (

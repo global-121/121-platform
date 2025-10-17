@@ -5,7 +5,7 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   getTransactionsIntersolveVoucher,
   getVoucherBalance,
-} from '@121-service/test/helpers/intersolve-voucher.helper';
+} from '@121-service/test/helpers/fsp-specific.helper';
 import { doPayment } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,

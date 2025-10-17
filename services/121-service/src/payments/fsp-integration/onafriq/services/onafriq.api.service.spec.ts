@@ -13,7 +13,7 @@ const mockParams = {
   firstName: 'John',
   lastName: 'Doe',
   thirdPartyTransId: 'abc123',
-  credentials: {
+  requestIdentity: {
     corporateCode: 'mocked_corporate_code',
     password: 'mocked_password',
     uniqueKey: 'mocked_unique_key',

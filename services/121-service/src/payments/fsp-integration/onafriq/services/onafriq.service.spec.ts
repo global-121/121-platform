@@ -13,7 +13,7 @@ const mockedCreateTransactionParams: CreateTransactionParams = {
   thirdPartyTransId: 'mocked_third_party_trans_id',
   firstName: 'mocked_first_name',
   lastName: 'mocked_last_name',
-  credentials: {
+  requestIdentity: {
     corporateCode: 'mocked_corporate_code',
     password: 'mocked_password',
     uniqueKey: 'mocked_unique_key',

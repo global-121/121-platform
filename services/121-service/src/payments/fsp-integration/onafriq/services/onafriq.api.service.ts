@@ -9,7 +9,7 @@ import { OnafriqApiWebhookSubscribeResponseBody } from '@121-service/src/payment
 import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-response-status-type.enum';
 import { OnafriqError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq.error';
 import { CallServiceResult } from '@121-service/src/payments/fsp-integration/onafriq/interfaces/call-service-result.interface.';
-import { Credentials } from '@121-service/src/payments/fsp-integration/onafriq/interfaces/create-transaction-params.interface';
+import { OnafriqRequestIdentity } from '@121-service/src/payments/fsp-integration/onafriq/interfaces/onafriq-request-identity.interface';
 import { OnafriqApiHelperService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.api.helper.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
@@ -85,14 +85,14 @@ export class OnafriqApiService {
     firstName,
     lastName,
     thirdPartyTransId,
-    credentials,
+    requestIdentity,
   }: {
     transferAmount: number;
     phoneNumberPayment: string;
     firstName: string;
     lastName: string;
     thirdPartyTransId: string;
-    credentials: Credentials;
+    requestIdentity: OnafriqRequestIdentity;
   }): Promise<CallServiceResult> {
     const payload = this.onafriqApiHelperService.createCallServicePayload({
       transferAmount,
@@ -100,7 +100,7 @@ export class OnafriqApiService {
       firstName,
       lastName,
       thirdPartyTransId,
-      credentials,
+      requestIdentity,
     });
     const callServiceResponse =
       await this.makeCallServiceCallAndValidateResponse(payload);
