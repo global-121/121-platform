@@ -1,9 +1,9 @@
 import {
-  changePasswordUrl,
-  loginUrl,
-  supportEmail,
-} from '@121-service/src/user/modules/user-emails/interfaces/enum/config.enum';
-import { EmailPayloadData } from '@121-service/src/user/modules/user-emails/interfaces/interfaces/email-payload-data.interface';
+  CHANGE_PASSWORD_URL,
+  LOGIN_URL,
+  SUPPORT_EMAIL,
+} from '@121-service/src/user/modules/user-emails/constants/constants';
+import { EmailPayloadData } from '@121-service/src/user/modules/user-emails/interfaces/email-payload-data.interface';
 
 export const emailBodyRegistrationCreationSSO = (
   payloadData: EmailPayloadData,
@@ -17,18 +17,18 @@ export const emailBodyRegistrationCreationSSO = (
     <p>Dear ${displayName},</p>
     <p>
       You have been added to the 121 Portal by the platform admin.<br>
-      To log in, go to: <a href="${loginUrl}">${loginUrl}</a>
+      To log in, go to: <a href="${LOGIN_URL}">${LOGIN_URL}</a>
     </p>
     <p>
       Username: ${email}<br>
       Password: <code>${password}</code>
     </p>
     <p>
-      After logging in, please change your password on: <a href="${changePasswordUrl}">${changePasswordUrl}</a>
+      After logging in, please change your password on: <a href="${CHANGE_PASSWORD_URL}">${CHANGE_PASSWORD_URL}</a>
     </p>
     <p>
       For assistance, if you were not expecting this email or believe it was sent to you by mistake,
-      please contact: <a href="mailto:${supportEmail}">${supportEmail}</a>
+      please contact: <a href="mailto:${SUPPORT_EMAIL}">${SUPPORT_EMAIL}</a>
     </p>
     <p>
       Best regards,<br>

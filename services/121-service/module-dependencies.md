@@ -6,6 +6,7 @@ graph LR
   IntersolveVisaReconciliationModule-->IntersolveVisaModule
   IntersolveVisaModule-->UserModule
   UserModule-->EmailsModule
+  UserModule-->UserEmailsModule
   CronjobModule-->IntersolveVoucherModule
   IntersolveVoucherModule-->ImageCodeModule
   IntersolveVoucherModule-->UserModule
