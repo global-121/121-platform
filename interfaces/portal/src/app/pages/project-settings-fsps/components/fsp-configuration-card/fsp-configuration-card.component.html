@@ -16,7 +16,7 @@
       FSP notes
     </p>
 
-    @if (requiredAttributes().length > 0) {
+    @if (requiredRegistrationAttributes().length > 0) {
       <p
         i18n
         class="mb-4"
@@ -25,7 +25,7 @@
         <b>exact format</b>
         for this FSP integration in the data column name:
       </p>
-      <p-table [value]="requiredAttributes()">
+      <p-table [value]="requiredRegistrationAttributes()">
         <ng-template #header>
           <tr>
             <th
@@ -44,15 +44,15 @@
         </ng-template>
         <ng-template
           #body
-          let-column
+          let-attribute
         >
           <tr>
-            <td>{{ column.label }}</td>
+            <td>{{ attribute.label }}</td>
             <td>
-              {{ column.name }}
+              {{ attribute.name }}
               <p-button
                 icon="pi pi-copy"
-                (click)="copyToClipboard(column.name)"
+                (click)="copyToClipboard(attribute.name)"
                 text
                 rounded
                 ariaLabel="Copy to clipboard"

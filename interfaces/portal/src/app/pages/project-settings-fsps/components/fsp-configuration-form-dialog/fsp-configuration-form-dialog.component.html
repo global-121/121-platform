@@ -27,11 +27,11 @@
     <ng-container [ngTemplateOutlet]="manualLink"></ng-container>.
   </p>
 
-  @for (property of formFields(); track property.name) {
+  @for (fspFormField of fspFormFields(); track fspFormField.name) {
     <app-fsp-configuration-property-form-field
       [projectId]="projectId()"
       [formGroup]="formGroup()"
-      [property]="property"
+      [fspFormField]="fspFormField"
     />
   }
 </app-form-dialog>

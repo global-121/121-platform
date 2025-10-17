@@ -14,7 +14,6 @@ import {
 } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
@@ -34,7 +33,6 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
 @Component({
   selector: 'app-fsp-configuration-card',
   imports: [
-    CardModule,
     TranslatableStringPipe,
     ButtonModule,
     FormDialogComponent,
@@ -100,7 +98,7 @@ export class FspConfigurationCardComponent {
     },
   ]);
 
-  readonly requiredAttributes = computed(() => {
+  readonly requiredRegistrationAttributes = computed(() => {
     const requiredFspAttributes =
       this.fspConfigurationService.getRequiredFspAttributes({
         fspSetting: this.fspSetting(),

@@ -12,11 +12,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
 
-import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { FSP_CONFIGURATION_PROPERTY_LABELS } from '~/domains/fsp-configuration/fsp-configuration.helper';
+import { FspFormField } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
 
@@ -36,11 +36,7 @@ import { FspConfigurationService } from '~/services/fsp-configuration.service';
 export class FspConfigurationPropertyFormFieldComponent {
   readonly projectId = input.required<number | string>();
   readonly formGroup = input.required<FormGroup>();
-  readonly property = input.required<{
-    name: 'displayName' | FspConfigurationProperties;
-    isRequired: boolean;
-    isSensitive: boolean;
-  }>();
+  readonly fspFormField = input.required<FspFormField>();
 
   readonly fspConfigurationService = inject(FspConfigurationService);
   readonly projectApiService = inject(ProjectApiService);
@@ -53,7 +49,7 @@ export class FspConfigurationPropertyFormFieldComponent {
   );
 
   readonly label = computed(() => {
-    const propertyName = this.property().name;
+    const propertyName = this.fspFormField().name;
     if (propertyName === 'displayName') {
       return $localize`Display name`;
     }
@@ -61,17 +57,17 @@ export class FspConfigurationPropertyFormFieldComponent {
   });
 
   readonly labelTooltip = computed(() =>
-    this.property().isSensitive
+    this.fspFormField().isSensitive
       ? $localize`This is a sensitive property, therefore its value needs to be re-entered upon reconfiguration.`
       : undefined,
   );
 
   readonly inputTextPlaceholder = computed(() =>
-    this.property().isSensitive ? sensitivePropertyString : '',
+    this.fspFormField().isSensitive ? sensitivePropertyString : '',
   );
 
   readonly fieldType = computed(() =>
-    this.fspConfigurationService.getPropertyFieldType(this.property().name),
+    this.fspConfigurationService.getPropertyFieldType(this.fspFormField().name),
   );
 
   // We can't use the generic function here because of how ReactiveForms don't play well with signals,

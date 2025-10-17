@@ -30,7 +30,6 @@ import {
   FspConfigurationFormGroup,
   FspConfigurationService,
 } from '~/services/fsp-configuration.service';
-import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Component({
@@ -44,7 +43,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   templateUrl: './fsp-configuration-form-dialog.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ToastService],
+  providers: [],
 })
 export class FspConfigurationFormDialogComponent {
   readonly projectId = input.required<string>();
@@ -54,7 +53,6 @@ export class FspConfigurationFormDialogComponent {
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
   readonly projectApiService = inject(ProjectApiService);
   readonly translatableStringService = inject(TranslatableStringService);
-  readonly toastService = inject(ToastService);
 
   projectAttributes = injectQuery(
     this.projectApiService.getProjectAttributes({
@@ -104,8 +102,8 @@ export class FspConfigurationFormDialogComponent {
     }),
   );
 
-  readonly formFields = computed(() =>
-    this.fspConfigurationService.fspSettingToFormFields({
+  readonly fspFormFields = computed(() =>
+    this.fspConfigurationService.fspSettingToFspFormFields({
       fspSetting: this.fspSetting(),
       existingFspConfiguration: this.existingFspConfiguration(),
     }),
