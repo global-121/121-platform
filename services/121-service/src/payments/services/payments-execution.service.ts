@@ -51,7 +51,6 @@ export class PaymentsExecutionService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly programRepository: ProgramRepository,
     private readonly messageTemplateService: MessageTemplateService,
-    private readonly registrationBulkService: RegistrationsBulkService,
   ) {}
 
   public async createPayment({
@@ -264,7 +263,7 @@ export class PaymentsExecutionService {
         }
       : {};
 
-    await this.registrationBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds(
+    await this.registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds(
       {
         referenceIds: registrationsToComplete.map((r) => r.referenceId),
         programId,
