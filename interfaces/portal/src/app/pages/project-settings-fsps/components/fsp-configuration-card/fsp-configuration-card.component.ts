@@ -15,7 +15,6 @@ import {
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { MenuModule } from 'primeng/menu';
 import { TableModule } from 'primeng/table';
 import { unique } from 'radashi';
 
@@ -26,6 +25,7 @@ import {
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
+import { EllipsisMenuComponent } from '~/components/ellipsis-menu/ellipsis-menu.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FSP_IMAGE_URLS } from '~/domains/fsp-configuration/fsp-configuration.helper';
@@ -40,10 +40,10 @@ import { ToastService } from '~/services/toast.service';
     CardModule,
     TranslatableStringPipe,
     ButtonModule,
-    MenuModule,
     FormDialogComponent,
     TableModule,
     CardWithLinkComponent,
+    EllipsisMenuComponent,
   ],
   templateUrl: './fsp-configuration-card.component.html',
   styles: ``,
