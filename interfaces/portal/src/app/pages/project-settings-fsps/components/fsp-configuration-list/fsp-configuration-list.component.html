@@ -1,4 +1,4 @@
-<p-card styleClass="[&_.p-card]:border-grey-300 [&_.p-card]:border">
+<p-card class="[&_.p-card]:border-grey-300 [&_.p-card]:border">
   <h2
     i18n
     class="mb-4"
@@ -17,11 +17,6 @@
 
   @if (fspConfigurations.isPending()) {
     <app-skeleton-inline />
-  } @else if (fspConfigurations.isError()) {
-    <app-form-error
-      [error]="fspConfigurations.failureReason()"
-      i18n-error
-    />
   } @else if (fspConfigurations.isSuccess()) {
     @let fspConfigs = fspConfigurations.data();
 
@@ -40,8 +35,8 @@
       </div>
     }
 
-    @if (showNewFspList()) {
-      @if (forceShowNewFspList()) {
+    @if (fspConfigs.length === 0 || forceShowNewFspList()) {
+      @if (fspConfigs.length > 0) {
         <p
           i18n
           class="txt-body-m mt-8 mb-3 font-bold"
