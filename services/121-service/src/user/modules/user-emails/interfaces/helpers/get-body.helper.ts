@@ -1,9 +1,9 @@
-import { supportEmail } from '@121-service/src/emails/enum/config.enum';
-import { EmailType } from '@121-service/src/emails/enum/email-type.enum';
-import { emailBodyPasswordReset } from '@121-service/src/emails/helpers/email-bodies/email-body-password-reset';
-import { emailBodyRegistrationCreation } from '@121-service/src/emails/helpers/email-bodies/email-body-registration-creation';
-import { emailBodyRegistrationCreationSSO } from '@121-service/src/emails/helpers/email-bodies/email-body-registration-creation-sso';
-import { EmailPayloadData } from '@121-service/src/emails/interfaces/email-payload-data.interface';
+import { supportEmail } from '@121-service/src/user/modules/user-emails/interfaces/enum/config.enum';
+import { EmailType } from '@121-service/src/user/modules/user-emails/interfaces/enum/email-type.enum';
+import { emailBodyPasswordReset } from '@121-service/src/user/modules/user-emails/interfaces/helpers/email-bodies/email-body-password-reset';
+import { emailBodyRegistrationCreation } from '@121-service/src/user/modules/user-emails/interfaces/helpers/email-bodies/email-body-registration-creation';
+import { emailBodyRegistrationCreationSSO } from '@121-service/src/user/modules/user-emails/interfaces/helpers/email-bodies/email-body-registration-creation-sso';
+import { EmailPayloadData } from '@121-service/src/user/modules/user-emails/interfaces/interfaces/email-payload-data.interface';
 
 /**
  * Get the email bodu
