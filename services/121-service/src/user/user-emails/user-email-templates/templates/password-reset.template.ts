@@ -1,18 +1,21 @@
+import { EmailPayloadData } from '@121-service/src/user/user-emails/interfaces/email-payload-data.interface';
+import { EmailTemplate } from '@121-service/src/user/user-emails/user-email-templates/interfaces/email-template.interface';
+import { wrapEmailBody } from '@121-service/src/user/user-emails/user-email-templates/template-body-wrapper';
 import {
   CHANGE_PASSWORD_URL,
   LOGIN_URL,
   SUPPORT_EMAIL,
-} from '@121-service/src/user/modules/user-emails/constants/constants';
-import { EmailPayloadData } from '@121-service/src/user/modules/user-emails/interfaces/email-payload-data.interface';
+} from '@121-service/src/user/user-emails/user-email-templates/template-constants';
 
-export const emailBodyPasswordReset = (
+export const emailTemplatePasswordReset = (
   payloadData: EmailPayloadData,
-): string => {
+): EmailTemplate => {
   const {
     emailRecipient: { displayName, email },
     password,
   } = payloadData;
-  return `
+  const subject = '121 Portal password reset';
+  const body = wrapEmailBody(`
     <p>Dear ${displayName},</p>
     <p>
       Your password for the 121 Portal has been reset.<br>
@@ -33,5 +36,7 @@ export const emailBodyPasswordReset = (
       Best regards,<br>
       121 Support Team
     </p>
-  `;
+  `);
+
+  return { subject, body };
 };
