@@ -53,11 +53,7 @@ export class PageLayoutProjectSettingsComponent {
         AppRoutes.projectSettings,
         AppRoutes.projectSettingsFsps,
       ],
-      // XXX: check permission and sync with app.routes.ts
-      visible: this.authService.hasPermission({
-        projectId: this.projectId(),
-        requiredPermission: PermissionEnum.ProgramUPDATE,
-      }),
+      visible: this.authService.isAdmin,
     },
     {
       label: $localize`:@@page-title-project-settings-team:Project team`,
