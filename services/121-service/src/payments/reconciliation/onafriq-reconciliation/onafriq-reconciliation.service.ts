@@ -203,11 +203,9 @@ export class OnafriqReconciliationService {
     // NOTE: If you need to touch this code and test locally, make sure to clean up any test results on sftp location.
     if (report.length > 0 && IS_PRODUCTION && !env.MOCK_ONAFRIQ) {
       const csvContent =
-        report.length === 0
-          ? ''
-          : Object.keys(report[0]).join(',') +
-            '\n' +
-            report.map((row) => Object.values(row).join(',')).join('\n');
+        Object.keys(report[0]).join(',') +
+        '\n' +
+        report.map((row) => Object.values(row).join(',')).join('\n');
       const filename = `${corporateCode}_${this.formatDateToYYYY_MM_DD(
         new Date(), // Use current date for the filename
       )}_01.csv`; // 01 indicates version-nr per day. We will only have one report per day, so this is always 01.
