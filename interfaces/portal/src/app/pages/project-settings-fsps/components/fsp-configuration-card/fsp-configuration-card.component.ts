@@ -24,15 +24,14 @@ import {
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 
-import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
+import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
-import { getFspSettingByName } from '~/domains/fsp/fsp.helper';
+import { FSP_IMAGE_URLS, getFspSettingByName } from '~/domains/fsp/fsp.helper';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { ToastService } from '~/services/toast.service';
-
 @Component({
   selector: 'app-fsp-configuration-card',
   imports: [
@@ -42,7 +41,7 @@ import { ToastService } from '~/services/toast.service';
     MenuModule,
     FormDialogComponent,
     TableModule,
-    ColoredChipComponent,
+    CardWithLinkComponent,
   ],
   templateUrl: './fsp-configuration-card.component.html',
   styles: ``,
@@ -115,6 +114,10 @@ export class FspConfigurationCardComponent {
 
     return fspSetting;
   });
+
+  readonly fspImage = computed(
+    () => FSP_IMAGE_URLS[this.configuration().fspName],
+  );
 
   readonly requiredAttributes = computed(() => {
     const fspSetting = this.fspSetting();

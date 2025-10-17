@@ -24,3 +24,16 @@ export const FSP_CONFIGURATION_PROPERTY_LABELS: Record<
   [FspConfigurationProperties.passwordOnafriq]: $localize`Password`,
   [FspConfigurationProperties.uniqueKeyOnafriq]: $localize`Unique key`,
 };
+
+export const FSP_IMAGE_URLS: Record<Fsps, string> = {
+  [Fsps.intersolveVoucherWhatsapp]: 'assets/fsps/ah.png',
+  [Fsps.intersolveVoucherPaper]: 'assets/fsps/ah.png',
+  [Fsps.intersolveVisa]: 'assets/fsps/visa.png',
+  [Fsps.safaricom]: 'assets/fsps/safaricom.png',
+  [Fsps.airtel]: 'assets/fsps/airtel.svg',
+  [Fsps.commercialBankEthiopia]: 'assets/fsps/cbe.png',
+  [Fsps.excel]: 'assets/fsps/excel.png',
+  [Fsps.deprecatedJumbo]: '',
+  [Fsps.nedbank]: 'assets/fsps/nedbank.png',
+  [Fsps.onafriq]: 'assets/fsps/onafriq.jpg',
+};
