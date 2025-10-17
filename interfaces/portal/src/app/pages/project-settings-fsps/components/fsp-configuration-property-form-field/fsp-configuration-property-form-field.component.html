@@ -8,7 +8,7 @@
   [isRequired]="property().isRequired"
   [formGroup]="formGroup()"
 >
-  @if (fieldType() === 'select-multiple') {
+  @if (fieldType() === 'select-attributes-multiple') {
     <p-multiselect
       [options]="projectAttributes.data()"
       [formControlName]="property().name"
@@ -19,7 +19,7 @@
       [filter]="true"
       [showClear]="false"
     />
-  } @else if (fieldType() === 'select') {
+  } @else if (fieldType() === 'select-attribute') {
     <p-select
       [options]="projectAttributes.data()"
       [formControlName]="property().name"

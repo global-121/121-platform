@@ -16,12 +16,7 @@ import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
-import { unique } from 'radashi';
 
-import {
-  FspConfigurationProperties,
-  Fsps,
-} from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
@@ -32,6 +27,7 @@ import { FSP_IMAGE_URLS } from '~/domains/fsp-configuration/fsp-configuration.he
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
+import { FspConfigurationService } from '~/services/fsp-configuration.service';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
@@ -55,6 +51,7 @@ export class FspConfigurationCardComponent {
   readonly configuration = input.required<FspConfiguration>();
   readonly reconfigureFsp = output<FspConfiguration>();
 
+  fspConfigurationService = inject(FspConfigurationService);
   fspConfigurationApiService = inject(FspConfigurationApiService);
   projectApiService = inject(ProjectApiService);
   toastService = inject(ToastService);
@@ -70,25 +67,17 @@ export class FspConfigurationCardComponent {
     'deleteConfigurationDialog',
   );
 
-  readonly deleteConfigurationDialogTitle = computed(
+  readonly deleteConfigurationDialogHeader = computed(
     () => $localize`Remove` + ' ' + this.configuration().name,
   );
 
-  deleteConfigurationMutation = injectMutation(() => ({
-    mutationFn: () =>
-      this.fspConfigurationApiService.deleteFspConfiguration({
-        projectId: this.projectId,
-        configurationName: this.configuration().name,
-      }),
-    onSuccess: () => {
-      void this.projectApiService.invalidateCache(this.projectId);
-      void this.fspConfigurationApiService.invalidateCache(this.projectId);
+  readonly fspSetting = computed(
+    () => FSP_SETTINGS[this.configuration().fspName],
+  );
 
-      this.toastService.showToast({
-        detail: `FSP deleted.`,
-      });
-    },
-  }));
+  readonly fspImage = computed(
+    () => FSP_IMAGE_URLS[this.configuration().fspName],
+  );
 
   readonly menuItems = computed<MenuItem[]>(() => [
     {
@@ -107,44 +96,33 @@ export class FspConfigurationCardComponent {
     },
   ]);
 
-  readonly fspSetting = computed(
-    () => FSP_SETTINGS[this.configuration().fspName],
-  );
-
-  readonly fspImage = computed(
-    () => FSP_IMAGE_URLS[this.configuration().fspName],
-  );
-
   readonly requiredAttributes = computed(() => {
-    const fspSetting = this.fspSetting();
+    const requiredFspAttributes =
+      this.fspConfigurationService.getRequiredFspAttributes({
+        fspSetting: this.fspSetting(),
+        existingFspConfiguration: this.configuration(),
+      });
 
-    let requiredAttributes: string[] = this.fspSetting()
-      .attributes.filter((property) => property.isRequired)
-      .map((property) => property.name);
-
-    if (fspSetting.name === Fsps.excel) {
-      // For Excel FSP, the required attributes are stored in configuration properties
-      // instead of attributes
-
-      const excelConfigurationProperties = this.configuration().properties;
-
-      const columnsToExport = excelConfigurationProperties.find(
-        (prop) => prop.name === FspConfigurationProperties.columnsToExport,
-      )?.value as string[];
-
-      const columnToMatch = excelConfigurationProperties.find(
-        (prop) => prop.name === FspConfigurationProperties.columnToMatch,
-      )?.value as string;
-
-      requiredAttributes = unique([...columnsToExport, columnToMatch]);
-    }
-
-    return requiredAttributes.map((requiredAttributeName) =>
-      this.projectAttributes
-        .data()
-        ?.find((attr) => attr.name === requiredAttributeName),
+    return requiredFspAttributes.map((propertyName) =>
+      this.projectAttributes.data()?.find((attr) => attr.name === propertyName),
     );
   });
+
+  deleteConfigurationMutation = injectMutation(() => ({
+    mutationFn: () =>
+      this.fspConfigurationApiService.deleteFspConfiguration({
+        projectId: this.projectId,
+        configurationName: this.configuration().name,
+      }),
+    onSuccess: () => {
+      void this.projectApiService.invalidateCache(this.projectId);
+      void this.fspConfigurationApiService.invalidateCache(this.projectId);
+
+      this.toastService.showToast({
+        detail: `FSP deleted.`,
+      });
+    },
+  }));
 
   copyToClipboard(text: string) {
     void navigator.clipboard.writeText(text);
