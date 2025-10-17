@@ -1916,17 +1916,11 @@
       <trans-unit id="7313006626571837182" datatype="html">
         <source>There are no specific fields needed for this integration</source>
       </trans-unit>
-      <trans-unit id="7705041759167938933" datatype="html">
-        <source>FSP integrated successfully.</source>
-      </trans-unit>
       <trans-unit id="7799902377740606724" datatype="html">
         <source>Select 1</source>
       </trans-unit>
       <trans-unit id="8270214591182392971" datatype="html">
         <source>Brand code</source>
-      </trans-unit>
-      <trans-unit id="8609049781453361060" datatype="html">
-        <source>You&apos;re about to remove <x equiv-text="{{ configuration().name | translatableString }}" id="INTERPOLATION"/> FSP from your project. Payments with this FSP will not go through, Registrations with this FSP will not be paid unless changed to an integrated FSP.</source>
       </trans-unit>
       <trans-unit id="8738732372986673558" datatype="html">
         <source>Copy to clipboard</source>
@@ -1978,6 +1972,12 @@
       </trans-unit>
       <trans-unit id="8190847041640657748" datatype="html">
         <source>Choose an FSP from the FSPs integrated to this instance. You can add multiple FSPs to the same project. If you wish to integrate a new FSP, contact the 121 support team or talk to the account manager.</source>
+      </trans-unit>
+      <trans-unit id="7072204994041048093" datatype="html">
+        <source>FSP &quot;<x equiv-text="fspDisplayName" id="PH"/>&quot; integrated successfully.</source>
+      </trans-unit>
+      <trans-unit id="9175933158540522211" datatype="html">
+        <source>You&apos;re about to remove the &quot;<x equiv-text="{{ configuration().label | translatableString }}" id="INTERPOLATION"/>&quot; FSP configuration from your project. Payments with this FSP will not go through, Registrations with this FSP will not be paid unless changed to an integrated FSP.</source>
       </trans-unit>
     </body>
   </file>
