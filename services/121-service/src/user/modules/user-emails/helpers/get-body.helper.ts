@@ -1,9 +1,9 @@
-import { supportEmail } from '@121-service/src/user/modules/user-emails/interfaces/enum/config.enum';
-import { EmailType } from '@121-service/src/user/modules/user-emails/interfaces/enum/email-type.enum';
-import { emailBodyPasswordReset } from '@121-service/src/user/modules/user-emails/interfaces/helpers/email-bodies/email-body-password-reset';
-import { emailBodyRegistrationCreation } from '@121-service/src/user/modules/user-emails/interfaces/helpers/email-bodies/email-body-registration-creation';
-import { emailBodyRegistrationCreationSSO } from '@121-service/src/user/modules/user-emails/interfaces/helpers/email-bodies/email-body-registration-creation-sso';
-import { EmailPayloadData } from '@121-service/src/user/modules/user-emails/interfaces/interfaces/email-payload-data.interface';
+import { SUPPORT_EMAIL } from '@121-service/src/user/modules/user-emails/constants/constants';
+import { EmailType } from '@121-service/src/user/modules/user-emails/enum/email-type.enum';
+import { emailBodyPasswordReset } from '@121-service/src/user/modules/user-emails/helpers/email-bodies/email-body-password-reset';
+import { emailBodyRegistrationCreation } from '@121-service/src/user/modules/user-emails/helpers/email-bodies/email-body-registration-creation';
+import { emailBodyRegistrationCreationSSO } from '@121-service/src/user/modules/user-emails/helpers/email-bodies/email-body-registration-creation-sso';
+import { EmailPayloadData } from '@121-service/src/user/modules/user-emails/interfaces/email-payload-data.interface';
 
 /**
  * Get the email bodu
@@ -49,7 +49,7 @@ export const getEmailBody = (
     </div>
 
     <div class="footer">
-      121 Support: <a href="mailto:${supportEmail}" style="color:#fff">${supportEmail}</a>
+      121 Support: <a href="mailto:${SUPPORT_EMAIL}" style="color:#fff">${SUPPORT_EMAIL}</a>
     </div>
   `;
 
