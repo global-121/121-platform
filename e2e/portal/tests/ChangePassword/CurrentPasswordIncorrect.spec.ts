@@ -38,7 +38,7 @@ test('[29310] Change password unsuccessfully (Non-matching passwords)', async ({
     });
     await changePasswordPage.submitChangePassword();
     await changePasswordPage.validateFormError({
-      errorText: 'Something went wrong: Your password was incorrect.',
+      errorText: 'Something went wrong: "Your password was incorrect."',
     });
   });
 });

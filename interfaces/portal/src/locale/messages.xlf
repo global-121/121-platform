@@ -731,7 +731,7 @@
         <source>Token expired</source>
       </trans-unit>
       <trans-unit id="generic-error-with-message" datatype="html">
-        <source>Something went wrong: <x equiv-text="errorMessage" id="errorMessage"/></source>
+        <source>Something went wrong: <x equiv-text="JSON.stringify(errorMessage)" id="errorMessage"/></source>
       </trans-unit>
       <trans-unit id="1070128073768279969" datatype="html">
         <source>Select a message from the template messages or write a custom message.</source>

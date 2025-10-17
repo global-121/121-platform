@@ -85,7 +85,7 @@ export class ProgramAttachmentsController {
       'application/pdf',
     ];
     if (!allowedMimeTypes.includes(file.mimetype)) {
-      throw new BadRequestException('Something went wrong: Validation failed');
+      throw new BadRequestException('Validation failed (invalid file type)');
     }
 
     const userId = RequestHelper.getUserId(req);
