@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { castArray, unique } from 'radashi';
@@ -10,8 +10,12 @@ import {
 import { FspDto } from '@121-service/src/fsps/fsp.dto';
 import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 
-import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
+import {
+  FspConfiguration,
+  FspFormField,
+} from '~/domains/fsp-configuration/fsp-configuration.model';
 import { AttributeWithTranslatedLabel } from '~/domains/project/project.model';
+import { TranslatableStringService } from '~/services/translatable-string.service';
 
 export type FspConfigurationFormGroup = FormGroup<
   {
@@ -28,6 +32,8 @@ export type FspConfigurationFormGroup = FormGroup<
   providedIn: 'root',
 })
 export class FspConfigurationService {
+  readonly translatableStringService = inject(TranslatableStringService);
+
   getMissingRequiredAttributes({
     fspSetting,
     projectAttributes,
@@ -86,17 +92,13 @@ export class FspConfigurationService {
     });
   }
 
-  fspSettingToFormFields({
+  fspSettingToFspFormFields({
     fspSetting,
     existingFspConfiguration,
   }: {
     fspSetting: FspDto;
     existingFspConfiguration?: FspConfiguration;
-  }): {
-    name: 'displayName' | FspConfigurationProperties;
-    isRequired: boolean;
-    isSensitive: boolean;
-  }[] {
+  }): FspFormField[] {
     return [
       {
         name: 'displayName',
@@ -160,9 +162,11 @@ export class FspConfigurationService {
     fspSetting: FspDto;
     existingFspConfiguration?: FspConfiguration;
   }) {
-    return existingFspConfiguration
-      ? (existingFspConfiguration.label.en ?? '')
-      : (fspSetting.defaultLabel.en ?? '');
+    const label = existingFspConfiguration
+      ? existingFspConfiguration.label
+      : fspSetting.defaultLabel;
+
+    return this.translatableStringService.translate(label) ?? '';
   }
 
   private getPropertyValue({
