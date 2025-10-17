@@ -21,10 +21,7 @@ export type FspConfigurationFormGroup = FormGroup<
   {
     displayName: FormControl<string>;
   } & Partial<
-    Record<
-      FspConfigurationProperties,
-      FormControl<string | string[] | undefined>
-    >
+    Record<FspConfigurationProperties, FormControl<string | string[]>>
   >
 >;
 
