@@ -412,7 +412,7 @@ export class IntersolveVoucherService {
       return;
     }
 
-    // Do not update transaction (or create event) on success callback on initial message //##TODO discuss this again (don't update transaction, but do create event?)
+    // Do not update transaction (or create event) on success callback on initial message
     if (
       newTransactionStatus === TransactionStatusEnum.success &&
       processType === MessageProcessType.whatsappTemplateVoucher

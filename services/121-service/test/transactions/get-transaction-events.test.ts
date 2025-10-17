@@ -119,6 +119,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       expect([null, '']).toContain(event.errorMessage);
     });
 
-    // ##TODO add test on latest-event being joined correctly. E.g. initial bulk insert is not tested now.
+    // TODO. Currently we don't test if latest-event is bulk-inserted correctly in payments-execution.service. This is not so important and is hard to test.
+    // Instead, add this test as part of AB#37516, where payment creation and start will be split, which offers the possibility for testing the bulk-insert in between those steps.
   });
 });

@@ -16,7 +16,6 @@ export class TransactionEventsService {
     private readonly lastTransactionEventRepository: LastTransactionEventRepository,
   ) {}
 
-  // ##TODO: move also to repository
   public async createEvent({
     context,
     type,
