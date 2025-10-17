@@ -2045,6 +2045,84 @@
       <trans-unit id="652894116103613049" datatype="html">
         <source>De-duplication</source>
       </trans-unit>
+      <trans-unit id="1916995782667784441" datatype="html">
+        <source>Import failed</source>
+      </trans-unit>
+      <trans-unit id="2304632129505872052" datatype="html">
+        <source>We couldn’t import the existing registration data from this form right now.</source>
+      </trans-unit>
+      <trans-unit id="2776329607620146573" datatype="html">
+        <source>Excel table</source>
+      </trans-unit>
+      <trans-unit id="278254988919897660" datatype="html">
+        <source>You can try again, or cancel this step and use the Import Registration Data feature later in the registration page.</source>
+      </trans-unit>
+      <trans-unit id="3054104681790532369" datatype="html">
+        <source>Kobo toolbox</source>
+      </trans-unit>
+      <trans-unit id="3069764081921374374" datatype="html">
+        <source>Kobo form successfully integrated.</source>
+      </trans-unit>
+      <trans-unit id="3096125963323588142" datatype="html">
+        <source>Integrate Kobo Toolbox</source>
+      </trans-unit>
+      <trans-unit id="3933760683279649879" datatype="html">
+        <source>Kobo server URL</source>
+      </trans-unit>
+      <trans-unit id="398086617339284927" datatype="html">
+        <source>Kobo submissions imported successfully.</source>
+      </trans-unit>
+      <trans-unit id="4124465588218417294" datatype="html">
+        <source>Kobo asset ID</source>
+      </trans-unit>
+      <trans-unit id="4575821526015368593" datatype="html">
+        <source>Import existing registration data from this form.</source>
+      </trans-unit>
+      <trans-unit id="6505097170055851334" datatype="html">
+        <source>Error while importing Kobo submissions</source>
+      </trans-unit>
+      <trans-unit id="6561381080846651069" datatype="html">
+        <source>We couldn&apos;t complete the integration due to the following issues in your Kobo form. Please review your form and fix these errors, then try again:</source>
+      </trans-unit>
+      <trans-unit id="6667455188919955905" datatype="html">
+        <source>You’re about to link this project with this kobo form:</source>
+      </trans-unit>
+      <trans-unit id="6927943623949177165" datatype="html">
+        <source>Registration integration</source>
+      </trans-unit>
+      <trans-unit id="7190779898314379984" datatype="html">
+        <source>Kobo token</source>
+      </trans-unit>
+      <trans-unit id="7751381156275025670" datatype="html">
+        <source>For more information about how to integrate kobo see manual</source>
+      </trans-unit>
+      <trans-unit id="8153112678957419197" datatype="html">
+        <source>Error while integrating Kobo form</source>
+      </trans-unit>
+      <trans-unit id="8209266927278152647" datatype="html">
+        <source>Link to the form</source>
+      </trans-unit>
+      <trans-unit id="8259134434818825921" datatype="html">
+        <source>To learn more about how to integrate Kobo forms see the 121 manual</source>
+      </trans-unit>
+      <trans-unit id="8679806927601731663" datatype="html">
+        <source>Try Again</source>
+      </trans-unit>
+      <trans-unit id="8820369126945258821" datatype="html">
+        <source>Integrate form</source>
+      </trans-unit>
+      <trans-unit id="9206135377946716312" datatype="html">
+        <source>Click to import</source>
+      </trans-unit>
+      <trans-unit id="999293858368779246" datatype="html">
+        <source>Select a registration tool you want to integrate to the project.</source>
+      </trans-unit>
+      <trans-unit id="generic-back" datatype="html">
+        <source>Back</source>
+      </trans-unit>
+      <trans-unit id="generic-continue" datatype="html">
+        <source>Continue</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

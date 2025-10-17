@@ -1,7 +1,50 @@
 <app-page-layout-project-settings [projectId]="projectId()">
-  <app-registration-questions-table [projectId]="projectId()" />
-  <app-deduplication-attributes-table
-    [projectId]="projectId()"
-    class="mt-5 block"
-  />
+  <p-card styleClass="[&_.p-card]:border-grey-300 [&_.p-card]:border">
+    <h2
+      i18n
+      class="mb-4"
+    >
+      Registration integration
+    </h2>
+
+    @if (koboIntegration.isPending()) {
+      <app-skeleton-inline />
+    } @else if (koboIntegration.isSuccess()) {
+      <app-card-with-link
+        title="Kobo toolbox"
+        i18n-title
+        [href]="koboIntegration.data().url"
+      >
+        <ng-container card-content>
+          <span i18n>Link to the form</span>
+        </ng-container>
+      </app-card-with-link>
+    } @else {
+      <p
+        i18n
+        class="mb-6"
+      >
+        Select a registration tool you want to integrate to the project.
+      </p>
+
+      <div class="flex gap-4">
+        <app-integrate-kobo-button
+          [projectId]="projectId()"
+          class="block w-1/2"
+        />
+        <app-import-excel-table-button
+          [projectId]="projectId()"
+          class="block w-1/2"
+        />
+      </div>
+    }
+  </p-card>
+
+  @if (koboIntegration.data()) {
+    <app-registration-questions-table [projectId]="projectId()" />
+    <app-deduplication-attributes-table
+      [projectId]="projectId()"
+      class="mt-5 block"
+    />
+  }
 </app-page-layout-project-settings>
