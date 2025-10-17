@@ -7,9 +7,9 @@ import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/enti
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
-import { UserEmailsModule } from '@121-service/src/user/modules/user-emails/user-emails.module';
 import { UserController } from '@121-service/src/user/user.controller';
 import { UserService } from '@121-service/src/user/user.service';
+import { UserEmailsModule } from '@121-service/src/user/user-emails/user-emails.module';
 
 @Module({
   imports: [

@@ -1,14 +1,18 @@
+import { EmailPayloadData } from '@121-service/src/user/user-emails/interfaces/email-payload-data.interface';
+import { EmailTemplate } from '@121-service/src/user/user-emails/user-email-templates/interfaces/email-template.interface';
+import { wrapEmailBody } from '@121-service/src/user/user-emails/user-email-templates/template-body-wrapper';
 import {
   LOGIN_URL,
   SUPPORT_EMAIL,
-} from '@121-service/src/user/modules/user-emails/constants/constants';
-import { EmailPayloadData } from '@121-service/src/user/modules/user-emails/interfaces/email-payload-data.interface';
+} from '@121-service/src/user/user-emails/user-email-templates/template-constants';
 
-export const emailBodyRegistrationCreation = (
+export const emailTemplateRegistrationCreation = (
   payloadData: EmailPayloadData,
-): string => {
+): EmailTemplate => {
   const { displayName, email } = payloadData.emailRecipient;
-  return `
+
+  const subject = '121 Portal account created';
+  const body = wrapEmailBody(`
     <p>Dear ${displayName},</p>
     <p>
       You have been added to the 121 Portal by the platform admin.<br>
@@ -25,5 +29,7 @@ export const emailBodyRegistrationCreation = (
       Best regards,<br>
       121 Support Team
     </p>
-  `;
+  `);
+
+  return { subject, body };
 };

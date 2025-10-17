@@ -43,11 +43,11 @@ import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity'
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
-import { EmailType } from '@121-service/src/user/modules/user-emails/enum/email-type.enum';
-import { EmailPayloadData } from '@121-service/src/user/modules/user-emails/interfaces/email-payload-data.interface';
-import { EmailRecipient } from '@121-service/src/user/modules/user-emails/interfaces/email-recipient.interface';
-import { UserEmailsService } from '@121-service/src/user/modules/user-emails/user-emails.service';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
+import { EmailType } from '@121-service/src/user/user-emails/enum/email-type.enum';
+import { EmailPayloadData } from '@121-service/src/user/user-emails/interfaces/email-payload-data.interface';
+import { EmailRecipient } from '@121-service/src/user/user-emails/interfaces/email-recipient.interface';
+import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 const tokenExpirationDays = 14;
 
