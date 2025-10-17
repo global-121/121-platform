@@ -1,7 +1,7 @@
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { subscribeWebhookOnafriq } from '@121-service/test/helpers/fsp-specific.helper';
 import {
   getAccessToken,
-  getServer,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
@@ -15,10 +15,7 @@ describe('Subscribe webhook', () => {
     accessToken = await getAccessToken();
 
     // Act
-    const response = await getServer()
-      .post(`/fsps/onafriq/webhook/subscribe/programs/${programId}`)
-      .set('Cookie', [accessToken])
-      .send();
+    const response = await subscribeWebhookOnafriq(programId, accessToken);
 
     // Assert
     // This test only asserts the correct retrieval of programFspConfigProperties, as beyond that in mock-mode nothing happens
@@ -32,10 +29,7 @@ describe('Subscribe webhook', () => {
     accessToken = await getAccessToken();
 
     // Act
-    const response = await getServer()
-      .post(`/fsps/onafriq/webhook/subscribe/programs/${programId}`)
-      .set('Cookie', [accessToken])
-      .send();
+    const response = await subscribeWebhookOnafriq(programId, accessToken);
 
     // Assert
     expect(response.statusCode).toBe(404);

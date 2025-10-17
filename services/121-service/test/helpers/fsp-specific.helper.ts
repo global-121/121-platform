@@ -5,6 +5,9 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { getTransactions } from '@121-service/test/helpers/program.helper';
 import { getServer } from '@121-service/test/helpers/utility.helper';
 
+//////////////////////
+// Intersolve voucher
+//////////////////////
 export async function getTransactionsIntersolveVoucher({
   programId,
   paymentId,
@@ -59,4 +62,17 @@ export async function triggerUnusedVouchersCache(
   return await getServer()
     .patch('/cronjobs/fsps/intersolve-voucher/unused-vouchers')
     .set('Cookie', [accessToken]);
+}
+
+/////////////////
+// Onafriq
+//////////////////
+export async function subscribeWebhookOnafriq(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .post(`/fsps/onafriq/webhook/subscribe/programs/${programId}`)
+    .set('Cookie', [accessToken])
+    .send();
 }

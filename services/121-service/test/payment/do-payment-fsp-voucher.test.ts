@@ -5,7 +5,7 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { getTransactionsIntersolveVoucher } from '@121-service/test/helpers/intersolve-voucher.helper';
+import { getTransactionsIntersolveVoucher } from '@121-service/test/helpers/fsp-specific.helper';
 import {
   doPayment,
   getTransactions,
