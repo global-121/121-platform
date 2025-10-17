@@ -1,11 +1,9 @@
-import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   inject,
   input,
-  LOCALE_ID,
   model,
   Signal,
 } from '@angular/core';
@@ -45,7 +43,6 @@ interface TransferHistoryTableCellContext {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ActivityLogTransferHistoryDialogComponent {
-  private locale = inject(LOCALE_ID);
   readonly projectId = input.required<string>();
   readonly transactionId = input.required<number>();
   readonly paymentDate = input.required<string>();
@@ -54,11 +51,9 @@ export class ActivityLogTransferHistoryDialogComponent {
 
   readonly dialogVisible = model(false);
 
-  readonly dialogHeader = computed(() => {
-    const formattedDate =
-      new DatePipe(this.locale).transform(this.paymentDate(), 'short') ?? '';
-    return $localize`Transfer ${formattedDate} - transfer history`;
-  });
+  readonly dialogHeader = computed(
+    () => $localize`Transfer ${this.paymentDate()} - transfer history`,
+  );
 
   readonly project = injectQuery(
     this.projectApiService.getProject(this.projectId),
