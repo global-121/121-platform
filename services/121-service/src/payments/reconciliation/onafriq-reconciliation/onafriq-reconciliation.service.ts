@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import { Redis } from 'ioredis';
 import SftpClient from 'ssh2-sftp-client';
-import { Between, Equal } from 'typeorm';
+import { Between, Equal, FindOperator } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { IS_PRODUCTION } from '@121-service/src/config';
@@ -147,7 +147,7 @@ export class OnafriqReconciliationService {
     toDate?: Date;
     fromDate?: Date;
   }): Promise<OnafriqReconciliationReport[]> {
-    let createdFilter: any;
+    let createdFilter: FindOperator<Date>;
     if (fromDate || toDate) {
       // if at least one provided, assume date range with open on the other end
       const fromDateFilter = fromDate || new Date(2000, 1, 1);
