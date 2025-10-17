@@ -6,8 +6,6 @@ export enum Fsps {
   airtel = 'Airtel',
   commercialBankEthiopia = 'Commercial-bank-ethiopia',
   excel = 'Excel',
-  // TODO AB#38595 remove this deprecated FSP
-  deprecatedJumbo = 'Intersolve-jumbo-physical',
   nedbank = 'Nedbank',
   onafriq = 'Onafriq',
 }
