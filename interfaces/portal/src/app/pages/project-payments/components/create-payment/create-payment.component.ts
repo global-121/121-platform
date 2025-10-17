@@ -21,7 +21,6 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { InputText } from 'primeng/inputtext';
-import { MenuModule } from 'primeng/menu';
 
 import { FspIntegrationType } from '@121-service/src/fsps/enums/fsp-integration-type.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
@@ -35,6 +34,7 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
+import { EllipsisMenuComponent } from '~/components/ellipsis-menu/ellipsis-menu.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { FullscreenStepperDialogComponent } from '~/components/fullscreen-stepper-dialog/fullscreen-stepper-dialog.component';
 import { RegistrationsTableComponent } from '~/components/registrations-table/registrations-table.component';
@@ -61,11 +61,11 @@ import { Dto } from '~/utils/dto-type';
     RegistrationsTableComponent,
     CardModule,
     DataListComponent,
-    MenuModule,
     ColoredChipComponent,
     FullscreenStepperDialogComponent,
     FormFieldWrapperComponent,
     InputText,
+    EllipsisMenuComponent,
   ],
   templateUrl: './create-payment.component.html',
   styles: ``,

@@ -92,23 +92,7 @@
           </form>
         </div>
         @if (paymentHasIntegratedFsp()) {
-          <p-button
-            text
-            plain
-            icon="pi pi-ellipsis-h"
-            class="absolute end-4 top-2"
-            title="More actions"
-            i18n-title="@@generic-more-actions"
-            aria-label="More actions"
-            i18n-aria-label="@@generic-more-actions"
-            (click)="menu.toggle($event)"
-          />
-          <p-menu
-            #menu
-            [model]="paymentSummaryMenuItems()"
-            [popup]="true"
-            appendTo="body"
-          />
+          <app-ellipsis-menu [menuItems]="paymentSummaryMenuItems()" />
         }
       </p-card>
     </div>
