@@ -83,7 +83,7 @@ export class TransactionsService {
     errorMessage?: string;
     newTransactionStatus?: TransactionStatusEnum;
   }) {
-    const transactionEventType = TransactionEventType.processingStep; // ##TODO: with the discussed design, do we need type at all any more?
+    const transactionEventType = TransactionEventType.processingStep;
     await this.transactionEventsService.createEvent({
       context,
       type: transactionEventType,
