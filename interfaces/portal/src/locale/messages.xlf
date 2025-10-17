@@ -1901,9 +1901,6 @@
       <trans-unit id="5951235042771324221" datatype="html">
         <source>&quot;<x equiv-text="text" id="PH"/>&quot; copied to clipboard</source>
       </trans-unit>
-      <trans-unit id="6667753881469228179" datatype="html">
-        <source>Financial Service Providerss</source>
-      </trans-unit>
       <trans-unit id="6964415671113324026" datatype="html">
         <source>FSP notes</source>
       </trans-unit>
@@ -1978,6 +1975,9 @@
       </trans-unit>
       <trans-unit id="9175933158540522211" datatype="html">
         <source>You&apos;re about to remove the &quot;<x equiv-text="{{ configuration().label | translatableString }}" id="INTERPOLATION"/>&quot; FSP configuration from your project. Payments with this FSP will not go through, Registrations with this FSP will not be paid unless changed to an integrated FSP.</source>
+      </trans-unit>
+      <trans-unit id="2049182205133748691" datatype="html">
+        <source>Financial Service Providers</source>
       </trans-unit>
     </body>
   </file>
