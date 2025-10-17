@@ -8,7 +8,7 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { getFspSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -577,9 +577,9 @@ export class RegistrationsService {
       });
     }
 
-    const intersolveVisaAttributeNames = getFspSettingByNameOrThrow(
-      Fsps.intersolveVisa,
-    ).attributes.map((attr) => attr.name) as string[];
+    const intersolveVisaAttributeNames = FSP_SETTINGS[
+      Fsps.intersolveVisa
+    ].attributes.map((attr) => attr.name) as string[];
     if (
       env.INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION &&
       intersolveVisaAttributeNames.includes(attribute)
@@ -991,9 +991,8 @@ export class RegistrationsService {
       });
 
     //  TODO: REFACTOR: This 'ugly' code is now also in payments.service.createAndAddIntersolveVisaTransactionJobs. This should be refactored when there's a better way of getting registration data.
-    const intersolveVisaAttributes = getFspSettingByNameOrThrow(
-      Fsps.intersolveVisa,
-    ).attributes;
+    const intersolveVisaAttributes =
+      FSP_SETTINGS[Fsps.intersolveVisa].attributes;
 
     const intersolveVisaAttributeNames = intersolveVisaAttributes.map(
       (q) => q.name,

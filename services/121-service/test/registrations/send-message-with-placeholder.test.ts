@@ -1,5 +1,5 @@
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { getFspSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
@@ -73,9 +73,10 @@ describe('Send custom message with placeholders', () => {
       new RegExp('{{paymentAmountMultiplier}}', 'g'),
       String(registrationAh.paymentAmountMultiplier),
     );
-    const labelInPreferredLanguage = getFspSettingByNameOrThrow(
-      Fsps.intersolveVoucherPaper,
-    ).defaultLabel[registrationAh.preferredLanguage];
+    const labelInPreferredLanguage =
+      FSP_SETTINGS[Fsps.intersolveVoucherPaper].defaultLabel[
+        registrationAh.preferredLanguage
+      ];
     processedMessage = processedMessage.replace(
       new RegExp('{{programFspConfigurationLabel}}', 'g'),
       labelInPreferredLanguage!,

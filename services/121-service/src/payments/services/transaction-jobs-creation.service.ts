@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 
 import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { getFspSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { ReferenceIdAndTransactionAmountInterface } from '@121-service/src/payments/interfaces/referenceid-transaction-amount.interface';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
@@ -644,7 +644,7 @@ export class TransactionJobsCreationService {
     registrationViews: MappedPaginatedRegistrationDto[];
     sharedJobsByReferenceId: Map<string, SharedTransactionJobDto>;
   }> {
-    const fspAttributes = getFspSettingByNameOrThrow(fspName).attributes;
+    const fspAttributes = FSP_SETTINGS[fspName].attributes;
     const fspAttributeNames = fspAttributes.map((q) => q.name);
     const registrationViews = await this.getRegistrationViews({
       referenceIdsTransactionAmounts,

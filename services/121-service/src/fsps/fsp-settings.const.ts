@@ -8,8 +8,8 @@ import { FspDto } from '@121-service/src/fsps/fsp.dto';
 
 // Attributes are the programRegistrationAttributes that are required for a registration to have a program fsp configuration with the fsp
 // Configuration properties are the program financial service configuration properties that are required for the fsp to be able to send a payment
-export const FSP_SETTINGS: FspDto[] = [
-  {
+export const FSP_SETTINGS: Record<Fsps, FspDto> = {
+  [Fsps.excel]: {
     name: Fsps.excel,
     integrationType: FspIntegrationType.csv,
     defaultLabel: {
@@ -27,7 +27,7 @@ export const FSP_SETTINGS: FspDto[] = [
       },
     ],
   },
-  {
+  [Fsps.intersolveVisa]: {
     name: Fsps.intersolveVisa,
     integrationType: FspIntegrationType.api,
     defaultLabel: {
@@ -78,7 +78,7 @@ export const FSP_SETTINGS: FspDto[] = [
       },
     ],
   },
-  {
+  [Fsps.intersolveVoucherWhatsapp]: {
     name: Fsps.intersolveVoucherWhatsapp,
     integrationType: FspIntegrationType.api,
     defaultLabel: {
@@ -101,7 +101,7 @@ export const FSP_SETTINGS: FspDto[] = [
       },
     ],
   },
-  {
+  [Fsps.intersolveVoucherPaper]: {
     name: Fsps.intersolveVoucherPaper,
     integrationType: FspIntegrationType.api,
     defaultLabel: {
@@ -119,7 +119,7 @@ export const FSP_SETTINGS: FspDto[] = [
       },
     ],
   },
-  {
+  [Fsps.safaricom]: {
     name: Fsps.safaricom,
     integrationType: FspIntegrationType.api,
     defaultLabel: {
@@ -137,7 +137,7 @@ export const FSP_SETTINGS: FspDto[] = [
     ],
     configurationProperties: [],
   },
-  {
+  [Fsps.airtel]: {
     name: Fsps.airtel,
     integrationType: FspIntegrationType.api,
     defaultLabel: {
@@ -151,7 +151,7 @@ export const FSP_SETTINGS: FspDto[] = [
     ],
     configurationProperties: [],
   },
-  {
+  [Fsps.commercialBankEthiopia]: {
     name: Fsps.commercialBankEthiopia,
     integrationType: FspIntegrationType.api,
     defaultLabel: {
@@ -178,7 +178,7 @@ export const FSP_SETTINGS: FspDto[] = [
       },
     ],
   },
-  {
+  [Fsps.nedbank]: {
     name: Fsps.nedbank,
     integrationType: FspIntegrationType.api,
     defaultLabel: {
@@ -197,7 +197,7 @@ export const FSP_SETTINGS: FspDto[] = [
       },
     ],
   },
-  {
+  [Fsps.onafriq]: {
     name: Fsps.onafriq,
     integrationType: FspIntegrationType.api,
     defaultLabel: {
@@ -232,4 +232,13 @@ export const FSP_SETTINGS: FspDto[] = [
       },
     ],
   },
-];
+  [Fsps.deprecatedJumbo]: {
+    name: Fsps.deprecatedJumbo,
+    integrationType: FspIntegrationType.api,
+    defaultLabel: {
+      en: 'Jumbo (DO NOT USE - deprecated)',
+    },
+    attributes: [],
+    configurationProperties: [],
+  },
+};

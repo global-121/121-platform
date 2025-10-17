@@ -1,7 +1,7 @@
 import { FspIntegrationType } from '@121-service/src/fsps/enums/fsp-integration-type.enum';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
-import { getFspSettingByName } from '~/domains/fsp/fsp.helper';
 import {
   FSPS_WITH_PHYSICAL_CARD_SUPPORT,
   FSPS_WITH_VOUCHER_SUPPORT,
@@ -27,8 +27,7 @@ export const projectHasFspWithExportFileIntegration = (
 ): boolean =>
   project?.programFspConfigurations.some(
     (fsp) =>
-      getFspSettingByName(fsp.fspName)?.integrationType ===
-      FspIntegrationType.csv,
+      FSP_SETTINGS[fsp.fspName].integrationType === FspIntegrationType.csv,
   ) ?? false;
 
 export const projectHasInclusionScore = (project?: Project): boolean =>
@@ -56,11 +55,11 @@ export const fspConfigurationNamesHaveIntegrationType = ({
       );
     }
 
-    return getFspSettingByName(config.fspName);
+    return FSP_SETTINGS[config.fspName];
   });
 
   return fspSettings.some(
-    (fspSetting) => fspSetting?.integrationType === integrationType,
+    (fspSetting) => fspSetting.integrationType === integrationType,
   );
 };
 
