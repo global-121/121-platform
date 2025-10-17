@@ -29,6 +29,7 @@ import { ProjectApiService } from '~/domains/project/project.api.service';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
 import { ToastService } from '~/services/toast.service';
+import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Component({
   selector: 'app-fsp-configuration-card',
@@ -54,6 +55,7 @@ export class FspConfigurationCardComponent {
   fspConfigurationService = inject(FspConfigurationService);
   fspConfigurationApiService = inject(FspConfigurationApiService);
   projectApiService = inject(ProjectApiService);
+  translatableStringService = inject(TranslatableStringService);
   toastService = inject(ToastService);
 
   projectAttributes = injectQuery(
@@ -68,7 +70,9 @@ export class FspConfigurationCardComponent {
   );
 
   readonly deleteConfigurationDialogHeader = computed(
-    () => $localize`Remove` + ' ' + this.configuration().name,
+    () =>
+      $localize`Remove` +
+      ` "${this.translatableStringService.translate(this.configuration().label) ?? ''}"`,
   );
 
   readonly fspSetting = computed(
