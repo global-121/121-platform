@@ -49,15 +49,14 @@ describe('EmailsService', () => {
       emailRecipient,
       password: 'testpassword',
     };
-    const { subject, body }: EmailTemplate =
+    const template: EmailTemplate =
       userEmailTemplatesService.buildEmailTemplate(
         EmailType.registrationCreationSSO,
         payload,
       );
     const emailData: EmailData = {
       email: emailRecipient.email,
-      subject,
-      body,
+      ...template,
     };
 
     await emailsService.sendEmail(emailData);
@@ -72,15 +71,14 @@ describe('EmailsService', () => {
       emailRecipient,
       password: 'newpassword',
     };
-    const { subject, body }: EmailTemplate =
+    const template: EmailTemplate =
       userEmailTemplatesService.buildEmailTemplate(
         EmailType.registrationCreationSSO,
         payload,
       );
     const emailData: EmailData = {
       email: emailRecipient.email,
-      subject,
-      body,
+      ...template,
     };
 
     await emailsService.sendEmail(emailData);
@@ -94,15 +92,14 @@ describe('EmailsService', () => {
     const payload: EmailPayloadData = {
       emailRecipient,
     };
-    const { subject, body }: EmailTemplate =
+    const template: EmailTemplate =
       userEmailTemplatesService.buildEmailTemplate(
         EmailType.registrationCreationSSO,
         payload,
       );
     const emailData: EmailData = {
       email: emailRecipient.email,
-      subject,
-      body,
+      ...template,
     };
 
     await emailsService.sendEmail(emailData);
