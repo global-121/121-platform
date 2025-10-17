@@ -182,30 +182,83 @@ export class TransactionEvents1760532935192 implements MigrationInterface {
       console.timeEnd('fill last transaction event table');
     }
 
-    ///////////////////////////////////////////////////////
-    // Migration that need to happen after the data is in place
-    ///////////////////////////////////////////////////////
-    // change twilio-message relation with transaction from OneToOne to ManyToOne
+    /////////////////////////////////////////////////////////////
+    // Migration that need to happen after the data is in place /
+    /////////////////////////////////////////////////////////////
 
-    // set transactionId to null in twilio_message where it does not exist in transaction table
+    // set transactionId to null in related tables where that transactionId does not exist in transaction table any more
+
+    // twilio-message
     // we use this transactionId to update the transaction for intersolve voucher when we get a callback from twilio, but for transaction not related to the latest transaction this is not relevant anymore
     if (showConsoleTime) {
       console.time('update twilio messages');
     }
-    await queryRunner.query(
-      `UPDATE "121-service"."twilio_message" tm
-          SET "transactionId" = NULL
-          FROM (
-            SELECT tm.id
-            FROM "121-service"."twilio_message" tm
-            LEFT JOIN "121-service"."transaction" t ON tm."transactionId" = t."id"
-            WHERE tm."transactionId" IS NOT NULL AND t."id" IS NULL
-          ) AS missing
-          WHERE tm.id = missing.id
-        `,
+    await this.updateFkToNullOfTransactionsThatNoLongerExist(
+      'twilio_message',
+      queryRunner,
     );
     if (showConsoleTime) {
       console.timeEnd('update twilio messages');
+    }
+
+    // intersolve-issue-voucher-request
+    if (showConsoleTime) {
+      console.time('update intersolve issue vouchers');
+    }
+    await this.updateFkToNullOfTransactionsThatNoLongerExist(
+      'intersolve_issue_voucher_request',
+      queryRunner,
+    );
+    if (showConsoleTime) {
+      console.timeEnd('update intersolve issue vouchers');
+    }
+
+    // onafriq-transaction
+    if (showConsoleTime) {
+      console.time('update onafriq transactions');
+    }
+    await this.removeRelatedRecordsOfTransactionsThatNoLongerExist(
+      'onafriq_transaction',
+      queryRunner,
+    );
+    if (showConsoleTime) {
+      console.timeEnd('update onafriq transactions');
+    }
+
+    // safaricom-transfer
+    if (showConsoleTime) {
+      console.time('update safaricom transfers');
+    }
+    await this.removeRelatedRecordsOfTransactionsThatNoLongerExist(
+      'safaricom_transfer',
+      queryRunner,
+    );
+    if (showConsoleTime) {
+      console.timeEnd('update safaricom transfers');
+    }
+
+    // cbe-transfer
+    if (showConsoleTime) {
+      console.time('update cbe transfers');
+    }
+    await this.removeRelatedRecordsOfTransactionsThatNoLongerExist(
+      'cbe_transfer',
+      queryRunner,
+    );
+    if (showConsoleTime) {
+      console.timeEnd('update cbe transfers');
+    }
+
+    // nedbank-voucher
+    if (showConsoleTime) {
+      console.time('update nedbank vouchers');
+    }
+    await this.removeRelatedRecordsOfTransactionsThatNoLongerExist(
+      'nedbank_voucher',
+      queryRunner,
+    );
+    if (showConsoleTime) {
+      console.timeEnd('update nedbank vouchers');
     }
 
     await queryRunner.query(
@@ -378,6 +431,41 @@ export class TransactionEvents1760532935192 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."cbe_transfer" DROP CONSTRAINT "FK_8d179b2bec6e57c9215780e7aad"`,
+    );
+  }
+
+  private async updateFkToNullOfTransactionsThatNoLongerExist(
+    tableName: string,
+    queryRunner: QueryRunner,
+  ) {
+    await queryRunner.query(
+      `UPDATE "121-service"."${tableName}" tm
+          SET "transactionId" = NULL
+          FROM (
+            SELECT tm.id
+            FROM "121-service"."${tableName}" tm
+            LEFT JOIN "121-service"."transaction" t ON tm."transactionId" = t."id"
+            WHERE tm."transactionId" IS NOT NULL AND t."id" IS NULL
+          ) AS missing
+          WHERE tm.id = missing.id
+        `,
+    );
+  }
+
+  private async removeRelatedRecordsOfTransactionsThatNoLongerExist(
+    tableName: string,
+    queryRunner: QueryRunner,
+  ) {
+    await queryRunner.query(
+      `DELETE FROM "121-service"."${tableName}" tm
+      USING (
+        SELECT tm.id
+        FROM "121-service"."${tableName}" tm
+        LEFT JOIN "121-service"."transaction" t ON tm."transactionId" = t."id"
+        WHERE tm."transactionId" IS NOT NULL AND t."id" IS NULL
+      ) AS missing
+      WHERE tm.id = missing.id
+        `,
     );
   }
 }
