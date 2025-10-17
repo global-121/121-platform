@@ -12,11 +12,9 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import ProjectSettingsPage from '@121-e2e/portal/pages/ProjectSettingsPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
-const currentDate = new Date();
-const todaysDate = new Date(currentDate);
-todaysDate.setDate(currentDate.getDate());
-const futureDate = new Date(currentDate);
-futureDate.setDate(currentDate.getDate() + 1);
+const todaysDate = new Date();
+const futureDate = new Date();
+futureDate.setDate(futureDate.getDate() + 1);
 
 // Arrange
 test.beforeEach(async ({ page }) => {
@@ -109,10 +107,6 @@ test('[38155] Edit Project Information', async ({ page }) => {
     );
     await projectSettings.selectCurrency(budgetInfo.currency);
     await projectSettings.editInformationFieldByLabel(
-      'Payment frequency',
-      budgetInfo.paymentFrequency,
-    );
-    await projectSettings.editInformationFieldByLabel(
       'Default transfers per registration',
       budgetInfo.defaultTransferAmount,
     );
@@ -131,7 +125,6 @@ test('[38155] Edit Project Information', async ({ page }) => {
       expect(budgetData).toEqual({
         'Funds available': budgetInfo.fundsAvailable,
         '*Currency': budgetInfo.currency,
-        'Payment frequency': budgetInfo.paymentFrequency,
         'Default transfers per registration': budgetInfo.defaultTransferAmount,
         '*Fixed transfer value': budgetInfo.fixedTransferValue,
       });
