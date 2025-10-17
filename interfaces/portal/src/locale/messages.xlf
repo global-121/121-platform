@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -459,9 +459,6 @@
       </trans-unit>
       <trans-unit id="8102975218009674229" datatype="html">
         <source>Print voucher</source>
-      </trans-unit>
-      <trans-unit id="3132687678063886490" datatype="html">
-        <source>Voucher - payment <x equiv-text="this.paymentId()" id="PH"/> of <x equiv-text="this.totalTransfers()" id="PH_1"/></source>
       </trans-unit>
       <trans-unit id="2161871078253886554" datatype="html">
         <source>Unknown user</source>
@@ -1842,7 +1839,7 @@
         <source>Part of payment</source>
       </trans-unit>
       <trans-unit id="7833274025744181866" datatype="html">
-        <source>Transfer <x equiv-text="formattedDate" id="PH"/> - transfer history</source>
+        <source>Transfer <x equiv-text="this.paymentDate()" id="PH"/> - transfer history</source>
       </trans-unit>
       <trans-unit id="transaction-status-created" datatype="html">
         <source>Created</source>
@@ -1870,6 +1867,12 @@
       </trans-unit>
       <trans-unit id="6456009373504868195" datatype="html">
         <source>Please correct the errors in the form.</source>
+      </trans-unit>
+      <trans-unit id="2530685350362198190" datatype="html">
+        <source>Voucher <x equiv-text="this.paymentId()" id="PH"/> on <x equiv-text="this.paymentDate()" id="PH_1"/></source>
+      </trans-unit>
+      <trans-unit id="819007450583343771" datatype="html">
+        <source>Voucher</source>
       </trans-unit>
     </body>
   </file>

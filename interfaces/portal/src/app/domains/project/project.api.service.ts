@@ -333,17 +333,17 @@ export class ProjectApiService extends DomainApiService {
 
   getIntersolveVoucher({
     projectId,
-    voucherReferenceId,
+    referenceId,
     paymentId,
   }: {
     projectId: Signal<number | string>;
-    voucherReferenceId: string;
+    referenceId: string;
     paymentId: number | string;
   }) {
     return this.generateQueryOptions<Blob>({
       path: [BASE_ENDPOINT, projectId, 'fsps/intersolve-voucher/vouchers'],
       params: {
-        referenceId: voucherReferenceId,
+        referenceId,
         paymentId: paymentId.toString(),
       },
       responseAsBlob: true,
