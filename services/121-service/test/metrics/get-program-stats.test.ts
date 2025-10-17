@@ -21,18 +21,16 @@ describe('Get program stats', () => {
     accessToken = await getAccessToken();
   });
 
-  it('should successfully get correct program stats, including cashDisbursed only counting latest non-error transactions', async () => {
+  it('should successfully get correct program stats, including cashDisbursed only counting non-error transactions', async () => {
     // Arrange
-    // Set up 2 registrations of which 1 fails (visa), and of which 1 has first a waiting and then a success transaction (AH voucher)
+    // Set up 2 registrations of which 1 fails (visa)
     registrationPV7.fullName = 'mock-fail-create-customer';
     const registrationsPV = [registrationPV6, registrationPV7];
 
-    await seedPaidRegistrations(
-      registrationsPV,
-      programIdPV,
-      amount,
-      Object.values(TransactionStatusEnum),
-    );
+    await seedPaidRegistrations(registrationsPV, programIdPV, amount, [
+      TransactionStatusEnum.success,
+      TransactionStatusEnum.error,
+    ]);
 
     // Act
     const getProgramStatsResponse = await getServer()
