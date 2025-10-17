@@ -29,12 +29,13 @@
         />
       }
       @if (globalFilterValue()?.toLowerCase() === 'henry dunant') {
-        <div class="fixed end-0 bottom-0 z-auto me-4">
+        <div class="animate-pop-in fixed end-0 bottom-0 z-auto me-4">
           <img
             src="assets/henry.png"
             class="w-64"
             alt="Gotcha!"
             i18n-alt
+            (load)="trackFilterSpecialValue()"
           />
         </div>
       }
