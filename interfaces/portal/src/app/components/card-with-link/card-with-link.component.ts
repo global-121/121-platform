@@ -20,6 +20,8 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
 export class CardWithLinkComponent {
   readonly href = input<RouterLink['routerLink']>();
   readonly title = input.required<string>();
+  readonly subtitle = input<string>();
+  readonly image = input<string>();
   readonly loading = input<boolean>(false);
   readonly cardClicked = output();
 }

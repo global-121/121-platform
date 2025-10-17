@@ -18,6 +18,7 @@ import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
+import { FSP_IMAGE_URLS } from '~/domains/fsp/fsp.helper';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { FspConfigurationCardComponent } from '~/pages/project-settings-fsps/components/fsp-configuration-card/fsp-configuration-card.component';
@@ -50,15 +51,24 @@ export class FspConfigurationListComponent {
     this.fspConfigurationApiService.getFspConfigurations(this.projectId),
   );
 
-  readonly FSP_SETTINGS = FSP_SETTINGS;
-  readonly Fsps = Fsps;
+  FSP_IMAGE_URLS = FSP_IMAGE_URLS;
 
   readonly showNewFspList = computed(
     () =>
       this.forceShowNewFspList() || this.fspConfigurations.data()?.length === 0,
   );
 
-  hasFspConfiguration(fspName: Fsps) {
+  readonly configurableFsps = computed(() =>
+    FSP_SETTINGS.filter(
+      (fspSetting) =>
+        // Can always add multiple Excel FSP configurations
+        fspSetting.name === Fsps.excel ||
+        (!this.hasFspConfiguration(fspSetting.name) &&
+          fspSetting.name !== Fsps.deprecatedJumbo),
+    ),
+  );
+
+  private hasFspConfiguration(fspName: Fsps) {
     return this.fspConfigurations
       .data()
       ?.some((fspConfiguration) => fspConfiguration.fspName === fspName);
