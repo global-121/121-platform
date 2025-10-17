@@ -16,7 +16,6 @@ import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
-import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FSP_IMAGE_URLS } from '~/domains/fsp-configuration/fsp-configuration.helper';
@@ -30,7 +29,6 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
     CardModule,
     ButtonModule,
     SkeletonInlineComponent,
-    FormErrorComponent,
     FspConfigurationCardComponent,
     CardWithLinkComponent,
     TranslatableStringPipe,
@@ -52,11 +50,6 @@ export class FspConfigurationListComponent {
   );
 
   FSP_IMAGE_URLS = FSP_IMAGE_URLS;
-
-  readonly showNewFspList = computed(
-    () =>
-      this.forceShowNewFspList() || this.fspConfigurations.data()?.length === 0,
-  );
 
   readonly configurableFsps = computed(() =>
     Object.values(FSP_SETTINGS).filter(
