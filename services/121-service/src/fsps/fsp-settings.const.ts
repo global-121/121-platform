@@ -232,13 +232,4 @@ export const FSP_SETTINGS: Record<Fsps, FspDto> = {
       },
     ],
   },
-  [Fsps.deprecatedJumbo]: {
-    name: Fsps.deprecatedJumbo,
-    integrationType: FspIntegrationType.api,
-    defaultLabel: {
-      en: 'Jumbo (DO NOT USE - deprecated)',
-    },
-    attributes: [],
-    configurationProperties: [],
-  },
 };

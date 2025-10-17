@@ -19,8 +19,6 @@ export class FspsService {
   }
 
   public async getAllFsps(): Promise<FspDto[]> {
-    return Object.values(FSP_SETTINGS).filter(
-      (fsp) => fsp.name !== Fsps.deprecatedJumbo,
-    );
+    return Object.values(FSP_SETTINGS);
   }
 }
