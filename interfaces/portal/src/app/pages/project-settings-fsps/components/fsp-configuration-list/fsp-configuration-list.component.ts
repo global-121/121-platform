@@ -18,8 +18,8 @@ import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
-import { FSP_IMAGE_URLS } from '~/domains/fsp/fsp.helper';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
+import { FSP_IMAGE_URLS } from '~/domains/fsp-configuration/fsp-configuration.helper';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { FspConfigurationCardComponent } from '~/pages/project-settings-fsps/components/fsp-configuration-card/fsp-configuration-card.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
@@ -59,7 +59,7 @@ export class FspConfigurationListComponent {
   );
 
   readonly configurableFsps = computed(() =>
-    FSP_SETTINGS.filter(
+    Object.values(FSP_SETTINGS).filter(
       (fspSetting) =>
         // Can always add multiple Excel FSP configurations
         fspSetting.name === Fsps.excel ||

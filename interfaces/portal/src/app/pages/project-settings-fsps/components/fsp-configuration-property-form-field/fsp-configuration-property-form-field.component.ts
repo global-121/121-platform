@@ -16,7 +16,7 @@ import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name
 import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
-import { FSP_CONFIGURATION_PROPERTY_LABELS } from '~/domains/fsp/fsp.helper';
+import { FSP_CONFIGURATION_PROPERTY_LABELS } from '~/domains/fsp-configuration/fsp-configuration.helper';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 
 @Component({

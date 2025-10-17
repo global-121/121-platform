@@ -23,15 +23,17 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
-import { FSP_IMAGE_URLS, getFspSettingByName } from '~/domains/fsp/fsp.helper';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
+import { FSP_IMAGE_URLS } from '~/domains/fsp-configuration/fsp-configuration.helper';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { ToastService } from '~/services/toast.service';
+
 @Component({
   selector: 'app-fsp-configuration-card',
   imports: [
@@ -105,15 +107,9 @@ export class FspConfigurationCardComponent {
     },
   ]);
 
-  readonly fspSetting = computed(() => {
-    const fspSetting = getFspSettingByName(this.configuration().fspName);
-
-    if (!fspSetting) {
-      throw new Error('Should never happen but keeps TS happy');
-    }
-
-    return fspSetting;
-  });
+  readonly fspSetting = computed(
+    () => FSP_SETTINGS[this.configuration().fspName],
+  );
 
   readonly fspImage = computed(
     () => FSP_IMAGE_URLS[this.configuration().fspName],
