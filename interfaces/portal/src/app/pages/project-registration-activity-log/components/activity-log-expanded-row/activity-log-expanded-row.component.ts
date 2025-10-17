@@ -26,6 +26,8 @@ import {
 } from '~/domains/payment/payment.helpers';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { Activity } from '~/domains/registration/registration.model';
+import { ActivityLogTransferHistoryDialogComponent } from '~/pages/project-registration-activity-log/components/activity-log-transfer-history-dialog/activity-log-transfer-history-dialog.component';
+import { ActivityLogVoucherDialogComponent } from '~/pages/project-registration-activity-log/components/activity-log-voucher-dialog/activity-log-voucher-dialog.component';
 import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
 
@@ -156,14 +158,18 @@ export class ActivityLogExpandedRowComponent
           },
         ];
       case ActivityTypeEnum.Transaction: {
+        const updatedDate = new DatePipe(this.locale).transform(
+          attributes.updatedDate,
+          'short',
+        );
+        const paymentDate = new DatePipe(this.locale).transform(
+          attributes.paymentDate,
+          'short',
+        );
         const list: DataListItem[] = [
           {
             label: $localize`Part of payment`,
-            value:
-              new DatePipe(this.locale).transform(
-                attributes.paymentDate,
-                'short',
-              ) ?? '',
+            value: paymentDate,
             type: 'text',
             routerLink: paymentLink({
               projectId: this.context().projectId(),
@@ -172,12 +178,16 @@ export class ActivityLogExpandedRowComponent
           },
           {
             label: $localize`Last updated`,
-            value:
-              new DatePipe(this.locale).transform(
-                attributes.updatedDate,
-                'short',
-              ) ?? '',
+            value: updatedDate,
             type: 'text',
+            detailAction: {
+              component: ActivityLogTransferHistoryDialogComponent,
+              inputs: {
+                projectId: this.context().projectId(),
+                transactionId: attributes.transactionId,
+                paymentDate,
+              },
+            },
           },
           {
             label: $localize`Approved by`,
@@ -203,6 +213,15 @@ export class ActivityLogExpandedRowComponent
             type: 'currency',
             currencyCode: this.context().currencyCode(),
             loading: this.intersolveVoucherBalance.isLoading(),
+            detailAction: {
+              component: ActivityLogVoucherDialogComponent,
+              inputs: {
+                projectId: this.context().projectId(),
+                paymentId: attributes.paymentId,
+                paymentDate,
+                referenceId: this.context().referenceId,
+              },
+            },
           });
         }
 

@@ -1,9 +1,16 @@
-import { CurrencyPipe, DatePipe, DecimalPipe, NgClass } from '@angular/common';
+import {
+  CurrencyPipe,
+  DatePipe,
+  DecimalPipe,
+  NgClass,
+  NgComponentOutlet,
+} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   inject,
   input,
+  Type,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
@@ -27,6 +34,10 @@ export type DataListItem = {
   chipLabel?: string;
   chipVariant?: ChipVariant;
   fullWidth?: boolean;
+  detailAction?: {
+    component: Type<unknown>;
+    inputs: Record<string, unknown>;
+  };
 } & (
   | {
       type: 'boolean';
@@ -69,6 +80,7 @@ export type DataListItem = {
     ColoredChipComponent,
     TranslatableStringPipe,
     NgClass,
+    NgComponentOutlet,
     RouterLink,
   ],
   templateUrl: './data-list.component.html',

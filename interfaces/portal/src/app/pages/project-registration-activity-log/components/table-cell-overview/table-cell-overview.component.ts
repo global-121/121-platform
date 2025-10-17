@@ -27,15 +27,12 @@ import {
 } from '~/components/colored-chip/colored-chip.helper';
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
 import { MESSAGE_CONTENT_TYPE_LABELS } from '~/domains/message/message.helper';
-import { FSPS_WITH_VOUCHER_SUPPORT } from '~/domains/payment/payment.helpers';
 import {
   REGISTRATION_STATUS_LABELS,
   registrationLink,
 } from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
 import { RetryTransfersDialogComponent } from '~/pages/project-payment-transfer-list/components/retry-transfers-dialog/retry-transfers-dialog.component';
-import { ActivityLogTransferHistoryDialogComponent } from '~/pages/project-registration-activity-log/components/activity-log-transfer-history-dialog/activity-log-transfer-history-dialog.component';
-import { ActivityLogVoucherDialogComponent } from '~/pages/project-registration-activity-log/components/activity-log-voucher-dialog/activity-log-voucher-dialog.component';
 import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
 import { AuthService } from '~/services/auth.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
@@ -46,8 +43,6 @@ import { Locale } from '~/utils/locale';
   imports: [
     ChipModule,
     ColoredChipComponent,
-    ActivityLogVoucherDialogComponent,
-    ActivityLogTransferHistoryDialogComponent,
     NgClass,
     ButtonModule,
     RetryTransfersDialogComponent,
@@ -143,45 +138,6 @@ export class TableCellOverviewComponent
       return false;
     }
     return item.attributes.status === TransactionStatusEnum.error;
-  });
-
-  readonly getVoucherDialogData = computed(() => {
-    const item = this.value();
-    const referenceId = this.context().referenceId;
-
-    if (!referenceId) {
-      return;
-    }
-
-    if (item.type !== ActivityTypeEnum.Transaction) {
-      return;
-    }
-    const fspName = item.attributes.fspName;
-    if (
-      typeof fspName !== 'string' ||
-      !FSPS_WITH_VOUCHER_SUPPORT.includes(fspName)
-    ) {
-      return;
-    }
-
-    return {
-      projectId: this.context().projectId(),
-      paymentId: item.attributes.paymentId,
-      totalTransfers: item.attributes.amount,
-      voucherReferenceId: referenceId,
-    };
-  });
-
-  readonly getTransferHistoryDialogData = computed(() => {
-    const item = this.value();
-    if (item.type !== ActivityTypeEnum.Transaction) {
-      return;
-    }
-    return {
-      projectId: this.context().projectId(),
-      transactionId: item.attributes.transactionId,
-      paymentDate: item.attributes.paymentDate,
-    };
   });
 
   readonly isIgnoreDuplicationType = computed(
