@@ -23,7 +23,7 @@ export enum TransactionEventDescription {
   intersolveVoucherCreationRequest = 'AH voucher creation',
   intersolveVoucherInitialMessageSent = 'Notification to claim voucher',
   intersolveVoucherVoucherMessageSent = 'Voucher message sending',
-  intersolveVoucherMessageCallback = 'Message delivery', // ##TODO: do we want to distinguish between callback on initial vs voucher message?
+  intersolveVoucherMessageCallback = 'Message delivery',
   // Excel fsp processing-step events
   excelPreparationForExport = 'Preparation for export',
   excelReconciliationFileUpload = 'Reconciliation file upload',
