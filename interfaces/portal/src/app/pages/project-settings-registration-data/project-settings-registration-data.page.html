@@ -1,5 +1,10 @@
-<app-page-layout-project-settings [projectId]="projectId()"
-  ><p-card styleClass="[&_.p-card]:border-grey-300 [&_.p-card]:border">
+<app-page-layout-project-settings [projectId]="projectId()">
+  <!--
+
+  KOBO Integration not yet ready for prime time
+  Needs work on the backend
+
+  <p-card styleClass="[&_.p-card]:border-grey-300 [&_.p-card]:border">
     <h2
       i18n
       class="mb-4"
@@ -38,7 +43,7 @@
         />
       </div>
     }
-  </p-card>
+  </p-card> -->
 
   @if (koboIntegration.data()) {
     <app-registration-questions-table [projectId]="projectId()" />
