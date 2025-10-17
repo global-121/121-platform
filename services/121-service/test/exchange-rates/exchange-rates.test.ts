@@ -4,7 +4,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getAllExchangeRates,
   retrieveAndStoreAllExchangeRates,
-} from '@121-service/test/helpers/exchange-rate.helper.js';
+} from '@121-service/test/helpers/exchange-rate.helper';
 import {
   getAccessToken,
   resetDB,
