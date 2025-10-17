@@ -25,11 +25,11 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
-import { getFspSettingByName } from '~/domains/fsp/fsp.helper';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { ProjectApiService } from '~/domains/project/project.api.service';
@@ -130,15 +130,9 @@ export class FspConfigurationFormDialogComponent {
     return new FormGroup(formGroupControls);
   });
 
-  readonly fspSettingToConfigure = computed(() => {
-    const fspSetting = getFspSettingByName(this.fspToConfigure());
-
-    if (!fspSetting) {
-      throw new Error('Should never happen but keeps TS happy');
-    }
-
-    return fspSetting;
-  });
+  readonly fspSettingToConfigure = computed(
+    () => FSP_SETTINGS[this.fspToConfigure()],
+  );
 
   readonly missingIntegrationAttributes = computed(() => {
     const fspSetting = this.fspSettingToConfigure();
