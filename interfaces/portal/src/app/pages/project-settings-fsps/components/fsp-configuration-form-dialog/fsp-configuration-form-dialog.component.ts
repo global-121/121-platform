@@ -111,6 +111,12 @@ export class FspConfigurationFormDialogComponent {
         existingPropertyValue = '';
       }
 
+      if (property.name === FspConfigurationProperties.columnsToExport) {
+        existingPropertyValue = existingPropertyValue
+          ? (existingPropertyValue as string).split(',')
+          : [];
+      }
+
       formGroupControls[property.name] = new FormControl<string | string[]>(
         existingPropertyValue ?? '',
         {
