@@ -6,7 +6,7 @@ export enum Fsps {
   airtel = 'Airtel',
   commercialBankEthiopia = 'Commercial-bank-ethiopia',
   excel = 'Excel',
-  // XXX: can we just remove this one? And then simplify FSP_SETTINGS accordingly?
+  // TODO AB#38595 remove this deprecated FSP
   deprecatedJumbo = 'Intersolve-jumbo-physical',
   nedbank = 'Nedbank',
   onafriq = 'Onafriq',
