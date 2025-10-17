@@ -8,7 +8,7 @@ import {
   output,
 } from '@angular/core';
 
-import { injectQuery } from 'node_modules/@tanstack/angular-query-experimental/inject-query';
+import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 
