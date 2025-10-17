@@ -1,8 +1,8 @@
 import {
   loginUrl,
   supportEmail,
-} from '@121-service/src/emails/enum/config.enum';
-import { EmailPayloadData } from '@121-service/src/emails/interfaces/email-payload-data.interface';
+} from '@121-service/src/user/modules/user-emails/interfaces/enum/config.enum';
+import { EmailPayloadData } from '@121-service/src/user/modules/user-emails/interfaces/interfaces/email-payload-data.interface';
 
 export const emailBodyRegistrationCreation = (
   payloadData: EmailPayloadData,

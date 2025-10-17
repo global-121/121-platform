@@ -1,12 +1,12 @@
 import { Test } from '@nestjs/testing';
 
-import { EmailType } from '@121-service/src/emails/enum/email-type.enum';
-import { getEmailBody } from '@121-service/src/emails/helpers/get-body.helper';
-import { getEmailSubject } from '@121-service/src/emails/helpers/get-subject.helper';
-import { EmailPayloadData } from '@121-service/src/emails/interfaces/email-payload-data.interface';
-import { EmailRecipient } from '@121-service/src/emails/interfaces/email-recipient.interface';
 import { EmailsService } from '@121-service/src/emails/services/emails.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { EmailType } from '@121-service/src/user/modules/user-emails/interfaces/enum/email-type.enum';
+import { getEmailBody } from '@121-service/src/user/modules/user-emails/interfaces/helpers/get-body.helper';
+import { getEmailSubject } from '@121-service/src/user/modules/user-emails/interfaces/helpers/get-subject.helper';
+import { EmailPayloadData } from '@121-service/src/user/modules/user-emails/interfaces/interfaces/email-payload-data.interface';
+import { EmailRecipient } from '@121-service/src/user/modules/user-emails/interfaces/interfaces/email-recipient.interface';
 
 // Mock for EmailsApiService
 const mockEmailsApiService = {

@@ -2,22 +2,21 @@ import {
   changePasswordUrl,
   loginUrl,
   supportEmail,
-} from '@121-service/src/emails/enum/config.enum';
-import { EmailPayloadData } from '@121-service/src/emails/interfaces/email-payload-data.interface';
+} from '@121-service/src/user/modules/user-emails/interfaces/enum/config.enum';
+import { EmailPayloadData } from '@121-service/src/user/modules/user-emails/interfaces/interfaces/email-payload-data.interface';
 
-export const emailBodyRegistrationCreationSSO = (
+export const emailBodyPasswordReset = (
   payloadData: EmailPayloadData,
 ): string => {
   const {
     emailRecipient: { displayName, email },
     password,
   } = payloadData;
-
   return `
     <p>Dear ${displayName},</p>
     <p>
-      You have been added to the 121 Portal by the platform admin.<br>
-      To log in, go to: <a href="${loginUrl}">${loginUrl}</a>
+      Your password for the 121 Portal has been reset.<br>
+      To log in again, go to: <a href="${loginUrl}">${loginUrl}</a>
     </p>
     <p>
       Username: ${email}<br>

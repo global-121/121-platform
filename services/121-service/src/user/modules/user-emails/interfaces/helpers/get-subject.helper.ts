@@ -1,4 +1,4 @@
-import { EmailType } from '@121-service/src/emails/enum/email-type.enum';
+import { EmailType } from '@121-service/src/user/modules/user-emails/interfaces/enum/email-type.enum';
 
 export const getEmailSubject = (type: EmailType): string => {
   switch (type) {

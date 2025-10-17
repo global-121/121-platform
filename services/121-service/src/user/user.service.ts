@@ -8,9 +8,7 @@ import * as jwt from 'jsonwebtoken';
 import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
-import { EmailType } from '@121-service/src/emails/enum/email-type.enum';
-import { EmailPayloadData } from '@121-service/src/emails/interfaces/email-payload-data.interface';
-import { EmailRecipient } from '@121-service/src/emails/interfaces/email-recipient.interface';
+import { EmailData } from '@121-service/src/emails/interfaces/email-data.interface';
 import { EmailsService } from '@121-service/src/emails/services/emails.service';
 import { env } from '@121-service/src/env';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -45,6 +43,10 @@ import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity'
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
+import { EmailType } from '@121-service/src/user/modules/user-emails/interfaces/enum/email-type.enum';
+import { EmailPayloadData } from '@121-service/src/user/modules/user-emails/interfaces/interfaces/email-payload-data.interface';
+import { EmailRecipient } from '@121-service/src/user/modules/user-emails/interfaces/interfaces/email-recipient.interface';
+import { UserEmailsService } from '@121-service/src/user/modules/user-emails/user-emails.service';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 const tokenExpirationDays = 14;
@@ -65,6 +67,7 @@ export class UserService {
   public constructor(
     @Inject(REQUEST) private readonly request: Request,
     private readonly emailsService: EmailsService,
+    private readonly userEmailsService: UserEmailsService,
   ) {}
 
   public async login(loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
@@ -283,18 +286,16 @@ export class UserService {
         password,
       };
 
-      // Send SSO template if SSO is enabled
-      if (env.USE_SSO_AZURE_ENTRA) {
-        await this.emailsService.sendEmail(
-          EmailType.registrationCreationSSO,
-          emailPayload,
-        );
-      } else {
-        await this.emailsService.sendEmail(
-          EmailType.registrationCreation,
-          emailPayload,
-        );
-      }
+      const emailType: EmailType = env.USE_SSO_AZURE_ENTRA
+        ? EmailType.registrationCreationSSO
+        : EmailType.registrationCreation;
+
+      const emailData: EmailData = this.userEmailsService.buildEmailData(
+        emailType,
+        emailPayload,
+      );
+
+      await this.emailsService.sendEmail(emailData);
     }
   }
 
@@ -952,7 +953,12 @@ export class UserService {
       password,
     };
 
-    await this.emailsService.sendEmail(EmailType.passwordReset, emailPayload);
+    const emailData: EmailData = this.userEmailsService.buildEmailData(
+      EmailType.passwordReset,
+      emailPayload,
+    );
+
+    await this.emailsService.sendEmail(emailData);
   }
 
   private generateSalt(): string {
