@@ -5,6 +5,7 @@ import { queryOptions } from '@tanstack/angular-query-experimental';
 import { unique } from 'radashi';
 
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
+import { UpdateProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
@@ -251,7 +252,7 @@ export class ProjectApiService extends DomainApiService {
           );
           return {
             ...attribute,
-            label:
+            translatedLabel:
               translatedLabel ??
               (isGenericAttribute(attribute.name)
                 ? ATTRIBUTE_LABELS[attribute.name]
@@ -259,6 +260,22 @@ export class ProjectApiService extends DomainApiService {
               attribute.name,
           };
         }),
+    });
+  }
+
+  updateProjectRegistrationAttribute({
+    projectId,
+    programRegistrationAttributeName,
+    attribute,
+  }: {
+    projectId: Signal<number | string>;
+    programRegistrationAttributeName: string;
+    attribute: Dto<UpdateProgramRegistrationAttributeDto>;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'PATCH',
+      endpoint: `${BASE_ENDPOINT}/${projectId().toString()}/registration-attributes/${programRegistrationAttributeName}`,
+      body: attribute,
     });
   }
 

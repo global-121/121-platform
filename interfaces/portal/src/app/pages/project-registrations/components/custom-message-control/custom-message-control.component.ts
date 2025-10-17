@@ -55,7 +55,7 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
   placeholders = injectQuery(
     this.messagingService.getMessagePlaceholders(this.projectId),
   );
-  readonly messagePlaceholders = computed<{ label: string }[]>(() => {
+  readonly messagePlaceholders = computed<{ translatedLabel: string }[]>(() => {
     if (this.placeholders.isSuccess()) {
       return this.placeholders.data();
     }
@@ -63,14 +63,14 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
     if (this.placeholders.isError()) {
       return [
         {
-          label: $localize`Failed to load options`,
+          translatedLabel: $localize`Failed to load options`,
         },
       ];
     }
 
     return [
       {
-        label: $localize`:@@generic-loading:Loading...`,
+        translatedLabel: $localize`:@@generic-loading:Loading...`,
       },
     ];
   });
@@ -78,7 +78,7 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
   readonly mentionConfig = computed(() => ({
     items: this.messagePlaceholders(),
     triggerChar: '@',
-    labelKey: 'label',
+    labelKey: 'translatedLabel',
     mentionSelect: (item: AttributeWithTranslatedLabel) => `{{${item.name}}} `,
   }));
 
