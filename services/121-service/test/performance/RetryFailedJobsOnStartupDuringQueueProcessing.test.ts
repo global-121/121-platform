@@ -3,26 +3,29 @@ import { HttpStatus } from '@nestjs/common';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { doPayment } from '@121-service/test/helpers/program.helper';
 import {
   duplicateRegistrations,
-  exportRegistrations,
   seedRegistrationsWithStatus,
-  sendMessage,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { getPaymentResults } from '@121-service/test/performance/helpers/performance.helper';
+import {
+  getPaymentResults,
+  isServiceUp,
+  kill121Service,
+} from '@121-service/test/performance/helpers/performance.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-const duplicateCount = 15; // 2^15 = 32768
+const duplicateCount = 7; // 2^7 = 128
 
-jest.setTimeout(4_600_000); // 76 minutes
-describe('Measure performance during payment', () => {
+jest.setTimeout(3_600_000); // 60 minutes
+describe('Retry failed jobs on startup during queue processing', () => {
   let accessToken: string;
-  it('Setup and do payment', async () => {
+  it('Retry failed jobs on startup', async () => {
     // Arrange
     const startTime = Date.now();
     await resetDB(SeedScript.nlrcMultiple, __filename);
@@ -42,7 +45,7 @@ describe('Measure performance during payment', () => {
       {
         secret: 'fill_in_secret',
       },
-    ); // 2^15 = 32768
+    ); // 2^7 = 128
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
     // Do payment
     const doPaymentResponse = await doPayment({
@@ -53,33 +56,41 @@ describe('Measure performance during payment', () => {
     });
     expect(doPaymentResponse.statusCode).toBe(HttpStatus.ACCEPTED);
     // Assert
-    // Check payment results have at least 50% success rate within 60 minutes
+    // Wait long enough so that jobs are added to the queue, but not so long that all are processed already
     await getPaymentResults({
       programId: programIdOCW,
       paymentId: 1,
       accessToken,
       totalAmountPowerOfTwo: duplicateCount,
-      passRate: 50,
-      maxRetryDurationMs: 4_600_000,
+      passRate: 1,
+      maxRetryDurationMs: 5_000,
+      delayBetweenAttemptsMs: 1_000,
       verbose: true,
     });
-    // When payment is still ongoing get export list and send bulk message
-    // Get export list
-    const getExportListResponse = await exportRegistrations(
-      programIdOCW,
-      'preferredLanguage',
+    // Kill 121-service to simulate crash
+    await kill121Service({ secret: 'fill_in_secret' });
+    // Restart 121-service
+    let serviceUp = false;
+    while (!serviceUp) {
+      // Wait until service is up
+      // eslint-disable-next-line no-await-in-loop
+      await waitFor(1_000);
+      const isServiceUpResponse = await isServiceUp();
+      serviceUp = isServiceUpResponse.statusCode === HttpStatus.OK;
+    }
+    // expect(isServiceUpResponse).toBe(HttpStatus.OK);
+    // Monitor that 100% of payments is successful
+    await getPaymentResults({
+      programId: programIdOCW,
+      paymentId: 1,
       accessToken,
-    );
-    expect(getExportListResponse.statusCode).toBe(HttpStatus.OK);
-    // Send bulk message
-    const bulkMessageResponse = await sendMessage(
-      accessToken,
-      programIdOCW,
-      [],
-      'Your voucher can be picked up at the location',
-    );
-    expect(bulkMessageResponse.statusCode).toBe(HttpStatus.ACCEPTED);
+      totalAmountPowerOfTwo: duplicateCount,
+      passRate: 100,
+      maxRetryDurationMs: 10_000,
+      delayBetweenAttemptsMs: 2_000,
+      verbose: true,
+    });
     const elapsedTime = Date.now() - startTime;
-    expect(elapsedTime).toBeLessThan(4_600_000); // 76 minutes
+    expect(elapsedTime).toBeLessThan(3_600_000); // 60 minutes
   });
 });
