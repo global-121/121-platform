@@ -1849,6 +1849,7 @@
       </trans-unit>
       <trans-unit id="7750731471522839997" datatype="html">
         <source>Editing in <x equiv-text="{{ languageName }}" id="INTERPOLATION"/>.</source>
+      </trans-unit>
       <trans-unit id="4031190280739566335" datatype="html">
         <source>Last updated</source>
       </trans-unit>
