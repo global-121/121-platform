@@ -2,13 +2,13 @@ import { Test } from '@nestjs/testing';
 
 import {
   CreateUserEmailPayload,
-  GenericEmailPayload,
+  FailedValidationEmailPayload,
 } from '@121-service/src/emails/dto/create-emails.dto';
 import { EmailsApiService } from '@121-service/src/emails/services/emails.api.service';
 import { EmailsService } from '@121-service/src/emails/services/emails.service';
 import { createNonSSOUserTemplate } from '@121-service/src/emails/templates/createNonSsoUserTemplate';
 import { createSSOUserTemplate } from '@121-service/src/emails/templates/createSsoUserTemplate';
-import { genericTemplate } from '@121-service/src/emails/templates/genericTemplate';
+import { failedValidationTemplate } from '@121-service/src/emails/templates/failedValidationTemplate';
 import { passwordResetTemplate } from '@121-service/src/emails/templates/passwordResetTemplate';
 
 // Mock for EmailsApiService
@@ -107,22 +107,28 @@ describe('EmailsService', () => {
     );
   });
 
-  it('should call sendEmail with correct payload for sendGenericEmail', async () => {
-    const payload: GenericEmailPayload = {
+  it('should call sendEmail with correct payload for failedValidationEmail', async () => {
+    const payload: FailedValidationEmailPayload = {
       email: 'test@example.com',
-      subject: 'Test Subject',
-      body: 'Test Body',
+      displayName: 'testuser',
+      attachment: {
+        name: 'attachment.csv',
+        contentBytes: Buffer.from('Test attachment content', 'utf8').toString(
+          'base64',
+        ),
+      },
     };
 
-    const { subject, body } = genericTemplate(payload.subject, payload.body);
+    const { subject, body } = failedValidationTemplate(payload.displayName);
 
-    await emailsService.sendGenericEmail(payload);
+    await emailsService.sendValidationFailedEmail(payload);
 
     expect(mockEmailsApiService.sendEmail).toHaveBeenCalledWith(
       expect.objectContaining({
         email: payload.email,
         subject,
         body,
+        attachment: payload.attachment,
       }),
     );
   });

@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 
 import {
   CreateUserEmailPayload,
-  GenericEmailPayload,
+  FailedValidationEmailPayload,
 } from '@121-service/src/emails/dto/create-emails.dto';
 import { EmailsApiService } from '@121-service/src/emails/services/emails.api.service';
 import { createNonSSOUserTemplate } from '@121-service/src/emails/templates/createNonSsoUserTemplate';
 import { createSSOUserTemplate } from '@121-service/src/emails/templates/createSsoUserTemplate';
-import { genericTemplate } from '@121-service/src/emails/templates/genericTemplate';
+import { failedValidationTemplate } from '@121-service/src/emails/templates/failedValidationTemplate';
 import { passwordResetTemplate } from '@121-service/src/emails/templates/passwordResetTemplate';
 
 @Injectable()
@@ -61,13 +61,16 @@ export class EmailsService {
     });
   }
 
-  public async sendGenericEmail(payload: GenericEmailPayload): Promise<void> {
-    const { subject, body } = genericTemplate(payload.subject, payload.body);
+  public async sendValidationFailedEmail(
+    payload: FailedValidationEmailPayload,
+  ): Promise<void> {
+    const { subject, body } = failedValidationTemplate(payload.displayName);
 
     await this.emailsApiService.sendEmail({
       email: payload.email,
       subject,
       body,
+      attachment: payload.attachment,
     });
   }
 }

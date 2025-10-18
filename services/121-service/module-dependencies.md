@@ -156,4 +156,7 @@ graph LR
   SafaricomReconciliationModule-->RedisModule
   SafaricomReconciliationModule-->TransactionsModule
   SafaricomReconciliationModule-->QueuesRegistryModule
+  RegistrationsUpdateJobsModule-->RegistrationsModule
+  RegistrationsUpdateJobsModule-->EmailsModule
+  RegistrationsUpdateJobsModule-->UserModule
 ```
