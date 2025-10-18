@@ -52,9 +52,11 @@ export class FormDialogComponent<TMutationData = unknown> {
 
   show({
     resetMutation = true,
+    resetFormGroup = true,
     trackingEvent = undefined,
   }: {
     resetMutation?: boolean;
+    resetFormGroup?: boolean;
     trackingEvent?: TrackingEvent;
   } = {}) {
     this.confirmationService.confirm({});
@@ -66,7 +68,27 @@ export class FormDialogComponent<TMutationData = unknown> {
       this.mutation().reset();
     }
 
-    this.formGroup()?.reset();
+    if (resetFormGroup) {
+      this.formGroup()?.reset();
+    }
+  }
+
+  hide({
+    resetMutation = true,
+    resetFormGroup = true,
+  }: {
+    resetMutation?: boolean;
+    resetFormGroup?: boolean;
+  } = {}) {
+    if (resetMutation) {
+      this.mutation().reset();
+    }
+
+    if (resetFormGroup) {
+      this.formGroup()?.reset();
+    }
+
+    this.confirmationService.close();
   }
 
   onProceed() {

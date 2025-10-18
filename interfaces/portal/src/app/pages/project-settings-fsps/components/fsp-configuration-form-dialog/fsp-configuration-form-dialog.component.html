@@ -1,0 +1,77 @@
+<app-form-dialog
+  #configurationDialog
+  [header]="configurationDialogHeader()"
+  headerIcon="pi pi-money-bill"
+  [formGroup]="formGroup()"
+  [mutation]="configureFsp"
+  [mutationData]="formGroup().getRawValue()"
+  proceedLabel="Integrate FSP"
+  i18n-proceedLabel
+>
+  <ng-template #manualLink>
+    <a
+      href="https://manual.121.global/"
+      target="_blank"
+      title="Opens in a new window"
+      i18n-title="@@generic-opens-in-new-window"
+      class="p-button p-button-link gap-1"
+      ><span i18n="@@generic-121-manual-title">121 Manual</span>
+      <span class="p-button-icon pi pi-external-link text-sm"></span
+    ></a>
+  </ng-template>
+  <p
+    i18n
+    class="mb-4"
+  >
+    For more information about how to integrate this FSP see the
+    <ng-container [ngTemplateOutlet]="manualLink"></ng-container>.
+  </p>
+
+  @for (fspFormField of fspFormFields(); track fspFormField.name) {
+    <app-fsp-configuration-property-form-field
+      [projectId]="projectId()"
+      [formGroup]="formGroup()"
+      [fspFormField]="fspFormField"
+    />
+  }
+</app-form-dialog>
+
+<app-form-dialog
+  #integrationErrorDialog
+  [mutation]="retryConfigureFsp"
+  [mutationData]="undefined"
+  header="Integration error"
+  i18n-header
+  headerIcon="pi pi-exclamation-triangle"
+  proceedLabel="Try again"
+  i18n-proceedLabel
+>
+  <p i18n>
+    We couldn't configure this FSP due to missing fields in your Kobo form.
+    Please add the following fields to your Kobo form. Save the form, redeploy
+    it, and refresh the integration to try again.
+  </p>
+  <ol class="my-4 list-inside list-decimal ps-4">
+    @for (attribute of missingIntegrationAttributes(); track attribute.name) {
+      <li i18n>
+        FSP "{{ fspLabel() }}" is missing required field
+        <b>"{{ attribute.name }}"</b>
+      </li>
+    }
+  </ol>
+  <ng-template #manualLink>
+    <a
+      href="https://manual.121.global/"
+      target="_blank"
+      title="Opens in a new window"
+      i18n-title="@@generic-opens-in-new-window"
+      class="p-button p-button-link gap-1"
+      ><span i18n="@@generic-121-manual-title">121 Manual</span>
+      <span class="p-button-icon pi pi-external-link text-sm"></span
+    ></a>
+  </ng-template>
+  <p i18n>
+    To learn more about how to integrate Kobo forms see the
+    <ng-container [ngTemplateOutlet]="manualLink"></ng-container>.
+  </p>
+</app-form-dialog>
