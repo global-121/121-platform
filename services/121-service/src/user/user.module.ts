@@ -9,6 +9,7 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { UserController } from '@121-service/src/user/user.controller';
 import { UserService } from '@121-service/src/user/user.service';
+import { UserEmailsModule } from '@121-service/src/user/user-emails/user-emails.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UserService } from '@121-service/src/user/user.service';
       PermissionEntity,
     ]),
     EmailsModule,
+    UserEmailsModule,
   ],
   providers: [UserService],
   controllers: [UserController],
