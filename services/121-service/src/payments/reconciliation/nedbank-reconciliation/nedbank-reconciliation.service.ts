@@ -6,14 +6,15 @@ import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/
 import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-integration/nedbank/repositories/nedbank-voucher.scoped.repository';
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/services/nedbank.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 
 @Injectable()
 export class NedbankReconciliationService {
   public constructor(
     private readonly nedbankService: NedbankService,
     private readonly nedbankVoucherScopedRepository: NedbankVoucherScopedRepository,
-    private readonly transactionScopedRepository: TransactionScopedRepository,
+    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async doNedbankReconciliation(): Promise<number> {
@@ -75,10 +76,13 @@ export class NedbankReconciliationService {
         voucherInfo.errorCode,
       );
     }
-    await this.transactionScopedRepository.update(
-      { id: transactionId },
-      { status: newTransactionStatus, errorMessage },
-    );
+
+    await this.transactionsService.saveTransactionProgressFromExternalSource({
+      transactionId,
+      description: TransactionEventDescription.nedbankCallbackReceived,
+      newTransactionStatus,
+      errorMessage,
+    });
   }
 
   private mapVoucherStatusToNewTransactionStatus(

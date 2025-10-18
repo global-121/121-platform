@@ -1,7 +1,8 @@
 import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integration/onafriq/entities/onafriq-transaction.entity';
 import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.service';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
@@ -14,23 +15,26 @@ describe('TransactionJobsOnafriqService', () => {
   let onafriqTransactionScopedRepository: jest.Mocked<
     ScopedRepository<OnafriqTransactionEntity>
   >;
-  let transactionScopedRepository: jest.Mocked<TransactionScopedRepository>;
+  let transactionEventsScopedRepository: jest.Mocked<TransactionEventsScopedRepository>;
   let transactionJobsHelperService: jest.Mocked<TransactionJobsHelperService>;
   let programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
+  let transactionsService: jest.Mocked<TransactionsService>;
 
   beforeEach(async () => {
     onafriqService = { createTransaction: jest.fn() } as any;
     onafriqTransactionScopedRepository = {
       findOne: jest.fn(),
       save: jest.fn(),
-    } as any;
-    transactionScopedRepository = {
-      count: jest.fn(),
       update: jest.fn(),
     } as any;
+    transactionEventsScopedRepository = {
+      countFailedTransactionAttempts: jest.fn(),
+    } as any;
     transactionJobsHelperService = {
-      getRegistrationOrThrow: jest.fn(),
-      createTransactionAndUpdateRegistration: jest.fn(),
+      createInitiatedOrRetryTransactionEvent: jest.fn(),
+    } as any;
+    transactionsService = {
+      saveTransactionProgress: jest.fn(),
     } as any;
     programFspConfigurationRepository = {
       getPropertiesByNamesOrThrow: jest.fn(),
@@ -39,9 +43,10 @@ describe('TransactionJobsOnafriqService', () => {
     service = new TransactionJobsOnafriqService(
       onafriqService,
       onafriqTransactionScopedRepository,
-      transactionScopedRepository,
       transactionJobsHelperService,
       programFspConfigurationRepository,
+      transactionEventsScopedRepository,
+      transactionsService,
     );
   });
 
@@ -50,10 +55,10 @@ describe('TransactionJobsOnafriqService', () => {
   });
 
   describe('processOnafriqTransactionJob', () => {
-    it('should use existing onafriqTransaction and not create a new one', async () => {
+    it('should use existing onafriqTransaction and not create a new one when existing transaction is found', async () => {
       const transactionJob: OnafriqTransactionJobDto = {
         referenceId: 'ref-1',
-        paymentId: 1,
+        transactionId: 1,
         programId: 1,
         userId: 1,
         bulkSize: 10,
@@ -68,12 +73,13 @@ describe('TransactionJobsOnafriqService', () => {
       const mockPassword = 'mocked_password';
       const mockUniqueKey = 'mocked_unique_key';
 
-      const registration = { id: 10 };
       const existingOnafriqTransaction = { transactionId: 99 };
       (
-        transactionJobsHelperService.getRegistrationOrThrow as jest.Mock
-      ).mockResolvedValue(registration);
-      (transactionScopedRepository.count as jest.Mock).mockResolvedValue(0);
+        transactionJobsHelperService.createInitiatedOrRetryTransactionEvent as jest.Mock
+      ).mockImplementation();
+      (
+        transactionEventsScopedRepository.countFailedTransactionAttempts as jest.Mock
+      ).mockResolvedValue(0);
       (
         onafriqTransactionScopedRepository.findOne as jest.Mock
       ).mockResolvedValue(existingOnafriqTransaction);
@@ -100,9 +106,10 @@ describe('TransactionJobsOnafriqService', () => {
       await service.processOnafriqTransactionJob(transactionJob);
 
       expect(
-        transactionJobsHelperService.createTransactionAndUpdateRegistration,
-      ).not.toHaveBeenCalled();
+        transactionJobsHelperService.createInitiatedOrRetryTransactionEvent,
+      ).toHaveBeenCalled();
       expect(onafriqTransactionScopedRepository.save).not.toHaveBeenCalled();
+      expect(onafriqTransactionScopedRepository.update).toHaveBeenCalled();
       expect(onafriqService.createTransaction).toHaveBeenCalledWith({
         transferAmount: 100,
         phoneNumberPayment: '123',

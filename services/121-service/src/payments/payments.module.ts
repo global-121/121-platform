@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { FspsModule } from '@121-service/src/fsps/fsp.module';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
+import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { ExcelModule } from '@121-service/src/payments/fsp-integration/excel/excel.module';
 import { PaymentEventsModule } from '@121-service/src/payments/payment-events/payment-events.module';
@@ -16,18 +17,17 @@ import { PaymentsProgressHelperService } from '@121-service/src/payments/service
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionEventsModule } from '@121-service/src/payments/transactions/transaction-events/transaction-events.module';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
-import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utils/registration-utils.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
+import { RegistrationEventsModule } from '@121-service/src/registration-events/registration-events.module';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { TransactionQueuesModule } from '@121-service/src/transaction-queues/transaction-queues.module';
 import { UserModule } from '@121-service/src/user/user.module';
@@ -35,13 +35,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      ProgramEntity,
-      TransactionEntity,
-      RegistrationEntity,
-      ProgramRegistrationAttributeEntity,
-      PaymentEntity,
-    ]),
+    TypeOrmModule.forFeature([ProgramEntity, PaymentEntity]),
     UserModule,
     HttpModule,
     ActionsModule,
@@ -56,6 +50,9 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     ProgramFspConfigurationsModule,
     RedisModule,
     PaymentEventsModule,
+    RegistrationEventsModule,
+    TransactionEventsModule,
+    MessageTemplateModule,
   ],
   providers: [
     PaymentsExecutionService,

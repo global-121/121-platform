@@ -7,14 +7,15 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
 export interface TransactionActivity extends BaseActivity {
   type: ActivityTypeEnum.Transaction;
   attributes: {
+    transactionId: number;
     paymentId: number;
     status: TransactionStatusEnum;
-    amount: number;
+    amount: number | null;
     paymentDate: Date;
     updatedDate: Date;
-    fspName: Fsps;
-    fspConfigurationLabel: LocalizedString;
-    fspConfigurationName: string;
-    errorMessage?: string;
+    fspName: Fsps | null;
+    fspConfigurationLabel: LocalizedString | null;
+    fspConfigurationName: string | null;
+    errorMessage: string | null;
   };
 }

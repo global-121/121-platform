@@ -273,13 +273,10 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/registration-events",
+    "path": "/api/programs/{programId}/transactions/{transactionId}/events",
     "params": [
       "programId",
-      "format",
-      "toDate",
-      "fromDate",
-      "referenceId"
+      "transactionId"
     ]
   },
   {
@@ -722,6 +719,17 @@
     "params": [
       "programId",
       "id"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registration-events",
+    "params": [
+      "programId",
+      "format",
+      "toDate",
+      "fromDate",
+      "referenceId"
     ]
   },
   {

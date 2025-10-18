@@ -26,6 +26,9 @@ const defaultMessageJob = {
   userId: 1,
 } as MessageJobDto;
 const mockDefaultNotificationText = 'default notification';
+const mockTransactionId = 1;
+const mockProgramFspConfigurationId = 2;
+const mockIntersolveVoucherId = 3;
 let getMessageTemplateForLanguageOrFallback: jest.SpyInstance;
 
 describe('MessageService', () => {
@@ -190,9 +193,10 @@ describe('MessageService', () => {
         messageContentType: MessageContentType.paymentTemplated,
         whatsappPhoneNumber: '94287277',
         customData: {
-          paymentId: 1,
-          amount: 123,
-          intersolveVoucherId: 456,
+          transactionData: {
+            transactionId: mockTransactionId,
+            programFspConfigurationId: mockProgramFspConfigurationId,
+          },
         },
       };
       const testMessageID = 'SM' + testMessageJob.whatsappPhoneNumber;
@@ -215,17 +219,18 @@ describe('MessageService', () => {
       });
 
       expect(
-        intersolveVoucherService.updateWaitingTransactionStep1,
+        intersolveVoucherService.updateTransactionProgressBasedOnInitialMessage,
       ).toHaveBeenCalledTimes(1);
       expect(
-        intersolveVoucherService.updateWaitingTransactionStep1,
-      ).toHaveBeenCalledWith(
-        testMessageJob.customData.paymentId,
-        testMessageJob.registrationId,
-        TransactionStatusEnum.waiting,
-        testMessageID,
-        undefined,
-      );
+        intersolveVoucherService.updateTransactionProgressBasedOnInitialMessage,
+      ).toHaveBeenCalledWith({
+        errorMessage: undefined,
+        messageSid: testMessageID,
+        newTransactionStatus: TransactionStatusEnum.waiting,
+        programFspConfigurationId: mockProgramFspConfigurationId,
+        transactionId: mockTransactionId,
+        userId: defaultMessageJob.userId,
+      });
     });
     it('should call whatsappService and intersolveVoucherService when processType = whatsappPendingVoucher and message = empty string', async () => {
       // Arrange
@@ -240,9 +245,10 @@ describe('MessageService', () => {
         messageContentType: MessageContentType.paymentTemplated,
         whatsappPhoneNumber: '94287277',
         customData: {
-          paymentId: 1,
-          amount: 123,
-          intersolveVoucherId: 456,
+          transactionData: {
+            transactionId: mockTransactionId,
+            intersolveVoucherId: mockIntersolveVoucherId,
+          },
         },
       };
       const testMessageID = 'SM' + testMessageJob.whatsappPhoneNumber;
@@ -266,22 +272,17 @@ describe('MessageService', () => {
       });
 
       expect(
-        intersolveVoucherService.processTransactionResultStep2,
+        intersolveVoucherService.updateTransactionProgressBasedOnVoucherMessage,
       ).toHaveBeenCalledTimes(1);
       expect(
-        intersolveVoucherService.processTransactionResultStep2,
-      ).toHaveBeenCalledWith(
-        testMessageJob.customData.paymentId,
-        testMessageJob.customData.amount,
-        testMessageJob.registrationId,
-        TransactionStatusEnum.success,
-        null,
-        testMessageJob.programId,
-        {
-          messageSid: testMessageID,
-          intersolveVoucherId: testMessageJob.customData.intersolveVoucherId,
-        },
-      );
+        intersolveVoucherService.updateTransactionProgressBasedOnVoucherMessage,
+      ).toHaveBeenCalledWith({
+        errorMessage: null,
+        intersolveVoucherId: mockIntersolveVoucherId,
+        messageSid: testMessageID,
+        newTransactionStatus: TransactionStatusEnum.success,
+        transactionId: mockTransactionId,
+      });
     });
   });
 });

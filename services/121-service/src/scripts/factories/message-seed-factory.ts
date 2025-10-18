@@ -20,7 +20,6 @@ export class MessageSeedFactory extends BaseSeedFactory<TwilioMessageEntity> {
     const registrations = await registrationRepo.find({
       where: { programId: Equal(programId) },
       select: { id: true }, // Only select id to optimize query
-      relations: { transactions: true },
       order: { id: 'ASC' },
     });
     console.log(

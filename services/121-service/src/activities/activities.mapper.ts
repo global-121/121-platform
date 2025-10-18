@@ -10,7 +10,7 @@ import { TransactionActivity } from '@121-service/src/activities/interfaces/tran
 import { Activity } from '@121-service/src/activities/types/activity.type';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { MessageByRegistrationId } from '@121-service/src/notifications/types/twilio-message-by-registration-id.interface';
-import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
+import { GetAuditedTransactionViews } from '@121-service/src/payments/transactions/types/get-audited-tranaction-views.type';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { GetRegistrationEventDto } from '@121-service/src/registration-events/dto/get-registration-event.dto';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
@@ -25,7 +25,7 @@ export class ActivitiesMapper {
     events,
     availableTypes,
   }: {
-    transactions: GetAuditedTransactionDto[];
+    transactions: GetAuditedTransactionViews[];
     messages: MessageByRegistrationId[];
     notes: NoteEntity[];
     events: RegistrationEventEntity[];
@@ -110,21 +110,22 @@ export class ActivitiesMapper {
   }
 
   private static mapTransactionsToActivity(
-    transactions: GetAuditedTransactionDto[],
+    transactions: GetAuditedTransactionViews[],
   ): TransactionActivity[] {
     return transactions.map((transaction, index) => ({
       id: `${ActivityTypeEnum.Transaction}${index}`,
       user: {
-        id: transaction.userId,
-        username: transaction.username,
+        id: transaction.user.id,
+        username: transaction.user.username ?? undefined,
       },
-      created: transaction.paymentDate,
+      created: transaction.created,
       type: ActivityTypeEnum.Transaction,
       attributes: {
+        transactionId: transaction.id,
         paymentId: transaction.paymentId,
         status: transaction.status,
-        amount: transaction.amount,
-        paymentDate: transaction.paymentDate,
+        amount: transaction.transferValue,
+        paymentDate: transaction.created,
         updatedDate: transaction.updated,
         fspName: transaction.fspName,
         fspConfigurationLabel: transaction.programFspConfigurationLabel,

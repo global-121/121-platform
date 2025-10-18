@@ -6,8 +6,8 @@ import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { NoteScopedRepository } from '@121-service/src/notes/note.repository';
 import { TwilioMessageScopedRepository } from '@121-service/src/notifications/twilio-message.repository';
 import { MessageByRegistrationId } from '@121-service/src/notifications/types/twilio-message-by-registration-id.interface';
-import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
+import { GetAuditedTransactionViews } from '@121-service/src/payments/transactions/types/get-audited-tranaction-views.type';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
 import { RegistrationEventScopedRepository } from '@121-service/src/registration-events/registration-event.repository';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -18,7 +18,7 @@ export class ActivitiesService {
   constructor(
     private readonly eventScopedRepository: RegistrationEventScopedRepository,
     private readonly twilioMessageScopedRepository: TwilioMessageScopedRepository,
-    private readonly transactionScopedRepository: TransactionScopedRepository,
+    private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly noteScopedRepository: NoteScopedRepository,
     private readonly userService: UserService,
   ) {}
@@ -33,7 +33,7 @@ export class ActivitiesService {
   }) {
     const availableTypes: ActivityTypeEnum[] = [];
 
-    let transactions: GetAuditedTransactionDto[] = [];
+    let transactions: GetAuditedTransactionViews[] = [];
     let messages: MessageByRegistrationId[] = [];
     let events: RegistrationEventEntity[] = [];
     let notes: NoteEntity[] = [];
@@ -48,10 +48,10 @@ export class ActivitiesService {
       availableTypes.push(ActivityTypeEnum.Transaction);
 
       transactions =
-        await this.transactionScopedRepository.getLatestTransactionsByRegistrationIdAndProgramId(
+        await this.transactionViewScopedRepository.getAuditedTransactionViews({
           registrationId,
           programId,
-        );
+        });
     }
 
     const canViewMessageHistory = await this.userService.canActivate(
@@ -64,9 +64,10 @@ export class ActivitiesService {
       availableTypes.push(ActivityTypeEnum.Message);
 
       messages =
-        await this.twilioMessageScopedRepository.getManyByRegistrationId(
+        await this.twilioMessageScopedRepository.getManyByRegistrationId({
           registrationId,
-        );
+          programId,
+        });
     }
 
     const canViewPersonalData = await this.userService.canActivate(

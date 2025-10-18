@@ -6,7 +6,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
   deleteRegistrations,
-  getEvents,
+  getRegistrationEvents,
   importRegistrations,
   searchRegistrationByReferenceId,
 } from '@121-service/test/helpers/registration.helper';
@@ -61,7 +61,10 @@ describe('Delete PA', () => {
       programId,
       accessToken,
     );
-    const eventsResponse = await getEvents({ programId, accessToken });
+    const eventsResponse = await getRegistrationEvents({
+      programId,
+      accessToken,
+    });
     const deleteEvent = eventsResponse.body[0];
 
     // Assert

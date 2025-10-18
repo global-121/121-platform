@@ -8,7 +8,7 @@ import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/
 import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { PaymentsModule } from '@121-service/src/payments/payments.module';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';

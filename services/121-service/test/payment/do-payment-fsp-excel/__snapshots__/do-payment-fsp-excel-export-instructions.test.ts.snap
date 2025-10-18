@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Do payment with Excel FSP Error cases Should throw an error if no transactions are found for the payment related to an excel FSP 1`] = `
+{
+  "message": "No transactions found for this payment with FSPs that require to download payment instructions.",
+  "statusCode": 404,
+}
+`;
+
+exports[`Do payment with Excel FSP Error cases Should throw an error if program does not have Excel FSP configured 1`] = `
+{
+  "message": "No program FSP configuration with Excel FSP found for this program",
+  "statusCode": 404,
+}
+`;
+
+exports[`Do payment with Excel FSP Error cases Sould throw an error if the payment doesn't exist 1`] = `
+{
+  "message": "Payment with ID 9999 not found in program 2",
+  "statusCode": 404,
+}
+`;

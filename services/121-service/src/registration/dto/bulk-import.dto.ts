@@ -62,18 +62,12 @@ class BulkImportResult extends BulkImportDto {
 }
 
 export class ImportResult {
-  public aggregateImportResult: AggregateImportResultDto;
+  public aggregateImportResult: {
+    countImported: number;
+  };
   public importResult?: BulkImportResult[];
 }
 
-export class AggregateImportResultDto {
-  public countImported?: number;
-  public countExistingPhoneNr?: number;
-  public countInvalidPhoneNr?: number;
-  public countNotFound?: number;
-  public countPaymentSuccess?: number;
-  public countPaymentFailed?: number;
-}
 export class ImportRegistrationsDto extends BulkImportDto {
   @ApiProperty({
     example: fspArray.join(' | '),

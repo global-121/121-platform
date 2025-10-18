@@ -17,8 +17,6 @@
     }
   </div>
 
-  @let dialogData = voucherDialogData();
-
   @if (isIgnoreDuplicationType()) {
     <a
       [routerLink]="duplicateLink()"
@@ -37,23 +35,11 @@
 
   @if (canRetryTransfer()) {
     <p-button
-      [ngClass]="{
-        'me-1': !!dialogData,
-      }"
       label="Retry transfer"
       i18n-label="@@retry-transfer"
       rounded
       size="small"
       (click)="retryTransfer()"
-    />
-  }
-
-  @if (dialogData) {
-    <app-activity-log-voucher-dialog
-      [projectId]="dialogData.projectId"
-      [paymentId]="dialogData.paymentId"
-      [totalTransfers]="dialogData.totalTransfers"
-      [voucherReferenceId]="dialogData.voucherReferenceId"
     />
   }
 </div>

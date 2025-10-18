@@ -10,7 +10,7 @@ import {
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
@@ -46,10 +46,10 @@ export class ProgramFspConfigurationEntity extends Base121Entity {
   public properties: Relation<ProgramFspConfigurationPropertyEntity[]>;
 
   @OneToMany(
-    (_type) => TransactionEntity,
-    (transactions) => transactions.programFspConfiguration,
+    (_type) => TransactionEventEntity,
+    (transactionEvent) => transactionEvent.programFspConfiguration,
   )
-  public transactions: Relation<TransactionEntity[]>;
+  public transactionEvents: Relation<TransactionEventEntity[]>;
 
   @OneToMany(
     (_type) => RegistrationEntity,

@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import csv from 'csv-parser';
 import { Readable } from 'typeorm/platform/PlatformTools';
 
-export type csvContents = Record<
+export type CsvContents = Record<
   string,
   string | number | boolean | undefined
 >[];
@@ -12,7 +12,7 @@ export class FileImportService {
   public async validateCsv(
     csvFile: Express.Multer.File,
     maxRecords?: number,
-  ): Promise<csvContents> {
+  ): Promise<CsvContents> {
     const indexLastPoint = csvFile.originalname.lastIndexOf('.');
     const extension = csvFile.originalname.substr(
       indexLastPoint,
@@ -48,11 +48,11 @@ export class FileImportService {
   private async csvBufferToArray(
     buffer: Buffer,
     separator: string,
-  ): Promise<csvContents> {
+  ): Promise<CsvContents> {
     const stream = new Readable();
     stream.push(buffer.toString());
     stream.push(null);
-    const parsedData: csvContents = [];
+    const parsedData: CsvContents = [];
     return await new Promise((resolve, reject): void => {
       stream
         .pipe(csv({ separator }))

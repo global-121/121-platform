@@ -1,2 +1,2 @@
 paymentId,id,registrationProgramId,registrationReferenceId,registrationId,registrationStatus,status,amount,errorMessage,programFspConfigurationName,registrationName,phoneNumber,preferredLanguage,paymentAmountMultiplier,programFspConfigurationLabel,paymentCount,fullName,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
-1,2,1,54e62864557597e034,2,included,success,60,,Intersolve-voucher-whatsapp,Lars Larsson,14155235556,nl,3,,1,Lars Larsson,14155235556,,,,,
+1,1,1,54e62864557597e034,2,included,success,60,,Intersolve-voucher-whatsapp,Lars Larsson,14155235556,nl,3,,1,Lars Larsson,14155235556,,,,,

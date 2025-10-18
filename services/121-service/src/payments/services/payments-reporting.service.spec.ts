@@ -5,7 +5,7 @@ import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -41,7 +41,7 @@ const mockTransactions = [
 
 describe('PaymentsReportingService - getTransactions', () => {
   let service: PaymentsReportingService;
-  let transactionScopedRepository: TransactionScopedRepository;
+  let transactionScopedRepository: TransactionViewScopedRepository;
   let registrationPaginationService: RegistrationsPaginationService;
   let programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository;
   let paymentsHelperService: PaymentsReportingHelperService;
@@ -52,7 +52,7 @@ describe('PaymentsReportingService - getTransactions', () => {
       PaymentsReportingService,
     ).compile();
 
-    transactionScopedRepository = unitRef.get(TransactionScopedRepository);
+    transactionScopedRepository = unitRef.get(TransactionViewScopedRepository);
 
     service = unit;
     registrationPaginationService = unitRef.get(RegistrationsPaginationService);

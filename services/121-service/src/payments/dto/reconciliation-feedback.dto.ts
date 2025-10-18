@@ -14,9 +14,6 @@ export class ReconciliationFeedbackDto {
   })
   status?: TransactionStatusEnum | null;
 
-  @ApiProperty({ example: 'Success', description: 'The message' })
-  message?: string | null;
-
   @ApiProperty({
     example: ImportStatus.imported,
     enum: ImportStatus,

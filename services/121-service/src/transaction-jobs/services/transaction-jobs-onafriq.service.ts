@@ -7,7 +7,10 @@ import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-inte
 import { OnafriqError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq.error';
 import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
+import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
@@ -21,68 +24,44 @@ export class TransactionJobsOnafriqService {
     private readonly onafriqService: OnafriqService,
     @Inject(getScopedRepositoryProviderName(OnafriqTransactionEntity))
     private readonly onafriqTransactionScopedRepository: ScopedRepository<OnafriqTransactionEntity>,
-    private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
+    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async processOnafriqTransactionJob(
     transactionJob: OnafriqTransactionJobDto,
   ): Promise<void> {
-    // 1. Create idempotency key
-    const registration =
-      await this.transactionJobsHelperService.getRegistrationOrThrow(
-        transactionJob.referenceId,
+    const transactionEventContext: TransactionEventCreationContext = {
+      transactionId: transactionJob.transactionId,
+      userId: transactionJob.userId,
+      programFspConfigurationId: transactionJob.programFspConfigurationId,
+    };
+
+    // 1. Create transaction event 'initiated' or 'retry'
+    await this.transactionJobsHelperService.createInitiatedOrRetryTransactionEvent(
+      {
+        context: transactionEventContext,
+        isRetry: transactionJob.isRetry,
+      },
+    );
+
+    // 2. Create idempotency key
+    const failedTransactionAttempts =
+      await this.transactionEventScopedRepository.countFailedTransactionAttempts(
+        transactionJob.transactionId,
       );
-    const failedTransactionsCount =
-      await this.transactionScopedRepository.count({
-        where: {
-          registrationId: Equal(registration.id),
-          paymentId: Equal(transactionJob.paymentId),
-          status: Equal(TransactionStatusEnum.error),
-        },
-      });
-    // thirdPartyTransId is generated using: (referenceId + paymentId + failedTransactionsCount)
+    // thirdPartyTransId is generated using: (referenceId + transactionId + failedTransactionAttempts)
     // Using this count to generate the thirdPartyTransId ensures that on:
     // a. Payment retry, a new thirdPartyTransId is generated, which will not be blocked by Onafriq API, as desired.
     // b. Queue retry: on queue retry, the same thirdPartyTransId is generated, which will be blocked by Onafriq API, as desired.
     const thirdPartyTransId = generateUUIDFromSeed(
-      `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentId},Attempt=${failedTransactionsCount}`,
+      `ReferenceId=${transactionJob.referenceId},TransactionId=${transactionJob.transactionId},Attempt=${failedTransactionAttempts}`,
     );
 
-    // 2. Check for existing Onafriq Transaction with the same thirdPartyTransId, because that means this job has already been (partly) processed. In case of a server crash, jobs that were in process are processed again.
-    let onafriqTransaction =
-      await this.onafriqTransactionScopedRepository.findOne({
-        where: {
-          thirdPartyTransId: Equal(thirdPartyTransId),
-        },
-      });
-
-    // 3. if no onafriq transaction yet, create a 121 transaction, otherwise this has already happened before
-    let transactionId: number;
-    if (!onafriqTransaction) {
-      const transaction =
-        await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
-          {
-            registration,
-            transactionJob,
-            transferAmountInMajorUnit: transactionJob.transactionAmount,
-            status: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
-          },
-        );
-      transactionId = transaction.id;
-
-      // TODO: combine this with the transaction creation above in one SQL transaction
-      const newOnafriqTransaction = new OnafriqTransactionEntity();
-      newOnafriqTransaction.thirdPartyTransId = thirdPartyTransId;
-      newOnafriqTransaction.recipientMsisdn = transactionJob.phoneNumberPayment;
-      newOnafriqTransaction.transactionId = transactionId;
-      onafriqTransaction = await this.onafriqTransactionScopedRepository.save(
-        newOnafriqTransaction,
-      );
-    } else {
-      transactionId = onafriqTransaction.transactionId;
-    }
+    // 3. Create or update Onafriq Transaction with thirdPartyTransId
+    await this.upsertOnafriqTransaction(thirdPartyTransId, transactionJob);
 
     // 4. Start the transfer, if failure: update to error transaction and return early
     try {
@@ -107,19 +86,58 @@ export class TransactionJobsOnafriqService {
         console.error(error.message);
         return;
       } else if (error instanceof OnafriqError) {
-        await this.transactionScopedRepository.update(
-          { id: transactionId },
-          { status: TransactionStatusEnum.error, errorMessage: error?.message },
-        );
+        // store error transactionEvent and update transaction to 'error'
+        await this.transactionsService.saveTransactionProgress({
+          context: transactionEventContext,
+          description: TransactionEventDescription.onafriqRequestSent,
+          errorMessage: error.message,
+          newTransactionStatus: TransactionStatusEnum.error,
+        });
         return;
       } else {
         throw error;
       }
     }
 
-    // 5. No messages sent for onafriq
+    // 5. store success transactionEvent and update transaction to 'waiting'
+    await this.transactionsService.saveTransactionProgress({
+      context: transactionEventContext,
+      description: TransactionEventDescription.onafriqRequestSent,
+      newTransactionStatus: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
+    });
+  }
 
-    // 6. No 121 transaction stored or updated after API-call, because waiting transaction is already stored earlier and will remain 'waiting' at this stage (to be updated via callback)
+  private async upsertOnafriqTransaction(
+    thirdPartyTransId: string,
+    transactionJob: OnafriqTransactionJobDto,
+  ): Promise<void> {
+    // Check for existing Onafriq Transactions with the same transactionId
+    const existingOnafriqTransaction =
+      await this.onafriqTransactionScopedRepository.findOne({
+        where: {
+          transactionId: Equal(transactionJob.transactionId),
+        },
+      });
+
+    // .. if found (implies: payment-retry or queue-retry), update existing Onafriq Transaction with thirdPartyTransId. In case of queue-retry the thirdPartyTransId is the same, so the update is not needed. But this leads to easier code.
+    if (existingOnafriqTransaction) {
+      await this.onafriqTransactionScopedRepository.update(
+        {
+          id: existingOnafriqTransaction.id,
+        },
+        {
+          thirdPartyTransId,
+        },
+      );
+      return;
+    }
+
+    // .. if not found, create new Onafriq Transaction
+    const newOnafriqTransaction = new OnafriqTransactionEntity();
+    newOnafriqTransaction.thirdPartyTransId = thirdPartyTransId;
+    newOnafriqTransaction.recipientMsisdn = transactionJob.phoneNumberPayment;
+    newOnafriqTransaction.transactionId = transactionJob.transactionId;
+    await this.onafriqTransactionScopedRepository.save(newOnafriqTransaction);
   }
 
   private async getOnafriqFspConfig(
