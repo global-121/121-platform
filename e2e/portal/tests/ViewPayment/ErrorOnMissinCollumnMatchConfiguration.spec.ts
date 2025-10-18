@@ -77,7 +77,7 @@ test('[32302] [Excel fsp]: Error message should be shown in case no matching col
     });
     await paymentsPage.startPayment();
     await paymentsPage.validateToastMessage(
-      'Something went wrong: Missing required configuration columnToMatch for FSP Excel',
+      'Something went wrong: "Missing required configuration columnToMatch for FSP Excel"',
     );
   });
 });
