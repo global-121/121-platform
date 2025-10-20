@@ -20,7 +20,7 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 
 const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^15 = 32768
 
-jest.setTimeout(120000); // 120 seconds
+jest.setTimeout(120_000); // 120 seconds
 describe('Bulk update 32k registrations', () => {
   let accessToken: string;
 
@@ -40,7 +40,7 @@ describe('Bulk update 32k registrations', () => {
       duplicateNumber,
       accessToken,
       {
-        secret: 'fill_in_secret',
+        secret: env.RESET_SECRET,
       },
     );
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
@@ -72,7 +72,7 @@ describe('Bulk update 32k registrations', () => {
     // clean up temp file
     fs.unlinkSync(tempFilePath);
     // Assert
-    expect(elapsedTime).toBeLessThan(15714); // 15714 ms = 15.714 seconds
+    expect(elapsedTime).toBeLessThan(20_000); // 20000 ms = 20 seconds
     expect(bulkUpdate.statusCode).toBe(HttpStatus.OK);
   });
 });

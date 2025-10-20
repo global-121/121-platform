@@ -25,6 +25,11 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 
 const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^17 = 131072
 const duplicateTarget = Math.pow(2, duplicateNumber);
+const maxWaitTimeMs = 240_000; // 4 minutes
+const passRate = 10; // 10%
+const maxRetryDurationMs = 4_800_000; // 80 minutes
+const delayBetweenAttemptsMs = 5_000; // 5 seconds
+const amount = 25;
 
 jest.setTimeout(4_800_000); // 80 minutes
 describe('Do payment for 100k registrations with Intersolve within expected range and successful rate threshold', () => {
@@ -47,7 +52,7 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
       duplicateNumber,
       accessToken,
       {
-        secret: 'fill_in_secret',
+        secret: env.RESET_SECRET,
       },
     );
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
@@ -63,13 +68,13 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
       programIdOCW,
       duplicateTarget,
       accessToken,
-      240_000,
+      maxWaitTimeMs,
       RegistrationStatusEnum.included,
     );
     // Do payment
     const doPaymentResponse = await doPayment({
       programId: programIdOCW,
-      amount: 25,
+      amount,
       referenceIds: [],
       accessToken,
     });
@@ -81,9 +86,9 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
       paymentId: 1,
       accessToken,
       totalAmountPowerOfTwo: duplicateNumber,
-      passRate: 10,
-      maxRetryDurationMs: 4_790_000,
-      delayBetweenAttemptsMs: 5_000,
+      passRate,
+      maxRetryDurationMs,
+      delayBetweenAttemptsMs,
       verbose: true,
     });
     const elapsedTime = Date.now() - startTime;

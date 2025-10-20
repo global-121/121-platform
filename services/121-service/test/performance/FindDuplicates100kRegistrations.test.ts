@@ -14,12 +14,12 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '15'); // cronjob duplicate number should be 2^17 = 131072
+const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '16'); // cronjob duplicate number should be 2^17 = 131072
 const queryParams = {
   'filter.duplicateStatus': 'duplicate',
 };
 
-jest.setTimeout(120000); // 80 seconds
+jest.setTimeout(120_000); // 120 seconds
 describe('Find duplicates in 100k registrations within expected range', () => {
   let accessToken: string;
 
@@ -40,7 +40,7 @@ describe('Find duplicates in 100k registrations within expected range', () => {
       duplicateNumber,
       accessToken,
       {
-        secret: 'fill_in_secret',
+        secret: env.RESET_SECRET,
       },
     );
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
@@ -52,7 +52,7 @@ describe('Find duplicates in 100k registrations within expected range', () => {
     });
     const elapsedTime = Date.now() - startTime;
     // Assert
-    expect(elapsedTime).toBeLessThan(120000); // 120000 ms = 120 seconds
+    expect(elapsedTime).toBeLessThan(120_000); // 120000 ms = 120 seconds
     expect(findDuplicatesResponse.statusCode).toBe(HttpStatus.OK);
     expect(findDuplicatesResponse.body.meta.totalItems).toBeGreaterThan(3000);
     expect(findDuplicatesResponse.body.meta.totalItems).toBeLessThan(10000);
