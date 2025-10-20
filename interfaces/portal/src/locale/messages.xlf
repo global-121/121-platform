@@ -1856,6 +1856,9 @@
       <trans-unit id="7750731471522839997" datatype="html">
         <source>Editing in <x equiv-text="{{ languageName }}" id="INTERPOLATION"/>.</source>
       </trans-unit>
+      <trans-unit id="3578644052206125685" datatype="html">
+        <source>Ukrainian</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
