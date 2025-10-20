@@ -221,20 +221,25 @@ export class MessageIncomingService {
           select: { transactionId: true, processType: true, status: true },
         },
       );
-      // Do not update transaction & create event twice for delivered + read
+      if (!messageWithTransaction) {
+        return;
+      }
+
+      // Do not update transaction & create event twice for delivered + read (or other way around)
       if (
-        messageWithTransaction?.status === TwilioStatus.delivered &&
-        callbackData.MessageStatus === TwilioStatus.read
+        (messageWithTransaction?.status === TwilioStatus.delivered &&
+          callbackData.MessageStatus === TwilioStatus.read) ||
+        (messageWithTransaction?.status === TwilioStatus.read &&
+          callbackData.MessageStatus === TwilioStatus.delivered)
       ) {
         return;
       }
-      if (messageWithTransaction?.transactionId) {
-        await this.intersolveVoucherService.processMessageStatusCallback(
-          callbackData,
-          messageWithTransaction.transactionId,
-          messageWithTransaction.processType!,
-        );
-      }
+
+      await this.intersolveVoucherService.processMessageStatusCallback(
+        callbackData,
+        messageWithTransaction.transactionId!,
+        messageWithTransaction.processType!,
+      );
     }
   }
 
