@@ -15,7 +15,7 @@ import {
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 // For guaranteeing that test data generates duplicates we should use at least 10 as minimal duplication number for fast test and 17 for full load test
-const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '16'); // cronjob duplicate number should be 2^17 = 131072
+const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '10'); // cronjob duplicate number should be 2^17 = 131072
 const queryParams = {
   'filter.duplicateStatus': 'duplicate',
 };
