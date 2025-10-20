@@ -139,6 +139,15 @@ describe('Do payment to 1 PA', () => {
           // Override the actual mediaUrl with a fixed value to avoid snapshot mismatches
           message.attributes.mediaUrl = mediaUrlPath + 'imageCode/secret';
         }
+
+        // Strip any prefix before '/api/' to make snapshot environment agnostic
+        if (message.attributes.mediaUrl) {
+          const apiIndex = message.attributes.mediaUrl.indexOf('/api/');
+          if (apiIndex > -1) {
+            message.attributes.mediaUrl =
+              message.attributes.mediaUrl.substring(apiIndex);
+          }
+        }
       });
 
       // Assert that both initial and voucher message are tied to a transaction
@@ -201,6 +210,7 @@ describe('Do payment to 1 PA', () => {
       expect(getTransactionsBody.body[0].status).toBe(
         TransactionStatusEnum.error,
       );
+
       expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
     });
 
