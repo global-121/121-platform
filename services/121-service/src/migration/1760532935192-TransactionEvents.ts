@@ -109,6 +109,14 @@ export class TransactionEvents1760532935192 implements MigrationInterface {
       `ALTER TABLE "121-service"."intersolve_voucher" RENAME COLUMN "amount" TO "transferValue"`,
     );
 
+    // update naming constraints for program_registration_attribute
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."program_registration_attribute" DROP CONSTRAINT "CHK_c228a4df10e774f22e14834d35"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."program_registration_attribute" ADD CONSTRAINT "CHK_4bf915660b25bdb76415741788" CHECK ("name" NOT IN ('id', 'status', 'referenceId', 'preferredLanguage', 'inclusionScore', 'paymentAmountMultiplier', 'fsp', 'registrationProgramId', 'maxPayments', 'paymentCount', 'paymentCountRemaining', 'registeredDate', 'validationDate', 'inclusionDate', 'deleteDate', 'completedDate', 'lastMessageStatus', 'lastMessageType', 'declinedDate'))`,
+    );
+
     // recreate registration view
     await queryRunner.query(
       `DELETE FROM "121-service"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`,
