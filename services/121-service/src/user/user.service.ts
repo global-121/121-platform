@@ -8,8 +8,8 @@ import * as jwt from 'jsonwebtoken';
 import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
+import { EmailsService } from '@121-service/src/emails/emails.service';
 import { EmailData } from '@121-service/src/emails/interfaces/email-data.interface';
-import { EmailsService } from '@121-service/src/emails/services/emails.service';
 import { env } from '@121-service/src/env';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';

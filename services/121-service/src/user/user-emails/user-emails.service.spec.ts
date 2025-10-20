@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 
+import { EmailsService } from '@121-service/src/emails/emails.service';
 import { EmailData } from '@121-service/src/emails/interfaces/email-data.interface';
-import { EmailsService } from '@121-service/src/emails/services/emails.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { EmailType } from '@121-service/src/user/user-emails/enum/email-type.enum';
 import { UserEmailTemplateInput } from '@121-service/src/user/user-emails/interfaces/user-email-template-input.interface';
