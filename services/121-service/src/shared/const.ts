@@ -19,13 +19,6 @@ export const nameConstraintQuestionsArray = [
   'fsp',
   'registrationProgramId',
   'maxPayments',
-  // ##TODO re-evaluate these lastTransaction fields
-  'lastTransactionCreated',
-  'lastTransactionPaymentNumber',
-  'lastTransactionStatus',
-  'lastTransactionAmount',
-  'lastTransactionErrorMessage',
-  'lastTransactionCustomData',
   'paymentCount',
   'paymentCountRemaining',
   'registeredDate',
