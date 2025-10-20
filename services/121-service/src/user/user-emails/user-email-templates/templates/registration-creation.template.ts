@@ -1,4 +1,4 @@
-import { EmailPayloadData } from '@121-service/src/user/user-emails/interfaces/email-payload-data.interface';
+import { UserEmailTemplateInput } from '@121-service/src/user/user-emails/interfaces/user-email-template-input.interface';
 import { EmailTemplate } from '@121-service/src/user/user-emails/user-email-templates/interfaces/email-template.interface';
 import { wrapEmailBody } from '@121-service/src/user/user-emails/user-email-templates/template-body-wrapper';
 import {
@@ -7,9 +7,9 @@ import {
 } from '@121-service/src/user/user-emails/user-email-templates/template-constants';
 
 export const emailTemplateRegistrationCreation = (
-  payloadData: EmailPayloadData,
+  userEmailTemplateInput: UserEmailTemplateInput,
 ): EmailTemplate => {
-  const { displayName, email } = payloadData.emailRecipient;
+  const { displayName, email } = userEmailTemplateInput;
 
   const subject = '121 Portal account created';
   const body = wrapEmailBody(`

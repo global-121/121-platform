@@ -4,21 +4,20 @@ import { EmailData } from '@121-service/src/emails/interfaces/email-data.interfa
 import { EmailsService } from '@121-service/src/emails/services/emails.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { EmailType } from '@121-service/src/user/user-emails/enum/email-type.enum';
-import { EmailPayloadData } from '@121-service/src/user/user-emails/interfaces/email-payload-data.interface';
-import { EmailRecipient } from '@121-service/src/user/user-emails/interfaces/email-recipient.interface';
+import { UserEmailTemplateInput } from '@121-service/src/user/user-emails/interfaces/user-email-template-input.interface';
 import { EmailTemplate } from '@121-service/src/user/user-emails/user-email-templates/interfaces/email-template.interface';
 import { UserEmailTemplatesService } from '@121-service/src/user/user-emails/user-email-templates/user-email-templates.service';
 
-// Mock for EmailsApiService
-const mockEmailsApiService = {
-  sendEmail: jest.fn(),
+// Mock for CustomHttpService used by EmailsService
+const mockHttpService = {
+  post: jest.fn().mockResolvedValue(undefined),
 };
 
 describe('EmailsService', () => {
   let emailsService: EmailsService;
   let userEmailTemplatesService: UserEmailTemplatesService;
 
-  const emailRecipient: EmailRecipient = {
+  const basePayload: Pick<UserEmailTemplateInput, 'email' | 'displayName'> = {
     email: 'test@example.com',
     displayName: 'testuser',
   };
@@ -27,10 +26,8 @@ describe('EmailsService', () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         EmailsService,
-        {
-          provide: CustomHttpService,
-          useValue: mockEmailsApiService,
-        },
+        UserEmailTemplatesService,
+        { provide: CustomHttpService, useValue: mockHttpService },
       ],
     }).compile();
 
@@ -45,8 +42,8 @@ describe('EmailsService', () => {
   });
 
   it('should call sendEmail with correct payload for registrationCreation', async () => {
-    const payload: EmailPayloadData = {
-      emailRecipient,
+    const payload: UserEmailTemplateInput = {
+      ...basePayload,
       password: 'testpassword',
     };
     const template: EmailTemplate =
@@ -55,20 +52,22 @@ describe('EmailsService', () => {
         payload,
       );
     const emailData: EmailData = {
-      email: emailRecipient.email,
-      ...template,
+      email: payload.email,
+      subject: template.subject,
+      body: template.body,
     };
 
     await emailsService.sendEmail(emailData);
 
-    expect(mockEmailsApiService.sendEmail).toHaveBeenCalledWith(
+    expect(mockHttpService.post).toHaveBeenCalledWith(
+      expect.any(String),
       expect.objectContaining(emailData),
     );
   });
 
   it('should call sendEmail with correct payload for passwordReset', async () => {
-    const payload: EmailPayloadData = {
-      emailRecipient,
+    const payload: UserEmailTemplateInput = {
+      ...basePayload,
       password: 'newpassword',
     };
     const template: EmailTemplate =
@@ -77,20 +76,22 @@ describe('EmailsService', () => {
         payload,
       );
     const emailData: EmailData = {
-      email: emailRecipient.email,
-      ...template,
+      email: payload.email,
+      subject: template.subject,
+      body: template.body,
     };
 
     await emailsService.sendEmail(emailData);
 
-    expect(mockEmailsApiService.sendEmail).toHaveBeenCalledWith(
+    expect(mockHttpService.post).toHaveBeenCalledWith(
+      expect.any(String),
       expect.objectContaining(emailData),
     );
   });
 
   it('should call sendEmail with correct payload for registrationCreationSSO', async () => {
-    const payload: EmailPayloadData = {
-      emailRecipient,
+    const payload: UserEmailTemplateInput = {
+      ...basePayload,
     };
     const template: EmailTemplate =
       userEmailTemplatesService.buildEmailTemplate(
@@ -98,13 +99,15 @@ describe('EmailsService', () => {
         payload,
       );
     const emailData: EmailData = {
-      email: emailRecipient.email,
-      ...template,
+      email: payload.email,
+      subject: template.subject,
+      body: template.body,
     };
 
     await emailsService.sendEmail(emailData);
 
-    expect(mockEmailsApiService.sendEmail).toHaveBeenCalledWith(
+    expect(mockHttpService.post).toHaveBeenCalledWith(
+      expect.any(String),
       expect.objectContaining(emailData),
     );
   });

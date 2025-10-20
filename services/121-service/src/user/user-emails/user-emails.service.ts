@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { EmailData } from '@121-service/src/emails/interfaces/email-data.interface';
 import { EmailType } from '@121-service/src/user/user-emails/enum/email-type.enum';
-import { EmailPayloadData } from '@121-service/src/user/user-emails/interfaces/email-payload-data.interface';
+import { UserEmailTemplateInput } from '@121-service/src/user/user-emails/interfaces/user-email-template-input.interface';
 import { EmailTemplate } from '@121-service/src/user/user-emails/user-email-templates/interfaces/email-template.interface';
 import { UserEmailTemplatesService } from '@121-service/src/user/user-emails/user-email-templates/user-email-templates.service';
 
@@ -13,19 +13,21 @@ export class UserEmailsService {
   ) {}
 
   public buildEmailData(
-    type: EmailType,
-    payloadData: EmailPayloadData,
+    emailType: EmailType,
+    userEmailTemplateInput: UserEmailTemplateInput,
   ): EmailData {
-    const {
-      emailRecipient: { email },
-    } = payloadData;
+    const { email } = userEmailTemplateInput;
 
     const template: EmailTemplate =
-      this.userEmailTemplatesService.buildEmailTemplate(type, payloadData);
+      this.userEmailTemplatesService.buildEmailTemplate(
+        emailType,
+        userEmailTemplateInput,
+      );
 
     const emailData: EmailData = {
       email,
-      ...template,
+      subject: template.subject,
+      body: template.body,
     };
 
     return emailData;
