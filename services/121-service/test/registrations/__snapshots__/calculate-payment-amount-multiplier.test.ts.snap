@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Set/calculate payment amount multiplier should error if paymentAmountMultiplier is set while program has a formula 1`] = `
 {
