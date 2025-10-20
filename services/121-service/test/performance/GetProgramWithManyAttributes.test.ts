@@ -22,6 +22,7 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 
 const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^5 = 32
 
+// 30 seconds is jest global timeout and this test should be able to complete within that time
 describe('Get program with many attributes within time threshold of 30 seconds', () => {
   let accessToken: string;
 

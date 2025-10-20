@@ -18,8 +18,9 @@ const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '16'); // cronjob dupli
 const queryParams = {
   'filter.duplicateStatus': 'duplicate',
 };
+const testTimeout = 120_000; // 120 seconds
 
-jest.setTimeout(120_000); // 120 seconds
+jest.setTimeout(testTimeout);
 describe('Find duplicates in 100k registrations within expected range', () => {
   let accessToken: string;
 
@@ -52,7 +53,7 @@ describe('Find duplicates in 100k registrations within expected range', () => {
     });
     const elapsedTime = Date.now() - startTime;
     // Assert
-    expect(elapsedTime).toBeLessThan(120_000); // 120000 ms = 120 seconds
+    expect(elapsedTime).toBeLessThan(testTimeout);
     expect(findDuplicatesResponse.statusCode).toBe(HttpStatus.OK);
     expect(findDuplicatesResponse.body.meta.totalItems).toBeGreaterThan(3000);
     expect(findDuplicatesResponse.body.meta.totalItems).toBeLessThan(10000);

@@ -10,8 +10,9 @@ import { programIdPV } from '@121-service/test/registrations/pagination/paginati
 
 const csvFilePath =
   './test-registration-data/test-registrations-westeros-1000.csv';
+const testTimeout = 600_000; // 10 minutes
 
-jest.setTimeout(600_000); // 10 minutes
+jest.setTimeout(testTimeout);
 describe('Import 1000 registrations', () => {
   let accessToken: string;
 
