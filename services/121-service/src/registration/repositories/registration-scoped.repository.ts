@@ -345,7 +345,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     return wallets;
   }
 
-  public async updatePaymentCounts(
+  public async increasePaymentCountByOne(
     registrationIds: number[],
     chunkSize: number,
   ): Promise<void> {

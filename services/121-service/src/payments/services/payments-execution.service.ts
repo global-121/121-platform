@@ -13,6 +13,7 @@ import { MessageTemplateService } from '@121-service/src/notifications/message-t
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
+import { PaymentsExecutionHelperService } from '@121-service/src/payments/services/payments-execution-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
@@ -51,6 +52,7 @@ export class PaymentsExecutionService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly programRepository: ProgramRepository,
     private readonly messageTemplateService: MessageTemplateService,
+    private readonly paymentsExecutionHelperService: PaymentsExecutionHelperService,
   ) {}
 
   public async createPayment({
@@ -200,40 +202,9 @@ export class PaymentsExecutionService {
     return savedPaymentEntity.id;
   }
 
-  public async createTransactionsAndUpdateRegistrations({
-    transactionCreationDetails,
-    programId,
-    paymentId,
-    userId,
-  }: {
-    transactionCreationDetails: TransactionCreationDetails[];
-    programId: number;
-    paymentId: number;
-    userId: number;
-  }): Promise<number[]> {
-    if (transactionCreationDetails.length === 0) {
-      return [];
-    }
+  // createTransactionsAndUpdateRegistrations moved to PaymentsExecutionHelperService
 
-    const transactionIds =
-      await this.transactionsService.createTransactionsAndEvents({
-        transactionCreationDetails,
-        paymentId,
-        userId,
-      });
-
-    await this.registrationScopedRepository.updatePaymentCounts(
-      transactionCreationDetails.map((t) => t.registrationId),
-      2000,
-    );
-
-    await this.setStatusToCompletedIfApplicable(programId, userId);
-
-    return transactionIds;
-  }
-
-  // TODO: we will likely need to move this to a later stage (upon initiating the payment after approval)
-  private async setStatusToCompletedIfApplicable(
+  public async setStatusToCompletedIfApplicable(
     programId: number,
     userId: number,
   ): Promise<void> {
@@ -356,7 +327,7 @@ export class PaymentsExecutionService {
       });
   }
 
-  public async initiatePayment({
+  private async initiatePayment({
     userId,
     programId,
     paymentId,
@@ -383,12 +354,19 @@ export class PaymentsExecutionService {
       },
     );
 
-    const transactionIds = await this.createTransactionsAndUpdateRegistrations({
-      userId,
+    const transactionIds =
+      await this.paymentsExecutionHelperService.createTransactionsAndUpdateRegistrationPaymentCount(
+        {
+          transactionCreationDetails,
+          paymentId,
+          userId,
+        },
+      );
+
+    await this.paymentsExecutionHelperService.setStatusToCompletedIfApplicable(
       programId,
-      paymentId,
-      transactionCreationDetails,
-    });
+      userId,
+    );
 
     await this.createTransactionJobs({
       programId,
