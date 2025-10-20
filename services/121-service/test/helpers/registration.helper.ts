@@ -762,7 +762,7 @@ export async function seedRegistrationsWithStatus(
   programId: number,
   accessToken: string,
   status: RegistrationStatusEnum,
-): Promise<any> {
+): Promise<request.Response> {
   const response = await importRegistrations(
     programId,
     registrations,
@@ -776,7 +776,7 @@ export async function seedRegistrationsWithStatus(
   }
 
   if (status === RegistrationStatusEnum.new) {
-    return;
+    return response;
   }
 
   const statusChangeResponse = await awaitChangeRegistrationStatus({

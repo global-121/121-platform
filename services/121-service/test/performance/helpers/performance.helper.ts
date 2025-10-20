@@ -2,6 +2,16 @@ import * as request from 'supertest';
 
 import { getPaymentSummary } from '@121-service/test/helpers/program.helper';
 import { getServer } from '@121-service/test/helpers/utility.helper';
+import {
+  PaymentResultsParams,
+  PaymentResultsResult,
+} from '@121-service/test/performance/interfaces/payment-results.interface';
+import {
+  RegistrationStatusParams,
+  RegistrationStatusResponse,
+  RegistrationStatusResult,
+} from '@121-service/test/performance/interfaces/registration-status.interface';
+import { StatusOverviewItem } from '@121-service/test/performance/interfaces/status-overview.interface';
 
 export type JsonRecord = Readonly<Record<string, unknown>>;
 
@@ -18,55 +28,6 @@ export function jsonToCsv(data: JsonRecord[]): string {
     csvRows.push(row.join(','));
   }
   return csvRows.join('\n');
-}
-
-// Helper function that waits and refreshes till the payment is processed or timeout occurs
-interface PaymentResultsParams {
-  readonly programId: number;
-  readonly paymentId: number;
-  readonly accessToken: string;
-  readonly totalAmountPowerOfTwo: number;
-  readonly passRate: number;
-  readonly maxRetryDurationMs?: number;
-  readonly delayBetweenAttemptsMs?: number;
-  readonly verbose?: boolean;
-}
-
-interface PaymentResultsResult {
-  readonly success: boolean;
-  readonly successfulPaymentsCount: number;
-  readonly totalPayments: number;
-  readonly successfulPaymentsPercentage: number;
-  readonly attempts: number;
-  readonly elapsedTimeMs: number;
-  readonly lastResponse?: any;
-}
-
-interface RegistrationStatusParams {
-  readonly programId: number;
-  readonly status: string;
-  readonly accessToken: string;
-  readonly maxRetryDurationMs?: number;
-  readonly delayBetweenAttemptsMs?: number;
-  readonly verbose?: boolean;
-}
-
-interface RegistrationStatusResult {
-  readonly success: boolean;
-  readonly response: any;
-  readonly attempts: number;
-  readonly elapsedTimeMs: number;
-}
-
-interface StatusOverviewItem {
-  readonly status: string;
-  readonly statusCount: number;
-}
-
-interface RegistrationStatusResponse {
-  readonly totalFilterCount: number;
-  readonly applicableCount: number;
-  readonly nonApplicableCount: number;
 }
 
 function sleep(ms: number): Promise<void> {
