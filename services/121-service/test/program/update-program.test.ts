@@ -27,7 +27,6 @@ describe('Update program', () => {
       fixedTransferValue: 500,
       budget: 50000,
       monitoringDashboardUrl: 'https://example.org/new-dashboard',
-      aboutProgram: { en: 'new description' },
       fullnameNamingConvention: ['firstName', 'lastName'],
       tryWhatsAppFirst: true,
       languages: [LanguageEnum.en, LanguageEnum.nl],
@@ -57,9 +56,6 @@ describe('Update program', () => {
     expect(updateProgramResponse.body.budget).toBe(program.budget);
     expect(updateProgramResponse.body.monitoringDashboardUrl).toBe(
       program.monitoringDashboardUrl,
-    );
-    expect(updateProgramResponse.body.aboutProgram).toMatchObject(
-      program.aboutProgram!,
     );
     expect(updateProgramResponse.body.fullnameNamingConvention).toStrictEqual(
       program.fullnameNamingConvention,

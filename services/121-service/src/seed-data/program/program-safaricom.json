@@ -143,9 +143,6 @@
       "showInPeopleAffectedTable": false
     }
   ],
-  "aboutProgram": {
-    "en": "Test program using Safaricom FSP"
-  },
   "fullnameNamingConvention": ["fullName"],
   "languages": ["en"],
   "enableMaxPayments": true,

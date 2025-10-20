@@ -2,9 +2,6 @@
 
 exports[`Create program should post a program: Create program response for program: CBE Program 1`] = `
 {
-  "aboutProgram": {
-    "en": "Test program using Commercial Bank of Ethiopia FSP",
-  },
   "allowEmptyPhoneNumber": false,
   "budget": null,
   "currency": "ETB",
@@ -479,14 +476,11 @@ exports[`Create program should post a program: Create program response for progr
 
 exports[`Create program should post a program: Create program response for program: NLRC OCW program 1`] = `
 {
-  "aboutProgram": {
-    "en": "This is the OCW program.",
-  },
   "allowEmptyPhoneNumber": false,
   "budget": null,
   "currency": "EUR",
   "description": {
-    "en": "",
+    "en": "This is the OCW program.",
   },
   "distributionDuration": 46,
   "distributionFrequency": "2-weeks",
