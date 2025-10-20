@@ -2,6 +2,7 @@ import { Test } from '@nestjs/testing';
 
 import { EmailsService } from '@121-service/src/emails/emails.service';
 import { EmailData } from '@121-service/src/emails/interfaces/email-data.interface';
+import { env } from '@121-service/src/env';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { EmailType } from '@121-service/src/user/user-emails/enum/email-type.enum';
 import { UserEmailTemplateInput } from '@121-service/src/user/user-emails/interfaces/user-email-template-input.interface';
@@ -9,8 +10,8 @@ import { EmailTemplate } from '@121-service/src/user/user-emails/user-email-temp
 import { UserEmailTemplatesService } from '@121-service/src/user/user-emails/user-email-templates/user-email-templates.service';
 
 // Mock for CustomHttpService used by EmailsService
-const mockHttpService = {
-  post: jest.fn().mockResolvedValue(undefined),
+const mockHttpService: Partial<CustomHttpService> = {
+  post: jest.fn().mockResolvedValue({ status: 202, data: null }),
 };
 
 describe('EmailsService', () => {
@@ -60,7 +61,7 @@ describe('EmailsService', () => {
     await emailsService.sendEmail(emailData);
 
     expect(mockHttpService.post).toHaveBeenCalledWith(
-      expect.any(String),
+      env.AZURE_EMAIL_API_URL,
       expect.objectContaining(emailData),
     );
   });
@@ -84,7 +85,7 @@ describe('EmailsService', () => {
     await emailsService.sendEmail(emailData);
 
     expect(mockHttpService.post).toHaveBeenCalledWith(
-      expect.any(String),
+      env.AZURE_EMAIL_API_URL,
       expect.objectContaining(emailData),
     );
   });
@@ -107,7 +108,7 @@ describe('EmailsService', () => {
     await emailsService.sendEmail(emailData);
 
     expect(mockHttpService.post).toHaveBeenCalledWith(
-      expect.any(String),
+      env.AZURE_EMAIL_API_URL,
       expect.objectContaining(emailData),
     );
   });
