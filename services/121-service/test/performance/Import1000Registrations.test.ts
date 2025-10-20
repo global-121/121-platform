@@ -10,7 +10,7 @@ import {
 const csvFilePath =
   './test-registration-data/test-registrations-westeros-1000.csv';
 
-jest.setTimeout(450000); // 7,5 minutes
+jest.setTimeout(450_000); // 7.5 minutes
 describe('Import 1000 registrations', () => {
   let accessToken: string;
 
