@@ -144,6 +144,23 @@ export async function doPayment({
     });
 }
 
+export async function paymentDryRun({
+  programId,
+  amount,
+  accessToken,
+}: {
+  programId: number;
+  amount: number;
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .post(`/programs/${programId}/payments?dryRun=true`)
+    .set('Cookie', [accessToken])
+    .send({
+      amount,
+    });
+}
+
 export async function retryPayment({
   programId,
   paymentId,
