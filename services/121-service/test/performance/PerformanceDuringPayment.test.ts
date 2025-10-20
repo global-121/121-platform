@@ -22,8 +22,9 @@ const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplic
 const passRate = 50; // 50%
 const maxRetryDurationMs = 4_800_000; // 80 minutes
 const amount = 25;
+const testTimeout = 4_800_000; // 80 minutes
 
-jest.setTimeout(4_800_000); // 80 minutes
+jest.setTimeout(testTimeout);
 describe('Measure performance during payment', () => {
   let accessToken: string;
   it('Setup and do payment', async () => {
@@ -84,6 +85,6 @@ describe('Measure performance during payment', () => {
     );
     expect(bulkMessageResponse.statusCode).toBe(HttpStatus.ACCEPTED);
     const elapsedTime = Date.now() - startTime;
-    expect(elapsedTime).toBeLessThan(4_800_000); // 80 minutes
+    expect(elapsedTime).toBeLessThan(testTimeout);
   });
 });

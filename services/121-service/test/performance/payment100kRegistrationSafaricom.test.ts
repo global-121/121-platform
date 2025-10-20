@@ -32,8 +32,9 @@ const passRate = 10; // 10%
 const maxRetryDurationMs = 4_800_000; // 80 minutes
 const delayBetweenAttemptsMs = 5_000; // 5 seconds
 const amount = 25;
+const testTimeout = 4_800_000; // 80 minutes
 
-jest.setTimeout(4_800_000); // 80 minutes
+jest.setTimeout(testTimeout);
 describe('Do payment for 100k registrations with Safaricom within expected range and successful rate threshold', () => {
   let accessToken: string;
 
@@ -94,6 +95,6 @@ describe('Do payment for 100k registrations with Safaricom within expected range
       verbose: true,
     });
     const elapsedTime = Date.now() - startTime;
-    expect(elapsedTime).toBeLessThan(4_800_000); // 80 minutes
+    expect(elapsedTime).toBeLessThan(testTimeout);
   });
 });

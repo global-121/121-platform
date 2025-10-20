@@ -19,8 +19,9 @@ import { jsonToCsv } from '@121-service/test/performance/helpers/performance.hel
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^15 = 32768
+const testTimeout = 120_000; // 120 seconds
 
-jest.setTimeout(120_000); // 120 seconds
+jest.setTimeout(testTimeout);
 describe('Bulk update 32k registrations', () => {
   let accessToken: string;
 

@@ -26,11 +26,13 @@ import {
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^15 = 32768
+const passRate = 10; // 10%
 const maxRetryDurationMs = 120_0000; // 20 minutes
 const delayBetweenAttemptsMs = 5000; // 5 seconds
 const amount = 25;
+const testTimeout = 1_200_000; // 20 minutes
 
-jest.setTimeout(1_200_000); // 20 minutes
+jest.setTimeout(testTimeout);
 describe('Status Change Payment In Large Program', () => {
   let accessToken: string;
 
@@ -65,7 +67,9 @@ describe('Status Change Payment In Large Program', () => {
           programIdOCW,
           accessToken,
         );
-      expect(postProgramRegistrationAttributeResponse.statusCode).toBe(201);
+      expect(postProgramRegistrationAttributeResponse.statusCode).toBe(
+        HttpStatus.CREATED,
+      );
     }
     // Upload registration
     const importRegistrationResponse = await importRegistrations(
@@ -96,7 +100,7 @@ describe('Status Change Payment In Large Program', () => {
       programId: programIdOCW,
       accessToken,
       status: 'included',
-      maxRetryDurationMs: 340_000,
+      maxRetryDurationMs,
     });
     // Do the payment with dryRun first
     const paymentDryRunResponse = await doPayment({
@@ -121,7 +125,7 @@ describe('Status Change Payment In Large Program', () => {
       paymentId: 1,
       accessToken,
       totalAmountPowerOfTwo: duplicateNumber,
-      passRate: 10,
+      passRate,
       maxRetryDurationMs,
       delayBetweenAttemptsMs,
       verbose: true,
