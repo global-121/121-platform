@@ -38,19 +38,21 @@ export class TableCellTransferHistoryOverviewComponent
 
   readonly label = computed(() => {
     const event = this.value();
-    if (event.type !== TransactionEventType.processingStep) {
-      return event.description;
-    }
+    // NOTE 1: Checking on errorMessage first (instead of on type) purely for the migrated old transactions, where errorMessage has been put in the 'initiated' event. For new transactions, this will never be the case.
+    // NOTE 2: For these old migrations this will yield nasty UX copy: 'Transfer initiated failed'.
     if (event.errorMessage) {
       return `${event.description} failed. Error: ${event.errorMessage}`;
     }
-    return `${event.description} succeeded.`;
+    if (event.type !== TransactionEventType.processingStep) {
+      return event.description;
+    }
+    return `${event.description} succeeded`;
   });
   readonly icon = computed(() => {
     const event = this.value();
     if (event.errorMessage) {
       return 'pi pi-exclamation-triangle';
     }
-    return 'pi pi-check-circle'; // ##TODO: this is rogue, the design actually dictates to not show an icon in this case
+    return 'pi pi-check-circle';
   });
 }
