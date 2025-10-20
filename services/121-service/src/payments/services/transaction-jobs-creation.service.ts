@@ -131,17 +131,16 @@ export class TransactionJobsCreationService {
    * This method is responsible for creating transaction jobs for Intersolve Visa. It fetches necessary PA data and maps it to a FSP specific DTO.
    * It then adds these jobs to the transaction queue.
    *
-   * @param {string[]} referenceIds - The reference IDs for the transaction jobs.
-   * @param {number} programId - The ID of the program.
-   * @param {number} paymentAmount - The amount to be transferred.
-   * @param {number} paymentId - The payment number.
-   * @param {boolean} isRetry - Whether this is a retry.
-   *
+   * @param {Object} params - The parameters for creating transaction jobs.
+   * @param {TransactionJobDetails[]} params.transactionJobDetails - Array of transaction job details (referenceId, transactionId, transferValue).
+   * @param {number} params.programId - The ID of the program.
+   * @param {number} params.userId - The user ID initiating the transaction.
+   * @param {boolean} params.isRetry - Whether this is a retry.
+   * @param {Fsps} params.fspName - The FSP name.
    * @returns {Promise<void>} A promise that resolves when the transaction jobs have been created and added.
-   *
    */
   private async createAndAddIntersolveVisaTransactionJobs({
-    transactionJobDetails: transactionJobDetails,
+    transactionJobDetails,
     programId,
     userId,
     isRetry,
@@ -196,17 +195,17 @@ export class TransactionJobsCreationService {
    * This method is responsible for creating transaction jobs for Intersolve Voucher. It fetches necessary PA data and maps it to a FSP specific DTO.
    * It then adds these jobs to the transaction queue.
    *
-   * @param {string[]} referenceIds - The reference IDs for the transaction jobs.
-   * @param {number} programId - The ID of the program.
-   * @param {number} paymentAmount - The amount to be transferred.
-   * @param {number} paymentId - The payment number.
-   * @param {boolean} isRetry - Whether this is a retry.
-   *
+   * @param {Object} params - The parameters for creating transaction jobs.
+   * @param {TransactionJobDetails[]} params.transactionJobDetails - Array of transaction job details (referenceId, transactionId, transferValue).
+   * @param {number} params.programId - The ID of the program.
+   * @param {number} params.userId - The user ID initiating the transaction.
+   * @param {boolean} params.isRetry - Whether this is a retry.
+   * @param {boolean} params.useWhatsapp - Whether to use WhatsApp for voucher delivery.
+   * @param {Fsps} params.fspName - The FSP name.
    * @returns {Promise<void>} A promise that resolves when the transaction jobs have been created and added.
-   *
    */
   private async createAndAddIntersolveVoucherTransactionJobs({
-    transactionJobDetails: transactionJobDetails,
+    transactionJobDetails,
     programId,
     userId,
     isRetry,
@@ -260,7 +259,7 @@ export class TransactionJobsCreationService {
    *
    */
   private async createAndAddSafaricomTransactionJobs({
-    transactionJobDetails: transactionJobDetails,
+    transactionJobDetails,
     programId,
     userId,
     isRetry,
@@ -549,10 +548,11 @@ export class TransactionJobsCreationService {
 
   /**
    * Get registration views with FSP-specific attributes
-   * @param referenceIdsTransactionAmounts - Array of reference IDs with transaction amounts
-   * @param fspAttributeNames - Names of attributes to fetch
-   * @param programId - Program ID
-   * @returns Registration views with FSP-specific data
+   * @param {Object} params - The parameters for fetching registration views.
+   * @param {TransactionJobDetails[]} params.transactionJobDetails - Array of transaction job details (referenceId, transactionId, transferValue).
+   * @param {string[]} params.fspAttributeNames - Names of attributes to fetch.
+   * @param {number} params.programId - Program ID.
+   * @returns {Promise<MappedPaginatedRegistrationDto[]>} Registration views with FSP-specific data.
    */
   private async getRegistrationViews({
     transactionJobDetails,
@@ -589,14 +589,14 @@ export class TransactionJobsCreationService {
    * Creates shared transaction job data.
    *
    * Fetches registration views (including required FSP attribute fields), builds a lookup map
-   * from referenceId to transaction amount and transactionId, and constructs the common
+   * from referenceId to transfer value and transactionId, and constructs the common
    * SharedTransactionJobDto objects used as the base for all FSP-specific job DTOs.
    *
    * Provides:
    * - registrationViews: enriched registration records (used to append FSP-specific fields later)
    * - sharedJobsByReferenceId: O(1) lookup map for shared job data keyed by referenceId
    *
-   * @param transactionJobDetails Input items containing referenceId, transactionId, and transactionAmount
+   * @param transactionJobDetails Input items containing referenceId, transactionId, and transferValue
    * @param programId Program identifier
    * @param userId User initiating the payment flow
    * @param isRetry Indicates whether this is a retry execution
@@ -631,7 +631,7 @@ export class TransactionJobsCreationService {
       transactionJobDetails.map((item) => [
         item.referenceId,
         {
-          transactionAmount: item.transactionAmount,
+          transferValue: item.transferValue,
           transactionId: item.transactionId,
         },
       ]),
@@ -643,9 +643,9 @@ export class TransactionJobsCreationService {
           userId,
           referenceId: registrationView.referenceId,
           programFspConfigurationId: registrationView.programFspConfigurationId,
-          transactionAmount: transactionDataByReferenceId.get(
+          transferValue: transactionDataByReferenceId.get(
             registrationView.referenceId,
-          )!.transactionAmount,
+          )!.transferValue,
           transactionId: transactionDataByReferenceId.get(
             registrationView.referenceId,
           )!.transactionId,

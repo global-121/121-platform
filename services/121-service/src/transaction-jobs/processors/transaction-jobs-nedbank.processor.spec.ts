@@ -13,7 +13,7 @@ const mockPaymentJob: NedbankTransactionJobDto = {
   userId: 1,
   transactionId: 3,
   referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
-  transactionAmount: 25,
+  transferValue: 25,
   isRetry: false,
   bulkSize: 10,
   phoneNumber: registrationNedbank.phoneNumber,

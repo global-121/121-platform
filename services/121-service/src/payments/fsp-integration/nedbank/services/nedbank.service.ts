@@ -12,17 +12,17 @@ export class NedbankService {
   public constructor(private readonly nedbankApiService: NedbankApiService) {}
 
   public async createVoucher({
-    transferAmount,
+    transferValue,
     phoneNumber,
     orderCreateReference,
     paymentReference,
   }: {
-    transferAmount: number;
+    transferValue: number;
     phoneNumber: string;
     orderCreateReference: string;
     paymentReference: string;
   }): Promise<NedbankVoucherStatus> {
-    const isAmountMultipleOf10 = transferAmount % 10 === 0;
+    const isAmountMultipleOf10 = transferValue % 10 === 0;
     if (!isAmountMultipleOf10) {
       throw new NedbankError(
         'Amount must be a multiple of 10',
@@ -43,7 +43,7 @@ export class NedbankService {
     }
     try {
       return await this.nedbankApiService.createOrder({
-        transferAmount,
+        transferValue,
         phoneNumber,
         orderCreateReference,
         paymentReference,

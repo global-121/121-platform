@@ -128,9 +128,9 @@ describe('IntersolveVisaService', () => {
     });
   });
 
-  describe('calculateTransferAmountWithWalletRetrieval', () => {
+  describe('calculateTransferValueWithWalletRetrieval', () => {
     const registrationId = 123;
-    const inputTransferAmountInMajorUnit = 75;
+    const inputTransferValueInMajorUnit = 75;
     const newDate = new Date('2024-02-02T00:00:00Z');
     const spentThisMonth = 10000; // 10 euro in cents
 
@@ -144,7 +144,7 @@ describe('IntersolveVisaService', () => {
       });
     });
 
-    it('should use calculate transfer amount for customer with parent and child wallet', async () => {
+    it('should use calculate transfer value for customer with parent and child wallet', async () => {
       // Arrange
 
       // Mock parent wallet before update
@@ -176,21 +176,21 @@ describe('IntersolveVisaService', () => {
       });
 
       // Act
-      const result = await service.calculateTransferAmountWithWalletRetrieval({
+      const result = await service.calculateTransferValueWithWalletRetrieval({
         registrationId,
-        inputTransferAmountInMajorUnit,
+        inputTransferValueInMajorUnit,
       });
 
       // Assert
       // The expected value is calculated as follows:
-      // For spentThisMonth = 10000 (100 euro), mockedToken.balance = 100 (1 euro), inputTransferAmountInMajorUnit = 75:
+      // For spentThisMonth = 10000 (100 euro), mockedToken.balance = 100 (1 euro), inputTransferValueInMajorUnit = 75:
       // Math.min(150 - (10000 + 100) / 100, 75) = Math.min(150 - 101, 75) = Math.min(49, 75) = 49
       const expected = 49;
 
       expect(result).toBe(expected);
     });
 
-    it('should calculate transfer amount if customer has a parent wallet without childwallets', async () => {
+    it('should calculate transfer value if customer has a parent wallet without childwallets', async () => {
       // Arrange
       const parentWallet = new IntersolveVisaParentWalletEntity();
       parentWallet.spentThisMonth = 10;
@@ -214,14 +214,14 @@ describe('IntersolveVisaService', () => {
       });
 
       // Act
-      const result = await service.calculateTransferAmountWithWalletRetrieval({
+      const result = await service.calculateTransferValueWithWalletRetrieval({
         registrationId,
-        inputTransferAmountInMajorUnit,
+        inputTransferValueInMajorUnit,
       });
 
       // Assert
       // The expected value should be the input amount as there are no earlier transactions to consider.
-      expect(result).toBe(inputTransferAmountInMajorUnit);
+      expect(result).toBe(inputTransferValueInMajorUnit);
     });
 
     it('should calculate amount if customer has no parent wallet', async () => {
@@ -234,14 +234,14 @@ describe('IntersolveVisaService', () => {
         .mockResolvedValue(customerWithoutParentWallet);
 
       // Act
-      const result = await service.calculateTransferAmountWithWalletRetrieval({
+      const result = await service.calculateTransferValueWithWalletRetrieval({
         registrationId,
-        inputTransferAmountInMajorUnit,
+        inputTransferValueInMajorUnit,
       });
 
       // Assert
       // The expected value should be the input amount as there are no earlier transactions to consider.
-      expect(result).toBe(inputTransferAmountInMajorUnit);
+      expect(result).toBe(inputTransferValueInMajorUnit);
     });
   });
 

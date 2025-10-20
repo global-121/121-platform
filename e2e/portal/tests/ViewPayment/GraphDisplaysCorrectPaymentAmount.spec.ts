@@ -28,7 +28,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[32299] Table should reflect the actual transfer amounts sent to the PAs in this payment', async ({
+test('[32299] Table should reflect the actual transfer values sent to the PAs in this payment', async ({
   page,
 }) => {
   const paymentPage = new PaymentPage(page);
@@ -58,11 +58,11 @@ test('[32299] Table should reflect the actual transfer amounts sent to the PAs i
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
-  await test.step('Validate transfer amount after "payment in progress" chip disappears in Payment overview', async () => {
+  await test.step('Validate transfer value after "payment in progress" chip disappears in Payment overview', async () => {
     await paymentPage.validateToastMessage('Payment created.');
     await paymentPage.waitForPaymentToComplete();
 
-    await paymentPage.validateTransferAmounts({
+    await paymentPage.validateTransferValues({
       amount: defaultMaxTransferValue,
     });
   });

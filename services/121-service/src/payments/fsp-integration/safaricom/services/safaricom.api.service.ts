@@ -22,18 +22,18 @@ export class SafaricomApiService {
   ) {}
 
   public async transfer({
-    transferAmount,
+    transferValue,
     phoneNumber,
     idNumber,
     originatorConversationId,
   }: {
-    transferAmount: number;
+    transferValue: number;
     phoneNumber: string;
     idNumber: string;
     originatorConversationId: string;
   }): Promise<TransferResult> {
     const payload = this.safaricomApiHelperService.createTransferPayload({
-      transferAmount,
+      transferValue,
       phoneNumber,
       idNumber,
       originatorConversationId,

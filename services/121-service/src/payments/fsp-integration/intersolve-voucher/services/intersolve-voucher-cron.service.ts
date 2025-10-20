@@ -131,7 +131,6 @@ export class IntersolveVoucherCronService {
           'voucher.id as id',
           '"whatsappPhoneNumber"',
           'registration."referenceId" AS "referenceId"',
-          'amount',
           '"reminderCount"',
           'voucher."userId" AS "userId"',
         ])

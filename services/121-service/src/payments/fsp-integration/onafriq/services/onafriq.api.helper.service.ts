@@ -12,7 +12,7 @@ import { CallServiceResult } from '@121-service/src/payments/fsp-integration/ona
 @Injectable()
 export class OnafriqApiHelperService {
   public createCallServicePayload({
-    transferAmount,
+    transferValue,
     phoneNumberPayment,
     firstName,
     lastName,
@@ -39,7 +39,7 @@ export class OnafriqApiHelperService {
             amountType: 2, // 2 = Receive Amount
           },
           amount: {
-            amount: transferAmount,
+            amount: transferValue,
             currencyCode,
           },
           sender: {

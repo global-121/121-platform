@@ -16,18 +16,18 @@ export class NedbankApiService {
   ) {}
 
   public async createOrder({
-    transferAmount,
+    transferValue,
     phoneNumber,
     orderCreateReference,
     paymentReference,
   }: {
-    transferAmount: number;
+    transferValue: number;
     phoneNumber: string;
     orderCreateReference: string;
     paymentReference: string;
   }): Promise<NedbankVoucherStatus> {
     const payload = this.createOrderPayload({
-      transferAmount,
+      transferValue,
       phoneNumber,
       orderCreateReference,
       paymentReference,
@@ -38,12 +38,12 @@ export class NedbankApiService {
   }
 
   private createOrderPayload({
-    transferAmount,
+    transferValue,
     phoneNumber,
     orderCreateReference,
     paymentReference,
   }: {
-    transferAmount: number;
+    transferValue: number;
     phoneNumber: string;
     orderCreateReference: string;
     paymentReference: string;
@@ -58,7 +58,7 @@ export class NedbankApiService {
         Initiation: {
           InstructionIdentification: uuid().replace(/-/g, ''), // This should be a unique string without dashes or you get an error from nedbank
           InstructedAmount: {
-            Amount: `${transferAmount.toString()}.00`, // This should be a string with two decimal places
+            Amount: `${transferValue.toString()}.00`, // This should be a string with two decimal places
             Currency: 'ZAR',
           },
           DebtorAccount: {

@@ -108,7 +108,7 @@ export class TransactionJobsNedbankService {
     let nedbankVoucherStatus: NedbankVoucherStatus;
     try {
       nedbankVoucherStatus = await this.nedbankService.createVoucher({
-        transferAmount: transactionJob.transactionAmount,
+        transferValue: transactionJob.transferValue,
         phoneNumber: transactionJob.phoneNumber,
         orderCreateReference,
         paymentReference,

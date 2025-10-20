@@ -74,7 +74,7 @@ export class IntersolveVoucherService {
     useWhatsapp,
     whatsappPhoneNumber,
     userId,
-    calculatedAmount,
+    calculatedTransferValue,
     transactionId,
     bulkSize,
     credentials,
@@ -84,7 +84,7 @@ export class IntersolveVoucherService {
     useWhatsapp: boolean;
     whatsappPhoneNumber: string | null;
     userId: number;
-    calculatedAmount: number;
+    calculatedTransferValue: number;
     transactionId: number;
     bulkSize: number;
     credentials: UsernamePasswordInterface;
@@ -101,7 +101,7 @@ export class IntersolveVoucherService {
     }
 
     const intersolveRefPos = this.getIntersolveRefPos();
-    paResult.calculatedAmount = calculatedAmount;
+    paResult.calculatedTransferValue = calculatedTransferValue;
 
     const paymentId =
       await this.transactionViewScopedRepository.getPaymentIdByTransactionId(
@@ -127,7 +127,7 @@ export class IntersolveVoucherService {
     } else {
       // .. if no existing voucher found, then create new one
       const voucherInfo = await this.issueVoucher({
-        amount: calculatedAmount,
+        amount: calculatedTransferValue,
         intersolveRefPos,
         username: credentials.username,
         password: credentials.password,
@@ -139,7 +139,7 @@ export class IntersolveVoucherService {
           voucherInfo,
           referenceId,
           paymentId,
-          amount: calculatedAmount,
+          amount: calculatedTransferValue,
           whatsappPhoneNumber,
           userId,
         });
@@ -224,9 +224,9 @@ export class IntersolveVoucherService {
     username: string;
     password: string;
   }): Promise<IntersolveIssueCardResponse> {
-    const amountInCents = amount * 100;
+    const transferValueInCents = amount * 100;
     return await this.intersolveVoucherApiService.issueCard(
-      amountInCents,
+      transferValueInCents,
       intersolveRefPos,
       username,
       password,
@@ -391,7 +391,7 @@ export class IntersolveVoucherService {
     voucherData.whatsappPhoneNumber = whatsappPhoneNumber;
     voucherData.send = false;
     voucherData.paymentId = paymentId;
-    voucherData.amount = amount;
+    voucherData.transferValue = amount;
     voucherData.userId = userId;
     return this.intersolveVoucherScopedRepository.save(voucherData);
   }
