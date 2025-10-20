@@ -480,7 +480,7 @@ export class IntersolveVoucherService {
     const voucher = await this.getVoucher(referenceId, paymentId, programId);
     const image = await this.imageCodeService.generateVoucherImage({
       dateTime: voucher.created,
-      amount: voucher.amount,
+      amount: voucher.transferValue,
       code: voucher.barcode,
       pin: voucher.pin,
     });
@@ -604,7 +604,7 @@ export class IntersolveVoucherService {
 
     intersolveVoucher.lastRequestedBalance = realBalance;
     intersolveVoucher.updatedLastRequestedBalance = new Date();
-    if (realBalance !== intersolveVoucher.amount) {
+    if (realBalance !== intersolveVoucher.transferValue) {
       intersolveVoucher.balanceUsed = true;
       intersolveVoucher.send = true;
     }
@@ -641,7 +641,7 @@ export class IntersolveVoucherService {
 
     const unusedVouchersDtos: UnusedVoucherDto[] = [];
     for await (const voucher of unusedVouchersEntities) {
-      if (voucher.lastRequestedBalance === voucher.amount) {
+      if (voucher.lastRequestedBalance === voucher.transferValue) {
         const unusedVoucher = new UnusedVoucherDto();
         unusedVoucher.referenceId = voucher.image[0].registration.referenceId;
         unusedVoucher.paymentId = voucher.paymentId ?? undefined;
@@ -740,7 +740,7 @@ export class IntersolveVoucherService {
 
     voucherWithBalance.paymentId = voucher.paymentId ?? undefined;
     voucherWithBalance.issueDate = voucher.created;
-    voucherWithBalance.originalBalance = voucher.amount ?? undefined;
+    voucherWithBalance.originalBalance = voucher.transferValue ?? undefined;
     voucherWithBalance.remainingBalance =
       voucher.lastRequestedBalance ?? undefined;
     voucherWithBalance.updatedRemainingBalanceUTC =

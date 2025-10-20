@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Do payment to 1 PA with FSP: Intersolve Voucher WhatsApp should fail pay-out due to invalid phone number 1`] = `"Magic fail (ErrorCode: 1)"`;
 

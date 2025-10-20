@@ -26,7 +26,7 @@ export class ImageCodeService {
     imageCodeEntity.secret = crypto.randomBytes(100).toString('hex');
     imageCodeEntity.image = await this.generateVoucherImage({
       dateTime: voucherData.created,
-      amount: voucherData.amount,
+      amount: voucherData.transferValue,
       code: voucherData.barcode,
       pin: voucherData.pin,
     });
