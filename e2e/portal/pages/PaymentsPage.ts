@@ -128,6 +128,8 @@ class PaymentsPage extends BasePage {
     successfulTransfers,
     failedTransfers,
     currency = '€',
+    projectId,
+    paymentId = 1,
   }: {
     date: string;
     registrationsNumber: number;
@@ -135,20 +137,39 @@ class PaymentsPage extends BasePage {
     successfulTransfers: number;
     failedTransfers: number;
     currency?: string;
+    projectId: number;
+    paymentId?: number;
   }) {
-    const paymentTitle = await this.paymentTitle.textContent();
-    const includedRegistrationsElement = await this.paymentSummaryMetrics
+    // Locate the specific payment card using the payment link and then navigate to its ancestor card element
+    const hrefLocatorUrl = `"/en-GB/project/${projectId}/payments/${paymentId}"`;
+    const card = this.page
+      .locator(`a[href=${hrefLocatorUrl}]`)
+      .locator('xpath=ancestor::*[@data-pc-name="card"]')
+      .getByTestId('payment-summary-metrics')
+      .locator('app-metric-container');
+
+    const paymentTitle = await this.page
+      .locator(`a[href=${hrefLocatorUrl}]`)
+      .getByTitle(date)
+      .textContent();
+
+    const includedRegistrationsElement = await card
       .filter({ hasText: 'Included reg.' })
       .textContent();
-    const totalAmountElement = await this.paymentSummaryMetrics
+
+    // Get the total amount element within the card
+    const totalAmountElement = await card
       .filter({ hasText: 'Expected total amount' })
       .textContent();
-    const successfulTransfersElement = await this.paymentSummaryMetrics
+
+    const successfulTransfersElement = await card
       .filter({ hasText: 'Amount successfully sent' })
       .textContent();
-    const failedTransfersElement = await this.paymentSummaryMetrics
+
+    const failedTransfersElement = await card
       .filter({ hasText: 'Failed transfers' })
       .textContent();
+
     // Validate payment title
     expect(paymentTitle).toContain(date);
     // Validate included registrations

@@ -66,6 +66,7 @@ test('[31970] Do successful payment for Visa fsp', async ({ page }) => {
       registrationsNumber: numberOfPas,
       successfulTransfers: defaultMaxTransferValue,
       failedTransfers: 0,
+      projectId: programIdOCW,
     });
   });
 });

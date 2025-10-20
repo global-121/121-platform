@@ -5,7 +5,7 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { getTransactionsIntersolveVoucher } from '@121-service/test/helpers/intersolve-voucher.helper';
+import { getTransactionsIntersolveVoucher } from '@121-service/test/helpers/fsp-specific.helper';
 import {
   doPayment,
   getTransactions,
@@ -46,7 +46,7 @@ describe('Do payment to 1 PA', () => {
       registrationAhCopy = { ...registrationAh };
     });
 
-    it('should succesfully pay-out', async () => {
+    it('should successfully pay-out', async () => {
       // Arrange
       await seedIncludedRegistrations(
         [registrationAhCopy],
@@ -97,7 +97,10 @@ describe('Do payment to 1 PA', () => {
         programId,
         referenceIds: [registrationAhCopy.referenceId],
         accessToken,
-        minimumNumberOfMessagesPerReferenceId: 3,
+        expectedMessageAttribute: {
+          key: 'contentType',
+          values: [MessageContentType.paymentInstructions],
+        },
       });
 
       const { body: messages } = await getMessageHistory(
@@ -106,10 +109,19 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
 
+      const ahVoucherRelatedMesssages = messages.filter((msg) =>
+        [
+          MessageContentType.paymentTemplated,
+          MessageContentType.paymentVoucher,
+          MessageContentType.paymentInstructions,
+        ].includes(msg.attributes.contentType),
+      );
+      expect(ahVoucherRelatedMesssages.length).toBe(3);
+
       let imageCodeSecret;
 
       // Validate and remove dynamic fields before snapshot
-      messages.forEach((message) => {
+      ahVoucherRelatedMesssages.forEach((message) => {
         // Validate the created date
         const createdDate = new Date(message.created);
         expect(createdDate.toString()).not.toBe('Invalid Date');
@@ -117,6 +129,8 @@ describe('Do payment to 1 PA', () => {
         // Remove the "created" field from the messages
         // @ts-expect-error don't care about deleting non-optional properties
         delete message.created;
+        // @ts-expect-error don't care about deleting non-optional properties
+        delete message.id;
 
         if (message.attributes.mediaUrl?.includes('imageCode')) {
           const [mediaUrlPath, mediaUrlSecret] =
@@ -128,7 +142,7 @@ describe('Do payment to 1 PA', () => {
       });
 
       // Assert that both initial and voucher message are tied to a transaction
-      const initialMessage = messages.find(
+      const initialMessage = ahVoucherRelatedMesssages.find(
         (msg) =>
           msg.attributes.contentType === MessageContentType.paymentTemplated,
       );
@@ -140,7 +154,7 @@ describe('Do payment to 1 PA', () => {
       expect(voucherMessage?.attributes.transactionId).not.toBeNull();
 
       // Assert the modified messages against the snapshot
-      expect(messages).toMatchSnapshot();
+      expect(ahVoucherRelatedMesssages).toMatchSnapshot();
 
       // Additional assertion for imageCodeSecret
       expect(imageCodeSecret).toHaveLength(200);
@@ -235,7 +249,7 @@ describe('Do payment to 1 PA', () => {
       expect(getTransactionsBody.body[0].errorMessage).toBeNull();
     });
 
-    it('should succesfully pay-out for Intersolve Voucher paper', async () => {
+    it('should successfully pay-out for Intersolve Voucher paper', async () => {
       // Arrange
       registrationAhCopy.programFspConfigurationName =
         Fsps.intersolveVoucherPaper;

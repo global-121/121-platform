@@ -33,6 +33,11 @@ export class MonitoringMenuComponent {
       icon: 'pi pi-chart-line',
     },
     {
+      label: $localize`:@@page-title-project-monitoring-dashboard:Dashboard`,
+      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectMonitoring}/${AppRoutes.projectMonitoringDashboard}`,
+      icon: 'pi pi-chart-line',
+    },
+    {
       label: $localize`:@@page-title-project-monitoring-files:Files`,
       routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectMonitoring}/${AppRoutes.projectMonitoringFiles}`,
       icon: 'pi pi-file',

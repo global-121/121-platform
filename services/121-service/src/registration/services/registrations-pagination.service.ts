@@ -150,7 +150,7 @@ export class RegistrationsPaginationService {
       paginateConfigCopy.searchableColumns = [];
     }
 
-    // PaginateConfig.select and PaginateConfig.relations cannot be used in combi with each other
+    // PaginateConfig.select and PaginateConfig.relations cannot be used in combination with each other
     // That's why we wrote some manual code to do the selection
     const result = await paginate<RegistrationViewEntity>(
       query,
@@ -212,7 +212,7 @@ export class RegistrationsPaginationService {
         programId,
         true,
         false,
-        baseQuery ? baseQuery.clone() : undefined, // We need to create a seperate querybuilder object twice or it will be modified twice
+        baseQuery ? baseQuery.clone() : undefined, // We need to create a separate queryBuilder object twice or it will be modified twice
       );
       totalPages = paginateResult.meta.totalPages ?? 0;
       paginateQuery.page = paginateQuery.page + 1;
@@ -242,7 +242,7 @@ export class RegistrationsPaginationService {
     const defaultChunkSize = 20000;
     const effectiveChunkSize = chunkSize || defaultChunkSize;
 
-    // Ensure that the a new qb is created for a chunk of referenceIds because limited query length
+    // Ensure that the a new queryBuilder is created for a chunk of referenceIds because limited query length
     const allResults: MappedPaginatedRegistrationDto[] = [];
 
     const chunks = chunk(referenceIds, effectiveChunkSize);

@@ -40,10 +40,7 @@ import {
   IActionDataHandler,
 } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
-import {
-  generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
-} from '~/utils/form-validation';
+import { generateFieldErrors } from '~/utils/form-validation';
 
 type SendMessageFormGroup =
   (typeof SendMessageDialogComponent)['prototype']['formGroup'];
@@ -96,27 +93,24 @@ export class SendMessageDialogComponent
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
     }),
-    messageTemplateKey: new FormControl<string | undefined>(undefined, {
-      nonNullable: true,
-    }),
-    customMessage: new FormControl<string | undefined>(undefined, {
-      nonNullable: true,
-    }),
+    messageTemplateKey: new FormControl<string | undefined>(
+      { value: undefined, disabled: false },
+      {
+        nonNullable: true,
+      },
+    ),
+    customMessage: new FormControl<string | undefined>(
+      {
+        value: undefined,
+        disabled: false,
+      },
+      {
+        nonNullable: true,
+      },
+    ),
   });
 
-  formFieldErrors = generateFieldErrors<SendMessageFormGroup>(this.formGroup, {
-    messageType: genericFieldIsRequiredValidationMessage,
-    messageTemplateKey: genericFieldIsRequiredValidationMessage,
-    customMessage: (control) => {
-      if (control.errors?.required) {
-        return $localize`:@@generic-required-field:This field is required.`;
-      }
-      if (control.errors?.minlength) {
-        return $localize`The message must be at least 20 characters long.`;
-      }
-      return;
-    },
-  });
+  formFieldErrors = generateFieldErrors(this.formGroup);
 
   sendMessageMutation = injectMutation(() => ({
     mutationFn: (

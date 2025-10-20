@@ -17,7 +17,7 @@ export class LookupService {
     throwNoException?: boolean,
   ): Promise<string | undefined> {
     try {
-      // Add additional sanitizing (incl NL-specific) because user is given no opportunity to correct here
+      // Add additional sanitizing (including NL-specific) because user is given no opportunity to correct here
       const updatedPhone = this.sanitizePhoneNrExtra(phoneNumber);
 
       const lookupResponse = await twilioClient.lookups.v1
@@ -44,7 +44,7 @@ export class LookupService {
     phoneNumber: string,
   ): Promise<number | undefined> {
     try {
-      // Add additional sanitizing (incl NL-specific) because user is given no opportunity to correct here
+      // Add additional sanitizing (including NL-specific) because user is given no opportunity to correct here
       const updatedPhone = this.sanitizePhoneNrExtra(phoneNumber);
 
       const lookupResponse = await twilioClient.lookups.v1

@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Set up Node.js version
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: '${{ env.k6TestsPath }}/.node-version'
           cache: 'npm'
@@ -60,7 +60,7 @@ jobs:
       - name: Download k6
         working-directory: ${{ env.k6TestsPath }}
         run: |
-          curl https://github.com/grafana/k6/releases/download/v0.51.0/k6-v0.51.0-linux-amd64.tar.gz -L | tar xvz --strip-components 1
+          curl https://github.com/grafana/k6/releases/download/v1.3.0/k6-v1.3.0-linux-amd64.tar.gz -L | tar xvz --strip-components 1
 
       - name: Run retryFailedJobsOnStartupDuringQueueProcessing.js with DUPLICATE_NUMBER=7
         working-directory: ${{ env.k6TestsPath }}

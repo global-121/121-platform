@@ -46,7 +46,7 @@ describe('Delete PA', () => {
     expect(response.body.applicableCount).toBe(0);
   });
 
-  it('should succesfully delete', async () => {
+  it('should successfully delete', async () => {
     const rightReferenceId = registrationVisa.referenceId;
 
     // Act

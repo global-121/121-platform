@@ -33,7 +33,7 @@ import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configur
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
-import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
+import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -150,13 +150,13 @@ export class IntersolveVoucherService {
       }
     }
 
-    // If no whatsapp: return early
+    // If no WhatsApp: return early
     if (!useWhatsapp) {
       paResult.status = TransactionStatusEnum.success;
       return paResult;
     }
 
-    // Continue with whatsapp:
+    // Continue with WhatsApp:
     return await this.sendWhatsapp(
       referenceId,
       paResult,
@@ -370,7 +370,7 @@ export class IntersolveVoucherService {
     if (status === TransactionStatusEnum.success) {
       transactionToUpdateFilter['transactionStep'] = 2;
     }
-    // No scoped needed as this is for incoming whatsapp messages
+    // No scoped needed as this is for incoming WhatsApp messages
     await this.transactionRepository.update(transactionToUpdateFilter, {
       status,
       errorMessage:

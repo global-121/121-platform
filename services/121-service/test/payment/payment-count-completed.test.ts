@@ -1,20 +1,25 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { TwilioStatus } from '@121-service/src/notifications/dto/twilio.dto';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { messageTemplateGeneric } from '@121-service/src/seed-data/message-template/message-template-generic.const';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
   getTransactions,
+  waitForMessagesToComplete,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
   getEvents,
+  getMessageHistory,
   getRegistrations,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
@@ -70,7 +75,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       // Assert
       await waitForPaymentTransactionsToComplete({
         programId,
-        paymentReferenceIds: [registrationAh.referenceId],
+        paymentReferenceIds,
         accessToken,
         maxWaitTimeMs: 10_000,
       });
@@ -123,6 +128,39 @@ describe('Do a payment to a PA with maxPayments=1', () => {
           event.attributes.newValue === RegistrationStatusEnum.completed,
       );
       expect(statusChangeToCompleted.length).toBe(1);
+
+      // Assert message sent
+      const expectedMessageTranslations = Object.values(
+        messageTemplateGeneric.completed.message ?? {},
+      );
+
+      await waitForMessagesToComplete({
+        programId,
+        referenceIds: paymentReferenceIds,
+        accessToken,
+        expectedMessageAttribute: {
+          key: 'body',
+          values: expectedMessageTranslations,
+        },
+      });
+
+      const messageHistoryResponse = await getMessageHistory(
+        programId,
+        registrationAh.referenceId,
+        accessToken,
+      );
+
+      const messageHistory = messageHistoryResponse.body;
+      const expectedMessages = messageHistory.filter((message) =>
+        expectedMessageTranslations.includes(message.attributes.body),
+      );
+      expect(expectedMessages.length).toBe(1);
+      expect(expectedMessages[0].attributes.status).not.toBe(
+        TwilioStatus.failed,
+      );
+      expect(expectedMessages[0].attributes.contentType).toBe(
+        MessageContentType.completed,
+      );
     });
   });
 });

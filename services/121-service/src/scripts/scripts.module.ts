@@ -7,6 +7,7 @@ import { ORMConfig } from '@121-service/src/ormconfig';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
+import { MockSeedFactoryService } from '@121-service/src/scripts/factories/mock-seed-factory.service';
 import { ScriptsController } from '@121-service/src/scripts/scripts.controller';
 import { SeedInit } from '@121-service/src/scripts/seed-init';
 import { SeedMultipleNLRCMockData } from '@121-service/src/scripts/seed-multiple-nlrc-mock';
@@ -31,6 +32,7 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
     SeedHelperService,
     SeedMultipleNLRCMockData,
     SeedMockHelperService,
+    MockSeedFactoryService,
     AxiosCallsService,
     CustomHttpService,
   ],

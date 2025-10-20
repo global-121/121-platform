@@ -1,5 +1,12 @@
-import { Controller, HttpStatus, Post, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
@@ -20,14 +27,16 @@ export class OnafriqController {
     summary:
       'Set callback URL for Onafriq to send transaction status updates to us. The exact callback URL is set in code, not here. In MOCK mode, this endpoint does nothing.',
   })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Webhook subscribed or updated successfully',
   })
-  @Post('fsps/onafriq/webhook/subscribe')
-  public async subscribeWebhook(): Promise<
-    OnafriqApiWebhookSubscribeResponseBody | undefined
-  > {
-    return await this.onafriqService.subscribeWebhook();
+  @Post('fsps/onafriq/webhook/subscribe/programs/:programId')
+  public async subscribeWebhook(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<OnafriqApiWebhookSubscribeResponseBody | undefined> {
+    return await this.onafriqService.subscribeWebhook(programId);
   }
 }

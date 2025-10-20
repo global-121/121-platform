@@ -5,8 +5,12 @@ const { baseUrl } = config;
 
 export default class ResetModel {
   constructor() {}
-  resetDBMockRegistrations(powerNumberRegistrations, timeout = '180s') {
-    const url = `${baseUrl}api/scripts/reset?isApiTests=true&script=nlrc-multiple-mock-data&mockPowerNumberRegistrations=${powerNumberRegistrations}&mockPv=true&mockOcw=true`;
+  resetDBMockRegistrations(
+    powerNumberRegistrations,
+    resetIdentifier,
+    timeout = '180s',
+  ) {
+    const url = `${baseUrl}api/scripts/reset?isApiTests=true&script=nlrc-multiple-mock-data&mockPowerNumberRegistrations=${powerNumberRegistrations}&mockPv=true&mockOcw=true&resetIdentifier=${resetIdentifier}`;
     const payload = JSON.stringify({
       secret: 'fill_in_secret',
     });
@@ -20,8 +24,8 @@ export default class ResetModel {
     return res;
   }
 
-  resetDB(resetScript) {
-    const url = `${baseUrl}api/scripts/reset?isApiTests=true&script=${resetScript}`;
+  resetDB(resetScript, resetIdentifier) {
+    const url = `${baseUrl}api/scripts/reset?isApiTests=true&script=${resetScript}&resetIdentifier=${resetIdentifier}`;
     const payload = JSON.stringify({
       secret: 'fill_in_secret',
     });
@@ -34,7 +38,7 @@ export default class ResetModel {
     return res;
   }
 
-  duplicateRegistrations(powerNumberRegistration) {
+  duplicateRegistrations(powerNumberRegistration, timeout = '180s') {
     const url = `${baseUrl}api/scripts/duplicate-registrations?mockPowerNumberRegistrations=${powerNumberRegistration}`;
     const payload = JSON.stringify({
       secret: 'fill_in_secret',
@@ -43,6 +47,7 @@ export default class ResetModel {
       headers: {
         'Content-Type': 'application/json',
       },
+      timeout,
     };
     const res = http.post(url, payload, params);
     return res;

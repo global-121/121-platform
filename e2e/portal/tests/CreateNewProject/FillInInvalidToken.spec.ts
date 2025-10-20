@@ -39,7 +39,7 @@ test('[29636] Fill in with invalid Token', async ({ page }) => {
     });
     await createProject.submitForm();
     await createProject.validateFormError({
-      errorText: 'Something went wrong: Invalid token.',
+      errorText: 'Something went wrong: "Invalid token."',
     });
   });
 });

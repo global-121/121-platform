@@ -60,7 +60,7 @@ test('[36351] Wrong CSV should trigger error (wrong data, column name etc.)', as
 
   await test.step('Validate import error message', async () => {
     await registrationsPage.validateErrorMessage(
-      `Something went wrong: The following referenceIds were not found in the database: ${fakeReferenceId}`,
+      `Something went wrong: "The following referenceIds were not found in the database: ${fakeReferenceId}"`,
     );
   });
 });

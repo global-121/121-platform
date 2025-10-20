@@ -21,10 +21,7 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
 
 import { FileUploadControlComponent } from '~/components/file-upload-control/file-upload-control.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
-import {
-  generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
-} from '~/utils/form-validation';
+import { generateFieldErrors } from '~/utils/form-validation';
 
 export type ImportFileDialogFormGroup =
   (typeof ImportFileDialogComponent)['prototype']['formGroup'];
@@ -60,12 +57,7 @@ export class ImportFileDialogComponent {
     }),
   });
 
-  formFieldErrors = generateFieldErrors<ImportFileDialogFormGroup>(
-    this.formGroup,
-    {
-      file: genericFieldIsRequiredValidationMessage,
-    },
-  );
+  formFieldErrors = generateFieldErrors(this.formGroup);
 
   readonly detailedImportErrors = computed(() => {
     const error = this.mutation().failureReason();

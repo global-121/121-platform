@@ -8,9 +8,6 @@ export class SeedConfigurationDto {
   @ApiProperty({ example: SeedScript.nlrcMultiple })
   readonly name: WrapperType<SeedScript>;
 
-  @ApiProperty({ example: 'organization-generic.json' })
-  readonly organization?: string;
-
   @ApiProperty({ default: false })
   readonly seedAdminOnly?: boolean;
 

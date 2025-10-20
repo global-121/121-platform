@@ -361,9 +361,6 @@
       <trans-unit id="8938510541215036054" datatype="html">
         <source>Enter a valid email address</source>
       </trans-unit>
-      <trans-unit id="2772023564304193657" datatype="html">
-        <source>Enter your password</source>
-      </trans-unit>
       <trans-unit id="2309376472788575612" datatype="html">
         <source>Registrations with the status “new”.</source>
       </trans-unit>
@@ -574,9 +571,6 @@
       <trans-unit id="generic-go-back" datatype="html">
         <source>Go back</source>
       </trans-unit>
-      <trans-unit id="3979054462974448924" datatype="html">
-        <source>The message must be at least 20 characters long.</source>
-      </trans-unit>
       <trans-unit id="5397829192667702490" datatype="html">
         <source>Sending messages</source>
       </trans-unit>
@@ -737,7 +731,7 @@
         <source>Token expired</source>
       </trans-unit>
       <trans-unit id="generic-error-with-message" datatype="html">
-        <source>Something went wrong: <x equiv-text="errorMessage" id="errorMessage"/></source>
+        <source>Something went wrong: <x equiv-text="JSON.stringify(errorMessage)" id="errorMessage"/></source>
       </trans-unit>
       <trans-unit id="1070128073768279969" datatype="html">
         <source>Select a message from the template messages or write a custom message.</source>
@@ -882,9 +876,6 @@
       </trans-unit>
       <trans-unit id="7483364924749111553" datatype="html">
         <source>They will not be included in payments.</source>
-      </trans-unit>
-      <trans-unit id="6828231165009897209" datatype="html">
-        <source>You must select this to proceed.</source>
       </trans-unit>
       <trans-unit id="8315909063441814502" datatype="html">
         <source>Changing statuses</source>
@@ -1146,9 +1137,6 @@
       </trans-unit>
       <trans-unit id="5452570589103987928" datatype="html">
         <source>Payment status chart.</source>
-      </trans-unit>
-      <trans-unit id="2982203751444563776" datatype="html">
-        <source>There are no registrations in this project yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> For information about importing registrations to your project check out the <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; class=&quot;p-button p-button-link gap-1&quot; &gt;" id="START_LINK"/> 121 Manual <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon pi pi-external-link text-sm&quot;&gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</source>
       </trans-unit>
       <trans-unit id="37959892232763790" datatype="html">
         <source>Welcome to <x equiv-text="{{ project.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></source>
@@ -1583,9 +1571,6 @@
       <trans-unit id="7088714514100361567" datatype="html">
         <source>Equal to</source>
       </trans-unit>
-      <trans-unit id="4874025357079324070" datatype="html">
-        <source>Only the columns that are currently visible in the table will be included. You can learn how to show or hide columns in the</source>
-      </trans-unit>
       <trans-unit id="1053772170616919441" datatype="html">
         <source>You&apos;re about to download an Excel file with all of the registrations included in payments.</source>
       </trans-unit>
@@ -1694,9 +1679,6 @@
       <trans-unit id="9048541856160254605" datatype="html">
         <source>Add user to 121</source>
       </trans-unit>
-      <trans-unit id="info-in-manual" datatype="html">
-        <source>For more information see the <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; class=&quot;p-button p-button-link gap-1&quot; &gt;" id="START_LINK"/> 121 Manual <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon pi pi-external-link text-sm&quot;&gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</source>
-      </trans-unit>
       <trans-unit id="3063750609223607355" datatype="html">
         <source>Add to team</source>
       </trans-unit>
@@ -1748,9 +1730,6 @@
       <trans-unit id="3845427937485595400" datatype="html">
         <source>Enable scope</source>
       </trans-unit>
-      <trans-unit id="5927673166996679723" datatype="html">
-        <source>The amount of people/ households your project wishes to reach.</source>
-      </trans-unit>
       <trans-unit id="6001336690636833920" datatype="html">
         <source>Basic information details saved successfully.</source>
       </trans-unit>
@@ -1762,9 +1741,6 @@
       </trans-unit>
       <trans-unit id="7307016430178924629" datatype="html">
         <source>Hint text...</source>
-      </trans-unit>
-      <trans-unit id="1200281517601565877" datatype="html">
-        <source>The number of times each registration will receive transfers in the project as a default.</source>
       </trans-unit>
       <trans-unit id="3033425005384068594" datatype="html">
         <source>Budget details saved successfully.</source>
@@ -1778,9 +1754,6 @@
       <trans-unit id="462133179319783861" datatype="html">
         <source>Fixed transfer value</source>
       </trans-unit>
-      <trans-unit id="6007900356631079593" datatype="html">
-        <source>This needs to be at least 0.</source>
-      </trans-unit>
       <trans-unit id="7003847942368840790" datatype="html">
         <source>Funds available</source>
       </trans-unit>
@@ -1792,9 +1765,6 @@
       </trans-unit>
       <trans-unit id="1321992891688971593" datatype="html">
         <source>Use &quot;validation&quot; in this project</source>
-      </trans-unit>
-      <trans-unit id="3772482029498071398" datatype="html">
-        <source>Turning on the validation option enables an additional registration status: &quot;<x equiv-text="REGISTRATION_STATUS_LABELS[RegistrationStatusEnum.validated]" id="PH"/>&quot;.</source>
       </trans-unit>
       <trans-unit id="773471341435150258" datatype="html">
         <source>Enable validation</source>
@@ -1813,6 +1783,80 @@
       </trans-unit>
       <trans-unit id="3578644052206125685" datatype="html">
         <source>Ukrainian</source>
+      <trans-unit id="1918076919963278361" datatype="html">
+        <source>Registration information</source>
+      </trans-unit>
+      <trans-unit id="3580204172671485392" datatype="html">
+        <source>Registrations per status</source>
+      </trans-unit>
+      <trans-unit id="3854227369866764893" datatype="html">
+        <source>Registrations per duplicate status</source>
+      </trans-unit>
+      <trans-unit id="4275051684912699373" datatype="html">
+        <source>Amount sent per payment</source>
+      </trans-unit>
+      <trans-unit id="8988239608752913304" datatype="html">
+        <source>Transfers per payment</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-monitoring-dashboard" datatype="html">
+        <source>Dashboard</source>
+      </trans-unit>
+      <trans-unit id="2483631699978730341" datatype="html">
+        <source>Registrations by creation date (last 2 weeks)</source>
+      </trans-unit>
+      <trans-unit id="358807055517116989" datatype="html">
+        <source>Payment information (last 5 payments)</source>
+      </trans-unit>
+      <trans-unit id="7407759016156383088" datatype="html">
+        <source>Amount sent per month</source>
+      </trans-unit>
+      <trans-unit id="message-content-type-new" datatype="html">
+        <source>New</source>
+      </trans-unit>
+      <trans-unit id="3271775381612841661" datatype="html">
+        <source>This enables an additional registration status: &quot;<x equiv-text="REGISTRATION_STATUS_LABELS[RegistrationStatusEnum.validated]" id="PH"/>&quot;.</source>
+      </trans-unit>
+      <trans-unit id="4941441939532394435" datatype="html">
+        <source>This field needs to be at least <x equiv-text="min" id="PH"/>.</source>
+      </trans-unit>
+      <trans-unit id="5449434756196250816" datatype="html">
+        <source>The number of times a registration will receive transfers in the project by default.</source>
+      </trans-unit>
+      <trans-unit id="6415562046042900466" datatype="html">
+        <source>The amount of people/households your project plans to reach.</source>
+      </trans-unit>
+      <trans-unit id="message-content-type-completed" datatype="html">
+        <source>Completed</source>
+      </trans-unit>
+      <trans-unit id="2245261357469609295" datatype="html">
+        <source>This field cannot be longer than <x equiv-text="maxlength" id="PH"/> characters.</source>
+      </trans-unit>
+      <trans-unit id="827790248534548401" datatype="html">
+        <source>An unknown validation error has been found. Check the console for more details.</source>
+      </trans-unit>
+      <trans-unit id="8355761006232718301" datatype="html">
+        <source>This field cannot be shorter than <x equiv-text="minlength" id="PH"/> characters.</source>
+      </trans-unit>
+      <trans-unit id="1581201431976430187" datatype="html">
+        <source>This field cannot be more than <x equiv-text="max" id="PH"/>.</source>
+      </trans-unit>
+      <trans-unit id="generic-121-manual-title" datatype="html">
+        <source>121 Manual</source>
+      </trans-unit>
+      <trans-unit id="3671758184194478074" datatype="html">
+        <source>Only the columns that are currently visible in the table will be included. You can learn how to show or hide columns in the <x ctype="x-ng_container" equiv-text="&lt;ng-container [ngTemplateOutlet]=&quot;manualLink&quot;&gt;" id="START_TAG_NG_CONTAINER"/><x ctype="x-ng_container" equiv-text="&lt;/ng-container&gt;" id="CLOSE_TAG_NG_CONTAINER"/>.</source>
+      </trans-unit>
+      <trans-unit id="6912528976135991062" datatype="html">
+        <source>There are no registrations in this project yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> For information about importing registrations to your project check out the <x ctype="x-ng_container" equiv-text="&lt;ng-container [ngTemplateOutlet]=&quot;manualLink&quot;&gt;" id="START_TAG_NG_CONTAINER"/><x ctype="x-ng_container" equiv-text="&lt;/ng-container&gt;" id="CLOSE_TAG_NG_CONTAINER"/>.</source>
+      </trans-unit>
+      <trans-unit id="generic-more-info-in-manual" datatype="html">
+        <source>For more information see the <x ctype="x-ng_container" equiv-text="&lt;ng-container [ngTemplateOutlet]=&quot;manualLink&quot;&gt;" id="START_TAG_NG_CONTAINER"/><x ctype="x-ng_container" equiv-text="&lt;/ng-container&gt;" id="CLOSE_TAG_NG_CONTAINER"/>.</source>
+      </trans-unit>
+      <trans-unit id="574910377369158209" datatype="html">
+        <source>Save and switch language to translate relevant details.</source>
+      </trans-unit>
+      <trans-unit id="7750731471522839997" datatype="html">
+        <source>Editing in <x equiv-text="{{ languageName }}" id="INTERPOLATION"/>.</source>
       </trans-unit>
     </body>
   </file>

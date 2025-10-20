@@ -6,7 +6,6 @@ export enum Fsps {
   airtel = 'Airtel',
   commercialBankEthiopia = 'Commercial-bank-ethiopia',
   excel = 'Excel',
-  deprecatedJumbo = 'Intersolve-jumbo-physical',
   nedbank = 'Nedbank',
   onafriq = 'Onafriq',
 }
@@ -20,6 +19,10 @@ export enum FspConfigurationProperties {
   coverLetterCode = 'coverLetterCode',
   fundingTokenCode = 'fundingTokenCode',
   paymentReferencePrefix = 'paymentReferencePrefix',
+  //onafriq
+  corporateCodeOnafriq = 'corporateCodeOnafriq',
+  passwordOnafriq = 'passwordOnafriq',
+  uniqueKeyOnafriq = 'uniqueKeyOnafriq',
 }
 
 export const FspConfigPropertyValueVisibility: Record<
@@ -34,4 +37,8 @@ export const FspConfigPropertyValueVisibility: Record<
   [FspConfigurationProperties.coverLetterCode]: true,
   [FspConfigurationProperties.fundingTokenCode]: true,
   [FspConfigurationProperties.paymentReferencePrefix]: true,
+  //onafriq
+  [FspConfigurationProperties.corporateCodeOnafriq]: true,
+  [FspConfigurationProperties.passwordOnafriq]: false,
+  [FspConfigurationProperties.uniqueKeyOnafriq]: false,
 };

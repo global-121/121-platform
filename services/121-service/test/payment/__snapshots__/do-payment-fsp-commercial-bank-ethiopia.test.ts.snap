@@ -1,5 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Do payment with FSP: Commercial Bank of Ethiopia when credit transfer API call gives an error response should succesfully do a payment with transactions that have status error 1`] = `"Other failure"`;
+exports[`Do payment with FSP: Commercial Bank of Ethiopia when credit transfer API call gives an error response should successfully do a payment with transactions that have status error 1`] = `"Other failure"`;
 
-exports[`Do payment with FSP: Commercial Bank of Ethiopia when credit transfer API call times out should succesfully do a payment with transactions that have status error 1`] = `"Failed because of an unknown error. Please contact 121 technical support."`;
+exports[`Do payment with FSP: Commercial Bank of Ethiopia when credit transfer API call times out should successfully do a payment with transactions that have status error 1`] = `"Failed because of an unknown error. Please contact 121 technical support."`;

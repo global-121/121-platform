@@ -5,6 +5,8 @@ import { endOfDay, startOfDay } from 'date-fns';
 import { FilterMatchMode, FilterMetadata } from 'primeng/api';
 import { TableLazyLoadEvent } from 'primeng/table';
 
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+
 import { QueryTableSelectionEvent } from '~/components/query-table/query-table.component';
 import { localTimeToUtcTime } from '~/utils/local-time-to-utc-time';
 
@@ -47,6 +49,27 @@ export abstract class IActionDataHandler<TData> {
   providedIn: 'root',
 })
 export class PaginateQueryService {
+  public extendStatusFilterToExcludeDeleted = (
+    currentStatusFilter?: string | string[],
+  ) => {
+    const deletedStatus = `${FilterOperator.NOT}:${RegistrationStatusEnum.deleted}`;
+
+    if (!currentStatusFilter) {
+      return deletedStatus;
+    }
+
+    if (Array.isArray(currentStatusFilter)) {
+      currentStatusFilter = currentStatusFilter.join(',');
+    }
+
+    // Prevent adding the deleted exclusion multiple times
+    if (currentStatusFilter.includes(deletedStatus)) {
+      return currentStatusFilter;
+    }
+
+    return `${currentStatusFilter},${deletedStatus}`;
+  };
+
   private convertPrimeNGMatchModeToFilterOperator({
     matchMode,
     isDate,

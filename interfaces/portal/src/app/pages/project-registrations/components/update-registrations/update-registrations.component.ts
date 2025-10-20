@@ -26,7 +26,6 @@ import { MultiSelectModule } from 'primeng/multiselect';
 
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
@@ -34,27 +33,19 @@ import {
   ImportFileDialogComponent,
   ImportFileDialogFormGroup,
 } from '~/components/import-file-dialog/import-file-dialog.component';
+import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { Registration } from '~/domains/registration/registration.model';
 import { DownloadService } from '~/services/download.service';
 import { ExportService } from '~/services/export.service';
 import {
   ActionDataWithPaginateQuery,
-  FilterOperator,
+  PaginateQueryService,
 } from '~/services/paginate-query.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
-import {
-  generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
-} from '~/utils/form-validation';
-
-type ExportCSVFormGroup =
-  (typeof UpdateRegistrationsComponent)['prototype']['exportCSVFormGroup'];
-
-type UpdateRegistrationsFormGroup =
-  (typeof UpdateRegistrationsComponent)['prototype']['updateRegistrationsFormGroup'];
+import { generateFieldErrors } from '~/utils/form-validation';
 
 @Component({
   selector: 'app-update-registrations',
@@ -86,6 +77,8 @@ export class UpdateRegistrationsComponent {
   readonly registrationAttributeService = inject(RegistrationAttributeService);
   readonly toastService = inject(ToastService);
   readonly translatableStringService = inject(TranslatableStringService);
+  readonly metricApiService = inject(MetricApiService);
+  readonly paginateQueryService = inject(PaginateQueryService);
 
   protected registrationAttributes = injectQuery(
     this.registrationAttributeService.getRegistrationAttributes(
@@ -117,12 +110,7 @@ export class UpdateRegistrationsComponent {
     }),
   });
 
-  exportCSVFormFieldErrors = generateFieldErrors<ExportCSVFormGroup>(
-    this.exportCSVFormGroup,
-    {
-      fields: genericFieldIsRequiredValidationMessage,
-    },
-  );
+  exportCSVFormFieldErrors = generateFieldErrors(this.exportCSVFormGroup);
 
   exportByTypeMutation = injectMutation(() =>
     this.exportService.getExportByTypeMutation(
@@ -144,14 +132,9 @@ export class UpdateRegistrationsComponent {
     }),
   });
 
-  updateRegistrationsFormFieldErrors =
-    generateFieldErrors<UpdateRegistrationsFormGroup>(
-      this.updateRegistrationsFormGroup,
-      {
-        reason: genericFieldIsRequiredValidationMessage,
-        confirmAction: genericFieldIsRequiredValidationMessage,
-      },
-    );
+  updateRegistrationsFormFieldErrors = generateFieldErrors(
+    this.updateRegistrationsFormGroup,
+  );
 
   updateRegistrationsMutation = injectMutation(() => ({
     mutationFn: (
@@ -185,6 +168,8 @@ export class UpdateRegistrationsComponent {
         severity: 'info',
         showSpinner: true,
       });
+      void this.metricApiService.invalidateCache(this.projectId);
+
       setTimeout(() => {
         // invalidate the cache again after a delay to try and make the changes reflected in the UI
         void this.registrationApiService.invalidateCache({
@@ -199,22 +184,6 @@ export class UpdateRegistrationsComponent {
     () =>
       $localize`Export a CSV for the ${this.actionData()?.count} selected registration(s). Select the columns you want to update.`,
   );
-
-  private readonly statusFilter = computed<string>(() => {
-    const deletedStatus = `${FilterOperator.NOT}:${RegistrationStatusEnum.deleted}`;
-
-    let currentStatusFilter = this.actionData()?.query.filter?.status;
-
-    if (!currentStatusFilter) {
-      return deletedStatus;
-    }
-
-    if (Array.isArray(currentStatusFilter)) {
-      currentStatusFilter = currentStatusFilter.join(',');
-    }
-
-    return `${currentStatusFilter},${deletedStatus}`;
-  });
 
   exportCSVForUpdateRegistrations() {
     this.exportCSVFormGroup.markAllAsTouched();
@@ -235,7 +204,9 @@ export class UpdateRegistrationsComponent {
         select: selectedFields,
         filter: {
           ...this.actionData()?.query.filter,
-          status: this.statusFilter(),
+          status: this.paginateQueryService.extendStatusFilterToExcludeDeleted(
+            this.actionData()?.query.filter?.status,
+          ),
         },
       },
       format: 'csv',

@@ -43,16 +43,7 @@ import {
 } from '~/services/registration-attribute.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
-import {
-  generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
-} from '~/utils/form-validation';
-
-type EditPersonalInformationFormGroup =
-  (typeof EditPersonalInformationComponent)['prototype']['formGroup'];
-
-type DialogFormGroup =
-  (typeof EditPersonalInformationComponent)['prototype']['dialogFormGroup'];
+import { generateFieldErrors } from '~/utils/form-validation';
 
 @Component({
   selector: 'app-edit-personal-information',
@@ -109,7 +100,7 @@ export class EditPersonalInformationComponent
   >({});
 
   readonly formFieldErrors = computed(() =>
-    generateFieldErrors<EditPersonalInformationFormGroup>(
+    generateFieldErrors(
       this.formGroup,
       this.registrationAttributeService.attributesToFormFormFieldErrors({
         attributes: this.attributeList(),
@@ -125,12 +116,7 @@ export class EditPersonalInformationComponent
     }),
   });
 
-  dialogFormFieldErrors = generateFieldErrors<DialogFormGroup>(
-    this.dialogFormGroup,
-    {
-      reason: genericFieldIsRequiredValidationMessage,
-    },
-  );
+  dialogFormFieldErrors = generateFieldErrors(this.dialogFormGroup);
 
   readonly hasChanges = computed(
     () => Object.keys(this.changedRegistrationData()).length > 0,

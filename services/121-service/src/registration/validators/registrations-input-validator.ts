@@ -239,7 +239,7 @@ export class RegistrationsInputValidator {
        * =============================================
        */
 
-      // Filter dynamic atttributes that are not relevant for this fsp if question is only fsp specific
+      // Filter dynamic attributes that are not relevant for this fsp if question is only fsp specific
 
       await Promise.all(
         program.programRegistrationAttributes.map(async (att) => {
@@ -290,7 +290,7 @@ export class RegistrationsInputValidator {
               if (errorObj) {
                 errors.push(errorObj);
               } else if (row[att.name]) {
-                // we can assume here that the orginal value is a string else it would not have returned an error object
+                // we can assume here that the original value is a string else it would not have returned an error object
                 phoneNumberLookupResults[row[att.name] as string] = sanitized;
                 validatedRegistrationInput.data[att.name] = sanitized as string;
               }
@@ -795,7 +795,7 @@ export class RegistrationsInputValidator {
       }
 
       // If the programFspConfigurationName being updated / set in this request
-      // check if a combination orignal registration and new row has all required attributes
+      // check if a combination original registration and new row has all required attributes
       if (row[GenericRegistrationAttributes.programFspConfigurationName]) {
         // Check if the required attributes are present in the row
         if (
@@ -836,10 +836,10 @@ export class RegistrationsInputValidator {
       (programFspConfig) =>
         programFspConfig.name === programFspConfigurationName,
     )?.fspName;
-    const foundFsp = FSP_SETTINGS.find((fsp) => fsp.name === fspName);
-    if (!foundFsp) {
+    if (!fspName) {
       return [];
     }
+    const foundFsp = FSP_SETTINGS[fspName];
     const requiredAttributes = foundFsp.attributes.filter(
       (attribute) => attribute.isRequired,
     );

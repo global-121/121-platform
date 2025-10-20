@@ -39,15 +39,18 @@ function checkAndFail(response, checks) {
 
 export default function () {
   // reset db
-  const reset = resetPage.resetDB(resetScript);
+  const reset = resetPage.resetDB(
+    resetScript,
+    'getProgramWithManyAttributes.js',
+  );
   checkAndFail(reset, {
-    'Reset succesfull status was 202': (r) => r.status == 202,
+    'Reset successful. Status was 202': (r) => r.status == 202,
   });
 
   // login
   const login = loginPage.login();
   checkAndFail(login, {
-    'Login succesfull status was 200': (r) => r.status == 201,
+    'Login successful. Status was 201': (r) => r.status == 201,
     'Login time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
         console.log(`Login time was ${r.timings.duration}ms`);
@@ -90,11 +93,11 @@ export default function () {
     'Duplication successful status was 201': (r) => r.status == 201,
   });
 
-  // get program by id and validte load time is less than 200ms
+  // get program by id and validate load time is less than 200ms
   const program = programsPage.getProgramById(2);
   checkAndFail(program, {
-    'Programme loaded succesfully status was 200': (r) => r.status == 200,
-    'Programme load time is less than 200ms': (r) => {
+    'Program loaded successfully status was 200': (r) => r.status == 200,
+    'Program load time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
         console.log(`Programme time was ${r.timings.duration}ms`);
       }

@@ -30,7 +30,7 @@ test('[29310] Change password unsuccessfully (Non-matching passwords)', async ({
     await homePage.selectAccountOption('Change password');
   });
 
-  await test.step('Should type wrong current password and recieve error', async () => {
+  await test.step('Should type wrong current password and receive error', async () => {
     await changePasswordPage.fillInChangePassword({
       currentPassword: `${env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? ''}-with-a-typo`,
       newPassword: 'newPassword',
@@ -38,7 +38,7 @@ test('[29310] Change password unsuccessfully (Non-matching passwords)', async ({
     });
     await changePasswordPage.submitChangePassword();
     await changePasswordPage.validateFormError({
-      errorText: 'Something went wrong: Your password was incorrect.',
+      errorText: 'Something went wrong: "Your password was incorrect."',
     });
   });
 });

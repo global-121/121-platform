@@ -39,6 +39,11 @@ export class LogService {
       },
     });
 
+    this.appInsights.addTelemetryInitializer((envelope) => {
+      if (!envelope.tags) return;
+      envelope.tags['ai.cloud.role'] = 'portal';
+      envelope.tags['ai.cloud.roleInstance'] = window.location.hostname;
+    });
     this.appInsights.loadAppInsights();
     this.appInsightsInitialized = true;
   }

@@ -21,7 +21,7 @@ describe('Export CBE validation report', () => {
     await waitFor(1_000);
   });
 
-  it('should succesfully generate a report of CBE validation data', async () => {
+  it('should successfully generate a report of CBE validation data', async () => {
     // // Arrange
     await importRegistrations(programId, [registrationCbe], accessToken);
     await startCbeValidationProcess(programId, accessToken);

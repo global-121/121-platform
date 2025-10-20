@@ -21,10 +21,7 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { ToastService } from '~/services/toast.service';
-import {
-  generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
-} from '~/utils/form-validation';
+import { generateFieldErrors } from '~/utils/form-validation';
 
 type AddNoteFormGroup =
   (typeof AddNoteDialogComponent)['prototype']['formGroup'];
@@ -68,9 +65,7 @@ export class AddNoteDialogComponent {
     }),
   });
 
-  formFieldErrors = generateFieldErrors<AddNoteFormGroup>(this.formGroup, {
-    note: genericFieldIsRequiredValidationMessage,
-  });
+  formFieldErrors = generateFieldErrors(this.formGroup);
 
   addNoteMutation = injectMutation(() => ({
     mutationFn: ({ note }: ReturnType<AddNoteFormGroup['getRawValue']>) => {

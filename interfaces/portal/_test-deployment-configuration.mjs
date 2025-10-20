@@ -76,12 +76,24 @@ test('Content-Security-Policy configuration for loading as iframe in Twilio Flex
   }
 });
 
+test('Content-Security-Policy configuration for loading as iframe in AWS Connect', () => {
+  const frameAncestorsCondition =
+    /frame-ancestors[^;]* https:\/\/nlrc-poc\.my\.connect\.aws/;
+
+  if (shouldBeEnabled(process.env.USE_IN_AWS_CONNECT_IFRAME)) {
+    match(csp, frameAncestorsCondition);
+  } else {
+    doesNotMatch(csp, frameAncestorsCondition);
+  }
+});
+
 test('Configuration to control pop-ups for SSO when the Portal is in an iframe on Twilio Flex', () => {
   const openerPolicy = swaConfig.globalHeaders['Cross-Origin-Opener-Policy'];
 
   if (
-    shouldBeEnabled(process.env.USE_IN_TWILIO_FLEX_IFRAME) &&
-    shouldBeEnabled(process.env.USE_SSO_AZURE_ENTRA)
+    shouldBeEnabled(process.env.USE_SSO_AZURE_ENTRA) &&
+    (shouldBeEnabled(process.env.USE_IN_TWILIO_FLEX_IFRAME) ||
+      shouldBeEnabled(process.env.USE_IN_AWS_CONNECT_IFRAME))
   ) {
     match(openerPolicy, /unsafe-none/);
   } else {

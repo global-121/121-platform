@@ -7,6 +7,19 @@ import { OnafriqApiHelperService } from '@121-service/src/payments/fsp-integrati
 import { OnafriqApiService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.api.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
+const mockParams = {
+  transferAmount: 100,
+  phoneNumberPayment: '123456789',
+  firstName: 'John',
+  lastName: 'Doe',
+  thirdPartyTransId: 'abc123',
+  requestIdentity: {
+    corporateCode: 'mocked_corporate_code',
+    password: 'mocked_password',
+    uniqueKey: 'mocked_unique_key',
+  },
+};
+
 describe('OnafriqApiService', () => {
   let onafriqApiService: OnafriqApiService;
   let customHttpService: CustomHttpService;
@@ -34,17 +47,9 @@ describe('OnafriqApiService', () => {
       const invalidResponse = undefined;
       (customHttpService.post as jest.Mock).mockResolvedValue(invalidResponse);
 
-      const params = {
-        transferAmount: 100,
-        phoneNumberPayment: '123456789',
-        firstName: 'John',
-        lastName: 'Doe',
-        thirdPartyTransId: 'abc123',
-      };
-
       let error: unknown;
       try {
-        await onafriqApiService.callService(params);
+        await onafriqApiService.callService(mockParams);
       } catch (e) {
         error = e;
       }
@@ -75,15 +80,7 @@ describe('OnafriqApiService', () => {
       };
       (customHttpService.post as jest.Mock).mockResolvedValue(validResponse);
 
-      const params = {
-        transferAmount: 100,
-        phoneNumberPayment: '123456789',
-        firstName: 'John',
-        lastName: 'Doe',
-        thirdPartyTransId: 'abc123',
-      };
-
-      const result = await onafriqApiService.callService(params);
+      const result = await onafriqApiService.callService(mockParams);
 
       expect(result.status).toBe(OnafriqApiResponseStatusType.success);
     });

@@ -731,16 +731,19 @@
   },
   {
     "method": "post",
-    "path": "/api/fsps/onafriq/reconciliation-report",
+    "path": "/api/fsps/onafriq/reconciliation-report/{programId}",
     "params": [
+      "programId",
       "fromDate",
       "toDate"
     ]
   },
   {
     "method": "post",
-    "path": "/api/fsps/onafriq/webhook/subscribe",
-    "params": []
+    "path": "/api/fsps/onafriq/webhook/subscribe/programs/{programId}",
+    "params": [
+      "programId"
+    ]
   },
   {
     "method": "get",
@@ -767,17 +770,6 @@
     "params": [
       "mockPowerNumberRegistrations"
     ]
-  },
-  {
-    "method": "get",
-    "path": "/api/organization",
-    "params": []
-  },
-  {
-    "method": "patch",
-    "path": "/api/organization",
-    "params": [],
-    "returnType": "OrganizationEntity"
   },
   {
     "method": "get",
@@ -850,21 +842,24 @@
     "method": "get",
     "path": "/api/programs/{programId}/metrics/registration-count-by-date",
     "params": [
-      "programId"
+      "programId",
+      "startDate"
     ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/metrics/all-payments-aggregates",
     "params": [
-      "programId"
+      "programId",
+      "limitNumberOfPayments"
     ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/metrics/amount-sent-by-month",
     "params": [
-      "programId"
+      "programId",
+      "limitNumberOfPayments"
     ]
   },
   {

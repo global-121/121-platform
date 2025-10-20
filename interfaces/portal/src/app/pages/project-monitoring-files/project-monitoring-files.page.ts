@@ -46,14 +46,8 @@ import { MonitoringUploadFileDialogComponent } from '~/pages/project-monitoring-
 import { AuthService } from '~/services/auth.service';
 import { DownloadService } from '~/services/download.service';
 import { ToastService } from '~/services/toast.service';
-import {
-  generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
-} from '~/utils/form-validation';
+import { generateFieldErrors } from '~/utils/form-validation';
 import { getUniqueUserOptions } from '~/utils/unique-users';
-
-type DeleteFileFormGroup =
-  (typeof ProjectMonitoringFilesPageComponent)['prototype']['deleteFileFormGroup'];
 
 @Component({
   selector: 'app-monitoring-files',
@@ -98,12 +92,7 @@ export class ProjectMonitoringFilesPageComponent {
     }),
   });
 
-  deleteFileFormFieldErrors = generateFieldErrors<DeleteFileFormGroup>(
-    this.deleteFileFormGroup,
-    {
-      confirmAction: genericFieldIsRequiredValidationMessage,
-    },
-  );
+  deleteFileFormFieldErrors = generateFieldErrors(this.deleteFileFormGroup);
 
   deleteFileMutation = injectMutation(() => ({
     mutationFn: (attachmentId: number) =>

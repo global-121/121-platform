@@ -14,9 +14,9 @@ const loginPage = new loginModel();
 const programsPage = new programsModel();
 const metricsPage = new metricstsModel();
 
-const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '5');
+const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '15');
 const programId = 3;
-const maxTimeoutAttempts = 600;
+const maxRetryDuration = 6000; // seconds // TODO: this is really long, but is needed to fix the further test. Instead look into setting up this test differently.
 const minPassRatePercentage = 50;
 const amount = 11.11;
 
@@ -42,15 +42,18 @@ function checkAndFail(response, checks) {
 
 export default function () {
   // reset db
-  const reset = resetPage.resetDBMockRegistrations(duplicateNumber);
+  const reset = resetPage.resetDBMockRegistrations(
+    duplicateNumber,
+    'performanceDuringPayment.js',
+  );
   checkAndFail(reset, {
-    'Reset succesfull status was 202': (r) => r.status == 202,
+    'Reset successful status was 202': (r) => r.status == 202,
   });
 
   // login
   const login = loginPage.login();
   checkAndFail(login, {
-    'Login succesfull status was 200': (r) => r.status == 201,
+    'Login successful. Status was 201': (r) => r.status == 201,
     'Login time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
         console.log(`Login time was ${r.timings.duration}ms`);
@@ -71,10 +74,11 @@ export default function () {
   });
 
   // Monitor that 100% of payments is successful and then stop the test
+  const paymentId = JSON.parse(doPayment.body).id;
   const monitorPayment = paymentsPage.getPaymentResults(
     programId,
-    maxTimeoutAttempts,
-    doPayment.body.id,
+    maxRetryDuration,
+    paymentId,
     duplicateNumber,
     minPassRatePercentage,
     amount,
@@ -92,13 +96,13 @@ export default function () {
   // get export list
   const exportList = metricsPage.getExportList(3);
   checkAndFail(exportList, {
-    'Export list loaded succesfully status was 200': (r) => r.status == 200,
+    'Export list loaded successfully status was 200': (r) => r.status == 200,
   });
 
   // send bulk message
   const message = programsPage.sendBulkMessage(3);
   checkAndFail(message, {
-    'Message sent succesfully status was 202': (r) => r.status == 202,
+    'Message sent successfully status was 202': (r) => r.status == 202,
   });
 
   sleep(1);

@@ -16,7 +16,7 @@ const loginPage = new loginModel();
 
 const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '7'); // '7' leads to 128 registrations
 const programId = 3;
-const maxTimeoutAttempts = 400;
+const maxRetryDuration = 2000; // seconds
 const minPassRatePercentage = 100;
 const amount = 10;
 
@@ -48,15 +48,18 @@ function isServiceUp() {
 
 export default function () {
   // reset db
-  const reset = resetPage.resetDBMockRegistrations(duplicateNumber);
+  const reset = resetPage.resetDBMockRegistrations(
+    duplicateNumber,
+    'retryFailedJobsOnStartupDuringQueueProcessing.js',
+  );
   checkAndFail(reset, {
-    'Reset succesfull status was 202': (r) => r.status == 202,
+    'Reset successful status was 202': (r) => r.status == 202,
   });
 
   // login
   const login = loginPage.login();
   checkAndFail(login, {
-    'Login succesfull status was 200': (r) => r.status == 201,
+    'Login successful. Status was 201': (r) => r.status == 201,
     'Login time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
         console.log(`Login time was ${r.timings.duration}ms`);
@@ -88,10 +91,11 @@ export default function () {
   }
 
   // Monitor that 100% of payments is successful and then stop the test
+  const paymentId = JSON.parse(doPayment.body).id;
   const monitorPayment = paymentsPage.getPaymentResults(
     programId,
-    maxTimeoutAttempts,
-    doPayment.body.id,
+    maxRetryDuration,
+    paymentId,
     duplicateNumber,
     minPassRatePercentage,
   );

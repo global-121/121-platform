@@ -70,6 +70,7 @@ test('[36008] Do successful payment for Voucher fsp', async ({ page }) => {
       registrationsNumber: numberOfPas,
       successfulTransfers: defaultMaxTransferValue,
       failedTransfers: 0,
+      projectId: programIdPV,
     });
   });
 });

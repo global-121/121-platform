@@ -16,9 +16,9 @@ import {
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FspDto } from '@121-service/src/fsps/fsp.dto';
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+import { stringIsFsp } from '@121-service/src/fsps/fsp-settings.helpers';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
-import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
@@ -48,14 +48,9 @@ export class SeedHelperService {
   ) {}
 
   public async seedData(seedConfig: SeedConfigurationDto, isApiTests = false) {
-    // Add organization
-    const organizationPath = `organization/${seedConfig.organization}`;
-    const organizationData = await this.importData(organizationPath);
-    await this.addOrganization(organizationData);
-
     // ***** SET SEQUENCE *****
     // This is to keep PV and OCW program ids on respectively 2 and 3
-    // This to prevent differences between our local and prod dbs so we are less prone to mistakes
+    // This to prevent differences between our local- and production database so we are less prone to mistakes
     if (seedConfig.firstProgramId && seedConfig.firstProgramId !== 1) {
       await this.dataSource.query(
         `ALTER SEQUENCE "121-service".program_id_seq RESTART WITH ${seedConfig.firstProgramId};`,
@@ -112,7 +107,7 @@ export class SeedHelperService {
     form.append('file', fs.createReadStream(filePathToUpload));
 
     const accessToken = await this.axiosCallsService.getAccessToken();
-    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
+    const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
     const formHeaders = form.getHeaders();
     for (const key in formHeaders) {
       if (Object.prototype.hasOwnProperty.call(formHeaders, key)) {
@@ -181,7 +176,7 @@ export class SeedHelperService {
         roles: [DefaultUserRole.KoboRegistrationUser],
       },
       {
-        type: 'koboValidationnUser',
+        type: 'koboValidationUser',
         username: env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO_VALIDATION,
         password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO_VALIDATION,
         roles: [DefaultUserRole.KoboValidationUser],
@@ -273,16 +268,6 @@ export class SeedHelperService {
     }
   }
 
-  public async addOrganization(
-    exampleOrganization: Record<string, any>,
-  ): Promise<void> {
-    const organizationRepository =
-      this.dataSource.getRepository(OrganizationEntity);
-    const organizationDump = JSON.stringify(exampleOrganization);
-    const organization = JSON.parse(organizationDump);
-    await organizationRepository.save(organization);
-  }
-
   public async addProgram(
     programExample: any,
     isApiTests: boolean,
@@ -334,16 +319,14 @@ export class SeedHelperService {
     foundProgram.programFspConfigurations = [];
 
     for (const fspConfigFromJson of fspConfigArrayFromJson) {
-      const fspObject = FSP_SETTINGS.find(
-        (fsp) => fsp.name === fspConfigFromJson.fsp,
-      );
-      if (!fspObject) {
+      const fspName = fspConfigFromJson.fsp;
+      if (!stringIsFsp(fspName)) {
         throw new HttpException(
-          `FSP with name ${fspConfigFromJson.fsp} not found in FSP_SETTINGS`,
+          `FSP with name ${fspName} not found in FSP_SETTINGS`,
           HttpStatus.NOT_FOUND,
         );
       }
-
+      const fspObject = FSP_SETTINGS[fspName];
       const programFspConfig = this.createProgramFspConfiguration(
         fspConfigFromJson,
         fspObject,

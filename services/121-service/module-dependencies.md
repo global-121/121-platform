@@ -59,6 +59,7 @@ graph LR
   RegistrationsModule-->RegistrationEventsModule
   RegistrationsModule-->ProgramFspConfigurationsModule
   RegistrationsModule-->QueuesRegistryModule
+  RegistrationsModule-->MessageTemplateModule
   CronjobModule-->NedbankReconciliationModule
   NedbankReconciliationModule-->NedbankModule
   NedbankReconciliationModule-->TransactionsModule
@@ -66,12 +67,14 @@ graph LR
   OnafriqReconciliationModule-->OnafriqModule
   OnafriqModule-->RedisModule
   OnafriqModule-->QueuesRegistryModule
+  OnafriqModule-->ProgramFspConfigurationsModule
   OnafriqReconciliationModule-->RedisModule
   OnafriqReconciliationModule-->TransactionsModule
   OnafriqReconciliationModule-->QueuesRegistryModule
+  OnafriqReconciliationModule-->ProgramFspConfigurationsModule
+  OnafriqReconciliationModule-->ProgramModule
   CronjobModule-->ExchangeRatesModule
   ExchangeRatesModule-->UserModule
-  OrganizationModule-->UserModule
   MessageModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
   WhatsappModule-->UserModule

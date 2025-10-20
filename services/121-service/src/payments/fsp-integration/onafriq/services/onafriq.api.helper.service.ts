@@ -17,18 +17,19 @@ export class OnafriqApiHelperService {
     firstName,
     lastName,
     thirdPartyTransId,
+    requestIdentity,
   }): OnafriqApiCallServiceRequestBody {
     const batchId = uuid(); // Generate a new batch ID for each request
     const mfsSign = this.generateMfsSign(
-      env.ONAFRIQ_PASSWORD,
+      requestIdentity.password,
       batchId,
-      env.ONAFRIQ_UNIQUE_KEY,
+      requestIdentity.uniqueKey,
     );
     const currencyCode = env.ONAFRIQ_CURRENCY_CODE;
     const countryCode = env.ONAFRIQ_COUNTRY_CODE;
     const callServicePayload: OnafriqApiCallServiceRequestBody = {
-      corporateCode: env.ONAFRIQ_CORPORATE_CODE,
-      password: env.ONAFRIQ_PASSWORD,
+      corporateCode: requestIdentity.corporateCode,
+      password: requestIdentity.password,
       mfsSign,
       batchId,
       requestBody: [
@@ -83,7 +84,7 @@ export class OnafriqApiHelperService {
     const status = transResponse?.status;
 
     // NOTE 1: we assume in the below there is only one transaction per batch (which is how we make the request)
-    // NOTE 2: the response data also contains data on totalTxSent, noTxAccepted, noTxRejected, which could theoretically be not adding up or not aligining with the status per transaction. We choose to focus on the information on transaction-level.
+    // NOTE 2: the response data also contains data on totalTxSent, noTxAccepted, noTxRejected, which could theoretically be not adding up or not aligning with the status per transaction. We choose to focus on the information on transaction-level.
     // NOTE 3: we have successfully tested manually that the error handling (here plus in parent method) also correctly handles bad gateway/timeout/ECONNRESET errors. There are no separate API-tests on this, as logically this is part of the same generic-error scenario.
     // NOTE 4: there is unfortunately no specific error code for duplicate thirdPartyTransId, so must be done on messageDetail
     if (

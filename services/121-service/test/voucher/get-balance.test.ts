@@ -5,7 +5,7 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   getTransactionsIntersolveVoucher,
   getVoucherBalance,
-} from '@121-service/test/helpers/intersolve-voucher.helper';
+} from '@121-service/test/helpers/fsp-specific.helper';
 import { doPayment } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
@@ -33,7 +33,7 @@ describe('Get Intersolve voucher balance', () => {
     await waitFor(3_000);
   });
 
-  it('should succesfully get balance', async () => {
+  it('should successfully get balance', async () => {
     // Arrange
     await importRegistrations(programIdPV, [registrationPV5], accessToken);
     await awaitChangeRegistrationStatus({

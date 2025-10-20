@@ -70,7 +70,7 @@ export const EXTERNAL_API = {
   imageCodeUrl: `${rootApi}/${API_PATHS.imageCode}`,
 };
 
-// Configure Public Twilio Setttings:
+// Configure Public Twilio Settings:
 // ---------------------------------------------------------------------------
 export const TWILIO_SANDBOX_WHATSAPP_NUMBER = '+14155238886';
 

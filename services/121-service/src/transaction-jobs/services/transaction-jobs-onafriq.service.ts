@@ -1,12 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
+import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integration/onafriq/entities/onafriq-transaction.entity';
 import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-response-status-type.enum';
 import { OnafriqError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq.error';
 import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { OnafriqTransactionJobDto } from '@121-service/src/transaction-queues/dto/onafriq-transaction-job.dto';
@@ -21,6 +23,7 @@ export class TransactionJobsOnafriqService {
     private readonly onafriqTransactionScopedRepository: ScopedRepository<OnafriqTransactionEntity>,
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
+    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
 
   public async processOnafriqTransactionJob(
@@ -83,12 +86,16 @@ export class TransactionJobsOnafriqService {
 
     // 4. Start the transfer, if failure: update to error transaction and return early
     try {
+      const requestIdentity = await this.getOnafriqFspConfig(
+        transactionJob.programFspConfigurationId,
+      );
       await this.onafriqService.createTransaction({
         transferAmount: transactionJob.transactionAmount,
         phoneNumberPayment: transactionJob.phoneNumberPayment,
         firstName: transactionJob.firstName,
         lastName: transactionJob.lastName,
         thirdPartyTransId,
+        requestIdentity,
       });
     } catch (error) {
       if (
@@ -113,5 +120,34 @@ export class TransactionJobsOnafriqService {
     // 5. No messages sent for onafriq
 
     // 6. No 121 transaction stored or updated after API-call, because waiting transaction is already stored earlier and will remain 'waiting' at this stage (to be updated via callback)
+  }
+
+  private async getOnafriqFspConfig(
+    programFspConfigurationId: number,
+  ): Promise<{
+    corporateCode: string;
+    password: string;
+    uniqueKey: string;
+  }> {
+    const programFspConfigProperties =
+      await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
+        programFspConfigurationId,
+        names: [
+          FspConfigurationProperties.corporateCodeOnafriq,
+          FspConfigurationProperties.passwordOnafriq,
+          FspConfigurationProperties.uniqueKeyOnafriq,
+        ],
+      });
+    return {
+      corporateCode: programFspConfigProperties.find(
+        (c) => c.name === FspConfigurationProperties.corporateCodeOnafriq,
+      )?.value as string,
+      password: programFspConfigProperties.find(
+        (c) => c.name === FspConfigurationProperties.passwordOnafriq,
+      )?.value as string,
+      uniqueKey: programFspConfigProperties.find(
+        (c) => c.name === FspConfigurationProperties.uniqueKeyOnafriq,
+      )?.value as string,
+    };
   }
 }

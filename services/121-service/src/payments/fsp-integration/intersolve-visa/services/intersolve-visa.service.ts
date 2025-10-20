@@ -499,7 +499,7 @@ export class IntersolveVisaService {
    * - Substitutes the old token with the new one.
    * - Finally, it creates a new card and updates the child wallet status.
    *
-   * @param {ReissueCardParams} input - The parameters for the card reissuance.
+   * @param {ReissueCardParams} input - The parameters for the card re-issuance.
    * @throws {Error} Throws an Error if no customer, parent wallet, or child wallet is found for the given registration ID, or if the child wallet to be replaced does not have a card created for it.
    * @returns {Promise<void>}
    */
@@ -559,7 +559,7 @@ export class IntersolveVisaService {
     });
 
     // Create child wallet entity
-    // Do this after the token has been succesfully substituted, so to make this API call more idempotent
+    // Do this after the token has been successfully substituted, so to make this API call more idempotent
     const newIntersolveVisaChildWallet = new IntersolveVisaChildWalletEntity();
     newIntersolveVisaChildWallet.intersolveVisaParentWallet =
       intersolveVisaCustomer.intersolveVisaParentWallet;
@@ -653,7 +653,7 @@ export class IntersolveVisaService {
         );
     }
 
-    // Calculate the amount that should be transfered. If the registration does not have customer yet the spendThisMonth and balance will be 0.
+    // Calculate the amount that should be transferred. If the registration does not have customer yet the spendThisMonth and balance will be 0.
     return this.calculateLimitedTransferAmount({
       transactionAmountInMajorUnit: inputTransferAmountInMajorUnit,
       spentThisMonth:
@@ -662,7 +662,7 @@ export class IntersolveVisaService {
     });
   }
 
-  // Calculated the amount that can be transferred based on the limits of maxumum amount on a wallet and maximum amount that can be spent per month.
+  // Calculated the amount that can be transferred based on the limits of maximum amount on a wallet and maximum amount that can be spent per month.
   private calculateLimitedTransferAmount({
     transactionAmountInMajorUnit,
     spentThisMonth,

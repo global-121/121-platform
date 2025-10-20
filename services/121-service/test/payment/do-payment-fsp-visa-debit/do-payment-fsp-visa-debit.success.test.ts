@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -12,11 +13,12 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
   getTransactions,
+  waitForMessagesToComplete,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
-  getMessageHistoryUntilX,
+  getMessageHistory,
   importRegistrations,
   issueNewVisaCard,
 } from '@121-service/test/helpers/registration.helper';
@@ -30,7 +32,7 @@ import {
   registrationOCW4,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-describe('Do succesful payment with FSP Visa Debit', () => {
+describe('Do successful payment with FSP Visa Debit', () => {
   // Set WhatsApp-number for ALL tests in this suite only
   const registrationVisa = {
     ...registrationVisaDefault,
@@ -45,7 +47,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     await waitFor(2_000);
   });
 
-  it('should succesfully pay-out Visa Debit', async () => {
+  it('should successfully pay-out Visa Debit', async () => {
     // Arrange
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
     await awaitChangeRegistrationStatus({
@@ -154,7 +156,6 @@ describe('Do succesful payment with FSP Visa Debit', () => {
 
   it('should payout different amounts based on current balance and spend', async () => {
     // Arrange
-
     registrationVisa.fullName = 'mock-current-balance-13000-mock-spent-1000';
     registrationVisa.paymentAmountMultiplier = 3;
 
@@ -202,6 +203,15 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       completeStatusses: Object.values(TransactionStatusEnum),
       paymentId: paymentId1,
     });
+    await waitForMessagesToComplete({
+      programId: programIdVisa,
+      referenceIds,
+      accessToken,
+      expectedMessageAttribute: {
+        key: 'contentType',
+        values: [MessageContentType.payment],
+      },
+    });
 
     // Reissue card so both cards have a spend of 6000
     await issueNewVisaCard(
@@ -227,6 +237,15 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       completeStatusses: Object.values(TransactionStatusEnum),
       paymentId: paymentId2,
     });
+    await waitForMessagesToComplete({
+      programId: programIdVisa,
+      referenceIds,
+      accessToken,
+      expectedMessageAttribute: {
+        key: 'contentType',
+        values: [MessageContentType.payment],
+      },
+    });
 
     // Assert
     const transactionsResponse1 = await getTransactions({
@@ -235,13 +254,10 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
-
-    // Waits until the 4th message is received
-    const messagesHistoryPa1 = await getMessageHistoryUntilX(
+    const messagesHistoryPa1 = await getMessageHistory(
       programIdVisa,
       registrationVisa.referenceId,
       accessToken,
-      4,
     );
 
     const transactionsResponse2 = await getTransactions({
@@ -250,12 +266,12 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       registrationReferenceId: registrationOCW2.referenceId,
       accessToken,
     });
-    const messagesHistoryPa2 = await getMessageHistoryUntilX(
+    const messagesHistoryPa2 = await getMessageHistory(
       programIdVisa,
       registrationOCW2.referenceId,
       accessToken,
-      4,
     );
+
     const transactionsResponse3 = await getTransactions({
       programId: programIdVisa,
       paymentId: paymentId2,

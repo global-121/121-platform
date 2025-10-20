@@ -15,7 +15,6 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
   },
   {
     name: SeedScript.nlrcMultiple,
-    organization: 'organization-nlrc.json',
     programs: [
       {
         program: 'program-nlrc-pv.json',
@@ -31,7 +30,6 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
   },
   {
     name: SeedScript.nlrcMultipleMock,
-    organization: 'organization-nlrc.json',
     programs: [
       {
         program: 'program-nlrc-pv.json',
@@ -48,7 +46,6 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
   },
   {
     name: SeedScript.cbeProgram,
-    organization: 'organization-generic.json',
     programs: [
       {
         program: 'program-cbe.json',
@@ -58,7 +55,6 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
   },
   {
     name: SeedScript.safaricomProgram,
-    organization: 'organization-generic.json',
     programs: [
       {
         program: 'program-safaricom.json',
@@ -68,7 +64,6 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
   },
   {
     name: SeedScript.airtelProgram,
-    organization: 'organization-generic.json',
     programs: [
       {
         program: 'program-airtel.json',
@@ -78,7 +73,6 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
   },
   {
     name: SeedScript.nedbankProgram,
-    organization: 'organization-generic.json',
     programs: [
       {
         program: 'program-nedbank.json',
@@ -88,7 +82,6 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
   },
   {
     name: SeedScript.onafriqProgram,
-    organization: 'organization-generic.json',
     programs: [
       {
         program: 'program-onafriq.json',
@@ -98,7 +91,6 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
   },
   {
     name: SeedScript.demoPrograms,
-    organization: 'organization-generic.json',
     programs: [
       {
         program: 'demo-program-mobile-money.json',
@@ -125,7 +117,6 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
   },
   {
     name: SeedScript.testMultiple,
-    organization: 'organization-generic.json',
     programs: [
       {
         program: 'program-cbe.json', // The test seed has multiple programs, because some tests scenarios only occur with multiple program

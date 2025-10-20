@@ -37,13 +37,24 @@ export class PaymentsReportingService {
     private readonly paymentEventsService: PaymentEventsService,
   ) {}
 
-  public async getPayments(programId: number) {
+  public async getPayments({
+    programId,
+    limitNumberOfPayments,
+  }: {
+    programId: number;
+    limitNumberOfPayments?: number;
+  }) {
     const rawPayments = await this.paymentRepository.find({
       where: {
         programId: Equal(programId),
       },
       select: ['id', 'created'],
+      order: {
+        id: 'DESC',
+      },
+      take: limitNumberOfPayments,
     });
+
     const payments = rawPayments.map((payment) => ({
       paymentId: payment.id,
       paymentDate: payment.created,
@@ -79,16 +90,20 @@ export class PaymentsReportingService {
       totalAmountPerStatus[status].count = Number(row.count);
       totalAmountPerStatus[status].amount = Number(row.totalamount);
     }
-
     return {
-      success: totalAmountPerStatus[TransactionStatusEnum.success] || {
+      [TransactionStatusEnum.success]: totalAmountPerStatus[
+        TransactionStatusEnum.success
+      ] || {
         count: 0,
         amount: 0,
       },
-      waiting: totalAmountPerStatus[TransactionStatusEnum.waiting] || {
+      [TransactionStatusEnum.waiting]: totalAmountPerStatus[
+        TransactionStatusEnum.waiting
+      ] || {
         count: 0,
         amount: 0,
       },
+      // TODO: as soon as this has changed update metric.model.ts in the frontend
       failed: totalAmountPerStatus[TransactionStatusEnum.error] || {
         count: 0,
         amount: 0,
@@ -238,7 +253,7 @@ export class PaymentsReportingService {
       if (!registrationView) {
         return { ...transaction };
       }
-      // Destructure 'name' as 'registrationName', and spread the rest
+      // De-structure 'name' as 'registrationName', and spread the rest
       const { name, referenceId: _referenceId, ...rest } = registrationView;
       return {
         ...transaction,

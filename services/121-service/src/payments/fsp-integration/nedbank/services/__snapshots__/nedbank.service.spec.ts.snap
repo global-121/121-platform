@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`NedbankService createVoucher should throw an error if amount is not a multiple of 10 1`] = `"Amount must be a multiple of 10"`;
 

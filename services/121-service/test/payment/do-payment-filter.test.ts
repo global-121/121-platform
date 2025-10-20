@@ -157,7 +157,7 @@ describe('Do payment with filter', () => {
     expect(transactionsResponse.body.length).toBe(1);
   });
 
-  it('should only pay included people with a combi of filters', async () => {
+  it('should only pay included people with a combination of filters', async () => {
     // Act
     const doPaymentResponse = await doPayment(
       {
@@ -193,7 +193,7 @@ describe('Do payment with filter', () => {
     expect(transactionsResponse.body.length).toBe(1);
   });
 
-  it('should only pay included people with a combi of filter and search', async () => {
+  it('should only pay included people with a combination of filter and search', async () => {
     // Act
     const doPaymentResponse = await doPayment(
       {

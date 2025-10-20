@@ -38,9 +38,7 @@ describe('ProgramFspConfigurationMapper', () => {
       expect(result.name).toBe(testEntity.name);
       expect(result.label).toEqual(testEntity.label);
 
-      const expectedFsp = FSP_SETTINGS.find(
-        (fsp) => fsp.name === testEntity.fspName,
-      )!;
+      const expectedFsp = FSP_SETTINGS[testEntity.fspName];
       // Remove unnecessary properties from the fsp object
       const {
         configurationProperties: _configurationProperties,
@@ -75,9 +73,7 @@ describe('ProgramFspConfigurationMapper', () => {
       expect(result.fspName).toBe(testEntity.fspName);
       expect(result.name).toBe(testEntity.name);
       expect(result.label).toEqual(testEntity.label);
-      const expectedFsp = FSP_SETTINGS.find(
-        (fsp) => fsp.name === testEntity.fspName,
-      )!;
+      const expectedFsp = FSP_SETTINGS[testEntity.fspName];
       // Remove unnecessary properties from the fsp object
       const {
         configurationProperties: _configurationProperties,

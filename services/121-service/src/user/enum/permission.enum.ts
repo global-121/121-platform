@@ -11,7 +11,7 @@
  * - update
  * - delete
  * - search (similar to read)
- * - export (simlar to read)
+ * - export (similar to read)
  *
  * The format used in the keys of this Enum is slightly different because of TypeScript limitations on which characters can be used.
  * The format is:
@@ -59,7 +59,6 @@ export enum PermissionEnum {
   // Registration(s) - Personal
   // What is 'personal'?
   RegistrationPersonalREAD = 'registration:personal.read',
-  RegistrationPersonalForValidationREAD = 'registration:personal:for-valdation.read',
   RegistrationPersonalEXPORT = 'registration:personal.export',
   RegistrationPersonalUPDATE = 'registration:personal.update',
   RegistrationPaymentExport = 'registration:payment.export',

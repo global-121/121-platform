@@ -15,7 +15,7 @@ import { FileImportService } from '@121-service/src/utils/file-import/file-impor
   imports: [
     HttpModule,
     TypeOrmModule.forFeature([ProgramEntity, ProgramFspConfigurationEntity]),
-    // TODO: Refactor this to not make excel module depedenent TransactionsModule and RegistrationsModule
+    // TODO: Refactor this to not make excel module dependent TransactionsModule and RegistrationsModule
     TransactionsModule,
     RegistrationsModule,
   ],
@@ -23,7 +23,7 @@ import { FileImportService } from '@121-service/src/utils/file-import/file-impor
     ExcelService,
     LookupService,
     FileImportService,
-    // TODO: Refactor this to not make excel module depedenent on program Fsp configuration
+    // TODO: Refactor this to not make excel module dependent on program Fsp configuration
     ProgramFspConfigurationRepository,
   ],
   controllers: [],

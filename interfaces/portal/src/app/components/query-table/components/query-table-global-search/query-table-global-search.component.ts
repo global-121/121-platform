@@ -33,7 +33,29 @@ import {
     AutoFocus,
   ],
   templateUrl: './query-table-global-search.component.html',
-  styles: ``,
+  // eslint-disable-next-line @angular-eslint/component-max-inline-declarations -- Only this one time...
+  styles: `
+    @keyframes popIn {
+      0%,
+      33% {
+        transform: scale(0.8) rotate(33deg) translateX(100%) translateY(100%);
+      }
+      84%,
+      92% {
+        transform: scale(1) rotate(-8deg) translateX(-10%);
+      }
+      90%,
+      100% {
+        transform: scale(1) rotate(3deg) translateX(0%) translateY(2%);
+        opacity: 1;
+      }
+    }
+    .animate-pop-in {
+      opacity: 0;
+      animation: popIn 0.33s 0.33s ease-in 1 forwards;
+      transform-origin: bottom center;
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QueryTableGlobalSearchComponent {
@@ -84,6 +106,13 @@ export class QueryTableGlobalSearchComponent {
     this.trackingService.trackEvent({
       category: TrackingCategory.manageTableSettings,
       action: TrackingAction.clickGlobalFilterButton,
+    });
+  }
+
+  trackFilterSpecialValue(): void {
+    this.trackingService.trackEvent({
+      category: TrackingCategory.hiddenFeatures,
+      action: TrackingAction.showHenryDunant,
     });
   }
 }

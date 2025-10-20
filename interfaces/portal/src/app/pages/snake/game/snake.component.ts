@@ -13,6 +13,12 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingService,
+} from '~/services/tracking.service';
+
 interface Vector {
   x: number;
   y: number;
@@ -26,11 +32,15 @@ interface Vector {
 })
 export class SnakeComponent implements AfterViewInit {
   changeDetectorRef = inject(ChangeDetectorRef);
+  readonly trackingService = inject(TrackingService);
+
   readonly board = viewChild.required<ElementRef<HTMLDivElement>>('board');
+
   public readonly isGameStarted = signal(false);
   public readonly isGameOver = signal(false);
   public readonly score = signal(0);
   public readonly random121Fact = signal('');
+
   private lastRenderTime = 0;
   private inputDirection: Vector;
   private lastInputDirection: Vector;
@@ -137,6 +147,11 @@ export class SnakeComponent implements AfterViewInit {
     ) {
       this.score.set(this.snakeBody.length - 3);
       this.isGameOver.set(true);
+      this.trackingService.trackEvent({
+        category: TrackingCategory.hiddenFeatures,
+        action: TrackingAction.showSnakeGameOver,
+        value: this.score(),
+      });
     }
   }
 

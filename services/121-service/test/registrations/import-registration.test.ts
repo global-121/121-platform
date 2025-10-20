@@ -1,8 +1,11 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { TwilioStatus } from '@121-service/src/notifications/dto/twilio.dto';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { messageTemplateGeneric } from '@121-service/src/seed-data/message-template/message-template-generic.const';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
   registrationScopedKisumuEastPv,
@@ -11,9 +14,11 @@ import {
 import {
   patchProgram,
   setAllProgramsRegistrationAttributesNonRequired,
+  waitForMessagesToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   getImportRegistrationsTemplate,
+  getMessageHistory,
   importRegistrations,
   searchRegistrationByReferenceId,
 } from '@121-service/test/helpers/registration.helper';
@@ -377,5 +382,45 @@ describe('Import a registration', () => {
     for (const key in registrationWesterosEmpty) {
       expect(registration[key]).toBe(registrationWesterosEmpty[key]);
     }
+  });
+
+  it('should send a template message to imported registrations', async () => {
+    // Arrange
+    await resetDB(SeedScript.nlrcMultiple, __filename);
+    const accessToken = await getAccessToken();
+
+    // Act
+    await importRegistrations(programIdOCW, [registrationVisa], accessToken);
+
+    const expectedMessageAttribute: {
+      key: 'body';
+      values: (string | number | null | undefined)[];
+    } = {
+      key: 'body',
+      values: Object.values(messageTemplateGeneric.new.message ?? {}),
+    };
+    await waitForMessagesToComplete({
+      programId: programIdOCW,
+      referenceIds: [registrationVisa.referenceId],
+      accessToken,
+      expectedMessageAttribute,
+    });
+
+    // Assert
+    const messageHistoryResponse = await getMessageHistory(
+      programIdOCW,
+      registrationVisa.referenceId,
+      accessToken,
+    );
+
+    const messageHistory = messageHistoryResponse.body;
+    const expectedMessages = messageHistory.filter((message) =>
+      expectedMessageAttribute.values.includes(message.attributes.body),
+    );
+    expect(expectedMessages.length).toBe(1);
+    expect(expectedMessages[0].attributes.status).not.toBe(TwilioStatus.failed);
+    expect(expectedMessages[0].attributes.contentType).toBe(
+      MessageContentType.new,
+    );
   });
 });

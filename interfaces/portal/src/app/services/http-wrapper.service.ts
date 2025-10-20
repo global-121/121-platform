@@ -120,7 +120,7 @@ export class HttpWrapperService {
     if (errorMessage) {
       return of(
         new Error(
-          $localize`:@@generic-error-with-message:Something went wrong: ${errorMessage}:errorMessage:`,
+          $localize`:@@generic-error-with-message:Something went wrong: ${JSON.stringify(errorMessage)}:errorMessage:`,
         ),
       );
     }

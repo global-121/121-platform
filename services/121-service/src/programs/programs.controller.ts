@@ -136,7 +136,7 @@ You can also leave the body empty.`,
   @Post()
   public async create(
     @Body()
-    programData: CreateProgramDto | Partial<CreateProgramDto>,
+    programData: Partial<CreateProgramDto>,
 
     @Query(
       'importFromKobo',
@@ -255,7 +255,7 @@ You can also leave the body empty.`,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Providede program registration attribute name not found',
+    description: 'Provided program registration attribute name not found',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({

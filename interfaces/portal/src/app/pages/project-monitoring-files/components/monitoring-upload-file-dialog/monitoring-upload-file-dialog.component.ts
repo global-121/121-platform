@@ -24,13 +24,7 @@ import {
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
-import {
-  generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
-} from '~/utils/form-validation';
-
-type UploadFileFormGroup =
-  (typeof MonitoringUploadFileDialogComponent)['prototype']['uploadFileFormGroup'];
+import { generateFieldErrors } from '~/utils/form-validation';
 
 @Component({
   selector: 'app-monitoring-upload-file-dialog',
@@ -63,12 +57,7 @@ export class MonitoringUploadFileDialogComponent {
     }),
   });
 
-  uploadFileFormFieldErrors = generateFieldErrors<UploadFileFormGroup>(
-    this.uploadFileFormGroup,
-    {
-      filename: genericFieldIsRequiredValidationMessage,
-    },
-  );
+  uploadFileFormFieldErrors = generateFieldErrors(this.uploadFileFormGroup);
 
   uploadFileMutation = injectMutation(() => ({
     mutationFn: (

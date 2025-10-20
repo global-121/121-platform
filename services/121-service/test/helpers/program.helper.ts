@@ -500,14 +500,20 @@ function filterByExpectedAttribute({
   };
 }): string[] {
   return messageHistories
-    .filter(
-      ({ messageHistory }) =>
-        !messageHistory.some((m) =>
-          expectedMessageAttribute.values.includes(
-            m.attributes[expectedMessageAttribute.key],
-          ),
-        ),
-    )
+    .filter(({ messageHistory }) => {
+      const messagesWithValidStatus = messageHistory.filter((m) => {
+        const validStatuses: MessageStatus[] = ['read', 'failed'];
+        if (m.attributes.notificationType === 'sms') {
+          validStatuses.push('sent');
+        }
+        return validStatuses.includes(m.attributes.status);
+      });
+      return !messagesWithValidStatus.some((m) => {
+        return expectedMessageAttribute.values.includes(
+          m.attributes[expectedMessageAttribute.key],
+        );
+      });
+    })
     .map(({ referenceId }) => referenceId);
 }
 

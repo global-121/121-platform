@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -26,13 +27,7 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { UserApiService } from '~/domains/user/user.api.service';
 import { User } from '~/domains/user/user.model';
 import { ToastService } from '~/services/toast.service';
-import {
-  generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
-} from '~/utils/form-validation';
-
-type AddUserToTeamFormGroup =
-  (typeof AddUserDialogComponent)['prototype']['formGroup'];
+import { generateFieldErrors } from '~/utils/form-validation';
 
 @Component({
   selector: 'app-add-user-dialog',
@@ -45,6 +40,7 @@ type AddUserToTeamFormGroup =
     FormFieldWrapperComponent,
     InputTextModule,
     ReactiveFormsModule,
+    NgTemplateOutlet,
   ],
 })
 export class AddUserDialogComponent {
@@ -72,18 +68,7 @@ export class AddUserDialogComponent {
     }),
   });
 
-  formFieldErrors = generateFieldErrors<AddUserToTeamFormGroup>(
-    this.formGroup,
-    {
-      displayNameValue: genericFieldIsRequiredValidationMessage,
-      usernameValue: (control) => {
-        if (!control.invalid) {
-          return;
-        }
-        return $localize`Enter a valid email address`;
-      },
-    },
-  );
+  formFieldErrors = generateFieldErrors(this.formGroup);
 
   userMutation = injectMutation(() => ({
     mutationFn: ({

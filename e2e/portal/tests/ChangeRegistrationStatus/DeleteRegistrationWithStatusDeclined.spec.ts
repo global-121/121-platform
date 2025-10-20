@@ -53,7 +53,7 @@ test('[34412] Delete registration with status "Declined"', async ({ page }) => {
     await registrations.validateToastMessageAndClose(toastMessage);
   });
   // Assert
-  await test.step('Validate registration was deleted succesfully', async () => {
+  await test.step('Validate registration was deleted successfully', async () => {
     await tableComponent.filterColumnByDropDownSelection({
       columnName: 'Registration Status',
       selection: 'Declined',

@@ -9,6 +9,7 @@ import { OnafriqApiWebhookSubscribeResponseBody } from '@121-service/src/payment
 import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-response-status-type.enum';
 import { OnafriqError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq.error';
 import { CallServiceResult } from '@121-service/src/payments/fsp-integration/onafriq/interfaces/call-service-result.interface.';
+import { OnafriqRequestIdentity } from '@121-service/src/payments/fsp-integration/onafriq/interfaces/onafriq-request-identity.interface';
 import { OnafriqApiHelperService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.api.helper.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
@@ -34,22 +35,23 @@ export class OnafriqApiService {
     }
   }
 
-  public async subscribeWebhook(): Promise<
-    OnafriqApiWebhookSubscribeResponseBody | undefined
-  > {
+  public async subscribeWebhook(
+    corporateCode: string,
+    password: string,
+  ): Promise<OnafriqApiWebhookSubscribeResponseBody | undefined> {
     if (env.MOCK_ONAFRIQ) {
       return; // No need to subscribe to webhook in mock mode
     }
 
     const webhookSubscribeUrl = `${onafriqApiUrl}/api/webhook/subscribe`;
     const payload = {
-      corporateCode: env.ONAFRIQ_CORPORATE_CODE,
+      corporateCode,
       callbackUrl: `${EXTERNAL_API.rootApi}/fsps/onafriq/callback`,
     };
     const headers = [
       {
         name: 'password',
-        value: env.ONAFRIQ_PASSWORD,
+        value: password,
       },
     ];
 
@@ -83,12 +85,14 @@ export class OnafriqApiService {
     firstName,
     lastName,
     thirdPartyTransId,
+    requestIdentity,
   }: {
     transferAmount: number;
     phoneNumberPayment: string;
     firstName: string;
     lastName: string;
     thirdPartyTransId: string;
+    requestIdentity: OnafriqRequestIdentity;
   }): Promise<CallServiceResult> {
     const payload = this.onafriqApiHelperService.createCallServicePayload({
       transferAmount,
@@ -96,6 +100,7 @@ export class OnafriqApiService {
       firstName,
       lastName,
       thirdPartyTransId,
+      requestIdentity,
     });
     const callServiceResponse =
       await this.makeCallServiceCallAndValidateResponse(payload);

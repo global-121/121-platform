@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Unsuccessfully mark registrations as unqiue from each other should fail to create an ignored duplicate registration pair for more that 10 registrations 1`] = `
+exports[`Unsuccessfully mark registrations as unique from each other should fail to create an ignored duplicate registration pair for more that 10 registrations 1`] = `
 [
   {
     "children": [],
@@ -41,7 +41,7 @@ exports[`Unsuccessfully mark registrations as unqiue from each other should fail
 ]
 `;
 
-exports[`Unsuccessfully mark registrations as unqiue from each other should fail to create an ignored duplicate registration pair for one registration 1`] = `
+exports[`Unsuccessfully mark registrations as unique from each other should fail to create an ignored duplicate registration pair for one registration 1`] = `
 [
   {
     "children": [],
@@ -62,4 +62,4 @@ exports[`Unsuccessfully mark registrations as unqiue from each other should fail
 ]
 `;
 
-exports[`Unsuccessfully mark registrations as unqiue from each other should fail to create an ignored duplicate registration pair if a registration id does not exist 1`] = `"Not all registrations were found in program 2. Expected 2 but found 1. Missing registraitonIds: 200"`;
+exports[`Unsuccessfully mark registrations as unique from each other should fail to create an ignored duplicate registration pair if a registration id does not exist 1`] = `"Not all registrations were found in program 2. Expected 2 but found 1. Missing registraitonIds: 200"`;

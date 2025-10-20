@@ -4,6 +4,8 @@ import { TestBed } from '@angular/core/testing';
 import { FilterMatchMode, FilterMetadata } from 'primeng/api';
 import { TableLazyLoadEvent } from 'primeng/table';
 
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+
 import {
   FilterOperator,
   PaginateQuery,
@@ -20,6 +22,55 @@ describe('PaginateQueryService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  describe('extendStatusFilterToExcludeDeleted', () => {
+    const expectedDeletedStatusExclusion = `${FilterOperator.NOT}:${RegistrationStatusEnum.deleted}`;
+
+    it('should return `$not:deleted` when no current filter is provided', () => {
+      const result = service.extendStatusFilterToExcludeDeleted(undefined);
+      expect(result).toBe(expectedDeletedStatusExclusion);
+    });
+    it('should add `$not:deleted` when a single filter is provided', () => {
+      const testFilter = `${FilterOperator.IN}:${RegistrationStatusEnum.included}`;
+      const result = service.extendStatusFilterToExcludeDeleted(testFilter);
+      expect(result).toBe(`${testFilter},${expectedDeletedStatusExclusion}`);
+    });
+    it('should add `$not:deleted` ONLY when its not already provided', () => {
+      const testFilter = `${expectedDeletedStatusExclusion},${FilterOperator.IN}:${RegistrationStatusEnum.included}`;
+      const result = service.extendStatusFilterToExcludeDeleted(testFilter);
+      expect(result).toBe(testFilter);
+    });
+    it('should add `$not:deleted` when a few filters are provided', () => {
+      const testFilter = [
+        `${FilterOperator.IN}:${RegistrationStatusEnum.included},${RegistrationStatusEnum.validated}`,
+        `${FilterOperator.NOT}:${RegistrationStatusEnum.paused}`,
+      ];
+      const result = service.extendStatusFilterToExcludeDeleted(testFilter);
+      expect(result).toBe(
+        `${FilterOperator.IN}:${RegistrationStatusEnum.included},${RegistrationStatusEnum.validated},${FilterOperator.NOT}:${RegistrationStatusEnum.paused},${expectedDeletedStatusExclusion}`,
+      );
+    });
+    it('should add `$not:deleted` when a single filter is provided (as an array)', () => {
+      const testFilter = [
+        `${FilterOperator.NOT}:${RegistrationStatusEnum.paused}`,
+      ];
+      const result = service.extendStatusFilterToExcludeDeleted(testFilter);
+      expect(result).toBe(
+        `${FilterOperator.NOT}:${RegistrationStatusEnum.paused},${expectedDeletedStatusExclusion}`,
+      );
+    });
+    it('should add `$not:deleted` ONLY when not already amongst the few filters provided', () => {
+      const testFilter = [
+        `${FilterOperator.IN}:${RegistrationStatusEnum.included},${RegistrationStatusEnum.validated}`,
+        expectedDeletedStatusExclusion,
+        `${FilterOperator.NOT}:${RegistrationStatusEnum.paused}`,
+      ];
+      const result = service.extendStatusFilterToExcludeDeleted(testFilter);
+      expect(result).toBe(
+        `${FilterOperator.IN}:${RegistrationStatusEnum.included},${RegistrationStatusEnum.validated},${expectedDeletedStatusExclusion},${FilterOperator.NOT}:${RegistrationStatusEnum.paused}`,
+      );
+    });
   });
 
   describe('convertPrimeNGMatchModeToFilterOperator', () => {

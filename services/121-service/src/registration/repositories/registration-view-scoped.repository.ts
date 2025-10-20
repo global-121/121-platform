@@ -1,13 +1,7 @@
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { FilterComparator } from 'nestjs-paginate/lib/filter';
-import {
-  Brackets,
-  DataSource,
-  FindOperator,
-  FindOperatorType,
-  Not,
-} from 'typeorm';
+import { Brackets, DataSource, FindOperator, FindOperatorType } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -83,7 +77,9 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
       return this.createQueryBuilder('registration').andWhere('1=0');
     }
     return this.createQueryBuilder('registration')
-      .andWhere({ status: Not(RegistrationStatusEnum.deleted) })
+      .andWhere('registration.status IS DISTINCT FROM :deletedStatus', {
+        deletedStatus: RegistrationStatusEnum.deleted, // The not opereator does not work with null values so we use IS DISTINCT FROM
+      })
       .andWhere('registration.referenceId IN (:...referenceIds)', {
         referenceIds,
       });
@@ -101,9 +97,12 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
   }
 
   public createQueryBuilderExcludeDeleted(): ScopedQueryBuilder<RegistrationViewEntity> {
-    return this.createQueryBuilder('registration').andWhere({
-      status: Not(RegistrationStatusEnum.deleted),
-    });
+    return this.createQueryBuilder('registration').andWhere(
+      'registration.status IS DISTINCT FROM :deletedStatus',
+      {
+        deletedStatus: RegistrationStatusEnum.deleted,
+      },
+    );
   }
 
   public addProgramFilter({

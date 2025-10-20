@@ -67,9 +67,9 @@ class ProjectMonitoring extends BasePage {
 
     const iframe = await this.monitoringIframe.locator('iframe').all();
     if (shouldHaveIframe) {
-      await expect(iframe.length).toBe(1);
+      expect(iframe.length).toBe(1);
     } else {
-      await expect(iframe.length).toBe(0);
+      expect(iframe.length).toBe(0);
       await expect(this.monitoringIframe).toContainText(
         'No PowerBI dashboard has been configured for this project, please contact support@121.global to set this up',
       );
@@ -79,9 +79,19 @@ class ProjectMonitoring extends BasePage {
   async assertValuesInMonitoringTab({
     peopleRegistered,
     peopleIncluded,
+    lastPaymentAmount,
+    remainingBudget,
+    cashDisbursed,
+    paymentsDone,
+    newRegistrations,
   }: {
     peopleRegistered: number;
     peopleIncluded: number;
+    lastPaymentAmount?: string;
+    remainingBudget: string;
+    cashDisbursed: string;
+    paymentsDone: number;
+    newRegistrations?: number;
   }) {
     const registrationsTileLocator = this.peopleRegisteredTile.getByTestId(
       'metric-tile-component',
@@ -89,11 +99,44 @@ class ProjectMonitoring extends BasePage {
     const includedTileLocator = this.peopleIncludedTile.getByTestId(
       'metric-tile-component',
     );
-
+    const remainingBudgetTileLocator = this.remainingBudgetTile.getByTestId(
+      'metric-tile-component',
+    );
+    const cashDisbursedTileLocator = this.cashDisbursedTile.getByTestId(
+      'metric-tile-component',
+    );
+    const paymentsDoneChip = this.remainingBudgetTile.getByLabel(
+      `${paymentsDone.toString()} payment(s) done`,
+    );
+    const newPeopleRegisteredChip = this.peopleRegisteredTile.getByLabel(
+      `${newRegistrations} new`,
+    );
+    // Validate metrics "Chips"
+    if (lastPaymentAmount) {
+      const cashDisbursedInLastPayment = this.cashDisbursedTile.getByLabel(
+        `+ ${lastPaymentAmount}`,
+      );
+      await expect(cashDisbursedInLastPayment).toContainText(
+        lastPaymentAmount ?? '',
+      );
+    }
+    if (newRegistrations) {
+      await expect(newPeopleRegisteredChip).toHaveText(
+        `${newRegistrations.toString()} new`,
+      );
+    }
+    await expect(paymentsDoneChip).toHaveText(
+      `${paymentsDone.toString()} payment(s) done`,
+    );
+    // Validate metrics values
     await expect(registrationsTileLocator).toHaveText(
       peopleRegistered.toString(),
     );
     await expect(includedTileLocator).toHaveText(peopleIncluded.toString());
+    await expect(remainingBudgetTileLocator).toHaveText(
+      remainingBudget.toString(),
+    );
+    await expect(cashDisbursedTileLocator).toHaveText(cashDisbursed.toString());
   }
 
   async selectTab({ tabName }: { tabName: string }) {
@@ -150,6 +193,71 @@ class ProjectMonitoring extends BasePage {
     await this.deleteOption.click();
     await this.deleteConfirmationCheckbox.click();
     await this.deleteFileButton.click();
+  }
+
+  // Charts assertions only registrations per status are checked by string because the chart is responsive
+  // And if we would like to check every possible status it make the assertion very complicated
+  async assertDashboardCharts({
+    regPerStatus,
+    regPerDuplicateStatus,
+    regByCreationDate,
+    statusPerPayment,
+    amountPerStatus,
+    amountPerMonth,
+  }: {
+    regPerStatus: string;
+    regPerDuplicateStatus: {
+      duplicate: number;
+      unique: number;
+    };
+    regByCreationDate: string;
+    statusPerPayment: {
+      date: string;
+      failed: number;
+      successful: number;
+      pending: number;
+    };
+    amountPerStatus: {
+      date: string;
+      failed: number;
+      successful: number;
+      pending: number;
+    };
+    amountPerMonth: {
+      date: string;
+      failed: number;
+      successful: number;
+      pending: number;
+    };
+  }) {
+    const barChartCanvas = this.page.locator('p-chart[type="bar"]');
+    const lineChartCanvas = this.page.locator('p-chart[type="line"]');
+    // Selectors for each chart type
+    const registrationsPerStatus = barChartCanvas.getByLabel(
+      `Registrations per status ${regPerStatus}`,
+    );
+    const registrationsPerDuplicateStatus = barChartCanvas.getByLabel(
+      `Registrations per duplicate status Duplicate: ${regPerDuplicateStatus.duplicate} Unique: ${regPerDuplicateStatus.unique}`,
+    );
+    const registrationsByCreationDate = lineChartCanvas.getByLabel(
+      `Registrations by creation date (last 2 weeks) ${regByCreationDate}`,
+    );
+    const transfersPerPayment = barChartCanvas.getByLabel(
+      `Transfers per payment ${statusPerPayment.date}: Failed: ${statusPerPayment.failed.toString()}, Successful: ${statusPerPayment.successful.toString()}, Pending: ${statusPerPayment.pending.toString()}`,
+    );
+    const amountSentPerPayment = barChartCanvas.getByLabel(
+      `Amount sent per payment ${amountPerStatus.date}: Failed: ${amountPerStatus.failed.toString()}, Successful: ${amountPerStatus.successful.toString()}, Pending: ${amountPerStatus.pending.toString()}`,
+    );
+    const amountSentPerMonth = barChartCanvas.getByLabel(
+      `Amount sent per month ${amountPerMonth.date}: Failed: ${amountPerMonth.failed.toString()}, Successful: ${amountPerMonth.successful.toString()}, Pending: ${amountPerMonth.pending.toString()}`,
+    );
+    // Validate charts data
+    await expect(registrationsPerStatus).toBeVisible();
+    await expect(registrationsPerDuplicateStatus).toBeVisible();
+    await expect(registrationsByCreationDate).toBeVisible();
+    await expect(transfersPerPayment).toBeVisible();
+    await expect(amountSentPerPayment).toBeVisible();
+    await expect(amountSentPerMonth).toBeVisible();
   }
 }
 

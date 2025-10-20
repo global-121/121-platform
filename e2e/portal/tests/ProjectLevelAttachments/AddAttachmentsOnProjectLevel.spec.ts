@@ -105,7 +105,8 @@ test.describe('Attachments on Project Level', () => {
 
     await test.step('Validate wrong file format error message', async () => {
       await projectMonitoring.validateFormError({
-        errorText: 'Something went wrong: Validation failed',
+        errorText:
+          'Something went wrong: "Validation failed (invalid file type)"',
       });
     });
   });
@@ -123,7 +124,7 @@ test.describe('Attachments on Project Level', () => {
     await test.step('Validate file size error message', async () => {
       await projectMonitoring.validateFormError({
         errorText:
-          'Something went wrong: Validation failed (current file size is 110100480, expected size is less than 100000000)',
+          'Something went wrong: "Validation failed (current file size is 110100480, expected size is less than 100000000)"',
       });
     });
   });

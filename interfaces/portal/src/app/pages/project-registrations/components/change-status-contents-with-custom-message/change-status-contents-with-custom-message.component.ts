@@ -44,30 +44,22 @@ export class ChangeStatusContentsWithCustomMessageComponent implements OnInit {
   readonly customMessageUpdated = output<string>();
 
   formGroup = new FormGroup({
-    customMessage: new FormControl<string | undefined>(undefined, {
-      nonNullable: true,
-      validators: [
-        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-        Validators.required,
-        Validators.minLength(20),
-      ],
-    }),
+    customMessage: new FormControl<string | undefined>(
+      { value: undefined, disabled: false },
+      {
+        nonNullable: true,
+        validators: [
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+          Validators.required,
+          Validators.minLength(20),
+        ],
+      },
+    ),
   });
   readonly previewData = signal<Partial<MessageInputData> | undefined>(
     undefined,
   );
-  formFieldErrors = generateFieldErrors(this.formGroup, {
-    customMessage: (control) => {
-      if (control.errors?.required) {
-        return $localize`:@@generic-required-field:This field is required.`;
-      }
-
-      if (control.errors?.minlength) {
-        return $localize`The message must be at least 20 characters long.`;
-      }
-      return;
-    },
-  });
+  formFieldErrors = generateFieldErrors(this.formGroup);
 
   ngOnInit(): void {
     this.previewData.set(undefined);

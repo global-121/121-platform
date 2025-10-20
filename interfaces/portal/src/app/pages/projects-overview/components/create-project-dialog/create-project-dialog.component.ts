@@ -22,10 +22,7 @@ import { FormDialogComponent } from '~/components/form-dialog/form-dialog.compon
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { ToastService } from '~/services/toast.service';
-import {
-  generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
-} from '~/utils/form-validation';
+import { generateFieldErrors } from '~/utils/form-validation';
 
 type CreateProjectFormGroup =
   (typeof CreateProjectDialogComponent)['prototype']['formGroup'];
@@ -65,13 +62,7 @@ export class CreateProjectDialogComponent {
     }),
   });
 
-  formFieldErrors = generateFieldErrors<CreateProjectFormGroup>(
-    this.formGroup,
-    {
-      token: genericFieldIsRequiredValidationMessage,
-      assetId: genericFieldIsRequiredValidationMessage,
-    },
-  );
+  formFieldErrors = generateFieldErrors(this.formGroup);
 
   createProjectMutation = injectMutation(() => ({
     mutationFn: ({

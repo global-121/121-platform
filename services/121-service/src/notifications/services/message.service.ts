@@ -148,8 +148,36 @@ export class MessageService {
   private async processWhatsappPendingMessage(
     messageJobDto: MessageJobDto,
   ): Promise<void> {
-    await this.whatsappService
-      .sendWhatsapp({
+    const pendingMessageId = messageJobDto.customData?.pendingMessageId;
+    if (!pendingMessageId) {
+      throw new Error(
+        'No pendingMessageId provided for whatsappPendingMessage', // This should never happen and is here to make typescript happy
+      );
+    }
+
+    const existingPendingMessage =
+      await this.whatsappPendingMessageRepo.findOne({
+        where: {
+          id: Equal(pendingMessageId),
+        },
+      });
+    // If the pending message does not exist anymore we do not need to process it
+    // This can happen if a registration replies 'yes' twice within a short time span
+    // There is still a small timeframe where as message is still being send and the pending message is not deleted yet, however adding this check here makes the window much smaller
+    if (!existingPendingMessage) {
+      return;
+    }
+
+    // Try to delete the pending message, if it was already deleted by another worker we do not need to process it
+    // This should solve any possible race conditions as a record in a db cannot be deleted twice
+    const deleteResult =
+      await this.whatsappPendingMessageRepo.delete(pendingMessageId);
+    if (deleteResult?.affected !== 1) {
+      return;
+    }
+
+    try {
+      await this.whatsappService.sendWhatsapp({
         message: messageJobDto.message,
         recipientPhoneNr: messageJobDto.whatsappPhoneNumber,
         mediaUrl: messageJobDto.mediaUrl,
@@ -158,15 +186,14 @@ export class MessageService {
         messageProcessType: messageJobDto.messageProcessType,
         existingSidToUpdate: messageJobDto.customData?.existingMessageSid,
         userId: messageJobDto.userId,
-      })
-      .then(async () => {
-        if (!messageJobDto.customData?.pendingMessageId) {
-          return;
-        }
-        return await this.whatsappPendingMessageRepo.delete(
-          messageJobDto.customData?.pendingMessageId,
-        );
       });
+    } catch (error) {
+      const newPendingMessage = { ...existingPendingMessage };
+      // Ensure typeorm writes a new record instead of trying to update the existing one
+      delete (newPendingMessage as { id?: unknown }).id;
+      await this.whatsappPendingMessageRepo.save(newPendingMessage);
+      throw error;
+    }
   }
 
   private async processWhatsappTemplateVoucher(
@@ -384,7 +411,7 @@ export class MessageService {
     }
 
     // No template found
-    // This can happen on projects that have Whatsapp and templates configured incorrectly.
+    // This can happen on projects that have WhatsApp and templates configured incorrectly.
     // TODO: Add feature to pro-actively inform admins of this.
     // It's (currently) better to return *this* than throw an error here; if we
     // send this to Twilio the Twilio error message will show up in the user

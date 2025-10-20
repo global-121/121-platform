@@ -12,7 +12,7 @@ import { GetTokenResponseIntersolveApiDto } from '@121-service/src/payments/fsp-
 import { GetTransactionsResponseIntersolveVisaDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/get-transactions-response-intersolve-api.dto';
 import { IssueTokenRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-request-intersolve-api.dto';
 import { IssueTokenResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-response-intersolve-api.dto';
-import { BaseResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/base-reponse-intersolve-api.dto';
+import { BaseResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/base-response-intersolve-api.dto';
 import { ErrorsInResponseIntersolveApi } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/error-in-response-intersolve-api';
 import { SubstituteTokenRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/substitute-token-request-intersolve-api.dto';
 import { TransactionsIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/transactions-intersolve-api.dto';
@@ -48,7 +48,7 @@ const estimatedAnnualPaymentVolumeMajorUnit =
 
 /* All "technical details" of how the Intersolve API is called and how to get what we need from the responses should be encapsulated here. Not the IntersolveVisaService nor any other part of the
     121 Service needs to know about Intersolve API implementation details.
-    Guideline: The (internal) API of the ApiService functions use FSP-specific terminology, the (IntersolveVisa)Service (externaly used API) uses "121" terminology.
+    Guideline: The (internal) API of the ApiService functions use FSP-specific terminology, the (IntersolveVisa)Service (externally used API) uses "121" terminology.
 */
 @Injectable()
 export class IntersolveVisaApiService {
@@ -240,7 +240,7 @@ export class IntersolveVisaApiService {
       fromDate: this.getTwoMonthsAgo(),
     });
 
-    // Seperate out the reservation and expired reservation transactions.
+    // Separate out the reservation and expired reservation transactions.
     const transactions = getTransactionsResponseDto.data.data;
     let reservationTransactions: TransactionsIntersolveApiDto[] = [];
     let expiredTransactions: TransactionsIntersolveApiDto[] = [];

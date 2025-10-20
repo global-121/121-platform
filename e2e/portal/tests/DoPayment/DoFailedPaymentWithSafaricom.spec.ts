@@ -79,6 +79,7 @@ test('[36096] Do failed payment for Safaricom fsp', async ({ page }) => {
       successfulTransfers: 0,
       failedTransfers: numberOfPas,
       currency: KRCSProgram.currency,
+      projectId: programIdSafaricom,
     });
   });
 });

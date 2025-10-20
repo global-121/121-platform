@@ -15,6 +15,7 @@ export enum AppRoutes {
   privacy = 'privacy',
   project = 'project',
   projectMonitoring = 'monitoring',
+  projectMonitoringDashboard = 'dashboard',
   projectMonitoringFiles = 'files',
   projectMonitoringPowerBI = 'powerbi',
   projectPaymentLog = 'payment-log',
@@ -127,6 +128,17 @@ export const routes: Routes = [
               ).then((x) => x.ProjectMonitoringPowerbiPageComponent),
           },
           {
+            path: AppRoutes.projectMonitoringDashboard,
+            title:
+              $localize`:@@page-title-project-monitoring-dashboard:Dashboard` +
+              ' | ' +
+              $localize`:@@page-title-project-monitoring:Monitoring`,
+            loadComponent: () =>
+              import(
+                '~/pages/project-monitoring-dashboard/project-monitoring-dashboard.page'
+              ).then((x) => x.ProjectMonitoringDashboardPageComponent),
+          },
+          {
             path: AppRoutes.projectMonitoringFiles,
             title:
               $localize`:@@page-title-project-monitoring-files:Files` +
@@ -137,7 +149,9 @@ export const routes: Routes = [
                 '~/pages/project-monitoring-files/project-monitoring-files.page'
               ).then((x) => x.ProjectMonitoringFilesPageComponent),
             canActivate: [
-              projectPermissionsGuard(PermissionEnum.ProgramAttachmentsREAD),
+              projectPermissionsGuard({
+                permission: PermissionEnum.ProgramAttachmentsREAD,
+              }),
             ],
           },
           {
@@ -162,7 +176,13 @@ export const routes: Routes = [
                 '~/pages/project-settings-information/project-settings-information.page'
               ).then((x) => x.ProjectSettingsInformationPageComponent),
             canActivate: [
-              projectPermissionsGuard(PermissionEnum.ProgramUPDATE),
+              projectPermissionsGuard({
+                permission: PermissionEnum.ProgramUPDATE,
+                fallbackRoute: [
+                  AppRoutes.projectSettings,
+                  AppRoutes.projectSettingsTeam,
+                ],
+              }),
             ],
           },
           {
@@ -176,7 +196,9 @@ export const routes: Routes = [
                 '~/pages/project-settings-team/project-settings-team.page'
               ).then((x) => x.ProjectSettingsTeamPageComponent),
             canActivate: [
-              projectPermissionsGuard(PermissionEnum.AidWorkerProgramREAD),
+              projectPermissionsGuard({
+                permission: PermissionEnum.AidWorkerProgramREAD,
+              }),
             ],
           },
           {

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { CreateOrderResponseNedbankApiDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/create-order-response-nedbank-api.dto';
-import { ErrorReponseNedbankApiDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/error-reponse-nedbank-api.dto';
+import { ErrorReponseNedbankApiDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/error-response-nedbank-api.dto';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { NedbankApiHelperService } from '@121-service/src/payments/fsp-integration/nedbank/services/nedbank-api.helper.service';
 

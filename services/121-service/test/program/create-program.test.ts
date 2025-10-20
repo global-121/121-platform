@@ -1,6 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
 
+import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import programCbe from '@121-service/src/seed-data/program/program-cbe.json';
 import programOCW from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
@@ -24,6 +25,7 @@ describe('Create program', () => {
 
   it('should post a program', async () => {
     // Arrange
+    // we do this because dates in JSON are not Date objects
     const programOcwJson = JSON.parse(JSON.stringify(programOCW));
     const programCbeJson = JSON.parse(JSON.stringify(programCbe));
     const seedPrograms = [programOcwJson, programCbeJson];
@@ -50,7 +52,176 @@ describe('Create program', () => {
     }
   });
 
-  it('should not be able to post a program with 2 of the same names', async () => {
+  it('should post a program with the minimum amount of attributes', async () => {
+    // Arrange
+    const minimalProgram = {
+      titlePortal: {
+        en: 'Test Title',
+      },
+      currency: CurrencyCode.EUR,
+    };
+
+    // Act
+    const createProgramResponse = await postProgram(
+      minimalProgram,
+      accessToken,
+    );
+
+    // Assert
+    expect(createProgramResponse.statusCode).toBe(HttpStatus.CREATED);
+    const expectedTitlePortal = 'Test Title';
+    const expectedCurrency = CurrencyCode.EUR;
+    expect(createProgramResponse.body).toEqual(
+      expect.objectContaining({
+        titlePortal: expect.objectContaining({
+          en: expectedTitlePortal,
+        }),
+        currency: expectedCurrency,
+      }),
+    );
+  });
+
+  it('should fallback to ["fullName"] as the fullnameNamingConvention if the mininum amount of attributes is provided', async () => {
+    // Arrange
+    const minimalProgram = {
+      titlePortal: {
+        en: 'Test Title',
+      },
+      currency: CurrencyCode.EUR,
+    };
+
+    // Act
+    const createProgramResponse = await postProgram(
+      minimalProgram,
+      accessToken,
+    );
+
+    // Assert
+    expect(createProgramResponse.body).toEqual(
+      expect.objectContaining({
+        fullnameNamingConvention: ['fullName'],
+      }),
+    );
+  });
+
+  it('should add "fullName" to the programRegistrationAttributes if the mininum amount of attributes is provided', async () => {
+    // Arrange
+    const minimalProgram = {
+      titlePortal: {
+        en: 'Test Title',
+      },
+      currency: CurrencyCode.EUR,
+    };
+
+    // Act
+    const createProgramResponse = await postProgram(
+      minimalProgram,
+      accessToken,
+    );
+
+    // Assert
+    expect(createProgramResponse.body).toEqual(
+      expect.objectContaining({
+        programRegistrationAttributes: expect.arrayContaining([
+          expect.objectContaining({
+            name: 'fullName',
+            label: expect.objectContaining({ en: 'Full name' }),
+            type: 'text',
+          }),
+        ]),
+      }),
+    );
+  });
+
+  it('should not fallback to ["fullName"] if fullnameNamingConvention is provided', async () => {
+    // Arrange
+    const minimalProgram = {
+      titlePortal: {
+        en: 'Test Title',
+      },
+      currency: CurrencyCode.EUR,
+      fullnameNamingConvention: ['firstName', 'lastName'],
+    };
+
+    // Act
+    const createProgramResponse = await postProgram(
+      minimalProgram,
+      accessToken,
+    );
+
+    // Assert
+    expect(createProgramResponse.body).toEqual(
+      expect.objectContaining({
+        fullnameNamingConvention: ['firstName', 'lastName'],
+      }),
+    );
+  });
+
+  it('should add programRegistrationAttributes for all fullnameNamingConvention fields provided', async () => {
+    // Arrange
+    const minimalProgram = {
+      titlePortal: {
+        en: 'Test Title',
+      },
+      currency: CurrencyCode.EUR,
+      fullnameNamingConvention: ['firstName', 'lastName'],
+    };
+
+    // Act
+    const createProgramResponse = await postProgram(
+      minimalProgram,
+      accessToken,
+    );
+
+    // Assert
+    expect(createProgramResponse.body).toEqual(
+      expect.objectContaining({
+        programRegistrationAttributes: expect.arrayContaining([
+          expect.objectContaining({
+            name: 'firstName',
+            label: expect.objectContaining({ en: 'firstName' }),
+            type: 'text',
+          }),
+          expect.objectContaining({
+            name: 'lastName',
+            label: expect.objectContaining({ en: 'lastName' }),
+            type: 'text',
+          }),
+        ]),
+      }),
+    );
+  });
+
+  it('should add "phoneNumber" to the programRegistrationAttributes if it\'s not provided', async () => {
+    // Arrange
+    const minimalProgram = {
+      titlePortal: {
+        en: 'Test Title',
+      },
+      currency: CurrencyCode.EUR,
+    };
+
+    // Act
+    const createProgramResponse = await postProgram(
+      minimalProgram,
+      accessToken,
+    );
+
+    // Assert
+    expect(createProgramResponse.body).toEqual(
+      expect.objectContaining({
+        programRegistrationAttributes: expect.arrayContaining([
+          expect.objectContaining({
+            name: 'phoneNumber',
+            label: expect.objectContaining({ en: 'Phone number' }),
+            type: 'text',
+          }),
+        ]),
+      }),
+    );
+  });
+
+  it('should not be able to post a program with 2 attributes that have the same name', async () => {
     // Arrange
     const programCbeJson = JSON.parse(JSON.stringify(programCbe));
     programCbeJson.programRegistrationAttributes.push(
@@ -65,26 +236,9 @@ describe('Create program', () => {
 
     // Assert
     expect(createProgramResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
-    expect(createProgramResponse.body).toMatchSnapshot();
-
-    // A new program should not have been created
-    expect(getProgramResponse.statusCode).toBe(HttpStatus.NOT_FOUND);
-  });
-
-  it('should not be able to post a program with missing names of full name naming convention', async () => {
-    // Arrange
-    const programOcwJson = JSON.parse(JSON.stringify(programOCW));
-    programOcwJson.fullnameNamingConvention.push('middle_name');
-    // Act
-    const createProgramResponse = await postProgram(
-      programOcwJson,
-      accessToken,
+    expect(createProgramResponse.body.errors).toBe(
+      "The following names: 'fullName' are used more than once in program registration attributes",
     );
-    const getProgramResponse = await getProgram(4, accessToken);
-
-    // Assert
-    expect(createProgramResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
-    expect(createProgramResponse.body).toMatchSnapshot();
 
     // A new program should not have been created
     expect(getProgramResponse.statusCode).toBe(HttpStatus.NOT_FOUND);

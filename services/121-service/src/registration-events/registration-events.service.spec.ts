@@ -210,7 +210,7 @@ describe('RegistrationEventsService', () => {
     );
   });
 
-  it('should create registration events for an FSP change of intersolve visa to voucher whatsapp', async () => {
+  it(`should create registration events for an FSP change of "${Fsps.intersolveVisa}" to "${Fsps.intersolveVoucherWhatsapp}}"`, async () => {
     // Changes that should be logged
     newViewRegistration[FspAttributes.whatsappPhoneNumber] = '1234567890';
     newViewRegistration['programFspConfigurationLabel'] = {

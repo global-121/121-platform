@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`AirtelApiService disburse authenticate calls authenticate endpoint 1`] = `
 [
@@ -13,7 +13,7 @@ exports[`AirtelApiService disburse authenticate throws an AirtelApiError when au
 
 exports[`AirtelApiService disburse authenticate throws an AirtelApiError when authentication call fails because of unknown response 1`] = `"Airtel API Error: authentication failed: unclear response from Airtel API"`;
 
-exports[`AirtelApiService disburse authenticate throws an AirtelApiError when authentication was unsuccessfull because of invalid secrets 1`] = `"Airtel API Error: authentication failed: invalid_client - Invalid client authentication"`;
+exports[`AirtelApiService disburse authenticate throws an AirtelApiError when authentication was unsuccessful because of invalid secrets 1`] = `"Airtel API Error: authentication failed: invalid_client - Invalid client authentication"`;
 
 exports[`AirtelApiService disburse authenticated throws an AirtelApiError when there's a network error 1`] = `"Airtel API Error: disburse failed, could not complete request: Network error"`;
 
