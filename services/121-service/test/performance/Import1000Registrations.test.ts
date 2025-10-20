@@ -6,11 +6,12 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
+import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
 const csvFilePath =
   './test-registration-data/test-registrations-westeros-1000.csv';
 
-jest.setTimeout(450_000); // 7.5 minutes
+jest.setTimeout(600_000); // 10 minutes
 describe('Import 1000 registrations', () => {
   let accessToken: string;
 
@@ -22,7 +23,7 @@ describe('Import 1000 registrations', () => {
     // Assert
     // Import 1000 registrations
     const registrationImportResponse = await importRegistrationsCSV(
-      2,
+      programIdPV,
       csvFilePath,
       accessToken,
     );

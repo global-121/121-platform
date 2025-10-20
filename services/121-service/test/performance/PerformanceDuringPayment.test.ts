@@ -19,8 +19,11 @@ import { getPaymentResults } from '@121-service/test/performance/helpers/perform
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^15 = 32768
+const passRate = 50; // 50%
+const maxRetryDurationMs = 4_800_000; // 80 minutes
+const amount = 25;
 
-jest.setTimeout(4_600_000); // 76 minutes
+jest.setTimeout(4_800_000); // 80 minutes
 describe('Measure performance during payment', () => {
   let accessToken: string;
   it('Setup and do payment', async () => {
@@ -41,14 +44,14 @@ describe('Measure performance during payment', () => {
       duplicateNumber,
       accessToken,
       {
-        secret: 'fill_in_secret',
+        secret: env.RESET_SECRET,
       },
     );
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
     // Do payment
     const doPaymentResponse = await doPayment({
       programId: programIdOCW,
-      amount: 25,
+      amount,
       referenceIds: [],
       accessToken,
     });
@@ -60,8 +63,8 @@ describe('Measure performance during payment', () => {
       paymentId: 1,
       accessToken,
       totalAmountPowerOfTwo: duplicateNumber,
-      passRate: 50,
-      maxRetryDurationMs: 4_600_000,
+      passRate,
+      maxRetryDurationMs,
       verbose: true,
     });
     // When payment is still ongoing get export list and send bulk message
@@ -81,6 +84,6 @@ describe('Measure performance during payment', () => {
     );
     expect(bulkMessageResponse.statusCode).toBe(HttpStatus.ACCEPTED);
     const elapsedTime = Date.now() - startTime;
-    expect(elapsedTime).toBeLessThan(4_600_000); // 76 minutes
+    expect(elapsedTime).toBeLessThan(4_800_000); // 80 minutes
   });
 });

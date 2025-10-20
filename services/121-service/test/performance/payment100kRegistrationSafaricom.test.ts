@@ -15,7 +15,10 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { getPaymentResults } from '@121-service/test/performance/helpers/performance.helper';
-import { registrationSafaricom } from '@121-service/test/registrations/pagination/pagination-data';
+import {
+  programIdSafaricom,
+  registrationSafaricom,
+} from '@121-service/test/registrations/pagination/pagination-data';
 
 // For now we decided to test only Safaricom and IntersolveVisa
 // The reasoning behind this is that IntersolveVisa has the most complex logic and most API calls
@@ -24,7 +27,11 @@ import { registrationSafaricom } from '@121-service/test/registrations/paginatio
 
 const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^17 = 131072
 const duplicateTarget = Math.pow(2, duplicateNumber);
-const programId = 1;
+const maxWaitTimeMs = 240_000; // 4 minutes
+const passRate = 10; // 10%
+const maxRetryDurationMs = 4_800_000; // 80 minutes
+const delayBetweenAttemptsMs = 5_000; // 5 seconds
+const amount = 25;
 
 jest.setTimeout(4_800_000); // 80 minutes
 describe('Do payment for 100k registrations with Safaricom within expected range and successful rate threshold', () => {
@@ -37,7 +44,7 @@ describe('Do payment for 100k registrations with Safaricom within expected range
     accessToken = await getAccessToken();
     // Upload registration
     const importRegistrationResponse = await importRegistrations(
-      programId,
+      programIdSafaricom,
       [registrationSafaricom],
       accessToken,
     );
@@ -47,29 +54,29 @@ describe('Do payment for 100k registrations with Safaricom within expected range
       duplicateNumber,
       accessToken,
       {
-        secret: 'fill_in_secret',
+        secret: env.RESET_SECRET,
       },
     );
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
     // Change status of all registrations to 'included'
     const changeStatusResponse = await changeRegistrationStatus({
-      programId,
+      programId: programIdSafaricom,
       status: RegistrationStatusEnum.included,
       accessToken,
     });
     expect(changeStatusResponse.statusCode).toBe(HttpStatus.ACCEPTED);
     // Wait for all status changes to be processed
     await waitForStatusChangeToComplete(
-      programId,
+      programIdSafaricom,
       duplicateTarget,
       accessToken,
-      240_000,
+      maxWaitTimeMs,
       RegistrationStatusEnum.included,
     );
     // Do payment
     const doPaymentResponse = await doPayment({
-      programId,
-      amount: 25,
+      programId: programIdSafaricom,
+      amount,
       referenceIds: [],
       accessToken,
     });
@@ -77,13 +84,13 @@ describe('Do payment for 100k registrations with Safaricom within expected range
     // Assert
     // Check payment results have at least 10% success rate within 80 minutes
     await getPaymentResults({
-      programId,
+      programId: programIdSafaricom,
       paymentId: 1,
       accessToken,
       totalAmountPowerOfTwo: duplicateNumber,
-      passRate: 10,
-      maxRetryDurationMs: 4_790_000,
-      delayBetweenAttemptsMs: 5_000,
+      passRate,
+      maxRetryDurationMs,
+      delayBetweenAttemptsMs,
       verbose: true,
     });
     const elapsedTime = Date.now() - startTime;

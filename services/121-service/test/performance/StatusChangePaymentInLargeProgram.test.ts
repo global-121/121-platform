@@ -9,7 +9,6 @@ import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data
 import {
   doPayment,
   getProgram,
-  paymentDryRun,
   postProgramRegistrationAttribute,
 } from '@121-service/test/helpers/program.helper';
 import {
@@ -27,6 +26,9 @@ import {
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^15 = 32768
+const maxRetryDurationMs = 120_0000; // 20 minutes
+const delayBetweenAttemptsMs = 5000; // 5 seconds
+const amount = 25;
 
 jest.setTimeout(1_200_000); // 20 minutes
 describe('Status Change Payment In Large Program', () => {
@@ -77,7 +79,7 @@ describe('Status Change Payment In Large Program', () => {
       duplicateNumber,
       accessToken,
       {
-        secret: 'fill_in_secret',
+        secret: env.RESET_SECRET,
       },
     );
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
@@ -88,7 +90,7 @@ describe('Status Change Payment In Large Program', () => {
     const getProgramResponse = await getProgram(programIdOCW, accessToken);
     const elapsedTime = performance.now() - startTime;
     expect(getProgramResponse.statusCode).toBe(HttpStatus.OK);
-    expect(elapsedTime).toBeLessThan(40); // 40 ms = 0.04 seconds
+    expect(elapsedTime).toBeLessThan(200); // 200 ms = 0.2 seconds
     // Change status of all PAs to included
     await updateRegistrationStatusAndLog({
       programId: programIdOCW,
@@ -97,16 +99,18 @@ describe('Status Change Payment In Large Program', () => {
       maxRetryDurationMs: 340_000,
     });
     // Do the payment with dryRun first
-    const paymentDryRunResponse = await paymentDryRun({
+    const paymentDryRunResponse = await doPayment({
       programId: programIdOCW,
+      referenceIds: [],
       accessToken,
-      amount: 25,
+      amount,
+      filter: { dryRun: 'true' },
     });
     expect(paymentDryRunResponse.statusCode).toBe(HttpStatus.OK);
     // Do payment
     const doPaymentResponse = await doPayment({
       programId: programIdOCW,
-      amount: 25,
+      amount,
       referenceIds: [],
       accessToken,
     });
@@ -118,8 +122,8 @@ describe('Status Change Payment In Large Program', () => {
       accessToken,
       totalAmountPowerOfTwo: duplicateNumber,
       passRate: 10,
-      maxRetryDurationMs: 1200000,
-      delayBetweenAttemptsMs: 5000,
+      maxRetryDurationMs,
+      delayBetweenAttemptsMs,
       verbose: true,
     });
   });

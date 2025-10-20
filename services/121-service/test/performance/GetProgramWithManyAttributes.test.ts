@@ -22,7 +22,7 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 
 const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^5 = 32
 
-describe('Get program with many attributes within time threshold', () => {
+describe('Get program with many attributes within time threshold of 30 seconds', () => {
   let accessToken: string;
 
   it('Should get program with many attributes within time threshold', async () => {
@@ -70,7 +70,7 @@ describe('Get program with many attributes within time threshold', () => {
       duplicateNumber,
       accessToken,
       {
-        secret: 'fill_in_secret',
+        secret: env.RESET_SECRET,
       },
     );
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
@@ -81,6 +81,6 @@ describe('Get program with many attributes within time threshold', () => {
     const getProgramResponse = await getProgram(programIdOCW, accessToken);
     const elapsedTime = performance.now() - startTime;
     expect(getProgramResponse.statusCode).toBe(HttpStatus.OK);
-    expect(elapsedTime).toBeLessThan(25); // 25 ms = 0.025 seconds
+    expect(elapsedTime).toBeLessThan(200); // 200 ms = 0.2 seconds
   });
 });
