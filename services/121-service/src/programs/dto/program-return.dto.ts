@@ -177,11 +177,6 @@ export class ProgramReturnDto {
   @Type(() => ProgramRegistrationAttributeDto)
   public readonly programRegistrationAttributes: ProgramRegistrationAttributeDto[];
 
-  @ApiProperty({ example: { en: 'about program' } })
-  @IsNotEmpty()
-  @IsOptional()
-  public readonly aboutProgram?: LocalizedString;
-
   @ApiProperty({
     example: ['nameFirst', 'nameLast'],
     description:

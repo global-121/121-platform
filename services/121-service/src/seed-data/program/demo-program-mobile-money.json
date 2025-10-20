@@ -295,11 +295,6 @@
       "placeholder": ""
     }
   ],
-  "aboutProgram": {
-    "en": "Multipurpose cash",
-    "es": "Efectivo multipropósito",
-    "fr": "Transfert monétaire polyvalent"
-  },
   "fullnameNamingConvention": ["fullName"],
   "languages": ["en", "es", "fr"],
   "enableMaxPayments": true,

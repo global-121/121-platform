@@ -56,9 +56,6 @@ export class ProgramEntity extends Base121Entity {
   @Column({ default: true })
   public validation: boolean;
 
-  @Column('json', { nullable: true, default: null })
-  public aboutProgram: LocalizedString | null;
-
   public editableAttributes?: Attribute[];
 
   @OneToMany(

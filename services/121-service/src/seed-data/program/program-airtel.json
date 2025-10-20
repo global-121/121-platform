@@ -45,9 +45,6 @@
       "showInPeopleAffectedTable": false
     }
   ],
-  "aboutProgram": {
-    "en": "Test program using Airtel FSP"
-  },
   "fullnameNamingConvention": ["fullName"],
   "languages": ["en"],
   "enableMaxPayments": true,

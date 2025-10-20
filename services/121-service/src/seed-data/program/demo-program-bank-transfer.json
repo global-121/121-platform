@@ -130,9 +130,6 @@
       "showInPeopleAffectedTable": true
     }
   ],
-  "aboutProgram": {
-    "en": "Demo program using Commercial Bank of Ethiopia FSP"
-  },
   "fullnameNamingConvention": ["fullName"],
   "languages": ["en", "et_AM"],
   "enableMaxPayments": true,

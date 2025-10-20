@@ -7,7 +7,7 @@
     "en": "South Africa - Nedbank"
   },
   "description": {
-    "en": ""
+    "en": "Program to test Nedbank with"
   },
   "startDate": "2021-01-11T12:00:00Z",
   "endDate": "2022-12-31T12:00:00Z",
@@ -50,9 +50,6 @@
       "showInPeopleAffectedTable": false
     }
   ],
-  "aboutProgram": {
-    "en": "Program to test Nedbank with"
-  },
   "fullnameNamingConvention": ["fullName"],
   "languages": ["en", "nl"],
   "enableMaxPayments": true,
