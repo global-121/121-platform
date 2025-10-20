@@ -46,6 +46,7 @@ import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
 import { EmailType } from '@121-service/src/user/user-emails/enum/email-type.enum';
 import { UserEmailTemplateInput } from '@121-service/src/user/user-emails/interfaces/user-email-template-input.interface';
+import { DEFAULT_DISPLAY_NAME } from '@121-service/src/user/user-emails/user-email-templates/template-constants';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 const tokenExpirationDays = 14;
@@ -275,9 +276,13 @@ export class UserService {
         UserType.aidWorker,
       );
 
+      if (!userEntity.username) {
+        throw new Error('Invariant violated: userEntity.username is missing');
+      }
+
       const emailPayload: UserEmailTemplateInput = {
-        email: userEntity.username ?? '',
-        displayName: userEntity.displayName ?? userEntity.username ?? '',
+        email: userEntity.username,
+        displayName: userEntity.displayName ?? DEFAULT_DISPLAY_NAME,
         password,
       };
 
@@ -938,9 +943,13 @@ export class UserService {
     user.password = this.hashPassword(password, user.salt);
     await this.userRepository.save(user);
 
+    if (!user.username) {
+      throw new Error('Invariant violated: user.username is missing');
+    }
+
     const emailPayload: UserEmailTemplateInput = {
-      email: user.username ?? '',
-      displayName: user.displayName ?? user.username ?? '',
+      email: user.username,
+      displayName: user.displayName ?? DEFAULT_DISPLAY_NAME,
       password,
     };
 
