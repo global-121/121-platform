@@ -28,7 +28,7 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 
 const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^15 = 32768
 
-jest.setTimeout(1200000); // 20 minutes
+jest.setTimeout(1_200_000); // 20 minutes
 describe('Status Change Payment In Large Program', () => {
   let accessToken: string;
 
