@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
 import { performance } from 'node:perf_hooks';
+import { env } from 'process';
 
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -18,6 +19,8 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
+
+const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^5 = 32
 
 describe('Get program with many attributes within time threshold', () => {
   let accessToken: string;
@@ -62,14 +65,14 @@ describe('Get program with many attributes within time threshold', () => {
       accessToken,
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
-    // Duplicate registration to be more than 100k
+    // Duplicate registrations
     const duplicateRegistrationsResponse = await duplicateRegistrations(
-      5,
+      duplicateNumber,
       accessToken,
       {
         secret: 'fill_in_secret',
       },
-    ); // 2^5 = 32
+    );
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Assert
@@ -78,6 +81,6 @@ describe('Get program with many attributes within time threshold', () => {
     const getProgramResponse = await getProgram(programIdOCW, accessToken);
     const elapsedTime = performance.now() - startTime;
     expect(getProgramResponse.statusCode).toBe(HttpStatus.OK);
-    expect(elapsedTime).toBeLessThan(25); // 20 ms = 0.02 seconds
+    expect(elapsedTime).toBeLessThan(25); // 25 ms = 0.025 seconds
   });
 });

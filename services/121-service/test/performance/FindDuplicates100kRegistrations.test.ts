@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+import { env } from 'process';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
@@ -13,6 +14,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
+const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '15'); // cronjob duplicate number should be 2^17 = 131072
 const queryParams = {
   'filter.duplicateStatus': 'duplicate',
 };
@@ -24,7 +26,6 @@ describe('Find duplicates in 100k registrations within expected range', () => {
   it('Should find duplicates within time threshold', async () => {
     // Arrange
     const startTime = Date.now();
-    const elapsedTime = Date.now() - startTime;
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
     // Upload registration
@@ -36,12 +37,12 @@ describe('Find duplicates in 100k registrations within expected range', () => {
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registration to be more than 100k
     const duplicateRegistrationsResponse = await duplicateRegistrations(
-      17,
+      duplicateNumber,
       accessToken,
       {
         secret: 'fill_in_secret',
       },
-    ); // 2^17 = 131072
+    );
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
     // Query for duplicate registrations
     const findDuplicatesResponse = await getRegistrations({
@@ -49,6 +50,7 @@ describe('Find duplicates in 100k registrations within expected range', () => {
       filter: queryParams,
       accessToken,
     });
+    const elapsedTime = Date.now() - startTime;
     // Assert
     expect(elapsedTime).toBeLessThan(120000); // 120000 ms = 120 seconds
     expect(findDuplicatesResponse.statusCode).toBe(HttpStatus.OK);
