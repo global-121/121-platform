@@ -297,27 +297,27 @@ describe('Do successful payment with FSP Visa Debit', () => {
       accessToken,
     });
 
-    const expectedCalculatedAmountPa1 = 150 - 13000 / 100 - 1000 / 100; // = 10
+    const expectedCalculatedTransferValuePa1 = 150 - 13000 / 100 - 1000 / 100; // = 10
     expect(transactionsResponse1.body[0].amount).toBe(
-      expectedCalculatedAmountPa1,
+      expectedCalculatedTransferValuePa1,
     );
     expect(transactionsResponse1.text).toContain(TransactionStatusEnum.success);
     // Validate for one message where amount is higher than 0 that it is send in a message
     expect(messagesHistoryPa1.body.map((msg) => msg.attributes.body)).toEqual(
       expect.arrayContaining([
-        expect.stringContaining(`€${expectedCalculatedAmountPa1}`),
+        expect.stringContaining(`€${expectedCalculatedTransferValuePa1}`),
       ]),
     );
 
-    const expectedCalculatedAmountPa2 = 150 - 14000 / 100 - 1000 / 100; // = 0
+    const expectedCalculatedTransferValuePa2 = 150 - 14000 / 100 - 1000 / 100; // = 0
     expect(transactionsResponse2.body[0].amount).toBe(
-      expectedCalculatedAmountPa2, // = 0 : A transaction of 0 is created
+      expectedCalculatedTransferValuePa2, // = 0 : A transaction of 0 is created
     );
     expect(transactionsResponse2.text).toContain(TransactionStatusEnum.success);
     // Validate for one message where amount is 0 that it still sends a message with the amount 0, so people will know they have to spend money earlier next months
     expect(messagesHistoryPa2.body.map((msg) => msg.attributes.body)).toEqual(
       expect.arrayContaining([
-        expect.stringContaining(`€${expectedCalculatedAmountPa2}`),
+        expect.stringContaining(`€${expectedCalculatedTransferValuePa2}`),
       ]),
     );
 

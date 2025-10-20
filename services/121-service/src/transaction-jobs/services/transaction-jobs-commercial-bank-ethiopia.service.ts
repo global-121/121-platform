@@ -74,7 +74,7 @@ export class TransactionJobsCommercialBankEthiopiaService {
             titlePortal: program.titlePortal,
             currency: program.currency, // TODO: This could have been hardcoded but for now leaving this as it was before this refactor
             fullName: transactionJob.fullName,
-            amount: transactionJob.transactionAmount,
+            amount: transactionJob.transferValue,
           },
           credentials,
         },

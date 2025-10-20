@@ -35,7 +35,7 @@ export class TransactionsService {
     for (const item of transactionCreationDetails) {
       const transactionToSave = new TransactionEntity();
       transactionToSave.registrationId = item.registrationId;
-      transactionToSave.transferValue = item.transactionAmount;
+      transactionToSave.transferValue = item.transferValue;
       transactionToSave.paymentId = paymentId;
       transactionToSave.status = TransactionStatusEnum.created;
       transactionToSave.userId = userId;

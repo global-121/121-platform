@@ -62,7 +62,7 @@ describe('TransactionJobsOnafriqService', () => {
         programId: 1,
         userId: 1,
         bulkSize: 10,
-        transactionAmount: 100,
+        transferValue: 100,
         programFspConfigurationId: 1,
         isRetry: false,
         phoneNumberPayment: '123',
@@ -111,7 +111,7 @@ describe('TransactionJobsOnafriqService', () => {
       expect(onafriqTransactionScopedRepository.save).not.toHaveBeenCalled();
       expect(onafriqTransactionScopedRepository.update).toHaveBeenCalled();
       expect(onafriqService.createTransaction).toHaveBeenCalledWith({
-        transferAmount: 100,
+        transferValue: 100,
         phoneNumberPayment: '123',
         firstName: 'John',
         lastName: 'Doe',

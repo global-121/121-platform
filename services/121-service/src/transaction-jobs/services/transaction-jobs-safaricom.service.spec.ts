@@ -72,7 +72,7 @@ describe('TransactionJobsSafaricomService', () => {
       programId: 1,
       userId: 1,
       bulkSize: 10,
-      transactionAmount: 100,
+      transferValue: 100,
       programFspConfigurationId: 1,
       isRetry: false,
       phoneNumber: '123',
@@ -101,7 +101,7 @@ describe('TransactionJobsSafaricomService', () => {
     expect(safaricomTransferScopedRepository.save).not.toHaveBeenCalled();
     expect(safaricomTransferScopedRepository.update).toHaveBeenCalled();
     expect(safaricomService.doTransfer).toHaveBeenCalledWith({
-      transferAmount: 100,
+      transferValue: 100,
       phoneNumber: '123',
       idNumber: 'nat-123',
       originatorConversationId: expect.any(String),

@@ -22,7 +22,7 @@ describe('TransactionJobsAirtelService', () => {
     programFspConfigurationId: 3,
     transactionId: 3,
     referenceId: 'ref-3',
-    transactionAmount: 300,
+    transferValue: 300,
     isRetry: false,
     userId: 3,
     bulkSize: 30,
@@ -88,7 +88,7 @@ describe('TransactionJobsAirtelService', () => {
       expect(airtelService.attemptOrCheckDisbursement).toHaveBeenCalledWith({
         airtelTransactionId: deterministicAirtelTransactionId,
         phoneNumber: transactionJob.phoneNumber,
-        amount: transactionJob.transactionAmount,
+        amount: transactionJob.transferValue,
       });
     });
 
@@ -108,7 +108,7 @@ describe('TransactionJobsAirtelService', () => {
       expect(airtelService.attemptOrCheckDisbursement).toHaveBeenCalledWith({
         airtelTransactionId: deterministicAirtelTransactionId,
         phoneNumber: transactionJob.phoneNumber,
-        amount: transactionJob.transactionAmount,
+        amount: transactionJob.transferValue,
       });
     });
 

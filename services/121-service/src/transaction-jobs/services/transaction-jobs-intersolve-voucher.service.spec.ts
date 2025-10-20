@@ -13,7 +13,7 @@ const mockedIntersolveVoucherTransactionJob: IntersolveVoucherTransactionJobDto 
     programId: 3,
     transactionId: 3,
     referenceId: 'ref-123',
-    transactionAmount: 25,
+    transferValue: 25,
     isRetry: false,
     userId: 1,
     bulkSize: 10,

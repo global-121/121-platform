@@ -30,9 +30,9 @@ export class IntersolveVoucherEntity extends Base121Entity {
   @Column()
   public barcode: string;
 
-  // The amount with which the voucher was originally created
+  // The transfer value with which the voucher was originally created
   @Column({ nullable: true, type: 'real' })
-  public amount: number | null;
+  public transferValue: number | null;
 
   @Index()
   @Column({ type: 'boolean', nullable: true })

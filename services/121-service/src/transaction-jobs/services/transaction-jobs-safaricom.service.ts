@@ -61,7 +61,7 @@ export class TransactionJobsSafaricomService {
     // 4. Start the transfer, if failure update to error transaction and return early
     try {
       await this.safaricomService.doTransfer({
-        transferAmount: transactionJob.transactionAmount,
+        transferValue: transactionJob.transferValue,
         phoneNumber: transactionJob.phoneNumber!,
         idNumber: transactionJob.idNumber!,
         originatorConversationId,

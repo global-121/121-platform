@@ -45,7 +45,7 @@ export class TransactionJobsIntersolveVoucherService {
         useWhatsapp: transactionJob.useWhatsapp,
         whatsappPhoneNumber: transactionJob.whatsappPhoneNumber,
         userId: transactionJob.userId,
-        calculatedAmount: transactionJob.transactionAmount,
+        calculatedTransferValue: transactionJob.transferValue,
         transactionId: transactionJob.transactionId,
         bulkSize: transactionJob.bulkSize,
         credentials,

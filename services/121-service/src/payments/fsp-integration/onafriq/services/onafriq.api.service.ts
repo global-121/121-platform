@@ -80,14 +80,14 @@ export class OnafriqApiService {
 
   // NOTE: this method-name aligns exactly with the name of the endpoint in the Onafriq API
   public async callService({
-    transferAmount,
+    transferValue,
     phoneNumberPayment,
     firstName,
     lastName,
     thirdPartyTransId,
     requestIdentity,
   }: {
-    transferAmount: number;
+    transferValue: number;
     phoneNumberPayment: string;
     firstName: string;
     lastName: string;
@@ -95,7 +95,7 @@ export class OnafriqApiService {
     requestIdentity: OnafriqRequestIdentity;
   }): Promise<CallServiceResult> {
     const payload = this.onafriqApiHelperService.createCallServicePayload({
-      transferAmount,
+      transferValue,
       phoneNumberPayment,
       firstName,
       lastName,

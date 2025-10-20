@@ -9,7 +9,7 @@ export class PaTransactionResultDto {
   public message?: string | null;
   public date?: Date;
   public customData?: any;
-  public calculatedAmount: number;
+  public calculatedTransferValue: number;
   public fspName: Fsps;
   public messageSid?: string;
   public registrationId?: number;
