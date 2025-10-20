@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Do payment with FSP: Nedbank when create order API call gives a valid response should create a transaction with status error when phone number is missing 1`] = `"Errors: Request Validation Error - TPP account configuration mismatch (Message: BUSINESS ERROR, Code: NB.APIM.Field.Invalid, Id: 1d3e3076-9e1c-4933-aa7f-69290941ec70)"`;
 
