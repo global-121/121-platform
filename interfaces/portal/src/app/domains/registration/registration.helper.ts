@@ -56,7 +56,7 @@ export const LANGUAGE_ENUM_LABEL: Record<LanguageEnum, string> = {
   pt_BR: $localize`Portuguese`,
   tl: $localize`Filipino`,
   tr: $localize`Turkish`,
-  ua: $localize`Ukrainian`,
+  uk: $localize`Ukrainian`,
 };
 
 export const VISA_CARD_STATUS_LABELS: Record<VisaCard121Status, string> = {

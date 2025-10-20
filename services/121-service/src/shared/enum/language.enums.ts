@@ -15,5 +15,5 @@ export enum LanguageEnum {
   es = 'es',
   fr = 'fr',
   tr = 'tr',
-  ua = 'ua',
+  uk = 'uk', // Ukrainian
 }
