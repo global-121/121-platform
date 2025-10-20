@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+import { env } from 'process';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -17,7 +18,7 @@ import {
 import { getPaymentResults } from '@121-service/test/performance/helpers/performance.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-const duplicateCount = 15; // 2^15 = 32768
+const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^15 = 32768
 
 jest.setTimeout(4_600_000); // 76 minutes
 describe('Measure performance during payment', () => {
@@ -37,12 +38,12 @@ describe('Measure performance during payment', () => {
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.ACCEPTED);
     // Duplicate registration
     const duplicateRegistrationsResponse = await duplicateRegistrations(
-      duplicateCount,
+      duplicateNumber,
       accessToken,
       {
         secret: 'fill_in_secret',
       },
-    ); // 2^15 = 32768
+    );
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
     // Do payment
     const doPaymentResponse = await doPayment({
@@ -58,7 +59,7 @@ describe('Measure performance during payment', () => {
       programId: programIdOCW,
       paymentId: 1,
       accessToken,
-      totalAmountPowerOfTwo: duplicateCount,
+      totalAmountPowerOfTwo: duplicateNumber,
       passRate: 50,
       maxRetryDurationMs: 4_600_000,
       verbose: true,

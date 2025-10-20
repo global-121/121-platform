@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+import { env } from 'process';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -17,8 +18,13 @@ import {
 import { getPaymentResults } from '@121-service/test/performance/helpers/performance.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-const duplicateCount = 17; // 2^17 = 131072
-const duplicateTarget = Math.pow(2, duplicateCount);
+// For now we decided to test only Safaricom and IntersolveVisa
+// The reasoning behind this is that IntersolveVisa has the most complex logic and most API calls
+// Safaricom is one of the payment providers which uses callbacks and therefore also has heavier/more complex
+// The other FSPs are simpler or similar to Safaricom so we decided to not test them
+
+const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^17 = 131072
+const duplicateTarget = Math.pow(2, duplicateNumber);
 
 jest.setTimeout(4_800_000); // 80 minutes
 describe('Do payment for 100k registrations with Intersolve within expected range and successful rate threshold', () => {
@@ -38,12 +44,12 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registration to be more than 100k
     const duplicateRegistrationsResponse = await duplicateRegistrations(
-      duplicateCount,
+      duplicateNumber,
       accessToken,
       {
         secret: 'fill_in_secret',
       },
-    ); // 2^17 = 131072
+    );
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
     // Change status of all registrations to 'included'
     const changeStatusResponse = await changeRegistrationStatus({
@@ -74,7 +80,7 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
       programId: programIdOCW,
       paymentId: 1,
       accessToken,
-      totalAmountPowerOfTwo: duplicateCount,
+      totalAmountPowerOfTwo: duplicateNumber,
       passRate: 10,
       maxRetryDurationMs: 4_790_000,
       delayBetweenAttemptsMs: 5_000,

@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
 import { performance } from 'node:perf_hooks';
+import { env } from 'process';
 
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -25,7 +26,7 @@ import {
 } from '@121-service/test/performance/helpers/performance.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-const duplicateCount = 15; // 2^15 = 32768
+const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^15 = 32768
 
 jest.setTimeout(1200000); // 20 minutes
 describe('Status Change Payment In Large Program', () => {
@@ -73,12 +74,12 @@ describe('Status Change Payment In Large Program', () => {
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registration between 20k - 50k
     const duplicateRegistrationsResponse = await duplicateRegistrations(
-      duplicateCount,
+      duplicateNumber,
       accessToken,
       {
         secret: 'fill_in_secret',
       },
-    ); // 2^15 = 32768
+    );
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Assert
@@ -115,7 +116,7 @@ describe('Status Change Payment In Large Program', () => {
       programId: programIdOCW,
       paymentId: 1,
       accessToken,
-      totalAmountPowerOfTwo: duplicateCount,
+      totalAmountPowerOfTwo: duplicateNumber,
       passRate: 10,
       maxRetryDurationMs: 1200000,
       delayBetweenAttemptsMs: 5000,
