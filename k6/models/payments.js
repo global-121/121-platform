@@ -17,10 +17,10 @@ export default class PaymentsModel {
     return res;
   }
 
-  createPayment(programId, amount) {
+  createPayment(programId, transferValue) {
     const url = `${baseUrl}api/programs/${programId}/payments`;
     const payload = JSON.stringify({
-      amount,
+      transferValue,
     });
     const params = {
       headers: {
