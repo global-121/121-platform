@@ -377,60 +377,36 @@ export async function updateRegistrationStatusAndLog({
   const expectedCount = toNumber(responseBody.applicableCount);
 
   // Wait for counts to match
-  try {
-    while (expectedCount !== registrationCount) {
-      attempts++;
+  while (Date.now() - startTime < maxRetryDurationMs) {
+    attempts++;
 
-      // Check timeout first before making API call
-      if (Date.now() - startTime < maxRetryDurationMs) {
-        if (verbose) {
-          console.log(
-            `Timeout: Registration count check exceeded maximum retry duration of ${maxRetryDurationMs}ms`,
-          );
-        }
-        break;
-      }
+    registrationCount = await getRegistrationCountForStatus(
+      programId,
+      status,
+      accessToken,
+    );
 
-      registrationCount = await getRegistrationCountForStatus(
-        programId,
-        status,
-        accessToken,
+    // Ensure both values are numbers
+    const normalizedExpectedCount = Number(expectedCount);
+    const normalizedRegistrationCount = Number(registrationCount);
+
+    if (verbose) {
+      console.log(
+        `Checking counts: applicableCount = ${normalizedExpectedCount}, registrationCount = ${normalizedRegistrationCount}`,
       );
+    }
 
+    // If counts match, exit the loop immediately
+    if (normalizedExpectedCount === normalizedRegistrationCount) {
       if (verbose) {
         console.log(
-          `Checking counts: applicableCount = ${expectedCount}, registrationCount = ${registrationCount}`,
+          `Registration count matched: ${normalizedRegistrationCount} registrations with status '${status}'`,
         );
       }
-
-      // If counts match, exit the loop immediately
-      if (expectedCount === registrationCount) {
-        if (verbose) {
-          console.log(
-            `Registration count matched: ${registrationCount} registrations with status '${status}'`,
-          );
-        }
-
-        return {
-          success: true,
-          response: responseStatusChange,
-          attempts,
-          elapsedTimeMs: Date.now() - startTime,
-        };
-      }
-
-      await sleep(delayBetweenAttemptsMs);
+      break;
     }
-  } catch (error) {
-    if (verbose) {
-      console.error('Error during registration count check:', error);
-    }
-    return {
-      success: false,
-      response: responseStatusChange,
-      attempts,
-      elapsedTimeMs: Date.now() - startTime,
-    };
+
+    await sleep(delayBetweenAttemptsMs);
   }
 
   const success = expectedCount === registrationCount;
