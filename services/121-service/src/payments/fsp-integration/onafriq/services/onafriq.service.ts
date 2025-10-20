@@ -55,7 +55,7 @@ export class OnafriqService {
   }
 
   public async createTransaction({
-    transferAmount,
+    transferValue,
     phoneNumberPayment,
     firstName,
     lastName,
@@ -67,7 +67,7 @@ export class OnafriqService {
     // await new Promise((resolve) => setTimeout(resolve, 60000));
 
     const mappedResponse = await this.onafriqApiService.callService({
-      transferAmount,
+      transferValue,
       phoneNumberPayment,
       firstName,
       lastName,

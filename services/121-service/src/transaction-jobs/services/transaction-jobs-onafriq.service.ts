@@ -69,7 +69,7 @@ export class TransactionJobsOnafriqService {
         transactionJob.programFspConfigurationId,
       );
       await this.onafriqService.createTransaction({
-        transferAmount: transactionJob.transactionAmount,
+        transferValue: transactionJob.transferValue,
         phoneNumberPayment: transactionJob.phoneNumberPayment,
         firstName: transactionJob.firstName,
         lastName: transactionJob.lastName,

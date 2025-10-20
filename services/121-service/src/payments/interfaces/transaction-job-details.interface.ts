@@ -1,5 +1,5 @@
 export class TransactionJobDetails {
   public readonly referenceId: string;
-  public readonly transactionAmount: number;
+  public readonly transferValue: number;
   public readonly transactionId: number;
 }

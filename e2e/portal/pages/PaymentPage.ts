@@ -102,7 +102,7 @@ class PaymentPage extends BasePage {
     }
   }
 
-  async validateTransferAmounts({ amount }: { amount: number }) {
+  async validateTransferValues({ amount }: { amount: number }) {
     await this.page.waitForTimeout(1000); // Wait for the graph to be updated after the loader is hidden
 
     const paymentAmount = this.paymentAmount.getByText('€');

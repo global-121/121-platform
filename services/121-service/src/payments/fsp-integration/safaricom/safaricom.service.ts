@@ -12,7 +12,7 @@ export class SafaricomService {
   ) {}
 
   public async doTransfer({
-    transferAmount,
+    transferValue,
     phoneNumber,
     idNumber,
     originatorConversationId,
@@ -22,7 +22,7 @@ export class SafaricomService {
     // await new Promise((resolve) => setTimeout(resolve, 60000));
 
     const transferResult = await this.safaricomApiService.transfer({
-      transferAmount,
+      transferValue,
       phoneNumber,
       idNumber,
       originatorConversationId,

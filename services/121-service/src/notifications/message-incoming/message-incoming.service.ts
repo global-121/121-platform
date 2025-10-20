@@ -533,7 +533,7 @@ export class MessageIncomingService {
             message = foundMessageTemplateText;
             message = message
               .split('[[amount]]')
-              .join(String(intersolveVoucher.amount));
+              .join(String(intersolveVoucher.transferValue));
           } else {
             throw new Error(
               `WhatsApp Voucher template not found for language: ${language}`,

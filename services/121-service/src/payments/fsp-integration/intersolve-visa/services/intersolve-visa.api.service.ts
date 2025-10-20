@@ -431,7 +431,7 @@ export class IntersolveVisaApiService {
   public async transfer({
     fromTokenCode,
     toTokenCode,
-    amount: amountInMajorUnit,
+    amount: transferValueInMajorUnit,
     reference,
   }: {
     fromTokenCode: string;
@@ -440,11 +440,11 @@ export class IntersolveVisaApiService {
     reference: string;
   }): Promise<void> {
     const uuid = generateUUIDFromSeed(reference);
-    const amountInCent = Math.round(amountInMajorUnit * 100); // Math round is needed to prevent floating point errors
+    const transferValueInCent = Math.round(transferValueInMajorUnit * 100); // Math round is needed to prevent floating point errors
 
     const transferRequestDto: TransferRequestIntersolveApiDto = {
       quantity: {
-        value: amountInCent,
+        value: transferValueInCent,
         assetCode: env.INTERSOLVE_VISA_ASSET_CODE,
       },
       creditor: {

@@ -463,7 +463,7 @@ export class PaymentsExecutionService {
           transactionJobDetails: transactionJobCreationDetailsForFsp.map(
             (job) => ({
               referenceId: job.referenceId,
-              transactionAmount: job.transferValue,
+              transferValue: job.transferValue,
               transactionId: job.transactionId!,
             }),
           ),
@@ -555,7 +555,7 @@ export class PaymentsExecutionService {
 
     return registrations.map((row) => ({
       registrationId: row.id,
-      transactionAmount: amount * row.paymentAmountMultiplier,
+      transferValue: amount * row.paymentAmountMultiplier,
       programFspConfigurationId: row.programFspConfigurationId,
     }));
   }

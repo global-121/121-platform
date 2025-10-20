@@ -8,7 +8,7 @@ import { OnafriqApiService } from '@121-service/src/payments/fsp-integration/ona
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 const mockParams = {
-  transferAmount: 100,
+  transferValue: 100,
   phoneNumberPayment: '123456789',
   firstName: 'John',
   lastName: 'Doe',

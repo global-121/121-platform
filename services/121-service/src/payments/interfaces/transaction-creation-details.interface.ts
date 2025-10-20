@@ -1,5 +1,5 @@
 export interface TransactionCreationDetails {
   registrationId: number;
-  transactionAmount: number;
+  transferValue: number;
   programFspConfigurationId: number;
 }

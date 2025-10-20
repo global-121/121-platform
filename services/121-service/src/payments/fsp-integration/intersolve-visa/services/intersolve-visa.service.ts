@@ -55,7 +55,7 @@ export class IntersolveVisaService {
     brandCode,
     coverLetterCode,
     fundingTokenCode,
-    transferAmountInMajorUnit,
+    transferValueInMajorUnit,
     transferReference,
   }: DoTransferOrIssueCardParams): Promise<DoTransferOrIssueCardResult> {
     const intersolveVisaCustomer = await this.getCustomerOrCreate({
@@ -98,17 +98,17 @@ export class IntersolveVisaService {
     });
 
     // Transfer money from the client's funding token to the parent token
-    if (transferAmountInMajorUnit > 0) {
+    if (transferValueInMajorUnit > 0) {
       await this.intersolveVisaApiService.transfer({
         fromTokenCode: fundingTokenCode,
         toTokenCode: intersolveVisaParentWallet.tokenCode,
-        amount: transferAmountInMajorUnit,
+        amount: transferValueInMajorUnit,
         reference: transferReference,
       });
     }
     return {
       isNewCardCreated: createDebitCardReturn.isNewCardCreated,
-      amountTransferredInMajorUnit: transferAmountInMajorUnit,
+      amountTransferredInMajorUnit: transferValueInMajorUnit,
     };
   }
 
@@ -615,27 +615,27 @@ export class IntersolveVisaService {
   }
 
   /**
-   * This function calculates the transfer amount after retrieving the wallet information for a given registration ID.
+   * This function calculates the transfer value after retrieving the wallet information for a given registration ID.
    * - It finds a customer for registrationId. If the customer has any child wallets, it retrieves and updates the latest information of the wallets and card from Intersolve.
    * - It then calculates the amount that should be transferred. If the registration does not have a customer yet, the spentThisMonth and balance will be 0.
    *
-   * @param {number} registrationId - The registration ID for which to calculate the transfer amount.
-   * @param {number} inputTransferAmount - The initial amount to be transferred.
+   * @param {number} registrationId - The registration ID for which to calculate the transfer value.
+   * @param {number} inputTransferValue - The initial amount to be transferred.
    * @throws {Error} Throws an Error if no customer is found for the given registration ID.
-   * @returns {Promise<number>} The calculated transfer amount. This is the inputTransferAmount amount capped by 150 - spendThisMonth - currentBalance.
+   * @returns {Promise<number>} The calculated transfer value. This is the inputTransferValue amount capped by 150 - spendThisMonth - currentBalance.
    */
-  public async calculateTransferAmountWithWalletRetrieval({
+  public async calculateTransferValueWithWalletRetrieval({
     registrationId,
-    inputTransferAmountInMajorUnit,
+    inputTransferValueInMajorUnit,
   }: {
     registrationId: number;
-    inputTransferAmountInMajorUnit: number;
+    inputTransferValueInMajorUnit: number;
   }): Promise<number> {
     const intersolveVisaCustomer =
       await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
         registrationId,
       );
-    // If there are any child wallets no-matter the status, retrieve latest information of the wallets and card from intersolve before calculating transfer amount from them
+    // If there are any child wallets no-matter the status, retrieve latest information of the wallets and card from intersolve before calculating transfer value from them
     if (
       intersolveVisaCustomer?.intersolveVisaParentWallet
         ?.intersolveVisaChildWallets &&
@@ -654,8 +654,8 @@ export class IntersolveVisaService {
     }
 
     // Calculate the amount that should be transferred. If the registration does not have customer yet the spendThisMonth and balance will be 0.
-    return this.calculateLimitedTransferAmount({
-      transactionAmountInMajorUnit: inputTransferAmountInMajorUnit,
+    return this.calculateLimitedTransferValue({
+      transferValueInMajorUnit: inputTransferValueInMajorUnit,
       spentThisMonth:
         intersolveVisaCustomer?.intersolveVisaParentWallet?.spentThisMonth ?? 0,
       balance: intersolveVisaCustomer?.intersolveVisaParentWallet?.balance ?? 0,
@@ -663,20 +663,23 @@ export class IntersolveVisaService {
   }
 
   // Calculated the amount that can be transferred based on the limits of maximum amount on a wallet and maximum amount that can be spent per month.
-  private calculateLimitedTransferAmount({
-    transactionAmountInMajorUnit,
+  private calculateLimitedTransferValue({
+    transferValueInMajorUnit,
     spentThisMonth,
     balance,
   }: {
-    transactionAmountInMajorUnit: number;
+    transferValueInMajorUnit: number;
     spentThisMonth: number;
     balance: number;
   }): number {
-    const calculatedAmountMajorUnit =
+    const calculatedTransferValueMajorUnit =
       (maximumAmountOfSpentCentPerMonth - spentThisMonth - balance) / 100;
 
-    if (calculatedAmountMajorUnit > 0) {
-      return Math.min(calculatedAmountMajorUnit, transactionAmountInMajorUnit);
+    if (calculatedTransferValueMajorUnit > 0) {
+      return Math.min(
+        calculatedTransferValueMajorUnit,
+        transferValueInMajorUnit,
+      );
     } else {
       return 0;
     }

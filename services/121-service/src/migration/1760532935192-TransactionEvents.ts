@@ -104,6 +104,11 @@ export class TransactionEvents1760532935192 implements MigrationInterface {
       `ALTER TABLE "121-service"."last_transaction_event" ADD CONSTRAINT "FK_0de93dafac190577420226cf69f" FOREIGN KEY ("transactionEventId") REFERENCES "121-service"."transaction_event"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
 
+    // rename amount column in intersolve voucher to transferValue
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."intersolve_voucher" RENAME COLUMN "amount" TO "transferValue"`,
+    );
+
     // recreate registration view
     await queryRunner.query(
       `DELETE FROM "121-service"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`,

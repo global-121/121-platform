@@ -54,7 +54,7 @@ describe('NedbankService', () => {
         .mockResolvedValue(NedbankVoucherStatus.PENDING);
 
       const result = await service.createVoucher({
-        transferAmount: amount,
+        transferValue: amount,
         phoneNumber: registrationNedbank.phoneNumber,
         orderCreateReference,
         paymentReference,
@@ -63,7 +63,7 @@ describe('NedbankService', () => {
       expect(result).toEqual(NedbankVoucherStatus.PENDING);
 
       expect(apiService.createOrder).toHaveBeenCalledWith({
-        transferAmount: amount,
+        transferValue: amount,
         phoneNumber: registrationNedbank.phoneNumber,
         orderCreateReference,
         paymentReference,
@@ -76,7 +76,7 @@ describe('NedbankService', () => {
       let error: NedbankError | any; // The any is unfortunately needed to prevent type errors
       try {
         await service.createVoucher({
-          transferAmount: amount, // Not a multiple of 10
+          transferValue: amount, // Not a multiple of 10
           phoneNumber: registrationNedbank.phoneNumber,
           orderCreateReference,
           paymentReference,
@@ -96,7 +96,7 @@ describe('NedbankService', () => {
       let error: NedbankError | any; // The any is unfortunately needed to prevent type errors
       try {
         await service.createVoucher({
-          transferAmount: amount,
+          transferValue: amount,
           phoneNumber: invalidPhoneNumber,
           orderCreateReference,
           paymentReference,
@@ -116,7 +116,7 @@ describe('NedbankService', () => {
       let error: NedbankError | any; // The any is unfortunately needed to prevent type errors
       try {
         await service.createVoucher({
-          transferAmount: amount,
+          transferValue: amount,
           phoneNumber: invalidPhoneNumber,
           orderCreateReference,
           paymentReference,

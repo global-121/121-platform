@@ -89,7 +89,7 @@ export class TransactionJobsAirtelService {
       await this.airtelService.attemptOrCheckDisbursement({
         airtelTransactionId,
         phoneNumber: transactionJob.phoneNumber,
-        amount: transactionJob.transactionAmount,
+        amount: transactionJob.transferValue,
       });
     } catch (error) {
       // We only want to write a specific set of errors to transactions, outside

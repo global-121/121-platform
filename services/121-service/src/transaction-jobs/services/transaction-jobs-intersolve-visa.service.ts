@@ -46,22 +46,22 @@ export class TransactionJobsIntersolveVisaService {
         transactionJob.referenceId,
       );
 
-    let transferAmountInMajorUnit: number;
+    let transferValueInMajorUnit: number;
     try {
-      transferAmountInMajorUnit =
-        await this.intersolveVisaService.calculateTransferAmountWithWalletRetrieval(
+      transferValueInMajorUnit =
+        await this.intersolveVisaService.calculateTransferValueWithWalletRetrieval(
           {
             registrationId: registration.id,
-            inputTransferAmountInMajorUnit: transactionJob.transactionAmount,
+            inputTransferValueInMajorUnit: transactionJob.transferValue,
           },
         );
     } catch (error) {
       if (error instanceof IntersolveVisaApiError) {
-        // Do not update the transaction amount since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
+        // Do not update the transfer value since we were unable to calculate the transfer value. The error message is also clear enough so users should not be confused about the potentially high amount.
         await this.transactionsService.saveTransactionProgress({
           context: transactionEventContext,
           description: TransactionEventDescription.visaPaymentRequested,
-          errorMessage: `Error calculating transfer amount: ${error?.message}`,
+          errorMessage: `Error calculating transfer value: ${error?.message}`,
           newTransactionStatus: TransactionStatusEnum.error,
         });
         return;
@@ -69,10 +69,10 @@ export class TransactionJobsIntersolveVisaService {
       throw error;
     }
 
-    // Update the transaction amount to the actual transfer amount after getting the max allowed by the wallet retrieval due to KYC limits
-    await this.updateTransferAmount({
+    // Update the transfer value to the actual transfer value after getting the max allowed by the wallet retrieval due to KYC limits
+    await this.updateTransferValue({
       transactionId: transactionJob.transactionId,
-      value: transferAmountInMajorUnit,
+      value: transferValueInMajorUnit,
     });
 
     let intersolveVisaDoTransferOrIssueCardReturnDto: DoTransferOrIssueCardResult;
@@ -96,7 +96,7 @@ export class TransactionJobsIntersolveVisaService {
             addressCity: transactionJob.addressCity!,
             phoneNumber: transactionJob.phoneNumber!,
           },
-          transferAmountInMajorUnit,
+          transferValueInMajorUnit,
           brandCode,
           coverLetterCode,
           fundingTokenCode,
@@ -166,7 +166,7 @@ export class TransactionJobsIntersolveVisaService {
     };
   }
 
-  private async updateTransferAmount({ transactionId, value }) {
+  private async updateTransferValue({ transactionId, value }) {
     await this.transactionRepository.update(
       { id: transactionId },
       { transferValue: value },

@@ -45,7 +45,7 @@ export class ExcelService {
             ...new Set(
               exportColumns.concat([GenericRegistrationAttributes.referenceId]),
             ),
-          ], // add referenceId (and deduplicate) to join transaction amount later
+          ], // add referenceId (and deduplicate) to join transfer value later
           referenceIds,
           chunkSize,
         },
