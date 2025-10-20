@@ -110,14 +110,14 @@ export async function unpublishProgram(
 
 export async function doPayment({
   programId,
-  amount,
+  transferValue,
   referenceIds,
   accessToken,
   filter = {},
   note,
 }: {
   programId: number;
-  amount: number;
+  transferValue: number;
   referenceIds: string[];
   accessToken: string;
   filter?: Record<string, string>;
@@ -139,7 +139,7 @@ export async function doPayment({
     .set('Cookie', [accessToken])
     .query(queryParams)
     .send({
-      amount,
+      transferValue,
       note,
     });
 }

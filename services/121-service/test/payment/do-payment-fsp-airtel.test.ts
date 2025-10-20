@@ -19,7 +19,7 @@ import {
 import { registrationAirtel } from '@121-service/test/registrations/pagination/pagination-data';
 
 const programId = 1;
-const amount = 200;
+const transferValue = 200;
 
 describe('Do payment with FSP: Airtel', () => {
   let accessToken: string;
@@ -45,7 +45,7 @@ describe('Do payment with FSP: Airtel', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      amount,
+      transferValue,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -98,7 +98,7 @@ describe('Do payment with FSP: Airtel', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      amount,
+      transferValue,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -159,7 +159,7 @@ describe('Do payment with FSP: Airtel', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      amount,
+      transferValue,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -211,7 +211,7 @@ describe('Do payment with FSP: Airtel', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      amount,
+      transferValue,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -260,7 +260,7 @@ describe('Do payment with FSP: Airtel', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      amount,
+      transferValue,
       referenceIds: paymentReferenceIds,
       accessToken,
     });

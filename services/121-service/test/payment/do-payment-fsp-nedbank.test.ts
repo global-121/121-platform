@@ -31,7 +31,7 @@ import {
 import { registrationNedbank } from '@121-service/test/registrations/pagination/pagination-data';
 
 const programId = 1;
-const amount = 200;
+const transferValue = 200;
 
 enum NedbankMockNumber {
   failDebitorAccountIncorrect = '27000000001',
@@ -67,7 +67,7 @@ describe('Do payment', () => {
         // Act
         const doPaymentResponse = await doPayment({
           programId,
-          amount,
+          transferValue,
           referenceIds: paymentReferenceIds,
           accessToken,
         });
@@ -178,7 +178,7 @@ describe('Do payment', () => {
         // Act
         const doPaymentResponse = await doPayment({
           programId,
-          amount,
+          transferValue,
           referenceIds: paymentReferenceIds,
           accessToken,
         });
@@ -234,7 +234,7 @@ describe('Do payment', () => {
         // Act
         const doPaymentResponse = await doPayment({
           programId,
-          amount: amountOver6000,
+          transferValue: amountOver6000,
           referenceIds: paymentReferenceIds,
           accessToken,
         });
@@ -294,7 +294,7 @@ describe('Do payment', () => {
         // Act
         const doPaymentResponse = await doPayment({
           programId,
-          amount,
+          transferValue,
           referenceIds: paymentReferenceIds,
           accessToken,
         });
@@ -358,7 +358,7 @@ describe('Do payment', () => {
         // Act
         await doPayment({
           programId,
-          amount,
+          transferValue,
           referenceIds: paymentReferenceIds,
           accessToken,
         });
@@ -414,7 +414,7 @@ describe('Do payment', () => {
         );
         const doPaymentResponse = await doPayment({
           programId,
-          amount,
+          transferValue,
           referenceIds: [registrationFailDebitorAccount.referenceId],
           accessToken,
         });
@@ -620,7 +620,7 @@ describe('Do payment', () => {
         // Act
         const doPaymentResponse = await doPayment({
           programId,
-          amount,
+          transferValue,
           referenceIds: paymentReferenceIds,
           accessToken,
         });

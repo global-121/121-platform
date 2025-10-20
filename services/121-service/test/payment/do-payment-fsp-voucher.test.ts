@@ -27,7 +27,7 @@ import { programIdPV } from '@121-service/test/registrations/pagination/paginati
 
 describe('Do payment to 1 PA', () => {
   const programId = programIdPV;
-  const amount = 22;
+  const transferValue = 22;
   const registrationAh = {
     referenceId: '63e62864557597e0a-AH',
     preferredLanguage: LanguageEnum.en,
@@ -59,7 +59,7 @@ describe('Do payment to 1 PA', () => {
       // Act
       const doPaymentResponse = await doPayment({
         programId,
-        amount,
+        transferValue,
         referenceIds: paymentReferenceIds,
         accessToken,
       });
@@ -191,7 +191,7 @@ describe('Do payment to 1 PA', () => {
       // Act
       const paymentId = await doPaymentAndWaitForCompletion({
         programId,
-        amount,
+        transferValue,
         referenceIds: paymentReferenceIds,
         accessToken,
         completeStatusses: [
@@ -235,7 +235,7 @@ describe('Do payment to 1 PA', () => {
       // Act
       const paymentId = await doPaymentAndWaitForCompletion({
         programId,
-        amount,
+        transferValue,
         referenceIds: paymentReferenceIds,
         accessToken,
         completeStatusses: [
@@ -280,7 +280,7 @@ describe('Do payment to 1 PA', () => {
       // Act
       const doPaymentResponse = await doPayment({
         programId,
-        amount,
+        transferValue,
         referenceIds: paymentReferenceIds,
         accessToken,
       });

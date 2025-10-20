@@ -10,9 +10,9 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  amountVisa,
   programIdVisa,
   registrationVisa as registrationVisaDefault,
+  transferValueVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
@@ -62,7 +62,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -122,7 +122,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -171,7 +171,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -220,7 +220,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -270,7 +270,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // do (successful) payment 1
     const doPaymentResponse1 = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -290,7 +290,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // do payment 2
     const doPaymentResponse2 = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -351,7 +351,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -383,7 +383,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      amount: magicFailOperationReferenceAmount,
+      transferValue: magicFailOperationReferenceAmount,
       referenceIds: paymentReferenceIds,
       accessToken,
     });

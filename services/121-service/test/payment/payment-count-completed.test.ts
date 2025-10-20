@@ -31,7 +31,7 @@ import { programIdPV } from '@121-service/test/registrations/pagination/paginati
 
 describe('Do a payment to a PA with maxPayments=1', () => {
   const programId = programIdPV;
-  const amount = 25;
+  const transferValue = 25;
   const registrationAh = {
     referenceId: '63e62864557597e0b-AH',
     preferredLanguage: LanguageEnum.en,
@@ -66,7 +66,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       // Act
       const doPaymentResponse = await doPayment({
         programId,
-        amount,
+        transferValue,
         referenceIds: paymentReferenceIds,
         accessToken,
       });

@@ -6,9 +6,9 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  amountVisa,
   programIdVisa,
   registrationVisa as registrationVisaDefault,
+  transferValueVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
@@ -63,7 +63,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -118,7 +118,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     // do 1st payment
     const doFirstPaymentResponse = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -136,7 +136,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     // do 2nd payment
     const doSecondPaymentResponse = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -201,7 +201,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     // do 1st payment
     const paymentResponse = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds,
       accessToken,
     });
@@ -235,7 +235,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
 
     const paymentResponse2 = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds,
       accessToken,
     });
@@ -323,7 +323,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
 
     // should be able to payout the full amount
     expect(transactionsResponse3.body[0].amount).toBe(
-      amountVisa * registrationOCW3.paymentAmountMultiplier,
+      transferValueVisa * registrationOCW3.paymentAmountMultiplier,
     );
     expect(transactionsResponse3.text).toContain(TransactionStatusEnum.success);
 

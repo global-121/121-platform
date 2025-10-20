@@ -18,7 +18,7 @@ let accessToken: string;
 
 describe('Payment Events API', () => {
   const programId = 1;
-  const amount = 15;
+  const transferValue = 15;
 
   beforeEach(async () => {
     await resetDB(SeedScript.safaricomProgram, __filename);
@@ -36,7 +36,7 @@ describe('Payment Events API', () => {
 
     const paymentId = await doPaymentAndWaitForCompletion({
       programId,
-      amount,
+      transferValue,
       referenceIds: [registrationSafaricom.referenceId],
       accessToken,
       note,

@@ -58,7 +58,7 @@ test('[31215] Move PA(s) from status "Completed" to "Declined"', async ({
   await test.step('Change status of registration to "Completed" with doing a payment', async () => {
     await doPayment({
       programId: 2,
-      amount: 25,
+      transferValue: 25,
       referenceIds: [registrationPvMaxPayment.referenceId],
       accessToken,
     });

@@ -30,7 +30,7 @@ test.beforeEach(async ({ page }) => {
 
   await doPayment({
     programId: programIdPV,
-    amount: 12.5,
+    transferValue: 12.5,
     referenceIds: [registrationPV5.referenceId],
     accessToken,
   });

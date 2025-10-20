@@ -21,7 +21,7 @@ import { registrationSafaricom } from '@121-service/test/registrations/paginatio
 let accessToken: string;
 describe('Export transactions', () => {
   const programId = 1;
-  const amount = 15;
+  const transferValue = 15;
 
   beforeEach(async () => {
     await resetDB(SeedScript.safaricomProgram, __filename);
@@ -45,7 +45,7 @@ describe('Export transactions', () => {
     const paymentId = await seedPaidRegistrations(
       [registrationSafaricom],
       programId,
-      amount,
+      transferValue,
     );
     const toDate = new Date().toISOString();
 
@@ -100,7 +100,11 @@ describe('Export transactions', () => {
     // Arrange
 
     // Payment that should not be exported
-    await seedPaidRegistrations([registrationSafaricom], programId, amount);
+    await seedPaidRegistrations(
+      [registrationSafaricom],
+      programId,
+      transferValue,
+    );
 
     const fromDate = new Date().toISOString();
 
@@ -108,7 +112,7 @@ describe('Export transactions', () => {
     const paymentIdOfMiddlePayment = await doPaymentAndWaitForCompletion({
       programId,
       referenceIds: [registrationSafaricom.referenceId],
-      amount,
+      transferValue,
       accessToken,
     });
     const toDate = new Date().toISOString();
@@ -117,7 +121,7 @@ describe('Export transactions', () => {
     await doPaymentAndWaitForCompletion({
       programId,
       referenceIds: [registrationSafaricom.referenceId],
-      amount,
+      transferValue,
       accessToken,
     });
 
@@ -154,13 +158,17 @@ describe('Export transactions', () => {
     // Arrange
 
     // Payment 1
-    await seedPaidRegistrations([registrationSafaricom], programId, amount);
+    await seedPaidRegistrations(
+      [registrationSafaricom],
+      programId,
+      transferValue,
+    );
 
     // Payment 2
     const paymentIdOfSecondPayment = await doPaymentAndWaitForCompletion({
       programId,
       referenceIds: [registrationSafaricom.referenceId],
-      amount,
+      transferValue,
       accessToken,
     });
 
