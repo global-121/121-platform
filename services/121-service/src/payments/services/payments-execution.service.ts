@@ -58,14 +58,14 @@ export class PaymentsExecutionService {
   public async createPayment({
     userId,
     programId,
-    amount,
+    transferValue,
     query,
     dryRun,
     note,
   }: {
     userId: number;
     programId: number;
-    amount: number | undefined;
+    transferValue: number | undefined;
     query: PaginateQuery;
     dryRun: boolean;
     note?: string;
@@ -94,7 +94,7 @@ export class PaymentsExecutionService {
     // If amount is not defined do not calculate the totalMultiplierSum
     // This happens when you call the endpoint with dryRun=true
     // Calling with dryrun is true happens in the pa table when you try to do a payment to decide which registrations are selectable
-    if (!amount) {
+    if (!transferValue) {
       return {
         ...bulkActionResultDto,
         sumPaymentAmountMultiplier: 0,
@@ -155,7 +155,7 @@ export class PaymentsExecutionService {
         userId,
         programId,
         paymentId,
-        amount,
+        transferValue,
         referenceIds,
       })
         .catch((e) => {
@@ -331,13 +331,13 @@ export class PaymentsExecutionService {
     userId,
     programId,
     paymentId,
-    amount,
+    transferValue,
     referenceIds,
   }: {
     userId: number;
     programId: number;
     paymentId: number;
-    amount: number;
+    transferValue: number;
     referenceIds: string[];
   }): Promise<void> {
     await this.actionService.saveAction(
@@ -349,7 +349,7 @@ export class PaymentsExecutionService {
     const transactionCreationDetails = await this.getTransactionCreationDetails(
       {
         referenceIds,
-        amount,
+        transferValue,
         programId,
       },
     );
@@ -529,11 +529,11 @@ export class PaymentsExecutionService {
 
   private async getTransactionCreationDetails({
     referenceIds,
-    amount,
+    transferValue,
     programId,
   }: {
     referenceIds: string[];
-    amount: number;
+    transferValue: number;
     programId: number;
   }): Promise<TransactionCreationDetails[]> {
     const idColumn: keyof RegistrationViewEntity = 'id';
@@ -555,7 +555,7 @@ export class PaymentsExecutionService {
 
     return registrations.map((row) => ({
       registrationId: row.id,
-      transferValue: amount * row.paymentAmountMultiplier,
+      transferValue: transferValue * row.paymentAmountMultiplier,
       programFspConfigurationId: row.programFspConfigurationId,
     }));
   }

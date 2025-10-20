@@ -198,7 +198,7 @@ export class PaymentsController {
     const result = await this.paymentsExecutionService.createPayment({
       userId,
       programId,
-      amount: data.transferValue,
+      transferValue: data.transferValue,
       query,
       dryRun: dryRunBoolean,
       note: data.note,
