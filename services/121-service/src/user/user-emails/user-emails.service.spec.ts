@@ -48,7 +48,7 @@ describe('EmailsService', () => {
     };
     const template: EmailTemplate =
       userEmailTemplatesService.buildEmailTemplate(
-        EmailType.registrationCreationSSO,
+        EmailType.registrationCreation,
         payload,
       );
     const emailData: EmailData = {
@@ -72,7 +72,7 @@ describe('EmailsService', () => {
     };
     const template: EmailTemplate =
       userEmailTemplatesService.buildEmailTemplate(
-        EmailType.registrationCreationSSO,
+        EmailType.passwordReset,
         payload,
       );
     const emailData: EmailData = {

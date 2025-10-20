@@ -2,6 +2,7 @@ import { UserEmailTemplateInput } from '@121-service/src/user/user-emails/interf
 import { EmailTemplate } from '@121-service/src/user/user-emails/user-email-templates/interfaces/email-template.interface';
 import { wrapEmailBody } from '@121-service/src/user/user-emails/user-email-templates/template-body-wrapper';
 import {
+  CHANGE_PASSWORD_URL,
   LOGIN_URL,
   SUPPORT_EMAIL,
 } from '@121-service/src/user/user-emails/user-email-templates/template-constants';
@@ -9,7 +10,7 @@ import {
 export const emailTemplateRegistrationCreation = (
   userEmailTemplateInput: UserEmailTemplateInput,
 ): EmailTemplate => {
-  const { displayName, email } = userEmailTemplateInput;
+  const { displayName, email, password } = userEmailTemplateInput;
 
   const subject = '121 Portal account created';
   const body = wrapEmailBody(`
@@ -19,7 +20,11 @@ export const emailTemplateRegistrationCreation = (
       To log in, go to: <a href="${LOGIN_URL}">${LOGIN_URL}</a>
     </p>
     <p>
-      Account e-mail: ${email}
+      Username: ${email}<br>
+      Password: <code>${password}</code>
+    </p>
+    <p>
+      After logging in, please change your password on: <a href="${CHANGE_PASSWORD_URL}">${CHANGE_PASSWORD_URL}</a>
     </p>
     <p>
       For assistance, if you were not expecting this email or believe it was sent to you by mistake,
