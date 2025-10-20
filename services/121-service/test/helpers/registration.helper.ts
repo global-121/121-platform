@@ -96,10 +96,9 @@ export function duplicateRegistrations(
   body: object = {},
 ): Promise<request.Response> {
   return getServer()
-    .post(
-      `/scripts/duplicate-registrations?mockPowerNumberRegistrations=${powerNumberRegistration}`,
-    )
+    .post('/scripts/duplicate-registrations')
     .set('Cookie', [accessToken])
+    .query({ mockPowerNumberRegistrations: powerNumberRegistration })
     .send(body);
 }
 
@@ -109,10 +108,13 @@ export function exportRegistrations(
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
-    .get(
-      `/programs/${programId}/metrics/export-list/registrations?sortBy=registrationProgramId:DESC&select=referenceId,${filter}&format=json`,
-    )
+    .get(`/programs/${programId}/metrics/export-list/registrations`)
     .set('Cookie', [accessToken])
+    .query({
+      sortBy: 'registrationProgramId:DESC',
+      select: `referenceId,${filter}`,
+      format: 'json',
+    })
     .send();
 }
 
