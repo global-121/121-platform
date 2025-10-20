@@ -42,8 +42,31 @@ interface PaymentResultsResult {
   readonly lastResponse?: any;
 }
 
-interface Kill121ServiceParams {
-  readonly secret?: string;
+interface RegistrationStatusParams {
+  readonly programId: number;
+  readonly status: string;
+  readonly accessToken: string;
+  readonly maxRetryDurationMs?: number;
+  readonly delayBetweenAttemptsMs?: number;
+  readonly verbose?: boolean;
+}
+
+interface RegistrationStatusResult {
+  readonly success: boolean;
+  readonly response: any;
+  readonly attempts: number;
+  readonly elapsedTimeMs: number;
+}
+
+interface StatusOverviewItem {
+  readonly status: string;
+  readonly statusCount: number;
+}
+
+interface RegistrationStatusResponse {
+  readonly totalFilterCount: number;
+  readonly applicableCount: number;
+  readonly nonApplicableCount: number;
 }
 
 function sleep(ms: number): Promise<void> {
@@ -262,19 +285,160 @@ export async function getPaymentResults({
   );
 }
 
-export async function kill121Service({
-  secret = 'fill_in_secret',
-}: Kill121ServiceParams = {}): Promise<request.Response> {
-  const body = { secret };
-
-  return await getServer()
-    .post(`/test/kill-service`)
-    .set('Content-Type', 'application/json')
-    .send(body);
+function updateRegistrationStatus(
+  programId: number,
+  status: string,
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer()
+    .patch(`/programs/${programId}/registrations/status`)
+    .set('Cookie', [accessToken])
+    .send({
+      status,
+      message: 'Long enough acceptable message',
+    });
 }
 
-export async function isServiceUp(): Promise<request.Response> {
-  return await getServer()
-    .get(`/health/health`)
-    .set('Accept', 'application/json');
+function getStatusOverview(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer()
+    .get(`/programs/${programId}/metrics/registration-status`)
+    .set('Cookie', [accessToken])
+    .send();
+}
+
+async function getRegistrationCountForStatus(
+  programId: number,
+  status: string,
+  accessToken: string,
+): Promise<number> {
+  const statusOverview = await getStatusOverview(programId, accessToken);
+  const statusOverviewBody: StatusOverviewItem[] = statusOverview.body;
+
+  const item = statusOverviewBody.find((item) => item.status === status);
+  return item?.statusCount ?? 0;
+}
+
+function logRegistrationStatusDetails(
+  responseBody: RegistrationStatusResponse,
+): void {
+  console.log(
+    `totalFilterCount: ${responseBody.totalFilterCount}, applicableCount: ${responseBody.applicableCount}, nonApplicableCount: ${responseBody.nonApplicableCount}`,
+  );
+}
+
+export async function updateRegistrationStatusAndLog({
+  programId,
+  status,
+  accessToken,
+  maxRetryDurationMs = 120_000, // 2 minutes default
+  delayBetweenAttemptsMs = 3_000, // 3 seconds default
+  verbose = true,
+}: RegistrationStatusParams): Promise<RegistrationStatusResult> {
+  const startTime = Date.now();
+
+  // Update registration status
+  const responseStatusChange = await updateRegistrationStatus(
+    programId,
+    status,
+    accessToken,
+  );
+
+  if (!isResponseSuccessful(responseStatusChange.status)) {
+    return {
+      success: false,
+      response: responseStatusChange,
+      attempts: 1,
+      elapsedTimeMs: Date.now() - startTime,
+    };
+  }
+
+  const responseBody: RegistrationStatusResponse = responseStatusChange.body;
+
+  if (verbose) {
+    logRegistrationStatusDetails(responseBody);
+  }
+
+  let attempts = 0;
+  let registrationCount: number = await getRegistrationCountForStatus(
+    programId,
+    status,
+    accessToken,
+  );
+
+  // Helper function to safely convert to number
+  const toNumber = (value: unknown): number => {
+    const num = Number(value);
+    return isNaN(num) ? 0 : num;
+  };
+
+  const expectedCount = toNumber(responseBody.applicableCount);
+
+  // Wait for counts to match
+  try {
+    while (expectedCount !== registrationCount) {
+      attempts++;
+
+      // Check timeout first before making API call
+      if (Date.now() - startTime < maxRetryDurationMs) {
+        if (verbose) {
+          console.log(
+            `Timeout: Registration count check exceeded maximum retry duration of ${maxRetryDurationMs}ms`,
+          );
+        }
+        break;
+      }
+
+      registrationCount = await getRegistrationCountForStatus(
+        programId,
+        status,
+        accessToken,
+      );
+
+      if (verbose) {
+        console.log(
+          `Checking counts: applicableCount = ${expectedCount}, registrationCount = ${registrationCount}`,
+        );
+      }
+
+      // If counts match, exit the loop immediately
+      if (expectedCount === registrationCount) {
+        if (verbose) {
+          console.log(
+            `Registration count matched: ${registrationCount} registrations with status '${status}'`,
+          );
+        }
+
+        return {
+          success: true,
+          response: responseStatusChange,
+          attempts,
+          elapsedTimeMs: Date.now() - startTime,
+        };
+      }
+
+      await sleep(delayBetweenAttemptsMs);
+    }
+  } catch (error) {
+    if (verbose) {
+      console.error('Error during registration count check:', error);
+    }
+    return {
+      success: false,
+      response: responseStatusChange,
+      attempts,
+      elapsedTimeMs: Date.now() - startTime,
+    };
+  }
+
+  const success = expectedCount === registrationCount;
+
+  return {
+    success,
+    response: responseStatusChange,
+    attempts,
+    elapsedTimeMs: Date.now() - startTime,
+  };
 }
