@@ -18,6 +18,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBody,
@@ -739,7 +740,7 @@ export class RegistrationsController {
     @Param('referenceId') referenceId: string,
     @Param('tokenCode') tokenCode: string,
     @Query('pause', ParseBoolPipe) pause: boolean,
-    @Req() req,
+    @Req() req: Request,
   ) {
     const userId = req.user.id;
     const permisson = pause

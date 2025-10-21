@@ -25,8 +25,13 @@ export class RegistrationViewsMapper {
     if (select && select.length > 0) {
       mappedRegistration = new RegistrationViewEntity();
       for (const selectKey of select) {
-        if (selectKey !== 'data' && (registration as any)[selectKey] !== undefined) {
-          (mappedRegistration as any)[selectKey] = (registration as any)[selectKey];
+        if (
+          selectKey !== 'data' &&
+          (registration as any)[selectKey] !== undefined
+        ) {
+          (mappedRegistration as any)[selectKey] = (registration as any)[
+            selectKey
+          ];
         }
       }
     }

@@ -329,9 +329,9 @@ export class RegistrationsService {
 
     // Loop through nameColumns and access properties dynamically
     for (const nameColumn of nameColumns) {
-      if (registrationObject[nameColumn]) {
-        fullnameConcat.push(registrationObject[nameColumn]);
-        delete registrationObject[nameColumn]; // Remove original properties
+      if ((registrationObject as any)[nameColumn]) {
+        fullnameConcat.push((registrationObject as any)[nameColumn]);
+        delete (registrationObject as any)[nameColumn]; // Remove original properties
       }
     }
 
@@ -439,9 +439,9 @@ export class RegistrationsService {
 
     for (const attributeKey of Object.keys(partialRegistrationInput)) {
       const attributeValue: string | number | string[] | boolean =
-        partialRegistrationInput[attributeKey];
+        (partialRegistrationInput as any)[attributeKey];
 
-      const oldValue = oldViewRegistration[attributeKey];
+      const oldValue = (oldViewRegistration as any)[attributeKey];
 
       if (String(oldValue) !== String(attributeValue)) {
         if (

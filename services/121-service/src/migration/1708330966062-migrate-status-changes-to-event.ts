@@ -35,8 +35,8 @@ export class MigrateStatusChangesToEvent1708330966062
       `SELECT * FROM "121-service"."registration_status_change" ORDER BY "registrationId", "created" ASC`,
     );
 
-    let currentRegistrationId = null;
-    let lastStatus = null;
+    let currentRegistrationId: any = null;
+    let lastStatus: any = null;
 
     const events = registrationStatusChanges.map((change: any) => {
       // Reset lastStatus if we're processing a new registrationId

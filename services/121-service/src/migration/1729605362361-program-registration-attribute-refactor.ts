@@ -481,7 +481,9 @@ export class ProgramRegistrationAttributeRefactor1729605362361
       );
 
       if (matchingFspQs.length > 0) {
-        const fspQuestionIds = matchingFspQs.map((fspQ: any) => fspQ.id).join(', ');
+        const fspQuestionIds = matchingFspQs
+          .map((fspQ: any) => fspQ.id)
+          .join(', ');
         // Remove registration data related to unmatched fsp questions
         // So for example some registrations still have data of jumbo while their fsp is now visa
         const deleteRegistrationDataRelatedToUnMatchedFsp = `

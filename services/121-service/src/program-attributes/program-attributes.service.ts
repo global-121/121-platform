@@ -34,7 +34,7 @@ export class ProgramAttributesService {
       'paymentAmountMultiplier',
       'programFspConfigurationName',
     ];
-    const paAttributesNameArray = program['paTableAttributes'].map(
+    const paAttributesNameArray = (program as any)['paTableAttributes'].map(
       (paAttribute: Attribute) => paAttribute.name,
     );
 

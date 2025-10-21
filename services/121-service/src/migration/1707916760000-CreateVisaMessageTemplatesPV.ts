@@ -84,11 +84,14 @@ export class CreateVisaMessageTemplatesPV1707916760000
 
     for (const program of relevantPrograms) {
       for (const type of Object.keys(newTemplates)) {
-        for (const language of Object.keys((newTemplates as any)[type].message)) {
+        for (const language of Object.keys(
+          (newTemplates as any)[type].message,
+        )) {
           const template = {
             type,
             language,
-            isSendMessageTemplate: (newTemplates as any)[type].isSendMessageTemplate,
+            isSendMessageTemplate: (newTemplates as any)[type]
+              .isSendMessageTemplate,
             isWhatsappTemplate: (newTemplates as any)[type].isWhatsappTemplate,
             message: (newTemplates as any)[type].message[language],
             programId: program.id,

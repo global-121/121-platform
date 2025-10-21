@@ -37,7 +37,7 @@ describe('Do payment to 1 PA', () => {
   };
   const paymentReferenceIds = [registrationAh.referenceId];
   let accessToken: string;
-  let registrationAhCopy;
+  let registrationAhCopy: any;
 
   describe('with FSP: Intersolve Voucher WhatsApp', () => {
     beforeEach(async () => {

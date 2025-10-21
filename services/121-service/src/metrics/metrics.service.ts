@@ -164,9 +164,9 @@ export class MetricsService {
 
       if (typeof row['programFspConfigurationLabel'] === 'object') {
         const preferredLanguage = 'en';
-        row['programFspConfigurationLabel'] = (row[
-          'programFspConfigurationLabel'
-        ] as any)?.[preferredLanguage] as string | undefined;
+        row['programFspConfigurationLabel'] = (
+          row['programFspConfigurationLabel'] as any
+        )?.[preferredLanguage] as string | undefined;
       }
     }
     rows = await this.replaceValueWithDropdownLabel({

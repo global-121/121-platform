@@ -36,7 +36,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     gender: 'male',
     age: 25,
   };
-  let registrationOnafriq;
+  let registrationOnafriq: any;
   let accessToken: string;
 
   beforeEach(async () => {

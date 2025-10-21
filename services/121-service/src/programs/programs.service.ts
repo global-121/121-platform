@@ -432,8 +432,9 @@ export class ProgramService {
     }
 
     for (const attribute in updateProgramRegistrationAttribute) {
-      (programRegistrationAttribute as any)[attribute] =
-        (updateProgramRegistrationAttribute as any)[attribute];
+      (programRegistrationAttribute as any)[attribute] = (
+        updateProgramRegistrationAttribute as any
+      )[attribute];
     }
 
     await this.programRegistrationAttributeRepository.save(

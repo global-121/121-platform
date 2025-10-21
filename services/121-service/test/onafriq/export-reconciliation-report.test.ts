@@ -29,7 +29,7 @@ describe('Export reconciliation report', () => {
     gender: 'male',
     age: 25,
   };
-  let registrationOnafriq;
+  let registrationOnafriq: any;
   let accessToken: string;
 
   beforeEach(async () => {
