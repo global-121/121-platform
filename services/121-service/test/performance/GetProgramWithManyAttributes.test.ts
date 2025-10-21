@@ -57,7 +57,9 @@ describe('Get program with many attributes within time threshold of 30 seconds',
           programIdOCW,
           accessToken,
         );
-      expect(postProgramRegistrationAttributeResponse.statusCode).toBe(201);
+      expect(postProgramRegistrationAttributeResponse.statusCode).toBe(
+        HttpStatus.CREATED,
+      );
     }
     // Upload registration
     const importRegistrationResponse = await importRegistrations(
