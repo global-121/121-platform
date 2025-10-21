@@ -1,4 +1,4 @@
-name: 'Test Service: Unit & Integration Tests'
+name: 'Test: Jest Performance Tests Cronjob'
 
 on:
   schedule:
