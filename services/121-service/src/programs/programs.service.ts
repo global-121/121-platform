@@ -176,7 +176,6 @@ export class ProgramService {
       programData.paymentAmountMultiplierFormula ?? null;
     program.targetNrRegistrations = programData.targetNrRegistrations ?? null;
     program.tryWhatsAppFirst = !!programData.tryWhatsAppFirst;
-    program.aboutProgram = programData.aboutProgram ?? null;
     program.fullnameNamingConvention = fullnameNamingConvention;
     program.languages = programData.languages ?? [LanguageEnum.en];
     program.enableMaxPayments = !!programData.enableMaxPayments;
@@ -301,7 +300,6 @@ export class ProgramService {
         ProgramRegistrationAttributeMapper.entitiesToDtos(
           program.programRegistrationAttributes,
         ),
-      aboutProgram: program.aboutProgram ?? undefined,
       fullnameNamingConvention: program.fullnameNamingConvention ?? undefined,
       languages: program.languages,
       enableMaxPayments: program.enableMaxPayments,

@@ -6,7 +6,7 @@
     "en": "NLRC OCW program"
   },
   "description": {
-    "en": ""
+    "en": "This is the OCW program."
   },
   "startDate": "2023-03-01T12:00:00.000Z",
   "endDate": "2023-12-31T12:00:00.000Z",
@@ -108,9 +108,6 @@
       "showInPeopleAffectedTable": false
     }
   ],
-  "aboutProgram": {
-    "en": "This is the OCW program."
-  },
   "fullnameNamingConvention": ["fullName"],
   "languages": ["en", "nl", "ar", "tr"],
   "enableMaxPayments": false,

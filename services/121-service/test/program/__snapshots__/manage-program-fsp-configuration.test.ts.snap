@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Manage Fsp configurations should not delete existing program Fsp configuration because of active registrations with that config 1`] = `
 {

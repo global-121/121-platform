@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Unsuccessfully mark registrations as unique from each other should fail to create an ignored duplicate registration pair for more that 10 registrations 1`] = `
 [

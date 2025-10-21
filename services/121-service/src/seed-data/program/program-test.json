@@ -269,13 +269,6 @@
       "showInPeopleAffectedTable": false
     }
   ],
-  "aboutProgram": {
-    "ar": "[حول برنامج المساعدات]",
-    "en": "[about aid program]",
-    "es": "[sobre el programa de ayuda]",
-    "fr": "[à propos du programme d'aide]",
-    "nl": "[beschrijving van het programma]"
-  },
   "fullnameNamingConvention": ["fullName"],
   "languages": ["ar", "en", "es", "fr", "nl"],
   "tryWhatsAppFirst": true,
