@@ -81,18 +81,14 @@ jobs:
       - name: Run performance tests with Jest
         working-directory: ${{ env.workingDirectory }}
         run: |
-          # Set base duplicate number
-          BASE_NUM=${{ env.DUPLICATE_NUMBER_BASE || '5' }}
-
-          docker compose exec 121-service npm run test:integration:all -t performance --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
           # Run different tests with different duplicate numbers
-          DUPLICATE_NUMBER=$((BASE_NUM + 10)) docker compose exec 121-service npm run test:integration:all -t BulkUpdate32kRegistrations.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
-          DUPLICATE_NUMBER=$((BASE_NUM + 12)) docker compose exec 121-service npm run test:integration:all -t FindDuplicates100kRegistrations.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
-          DUPLICATE_NUMBER=$BASE_NUM docker compose exec 121-service npm run test:integration:all -t GetProgramWithManyAttributes.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
-          DUPLICATE_NUMBER=$((BASE_NUM + 12)) docker compose exec 121-service npm run test:integration:all -t Payment100kRegistrationIntersolveVisa.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
-          DUPLICATE_NUMBER=$((BASE_NUM + 12)) docker compose exec 121-service npm run test:integration:all -t Payment100kRegistrationSafaricom.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
-          DUPLICATE_NUMBER=$((BASE_NUM + 10)) docker compose exec 121-service npm run test:integration:all -t PerformanceDuringPayment.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
-          DUPLICATE_NUMBER=$((BASE_NUM + 10)) docker compose exec 121-service npm run test:integration:all -t StatusChangePaymentInLargeProgram.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
+          DUPLICATE_NUMBER=15 docker compose exec 121-service npm run test:integration:all -t BulkUpdate32kRegistrations.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
+          DUPLICATE_NUMBER=17 docker compose exec 121-service npm run test:integration:all -t FindDuplicates100kRegistrations.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
+          DUPLICATE_NUMBER=5 docker compose exec 121-service npm run test:integration:all -t GetProgramWithManyAttributes.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
+          DUPLICATE_NUMBER=17 docker compose exec 121-service npm run test:integration:all -t Payment100kRegistrationIntersolveVisa.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
+          DUPLICATE_NUMBER=17 docker compose exec 121-service npm run test:integration:all -t Payment100kRegistrationSafaricom.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
+          DUPLICATE_NUMBER=15 docker compose exec 121-service npm run test:integration:all -t PerformanceDuringPayment.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
+          DUPLICATE_NUMBER=15 docker compose exec 121-service npm run test:integration:all -t StatusChangePaymentInLargeProgram.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
           docker compose exec 121-service npm run test:integration:all -t Import1000Registrations.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
 
       # For more info, see TODO: README.md
