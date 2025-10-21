@@ -652,15 +652,6 @@
       <trans-unit id="add-project-label" datatype="html">
         <source>Add project</source>
       </trans-unit>
-      <trans-unit id="1887371025019909976" datatype="html">
-        <source>Kobo Asset ID</source>
-      </trans-unit>
-      <trans-unit id="7750664097458673871" datatype="html">
-        <source>Kobo Token</source>
-      </trans-unit>
-      <trans-unit id="3086090297914662332" datatype="html">
-        <source>No Project-ID returned.</source>
-      </trans-unit>
       <trans-unit id="2046529380163546074" datatype="html">
         <source>Project successfully created.</source>
       </trans-unit>
@@ -1855,6 +1846,21 @@
       </trans-unit>
       <trans-unit id="4034832711447871121" datatype="html">
         <source>Max. 60 characters</source>
+      </trans-unit>
+      <trans-unit id="3423420597317106513" datatype="html">
+        <source>Budget</source>
+      </trans-unit>
+      <trans-unit id="4312496512919678092" datatype="html">
+        <source>Add a name and description to your project to help your users find it.</source>
+      </trans-unit>
+      <trans-unit id="5036339937977262552" datatype="html">
+        <source>Project information</source>
+      </trans-unit>
+      <trans-unit id="6962699013778688473" datatype="html">
+        <source>Continue</source>
+      </trans-unit>
+      <trans-unit id="7113499429942611780" datatype="html">
+        <source>Create new project</source>
       </trans-unit>
     </body>
   </file>
