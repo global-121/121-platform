@@ -21,8 +21,8 @@ export enum ImportStatus {
   paymentFailed = 'paymentFailed',
 }
 
-const fspArray = Object.values(Fsps).map((item) => String(item));
-const languageArray = Object.values(LanguageEnum).map((item) => String(item));
+const fspArray = Object.values(Fsps).map((item: any) => String(item));
+const languageArray = Object.values(LanguageEnum).map((item: any) => String(item));
 class BulkImportDto {
   @ApiProperty()
   @IsString()

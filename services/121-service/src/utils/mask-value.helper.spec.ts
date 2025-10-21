@@ -29,7 +29,7 @@ describe('maskValueKeepStart', () => {
       },
     ];
 
-    tests.forEach((testCase) => {
+    tests.forEach((testCase: any) => {
       // Act
       const result = maskValueKeepStart(testCase.value, testCase.length);
 
@@ -51,7 +51,7 @@ describe('maskValueKeepStart', () => {
       },
     ];
 
-    tests.forEach((testCase) => {
+    tests.forEach((testCase: any) => {
       // Act
       const result = maskValueKeepStart(testCase.value);
 
@@ -102,7 +102,7 @@ describe('maskValueKeepEnd', () => {
       },
     ];
 
-    tests.forEach((testCase) => {
+    tests.forEach((testCase: any) => {
       // Act
       const result = maskValueKeepEnd(testCase.value, testCase.length);
 
@@ -124,7 +124,7 @@ describe('maskValueKeepEnd', () => {
       },
     ];
 
-    tests.forEach((testCase) => {
+    tests.forEach((testCase: any) => {
       // Act
       const result = maskValueKeepEnd(testCase.value);
 

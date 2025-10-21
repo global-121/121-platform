@@ -186,12 +186,12 @@ export class InclusionScoreService {
     answerPA: number,
   ): number {
     let score = 0;
-    if (programRegistrationAttribute.scoring['multiplier']) {
+    if (programRegistrationAttribute.(scoring as any)['multiplier']) {
       if (isNaN(answerPA)) {
         answerPA = 0;
       }
       score =
-        Number(programRegistrationAttribute.scoring['multiplier']) * answerPA;
+        Number(programRegistrationAttribute.(scoring as any)['multiplier']) * answerPA;
     }
     return score;
   }

@@ -47,7 +47,7 @@ export class TwilioMessageScopedRepository extends ScopedRepository<TwilioMessag
       return [];
     }
 
-    const result = messageHistoryArray.map((row) => {
+    const result = messageHistoryArray.map((row: any) => {
       const { userId, username, ...rest } = row;
       return {
         ...rest,

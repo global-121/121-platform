@@ -75,10 +75,10 @@ describe('Metric export list', () => {
     expect(getRegistrationsResponse.status).toBe(HttpStatus.OK);
     expect(data.length).toBe(5);
 
-    const expectedReferenceIds = registrationsOCW.map((r) => r.referenceId);
+    const expectedReferenceIds = registrationsOCW.map((r: any) => r.referenceId);
 
     // Also check if the right referenceIds are in the eport
-    expect(data.map((r) => r.referenceId).sort()).toEqual(
+    expect(data.map((r: any) => r.referenceId).sort()).toEqual(
       expectedReferenceIds.sort(),
     );
   });
@@ -203,7 +203,7 @@ describe('Metric export list', () => {
 
     // Assert check if an excel is returned
     expect(getRegistrationsResponse.status).toBe(HttpStatus.OK);
-    expect(getRegistrationsResponse.header['content-type']).toBe(
+    expect(getRegistrationsResponse.(header as any)['content-type']).toBe(
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     );
     expect(Buffer.isBuffer(getRegistrationsResponse.body)).toBe(true);

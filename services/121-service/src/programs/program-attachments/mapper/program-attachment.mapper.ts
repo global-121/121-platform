@@ -5,7 +5,7 @@ export class ProgramAttachmentMapper {
   public static mapEntitiesToDtos(
     entities: ProgramAttachmentEntity[],
   ): GetProgramAttachmentResponseDto[] {
-    return entities.map((entity) =>
+    return entities.map((entity: any) =>
       ProgramAttachmentMapper.mapEntityToDto(entity),
     );
   }

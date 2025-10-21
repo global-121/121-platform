@@ -74,7 +74,7 @@ export class FileImportService {
   }
 
   public checkForCompletelyEmptyRow(row: any): boolean {
-    if (Object.keys(row).every((key) => !(row as any)[key])) {
+    if (Object.keys(row).every((key: any) => !(row as any)[key])) {
       return true;
     }
     return false;

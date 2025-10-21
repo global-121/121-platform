@@ -37,14 +37,14 @@ export class MessageTemplate1699276319254 implements MigrationInterface {
     const programs = await programsQb.getRawMany();
 
     for (const program of programs) {
-      const notifications = program['notifications'];
+      const notifications = (program as any)['notifications'];
       if (notifications) {
         for (const [language, messages] of Object.entries<string>(
           notifications,
         )) {
           for (const [key, text] of Object.entries(messages)) {
             const messageTemplate = {
-              programId: program['id'],
+              programId: (program as any)['id'],
               language,
               type: key,
               message: text,

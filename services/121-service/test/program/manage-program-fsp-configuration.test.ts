@@ -96,16 +96,16 @@ describe('Manage Fsp configurations', () => {
       }),
     );
     const propertyNamesResult = result.body.properties
-      .map((property) => property.name)
+      .map((property: any) => property.name)
       .sort();
     const propertyNamesExpected = createProgramFspConfigurationDto
-      .properties!.map((property) => property.name)
+      .properties!.map((property: any) => property.name)
       .sort();
     expect(propertyNamesResult).toEqual(
       expect.arrayContaining(propertyNamesExpected),
     );
     // All properties should have updated field as timestamp
-    result.body.properties.forEach((property) => {
+    result.body.properties.forEach((property: any) => {
       const date = new Date(property.updated);
       expect(!isNaN(date.getTime())).toBeTruthy();
       expect(property.value).toBe(hiddenString); // All values from intersolve voucher are hidden
@@ -164,7 +164,7 @@ describe('Manage Fsp configurations', () => {
       expect.arrayContaining(propertyNamesExpected),
     );
     // All properties should have updated field as timestamp
-    result.body.properties.forEach((property) => {
+    result.body.properties.forEach((property: any) => {
       const date = new Date(property.updated);
       expect(!isNaN(date.getTime())).toBeTruthy();
       expect(property.value).toBe(hiddenString); // All values from intersolve voucher are hidden
@@ -300,7 +300,7 @@ describe('Manage Fsp configurations', () => {
 
     // Assert
     expect(result.statusCode).toBe(HttpStatus.CREATED);
-    const propertyNamesResult = result.body.map((property) => property.name);
+    const propertyNamesResult = result.body.map((property: any) => property.name);
     const propertyNamesExpected =
       createProgramFspConfigurationDto.properties!.map(
         (property) => property.name,
@@ -309,7 +309,7 @@ describe('Manage Fsp configurations', () => {
       expect.arrayContaining(propertyNamesExpected),
     );
     // All properties should have updated field as timestamp
-    result.body.forEach((property) => {
+    result.body.forEach((property: any) => {
       const date = new Date(property.updated);
       expect(!isNaN(date.getTime())).toBeTruthy();
     });
@@ -329,7 +329,7 @@ describe('Manage Fsp configurations', () => {
       accessToken,
     });
     const usernamePropertyBefore = getResultBefore.body
-      .find((config) => config.name === seededFspConfigVoucher.fsp)!
+      .find((config: any) => config.name === seededFspConfigVoucher.fsp)!
       .properties.find(
         (property) => property.name === FspConfigurationProperties.username,
       );
@@ -347,7 +347,7 @@ describe('Manage Fsp configurations', () => {
       accessToken,
     });
     const usernamePropertyAfter = getResultAfter.body
-      .find((config) => config.name === seededFspConfigVoucher.fsp)!
+      .find((config: any) => config.name === seededFspConfigVoucher.fsp)!
       .properties.find(
         (property) => property.name === FspConfigurationProperties.username,
       );
@@ -405,14 +405,14 @@ describe('Manage Fsp configurations', () => {
     // Assert
     expect(getVisibleProperties.statusCode).toBe(HttpStatus.OK);
     const properties = getVisibleProperties.body;
-    properties.forEach((property) => {
+    properties.forEach((property: any) => {
       expect(property.value).not.toBe(hiddenString); // Visible properties should not be masked
     });
-    properties.forEach((property) => {
+    properties.forEach((property: any) => {
       expect(property.name).not.toBe(FspConfigurationProperties.username);
       expect(property.name).not.toBe(FspConfigurationProperties.password);
     });
-    properties.forEach((property) => {
+    properties.forEach((property: any) => {
       expect(enumValues).toContain(property.name);
     });
   });
@@ -427,7 +427,7 @@ describe('Manage Fsp configurations', () => {
     // Assert
     expect(getHiddenProperties.statusCode).toBe(HttpStatus.OK);
     const properties = getHiddenProperties.body;
-    const hiddenPropertyNames = properties.map((property) => property.name);
+    const hiddenPropertyNames = properties.map((property: any) => property.name);
     // Checks that only hidden properties are returned
     expect(hiddenPropertyNames).toEqual(
       expect.arrayContaining([
@@ -435,7 +435,7 @@ describe('Manage Fsp configurations', () => {
         FspConfigurationProperties.password,
       ]),
     );
-    properties.forEach((property) => {
+    properties.forEach((property: any) => {
       expect(property.value).toBe(hiddenString); // Hidden properties should be masked
     });
   });

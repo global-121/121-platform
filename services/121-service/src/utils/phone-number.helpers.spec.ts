@@ -29,7 +29,7 @@ describe('formatPhoneNumber', () => {
       },
     ];
 
-    tests.forEach((testCase) => {
+    tests.forEach((testCase: any) => {
       // Act
       const result = formatPhoneNumber(testCase.in);
 
@@ -42,7 +42,7 @@ describe('formatPhoneNumber', () => {
     // Arrange
     const tests = ['', null, undefined, '+'];
 
-    tests.forEach((testCase) => {
+    tests.forEach((testCase: any) => {
       // Assert
       expect(() => {
         // Act
@@ -70,7 +70,7 @@ describe('formatWhatsAppNumber', () => {
       },
     ];
 
-    tests.forEach((testCase) => {
+    tests.forEach((testCase: any) => {
       // Act
       const result = formatWhatsAppNumber(testCase.in);
 
@@ -83,7 +83,7 @@ describe('formatWhatsAppNumber', () => {
     // Arrange
     const tests = ['', null, undefined, 'whatsapp:', 'whatsapp:+'];
 
-    tests.forEach((testCase) => {
+    tests.forEach((testCase: any) => {
       // Assert
       expect(() => {
         // Act

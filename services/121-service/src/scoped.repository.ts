@@ -100,7 +100,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
 
   public override async find<Options extends FindManyOptions<T>>(
     options?: Options,
-  ): Promise<FindReturnType<T, Options['select'], Options['relations']>[]> {
+  ): Promise<FindReturnType<T, (Options as any)['select'], (Options as any)['relations']>[]> {
     if (!hasUserScope(this.request)) {
       return this.repository.find(options);
     }
@@ -115,7 +115,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
   public override async findAndCount<Options extends FindManyOptions<T>>(
     options?: Options,
   ): Promise<
-    [FindReturnType<T, Options['select'], Options['relations']>[], number]
+    [FindReturnType<T, (Options as any)['select'], (Options as any)['relations']>[], number]
   > {
     if (!hasUserScope(this.request)) {
       return this.repository.findAndCount(options); // Pass undefined directly if no scope
@@ -133,8 +133,8 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     options: Options,
   ): Promise<FindReturnType<
     T,
-    Options['select'],
-    Options['relations']
+    (Options as any)['select'],
+    (Options as any)['relations']
   > | null> {
     if (!hasUserScope(this.request)) {
       return this.repository.findOne(options);
@@ -150,7 +150,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
 
   public override async findOneOrFail<Options extends FindOneOptions<T>>(
     options: Options,
-  ): Promise<FindReturnType<T, Options['select'], Options['relations']>> {
+  ): Promise<FindReturnType<T, (Options as any)['select'], (Options as any)['relations']>> {
     if (!hasUserScope(this.request)) {
       return this.repository.findOneOrFail(options);
     }

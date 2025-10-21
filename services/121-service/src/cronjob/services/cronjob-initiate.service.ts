@@ -155,7 +155,7 @@ export class CronjobInitiateService {
   public getAllCronJobMethodNames(): string[] {
     const prototype = Object.getPrototypeOf(this);
     const methodNames = Object.getOwnPropertyNames(prototype)
-      .filter((name) => {
+      .filter((name: any) => {
         const descriptor = Object.getOwnPropertyDescriptor(prototype, name);
         return (
           descriptor &&
@@ -163,7 +163,7 @@ export class CronjobInitiateService {
           name !== 'constructor'
         );
       })
-      .filter((name) => name.startsWith('cron'));
+      .filter((name: any) => name.startsWith('cron'));
     return methodNames;
   }
 

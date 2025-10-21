@@ -323,7 +323,7 @@ export class IntersolveVisaApiService {
     const thisYear = now.getFullYear();
     let total = 0;
     const originalTransactionIdsOfExpiredReservations =
-      expiredReserveTransactions.map((r) => r.originalTransactionId);
+      expiredReserveTransactions.map((r: any) => r.originalTransactionId);
     for (const transaction of walletTransactions) {
       const transactionDate = new Date(transaction.createdAt);
       if (

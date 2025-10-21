@@ -16,7 +16,7 @@ export class AzureLoggerMiddleware implements NestMiddleware {
 
   use(request: Request, response: Response, next: NextFunction): void {
     if (this.defaultClient) {
-      const ip = request.headers['x-forwarded-for'];
+      const ip = request.(headers as any)['x-forwarded-for'];
       const body = request.body;
       const { method, path: url } = request;
 

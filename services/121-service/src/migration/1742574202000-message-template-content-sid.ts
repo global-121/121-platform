@@ -30,8 +30,8 @@ export class MessageTemplateContentSid1742574202000
     //   // filter out content no quick reply and non approved
     //   const filteredContents = contents.filter(
     //     (content) =>
-    //       content.types['twilio/quick-reply'] &&
-    //       content.types['twilio/quick-reply']?.body &&
+    //       content.(types as any)['twilio/quick-reply'] &&
+    //       content.(types as any)['twilio/quick-reply']?.body &&
     //       content.approvalRequests.status === 'approved',
     //   );
 
@@ -40,7 +40,7 @@ export class MessageTemplateContentSid1742574202000
     //     let sid: undefined | string = undefined;
     //     for (const content of filteredContents) {
     //       if (
-    //         content.types['twilio/quick-reply']?.body ===
+    //         content.(types as any)['twilio/quick-reply']?.body ===
     //         messageTemplate.message
     //       ) {
     //         sid = content.sid;
@@ -62,7 +62,7 @@ export class MessageTemplateContentSid1742574202000
     //     `SELECT * FROM "121-service"."message_template" where "contentSid" is not null`,
     //   );
     //   console.table(
-    //     messageTemplates.map((messageTemplate) => ({
+    //     messageTemplates.map((messageTemplate: any) => ({
     //       id: messageTemplate.id,
     //       contentSid: messageTemplate.contentSid,
     //       message: messageTemplate.message,

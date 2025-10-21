@@ -136,7 +136,7 @@ describe('Export transactions', () => {
 
     // Check the filename in the Content-Disposition header
     const contentDisposition =
-      transactionsResponse.headers['content-disposition'];
+      transactionsResponse.(headers as any)['content-disposition'];
     expect(contentDisposition).toContain('attachment; filename=');
     expect(contentDisposition).toMatch(/transactions_\d+_.+\.xlsx/);
 

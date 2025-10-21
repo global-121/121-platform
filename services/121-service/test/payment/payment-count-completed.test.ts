@@ -151,7 +151,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       );
 
       const messageHistory = messageHistoryResponse.body;
-      const expectedMessages = messageHistory.filter((message) =>
+      const expectedMessages = messageHistory.filter((message: any) =>
         expectedMessageTranslations.includes(message.attributes.body),
       );
       expect(expectedMessages.length).toBe(1);

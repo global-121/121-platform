@@ -104,7 +104,7 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
       .andWhere('properties.name = :name', { name })
       .orderBy('properties.name', 'ASC')
       .getOne();
-    return configuration?.properties.find((property) => property.name === name)
+    return configuration?.properties.find((property: any) => property.name === name)
       ?.value;
   }
 
@@ -118,14 +118,14 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
     const properties = await this.getProperties(programFspConfigurationId);
 
     for (const name of names) {
-      if (!properties.find((property) => property.name === name)) {
+      if (!properties.find((property: any) => property.name === name)) {
         throw new Error(
           `Configuration with name ${name} not found for ProgramFspConfigurationEntity with id:  ${programFspConfigurationId}`,
         );
       }
     }
 
-    return properties.map((property) => ({
+    return properties.map((property: any) => ({
       name: property.name,
       value: property.value,
     }));

@@ -157,15 +157,15 @@ export class MetricsService {
       });
 
     for await (const row of rows) {
-      if (row['registrationProgramId']) {
-        row['id'] = row['registrationProgramId'];
-        delete row['registrationProgramId'];
+      if ((row as any)['registrationProgramId']) {
+        (row as any)['id'] = (row as any)['registrationProgramId'];
+        delete (row as any)['registrationProgramId'];
       }
 
-      if (typeof row['programFspConfigurationLabel'] === 'object') {
+      if (typeof (row as any)['programFspConfigurationLabel'] === 'object') {
         const preferredLanguage = 'en';
-        row['programFspConfigurationLabel'] = (
-          row['programFspConfigurationLabel'] as any
+        (row as any)['programFspConfigurationLabel'] = (
+          (row as any)['programFspConfigurationLabel'] as any
         )?.[preferredLanguage] as string | undefined;
       }
     }
@@ -175,7 +175,7 @@ export class MetricsService {
       programId,
     });
 
-    const orderedObjects = rows.map((row) => {
+    const orderedObjects = rows.map((row: any) => {
       // Enforce this order of keys if present
       const keyOrder = [
         'referenceId',

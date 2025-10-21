@@ -71,7 +71,7 @@ export class ProgramFspConfigurationsService {
 
     if (programFspConfigurationDto.properties) {
       await this.validateAllowedPropertyNames({
-        propertyNames: programFspConfigurationDto.properties.map((p) => p.name),
+        propertyNames: programFspConfigurationDto.properties.map((p: any) => p.name),
         fspName: programFspConfigurationDto.fspName,
       });
     }
@@ -188,11 +188,11 @@ export class ProgramFspConfigurationsService {
       name,
     );
     await this.validateAllowedPropertyNames({
-      propertyNames: inputProperties.map((p) => p.name),
+      propertyNames: inputProperties.map((p: any) => p.name),
       fspName: config.fspName,
     });
     await this.validateNoDuplicateExistingProperties({
-      propertyNames: inputProperties.map((p) => p.name),
+      propertyNames: inputProperties.map((p: any) => p.name),
       configIdToCheckForDuplicates: config.id,
     });
     const properties = await this.createPropertyEntities(

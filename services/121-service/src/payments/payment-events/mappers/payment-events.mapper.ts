@@ -26,7 +26,7 @@ export class PaymentEventsMapper {
   private static mapEntitiesToEventData(
     paymentEventEntities: PaymentEventEntity[],
   ): PaymentEventDataDto[] {
-    return paymentEventEntities.map((event) => ({
+    return paymentEventEntities.map((event: any) => ({
       id: event.id,
       type: event.type,
       created: event.created,
@@ -46,7 +46,7 @@ export class PaymentEventsMapper {
   ): Partial<Record<PaymentEvent, number>> {
     const count: Partial<Record<PaymentEvent, number>> = {};
 
-    paymentEventEntities.forEach((event) => {
+    paymentEventEntities.forEach((event: any) => {
       count[event.type] = (count[event.type] ?? 0) + 1;
     });
 

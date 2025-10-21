@@ -102,8 +102,8 @@ describe('Program Attachments', () => {
 
     // Assert
     expect(response.status).toBe(HttpStatus.OK);
-    expect(response.headers['content-type']).toBe(testImageMimetype);
-    expect(response.headers['content-disposition']).toContain(
+    expect(response.(headers as any)['content-type']).toBe(testImageMimetype);
+    expect(response.(headers as any)['content-disposition']).toContain(
       `attachment; filename="${testImageFilename}.${testImageExtension}"`,
     );
     expect(response.body.length).toBeGreaterThan(0);

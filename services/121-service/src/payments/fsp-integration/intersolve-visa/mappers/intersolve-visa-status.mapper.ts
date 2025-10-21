@@ -56,15 +56,15 @@ export class IntersolveVisaStatusMapper {
         }, {});
 
         const mappingRow: VisaCard121StatusMapInterface = {
-          TokenBlocked: rowObject['TokenBlocked'] === 'TRUE',
-          TokenStatus: rowObject['TokenStatus'],
-          CardStatus: rowObject['CardStatus'],
-          VisaCard121Status: rowObject['VisaCard121Status']
-            ? rowObject['VisaCard121Status']
+          TokenBlocked: (rowObject as any)['TokenBlocked'] === 'TRUE',
+          TokenStatus: (rowObject as any)['TokenStatus'],
+          CardStatus: (rowObject as any)['CardStatus'],
+          VisaCard121Status: (rowObject as any)['VisaCard121Status']
+            ? (rowObject as any)['VisaCard121Status']
             : 'Unknown', // No need to trim, already done
           VisaCard121StatusExplanation:
-            rowObject['VisaCard121StatusExplanation'],
-          Actions121: rowObject['Actions121'],
+            (rowObject as any)['VisaCard121StatusExplanation'],
+          Actions121: (rowObject as any)['Actions121'],
         };
         this.mapping.push(mappingRow);
       });
@@ -111,8 +111,8 @@ export class IntersolveVisaStatusMapper {
         );
       }
       return {
-        status: matchingRow['VisaCard121Status'] as VisaCard121Status,
-        explanation: matchingRow['VisaCard121StatusExplanation'],
+        status: (matchingRow as any)['VisaCard121Status'] as VisaCard121Status,
+        explanation: (matchingRow as any)['VisaCard121StatusExplanation'],
         actions: actionsArray,
       };
     }

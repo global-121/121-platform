@@ -23,7 +23,7 @@ import {
 
 describe('Payment in progress', () => {
   let accessToken: string;
-  const registrationReferenceIdsPV = registrationsPV.map((r) => r.referenceId);
+  const registrationReferenceIdsPV = registrationsPV.map((r: any) => r.referenceId);
   const registrationReferenceIdsOCW = registrationsOCW.map(
     (r) => r.referenceId,
   );
@@ -275,14 +275,14 @@ describe('Payment in progress', () => {
     // Cleanup to make sure nothing is in progress anymore
     await waitForPaymentTransactionsToComplete({
       programId: programIdPV,
-      paymentReferenceIds: registrationsVisaPV.map((r) => r.referenceId),
+      paymentReferenceIds: registrationsVisaPV.map((r: any) => r.referenceId),
       accessToken,
       maxWaitTimeMs: 30_000,
       paymentId: paymentIdPv,
     });
     await waitForPaymentTransactionsToComplete({
       programId: programIdOCW,
-      paymentReferenceIds: registrationsVisaOcw.map((r) => r.referenceId),
+      paymentReferenceIds: registrationsVisaOcw.map((r: any) => r.referenceId),
       accessToken,
       maxWaitTimeMs: 30_000,
       paymentId: doPaymentOcwResultPaymentNext.body.id,

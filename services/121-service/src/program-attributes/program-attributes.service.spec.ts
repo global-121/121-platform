@@ -74,7 +74,7 @@ describe('ProgramAttributesService', () => {
           'paymentCountRemaining',
         ];
 
-      const resultPropertyNames = result.map((r) => r.name);
+      const resultPropertyNames = result.map((r: any) => r.name);
 
       expect(result).toBeDefined();
       // Test the mapping

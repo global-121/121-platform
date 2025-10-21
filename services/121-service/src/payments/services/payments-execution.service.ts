@@ -195,7 +195,7 @@ export class PaymentsExecutionService {
     programFspConfigurationNames: string[],
   ): Promise<void> {
     const validationResults = await Promise.all(
-      programFspConfigurationNames.map((name) =>
+      programFspConfigurationNames.map((name: any) =>
         this.validateMissingFspConfigurations(programId, name),
       ),
     );
@@ -426,7 +426,7 @@ export class PaymentsExecutionService {
       });
 
     const referenceIdsWithLatestTransactionFailedForPayment =
-      latestTransactionsFailedForPayment.map((t) => t.referenceId);
+      latestTransactionsFailedForPayment.map((t: any) => t.referenceId);
 
     if (!referenceIdsWithLatestTransactionFailedForPayment.length) {
       const errors = 'No failed transactions found for this payment.';
@@ -505,7 +505,7 @@ export class PaymentsExecutionService {
         },
       );
 
-    return registrations.map((row) => ({
+    return registrations.map((row: any) => ({
       transactionAmount: amount * row.paymentAmountMultiplier,
       referenceId: row.referenceId,
       fspName: row.fspName,

@@ -167,7 +167,7 @@ export class TransactionsService {
       const savedTransactionEntities =
         await this.transactionScopedRepository.find({
           where: {
-            id: In(savedTransactions.map((i) => i.id)),
+            id: In(savedTransactions.map((i: any) => i.id)),
           },
         });
 

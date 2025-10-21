@@ -100,8 +100,8 @@ export class PaymentsExcelFspService {
 
   private getFspNamesThatRequireInstructions(): Fsps[] {
     return Object.values(FSP_SETTINGS)
-      .filter((fsp) => [FspIntegrationType.csv].includes(fsp.integrationType))
-      .map((fsp) => fsp.name);
+      .filter((fsp: any) => [FspIntegrationType.csv].includes(fsp.integrationType))
+      .map((fsp: any) => fsp.name);
   }
 
   private filterTransactionsWithFspInstructionBasedOnStatus(
@@ -109,9 +109,9 @@ export class PaymentsExcelFspService {
     programFspConfigEntitiesWithFspInstruction: ProgramFspConfigurationEntity[],
   ): TransactionReturnDto[] {
     const programFspConfigNamesThatRequireInstructions =
-      programFspConfigEntitiesWithFspInstruction.map((c) => c.name);
+      programFspConfigEntitiesWithFspInstruction.map((c: any) => c.name);
 
-    const transactionsWithFspInstruction = transactions.filter((t) =>
+    const transactionsWithFspInstruction = transactions.filter((t: any) =>
       programFspConfigNamesThatRequireInstructions.includes(
         t.programFspConfigurationName,
       ),

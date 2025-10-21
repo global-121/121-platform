@@ -258,7 +258,7 @@ export class MockSeedFactoryService {
     // Get all existing customers and their registrationIds
     const existingCustomers = await customerRepo.find();
     const existingRegistrationIds = new Set(
-      existingCustomers.map((c) => c.registrationId),
+      existingCustomers.map((c: any) => c.registrationId),
     );
 
     const customers: DeepPartial<IntersolveVisaCustomerEntity>[] = [];
@@ -272,18 +272,18 @@ export class MockSeedFactoryService {
     }
     // Batch insert customers
     const batchSize = 2500;
-    let savedCustomerIds: number[] = [...existingCustomers.map((c) => c.id)];
+    let savedCustomerIds: number[] = [...existingCustomers.map((c: any) => c.id)];
     for (const batch of chunk(customers, batchSize)) {
       const insertResult = await customerRepo.insert(batch as any[]);
       savedCustomerIds = savedCustomerIds.concat(
-        insertResult.identifiers.map((idObj) => idObj.id),
+        insertResult.identifiers.map((idObj: any) => idObj.id),
       );
     }
 
     // Get all existing parent wallets and their customer IDs
     const existingParentWallets = await parentWalletRepo.find();
     const existingParentWalletCustomerIds = new Set(
-      existingParentWallets.map((w) => w.intersolveVisaCustomerId),
+      existingParentWallets.map((w: any) => w.intersolveVisaCustomerId),
     );
 
     const parentWallets: DeepPartial<IntersolveVisaParentWalletEntity>[] = [];
@@ -302,19 +302,19 @@ export class MockSeedFactoryService {
     }
     // Batch insert parent wallets
     let savedParentWalletIds: number[] = [
-      ...existingParentWallets.map((w) => w.id),
+      ...existingParentWallets.map((w: any) => w.id),
     ];
     for (const batch of chunk(parentWallets, batchSize)) {
       const saved = await parentWalletRepo.insert(batch as any[]);
       savedParentWalletIds = savedParentWalletIds.concat(
-        saved.identifiers.map((idObj) => idObj.id),
+        saved.identifiers.map((idObj: any) => idObj.id),
       );
     }
 
     // Get all existing child wallets and their parent wallet IDs
     const existingChildWallets = await childWalletRepo.find();
     const existingChildWalletParentIds = new Set(
-      existingChildWallets.map((w) => w.intersolveVisaParentWalletId),
+      existingChildWallets.map((w: any) => w.intersolveVisaParentWalletId),
     );
 
     const childWallets: DeepPartial<IntersolveVisaChildWalletEntity>[] = [];
@@ -491,13 +491,13 @@ export class MockSeedFactoryService {
       const insertResult = await voucherRepo.insert(batch as any[]);
       if (insertResult && Array.isArray(insertResult.identifiers)) {
         insertedVoucherIds.push(
-          ...insertResult.identifiers.map((idObj) => idObj.id),
+          ...insertResult.identifiers.map((idObj: any) => idObj.id),
         );
       }
     }
 
     const voucherRegistrationIds = new Set(
-      voucherRegistrations.map((r) => r.id),
+      voucherRegistrations.map((r: any) => r.id),
     );
 
     // Map inserted IDs to registrationIds for export voucher creation

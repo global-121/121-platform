@@ -40,7 +40,7 @@ describe('comparison.helper', () => {
         },
       ];
 
-      testCases.forEach((testCase) => {
+      testCases.forEach((testCase: any) => {
         // Act
         const result = isSameAsString(testCase.a, testCase.b);
 

@@ -66,7 +66,7 @@ export class SafaricomReconciliationController {
     );
     if (errors.length) {
       // Format the errors to match the default NestJS validation error response
-      const errorMessages = errors.map((err) => ({
+      const errorMessages = errors.map((err: any) => ({
         property: err.property,
         constraints: err.constraints,
       }));

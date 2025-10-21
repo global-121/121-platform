@@ -55,7 +55,7 @@ export class PaymentsReportingService {
       take: limitNumberOfPayments,
     });
 
-    const payments = rawPayments.map((payment) => ({
+    const payments = rawPayments.map((payment: any) => ({
       paymentId: payment.id,
       paymentDate: payment.created,
     }));
@@ -232,7 +232,7 @@ export class PaymentsReportingService {
       return [];
     }
 
-    const referenceIds = transactions.map((t) => t.registrationReferenceId);
+    const referenceIds = transactions.map((t: any) => t.registrationReferenceId);
 
     select.push(GenericRegistrationAttributes.referenceId);
     const registrationViews =
@@ -242,10 +242,10 @@ export class PaymentsReportingService {
 
     // Create a map for faster lookups
     const registrationViewMap = new Map(
-      registrationViews.map((item) => [item.referenceId, item]),
+      registrationViews.map((item: any) => [item.referenceId, item]),
     );
 
-    const transactionsEnriched = transactions.map((transaction) => {
+    const transactionsEnriched = transactions.map((transaction: any) => {
       const registrationView = registrationViewMap.get(
         transaction.registrationReferenceId,
       );

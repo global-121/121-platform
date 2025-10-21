@@ -31,8 +31,8 @@ export enum AdditionalActionType {
 export type ActionType = ExportType | AdditionalActionType;
 
 // Add both enum together to one array so it can be used as validator in the DTO
-const ExportActionArray = Object.values(ExportType).map((item) => String(item));
-const AdditionalActionArray = Object.values(AdditionalActionType).map((item) =>
+const ExportActionArray = Object.values(ExportType).map((item: any) => String(item));
+const AdditionalActionArray = Object.values(AdditionalActionType).map((item: any) =>
   String(item),
 );
 export const ActionArray = ExportActionArray.concat(AdditionalActionArray);

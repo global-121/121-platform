@@ -42,10 +42,10 @@ describe('Mock registrations', () => {
 
     // Assert unique phone numbers and whatsapp phone numbers
     const uniquePhoneNumbers = new Set(
-      registrationsResponse.body.data.map((r) => r.phoneNumber),
+      registrationsResponse.body.data.map((r: any) => r.phoneNumber),
     );
     const uniqueWhatsappPhoneNumbers = new Set(
-      registrationsResponse.body.data.map((r) => r.whatsappPhoneNumber),
+      registrationsResponse.body.data.map((r: any) => r.whatsappPhoneNumber),
     );
     expect(uniquePhoneNumbers.size).toBe(4);
     expect(uniqueWhatsappPhoneNumbers.size).toBe(4);

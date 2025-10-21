@@ -398,7 +398,7 @@ export class RegistrationsService {
       let errorMessage: object | string = '';
       if (Array.isArray(errorResponse)) {
         errorMessage = errorResponse
-          .map((err) => `${err.column}: ${err.error}`)
+          .map((err: any) => `${err.column}: ${err.error}`)
           .join(', ');
       } else {
         errorMessage = errorResponse;
@@ -580,7 +580,7 @@ export class RegistrationsService {
 
     const intersolveVisaAttributeNames = FSP_SETTINGS[
       Fsps.intersolveVisa
-    ].attributes.map((attr) => attr.name) as string[];
+    ].attributes.map((attr: any) => attr.name) as string[];
     if (
       env.INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION &&
       intersolveVisaAttributeNames.includes(attribute)
@@ -672,7 +672,7 @@ export class RegistrationsService {
       await this.registrationScopedRepository.find({
         where: { phoneNumber: Equal(phoneNumber) },
       })
-    ).map((r) => {
+    ).map((r: any) => {
       return {
         programId: r.programId,
         referenceId: r.referenceId,
@@ -796,7 +796,7 @@ export class RegistrationsService {
     if (duplicates.length === 0) {
       return [];
     }
-    const referenceIds = duplicates.map((d) => d.referenceId);
+    const referenceIds = duplicates.map((d: any) => d.referenceId);
     // Get the full names of the duplicates using the pagination functionality
     // This is done to avoid duplicating the complex logic of retrieving full names, which is already implemented in the pagination service
     // TODO: In the future, this logic should be refactored to reside in the registration repository
@@ -809,7 +809,7 @@ export class RegistrationsService {
       );
 
     // Add the name to the duplicate information together in one object
-    return duplicates.map((duplicate) => {
+    return duplicates.map((duplicate: any) => {
       const registration = registrationViews.find(
         (r) => r.id === duplicate.registrationId,
       );
@@ -853,8 +853,8 @@ export class RegistrationsService {
     });
 
     if (registrations.length !== registrationIds.length) {
-      const foundIds = registrations.map((reg) => reg.id);
-      const missingIds = registrationIds.filter((id) => !foundIds.includes(id));
+      const foundIds = registrations.map((reg: any) => reg.id);
+      const missingIds = registrationIds.filter((id: any) => !foundIds.includes(id));
 
       const error = `Not all registrations were found in program ${programId}. Expected ${registrationIds.length} but found ${registrations.length}. Missing registraitonIds: ${missingIds.join(', ')}`;
       throw new HttpException(error, HttpStatus.BAD_REQUEST);

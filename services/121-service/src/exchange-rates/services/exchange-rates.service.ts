@@ -59,6 +59,6 @@ export class ExchangeRatesService {
         .where('program.currency != :euroCode', { euroCode })
         .distinct()
         .getRawMany()
-    ).map((el) => el.program_currency);
+    ).map((el: any) => el.program_currency);
   }
 }

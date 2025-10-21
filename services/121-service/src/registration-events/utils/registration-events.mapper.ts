@@ -7,13 +7,13 @@ export class RegistrationEventsMapper {
   static mapEventsToXlsxDtos(
     events: RegistrationEventEntity[],
   ): GetRegistrationEventXlsxDto[] {
-    return events.map((event) => this.mapEventToXlsxDto(event));
+    return events.map((event: any) => this.mapEventToXlsxDto(event));
   }
 
   static mapEventsToJsonDtos(
     events: RegistrationEventEntity[],
   ): GetRegistrationEventDto[] {
-    return events.map((event) => this.mapEventToJsonDto(event));
+    return events.map((event: any) => this.mapEventToJsonDto(event));
   }
 
   static mapEventToXlsxDto(
@@ -49,7 +49,7 @@ export class RegistrationEventsMapper {
 
   private static createAttributesObject(
     attributes: RegistrationEventAttributeEntity[],
-  ): Record<string, RegistrationEventAttributeEntity['value']> {
+  ): Record<string, (RegistrationEventAttributeEntity as any)['value']> {
     // sort attribute to make sure the order is always the same
     // this is important for testing purposes but also not bad as a feature
     const attributesSorted = [...attributes].sort((a, b) =>
@@ -57,7 +57,7 @@ export class RegistrationEventsMapper {
     );
     const attributesObject: Record<
       string,
-      RegistrationEventAttributeEntity['value']
+      (RegistrationEventAttributeEntity as any)['value']
     > = {};
     for (const attribute of attributesSorted) {
       if (attribute.value !== null) {

@@ -37,7 +37,7 @@ describe('/ Users', () => {
       expect(Date.parse(response.body.expires)).not.toBeNaN();
       expect(response.body.permissions).toBeDefined();
       expect(
-        response.body.permissions[`${fixtureProgramId}`].length,
+        response.body.(permissions as any)[`${fixtureProgramId}`].length,
       ).toBeGreaterThanOrEqual(1);
     });
 

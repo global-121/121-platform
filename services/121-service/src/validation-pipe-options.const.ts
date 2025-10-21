@@ -6,7 +6,7 @@ export const ValidationPipeOptions = {
   forbidUnknownValues: true,
   exceptionFactory: (errors: any) => {
     for (const e of errors) {
-      if (e.constraints && e.constraints['unknownValue']) {
+      if (e.constraints && e.(constraints as any)['unknownValue']) {
         console.log('e: ', e);
         throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
       }

@@ -60,7 +60,7 @@ export class FixDoubleVoucherPvPayment1671705921261007
     //     set
     //       payment = 168
     //     where
-    //       id in (${transactionIdsThatNeedToBeUpdated.map((t) => t.id)})`);
+    //       id in (${transactionIdsThatNeedToBeUpdated.map((t: any) => t.id)})`);
     //   }
     //   const intersolveVoucherIdsThatNeedUpdate = await queryRunner.query(`
     //     select
@@ -88,7 +88,7 @@ export class FixDoubleVoucherPvPayment1671705921261007
     //     set
     //       payment = 168
     //     where
-    //       id in (${intersolveVoucherIdsThatNeedUpdate.map((t) => t.id)})`);
+    //       id in (${intersolveVoucherIdsThatNeedUpdate.map((t: any) => t.id)})`);
     //   }
     //   await queryRunner.query(`TRUNCATE "121-service"."latest_transaction"`);
     //   await queryRunner.query(`

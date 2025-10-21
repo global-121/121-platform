@@ -160,7 +160,7 @@ describe('Do payment with Excel FSP', () => {
     it('Should return all program-registration-attributes on Get FSP instruction with Excel-FSP when "columnsToExport" is not set', async () => {
       // Arrange
       const programAttributeColumns =
-        programTest.programRegistrationAttributes.map((pa) => pa.name);
+        programTest.programRegistrationAttributes.map((pa: any) => pa.name);
       programAttributeColumns.concat(['amount']);
 
       const fspConfigurations = await getProgramFspConfigurations({

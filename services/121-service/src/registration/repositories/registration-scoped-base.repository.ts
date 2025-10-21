@@ -25,7 +25,7 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
 
   public async find<Options extends FindManyOptions<T>>(
     options?: Options,
-  ): Promise<FindReturnType<T, Options['select'], Options['relations']>[]> {
+  ): Promise<FindReturnType<T, (Options as any)['select'], (Options as any)['relations']>[]> {
     if (!hasUserScope(this.request)) {
       return this.repository.find(options);
     }
@@ -41,8 +41,8 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
     options: Options,
   ): Promise<FindReturnType<
     T,
-    Options['select'],
-    Options['relations']
+    (Options as any)['select'],
+    (Options as any)['relations']
   > | null> {
     if (!hasUserScope(this.request)) {
       return this.repository.findOne(options);
@@ -57,7 +57,7 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
 
   public async findOneOrFail<Options extends FindOneOptions<T>>(
     options: Options,
-  ): Promise<FindReturnType<T, Options['select'], Options['relations']>> {
+  ): Promise<FindReturnType<T, (Options as any)['select'], (Options as any)['relations']>> {
     if (!hasUserScope(this.request)) {
       return this.repository.findOneOrFail(options);
     }

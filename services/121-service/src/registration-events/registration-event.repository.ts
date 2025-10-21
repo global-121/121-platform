@@ -60,15 +60,15 @@ export class RegistrationEventScopedRepository extends ScopedRepository<Registra
       whereStatement.registration.id = registrationId;
     }
     if (queryParams) {
-      if (queryParams['referenceId']) {
-        whereStatement.registration.referenceId = queryParams['referenceId'];
+      if ((queryParams as any)['referenceId']) {
+        whereStatement.registration.referenceId = (queryParams as any)['referenceId'];
       }
 
       whereStatement.created = Between(
-        queryParams['fromDate']
-          ? new Date(queryParams['fromDate'])
+        (queryParams as any)['fromDate']
+          ? new Date((queryParams as any)['fromDate'])
           : new Date(2000, 1, 1),
-        queryParams['toDate'] ? new Date(queryParams['toDate']) : new Date(),
+        (queryParams as any)['toDate'] ? new Date((queryParams as any)['toDate']) : new Date(),
       );
     }
     return whereStatement;

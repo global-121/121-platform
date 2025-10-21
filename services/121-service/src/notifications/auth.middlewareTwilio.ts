@@ -18,7 +18,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     }
 
     let twilioSignature: string | string[] | undefined =
-      req.headers['x-twilio-signature'];
+      req.(headers as any)['x-twilio-signature'];
     if (Array.isArray(twilioSignature)) {
       twilioSignature = twilioSignature[0];
     }

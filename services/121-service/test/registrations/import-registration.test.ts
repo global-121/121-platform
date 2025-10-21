@@ -414,7 +414,7 @@ describe('Import a registration', () => {
     );
 
     const messageHistory = messageHistoryResponse.body;
-    const expectedMessages = messageHistory.filter((message) =>
+    const expectedMessages = messageHistory.filter((message: any) =>
       expectedMessageAttribute.values.includes(message.attributes.body),
     );
     expect(expectedMessages.length).toBe(1);

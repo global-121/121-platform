@@ -368,7 +368,7 @@ export class IntersolveVoucherService {
     // if success, then only update if transaction is a 'voucher sent' message
     // if error, then always update
     if (status === TransactionStatusEnum.success) {
-      transactionToUpdateFilter['transactionStep'] = 2;
+      (transactionToUpdateFilter as any)['transactionStep'] = 2;
     }
     // No scoped needed as this is for incoming WhatsApp messages
     await this.transactionRepository.update(transactionToUpdateFilter, {
@@ -688,7 +688,7 @@ export class IntersolveVoucherService {
     }
 
     transactionResult.customData = JSON.parse(JSON.stringify({}));
-    transactionResult.customData['IntersolvePayoutStatus'] =
+    transactionResult.(customData as any)['IntersolvePayoutStatus'] =
       IntersolveVoucherPayoutStatus.VoucherSent;
     transactionResult.status = status;
     transactionResult.fspName = Fsps.intersolveVoucherWhatsapp;

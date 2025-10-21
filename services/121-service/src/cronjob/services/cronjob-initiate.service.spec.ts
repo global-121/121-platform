@@ -10,16 +10,16 @@ describe('Cronjob initiation', () => {
     cronjobInitiateService = new CronjobInitiateService();
     // Make this a noop.
     jest
-      .spyOn(cronjobInitiateService.axiosCallsService, 'getAccessToken')
-      .mockResolvedValue(true);
+      .spyOn((cronjobInitiateService as any).axiosCallsService, 'getAccessToken')
+      .mockResolvedValue(true as any);
     // Make this a noop. We assert on this return value.
     jest
-      .spyOn(cronjobInitiateService.axiosCallsService, 'accessTokenToHeaders')
-      .mockResolvedValue(testHeader);
+      .spyOn((cronjobInitiateService as any).axiosCallsService, 'accessTokenToHeaders')
+      .mockResolvedValue(testHeader as any);
     // We assert on this return value.
     jest
-      .spyOn(cronjobInitiateService.axiosCallsService, 'getBaseUrl')
-      .mockResolvedValue(exampleApiUrl);
+      .spyOn((cronjobInitiateService as any).axiosCallsService, 'getBaseUrl')
+      .mockResolvedValue(exampleApiUrl as any);
   });
 
   afterAll(jest.restoreAllMocks);
@@ -27,11 +27,11 @@ describe('Cronjob initiation', () => {
   it('that do PUT requests should call httpService.put and pass correct arguments', async () => {
     // Arrange
     const mockFn = jest
-      .spyOn(cronjobInitiateService.httpService, 'put')
-      .mockResolvedValue(true);
+      .spyOn((cronjobInitiateService as any).httpService, 'put')
+      .mockResolvedValue(true as any);
 
     // Act
-    await cronjobInitiateService.cronValidateCommercialBankEthiopiaAccountEnquiries();
+    await cronjobInitiateService.cronValidateCommercialBankEthiopiaAccountEnquiries('testMethod');
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
@@ -45,11 +45,11 @@ describe('Cronjob initiation', () => {
   it('that do PATCH requests should call httpService.patch and pass correct arguments', async () => {
     // Arrange
     const mockFn = jest
-      .spyOn(cronjobInitiateService.httpService, 'patch')
-      .mockResolvedValue(true);
+      .spyOn((cronjobInitiateService as any).httpService, 'patch')
+      .mockResolvedValue(true as any);
 
     // Act
-    await cronjobInitiateService.cronRetrieveAndUpdatedUnusedIntersolveVouchers();
+    await cronjobInitiateService.cronRetrieveAndUpdatedUnusedIntersolveVouchers('testMethod');
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
@@ -63,11 +63,11 @@ describe('Cronjob initiation', () => {
   it('that do POST requests should call httpService.post and pass correct arguments', async () => {
     // Arrange
     const mockFn = jest
-      .spyOn(cronjobInitiateService.httpService, 'post')
-      .mockResolvedValue(true);
+      .spyOn((cronjobInitiateService as any).httpService, 'post')
+      .mockResolvedValue(true as any);
 
     // Act
-    await cronjobInitiateService.cronCancelByRefposIntersolve();
+    await cronjobInitiateService.cronCancelByRefposIntersolve('testMethod');
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
@@ -81,11 +81,11 @@ describe('Cronjob initiation', () => {
   it('that do DELETE requests should call httpService.delete and pass correct arguments', async () => {
     // Arrange
     const mockFn = jest
-      .spyOn(cronjobInitiateService.httpService, 'delete')
-      .mockResolvedValue(true);
+      .spyOn((cronjobInitiateService as any).httpService, 'delete')
+      .mockResolvedValue(true as any);
 
     // Act
-    await cronjobInitiateService.cronRemoveDeprecatedImageCodes();
+    await cronjobInitiateService.cronRemoveDeprecatedImageCodes('testMethod');
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
@@ -124,7 +124,7 @@ describe('Cronjob initiation', () => {
   it('should log a useful message when a request fails', async () => {
     // Arrange
     const mockFn = jest
-      .spyOn(cronjobInitiateService.httpService, 'patch')
+      .spyOn((cronjobInitiateService as any).httpService, 'patch')
       .mockImplementation(() => {
         throw new Error('patch request failed');
       });

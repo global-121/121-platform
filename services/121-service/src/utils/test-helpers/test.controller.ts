@@ -42,7 +42,7 @@ export class TestController {
     const missing = this.performExhaustivenessCheck();
     const missingEntries = Object.entries(missing).map(
       ([entity, path]) =>
-        `${entity}: [${path.map((p) => `'${p}'`).join(', ')}]`,
+        `${entity}: [${path.map((p: any) => `'${p}'`).join(', ')}]`,
     );
     console.log('missingEntries: ', missingEntries);
     return missingEntries;

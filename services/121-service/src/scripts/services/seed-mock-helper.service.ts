@@ -205,10 +205,10 @@ export class SeedMockHelperService {
     filter: Record<string, string> = {},
   ): Promise<any> {
     const queryParams = new URLSearchParams();
-    attributes.forEach((attr) => queryParams.append('select', attr));
+    attributes.forEach((attr: any) => queryParams.append('select', attr));
     if (page) queryParams.append('page', page.toString());
     if (limit) queryParams.append('limit', limit.toString());
-    Object.keys(filter).forEach((key) => queryParams.append(key, filter[key]));
+    Object.keys(filter).forEach((key: any) => queryParams.append(key, filter[key]));
 
     const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/registrations?${queryParams}`;
     const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);

@@ -51,7 +51,7 @@ describe('Registrations - [Scoped]', () => {
 
     await awaitChangeRegistrationStatus({
       programId: OcwProgramId,
-      referenceIds: registrationsOCW.map((r) => r.referenceId),
+      referenceIds: registrationsOCW.map((r: any) => r.referenceId),
       status: RegistrationStatusEnum.included,
       accessToken,
     });

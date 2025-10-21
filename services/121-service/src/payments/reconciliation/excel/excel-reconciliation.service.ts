@@ -45,7 +45,7 @@ export class ExcelReconciliationService {
 
   public async getImportInstructionsTemplate(
     programId: number,
-  ): Promise<(GetImportTemplateResponseDto as any)[]> {
+  ): Promise<GetImportTemplateResponseDto[]> {
     const programWithExcelFspConfigs = await this.programRepository.findOne({
       where: {
         id: Equal(programId),
@@ -68,7 +68,7 @@ export class ExcelReconciliationService {
       );
     }
 
-    const templates: (GetImportTemplateResponseDto as any)[] = [];
+    const templates: GetImportTemplateResponseDto[] = [];
     for (const fspConfig of programWithExcelFspConfigs.programFspConfigurations) {
       const matchColumn = await this.excelService.getImportMatchColumn(
         fspConfig.id,
@@ -88,7 +88,7 @@ export class ExcelReconciliationService {
     paymentId: number,
     userId: number,
   ): Promise<{
-    importResult: (ReconciliationFeedbackDto as any)[];
+    importResult: ReconciliationFeedbackDto[];
     aggregateImportResult: {
       countPaymentFailed: number;
       countPaymentSuccess: number;
@@ -165,7 +165,7 @@ export class ExcelReconciliationService {
       );
     }
 
-    const feedback: (ReconciliationFeedbackDto as any)[] = importResults.map(
+    const feedback: ReconciliationFeedbackDto[] = importResults.map(
       (r) => r.feedback,
     );
     const aggregateImportResult = this.countFeedbackResults(feedback);
@@ -182,7 +182,7 @@ export class ExcelReconciliationService {
     };
   }
 
-  private countFeedbackResults(feedback: (ReconciliationFeedbackDto as any)[]): {
+  private countFeedbackResults(feedback: ReconciliationFeedbackDto[]): {
     countPaymentSuccess: number;
     countPaymentFailed: number;
     countNotFound: number;
@@ -220,12 +220,12 @@ export class ExcelReconciliationService {
     csvContents: csvContents;
     paymentId: number;
     programId: number;
-    fspConfigs: (ProgramFspConfigurationEntity as any)[];
-  }): Promise<(ReconciliationResult as any)[]> {
+    fspConfigs: ProgramFspConfigurationEntity[];
+  }): Promise<ReconciliationResult[]> {
     const validatedExcelImport = csvContents;
 
     // First set up unfilled feedback object based on import rows ..
-    const crossFspConfigImportResults: (ReconciliationResult as any)[] = [];
+    const crossFspConfigImportResults: ReconciliationResult[] = [];
     for (const row of validatedExcelImport) {
       const resultRow = new ReconciliationResult();
       resultRow.feedback = {
@@ -258,7 +258,7 @@ export class ExcelReconciliationService {
       // Convert the array into a map for increased performance (hash-map lookup)
       const importResultForFspConfigMap = new Map(
         importResultForFspConfig.map((item: any) => [
-          item.(feedback as any)[matchColumn],
+          item.feedback[matchColumn],
           item,
         ]),
       );
@@ -266,13 +266,13 @@ export class ExcelReconciliationService {
       // .. then loop over each row of the original import to update if a match has been found with this fspConfig
       crossFspConfigImportResults.forEach((row, index) => {
         const importResultForFspConfigRow = importResultForFspConfigMap.get(
-          row.(feedback as any)[matchColumn],
+          row.feedback[matchColumn],
         );
         if (
           importResultForFspConfigRow?.feedback.importStatus !==
           ImportStatus.notFound
         ) {
-          (crossFspConfigImportResults as any)[index] = importResultForFspConfigRow!;
+          crossFspConfigImportResults[index] = importResultForFspConfigRow!;
         }
       });
     }
@@ -291,10 +291,10 @@ export class ExcelReconciliationService {
   }: {
     programId: number;
     paymentId: number;
-    validatedExcelImport: (object as any)[];
+    validatedExcelImport: object[];
     fspConfig: ProgramFspConfigurationEntity;
     matchColumn: string;
-  }): Promise<(ReconciliationResult as any)[]> {
+  }): Promise<ReconciliationResult[]> {
     const registrationsForReconciliation =
       await this.getRegistrationsForReconciliation(
         programId,
@@ -329,7 +329,7 @@ export class ExcelReconciliationService {
     paymentId: number,
     matchColumn: string,
     programFspConfigurationId: number,
-  ): Promise<(MappedPaginatedRegistrationDto as any)[]> {
+  ): Promise<MappedPaginatedRegistrationDto[]> {
     const qb =
       this.registrationViewScopedRepository.getQueryBuilderForFspInstructions({
         programId,
@@ -359,11 +359,11 @@ export class ExcelReconciliationService {
         (ExcelReconciliationService as any)['getRegistrationsForReconciliation']
       >
     >,
-    importRecords: (object as any)[],
+    importRecords: object[],
     matchColumn: string,
-    existingTransactions: (TransactionReturnDto as any)[],
+    existingTransactions: TransactionReturnDto[],
     fspConfigId: number,
-  ): (ReconciliationResult as any)[] {
+  ): ReconciliationResult[] {
     // First order registrations by referenceId to join amount from transactions
     const registrationsOrderedByReferenceId = registrations.sort((a, b) =>
       a.referenceId.localeCompare(b.referenceId),
@@ -377,32 +377,32 @@ export class ExcelReconciliationService {
 
     // Then order registrations and importRecords by matchColumn to join them
     const importRecordsOrdered = importRecords.sort((a, b) =>
-      (a as any)[matchColumn]?.localeCompare((b as any)[matchColumn]),
+      a[matchColumn]?.localeCompare(b[matchColumn]),
     );
     const registrationsOrdered = registrationsWithAmount.sort((a, b) =>
-      ((a as any)[matchColumn] as string).localeCompare((b as any)[matchColumn] as string),
+      (a[matchColumn] as string).localeCompare(b[matchColumn] as string),
     );
 
-    const resultFeedback: (ReconciliationResult as any)[] = [];
+    const resultFeedback: ReconciliationResult[] = [];
     for (const record of importRecordsOrdered) {
       let transaction: PaTransactionResultDto | null = null;
       let importStatus = ImportStatus.notFound;
 
       if (
         ![TransactionStatusEnum.success, TransactionStatusEnum.error].includes(
-          (record as any)[this.statusColumnName]?.toLowerCase(),
+          record[this.statusColumnName]?.toLowerCase(),
         )
       ) {
         const errors = `The 'status' column is either missing or contains unexpected values. It should only contain 'success' or 'error'.`;
         throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-      } else if ((record as any)[matchColumn] === undefined) {
+      } else if (record[matchColumn] === undefined) {
         const errors = `The match column '${matchColumn}' is missing.`;
         throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
       }
 
       // find registration with matching matchColumn value
       const matchedRegistration = registrationsOrdered.find(
-        (r) => (r as any)[matchColumn] === (record as any)[matchColumn],
+        (r) => r[matchColumn] === record[matchColumn],
       );
       if (matchedRegistration) {
         transaction = this.createTransactionResult(matchedRegistration, record);
@@ -417,7 +417,7 @@ export class ExcelReconciliationService {
           status: transaction?.status ?? null,
           message: transaction?.message ?? null,
           importStatus,
-          [matchColumn]: (record as any)[matchColumn],
+          [matchColumn]: record[matchColumn],
         },
         programFspConfigurationId: matchedRegistration
           ? fspConfigId
@@ -434,10 +434,10 @@ export class ExcelReconciliationService {
     importRecords,
     matchColumn,
   }: {
-    importRecords: (object as any)[];
+    importRecords: object[];
     matchColumn: string;
   }): void {
-    const matchColumnValues = importRecords.map((r: any) => (r as any)[matchColumn]);
+    const matchColumnValues = importRecords.map((r: any) => r[matchColumn]);
     const uniqueMatchColumnValues = new Set(matchColumnValues);
     if (uniqueMatchColumnValues.size !== matchColumnValues.length) {
       const errors = `The match column '${matchColumn}' contains duplicate values.`;

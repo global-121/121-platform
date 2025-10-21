@@ -322,7 +322,7 @@ describe('RegistrationsService', () => {
         { smallerRegistrationId: 3, largerRegistrationId: 4 },
       ];
 
-      expectedPairs.forEach((pair) => {
+      expectedPairs.forEach((pair: any) => {
         expect(uniqueRegistrationPairRepository.store).toHaveBeenCalledWith(
           pair,
         );

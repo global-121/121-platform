@@ -40,7 +40,7 @@ export class PaymentsReportingHelperService {
         },
       });
 
-    return programRegistrationAttributes.map((attr) => attr.name);
+    return programRegistrationAttributes.map((attr: any) => attr.name);
   }
 
   private async getDefaultSelect({

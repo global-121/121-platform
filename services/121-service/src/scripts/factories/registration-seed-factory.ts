@@ -42,7 +42,7 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
     let currentMax = maxResult?.max || 0;
 
     const newRegistrationsData: DeepPartial<RegistrationEntity>[] =
-      existingRegistrations.map((registration) => {
+      existingRegistrations.map((registration: any) => {
         currentMax += 1;
         return {
           programId: registration.programId,

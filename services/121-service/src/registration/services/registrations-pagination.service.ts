@@ -103,7 +103,7 @@ export class RegistrationsPaginationService {
     if (query.filter) {
       const filters = Object.keys(query.filter);
       if (
-        relationNamesWithoutPhonenumber.some((key) => filters.includes(key))
+        relationNamesWithoutPhonenumber.some((key: any) => filters.includes(key))
       ) {
         queryBuilder = this.filterOnRegistrationAttributeData(
           query,
@@ -132,7 +132,7 @@ export class RegistrationsPaginationService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      if (relationNamesWithoutPhonenumber.some((key) => sortByKey === key)) {
+      if (relationNamesWithoutPhonenumber.some((key: any) => sortByKey === key)) {
         queryBuilder =
           this.registrationViewScopedRepository.sortOnRegistrationData(
             sortByKey,
@@ -162,7 +162,7 @@ export class RegistrationsPaginationService {
     let attributeRelationsSelect = [...programRegistrationAttributeRelations];
     const { select } = query;
     if (select !== undefined && select.length > 0) {
-      attributeRelationsSelect = attributeRelationsSelect.filter((relation) =>
+      attributeRelationsSelect = attributeRelationsSelect.filter((relation: any) =>
         select.includes(relation.name),
       );
     }
@@ -203,7 +203,7 @@ export class RegistrationsPaginationService {
     let totalPages = 1;
 
     let allRegistrations: Awaited<
-      ReturnType<RegistrationsPaginationService['getPaginate']>
+      ReturnType<(RegistrationsPaginationService as any)['getPaginate']>
     >['data'] = [];
 
     for (let i = 0; i < totalPages; i++) {
@@ -399,7 +399,7 @@ export class RegistrationsPaginationService {
     hasPersonalReadPermission: boolean;
     programId: number;
   }): Promise<MappedPaginatedRegistrationDto[]> {
-    return paginatedResult.data.map((registration) => {
+    return paginatedResult.data.map((registration: any) => {
       const mappedRootRegistration =
         RegistrationViewsMapper.selectRegistrationRootFields({
           registration,

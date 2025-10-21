@@ -24,7 +24,7 @@ export class ProgramRegistrationAttributeRepository extends Repository<ProgramRe
       program: { id: Equal(programId) },
     };
     if (select && select.length > 0) {
-      where['name'] = In(select);
+      (where as any)['name'] = In(select);
     }
     return await this.repository.find({
       where,

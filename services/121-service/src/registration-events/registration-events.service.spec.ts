@@ -108,7 +108,7 @@ describe('RegistrationEventsService', () => {
     userService = unitRef.get(UserService);
     registrationEventsService = unit;
     // Mock request user id
-    registrationEventsService['request']['user']!['id'] = 2;
+    (registrationEventsService as any)['request']['user']!['id'] = 2;
 
     jest
       .spyOn(registrationEventRepository, 'getManyByProgramIdAndSearchOptions')
@@ -213,7 +213,7 @@ describe('RegistrationEventsService', () => {
   it(`should create registration events for an FSP change of "${Fsps.intersolveVisa}" to "${Fsps.intersolveVoucherWhatsapp}}"`, async () => {
     // Changes that should be logged
     newViewRegistration[FspAttributes.whatsappPhoneNumber] = '1234567890';
-    newViewRegistration['programFspConfigurationLabel'] = {
+    (newViewRegistration as any)['programFspConfigurationLabel'] = {
       en: 'Albert Heijn voucher WhatsApp',
     };
     delete newViewRegistration[FspAttributes.addressCity];
@@ -241,11 +241,11 @@ describe('RegistrationEventsService', () => {
         attributes: [
           {
             key: 'oldValue',
-            value: oldViewRegistration['programFspConfigurationLabel'],
+            value: (oldViewRegistration as any)['programFspConfigurationLabel'],
           },
           {
             key: 'newValue',
-            value: newViewRegistration['programFspConfigurationLabel'],
+            value: (newViewRegistration as any)['programFspConfigurationLabel'],
           },
         ],
         userId: 2,

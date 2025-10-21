@@ -524,7 +524,7 @@ export class RegistrationsBulkService {
         queryBuilder,
       );
 
-    return data.map((r) => r.referenceId);
+    return data.map((r: any) => r.referenceId);
   }
 
   private async updateRegistrationStatusPerChunk({
@@ -533,12 +533,12 @@ export class RegistrationsBulkService {
     reason,
   }: {
     filteredRegistrations: Awaited<
-      ReturnType<RegistrationsPaginationService['getPaginate']>
+      ReturnType<(RegistrationsPaginationService as any)['getPaginate']>
     >['data'];
     registrationStatus: RegistrationStatusEnum;
     reason?: string;
   }): Promise<void> {
-    const filteredRegistrationsIds = filteredRegistrations.map((r) => r.id);
+    const filteredRegistrationsIds = filteredRegistrations.map((r: any) => r.id);
 
     await this.registrationScopedRepository.updateUnscoped(
       {
@@ -615,7 +615,7 @@ export class RegistrationsBulkService {
     reason,
   }: {
     registrationsForDelete: Awaited<
-      ReturnType<RegistrationsPaginationService['getPaginate']>
+      ReturnType<(RegistrationsPaginationService as any)['getPaginate']>
     >['data'];
     reason: string;
   }): Promise<void> {
@@ -624,7 +624,7 @@ export class RegistrationsBulkService {
       registrationStatus: RegistrationStatusEnum.deleted,
       reason,
     });
-    const registrationsIds = registrationsForDelete.map((r) => r.id);
+    const registrationsIds = registrationsForDelete.map((r: any) => r.id);
 
     await this.noteScopedRepository.deleteUnscoped({
       registrationId: In(registrationsIds),
@@ -660,7 +660,7 @@ export class RegistrationsBulkService {
         id: In(registrationsIds),
       })
       .getRawMany();
-    const voucherIds = voucherImageQueryResult.map((v) => v.voucherId);
+    const voucherIds = voucherImageQueryResult.map((v: any) => v.voucherId);
     await this.intersolveVoucherScopedRepo.updateUnscoped(
       { id: In(voucherIds) },
       { whatsappPhoneNumber: null },
@@ -675,7 +675,7 @@ export class RegistrationsBulkService {
     userId,
   }: {
     registrations: Awaited<
-      ReturnType<RegistrationsPaginationService['getPaginate']>
+      ReturnType<(RegistrationsPaginationService as any)['getPaginate']>
     >['data'];
     messageContentDetails: MessageContentDetails;
     bulksize: number;
@@ -705,7 +705,7 @@ export class RegistrationsBulkService {
     newStatus: RegistrationStatusEnum,
   ): RegistrationStatusEnum[] {
     const allStatuses = Object.values(RegistrationStatusEnum);
-    return allStatuses.filter((currentStatus) =>
+    return allStatuses.filter((currentStatus: any) =>
       StatusChangeHelper.isValidStatusChange(currentStatus, newStatus),
     );
   }

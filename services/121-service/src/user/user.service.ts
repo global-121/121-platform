@@ -113,7 +113,7 @@ export class UserService {
       relations: ['permissions'],
     });
 
-    return userRoles.map((userRole) => this.getUserRoleResponse(userRole));
+    return userRoles.map((userRole: any) => this.getUserRoleResponse(userRole));
   }
 
   public async getProgramScopeIdsUserHasPermission(
@@ -124,7 +124,7 @@ export class UserService {
     const programIdScopeObjects: { programId: number; scope: string }[] = [];
     for (const assignment of user.programAssignments) {
       for (const role of assignment.roles) {
-        if (role.permissions.map((p) => p.name).includes(permission)) {
+        if (role.permissions.map((p: any) => p.name).includes(permission)) {
           const programIdScopeObject = {
             programId: assignment.programId,
             scope: assignment.scope,
@@ -408,7 +408,7 @@ export class UserService {
         programAssignment.roles = newRoles;
         programAssignment.scope = scope;
         await this.assignmentRepository.save(programAssignment);
-        response.roles = programAssignment.roles.map((role) =>
+        response.roles = programAssignment.roles.map((role: any) =>
           this.getUserRoleResponse(role),
         );
         return response;
@@ -422,7 +422,7 @@ export class UserService {
       roles: newRoles,
       scope,
     });
-    response.roles = newRoles.map((role) => this.getUserRoleResponse(role));
+    response.roles = newRoles.map((role: any) => this.getUserRoleResponse(role));
     return response;
   }
 
@@ -469,7 +469,7 @@ export class UserService {
     for (const programAssignment of user.programAssignments) {
       if (programAssignment.program.id === programId) {
         const rolesToKeep = programAssignment.roles.filter(
-          (role) => !rolesToDelete.some((newRole) => newRole.id === role.id),
+          (role) => !rolesToDelete.some((newRole: any) => newRole.id === role.id),
         );
         let resultRoles: UserRoleEntity[] = [];
 
@@ -489,7 +489,7 @@ export class UserService {
           programId,
           userId,
           scope: programAssignment.scope,
-          roles: resultRoles.map((role) => this.getUserRoleResponse(role)),
+          roles: resultRoles.map((role: any) => this.getUserRoleResponse(role)),
         };
       }
     }
@@ -581,8 +581,8 @@ export class UserService {
     const roles = {};
     if (user.programAssignments && user.programAssignments[0]) {
       for (const programAssignment of user.programAssignments) {
-        const programRoles = programAssignment.roles.map((role) => role.role);
-        roles[`${programAssignment.programId}`] = programRoles;
+        const programRoles = programAssignment.roles.map((role: any) => role.role);
+        (roles as any)[`${programAssignment.programId}`] = programRoles;
       }
     }
 
@@ -664,7 +664,7 @@ export class UserService {
       for (const programAssignment of user.programAssignments) {
         let permissions: PermissionEnum[] = [];
         for (const role of programAssignment.roles) {
-          const permissionNames = role.permissions.map((a) => a.name);
+          const permissionNames = role.permissions.map((a: any) => a.name);
           permissions = [...new Set([...permissions, ...permissionNames])];
           permissionsObject[programAssignment.program.id] = permissions;
         }
@@ -764,7 +764,7 @@ export class UserService {
       .groupBy('user.id')
       .getRawMany();
 
-    const result = users.map((user) => {
+    const result = users.map((user: any) => {
       const roles = user.rolesid.map((id: any, index: any) => ({
         id,
         role: user.role[index],
@@ -822,7 +822,7 @@ export class UserService {
       programId,
       userId,
       scope: assignment.scope,
-      roles: assignment.roles.map((role) => this.getUserRoleResponse(role)),
+      roles: assignment.roles.map((role: any) => this.getUserRoleResponse(role)),
     };
   }
 
@@ -889,7 +889,7 @@ export class UserService {
           programId,
           userId,
           scope: programAssignment.scope,
-          roles: programAssignment.roles.map((role) =>
+          roles: programAssignment.roles.map((role: any) =>
             this.getUserRoleResponse(role),
           ),
         };

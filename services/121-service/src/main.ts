@@ -87,10 +87,10 @@ function generateSwaggerSummaryJson(app: INestApplication<any>): void {
     for (const method in (openApiDocument.paths as any)[path]) {
       const methodInfo = (openApiDocument.paths as any)[path][method];
       const returnType =
-        methodInfo.responses['200']?.content?.['application/json']?.schema?.$ref
+        methodInfo.(responses as any)['200']?.content?.['application/json']?.schema?.$ref
           ?.split('/')
           .pop() ||
-        methodInfo.responses['201']?.content?.['application/json']?.schema?.$ref
+        methodInfo.(responses as any)['201']?.content?.['application/json']?.schema?.$ref
           ?.split('/')
           .pop();
 

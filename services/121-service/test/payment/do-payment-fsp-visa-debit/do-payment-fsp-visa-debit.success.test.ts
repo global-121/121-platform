@@ -175,7 +175,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
       registrationOCW4,
     ];
 
-    const referenceIds = registrations.map((r) => r.referenceId);
+    const referenceIds = registrations.map((r: any) => r.referenceId);
 
     await importRegistrations(programIdVisa, registrations, accessToken);
     await awaitChangeRegistrationStatus({
@@ -291,7 +291,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     );
     expect(transactionsResponse1.text).toContain(TransactionStatusEnum.success);
     // Validate for one message where amount is higher than 0 that it is send in a message
-    expect(messagesHistoryPa1.body.map((msg) => msg.attributes.body)).toEqual(
+    expect(messagesHistoryPa1.body.map((msg: any) => msg.attributes.body)).toEqual(
       expect.arrayContaining([
         expect.stringContaining(`€${expectedCalculatedAmountPa1}`),
       ]),
@@ -303,7 +303,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     );
     expect(transactionsResponse2.text).toContain(TransactionStatusEnum.success);
     // Validate for one message where amount is 0 that it still sends a message with the amount 0, so people will know they have to spend money earlier next months
-    expect(messagesHistoryPa2.body.map((msg) => msg.attributes.body)).toEqual(
+    expect(messagesHistoryPa2.body.map((msg: any) => msg.attributes.body)).toEqual(
       expect.arrayContaining([
         expect.stringContaining(`€${expectedCalculatedAmountPa2}`),
       ]),

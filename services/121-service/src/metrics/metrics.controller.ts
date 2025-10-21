@@ -109,8 +109,8 @@ export class MetricsController {
     @Res() res: Response,
   ): Promise<Response | void> {
     const userId = RequestHelper.getUserId(req);
-    if (queryParams['search']) {
-      paginationQuery.search = queryParams['search'];
+    if ((queryParams as any)['search']) {
+      paginationQuery.search = (queryParams as any)['search'];
     }
     const result = await this.metricsService.getExport({
       programId,

@@ -76,9 +76,9 @@ export class RegistrationsImportService {
 
     // Prepare the job array to push to the queue
     const updateJobs: Omit<RegistrationUpdateJobDto, 'request'>[] =
-      bulkUpdateRecords.map((record) => {
-        const referenceId = record['referenceId'] as string;
-        delete record['referenceId'];
+      bulkUpdateRecords.map((record: any) => {
+        const referenceId = (record as any)['referenceId'] as string;
+        delete (record as any)['referenceId'];
         return {
           referenceId,
           data: record,
@@ -93,7 +93,7 @@ export class RegistrationsImportService {
       await Promise.allSettled(
         updateJobs
           .slice(start, end)
-          .map((job) =>
+          .map((job: any) =>
             this.queueRegistrationUpdateService.addRegistrationUpdateToQueue(
               job,
             ),
@@ -113,7 +113,7 @@ export class RegistrationsImportService {
     ];
     const dynamicAttributes: string[] = (
       await this.getDynamicAttributes(programId)
-    ).map((d) => d.name);
+    ).map((d: any) => d.name);
 
     const program = await this.programRepository.findOneByOrFail({
       id: programId,
@@ -311,8 +311,8 @@ export class RegistrationsImportService {
     const uniqueConfigNames = Array.from(
       new Set(
         validatedImportRecords
-          .filter((record) => record.programFspConfigurationName !== undefined)
-          .map((record) => record.programFspConfigurationName),
+          .filter((record: any) => record.programFspConfigurationName !== undefined)
+          .map((record: any) => record.programFspConfigurationName),
       ),
     );
     for (const programFspConfigurationName of uniqueConfigNames) {
@@ -389,7 +389,7 @@ export class RegistrationsImportService {
       await this.programRegistrationAttributeRepository.find({
         where: { program: { id: Equal(programId) } },
       })
-    ).map((attribute) => {
+    ).map((attribute: any) => {
       return {
         id: attribute.id,
         name: attribute.name,

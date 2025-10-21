@@ -234,7 +234,7 @@ export class SeedInit implements InterfaceScript {
       const defaultRoleEntity = new UserRoleEntity();
       defaultRoleEntity.role = defaultRole.role;
       defaultRoleEntity.label = defaultRole.label;
-      defaultRoleEntity.permissions = permissions.filter((permission) =>
+      defaultRoleEntity.permissions = permissions.filter((permission: any) =>
         defaultRole.permissions.includes(permission.name),
       );
       userRoleEntities.push(await userRoleRepository.save(defaultRoleEntity));

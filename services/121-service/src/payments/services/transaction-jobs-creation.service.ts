@@ -579,7 +579,7 @@ export class TransactionJobsCreationService {
     // When payment is retried the debitTheirRef is already stored in the (failed) transaction entity
     // During job processing, the previous debitTheirRef will be retrieved from the transaction entity and used to create call CBE api
     if (!isRetry) {
-      cbeTransferJobs.forEach((job) => {
+      cbeTransferJobs.forEach((job: any) => {
         job.debitTheirRef =
           `${formatDateYYMMDD(new Date())}${generateRandomNumerics(10)}`.substring(
             0,
@@ -652,7 +652,7 @@ export class TransactionJobsCreationService {
     sharedJobsByReferenceId: Map<string, SharedTransactionJobDto>;
   }> {
     const fspAttributes = FSP_SETTINGS[fspName].attributes;
-    const fspAttributeNames = fspAttributes.map((q) => q.name);
+    const fspAttributeNames = fspAttributes.map((q: any) => q.name);
     const registrationViews = await this.getRegistrationViews({
       referenceIdsTransactionAmounts,
       fspAttributeNames,
@@ -660,7 +660,7 @@ export class TransactionJobsCreationService {
     });
 
     const transactionDataByReferenceId = new Map(
-      referenceIdsTransactionAmounts.map((item) => [
+      referenceIdsTransactionAmounts.map((item: any) => [
         item.referenceId,
         item.transactionAmount,
       ]),
@@ -683,7 +683,7 @@ export class TransactionJobsCreationService {
       },
     );
     const sharedJobsByReferenceId = new Map(
-      sharedJobs.map((j) => [j.referenceId, j]),
+      sharedJobs.map((j: any) => [j.referenceId, j]),
     );
 
     return { registrationViews, sharedJobsByReferenceId };

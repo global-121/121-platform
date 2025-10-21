@@ -62,7 +62,7 @@ export class MessageSeedFactory extends BaseSeedFactory<TwilioMessageEntity> {
     // Fetch all original message IDs at the start
     const originalIds: number[] = (
       await this.repository.find({ select: { id: true }, order: { id: 'ASC' } })
-    ).map((m) => m.id);
+    ).map((m: any) => m.id);
     if (originalIds.length === 0) {
       console.warn('No existing messages found to duplicate');
       return;

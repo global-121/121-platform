@@ -24,7 +24,7 @@ export class IntersolveVisaDtoMapper {
         (a, b) => b.created.getTime() - a.created.getTime(),
       );
 
-    const cards = sortedWallets.map((wallet) =>
+    const cards = sortedWallets.map((wallet: any) =>
       this.mapChildWalletEntityToCard(wallet),
     );
 

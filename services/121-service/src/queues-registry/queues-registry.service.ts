@@ -105,7 +105,7 @@ export class QueuesRegistryService implements OnModuleInit {
   async onModuleInit(): Promise<void> {
     const registered = Array.from(REGISTERED_PROCESSORS);
     const expected = Object.keys(this.allQueues);
-    const missing = expected.filter((q) => !registered.includes(q));
+    const missing = expected.filter((q: any) => !registered.includes(q));
     if (missing.length > 0) {
       throw new Error(
         `Missing processor registrations for: ${missing.join(', ')}`,
@@ -134,7 +134,7 @@ export class QueuesRegistryService implements OnModuleInit {
     for (const queue of Object.values(this.allQueues)) {
       const failedJobs = await queue.getFailed();
       // Only retry for this specific error message, as we know the job processing has never started and is therefore safe to retry (jobs are not idempotent)
-      const missingProcessHandlerJobs = failedJobs.filter((job) =>
+      const missingProcessHandlerJobs = failedJobs.filter((job: any) =>
         job.failedReason?.includes('Missing process handler for job type'),
       );
       if (!missingProcessHandlerJobs.length) {
@@ -159,7 +159,7 @@ export class QueuesRegistryService implements OnModuleInit {
     // Prefix is needed here because .keys does not take into account the prefix of the redis client
     const keys = await redisClient.keys(`${env.REDIS_PREFIX}:*`);
     if (keys.length) {
-      const keysWithoutPrefix = keys.map((key) =>
+      const keysWithoutPrefix = keys.map((key: any) =>
         key.replace(env.REDIS_PREFIX + ':', ''),
       );
       await this.batchDeleteKeys(redisClient, keysWithoutPrefix);

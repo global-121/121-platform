@@ -131,7 +131,7 @@ export async function doPayment({
   }
 
   if (referenceIds && referenceIds.length > 0) {
-    queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
+    (queryParams as any)['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
   }
 
   return await getServer()
@@ -357,7 +357,7 @@ export async function waitForPaymentTransactionsToComplete({
     });
     if (Array.isArray(paymentTransactions?.body)) {
       // Check if all transactions have a "complete" status
-      allTransactionsComplete = paymentReferenceIds.every((referenceId) => {
+      allTransactionsComplete = paymentReferenceIds.every((referenceId: any) => {
         const transaction = paymentTransactions.body.find(
           (txn: any) => txn.registrationReferenceId === referenceId,
         );
@@ -397,7 +397,7 @@ export async function waitForStatusUpdateToComplete(
     });
 
     // Check if all registrations have the new status
-    allStatusUpdatesSuccessful = referenceIds.every((referenceId) => {
+    allStatusUpdatesSuccessful = referenceIds.every((referenceId: any) => {
       const registration = registrations.body.data.find(
         (r: any) => r.referenceId === referenceId,
       );
@@ -427,8 +427,8 @@ export async function waitForMessagesToComplete({
   accessToken: string;
   minimumNumberOfMessagesPerReferenceId?: number;
   expectedMessageAttribute?: {
-    key: keyof MessageActivity['attributes'];
-    values: MessageActivity['attributes'][keyof MessageActivity['attributes']][];
+    key: keyof (MessageActivity as any)['attributes'];
+    values: (MessageActivity as any)['attributes'][keyof (MessageActivity as any)['attributes']][];
   };
 }): Promise<void> {
   const maxWaitTimeMs = 25_000;
@@ -495,20 +495,20 @@ function filterByExpectedAttribute({
     messageHistory: MessageActivity[];
   }[];
   expectedMessageAttribute: {
-    key: keyof MessageActivity['attributes'];
-    values: MessageActivity['attributes'][keyof MessageActivity['attributes']][];
+    key: keyof (MessageActivity as any)['attributes'];
+    values: (MessageActivity as any)['attributes'][keyof (MessageActivity as any)['attributes']][];
   };
 }): string[] {
   return messageHistories
     .filter(({ messageHistory }) => {
-      const messagesWithValidStatus = messageHistory.filter((m) => {
+      const messagesWithValidStatus = messageHistory.filter((m: any) => {
         const validStatuses: MessageStatus[] = ['read', 'failed'];
         if (m.attributes.notificationType === 'sms') {
           validStatuses.push('sent');
         }
         return validStatuses.includes(m.attributes.status);
       });
-      return !messagesWithValidStatus.some((m) => {
+      return !messagesWithValidStatus.some((m: any) => {
         return expectedMessageAttribute.values.includes(
           m.attributes[expectedMessageAttribute.key],
         );
@@ -529,7 +529,7 @@ function filterByMinimumMessages({
 }): string[] {
   return messageHistories
     .filter(({ messageHistory }) => {
-      const messagesWithValidStatus = messageHistory.filter((m) => {
+      const messagesWithValidStatus = messageHistory.filter((m: any) => {
         const validStatuses: MessageStatus[] = ['read', 'failed'];
         if (m.attributes.notificationType === 'sms') {
           validStatuses.push('sent');

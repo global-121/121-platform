@@ -18,7 +18,7 @@ export function processMessagePlaceholders(
 
   const processedTemplate = template.replace(
     new RegExp(`{{${placeholderKey}}}`, 'g'),
-    registration[`${placeholderKey}`],
+    (registration as any)[`${placeholderKey}`],
   );
 
   return processedTemplate;

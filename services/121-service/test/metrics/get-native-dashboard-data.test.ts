@@ -39,7 +39,7 @@ const seedTwoPayments = async () => {
   await doPaymentAndWaitForCompletion({
     programId: programIdPV,
     amount,
-    referenceIds: registrationsPV.map((r) => r.referenceId),
+    referenceIds: registrationsPV.map((r: any) => r.referenceId),
     accessToken,
     completeStatusses: Object.values(TransactionStatusEnum),
   });

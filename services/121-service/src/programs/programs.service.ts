@@ -323,7 +323,7 @@ export class ProgramService {
         includeProgramRegistrationAttributes: true,
         includeTemplateDefaultAttributes: false,
       });
-    const existingNames = existingAttributes.map((attr) => {
+    const existingNames = existingAttributes.map((attr: any) => {
       return attr.name;
     });
     if (existingNames.includes(name)) {
@@ -565,7 +565,7 @@ export class ProgramService {
     // make sure phoneNumber is in programRegistrationAttributes
 
     if (
-      !programRegistrationAttributes.find((attr) => attr.name === 'phoneNumber')
+      !programRegistrationAttributes.find((attr: any) => attr.name === 'phoneNumber')
     ) {
       programRegistrationAttributes.push({
         name: 'phoneNumber',

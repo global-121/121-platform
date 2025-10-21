@@ -38,7 +38,7 @@ export class addPausedStatus1694821278357 implements MigrationInterface {
   //     relations: ['permissions'],
   //   });
   //   for (const role of userRoles) {
-  //     const permissions = role.permissions.map((p) => p.name as PermissionEnum);
+  //     const permissions = role.permissions.map((p: any) => p.name as PermissionEnum);
   //     if (
   //       permissions.includes(closestPermission) &&
   //       !permissions.includes(newPermission)

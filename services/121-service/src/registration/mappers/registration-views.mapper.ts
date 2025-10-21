@@ -69,7 +69,7 @@ export class RegistrationViewsMapper {
     };
 
     for (const dataRelation of registrationDataInfoArray) {
-      const registrationData = registrationDataArray.find((x) =>
+      const registrationData = registrationDataArray.find((x: any) =>
         findRelation(dataRelation.relation, x),
       );
       if (registrationData) {
@@ -147,9 +147,9 @@ export class RegistrationViewsMapper {
     attribute: ProgramRegistrationAttributeEntity,
     value: unknown,
   ): unknown {
-    const selectedOption = attribute.options?.find((o) => o.option === value);
-    if (selectedOption && selectedOption.label && selectedOption.label['en']) {
-      return selectedOption.label['en'];
+    const selectedOption = attribute.options?.find((o: any) => o.option === value);
+    if (selectedOption && selectedOption.label && selectedOption.(label as any)['en']) {
+      return selectedOption.(label as any)['en'];
     }
     return value;
   }

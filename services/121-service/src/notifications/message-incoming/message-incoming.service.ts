@@ -313,7 +313,7 @@ export class MessageIncomingService {
         relations: ['programFspConfigurations'],
       });
       const fspConfigWithFspIntersolveWhatsapp =
-        program.programFspConfigurations.find((config) => {
+        program.programFspConfigurations.find((config: any) => {
           return config.fspName === Fsps.intersolveVoucherWhatsapp;
         })!;
       tryWhatsapp.registration.programFspConfigurationId =
@@ -370,7 +370,7 @@ export class MessageIncomingService {
     registrations: RegistrationEntity[],
   ): Promise<RegistrationEntity[]> {
     // Trim registrations down to only those with outstanding vouchers
-    const registrationIds = registrations.map((c) => c.id);
+    const registrationIds = registrations.map((c: any) => c.id);
     const registrationWithVouchers = await this.registrationRepository.find({
       where: { id: In(registrationIds) },
       relations: ['images', 'images.voucher'],

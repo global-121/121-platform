@@ -39,7 +39,7 @@ export class AxiosCallsService {
 
   public async getAccessToken(): Promise<string> {
     const login = await this.loginAsAdmin();
-    const cookies = login.headers['set-cookie'];
+    const cookies = login.(headers as any)['set-cookie'];
     try {
       const accessToken = cookies
         .find((cookie: string) => cookie.startsWith(CookieNames.general))

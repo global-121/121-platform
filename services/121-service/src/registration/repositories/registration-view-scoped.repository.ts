@@ -124,7 +124,7 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
     attributeRelations: RegistrationDataInfo[],
   ): ScopedQueryBuilder<RegistrationViewEntity> {
-    const relationInfo = attributeRelations.find((r) => r.name === sortByKey);
+    const relationInfo = attributeRelations.find((r: any) => r.name === sortByKey);
     if (!relationInfo) {
       return queryBuilder;
     }
@@ -155,7 +155,7 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
     parsedFilter: ColumnsFilters;
   }): ScopedQueryBuilder<RegistrationViewEntity> {
     for (const [filterKey, filters] of Object.entries(parsedFilter)) {
-      const relationInfo = attributeRelations.find((r) => r.name === filterKey);
+      const relationInfo = attributeRelations.find((r: any) => r.name === filterKey);
       if (relationInfo) {
         for (const filter of filters) {
           queryBuilder = this.applySingleAttributeFilter({

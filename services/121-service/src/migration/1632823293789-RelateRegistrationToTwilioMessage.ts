@@ -91,7 +91,7 @@ export class RelateRegistrationToTwilioMessage1632823293789
     // Cases with historical phonenumber changes will not be properly captured this way, as the old phone number will not be found in the current registration table
     // If multiple phone-numbers are found (e.g. a 'rejected' one and an 'included' one) then the oldest one is taken
 
-    // If whatsapp: join to customData['whatsappPhoneNumber']
+    // If whatsapp: join to (customData as any)['whatsappPhoneNumber']
     await queryRunner.query(
       `UPDATE "121-service".twilio_message tm
       SET "registrationId" = r.id

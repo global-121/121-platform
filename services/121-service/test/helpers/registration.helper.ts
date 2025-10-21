@@ -119,7 +119,7 @@ export function deleteRegistrations({
   const queryParams: Record<string, string> = {};
 
   if (referenceIds) {
-    queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
+    (queryParams as any)['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
   }
 
   if (filter) {
@@ -246,13 +246,13 @@ export function getRegistrations({
   const queryParams: Record<string, string> = {};
 
   if (attributes) {
-    queryParams['select'] = attributes.join(',');
+    (queryParams as any)['select'] = attributes.join(',');
   }
   if (page) {
-    queryParams['page'] = String(page);
+    (queryParams as any)['page'] = String(page);
   }
   if (limit) {
-    queryParams['limit'] = String(limit);
+    (queryParams as any)['limit'] = String(limit);
   }
   if (filter) {
     for (const [key, value] of Object.entries(filter)) {
@@ -260,7 +260,7 @@ export function getRegistrations({
     }
   }
   if (sort) {
-    queryParams['sortBy'] = `${sort.field}:${sort.direction}`;
+    (queryParams as any)['sortBy'] = `${sort.field}:${sort.direction}`;
   }
 
   return getServer()
@@ -294,7 +294,7 @@ export async function changeRegistrationStatus({
   const queryParams: Record<string, string> = {};
 
   if (referenceIds) {
-    queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
+    (queryParams as any)['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
   }
 
   if (filter) {
@@ -447,7 +447,7 @@ export function sendMessage(
   }
 
   if (referenceIds && referenceIds.length > 0) {
-    queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
+    (queryParams as any)['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
   }
 
   return getServer()
@@ -774,15 +774,15 @@ export async function getEvents({
   const queryParams: Record<string, string> = {};
 
   if (fromDate) {
-    queryParams['fromDate'] = fromDate;
+    (queryParams as any)['fromDate'] = fromDate;
   }
 
   if (toDate) {
-    queryParams['toDate'] = toDate;
+    (queryParams as any)['toDate'] = toDate;
   }
 
   if (referenceId) {
-    queryParams['referenceId'] = referenceId;
+    (queryParams as any)['referenceId'] = referenceId;
   }
 
   return getServer()

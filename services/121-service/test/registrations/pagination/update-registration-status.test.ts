@@ -134,7 +134,7 @@ describe('change the status of a set of registrations', () => {
     // This represents the situation where in the front-end you are filtered on ceratin statuses and then click 'select all'
     const newStatus = RegistrationStatusEnum.included; // 'new' to 'included' IS possible
     const filter = {};
-    filter[`filter.status`] = RegistrationStatusEnum.included; // but initial filter on included PAs leaves empty set as they are now registered
+    (filter as any)[`filter.status`] = RegistrationStatusEnum.included; // but initial filter on included PAs leaves empty set as they are now registered
 
     // Act
     const updateStatusResponse = await awaitChangeRegistrationStatus({

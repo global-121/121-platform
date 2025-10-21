@@ -166,7 +166,7 @@ export class ProgramAttributesService {
       await this.programRegistrationAttributeEntity.find({
         where: { program: { id: Equal(programId) } },
       })
-    ).map((c) => {
+    ).map((c: any) => {
       return {
         name: c.name,
         type: c.type,
@@ -191,7 +191,7 @@ export class ProgramAttributesService {
       });
     }
     const rawProgramAttributes = await queryRegistrationAttr.getMany();
-    const programAttributes = rawProgramAttributes.map((c) => {
+    const programAttributes = rawProgramAttributes.map((c: any) => {
       return {
         name: c.name,
         type: c.type,

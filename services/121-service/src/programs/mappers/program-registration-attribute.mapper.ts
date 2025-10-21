@@ -5,7 +5,7 @@ export class ProgramRegistrationAttributeMapper {
   public static entitiesToDtos(
     entities: ProgramRegistrationAttributeEntity[],
   ): ProgramRegistrationAttributeDto[] {
-    return entities.map((entity) => this.entityToDto(entity));
+    return entities.map((entity: any) => this.entityToDto(entity));
   }
 
   public static entityToDto(
@@ -30,7 +30,7 @@ export class ProgramRegistrationAttributeMapper {
   public static dtosToEntities(
     attributes: ProgramRegistrationAttributeDto[],
   ): Partial<ProgramRegistrationAttributeEntity>[] {
-    return attributes.map((attribute) => this.dtoToEntity(attribute));
+    return attributes.map((attribute: any) => this.dtoToEntity(attribute));
   }
 
   private static dtoToEntity(

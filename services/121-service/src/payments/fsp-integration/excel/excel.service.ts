@@ -106,7 +106,7 @@ export class ExcelService {
   public joinRegistrationsAndTransactions(
     orderedRegistrations: Awaited<
       ReturnType<
-        RegistrationsPaginationService['getRegistrationViewsChunkedByPaginateQuery']
+        (RegistrationsPaginationService as any)['getRegistrationViewsChunkedByPaginateQuery']
       >
     >,
     transactions: TransactionReturnDto[],
@@ -125,7 +125,7 @@ export class ExcelService {
       a.referenceId.localeCompare(b.referenceId),
     );
     let j = 0;
-    const excelFspInstructions = orderedRegistrations.map((registration) => {
+    const excelFspInstructions = orderedRegistrations.map((registration: any) => {
       const fspInstructions: ExcelFspInstructions = {
         referenceId: registration.referenceId,
         id: registration.id,

@@ -14,7 +14,7 @@ export class ProgramFspConfigurationMapper {
   public static mapEntitiesToDtos(
     entities: ProgramFspConfigurationEntity[],
   ): ProgramFspConfigurationResponseDto[] {
-    return entities.map((entity) =>
+    return entities.map((entity: any) =>
       ProgramFspConfigurationMapper.mapEntityToDto(entity),
     );
   }
@@ -60,7 +60,7 @@ export class ProgramFspConfigurationMapper {
     if (!properties) {
       return [];
     }
-    return properties.map((property) =>
+    return properties.map((property: any) =>
       ProgramFspConfigurationMapper.mapPropertyEntityToDto(property),
     );
   }
@@ -81,7 +81,7 @@ export class ProgramFspConfigurationMapper {
     dtos: CreateProgramFspConfigurationPropertyDto[],
     programFspConfigurationId: number,
   ): ProgramFspConfigurationPropertyEntity[] {
-    return dtos.map((dto) =>
+    return dtos.map((dto: any) =>
       ProgramFspConfigurationMapper.mapPropertyDtoToEntity(
         dto,
         programFspConfigurationId,

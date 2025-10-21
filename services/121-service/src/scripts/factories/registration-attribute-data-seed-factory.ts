@@ -35,7 +35,7 @@ export class RegistrationAttributeSeedFactory extends BaseSeedFactory<Registrati
 
     // Create mapping of old registration IDs to new registration IDs
     const oldRegistrationIds = [
-      ...new Set(existingAttributeData.map((ad) => ad.registrationId)),
+      ...new Set(existingAttributeData.map((ad: any) => ad.registrationId)),
     ].sort((a, b) => a - b); // Sort to ensure consistent mapping
 
     // For each old registration ID, find the corresponding new registration ID

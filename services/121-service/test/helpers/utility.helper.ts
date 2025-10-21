@@ -156,7 +156,7 @@ export async function addPermissionToRole(
 ): Promise<void> {
   const role = await getRole(roleName);
   const permissionSet = new Set(role.permissions || []);
-  permissionsToAdd.forEach((permission) => permissionSet.add(permission));
+  permissionsToAdd.forEach((permission: any) => permissionSet.add(permission));
   const updatedPermissions = Array.from(permissionSet) as PermissionEnum[];
   await updatePermissionsOfRole(role.id, {
     permissions: updatedPermissions,
@@ -168,7 +168,7 @@ function removeNestedProperties<T extends object>(
   keysToIgnore: string[],
 ): T {
   if (Array.isArray(obj)) {
-    return obj.map((item) => removeNestedProperties(item, keysToIgnore)) as T;
+    return obj.map((item: any) => removeNestedProperties(item, keysToIgnore)) as T;
   }
 
   if (!obj || typeof obj !== 'object') {

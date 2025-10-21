@@ -304,7 +304,7 @@ export class RegistrationsInputValidator {
 
           if (att.type === RegistrationAttributeTypes.dropdown) {
             const optionNames = att.options
-              ? att.options?.map((option) => option.option)
+              ? att.options?.map((option: any) => option.option)
               : [];
 
             if (optionNames.includes(String(row[att.name]))) {
@@ -393,8 +393,8 @@ export class RegistrationsInputValidator {
     csvArray: Record<string, InputAttributeType>[],
   ): void {
     const allReferenceIds = csvArray
-      .filter((row) => row[AdditionalAttributes.referenceId])
-      .map((row) => row[AdditionalAttributes.referenceId]);
+      .filter((row: any) => row[AdditionalAttributes.referenceId])
+      .map((row: any) => row[AdditionalAttributes.referenceId]);
     const uniqueReferenceIds = [...new Set(allReferenceIds)];
     if (uniqueReferenceIds.length < allReferenceIds.length) {
       throw new HttpException(
@@ -460,7 +460,7 @@ export class RegistrationsInputValidator {
         value: programFspName,
         column: AdditionalAttributes.programFspConfigurationName,
         error: `FspConfigurationName ${programFspName} not found in program. Allowed values: ${programFspConfigurations
-          .map((fspConfig) => fspConfig.name)
+          .map((fspConfig: any) => fspConfig.name)
           .join(', ')}`,
       };
     }
@@ -845,7 +845,7 @@ export class RegistrationsInputValidator {
     const requiredAttributes = foundFsp.attributes.filter(
       (attribute) => attribute.isRequired,
     );
-    return requiredAttributes.map((attribute) => attribute.name);
+    return requiredAttributes.map((attribute: any) => attribute.name);
   }
 
   private async getOriginalRegistrationsOrThrow(
@@ -853,14 +853,14 @@ export class RegistrationsInputValidator {
     programId: number,
   ): Promise<Map<string, MappedPaginatedRegistrationDto>> {
     const referenceIds = csvArray
-      .filter((row) => (row as any)[GenericRegistrationAttributes.referenceId])
-      .map((row) => (row as any)[GenericRegistrationAttributes.referenceId]);
+      .filter((row: any) => (row as any)[GenericRegistrationAttributes.referenceId])
+      .map((row: any) => (row as any)[GenericRegistrationAttributes.referenceId]);
     const originalRegistrations =
       await this.registrationPaginationService.getRegistrationViewsChunkedByReferenceIds(
         { programId, referenceIds },
       );
     const originalRegistrationsMap = new Map(
-      originalRegistrations.map((reg) => [reg.referenceId, reg]),
+      originalRegistrations.map((reg: any) => [reg.referenceId, reg]),
     );
     const notFoundIds = referenceIds.filter(
       (id) => !originalRegistrationsMap.has(id),

@@ -73,7 +73,7 @@ export class SoapService {
     let headerPart = this.getChild(header, 0);
     headerPart = this.setValue(headerPart, [0, 0, 0], username);
     headerPart = this.setValue(headerPart, [0, 1, 0], password);
-    payload['elements'][0]['elements'].unshift(headerPart);
+    (payload as any)['elements'][0]['elements'].unshift(headerPart);
     return payload;
   }
 
@@ -85,7 +85,7 @@ export class SoapService {
   }
 
   public findSoapIndex(soapElement: any, q: string): any {
-    return soapElement['elements'].findIndex((x: any) => x.name === q);
+    return (soapElement as any)['elements'].findIndex((x: any) => x.name === q);
   }
 
   public changeSoapBody(
@@ -98,7 +98,7 @@ export class SoapService {
     const bodyIndex = this.findSoapIndex(envelopeXML, 'soap:Body');
     const soapBodyXML = this.getChild(envelopeXML, bodyIndex);
     const mainElementIndex = this.findSoapIndex(soapBodyXML, mainElement);
-    const mainElementXML = soapBodyXML['elements'][mainElementIndex];
+    const mainElementXML = (soapBodyXML as any)['elements'][mainElementIndex];
     let rootElement = mainElementXML;
     const pathIndices: number[] = [0, bodyIndex, mainElementIndex];
     let subElementXMLIndex = -1;
@@ -118,7 +118,7 @@ export class SoapService {
   }
 
   private getChild(xml: any, index: number): any {
-    return xml['elements'][index];
+    return (xml as any)['elements'][index];
   }
 
   private setValue(xml: any, indices: number[], value: string): any {
@@ -127,13 +127,13 @@ export class SoapService {
       throw new Error('Invalid indices array.');
     }
     if (indices.length > 0) {
-      xml['elements'][firstIndex] = this.setValue(
+      (xml as any)['elements'][firstIndex] = this.setValue(
         this.getChild(xml, firstIndex),
         indices,
         value,
       );
     } else {
-      xml['elements'][firstIndex]['text'] = value;
+      (xml as any)['elements'][firstIndex]['text'] = value;
     }
     return xml;
   }

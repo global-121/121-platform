@@ -88,7 +88,7 @@ export class WhatsappService {
         const fetchedTemplate = await twilioClient.content.v1
           .contents(contentSid)
           .fetch();
-        const quickReplyType = fetchedTemplate.types['twilio/quick-reply'];
+        const quickReplyType = fetchedTemplate.(types as any)['twilio/quick-reply'];
         let messageToStoreBody = '';
         if ('body' in quickReplyType && !!quickReplyType.body) {
           if (typeof quickReplyType.body !== 'string') {
@@ -250,7 +250,7 @@ export class WhatsappService {
       await this.messageTemplateServices.getMessageTemplatesByProgramId(
         program.id,
       )
-    ).filter((template) => template.contentSid);
+    ).filter((template: any) => template.contentSid);
 
     await this.testLanguageTemplates(messageTemplates, sessionId);
   }
@@ -331,7 +331,7 @@ export class WhatsappService {
       await this.messageTemplateServices.getMessageTemplatesByProgramId(
         program.id,
       )
-    ).filter((template) => template.contentSid);
+    ).filter((template: any) => template.contentSid);
 
     return await this.getLanguageTemplateResults(messageTemplates, sessionId);
   }

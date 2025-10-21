@@ -29,6 +29,6 @@ export class TransactionRepository extends Repository<TransactionEntity> {
       .limit(3)
       .getRawMany();
 
-    return lastThreePaymentIds.map((payment) => payment.paymentId);
+    return lastThreePaymentIds.map((payment: any) => payment.paymentId);
   }
 }

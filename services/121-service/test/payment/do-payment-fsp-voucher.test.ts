@@ -109,7 +109,7 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
 
-      const ahVoucherRelatedMesssages = messages.filter((msg) =>
+      const ahVoucherRelatedMesssages = messages.filter((msg: any) =>
         [
           MessageContentType.paymentTemplated,
           MessageContentType.paymentVoucher,
@@ -121,7 +121,7 @@ describe('Do payment to 1 PA', () => {
       let imageCodeSecret;
 
       // Validate and remove dynamic fields before snapshot
-      ahVoucherRelatedMesssages.forEach((message) => {
+      ahVoucherRelatedMesssages.forEach((message: any) => {
         // Validate the created date
         const createdDate = new Date(message.created);
         expect(createdDate.toString()).not.toBe('Invalid Date');

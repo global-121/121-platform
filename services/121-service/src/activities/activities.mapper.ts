@@ -37,7 +37,7 @@ export class ActivitiesMapper {
     const { dataChanges, statusUpdates, fspChanges, ignoredDuplicates } =
       this.categoriseEvents(events);
 
-    availableTypes.forEach((type) => {
+    availableTypes.forEach((type: any) => {
       let activities: Activity[] = [];
 
       switch (type) {
@@ -82,7 +82,7 @@ export class ActivitiesMapper {
     const fspChanges: GetRegistrationEventDto[] = [];
     const ignoredDuplicates: GetRegistrationEventDto[] = [];
 
-    registrationEvents.forEach((registrationEvent) => {
+    registrationEvents.forEach((registrationEvent: any) => {
       const mappedEvent =
         RegistrationEventsMapper.mapEventToJsonDto(registrationEvent);
 

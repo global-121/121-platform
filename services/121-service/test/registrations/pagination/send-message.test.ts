@@ -83,7 +83,7 @@ describe('send arbitrary messages to set of registrations', () => {
     expect(sendMessageResponse.body.totalFilterCount).toBe(1);
     expect(sendMessageResponse.body.applicableCount).toBe(1);
     // Only registrationOCW1 should receive the message
-    const expectedMessagePa1 = messageHistoryPa1.filter((message) =>
+    const expectedMessagePa1 = messageHistoryPa1.filter((message: any) =>
       expectedMessageAttribute.values.includes(message.attributes.body),
     );
     expect(expectedMessagePa1.length).toBe(1);
@@ -91,7 +91,7 @@ describe('send arbitrary messages to set of registrations', () => {
       TwilioStatus.failed,
     );
     // registrationOCW2 should not receive the message
-    const expectedMessagePa2 = messageHistoryPa2.filter((message) =>
+    const expectedMessagePa2 = messageHistoryPa2.filter((message: any) =>
       expectedMessageAttribute.values.includes(message.attributes.body),
     );
     expect(expectedMessagePa2.length).toBe(0);
@@ -164,16 +164,16 @@ describe('send arbitrary messages to set of registrations', () => {
     expect(sendMessageResponse.body.totalFilterCount).toBe(2);
     expect(sendMessageResponse.body.applicableCount).toBe(2);
     // Only registrationOCW3 and registrationOCW4 should receive the message
-    const expectedMessagesPa1 = messageHistory1.filter((message) =>
+    const expectedMessagesPa1 = messageHistory1.filter((message: any) =>
       expectedMessageAttribute.values.includes(message.attributes.body),
     );
-    const expectedMessagesPa2 = messageHistory2.filter((message) =>
+    const expectedMessagesPa2 = messageHistory2.filter((message: any) =>
       expectedMessageAttribute.values.includes(message.attributes.body),
     );
-    const expectedMessagesPa3 = messageHistory3.filter((message) =>
+    const expectedMessagesPa3 = messageHistory3.filter((message: any) =>
       expectedMessageAttribute.values.includes(message.attributes.body),
     );
-    const expectedMessagesPa4 = messageHistory4.filter((message) =>
+    const expectedMessagesPa4 = messageHistory4.filter((message: any) =>
       expectedMessageAttribute.values.includes(message.attributes.body),
     );
     expect(expectedMessagesPa1.length).toBe(0);

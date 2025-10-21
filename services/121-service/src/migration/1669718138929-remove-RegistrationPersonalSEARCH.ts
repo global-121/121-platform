@@ -39,7 +39,7 @@ export class removeRegistrationPersonalSEARCH1669718138929
   //     .getMany();
 
   //   for (const userRole of userRoles) {
-  //     const permissionNameArray = userRole.permissions.map((p) => p.name);
+  //     const permissionNameArray = userRole.permissions.map((p: any) => p.name);
   //     const includesSearch = permissionNameArray.includes(
   //       'registration:personal.search' as PermissionEnum,
   //     );

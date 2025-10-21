@@ -45,15 +45,15 @@ export class PaymentAmountMultiplierFormula1654608274278
     //     .getMany();
     //   for (const r of registrations) {
     //     if (
-    //       r.customData['nrOfHouseHoldMembers'] &&
-    //       !isNaN(r.customData['nrOfHouseHoldMembers']) &&
+    //       r.(customData as any)['nrOfHouseHoldMembers'] &&
+    //       !isNaN(r.(customData as any)['nrOfHouseHoldMembers']) &&
     //       ['registered', 'included', 'startedRegistration'].includes(
     //         r.registrationStatus,
     //       ) &&
     //       r.paymentAmountMultiplier == null
     //     ) {
-    //       r['paymentAmountMultiplier'] = Number(
-    //         r.customData['nrOfHouseHoldMembers'],
+    //       (r as any)['paymentAmountMultiplier'] = Number(
+    //         r.(customData as any)['nrOfHouseHoldMembers'],
     //       );
     //       await registrationRepo.save(r);
     //     }

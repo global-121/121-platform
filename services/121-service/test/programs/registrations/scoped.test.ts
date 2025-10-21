@@ -58,7 +58,7 @@ describe('Registrations - [Scoped]', () => {
     ];
 
     // Also check if the right referenceIds are in the transactions
-    expect(data.map((r) => r.referenceId).sort()).toEqual(
+    expect(data.map((r: any) => r.referenceId).sort()).toEqual(
       expectedReferenceIds.sort(),
     );
   });
@@ -91,7 +91,7 @@ describe('Registrations - [Scoped]', () => {
     const expectedReferenceIds = [registrationScopedKisumuEastPv.referenceId];
 
     // Also check if the right referenceIds are in the transactions
-    expect(data.map((r) => r.referenceId).sort()).toEqual(
+    expect(data.map((r: any) => r.referenceId).sort()).toEqual(
       expectedReferenceIds.sort(),
     );
   });
@@ -115,8 +115,8 @@ describe('Registrations - [Scoped]', () => {
     const transactions = transactionResponse.body;
 
     const refrenceIdsWithAllowedScope = registrationsPV
-      .filter((r) => r.scope.startsWith(testScope))
-      .map((r) => r.referenceId);
+      .filter((r: any) => r.scope.startsWith(testScope))
+      .map((r: any) => r.referenceId);
 
     const referenceIdsFromTransactions = transactions.map(
       (transaction) => transaction.registrationReferenceId,

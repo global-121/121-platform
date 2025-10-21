@@ -426,7 +426,7 @@ export class MessageService {
   private async processPlaceholders(
     messageTextWithPlaceholders: string,
     placeholderData: Exclude<
-      MessageJobCustomDataDto['placeholderData'],
+      (MessageJobCustomDataDto as any)['placeholderData'],
       undefined | null
     >,
     preferredLanguage: LanguageEnum,

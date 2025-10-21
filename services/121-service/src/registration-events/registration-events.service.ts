@@ -124,7 +124,7 @@ export class RegistrationEventsService {
 
     // Get userId from request if it exists otherwise this update was done using a queue than get it from the request of the job of the queue
     const requestUserId: number = this.request?.user?.['id']
-      ? this.request.user['id']
+      ? this.request.(user as any)['id']
       : this.jobRef?.data?.request?.userId;
 
     // UserId can be null if the registration change was done by a system user, for example when the system puts a registration to status complete
@@ -171,8 +171,8 @@ export class RegistrationEventsService {
     newEntities: RegistrationViewWithId[],
     eventLogOptionsDto?: createFromRegistrationViewsOptions,
   ): void {
-    const oldIds = oldEntities.map((entity) => entity.id);
-    const newIds = newEntities.map((entity) => entity.id);
+    const oldIds = oldEntities.map((entity: any) => entity.id);
+    const newIds = newEntities.map((entity: any) => entity.id);
 
     if (!isEqual(oldIds.sort(), newIds.sort())) {
       throw new Error(
@@ -233,7 +233,7 @@ export class RegistrationEventsService {
       'preferredLanguage',
     ];
 
-    return requiredProperties.every((prop) => prop in obj);
+    return requiredProperties.every((prop: any) => prop in obj);
   }
 
   private createEventsForChanges(
@@ -265,7 +265,7 @@ export class RegistrationEventsService {
 
     // Filter out the keys that are not in the registeredAttributes
     if (registeredAttributes) {
-      fieldNames = fieldNames.filter((key) =>
+      fieldNames = fieldNames.filter((key: any) =>
         registeredAttributes.includes(key as string),
       );
     }
@@ -299,8 +299,8 @@ export class RegistrationEventsService {
 
   private createEventForChange(
     fieldName: string,
-    oldValue: RegistrationEventAttributeEntity['value'],
-    newValue: RegistrationEventAttributeEntity['value'],
+    oldValue: (RegistrationEventAttributeEntity as any)['value'],
+    newValue: (RegistrationEventAttributeEntity as any)['value'],
     registrationId: number,
   ): RegistrationEventEntity {
     const event = new RegistrationEventEntity();
@@ -323,7 +323,7 @@ export class RegistrationEventsService {
     attributesData: Partial<
       Record<
         RegistrationEventAttributeKeyEnum,
-        RegistrationEventAttributeEntity['value']
+        (RegistrationEventAttributeEntity as any)['value']
       >
     >,
   ): RegistrationEventAttributeEntity[] {
@@ -339,7 +339,7 @@ export class RegistrationEventsService {
 
   private createEventAttributeEntity(
     key: RegistrationEventAttributeKeyEnum,
-    value: RegistrationEventAttributeEntity['value'],
+    value: (RegistrationEventAttributeEntity as any)['value'],
   ): RegistrationEventAttributeEntity {
     const eventAttribute = new RegistrationEventAttributeEntity();
     eventAttribute.key = key;
@@ -376,7 +376,7 @@ export class RegistrationEventsService {
     ];
 
     // Filter out irrelevant keys
-    return mergedArray.filter((key) => !irrelevantKeys.includes(key));
+    return mergedArray.filter((key: any) => !irrelevantKeys.includes(key));
   }
 
   private getEventType(key: string): RegistrationEventEnum {

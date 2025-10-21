@@ -59,10 +59,10 @@ export class addShortLabel1658218507582 implements MigrationInterface {
 
   //     if (program) {
   //       let programJson;
-  //       if (program.titlePortal['en'] === programPilotNL.titlePortal.en) {
+  //       if (program.(titlePortal as any)['en'] === programPilotNL.titlePortal.en) {
   //         programJson = programPilotNL;
   //       }
-  //       if (program.titlePortal['en'] === programPilotNL2.titlePortal.en) {
+  //       if (program.(titlePortal as any)['en'] === programPilotNL2.titlePortal.en) {
   //         programJson = programPilotNL2;
   //       }
 

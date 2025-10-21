@@ -18,7 +18,7 @@ export abstract class BaseSeedFactory<T extends Base121Entity> {
     for (const batch of chunk(entitiesData, batchSize)) {
       const result = await this.repository.insert(batch as any[]);
       if (result && Array.isArray(result.identifiers)) {
-        insertedIds.push(...result.identifiers.map((idObj) => idObj.id));
+        insertedIds.push(...result.identifiers.map((idObj: any) => idObj.id));
       }
       processedSoFar += batch.length;
       this.logBatchProgress(processedSoFar, entitiesData.length, 'Inserted');
