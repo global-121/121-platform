@@ -9,10 +9,6 @@ export class EmailsService {
   public constructor(private readonly httpService: CustomHttpService) {}
 
   public async sendEmail(emailData: EmailData): Promise<void> {
-    if (!env.AZURE_EMAIL_API_URL) {
-      throw new Error('AZURE_EMAIL_API_URL is not configured');
-    }
-
     await this.httpService.post<unknown>(env.AZURE_EMAIL_API_URL, emailData);
   }
 }
