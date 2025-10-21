@@ -9,7 +9,13 @@
     "lint": "eslint src/**/*.ts",
     "format": "prettier --write src/**/*.ts"
   },
-  "keywords": ["github-actions", "test-results", "jest", "playwright", "karma"],
+  "keywords": [
+    "github-actions",
+    "test-results",
+    "jest",
+    "playwright",
+    "karma"
+  ],
   "author": "121.global",
   "license": "Apache-2.0",
   "dependencies": {

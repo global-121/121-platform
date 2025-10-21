@@ -63,9 +63,9 @@ jobs:
       - name: Check that no "XXX:" comments have been left on the PR
         run: |
           echo "The following files contain 'XXX:' comments that should be removed:"
-          ! grep -RI --exclude-dir=.git --exclude=\*.{json,md,xml,nvmrc} --exclude=test_pull_request_formatting.yml "XXX:" .
+          ! grep -RI --exclude-dir=.git --exclude-dir=dist --exclude-dir=node_modules --exclude=\*.{json,md,xml,nvmrc} --exclude=test_pull_request_formatting.yml "XXX:" .
 
       - name: Check that no "##TODO" comments have been left on the PR
         run: |
           echo "The following files contain '##TODO' comments that should be removed:"
-          ! grep -RI --exclude-dir=.git --exclude=\*.{json,md,xml,nvmrc} --exclude=test_pull_request_formatting.yml "##TODO" .
+          ! grep -RI --exclude-dir=.git --exclude-dir=dist --exclude-dir=node_modules --exclude=\*.{json,md,xml,nvmrc} --exclude=test_pull_request_formatting.yml "##TODO" .
