@@ -35,6 +35,7 @@ export class ProgramEntity extends Base121Entity {
   @Column({ type: 'character varying', nullable: true })
   public currency: WrapperType<CurrencyCode> | null;
 
+  // TODO: get rid of this or do something with it - it's been removed from the UI
   @Column({ type: 'character varying', nullable: true })
   public distributionFrequency: string | null;
 
