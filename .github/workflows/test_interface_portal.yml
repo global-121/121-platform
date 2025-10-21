@@ -67,7 +67,9 @@ jobs:
 
       - name: 'Test: Code'
         working-directory: ${{ env.interfacePath }}
-        run: 'npm run test:coverage'
+        run: |
+          mkdir -p test-results
+          npm run test:coverage -- --reporters=progress,kjhtml,json --outputFile=test-results/portal-unit-tests.json
 
       - uses: qltysh/qlty-action/coverage@v2
         with:
@@ -90,3 +92,11 @@ jobs:
           name: coverage-report
           path: |
             ${{ env.interfacePath }}/coverage
+
+      - name: Upload portal test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: portal-test-results
+          path: |
+            ${{ env.interfacePath }}/test-results/

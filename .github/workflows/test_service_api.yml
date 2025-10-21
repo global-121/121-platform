@@ -77,7 +77,8 @@ jobs:
       - name: Run integration tests with Jest
         working-directory: ${{ env.workingDirectory }}
         run: |
-          docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
+          docker compose exec 121-service mkdir -p test-results
+          docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }} --json --outputFile=test-results/integration-shard-${{ matrix.shard }}.json || true
 
       # For more info, see services/121-service/README.md#Integration-test-coverage
       - name: Generate lcov report from 121-service
@@ -91,6 +92,14 @@ jobs:
           name: integration-test-coverage-report-${{ matrix.shard }}
           path: |
             ${{ env.workingDirectory }}coverage
+
+      - name: Upload integration test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: integration-test-results-shard-${{ matrix.shard }}
+          path: |
+            ${{ env.workingDirectory }}test-results/
 
       - name: Docker logs
         if: always()
@@ -134,13 +143,23 @@ jobs:
 
       - name: Run unit tests with Jest
         working-directory: ${{ env.workingDirectory }}
-        run: 'npm run test:unit:coverage'
+        run: |
+          mkdir -p test-results
+          npm run test:unit:coverage -- --json --outputFile=test-results/unit-tests.json || true
 
       - uses: actions/upload-artifact@v4
         with:
           name: unit-test-coverage-report
           path: |
             ${{ env.workingDirectory }}/coverage
+
+      - name: Upload unit test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unit-test-results
+          path: |
+            ${{ env.workingDirectory }}/test-results/
 
   upload_coverage_reports:
     runs-on: ubuntu-latest
@@ -180,6 +199,21 @@ jobs:
     needs: [test-shard, test]
     if: always()
     steps:
+      - name: Check out repository code
+        uses: actions/checkout@v5
+
+      - name: Download test result artifacts
+        uses: actions/download-artifact@v5
+        with:
+          path: test-artifacts
+
+      - name: Aggregate test results
+        uses: ./.github/actions/aggregate-test-results
+        if: always()
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          include-passing: 'false'
+
       - name: Check required job results
         if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
         run: |

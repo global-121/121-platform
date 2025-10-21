@@ -1,0 +1,25 @@
+name: 'Aggregate Test Results'
+description: 'Collects and aggregates test results from all test runners and shards'
+inputs:
+  github-token:
+    description: 'GitHub token for commenting on PRs'
+    required: true
+  artifact-pattern:
+    description: 'Pattern to match test result artifacts'
+    default: '*test*result*'
+  include-passing:
+    description: 'Include passing tests in summary'
+    default: 'false'
+outputs:
+  total-tests:
+    description: 'Total number of tests run'
+  failed-tests:
+    description: 'Number of failed tests'
+  passed-tests:
+    description: 'Number of passed tests'
+  summary:
+    description: 'Test results summary'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
