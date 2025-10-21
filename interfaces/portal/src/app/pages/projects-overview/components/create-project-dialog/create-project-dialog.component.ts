@@ -133,8 +133,12 @@ export class CreateProjectDialogComponent {
         validation,
       }),
     onSuccess: async (result) => {
-      await this.projectApiService.invalidateCache();
-      await this.authService.refreshUser();
+      await Promise.all([
+        this.projectApiService.invalidateCache(),
+        // We need to refresh the user to get the new list of projectIds
+        // which is stored in authService.getAssignedProjectIds
+        this.authService.refreshUser(),
+      ]);
 
       await this.router.navigate([
         '/',
