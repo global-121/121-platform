@@ -206,17 +206,18 @@ export class RegistrationsImportService {
       }
       for await (const att of dynamicAttributes) {
         if (att.type === RegistrationAttributeTypes.boolean) {
-          customData[att.name] =
+          (customData as any)[att.name] =
             RegistrationsInputValidatorHelpers.inputToBoolean(
-              record.data[att.name],
+              (record.data as any)[att.name],
             );
         } else {
-          customData[att.name] = record.data[att.name];
+          (customData as any)[att.name] = (record.data as any)[att.name];
         }
       }
 
-      registration.programFspConfiguration =
-        programFspConfigurations[record.programFspConfigurationName!];
+      registration.programFspConfiguration = (programFspConfigurations as any)[
+        record.programFspConfigurationName!
+      ];
 
       registrations.push(registration);
       customDataList.push(customData);
@@ -315,7 +316,7 @@ export class RegistrationsImportService {
       ),
     );
     for (const programFspConfigurationName of uniqueConfigNames) {
-      programFspConfigurations[programFspConfigurationName!] =
+      (programFspConfigurations as any)[programFspConfigurationName!] =
         await this.programFspConfigurationRepository.findOneOrFail({
           where: {
             name: Equal(programFspConfigurationName ?? ''),
@@ -355,15 +356,17 @@ export class RegistrationsImportService {
       if (att.type === RegistrationAttributeTypes.boolean) {
         values.push(
           RegistrationsInputValidatorHelpers.inputToBoolean(
-            customData[att.name],
+            (customData as any)[att.name],
           ),
         );
       } else if (att.type === RegistrationAttributeTypes.text) {
-        values.push(customData[att.name] ? customData[att.name] : '');
+        values.push(
+          (customData as any)[att.name] ? (customData as any)[att.name] : '',
+        );
       } else if (att.type === RegistrationAttributeTypes.multiSelect) {
-        values = customData[att.name].split('|');
+        values = (customData as any)[att.name].split('|');
       } else {
-        values.push(customData[att.name]);
+        values.push((customData as any)[att.name]);
       }
       for (const value of values) {
         if (value != null) {

@@ -646,7 +646,7 @@ export async function seedPaidRegistrations(
 ): Promise<number> {
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(registrations, programId, accessToken);
-  const registrationReferenceIds = registrations.map((r) => r.referenceId);
+  const registrationReferenceIds = registrations.map((r: any) => r.referenceId);
 
   return await doPaymentAndWaitForCompletion({
     programId,
@@ -722,7 +722,7 @@ export async function seedIncludedRegistrations(
 
   await awaitChangeRegistrationStatus({
     programId,
-    referenceIds: registrations.map((r) => r.referenceId),
+    referenceIds: registrations.map((r: any) => r.referenceId),
     status: RegistrationStatusEnum.included,
     accessToken,
   });
@@ -752,7 +752,7 @@ export async function seedRegistrationsWithStatus(
 
   await awaitChangeRegistrationStatus({
     programId,
-    referenceIds: registrations.map((r) => r.referenceId),
+    referenceIds: registrations.map((r: any) => r.referenceId),
     status,
     accessToken,
   });

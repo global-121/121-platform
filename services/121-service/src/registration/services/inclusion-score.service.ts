@@ -91,13 +91,13 @@ export class InclusionScoreService {
           entry.programRegistrationAttribute.type ===
           RegistrationAttributeTypes.multiSelect
         ) {
-          if (scoreList[newKeyName] !== undefined) {
-            scoreList[newKeyName].push(attrValue);
+          if ((scoreList as any)[newKeyName] !== undefined) {
+            (scoreList as any)[newKeyName].push(attrValue);
           } else {
-            scoreList[newKeyName] = [attrValue];
+            (scoreList as any)[newKeyName] = [attrValue];
           }
         } else {
-          scoreList[newKeyName] = attrValue;
+          (scoreList as any)[newKeyName] = attrValue;
         }
       }
     }
@@ -111,8 +111,8 @@ export class InclusionScoreService {
     let totalScore = 0;
     for (const attribute of programRegistrationAttributes) {
       const attributeName = attribute.name;
-      if (scoreList[attributeName]) {
-        const answerPA = scoreList[attributeName];
+      if ((scoreList as any)[attributeName]) {
+        const answerPA = (scoreList as any)[attributeName];
         switch (attribute.type) {
           case RegistrationAttributeTypes.dropdown:
             totalScore =

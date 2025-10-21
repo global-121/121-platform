@@ -25,7 +25,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 import { THROTTLING_LIMIT_HIGH } from '@121-service/src/config';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
@@ -274,7 +274,7 @@ export class UserController {
     status: HttpStatus.OK,
     description: 'User returned',
   })
-  public async findMe(@Req() req): Promise<UserRO> {
+  public async findMe(@Req() req: Request): Promise<UserRO> {
     if (!req.user || !req.user.username) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);

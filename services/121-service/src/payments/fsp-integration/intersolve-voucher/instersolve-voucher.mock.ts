@@ -16,7 +16,7 @@ export class IntersolveVoucherMockService {
 
     await waitForRandomDelay(100, 300);
     const soapBody = payload.elements[0].elements.find(
-      (e) => e.name === 'soap:Body',
+      (e: any) => e.name === 'soap:Body',
     );
     const name = soapBody.elements[0].name;
     let response;
@@ -41,7 +41,7 @@ export class IntersolveVoucherMockService {
       }
 
       const amount = soapBody.elements[0].elements.find(
-        (e) => e.name === 'Value',
+        (e: any) => e.name === 'Value',
       ).elements[0].text;
 
       console.log('IntersolveMock: post(): ', 'payload:', {

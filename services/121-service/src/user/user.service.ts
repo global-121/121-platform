@@ -765,7 +765,7 @@ export class UserService {
       .getRawMany();
 
     const result = users.map((user) => {
-      const roles = user.rolesid.map((id, index) => ({
+      const roles = user.rolesid.map((id: any, index: any) => ({
         id,
         role: user.role[index],
         label: user.label[index],

@@ -422,7 +422,7 @@ export class RegistrationsInputValidator {
         );
       }
       const cleanedFullNameLanguage = fullNameLanguage.trim().toLowerCase();
-      mapping[cleanedFullNameLanguage] = languageAbbr;
+      (mapping as any)[cleanedFullNameLanguage] = languageAbbr;
     }
     return mapping;
   }
@@ -548,7 +548,7 @@ export class RegistrationsInputValidator {
       return LanguageEnum.en;
     }
     if (Object.keys(programLanguageMapping).includes(preferredLanguage)) {
-      return programLanguageMapping[preferredLanguage];
+      return (programLanguageMapping as any)[preferredLanguage];
     } else if (
       Object.values(programLanguageMapping).some(
         (x) => x.toLowerCase() == preferredLanguage.toLowerCase(),
@@ -767,7 +767,7 @@ export class RegistrationsInputValidator {
     // Otherwise, check the required attributes for the original registration that is in the database
 
     const relevantFspConfigName =
-      row[GenericRegistrationAttributes.programFspConfigurationName] ??
+      (row as any)[GenericRegistrationAttributes.programFspConfigurationName] ??
       originalRegistration?.programFspConfigurationName;
     if (!relevantFspConfigName) {
       // If the programFspConfigurationName is neither in the row nor in the original registration, we cannot check the required attributes
@@ -783,11 +783,11 @@ export class RegistrationsInputValidator {
     for (const attribute of requiredAttributes) {
       // Check if required attributes are not being deleted or set to nullable in the PATCH / POST request
       if (row.hasOwnProperty(attribute)) {
-        if (row[attribute] == null || row[attribute] === '') {
+        if ((row as any)[attribute] == null || (row as any)[attribute] === '') {
           errors.push({
             lineNumber: i + 1,
             column: attribute,
-            value: row[attribute],
+            value: (row as any)[attribute],
             error: `Cannot update/set ${attribute} with a nullable value as it is required for the FSP: ${relevantFspConfigName}`,
           });
           continue;
@@ -796,7 +796,9 @@ export class RegistrationsInputValidator {
 
       // If the programFspConfigurationName being updated / set in this request
       // check if a combination original registration and new row has all required attributes
-      if (row[GenericRegistrationAttributes.programFspConfigurationName]) {
+      if (
+        (row as any)[GenericRegistrationAttributes.programFspConfigurationName]
+      ) {
         // Check if the required attributes are present in the row
         if (
           !this.isRequiredAttributeInObject(attribute, row) &&
@@ -823,8 +825,8 @@ export class RegistrationsInputValidator {
     }
     return (
       body.hasOwnProperty(attribute) &&
-      body[attribute] != null &&
-      body[attribute] !== ''
+      (body as any)[attribute] != null &&
+      (body as any)[attribute] !== ''
     );
   }
 
@@ -851,8 +853,8 @@ export class RegistrationsInputValidator {
     programId: number,
   ): Promise<Map<string, MappedPaginatedRegistrationDto>> {
     const referenceIds = csvArray
-      .filter((row) => row[GenericRegistrationAttributes.referenceId])
-      .map((row) => row[GenericRegistrationAttributes.referenceId]);
+      .filter((row) => (row as any)[GenericRegistrationAttributes.referenceId])
+      .map((row) => (row as any)[GenericRegistrationAttributes.referenceId]);
     const originalRegistrations =
       await this.registrationPaginationService.getRegistrationViewsChunkedByReferenceIds(
         { programId, referenceIds },

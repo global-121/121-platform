@@ -71,7 +71,7 @@ describe('Export Visa debit card report', () => {
         lastUsedDate: _lastUsedDate,
         cardNumber: _cardNumber,
         ...rest
-      }) => rest,
+      }: any) => rest,
     );
     expect(results).toMatchSnapshot();
   });

@@ -149,8 +149,8 @@ export class ExcelReconciliationService {
 
     for (const fspConfig of fspConfigsExcel) {
       const transactions = importResults
-        .filter((r) => r.programFspConfigurationId === fspConfig.id)
-        .map((r) => r.transaction)
+        .filter((r: any) => r.programFspConfigurationId === fspConfig.id)
+        .map((r: any) => r.transaction)
         .filter((t): t is PaTransactionResultDto => t !== undefined);
 
       // We persist the updated transactions here.
@@ -257,7 +257,7 @@ export class ExcelReconciliationService {
       });
       // Convert the array into a map for increased performance (hash-map lookup)
       const importResultForFspConfigMap = new Map(
-        importResultForFspConfig.map((item) => [
+        importResultForFspConfig.map((item: any) => [
           item.feedback[matchColumn],
           item,
         ]),
@@ -437,7 +437,7 @@ export class ExcelReconciliationService {
     importRecords: object[];
     matchColumn: string;
   }): void {
-    const matchColumnValues = importRecords.map((r) => r[matchColumn]);
+    const matchColumnValues = importRecords.map((r: any) => r[matchColumn]);
     const uniqueMatchColumnValues = new Set(matchColumnValues);
     if (uniqueMatchColumnValues.size !== matchColumnValues.length) {
       const errors = `The match column '${matchColumn}' contains duplicate values.`;
