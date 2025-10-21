@@ -5,7 +5,7 @@ import { Job } from 'bull';
 import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { RegisteredProcessor } from '@121-service/src/queues-registry/register-processor.decorator';
 import { ProcessNameRegistration } from '@121-service/src/registration/enum/process-name-registration.enum';
-import { RegistrationsUpdateJobsService } from '@121-service/src/registrations-update-jobs/services/registrations-update-jobs.service';
+import { RegistrationsUpdateJobsService } from '@121-service/src/registrations-update-jobs/registrations-update-jobs.service';
 
 @RegisteredProcessor(QueueNames.registration, Scope.REQUEST)
 export class RegistrationsUpdateJobsProcessor {
