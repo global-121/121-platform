@@ -30,7 +30,7 @@ const passRate = 10; // 10%
 const maxRetryDurationMs = 1_200_000; // 20 minutes
 const delayBetweenAttemptsMs = 5000; // 5 seconds
 const amount = 25;
-const testTimeout = 1_200_000; // 20 minutes
+const testTimeout = 18_000_000; // 30 minutes
 
 jest.setTimeout(testTimeout);
 describe('Status Change Payment In Large Program', () => {

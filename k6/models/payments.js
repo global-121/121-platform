@@ -5,22 +5,10 @@ import config from './config.js';
 const { baseUrl } = config;
 
 export default class PaymentsModel {
-  verifyPaymentDryRun(programId) {
-    const url = `${baseUrl}api/programs/${programId}/payments?dryRun=true`;
-    const params = {
-      headers: {
-        'Content-Type': 'application/json',
-        accept: 'application/json',
-      },
-    };
-    const res = http.post(url, null, params);
-    return res;
-  }
-
-  createPayment(programId, transferValue) {
+  createPayment(programId, amount) {
     const url = `${baseUrl}api/programs/${programId}/payments`;
     const payload = JSON.stringify({
-      transferValue,
+      transferValue: amount,
     });
     const params = {
       headers: {
@@ -50,7 +38,10 @@ export default class PaymentsModel {
       const res = http.get(url);
       const responseBody = JSON.parse(res.body);
       const successfulPaymentsCount = parseInt(
-        responseBody?.['success']?.count || '0',
+        (responseBody &&
+          responseBody['success'] &&
+          responseBody['success'].count) ||
+          '0',
       );
 
       successfulPaymentsPercentage =
@@ -78,25 +69,5 @@ export default class PaymentsModel {
     return {
       status: 500,
     };
-  }
-
-  verifyPaymentDryRunUntilSuccess(programId, maxRetryDuration = 10) {
-    const delayBetweenAttempts = 1; // seconds
-    let attempts = 0;
-    while (attempts * delayBetweenAttempts < maxRetryDuration) {
-      console.log(
-        `Attempt ${attempts + 1} to verify payment dry run for programId: ${programId}`,
-      );
-      const result = this.verifyPaymentDryRun(programId);
-      if (!result.status || result.status === 200) {
-        console.log(`Payment dry run successful on attempt ${attempts + 1}`);
-        return result;
-      }
-      attempts++;
-      sleep(delayBetweenAttempts);
-    }
-    throw new Error(
-      `Failed to verify payment dry run after ${maxRetryDuration} seconds for programId: ${programId}`,
-    );
   }
 }

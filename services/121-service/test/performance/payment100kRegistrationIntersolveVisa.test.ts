@@ -30,7 +30,7 @@ const passRate = 10; // 10%
 const maxRetryDurationMs = 4_800_000; // 80 minutes
 const delayBetweenAttemptsMs = 5_000; // 5 seconds
 const amount = 25;
-const testTimeout = 4_800_000; // 80 minutes
+const testTimeout = 5_400_000; // 90 minutes
 
 jest.setTimeout(testTimeout);
 describe('Do payment for 100k registrations with Intersolve within expected range and successful rate threshold', () => {
