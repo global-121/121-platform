@@ -125,7 +125,7 @@
     }
   ],
   "fullnameNamingConvention": ["fullName"],
-  "languages": ["ar", "en", "es", "fr", "in", "nl", "pt_BR", "tl"],
+  "languages": ["ar", "en", "es", "fr", "in", "nl", "pt_BR", "tl", "uk"],
   "enableMaxPayments": true,
   "enableScope": true,
   "allowEmptyPhoneNumber": true,
