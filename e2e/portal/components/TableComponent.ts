@@ -88,6 +88,7 @@ class TableComponent {
     const transferHistoryTable = this.page.getByTestId(
       'transfer-history-table',
     );
+    await expect(transferHistoryTable).toBeVisible();
     const transferHistoryTableRows = transferHistoryTable.locator('tbody tr');
     const rowCount = await transferHistoryTableRows.count();
     expect(rowCount).toBe(expectedRowCount);
