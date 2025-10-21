@@ -102,10 +102,6 @@ export class UpdateProgramDto {
   @IsString()
   public monitoringDashboardUrl?: string;
 
-  @ApiProperty({ example: { en: 'description' } })
-  @IsOptional()
-  public aboutProgram?: LocalizedString;
-
   @ApiProperty({ example: ['firstName', 'lastName'] })
   @IsOptional()
   @IsArray()

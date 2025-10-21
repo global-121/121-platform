@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Do payment with Excel FSP Export FSP instructions Should return all program-registration-attributes on Get FSP instruction with Excel-FSP when "columnsToExport" is not set 1`] = `
 [

@@ -69,9 +69,6 @@
       "showInPeopleAffectedTable": false
     }
   ],
-  "aboutProgram": {
-    "en": "Test program using Onafriq FSP"
-  },
   "fullnameNamingConvention": ["firstName", "lastName"],
   "languages": ["en"],
   "enableMaxPayments": true,

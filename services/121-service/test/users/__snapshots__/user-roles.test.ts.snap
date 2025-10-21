@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`/ Users / Roles should not create a role when the role already exists 1`] = `"{"statusCode":409,"message":"Role already exists: test-manager"}"`;
 

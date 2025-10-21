@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Do payment with FSP: Commercial Bank of Ethiopia when credit transfer API call gives an error response should successfully do a payment with transactions that have status error 1`] = `"Other failure"`;
 
