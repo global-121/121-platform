@@ -7,8 +7,8 @@ import {
  * Wrap the email content in a base-template.
  * @param content HTML-content of the email; Output within a white box, between header and footer
  */
-export const wrapEmailBody = (content: string): string => {
-  const templateBody = `
+export const wrapUserEmailContent = (content: string): string => {
+  return `
     <style>
     html,
     body {
@@ -45,6 +45,4 @@ export const wrapEmailBody = (content: string): string => {
       121 Support: <a href="mailto:${SUPPORT_EMAIL}" style="color:#fff">${SUPPORT_EMAIL}</a>
     </div>
   `;
-
-  return templateBody;
 };

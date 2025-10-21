@@ -1,36 +1,32 @@
 import { Injectable } from '@nestjs/common';
 
-import { EmailType } from '@121-service/src/user/user-emails/enum/email-type.enum';
+import { UserEmailTemplateType } from '@121-service/src/user/user-emails/enum/user-email-template-type.enum';
 import { UserEmailTemplateInput } from '@121-service/src/user/user-emails/interfaces/user-email-template-input.interface';
-import { EmailTemplate } from '@121-service/src/user/user-emails/user-email-templates/interfaces/email-template.interface';
-import { emailTemplatePasswordReset } from '@121-service/src/user/user-emails/user-email-templates/templates/password-reset.template';
-import { emailTemplateRegistrationCreation } from '@121-service/src/user/user-emails/user-email-templates/templates/registration-creation.template';
-import { emailTemplateRegistrationCreationSSO } from '@121-service/src/user/user-emails/user-email-templates/templates/registration-creation-sso.template';
+import { UserEmailTemplate } from '@121-service/src/user/user-emails/user-email-templates/interfaces/user-email-template.interface';
+import { buildTemplateAccountcreated } from '@121-service/src/user/user-emails/user-email-templates/templates/account-created.template';
+import { buildTemplateAccountCreatedSSO } from '@121-service/src/user/user-emails/user-email-templates/templates/account-created-sso.template';
+import { buildTemplatePasswordReset } from '@121-service/src/user/user-emails/user-email-templates/templates/password-reset.template';
 
 @Injectable()
 export class UserEmailTemplatesService {
-  public buildEmailTemplate(
-    type: EmailType,
+  public buildUserEmailTemplate(
+    userEmailTemplateType: UserEmailTemplateType,
     userEmailTemplateInput: UserEmailTemplateInput,
-  ): EmailTemplate {
-    let emailTemplate: EmailTemplate;
+  ): UserEmailTemplate {
+    let emailTemplate: UserEmailTemplate;
 
-    switch (type) {
-      case EmailType.accountCreated:
-        emailTemplate = emailTemplateRegistrationCreation(
-          userEmailTemplateInput,
-        );
+    switch (userEmailTemplateType) {
+      case UserEmailTemplateType.accountCreated:
+        emailTemplate = buildTemplateAccountcreated(userEmailTemplateInput);
         break;
-      case EmailType.accountCreatedForSSO:
-        emailTemplate = emailTemplateRegistrationCreationSSO(
-          userEmailTemplateInput,
-        );
+      case UserEmailTemplateType.accountCreatedForSSO:
+        emailTemplate = buildTemplateAccountCreatedSSO(userEmailTemplateInput);
         break;
-      case EmailType.passwordReset:
-        emailTemplate = emailTemplatePasswordReset(userEmailTemplateInput);
+      case UserEmailTemplateType.passwordReset:
+        emailTemplate = buildTemplatePasswordReset(userEmailTemplateInput);
         break;
       default:
-        throw new Error(`Unsupported email type: ${type}`);
+        throw new Error(`Unsupported email type: ${userEmailTemplateType}`);
     }
 
     return emailTemplate;

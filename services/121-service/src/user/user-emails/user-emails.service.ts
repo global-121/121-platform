@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 
 import { EmailsService } from '@121-service/src/emails/emails.service';
 import { EmailData } from '@121-service/src/emails/interfaces/email-data.interface';
-import { EmailType } from '@121-service/src/user/user-emails/enum/email-type.enum';
+import { UserEmailTemplateType } from '@121-service/src/user/user-emails/enum/user-email-template-type.enum';
 import { UserEmailTemplateInput } from '@121-service/src/user/user-emails/interfaces/user-email-template-input.interface';
-import { EmailTemplate } from '@121-service/src/user/user-emails/user-email-templates/interfaces/email-template.interface';
+import { UserEmailTemplate } from '@121-service/src/user/user-emails/user-email-templates/interfaces/user-email-template.interface';
 import { UserEmailTemplatesService } from '@121-service/src/user/user-emails/user-email-templates/user-email-templates.service';
 
 @Injectable()
@@ -15,32 +15,32 @@ export class UserEmailsService {
   ) {}
 
   private buildUserEmailData(
-    emailType: EmailType,
+    userEmailTemplateType: UserEmailTemplateType,
     userEmailTemplateInput: UserEmailTemplateInput,
   ): EmailData {
     const { email } = userEmailTemplateInput;
 
-    const template: EmailTemplate =
-      this.userEmailTemplatesService.buildEmailTemplate(
-        emailType,
+    const template: UserEmailTemplate =
+      this.userEmailTemplatesService.buildUserEmailTemplate(
+        userEmailTemplateType,
         userEmailTemplateInput,
       );
 
-    const emailData: EmailData = {
+    const userEmailData: EmailData = {
       email,
       subject: template.subject,
       body: template.body,
     };
 
-    return emailData;
+    return userEmailData;
   }
 
   public async sendUserEmail(
     userEmailTemplateInput: UserEmailTemplateInput,
-    emailType: EmailType,
+    userEmailTemplateType: UserEmailTemplateType,
   ): Promise<void> {
     const emailData: EmailData = this.buildUserEmailData(
-      emailType,
+      userEmailTemplateType,
       userEmailTemplateInput,
     );
 

@@ -42,7 +42,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
-import { EmailType } from '@121-service/src/user/user-emails/enum/email-type.enum';
+import { UserEmailTemplateType } from '@121-service/src/user/user-emails/enum/user-email-template-type.enum';
 import { UserEmailTemplateInput } from '@121-service/src/user/user-emails/interfaces/user-email-template-input.interface';
 import { DEFAULT_DISPLAY_NAME } from '@121-service/src/user/user-emails/user-email-templates/template-constants';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
@@ -277,17 +277,21 @@ export class UserService {
         throw new Error('username is missing');
       }
 
-      const emailPayload: UserEmailTemplateInput = {
+      const userEmailTemplateInput: UserEmailTemplateInput = {
         email: userEntity.username,
         displayName: userEntity.displayName ?? DEFAULT_DISPLAY_NAME,
         password,
       };
 
-      const emailType: EmailType = env.USE_SSO_AZURE_ENTRA
-        ? EmailType.accountCreatedForSSO
-        : EmailType.accountCreated;
+      const userEmailTemplateType: UserEmailTemplateType =
+        env.USE_SSO_AZURE_ENTRA
+          ? UserEmailTemplateType.accountCreatedForSSO
+          : UserEmailTemplateType.accountCreated;
 
-      await this.userEmailsService.sendUserEmail(emailPayload, emailType);
+      await this.userEmailsService.sendUserEmail(
+        userEmailTemplateInput,
+        userEmailTemplateType,
+      );
     }
   }
 
@@ -935,15 +939,15 @@ export class UserService {
     user.password = this.hashPassword(password, user.salt);
     await this.userRepository.save(user);
 
-    const emailPayload: UserEmailTemplateInput = {
+    const userEmailTemplateInput: UserEmailTemplateInput = {
       email: user.username,
       displayName: user.displayName ?? DEFAULT_DISPLAY_NAME,
       password,
     };
 
     await this.userEmailsService.sendUserEmail(
-      emailPayload,
-      EmailType.passwordReset,
+      userEmailTemplateInput,
+      UserEmailTemplateType.passwordReset,
     );
   }
 

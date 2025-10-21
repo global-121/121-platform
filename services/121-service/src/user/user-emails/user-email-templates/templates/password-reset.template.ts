@@ -1,19 +1,19 @@
 import { UserEmailTemplateInput } from '@121-service/src/user/user-emails/interfaces/user-email-template-input.interface';
-import { EmailTemplate } from '@121-service/src/user/user-emails/user-email-templates/interfaces/email-template.interface';
-import { wrapEmailBody } from '@121-service/src/user/user-emails/user-email-templates/template-body-wrapper';
+import { UserEmailTemplate } from '@121-service/src/user/user-emails/user-email-templates/interfaces/user-email-template.interface';
 import {
   CHANGE_PASSWORD_URL,
   LOGIN_URL,
   SUPPORT_EMAIL,
 } from '@121-service/src/user/user-emails/user-email-templates/template-constants';
+import { wrapUserEmailContent } from '@121-service/src/user/user-emails/user-email-templates/template-content-wrapper';
 
-export const emailTemplatePasswordReset = (
+export const buildTemplatePasswordReset = (
   userEmailTemplateInput: UserEmailTemplateInput,
-): EmailTemplate => {
+): UserEmailTemplate => {
   const { displayName, email, password } = userEmailTemplateInput;
 
   const subject = '121 Portal password reset';
-  const body = wrapEmailBody(`
+  const body = wrapUserEmailContent(`
     <p>Dear ${displayName},</p>
     <p>
       Your password for the 121 Portal has been reset.<br>
