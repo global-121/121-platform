@@ -9,7 +9,7 @@ import { AirtelApiDisbursementStatusResponseCodeEnum } from '@121-service/src/pa
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
-const responseWrapper = (obj) => ({
+const responseWrapper = (obj: any) => ({
   data: obj,
 });
 

@@ -35,7 +35,7 @@ export class IntersolveVisaStatusMapper {
     const fileName = 'visa-card-121-status-map.csv';
     const csvFilePath = path.join(__dirname, fileName);
     const fileContent = fs.readFileSync(csvFilePath, { encoding: 'utf-8' });
-    const rows = fileContent.split('\n').filter((row) => row.trim()); // Filters out empty lines
+    const rows = fileContent.split('\n').filter((row: any) => row.trim()); // Filters out empty lines
 
     if (rows.length > 0) {
       const headerRow = rows.shift();
@@ -46,10 +46,10 @@ export class IntersolveVisaStatusMapper {
       }
       const headers = headerRow
         .split(';')
-        .map((header) => header.trim().replace(/^"|"$/g, '')); // Remove quotes from headers
+        .map((header: any) => header.trim().replace(/^"|"$/g, '')); // Remove quotes from headers
 
-      rows.forEach((row) => {
-        const columns = row.split(';').map((column) => column.trim());
+      rows.forEach((row: any) => {
+        const columns = row.split(';').map((column: any) => column.trim());
         const rowObject = headers.reduce((obj, nextKey, index) => {
           obj[nextKey] = columns[index].replace(/^"|"$/g, ''); // Remove quotes from values
           return obj;

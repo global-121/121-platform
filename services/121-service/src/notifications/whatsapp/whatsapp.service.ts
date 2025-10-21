@@ -74,10 +74,10 @@ export class WhatsappService {
       to: formatWhatsAppNumber(recipientPhoneNr),
     };
     if (mediaUrl) {
-      payload['mediaUrl'] = mediaUrl;
+      (payload as any)['mediaUrl'] = mediaUrl;
     }
     if (env.MOCK_TWILIO) {
-      payload['messageContentType'] = messageContentType;
+      (payload as any)['messageContentType'] = messageContentType;
     }
 
     try {
@@ -317,10 +317,8 @@ export class WhatsappService {
     const programs = await this.programRepository.find();
     const result = {};
     for (const program of programs) {
-      result[`program-${program.id}`] = await this.getProgramTemplateResult(
-        program,
-        sessionId,
-      );
+      (result as any)[`program-${program.id}`] =
+        await this.getProgramTemplateResult(program, sessionId);
     }
     return result;
   }
@@ -346,8 +344,8 @@ export class WhatsappService {
 
     for (const messageTemplate of messagesTemplates) {
       // Initialize the language property if it doesn't exist
-      if (!resultsLanguage[messageTemplate.language]) {
-        resultsLanguage[messageTemplate.language] = {};
+      if (!(resultsLanguage as any)[messageTemplate.language]) {
+        (resultsLanguage as any)[messageTemplate.language] = {};
       }
 
       const whatsappTemplateTestEntity =
@@ -361,12 +359,16 @@ export class WhatsappService {
           order: { created: 'ASC' },
         });
       if (whatsappTemplateTestEntity && whatsappTemplateTestEntity.succes) {
-        resultsLanguage[messageTemplate.language][messageTemplate.type] = {
+        (resultsLanguage as any)[messageTemplate.language][
+          messageTemplate.type
+        ] = {
           status: 'Succes', // TODO: Is anything dependent on this exact string? If not, fix to 'Success'
           created: whatsappTemplateTestEntity.created,
         };
       } else if (whatsappTemplateTestEntity) {
-        resultsLanguage[messageTemplate.language][messageTemplate.type] = {
+        (resultsLanguage as any)[messageTemplate.language][
+          messageTemplate.type
+        ] = {
           status: 'Failed',
           created: whatsappTemplateTestEntity.created,
           callback: whatsappTemplateTestEntity.callback
@@ -374,7 +376,9 @@ export class WhatsappService {
             : undefined,
         };
       } else {
-        resultsLanguage[messageTemplate.language][messageTemplate.type] = {
+        (resultsLanguage as any)[messageTemplate.language][
+          messageTemplate.type
+        ] = {
           status: 'No tests found for this notification',
         };
       }

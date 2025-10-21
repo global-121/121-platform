@@ -26,7 +26,7 @@ export class RenamePeopleAffected1739294207739 implements MigrationInterface {
     `);
 
     for (const programCustomAttribute of programRegistrationAttributes) {
-      const updatedExport = programCustomAttribute.export.map((item) =>
+      const updatedExport = programCustomAttribute.export.map((item: any) =>
         item === oldExportTypeString ? newExportTypeString : item,
       );
 

@@ -88,48 +88,48 @@ export class CommercialBankEthiopiaApiService {
 
     // Find the soapenv:Body element
     const soapBody = payload.elements
-      .find((el) => el.name === 'soapenv:Envelope')
-      .elements.find((el) => el.name === 'soapenv:Body');
+      .find((el: any) => el.name === 'soapenv:Envelope')
+      .elements.find((el: any) => el.name === 'soapenv:Body');
 
     // Find the cber:RMTFundtransfer element
     const rmtFundtransfer = soapBody.elements.find(
-      (el) => el.name === 'cber:RMTFundtransfer',
+      (el: any) => el.name === 'cber:RMTFundtransfer',
     );
 
     // Modify the elements within cber:RMTFundtransfer
-    rmtFundtransfer.elements.forEach((element) => {
+    rmtFundtransfer.elements.forEach((element: any) => {
       switch (element.name) {
         case 'WebRequestCommon':
           const passwordElement = element.elements.find(
-            (el) => el.name === 'password',
+            (el: any) => el.name === 'password',
           );
           const userNameElement = element.elements.find(
-            (el) => el.name === 'userName',
+            (el: any) => el.name === 'userName',
           );
           passwordElement.elements[0].text = credentials.password;
           userNameElement.elements[0].text = credentials.username;
           break;
         case 'FUNDSTRANSFERCBEREMITANCEType':
           const debitAmountElement = element.elements.find(
-            (el) => el.name === 'fun:DEBITAMOUNT',
+            (el: any) => el.name === 'fun:DEBITAMOUNT',
           );
           const debitTheirRefElement = element.elements.find(
-            (el) => el.name === 'fun:DEBITTHEIRREF',
+            (el: any) => el.name === 'fun:DEBITTHEIRREF',
           );
           const creditTheirRefElement = element.elements.find(
-            (el) => el.name === 'fun:CREDITTHEIRREF',
+            (el: any) => el.name === 'fun:CREDITTHEIRREF',
           );
           const creditAcctNoElement = element.elements.find(
-            (el) => el.name === 'fun:CREDITACCTNO',
+            (el: any) => el.name === 'fun:CREDITACCTNO',
           );
           const creditCurrencyElement = element.elements.find(
-            (el) => el.name === 'fun:CREDITCURRENCY',
+            (el: any) => el.name === 'fun:CREDITCURRENCY',
           );
           const remitterNameElement = element.elements.find(
-            (el) => el.name === 'fun:RemitterName',
+            (el: any) => el.name === 'fun:RemitterName',
           );
           const beneficiaryNameElement = element.elements.find(
-            (el) => el.name === 'fun:BeneficiaryName',
+            (el: any) => el.name === 'fun:BeneficiaryName',
           );
 
           debitAmountElement.elements[0].text = payment.debitAmount;
@@ -207,36 +207,36 @@ export class CommercialBankEthiopiaApiService {
 
     // Find the soapenv:Body element
     const soapBody = payload.elements
-      .find((el) => el.name === 'soapenv:Envelope')
-      .elements.find((el) => el.name === 'soapenv:Body');
+      .find((el: any) => el.name === 'soapenv:Envelope')
+      .elements.find((el: any) => el.name === 'soapenv:Body');
 
     // Find the cber:CBERemitanceTransactionStatus element
     const rmtFundtransfer = soapBody.elements.find(
-      (el) => el.name === 'cber:CBERemitanceTransactionStatus',
+      (el: any) => el.name === 'cber:CBERemitanceTransactionStatus',
     );
 
     // Modify the elements within cber:CBERemitanceTransactionStatus
-    rmtFundtransfer.elements.forEach((element) => {
+    rmtFundtransfer.elements.forEach((element: any) => {
       switch (element.name) {
         case 'WebRequestCommon':
           const passwordElement = element.elements.find(
-            (el) => el.name === 'password',
+            (el: any) => el.name === 'password',
           );
           const userNameElement = element.elements.find(
-            (el) => el.name === 'userName',
+            (el: any) => el.name === 'userName',
           );
           passwordElement.elements[0].text = credentials.password;
           userNameElement.elements[0].text = credentials.username;
           break;
         case 'ETXNSTATUSCBEREMITANCEType':
           const enquiryInputElement = element.elements.find(
-            (el) => el.name === 'enquiryInputCollection',
+            (el: any) => el.name === 'enquiryInputCollection',
           );
           const columnNameElement = enquiryInputElement.elements.find(
-            (el) => el.name === 'columnName',
+            (el: any) => el.name === 'columnName',
           );
           const criteriaValueElement = enquiryInputElement.elements.find(
-            (el) => el.name === 'criteriaValue',
+            (el: any) => el.name === 'criteriaValue',
           );
           columnNameElement.elements[0].text = 'ID';
           criteriaValueElement.elements[0].text = payment.debitTheirRef;
@@ -305,36 +305,36 @@ export class CommercialBankEthiopiaApiService {
 
     // Find the soapenv:Body element
     const soapBody = payload.elements
-      .find((el) => el.name === 'soapenv:Envelope')
-      .elements.find((el) => el.name === 'soapenv:Body');
+      .find((el: any) => el.name === 'soapenv:Envelope')
+      .elements.find((el: any) => el.name === 'soapenv:Body');
 
     // Find the cber:AccountEnquiry element
     const rmtFundtransfer = soapBody.elements.find(
-      (el) => el.name === 'cber:AccountEnquiry',
+      (el: any) => el.name === 'cber:AccountEnquiry',
     );
 
     // Modify the elements within cber:AccountEnquiry
-    rmtFundtransfer.elements.forEach((element) => {
+    rmtFundtransfer.elements.forEach((element: any) => {
       switch (element.name) {
         case 'WebRequestCommon':
           const passwordElement = element.elements.find(
-            (el) => el.name === 'password',
+            (el: any) => el.name === 'password',
           );
           const userNameElement = element.elements.find(
-            (el) => el.name === 'userName',
+            (el: any) => el.name === 'userName',
           );
           passwordElement.elements[0].text = credentials.password;
           userNameElement.elements[0].text = credentials.username;
           break;
         case 'EACCOUNTCBEREMITANCEType':
           const enquiryInputElement = element.elements.find(
-            (el) => el.name === 'enquiryInputCollection',
+            (el: any) => el.name === 'enquiryInputCollection',
           );
           const columnNameElement = enquiryInputElement.elements.find(
-            (el) => el.name === 'columnName',
+            (el: any) => el.name === 'columnName',
           );
           const criteriaValueElement = enquiryInputElement.elements.find(
-            (el) => el.name === 'criteriaValue',
+            (el: any) => el.name === 'criteriaValue',
           );
           columnNameElement.elements[0].text = 'ID';
           criteriaValueElement.elements[0].text = bankAccountNumber;

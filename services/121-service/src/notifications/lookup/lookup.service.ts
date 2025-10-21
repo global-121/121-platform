@@ -60,7 +60,7 @@ export class LookupService {
     return;
   }
 
-  private processLebanonException(lookupResponse): string {
+  private processLebanonException(lookupResponse: any): string {
     if (lookupResponse.nationalFormat.substr(0, 1) == '0') {
       return lookupResponse.phoneNumber.replace('+961', '+9610');
     } else {

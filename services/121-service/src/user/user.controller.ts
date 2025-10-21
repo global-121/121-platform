@@ -25,6 +25,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
+import { Response } from 'express';
 
 import { THROTTLING_LIMIT_HIGH } from '@121-service/src/config';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
@@ -108,7 +109,7 @@ export class UserController {
   })
   @Put('roles/:userRoleId')
   public async updateUserRole(
-    @Param() params,
+    @Param() params: any,
     @Body() userRoleData: UpdateUserRoleDto,
   ): Promise<UserRoleResponseDTO> {
     return await this.userService.updateUserRole(
@@ -180,7 +181,7 @@ export class UserController {
   @Post('users/login')
   public async login(
     @Body() loginUserDto: LoginUserDto,
-    @Res() res,
+    @Res() res: Response,
   ): Promise<UserRO> {
     try {
       const loginResponse = await this.userService.login(loginUserDto);
@@ -213,7 +214,7 @@ export class UserController {
   @ApiTags('users')
   @ApiOperation({ summary: 'Log out existing user' })
   @Post('users/logout')
-  public async logout(@Res() res): Promise<UserRO> {
+  public async logout(@Res() res: Response): Promise<UserRO> {
     try {
       const key = this.userService.getInterfaceKeyByHeader();
       const { sameSite, secure, httpOnly } =

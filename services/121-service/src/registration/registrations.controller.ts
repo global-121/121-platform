@@ -707,9 +707,9 @@ export class RegistrationsController {
   public async reissueCardAndSendMessage(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('referenceId') referenceId: string,
-    @Req() req,
+    @Req() req: Request,
   ): Promise<void> {
-    const userId = req.user.id;
+    const userId = (req as any).user.id;
 
     await this.registrationsService.reissueCardAndSendMessage(
       referenceId,
@@ -742,7 +742,7 @@ export class RegistrationsController {
     @Query('pause', ParseBoolPipe) pause: boolean,
     @Req() req: Request,
   ) {
-    const userId = req.user.id;
+    const userId = (req as any).user.id;
     const permisson = pause
       ? PermissionEnum.FspDebitCardBLOCK
       : PermissionEnum.FspDebitCardUNBLOCK;

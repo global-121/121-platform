@@ -18,7 +18,7 @@ export class UpdateDefaultProgramRegistrationAttributeExport1752231828620
     for (const programCustomAttribute of programRegistrationAttributes) {
       // Remove 'all-registrations' from existing export arrays
       const updatedExport = programCustomAttribute.export.filter(
-        (item) => item !== 'all-registrations',
+        (item: any) => item !== 'all-registrations',
       );
 
       // Replace 'included' with 'payment' if 'payment' is not already present

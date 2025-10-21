@@ -62,7 +62,7 @@ export class FileImportService {
           const cleanedRowData = Object.keys(rowData).reduce((acc, key) => {
             // Use a regex to remove non-printable characters and trim whitespace
             const cleanKey = key.replace(/[^\x20-\x7E]+/g, '').trim();
-            acc[cleanKey] = rowData[key];
+            (acc as any)[cleanKey] = (rowData as any)[key];
             return acc;
           }, {});
           parsedData.push(cleanedRowData);
@@ -73,8 +73,8 @@ export class FileImportService {
     });
   }
 
-  public checkForCompletelyEmptyRow(row): boolean {
-    if (Object.keys(row).every((key) => !row[key])) {
+  public checkForCompletelyEmptyRow(row: any): boolean {
+    if (Object.keys(row).every((key) => !(row as any)[key])) {
       return true;
     }
     return false;

@@ -116,7 +116,7 @@ export class MessageIncomingService {
     );
   }
 
-  public async processSmsStatusCallback(callbackData): Promise<void> {
+  public async processSmsStatusCallback(callbackData: any): Promise<void> {
     await this.twilioMessageRepository.update(
       { sid: callbackData.MessageSid },
       { status: callbackData.SmsStatus || callbackData.MessageStatus },
@@ -333,7 +333,7 @@ export class MessageIncomingService {
   }
 
   private async getRegistrationsWithPhoneNumber(
-    phoneNumber,
+    phoneNumber: any,
   ): Promise<RegistrationEntity[]> {
     const registrationsWithPhoneNumber = await this.registrationRepository
       .createQueryBuilder('registration')

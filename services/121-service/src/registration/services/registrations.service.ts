@@ -467,7 +467,7 @@ export class RegistrationsService {
           ? String(registrationDataInput[attributeKey])
           : registrationDataInput[attributeKey];
 
-      const oldValue = oldViewRegistration[attributeKey];
+      const oldValue = (oldViewRegistration as any)[attributeKey];
 
       if (String(oldValue) !== String(attributeValue)) {
         registrationToUpdate = await this.updateAttribute({
@@ -523,8 +523,8 @@ export class RegistrationsService {
       registration.programId,
     );
 
-    if (typeof registration[attribute] !== 'undefined') {
-      registration[attribute] = value;
+    if (typeof (registration as any)[attribute] !== 'undefined') {
+      (registration as any)[attribute] = value;
     }
 
     if (

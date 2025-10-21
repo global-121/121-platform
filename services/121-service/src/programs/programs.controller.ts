@@ -203,7 +203,7 @@ You can also leave the body empty.`,
     programId: number,
     @Body() body: SecretDto,
     @Res() res: Response,
-  ): Promise<void> {
+  ): Promise<any> {
     if (body.secret !== env.RESET_SECRET) {
       return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
     }

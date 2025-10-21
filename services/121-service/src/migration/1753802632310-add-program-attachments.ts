@@ -73,7 +73,7 @@ export class AddProgramAttachments1753802632310 implements MigrationInterface {
 
       const permissionId = permissionIdQuery[0].id;
 
-      const rolesToAssign = permissionMap[permissionName];
+      const rolesToAssign = (permissionMap as any)[permissionName];
 
       // Loop through each role and assign the permission
       for (const role of rolesToAssign) {

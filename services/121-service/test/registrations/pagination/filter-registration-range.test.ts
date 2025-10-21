@@ -56,7 +56,7 @@ async function getMiddleCreatedDateOfRegistrations(
   }).then((response) => {
     const registrations = response.body.data;
     const sortedCreatedDates = registrations
-      .map((registration) => new Date(registration.created))
+      .map((registration: any) => new Date(registration.created))
       .sort((a, b) => a.getTime() - b.getTime());
 
     // Pick the middle date dynamically and adjust by subtracting a few milliseconds
@@ -108,7 +108,7 @@ describe('Filter registrations using range', () => {
       registrations[3].referenceId,
       registrations[4].referenceId,
     ];
-    expect(data.map((registration) => registration.referenceId)).toEqual(
+    expect(data.map((registration: any) => registration.referenceId)).toEqual(
       expectedReferenceIds,
     );
   });
@@ -128,7 +128,7 @@ describe('Filter registrations using range', () => {
       registrations[1].referenceId,
     ];
 
-    expect(data.map((registration) => registration.referenceId)).toEqual(
+    expect(data.map((registration: any) => registration.referenceId)).toEqual(
       expectedReferenceIds,
     );
   });
@@ -149,7 +149,7 @@ describe('Filter registrations using range', () => {
       registrations[3].referenceId,
       registrations[4].referenceId,
     ];
-    expect(data.map((registration) => registration.referenceId)).toEqual(
+    expect(data.map((registration: any) => registration.referenceId)).toEqual(
       expectedReferenceIds,
     );
   });
@@ -172,7 +172,7 @@ describe('Filter registrations using range', () => {
       registrations[3].referenceId,
       registrations[4].referenceId,
     ];
-    expect(data.map((registration) => registration.referenceId)).toEqual(
+    expect(data.map((registration: any) => registration.referenceId)).toEqual(
       expectedReferenceIds,
     );
   });
@@ -194,7 +194,7 @@ describe('Filter registrations using range', () => {
       registrations[0].referenceId,
       registrations[1].referenceId,
     ];
-    expect(data.map((registration) => registration.referenceId)).toEqual(
+    expect(data.map((registration: any) => registration.referenceId)).toEqual(
       expectedReferenceIds,
     );
   });
@@ -213,7 +213,7 @@ describe('Filter registrations using range', () => {
     const data = getRegistrationsResponseGreater.body.data;
     // Assert
     const expectedReferenceIds = [registrations[2].referenceId];
-    expect(data.map((registration) => registration.referenceId)).toEqual(
+    expect(data.map((registration: any) => registration.referenceId)).toEqual(
       expectedReferenceIds,
     );
   });
@@ -236,7 +236,7 @@ describe('Filter registrations using range', () => {
       registrations[3].referenceId,
     ];
     // Registration without addressHouseNumber are not included in the response
-    expect(data.map((registration) => registration.referenceId)).toEqual(
+    expect(data.map((registration: any) => registration.referenceId)).toEqual(
       expectedReferenceIds,
     );
   });
@@ -255,7 +255,7 @@ describe('Filter registrations using range', () => {
 
     // Assert
     const expectedReferenceIds = [registrations[0].referenceId];
-    expect(data.map((registration) => registration.referenceId)).toEqual(
+    expect(data.map((registration: any) => registration.referenceId)).toEqual(
       expectedReferenceIds,
     );
   });
@@ -277,7 +277,7 @@ describe('Filter registrations using range', () => {
       registrations[1].referenceId,
       registrations[2].referenceId,
     ];
-    expect(data.map((registration) => registration.referenceId)).toEqual(
+    expect(data.map((registration: any) => registration.referenceId)).toEqual(
       expectedReferenceIds,
     );
   });
@@ -294,7 +294,7 @@ describe('Filter registrations using range', () => {
     const data = getRegistrationsResponse.body.data;
 
     // Assert
-    expect(data.map((registration) => registration.referenceId)).toEqual(
+    expect(data.map((registration: any) => registration.referenceId)).toEqual(
       allReferenceIds,
     );
   });

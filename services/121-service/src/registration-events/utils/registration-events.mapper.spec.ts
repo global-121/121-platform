@@ -61,6 +61,8 @@ describe('RegistrationEventsMapper', () => {
     expect(dto.changedAt).toEqual(eventEntity.created);
     expect(dto.changedBy).toEqual(eventEntity.user.username);
     expect(dto.type).toEqual(eventEntity.type);
-    expect(dto[eventAttributeEntity.key]).toEqual(eventAttributeEntity.value);
+    expect((dto as any)[eventAttributeEntity.key]).toEqual(
+      eventAttributeEntity.value,
+    );
   });
 });

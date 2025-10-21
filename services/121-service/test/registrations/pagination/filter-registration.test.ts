@@ -246,7 +246,7 @@ describe('Filter registrations', () => {
         },
       });
       const data = getRegistrationsResponse.body.data;
-      const foundReferenceIds = data.map((r) => r.referenceId);
+      const foundReferenceIds = data.map((r: any) => r.referenceId);
 
       expect(foundReferenceIds).not.toContain(registrationOCW1.referenceId);
 
@@ -301,7 +301,7 @@ describe('Filter registrations', () => {
       });
       const data = getRegistrationsResponse.body.data;
 
-      const foundReferenceIds = data.map((r) => r.referenceId);
+      const foundReferenceIds = data.map((r: any) => r.referenceId);
 
       // Assert
       expect(foundReferenceIds).not.toContain(registrationOCW1.referenceId);
@@ -325,7 +325,7 @@ describe('Filter registrations', () => {
         },
       });
       const data = getRegistrationsResponse.body.data;
-      const foundReferenceIds = data.map((r) => r.referenceId);
+      const foundReferenceIds = data.map((r: any) => r.referenceId);
 
       // Assert
       const expectedReferenceIds = [
@@ -346,7 +346,7 @@ describe('Filter registrations', () => {
         },
       });
       const data = getRegistrationsResponse.body.data;
-      const foundReferenceIds = data.map((r) => r.referenceId);
+      const foundReferenceIds = data.map((r: any) => r.referenceId);
 
       // Assert
       const expectedReferenceIds = [
@@ -368,7 +368,7 @@ describe('Filter registrations', () => {
         },
       });
       const data = getRegistrationsResponse.body.data;
-      const foundReferenceIds = data.map((r) => r.referenceId);
+      const foundReferenceIds = data.map((r: any) => r.referenceId);
 
       // Assert
       const expectedReferenceIds = [
