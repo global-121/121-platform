@@ -1,5 +1,6 @@
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { SYSTEM_USER } from '@121-service/src/payments/transactions/transaction-events/mappers/transaction-events.mapper';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import {
@@ -86,7 +87,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
         TransactionEventDescription.onafriqCallbackReceived,
     );
     callbackEvents.forEach((event) => {
-      expect(event.user).toBeNull();
+      expect(event.user).toMatchObject(SYSTEM_USER);
     });
 
     // All non-callback events have user as null or object with id/username

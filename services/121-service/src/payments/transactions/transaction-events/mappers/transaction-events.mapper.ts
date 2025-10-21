@@ -5,6 +5,11 @@ import {
   mapUserToDto,
 } from '@121-service/src/utils/event-mapper/event.mapper.helper';
 
+export const SYSTEM_USER = {
+  id: 0,
+  username: '121 system',
+};
+
 export class TransactionEventsMapper {
   public static mapToTransactionEventsDto(
     transactionEventEntities: TransactionEventEntity[],
@@ -15,10 +20,7 @@ export class TransactionEventsMapper {
         id: event.id,
         type: event.type,
         created: event.created,
-        user: mapUserToDto(event.user) ?? {
-          id: 0,
-          username: '121 system',
-        },
+        user: mapUserToDto(event.user) ?? SYSTEM_USER,
         description: event.description,
         isSuccessfullyCompleted: event.isSuccessfullyCompleted,
         errorMessage: event.errorMessage,
