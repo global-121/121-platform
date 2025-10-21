@@ -28,7 +28,6 @@ export const FSP_IMAGE_URLS: Record<Fsps, string> = {
   [Fsps.airtel]: 'assets/fsps/airtel.svg',
   [Fsps.commercialBankEthiopia]: 'assets/fsps/cbe.png',
   [Fsps.excel]: 'assets/fsps/excel.png',
-  [Fsps.deprecatedJumbo]: '',
   [Fsps.nedbank]: 'assets/fsps/nedbank.png',
   [Fsps.onafriq]: 'assets/fsps/onafriq.jpg',
 };

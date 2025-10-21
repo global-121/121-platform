@@ -52,18 +52,18 @@ export class FspConfigurationListComponent {
   FSP_IMAGE_URLS = FSP_IMAGE_URLS;
 
   readonly configurableFsps = computed(() =>
-    Object.values(FSP_SETTINGS).filter(
-      (fspSetting) =>
-        // Can always add multiple Excel FSP configurations
-        fspSetting.name === Fsps.excel ||
-        (!this.hasFspConfiguration(fspSetting.name) &&
-          fspSetting.name !== Fsps.deprecatedJumbo),
-    ),
+    Object.values(FSP_SETTINGS).filter(this.canConfigureFsp.bind(this)),
   );
 
-  private hasFspConfiguration(fspName: Fsps) {
+  private canConfigureFsp({ name }: { name: Fsps }) {
+    if (name === Fsps.excel) {
+      // Can always add multiple Excel FSP configurations
+      return true;
+    }
+
+    // For other FSPs, only allow adding if not already configured
     return this.fspConfigurations
       .data()
-      ?.some((fspConfiguration) => fspConfiguration.fspName === fspName);
+      ?.every((fspConfiguration) => fspConfiguration.fspName !== name);
   }
 }
