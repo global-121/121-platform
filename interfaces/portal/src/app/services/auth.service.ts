@@ -208,14 +208,14 @@ export class AuthService {
     return false;
   }
 
-  public async refreshUser() {
-    const currentUser = await this.queryClient.fetchQuery(
-      this.userApiService.getCurrent()(),
-    );
+  public async refreshUserPermissions() {
+    const updatedUserPermissions = (
+      await this.queryClient.fetchQuery(this.userApiService.getCurrent()())
+    ).user.permissions;
+
     setUserInLocalStorage({
-      // we merge the existing user (to keep e.g. the token expiration), with the refreshed data from the backend
       ...this.user,
-      ...currentUser.user,
+      permissions: updatedUserPermissions,
     });
   }
 }

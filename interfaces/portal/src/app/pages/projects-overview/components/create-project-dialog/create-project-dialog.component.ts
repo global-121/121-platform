@@ -135,9 +135,8 @@ export class CreateProjectDialogComponent {
     onSuccess: async (result) => {
       await Promise.all([
         this.projectApiService.invalidateCache(),
-        // We need to refresh the user to get the new list of projectIds
-        // which is stored in authService.getAssignedProjectIds
-        this.authService.refreshUser(),
+        // The keys of the user permissions determine which projects a user can see
+        this.authService.refreshUserPermissions(),
       ]);
 
       await this.router.navigate([
