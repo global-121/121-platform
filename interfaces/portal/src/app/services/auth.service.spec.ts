@@ -2,8 +2,11 @@ import { Injector } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
+import { QueryClient } from '@tanstack/angular-query-experimental';
+
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
+import { UserApiService } from '~/domains/user/user.api.service';
 import { AuthService } from '~/services/auth.service';
 import { LogService } from '~/services/log.service';
 import { LocalStorageUser } from '~/utils/local-storage';
@@ -19,6 +22,8 @@ describe('AuthService - hasDeprecatedPermissions', () => {
   let mockLogService: jasmine.SpyObj<LogService>;
   let mockAuthStrategy: MockAuthStrategy;
   let mockInjector: jasmine.SpyObj<Injector>;
+  let mockUserApiService: jasmine.SpyObj<UserApiService>;
+  let mockQueryClient: jasmine.SpyObj<QueryClient>;
 
   const createMockUser = (
     permissions: Record<number, PermissionEnum[]>,
@@ -39,6 +44,13 @@ describe('AuthService - hasDeprecatedPermissions', () => {
       logout: jasmine.createSpy<() => Promise<void>>('logout'),
       isUserExpired: jasmine.createSpy<() => boolean>('isUserExpired'),
     };
+    mockUserApiService = jasmine.createSpyObj<UserApiService>(
+      'UserApiService',
+      ['getCurrent'],
+    );
+    mockQueryClient = jasmine.createSpyObj<QueryClient>('QueryClient', [
+      'fetchQuery',
+    ]);
 
     // eslint-disable-next-line @typescript-eslint/no-deprecated -- Did not manage to get test working otherwise
     mockInjector.get.and.returnValue(mockAuthStrategy);
@@ -49,6 +61,8 @@ describe('AuthService - hasDeprecatedPermissions', () => {
         { provide: Router, useValue: mockRouter },
         { provide: LogService, useValue: mockLogService },
         { provide: Injector, useValue: mockInjector },
+        { provide: UserApiService, useValue: mockUserApiService },
+        { provide: QueryClient, useValue: mockQueryClient },
       ],
     });
 

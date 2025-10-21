@@ -412,9 +412,6 @@
       <trans-unit id="6885844978916799621" datatype="html">
         <source>Budget</source>
       </trans-unit>
-      <trans-unit id="1194881950571757496" datatype="html">
-        <source>Payment frequency</source>
-      </trans-unit>
       <trans-unit id="7410432243549869948" datatype="html">
         <source>Duration</source>
       </trans-unit>
@@ -654,15 +651,6 @@
       </trans-unit>
       <trans-unit id="add-project-label" datatype="html">
         <source>Add project</source>
-      </trans-unit>
-      <trans-unit id="1887371025019909976" datatype="html">
-        <source>Kobo Asset ID</source>
-      </trans-unit>
-      <trans-unit id="7750664097458673871" datatype="html">
-        <source>Kobo Token</source>
-      </trans-unit>
-      <trans-unit id="3086090297914662332" datatype="html">
-        <source>No Project-ID returned.</source>
       </trans-unit>
       <trans-unit id="2046529380163546074" datatype="html">
         <source>Project successfully created.</source>
@@ -1179,9 +1167,6 @@
       </trans-unit>
       <trans-unit id="7906932148820692681" datatype="html">
         <source>Operation not possible.</source>
-      </trans-unit>
-      <trans-unit id="8103250468659936776" datatype="html">
-        <source>Please fill out all required fields.</source>
       </trans-unit>
       <trans-unit id="attribute-edit-info-maxPayments" datatype="html">
         <source>Maximum amount of transfers to be received. Keeping field empty to remove the limit.</source>
@@ -1739,9 +1724,6 @@
       <trans-unit id="7243649521435718104" datatype="html">
         <source>Use &quot;scope&quot; in this project</source>
       </trans-unit>
-      <trans-unit id="7307016430178924629" datatype="html">
-        <source>Hint text...</source>
-      </trans-unit>
       <trans-unit id="3033425005384068594" datatype="html">
         <source>Budget details saved successfully.</source>
       </trans-unit>
@@ -1858,6 +1840,27 @@
       </trans-unit>
       <trans-unit id="3578644052206125685" datatype="html">
         <source>Ukrainian</source>
+      </trans-unit>
+      <trans-unit id="4034832711447871121" datatype="html">
+        <source>Max. 60 characters</source>
+      </trans-unit>
+      <trans-unit id="3423420597317106513" datatype="html">
+        <source>Budget</source>
+      </trans-unit>
+      <trans-unit id="4312496512919678092" datatype="html">
+        <source>Add a name and description to your project to help your users find it.</source>
+      </trans-unit>
+      <trans-unit id="5036339937977262552" datatype="html">
+        <source>Project information</source>
+      </trans-unit>
+      <trans-unit id="6962699013778688473" datatype="html">
+        <source>Continue</source>
+      </trans-unit>
+      <trans-unit id="7113499429942611780" datatype="html">
+        <source>Create new project</source>
+      </trans-unit>
+      <trans-unit id="6456009373504868195" datatype="html">
+        <source>Please correct the errors in the form.</source>
       </trans-unit>
     </body>
   </file>

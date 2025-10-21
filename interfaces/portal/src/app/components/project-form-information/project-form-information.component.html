@@ -3,9 +3,12 @@
     <app-form-field-wrapper
       label="Start Date"
       i18n-label
+      [errorMessage]="formFieldErrors()('startDate')"
     >
       <p-datepicker
         formControlName="startDate"
+        [maxDate]="formGroup.getRawValue().endDate"
+        [showClear]="true"
         appendTo="body"
       />
     </app-form-field-wrapper>
@@ -13,9 +16,12 @@
     <app-form-field-wrapper
       label="End Date"
       i18n-label
+      [errorMessage]="formFieldErrors()('endDate')"
     >
       <p-datepicker
         formControlName="endDate"
+        [minDate]="formGroup.getRawValue().startDate"
+        [showClear]="true"
         appendTo="body"
       />
     </app-form-field-wrapper>

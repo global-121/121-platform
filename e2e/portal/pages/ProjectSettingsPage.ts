@@ -35,6 +35,14 @@ class ProjectSettingsPage extends BasePage {
   }
 
   async selectDateRange({ start, end }: { start: Date; end: Date }) {
+    // We need to clear dates first, because the date picker
+    // will limit the selectable dates based on the current value
+    // (e.g. if the start date is set to 2024-06-15, you cannot select
+    // an end date before that date, so if you want to select a start
+    // date after the current end date, you need to clear the end date first)
+    await this.dateRangeStartInput.clearDate();
+    await this.dateRangeEndInput.clearDate();
+
     await this.dateRangeStartInput.selectDate({ targetDate: start });
     await this.dateRangeEndInput.selectDate({ targetDate: end });
   }

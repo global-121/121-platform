@@ -25,7 +25,7 @@ export type LocalStorageUser = Pick<
   | 'username'
 >;
 
-export const setUserInLocalStorage = (user: User): void => {
+export const setUserInLocalStorage = (user: Omit<User, 'id'>): void => {
   const userToStore: LocalStorageUser = {
     username: user.username,
     permissions: user.permissions,
