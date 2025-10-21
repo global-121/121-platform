@@ -222,6 +222,6 @@ graph LR
   SafaricomReconciliationModule-->TransactionsModule
   SafaricomReconciliationModule-->QueuesRegistryModule
   RegistrationsUpdateJobsModule-->RegistrationsModule
-  RegistrationsUpdateJobsModule-->EmailsModule
+  RegistrationsUpdateJobsModule-->UserEmailsModule
   RegistrationsUpdateJobsModule-->UserModule
 ```

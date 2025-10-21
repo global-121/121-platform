@@ -288,10 +288,10 @@ export class UserService {
           ? UserEmailTemplateType.accountCreatedForSSO
           : UserEmailTemplateType.accountCreated;
 
-      await this.userEmailsService.sendUserEmail(
+      await this.userEmailsService.sendUserEmail({
         userEmailTemplateInput,
         userEmailTemplateType,
-      );
+      });
     }
   }
 
@@ -945,10 +945,10 @@ export class UserService {
       password,
     };
 
-    await this.userEmailsService.sendUserEmail(
+    await this.userEmailsService.sendUserEmail({
       userEmailTemplateInput,
-      UserEmailTemplateType.passwordReset,
-    );
+      userEmailTemplateType: UserEmailTemplateType.passwordReset,
+    });
   }
 
   private generateSalt(): string {
