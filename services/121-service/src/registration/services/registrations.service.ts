@@ -438,8 +438,9 @@ export class RegistrationsService {
     let maxPaymentsMatchesPaymentCount = false;
 
     for (const attributeKey of Object.keys(partialRegistrationInput)) {
-      const attributeValue: string | number | string[] | boolean =
-        (partialRegistrationInput as any)[attributeKey];
+      const attributeValue: string | number | string[] | boolean = (
+        partialRegistrationInput as any
+      )[attributeKey];
 
       const oldValue = (oldViewRegistration as any)[attributeKey];
 
