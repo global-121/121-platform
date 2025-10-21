@@ -287,8 +287,8 @@ export class UserService {
       };
 
       const emailType: EmailType = env.USE_SSO_AZURE_ENTRA
-        ? EmailType.registrationCreationSSO
-        : EmailType.registrationCreation;
+        ? EmailType.accountCreatedForSSO
+        : EmailType.accountCreated;
 
       const emailData: EmailData = this.userEmailsService.buildEmailData(
         emailType,

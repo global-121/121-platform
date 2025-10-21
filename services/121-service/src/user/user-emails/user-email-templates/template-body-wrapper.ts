@@ -4,7 +4,7 @@ import {
 } from '@121-service/src/user/user-emails/user-email-templates/template-constants';
 
 /**
- * Wrap the email body
+ * Wrap the email content in a base-template.
  * @param content HTML-content of the email; Output within a white box, between header and footer
  */
 export const wrapEmailBody = (content: string): string => {

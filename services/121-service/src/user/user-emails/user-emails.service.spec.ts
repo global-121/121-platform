@@ -42,14 +42,14 @@ describe('EmailsService', () => {
     jest.clearAllMocks();
   });
 
-  it('should call sendEmail with correct payload for registrationCreation', async () => {
+  it('should call sendEmail with correct payload for accountCreated', async () => {
     const payload: UserEmailTemplateInput = {
       ...basePayload,
       password: 'testpassword',
     };
     const template: EmailTemplate =
       userEmailTemplatesService.buildEmailTemplate(
-        EmailType.registrationCreation,
+        EmailType.accountCreated,
         payload,
       );
     const emailData: EmailData = {
@@ -90,13 +90,13 @@ describe('EmailsService', () => {
     );
   });
 
-  it('should call sendEmail with correct payload for registrationCreationSSO', async () => {
+  it('should call sendEmail with correct payload for accountCreatedForSSO', async () => {
     const payload: UserEmailTemplateInput = {
       ...basePayload,
     };
     const template: EmailTemplate =
       userEmailTemplatesService.buildEmailTemplate(
-        EmailType.registrationCreationSSO,
+        EmailType.accountCreatedForSSO,
         payload,
       );
     const emailData: EmailData = {

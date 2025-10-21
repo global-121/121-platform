@@ -1,5 +1,5 @@
 export enum EmailType {
-  registrationCreation = 'registrationCreation',
-  registrationCreationSSO = 'registrationCreationSSO',
+  accountCreated = 'accountCreated',
+  accountCreatedForSSO = 'accountCreatedForSSO',
   passwordReset = 'passwordReset',
 }

@@ -16,12 +16,12 @@ export class UserEmailTemplatesService {
     let emailTemplate: EmailTemplate;
 
     switch (type) {
-      case EmailType.registrationCreation:
+      case EmailType.accountCreated:
         emailTemplate = emailTemplateRegistrationCreation(
           userEmailTemplateInput,
         );
         break;
-      case EmailType.registrationCreationSSO:
+      case EmailType.accountCreatedForSSO:
         emailTemplate = emailTemplateRegistrationCreationSSO(
           userEmailTemplateInput,
         );
