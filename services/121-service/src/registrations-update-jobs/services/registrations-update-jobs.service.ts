@@ -1,18 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { env } from 'process';
 
-import { FailedValidationEmailPayload } from '@121-service/src/emails/dto/create-emails.dto';
-import { EmailsService } from '@121-service/src/emails/services/emails.service';
 import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { UserService } from '@121-service/src/user/user.service';
+import { UserEmailTemplateType } from '@121-service/src/user/user-emails/enum/user-email-template-type.enum';
+import { UserEmailTemplateInput } from '@121-service/src/user/user-emails/interfaces/user-email-template-input.interface';
+import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 
 @Injectable()
 export class RegistrationsUpdateJobsService {
   constructor(
     private readonly registrationsService: RegistrationsService,
-    private readonly emailsService: EmailsService,
+    private readonly userEmailsService: UserEmailsService,
     private readonly userService: UserService,
   ) {}
 
@@ -78,7 +79,12 @@ export class RegistrationsUpdateJobsService {
       );
     }
 
-    const emailPayload: FailedValidationEmailPayload = {
+    //todo: rm before merging
+    if (!env.MY_EMAIL_ADDRESS) {
+      throw new Error('MY_EMAIL_ADDRESS environment variable is not set');
+    }
+
+    const userEmailTemplateInput: UserEmailTemplateInput = {
       //todo: change back to user.username before merging
       email: env.MY_EMAIL_ADDRESS,
       displayName: user.displayName,
@@ -88,6 +94,9 @@ export class RegistrationsUpdateJobsService {
       },
     };
 
-    await this.emailsService.sendValidationFailedEmail(emailPayload);
+    await this.userEmailsService.sendUserEmail({
+      userEmailTemplateInput,
+      userEmailTemplateType: UserEmailTemplateType.importValidationFailed,
+    });
   }
 }

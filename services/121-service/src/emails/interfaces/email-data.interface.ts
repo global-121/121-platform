@@ -1,5 +1,9 @@
 export interface EmailData {
-  email: string;
-  subject: string;
-  body: string;
+  readonly email: string;
+  readonly subject: string;
+  readonly body: string;
+  readonly attachment?: {
+    readonly name: string;
+    readonly contentBytes: string;
+  };
 }

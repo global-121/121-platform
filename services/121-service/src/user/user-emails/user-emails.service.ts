@@ -35,10 +35,13 @@ export class UserEmailsService {
     return userEmailData;
   }
 
-  public async sendUserEmail(
-    userEmailTemplateInput: UserEmailTemplateInput,
-    userEmailTemplateType: UserEmailTemplateType,
-  ): Promise<void> {
+  public async sendUserEmail({
+    userEmailTemplateInput,
+    userEmailTemplateType,
+  }: {
+    userEmailTemplateInput: UserEmailTemplateInput;
+    userEmailTemplateType: UserEmailTemplateType;
+  }): Promise<void> {
     const emailData: EmailData = this.buildUserEmailData(
       userEmailTemplateType,
       userEmailTemplateInput,
