@@ -5,7 +5,9 @@ graph LR
   CronjobModule-->IntersolveVisaReconciliationModule
   IntersolveVisaReconciliationModule-->IntersolveVisaModule
   IntersolveVisaModule-->UserModule
-  UserModule-->EmailsModule
+  UserModule-->UserEmailsModule
+  UserEmailsModule-->UserEmailTemplatesModule
+  UserEmailsModule-->EmailsModule
   CronjobModule-->IntersolveVoucherModule
   IntersolveVoucherModule-->ImageCodeModule
   IntersolveVoucherModule-->UserModule

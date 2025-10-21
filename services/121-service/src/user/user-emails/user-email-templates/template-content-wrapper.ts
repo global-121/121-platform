@@ -1,13 +1,11 @@
-import { supportEmail } from '@121-service/src/emails/templates/config.enum';
+import { SUPPORT_EMAIL } from '@121-service/src/user/user-emails/user-email-templates/template-constants';
 
 /**
  * Wrap the email content in a base-template.
  * @param content HTML-content of the email; Output within a white box, between header and footer
  */
-export const emailBody = (content: string): string => {
-  const portalName = '121 Portal';
-
-  const body = `
+export const wrapUserEmailContent = (content: string): string => {
+  return `
     <style>
     html,
     body {
@@ -33,7 +31,7 @@ export const emailBody = (content: string): string => {
     </style>
 
     <div class="header">
-      <h1>${portalName}</h1>
+      <h1>121 Portal</h1>
     </div>
 
     <div class="content">
@@ -41,9 +39,7 @@ export const emailBody = (content: string): string => {
     </div>
 
     <div class="footer">
-      121 Support: <a href="mailto:${supportEmail}" style="color:#fff">${supportEmail}</a>
+      121 Support: <a href="mailto:${SUPPORT_EMAIL}" style="color:#fff">${SUPPORT_EMAIL}</a>
     </div>
   `;
-
-  return body;
 };
