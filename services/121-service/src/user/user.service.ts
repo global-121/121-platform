@@ -274,7 +274,7 @@ export class UserService {
       );
 
       if (!userEntity.username) {
-        throw new Error('Invariant violated: userEntity.username is missing');
+        throw new Error('username is missing');
       }
 
       const emailPayload: UserEmailTemplateInput = {
@@ -927,17 +927,13 @@ export class UserService {
     const user = await this.userRepository.findOne({
       where: { username: Equal(changePasswordDto.username) },
     });
-    if (!user) {
+    if (!user || !user.username) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     user.salt = this.generateSalt();
     const password = this.generateStrongPassword();
     user.password = this.hashPassword(password, user.salt);
     await this.userRepository.save(user);
-
-    if (!user.username) {
-      throw new Error('Invariant violated: user.username is missing');
-    }
 
     const emailPayload: UserEmailTemplateInput = {
       email: user.username,
