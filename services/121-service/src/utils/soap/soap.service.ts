@@ -48,7 +48,7 @@ export class SoapService {
         );
         const { body } = response;
         const jsonResponse = convert.xml2js(body, { compact: true });
-        return jsonResponse['soap:Envelope']['soap:Body'];
+        return (jsonResponse as any)['soap:Envelope']['soap:Body'];
       })
       .catch((err: any) => {
         this.httpService.logErrorRequest(
@@ -85,7 +85,7 @@ export class SoapService {
   }
 
   public findSoapIndex(soapElement: any, q: string): any {
-    return soapElement['elements'].findIndex((x) => x.name === q);
+    return soapElement['elements'].findIndex((x: any) => x.name === q);
   }
 
   public changeSoapBody(
@@ -214,23 +214,27 @@ export class SoapService {
         const parsedResponse = convert.xml2js(response.body, { compact: true });
 
         if (
-          parsedResponse['S:Envelope']['S:Body']['ns10:RMTFundtransferResponse']
+          (parsedResponse as any)['S:Envelope']['S:Body'][
+            'ns10:RMTFundtransferResponse'
+          ]
         ) {
-          return parsedResponse['S:Envelope']['S:Body'][
+          return (parsedResponse as any)['S:Envelope']['S:Body'][
             'ns10:RMTFundtransferResponse'
           ];
         } else if (
-          parsedResponse['S:Envelope']['S:Body'][
+          (parsedResponse as any)['S:Envelope']['S:Body'][
             'ns10:CBERemitanceTransactionStatusResponse'
           ]
         ) {
-          return parsedResponse['S:Envelope']['S:Body'][
+          return (parsedResponse as any)['S:Envelope']['S:Body'][
             'ns10:CBERemitanceTransactionStatusResponse'
           ];
         } else if (
-          parsedResponse['S:Envelope']['S:Body']['ns10:AccountEnquiryResponse']
+          (parsedResponse as any)['S:Envelope']['S:Body'][
+            'ns10:AccountEnquiryResponse'
+          ]
         ) {
-          return parsedResponse['S:Envelope']['S:Body'][
+          return (parsedResponse as any)['S:Envelope']['S:Body'][
             'ns10:AccountEnquiryResponse'
           ];
         }

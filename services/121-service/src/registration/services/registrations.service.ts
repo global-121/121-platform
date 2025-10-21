@@ -627,7 +627,7 @@ export class RegistrationsService {
 
       const mappedRegistrationData = registrationData.reduce(
         (acc, { name, value }) => {
-          acc[name] = value;
+          (acc as any)[name] = value;
           return acc;
         },
         {},
@@ -636,15 +636,20 @@ export class RegistrationsService {
       await this.intersolveVisaService.sendUpdatedCustomerInformation({
         registrationId: registration.id,
         contactInformation: {
-          addressStreet: mappedRegistrationData[`addressStreet`],
-          addressHouseNumber: mappedRegistrationData[`addressHouseNumber`],
-          addressHouseNumberAddition:
-            mappedRegistrationData[`addressHouseNumberAddition`],
-          addressPostalCode: mappedRegistrationData[`addressPostalCode`],
-          addressCity: mappedRegistrationData[`addressCity`],
-          phoneNumber: mappedRegistrationData[`phoneNumber`],
+          addressStreet: (mappedRegistrationData as any)[`addressStreet`],
+          addressHouseNumber: (mappedRegistrationData as any)[
+            `addressHouseNumber`
+          ],
+          addressHouseNumberAddition: (mappedRegistrationData as any)[
+            `addressHouseNumberAddition`
+          ],
+          addressPostalCode: (mappedRegistrationData as any)[
+            `addressPostalCode`
+          ],
+          addressCity: (mappedRegistrationData as any)[`addressCity`],
+          phoneNumber: (mappedRegistrationData as any)[`phoneNumber`],
         },
-        name: mappedRegistrationData[`fullName`],
+        name: (mappedRegistrationData as any)[`fullName`],
       });
     }
   }
@@ -1019,7 +1024,7 @@ export class RegistrationsService {
 
     const mappedRegistrationData = registrationData.reduce(
       (acc, { name, value }) => {
-        acc[name] = value;
+        (acc as any)[name] = value;
         return acc;
       },
       {},
@@ -1028,9 +1033,9 @@ export class RegistrationsService {
     for (const name of dataFieldNames) {
       if (name === FspAttributes.addressHouseNumberAddition) continue; // Skip non-required property
       if (
-        mappedRegistrationData[name] === null ||
-        mappedRegistrationData[name] === undefined ||
-        mappedRegistrationData[name] === ''
+        (mappedRegistrationData as any)[name] === null ||
+        (mappedRegistrationData as any)[name] === undefined ||
+        (mappedRegistrationData as any)[name] === ''
       ) {
         throw new HttpException(
           `Property ${name} is undefined`,
@@ -1045,17 +1050,26 @@ export class RegistrationsService {
         registrationId: registration.id,
         // Why do we need this?
         reference: registration.referenceId,
-        name: mappedRegistrationData[FspAttributes.fullName],
+        name: (mappedRegistrationData as any)[FspAttributes.fullName],
         contactInformation: {
-          addressStreet: mappedRegistrationData[FspAttributes.addressStreet],
-          addressHouseNumber:
-            mappedRegistrationData[FspAttributes.addressHouseNumber],
-          addressHouseNumberAddition:
-            mappedRegistrationData[FspAttributes.addressHouseNumberAddition],
-          addressPostalCode:
-            mappedRegistrationData[FspAttributes.addressPostalCode],
-          addressCity: mappedRegistrationData[FspAttributes.addressCity],
-          phoneNumber: mappedRegistrationData[FspAttributes.phoneNumber], // In the above for loop it is checked that this is not undefined or empty
+          addressStreet: (mappedRegistrationData as any)[
+            FspAttributes.addressStreet
+          ],
+          addressHouseNumber: (mappedRegistrationData as any)[
+            FspAttributes.addressHouseNumber
+          ],
+          addressHouseNumberAddition: (mappedRegistrationData as any)[
+            FspAttributes.addressHouseNumberAddition
+          ],
+          addressPostalCode: (mappedRegistrationData as any)[
+            FspAttributes.addressPostalCode
+          ],
+          addressCity: (mappedRegistrationData as any)[
+            FspAttributes.addressCity
+          ],
+          phoneNumber: (mappedRegistrationData as any)[
+            FspAttributes.phoneNumber
+          ], // In the above for loop it is checked that this is not undefined or empty
         },
         brandCode: intersolveVisaConfig.find(
           (c) => c.name === FspConfigurationProperties.brandCode,

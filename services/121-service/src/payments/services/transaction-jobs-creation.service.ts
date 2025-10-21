@@ -188,15 +188,20 @@ export class TransactionJobsCreationService {
           return {
             ...base!,
             // FSP-specific additions:
-            name: registrationView[FspAttributes.fullName]!, // Fullname is a required field if a registration has visa as FSP
-            addressStreet: registrationView[FspAttributes.addressStreet],
-            addressHouseNumber:
-              registrationView[FspAttributes.addressHouseNumber],
-            addressHouseNumberAddition:
-              registrationView[FspAttributes.addressHouseNumberAddition],
-            addressPostalCode:
-              registrationView[FspAttributes.addressPostalCode],
-            addressCity: registrationView[FspAttributes.addressCity],
+            name: (registrationView as any)[FspAttributes.fullName]!, // Fullname is a required field if a registration has visa as FSP
+            addressStreet: (registrationView as any)[
+              FspAttributes.addressStreet
+            ],
+            addressHouseNumber: (registrationView as any)[
+              FspAttributes.addressHouseNumber
+            ],
+            addressHouseNumberAddition: (registrationView as any)[
+              FspAttributes.addressHouseNumberAddition
+            ],
+            addressPostalCode: (registrationView as any)[
+              FspAttributes.addressPostalCode
+            ],
+            addressCity: (registrationView as any)[FspAttributes.addressCity],
             phoneNumber: registrationView.phoneNumber!, // Phonenumber is a required field if a registration has visa as FSP
           };
         },
@@ -260,7 +265,7 @@ export class TransactionJobsCreationService {
             // FSP-specific additions:
             useWhatsapp,
             whatsappPhoneNumber: useWhatsapp
-              ? registrationView[FspAttributes.whatsappPhoneNumber]!
+              ? (registrationView as any)[FspAttributes.whatsappPhoneNumber]!
               : null,
           };
         },
@@ -311,7 +316,7 @@ export class TransactionJobsCreationService {
           ...base!,
           // FSP-specific additions:
           phoneNumber: registrationView.phoneNumber!, // Phonenumber is a required field if a registration has safaricom as FSP
-          idNumber: registrationView[FspAttributes.nationalId],
+          idNumber: (registrationView as any)[FspAttributes.nationalId],
           originatorConversationId: uuid(), // REFACTOR: switch to nedbank/onafriq approach for idempotency key
         };
       });
@@ -457,10 +462,11 @@ export class TransactionJobsCreationService {
         return {
           ...base!,
           // FSP-specific additions:
-          phoneNumberPayment:
-            registrationView[FspAttributes.phoneNumberPayment],
-          firstName: registrationView[FspAttributes.firstName],
-          lastName: registrationView[FspAttributes.lastName],
+          phoneNumberPayment: (registrationView as any)[
+            FspAttributes.phoneNumberPayment
+          ],
+          firstName: (registrationView as any)[FspAttributes.firstName],
+          lastName: (registrationView as any)[FspAttributes.lastName],
         };
       });
     await this.transactionQueuesService.addOnafriqTransactionJobs(
@@ -558,9 +564,10 @@ export class TransactionJobsCreationService {
           return {
             ...base!,
             // FSP-specific additions:
-            bankAccountNumber:
-              registrationView[FspAttributes.bankAccountNumber]!,
-            fullName: registrationView[FspAttributes.fullName]!,
+            bankAccountNumber: (registrationView as any)[
+              FspAttributes.bankAccountNumber
+            ]!,
+            fullName: (registrationView as any)[FspAttributes.fullName]!,
           };
         },
       );
