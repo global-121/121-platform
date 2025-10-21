@@ -1,6 +1,7 @@
 import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
+import { Response } from 'express';
 
 import { IS_PRODUCTION } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
@@ -80,7 +81,7 @@ export class ScriptsController {
     @Query('mockPv') mockPv: boolean,
     @Query('mockOcw') mockOcw: boolean,
     @Query('isApiTests') isApiTests: boolean,
-    @Res() res,
+    @Res() res: Response,
   ): Promise<string> {
     if (body.secret !== env.RESET_SECRET) {
       return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
@@ -133,7 +134,7 @@ export class ScriptsController {
     @Body() body: SecretDto,
     @Query('mockPowerNumberRegistrations')
     mockPowerNumberRegistrations: string,
-    @Res() res,
+    @Res() res: Response,
   ): Promise<void> {
     if (body.secret !== env.RESET_SECRET) {
       return res.status(HttpStatus.FORBIDDEN).send('Not allowed');

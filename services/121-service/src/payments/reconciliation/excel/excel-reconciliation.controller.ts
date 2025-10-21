@@ -19,6 +19,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Request } from 'express';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
@@ -84,7 +85,7 @@ export class ExcelReconciliationController {
     programId: number,
     @Param('paymentId', ParseIntPipe)
     paymentId: number,
-    @Req() req,
+    @Req() req: Request,
   ): Promise<ImportReconciliationResponseDto> {
     const userId = RequestHelper.getUserId(req);
     return await this.excelReconciliationService.upsertFspReconciliationData(
