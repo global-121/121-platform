@@ -25,7 +25,6 @@ import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-conf
 import { FSP_IMAGE_URLS } from '~/domains/fsp-configuration/fsp-configuration.helper';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
@@ -33,7 +32,6 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
 @Component({
   selector: 'app-fsp-configuration-card',
   imports: [
-    TranslatableStringPipe,
     ButtonModule,
     FormDialogComponent,
     TableModule,
@@ -67,10 +65,14 @@ export class FspConfigurationCardComponent {
     'deleteConfigurationDialog',
   );
 
-  readonly deleteConfigurationDialogHeader = computed(
+  readonly fspConfigurationLabel = computed(
     () =>
-      $localize`Remove` +
-      ` "${this.translatableStringService.translate(this.configuration().label) ?? ''}"`,
+      this.translatableStringService.translate(this.configuration().label) ??
+      '',
+  );
+
+  readonly deleteConfigurationDialogHeader = computed(
+    () => $localize`Remove` + ` "${this.fspConfigurationLabel()}"`,
   );
 
   readonly fspSetting = computed(

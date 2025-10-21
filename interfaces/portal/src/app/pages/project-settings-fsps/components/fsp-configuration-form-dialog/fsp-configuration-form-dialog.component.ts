@@ -15,6 +15,7 @@ import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
+import { dash } from 'radashi';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FspDto } from '@121-service/src/fsps/fsp.dto';
@@ -68,7 +69,11 @@ export class FspConfigurationFormDialogComponent {
     'integrationErrorDialog',
   );
 
+  // This is defaulted to Excel to avoid undefined errors before show() is called
+  // It could default to anything really, as show() will always be called first
   readonly fspSetting = signal<FspDto>(FSP_SETTINGS[Fsps.excel]);
+  // If this is undefined, it is because we are adding a new FSP configuration
+  // (not reconfiguring one)
   readonly existingFspConfiguration = signal<FspConfiguration | undefined>(
     undefined,
   );
@@ -128,8 +133,9 @@ export class FspConfigurationFormDialogComponent {
 
       const fspConfiguration = {
         // TODO: AB#38589 - edit name separately from display name
-        name: formGroupData.displayName,
+        name: dash(formGroupData.displayName),
         label: {
+          // Intentionally using 'en' here, as we don't actually want to translate the display name
           en: formGroupData.displayName,
         },
         fspName,
@@ -147,13 +153,13 @@ export class FspConfigurationFormDialogComponent {
       const existingFspConfiguration = this.existingFspConfiguration();
 
       if (existingFspConfiguration) {
-        // set name to the existing value to avoid changing it
-        fspConfiguration.name = existingFspConfiguration.name;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars -- we need to exclude name from updateFspConfigurationDto
+        const { name, ...updateFspConfigurationDto } = fspConfiguration;
 
         return this.fspConfigurationApiService.updateFspConfiguration({
           projectId: this.projectId,
           configurationName: existingFspConfiguration.name,
-          configuration: fspConfiguration,
+          configuration: updateFspConfigurationDto,
         });
       }
 

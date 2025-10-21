@@ -1,6 +1,6 @@
 <app-card-with-link
   class="relative"
-  [title]="configuration().label | translatableString"
+  [title]="fspConfigurationLabel()"
   (cardClicked)="reconfigureFsp.emit(configuration())"
   [image]="fspImage()"
   subtitle="Click to reconfigure"
@@ -78,8 +78,7 @@
   [mutationData]="undefined"
   i18n
 >
-  You're about to remove the "{{ configuration().label | translatableString }}"
-  FSP configuration from your project. Payments with this FSP will not go
-  through, Registrations with this FSP will not be paid unless changed to an
-  integrated FSP.
+  You're about to remove the "{{ fspConfigurationLabel() }}" FSP configuration
+  from your project. Payments with this FSP will not go through, Registrations
+  with this FSP will not be paid unless changed to an integrated FSP.
 </app-form-dialog>
