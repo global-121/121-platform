@@ -25,3 +25,4 @@ export declare class TestResultParser {
      */
     static aggregateResults(allResults: TestResult[]): TestSummary;
 }
+//# sourceMappingURL=parser.d.ts.map
