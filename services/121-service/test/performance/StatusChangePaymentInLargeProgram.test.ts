@@ -27,7 +27,7 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 
 const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^15 = 32768
 const passRate = 10; // 10%
-const maxRetryDurationMs = 120_0000; // 20 minutes
+const maxRetryDurationMs = 1_200_000; // 20 minutes
 const delayBetweenAttemptsMs = 5000; // 5 seconds
 const amount = 25;
 const testTimeout = 1_200_000; // 20 minutes
