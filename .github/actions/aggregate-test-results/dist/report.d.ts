@@ -25,4 +25,3 @@ export declare class ReportGenerator {
      */
     private static formatDuration;
 }
-//# sourceMappingURL=report.d.ts.map
