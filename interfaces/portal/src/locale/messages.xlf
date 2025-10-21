@@ -1877,6 +1877,129 @@
       <trans-unit id="6553227732294230782" datatype="html">
         <source>Transfer failed. Error: <x equiv-text="event.errorMessage" id="PH"/></source>
       </trans-unit>
+      <trans-unit id="157548652954522016" datatype="html">
+        <source>Click to reconfigure</source>
+      </trans-unit>
+      <trans-unit id="1669185263898985643" datatype="html">
+        <source>Question</source>
+      </trans-unit>
+      <trans-unit id="173881015099071159" datatype="html">
+        <source>Add another FSP</source>
+      </trans-unit>
+      <trans-unit id="2049182205133748691" datatype="html">
+        <source>Financial Service Providers</source>
+      </trans-unit>
+      <trans-unit id="2330756841114483977" datatype="html">
+        <source>Choose another FSP:</source>
+      </trans-unit>
+      <trans-unit id="2409672154570643758" datatype="html">
+        <source>Display name</source>
+      </trans-unit>
+      <trans-unit id="3366674803315613002" datatype="html">
+        <source>Column to match</source>
+      </trans-unit>
+      <trans-unit id="3443268590750127257" datatype="html">
+        <source>Unique key</source>
+      </trans-unit>
+      <trans-unit id="3698276378504762536" datatype="html">
+        <source>This is a sensitive property, therefore its value needs to be re-entered upon reconfiguration.</source>
+      </trans-unit>
+      <trans-unit id="4151726167516719564" datatype="html">
+        <source>Select 1 or more</source>
+      </trans-unit>
+      <trans-unit id="444188195724727657" datatype="html">
+        <source>Missing required attributes for FSP integration. Please add them to the project registration form before trying again.</source>
+      </trans-unit>
+      <trans-unit id="4514255065946238571" datatype="html">
+        <source>To learn more about how to integrate Kobo forms see the <x ctype="x-ng_container" equiv-text="&lt;ng-container [ngTemplateOutlet]=&quot;manualLink&quot;&gt;" id="START_TAG_NG_CONTAINER"/><x ctype="x-ng_container" equiv-text="&lt;/ng-container&gt;" id="CLOSE_TAG_NG_CONTAINER"/>.</source>
+      </trans-unit>
+      <trans-unit id="4578833766272403833" datatype="html">
+        <source>Cover letter code</source>
+      </trans-unit>
+      <trans-unit id="4624691512001831810" datatype="html">
+        <source>Corporate code</source>
+      </trans-unit>
+      <trans-unit id="4725718925572069565" datatype="html">
+        <source>Click to integrate</source>
+      </trans-unit>
+      <trans-unit id="4771770532882776287" datatype="html">
+        <source>Integration error</source>
+      </trans-unit>
+      <trans-unit id="4814285799071780083" datatype="html">
+        <source>Remove</source>
+      </trans-unit>
+      <trans-unit id="4983372178316388330" datatype="html">
+        <source>Reconfigure</source>
+      </trans-unit>
+      <trans-unit id="5095658280989996703" datatype="html">
+        <source>FSP &quot;<x equiv-text="{{ fspLabel() }}" id="INTERPOLATION"/>&quot; is missing required field <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>&quot;<x equiv-text="{{ attribute.name }}" id="INTERPOLATION_1"/>&quot;<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/></source>
+      </trans-unit>
+      <trans-unit id="5248717555542428023" datatype="html">
+        <source>Username</source>
+      </trans-unit>
+      <trans-unit id="5473276629033556345" datatype="html">
+        <source>Funding token code</source>
+      </trans-unit>
+      <trans-unit id="5479133824073842793" datatype="html">
+        <source>Configure</source>
+      </trans-unit>
+      <trans-unit id="5568900620756681669" datatype="html">
+        <source>Your form must include the following required fields in this <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>exact format<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> for this FSP integration in the data column name:</source>
+      </trans-unit>
+      <trans-unit id="5951235042771324221" datatype="html">
+        <source>&quot;<x equiv-text="text" id="PH"/>&quot; copied to clipboard</source>
+      </trans-unit>
+      <trans-unit id="6650633628037596693" datatype="html">
+        <source>Try again</source>
+      </trans-unit>
+      <trans-unit id="6964415671113324026" datatype="html">
+        <source>FSP notes</source>
+      </trans-unit>
+      <trans-unit id="7014051207286040747" datatype="html">
+        <source>Data column name</source>
+      </trans-unit>
+      <trans-unit id="7022921536845926478" datatype="html">
+        <source>Payment reference prefix</source>
+      </trans-unit>
+      <trans-unit id="7071030556804020510" datatype="html">
+        <source>For more information about how to integrate this FSP see the <x ctype="x-ng_container" equiv-text="&lt;ng-container [ngTemplateOutlet]=&quot;manualLink&quot;&gt;" id="START_TAG_NG_CONTAINER"/><x ctype="x-ng_container" equiv-text="&lt;/ng-container&gt;" id="CLOSE_TAG_NG_CONTAINER"/>.</source>
+      </trans-unit>
+      <trans-unit id="7072204994041048093" datatype="html">
+        <source>FSP &quot;<x equiv-text="fspDisplayName" id="PH"/>&quot; integrated successfully.</source>
+      </trans-unit>
+      <trans-unit id="7313006626571837182" datatype="html">
+        <source>There are no specific fields needed for this integration</source>
+      </trans-unit>
+      <trans-unit id="7381452168881549852" datatype="html">
+        <source>We couldn&apos;t configure this FSP due to missing fields in your Kobo form. Please add the following fields to your Kobo form. Save the form, redeploy it, and refresh the integration to try again.</source>
+      </trans-unit>
+      <trans-unit id="7799902377740606724" datatype="html">
+        <source>Select 1</source>
+      </trans-unit>
+      <trans-unit id="8190847041640657748" datatype="html">
+        <source>Choose an FSP from the FSPs integrated to this instance. You can add multiple FSPs to the same project. If you wish to integrate a new FSP, contact the 121 support team or talk to the account manager.</source>
+      </trans-unit>
+      <trans-unit id="8270214591182392971" datatype="html">
+        <source>Brand code</source>
+      </trans-unit>
+      <trans-unit id="8738732372986673558" datatype="html">
+        <source>Copy to clipboard</source>
+      </trans-unit>
+      <trans-unit id="9175933158540522211" datatype="html">
+        <source>You&apos;re about to remove the &quot;<x equiv-text="{{ configuration().label | translatableString }}" id="INTERPOLATION"/>&quot; FSP configuration from your project. Payments with this FSP will not go through, Registrations with this FSP will not be paid unless changed to an integrated FSP.</source>
+      </trans-unit>
+      <trans-unit id="9190469470269882637" datatype="html">
+        <source>Integrate FSP</source>
+      </trans-unit>
+      <trans-unit id="9202925211917001608" datatype="html">
+        <source>Columns to export</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-settings-fsps" datatype="html">
+        <source>FSPs</source>
+      </trans-unit>
+      <trans-unit id="remove-fsp" datatype="html">
+        <source>Remove FSP</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
