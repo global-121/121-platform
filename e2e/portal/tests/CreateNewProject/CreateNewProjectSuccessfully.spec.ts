@@ -93,7 +93,7 @@ test('Create project validation checks on each step', async ({ page }) => {
   await test.step('Should attempt to proceed without filling in step 1', async () => {
     await createProjectDialog.nextButton.click();
     await homePage.validateToastMessageAndClose(
-      'Please fill out all required fields.',
+      'Please correct the errors in the form.',
     );
     // Project name is mandatory
     await expect(page.getByText('This field is required')).toBeVisible();
@@ -107,7 +107,7 @@ test('Create project validation checks on each step', async ({ page }) => {
   await test.step('Should attempt to proceed without filling in step 2', async () => {
     await createProjectDialog.nextButton.click();
     await homePage.validateToastMessageAndClose(
-      'Please fill out all required fields.',
+      'Please correct the errors in the form.',
     );
     // Target registrations has a minimum value of 1
     await expect(

@@ -194,7 +194,7 @@ export class CreateProjectDialogComponent {
     if (!formGroupToValidate.valid) {
       this.toastService.showToast({
         severity: 'error',
-        detail: $localize`Please fill out all required fields.`,
+        detail: $localize`Please correct the errors in the form.`,
       });
       return;
     }

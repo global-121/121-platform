@@ -1168,9 +1168,6 @@
       <trans-unit id="7906932148820692681" datatype="html">
         <source>Operation not possible.</source>
       </trans-unit>
-      <trans-unit id="8103250468659936776" datatype="html">
-        <source>Please fill out all required fields.</source>
-      </trans-unit>
       <trans-unit id="attribute-edit-info-maxPayments" datatype="html">
         <source>Maximum amount of transfers to be received. Keeping field empty to remove the limit.</source>
       </trans-unit>
@@ -1861,6 +1858,9 @@
       </trans-unit>
       <trans-unit id="7113499429942611780" datatype="html">
         <source>Create new project</source>
+      </trans-unit>
+      <trans-unit id="6456009373504868195" datatype="html">
+        <source>Please correct the errors in the form.</source>
       </trans-unit>
     </body>
   </file>
