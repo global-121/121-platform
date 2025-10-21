@@ -1,5 +1,6 @@
 import { Body, Controller, Get, HttpStatus, Post, Res } from '@nestjs/common';
 import { ApiExcludeEndpoint, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
 import { DataSource } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
@@ -18,7 +19,7 @@ export class TestController {
   })
   @ApiExcludeEndpoint(!IS_DEVELOPMENT)
   @Post('kill-service')
-  killService(@Body() body: SecretDto, @Res() res): void {
+  killService(@Body() body: SecretDto, @Res() res: Response): void {
     if (body.secret !== env.RESET_SECRET) {
       return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
     }

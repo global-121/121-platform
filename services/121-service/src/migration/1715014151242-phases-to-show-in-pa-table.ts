@@ -9,7 +9,7 @@ export class PhasesToShowInPaTable1715014151242 implements MigrationInterface {
        WHERE "name" IN ('program:phase.update')`,
     );
 
-    const permissionIds = permissionsToDelete.map((perm) => perm.id);
+    const permissionIds = permissionsToDelete.map((perm: any) => perm.id);
 
     if (permissionIds.length > 0) {
       await queryRunner.query(

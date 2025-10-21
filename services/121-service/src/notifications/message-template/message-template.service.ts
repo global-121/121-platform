@@ -139,7 +139,7 @@ export class MessageTemplateService {
     }
 
     for (const key in updateMessageTemplateDto) {
-      template[key] = updateMessageTemplateDto[key];
+      (template as any)[key] = (updateMessageTemplateDto as any)[key];
     }
 
     return await this.messageTemplateRepository.save(template);

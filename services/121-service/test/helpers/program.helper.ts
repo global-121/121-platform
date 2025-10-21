@@ -289,7 +289,7 @@ export async function importFspReconciliationData(
 
 function jsonArrayToCsv(json: object[]): string {
   const fields = Object.keys(json[0]);
-  const replacer = function (_key, value): string | number {
+  const replacer = function (_key: any, value: any): string | number {
     return value === null ? '' : value;
   };
   const csv = json.map(function (row): string {
@@ -359,7 +359,7 @@ export async function waitForPaymentTransactionsToComplete({
       // Check if all transactions have a "complete" status
       allTransactionsComplete = paymentReferenceIds.every((referenceId) => {
         const transaction = paymentTransactions.body.find(
-          (txn) => txn.registrationReferenceId === referenceId,
+          (txn: any) => txn.registrationReferenceId === referenceId,
         );
         return transaction && completeStatusses.includes(transaction.status);
       });
@@ -399,7 +399,7 @@ export async function waitForStatusUpdateToComplete(
     // Check if all registrations have the new status
     allStatusUpdatesSuccessful = referenceIds.every((referenceId) => {
       const registration = registrations.body.data.find(
-        (r) => r.referenceId === referenceId,
+        (r: any) => r.referenceId === referenceId,
       );
       return registration && registration.status === newRegistrationStatus;
     });

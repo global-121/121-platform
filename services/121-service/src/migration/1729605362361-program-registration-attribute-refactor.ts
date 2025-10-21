@@ -419,7 +419,7 @@ export class ProgramRegistrationAttributeRefactor1729605362361
     ]);
     for (const programRegistrationAttribute of programRegistrationAttributes) {
       const matchingProgramQuestion = programQuestions.find(
-        (pq) =>
+        (pq: any) =>
           pq.name === programRegistrationAttribute.name &&
           pq.programId === programRegistrationAttribute.programId,
       );
@@ -448,7 +448,7 @@ export class ProgramRegistrationAttributeRefactor1729605362361
 
     for (const programRegistrationAttribute of programRegistrationAttributes) {
       const matchingProgramCustomAttribute = programCustomAttributes.find(
-        (pca) =>
+        (pca: any) =>
           pca.name === programRegistrationAttribute.name &&
           pca.programId === programRegistrationAttribute.programId,
       );
@@ -477,11 +477,11 @@ export class ProgramRegistrationAttributeRefactor1729605362361
 
     for (const programRegistrationAttribute of programRegistrationAttributes) {
       const matchingFspQs = fspQuestions.filter(
-        (fspQ) => fspQ.name === programRegistrationAttribute.name,
+        (fspQ: any) => fspQ.name === programRegistrationAttribute.name,
       );
 
       if (matchingFspQs.length > 0) {
-        const fspQuestionIds = matchingFspQs.map((fspQ) => fspQ.id).join(', ');
+        const fspQuestionIds = matchingFspQs.map((fspQ: any) => fspQ.id).join(', ');
         // Remove registration data related to unmatched fsp questions
         // So for example some registrations still have data of jumbo while their fsp is now visa
         const deleteRegistrationDataRelatedToUnMatchedFsp = `

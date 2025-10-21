@@ -30,7 +30,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 
 describe('Do failing payment with FSP Visa Debit', () => {
-  let registrationVisa;
+  let registrationVisa: any;
 
   let accessToken: string;
 

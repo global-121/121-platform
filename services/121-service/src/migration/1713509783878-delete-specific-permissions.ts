@@ -11,7 +11,7 @@ export class DeleteSpecificPermissions1713509783878
        WHERE "name" IN ('registration:status:rejected.update', 'registration:status:inclusionEnded.update')`,
     );
 
-    const permissionIds = permissionsToDelete.map((perm) => perm.id);
+    const permissionIds = permissionsToDelete.map((perm: any) => perm.id);
 
     if (permissionIds.length > 0) {
       await queryRunner.query(

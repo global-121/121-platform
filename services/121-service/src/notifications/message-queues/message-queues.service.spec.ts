@@ -67,7 +67,7 @@ describe('MessageQueuesService', () => {
     registration.preferredLanguage = LanguageEnum.fr;
     registration.phoneNumber = '234567891';
     registration.programId = 1;
-    registration[DefaultRegistrationDataAttributeNames.whatsappPhoneNumber] =
+    (registration as any)[DefaultRegistrationDataAttributeNames.whatsappPhoneNumber] =
       '0987654321';
 
     // Act
@@ -86,7 +86,7 @@ describe('MessageQueuesService', () => {
       {
         ...defaultMessageJob,
         whatsappPhoneNumber:
-          registration[
+          (registration as any)[
             DefaultRegistrationDataAttributeNames.whatsappPhoneNumber
           ],
         phoneNumber: registration.phoneNumber,

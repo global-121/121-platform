@@ -76,7 +76,7 @@ export class MessageQueuesService {
     userId: number;
   }): Promise<void> {
     let whatsappPhoneNumber =
-      registration[DefaultRegistrationDataAttributeNames.whatsappPhoneNumber];
+      (registration as any)[DefaultRegistrationDataAttributeNames.whatsappPhoneNumber];
     if (registration instanceof RegistrationEntity) {
       whatsappPhoneNumber =
         await this.registrationDataService.getRegistrationDataValueByName(
