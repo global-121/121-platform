@@ -182,7 +182,7 @@ export class UserController {
   public async login(
     @Body() loginUserDto: LoginUserDto,
     @Res() res: Response,
-  ): Promise<UserRO> {
+  ): Promise<any> {
     try {
       const loginResponse = await this.userService.login(loginUserDto);
 
@@ -214,7 +214,7 @@ export class UserController {
   @ApiTags('users')
   @ApiOperation({ summary: 'Log out existing user' })
   @Post('users/logout')
-  public async logout(@Res() res: Response): Promise<UserRO> {
+  public async logout(@Res() res: Response): Promise<any> {
     try {
       const key = this.userService.getInterfaceKeyByHeader();
       const { sameSite, secure, httpOnly } =
@@ -275,14 +275,14 @@ export class UserController {
     description: 'User returned',
   })
   public async findMe(@Req() req: Request): Promise<UserRO> {
-    if (!req.user || !req.user.username) {
+    if (!(req as any).user || !(req as any).user.username) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
 
     return await this.userService.getUserRoByUsernameOrThrow(
-      req.user.username,
-      req.user.exp,
+      (req as any).user.username,
+      (req as any).user.exp,
     );
   }
 
