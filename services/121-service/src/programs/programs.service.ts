@@ -83,7 +83,7 @@ export class ProgramService {
 
     program.editableAttributes =
       await this.programAttributesService.getPaEditableAttributes(program.id);
-    program['paTableAttributes'] =
+    (program as any)['paTableAttributes'] =
       await this.programAttributesService.getAttributes({
         programId: program.id,
         includeProgramRegistrationAttributes: true,
@@ -91,10 +91,10 @@ export class ProgramService {
       });
 
     // TODO: Get these attributes from some enum or something
-    program['filterableAttributes'] =
+    (program as any)['filterableAttributes'] =
       this.programAttributesService.getFilterableAttributes(program);
 
-    program['fspConfigurations'] =
+    (program as any)['fspConfigurations'] =
       ProgramFspConfigurationMapper.mapEntitiesToDtos(
         program.programFspConfigurations,
       );
@@ -432,8 +432,8 @@ export class ProgramService {
     }
 
     for (const attribute in updateProgramRegistrationAttribute) {
-      programRegistrationAttribute[attribute] =
-        updateProgramRegistrationAttribute[attribute];
+      (programRegistrationAttribute as any)[attribute] =
+        (updateProgramRegistrationAttribute as any)[attribute];
     }
 
     await this.programRegistrationAttributeRepository.save(

@@ -38,7 +38,7 @@ export class MigrateDataChangesToEvent1708330965061
       `SELECT * FROM "121-service".registration_change_log`,
     );
 
-    const mappedEvents = registrationDataChanges.map((change) => {
+    const mappedEvents = registrationDataChanges.map((change: any) => {
       const event = new RegistrationEventEntity();
       event.created = change.created;
       event.updated = change.updated;

@@ -39,9 +39,9 @@ const validPropertyDto: CreateProgramFspConfigurationPropertyDto = {
 };
 
 // Declaring mocks here so they are accessible through all files
-let mockProgramFspConfigurationRepository;
-let mockProgramFspConfigurationPropertyRepository;
-let mockTransactionScopedRepository;
+let mockProgramFspConfigurationRepository: any;
+let mockProgramFspConfigurationPropertyRepository: any;
+let mockTransactionScopedRepository: any;
 
 describe('ProgramFspConfigurationsService', () => {
   let service: ProgramFspConfigurationsService;

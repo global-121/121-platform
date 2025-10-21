@@ -38,7 +38,7 @@ export class MigrateStatusChangesToEvent1708330966062
     let currentRegistrationId = null;
     let lastStatus = null;
 
-    const events = registrationStatusChanges.map((change) => {
+    const events = registrationStatusChanges.map((change: any) => {
       // Reset lastStatus if we're processing a new registrationId
       if (currentRegistrationId !== change.registrationId) {
         currentRegistrationId = change.registrationId;

@@ -4,7 +4,7 @@ const exampleApiUrl = 'http://example.com/api';
 const expectedCronjobUrl = `${exampleApiUrl}/cronjobs`;
 
 describe('Cronjob initiation', () => {
-  let cronjobInitiateService;
+  let cronjobInitiateService: CronjobInitiateService;
   const testHeader = { name: 'test name', value: 'test value' };
   beforeAll(() => {
     cronjobInitiateService = new CronjobInitiateService();

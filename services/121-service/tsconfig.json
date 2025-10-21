@@ -9,7 +9,6 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "strictPropertyInitialization": false, // TODO: AB#28804
-    "noImplicitAny": false, // TODO: AB#28419
     "useUnknownInCatchVariables": false, // TODO: AB#27718
     "moduleResolution": "bundler",
     "declaration": false,

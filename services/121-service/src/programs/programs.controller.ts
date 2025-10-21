@@ -25,6 +25,7 @@ import {
 } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
+import { Response } from 'express';
 
 import { env } from '@121-service/src/env';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
@@ -201,7 +202,7 @@ You can also leave the body empty.`,
     @Param('programId', ParseIntPipe)
     programId: number,
     @Body() body: SecretDto,
-    @Res() res,
+    @Res() res: Response,
   ): Promise<void> {
     if (body.secret !== env.RESET_SECRET) {
       return res.status(HttpStatus.FORBIDDEN).send('Not allowed');

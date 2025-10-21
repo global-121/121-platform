@@ -252,7 +252,7 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
     const programPvJson = JSON.parse(programPv);
     const phoneNumberQuestionId = phoneNumberQuestionIdResult[0].id;
     const phonenumberQuestionSeed = programPvJson.programQuestions.find(
-      (pq) => pq.name === 'phoneNumber',
+      (pq: any) => pq.name === 'phoneNumber',
     );
     await queryRunner.query(
       `
@@ -312,7 +312,7 @@ export class MergeLvvPv1702982630555 implements MigrationInterface {
     );
     const programPvJson = JSON.parse(programPv);
     const fullNameQuestion = programPvJson.programQuestions.find(
-      (pq) => pq.name === 'fullName',
+      (pq: any) => pq.name === 'fullName',
     );
     await queryRunner.query(`
       UPDATE "121-service".program_question

@@ -25,8 +25,8 @@ export class RegistrationViewsMapper {
     if (select && select.length > 0) {
       mappedRegistration = new RegistrationViewEntity();
       for (const selectKey of select) {
-        if (selectKey !== 'data' && registration[selectKey] !== undefined) {
-          mappedRegistration[selectKey] = registration[selectKey];
+        if (selectKey !== 'data' && (registration as any)[selectKey] !== undefined) {
+          (mappedRegistration as any)[selectKey] = (registration as any)[selectKey];
         }
       }
     }
@@ -54,8 +54,8 @@ export class RegistrationViewsMapper {
       const propertiesToCheck = ['programRegistrationAttributeId'];
       for (const property of propertiesToCheck) {
         if (
-          dataRelation[property] === data[property] &&
-          data[property] !== null
+          (dataRelation as any)[property] === (data as any)[property] &&
+          (data as any)[property] !== null
         ) {
           return true;
         }
@@ -68,9 +68,9 @@ export class RegistrationViewsMapper {
         findRelation(dataRelation.relation, x),
       );
       if (registrationData) {
-        mappedRegistration[dataRelation.name] = registrationData.value;
+        (mappedRegistration as any)[dataRelation.name] = registrationData.value;
       } else {
-        mappedRegistration[dataRelation.name] = null;
+        (mappedRegistration as any)[dataRelation.name] = null;
       }
     }
 
@@ -99,7 +99,7 @@ export class RegistrationViewsMapper {
         (x) => !orignalSelect.includes(x),
       );
       for (const key of differenceOrignalSelect) {
-        delete registration[key];
+        delete (registration as any)[key];
       }
     }
     return {
