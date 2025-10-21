@@ -2,18 +2,6 @@
 
 ```mermaid
 graph LR
-  CronjobModule-->IntersolveVisaReconciliationModule
-  IntersolveVisaReconciliationModule-->IntersolveVisaModule
-  IntersolveVisaModule-->UserModule
-  UserModule-->UserEmailsModule
-  UserEmailsModule-->UserEmailTemplatesModule
-  UserEmailsModule-->EmailsModule
-  CronjobModule-->IntersolveVoucherModule
-  IntersolveVoucherModule-->ImageCodeModule
-  IntersolveVoucherModule-->UserModule
-  IntersolveVoucherModule-->TransactionsModule
-  TransactionsModule-->UserModule
-  TransactionsModule-->ActionsModule
   ActionsModule-->UserModule
   ActivitiesModule-->MessageModule
   ActivitiesModule-->NoteModule
@@ -174,7 +162,9 @@ graph LR
   TransactionsModule-->RegistrationUtilsModule
   TransactionsModule-->TransactionEventsModule
   TransactionsModule-->UserModule
-  UserModule-->EmailsModule
+  UserEmailsModule-->EmailsModule
+  UserEmailsModule-->UserEmailTemplatesModule
+  UserModule-->UserEmailsModule
   WhatsappModule-->ImageCodeModule
   WhatsappModule-->MessageTemplateModule
   WhatsappModule-->UserModule
