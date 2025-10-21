@@ -2,8 +2,8 @@ export enum TransactionEventDescription {
   created = 'Transfer created', // 'transfer' to align with front-end naming
   initiated = 'Transfer started',
   retry = 'Transfer retried',
-  // IMPORTANT: all description below should be phrased generically, so they can be suffixed with either "succeeded" or "failed"
-  // TODO re-evaluate this setup as it is prone to mistakes and yields nasty UX copy
+  // IMPORTANT: all descriptions below should be phrased generically, so they can be suffixed with either "succeeded" or "failed"
+  // TODO re-evaluate this setup as it is prone to mistakes and yields ugly UX copy, and is not translatable
   onafriqRequestSent = 'Onafriq payment request',
   onafriqCallbackReceived = 'Onafriq payment distribution',
   safaricomRequestSent = 'Safaricom payment request',

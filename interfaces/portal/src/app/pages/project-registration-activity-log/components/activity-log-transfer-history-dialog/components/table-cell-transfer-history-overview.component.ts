@@ -7,6 +7,7 @@ import {
   input,
 } from '@angular/core';
 
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
@@ -38,9 +39,12 @@ export class TableCellTransferHistoryOverviewComponent
 
   readonly label = computed(() => {
     const event = this.value();
-    // NOTE 1: Checking on errorMessage first (instead of on type) purely for the migrated old transactions, where errorMessage has been put in the 'initiated' event. For new transactions, this will never be the case.
-    // NOTE 2: For these old migrations this will yield nasty UX copy: 'Transfer initiated failed'.
     if (event.errorMessage) {
+      // NOTE: This exception is needed purely for the migrated old transactions, where errorMessage has been put in the 'initiated' event. For new transactions, this will never be the case.
+      // Without this exception, this would yield a double past tense.
+      if (event.description === TransactionEventDescription.initiated) {
+        return $localize`Transfer failed. Error: ${event.errorMessage}`;
+      }
       return `${event.description} failed. Error: ${event.errorMessage}`;
     }
     if (event.type !== TransactionEventType.processingStep) {

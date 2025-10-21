@@ -15,7 +15,10 @@ export class TransactionEventsMapper {
         id: event.id,
         type: event.type,
         created: event.created,
-        user: mapUserToDto(event.user),
+        user: mapUserToDto(event.user) ?? {
+          id: 0,
+          username: '121 system',
+        },
         description: event.description,
         isSuccessfullyCompleted: event.isSuccessfullyCompleted,
         errorMessage: event.errorMessage,
