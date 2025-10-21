@@ -1,7 +1,4 @@
-import {
-  PORTAL_NAME,
-  SUPPORT_EMAIL,
-} from '@121-service/src/user/user-emails/user-email-templates/template-constants';
+import { SUPPORT_EMAIL } from '@121-service/src/user/user-emails/user-email-templates/template-constants';
 
 /**
  * Wrap the email content in a base-template.
@@ -34,7 +31,7 @@ export const wrapUserEmailContent = (content: string): string => {
     </style>
 
     <div class="header">
-      <h1>${PORTAL_NAME}</h1>
+      <h1>121 Portal</h1>
     </div>
 
     <div class="content">
