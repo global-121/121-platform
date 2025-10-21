@@ -27,7 +27,7 @@ test.beforeEach(async ({ page }) => {
   // do 1st payment
   await doPaymentAndWaitForCompletion({
     programId: programIdOCW,
-    amount: 25,
+    transferValue: 25,
     referenceIds: registrationsVisa.map((reg) => reg.referenceId),
     accessToken,
   });
@@ -35,7 +35,7 @@ test.beforeEach(async ({ page }) => {
   // do 2nd payment
   await doPaymentAndWaitForCompletion({
     programId: programIdOCW,
-    amount: transferValueForSecondPayment,
+    transferValue: transferValueForSecondPayment,
     referenceIds: registrationsVisa.map((reg) => reg.referenceId),
     accessToken,
   });

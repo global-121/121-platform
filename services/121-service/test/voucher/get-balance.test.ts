@@ -24,7 +24,7 @@ describe('Get Intersolve voucher balance', () => {
   let accessToken: string;
 
   const payment = 1;
-  const amount = 22;
+  const transferValue = 22;
 
   beforeEach(async () => {
     await waitFor(1_000);
@@ -45,7 +45,7 @@ describe('Get Intersolve voucher balance', () => {
     const paymentReferenceIds = [registrationPV5.referenceId];
     await doPayment({
       programId: programIdPV,
-      amount,
+      transferValue,
       referenceIds: paymentReferenceIds,
       accessToken,
     });

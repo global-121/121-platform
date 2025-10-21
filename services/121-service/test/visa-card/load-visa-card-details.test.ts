@@ -4,9 +4,9 @@ import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/int
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  amountVisa,
   programIdVisa,
   registrationVisa,
+  transferValueVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
@@ -60,7 +60,7 @@ describe('Load Visa debit cards and details', () => {
     });
     await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds,
       accessToken,
     });
@@ -91,7 +91,9 @@ describe('Load Visa debit cards and details', () => {
       expect(visaParentWalletResponse.body.cards).toBeDefined();
       expect(visaParentWalletResponse.body.cards.length).toBe(2);
       expect(visaParentWalletResponse.body.balance).toBeDefined();
-      expect(visaParentWalletResponse.body.balance).toBe(amountVisa * 100);
+      expect(visaParentWalletResponse.body.balance).toBe(
+        transferValueVisa * 100,
+      );
       expect(visaParentWalletResponse.body.lastUsedDate).toBeDefined();
       expect(visaParentWalletResponse.body.spentThisMonth).toBeDefined();
       const sortedCards = visaParentWalletResponse.body.cards.sort(

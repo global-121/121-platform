@@ -18,7 +18,7 @@ const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '7'); // '7' leads to
 const programId = 3;
 const maxRetryDuration = 2000; // seconds
 const minPassRatePercentage = 100;
-const amount = 10;
+const transferValue = 10;
 
 export const options = {
   thresholds: {
@@ -69,7 +69,7 @@ export default function () {
   });
 
   // Do the payment
-  const doPayment = paymentsPage.createPayment(programId, amount);
+  const doPayment = paymentsPage.createPayment(programId, transferValue);
   checkAndFail(doPayment, {
     'Payment successfully done status 202': (r) => {
       if (r.status != 202) {

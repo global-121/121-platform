@@ -185,7 +185,10 @@ export class PaymentsController {
       query,
     );
     const dryRunBoolean = dryRun === 'true'; // defaults to false
-    if (!dryRunBoolean && (data.amount === undefined || data.amount <= 0)) {
+    if (
+      !dryRunBoolean &&
+      (data.transferValue === undefined || data.transferValue <= 0)
+    ) {
       throw new HttpException(
         'Amount should be larger than 0 when not using dry run',
         HttpStatus.BAD_REQUEST,
@@ -195,7 +198,7 @@ export class PaymentsController {
     const result = await this.paymentsExecutionService.createPayment({
       userId,
       programId,
-      amount: data.amount,
+      transferValue: data.transferValue,
       query,
       dryRun: dryRunBoolean,
       note: data.note,

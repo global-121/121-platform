@@ -40,7 +40,7 @@ test.beforeEach(async ({ page }) => {
 
   const paymentResponse = await doPayment({
     programId: 2,
-    amount: 100,
+    transferValue: 100,
     referenceIds: [referenceIdPV5],
     accessToken,
   });
@@ -88,7 +88,9 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[34462] Expand rows of activity overview', async ({ page }) => {
+test('[34462] Expand rows of activity overview and view transfer history', async ({
+  page,
+}) => {
   const activityLogPage = new RegistrationActivityLogPage(page);
   const tableComponent = new TableComponent(page);
   const registrationsPage = new RegistrationsPage(page);
@@ -99,6 +101,7 @@ test('[34462] Expand rows of activity overview', async ({ page }) => {
       registrationName: registrationPV5.fullName,
     });
   });
+
   // Assert
   await test.step('Expand all activity rows and assert that they are expanded', async () => {
     // Mitigate the timeout issue when the table is not fully loaded
@@ -116,6 +119,16 @@ test('[34462] Expand rows of activity overview', async ({ page }) => {
     // Validate amount of rows after expanding
     await tableComponent.validateWaitForTableRowCount({
       expectedRowCount: activitiesCount * 2,
+    });
+  });
+
+  await test.step('View transfer history and validate table contents', async () => {
+    // Click view transfer history button in first row
+    await tableComponent.clickViewTransferHistoryButtonInRow();
+
+    // Validate that transfer history table has correct number of rows
+    await tableComponent.validateTransferHistoryTableRowCount({
+      expectedRowCount: 6, // created / initiated / voucher created / initial message sent / voucher message sent / message delivered
     });
   });
 });

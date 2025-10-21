@@ -3,8 +3,8 @@ import { HttpStatus } from '@nestjs/common';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  amountVisa,
   programIdVisa,
+  transferValueVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
   doPayment,
@@ -60,7 +60,7 @@ describe('Do payment with filter', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds: [],
       accessToken,
     });
@@ -94,7 +94,7 @@ describe('Do payment with filter', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds: [],
       accessToken,
       filter: { 'filter.status': '$in:included' },
@@ -128,7 +128,7 @@ describe('Do payment with filter', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds: [],
       accessToken,
       filter: {
@@ -162,7 +162,7 @@ describe('Do payment with filter', () => {
     const doPaymentResponse = await doPayment(
       {
         programId: programIdVisa,
-        amount: amountVisa,
+        transferValue: transferValueVisa,
         referenceIds: [],
         accessToken,
         filter: {
@@ -198,7 +198,7 @@ describe('Do payment with filter', () => {
     const doPaymentResponse = await doPayment(
       {
         programId: programIdVisa,
-        amount: amountVisa,
+        transferValue: transferValueVisa,
         referenceIds: [],
         accessToken,
         filter: {

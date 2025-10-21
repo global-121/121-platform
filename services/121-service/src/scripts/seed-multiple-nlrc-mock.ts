@@ -8,8 +8,8 @@ import { SeedHelperService } from '@121-service/src/scripts/services/seed-helper
 import { SeedMockHelperService } from '@121-service/src/scripts/services/seed-mock-helper.service';
 import { registrationAHWhatsapp } from '@121-service/src/seed-data/mock/registration-pv.data';
 import {
-  amountVisa,
   registrationVisa,
+  transferValueVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
@@ -109,7 +109,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
 
     await this.seedMockHelper.doPayment(
       programId,
-      amountVisa,
+      transferValueVisa,
       [registration.referenceId],
       accessToken,
     );

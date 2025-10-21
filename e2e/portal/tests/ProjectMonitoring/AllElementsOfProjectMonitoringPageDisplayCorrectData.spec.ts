@@ -35,14 +35,14 @@ test.beforeEach(async ({ page }) => {
   // do payment for NLRC OCW
   await doPaymentAndWaitForCompletion({
     programId: programIdOCW,
-    amount: defaultTransferValue,
+    transferValue: defaultTransferValue,
     referenceIds: registrationsOCW.map((reg) => reg.referenceId),
     accessToken,
   });
   // do payment for NLRC PV
   await doPaymentAndWaitForCompletion({
     programId: programIdPV,
-    amount: defaultTransferValue,
+    transferValue: defaultTransferValue,
     referenceIds: registrationsVoucher.map((reg) => reg.referenceId),
     accessToken,
   });

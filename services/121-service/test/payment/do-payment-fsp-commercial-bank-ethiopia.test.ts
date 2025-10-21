@@ -22,7 +22,7 @@ import { registrationCbe } from '@121-service/test/registrations/pagination/pagi
 
 const programId = 1;
 const paymentId = 1;
-const amount = 200;
+const transferValue = 200;
 
 describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
   let accessToken: string;
@@ -40,7 +40,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      amount,
+      transferValue,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -104,7 +104,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     const doPaymentResponse = await doPayment({
       programId,
 
-      amount,
+      transferValue,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -157,7 +157,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      amount,
+      transferValue,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -209,7 +209,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
 
     const doPaymentResponse = await doPayment({
       programId,
-      amount,
+      transferValue,
       referenceIds: paymentReferenceIds,
       accessToken,
     });

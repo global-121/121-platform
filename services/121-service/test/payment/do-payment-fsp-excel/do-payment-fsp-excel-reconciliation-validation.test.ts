@@ -29,7 +29,7 @@ import {
 describe('Reconciliate excel FSP data', () => {
   let accessToken: string;
   // Payment info
-  const amount = 10;
+  const transferValue = 10;
   const paymentId = 1;
   const differentMatchColumn = 'accountId';
 
@@ -72,7 +72,7 @@ describe('Reconciliate excel FSP data', () => {
     await seedPaidRegistrations(
       registrationsWesteros,
       programIdWesteros,
-      amount,
+      transferValue,
       [TransactionStatusEnum.waiting],
     );
 
@@ -111,7 +111,7 @@ describe('Reconciliate excel FSP data', () => {
 
     const secondPayment = await doPayment({
       programId: programIdWesteros,
-      amount,
+      transferValue,
       accessToken,
       referenceIds: referenceIdsWesteros,
     });

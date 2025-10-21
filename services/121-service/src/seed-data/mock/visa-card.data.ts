@@ -4,7 +4,7 @@ import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 export const programIdVisa = 3;
 export const paymentIdVisa = 1;
-export const amountVisa = 25;
+export const transferValueVisa = 25;
 
 export const registrationVisa = {
   referenceId: 'registration-visa-1',

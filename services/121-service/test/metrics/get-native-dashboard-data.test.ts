@@ -18,7 +18,7 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 let accessToken: string;
-const amount = 50;
+const transferValue = 50;
 
 // Set up 3 registrations of which 1 succeeds (visa), 1 fails (visa with magic mock fail name) and 1 on waiting (AH voucher with magic mock nr to not get incoming message)
 registrationPV7.fullName = 'mock-fail-create-customer';
@@ -36,14 +36,14 @@ const seedTwoPayments = async () => {
   await seedPaidRegistrations(
     registrationsPV,
     programIdPV,
-    amount,
+    transferValue,
     completeStatusses,
   );
 
   // Add a second payment to return two aggregates in the response
   await doPaymentAndWaitForCompletion({
     programId: programIdPV,
-    amount,
+    transferValue,
     referenceIds: registrationsPV.map((r) => r.referenceId),
     accessToken,
     completeStatusses,
@@ -77,15 +77,15 @@ describe('Get all payments aggregates', () => {
         expect.objectContaining({
           success: expect.objectContaining({
             count: 1,
-            amount,
+            amount: transferValue,
           }),
           waiting: expect.objectContaining({
             count: 1,
-            amount,
+            amount: transferValue,
           }),
           failed: expect.objectContaining({
             count: 1,
-            amount,
+            amount: transferValue,
           }),
         }),
       );
@@ -111,15 +111,15 @@ describe('Get all payments aggregates', () => {
         expect.objectContaining({
           success: expect.objectContaining({
             count: 1,
-            amount,
+            amount: transferValue,
           }),
           waiting: expect.objectContaining({
             count: 1,
-            amount,
+            amount: transferValue,
           }),
           failed: expect.objectContaining({
             count: 1,
-            amount,
+            amount: transferValue,
           }),
         }),
       );
@@ -160,9 +160,9 @@ describe('Get amount sent by month', () => {
       const firstMonthKey = Object.keys(getAmountSentByMonthResponse.body)[0];
       expect(firstMonthKey).toMatch(/^\d{4}-\d{2}$/);
       expect(getAmountSentByMonthResponse.body[firstMonthKey]).toEqual({
-        success: amount * 2,
-        waiting: amount * 2,
-        failed: amount * 2,
+        success: transferValue * 2,
+        waiting: transferValue * 2,
+        failed: transferValue * 2,
       });
     });
 
@@ -181,9 +181,9 @@ describe('Get amount sent by month', () => {
       const firstMonthKey = Object.keys(getAmountSentByMonthResponse.body)[0];
       expect(firstMonthKey).toMatch(/^\d{4}-\d{2}$/);
       expect(getAmountSentByMonthResponse.body[firstMonthKey]).toEqual({
-        success: amount,
-        waiting: amount,
-        failed: amount,
+        success: transferValue,
+        waiting: transferValue,
+        failed: transferValue,
       });
     });
   });

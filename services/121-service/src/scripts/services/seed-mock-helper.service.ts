@@ -218,7 +218,7 @@ export class SeedMockHelperService {
 
   public async doPayment(
     programId: number,
-    amount: number,
+    transferValue: number,
     referenceIds: string[],
     accessToken: string,
     filter: Record<string, string> = {},
@@ -240,7 +240,7 @@ export class SeedMockHelperService {
     )}`;
     const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
     const body = {
-      amount,
+      transferValue,
     };
 
     return await this.httpService.post(url, body, headers);

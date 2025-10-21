@@ -26,7 +26,7 @@ import {
 
 describe('Do payment to 1 PA with Fsp Onafriq', () => {
   const programId = 1;
-  const amount = 12327;
+  const transferValue = 12327;
   const baseRegistrationOnafriq = {
     referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
     programFspConfigurationName: Fsps.onafriq,
@@ -64,7 +64,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      amount,
+      transferValue,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -126,7 +126,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      amount,
+      transferValue,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -228,7 +228,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      amount,
+      transferValue,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -293,7 +293,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      amount,
+      transferValue,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
