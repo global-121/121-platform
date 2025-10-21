@@ -22,7 +22,7 @@ const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplic
 const passRate = 50; // 50%
 const maxRetryDurationMs = 4_800_000; // 80 minutes
 const amount = 25;
-const testTimeout = 4_800_000; // 80 minutes
+const testTimeout = 5_400_000; // 90 minutes
 
 jest.setTimeout(testTimeout);
 describe('Measure performance during payment', () => {

@@ -10,12 +10,12 @@ import {
   duplicateRegistrations,
   exportRegistrations,
   importRegistrations,
+  jsonToCsv,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { jsonToCsv } from '@121-service/test/performance/helpers/performance.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^15 = 32768
