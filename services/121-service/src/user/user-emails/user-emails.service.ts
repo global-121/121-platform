@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { EmailsService } from '@121-service/src/emails/emails.service';
 import { EmailData } from '@121-service/src/emails/interfaces/email-data.interface';
 import { EmailType } from '@121-service/src/user/user-emails/enum/email-type.enum';
 import { UserEmailTemplateInput } from '@121-service/src/user/user-emails/interfaces/user-email-template-input.interface';
@@ -10,9 +11,10 @@ import { UserEmailTemplatesService } from '@121-service/src/user/user-emails/use
 export class UserEmailsService {
   constructor(
     private readonly userEmailTemplatesService: UserEmailTemplatesService,
+    private readonly emailsService: EmailsService,
   ) {}
 
-  public buildEmailData(
+  private buildUserEmailData(
     emailType: EmailType,
     userEmailTemplateInput: UserEmailTemplateInput,
   ): EmailData {
@@ -31,5 +33,17 @@ export class UserEmailsService {
     };
 
     return emailData;
+  }
+
+  public async sendUserEmail(
+    userEmailTemplateInput: UserEmailTemplateInput,
+    emailType: EmailType,
+  ): Promise<void> {
+    const emailData: EmailData = this.buildUserEmailData(
+      emailType,
+      userEmailTemplateInput,
+    );
+
+    await this.emailsService.sendEmail(emailData);
   }
 }

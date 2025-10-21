@@ -8,8 +8,6 @@ import * as jwt from 'jsonwebtoken';
 import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
-import { EmailsService } from '@121-service/src/emails/emails.service';
-import { EmailData } from '@121-service/src/emails/interfaces/email-data.interface';
 import { env } from '@121-service/src/env';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
@@ -66,7 +64,6 @@ export class UserService {
 
   public constructor(
     @Inject(REQUEST) private readonly request: Request,
-    private readonly emailsService: EmailsService,
     private readonly userEmailsService: UserEmailsService,
   ) {}
 
@@ -290,12 +287,7 @@ export class UserService {
         ? EmailType.accountCreatedForSSO
         : EmailType.accountCreated;
 
-      const emailData: EmailData = this.userEmailsService.buildEmailData(
-        emailType,
-        emailPayload,
-      );
-
-      await this.emailsService.sendEmail(emailData);
+      await this.userEmailsService.sendUserEmail(emailPayload, emailType);
     }
   }
 
@@ -953,12 +945,10 @@ export class UserService {
       password,
     };
 
-    const emailData: EmailData = this.userEmailsService.buildEmailData(
-      EmailType.passwordReset,
+    await this.userEmailsService.sendUserEmail(
       emailPayload,
+      EmailType.passwordReset,
     );
-
-    await this.emailsService.sendEmail(emailData);
   }
 
   private generateSalt(): string {
