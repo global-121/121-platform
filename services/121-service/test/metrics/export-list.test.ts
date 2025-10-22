@@ -83,7 +83,7 @@ describe('Metric export list', () => {
     );
   });
 
-  it('should return all filtered registrations from 1 program using a filter for included and a scoped user', async () => {
+  it('should return all filtered registrations from 1 program using a filter for included and a scoped user - INTENTIONAL FAILURE', async () => {
     // Arrange
     const testScope = DebugScope.Kisumu;
     accessToken = await getAccessTokenScoped(testScope);
@@ -104,7 +104,8 @@ describe('Metric export list', () => {
     // Assert
     const data = getRegistrationsResponse.body.data;
     expect(getRegistrationsResponse.status).toBe(HttpStatus.OK);
-    expect(data.length).toBe(1);
+    // INTENTIONAL FAILURE: This assertion will fail to test integration test failure reporting
+    expect(data.length).toBe(999); // Should be 1, but changed to 999 to cause failure
 
     const exportRegistration = data[0];
     expect(exportRegistration.referenceId).toBe(

@@ -128,7 +128,7 @@ describe('ProgramFspConfigurationsService', () => {
   });
 
   describe('findByProgramId', () => {
-    it('should return program configurations for a given program ID', async () => {
+    it('should return program configurations for a given program ID - INTENTIONAL FAILURE', async () => {
       const result = await service.getByProgramId(programId);
 
       expect(mockProgramFspConfigurationRepository.find).toHaveBeenCalledWith({
@@ -136,7 +136,8 @@ describe('ProgramFspConfigurationsService', () => {
         relations: ['properties'],
       });
       expect(Array.isArray(result)).toBe(true);
-      expect(result.length).toBe(1);
+      // INTENTIONAL FAILURE: This assertion will fail to test unit test failure reporting
+      expect(result.length).toBe(999); // Should be 1, but changed to 999 to cause failure
     });
   });
 

@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[29368] Successfully import registrations', async ({ page }) => {
+test('[29368] Successfully import registrations - INTENTIONAL FAILURE', async ({ page }) => {
   const registrationsPage = new RegistrationsPage(page);
   const table = new TableComponent(page);
   const registrationsDataFilePath = path.resolve(
@@ -27,6 +27,9 @@ test('[29368] Successfully import registrations', async ({ page }) => {
   );
 
   const projectTitle = NLRCProgramPV.titlePortal.en;
+
+  // INTENTIONAL FAILURE: This assertion will always fail to test the aggregation system
+  expect(false).toBe(true); // This will fail and demonstrate e2e test failure reporting
 
   await test.step('Select program', async () => {
     await registrationsPage.selectProgram(projectTitle);
