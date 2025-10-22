@@ -1,6 +1,9 @@
 name: 'Test: Jest Performance Tests Cronjob'
 
 on:
+  push:
+    branches:
+      - 'Piotrk39/chore.add-performance-jest-cronjob-workflow' # Runs on all branches; restrict to e.g. 'feature/*' if you want only feature branches
   schedule:
     # See: https://crontab.guru/#42_1_*_*_1-5
     - cron: '42 1 * * 1-5'
