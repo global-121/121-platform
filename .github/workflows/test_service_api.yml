@@ -80,6 +80,12 @@ jobs:
           docker compose exec 121-service mkdir -p test-results
           docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }} --json --outputFile=test-results/integration-shard-${{ matrix.shard }}.json
 
+      - name: Copy test results from Docker container
+        working-directory: ${{ env.workingDirectory }}
+        run: |
+          mkdir -p test-results
+          docker compose cp 121-service:/app/test-results/integration-shard-${{ matrix.shard }}.json ./test-results/ || echo "No test results file found"
+
       # For more info, see services/121-service/README.md#Integration-test-coverage
       - name: Generate lcov report from 121-service
         working-directory: ${{ env.workingDirectory }}
@@ -99,7 +105,7 @@ jobs:
         with:
           name: integration-test-results-shard-${{ matrix.shard }}
           path: |
-            ${{ env.workingDirectory }}test-results/
+            ${{ env.workingDirectory }}/test-results/
 
       - name: Docker logs
         if: always()
@@ -208,6 +214,7 @@ jobs:
           path: test-artifacts
 
       - name: Aggregate test results
+        id: aggregate
         uses: ./.github/actions/aggregate-test-results
         if: always()
         with:

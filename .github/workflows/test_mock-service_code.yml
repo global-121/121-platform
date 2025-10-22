@@ -64,7 +64,6 @@ jobs:
           path: |
             ${{ env.workingDirectory }}/test-results/
 
-  # Aggregate test results
   test-mock-service-resolution:
     runs-on: ubuntu-latest
     needs: [test]
@@ -79,6 +78,7 @@ jobs:
           path: test-artifacts
 
       - name: Aggregate test results
+        id: aggregate
         uses: ./.github/actions/aggregate-test-results
         if: always()
         with:

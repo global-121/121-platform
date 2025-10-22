@@ -69,9 +69,19 @@ jobs:
         working-directory: ${{ env.interfacePath }}
         run: |
           mkdir -p test-results
+          # Run Karma tests and capture result
+          set +e  # Don't exit on test failure
           npm run test:coverage
-          # Create a basic test result summary for aggregation
-          echo '{"summary":{"success":0,"failed":0,"total":0},"browsers":{}}' > test-results/portal-unit-tests.json
+          TEST_EXIT_CODE=$?
+          set -e  # Re-enable exit on error
+          
+          # Create a simple JSON summary based on test results
+          if [ $TEST_EXIT_CODE -eq 0 ]; then
+            echo '{"summary":{"success":1,"failed":0,"total":1},"browsers":{"Chrome":{"success":1,"failed":0}}}' > test-results/portal-unit-tests.json
+          else
+            echo '{"summary":{"success":0,"failed":1,"total":1},"browsers":{"Chrome":{"success":0,"failed":1}}}' > test-results/portal-unit-tests.json
+            exit $TEST_EXIT_CODE  # Restore original exit code
+          fi
 
       - uses: qltysh/qlty-action/coverage@v2
         with:
@@ -103,7 +113,6 @@ jobs:
           path: |
             ${{ env.interfacePath }}/test-results/
 
-  # Aggregate test results
   test-portal-resolution:
     runs-on: ubuntu-latest
     needs: [test]
@@ -118,6 +127,7 @@ jobs:
           path: test-artifacts
 
       - name: Aggregate test results
+        id: aggregate
         uses: ./.github/actions/aggregate-test-results
         if: always()
         with:
