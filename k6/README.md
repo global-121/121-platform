@@ -1,10 +1,14 @@
+> [!NOTE]
+> K6 tests have been reduced to a single test that requires its own isolated environment.
+> Full load tests have been removed entirely, along with their associated workflow.
+
 # K6 Performance Testing Suite
 
 > See: <https://k6.io/docs/>
 
 ---
 
-> **Note:** This documentation is still work in progress. It covers the main topics: what K6 is, how to run it locally, and where to configure tests for CI.
+> **Note:** This documentation covers: what K6 is, how to run it locally, and where to configure the Github Action workflow.
 
 ## What is K6?
 
@@ -34,10 +38,10 @@ brew install k6
 
 1. **Install K6 dependencies:**
 
-   ```shell
+```shell
    cd /k6
    npm install
-   ```
+```
 
 2. **Set environment variable:**
    Make sure the `EXTERNAL_121_SERVICE_URL` environment variable is set to `http://localhost:3000` (not to an `ngrok` address).
@@ -60,48 +64,20 @@ baseUrl: __ENV.EXTERNAL_121_SERVICE_URL + '/' || 'http://localhost:3000/',
 baseUrl: __ENV.EXTERNAL_121_SERVICE_URL || 'http://localhost:3000/',
 ```
 
-### Running Tests
+### Running the Test
 
 ```shell
 cd /k6
-npm run test -- tests/<name-of-the-test>.js
+npm run test -- tests/BulkUpdate32kRegistration.js
 ```
-
-#### Adjusting Test Load
-
-For faster CI execution, tests use:
-
-```shell
-DUPLICATE_NUMBER=5 npm run test -- tests/<name-of-the-test>.js
-```
-
-This number defines the number of duplicates for both local and CI cron job runs and can be adjusted for testing purposes.
-
-The test results will be displayed in your terminal.
 
 ## CI Configuration
 
-Tests are configured in:
+The test is configured in:
 
-- [`.github/workflows/test_k6.yml`](../.github/workflows/test_k6.yml) - Fast tests
-- [`.github/workflows/test_k6_cronjob.yml`](../.github/workflows/test_k6_cronjob.yml) - Overnight full load tests
+- [`.github/workflows/test_k6.yml`](../.github/workflows/test_k6.yml)
 
-**Note:** Load tests are much "heavier" to execute than API integration tests, which is why we split them into faster `test_k6` runs and slower overnight `test_k6_cronjob` runs.
-
-### Overnight Tests
-
-In overnight runs, we execute all tests together with the `duplicateNumber` defined inside each test file:
-
-```yaml
-- name: Run all k6 tests
-  working-directory: ${{ env.k6TestsPath }}
-  run: |
-    ./run-all-tests.sh
-```
-
-### Fast Tests
-
-For faster `test_k6` runs, `__ENV.DUPLICATE_NUMBER` is defined in the YAML file:
+The workflow runs the `BulkUpdate32kRegistration.js` test with `DUPLICATE_NUMBER=3` for faster execution:
 
 ```yaml
 - name: Run BulkUpdate32kRegistration.js with DUPLICATE_NUMBER=3
