@@ -42,12 +42,12 @@ export abstract class BaseProgramDto {
   @IsOptional()
   public readonly description?: LocalizedString;
 
-  @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
+  @ApiProperty({ example: '2020-01-01T00:01:00.000Z' })
   @IsOptional()
   @IsDateString()
   public readonly startDate?: Date;
 
-  @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
+  @ApiProperty({ example: '2020-12-31T23:59:59.000Z' })
   @IsOptional()
   @IsDateString()
   public readonly endDate?: Date;
