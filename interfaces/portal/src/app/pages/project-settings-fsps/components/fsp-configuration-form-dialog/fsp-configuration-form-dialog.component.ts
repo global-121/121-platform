@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -23,6 +22,7 @@ import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
+import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { ProjectApiService } from '~/domains/project/project.api.service';
@@ -39,7 +39,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     FormDialogComponent,
     FspConfigurationPropertyFormFieldComponent,
     ReactiveFormsModule,
-    NgTemplateOutlet,
+    ManualLinkComponent,
   ],
   templateUrl: './fsp-configuration-form-dialog.component.html',
   styles: ``,

@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -26,6 +25,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { ButtonMenuComponent } from '~/components/button-menu/button-menu.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
+import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { Registration } from '~/domains/registration/registration.model';
 import { AuthService } from '~/services/auth.service';
@@ -48,7 +48,7 @@ import {
     ReactiveFormsModule,
     FormFieldWrapperComponent,
     RadioButtonModule,
-    NgTemplateOutlet,
+    ManualLinkComponent,
   ],
   templateUrl: './export-registrations.component.html',
   styles: ``,

@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -18,6 +17,7 @@ import { CardModule } from 'primeng/card';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
+import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { RegistrationsTableComponent } from '~/components/registrations-table/registrations-table.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
@@ -56,7 +56,7 @@ import { getOriginUrl } from '~/utils/url-helper';
     RegistrationsTableComponent,
     TranslatableStringPipe,
     ImportRegistrationsMenuComponent,
-    NgTemplateOutlet,
+    ManualLinkComponent,
   ],
   providers: [ToastService],
   templateUrl: './project-registrations.page.html',
