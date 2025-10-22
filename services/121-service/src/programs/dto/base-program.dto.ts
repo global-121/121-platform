@@ -84,8 +84,6 @@ export abstract class BaseProgramDto {
 
   @ApiProperty({
     example: ['nameFirst', 'nameLast'],
-    description:
-      'Should be array of name-related program-registration-attributes.',
   })
   @IsOptional()
   @IsArray()
