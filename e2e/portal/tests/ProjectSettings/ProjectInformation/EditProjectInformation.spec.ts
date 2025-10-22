@@ -44,7 +44,7 @@ test('[38155] Edit Project Information', async ({ page }) => {
   const budgetInfo = {
     fundsAvailable: '200',
     currency: CurrencyCode.CAD,
-    paymentFrequency: '2-months',
+    paymentFrequency: '2-weeks',
     defaultTransferValue: '200',
     fixedTransferValue: '100',
   };
@@ -125,6 +125,7 @@ test('[38155] Edit Project Information', async ({ page }) => {
       expect(budgetData).toEqual({
         'Funds available': budgetInfo.fundsAvailable,
         '*Currency': budgetInfo.currency,
+        'Payment frequency': budgetInfo.paymentFrequency,
         'Default transfers per registration': budgetInfo.defaultTransferValue,
         '*Fixed transfer value': budgetInfo.fixedTransferValue,
       });
