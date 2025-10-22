@@ -40,10 +40,41 @@ jobs:
             - services/mock-service/**
             - '!**.md'
 
-  performance-tests:
+  performance-test-shard:
     runs-on: ubuntu-latest
     needs: path-filter
     if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ['1', '2', '3', '4', '5', '6', '7', '8']
+        include:
+          - shard: '1'
+            test_name: 'BulkUpdate32kRegistrations.test.ts'
+            duplicate_number: '5'
+          - shard: '2'
+            test_name: 'FindDuplicates100kRegistrations.test.ts'
+            duplicate_number: '5'
+          - shard: '3'
+            test_name: 'GetProgramWithManyAttributes.test.ts'
+            duplicate_number: '5'
+          - shard: '4'
+            test_name: 'Payment100kRegistrationIntersolveVisa.test.ts'
+            duplicate_number: '5'
+          - shard: '5'
+            test_name: 'Payment100kRegistrationSafaricom.test.ts'
+            duplicate_number: '5'
+          - shard: '6'
+            test_name: 'PerformanceDuringPayment.test.ts'
+            duplicate_number: '5'
+          - shard: '7'
+            test_name: 'StatusChangePaymentInLargeProgram.test.ts'
+            duplicate_number: '5'
+          - shard: '8'
+            test_name: 'Import1000Registrations.test.ts'
+            duplicate_number: ''
+
     steps:
       - name: Check out repository code
         uses: actions/checkout@v5
@@ -57,26 +88,22 @@ jobs:
         run: |
           npm run start:services:ci
 
-      - name: Run performance tests with Jest
+      - name: Run performance test - ${{ matrix.test_name }}
         working-directory: ${{ env.workingDirectory }}
         run: |
-          # Run different tests with different duplicate numbers
-          docker compose exec -e DUPLICATE_NUMBER=15 121-service npm run test:integration:all -t BulkUpdate32kRegistrations.test.ts
-          docker compose exec -e DUPLICATE_NUMBER=17 121-service npm run test:integration:all -t FindDuplicates100kRegistrations.test.ts
-          docker compose exec -e DUPLICATE_NUMBER=5 121-service npm run test:integration:all -t GetProgramWithManyAttributes.test.ts
-          docker compose exec -e DUPLICATE_NUMBER=17 121-service npm run test:integration:all -t Payment100kRegistrationIntersolveVisa.test.ts
-          docker compose exec -e DUPLICATE_NUMBER=17 121-service npm run test:integration:all -t Payment100kRegistrationSafaricom.test.ts
-          docker compose exec -e DUPLICATE_NUMBER=15 121-service npm run test:integration:all -t PerformanceDuringPayment.test.ts
-          docker compose exec -e DUPLICATE_NUMBER=15 121-service npm run test:integration:all -t StatusChangePaymentInLargeProgram.test.ts
-          docker compose exec 121-service npm run test:integration:all -t Import1000Registrations.test.ts
+          if [ -n "${{ matrix.duplicate_number }}" ]; then
+            docker compose exec -e DUPLICATE_NUMBER=${{ matrix.duplicate_number }} 121-service npm run test:integration:all -t ${{ matrix.test_name }}
+          else
+            docker compose exec 121-service npm run test:integration:all -t ${{ matrix.test_name }}
+          fi
 
       - name: Docker logs
         if: always()
         uses: jwalton/gh-docker-logs@v2
 
-  notify-results:
+  performance-test-shard-resolution:
     runs-on: ubuntu-latest
-    needs: [performance-tests]
+    needs: [performance-test-shard]
     if: always()
     steps:
       - name: Check test results - FAILURE
