@@ -120,7 +120,7 @@ export class CreatePaymentComponent {
     this.paymentApiService.getPaymentStatus(this.projectId),
   );
 
-  readonly paymentAmount = computed(
+  readonly transferValue = computed(
     () => this.project.data()?.fixedTransferValue ?? 0,
   );
 
@@ -169,7 +169,7 @@ export class CreatePaymentComponent {
       {
         label: $localize`Total payment amount`,
         value: this.currencyPipe.transform(
-          this.paymentAmount() * dryRunResult.sumPaymentAmountMultiplier,
+          this.transferValue() * dryRunResult.sumPaymentAmountMultiplier,
           this.project.data()?.currency,
           'symbol-narrow',
           '1.2-2',
@@ -227,7 +227,7 @@ export class CreatePaymentComponent {
         projectId: this.projectId,
         paginateQuery,
         paymentData: {
-          amount: this.paymentAmount(),
+          transferValue: this.transferValue(),
           note: this.paymentFormGroup.value.note,
         },
         dryRun,

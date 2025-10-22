@@ -49,7 +49,7 @@ describe('Payment in progress', () => {
 
   it('should not be in progress after payment is completed', async () => {
     // Arrange
-    const paymentAmount = 25;
+    const transferValue = 25;
     const filterAllIncluded = { 'filter.status': '$in:included' };
 
     await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);
@@ -62,7 +62,7 @@ describe('Payment in progress', () => {
     // We do a payment here and wait for it to complete
     const doPaymentResponse = await doPayment({
       programId: programIdPV,
-      amount: paymentAmount,
+      transferValue,
       referenceIds: [],
       accessToken,
       filter: filterAllIncluded,
@@ -86,7 +86,7 @@ describe('Payment in progress', () => {
 
     const doPaymentPvResultPaymentNext = await doPayment({
       programId: programIdPV,
-      amount: paymentAmount,
+      transferValue,
       referenceIds: [],
       accessToken,
       filter: filterAllIncluded,
@@ -95,7 +95,7 @@ describe('Payment in progress', () => {
 
     const doPaymentOcwResultPaymentNext = await doPayment({
       programId: programIdOCW,
-      amount: paymentAmount,
+      transferValue,
       referenceIds: [],
       accessToken,
       filter: filterAllIncluded,
@@ -143,7 +143,7 @@ describe('Payment in progress', () => {
     // We do a payment and we do not wait for all transactions to complete
     const doPaymentResponse = await doPayment({
       programId: programIdPV,
-      amount: paymentAmount,
+      transferValue: paymentAmount,
       referenceIds: [],
       accessToken,
       filter: filterAllIncluded,
@@ -159,14 +159,14 @@ describe('Payment in progress', () => {
 
     const doPaymentPvResultPaymentNext = await doPayment({
       programId: programIdPV,
-      amount: paymentAmount,
+      transferValue: paymentAmount,
       referenceIds: [],
       accessToken,
       filter: filterAllIncluded,
     });
     const doPaymentOcwResultPaymentNext = await doPayment({
       programId: programIdOCW,
-      amount: paymentAmount,
+      transferValue: paymentAmount,
       referenceIds: [],
       accessToken,
       filter: filterAllIncluded,
@@ -223,7 +223,7 @@ describe('Payment in progress', () => {
     // We do a payment only for the PV program and we do not wait for all transactions to complete
     const doPaymentResponse = await doPayment({
       programId: programIdPV,
-      amount: paymentAmount,
+      transferValue: paymentAmount,
       referenceIds: [],
       accessToken,
       filter: filterAllIncluded,
@@ -241,7 +241,7 @@ describe('Payment in progress', () => {
     // We expect that doing the next payment fails since the previous payment is still in progress
     const doPaymentPvResultPaymentNext = await doPayment({
       programId: programIdPV,
-      amount: paymentAmount,
+      transferValue: paymentAmount,
       referenceIds: [],
       accessToken,
       filter: filterAllIncluded,
@@ -256,7 +256,7 @@ describe('Payment in progress', () => {
     // We expect that doing a payment for OCW succeeds since the previous payment is not in progress (the payment in progress is for PV)
     const doPaymentOcwResultPaymentNext = await doPayment({
       programId: programIdOCW,
-      amount: paymentAmount,
+      transferValue: paymentAmount,
       referenceIds: [],
       accessToken,
       filter: filterAllIncluded,

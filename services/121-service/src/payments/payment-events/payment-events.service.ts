@@ -13,6 +13,7 @@ export class PaymentEventsService {
   @InjectRepository(PaymentEventEntity)
   private readonly paymentEventRepository: Repository<PaymentEventEntity>;
 
+  // TODO: move some of these methods to repository
   public async getPaymentEvents(
     paymentId: number,
   ): Promise<PaymentEventsReturnDto> {

@@ -37,7 +37,7 @@ test.beforeEach(async ({ page }) => {
   // Make payment to change status to "Completed"
   await doPayment({
     programId: 2,
-    amount: 25,
+    transferValue: 25,
     referenceIds: [],
     accessToken,
   });

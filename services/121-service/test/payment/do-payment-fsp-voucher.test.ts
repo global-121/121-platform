@@ -3,6 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { getTransactionsIntersolveVoucher } from '@121-service/test/helpers/fsp-specific.helper';
@@ -15,6 +16,7 @@ import {
 import {
   doPaymentAndWaitForCompletion,
   getMessageHistory,
+  getTransactionEventDescriptions,
   seedIncludedRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -25,7 +27,7 @@ import { programIdPV } from '@121-service/test/registrations/pagination/paginati
 
 describe('Do payment to 1 PA', () => {
   const programId = programIdPV;
-  const amount = 22;
+  const transferValue = 22;
   const registrationAh = {
     referenceId: '63e62864557597e0a-AH',
     preferredLanguage: LanguageEnum.en,
@@ -57,7 +59,7 @@ describe('Do payment to 1 PA', () => {
       // Act
       const doPaymentResponse = await doPayment({
         programId,
-        amount,
+        transferValue,
         referenceIds: paymentReferenceIds,
         accessToken,
       });
@@ -102,6 +104,21 @@ describe('Do payment to 1 PA', () => {
           values: [MessageContentType.paymentInstructions],
         },
       });
+
+      const transactionEventDescriptions =
+        await getTransactionEventDescriptions({
+          programId,
+          transactionId: getTransactionsBody[0].id,
+          accessToken,
+        });
+      expect(transactionEventDescriptions).toEqual([
+        TransactionEventDescription.created,
+        TransactionEventDescription.initiated,
+        TransactionEventDescription.intersolveVoucherCreationRequest,
+        TransactionEventDescription.intersolveVoucherInitialMessageSent,
+        TransactionEventDescription.intersolveVoucherVoucherMessageSent,
+        TransactionEventDescription.intersolveVoucherMessageCallback,
+      ]);
 
       const { body: messages } = await getMessageHistory(
         programId,
@@ -183,7 +200,7 @@ describe('Do payment to 1 PA', () => {
       // Act
       const paymentId = await doPaymentAndWaitForCompletion({
         programId,
-        amount,
+        transferValue,
         referenceIds: paymentReferenceIds,
         accessToken,
         completeStatusses: [
@@ -228,7 +245,7 @@ describe('Do payment to 1 PA', () => {
       // Act
       const paymentId = await doPaymentAndWaitForCompletion({
         programId,
-        amount,
+        transferValue,
         referenceIds: paymentReferenceIds,
         accessToken,
         completeStatusses: [
@@ -273,7 +290,7 @@ describe('Do payment to 1 PA', () => {
       // Act
       const doPaymentResponse = await doPayment({
         programId,
-        amount,
+        transferValue,
         referenceIds: paymentReferenceIds,
         accessToken,
       });

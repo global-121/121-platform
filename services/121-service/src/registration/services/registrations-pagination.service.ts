@@ -12,6 +12,7 @@ import { Equal, Repository } from 'typeorm';
 
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
+import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import {
   AllowedFiltersNumber,
   AllowedFiltersString,
@@ -42,6 +43,7 @@ export class RegistrationsPaginationService {
   public constructor(
     private readonly programService: ProgramService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
+    private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
   ) {}
 
   public async getPaginate(

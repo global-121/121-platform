@@ -2,12 +2,13 @@ import { HttpStatus } from '@nestjs/common';
 
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  amountVisa,
   programIdVisa,
   registrationVisa as registrationVisaDefault,
+  transferValueVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
@@ -19,6 +20,7 @@ import {
 import {
   awaitChangeRegistrationStatus,
   getMessageHistory,
+  getTransactionEventDescriptions,
   importRegistrations,
   issueNewVisaCard,
 } from '@121-service/test/helpers/registration.helper';
@@ -61,7 +63,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -72,7 +74,6 @@ describe('Do successful payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
     });
 
     // Assert
@@ -88,6 +89,17 @@ describe('Do successful payment with FSP Visa Debit', () => {
       paymentReferenceIds.length,
     );
     expect(transactionsResponse.text).toContain(TransactionStatusEnum.success);
+
+    const transactionEventDescriptions = await getTransactionEventDescriptions({
+      programId: programIdVisa,
+      transactionId: transactionsResponse.body[0].id,
+      accessToken,
+    });
+    expect(transactionEventDescriptions).toEqual([
+      TransactionEventDescription.created,
+      TransactionEventDescription.initiated,
+      TransactionEventDescription.visaPaymentRequested,
+    ]);
   });
 
   it('should successfully load balance Visa Debit', async () => {
@@ -106,7 +118,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     // do 1st payment
     const doFirstPaymentResponse = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -117,14 +129,14 @@ describe('Do successful payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [TransactionStatusEnum.success],
       paymentId: firstPaymentId,
     });
 
     // do 2nd payment
     const doSecondPaymentResponse = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -135,7 +147,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [TransactionStatusEnum.success],
       paymentId: secondPaymentId,
     });
 
@@ -189,7 +201,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     // do 1st payment
     const paymentResponse = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds,
       accessToken,
     });
@@ -200,7 +212,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
       paymentReferenceIds: referenceIds,
       accessToken,
       maxWaitTimeMs: 6_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [TransactionStatusEnum.success],
       paymentId: paymentId1,
     });
     await waitForMessagesToComplete({
@@ -223,7 +235,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
 
     const paymentResponse2 = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds,
       accessToken,
     });
@@ -234,7 +246,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
       paymentReferenceIds: referenceIds,
       accessToken,
       maxWaitTimeMs: 6_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [TransactionStatusEnum.success],
       paymentId: paymentId2,
     });
     await waitForMessagesToComplete({
@@ -285,33 +297,33 @@ describe('Do successful payment with FSP Visa Debit', () => {
       accessToken,
     });
 
-    const expectedCalculatedAmountPa1 = 150 - 13000 / 100 - 1000 / 100; // = 10
+    const expectedCalculatedTransferValuePa1 = 150 - 13000 / 100 - 1000 / 100; // = 10
     expect(transactionsResponse1.body[0].amount).toBe(
-      expectedCalculatedAmountPa1,
+      expectedCalculatedTransferValuePa1,
     );
     expect(transactionsResponse1.text).toContain(TransactionStatusEnum.success);
     // Validate for one message where amount is higher than 0 that it is send in a message
     expect(messagesHistoryPa1.body.map((msg) => msg.attributes.body)).toEqual(
       expect.arrayContaining([
-        expect.stringContaining(`€${expectedCalculatedAmountPa1}`),
+        expect.stringContaining(`€${expectedCalculatedTransferValuePa1}`),
       ]),
     );
 
-    const expectedCalculatedAmountPa2 = 150 - 14000 / 100 - 1000 / 100; // = 0
+    const expectedCalculatedTransferValuePa2 = 150 - 14000 / 100 - 1000 / 100; // = 0
     expect(transactionsResponse2.body[0].amount).toBe(
-      expectedCalculatedAmountPa2, // = 0 : A transaction of 0 is created
+      expectedCalculatedTransferValuePa2, // = 0 : A transaction of 0 is created
     );
     expect(transactionsResponse2.text).toContain(TransactionStatusEnum.success);
     // Validate for one message where amount is 0 that it still sends a message with the amount 0, so people will know they have to spend money earlier next months
     expect(messagesHistoryPa2.body.map((msg) => msg.attributes.body)).toEqual(
       expect.arrayContaining([
-        expect.stringContaining(`€${expectedCalculatedAmountPa2}`),
+        expect.stringContaining(`€${expectedCalculatedTransferValuePa2}`),
       ]),
     );
 
     // should be able to payout the full amount
     expect(transactionsResponse3.body[0].amount).toBe(
-      amountVisa * registrationOCW3.paymentAmountMultiplier,
+      transferValueVisa * registrationOCW3.paymentAmountMultiplier,
     );
     expect(transactionsResponse3.text).toContain(TransactionStatusEnum.success);
 

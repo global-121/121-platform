@@ -205,7 +205,7 @@ describe('Update program fsp configuration of PA', () => {
     );
     await doPayment({
       programId: programIdPv,
-      amount: 15,
+      transferValue: 15,
       referenceIds: [registrationPvScoped.referenceId],
       accessToken,
     });

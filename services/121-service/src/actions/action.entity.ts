@@ -25,8 +25,6 @@ export enum AdditionalActionType {
   importRegistrations = 'import-registrations',
   paymentFinished = 'payment-finished',
   paymentStarted = 'payment-started',
-  exportFspInstructions = 'export-fsp-instructions',
-  importFspReconciliation = 'import-fsp-reconciliation',
 }
 export type ActionType = ExportType | AdditionalActionType;
 

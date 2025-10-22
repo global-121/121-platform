@@ -11,7 +11,7 @@ import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/f
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/entities/intersolve-voucher.entity';
 import { IntersolveVoucherApiService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/instersolve-voucher.api.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
@@ -131,7 +131,6 @@ export class IntersolveVoucherCronService {
           'voucher.id as id',
           '"whatsappPhoneNumber"',
           'registration."referenceId" AS "referenceId"',
-          'amount',
           '"reminderCount"',
           'voucher."userId" AS "userId"',
         ])
@@ -172,11 +171,11 @@ export class IntersolveVoucherCronService {
         }
         const language = await this.getLanguageForRegistration(referenceId);
         const contentSid =
-          await this.intersolveVoucherService.getNotificationContentSid(
-            registration.program,
-            ProgramNotificationEnum.whatsappPayment,
+          await this.intersolveVoucherService.getNotificationContentSid({
+            program: registration.program,
+            type: ProgramNotificationEnum.whatsappPayment,
             language,
-          );
+          });
 
         await this.queueMessageService.addMessageJob({
           registration,

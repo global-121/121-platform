@@ -5,7 +5,7 @@ export class CreatePaymentDto {
   @ApiProperty({ example: 10 })
   @IsNumber()
   @IsOptional()
-  public readonly amount?: number;
+  public readonly transferValue?: number;
 
   @ApiProperty({
     example: 'Extra payment to registrations not included in first payment',

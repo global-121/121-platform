@@ -31,7 +31,7 @@ describe('Set/calculate payment amount multiplier', () => {
     // Arrange
     await resetDB(SeedScript.testMultiple, __filename);
     const nrOfDragons = 2.5; // We are using half a dragon here to ensure decimal calculations also work
-    const amount = 10;
+    const transferValue = 10;
     const registrationWesterosCopy = { ...registrationWesteros1 };
     registrationWesterosCopy.dragon = nrOfDragons;
 
@@ -51,7 +51,7 @@ describe('Set/calculate payment amount multiplier', () => {
     const paymentId = await doPaymentAndWaitForCompletion({
       programId: programIdWesteros,
       referenceIds: [importedRegistration.referenceId],
-      amount,
+      transferValue,
       accessToken,
       completeStatusses: Object.values(TransactionStatusEnum),
     });
@@ -67,7 +67,7 @@ describe('Set/calculate payment amount multiplier', () => {
     // Assert
 
     expect(importedRegistration.paymentAmountMultiplier).toBe(nrOfDragons + 1);
-    expect(transaction.amount).toBe(amount * (nrOfDragons + 1));
+    expect(transaction.amount).toBe(transferValue * (nrOfDragons + 1));
   });
 
   it('should error if paymentAmountMultiplier is set while program has a formula', async () => {

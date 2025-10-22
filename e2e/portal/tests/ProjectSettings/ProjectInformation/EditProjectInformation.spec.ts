@@ -45,7 +45,7 @@ test('[38155] Edit Project Information', async ({ page }) => {
     fundsAvailable: '200',
     currency: CurrencyCode.CAD,
     paymentFrequency: '2-months',
-    defaultTransferAmount: '200',
+    defaultTransferValue: '200',
     fixedTransferValue: '100',
   };
 
@@ -108,7 +108,7 @@ test('[38155] Edit Project Information', async ({ page }) => {
     await projectSettings.selectCurrency(budgetInfo.currency);
     await projectSettings.editInformationFieldByLabel(
       'Default transfers per registration',
-      budgetInfo.defaultTransferAmount,
+      budgetInfo.defaultTransferValue,
     );
     await projectSettings.editInformationFieldByLabel(
       '*Fixed transfer value',
@@ -125,7 +125,7 @@ test('[38155] Edit Project Information', async ({ page }) => {
       expect(budgetData).toEqual({
         'Funds available': budgetInfo.fundsAvailable,
         '*Currency': budgetInfo.currency,
-        'Default transfers per registration': budgetInfo.defaultTransferAmount,
+        'Default transfers per registration': budgetInfo.defaultTransferValue,
         '*Fixed transfer value': budgetInfo.fixedTransferValue,
       });
     }).toPass({ timeout: 2000 });

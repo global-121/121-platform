@@ -152,7 +152,7 @@ export async function waitForDeleteRegistrations({
     let totalRegistrationSuccessfullyDeleted = 0;
 
     for (const referenceId of referenceIds) {
-      const getEventsResponse = await getEvents({
+      const getEventsResponse = await getRegistrationEvents({
         programId,
         fromDate: undefined,
         toDate: undefined,
@@ -369,7 +369,10 @@ export async function waitForStatusChangeToComplete(
 ): Promise<void> {
   const startTime = Date.now();
   while (Date.now() - startTime < maxWaitTimeMs) {
-    const eventsResult = await getEvents({ programId, accessToken });
+    const eventsResult = await getRegistrationEvents({
+      programId,
+      accessToken,
+    });
     if (!eventsResult?.body || !Array.isArray(eventsResult.body)) {
       await waitFor(200);
       continue;
@@ -651,7 +654,7 @@ export async function seedPaidRegistrations(
   return await doPaymentAndWaitForCompletion({
     programId,
     referenceIds: registrationReferenceIds,
-    amount,
+    transferValue: amount,
     accessToken,
     completeStatusses,
   });
@@ -660,7 +663,7 @@ export async function seedPaidRegistrations(
 export async function doPaymentAndWaitForCompletion({
   programId,
   referenceIds,
-  amount,
+  transferValue,
   accessToken,
   completeStatusses = [
     TransactionStatusEnum.success,
@@ -670,14 +673,14 @@ export async function doPaymentAndWaitForCompletion({
 }: {
   programId: number;
   referenceIds: string[];
-  amount: number;
+  transferValue: number;
   accessToken: string;
   completeStatusses?: TransactionStatusEnum[];
   note?: string;
 }): Promise<number> {
   const doPaymentResponse = await doPayment({
     programId,
-    amount,
+    transferValue,
     referenceIds,
     accessToken,
     note,
@@ -758,7 +761,7 @@ export async function seedRegistrationsWithStatus(
   });
 }
 
-export async function getEvents({
+export async function getRegistrationEvents({
   programId,
   accessToken,
   fromDate,
@@ -789,6 +792,38 @@ export async function getEvents({
     .get(`/programs/${programId}/registration-events`)
     .set('Cookie', [accessToken])
     .query(queryParams)
+    .send();
+}
+
+export async function getTransactionEventDescriptions({
+  programId,
+  transactionId,
+  accessToken,
+}: {
+  programId: number;
+  transactionId: number;
+  accessToken: string;
+}) {
+  const response = await getTransactionEvents({
+    programId,
+    transactionId,
+    accessToken,
+  });
+  return response.body.data.map((event) => event.description);
+}
+
+export async function getTransactionEvents({
+  programId,
+  transactionId,
+  accessToken,
+}: {
+  programId: number;
+  transactionId: number;
+  accessToken: string;
+}) {
+  return await getServer()
+    .get(`/programs/${programId}/transactions/${transactionId}/events`)
+    .set('Cookie', [accessToken])
     .send();
 }
 

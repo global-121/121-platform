@@ -1,12 +1,13 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  amountVisa,
   programIdVisa,
   registrationVisa as registrationVisaDefault,
+  transferValueVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
@@ -17,6 +18,7 @@ import {
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
+  getTransactionEventDescriptions,
   importRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
@@ -55,7 +57,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -66,7 +68,10 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
       paymentId,
     });
 
@@ -100,6 +105,19 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
       paymentReferenceIds.length,
     );
     expect(transactionsResponse.text).toContain(TransactionStatusEnum.success);
+
+    const transactionEventDescriptions = await getTransactionEventDescriptions({
+      programId: programIdVisa,
+      transactionId: transactionsResponse.body[0].id,
+      accessToken,
+    });
+    expect(transactionEventDescriptions).toEqual([
+      TransactionEventDescription.created,
+      TransactionEventDescription.initiated,
+      TransactionEventDescription.visaPaymentRequested,
+      TransactionEventDescription.retry,
+      TransactionEventDescription.visaPaymentRequested,
+    ]);
   });
 
   it('should not multiply again on retry', async () => {
@@ -118,7 +136,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      amount: amountVisa,
+      transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
@@ -129,7 +147,10 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
       paymentId,
     });
 
@@ -159,7 +180,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     });
 
     expect(transactionsResponse.body[0].amount).toBe(
-      amountVisa * registrationVisa.paymentAmountMultiplier,
+      transferValueVisa * registrationVisa.paymentAmountMultiplier,
     );
     expect(transactionsResponse.text).toContain(TransactionStatusEnum.success);
   });

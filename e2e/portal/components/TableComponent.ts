@@ -73,6 +73,27 @@ class TableComponent {
     await this.table.getByTestId('expand-all-rows-button').click();
   }
 
+  async clickViewTransferHistoryButtonInRow() {
+    const button = this.table
+      .getByTestId('view-transfer-history-button')
+      .first();
+    await button.click();
+  }
+
+  async validateTransferHistoryTableRowCount({
+    expectedRowCount,
+  }: {
+    expectedRowCount: number;
+  }) {
+    const transferHistoryTable = this.page.getByTestId(
+      'transfer-history-table',
+    );
+    await expect(transferHistoryTable).toBeVisible();
+    const transferHistoryTableRows = transferHistoryTable.locator('tbody tr');
+    const rowCount = await transferHistoryTableRows.count();
+    expect(rowCount).toBe(expectedRowCount);
+  }
+
   async waitForLoaded(rowsCount?: number) {
     await expect(this.tableLoading).toHaveCount(0);
     await expect(this.tableEmpty).not.toBeVisible();

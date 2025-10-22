@@ -99,7 +99,9 @@ describe('Filter registrations using range', () => {
     const getRegistrationsResponse = await getRegistrations({
       programId: programIdOCW,
       accessToken,
-      filter: { 'filter.paymentAmountMultiplier': `${FilterOperator.GT}:2` },
+      filter: {
+        'filter.paymentAmountMultiplier': `${FilterOperator.GT}:2`,
+      },
     });
     const data = getRegistrationsResponse.body.data;
 
@@ -118,7 +120,9 @@ describe('Filter registrations using range', () => {
     const getRegistrationsResponse = await getRegistrations({
       programId: programIdOCW,
       accessToken,
-      filter: { 'filter.paymentAmountMultiplier': `${FilterOperator.LT}:2` },
+      filter: {
+        'filter.paymentAmountMultiplier': `${FilterOperator.LT}:2`,
+      },
     });
     const data = getRegistrationsResponse.body.data;
 

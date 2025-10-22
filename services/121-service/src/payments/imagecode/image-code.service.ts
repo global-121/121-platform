@@ -26,7 +26,7 @@ export class ImageCodeService {
     imageCodeEntity.secret = crypto.randomBytes(100).toString('hex');
     imageCodeEntity.image = await this.generateVoucherImage({
       dateTime: voucherData.created,
-      amount: voucherData.amount,
+      amount: voucherData.transferValue,
       code: voucherData.barcode,
       pin: voucherData.pin,
     });
@@ -35,10 +35,13 @@ export class ImageCodeService {
     return EXTERNAL_API.imageCodeUrl + imageCodeEntity.secret;
   }
 
-  public async createVoucherExportVouchers(
-    intersolveVoucherEntity: IntersolveVoucherEntity,
-    referenceId: string,
-  ): Promise<ImageCodeExportVouchersEntity> {
+  public async createVoucherExportVouchers({
+    intersolveVoucherEntity,
+    referenceId,
+  }: {
+    intersolveVoucherEntity: IntersolveVoucherEntity;
+    referenceId: string;
+  }): Promise<ImageCodeExportVouchersEntity> {
     const imageCodeExportVouchersEntity = new ImageCodeExportVouchersEntity();
 
     imageCodeExportVouchersEntity.registration =

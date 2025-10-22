@@ -18,8 +18,8 @@ import {
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
-  getEvents,
   getMessageHistory,
+  getRegistrationEvents,
   getRegistrations,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
@@ -31,7 +31,7 @@ import { programIdPV } from '@121-service/test/registrations/pagination/paginati
 
 describe('Do a payment to a PA with maxPayments=1', () => {
   const programId = programIdPV;
-  const amount = 25;
+  const transferValue = 25;
   const registrationAh = {
     referenceId: '63e62864557597e0b-AH',
     preferredLanguage: LanguageEnum.en,
@@ -66,7 +66,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       // Act
       const doPaymentResponse = await doPayment({
         programId,
-        amount,
+        transferValue,
         referenceIds: paymentReferenceIds,
         accessToken,
       });
@@ -118,7 +118,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       expect(getRegistration!.paymentCount).toBe(1);
 
       const statusChangeToCompleted = (
-        await getEvents({
+        await getRegistrationEvents({
           programId,
           accessToken,
           referenceId: registrationAh.referenceId,

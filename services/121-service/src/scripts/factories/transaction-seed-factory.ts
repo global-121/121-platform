@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import chunk from 'lodash/chunk';
 import { DataSource, DeepPartial, Equal, Repository } from 'typeorm';
 
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
+import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { BaseSeedFactory } from '@121-service/src/scripts/factories/base-seed-factory';
 
@@ -23,7 +25,6 @@ export class TransactionSeedFactory extends BaseSeedFactory<TransactionEntity> {
 
     const registrations = await registrationRepo.find({
       where: { programId: Equal(programId) },
-      relations: { transactions: true },
     });
     console.log(
       `Generating messages for ${registrations.length} registrations`,
@@ -49,7 +50,6 @@ export class TransactionSeedFactory extends BaseSeedFactory<TransactionEntity> {
         } = transaction;
         transactionsData.push({
           ...transactionData,
-          registration,
           registrationId: registration.id,
         });
       }
@@ -59,15 +59,70 @@ export class TransactionSeedFactory extends BaseSeedFactory<TransactionEntity> {
     return;
   }
 
+  public async extendTransactionEventsToAllTransactions(
+    programId: number,
+  ): Promise<void> {
+    const transactionRepo = this.dataSource.getRepository(TransactionEntity);
+    const eventRepo = this.dataSource.getRepository(TransactionEventEntity);
+
+    // Find the initial seeded transaction and its events
+    const initialTransaction = await transactionRepo.findOneOrFail({
+      where: { payment: { programId: Equal(programId) } },
+      order: { id: 'ASC' },
+    });
+    const initialEvents = await eventRepo.find({
+      where: { transaction: Equal(initialTransaction.id) },
+    });
+
+    const findBatchSize = 100000;
+    let offset = 0;
+    let totalProcessed = 0;
+    let hasMore = true;
+    while (hasMore) {
+      // Fetch a batch of transactions (excluding the initial one)
+      const transactionBatch = await transactionRepo.find({
+        where: { payment: { programId: Equal(programId) } },
+        order: { id: 'ASC' },
+        skip: offset,
+        take: findBatchSize,
+      });
+      // Remove the initial transaction if present in the first batch
+      const filteredBatch =
+        offset === 0
+          ? transactionBatch.filter((t) => t.id !== initialTransaction.id)
+          : transactionBatch;
+      if (filteredBatch.length === 0) {
+        hasMore = false;
+        break;
+      }
+      const eventsData: DeepPartial<TransactionEventEntity>[] = [];
+      for (const transaction of filteredBatch) {
+        for (const event of initialEvents) {
+          const { id: _id, transaction: _omit, ...eventData } = event;
+          eventsData.push({
+            ...eventData,
+            transactionId: transaction.id,
+          });
+        }
+      }
+      const insertBatchSize = 2500;
+      for (const batch of chunk(eventsData, insertBatchSize)) {
+        await eventRepo.insert(batch as any[]);
+      }
+      totalProcessed += filteredBatch.length;
+      console.log(
+        `Inserted event data for ${totalProcessed} transactions so far...`,
+      );
+      offset += findBatchSize;
+    }
+  }
+
   public async createPaymentForProgram(
     programId: number,
   ): Promise<PaymentEntity> {
-    console.log(`Creating payment for program ${programId}`);
-
     const paymentData: DeepPartial<PaymentEntity> = {
       programId,
     };
-
     return await this.paymentRepository.save(paymentData);
   }
 
@@ -121,30 +176,37 @@ export class TransactionSeedFactory extends BaseSeedFactory<TransactionEntity> {
     console.log('Payment counts updated successfully');
   }
 
-  public async updateLatestTransactions(): Promise<void> {
-    console.log('Updating latest transactions table');
+  public async updateLastTransactionEvents(): Promise<void> {
+    console.log('Updating last transaction events table');
 
-    // Clear existing latest transactions
+    // Clear existing last transaction events
     await this.dataSource.query(
-      'TRUNCATE TABLE "121-service"."latest_transaction"',
+      'TRUNCATE TABLE "121-service"."last_transaction_event"',
     );
 
-    // TODO: migrate to typed approach
-    await this.dataSource.query(`
-      INSERT INTO "121-service"."latest_transaction" ("paymentId", "registrationId", "transactionId")
-      SELECT t."paymentId", t."registrationId", t.id AS transactionId
-      FROM (
-        SELECT "paymentId", "registrationId", MAX(id) AS max_id
-        FROM "121-service"."transaction"
-        WHERE status = 'success'
-        GROUP BY "paymentId", "registrationId"
-      ) AS latest_transactions
-      INNER JOIN "121-service"."transaction" AS t
-      ON t."paymentId" = latest_transactions."paymentId"
-      AND t."registrationId" = latest_transactions."registrationId"
-      AND t.id = latest_transactions.max_id;
-    `);
+    const lastEvents = await this.dataSource
+      .createQueryBuilder()
+      .select('"transactionId"')
+      .addSelect('MAX(id)', 'transactionEventId')
+      .from('121-service.transaction_event', 'te')
+      .groupBy('"transactionId"')
+      .getRawMany();
 
-    console.log('Latest transactions table updated successfully');
+    const BATCH_SIZE = 2500;
+    for (const batch of chunk(lastEvents, BATCH_SIZE)) {
+      await this.dataSource
+        .createQueryBuilder()
+        .insert()
+        .into('121-service.last_transaction_event')
+        .values(
+          batch.map((e) => ({
+            transactionId: e.transactionId,
+            transactionEventId: e.transactionEventId,
+          })),
+        )
+        .execute();
+    }
+
+    console.log('Last transaction events table updated successfully');
   }
 }

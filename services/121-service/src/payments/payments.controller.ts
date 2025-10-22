@@ -34,6 +34,7 @@ import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.
 import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-payment-aggregation.dto';
 import { GetPaymentsDto } from '@121-service/src/payments/dto/get-payments.dto';
 import { GetTransactionResponseDto } from '@121-service/src/payments/dto/get-transaction-response.dto';
+import { PaymentReturnDto } from '@121-service/src/payments/dto/payment-return.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
 import { PaymentEventDataDto } from '@121-service/src/payments/payment-events/dtos/payment-event-data.dto';
@@ -41,7 +42,6 @@ import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events
 import { PaymentsExcelFspService } from '@121-service/src/payments/services/payments-excel-fsp.service';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
-import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { GetTransactionsQueryDto } from '@121-service/src/payments/transactions/dto/get-transaction-query.dto';
 import { PaginateConfigRegistrationViewOnlyFilters } from '@121-service/src/registration/const/filter-operation.const';
 import {
@@ -185,7 +185,10 @@ export class PaymentsController {
       query,
     );
     const dryRunBoolean = dryRun === 'true'; // defaults to false
-    if (!dryRunBoolean && (data.amount === undefined || data.amount <= 0)) {
+    if (
+      !dryRunBoolean &&
+      (data.transferValue === undefined || data.transferValue <= 0)
+    ) {
       throw new HttpException(
         'Amount should be larger than 0 when not using dry run',
         HttpStatus.BAD_REQUEST,
@@ -195,7 +198,7 @@ export class PaymentsController {
     const result = await this.paymentsExecutionService.createPayment({
       userId,
       programId,
-      amount: data.amount,
+      transferValue: data.transferValue,
       query,
       dryRun: dryRunBoolean,
       note: data.note,
@@ -255,14 +258,10 @@ export class PaymentsController {
     programId: number,
     @Param('paymentId', ParseIntPipe)
     paymentId: number,
-    @Req() req: ScopedUserRequest,
   ): Promise<FspInstructions[]> {
-    const userId = RequestHelper.getUserId(req);
-
     return await this.paymentsExcelFspService.getFspInstructions(
       programId,
       paymentId,
-      userId,
     );
   }
 

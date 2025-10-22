@@ -8,7 +8,7 @@ import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/s
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 
 const mockedDoTransferParams: DoTransferParams = {
-  transferAmount: 100,
+  transferValue: 100,
   phoneNumber: '254708374149',
   originatorConversationId: 'mocked_originator_conversation_id',
   idNumber: 'mocked_national_id',
@@ -53,7 +53,7 @@ describe('SafaricomService', () => {
       await safaricomService.doTransfer(mockedDoTransferParams);
 
       expect(safaricomApiService.transfer).toHaveBeenCalledWith({
-        transferAmount: mockedDoTransferParams.transferAmount,
+        transferValue: mockedDoTransferParams.transferValue,
         phoneNumber: mockedDoTransferParams.phoneNumber,
         idNumber: mockedDoTransferParams.idNumber,
         originatorConversationId:

@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -16,6 +17,7 @@ import {
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
+  getTransactionEventDescriptions,
   importRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
@@ -26,7 +28,7 @@ import {
 
 describe('Do payment to 1 PA', () => {
   const programId = 1;
-  const amount = 12327;
+  const transferValue = 12327;
   const registrationSafaricom = {
     referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
     programFspConfigurationName: Fsps.safaricom,
@@ -77,7 +79,7 @@ describe('Do payment to 1 PA', () => {
       // Act
       const doPaymentResponse = await doPayment({
         programId,
-        amount,
+        transferValue,
         referenceIds: paymentReferenceIds,
         accessToken,
       });
@@ -110,6 +112,19 @@ describe('Do payment to 1 PA', () => {
         TransactionStatusEnum.success,
       );
       expect(getTransactionsBody.body[0].errorMessage).toBe(null);
+
+      const transactionEventDescriptions =
+        await getTransactionEventDescriptions({
+          programId,
+          transactionId: getTransactionsBody.body[0].id,
+          accessToken,
+        });
+      expect(transactionEventDescriptions).toEqual([
+        TransactionEventDescription.created,
+        TransactionEventDescription.initiated,
+        TransactionEventDescription.safaricomRequestSent,
+        TransactionEventDescription.safaricomCallbackReceived,
+      ]);
     });
 
     it('should give error the initial safaricom api call', async () => {
@@ -134,7 +149,7 @@ describe('Do payment to 1 PA', () => {
       // Act
       const doPaymentResponse = await doPayment({
         programId,
-        amount,
+        transferValue,
         referenceIds: paymentReferenceIds,
         accessToken,
       });
@@ -191,7 +206,7 @@ describe('Do payment to 1 PA', () => {
       // Initial failing payment
       const doPaymentResponse = await doPayment({
         programId,
-        amount,
+        transferValue,
         referenceIds: paymentReferenceIds,
         accessToken,
       });
@@ -238,6 +253,21 @@ describe('Do payment to 1 PA', () => {
       expect(getTransactionsBody.body[0].status).toBe(
         TransactionStatusEnum.success,
       );
+
+      const transactionEventDescriptions =
+        await getTransactionEventDescriptions({
+          programId,
+          transactionId: getTransactionsBody.body[0].id,
+          accessToken,
+        });
+      expect(transactionEventDescriptions).toEqual([
+        TransactionEventDescription.created,
+        TransactionEventDescription.initiated,
+        TransactionEventDescription.safaricomRequestSent,
+        TransactionEventDescription.retry,
+        TransactionEventDescription.safaricomRequestSent,
+        TransactionEventDescription.safaricomCallbackReceived,
+      ]);
     });
 
     it('should fail to pay-out to PA due to time out in communication from Safaricom to PA', async () => {
@@ -261,7 +291,7 @@ describe('Do payment to 1 PA', () => {
       // Act
       const doPaymentResponse = await doPayment({
         programId,
-        amount,
+        transferValue,
         referenceIds: paymentReferenceIds,
         accessToken,
       });

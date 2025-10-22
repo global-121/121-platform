@@ -7,21 +7,27 @@ import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { getFspConfigurationRequiredProperties } from '@121-service/src/fsps/fsp-settings.helpers';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { MessageContentDetails } from '@121-service/src/notifications/interfaces/message-content-details.interface';
+import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
-import { PaymentJobCreationDetails } from '@121-service/src/payments/interfaces/payment-job-creation-details.interface';
-import { RetryPaymentJobCreationDetails } from '@121-service/src/payments/interfaces/retry-payment-job-creation-details.interface';
+import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
+import { PaymentsExecutionHelperService } from '@121-service/src/payments/services/payments-execution-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
-import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import {
   BulkActionResultPaymentDto,
   BulkActionResultRetryPaymentDto,
 } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
@@ -36,25 +42,30 @@ export class PaymentsExecutionService {
     private readonly actionService: ActionsService,
     private readonly azureLogService: AzureLogService,
     private readonly transactionsService: TransactionsService,
+    private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly paymentEventsService: PaymentEventsService,
     private readonly transactionJobsCreationService: TransactionJobsCreationService,
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
+    private readonly registrationScopedRepository: RegistrationScopedRepository,
+    private readonly programRepository: ProgramRepository,
+    private readonly messageTemplateService: MessageTemplateService,
+    private readonly paymentsExecutionHelperService: PaymentsExecutionHelperService,
   ) {}
 
   public async createPayment({
     userId,
     programId,
-    amount,
+    transferValue,
     query,
     dryRun,
     note,
   }: {
     userId: number;
     programId: number;
-    amount: number | undefined;
+    transferValue: number | undefined;
     query: PaginateQuery;
     dryRun: boolean;
     note?: string;
@@ -83,7 +94,7 @@ export class PaymentsExecutionService {
     // If amount is not defined do not calculate the totalMultiplierSum
     // This happens when you call the endpoint with dryRun=true
     // Calling with dryrun is true happens in the pa table when you try to do a payment to decide which registrations are selectable
-    if (!amount) {
+    if (!transferValue) {
       return {
         ...bulkActionResultDto,
         sumPaymentAmountMultiplier: 0,
@@ -144,13 +155,14 @@ export class PaymentsExecutionService {
         userId,
         programId,
         paymentId,
-        amount,
+        transferValue,
         referenceIds,
       })
         .catch((e) => {
           this.azureLogService.logError(e, true);
         })
         .finally(() => {
+          // TODO: Remove this, along with all payment action saving?
           void this.actionService.saveAction(
             userId,
             programId,
@@ -188,6 +200,49 @@ export class PaymentsExecutionService {
     }
 
     return savedPaymentEntity.id;
+  }
+
+  // createTransactionsAndUpdateRegistrations moved to PaymentsExecutionHelperService
+
+  public async setStatusToCompletedIfApplicable(
+    programId: number,
+    userId: number,
+  ): Promise<void> {
+    const program = await this.programRepository.findByIdOrFail(programId);
+    if (!program.enableMaxPayments) {
+      return;
+    }
+
+    const registrationsToComplete =
+      await this.registrationScopedRepository.getRegistrationsToComplete(
+        programId,
+      );
+    if (registrationsToComplete.length === 0) {
+      return;
+    }
+
+    const isTemplateAvailable =
+      await this.messageTemplateService.isTemplateAvailable(
+        programId,
+        RegistrationStatusEnum.completed,
+      );
+    const messageContentDetails: MessageContentDetails = isTemplateAvailable
+      ? {
+          messageTemplateKey: RegistrationStatusEnum.completed,
+          messageContentType: MessageContentType.completed,
+          message: '',
+        }
+      : {};
+
+    await this.registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds(
+      {
+        referenceIds: registrationsToComplete.map((r) => r.referenceId),
+        programId,
+        registrationStatus: RegistrationStatusEnum.completed,
+        userId,
+        messageContentDetails,
+      },
+    );
   }
 
   private async checkFspConfigurationsOrThrow(
@@ -272,17 +327,17 @@ export class PaymentsExecutionService {
       });
   }
 
-  public async initiatePayment({
+  private async initiatePayment({
     userId,
     programId,
     paymentId,
-    amount,
+    transferValue,
     referenceIds,
   }: {
     userId: number;
     programId: number;
     paymentId: number;
-    amount: number;
+    transferValue: number;
     referenceIds: string[];
   }): Promise<void> {
     await this.actionService.saveAction(
@@ -291,17 +346,31 @@ export class PaymentsExecutionService {
       AdditionalActionType.paymentStarted,
     );
 
-    // Get the registration data for the payment (like phone number, bankaccountNumber etc)
-    const paymentJobCreationDetails = await this.getPaymentJobCreationDetails({
-      referenceIds,
-      amount,
+    const transactionCreationDetails = await this.getTransactionCreationDetails(
+      {
+        referenceIds,
+        transferValue,
+        programId,
+      },
+    );
+
+    const transactionIds =
+      await this.paymentsExecutionHelperService.createTransactionsAndUpdateRegistrationPaymentCount(
+        {
+          transactionCreationDetails,
+          paymentId,
+          userId,
+        },
+      );
+
+    await this.paymentsExecutionHelperService.setStatusToCompletedIfApplicable(
       programId,
-    });
+      userId,
+    );
 
     await this.createTransactionJobs({
-      paymentJobCreationDetails,
       programId,
-      paymentId,
+      transactionIds,
       userId,
       isRetry: false,
     });
@@ -317,12 +386,11 @@ export class PaymentsExecutionService {
       programId,
     );
 
-    const retryDetailsList =
-      await this.getRetryPaymentJobCreationDetailsOrThrow({
-        programId,
-        paymentId,
-        inputReferenceIds: referenceIds,
-      });
+    const transactionDetails = await this.getRetryTransactionDetailsOrThrow({
+      programId,
+      paymentId,
+      inputReferenceIds: referenceIds,
+    });
 
     await this.actionService.saveAction(
       userId,
@@ -331,9 +399,8 @@ export class PaymentsExecutionService {
     );
 
     void this.createTransactionJobs({
-      paymentJobCreationDetails: retryDetailsList,
       programId,
-      paymentId,
+      transactionIds: transactionDetails.map((t) => t.transactionId),
       userId,
       isRetry: true,
     })
@@ -350,65 +417,65 @@ export class PaymentsExecutionService {
 
     const programFspConfigurationNames: string[] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms
-    for (const registration of retryDetailsList) {
+    for (const transaction of transactionDetails) {
       if (
         !programFspConfigurationNames.includes(
-          registration.programFspConfigurationName,
+          transaction.programFspConfigurationName,
         )
       ) {
         programFspConfigurationNames.push(
-          registration.programFspConfigurationName,
+          transaction.programFspConfigurationName,
         );
       }
     }
 
     return {
-      totalFilterCount: retryDetailsList.length,
-      applicableCount: retryDetailsList.length,
+      totalFilterCount: transactionDetails.length,
+      applicableCount: transactionDetails.length,
       nonApplicableCount: 0,
       programFspConfigurationNames,
     };
   }
 
   public async createTransactionJobs({
-    paymentJobCreationDetails,
     programId,
-    paymentId,
     userId,
+    transactionIds,
     isRetry = false,
   }: {
-    paymentJobCreationDetails: PaymentJobCreationDetails[];
     programId: number;
-    paymentId: number;
+    transactionIds: number[];
     userId: number;
     isRetry?: boolean;
   }): Promise<void> {
-    for (const fspName of Object.values(Fsps)) {
-      const paymentJobCreationDetailsForFsp = paymentJobCreationDetails.filter(
-        (job) => job.fspName === fspName,
+    const transactionJobCreationDetails =
+      await this.transactionViewScopedRepository.getTransactionJobCreationDetails(
+        transactionIds,
       );
 
-      if (paymentJobCreationDetailsForFsp.length > 0) {
-        await this.transactionJobsCreationService.createAndAddFspSpecificTransactionJobs(
-          {
-            fspName,
-            referenceIdsTransactionAmounts: paymentJobCreationDetailsForFsp.map(
-              (job) => ({
-                referenceId: job.referenceId,
-                transactionAmount: job.transactionAmount,
-              }),
-            ),
-            userId,
-            programId,
-            paymentId,
-            isRetry,
-          },
-        );
+    for (const fspName of Object.values(Fsps)) {
+      const transactionJobCreationDetailsForFsp =
+        transactionJobCreationDetails.filter((job) => job.fspName === fspName);
+
+      if (transactionJobCreationDetailsForFsp.length > 0) {
+        await this.transactionJobsCreationService.addTransactionJobsForFsp({
+          fspName,
+          transactionJobDetails: transactionJobCreationDetailsForFsp.map(
+            (job) => ({
+              referenceId: job.referenceId,
+              transferValue: job.transferValue,
+              transactionId: job.transactionId!,
+            }),
+          ),
+          userId,
+          programId,
+          isRetry,
+        });
       }
     }
   }
 
-  private async getRetryPaymentJobCreationDetailsOrThrow({
+  private async getRetryTransactionDetailsOrThrow({
     programId,
     paymentId,
     inputReferenceIds,
@@ -416,17 +483,16 @@ export class PaymentsExecutionService {
     programId: number;
     paymentId: number;
     inputReferenceIds?: string[];
-  }): Promise<RetryPaymentJobCreationDetails[]> {
-    const latestTransactionsFailedForPayment =
-      await this.transactionsService.getLastTransactions({
-        programId,
-        paymentId,
-        referenceId: undefined,
-        status: TransactionStatusEnum.error,
-      });
+  }): Promise<
+    { transactionId: number; programFspConfigurationName: string }[]
+  > {
+    const failedTransactionForPayment =
+      await this.transactionViewScopedRepository.getFailedTransactionDetailsForRetry(
+        { programId, paymentId },
+      );
 
     const referenceIdsWithLatestTransactionFailedForPayment =
-      latestTransactionsFailedForPayment.map((t) => t.referenceId);
+      failedTransactionForPayment.map((t) => t.registrationReferenceId);
 
     if (!referenceIdsWithLatestTransactionFailedForPayment.length) {
       const errors = 'No failed transactions found for this payment.';
@@ -447,68 +513,50 @@ export class PaymentsExecutionService {
       }
     }
 
-    // If referenceIds are passed by the user only retry those, otherwise retry all failed transactions for this payment
-    const targetedReferenceIdsForPayment =
-      inputReferenceIds ?? referenceIdsWithLatestTransactionFailedForPayment;
+    const transactionsToRetry = inputReferenceIds
+      ? failedTransactionForPayment.filter((t) =>
+          inputReferenceIds?.includes(t.registrationReferenceId),
+        )
+      : failedTransactionForPayment;
 
-    const registrations =
-      await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
-        {
-          programId,
-          referenceIds: targetedReferenceIdsForPayment,
-          select: ['referenceId', 'fspName', 'programFspConfigurationName'],
-          chunkSize: 4000,
-        },
-      );
-
-    // Create a map of latest failed transaction by referenceId with the transaction amount
-    // Hash-map is faster than find in array when having a lot of registrations to process
-    const latestFailedTransactionByReferenceId: Record<string, number> = {};
-    for (const transaction of latestTransactionsFailedForPayment) {
-      latestFailedTransactionByReferenceId[transaction.referenceId] =
-        transaction.amount;
-    }
-
-    const paymentJobCreationsDetailsList: RetryPaymentJobCreationDetails[] = [];
-
-    for (const registration of registrations) {
-      const transactionAmount =
-        latestFailedTransactionByReferenceId[registration.referenceId];
-
-      paymentJobCreationsDetailsList.push({
-        transactionAmount,
-        referenceId: registration.referenceId,
-        fspName: registration.fspName,
-        programFspConfigurationName: registration.programFspConfigurationName,
-      });
-    }
-
-    return paymentJobCreationsDetailsList;
+    return transactionsToRetry.map((t) => {
+      return {
+        transactionId: t.id,
+        programFspConfigurationName: t.programFspConfigurationName,
+      };
+    });
   }
 
-  private async getPaymentJobCreationDetails({
+  private async getTransactionCreationDetails({
     referenceIds,
-    amount,
+    transferValue,
     programId,
   }: {
     referenceIds: string[];
-    amount: number;
+    transferValue: number;
     programId: number;
-  }): Promise<PaymentJobCreationDetails[]> {
+  }): Promise<TransactionCreationDetails[]> {
+    const idColumn: keyof RegistrationViewEntity = 'id';
+    const programFspConfigurationIdColumn: keyof RegistrationViewEntity =
+      'programFspConfigurationId';
     const registrations =
       await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
         {
           programId,
           referenceIds,
-          select: ['referenceId', 'paymentAmountMultiplier', 'fspName'],
+          select: [
+            idColumn,
+            GenericRegistrationAttributes.paymentAmountMultiplier,
+            programFspConfigurationIdColumn,
+          ],
           chunkSize: 4000,
         },
       );
 
     return registrations.map((row) => ({
-      transactionAmount: amount * row.paymentAmountMultiplier,
-      referenceId: row.referenceId,
-      fspName: row.fspName,
+      registrationId: row.id,
+      transferValue: transferValue * row.paymentAmountMultiplier,
+      programFspConfigurationId: row.programFspConfigurationId,
     }));
   }
 }

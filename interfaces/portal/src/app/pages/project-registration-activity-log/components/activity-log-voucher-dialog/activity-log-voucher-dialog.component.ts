@@ -31,8 +31,8 @@ export class ActivityLogVoucherDialogComponent {
   readonly rtlHelper = inject(RtlHelperService);
   readonly projectId = input.required<string>();
   readonly paymentId = input.required<number>();
-  readonly totalTransfers = input.required<number>();
-  readonly voucherReferenceId = input.required<string>();
+  readonly paymentDate = input.required<string>();
+  readonly referenceId = input.required<string>();
 
   private readonly projectApiService = inject(ProjectApiService);
   private readonly domSanitizer = inject(DomSanitizer);
@@ -43,14 +43,13 @@ export class ActivityLogVoucherDialogComponent {
   readonly dialogVisible = model(false);
 
   readonly dialogHeader = computed(
-    () =>
-      $localize`Voucher - payment ${this.paymentId()} of ${this.totalTransfers()}`,
+    () => $localize`Voucher ${this.paymentId()} on ${this.paymentDate()}`,
   );
 
   voucher = injectQuery(() => ({
     ...this.projectApiService.getIntersolveVoucher({
       projectId: this.projectId,
-      voucherReferenceId: this.voucherReferenceId(),
+      referenceId: this.referenceId(),
       paymentId: this.paymentId(),
     })(),
     enabled: this.dialogVisible(),
@@ -78,7 +77,7 @@ export class ActivityLogVoucherDialogComponent {
 
   readonly voucherFileName = computed(
     () =>
-      `voucher-project-${this.projectId()}-payment-${this.paymentId().toString()}-voucher-${this.voucherReferenceId()}.png`,
+      `voucher-project-${this.projectId()}-payment-${this.paymentId().toString()}-voucher-${this.referenceId()}.png`,
   );
 
   printVoucher() {

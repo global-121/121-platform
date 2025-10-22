@@ -8,7 +8,7 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
 import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
 const transferInput = {
-  transferAmount: 10,
+  transferValue: 10,
   phoneNumber: 'mocked-phone-number',
   idNumber: 'mocked-id-number',
   originatorConversationId: 'mocked-originator-conversation-id',

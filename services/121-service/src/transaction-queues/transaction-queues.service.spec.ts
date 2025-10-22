@@ -10,9 +10,9 @@ const mockIntersolveVisaTransactionJobDto: IntersolveVisaTransactionJobDto[] = [
   {
     programId: 3,
     userId: 1,
-    paymentId: 3,
+    transactionId: 3,
     referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
-    transactionAmount: 25,
+    transferValue: 25,
     isRetry: false,
     bulkSize: 10,
     name: 'mock-fail-create-debit-card',
@@ -29,15 +29,14 @@ const mockIntersolveVisaTransactionJobDto: IntersolveVisaTransactionJobDto[] = [
 const mockSafaricomTransactionJobDto: SafaricomTransactionJobDto[] = [
   {
     programId: 3,
-    paymentId: 3,
+    transactionId: 3,
     referenceId: 'a3d1f489-2718-4430-863f-5abc14523691',
-    transactionAmount: 25,
+    transferValue: 25,
     isRetry: false,
     userId: 1,
     bulkSize: 10,
     phoneNumber: '254708374149',
     idNumber: 'nat-123',
-    originatorConversationId: 'originator-id',
     programFspConfigurationId: 1,
   },
 ];

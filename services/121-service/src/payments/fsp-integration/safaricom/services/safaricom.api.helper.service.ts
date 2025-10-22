@@ -9,7 +9,7 @@ import { DuplicateOriginatorConversationIdError } from '@121-service/src/payment
 @Injectable()
 export class SafaricomApiHelperService {
   public createTransferPayload({
-    transferAmount,
+    transferValue,
     phoneNumber,
     idNumber,
     originatorConversationId,
@@ -22,7 +22,7 @@ export class SafaricomApiHelperService {
       InitiatorName: env.SAFARICOM_INITIATORNAME,
       SecurityCredential: env.SAFARICOM_SECURITY_CREDENTIAL,
       CommandID: 'BusinessPayment',
-      Amount: transferAmount,
+      Amount: transferValue,
       PartyA: env.SAFARICOM_PARTY_A,
       PartyB: phoneNumber,
       Remarks: 'No remarks', // Not used for reconciliation by clients. Required to be non-empty, so filled with default value.

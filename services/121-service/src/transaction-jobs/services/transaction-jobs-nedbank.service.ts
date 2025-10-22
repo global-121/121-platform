@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Equal } from 'typeorm';
 
 import { NedbankVoucherStatus } from '@121-service//src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { env } from '@121-service/src/env';
@@ -8,7 +7,10 @@ import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/
 import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-integration/nedbank/repositories/nedbank-voucher.scoped.repository';
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/services/nedbank.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
+import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
@@ -19,70 +21,66 @@ export class TransactionJobsNedbankService {
   constructor(
     private readonly nedbankService: NedbankService,
     private readonly nedbankVoucherScopedRepository: NedbankVoucherScopedRepository,
-    private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
+    private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
+    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async processNedbankTransactionJob(
     transactionJob: NedbankTransactionJobDto,
   ): Promise<void> {
-    // 1. Get the registration to log changes to it later in event table
-    const registration =
-      await this.transactionJobsHelperService.getRegistrationOrThrow(
-        transactionJob.referenceId,
-      );
+    const transactionEventContext: TransactionEventCreationContext = {
+      transactionId: transactionJob.transactionId,
+      userId: transactionJob.userId,
+      programFspConfigurationId: transactionJob.programFspConfigurationId,
+    };
 
-    // 2. Set the payment reference
+    // Create transaction event 'initiated' or 'retry'
+    await this.transactionJobsHelperService.createInitiatedOrRetryTransactionEvent(
+      {
+        context: transactionEventContext,
+        isRetry: transactionJob.isRetry,
+      },
+    );
+
+    // Set the payment reference
     const paymentReference = await this.createPaymentReference({
       programFspConfigurationId: transactionJob.programFspConfigurationId,
       phoneNumber: transactionJob.phoneNumber,
     });
 
-    // 3. Check if there is an existing voucher/orderCreateReference without status if not create orderCreateReference, the nedbank voucher and the related transaction
+    // Check if there is an existing voucher/orderCreateReference without status if not create orderCreateReference, the nedbank voucher and the related transaction
     // This should almost never happen, only when we have a server crash or when we got a timeout from the nedbank API when creating the order
     // but if it does, we should use the same orderCreateReference to avoid creating a new voucher
     let orderCreateReference: string;
-    let transactionId: number;
+    const transactionId = transactionJob.transactionId;
     const voucherWithoutStatus =
       await this.nedbankVoucherScopedRepository.getVoucherWhereStatusNull({
-        paymentId: transactionJob.paymentId,
-        registrationId: registration.id,
+        transactionId: transactionJob.transactionId,
       });
 
     if (voucherWithoutStatus) {
       orderCreateReference = voucherWithoutStatus.orderCreateReference;
-      transactionId = voucherWithoutStatus.transactionId;
     } else {
-      // Create transaction and update registration
-      // Note: The transaction is created before the voucher is created, so it can be linked to the generated orderCreateReference
-      // before the create voucher order API call to Nedbank is made
-      const transaction =
-        await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
-          {
-            registration,
-            transactionJob,
-            transferAmountInMajorUnit: transactionJob.transactionAmount,
-            status: TransactionStatusEnum.waiting,
-          },
-        );
-      transactionId = transaction.id;
+      // Update transaction status to waiting, this is to ensure that this transactions is not retried as we are about to create the voucher
+      // If this job fails after this point due to a timout from nedbank the reconciliation process will pick it up and set it to success or error, so it can be retried if needed
+      await this.transactionsService.updateTransactionStatus({
+        transactionId: transactionJob.transactionId,
+        status: TransactionStatusEnum.waiting,
+      });
 
       // Get count of failed transactions to create orderCreateReference
-      const failedTransactionsCount =
-        await this.transactionScopedRepository.count({
-          where: {
-            registrationId: Equal(registration.id),
-            paymentId: Equal(transactionJob.paymentId),
-            status: Equal(TransactionStatusEnum.error),
-          },
-        });
-      // orderCreateReference is generated using: (referenceId + paymentId + current failed transactions)
+      const failedTransactionAttempts =
+        await this.transactionEventScopedRepository.countFailedTransactionAttempts(
+          transactionJob.transactionId,
+        );
+      // orderCreateReference is generated using: (referenceId + transactionId + current failed transactions)
       // Using this count to generate the OrderReferenceId ensures that:
       // a. On payment retry, a new reference is generated (needed because a new reference is required by nedbank if a failed order was created).
       // b. Queue Retry: on queue retry, the same OrderReferenceId is generated, which is beneficial because the old successful/failed Order response would be returned.
       orderCreateReference = generateUUIDFromSeed(
-        `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentId},Attempt=${failedTransactionsCount}`,
+        `ReferenceId=${transactionJob.referenceId},TransactionId=${transactionId},Attempt=${failedTransactionAttempts}`,
       ).replace(/^(.{14})5/, '$14');
 
       // THIS IS MOCK FUNCTIONALITY FOR TESTING PURPOSES ONLY
@@ -93,34 +91,47 @@ export class TransactionJobsNedbankService {
         orderCreateReference = `${transactionJob.referenceId}-${orderCreateReference}`;
       }
 
-      await this.nedbankVoucherScopedRepository.storeVoucher({
+      // Store the nedbank voucher with status null (as we don't know the status yet)
+      // For payment retry or queue retry we need to reuse the existing voucher attached the the transaction
+      // (For queue retry voucherstatus should already be null)
+      await this.nedbankVoucherScopedRepository.upsertVoucherByTransactionId({
         paymentReference,
         orderCreateReference,
         transactionId,
+        voucherStatus: null,
       });
     }
 
-    // 3. Create the voucher via Nedbank API and update the transaction if an error occurs
-    // Updating the transaction on successful voucher creation is not needed as it is already in the 'waiting' state
+    // Create the voucher via Nedbank API and update the transaction if an error occurs
+    // Updating the transaction on succesfull voucher creation is not needed as it is already in the 'waiting' state
     // and will be updated to success (or error) via the reconciliation process
     let nedbankVoucherStatus: NedbankVoucherStatus;
     try {
       nedbankVoucherStatus = await this.nedbankService.createVoucher({
-        transferAmount: transactionJob.transactionAmount,
+        transferValue: transactionJob.transferValue,
         phoneNumber: transactionJob.phoneNumber,
         orderCreateReference,
         paymentReference,
       });
     } catch (error) {
       if (error instanceof NedbankError) {
-        nedbankVoucherStatus = NedbankVoucherStatus.FAILED;
-        await this.transactionScopedRepository.update(
-          { id: transactionId },
-          { status: TransactionStatusEnum.error, errorMessage: error?.message },
-        );
         // Update the status to failed so we don't try to create the voucher again
         // NedbankVoucherStatus.FAILED is introduced to differentiate between
-        // a) a voucher that failed to be created, while we got a response from Nedbank and b) a voucher of which the status is unknown due to a timeout/server crash
+        // a) a voucher that failed to be created, while we got a response from Nedbank and b) a voucher of which the status is unknown due to a timout/server crash
+        await this.nedbankVoucherScopedRepository.update(
+          { orderCreateReference },
+          { status: NedbankVoucherStatus.FAILED },
+        );
+
+        // Update the transaction to error, so it won't be picked up by the reconciliation process
+        await this.transactionsService.saveTransactionProgress({
+          context: transactionEventContext,
+          description:
+            TransactionEventDescription.nedbankVoucherCreationRequested,
+          errorMessage: error?.message,
+          newTransactionStatus: TransactionStatusEnum.error,
+        });
+        return;
       } else {
         throw error;
       }
@@ -131,6 +142,12 @@ export class TransactionJobsNedbankService {
       { orderCreateReference },
       { status: nedbankVoucherStatus },
     );
+
+    await this.transactionsService.saveTransactionProgress({
+      context: transactionEventContext,
+      description: TransactionEventDescription.nedbankVoucherCreationRequested,
+      newTransactionStatus: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
+    });
   }
 
   /**

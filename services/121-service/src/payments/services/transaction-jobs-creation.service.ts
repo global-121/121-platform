@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
 
 import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
-import { ReferenceIdAndTransactionAmountInterface } from '@121-service/src/payments/interfaces/referenceid-transaction-amount.interface';
+import { TransactionJobDetails } from '@121-service/src/payments/interfaces/transaction-job-details.interface';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
-import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
 import { CommercialBankEthiopiaTransactionJobDto } from '@121-service/src/transaction-queues/dto/commercial-bank-ethiopia-transaction-job.dto';
@@ -26,109 +24,97 @@ import { generateRandomNumerics } from '@121-service/src/utils/random-value.help
 export class TransactionJobsCreationService {
   constructor(
     private readonly registrationsPaginationService: RegistrationsPaginationService,
-    private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly transactionQueuesService: TransactionQueuesService,
   ) {}
 
   /**
    * Generic method to create FSP-specific transaction jobs based on FSP name
    */
-  public async createAndAddFspSpecificTransactionJobs({
+  public async addTransactionJobsForFsp({
     fspName,
-    referenceIdsTransactionAmounts,
+    transactionJobDetails,
     programId,
     userId,
-    paymentId,
     isRetry,
   }: {
     fspName: string;
-    referenceIdsTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    transactionJobDetails: TransactionJobDetails[];
     programId: number;
     userId: number;
-    paymentId: number;
     isRetry: boolean;
   }): Promise<void> {
     switch (fspName) {
       case Fsps.intersolveVisa:
         return await this.createAndAddIntersolveVisaTransactionJobs({
-          referenceIdsTransactionAmounts,
+          transactionJobDetails,
           programId,
           userId,
-          paymentId,
           isRetry,
           fspName,
         });
       case Fsps.intersolveVoucherWhatsapp:
         return await this.createAndAddIntersolveVoucherTransactionJobs({
-          referenceIdsTransactionAmounts,
+          transactionJobDetails,
           programId,
           userId,
-          paymentId,
           isRetry,
           fspName,
           useWhatsapp: true,
         });
       case Fsps.intersolveVoucherPaper:
         return await this.createAndAddIntersolveVoucherTransactionJobs({
-          referenceIdsTransactionAmounts,
+          transactionJobDetails,
           programId,
           userId,
-          paymentId,
           isRetry,
           fspName,
           useWhatsapp: false,
         });
       case Fsps.safaricom:
         return await this.createAndAddSafaricomTransactionJobs({
-          referenceIdsTransactionAmounts,
+          transactionJobDetails,
           programId,
           userId,
-          paymentId,
           isRetry,
           fspName,
         });
       case Fsps.airtel:
         return await this.createAndAddAirtelTransactionJobs({
-          referenceIdsTransactionAmounts,
+          transactionJobDetails,
           programId,
           userId,
-          paymentId,
           isRetry,
           fspName,
         });
       case Fsps.nedbank:
         return await this.createAndAddNedbankTransactionJobs({
-          referenceIdsTransactionAmounts,
+          transactionJobDetails,
           programId,
           userId,
-          paymentId,
           isRetry,
           fspName,
         });
       case Fsps.onafriq:
         return await this.createAndAddOnafriqTransactionJobs({
-          referenceIdsTransactionAmounts,
+          transactionJobDetails,
           programId,
           userId,
-          paymentId,
           isRetry,
           fspName,
         });
       case Fsps.commercialBankEthiopia:
         return await this.createAndAddCommercialBankEthiopiaTransactionJobs({
-          referenceIdsTransactionAmounts,
+          transactionJobDetails,
           programId,
           userId,
-          paymentId,
           isRetry,
           fspName,
         });
       case Fsps.excel:
         return await this.createAndAddExcelTransactionJobs({
-          referenceIdsTransactionAmounts,
+          transactionJobDetails,
           programId,
           userId,
-          paymentId,
           isRetry,
           fspName,
         });
@@ -145,35 +131,31 @@ export class TransactionJobsCreationService {
    * This method is responsible for creating transaction jobs for Intersolve Visa. It fetches necessary PA data and maps it to a FSP specific DTO.
    * It then adds these jobs to the transaction queue.
    *
-   * @param {string[]} referenceIds - The reference IDs for the transaction jobs.
-   * @param {number} programId - The ID of the program.
-   * @param {number} paymentAmount - The amount to be transferred.
-   * @param {number} paymentId - The payment number.
-   * @param {boolean} isRetry - Whether this is a retry.
-   *
+   * @param {Object} params - The parameters for creating transaction jobs.
+   * @param {TransactionJobDetails[]} params.transactionJobDetails - Array of transaction job details (referenceId, transactionId, transferValue).
+   * @param {number} params.programId - The ID of the program.
+   * @param {number} params.userId - The user ID initiating the transaction.
+   * @param {boolean} params.isRetry - Whether this is a retry.
+   * @param {Fsps} params.fspName - The FSP name.
    * @returns {Promise<void>} A promise that resolves when the transaction jobs have been created and added.
-   *
    */
   private async createAndAddIntersolveVisaTransactionJobs({
-    referenceIdsTransactionAmounts,
+    transactionJobDetails,
     programId,
     userId,
-    paymentId,
     isRetry,
     fspName,
   }: {
-    referenceIdsTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    transactionJobDetails: TransactionJobDetails[];
     programId: number;
     userId: number;
-    paymentId: number;
     isRetry: boolean;
     fspName: Fsps;
   }): Promise<void> {
     const { registrationViews, sharedJobsByReferenceId } =
       await this.createSharedJobs({
-        referenceIdsTransactionAmounts,
+        transactionJobDetails,
         programId,
-        paymentId,
         userId,
         isRetry,
         fspName,
@@ -213,37 +195,34 @@ export class TransactionJobsCreationService {
    * This method is responsible for creating transaction jobs for Intersolve Voucher. It fetches necessary PA data and maps it to a FSP specific DTO.
    * It then adds these jobs to the transaction queue.
    *
-   * @param {string[]} referenceIds - The reference IDs for the transaction jobs.
-   * @param {number} programId - The ID of the program.
-   * @param {number} paymentAmount - The amount to be transferred.
-   * @param {number} paymentId - The payment number.
-   * @param {boolean} isRetry - Whether this is a retry.
-   *
+   * @param {Object} params - The parameters for creating transaction jobs.
+   * @param {TransactionJobDetails[]} params.transactionJobDetails - Array of transaction job details (referenceId, transactionId, transferValue).
+   * @param {number} params.programId - The ID of the program.
+   * @param {number} params.userId - The user ID initiating the transaction.
+   * @param {boolean} params.isRetry - Whether this is a retry.
+   * @param {boolean} params.useWhatsapp - Whether to use WhatsApp for voucher delivery.
+   * @param {Fsps} params.fspName - The FSP name.
    * @returns {Promise<void>} A promise that resolves when the transaction jobs have been created and added.
-   *
    */
   private async createAndAddIntersolveVoucherTransactionJobs({
-    referenceIdsTransactionAmounts,
+    transactionJobDetails,
     programId,
     userId,
-    paymentId,
     isRetry,
     useWhatsapp,
     fspName,
   }: {
-    referenceIdsTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    transactionJobDetails: TransactionJobDetails[];
     programId: number;
     userId: number;
-    paymentId: number;
     isRetry: boolean;
     useWhatsapp: boolean;
     fspName: Fsps;
   }): Promise<void> {
     const { registrationViews, sharedJobsByReferenceId } =
       await this.createSharedJobs({
-        referenceIdsTransactionAmounts,
+        transactionJobDetails,
         programId,
-        paymentId,
         userId,
         isRetry,
         fspName,
@@ -280,25 +259,22 @@ export class TransactionJobsCreationService {
    *
    */
   private async createAndAddSafaricomTransactionJobs({
-    referenceIdsTransactionAmounts,
+    transactionJobDetails,
     programId,
     userId,
-    paymentId,
     isRetry,
     fspName,
   }: {
-    referenceIdsTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    transactionJobDetails: TransactionJobDetails[];
     programId: number;
     userId: number;
-    paymentId: number;
     isRetry: boolean;
     fspName: Fsps;
   }): Promise<void> {
     const { registrationViews, sharedJobsByReferenceId } =
       await this.createSharedJobs({
-        referenceIdsTransactionAmounts,
+        transactionJobDetails,
         programId,
-        paymentId,
         userId,
         isRetry,
         fspName,
@@ -312,7 +288,6 @@ export class TransactionJobsCreationService {
           // FSP-specific additions:
           phoneNumber: registrationView.phoneNumber!, // Phonenumber is a required field if a registration has safaricom as FSP
           idNumber: registrationView[FspAttributes.nationalId],
-          originatorConversationId: uuid(), // REFACTOR: switch to nedbank/onafriq approach for idempotency key
         };
       });
     await this.transactionQueuesService.addSafaricomTransactionJobs(
@@ -330,25 +305,22 @@ export class TransactionJobsCreationService {
    *
    */
   private async createAndAddAirtelTransactionJobs({
-    referenceIdsTransactionAmounts,
+    transactionJobDetails,
     programId,
     userId,
-    paymentId,
     isRetry,
     fspName,
   }: {
-    referenceIdsTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    transactionJobDetails: TransactionJobDetails[];
     programId: number;
     userId: number;
-    paymentId: number;
     isRetry: boolean;
     fspName: Fsps;
   }): Promise<void> {
     const { registrationViews, sharedJobsByReferenceId } =
       await this.createSharedJobs({
-        referenceIdsTransactionAmounts,
+        transactionJobDetails,
         programId,
-        paymentId,
         userId,
         isRetry,
         fspName,
@@ -379,25 +351,22 @@ export class TransactionJobsCreationService {
    *
    */
   private async createAndAddNedbankTransactionJobs({
-    referenceIdsTransactionAmounts,
+    transactionJobDetails,
     programId,
     userId,
-    paymentId,
     isRetry,
     fspName,
   }: {
-    referenceIdsTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    transactionJobDetails: TransactionJobDetails[];
     programId: number;
     userId: number;
-    paymentId: number;
     isRetry: boolean;
     fspName: Fsps;
   }): Promise<void> {
     const { registrationViews, sharedJobsByReferenceId } =
       await this.createSharedJobs({
-        referenceIdsTransactionAmounts,
+        transactionJobDetails,
         programId,
-        paymentId,
         userId,
         isRetry,
         fspName,
@@ -427,25 +396,22 @@ export class TransactionJobsCreationService {
    *
    */
   private async createAndAddOnafriqTransactionJobs({
-    referenceIdsTransactionAmounts,
+    transactionJobDetails,
     programId,
     userId,
-    paymentId,
     isRetry,
     fspName,
   }: {
-    referenceIdsTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    transactionJobDetails: TransactionJobDetails[];
     programId: number;
     userId: number;
-    paymentId: number;
     isRetry: boolean;
     fspName: Fsps;
   }): Promise<void> {
     const { registrationViews, sharedJobsByReferenceId } =
       await this.createSharedJobs({
-        referenceIdsTransactionAmounts,
+        transactionJobDetails,
         programId,
-        paymentId,
         userId,
         isRetry,
         fspName,
@@ -478,25 +444,22 @@ export class TransactionJobsCreationService {
    *
    */
   private async createAndAddExcelTransactionJobs({
-    referenceIdsTransactionAmounts,
+    transactionJobDetails,
     programId,
     userId,
-    paymentId,
     isRetry,
     fspName,
   }: {
-    referenceIdsTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    transactionJobDetails: TransactionJobDetails[];
     programId: number;
     userId: number;
-    paymentId: number;
     isRetry: boolean;
     fspName: Fsps;
   }): Promise<void> {
     const { registrationViews, sharedJobsByReferenceId } =
       await this.createSharedJobs({
-        referenceIdsTransactionAmounts,
+        transactionJobDetails,
         programId,
-        paymentId,
         userId,
         isRetry,
         fspName,
@@ -524,25 +487,22 @@ export class TransactionJobsCreationService {
    * @returns {Promise<void>} A promise that resolves when the transaction jobs have been created and added.
    */
   private async createAndAddCommercialBankEthiopiaTransactionJobs({
-    referenceIdsTransactionAmounts,
+    transactionJobDetails,
     programId,
     userId,
-    paymentId,
     isRetry,
     fspName,
   }: {
-    referenceIdsTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    transactionJobDetails: TransactionJobDetails[];
     programId: number;
     userId: number;
-    paymentId: number;
     isRetry: boolean;
     fspName: Fsps;
   }): Promise<void> {
     const { registrationViews, sharedJobsByReferenceId } =
       await this.createSharedJobs({
-        referenceIdsTransactionAmounts,
+        transactionJobDetails,
         programId,
-        paymentId,
         userId,
         isRetry,
         fspName,
@@ -588,23 +548,22 @@ export class TransactionJobsCreationService {
 
   /**
    * Get registration views with FSP-specific attributes
-   * @param referenceIdsTransactionAmounts - Array of reference IDs with transaction amounts
-   * @param fspAttributeNames - Names of attributes to fetch
-   * @param programId - Program ID
-   * @returns Registration views with FSP-specific data
+   * @param {Object} params - The parameters for fetching registration views.
+   * @param {TransactionJobDetails[]} params.transactionJobDetails - Array of transaction job details (referenceId, transactionId, transferValue).
+   * @param {string[]} params.fspAttributeNames - Names of attributes to fetch.
+   * @param {number} params.programId - Program ID.
+   * @returns {Promise<MappedPaginatedRegistrationDto[]>} Registration views with FSP-specific data.
    */
   private async getRegistrationViews({
-    referenceIdsTransactionAmounts,
+    transactionJobDetails,
     fspAttributeNames,
     programId,
   }: {
-    referenceIdsTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    transactionJobDetails: TransactionJobDetails[];
     fspAttributeNames: string[];
     programId: number;
   }): Promise<MappedPaginatedRegistrationDto[]> {
-    const referenceIds = referenceIdsTransactionAmounts.map(
-      (r) => r.referenceId,
-    );
+    const referenceIds = transactionJobDetails.map((r) => r.referenceId);
 
     const defaultSelect: (keyof RegistrationViewEntity)[] = [
       'referenceId',
@@ -626,17 +585,33 @@ export class TransactionJobsCreationService {
     return registrationViews;
   }
 
+  /**
+   * Creates shared transaction job data.
+   *
+   * Fetches registration views (including required FSP attribute fields), builds a lookup map
+   * from referenceId to transfer value and transactionId, and constructs the common
+   * SharedTransactionJobDto objects used as the base for all FSP-specific job DTOs.
+   *
+   * Provides:
+   * - registrationViews: enriched registration records (used to append FSP-specific fields later)
+   * - sharedJobsByReferenceId: O(1) lookup map for shared job data keyed by referenceId
+   *
+   * @param transactionJobDetails Input items containing referenceId, transactionId, and transferValue
+   * @param programId Program identifier
+   * @param userId User initiating the payment flow
+   * @param isRetry Indicates whether this is a retry execution
+   * @param fspName FSP whose attribute set determines which registration fields are loaded
+   * @returns Promise resolving to { registrationViews, sharedJobsByReferenceId }
+   */
   private async createSharedJobs({
-    referenceIdsTransactionAmounts,
+    transactionJobDetails,
     programId,
-    paymentId,
     userId,
     isRetry,
     fspName,
   }: {
-    referenceIdsTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    transactionJobDetails: TransactionJobDetails[];
     programId: number;
-    paymentId: number;
     userId: number;
     isRetry: boolean;
     fspName: Fsps;
@@ -647,31 +622,35 @@ export class TransactionJobsCreationService {
     const fspAttributes = FSP_SETTINGS[fspName].attributes;
     const fspAttributeNames = fspAttributes.map((q) => q.name);
     const registrationViews = await this.getRegistrationViews({
-      referenceIdsTransactionAmounts,
+      transactionJobDetails,
       fspAttributeNames,
       programId,
     });
 
     const transactionDataByReferenceId = new Map(
-      referenceIdsTransactionAmounts.map((item) => [
+      transactionJobDetails.map((item) => [
         item.referenceId,
-        item.transactionAmount,
+        {
+          transferValue: item.transferValue,
+          transactionId: item.transactionId,
+        },
       ]),
     );
     const sharedJobs: SharedTransactionJobDto[] = registrationViews.map(
       (registrationView): SharedTransactionJobDto => {
         return {
           programId,
-          paymentId,
           userId,
           referenceId: registrationView.referenceId,
           programFspConfigurationId: registrationView.programFspConfigurationId,
-          // Use hash-map to lookup transaction amount for this referenceId (with the 4000 chunk-size this takes less than 1ms)
-          transactionAmount: transactionDataByReferenceId.get(
+          transferValue: transactionDataByReferenceId.get(
             registrationView.referenceId,
-          )!,
+          )!.transferValue,
+          transactionId: transactionDataByReferenceId.get(
+            registrationView.referenceId,
+          )!.transactionId,
           isRetry,
-          bulkSize: referenceIdsTransactionAmounts.length,
+          bulkSize: transactionJobDetails.length,
         };
       },
     );

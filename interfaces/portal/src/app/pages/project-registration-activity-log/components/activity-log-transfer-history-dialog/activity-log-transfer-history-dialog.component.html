@@ -1,0 +1,36 @@
+<p-button
+  label="View transfer history"
+  i18n-label
+  (click)="dialogVisible.set(true)"
+  outlined
+  rounded
+  size="small"
+  data-testid="view-transfer-history-button"
+/>
+<p-dialog
+  [header]="dialogHeader()"
+  [modal]="true"
+  [dismissableMask]="true"
+  [(visible)]="dialogVisible"
+  [style]="{ width: '70rem' }"
+  appendTo="body"
+>
+  @defer {
+    @if (transferEventLog.isSuccess()) {
+      <app-query-table
+        [items]="transferEvents()"
+        [isPending]="false"
+        [columns]="columns()"
+        localStorageKey="transfer-history-table"
+        [tableCellContext]="tableCellContext()"
+        [initialSortField]="'created'"
+        [initialSortOrder]="-1"
+        data-testid="transfer-history-table"
+      />
+    } @else if (transferEventLog.isPending()) {
+      <p-skeleton height="24rem" />
+    } @else {
+      <p>{{ transferEventLog.error()?.message }}</p>
+    }
+  }
+</p-dialog>

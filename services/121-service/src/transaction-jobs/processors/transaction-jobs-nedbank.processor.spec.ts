@@ -11,9 +11,9 @@ import { registrationNedbank } from '@121-service/test/registrations/pagination/
 const mockPaymentJob: NedbankTransactionJobDto = {
   programId: 3,
   userId: 1,
-  paymentId: 3,
+  transactionId: 3,
   referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
-  transactionAmount: 25,
+  transferValue: 25,
   isRetry: false,
   bulkSize: 10,
   phoneNumber: registrationNedbank.phoneNumber,

@@ -24,6 +24,7 @@ import {
   isGenericAttribute,
 } from '~/domains/project/project-attribute.helpers';
 import { Role } from '~/domains/role/role.model';
+import { TransactionEventsResponse } from '~/domains/transaction/transaction.model';
 import { AuthService } from '~/services/auth.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Dto } from '~/utils/dto-type';
@@ -332,17 +333,17 @@ export class ProjectApiService extends DomainApiService {
 
   getIntersolveVoucher({
     projectId,
-    voucherReferenceId,
+    referenceId,
     paymentId,
   }: {
     projectId: Signal<number | string>;
-    voucherReferenceId: string;
+    referenceId: string;
     paymentId: number | string;
   }) {
     return this.generateQueryOptions<Blob>({
       path: [BASE_ENDPOINT, projectId, 'fsps/intersolve-voucher/vouchers'],
       params: {
-        referenceId: voucherReferenceId,
+        referenceId,
         paymentId: paymentId.toString(),
       },
       responseAsBlob: true,
@@ -394,6 +395,18 @@ export class ProjectApiService extends DomainApiService {
       path: [BASE_ENDPOINT, projectId, 'transactions'],
       params,
       responseAsBlob: true,
+    });
+  }
+
+  getTransactionEvents({
+    projectId,
+    transactionId,
+  }: {
+    projectId: Signal<number | string>;
+    transactionId: Signal<number | string>;
+  }) {
+    return this.generateQueryOptions<TransactionEventsResponse>({
+      path: [BASE_ENDPOINT, projectId, 'transactions', transactionId, 'events'],
     });
   }
 

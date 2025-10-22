@@ -319,7 +319,7 @@
       "properties": [
         {
           "name": "columnsToExport",
-          "value": ["name", "dob", "dragon", "phoneNumber"]
+          "value": ["dob", "dragon", "personalId"]
         },
         {
           "name": "columnToMatch",
