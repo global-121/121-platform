@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+import { env } from 'process';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -74,7 +75,7 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
     // Do payment
     const doPaymentResponse = await doPayment({
       programId: programIdOCW,
-      amount,
+      transferValue: amount,
       referenceIds: [],
       accessToken,
     });
