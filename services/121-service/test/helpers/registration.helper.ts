@@ -778,7 +778,7 @@ export async function seedRegistrationsWithStatus(
   }
 
   if (status === RegistrationStatusEnum.new) {
-    return response;
+    return response; // returning something here to satisfy Typescript. This response is not actually used anywhere.
   }
 
   const statusChangeResponse = await awaitChangeRegistrationStatus({
