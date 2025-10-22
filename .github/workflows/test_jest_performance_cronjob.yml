@@ -1,9 +1,6 @@
 name: 'Test: Jest Performance Tests Cronjob'
 
 on:
-  push:
-    branches:
-      - 'Piotrk39/chore.add-performance-jest-cronjob-workflow'
   schedule:
     - cron: '42 1 * * 1-5'
   workflow_dispatch:
@@ -52,25 +49,25 @@ jobs:
         include:
           - shard: '1'
             test_name: 'BulkUpdate32kRegistrations.test.ts'
-            duplicate_number: '5'
+            duplicate_number: '15'
           - shard: '2'
             test_name: 'FindDuplicates100kRegistrations.test.ts'
-            duplicate_number: '5'
+            duplicate_number: '17'
           - shard: '3'
             test_name: 'GetProgramWithManyAttributes.test.ts'
             duplicate_number: '5'
           - shard: '4'
             test_name: 'Payment100kRegistrationIntersolveVisa.test.ts'
-            duplicate_number: '5'
+            duplicate_number: '17'
           - shard: '5'
             test_name: 'Payment100kRegistrationSafaricom.test.ts'
-            duplicate_number: '5'
+            duplicate_number: '17'
           - shard: '6'
             test_name: 'PerformanceDuringPayment.test.ts'
-            duplicate_number: '5'
+            duplicate_number: '15'
           - shard: '7'
             test_name: 'StatusChangePaymentInLargeProgram.test.ts'
-            duplicate_number: '5'
+            duplicate_number: '15'
           - shard: '8'
             test_name: 'Import1000Registrations.test.ts'
             duplicate_number: ''
