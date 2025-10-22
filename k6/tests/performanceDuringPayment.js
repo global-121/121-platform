@@ -96,7 +96,10 @@ export default function () {
   // get export list
   const exportList = metricsPage.getExportList(3);
   checkAndFail(exportList, {
-    'Export list loaded successfully status was 200 - INTENTIONAL FAILURE': (r) => {
+    'Export list loaded successfully status was 200 - INTENTIONAL FAILURE': (
+      r,
+    ) => {
+      console.log('r: ', r);
       // INTENTIONAL FAILURE: Always return false to test k6 failure reporting
       return false; // This will always fail to demonstrate k6 test failure
     },
