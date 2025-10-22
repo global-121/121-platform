@@ -18,7 +18,8 @@ export const buildTemplateImportValidationFailed = (
     </p>
     <p>
       The registrations associated with invalid values are listed in the attachment included with this email.<br>
-      Please review the attached file, correct invalid values, and try importing again.
+      Please review the attached file, correct invalid values, and try importing again.<br>
+      Note however that valid registrations have already been imported successfully.
     </p>
     <p>
       If you need assistance, please contact us at: <a href="mailto:${SUPPORT_EMAIL}">${SUPPORT_EMAIL}</a>

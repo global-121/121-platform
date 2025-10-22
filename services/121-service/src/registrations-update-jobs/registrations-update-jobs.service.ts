@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { env } from 'process';
 
 import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
+import { RegistrationUpdateErrorRecord } from '@121-service/src/registrations-update-jobs/interfaces/registration-update-error-record.interface';
 import { UserService } from '@121-service/src/user/user.service';
 import { UserEmailTemplateType } from '@121-service/src/user/user-emails/enum/user-email-template-type.enum';
 import { UserEmailTemplateInput } from '@121-service/src/user/user-emails/interfaces/user-email-template-input.interface';
@@ -20,18 +21,21 @@ export class RegistrationsUpdateJobsService {
   public async processRegistrationsUpdateJob(
     job: RegistrationsUpdateJobDto,
   ): Promise<void> {
-    const failedResults: RegistrationsUpdateJobDto['data'] =
+    const registrationUpdateErrorRecords: RegistrationUpdateErrorRecord[] =
       await this.updateRegistrations(job);
 
-    if (failedResults.length > 0) {
-      await this.sendValidationFailureEmail(failedResults, job.request.userId);
+    if (registrationUpdateErrorRecords.length > 0) {
+      await this.sendValidationFailureEmail(
+        registrationUpdateErrorRecords,
+        job.request.userId,
+      );
     }
   }
 
   private async updateRegistrations(
     job: RegistrationsUpdateJobDto,
-  ): Promise<RegistrationsUpdateJobDto['data']> {
-    const failedResults: RegistrationsUpdateJobDto['data'] = [];
+  ): Promise<RegistrationUpdateErrorRecord[]> {
+    const registrationUpdateErrorRecords: RegistrationUpdateErrorRecord[] = [];
 
     for (const record of job.data) {
       const dto: UpdateRegistrationDto = {
@@ -47,26 +51,25 @@ export class RegistrationsUpdateJobsService {
           userId: job.request.userId,
         });
       } catch (error) {
-        failedResults.push({
-          ...record,
-          error: error instanceof Error ? error.message : String(error),
-        });
+        if (error instanceof HttpException) {
+          throw error;
+        } else {
+          registrationUpdateErrorRecords.push({
+            referenceId: record.referenceId as string,
+            errorMessage:
+              error instanceof Error ? error.message : String(error),
+          });
+        }
       }
     }
 
-    return failedResults;
+    return registrationUpdateErrorRecords;
   }
 
   private async sendValidationFailureEmail(
-    failedResults: RegistrationsUpdateJobDto['data'],
+    registrationUpdateErrorRecords: RegistrationUpdateErrorRecord[],
     userId: RegistrationsUpdateJobDto['request']['userId'],
   ): Promise<void> {
-    const csvHeader = 'referenceId, error\n';
-    const csvRows = failedResults
-      .map((result) => `${result.referenceId}, ${result.error}`)
-      .join('\n');
-    const csvContent = csvHeader + csvRows;
-
     const user = await this.userService.findById(userId);
 
     if (!user || !user.username) {
@@ -80,13 +83,17 @@ export class RegistrationsUpdateJobsService {
       throw new Error('MY_EMAIL_ADDRESS environment variable is not set');
     }
 
+    const contentBytes = this.formatErrorRecordsAsCsv(
+      registrationUpdateErrorRecords,
+    );
+
     const userEmailTemplateInput: UserEmailTemplateInput = {
       //todo: change back to user.username before merging
       email: env.MY_EMAIL_ADDRESS,
       displayName: user.displayName,
       attachment: {
         name: 'failed-validations.csv',
-        contentBytes: Buffer.from(csvContent, 'utf8').toString('base64'),
+        contentBytes,
       },
     };
 
@@ -94,5 +101,19 @@ export class RegistrationsUpdateJobsService {
       userEmailTemplateInput,
       userEmailTemplateType: UserEmailTemplateType.importValidationFailed,
     });
+  }
+
+  private formatErrorRecordsAsCsv(
+    errorRecords: RegistrationUpdateErrorRecord[],
+  ): string {
+    const csvHeader = 'referenceId, error\n';
+    const csvRows = errorRecords
+      .map((record) => `${record.referenceId}, ${record.errorMessage}`)
+      .join('\n');
+    const contentBytes = Buffer.from(csvHeader + csvRows, 'utf8').toString(
+      'base64',
+    );
+
+    return contentBytes;
   }
 }
