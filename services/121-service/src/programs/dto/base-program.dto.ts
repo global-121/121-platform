@@ -89,7 +89,9 @@ export abstract class BaseProgramDto {
   @IsArray()
   public readonly fullnameNamingConvention?: string[];
 
-  @ApiProperty({ example: ['en', 'nl'] })
+  @ApiProperty({
+    example: Object.values(LanguageEnum),
+  })
   @IsOptional()
   @IsArray()
   public readonly languages?: WrapperType<LanguageEnum[]>;
