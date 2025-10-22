@@ -64,7 +64,7 @@ jobs:
           path: |
             ${{ env.workingDirectory }}/test-results/
 
-  # Aggregate test results  
+  # Aggregate test results
   test-mock-service-resolution:
     runs-on: ubuntu-latest
     needs: [test]

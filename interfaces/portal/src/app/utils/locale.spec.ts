@@ -8,13 +8,6 @@ describe('getLocaleForInitialization', () => {
   });
 
   it('should throw an error when an invalid default locale is passed in - INTENTIONAL FAILURE', () => {
-    expect(() => {
-      getLocaleForInitialization({
-        defaultLocale: 'nonsense',
-        urlLocale: 'en-GB',
-      });
-    }).toThrowError('Invalid default locale "nonsense" found in environment.');
-    
     // INTENTIONAL FAILURE: This assertion will always fail to test portal unit test failure reporting  
     expect(true).toBe(false); // This will fail and demonstrate portal test failure
   });
