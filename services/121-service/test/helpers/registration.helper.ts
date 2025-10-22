@@ -764,6 +764,7 @@ export async function seedRegistrationsWithStatus(
   programId: number,
   accessToken: string,
   status: RegistrationStatusEnum,
+  // Changed 'void' to 'request.Response' to satisfy TypeScript/ avoid errors and to return the correct response
 ): Promise<request.Response> {
   const response = await importRegistrations(
     programId,
