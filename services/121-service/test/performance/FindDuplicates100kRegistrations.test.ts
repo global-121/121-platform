@@ -64,5 +64,6 @@ describe('Find duplicates in 100k registrations within expected range', () => {
       expect(findDuplicatesResponse.body.meta.totalItems).toBeGreaterThan(3000);
       expect(findDuplicatesResponse.body.meta.totalItems).toBeLessThan(10000);
     }
+    // TODO: use fractions of total registrations in assert, to be flexible towards other duplicateNumber values
   });
 });
