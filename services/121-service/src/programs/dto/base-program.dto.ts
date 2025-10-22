@@ -12,23 +12,23 @@ import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
-// A base DTO to share properties between CreateProgramDto and UpdateProgramDto.
-// Not to be used directly.
-
-// The class-validator decorators can be inherited, but they are then applied in sequence.
-// We want to have *different* validation rules for Create vs Update.
-// So the DTO fields that differ are defined separately in the respective DTOs.
-// See https://class-validator.sonicar.tech/inheritance/
-
-// All fields are optional, because we want creation with minimal fields and
-// updates with patch semantics.
-export class BaseProgramDto {
+/**
+ * A base DTO to share properties between CreateProgramDto and UpdateProgramDto.
+ *
+ * The class-validator decorators can be inherited, but they are then applied in sequence.
+ * We want to have *different* validation rules for Create vs Update.
+ * So the DTO fields that differ are defined separately in the respective DTOs.
+ * See https://class-validator.sonicar.tech/inheritance/
+ *
+ * All fields are optional, because we want creation with minimal fields and
+ * updates with patch semantics.
+ */
+export abstract class BaseProgramDto {
   @ApiProperty({ example: 'Nederland' })
   @IsOptional()
   @IsString()
   public readonly location?: string;
 
-  @ApiProperty({ example: false })
   @IsOptional()
   @IsBoolean()
   public readonly validation?: boolean;
