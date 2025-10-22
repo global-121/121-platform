@@ -3,26 +3,18 @@ name: 'Test: Jest Performance Tests Cronjob'
 on:
   push:
     branches:
-      - 'Piotrk39/chore.add-performance-jest-cronjob-workflow' # Runs on all branches; restrict to e.g. 'feature/*' if you want only feature branches
+      - 'Piotrk39/chore.add-performance-jest-cronjob-workflow'
   schedule:
-    # See: https://crontab.guru/#42_1_*_*_1-5
     - cron: '42 1 * * 1-5'
   workflow_dispatch:
 
-# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
-
-# Can't use the top-level "paths" filter because of issues with required checks
-# See: https://github.com/orgs/community/discussions/44490#discussioncomment-10253645
-
-# This is needed for qlty to authenticate with OIDC
-# https://docs.qlty.sh/coverage/quickstart#github-actions
 permissions:
   contents: read
   id-token: write
 
 env:
   workingDirectory: services/121-service/
-  EXTERNAL_121_SERVICE_URL: http://localhost:3000 # Add the missing environment variable
+  EXTERNAL_121_SERVICE_URL: http://localhost:3000
 
 jobs:
   path-filter:
@@ -31,14 +23,12 @@ jobs:
       should_skip: ${{ steps.filter.outputs.should_skip }}
     steps:
       - uses: actions/checkout@v5
-        # Other events (from the merge-queue) can safely ignore the path-filter; Its output would default to 'NOT true'
         if: github.event_name == 'pull_request'
         with:
-          filter: blob:none # Reduce clone size/speed
-          fetch-depth: 0 # Full history is needed to determine the "changed files in this PR"
+          filter: blob:none
+          fetch-depth: 0
 
       - uses: leavesster/pull-request-path-filter@v0.2
-        # Other events (from the merge-queue) can safely ignore the path-filter; Its output would default to 'NOT true'
         if: github.event_name == 'pull_request'
         id: 'filter'
         with:
@@ -50,15 +40,10 @@ jobs:
             - services/mock-service/**
             - '!**.md'
 
-  test-shard:
+  performance-tests:
     runs-on: ubuntu-latest
     needs: path-filter
     if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: ['1', '2', '3', '4']
-        shardCount: ['4']
     steps:
       - name: Check out repository code
         uses: actions/checkout@v5
@@ -67,15 +52,6 @@ jobs:
         run: |
           cp ./services/.env.example services/.env
           grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
-          # override the default value for COVERAGE_DEV_STARTUP_SUFFIX from .env.example
-          # this is needed to collect coverage data during integration tests
-          echo "COVERAGE_DEV_STARTUP_SUFFIX=:collect-coverage" >> $GITHUB_ENV
-          # Set different duplicate numbers based on trigger type
-          if [ "${{ github.event_name }}" = "schedule" ]; then
-            echo "DUPLICATE_NUMBER_BASE=15" >> $GITHUB_ENV
-          else
-            echo "DUPLICATE_NUMBER_BASE=5" >> $GITHUB_ENV
-          fi
 
       - name: Run Services with Docker
         run: |
@@ -85,50 +61,35 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: |
           # Run different tests with different duplicate numbers
-          DUPLICATE_NUMBER=15 docker compose exec 121-service npm run test:integration:all -t BulkUpdate32kRegistrations.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
-          DUPLICATE_NUMBER=17 docker compose exec 121-service npm run test:integration:all -t FindDuplicates100kRegistrations.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
-          DUPLICATE_NUMBER=5 docker compose exec 121-service npm run test:integration:all -t GetProgramWithManyAttributes.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
-          DUPLICATE_NUMBER=17 docker compose exec 121-service npm run test:integration:all -t Payment100kRegistrationIntersolveVisa.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
-          DUPLICATE_NUMBER=17 docker compose exec 121-service npm run test:integration:all -t Payment100kRegistrationSafaricom.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
-          DUPLICATE_NUMBER=15 docker compose exec 121-service npm run test:integration:all -t PerformanceDuringPayment.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
-          DUPLICATE_NUMBER=15 docker compose exec 121-service npm run test:integration:all -t StatusChangePaymentInLargeProgram.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
-          docker compose exec 121-service npm run test:integration:all -t Import1000Registrations.test.ts --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
-
-      # For more info, see TODO: README.md
-      - name: Generate lcov report from 121-service
-        working-directory: ${{ env.workingDirectory }}
-        run: |
-          curl -d '{"secret":"fill_in_secret"}' -H "Content-Type: application/json" -X POST '${{ env.EXTERNAL_121_SERVICE_URL }}/api/test/kill-service' || true
-          docker compose exec 121-service npm run coverage:report:integration
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: integration-test-coverage-report-${{ matrix.shard }}
-          path: |
-            ${{ env.workingDirectory }}coverage
+          docker compose exec -e DUPLICATE_NUMBER=15 121-service npm run test:integration:all -t BulkUpdate32kRegistrations.test.ts
+          docker compose exec -e DUPLICATE_NUMBER=17 121-service npm run test:integration:all -t FindDuplicates100kRegistrations.test.ts
+          docker compose exec -e DUPLICATE_NUMBER=5 121-service npm run test:integration:all -t GetProgramWithManyAttributes.test.ts
+          docker compose exec -e DUPLICATE_NUMBER=17 121-service npm run test:integration:all -t Payment100kRegistrationIntersolveVisa.test.ts
+          docker compose exec -e DUPLICATE_NUMBER=17 121-service npm run test:integration:all -t Payment100kRegistrationSafaricom.test.ts
+          docker compose exec -e DUPLICATE_NUMBER=15 121-service npm run test:integration:all -t PerformanceDuringPayment.test.ts
+          docker compose exec -e DUPLICATE_NUMBER=15 121-service npm run test:integration:all -t StatusChangePaymentInLargeProgram.test.ts
+          docker compose exec 121-service npm run test:integration:all -t Import1000Registrations.test.ts
 
       - name: Docker logs
         if: always()
         uses: jwalton/gh-docker-logs@v2
 
-  # This job is here to make the above jobs "required" in GitHub.
-  # This is a workaround for this issue: https://github.com/orgs/community/discussions/44490
-  test-shard-resolution-api:
+  notify-results:
     runs-on: ubuntu-latest
-    needs: [test-shard]
+    needs: [performance-tests]
     if: always()
     steps:
-      - name: Check required job results - FAILURE
+      - name: Check test results - FAILURE
         if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
         run: |
-          echo "Some checks have failed." >> $GITHUB_STEP_SUMMARY
+          echo "Performance tests have failed." >> $GITHUB_STEP_SUMMARY
           echo "Test results: ${{ toJson(needs.*.result) }}" >> $GITHUB_STEP_SUMMARY
           exit 1
 
-      - name: Check required job results - SUCCESS
+      - name: Check test results - SUCCESS
         if: ${{ !(contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')) }}
         run: |
-          echo "All required checks have successfully passed." >> $GITHUB_STEP_SUMMARY
+          echo "All performance tests have successfully passed." >> $GITHUB_STEP_SUMMARY
           echo "Test results: ${{ toJson(needs.*.result) }}" >> $GITHUB_STEP_SUMMARY
 
       - name: Microsoft Teams Notification
