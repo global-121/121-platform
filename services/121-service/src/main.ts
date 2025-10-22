@@ -1,20 +1,18 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { apiReference } from '@scalar/nestjs-api-reference';
 import * as bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import { Request, Response } from 'express';
-import fs, { writeFileSync } from 'fs';
+import fs from 'fs';
 import { SpelunkerModule } from 'nestjs-spelunker';
 
 import { ApplicationModule } from '@121-service/src/app.module';
 import {
-  APP_FAVICON,
   APP_TITLE,
   APP_VERSION,
   IS_DEVELOPMENT,
-  SWAGGER_CUSTOM_CSS,
-  SWAGGER_CUSTOM_JS,
 } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
@@ -67,54 +65,6 @@ function generateModuleDependencyGraph(app: INestApplication): void {
   });
 }
 
-interface MethodInfo {
-  method: string;
-  path: string;
-  params: string[];
-  returnType?: string;
-}
-
-function generateSwaggerSummaryJson(app: INestApplication<any>): void {
-  const options = new DocumentBuilder()
-    .setTitle(APP_TITLE)
-    .setVersion(APP_VERSION)
-    .build();
-  const openApiDocument = SwaggerModule.createDocument(app, options);
-
-  const summaryDocument: MethodInfo[] = [];
-
-  for (const path in openApiDocument.paths) {
-    for (const method in openApiDocument.paths[path]) {
-      const methodInfo = openApiDocument.paths[path][method];
-      const returnType =
-        methodInfo.responses['200']?.content?.['application/json']?.schema?.$ref
-          ?.split('/')
-          .pop() ||
-        methodInfo.responses['201']?.content?.['application/json']?.schema?.$ref
-          ?.split('/')
-          .pop();
-
-      const params =
-        methodInfo.parameters?.map((param: any) => param.name) || [];
-
-      const methodInfoObject: MethodInfo = {
-        method,
-        path,
-        params,
-      };
-
-      if (returnType) {
-        methodInfoObject.returnType = returnType;
-      }
-
-      summaryDocument.push(methodInfoObject);
-    }
-  }
-
-  const document = JSON.stringify(summaryDocument, null, 2);
-  writeFileSync('swagger.json', document);
-}
-
 async function bootstrap(): Promise<void> {
   console.warn(`Bootstrapping ${APP_TITLE} - ${APP_VERSION}`);
 
@@ -144,35 +94,21 @@ async function bootstrap(): Promise<void> {
 
   app.setGlobalPrefix('api');
 
-  const options = new DocumentBuilder()
-    .setTitle(APP_TITLE)
-    .setVersion(APP_VERSION)
-    .addServer(env.EXTERNAL_121_SERVICE_URL)
+  const config = new DocumentBuilder()
+    .setTitle('121')
+    .setDescription('The 121 API description')
+    .setVersion('1.0')
+    .addTag('121')
     .build();
 
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('/docs', app, document, {
-    customSiteTitle: APP_TITLE,
-    customfavIcon: APP_FAVICON,
-    customCss: SWAGGER_CUSTOM_CSS,
-    customJsStr: SWAGGER_CUSTOM_JS,
-    swaggerOptions: {
-      // See: https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md
-      deepLinking: true,
-      defaultModelExpandDepth: 10,
-      defaultModelsExpandDepth: 1,
-      displayOperationId: IS_DEVELOPMENT,
-      displayRequestDuration: true,
-      filter: false,
-      operationsSorter: 'alpha',
-      persistAuthorization: IS_DEVELOPMENT,
-      queryConfigEnabled: IS_DEVELOPMENT,
-      showCommonExtensions: true,
-      showExtensions: true,
-      tagsSorter: 'alpha',
-      tryItOutEnabled: IS_DEVELOPMENT,
-    },
-  });
+  const document = SwaggerModule.createDocument(app, config);
+
+  app.use(
+    '/docs',
+    apiReference({
+      content: document,
+    }),
+  );
 
   app.useGlobalPipes(new ValidationPipe(ValidationPipeOptions));
   app.use(bodyParser.json({ limit: '25mb' }));
@@ -189,7 +125,6 @@ async function bootstrap(): Promise<void> {
 
   if (IS_DEVELOPMENT) {
     generateModuleDependencyGraph(app);
-    generateSwaggerSummaryJson(app);
   }
 
   // Set up generic error handling:
