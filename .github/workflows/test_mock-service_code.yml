@@ -54,7 +54,7 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: |
           mkdir -p test-results
-          npm run test -- --json --outputFile=test-results/mock-service-tests.json || true
+          npm run test -- --json --outputFile=test-results/mock-service-tests.json
 
       - name: Upload mock service test results
         uses: actions/upload-artifact@v4

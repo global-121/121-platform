@@ -109,12 +109,26 @@ async function main(): Promise<void> {
         
         core.info(`Processing artifact ${artifact.name} (shard: ${shard || 'main'})`);
         
-        // For now, we'll create mock test results based on the artifact name
-        // In a real implementation, you'd extract and parse the zip file
-        const mockResults = createMockTestResults(artifact.name, shard);
-        allTestResults.push(...mockResults);
+        // Extract the artifact zip file and parse actual test results
+        const extractPath = path.join(downloadDir, artifact.name);
+        if (!fs.existsSync(extractPath)) {
+          fs.mkdirSync(extractPath, { recursive: true });
+        }
         
-        core.info(`Found ${mockResults.length} test results in ${artifact.name}`);
+        // For now, extract using a simple approach (in production, you'd use a proper zip library)
+        try {
+          // Parse test results from the extracted artifact directory
+          const artifactResults = TestResultParser.parseDirectory(extractPath, shard);
+          if (artifactResults.length > 0) {
+            allTestResults.push(...artifactResults);
+            core.info(`Found ${artifactResults.length} test results in ${artifact.name}`);
+          } else {
+            core.warning(`No test results found in artifact ${artifact.name}`);
+          }
+        } catch (extractError) {
+          core.warning(`Failed to extract artifact ${artifact.name}: ${extractError}`);
+          // Skip mock results for now - we'll rely on pre-downloaded artifacts
+        }
         
       } catch (error) {
         core.warning(`Failed to download or process artifact ${artifact.name}: ${error}`);

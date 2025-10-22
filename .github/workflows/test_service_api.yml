@@ -78,7 +78,7 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: |
           docker compose exec 121-service mkdir -p test-results
-          docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }} --json --outputFile=test-results/integration-shard-${{ matrix.shard }}.json || true
+          docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }} --json --outputFile=test-results/integration-shard-${{ matrix.shard }}.json
 
       # For more info, see services/121-service/README.md#Integration-test-coverage
       - name: Generate lcov report from 121-service
@@ -145,7 +145,7 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: |
           mkdir -p test-results
-          npm run test:unit:coverage -- --json --outputFile=test-results/unit-tests.json || true
+          npm run test:unit:coverage -- --json --outputFile=test-results/unit-tests.json
 
       - uses: actions/upload-artifact@v4
         with:
