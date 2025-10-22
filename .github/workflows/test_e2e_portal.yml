@@ -150,6 +150,18 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           include-passing: 'false'
+        continue-on-error: true
+
+      - name: Debug aggregation results
+        if: always()
+        run: |
+          echo "Aggregation step completed with status: ${{ steps.aggregate.outcome }}"
+          if [ -f "test-results-summary.md" ]; then
+            echo "Summary file found:"
+            cat test-results-summary.md
+          else
+            echo "No summary file found"
+          fi
 
       - name: Check required job results
         if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
