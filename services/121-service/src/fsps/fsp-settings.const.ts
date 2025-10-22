@@ -8,6 +8,7 @@ import { FspDto } from '@121-service/src/fsps/fsp.dto';
 
 // Attributes are the programRegistrationAttributes that are required for a registration to have a program fsp configuration with the fsp
 // Configuration properties are the program financial service configuration properties that are required for the fsp to be able to send a payment
+// The order of the configuration properties define the order in which they are displayed in the UI to add/edit a program fsp configuration
 export const FSP_SETTINGS: Record<Fsps, FspDto> = {
   [Fsps.excel]: {
     name: Fsps.excel,
@@ -18,12 +19,12 @@ export const FSP_SETTINGS: Record<Fsps, FspDto> = {
     attributes: [],
     configurationProperties: [
       {
-        name: FspConfigurationProperties.columnsToExport,
-        isRequired: false,
-      },
-      {
         name: FspConfigurationProperties.columnToMatch,
         isRequired: true,
+      },
+      {
+        name: FspConfigurationProperties.columnsToExport,
+        isRequired: false,
       },
     ],
   },
@@ -92,11 +93,11 @@ export const FSP_SETTINGS: Record<Fsps, FspDto> = {
     ],
     configurationProperties: [
       {
-        name: FspConfigurationProperties.password,
+        name: FspConfigurationProperties.username,
         isRequired: true,
       },
       {
-        name: FspConfigurationProperties.username,
+        name: FspConfigurationProperties.password,
         isRequired: true,
       },
     ],
@@ -110,11 +111,11 @@ export const FSP_SETTINGS: Record<Fsps, FspDto> = {
     attributes: [],
     configurationProperties: [
       {
-        name: FspConfigurationProperties.password,
+        name: FspConfigurationProperties.username,
         isRequired: true,
       },
       {
-        name: FspConfigurationProperties.username,
+        name: FspConfigurationProperties.password,
         isRequired: true,
       },
     ],
@@ -169,11 +170,11 @@ export const FSP_SETTINGS: Record<Fsps, FspDto> = {
     ],
     configurationProperties: [
       {
-        name: FspConfigurationProperties.password,
+        name: FspConfigurationProperties.username,
         isRequired: true,
       },
       {
-        name: FspConfigurationProperties.username,
+        name: FspConfigurationProperties.password,
         isRequired: true,
       },
     ],

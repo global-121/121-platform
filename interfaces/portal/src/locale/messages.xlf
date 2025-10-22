@@ -1895,9 +1895,6 @@
       <trans-unit id="2409672154570643758" datatype="html">
         <source>Display name</source>
       </trans-unit>
-      <trans-unit id="3366674803315613002" datatype="html">
-        <source>Column to match</source>
-      </trans-unit>
       <trans-unit id="3443268590750127257" datatype="html">
         <source>Unique key</source>
       </trans-unit>
@@ -1999,6 +1996,12 @@
       </trans-unit>
       <trans-unit id="remove-fsp" datatype="html">
         <source>Remove FSP</source>
+      </trans-unit>
+      <trans-unit id="5493925311905255309" datatype="html">
+        <source>Import registration data to select columns</source>
+      </trans-unit>
+      <trans-unit id="7457873139064677422" datatype="html">
+        <source>Field for identifying registrations</source>
       </trans-unit>
     </body>
   </file>

@@ -38,4 +38,17 @@
       autocomplete="off"
     />
   }
+  <ng-container slot="details">
+    @if (
+      fieldType() === 'select-attribute' ||
+      fieldType() === 'select-attributes-multiple'
+    ) {
+      <p
+        i18n
+        class="text-grey-500 txt-system-s mt-1"
+      >
+        Import registration data to select columns
+      </p>
+    }
+  </ng-container>
 </app-form-field-wrapper>
