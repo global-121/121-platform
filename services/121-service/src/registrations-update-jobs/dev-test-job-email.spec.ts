@@ -65,12 +65,8 @@ describe('RegistrationsUpdateJobsService - integration with real email', () => {
       request: { userId: 1, scope: '' },
     };
 
-    // This will make a real email request if env vars are configured
     await expect(
       registrationsUpdateJobsService.processRegistrationsUpdateJob(job),
     ).resolves.not.toThrow();
-
-    // Log success message if email was sent
-    console.log('✅ Integration test completed - check your email inbox!');
   });
 });

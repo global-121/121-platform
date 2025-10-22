@@ -18,7 +18,7 @@ export class UserEmailsService {
     userEmailTemplateType: UserEmailTemplateType,
     userEmailTemplateInput: UserEmailTemplateInput,
   ): EmailData {
-    const { email } = userEmailTemplateInput;
+    const { email, attachment } = userEmailTemplateInput;
 
     const template: UserEmailTemplate =
       this.userEmailTemplatesService.buildUserEmailTemplate(
@@ -30,6 +30,7 @@ export class UserEmailsService {
       email,
       subject: template.subject,
       body: template.body,
+      attachment,
     };
 
     return userEmailData;
