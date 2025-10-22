@@ -52,7 +52,7 @@ describe('Measure performance during payment', () => {
     // Do payment
     const doPaymentResponse = await doPayment({
       programId: programIdOCW,
-      amount,
+      transferValue: amount,
       referenceIds: [],
       accessToken,
     });

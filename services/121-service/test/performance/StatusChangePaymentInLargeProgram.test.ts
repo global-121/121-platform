@@ -107,14 +107,14 @@ describe('Status Change Payment In Large Program', () => {
       programId: programIdOCW,
       referenceIds: [],
       accessToken,
-      amount,
+      transferValue: amount,
       filter: { dryRun: 'true' },
     });
     expect(paymentDryRunResponse.statusCode).toBe(HttpStatus.OK);
     // Do payment
     const doPaymentResponse = await doPayment({
       programId: programIdOCW,
-      amount,
+      transferValue: amount,
       referenceIds: [],
       accessToken,
     });

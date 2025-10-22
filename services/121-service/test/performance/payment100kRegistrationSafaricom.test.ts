@@ -77,7 +77,7 @@ describe('Do payment for 100k registrations with Safaricom within expected range
     // Do payment
     const doPaymentResponse = await doPayment({
       programId: programIdSafaricom,
-      amount,
+      transferValue: amount,
       referenceIds: [],
       accessToken,
     });
