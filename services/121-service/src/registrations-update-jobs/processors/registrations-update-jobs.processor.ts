@@ -15,13 +15,8 @@ export class RegistrationsUpdateJobsProcessor {
 
   @Process(ProcessNameRegistration.update)
   public async handleUpdate(job: Job): Promise<void> {
-    const result =
-      await this.registrationsUpdateJobsService.processRegistrationsUpdateJob(
-        job.data,
-      );
-
-    await this.registrationsUpdateJobsService.handleJobCompletion(
-      result,
+    console.log('JOB: ', job.data);
+    await this.registrationsUpdateJobsService.processRegistrationsUpdateJob(
       job.data,
     );
   }

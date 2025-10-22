@@ -19,8 +19,19 @@ export class RegistrationsUpdateJobsService {
 
   public async processRegistrationsUpdateJob(
     job: RegistrationsUpdateJobDto,
+  ): Promise<void> {
+    const failedResults: RegistrationsUpdateJobDto['data'] =
+      await this.updateRegistrations(job);
+
+    if (failedResults.length > 0) {
+      await this.sendValidationFailureEmail(failedResults, job.request.userId);
+    }
+  }
+
+  private async updateRegistrations(
+    job: RegistrationsUpdateJobDto,
   ): Promise<RegistrationsUpdateJobDto['data']> {
-    const results: RegistrationsUpdateJobDto['data'] = [];
+    const failedResults: RegistrationsUpdateJobDto['data'] = [];
 
     for (const record of job.data) {
       const dto: UpdateRegistrationDto = {
@@ -29,41 +40,26 @@ export class RegistrationsUpdateJobsService {
       };
 
       try {
-        const result =
-          await this.registrationsService.validateInputAndUpdateRegistration({
-            programId: job.programId,
-            referenceId: record.referenceId as string,
-            updateRegistrationDto: dto,
-            userId: job.request.userId,
-          });
-        if (result) {
-          results.push({ ...record, error: undefined });
-        }
+        await this.registrationsService.validateInputAndUpdateRegistration({
+          programId: job.programId,
+          referenceId: record.referenceId as string,
+          updateRegistrationDto: dto,
+          userId: job.request.userId,
+        });
       } catch (error) {
-        results.push({
+        failedResults.push({
           ...record,
           error: error instanceof Error ? error.message : String(error),
         });
       }
     }
 
-    return results;
+    return failedResults;
   }
 
-  public async handleJobCompletion(
-    results: RegistrationsUpdateJobDto['data'],
-    jobData: RegistrationsUpdateJobDto,
-  ): Promise<void> {
-    const failedResults = results.filter((result) => result.error);
-
-    if (failedResults.length > 0) {
-      await this.sendValidationFailureNotification(failedResults, jobData);
-    }
-  }
-
-  private async sendValidationFailureNotification(
+  private async sendValidationFailureEmail(
     failedResults: RegistrationsUpdateJobDto['data'],
-    jobData: RegistrationsUpdateJobDto,
+    userId: RegistrationsUpdateJobDto['request']['userId'],
   ): Promise<void> {
     const csvHeader = 'referenceId, error\n';
     const csvRows = failedResults
@@ -71,7 +67,7 @@ export class RegistrationsUpdateJobsService {
       .join('\n');
     const csvContent = csvHeader + csvRows;
 
-    const user = await this.userService.findById(jobData.request.userId);
+    const user = await this.userService.findById(userId);
 
     if (!user || !user.username) {
       throw new Error(
