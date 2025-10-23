@@ -91,4 +91,37 @@ describe('RegistrationsUpdateJobsService - integration with real email', () => {
       }),
     ).resolves.not.toThrow();
   });
+
+  it('should send a real email with attachment', async () => {
+    if (!env.MY_EMAIL_ADDRESS) {
+      console.log('Skipping real email test - MY_EMAIL_ADDRESS not set');
+      return;
+    }
+
+    const csvHeader = 'referenceId, error\n';
+    const csvRows = [
+      { referenceId: 1, errorMessage: 'Sample error message' },
+      { referenceId: 2, errorMessage: 'Another error message' },
+    ]
+      .map((record) => `${record.referenceId}, ${record.errorMessage}`)
+      .join('\n');
+    const contentBytes = Buffer.from(csvHeader + csvRows, 'utf8').toString(
+      'base64',
+    );
+
+    const attachment = {
+      name: 'test.csv',
+      contentBytes,
+    };
+    await expect(
+      userEmailsService.sendUserEmail({
+        userEmailTemplateInput: {
+          email: env.MY_EMAIL_ADDRESS,
+          displayName: 'Test User',
+          attachment,
+        },
+        userEmailTemplateType: UserEmailTemplateType.importValidationFailed,
+      }),
+    ).resolves.not.toThrow();
+  });
 });
