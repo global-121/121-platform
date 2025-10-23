@@ -292,7 +292,7 @@ export class RegistrationsTableColumnService {
             if (registration[column.field]) {
               return registration[column.field] as string;
             } else {
-              return '0'; // default numeric values to 0
+              return ''; // no value should be shown as empty string
             }
           };
         }
