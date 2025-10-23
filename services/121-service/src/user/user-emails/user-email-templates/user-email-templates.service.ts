@@ -5,6 +5,7 @@ import { UserEmailTemplateInput } from '@121-service/src/user/user-emails/interf
 import { UserEmailTemplate } from '@121-service/src/user/user-emails/user-email-templates/interfaces/user-email-template.interface';
 import { buildTemplateAccountcreated } from '@121-service/src/user/user-emails/user-email-templates/templates/account-created.template';
 import { buildTemplateAccountCreatedSSO } from '@121-service/src/user/user-emails/user-email-templates/templates/account-created-sso.template';
+import { buildTemplateImportValidationFailed } from '@121-service/src/user/user-emails/user-email-templates/templates/import-validation-failed';
 import { buildTemplatePasswordReset } from '@121-service/src/user/user-emails/user-email-templates/templates/password-reset.template';
 import { stripHtmlTags } from '@121-service/src/utils/strip-html-tags.helper';
 
@@ -33,6 +34,11 @@ export class UserEmailTemplatesService {
       case UserEmailTemplateType.passwordReset:
         emailTemplate = buildTemplatePasswordReset(
           sanitizedUserEmailTemplateInput,
+        );
+        break;
+      case UserEmailTemplateType.importValidationFailed:
+        emailTemplate = buildTemplateImportValidationFailed(
+          userEmailTemplateInput,
         );
         break;
       default:

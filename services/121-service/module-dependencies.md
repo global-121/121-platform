@@ -129,6 +129,9 @@ graph LR
   RegistrationsModule-->RegistrationEventsModule
   RegistrationsModule-->RegistrationUtilsModule
   RegistrationsModule-->UserModule
+  RegistrationsUpdateJobsModule-->RegistrationsModule
+  RegistrationsUpdateJobsModule-->UserEmailsModule
+  RegistrationsUpdateJobsModule-->UserModule
   SafaricomModule-->QueuesRegistryModule
   SafaricomModule-->RedisModule
   SafaricomReconciliationModule-->QueuesRegistryModule

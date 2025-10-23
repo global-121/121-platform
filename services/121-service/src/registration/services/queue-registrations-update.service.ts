@@ -13,7 +13,7 @@ export class QueueRegistrationUpdateService {
     private readonly queuesService: QueuesRegistryService,
   ) {}
 
-  public async addRegistrationUpdateToQueue(
+  public async addRegistrationsUpdateToQueue(
     job: Omit<RegistrationsUpdateJobDto, 'request'>,
   ): Promise<void> {
     // UsedId has to be defined, else there would have been an auth error
