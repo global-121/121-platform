@@ -94,11 +94,18 @@ export class QueryTableColumnManagementComponent<
   }
 
   onFormSubmit(): void {
-    const { selectedColumns } = this.formGroup.getRawValue();
+    let { selectedColumns } = this.formGroup.getRawValue();
     if (selectedColumns.length === 0) {
       this.formError.set($localize`At least one column must be selected`);
       return;
     }
+
+    // update `selectedColumns` so the columns always appear in the same order in the table
+    selectedColumns = this.columns().filter((col) =>
+      selectedColumns
+        .map((selectedCol) => selectedCol.field)
+        .includes(col.field),
+    );
 
     const visibleFieldNames = this.getFieldNameList(this.visibleColumns());
     const selectedFieldNames = this.getFieldNameList(selectedColumns);
