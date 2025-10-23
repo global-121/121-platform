@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, Relation } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne, Relation } from 'typeorm';
 
 import { ActionEntity } from '@121-service/src/actions/action.entity';
 import { Base121Entity } from '@121-service/src/base.entity';
@@ -8,6 +8,7 @@ import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
+import { KoboEntity } from '@121-service/src/programs/kobo/enitities/kobo.entity';
 import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attachments/program-attachment.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -125,4 +126,7 @@ export class ProgramEntity extends Base121Entity {
     (attachments) => attachments.program,
   )
   public attachments: Relation<ProgramAttachmentEntity[]>;
+
+  @OneToOne(() => KoboEntity, (kobo) => kobo.program, { onDelete: 'SET NULL' })
+  public kobo: Relation<KoboEntity>;
 }
