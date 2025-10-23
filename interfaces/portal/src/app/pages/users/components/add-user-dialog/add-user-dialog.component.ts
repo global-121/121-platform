@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -24,6 +23,7 @@ import { InputTextModule } from 'primeng/inputtext';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
+import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { UserApiService } from '~/domains/user/user.api.service';
 import { User } from '~/domains/user/user.model';
 import { ToastService } from '~/services/toast.service';
@@ -40,7 +40,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
     FormFieldWrapperComponent,
     InputTextModule,
     ReactiveFormsModule,
-    NgTemplateOutlet,
+    ManualLinkComponent,
   ],
 })
 export class AddUserDialogComponent {

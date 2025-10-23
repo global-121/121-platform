@@ -1,0 +1,84 @@
+<app-card-with-link
+  class="relative"
+  [title]="fspConfigurationLabel()"
+  (cardClicked)="reconfigureFsp.emit(configuration())"
+  [image]="fspImage()"
+  subtitle="Click to reconfigure"
+  i18n-subtitle
+>
+  <ng-container card-content>
+    <app-ellipsis-menu [menuItems]="menuItems()" />
+
+    <p
+      i18n
+      class="mt-4 font-bold"
+    >
+      FSP notes
+    </p>
+
+    @if (requiredRegistrationAttributes().length > 0) {
+      <p
+        i18n
+        class="mb-4"
+      >
+        Your form must include the following required fields in this
+        <b>exact format</b>
+        for this FSP integration in the data column name:
+      </p>
+      <p-table [value]="requiredRegistrationAttributes()">
+        <ng-template #header>
+          <tr>
+            <th
+              i18n
+              class="txt-body-s text-grey-700 font-semibold uppercase"
+            >
+              Question
+            </th>
+            <th
+              i18n
+              class="txt-body-s text-grey-700 font-semibold uppercase"
+            >
+              Data column name
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template
+          #body
+          let-attribute
+        >
+          <tr>
+            <td>{{ attribute.label }}</td>
+            <td>
+              {{ attribute.name }}
+              <p-button
+                icon="pi pi-copy"
+                (click)="copyToClipboard(attribute.name)"
+                text
+                rounded
+                ariaLabel="Copy to clipboard"
+                i18n-ariaLabel
+              />
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    } @else {
+      <p i18n>There are no specific fields needed for this integration</p>
+    }
+  </ng-container>
+</app-card-with-link>
+
+<app-form-dialog
+  #deleteConfigurationDialog
+  [header]="deleteConfigurationDialogHeader()"
+  headerIcon="pi pi-trash"
+  proceedLabel="Remove FSP"
+  i18n-proceedLabel="@@remove-fsp"
+  [mutation]="deleteConfigurationMutation"
+  [mutationData]="undefined"
+  i18n
+>
+  You're about to remove the "{{ fspConfigurationLabel() }}" FSP configuration
+  from your project. Payments with this FSP will not go through, Registrations
+  with this FSP will not be paid unless changed to an integrated FSP.
+</app-form-dialog>

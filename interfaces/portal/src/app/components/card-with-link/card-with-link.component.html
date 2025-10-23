@@ -1,22 +1,43 @@
 <p-card
-  styleClass="[&_.p-card-content]:flex-end group shadow-clickable-cards relative h-full border border-transparent transition-colors *:h-full focus-within:border-purple-500 hover:border-purple-500 [&_.p-card-title]:flex-grow"
+  styleClass="[&_.p-card-content]:flex-end group shadow-clickable-cards relative h-full border border-transparent transition-colors *:h-full focus-within:border-purple-500 hover:border-purple-500 [&_.p-card-title]:flex-grow [&_.p-card-title]:ps-0"
 >
   <ng-template pTemplate="title">
-    <a
-      [routerLink]="href()"
-      class="group-focus-within:text-purple group-hover:text-purple transition-colors after:absolute after:inset-0 after:block"
-    >
-      @if (loading()) {
-        <app-skeleton-inline />
-      } @else {
-        <span
-          class="line-clamp-2 text-ellipsis"
-          [title]="title()"
-        >
-          {{ title() }}
-        </span>
+    <div class="flex flex-row items-center">
+      @if (image()) {
+        <div class="ms-1 me-5 w-24">
+          <img
+            [src]="image()"
+            alt=""
+            aria-hidden="true"
+            role="presentation"
+            class="mx-auto h-14 object-contain"
+          />
+        </div>
       }
-    </a>
+      <div>
+        <a
+          [routerLink]="href()"
+          (click)="cardClicked.emit()"
+          class="group-focus-within:text-purple group-hover:text-purple cursor-pointer transition-colors after:absolute after:inset-0 after:block"
+        >
+          @if (loading()) {
+            <app-skeleton-inline />
+          } @else {
+            <span
+              class="line-clamp-2 text-ellipsis"
+              [title]="title()"
+            >
+              {{ title() }}
+            </span>
+          }
+        </a>
+        @if (subtitle()) {
+          <div class="txt-body-m font-normal">
+            {{ subtitle() }}
+          </div>
+        }
+      </div>
+    </div>
   </ng-template>
   <ng-template pTemplate="content">
     <ng-content select="[card-content]"></ng-content>

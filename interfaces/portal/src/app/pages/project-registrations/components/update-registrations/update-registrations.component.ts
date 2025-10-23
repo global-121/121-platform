@@ -33,6 +33,7 @@ import {
   ImportFileDialogComponent,
   ImportFileDialogFormGroup,
 } from '~/components/import-file-dialog/import-file-dialog.component';
+import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { Registration } from '~/domains/registration/registration.model';
@@ -58,6 +59,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
     InputTextModule,
     CheckboxModule,
     FormErrorComponent,
+    ManualLinkComponent,
   ],
   templateUrl: './update-registrations.component.html',
   styles: ``,

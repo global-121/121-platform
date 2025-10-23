@@ -25,24 +25,12 @@
       >{{ exportSelectedActionData()?.count }} selected registration(s)</strong
     >.
   </p>
-  <ng-template #manualLink>
-    <a
-      href="https://manual.121.global/"
-      target="_blank"
-      title="Opens in a new window"
-      i18n-title="@@generic-opens-in-new-window"
-      class="p-button p-button-link gap-1"
-      ><span i18n="@@generic-121-manual-title">121 Manual</span>
-      <span class="p-button-icon pi pi-external-link text-sm"></span
-    ></a>
-  </ng-template>
   <p
     class="mt-2"
     i18n
   >
     Only the columns that are currently visible in the table will be included.
-    You can learn how to show or hide columns in the
-    <ng-container [ngTemplateOutlet]="manualLink"></ng-container>.
+    You can learn how to show or hide columns in the <app-manual-link />.
   </p>
 
   <strong

@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -27,6 +26,7 @@ import { SelectModule } from 'primeng/select';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
+import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { ProjectUserWithRolesLabel } from '~/domains/project/project.model';
 import { RoleApiService } from '~/domains/role/role.api.service';
@@ -47,7 +47,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
     MultiSelectModule,
     InputTextModule,
     ReactiveFormsModule,
-    NgTemplateOutlet,
+    ManualLinkComponent,
   ],
 })
 export class AddProjectTeamUserDialogComponent {
