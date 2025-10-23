@@ -40,7 +40,10 @@ const createProjectAttribute = (
   name: string,
 ): AttributeWithTranslatedLabel => ({
   name,
-  label: 'label',
+  label: {
+    en: 'label',
+  },
+  translatedLabel: 'label',
   type: RegistrationAttributeTypes.text,
 });
 

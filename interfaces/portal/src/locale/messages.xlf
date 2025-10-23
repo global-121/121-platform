@@ -2000,6 +2000,51 @@
       <trans-unit id="922512355272678698" datatype="html">
         <source>Learn more about updating selected registrations in the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/>.</source>
       </trans-unit>
+      <trans-unit id="1419676661357831374" datatype="html">
+        <source>Registration data</source>
+      </trans-unit>
+      <trans-unit id="3560595744015834305" datatype="html">
+        <source>Update successful.</source>
+      </trans-unit>
+      <trans-unit id="4870684362400415992" datatype="html">
+        <source>Duplication fields</source>
+      </trans-unit>
+      <trans-unit id="4958457044114658950" datatype="html">
+        <source>No attributes selected.</source>
+      </trans-unit>
+      <trans-unit id="6062854020526523813" datatype="html">
+        <source>Below are the <x equiv-text="{{ projectAttributes.data()?.length }}" id="INTERPOLATION"/> questions from the integrated Kobo form. Please edit each column name to a shorter version that will be displayed in the data table and on the profile page.</source>
+      </trans-unit>
+      <trans-unit id="6124886965308904831" datatype="html">
+        <source>An error occurred during the update.</source>
+      </trans-unit>
+      <trans-unit id="6711033592081422255" datatype="html">
+        <source>Question label</source>
+      </trans-unit>
+      <trans-unit id="8094115796114921772" datatype="html">
+        <source>An error occurred while updating the labels.</source>
+      </trans-unit>
+      <trans-unit id="809774108055144125" datatype="html">
+        <source>Select the fields you would like to use as duplication indicators - if these fields are found to match the registrations will be flagged as duplicates. Note that some FSPs may require specific fields to be unique, check for notes in the FSP page.</source>
+      </trans-unit>
+      <trans-unit id="964040539261320237" datatype="html">
+        <source>Select Attributes</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-settings-registration-data" datatype="html">
+        <source>Registration data</source>
+      </trans-unit>
+      <trans-unit id="4705747697674144692" datatype="html">
+        <source>Personal information</source>
+      </trans-unit>
+      <trans-unit id="5648292710765442159" datatype="html">
+        <source>Edit de-duplication attributes</source>
+      </trans-unit>
+      <trans-unit id="6267577653105675049" datatype="html">
+        <source>Edit personal information</source>
+      </trans-unit>
+      <trans-unit id="652894116103613049" datatype="html">
+        <source>De-duplication</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
