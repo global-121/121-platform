@@ -283,18 +283,26 @@ export class RegistrationsTableColumnService {
     columns: QueryTableColumn<Registration>[],
   ): QueryTableColumn<Registration>[] {
     return columns
-      .map((column) => ({
-        ...column,
-        defaultHidden: !DEFAULT_VISIBLE_FIELDS_SORTED.includes(column.field),
-        getCellText:
-          column.type === QueryTableColumnType.NUMERIC
-            ? (registration: Registration) =>
-                registration[column.field]
-                  ? (registration[column.field] as string)
-                  : '0' // default numeric values to 0
-            : // return undefined if not numeric type so that the default text rendering is used
-              undefined,
-      }))
+      .map((column) => {
+        // undefined indicates: use default text rendering (used for non-numeric columns).
+        let getCellText: ((registration: Registration) => string) | undefined;
+
+        if (column.type === QueryTableColumnType.NUMERIC) {
+          getCellText = (registration: Registration) => {
+            if (registration[column.field]) {
+              return registration[column.field] as string;
+            } else {
+              return '0'; // default numeric values to 0
+            }
+          };
+        }
+
+        return {
+          ...column,
+          defaultHidden: !DEFAULT_VISIBLE_FIELDS_SORTED.includes(column.field),
+          getCellText,
+        };
+      })
       .sort(this.sortColumnsByDefaultOrder.bind(this));
   }
 
