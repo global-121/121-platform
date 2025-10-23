@@ -37,7 +37,7 @@ export class UserEmailTemplatesService {
         break;
       default:
         throw new Error(
-          `Unsupported email type: ${sanitizedUserEmailTemplateInput}`,
+          `Unsupported user email template type: ${userEmailTemplateType}`,
         );
     }
 
