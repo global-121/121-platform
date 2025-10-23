@@ -7,20 +7,9 @@
   i18n-header
 >
   <ng-container pre-file-input>
-    <p>
-      <ng-container i18n
-        >Learn more about updating selected registrations in the
-      </ng-container>
-      <a
-        href="https://manual.121.global/"
-        target="_blank"
-        title="Opens in a new window"
-        i18n-title="@@generic-opens-in-new-window"
-        class="p-button p-button-link"
-      >
-        <ng-container i18n>manual</ng-container>
-        <span class="p-button-icon pi pi-external-link ms-0 text-sm"></span>
-      </a>
+    <p i18n>
+      Learn more about updating selected registrations in the
+      <app-manual-link />.
     </p>
     <div [formGroup]="exportCSVFormGroup">
       <app-form-field-wrapper

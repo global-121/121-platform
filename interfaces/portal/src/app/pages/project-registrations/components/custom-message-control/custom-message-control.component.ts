@@ -19,6 +19,7 @@ import { TextareaModule } from 'primeng/textarea';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
+import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { AttributeWithTranslatedLabel } from '~/domains/project/project.model';
 import { MessagingService } from '~/services/messaging.service';
 
@@ -31,6 +32,7 @@ import { MessagingService } from '~/services/messaging.service';
     NgClass,
     FormErrorComponent,
     MentionModule,
+    ManualLinkComponent,
   ],
   templateUrl: './custom-message-control.component.html',
   styles: ``,
