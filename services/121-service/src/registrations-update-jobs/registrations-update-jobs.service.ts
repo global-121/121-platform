@@ -1,5 +1,4 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { env } from 'process';
 
 import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
@@ -78,18 +77,12 @@ export class RegistrationsUpdateJobsService {
       );
     }
 
-    //todo: rm before merging
-    if (!env.MY_EMAIL_ADDRESS) {
-      throw new Error('MY_EMAIL_ADDRESS environment variable is not set');
-    }
-
     const contentBytes = this.formatErrorRecordsAsCsv(
       registrationUpdateErrorRecords,
     );
 
     const userEmailTemplateInput: UserEmailTemplateInput = {
-      //todo: change back to user.username before merging
-      email: env.MY_EMAIL_ADDRESS,
+      email: user.username,
       displayName: user.displayName,
       attachment: {
         name: 'failed-validations.csv',
