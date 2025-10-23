@@ -190,9 +190,7 @@
   >
     <tr
       [pContextMenuRow]="item"
-      [ngClass]="{
-        'bg-purple-50': expanded,
-      }"
+      [ngClass]="{ 'bg-purple-50': expanded }"
     >
       @if (enableSelection()) {
         <td style="width: 0">
@@ -240,8 +238,8 @@
             @let cellText = getCellText(column, item);
             @if (column.type === 'multiselect') {
               @if (column.displayAsChip) {
-                @if (column.getCellChipData) {
-                  @let chipData = column.getCellChipData(item);
+                @let chipData = column.getCellChipData?.(item);
+                @if (chipData) {
                   <app-colored-chip
                     [label]="chipData.chipLabel"
                     [variant]="chipData.chipVariant"
@@ -256,25 +254,22 @@
                 <span class="inline-flex items-center">
                   @let icon = getMultiSelectCellIcon(column, item);
                   @if (icon) {
-                    <span class="me-2 inline leading-0"
-                      ><i [ngClass]="[icon, 'mt-0.25 text-xl']"></i>
+                    <span class="me-2 inline leading-0">
+                      <i [ngClass]="[icon, 'mt-0.25 text-xl']"></i>
                     </span>
                   }
                   <span>{{ cellText }}</span>
                 </span>
               }
             } @else {
-              @let routerLink =
-                column.getCellRouterLink
-                  ? column.getCellRouterLink(item)
-                  : undefined;
-
+              @let routerLink = column.getCellRouterLink?.(item);
               @if (routerLink) {
                 <a
                   [routerLink]="routerLink"
                   class="hover:underline focus:underline"
-                  >{{ cellText }}</a
                 >
+                  {{ cellText }}
+                </a>
               } @else {
                 {{ cellText }}
               }
@@ -337,9 +332,8 @@
               <span
                 i18n
                 class="font-bold"
+                >No results found</span
               >
-                No results found
-              </span>
             </div>
 
             <p
@@ -369,9 +363,8 @@
                 <span
                   i18n
                   class="font-bold"
+                  >No results</span
                 >
-                  No results
-                </span>
               </div>
 
               <p
