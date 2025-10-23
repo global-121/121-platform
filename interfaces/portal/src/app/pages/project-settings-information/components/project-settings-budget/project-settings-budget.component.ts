@@ -79,12 +79,10 @@ export class ProjectSettingsBudgetComponent {
           fixedTransferValue,
         },
       }),
-    onSuccess: async () => {
+    onSuccess: () => {
       this.toastService.showToast({
         detail: $localize`Budget details saved successfully.`,
       });
-
-      await this.projectApiService.invalidateCache();
     },
   }));
 
