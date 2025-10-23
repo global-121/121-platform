@@ -44,6 +44,18 @@ export class PageLayoutProjectSettingsComponent {
       }),
     },
     {
+      label: $localize`FSP`,
+      icon: 'pi pi-money-bill',
+      routerLink: [
+        '/',
+        AppRoutes.project,
+        this.projectId(),
+        AppRoutes.projectSettings,
+        AppRoutes.projectSettingsFsps,
+      ],
+      visible: this.authService.isAdmin,
+    },
+    {
       label: $localize`:@@page-title-project-settings-team:Project team`,
       icon: 'pi pi-users',
       routerLink: [

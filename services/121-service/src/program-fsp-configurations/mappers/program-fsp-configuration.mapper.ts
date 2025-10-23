@@ -3,6 +3,7 @@ import {
   FspConfigurationProperties,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 import { ProgramFspConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-property-response.dto';
@@ -69,7 +70,7 @@ export class ProgramFspConfigurationMapper {
     property: ProgramFspConfigurationPropertyEntity,
   ): ProgramFspConfigurationPropertyResponseDto {
     const isVisible = FspConfigPropertyValueVisibility[property.name];
-    const value = isVisible ? property.value : '[********]';
+    const value = isVisible ? property.value : sensitivePropertyString;
     return {
       name: property.name,
       value,

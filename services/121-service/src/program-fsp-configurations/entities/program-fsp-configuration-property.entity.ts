@@ -1,4 +1,3 @@
-import { isObject } from 'lodash';
 import {
   Column,
   Entity,
@@ -25,7 +24,7 @@ export class ProgramFspConfigurationPropertyEntity extends Base121Entity {
     type: 'varchar',
     transformer: {
       to: (value: any) => {
-        if (Array.isArray(value) || isObject(value)) {
+        if (Array.isArray(value)) {
           return JSON.stringify(value);
         }
 
@@ -34,7 +33,7 @@ export class ProgramFspConfigurationPropertyEntity extends Base121Entity {
       from: (value: any) => {
         try {
           const parsedValue = JSON.parse(value);
-          if (Array.isArray(parsedValue) || isObject(parsedValue)) {
+          if (Array.isArray(parsedValue)) {
             return parsedValue;
           }
 
@@ -45,7 +44,7 @@ export class ProgramFspConfigurationPropertyEntity extends Base121Entity {
       },
     },
   })
-  public value: string | string[] | Record<string, string>;
+  public value: string | string[];
 
   @ManyToOne(
     (_type) => ProgramFspConfigurationEntity,
