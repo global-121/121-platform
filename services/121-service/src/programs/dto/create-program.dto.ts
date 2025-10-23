@@ -2,21 +2,17 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsArray,
-  IsBoolean,
-  IsDateString,
   IsDefined,
   IsEnum,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
-  IsString,
   ValidateNested,
 } from 'class-validator';
 
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
+import { BaseProgramDto } from '@121-service/src/programs/dto/base-program.dto';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
@@ -92,74 +88,16 @@ const exampleAttributes: ProgramRegistrationAttributeDto[] = [
   },
 ];
 
-export class CreateProgramDto {
-  @ApiProperty({ example: false })
-  @IsOptional()
-  @IsBoolean()
-  public readonly validation?: boolean;
-
-  @ApiProperty({ example: 'Nederland' })
-  @IsOptional()
-  @IsString()
-  public readonly location?: string;
-
-  @ApiProperty({ example: 'NLRC' })
-  @IsOptional()
-  @IsString()
-  public readonly ngo?: string;
-
+// See UpdateProgramDto for fields that differ in validation rules.
+export class CreateProgramDto extends BaseProgramDto {
   @ApiProperty({ example: { en: 'title' } })
   @IsNotEmpty()
   public readonly titlePortal: LocalizedString;
-
-  @ApiProperty({ example: { en: 'description' } })
-  @IsOptional()
-  public readonly description?: LocalizedString;
-
-  @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
-  @IsOptional()
-  @IsDateString()
-  public readonly startDate?: Date;
-
-  @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
-  @IsOptional()
-  @IsDateString()
-  public readonly endDate?: Date;
 
   @ApiProperty({ example: 'MWK' })
   @IsNotEmpty()
   @IsEnum(CurrencyCode)
   public readonly currency: WrapperType<CurrencyCode>;
-
-  @ApiProperty({ example: 'week', enum: ['week', 'month'] })
-  @IsOptional()
-  @IsString()
-  public readonly distributionFrequency?: string;
-
-  @ApiProperty({ example: 10 })
-  @IsOptional()
-  @IsNumber()
-  public readonly distributionDuration?: number;
-
-  @ApiProperty({ example: 500 })
-  @IsOptional()
-  @IsNumber()
-  public readonly fixedTransferValue?: number;
-
-  @ApiProperty({ example: '0 + 1 * nrOfHouseHoldMembers' })
-  @IsOptional()
-  @IsString()
-  public readonly paymentAmountMultiplierFormula?: string;
-
-  @ApiProperty({ example: 250 })
-  @IsOptional()
-  @IsNumber()
-  public readonly targetNrRegistrations?: number;
-
-  @ApiProperty({ example: true })
-  @IsOptional()
-  @IsBoolean()
-  public readonly tryWhatsAppFirst?: boolean;
 
   @ApiProperty({
     example: exampleAttributes,
@@ -170,42 +108,4 @@ export class CreateProgramDto {
   @IsDefined()
   @Type(() => ProgramRegistrationAttributeDto)
   public readonly programRegistrationAttributes?: ProgramRegistrationAttributeDto[];
-
-  @ApiProperty({
-    example: ['nameFirst', 'nameLast'],
-    description:
-      'Should be array of name-related program-registration-attributes.',
-  })
-  @IsOptional()
-  @IsArray()
-  public readonly fullnameNamingConvention?: string[];
-
-  @ApiProperty({ example: ['en', 'nl'] })
-  @IsOptional()
-  @IsArray()
-  public readonly languages?: WrapperType<LanguageEnum[]>;
-
-  @ApiProperty({ example: false })
-  @IsOptional()
-  @IsBoolean()
-  public readonly enableMaxPayments?: boolean;
-
-  @ApiProperty({ example: false })
-  @IsOptional()
-  @IsBoolean()
-  public readonly enableScope?: boolean;
-
-  @ApiProperty({ example: false })
-  @IsOptional()
-  @IsBoolean()
-  public readonly allowEmptyPhoneNumber?: boolean;
-
-  @ApiProperty({ example: 'example.org' })
-  @IsOptional()
-  public monitoringDashboardUrl?: string;
-
-  @ApiProperty({ example: 100000 })
-  @IsOptional()
-  @IsNumber()
-  public readonly budget?: number;
 }
