@@ -43,10 +43,7 @@ import { QueryTablePaginationService } from '~/components/query-table/services/q
 import { QueryTableRowExpansionService } from '~/components/query-table/services/query-table-row-expansion.service';
 import { QueryTableSelectionService } from '~/components/query-table/services/query-table-selection.service';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
-import {
-  PaginateQuery,
-  PaginateQueryService,
-} from '~/services/paginate-query.service';
+import { PaginateQuery } from '~/services/paginate-query.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 import {
@@ -135,13 +132,11 @@ export type QueryTableSelectionEvent<TData> = { selectAll: true } | TData[];
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
-  locale = inject<Locale>(LOCALE_ID);
-  paginateQueryService = inject(PaginateQueryService);
-  toastService = inject(ToastService);
+  readonly locale = inject<Locale>(LOCALE_ID);
   readonly rtlHelper = inject(RtlHelperService);
   readonly trackingService = inject(TrackingService);
 
-  // Injected services
+  // Local / helper services
   readonly filterService = inject(QueryTableFilterService<TData>);
   readonly selectionService = inject(QueryTableSelectionService<TData>);
   readonly rowExpansionService = inject(QueryTableRowExpansionService<TData>);
