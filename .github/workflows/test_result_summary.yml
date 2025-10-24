@@ -1,0 +1,140 @@
+name: 'Test Result Summary'
+
+on:
+  workflow_run:
+    workflows:
+      - 'Test Service: Unit & Integration Tests'
+      - 'Test Interface: Portal'
+      - 'Test: E2E (Portal)'
+      - 'Test Mock-Service: Code'
+    types:
+      - completed
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  unified-test-summary:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion != 'skipped' }}
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # Use the commit SHA from the workflow run, not main
+          ref: ${{ github.event.workflow_run.head_sha }}
+          sparse-checkout: |
+            .github/actions/aggregate-test-results
+
+      - name: Get workflow run information
+        id: workflow-info
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const workflowRun = context.payload.workflow_run;
+            
+            console.log('Workflow run details:', {
+              id: workflowRun.id,
+              name: workflowRun.name,
+              head_sha: workflowRun.head_sha,
+              conclusion: workflowRun.conclusion,
+              status: workflowRun.status,
+              pull_requests: workflowRun.pull_requests
+            });
+            
+            // Store the workflow run info for the aggregation action
+            const fs = require('fs');
+            const workflowData = {
+              id: workflowRun.id,
+              head_sha: workflowRun.head_sha,
+              head_branch: workflowRun.head_branch,
+              event: workflowRun.event,
+              status: workflowRun.status,
+              conclusion: workflowRun.conclusion,
+              workflow_id: workflowRun.workflow_id,
+              name: workflowRun.name,
+              pull_requests: workflowRun.pull_requests || []
+            };
+            
+            fs.writeFileSync('workflow-run.json', JSON.stringify(workflowData, null, 2));
+            
+            // Set outputs for later steps
+            core.setOutput('workflow-name', workflowRun.name);
+            core.setOutput('pr-number', workflowRun.pull_requests?.[0]?.number || '');
+            core.setOutput('head-sha', workflowRun.head_sha);
+            
+            return workflowData;
+
+      - name: Find related workflow runs for comprehensive summary
+        id: find-runs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const headSha = '${{ steps.workflow-info.outputs.head-sha }}';
+            const prNumber = '${{ steps.workflow-info.outputs.pr-number }}';
+            
+            console.log(`Looking for workflow runs for SHA: ${headSha}, PR: ${prNumber}`);
+            
+            // Get recent workflow runs for the same commit/PR
+            const runs = await github.rest.actions.listWorkflowRunsForRepo({
+              owner,
+              repo,
+              per_page: 50,
+              created: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString() // Last 24 hours
+            });
+            
+            // Filter runs for the same head SHA or PR
+            const relatedRuns = runs.data.workflow_runs.filter(run => {
+              const isSameSha = run.head_sha === headSha;
+              const isSamePr = prNumber && run.pull_requests?.some(pr => pr.number.toString() === prNumber);
+              const isTestWorkflow = [
+                'Test Service: Unit & Integration Tests',
+                'Test Interface: Portal', 
+                'Test: E2E (Portal)',
+                'Test Mock-Service: Code'
+              ].includes(run.name || '');
+              
+              return (isSameSha || isSamePr) && isTestWorkflow;
+            });
+            
+            console.log('Found related test workflow runs:', relatedRuns.map(r => ({
+              id: r.id,
+              name: r.name,
+              status: r.status,
+              conclusion: r.conclusion
+            })));
+            
+            // Store the run IDs for artifact collection
+            const runIds = relatedRuns.map(r => r.id);
+            const fs = require('fs');
+            fs.writeFileSync('related-runs.json', JSON.stringify(runIds, null, 2));
+            
+            return runIds;
+
+      - name: Aggregate test results from all related workflows
+        uses: ./.github/actions/aggregate-test-results
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          include-passing: 'false'
+          unified-summary: 'true'
+        env:
+          RELATED_WORKFLOW_RUNS: './related-runs.json'
+          TARGET_PR_NUMBER: ${{ steps.workflow-info.outputs.pr-number }}
+          TARGET_HEAD_SHA: ${{ steps.workflow-info.outputs.head-sha }}
+
+      - name: Upload unified test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unified-test-results-${{ github.event.workflow_run.head_sha }}
+          path: |
+            ./test-results-summary.json
+            ./test-results-summary.md
+            ./related-runs.json
+            ./workflow-run.json

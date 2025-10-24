@@ -1,13 +1,25 @@
 import { TestSummary, TestResult } from './types';
 
+interface ReportOptions {
+  includePassing?: boolean;
+  unifiedSummary?: boolean;
+}
+
 export class ReportGenerator {
+  constructor(
+    private summary: TestSummary,
+    private options: ReportOptions = {}
+  ) {}
+
   /**
-   * Generate a markdown summary of test results
+   * Generate a markdown report
    */
-  static generateMarkdownSummary(summary: TestSummary, includePassing: boolean = false): string {
-    const { totalTests, passedTests, failedTests: failedCount, skippedTests, shards } = summary;
+  generateMarkdownReport(): string {
+    const { totalTests, passedTests, failedTests: failedCount, skippedTests, shards } = this.summary;
     
-    let markdown = '## 🧪 Test Results Summary\n\n';
+    let markdown = this.options.unifiedSummary 
+      ? '## 🧪 Unified Test Results Summary\n\n'
+      : '## 🧪 Test Results Summary\n\n';
     
     // Overall stats
     const successRate = totalTests > 0 ? Math.round((passedTests / totalTests) * 100) : 0;
@@ -27,7 +39,193 @@ export class ReportGenerator {
       markdown += '\n';
     }
     
+    // Workflow breakdown for unified summaries
+    if (this.options.unifiedSummary) {
+      markdown += this.generateWorkflowBreakdown();
+    }
+    
     // Shard breakdown
+    markdown += this.generateShardBreakdown();
+    
+    // Failed tests details
+    if (failedCount > 0) {
+      markdown += this.generateFailedTestsSection();
+    }
+    
+    return markdown;
+  }
+
+  /**
+   * Generate workflow breakdown for unified summaries
+   */
+  private generateWorkflowBreakdown(): string {
+    const workflowGroups = this.groupResultsByWorkflow();
+    
+    if (Object.keys(workflowGroups).length <= 1) {
+      return ''; // No need for workflow breakdown if only one workflow
+    }
+    
+    let markdown = '### 🔀 Results by Workflow\n\n';
+    markdown += '| Workflow | Passed | Failed | Skipped | Status |\n';
+    markdown += '|----------|--------|--------|---------|--------|\n';
+    
+    for (const [workflowName, results] of Object.entries(workflowGroups)) {
+      const passed = results.filter(r => r.status === 'passed').length;
+      const failed = results.filter(r => r.status === 'failed').length;
+      const skipped = results.filter(r => r.status === 'skipped').length;
+      const status = failed > 0 ? '❌' : '✅';
+      
+      markdown += `| ${workflowName} | ${passed} | ${failed} | ${skipped} | ${status} |\n`;
+    }
+    
+    markdown += '\n';
+    return markdown;
+  }
+
+  /**
+   * Generate shard breakdown
+   */
+  private generateShardBreakdown(): string {
+    const { shards } = this.summary;
+    
+    if (Object.keys(shards).length <= 1) {
+      return ''; // No shard breakdown if no shards or only one
+    }
+    
+    let markdown = '### 🔀 Results by Shard/Job\n\n';
+    markdown += '| Shard | Runner | Passed | Failed | Skipped | Status |\n';
+    markdown += '|-------|--------|--------|--------|---------|--------|\n';
+    
+    for (const [shardName, shardData] of Object.entries(shards)) {
+      const status = shardData.failed > 0 ? '❌' : '✅';
+      markdown += `| ${shardName} | ${shardData.runner} | ${shardData.passed} | ${shardData.failed} | ${shardData.skipped} | ${status} |\n`;
+    }
+    
+    markdown += '\n';
+    return markdown;
+  }
+
+  /**
+   * Generate failed tests section
+   */
+  private generateFailedTestsSection(): string {
+    const failedTests = this.summary.results.filter(r => r.status === 'failed');
+    
+    if (failedTests.length === 0) {
+      return '';
+    }
+    
+    let markdown = '### ❌ Failed Tests\n\n';
+    
+    // Group failed tests by file
+    const fileGroups = this.groupResultsByFile(failedTests);
+    
+    for (const [file, tests] of Object.entries(fileGroups)) {
+      markdown += `#### 📄 \`${file}\`\n`;
+      
+      for (const test of tests) {
+        const shardInfo = test.shard ? ` [Shard: ${test.shard}]` : '';
+        const workflowInfo = this.options.unifiedSummary && test.artifactName 
+          ? ` [${this.getWorkflowNameFromArtifact(test.artifactName)}]` 
+          : '';
+        
+        markdown += `- **${test.name}** (${test.suiteName || 'Unknown'})${shardInfo}${workflowInfo}\n`;
+        
+        if (test.error) {
+          // Truncate long error messages
+          const errorMessage = test.error.length > 200 
+            ? `${test.error.substring(0, 200)}...` 
+            : test.error;
+          markdown += `  \`\`\`\n  ${errorMessage}\n  \`\`\`\n`;
+        }
+      }
+      
+      markdown += '\n';
+    }
+    
+    return markdown;
+  }
+
+  /**
+   * Generate JSON report
+   */
+  generateJsonReport(): any {
+    return {
+      summary: {
+        totalTests: this.summary.totalTests,
+        passedTests: this.summary.passedTests,
+        failedTests: this.summary.failedTests,
+        skippedTests: this.summary.skippedTests,
+        duration: this.summary.duration,
+      },
+      shards: this.summary.shards,
+      workflows: this.options.unifiedSummary ? this.groupResultsByWorkflow() : undefined,
+      failedTests: this.summary.results.filter(r => r.status === 'failed'),
+      timestamp: new Date().toISOString(),
+    };
+  }
+
+  /**
+   * Group results by workflow
+   */
+  private groupResultsByWorkflow(): Record<string, TestResult[]> {
+    const groups: Record<string, TestResult[]> = {};
+    
+    for (const result of this.summary.results) {
+      const workflowName = this.getWorkflowNameFromArtifact(result.artifactName || 'Unknown');
+      
+      if (!groups[workflowName]) {
+        groups[workflowName] = [];
+      }
+      
+      groups[workflowName].push(result);
+    }
+    
+    return groups;
+  }
+
+  /**
+   * Group results by file
+   */
+  private groupResultsByFile(results: TestResult[]): Record<string, TestResult[]> {
+    const groups: Record<string, TestResult[]> = {};
+    
+    for (const result of results) {
+      if (!groups[result.file]) {
+        groups[result.file] = [];
+      }
+      
+      groups[result.file].push(result);
+    }
+    
+    return groups;
+  }
+
+  /**
+   * Extract workflow name from artifact name
+   */
+  private getWorkflowNameFromArtifact(artifactName: string): string {
+    if (artifactName.includes('unit') || artifactName.includes('integration')) {
+      return 'Service Tests';
+    } else if (artifactName.includes('portal')) {
+      return 'Portal Tests';
+    } else if (artifactName.includes('e2e')) {
+      return 'E2E Tests';
+    } else if (artifactName.includes('mock')) {
+      return 'Mock Service Tests';
+    }
+    
+    return 'Unknown';
+  }
+
+  /**
+   * Legacy method for backward compatibility
+   */
+  static generateMarkdownSummary(summary: TestSummary, includePassing: boolean = false): string {
+    const generator = new ReportGenerator(summary, { includePassing });
+    return generator.generateMarkdownReport();
+  }
+}
     if (Object.keys(shards).length > 1) {
       markdown += '### 🔀 Results by Shard/Job\n\n';
       markdown += '| Shard | Runner | Passed | Failed | Skipped | Status |\n';

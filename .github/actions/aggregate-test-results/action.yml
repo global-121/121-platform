@@ -10,6 +10,9 @@ inputs:
   include-passing:
     description: 'Include passing tests in summary'
     default: 'false'
+  unified-summary:
+    description: 'Generate unified summary across multiple workflow runs'
+    default: 'false'
 outputs:
   total-tests:
     description: 'Total number of tests run'

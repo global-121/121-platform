@@ -120,18 +120,5 @@ jobs:
     needs: [test]
     if: always()
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v5
-
-      - name: Download test result artifacts
-        uses: actions/download-artifact@v5
-        with:
-          path: test-artifacts
-
-      - name: Aggregate test results
-        id: aggregate
-        uses: ./.github/actions/aggregate-test-results
-        if: always()
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          include-passing: 'false'
+      - name: Portal test completed
+        run: echo "Portal tests completed. Unified results will be available in the Test Result Summary workflow."

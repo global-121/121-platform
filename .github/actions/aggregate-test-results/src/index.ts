@@ -13,9 +13,9 @@ async function main(): Promise<void> {
     const githubToken = core.getInput('github-token', { required: true });
     const artifactPattern = core.getInput('artifact-pattern') || '*test*result*';
     const includePassing = core.getInput('include-passing') === 'true';
+    const unifiedSummary = core.getInput('unified-summary') === 'true';
     
     const octokit = github.getOctokit(githubToken);
-    const artifactClient = new DefaultArtifactClient();
     
     core.info('🔍 Starting test result aggregation...');
     
@@ -23,16 +23,36 @@ async function main(): Promise<void> {
     const context = github.context;
     const { owner, repo } = context.repo;
     
-    // Determine the workflow run ID to process
-    let targetRunId: number;
+    let targetRunIds: number[] = [];
     let targetSha: string;
-    let targetPullRequests: any[] = [];
+    let targetPrNumber: string | undefined;
     
-    if (process.env.WORKFLOW_RUN_ID) {
-      // We're running as a workflow_run event
-      targetRunId = parseInt(process.env.WORKFLOW_RUN_ID);
+    if (unifiedSummary && process.env.RELATED_WORKFLOW_RUNS) {
+      // Unified mode: collect from multiple related workflow runs
+      core.info('🔗 Running in unified summary mode');
       
-      // Get the workflow run details
+      targetSha = process.env.TARGET_HEAD_SHA || context.sha;
+      targetPrNumber = process.env.TARGET_PR_NUMBER;
+      
+      try {
+        const relatedRunsFile = process.env.RELATED_WORKFLOW_RUNS;
+        if (fs.existsSync(relatedRunsFile)) {
+          const relatedRuns = JSON.parse(fs.readFileSync(relatedRunsFile, 'utf8'));
+          targetRunIds = Array.isArray(relatedRuns) ? relatedRuns : [relatedRuns];
+          core.info(`Found ${targetRunIds.length} related workflow runs: ${targetRunIds.join(', ')}`);
+        } else {
+          core.warning('Related runs file not found, falling back to current run');
+          targetRunIds = [context.runId];
+        }
+      } catch (error) {
+        core.warning(`Error reading related runs: ${error}, falling back to current run`);
+        targetRunIds = [context.runId];
+      }
+    } else if (process.env.WORKFLOW_RUN_ID) {
+      // Single workflow run mode
+      const targetRunId = parseInt(process.env.WORKFLOW_RUN_ID);
+      targetRunIds = [targetRunId];
+      
       const workflowRun = await octokit.rest.actions.getWorkflowRun({
         owner,
         repo,
@@ -40,42 +60,18 @@ async function main(): Promise<void> {
       });
       
       targetSha = workflowRun.data.head_sha;
-      targetPullRequests = workflowRun.data.pull_requests || [];
       
       core.info(`Processing workflow run ${targetRunId} (${workflowRun.data.name})`);
     } else {
-      // We're running in the same workflow
-      targetRunId = context.runId;
+      // Current workflow mode
+      targetRunIds = [context.runId];
       targetSha = context.sha;
       
-      if (context.payload.pull_request) {
-        targetPullRequests = [context.payload.pull_request];
-      }
-      
-      core.info(`Processing current workflow run ${targetRunId}`);
+      core.info(`Processing current workflow run ${context.runId}`);
     }
     
     core.info(`Target SHA: ${targetSha}`);
-    
-    // Get all artifacts from the workflow run
-    const artifacts = await octokit.rest.actions.listWorkflowRunArtifacts({
-      owner,
-      repo,
-      run_id: targetRunId,
-    });
-    
-    core.info(`Found ${artifacts.data.artifacts.length} total artifacts`);
-    
-    // Filter artifacts based on pattern
-    const testArtifacts = artifacts.data.artifacts.filter(artifact => {
-      const nameMatches = artifact.name.toLowerCase().includes('test') ||
-                         artifact.name.toLowerCase().includes('result') ||
-                         artifact.name.toLowerCase().includes('coverage');
-      core.info(`Artifact: ${artifact.name} - Matches: ${nameMatches}`);
-      return nameMatches;
-    });
-    
-    core.info(`Found ${testArtifacts.length} test-related artifacts`);
+    core.info(`Target PR: ${targetPrNumber || 'none'}`);
     
     const allTestResults: TestResult[] = [];
     const downloadDir = path.join(process.cwd(), 'downloaded-artifacts');
@@ -85,8 +81,164 @@ async function main(): Promise<void> {
       fs.mkdirSync(downloadDir, { recursive: true });
     }
     
-    // Download and process each artifact
-    for (const artifact of testArtifacts) {
+    // Collect artifacts from all target workflow runs
+    for (const runId of targetRunIds) {
+      core.info(`📦 Processing artifacts from workflow run ${runId}`);
+      
+      try {
+        // Get all artifacts from this workflow run
+        const artifacts = await octokit.rest.actions.listWorkflowRunArtifacts({
+          owner,
+          repo,
+          run_id: runId,
+        });
+        
+        core.info(`Found ${artifacts.data.artifacts.length} total artifacts in run ${runId}`);
+        
+        // Filter artifacts based on pattern
+        const testArtifacts = artifacts.data.artifacts.filter(artifact => {
+          const nameMatches = artifact.name.toLowerCase().includes('test') ||
+                             artifact.name.toLowerCase().includes('result') ||
+                             artifact.name.toLowerCase().includes('coverage');
+          core.info(`Artifact: ${artifact.name} - Matches: ${nameMatches}`);
+          return nameMatches;
+        });
+        
+        core.info(`Found ${testArtifacts.length} test-related artifacts in run ${runId}`);
+        
+        // Download and process each artifact
+        for (const artifact of testArtifacts) {
+          try {
+            core.info(`⬇️ Downloading artifact: ${artifact.name} (ID: ${artifact.id})`);
+            
+            const downloadResponse = await octokit.rest.actions.downloadArtifact({
+              owner,
+              repo,
+              artifact_id: artifact.id,
+              archive_format: 'zip',
+            });
+            
+            const artifactDir = path.join(downloadDir, `${artifact.name}-${runId}`);
+            
+            if (!fs.existsSync(artifactDir)) {
+              fs.mkdirSync(artifactDir, { recursive: true });
+            }
+            
+            // Save the zip file
+            const zipPath = path.join(artifactDir, `${artifact.name}.zip`);
+            fs.writeFileSync(zipPath, Buffer.from(downloadResponse.data as ArrayBuffer));
+            
+            // Extract and parse test results
+            core.info(`📊 Parsing test results from ${artifact.name}`);
+            const artifactResults = TestResultParser.parseDirectory(artifactDir);
+            
+            // Add run context to results
+            artifactResults.forEach(result => {
+              result.workflowRun = runId;
+              result.artifactName = artifact.name;
+            });
+            
+            allTestResults.push(...artifactResults);
+            core.info(`Added ${artifactResults.length} test results from ${artifact.name}`);
+            
+          } catch (error) {
+            core.warning(`Failed to download/parse artifact ${artifact.name}: ${error}`);
+          }
+        }
+      } catch (error) {
+        core.warning(`Failed to process artifacts from run ${runId}: ${error}`);
+      }
+    }
+    
+    core.info(`📊 Total test results collected: ${allTestResults.length}`);
+    
+    // Aggregate results
+    const summary = TestResultParser.aggregateResults(allTestResults);
+    
+    // Generate report
+    const reportGenerator = new ReportGenerator(summary, {
+      includePassing,
+      unifiedSummary
+    });
+    
+    const markdownReport = reportGenerator.generateMarkdownReport();
+    const jsonReport = reportGenerator.generateJsonReport();
+    
+    // Save reports
+    fs.writeFileSync('test-results-summary.md', markdownReport);
+    fs.writeFileSync('test-results-summary.json', JSON.stringify(jsonReport, null, 2));
+    
+    // Update workflow summary
+    core.summary.addRaw(markdownReport);
+    await core.summary.write();
+    core.info('✅ Workflow summary updated');
+    
+    // Post PR comment if we have PR information
+    if (targetPrNumber) {
+      const prNumber = parseInt(targetPrNumber);
+      
+      try {
+        core.info(`💬 Posting unified test summary to PR #${prNumber}`);
+        
+        // Look for existing comment
+        const comments = await octokit.rest.issues.listComments({
+          owner,
+          repo,
+          issue_number: prNumber,
+        });
+        
+        const botComment = comments.data.find(comment => 
+          comment.user?.type === 'Bot' && 
+          comment.body?.includes('## 🧪 Unified Test Results Summary')
+        );
+        
+        const prCommentBody = `## 🧪 Unified Test Results Summary
+
+${markdownReport}
+
+---
+*This comment is automatically updated when tests complete across all workflows.*
+*Last updated: ${new Date().toISOString()}*`;
+        
+        if (botComment) {
+          // Update existing comment
+          await octokit.rest.issues.updateComment({
+            owner,
+            repo,
+            comment_id: botComment.id,
+            body: prCommentBody,
+          });
+          core.info(`Updated existing PR comment #${botComment.id}`);
+        } else {
+          // Create new comment
+          await octokit.rest.issues.createComment({
+            owner,
+            repo,
+            issue_number: prNumber,
+            body: prCommentBody,
+          });
+          core.info(`Created new PR comment on #${prNumber}`);
+        }
+      } catch (error) {
+        core.warning(`Failed to comment on PR: ${error}`);
+      }
+    }
+    
+    // Set output
+    core.setOutput('test-results', JSON.stringify(jsonReport));
+    core.setOutput('failed-tests', summary.failedTests);
+    
+    core.info('✅ Test result aggregation completed successfully');
+    
+  } catch (error) {
+    core.setFailed(`Action failed: ${error}`);
+  }
+}
+
+// Run the action
+main().catch(error => {
+  core.setFailed(`Unhandled error: ${error}`);
+});
       try {
         core.info(`🔽 Downloading artifact: ${artifact.name}`);
         

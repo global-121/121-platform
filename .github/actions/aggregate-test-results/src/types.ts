@@ -8,6 +8,8 @@ export interface TestResult {
   retries?: number;
   shard?: string;
   runner: 'jest' | 'playwright' | 'karma';
+  workflowRun?: number;
+  artifactName?: string;
 }
 
 export interface TestSummary {
