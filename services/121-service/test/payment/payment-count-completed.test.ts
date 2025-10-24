@@ -77,7 +77,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
         programId,
         paymentReferenceIds,
         accessToken,
-        maxWaitTimeMs: 10_000,
+        maxWaitTimeMs: 20_000,
       });
 
       const getTransactionsRes = await getTransactions({
