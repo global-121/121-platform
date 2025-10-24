@@ -144,7 +144,6 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
           name: Not(In(['phoneNumber', 'whatsappPhoneNumber'])),
         },
       });
-    console.log('attributesWithDuplicateCheck: ', attributesWithDuplicateCheck);
     if (attributesWithDuplicateCheck.length === 0) {
       console.log('No attributes found with duplicateCheck=true');
       return;

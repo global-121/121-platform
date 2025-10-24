@@ -47,7 +47,8 @@
       i18n-metricLabel
     />
 
-    @let latestPaymentAmount = this.latestPayment.data()?.success?.amount;
+    @let latestPaymentAmount =
+      this.latestPayment.data()?.success?.transferValue;
     <app-metric-tile
       class="[grid-area:metric4]"
       [pending]="metrics.isPending()"

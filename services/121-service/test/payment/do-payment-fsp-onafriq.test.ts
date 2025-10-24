@@ -8,7 +8,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  doPayment,
+  createAndStartPayment,
   getTransactions,
   retryPayment,
   waitForPaymentTransactionsToComplete,
@@ -62,7 +62,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     const paymentReferenceIds = [registrationOnafriq.referenceId];
 
     // Act
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
@@ -124,7 +124,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     const paymentReferenceIds = [registrationOnafriq.referenceId];
 
     // Act
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
@@ -192,8 +192,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
     });
-    expect(retryResponse.status).toBe(HttpStatus.OK);
-    expect(retryResponse.body.applicableCount).toBe(paymentReferenceIds.length);
+    expect(retryResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(getTransactionsAfterRetryBody.body[0].status).toBe(
       TransactionStatusEnum.success,
     );
@@ -226,7 +225,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     const paymentReferenceIds = [registrationOnafriq.referenceId];
 
     // Act
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
@@ -291,7 +290,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     const paymentReferenceIds = [registrationOnafriq.referenceId];
 
     // Act
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,

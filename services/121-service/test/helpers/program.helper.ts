@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import * as request from 'supertest';
 import { MessageStatus } from 'twilio/lib/rest/api/v2010/account/message';
 import * as XLSX from 'xlsx';
@@ -108,7 +109,7 @@ export async function unpublishProgram(
     });
 }
 
-export async function doPayment({
+export async function createPayment({
   programId,
   transferValue,
   referenceIds,
@@ -118,7 +119,7 @@ export async function doPayment({
 }: {
   programId: number;
   transferValue: number;
-  referenceIds: string[];
+  referenceIds?: string[];
   accessToken: string;
   filter?: Record<string, string>;
   note?: string;
@@ -144,6 +145,72 @@ export async function doPayment({
     });
 }
 
+export async function startPayment({
+  programId,
+  paymentId,
+  accessToken,
+}: {
+  programId: number;
+  paymentId: number;
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .patch(`/programs/${programId}/payments/${paymentId}`)
+    .set('Cookie', [accessToken])
+    .send();
+}
+
+export async function createAndStartPayment({
+  programId,
+  transferValue,
+  referenceIds,
+  accessToken,
+  filter = {},
+  note,
+}: {
+  programId: number;
+  transferValue: number;
+  referenceIds: string[];
+  accessToken: string;
+  filter?: Record<string, string>;
+  note?: string;
+}): Promise<request.Response> {
+  const createPaymentResult = await createPayment({
+    programId,
+    transferValue,
+    referenceIds,
+    accessToken,
+    filter,
+    note,
+  });
+  if (createPaymentResult.status !== HttpStatus.ACCEPTED) {
+    return createPaymentResult;
+  }
+
+  const paymentId = createPaymentResult.body.id;
+  await waitForPaymentTransactionsToComplete({
+    programId,
+    paymentReferenceIds: referenceIds,
+    accessToken,
+    maxWaitTimeMs: 20_000,
+    paymentId,
+    completeStatusses: [TransactionStatusEnum.created],
+  });
+
+  const startPaymentResult = await startPayment({
+    programId,
+    paymentId,
+    accessToken,
+  });
+
+  // In error cases, return the error from starting the payment
+  if (startPaymentResult.status !== HttpStatus.ACCEPTED) {
+    return startPaymentResult;
+  }
+  // In success cases, we need the doPaymentResult to get the paymentId from
+  return createPaymentResult;
+}
+
 export async function retryPayment({
   programId,
   paymentId,
@@ -156,11 +223,13 @@ export async function retryPayment({
   referenceIds?: string[];
 }): Promise<request.Response> {
   return await getServer()
-    .patch(`/programs/${programId}/payments`)
+    .patch(`/programs/${programId}/payments/${paymentId}`)
     .set('Cookie', [accessToken])
     .send({
-      paymentId,
       referenceIds,
+    })
+    .query({
+      retry: true,
     });
 }
 
@@ -180,6 +249,33 @@ export async function getProgramPaymentsStatus(
   return await getServer()
     .get(`/programs/${programId}/payments/status`)
     .set('Cookie', [accessToken]);
+}
+
+export async function waitForPaymentNotInProgress({
+  programId,
+  accessToken,
+  maxWaitTimeMs = 20000,
+  pollIntervalMs = 500,
+}: {
+  programId: number;
+  accessToken: string;
+  maxWaitTimeMs?: number;
+  pollIntervalMs?: number;
+}): Promise<void> {
+  const startTime = Date.now();
+  while (true) {
+    const result = (await getProgramPaymentsStatus(programId, accessToken))
+      .body;
+    if (result.inProgress === false) {
+      return;
+    }
+    if (Date.now() - startTime > maxWaitTimeMs) {
+      throw new Error(
+        `Timeout: Payment still in progress after ${maxWaitTimeMs}ms`,
+      );
+    }
+    await waitFor(pollIntervalMs);
+  }
 }
 
 export async function getTransactions({

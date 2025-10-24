@@ -9,7 +9,6 @@ import {
   Relation,
 } from 'typeorm';
 
-import { ActionEntity } from '@121-service/src/actions/action.entity';
 import { Base121Entity } from '@121-service/src/base.entity';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
@@ -42,9 +41,6 @@ export class UserEntity extends Base121Entity {
     (assignment) => assignment.user,
   )
   public programAssignments: Relation<ProgramAidworkerAssignmentEntity[]>;
-
-  @OneToMany(() => ActionEntity, (program) => program.user)
-  public actions: Relation<ActionEntity[]>;
 
   @OneToMany(() => RegistrationEntity, (registration) => registration.user)
   public registrations: Relation<RegistrationEntity[]>;
