@@ -2021,6 +2021,9 @@
       <trans-unit id="inProgressChipTooltip" datatype="html">
         <source>The payment will be in progress while the transfers in the table below are loading.</source>
       </trans-unit>
+      <trans-unit id="payment-event-log-item-type-retry" datatype="html">
+        <source>Retry</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

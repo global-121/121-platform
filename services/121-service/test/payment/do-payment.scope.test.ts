@@ -69,7 +69,7 @@ describe('Registrations - [Scoped]', () => {
     // add payment.create permission to the user
     await addPermissionToRole(DefaultUserRole.CvaManager, [
       PermissionEnum.PaymentCREATE,
-      PermissionEnum.PaymentUPDATE, // ##TODO modify/extend this test to 2 users with respective permissions?
+      PermissionEnum.PaymentUPDATE,
     ]);
 
     const testScope = DebugScope.Kisumu;
