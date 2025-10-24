@@ -69,13 +69,13 @@ describe('Get program with many attributes within time threshold of 30 seconds',
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registrations
-    const duplicateRegistrationsResponse = await duplicateRegistrations(
-      duplicateNumber,
+    const duplicateRegistrationsResponse = await duplicateRegistrations({
+      powerNumberRegistration: duplicateNumber,
       accessToken,
-      {
+      body: {
         secret: env.RESET_SECRET,
       },
-    );
+    });
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Assert

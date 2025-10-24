@@ -79,13 +79,13 @@ describe('Status Change Payment In Large Program', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registration between 20k - 50k
-    const duplicateRegistrationsResponse = await duplicateRegistrations(
-      duplicateNumber,
+    const duplicateRegistrationsResponse = await duplicateRegistrations({
+      powerNumberRegistration: duplicateNumber,
       accessToken,
-      {
+      body: {
         secret: env.RESET_SECRET,
       },
-    );
+    });
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Assert

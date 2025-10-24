@@ -37,13 +37,13 @@ describe('Bulk update 32k registrations', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registration to be 32k
-    const duplicateRegistrationsResponse = await duplicateRegistrations(
-      duplicateNumber,
+    const duplicateRegistrationsResponse = await duplicateRegistrations({
+      powerNumberRegistration: duplicateNumber,
       accessToken,
-      {
+      body: {
         secret: env.RESET_SECRET,
       },
-    );
+    });
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
     // export registrations
     const exportRegistrationsResponse = await exportRegistrations(

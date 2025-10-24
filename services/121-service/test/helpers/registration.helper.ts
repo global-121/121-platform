@@ -90,11 +90,15 @@ export function importRegistrationsCSV(
     .attach('file', filePath);
 }
 
-export function duplicateRegistrations(
-  powerNumberRegistration: number,
-  accessToken: string,
-  body: object = {},
-): Promise<request.Response> {
+export function duplicateRegistrations({
+  powerNumberRegistration,
+  accessToken,
+  body = {},
+}: {
+  powerNumberRegistration: number;
+  accessToken: string;
+  body: object;
+}): Promise<request.Response> {
   return getServer()
     .post('/scripts/duplicate-registrations')
     .set('Cookie', [accessToken])
@@ -377,24 +381,30 @@ export async function awaitChangeRegistrationStatus({
     );
   }
 
-  await waitForStatusChangeToComplete(
+  await waitForStatusChangeToComplete({
     programId,
-    referenceIds.length,
+    amountOfRegistrations: referenceIds.length,
     status,
-    8_000,
+    maxWaitTimeMs: 8_000,
     accessToken,
-  );
+  });
 
   return result;
 }
 
-export async function waitForStatusChangeToComplete(
-  programId: number,
-  amountOfRegistrations: number,
-  status: string,
-  maxWaitTimeMs: number,
-  accessToken: string,
-): Promise<void> {
+export async function waitForStatusChangeToComplete({
+  programId,
+  amountOfRegistrations,
+  status,
+  maxWaitTimeMs,
+  accessToken,
+}: {
+  programId: number;
+  amountOfRegistrations: number;
+  status: string;
+  maxWaitTimeMs: number;
+  accessToken: string;
+}): Promise<void> {
   const startTime = Date.now();
   while (Date.now() - startTime < maxWaitTimeMs) {
     const eventsResult = await getRegistrationEvents({

@@ -49,13 +49,13 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registration to be more than 100k
-    const duplicateRegistrationsResponse = await duplicateRegistrations(
-      duplicateNumber,
+    const duplicateRegistrationsResponse = await duplicateRegistrations({
+      powerNumberRegistration: duplicateNumber,
       accessToken,
-      {
+      body: {
         secret: env.RESET_SECRET,
       },
-    );
+    });
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
     // Change status of all registrations to 'included'
     const changeStatusResponse = await changeRegistrationStatus({
@@ -65,13 +65,13 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
     });
     expect(changeStatusResponse.statusCode).toBe(HttpStatus.ACCEPTED);
     // Wait for all status changes to be processed
-    await waitForStatusChangeToComplete(
-      programIdOCW,
-      duplicateTarget,
-      RegistrationStatusEnum.included,
+    await waitForStatusChangeToComplete({
+      programId: programIdOCW,
+      amountOfRegistrations: duplicateTarget,
+      status: RegistrationStatusEnum.included,
       maxWaitTimeMs,
       accessToken,
-    );
+    });
     // Do payment
     const doPaymentResponse = await doPayment({
       programId: programIdOCW,

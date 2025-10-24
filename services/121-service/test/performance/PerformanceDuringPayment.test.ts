@@ -41,13 +41,13 @@ describe('Measure performance during payment', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.ACCEPTED);
     // Duplicate registration
-    const duplicateRegistrationsResponse = await duplicateRegistrations(
-      duplicateNumber,
+    const duplicateRegistrationsResponse = await duplicateRegistrations({
+      powerNumberRegistration: duplicateNumber,
       accessToken,
-      {
+      body: {
         secret: env.RESET_SECRET,
       },
-    );
+    });
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
     // Do payment
     const doPaymentResponse = await doPayment({
