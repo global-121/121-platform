@@ -70,9 +70,9 @@ describe('Do payment for 100k registrations with Safaricom within expected range
     await waitForStatusChangeToComplete(
       programIdSafaricom,
       duplicateTarget,
-      accessToken,
-      maxWaitTimeMs,
       RegistrationStatusEnum.included,
+      maxWaitTimeMs,
+      accessToken,
     );
     // Do payment
     const doPaymentResponse = await doPayment({

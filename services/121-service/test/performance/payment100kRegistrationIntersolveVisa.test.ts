@@ -68,9 +68,9 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
     await waitForStatusChangeToComplete(
       programIdOCW,
       duplicateTarget,
-      accessToken,
-      maxWaitTimeMs,
       RegistrationStatusEnum.included,
+      maxWaitTimeMs,
+      accessToken,
     );
     // Do payment
     const doPaymentResponse = await doPayment({
