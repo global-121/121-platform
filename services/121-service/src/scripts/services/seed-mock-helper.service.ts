@@ -245,4 +245,15 @@ export class SeedMockHelperService {
 
     return await this.httpService.post(url, body, headers);
   }
+
+  public async startPayment(
+    programId: number,
+    paymentId: number,
+    accessToken: string,
+  ): Promise<any> {
+    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/payments/${paymentId}`;
+    const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
+
+    await this.httpService.patch(url, {}, headers);
+  }
 }
