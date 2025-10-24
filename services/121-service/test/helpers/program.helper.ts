@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import * as request from 'supertest';
 import { MessageStatus } from 'twilio/lib/rest/api/v2010/account/message';
 import * as XLSX from 'xlsx';
@@ -108,7 +109,7 @@ export async function unpublishProgram(
     });
 }
 
-export async function doPayment({
+export async function createPayment({
   programId,
   transferValue,
   referenceIds,
@@ -142,6 +143,72 @@ export async function doPayment({
       transferValue,
       note,
     });
+}
+
+export async function startPayment({
+  programId,
+  paymentId,
+  accessToken,
+}: {
+  programId: number;
+  paymentId: number;
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .patch(`/programs/${programId}/payments/${paymentId}`)
+    .set('Cookie', [accessToken])
+    .send();
+}
+
+export async function createAndStartPayment({
+  programId,
+  transferValue,
+  referenceIds,
+  accessToken,
+  filter = {},
+  note,
+}: {
+  programId: number;
+  transferValue: number;
+  referenceIds: string[];
+  accessToken: string;
+  filter?: Record<string, string>;
+  note?: string;
+}): Promise<request.Response> {
+  const createPaymentResult = await createPayment({
+    programId,
+    transferValue,
+    referenceIds,
+    accessToken,
+    filter,
+    note,
+  });
+  if (createPaymentResult.status !== HttpStatus.ACCEPTED) {
+    return createPaymentResult;
+  }
+
+  const paymentId = createPaymentResult.body.id;
+  await waitForPaymentTransactionsToComplete({
+    programId,
+    paymentReferenceIds: referenceIds,
+    accessToken,
+    maxWaitTimeMs: 20_000,
+    paymentId,
+    completeStatusses: [TransactionStatusEnum.created],
+  });
+
+  const startPaymentResult = await startPayment({
+    programId,
+    paymentId,
+    accessToken,
+  });
+
+  // In error cases, return the error from starting the payment
+  if (startPaymentResult.status !== HttpStatus.ACCEPTED) {
+    return startPaymentResult;
+  }
+  // In success cases, we need the doPaymentResult to get the paymentId from
+  return createPaymentResult;
 }
 
 export async function retryPayment({

@@ -107,11 +107,15 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       accessToken,
     );
 
-    await this.seedMockHelper.doPayment(
+    const createPaymentResponse = await this.seedMockHelper.createPayment(
       programId,
       transferValueVisa,
       [registration.referenceId],
       accessToken,
     );
+    const paymentId = createPaymentResponse.data.id;
+    // ##TODO: can this be done better?
+    await waitFor(2_000);
+    await this.seedMockHelper.startPayment(programId, paymentId, accessToken);
   }
 }

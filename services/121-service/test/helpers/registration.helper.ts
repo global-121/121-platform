@@ -6,12 +6,13 @@ import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type
 import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  doPayment,
+  createAndStartPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
@@ -678,7 +679,7 @@ export async function doPaymentAndWaitForCompletion({
   completeStatusses?: TransactionStatusEnum[];
   note?: string;
 }): Promise<number> {
-  const doPaymentResponse = await doPayment({
+  const doPaymentResponse = await createAndStartPayment({
     programId,
     transferValue,
     referenceIds,
@@ -894,4 +895,39 @@ export async function getActivities({
     .get(`/programs/${programId}/registrations/${registrationId}/activities`)
     .set('Cookie', [accessToken])
     .send();
+}
+
+export async function waitForRegistrationToHaveUpdatedPaymentCount({
+  programId,
+  referenceId,
+  expectedPaymentCount,
+  accessToken,
+  maxWaitTimeMs = 80_000,
+}: {
+  programId: number;
+  referenceId: string;
+  expectedPaymentCount: number;
+  accessToken: string;
+  maxWaitTimeMs?: number;
+}): Promise<MappedPaginatedRegistrationDto | null> {
+  const interval = 1_000; // Interval between retries in milliseconds
+  let elapsedTime = 0;
+  let registration: MappedPaginatedRegistrationDto | null = null;
+  while (
+    (!registration || registration.paymentCount !== expectedPaymentCount) &&
+    elapsedTime < maxWaitTimeMs
+  ) {
+    const getRegistrationResponse = await getRegistrations({
+      programId,
+      accessToken,
+      filter: {
+        'filter.referenceId': referenceId,
+      },
+    });
+    registration = getRegistrationResponse.body.data[0];
+
+    await waitFor(interval);
+    elapsedTime += interval;
+  }
+  return registration;
 }
