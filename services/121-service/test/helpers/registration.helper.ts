@@ -11,7 +11,7 @@ import { RegistrationEventEnum } from '@121-service/src/registration-events/enum
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  doPayment,
+  createAndStartPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
@@ -716,7 +716,7 @@ export async function doPaymentAndWaitForCompletion({
   completeStatusses?: TransactionStatusEnum[];
   note?: string;
 }): Promise<number> {
-  const doPaymentResponse = await doPayment({
+  const doPaymentResponse = await createAndStartPayment({
     programId,
     transferValue,
     referenceIds,
