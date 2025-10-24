@@ -30,7 +30,7 @@
     "verify:build": "node --env-file=.env ./_verify-build.mjs",
     "typecheck": "npx tsc --noEmit",
     "extract-i18n": "ng extract-i18n",
-    "extract-i18n:smart": "node --env-file=.env ./_extract-i18n-if-changed.mjs",
+    "extract-i18n:smart": "node ./_extract-i18n-if-changed.mjs",
     "knip": "knip"
   },
   "private": true,
