@@ -7,9 +7,6 @@ import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { getFspConfigurationRequiredProperties } from '@121-service/src/fsps/fsp-settings.helpers';
-import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
-import { MessageContentDetails } from '@121-service/src/notifications/interfaces/message-content-details.interface';
-import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
@@ -18,8 +15,8 @@ import { PaymentsProgressHelperService } from '@121-service/src/payments/service
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import {
   BulkActionResultPaymentDto,
   BulkActionResultRetryPaymentDto,
@@ -27,7 +24,6 @@ import {
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
@@ -48,11 +44,9 @@ export class PaymentsExecutionService {
     private readonly paymentEventsService: PaymentEventsService,
     private readonly transactionJobsCreationService: TransactionJobsCreationService,
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
-    private readonly registrationScopedRepository: RegistrationScopedRepository,
-    private readonly programRepository: ProgramRepository,
-    private readonly messageTemplateService: MessageTemplateService,
     private readonly paymentsExecutionHelperService: PaymentsExecutionHelperService,
     private readonly paymentsReportingService: PaymentsReportingService,
+    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async createPayment({
@@ -204,49 +198,6 @@ export class PaymentsExecutionService {
     return savedPaymentEntity.id;
   }
 
-  // createTransactionsAndUpdateRegistrations moved to PaymentsExecutionHelperService
-
-  public async setStatusToCompletedIfApplicable(
-    programId: number,
-    userId: number,
-  ): Promise<void> {
-    const program = await this.programRepository.findByIdOrFail(programId);
-    if (!program.enableMaxPayments) {
-      return;
-    }
-
-    const registrationsToComplete =
-      await this.registrationScopedRepository.getRegistrationsToComplete(
-        programId,
-      );
-    if (registrationsToComplete.length === 0) {
-      return;
-    }
-
-    const isTemplateAvailable =
-      await this.messageTemplateService.isTemplateAvailable(
-        programId,
-        RegistrationStatusEnum.completed,
-      );
-    const messageContentDetails: MessageContentDetails = isTemplateAvailable
-      ? {
-          messageTemplateKey: RegistrationStatusEnum.completed,
-          messageContentType: MessageContentType.completed,
-          message: '',
-        }
-      : {};
-
-    await this.registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds(
-      {
-        referenceIds: registrationsToComplete.map((r) => r.referenceId),
-        programId,
-        registrationStatus: RegistrationStatusEnum.completed,
-        userId,
-        messageContentDetails,
-      },
-    );
-  }
-
   private async checkFspConfigurationsOrThrow(
     programId: number,
     programFspConfigurationNames: string[],
@@ -329,6 +280,7 @@ export class PaymentsExecutionService {
       });
   }
 
+  // ##TODO: change this name, as it no longer makes sense. This is still part of createPayment, not of startPayment. Probably reorganize methods also.
   private async initiatePayment({
     userId,
     programId,
@@ -356,18 +308,11 @@ export class PaymentsExecutionService {
       },
     );
 
-    await this.paymentsExecutionHelperService.createTransactionsAndUpdateRegistrationPaymentCount(
-      {
-        transactionCreationDetails,
-        paymentId,
-        userId,
-      },
-    );
-
-    await this.paymentsExecutionHelperService.setStatusToCompletedIfApplicable(
-      programId,
+    await this.transactionsService.createTransactionsAndEvents({
+      transactionCreationDetails,
+      paymentId,
       userId,
-    );
+    });
   }
 
   public async startPayment({
@@ -390,6 +335,14 @@ export class PaymentsExecutionService {
         programId,
         paymentId,
       });
+
+    await this.paymentsExecutionHelperService.updatePaymentCountAndSetToCompleted(
+      {
+        registrationIds: transactions.map((t) => t.registrationId),
+        programId,
+        userId,
+      },
+    );
 
     await this.createTransactionJobs({
       programId,
