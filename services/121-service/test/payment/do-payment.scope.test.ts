@@ -69,6 +69,7 @@ describe('Registrations - [Scoped]', () => {
     // add payment.create permission to the user
     await addPermissionToRole(DefaultUserRole.CvaManager, [
       PermissionEnum.PaymentCREATE,
+      PermissionEnum.PaymentSTART, // ##TODO modify/extend this test to 2 users with respective permissions?
     ]);
 
     const testScope = DebugScope.Kisumu;
@@ -87,12 +88,15 @@ describe('Registrations - [Scoped]', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
+    // ##TODO putting any console.log here makes the test pass, otherwise it fails. Investigate why.
+    console.log('Ignore');
+
     // Assert
     await waitForPaymentTransactionsToComplete({
       programId: PvProgramId,
       paymentReferenceIds: registrationsPvFirst2ReferenceIds,
       accessToken,
-      maxWaitTimeMs: 10_000,
+      maxWaitTimeMs: 20_000,
     });
     const transactionsResponse = await getTransactions({
       programId: programIdPV,

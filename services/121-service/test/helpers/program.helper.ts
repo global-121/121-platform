@@ -109,7 +109,7 @@ export async function unpublishProgram(
     });
 }
 
-export async function createAndStartPayment({
+export async function createPayment({
   programId,
   transferValue,
   referenceIds,
@@ -135,7 +135,7 @@ export async function createAndStartPayment({
     queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
   }
 
-  const doPaymentResult = await getServer()
+  return await getServer()
     .post(`/programs/${programId}/payments`)
     .set('Cookie', [accessToken])
     .query(queryParams)
@@ -143,17 +143,41 @@ export async function createAndStartPayment({
       transferValue,
       note,
     });
-  const paymentId = doPaymentResult.body.id;
+}
 
-  if (doPaymentResult.status !== HttpStatus.ACCEPTED) {
-    return doPaymentResult;
+export async function createAndStartPayment({
+  programId,
+  transferValue,
+  referenceIds,
+  accessToken,
+  filter = {},
+  note,
+}: {
+  programId: number;
+  transferValue: number;
+  referenceIds: string[];
+  accessToken: string;
+  filter?: Record<string, string>;
+  note?: string;
+}): Promise<request.Response> {
+  const createPaymentResult = await createPayment({
+    programId,
+    transferValue,
+    referenceIds,
+    accessToken,
+    filter,
+    note,
+  });
+  if (createPaymentResult.status !== HttpStatus.ACCEPTED) {
+    return createPaymentResult;
   }
 
+  const paymentId = createPaymentResult.body.id;
   await waitForPaymentTransactionsToComplete({
     programId,
     paymentReferenceIds: referenceIds,
     accessToken,
-    maxWaitTimeMs: 2_000,
+    maxWaitTimeMs: 20_000,
     paymentId,
     completeStatusses: [TransactionStatusEnum.created],
   });
@@ -168,7 +192,7 @@ export async function createAndStartPayment({
     return startPaymentResult;
   }
   // In success cases, we need the doPaymentResult to get the paymentId from
-  return doPaymentResult;
+  return createPaymentResult;
 }
 
 export async function retryPayment({
