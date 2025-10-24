@@ -145,7 +145,6 @@ export async function createAndStartPayment({
     });
   const paymentId = doPaymentResult.body.id;
 
-  console.log('doPaymentResult: ', doPaymentResult);
   if (doPaymentResult.status !== HttpStatus.ACCEPTED) {
     return doPaymentResult;
   }
@@ -164,7 +163,6 @@ export async function createAndStartPayment({
     .set('Cookie', [accessToken])
     .send();
 
-  console.log('startPaymentResult: ', startPaymentResult);
   // In error cases, return the error from starting the payment
   if (startPaymentResult.status !== HttpStatus.ACCEPTED) {
     return startPaymentResult;
