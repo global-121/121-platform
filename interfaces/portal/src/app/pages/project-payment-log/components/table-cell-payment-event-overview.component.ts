@@ -46,10 +46,8 @@ export class TableCellPaymentEventOverviewComponent
     switch (eventType) {
       case PaymentEvent.note:
         return event.attributes.note;
-      case PaymentEvent.created:
-        return `${PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS[eventType]} ${this.datePipe.transform(event.created, 'short') ?? ''}`;
       default:
-        return PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS[eventType];
+        return `${PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS[eventType]} ${this.datePipe.transform(event.created, 'short') ?? ''}`;
     }
   });
   readonly icon = computed(

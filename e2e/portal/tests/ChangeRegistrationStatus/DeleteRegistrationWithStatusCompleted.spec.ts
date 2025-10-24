@@ -2,7 +2,7 @@ import test from '@playwright/test';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { doPayment } from '@121-service/test/helpers/program.helper';
+import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
 import { seedRegistrationsWithStatus } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -33,7 +33,7 @@ test.beforeEach(async ({ page }) => {
     RegistrationStatusEnum.included,
   );
   // Make payment to change status to "Completed"
-  await doPayment({
+  await createAndStartPayment({
     programId: 2,
     transferValue: 25,
     referenceIds: [],

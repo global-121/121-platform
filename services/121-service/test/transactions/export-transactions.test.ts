@@ -46,6 +46,7 @@ describe('Export transactions', () => {
       [registrationSafaricom],
       programId,
       transferValue,
+      [TransactionStatusEnum.success],
     );
     const toDate = new Date().toISOString();
 
