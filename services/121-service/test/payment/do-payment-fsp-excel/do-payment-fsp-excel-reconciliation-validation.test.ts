@@ -8,7 +8,7 @@ import {
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  doPayment,
+  createAndStartPayment,
   getTransactions,
   importFspReconciliationData,
   waitForPaymentTransactionsToComplete,
@@ -109,7 +109,7 @@ describe('Reconciliate excel FSP data', () => {
       },
     ];
 
-    const secondPayment = await doPayment({
+    const secondPayment = await createAndStartPayment({
       programId: programIdWesteros,
       transferValue,
       accessToken,
