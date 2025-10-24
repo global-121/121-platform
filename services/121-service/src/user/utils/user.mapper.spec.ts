@@ -15,7 +15,6 @@ describe('User mapper', () => {
       password: 'testPassword',
       programAssignments: [],
       uploadedAttachments: [],
-      actions: [],
       registrations: [],
       notes: [],
       userType: UserType.aidWorker,

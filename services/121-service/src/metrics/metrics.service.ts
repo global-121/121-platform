@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, In, Not } from 'typeorm';
 
-import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import {
   AggregatePerMonth,
@@ -49,7 +48,6 @@ export class MetricsService {
     private readonly registrationScopedViewRepository: RegistrationViewScopedRepository,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
-    private readonly actionService: ActionsService,
     private readonly registrationsPaginationsService: RegistrationsPaginationService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly userService: UserService,
@@ -79,7 +77,6 @@ export class MetricsService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    await this.actionService.saveAction(userId, programId, type);
 
     const permission =
       userPermissionMapByExportType[
@@ -334,7 +331,9 @@ export class MetricsService {
       .select('SUM(transaction."transferValue"::numeric)', 'cashDisbursed')
       .leftJoin('transaction.payment', 'p')
       .andWhere({
-        status: Not(TransactionStatusEnum.error),
+        status: Not(
+          In([TransactionStatusEnum.error, TransactionStatusEnum.created]),
+        ),
       })
       .andWhere('p."programId" = :programId', { programId })
       .getRawOne();
@@ -502,6 +501,7 @@ export class MetricsService {
           success: 0,
           waiting: 0,
           failed: 0,
+          created: 0,
         };
       }
 
@@ -511,9 +511,10 @@ export class MetricsService {
           payment.paymentId,
         );
 
-      res[month].success += Number(aggregate.success.amount);
-      res[month].waiting += Number(aggregate.waiting.amount);
-      res[month].failed += Number(aggregate.failed.amount);
+      res[month].success += Number(aggregate.success.transferValue);
+      res[month].waiting += Number(aggregate.waiting.transferValue);
+      res[month].failed += Number(aggregate.failed.transferValue);
+      res[month].created += Number(aggregate.created.transferValue);
     }
     return res;
   }
