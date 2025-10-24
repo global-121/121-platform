@@ -26,17 +26,22 @@ export class PaymentEventsService {
     return PaymentEventsMapper.mapToPaymentEventsDto(paymentEventEntities);
   }
 
-  public async createCreatedEvent({
+  public async createEvent({
     paymentId,
     userId,
+    type,
+    attributes,
   }: {
     paymentId: number;
     userId: number;
+    type: PaymentEvent;
+    attributes?: { key: PaymentEventAttributeKey; value: string }[];
   }): Promise<void> {
     await this.paymentEventRepository.save({
-      type: PaymentEvent.created,
+      type,
       paymentId,
       user: { id: userId },
+      attributes,
     });
   }
 
@@ -49,10 +54,10 @@ export class PaymentEventsService {
     userId: number;
     note: string;
   }): Promise<void> {
-    await this.paymentEventRepository.save({
+    await this.createEvent({
       type: PaymentEvent.note,
       paymentId,
-      user: { id: userId },
+      userId,
       attributes: [
         {
           key: PaymentEventAttributeKey.note,

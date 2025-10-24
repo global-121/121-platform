@@ -2,8 +2,6 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ActionEntity } from '@121-service/src/actions/action.entity';
-import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { FspsModule } from '@121-service/src/fsps/fsp.module';
 import { KoboConnectModule } from '@121-service/src/kobo-connect/kobo-connect.module';
 import { LookupModule } from '@121-service/src/notifications/lookup/lookup.module';
@@ -26,10 +24,8 @@ import { UserModule } from '@121-service/src/user/user.module';
     TypeOrmModule.forFeature([
       ProgramEntity,
       ProgramRegistrationAttributeEntity,
-      ActionEntity,
       ProgramFspConfigurationEntity,
     ]),
-    ActionsModule,
     UserModule,
     FspsModule,
     HttpModule,

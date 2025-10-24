@@ -12,7 +12,7 @@ import {
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  doPayment,
+  createAndStartPayment,
   getTransactions,
   waitForMessagesToComplete,
   waitForPaymentTransactionsToComplete,
@@ -61,7 +61,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
@@ -116,7 +116,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
 
     // Act
     // do 1st payment
-    const doFirstPaymentResponse = await doPayment({
+    const doFirstPaymentResponse = await createAndStartPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
@@ -134,7 +134,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     });
 
     // do 2nd payment
-    const doSecondPaymentResponse = await doPayment({
+    const doSecondPaymentResponse = await createAndStartPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
@@ -199,7 +199,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
 
     // Act
     // do 1st payment
-    const paymentResponse = await doPayment({
+    const paymentResponse = await createAndStartPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds,
@@ -233,7 +233,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     );
     await waitFor(2_000);
 
-    const paymentResponse2 = await doPayment({
+    const paymentResponse2 = await createAndStartPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds,
