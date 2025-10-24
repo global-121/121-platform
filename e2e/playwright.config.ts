@@ -16,6 +16,7 @@ export default defineConfig({
   retries: 1,
   reporter: [
     ['list'],
+    ['json', { outputFile: 'test-results/playwright-results.json' }],
     // [
     //   '@alex_neo/playwright-azure-reporter',
     //   {

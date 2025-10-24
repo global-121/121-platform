@@ -52,4 +52,22 @@ jobs:
 
       - name: Test
         working-directory: ${{ env.workingDirectory }}
-        run: 'npm run test'
+        run: |
+          mkdir -p test-results
+          npm run test -- --json --outputFile=test-results/mock-service-tests.json
+
+      - name: Upload mock service test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mock-service-test-results
+          path: |
+            ${{ env.workingDirectory }}/test-results/
+
+  test-mock-service-resolution:
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: always()
+    steps:
+      - name: Mock service test completed
+        run: echo "Mock service tests completed. Unified results will be available in the Test Result Summary workflow."
