@@ -108,7 +108,7 @@ export async function unpublishProgram(
     });
 }
 
-export async function doPayment({
+export async function createAndStartPayment({
   programId,
   transferValue,
   referenceIds,
@@ -134,7 +134,7 @@ export async function doPayment({
     queryParams['filter.referenceId'] = `$in:${referenceIds.join(',')}`;
   }
 
-  return await getServer()
+  const doPaymentResult = await getServer()
     .post(`/programs/${programId}/payments`)
     .set('Cookie', [accessToken])
     .query(queryParams)
@@ -142,6 +142,23 @@ export async function doPayment({
       transferValue,
       note,
     });
+  const paymentId = doPaymentResult.body.id;
+
+  await waitForPaymentTransactionsToComplete({
+    programId,
+    paymentReferenceIds: referenceIds,
+    accessToken,
+    maxWaitTimeMs: 20_000,
+    paymentId,
+    completeStatusses: [TransactionStatusEnum.created],
+  });
+
+  await getServer()
+    .patch(`/programs/${programId}/payments/${paymentId}`)
+    .set('Cookie', [accessToken])
+    .send();
+
+  return doPaymentResult;
 }
 
 export async function retryPayment({

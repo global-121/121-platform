@@ -11,7 +11,7 @@ import { messageTemplateGeneric } from '@121-service/src/seed-data/message-templ
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  doPayment,
+  createAndStartPayment,
   getTransactions,
   waitForMessagesToComplete,
   waitForPaymentTransactionsToComplete,
@@ -64,7 +64,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       const paymentReferenceIds = [registrationAh.referenceId];
 
       // Act
-      const doPaymentResponse = await doPayment({
+      const doPaymentResponse = await createAndStartPayment({
         programId,
         transferValue,
         referenceIds: paymentReferenceIds,

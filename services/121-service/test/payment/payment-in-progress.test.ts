@@ -4,7 +4,7 @@ import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationsPV } from '@121-service/test/fixtures/scoped-registrations';
 import {
-  doPayment,
+  createAndStartPayment,
   getProgramPaymentsStatus,
   retryPayment,
   waitForPaymentTransactionsToComplete,
@@ -60,7 +60,7 @@ describe('Payment in progress', () => {
     );
 
     // We do a payment here and wait for it to complete
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId: programIdPV,
       transferValue,
       referenceIds: [],
@@ -84,7 +84,7 @@ describe('Payment in progress', () => {
       await getProgramPaymentsStatus(programIdOCW, accessToken)
     ).body;
 
-    const doPaymentPvResultPaymentNext = await doPayment({
+    const doPaymentPvResultPaymentNext = await createAndStartPayment({
       programId: programIdPV,
       transferValue,
       referenceIds: [],
@@ -93,7 +93,7 @@ describe('Payment in progress', () => {
     });
     const paymentIdPvNext = doPaymentPvResultPaymentNext.body.id;
 
-    const doPaymentOcwResultPaymentNext = await doPayment({
+    const doPaymentOcwResultPaymentNext = await createAndStartPayment({
       programId: programIdOCW,
       transferValue,
       referenceIds: [],
@@ -141,7 +141,7 @@ describe('Payment in progress', () => {
 
     // Act
     // We do a payment and we do not wait for all transactions to complete
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId: programIdPV,
       transferValue: paymentAmount,
       referenceIds: [],
@@ -157,14 +157,14 @@ describe('Payment in progress', () => {
       await getProgramPaymentsStatus(programIdOCW, accessToken)
     ).body;
 
-    const doPaymentPvResultPaymentNext = await doPayment({
+    const doPaymentPvResultPaymentNext = await createAndStartPayment({
       programId: programIdPV,
       transferValue: paymentAmount,
       referenceIds: [],
       accessToken,
       filter: filterAllIncluded,
     });
-    const doPaymentOcwResultPaymentNext = await doPayment({
+    const doPaymentOcwResultPaymentNext = await createAndStartPayment({
       programId: programIdOCW,
       transferValue: paymentAmount,
       referenceIds: [],
@@ -221,7 +221,7 @@ describe('Payment in progress', () => {
 
     // Act
     // We do a payment only for the PV program and we do not wait for all transactions to complete
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId: programIdPV,
       transferValue: paymentAmount,
       referenceIds: [],
@@ -239,7 +239,7 @@ describe('Payment in progress', () => {
     ).body;
 
     // We expect that doing the next payment fails since the previous payment is still in progress
-    const doPaymentPvResultPaymentNext = await doPayment({
+    const doPaymentPvResultPaymentNext = await createAndStartPayment({
       programId: programIdPV,
       transferValue: paymentAmount,
       referenceIds: [],
@@ -254,7 +254,7 @@ describe('Payment in progress', () => {
     });
 
     // We expect that doing a payment for OCW succeeds since the previous payment is not in progress (the payment in progress is for PV)
-    const doPaymentOcwResultPaymentNext = await doPayment({
+    const doPaymentOcwResultPaymentNext = await createAndStartPayment({
       programId: programIdOCW,
       transferValue: paymentAmount,
       referenceIds: [],
