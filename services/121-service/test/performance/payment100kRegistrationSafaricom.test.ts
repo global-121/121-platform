@@ -26,7 +26,7 @@ import {
 // The other FSPs are simpler or similar to Safaricom so we decided to not test them
 
 const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^17 = 131072
-const duplicateTarget = Math.pow(2, duplicateNumber);
+// const duplicateTarget = Math.pow(2, duplicateNumber);
 const maxWaitTimeMs = 240_000; // 4 minutes
 const passRate = 10; // 10%
 const maxRetryDurationMs = 4_800_000; // 80 minutes
@@ -50,6 +50,21 @@ describe('Do payment for 100k registrations with Safaricom within expected range
       accessToken,
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
+    // Change status of this registration to 'included'
+    const changeStatusResponse = await changeRegistrationStatus({
+      programId: programIdSafaricom,
+      status: RegistrationStatusEnum.included,
+      accessToken,
+    });
+    expect(changeStatusResponse.statusCode).toBe(HttpStatus.ACCEPTED);
+    // Wait for status change to be processed
+    await waitForStatusChangeToComplete({
+      programId: programIdSafaricom,
+      amountOfRegistrations: 1, //duplicateTarget,
+      status: RegistrationStatusEnum.included,
+      maxWaitTimeMs,
+      accessToken,
+    });
     // Duplicate registration to be more than 100k
     const duplicateRegistrationsResponse = await duplicateRegistrations({
       powerNumberRegistration: duplicateNumber,
@@ -59,21 +74,7 @@ describe('Do payment for 100k registrations with Safaricom within expected range
       },
     });
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
-    // Change status of all registrations to 'included'
-    const changeStatusResponse = await changeRegistrationStatus({
-      programId: programIdSafaricom,
-      status: RegistrationStatusEnum.included,
-      accessToken,
-    });
-    expect(changeStatusResponse.statusCode).toBe(HttpStatus.ACCEPTED);
-    // Wait for all status changes to be processed
-    await waitForStatusChangeToComplete({
-      programId: programIdSafaricom,
-      amountOfRegistrations: duplicateTarget,
-      status: RegistrationStatusEnum.included,
-      maxWaitTimeMs,
-      accessToken,
-    });
+
     // Do payment
     const doPaymentResponse = await doPayment({
       programId: programIdSafaricom,

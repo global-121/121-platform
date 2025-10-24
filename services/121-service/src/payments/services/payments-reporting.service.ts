@@ -90,6 +90,7 @@ export class PaymentsReportingService {
       totalAmountPerStatus[status].count = Number(row.count);
       totalAmountPerStatus[status].amount = Number(row.totalamount);
     }
+    console.log('totalAmountPerStatus: ', totalAmountPerStatus);
     return {
       [TransactionStatusEnum.success]: totalAmountPerStatus[
         TransactionStatusEnum.success
