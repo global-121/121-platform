@@ -4,15 +4,15 @@ import http from 'k6/http';
 import { Counter } from 'k6/metrics';
 
 import config from '../models/config.js';
-import loginModel from '../models/login.js';
-import paymentsModel from '../models/payments.js';
-import resetModel from '../models/reset.js';
+import LoginModel from '../models/login.js';
+import PaymentsModel from '../models/payments.js';
+import ResetModel from '../models/reset.js';
 
 const { baseUrl } = config;
 
-const resetPage = new resetModel();
-const paymentsPage = new paymentsModel();
-const loginPage = new loginModel();
+const resetPage = new ResetModel();
+const paymentsPage = new PaymentsModel();
+const loginPage = new LoginModel();
 
 const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '7'); // '7' leads to 128 registrations
 const programId = 3;

@@ -234,13 +234,13 @@ describe('Manage Fsp configurations', () => {
       referenceIds: [registrationOCW5.referenceId],
       accessToken,
     });
-    await waitForStatusChangeToComplete(
-      programIdVisa,
-      1,
-      RegistrationStatusEnum.deleted,
-      8_000,
+    await waitForStatusChangeToComplete({
+      programId: programIdVisa,
+      amountOfRegistrations: 1,
+      status: RegistrationStatusEnum.deleted,
+      maxWaitTimeMs: 8_000,
       accessToken,
-    );
+    });
 
     // Act
     const name = seededFspConfigVoucher.fsp;

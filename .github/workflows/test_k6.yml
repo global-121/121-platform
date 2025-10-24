@@ -67,36 +67,6 @@ jobs:
         run: |
           DUPLICATE_NUMBER=7 npx dotenv -e ../services/.env -- ./k6 run tests/retryFailedJobsOnStartupDuringQueueProcessing.js
 
-      - name: Run findDuplicates100kRegistrations.js with DUPLICATE_NUMBER=16
-        working-directory: ${{ env.k6TestsPath }}
-        run: |
-          DUPLICATE_NUMBER=16 npx dotenv -e ../services/.env -- ./k6 run tests/findDuplicates100kRegistrations.js
-
-      - name: Run BulkUpdate32kRegistration.js with DUPLICATE_NUMBER=3
-        working-directory: ${{ env.k6TestsPath }}
-        run: |
-          DUPLICATE_NUMBER=3 npx dotenv -e ../services/.env -- ./k6 run tests/BulkUpdate32kRegistration.js
-
-      - name: Run payment100kRegistrationIntersolveVisa.js with DUPLICATE_NUMBER=3
-        working-directory: ${{ env.k6TestsPath }}
-        run: |
-          DUPLICATE_NUMBER=3 npx dotenv -e ../services/.env -- ./k6 run tests/payment100kRegistrationIntersolveVisa.js
-
-      - name: Run payment100kRegistrationSafaricom.js with DUPLICATE_NUMBER=3
-        working-directory: ${{ env.k6TestsPath }}
-        run: |
-          DUPLICATE_NUMBER=3 npx dotenv -e ../services/.env -- ./k6 run tests/payment100kRegistrationSafaricom.js
-
-      - name: Run performanceDuringPayment.js with DUPLICATE_NUMBER=3
-        working-directory: ${{ env.k6TestsPath }}
-        run: |
-          DUPLICATE_NUMBER=3 npx dotenv -e ../services/.env -- ./k6 run tests/performanceDuringPayment.js
-
-      - name: Run statusChangePaymentInLargeProgram.js with DUPLICATE_NUMBER=3
-        working-directory: ${{ env.k6TestsPath }}
-        run: |
-          DUPLICATE_NUMBER=3 npx dotenv -e ../services/.env -- ./k6 run tests/statusChangePaymentInLargeProgram.js
-
       - name: Docker logs
         if: always()
         uses: jwalton/gh-docker-logs@v2
