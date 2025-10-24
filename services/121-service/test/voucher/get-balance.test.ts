@@ -6,7 +6,7 @@ import {
   getTransactionsIntersolveVoucher,
   getVoucherBalance,
 } from '@121-service/test/helpers/fsp-specific.helper';
-import { doPayment } from '@121-service/test/helpers/program.helper';
+import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
   importRegistrations,
@@ -43,7 +43,7 @@ describe('Get Intersolve voucher balance', () => {
       accessToken,
     });
     const paymentReferenceIds = [registrationPV5.referenceId];
-    await doPayment({
+    await createAndStartPayment({
       programId: programIdPV,
       transferValue,
       referenceIds: paymentReferenceIds,

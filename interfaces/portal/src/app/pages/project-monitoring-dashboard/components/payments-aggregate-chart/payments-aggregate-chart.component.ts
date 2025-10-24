@@ -32,7 +32,7 @@ export class PaymentsAggregateChartComponent {
   private metricApiService = inject(MetricApiService);
   readonly locale = inject(LOCALE_ID);
   readonly projectId = input.required<string>();
-  readonly aggregateType = input.required<'amount' | 'count'>();
+  readonly aggregateType = input.required<'count' | 'transferValue'>();
 
   readonly getLabelFunction =
     input.required<(opts: ChartTextAlternativeOptions) => string>();
@@ -47,7 +47,7 @@ export class PaymentsAggregateChartComponent {
     >();
 
   readonly title = computed(() =>
-    this.aggregateType() === 'amount'
+    this.aggregateType() === 'transferValue'
       ? $localize`Amount sent per payment`
       : $localize`Transfers per payment`,
   );
@@ -110,6 +110,14 @@ export class PaymentsAggregateChartComponent {
             payment[TransactionStatusEnum.waiting][this.aggregateType()],
         ),
         backgroundColor: tailwindConfig.theme.colors.yellow[500],
+      },
+      {
+        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.created],
+        data: this.data().map(
+          (payment) =>
+            payment[TransactionStatusEnum.created][this.aggregateType()],
+        ),
+        backgroundColor: tailwindConfig.theme.colors.grey[500],
       },
     ],
   }));

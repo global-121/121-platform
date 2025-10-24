@@ -4,7 +4,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  doPayment,
+  createAndStartPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import { seedRegistrationsWithStatus } from '@121-service/test/helpers/registration.helper';
@@ -55,7 +55,7 @@ test('Move PA(s) from status "Included" to "Completed"', async ({ page }) => {
   });
 
   await test.step('Change status of registratios to "Completed" with doing a payment', async () => {
-    await doPayment({
+    await createAndStartPayment({
       programId: programIdPV,
       transferValue: 100,
       referenceIds: paymentReferenceIds,

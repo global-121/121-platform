@@ -1,6 +1,5 @@
 import { Column, Entity, OneToMany, Relation } from 'typeorm';
 
-import { ActionEntity } from '@121-service/src/actions/action.entity';
 import { Base121Entity } from '@121-service/src/base.entity';
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
@@ -65,9 +64,6 @@ export class ProgramEntity extends Base121Entity {
   )
   public aidworkerAssignments: Relation<ProgramAidworkerAssignmentEntity[]>;
 
-  @OneToMany(() => ActionEntity, (action) => action.program)
-  public actions: ActionEntity[];
-
   @OneToMany(
     () => ProgramRegistrationAttributeEntity,
     (programRegistrationAttributes) => programRegistrationAttributes.program,
@@ -125,4 +121,7 @@ export class ProgramEntity extends Base121Entity {
     (attachments) => attachments.program,
   )
   public attachments: Relation<ProgramAttachmentEntity[]>;
+
+  @Column({ default: false, select: false })
+  public paymentsAreLocked: boolean;
 }

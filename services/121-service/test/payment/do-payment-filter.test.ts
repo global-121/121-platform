@@ -7,7 +7,7 @@ import {
   transferValueVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
-  doPayment,
+  createAndStartPayment,
   getTransactions,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -58,7 +58,7 @@ describe('Do payment with filter', () => {
 
   it('should only pay included people', async () => {
     // Act
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: [],
@@ -92,7 +92,7 @@ describe('Do payment with filter', () => {
   // So in practice this query filter will very often be used
   it('should only pay included people with query filter included', async () => {
     // Act
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: [],
@@ -126,7 +126,7 @@ describe('Do payment with filter', () => {
 
   it('should only pay included people with query filter referenceId', async () => {
     // Act
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: [],
@@ -159,7 +159,7 @@ describe('Do payment with filter', () => {
 
   it('should only pay included people with a combination of filters', async () => {
     // Act
-    const doPaymentResponse = await doPayment(
+    const doPaymentResponse = await createAndStartPayment(
       {
         programId: programIdVisa,
         transferValue: transferValueVisa,
@@ -195,7 +195,7 @@ describe('Do payment with filter', () => {
 
   it('should only pay included people with a combination of filter and search', async () => {
     // Act
-    const doPaymentResponse = await doPayment(
+    const doPaymentResponse = await createAndStartPayment(
       {
         programId: programIdVisa,
         transferValue: transferValueVisa,
