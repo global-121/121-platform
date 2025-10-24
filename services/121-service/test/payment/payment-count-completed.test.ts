@@ -4,15 +4,14 @@ import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TwilioStatus } from '@121-service/src/notifications/dto/twilio.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { messageTemplateGeneric } from '@121-service/src/seed-data/message-template/message-template-generic.const';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  createAndStartPayment,
+  createPayment,
   getTransactions,
+  startPayment,
   waitForMessagesToComplete,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -22,6 +21,7 @@ import {
   getRegistrationEvents,
   getRegistrations,
   importRegistrations,
+  waitForRegistrationToHaveUpdatedPaymentCount,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -29,6 +29,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
+// ##TODO better describe and file name with extended scope of this test now
 describe('Do a payment to a PA with maxPayments=1', () => {
   const programId = programIdPV;
   const transferValue = 25;
@@ -63,16 +64,58 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       });
       const paymentReferenceIds = [registrationAh.referenceId];
 
-      // Act
-      const doPaymentResponse = await createAndStartPayment({
+      // Act 1 - create payment
+      const createPaymentResponse = await createPayment({
         programId,
         transferValue,
         referenceIds: paymentReferenceIds,
         accessToken,
       });
-      const paymentId = doPaymentResponse.body.id;
+      const paymentId = createPaymentResponse.body.id;
+      await waitForPaymentTransactionsToComplete({
+        programId,
+        paymentReferenceIds,
+        accessToken,
+        maxWaitTimeMs: 20_000,
+        completeStatusses: [TransactionStatusEnum.created],
+      });
 
-      // Assert
+      // Assert 1 - before starting payment
+      const getTransactionsBeforeStartResponse = await getTransactions({
+        programId,
+        paymentId,
+        registrationReferenceId: registrationAh.referenceId,
+        accessToken,
+      });
+      const transactionsBeforeStart = getTransactionsBeforeStartResponse.body;
+
+      const registrations = await getRegistrations({
+        programId,
+        accessToken,
+        filter: {
+          'filter.referenceId': registrationAh.referenceId,
+        },
+      });
+      const registrationBeforeStart = registrations.body.data[0];
+
+      expect(createPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(createPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
+      expect(transactionsBeforeStart[0].status).toBe(
+        TransactionStatusEnum.created,
+      );
+      expect(registrationBeforeStart!.status).toBe(
+        RegistrationStatusEnum.included,
+      );
+      expect(registrationBeforeStart!.paymentCount).toBe(0);
+
+      // Act 2 - start payment
+      const startPaymentResponse = await startPayment({
+        programId,
+        paymentId,
+        accessToken,
+      });
       await waitForPaymentTransactionsToComplete({
         programId,
         paymentReferenceIds,
@@ -80,42 +123,33 @@ describe('Do a payment to a PA with maxPayments=1', () => {
         maxWaitTimeMs: 20_000,
       });
 
-      const getTransactionsRes = await getTransactions({
+      // Assert 2 - after payment
+      const getTransactionsAfterStartResponse = await getTransactions({
         programId,
         paymentId,
         registrationReferenceId: registrationAh.referenceId,
         accessToken,
       });
-      const getTransactionsBody = getTransactionsRes.body;
+      const transactionsAfterStart = getTransactionsAfterStartResponse.body;
       // Wait for registration to be updated
-      const timeout = 80_000; // Timeout in milliseconds
-      const interval = 1_000; // Interval between retries in milliseconds
-      let elapsedTime = 0;
-      let getRegistration: MappedPaginatedRegistrationDto | null = null;
-      while (
-        (!getRegistration || getRegistration.paymentCount !== 1) &&
-        elapsedTime < timeout
-      ) {
-        const getRegistraitonRes = await getRegistrations({
+      const registrationAfterStart =
+        await waitForRegistrationToHaveUpdatedPaymentCount({
           programId,
+          referenceId: registrationAh.referenceId,
+          expectedPaymentCount: 1,
           accessToken,
         });
-        getRegistration = getRegistraitonRes.body.data[0];
-
-        await waitFor(interval);
-        elapsedTime += interval;
-      }
-      // Assert
-      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-      expect(doPaymentResponse.body.applicableCount).toBe(
-        paymentReferenceIds.length,
+      expect(startPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(transactionsAfterStart[0].status).toBe(
+        TransactionStatusEnum.success,
       );
-      expect(getTransactionsBody[0].status).toBe(TransactionStatusEnum.success);
-      expect(getTransactionsBody[0].errorMessage).toBe(null);
+      expect(transactionsAfterStart[0].errorMessage).toBe(null);
 
-      expect(getRegistration!.status).toBe(RegistrationStatusEnum.completed);
-      expect(getRegistration!.paymentCountRemaining).toBe(0);
-      expect(getRegistration!.paymentCount).toBe(1);
+      expect(registrationAfterStart!.status).toBe(
+        RegistrationStatusEnum.completed,
+      );
+      expect(registrationAfterStart!.paymentCountRemaining).toBe(0);
+      expect(registrationAfterStart!.paymentCount).toBe(1);
 
       const statusChangeToCompleted = (
         await getRegistrationEvents({

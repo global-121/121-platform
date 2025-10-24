@@ -145,6 +145,21 @@ export async function createPayment({
     });
 }
 
+export async function startPayment({
+  programId,
+  paymentId,
+  accessToken,
+}: {
+  programId: number;
+  paymentId: number;
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .patch(`/programs/${programId}/payments/${paymentId}`)
+    .set('Cookie', [accessToken])
+    .send();
+}
+
 export async function createAndStartPayment({
   programId,
   transferValue,
@@ -182,10 +197,11 @@ export async function createAndStartPayment({
     completeStatusses: [TransactionStatusEnum.created],
   });
 
-  const startPaymentResult = await getServer()
-    .patch(`/programs/${programId}/payments/${paymentId}`)
-    .set('Cookie', [accessToken])
-    .send();
+  const startPaymentResult = await startPayment({
+    programId,
+    paymentId,
+    accessToken,
+  });
 
   // In error cases, return the error from starting the payment
   if (startPaymentResult.status !== HttpStatus.ACCEPTED) {
