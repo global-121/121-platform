@@ -5,7 +5,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 import { triggerUnusedVouchersCache } from '@121-service/test/helpers/fsp-specific.helper';
 import {
-  doPayment,
+  createAndStartPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -28,7 +28,7 @@ test.beforeEach(async ({ page }) => {
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
 
-  await doPayment({
+  await createAndStartPayment({
     programId: programIdPV,
     transferValue: 12.5,
     referenceIds: [registrationPV5.referenceId],

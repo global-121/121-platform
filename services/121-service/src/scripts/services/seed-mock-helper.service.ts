@@ -216,7 +216,7 @@ export class SeedMockHelperService {
     return await this.httpService.get(url, headers);
   }
 
-  public async doPayment(
+  public async createPayment(
     programId: number,
     transferValue: number,
     referenceIds: string[],
