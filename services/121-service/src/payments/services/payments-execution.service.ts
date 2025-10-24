@@ -15,9 +15,9 @@ import { TransactionCreationDetails } from '@121-service/src/payments/interfaces
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsExecutionHelperService } from '@121-service/src/payments/services/payments-execution-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
+import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
-import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import {
@@ -41,7 +41,6 @@ export class PaymentsExecutionService {
   public constructor(
     private readonly actionService: ActionsService,
     private readonly azureLogService: AzureLogService,
-    private readonly transactionsService: TransactionsService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
@@ -53,6 +52,7 @@ export class PaymentsExecutionService {
     private readonly programRepository: ProgramRepository,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly paymentsExecutionHelperService: PaymentsExecutionHelperService,
+    private readonly paymentsReportingService: PaymentsReportingService,
   ) {}
 
   public async createPayment({
@@ -70,6 +70,7 @@ export class PaymentsExecutionService {
     dryRun: boolean;
     note?: string;
   }): Promise<BulkActionResultPaymentDto> {
+    // ##TODO: this check should move to payment-start and no longer on payment-create?
     if (!dryRun) {
       await this.paymentsProgressHelperService.checkPaymentInProgressAndThrow(
         programId,
@@ -354,23 +355,52 @@ export class PaymentsExecutionService {
       },
     );
 
-    const transactionIds =
-      await this.paymentsExecutionHelperService.createTransactionsAndUpdateRegistrationPaymentCount(
-        {
-          transactionCreationDetails,
-          paymentId,
-          userId,
-        },
-      );
+    await this.paymentsExecutionHelperService.createTransactionsAndUpdateRegistrationPaymentCount(
+      {
+        transactionCreationDetails,
+        paymentId,
+        userId,
+      },
+    );
 
     await this.paymentsExecutionHelperService.setStatusToCompletedIfApplicable(
       programId,
       userId,
     );
 
+    // ##TODO: this is where the split should happen. Re-evaluate this later.
+    // await this.createTransactionJobs({
+    //   programId,
+    //   transactionIds,
+    //   userId,
+    //   isRetry: false,
+    // });
+  }
+
+  public async startPayment({
+    userId,
+    programId,
+    paymentId,
+  }: {
+    userId: number;
+    programId: number;
+    paymentId: number;
+  }): Promise<void> {
+    // ##TODO put this here? What to do with actions?
+    await this.paymentsProgressHelperService.checkPaymentInProgressAndThrow(
+      programId,
+    );
+
+    // ##TODO more efficient way of doing this, as we only need ids?
+    const transactions =
+      await this.paymentsReportingService.getTransactionsByPaymentId({
+        programId,
+        paymentId,
+      });
+
     await this.createTransactionJobs({
       programId,
-      transactionIds,
+      transactionIds: transactions.map((t) => t.id),
       userId,
       isRetry: false,
     });

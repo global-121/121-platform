@@ -127,17 +127,17 @@ export class PaymentsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Dry run result for doing a payment - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'Dry run result for creating a payment - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
     description:
-      'Doing the payment was successfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'Creating payment and transactions successfully - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiOperation({
-    summary: '[SCOPED] Send payout instruction to fsps',
+    summary: '[SCOPED] Created payment and transactions',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @PaginatedSwaggerDocs(
@@ -210,6 +210,32 @@ export class PaymentsController {
       throw new HttpException(result, HttpStatus.OK);
     }
     return result;
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentSTART] })
+  @ApiResponse({
+    status: HttpStatus.ACCEPTED,
+    description: 'Successfully started the payment',
+  })
+  @ApiOperation({
+    summary: 'Start payment to send payment instructions to FSP',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
+  @HttpCode(HttpStatus.ACCEPTED)
+  //##TODO: combine this with Patch retryPayment?
+  @Patch('programs/:programId/payments/:paymentId')
+  public async startPayment(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('paymentId', ParseIntPipe) paymentId: number,
+    @Req() req: ScopedUserRequest,
+  ): Promise<void> {
+    const userId = RequestHelper.getUserId(req);
+    await this.paymentsExecutionService.startPayment({
+      userId,
+      programId,
+      paymentId,
+    });
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentCREATE] })
