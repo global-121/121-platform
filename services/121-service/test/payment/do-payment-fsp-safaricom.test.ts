@@ -8,7 +8,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  doPayment,
+  createAndStartPayment,
   getTransactions,
   patchProgram,
   retryPayment,
@@ -68,7 +68,7 @@ describe('Do payment to 1 PA', () => {
       const paymentReferenceIds = [registrationSafaricom.referenceId];
 
       // Act
-      const doPaymentResponse = await doPayment({
+      const doPaymentResponse = await createAndStartPayment({
         programId,
         transferValue,
         referenceIds: paymentReferenceIds,
@@ -129,7 +129,7 @@ describe('Do payment to 1 PA', () => {
       const paymentReferenceIds = [registrationSafaricom.referenceId];
 
       // Act
-      const doPaymentResponse = await doPayment({
+      const doPaymentResponse = await createAndStartPayment({
         programId,
         transferValue,
         referenceIds: paymentReferenceIds,
@@ -179,7 +179,7 @@ describe('Do payment to 1 PA', () => {
 
       // Act
       // Initial failing payment
-      const doPaymentResponse = await doPayment({
+      const doPaymentResponse = await createAndStartPayment({
         programId,
         transferValue,
         referenceIds: paymentReferenceIds,
@@ -261,7 +261,7 @@ describe('Do payment to 1 PA', () => {
       const paymentReferenceIds = [registrationSafaricom.referenceId];
 
       // Act
-      const doPaymentResponse = await doPayment({
+      const doPaymentResponse = await createAndStartPayment({
         programId,
         transferValue,
         referenceIds: paymentReferenceIds,

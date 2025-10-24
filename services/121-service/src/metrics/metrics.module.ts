@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { MetricsController } from '@121-service/src/metrics/metrics.controller';
 import { MetricsService } from '@121-service/src/metrics/metrics.service';
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
@@ -23,7 +22,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     TypeOrmModule.forFeature([SafaricomTransferEntity]),
     UserModule,
     RegistrationsModule,
-    ActionsModule,
     PaymentsModule,
     IntersolveVisaModule,
     IntersolveVoucherModule,

@@ -1598,6 +1598,9 @@
       <trans-unit id="payment-event-log-item-type-created" datatype="html">
         <source>Created</source>
       </trans-unit>
+      <trans-unit id="payment-event-log-item-type-started" datatype="html">
+        <source>Started</source>
+      </trans-unit>
       <trans-unit id="payment-event-log-item-type-note" datatype="html">
         <source>Note</source>
       </trans-unit>
@@ -2005,6 +2008,12 @@
       </trans-unit>
       <trans-unit id="9102963095355753902" datatype="html">
         <source>Slovak</source>
+      </trans-unit>
+      <trans-unit id="payment-event-log-item-type-retry" datatype="html">
+        <source>Retry</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-project-settings|trim" datatype="html">
+        <source>Project settings</source>
       </trans-unit>
     </body>
   </file>
