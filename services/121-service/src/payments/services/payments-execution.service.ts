@@ -151,6 +151,7 @@ export class PaymentsExecutionService {
         note,
       });
       bulkActionResultPaymentDto.id = paymentId;
+      // ##TODO: make whole create payment sync now, instead of this part being async?
       // TODO: REFACTOR: userId not be passed down, but should be available in a context object; registrationsForPayment.length is redundant, as it is the same as referenceIds.length
       void this.initiatePayment({
         userId,
@@ -367,14 +368,6 @@ export class PaymentsExecutionService {
       programId,
       userId,
     );
-
-    // ##TODO: this is where the split should happen. Re-evaluate this later.
-    // await this.createTransactionJobs({
-    //   programId,
-    //   transactionIds,
-    //   userId,
-    //   isRetry: false,
-    // });
   }
 
   public async startPayment({

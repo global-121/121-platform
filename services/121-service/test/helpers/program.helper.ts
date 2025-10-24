@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import * as request from 'supertest';
 import { MessageStatus } from 'twilio/lib/rest/api/v2010/account/message';
 import * as XLSX from 'xlsx';
@@ -144,20 +145,31 @@ export async function createAndStartPayment({
     });
   const paymentId = doPaymentResult.body.id;
 
+  console.log('doPaymentResult: ', doPaymentResult);
+  if (doPaymentResult.status !== HttpStatus.ACCEPTED) {
+    return doPaymentResult;
+  }
+
   await waitForPaymentTransactionsToComplete({
     programId,
     paymentReferenceIds: referenceIds,
     accessToken,
-    maxWaitTimeMs: 20_000,
+    maxWaitTimeMs: 2_000,
     paymentId,
     completeStatusses: [TransactionStatusEnum.created],
   });
 
-  await getServer()
+  const startPaymentResult = await getServer()
     .patch(`/programs/${programId}/payments/${paymentId}`)
     .set('Cookie', [accessToken])
     .send();
 
+  console.log('startPaymentResult: ', startPaymentResult);
+  // In error cases, return the error from starting the payment
+  if (startPaymentResult.status !== HttpStatus.ACCEPTED) {
+    return startPaymentResult;
+  }
+  // In success cases, we need the doPaymentResult to get the paymentId from
   return doPaymentResult;
 }
 
