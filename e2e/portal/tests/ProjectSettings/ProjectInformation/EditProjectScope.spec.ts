@@ -37,7 +37,9 @@ test('[38156] Toggle scope in project settings', async ({ page }) => {
 
   await test.step('Disable scope', async () => {
     await registrations.navigateToProgramPage('Settings');
-    await projectSettings.clickEditSectionByTitle('Basic information');
+    await projectSettings.clickEditProjectInformationSectionByTitle(
+      'Basic information',
+    );
 
     await page.getByLabel('Use "scope" in this project').click();
     await projectSettings.saveChanges();
@@ -65,7 +67,9 @@ test('[38156] Toggle scope in project settings', async ({ page }) => {
 
   await test.step('Enable scope again', async () => {
     await registrations.navigateToProgramPage('Settings');
-    await projectSettings.clickEditSectionByTitle('Basic information');
+    await projectSettings.clickEditProjectInformationSectionByTitle(
+      'Basic information',
+    );
 
     await page.getByLabel('Use "scope" in this project').click();
     await projectSettings.saveChanges();

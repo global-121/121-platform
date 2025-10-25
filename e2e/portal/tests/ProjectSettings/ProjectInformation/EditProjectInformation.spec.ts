@@ -59,7 +59,9 @@ test('[38155] Edit Project Information', async ({ page }) => {
   });
 
   await test.step('Edit basic information', async () => {
-    await projectSettings.clickEditSectionByTitle('Basic information');
+    await projectSettings.clickEditProjectInformationSectionByTitle(
+      'Basic information',
+    );
     await projectSettings.editInformationFieldByLabel(
       'Project name',
       projectInfo.name,
@@ -100,7 +102,7 @@ test('[38155] Edit Project Information', async ({ page }) => {
   });
 
   await test.step('Edit Budget information', async () => {
-    await projectSettings.clickEditSectionByTitle('Budget');
+    await projectSettings.clickEditProjectInformationSectionByTitle('Budget');
     await projectSettings.editInformationFieldByLabel(
       'Funds available',
       budgetInfo.fundsAvailable,
