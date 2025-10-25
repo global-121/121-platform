@@ -6,9 +6,9 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
+import FspSettingsPage from '@121-e2e/portal/pages/FspSettingsPage';
 import HomePage from '@121-e2e/portal/pages/HomePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import ProjectSettingsPage from '@121-e2e/portal/pages/ProjectSettingsPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 const configuredFsps = ['Visa debit card', 'Albert Heijn voucher WhatsApp'];
@@ -38,7 +38,7 @@ test('Validate that only configured FSPs are present as configured', async ({
 }) => {
   const homePage = new HomePage(page);
   const registrations = new RegistrationsPage(page);
-  const projectSettings = new ProjectSettingsPage(page);
+  const fspSettings = new FspSettingsPage(page);
 
   await test.step('Navigate to program', async () => {
     await homePage.selectProgram('NLRC OCW program');
@@ -46,23 +46,23 @@ test('Validate that only configured FSPs are present as configured', async ({
 
   await test.step('Navigate to FSP configuration', async () => {
     await registrations.navigateToProgramPage('Settings');
-    await projectSettings.clickEditFspSection();
+    await fspSettings.clickEditFspSection();
   });
 
   await test.step('Validate only assigned FSPs are visible at first', async () => {
-    await projectSettings.validateFspVisibility({ fspNames: configuredFsps });
+    await fspSettings.validateFspVisibility({ fspNames: configuredFsps });
   });
 
   await test.step('Validate unassigned FSPs are not visible', async () => {
-    await projectSettings.validateFspVisibility({
+    await fspSettings.validateFspVisibility({
       fspNames: availableFsps,
       visible: false,
     });
   });
 
   await test.step('Validate that both assigned and configurable FSPs are visible', async () => {
-    await projectSettings.clickAddAnotherFspButton();
-    await projectSettings.validateFspVisibility({
+    await fspSettings.clickAddAnotherFspButton();
+    await fspSettings.validateFspVisibility({
       fspNames: [...configuredFsps, ...availableFsps],
     });
   });

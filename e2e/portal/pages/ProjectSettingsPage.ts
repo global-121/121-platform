@@ -1,4 +1,3 @@
-import { expect } from '@playwright/test';
 import { Locator, Page } from 'playwright';
 
 import DataListComponent from '../components/DataListComponent';
@@ -64,35 +63,6 @@ class ProjectSettingsPage extends BasePage {
     };
 
     await this.page.getByLabel(editLabelMap[title]).click();
-  }
-
-  async clickEditFspSection() {
-    await this.page.getByText('FSP').click();
-  }
-
-  async validateFspVisibility({
-    fspNames,
-    visible = true,
-  }: {
-    fspNames: string[];
-    visible?: boolean;
-  }) {
-    // There is no explicit count for checking if an FSP is available more than once
-    // Because playwright does it implicitly when checking visibility of an element
-    // (e.g. if there are 2 elements with the same text and we check for visibility,
-    // it will fail because it doesn't know which one to check)
-    for (const fspName of fspNames) {
-      const fspLocator = this.page.getByText(fspName);
-      if (visible) {
-        await expect(fspLocator).toBeVisible();
-      } else {
-        await expect(fspLocator).toBeHidden();
-      }
-    }
-  }
-
-  async clickAddAnotherFspButton() {
-    await this.page.getByRole('button', { name: 'Add another FSP' }).click();
   }
 
   async editInformationFieldByLabel(label: string, value: string) {

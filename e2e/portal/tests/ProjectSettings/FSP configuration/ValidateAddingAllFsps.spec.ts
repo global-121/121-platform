@@ -6,20 +6,32 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
+import FspSettingsPage from '@121-e2e/portal/pages/FspSettingsPage';
 import HomePage from '@121-e2e/portal/pages/HomePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import ProjectSettingsPage from '@121-e2e/portal/pages/ProjectSettingsPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
-const configuredFsps = ['Visa debit card', 'Albert Heijn voucher WhatsApp'];
+const excelFsp = ['Excel Payment Instructions'];
+
+const fspsToDelete = ['Visa debit card', 'Albert Heijn voucher WhatsApp'];
+
 const availableFsps = [
-  'Excel Payment Instructions',
   'Albert Heijn voucher paper',
   'Safaricom',
   'Airtel',
   'Commercial Bank of Ethiopia',
   'Nedbank',
   'Onafriq',
+  'Visa debit card',
+  'Albert Heijn voucher WhatsApp',
+];
+
+const fspsConfiguredInKobo = [
+  'Albert Heijn voucher paper',
+  'Airtel',
+  'Nedbank',
+  'Visa debit card',
+  'Albert Heijn voucher WhatsApp',
 ];
 
 // Arrange
@@ -33,12 +45,10 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('Validate that only configured FSPs are present as configured', async ({
-  page,
-}) => {
+test('Add all available FSPs', async ({ page }) => {
   const homePage = new HomePage(page);
   const registrations = new RegistrationsPage(page);
-  const projectSettings = new ProjectSettingsPage(page);
+  const fspSettings = new FspSettingsPage(page);
 
   await test.step('Navigate to program', async () => {
     await homePage.selectProgram('NLRC OCW program');
@@ -46,24 +56,26 @@ test('Validate that only configured FSPs are present as configured', async ({
 
   await test.step('Navigate to FSP configuration', async () => {
     await registrations.navigateToProgramPage('Settings');
-    await projectSettings.clickEditFspSection();
+    await fspSettings.clickEditFspSection();
   });
 
-  await test.step('Validate only assigned FSPs are visible at first', async () => {
-    await projectSettings.validateFspVisibility({ fspNames: configuredFsps });
-  });
-
-  await test.step('Validate unassigned FSPs are not visible', async () => {
-    await projectSettings.validateFspVisibility({
-      fspNames: availableFsps,
-      visible: false,
+  await test.step('Delete CBE FSP available FSPs are visible', async () => {
+    await fspSettings.deleteFsp({
+      fspName: fspsToDelete,
     });
   });
 
-  await test.step('Validate that both assigned and configurable FSPs are visible', async () => {
-    await projectSettings.clickAddAnotherFspButton();
-    await projectSettings.validateFspVisibility({
-      fspNames: [...configuredFsps, ...availableFsps],
+  await test.step('Validate all FSPs are visible', async () => {
+    await fspSettings.validateFspVisibility({
+      fspNames: availableFsps,
+    });
+  });
+
+  await test.step('Add all available FSPs that match kobo form configuration', async () => {
+    await fspSettings.addFsp({ fspName: fspsConfiguredInKobo });
+    await fspSettings.addFsp({ fspName: excelFsp });
+    await fspSettings.validateFspVisibility({
+      fspNames: [...fspsConfiguredInKobo, ...excelFsp],
     });
   });
 });
