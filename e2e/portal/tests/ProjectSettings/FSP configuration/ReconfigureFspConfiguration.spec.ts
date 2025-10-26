@@ -14,7 +14,7 @@ import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 const configuredFsps = ['Visa debit card', 'Albert Heijn voucher WhatsApp'];
 const visaConfigurationCi = [
   'Visa debit card',
-  'INTERSOLVE_VISA_BRAND_CODE',
+  'test-INTERSOLVE_VISA_BRAND_CODE',
   'TESTINTERSOLVEVISACOVERLETTERCODE',
   'test_INTERSOLVE_VISA_FUNDINGTOKEN_CODE',
 ];
