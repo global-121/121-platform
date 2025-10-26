@@ -33,7 +33,7 @@ const newVisaConfiguration = [
 
 // Configuration to use based on environment
 // eslint-disable-next-line n/no-process-env
-const isCI = !!process.env.CI;
+const isCI = process.env.CI === 'true';
 const visaConfiguration = isCI ? visaConfigurationCi : visaConfigurationLocal;
 
 // Arrange

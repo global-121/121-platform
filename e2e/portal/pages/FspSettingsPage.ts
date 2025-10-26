@@ -32,6 +32,9 @@ class FspSettingsPage extends BasePage {
   }
 
   async validateFspConfiguration(fspConfiguration: string[]) {
+    // Wait for inputs to be loaded
+    await this.page.waitForTimeout(200);
+
     const inputs = this.page.locator('input');
     const inputCount = await inputs.count();
 
@@ -91,6 +94,7 @@ class FspSettingsPage extends BasePage {
       }
       // Now proceed with selecting and configuring the FSP
       await this.fspCard.filter({ hasText: name }).click();
+      await this.page.waitForTimeout(200); // Wait for inputs to load
       const inputs = this.page.locator('input');
       const inputCount = await inputs.count();
 
