@@ -12,8 +12,13 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 const configuredFsps = ['Visa debit card', 'Albert Heijn voucher WhatsApp'];
-// For Reviewer those values were taken straight from the UI if those are not meant for the "public" eye let me know to change them
-const visaConfiguration = [
+const visaConfigurationCi = [
+  'Visa debit card',
+  'INTERSOLVE_VISA_BRAND_CODE',
+  'TESTINTERSOLVEVISACOVERLETTERCODE',
+  'test_INTERSOLVE_VISA_FUNDINGTOKEN_CODE',
+];
+const visaConfigurationLocal = [
   'Visa debit card',
   'Ix906_01',
   'RC01',
@@ -25,6 +30,11 @@ const newVisaConfiguration = [
   'RC02',
   '510121323',
 ];
+
+// Configuration to use based on environment
+// eslint-disable-next-line n/no-process-env
+const isCI = !!process.env.CI;
+const visaConfiguration = isCI ? visaConfigurationCi : visaConfigurationLocal;
 
 // Arrange
 test.beforeEach(async ({ page }) => {
