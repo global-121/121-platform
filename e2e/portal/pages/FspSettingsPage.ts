@@ -55,31 +55,30 @@ class FspSettingsPage extends BasePage {
       if (await this.addFspButton.isVisible()) {
         await this.addFspButton.click();
       }
-
       // Now proceed with selecting and configuring the FSP
       await this.fspCard.filter({ hasText: name }).click();
-
       const inputs = this.page.locator('input');
       const inputCount = await inputs.count();
-      if (inputCount === 1) {
-        // Handle dropdowns when no inputs are present
-        await this.page.waitForTimeout(200); // Small wait to ensure dropdowns are loaded
-        const dropdowns = this.page.getByRole('combobox', { name: 'Select 1' });
-        const dropdownCount = await dropdowns.count();
-        console.log('dropdownCount: ', dropdownCount);
 
-        for (let i = 0; i < dropdownCount; i++) {
-          console.log(`Selecting FSP dropdown ${i + 1} of ${dropdownCount}`);
-          const dropdown = dropdowns.nth(i);
-          await dropdown.click();
+      if (name === 'Excel Payment Instructions') {
+        // Handle dropdowns for Excel Payment Instructions FSP
+        const dropdown = this.page.getByPlaceholder('Select 1');
+        const dropdownsCount = await dropdown.count();
 
+        for (let i = 0; i < dropdownsCount; i++) {
+          await dropdown.nth(i).click();
           // Select the option with the FSP name
-          await this.page.getByLabel('Full Name').click();
+          await this.page
+            .getByLabel('Full Name')
+            .nth(i + 1)
+            .click();
+          await dropdown.nth(i).click(); // Close the dropdown
         }
-      }
-      for (let i = 1; i < inputCount; i++) {
-        const input = inputs.nth(i);
-        await input.fill(name);
+      } else {
+        for (let i = 1; i < inputCount; i++) {
+          const input = inputs.nth(i);
+          await input.fill(name);
+        }
       }
 
       await this.integrateFspButton.click();

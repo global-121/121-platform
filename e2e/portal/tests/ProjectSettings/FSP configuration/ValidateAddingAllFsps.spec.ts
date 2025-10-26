@@ -11,8 +11,6 @@ import HomePage from '@121-e2e/portal/pages/HomePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
-const excelFsp = ['Excel Payment Instructions'];
-
 const fspsToDelete = ['Visa debit card', 'Albert Heijn voucher WhatsApp'];
 
 const availableFsps = [
@@ -32,6 +30,7 @@ const fspsConfiguredInKobo = [
   'Nedbank',
   'Visa debit card',
   'Albert Heijn voucher WhatsApp',
+  'Excel Payment Instructions',
 ];
 
 // Arrange
@@ -59,13 +58,13 @@ test('Add all available FSPs', async ({ page }) => {
     await fspSettings.clickEditFspSection();
   });
 
-  await test.step('Delete CBE FSP available FSPs are visible', async () => {
+  await test.step('Delete All FSPs', async () => {
     await fspSettings.deleteFsp({
       fspName: fspsToDelete,
     });
   });
 
-  await test.step('Validate all FSPs are visible', async () => {
+  await test.step('Validate all FSPs are ready for configuration', async () => {
     await fspSettings.validateFspVisibility({
       fspNames: availableFsps,
     });
@@ -73,9 +72,11 @@ test('Add all available FSPs', async ({ page }) => {
 
   await test.step('Add all available FSPs that match kobo form configuration', async () => {
     await fspSettings.addFsp({ fspName: fspsConfiguredInKobo });
-    await fspSettings.addFsp({ fspName: excelFsp });
+  });
+
+  await test.step('Validate that only selected FSPs were configured', async () => {
     await fspSettings.validateFspVisibility({
-      fspNames: [...fspsConfiguredInKobo, ...excelFsp],
+      fspNames: fspsConfiguredInKobo,
     });
   });
 });
