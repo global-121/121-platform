@@ -23,6 +23,40 @@ class FspSettingsPage extends BasePage {
     await this.page.getByRole('link', { name: 'FSP' }).click();
   }
 
+  async openEditFspConfigurationByName(fspName: string) {
+    const fspCard = this.fspCard
+      .filter({ hasText: fspName })
+      .getByLabel('More actions');
+    await fspCard.click();
+    await this.page.getByRole('menuitem', { name: 'Reconfigure' }).click();
+  }
+
+  async validateFspConfiguration(fspConfiguration: string[]) {
+    const inputs = this.page.locator('input');
+    const inputCount = await inputs.count();
+
+    for (const config of fspConfiguration) {
+      let found = false;
+
+      for (let i = 0; i < inputCount; i++) {
+        const input = inputs.nth(i);
+        const value = await input.inputValue();
+
+        if (value === config) {
+          await expect(input).toHaveValue(config);
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) {
+        throw new Error(
+          `Configuration value "${config}" not found in any input`,
+        );
+      }
+    }
+  }
+
   async validateFspVisibility({
     fspNames,
     visible = true,
@@ -83,6 +117,18 @@ class FspSettingsPage extends BasePage {
 
       await this.integrateFspButton.click();
     }
+  }
+
+  async reconfigureFsp(configuration: string[]) {
+    const inputs = this.page.locator('input');
+    const inputCount = await inputs.count();
+
+    for (let i = 0; i < inputCount; i++) {
+      const input = inputs.nth(i);
+      await input.fill(configuration[i]);
+    }
+
+    await this.integrateFspButton.click();
   }
 
   async deleteFsp({ fspName }: { fspName: string[] }) {
