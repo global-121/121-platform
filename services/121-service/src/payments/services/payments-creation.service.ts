@@ -8,6 +8,7 @@ import { ActionsService } from '@121-service/src/actions/actions.service';
 import { getFspConfigurationRequiredProperties } from '@121-service/src/fsps/fsp-settings.helpers';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
+import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
@@ -179,9 +180,10 @@ export class PaymentsCreationService {
     paymentEntity.programId = programId;
     const savedPaymentEntity = await this.paymentRepository.save(paymentEntity);
 
-    await this.paymentEventsService.createCreatedEvent({
+    await this.paymentEventsService.createEventWithoutAttributes({
       paymentId: savedPaymentEntity.id,
       userId,
+      type: PaymentEvent.created,
     });
 
     if (note) {
