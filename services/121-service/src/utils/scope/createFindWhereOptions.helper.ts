@@ -58,10 +58,6 @@ export function convertToScopedOptions<T, Options extends FindManyOptions<T>>(
   // Create default options if undefined
   const baseOptions: FindOptionsCombined<T> = options || {};
 
-  // For scope filtering, we reverse the relation array so nesting starts from the innermost registration outward.
-  // This matches the actual path needed to reach the 'scope' property for filtering.
-  // For the enableScope check, we use the original order, nesting from the entity outward to 'program',
-  // since 'enableScope' is checked directly on the program relation.
   const whereQueryScope = getWhereQueryWithScope(
     baseOptions,
     relationArrayToRegistration,
