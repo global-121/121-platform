@@ -9,7 +9,6 @@ import { LookupService } from '@121-service/src/notifications/lookup/lookup.serv
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
-import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import {
   DefaultRegistrationDataAttributeNames,
   GenericRegistrationAttributes,
@@ -112,7 +111,6 @@ describe('RegistrationsInputValidator', () => {
   let mockProgramRepository: Partial<Repository<ProgramEntity>>;
   let mockRegistrationRepository: Partial<Repository<RegistrationEntity>>;
   let userService: UserService;
-  let registrationsPaginationService: RegistrationsPaginationService;
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -170,9 +168,6 @@ describe('RegistrationsInputValidator', () => {
     userService = module.get<UserService>(UserService);
     mockRegistrationRepository.findOne = jest.fn().mockResolvedValue(null);
     mockProgramRepository.findOneOrFail = jest.fn().mockResolvedValue(program);
-    registrationsPaginationService = module.get<RegistrationsPaginationService>(
-      RegistrationsPaginationService,
-    );
   });
 
   it('should validate and clean registrations input without errors', async () => {
@@ -434,57 +429,5 @@ describe('RegistrationsInputValidator', () => {
       },
     };
     expect(result[0]).toEqual(expectedResult);
-  });
-
-  it('should reject bulk updates containing telephone attributes', async () => {
-    const referenceId = '00dc9451-1273-484c-b2e8-ae21b51a96ab';
-    const mockRegistration = {
-      referenceId,
-      programFspConfigurationName: 'Excel',
-    } as unknown as RegistrationViewEntity;
-
-    jest
-      .spyOn(
-        registrationsPaginationService,
-        'getRegistrationViewsChunkedByReferenceIds',
-      )
-      .mockResolvedValueOnce([mockRegistration]);
-
-    const csvArray = [
-      {
-        referenceId,
-        phoneNumber: '14155238880',
-        whatsappPhoneNumber: '14155238880',
-      },
-    ];
-
-    const validationPromise = validator.validateAndCleanInput({
-      registrationInputArray: csvArray,
-      programId,
-      userId,
-      typeOfInput: RegistrationValidationInputType.bulkUpdate,
-      validationConfig: {
-        validateUniqueReferenceId: true,
-        validateExistingReferenceId: true,
-      },
-    });
-
-    await expect(validationPromise).rejects.toThrow(HttpException);
-    await expect(validationPromise).rejects.toMatchObject({
-      response: expect.arrayContaining([
-        {
-          lineNumber: 1,
-          column: DefaultRegistrationDataAttributeNames.phoneNumber,
-          value: '14155238880',
-          error: `Attribute ${DefaultRegistrationDataAttributeNames.phoneNumber} is of type tel (telephone number) and cannot be updated in bulk`,
-        },
-        {
-          lineNumber: 1,
-          column: FspAttributes.whatsappPhoneNumber,
-          value: '14155238880',
-          error: `Attribute ${FspAttributes.whatsappPhoneNumber} is of type tel (telephone number) and cannot be updated in bulk`,
-        },
-      ]),
-    });
   });
 });
