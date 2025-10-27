@@ -64,7 +64,7 @@ jobs:
             duplicate_number: '17'
           - shard: '5'
             test_name: 'Payment100kRegistrationSafaricom.test.ts'
-            duplicate_number: '12'
+            duplicate_number: '17'
           - shard: '6'
             test_name: 'PerformanceDuringPayment.test.ts'
             duplicate_number: '15'
