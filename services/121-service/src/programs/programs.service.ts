@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { merge } from 'lodash';
+import { difference } from 'lodash';
 import { DataSource, Equal, QueryFailedError, Repository } from 'typeorm';
 
 import { ActionEntity } from '@121-service/src/actions/action.entity';
@@ -33,6 +34,7 @@ import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
+import { sortStringsAlphabeticSimple } from '@121-service/src/utils/sort-strings-alphabetic-simple';
 
 @Injectable()
 export class ProgramService {
@@ -142,13 +144,35 @@ export class ProgramService {
     }
   }
 
+  // TODO: Better to do this validation in the controller.
+  private async validateProgramLanguages(
+    languages: string[] | undefined,
+  ): Promise<void> {
+    if (!languages || languages.length === 0) {
+      return;
+    }
+    // Sorting to print nicer.
+    const supportedLanguages = sortStringsAlphabeticSimple(
+      Object.values(LanguageEnum),
+    );
+    const unsupportedLanguages = difference(languages, supportedLanguages);
+    if (unsupportedLanguages.length > 0) {
+      const error = `The following languages: '${unsupportedLanguages.join(
+        ', ',
+      )}' are not supported. Supported languages are: ${supportedLanguages.join(', ')}`;
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+  }
+
   public async create(
     programData: CreateProgramDto,
     userId: number,
   ): Promise<ProgramEntity> {
     let newProgram;
 
+    // FYI: Not used in updateProgram.
     await this.validateProgram(programData);
+    await this.validateProgramLanguages(programData.languages);
 
     const fullnameNamingConvention =
       this.applyFullnameNamingConventionFallbackIfNecessary({
@@ -246,6 +270,8 @@ export class ProgramService {
     updateProgramDto: UpdateProgramDto,
   ): Promise<ProgramReturnDto> {
     const program = await this.findProgramOrThrow(programId);
+
+    await this.validateProgramLanguages(updateProgramDto.languages);
 
     // If nothing to update, raise a 400 Bad Request.
     if (Object.keys(updateProgramDto).length === 0) {

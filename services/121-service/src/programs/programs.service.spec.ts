@@ -1,4 +1,4 @@
-import { HttpException } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DataSource, Equal, Repository } from 'typeorm';
@@ -8,6 +8,8 @@ import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
+import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
@@ -123,6 +125,52 @@ describe('ProgramService', () => {
       // Act & Assert
       await expect(service.findProgramOrThrow(programId)).rejects.toThrow(
         HttpException,
+      );
+    });
+  });
+
+  describe('create', () => {
+    it('should produce an error when receiving unsupported languages', async () => {
+      // Arrange
+      const createProgramDto: CreateProgramDto = {
+        titlePortal: 'Test Program',
+        description: 'Test Description',
+        currency: 'USD',
+        languages: ['en', 'zz'], // 'zz' is an unsupported language
+      } as CreateProgramDto;
+      const userId = 1;
+      const mockProgram = { id: 1, ...createProgramDto } as ProgramEntity;
+      jest.spyOn(programRepository, 'save').mockResolvedValue(mockProgram);
+
+      // Act & Assert
+      await expect(service.create(createProgramDto, userId)).rejects.toThrow(
+        new HttpException(
+          "The following languages: 'zz' are not supported. Supported languages are: ar, en, es, fr, in, nl, pt_BR, tl, tr, uk",
+          HttpStatus.BAD_REQUEST,
+        ),
+      );
+    });
+  });
+
+  describe('updateProgram', () => {
+    it('should produce an error when receiving unsupported languages', async () => {
+      // Arrange
+      const updateProgramDto: UpdateProgramDto = {
+        languages: ['en', 'zz'], // 'zz' is an unsupported language
+      } as UpdateProgramDto;
+      const mockProgram = { id: 1, ...updateProgramDto } as ProgramEntity;
+      jest.spyOn(programRepository, 'findOne').mockResolvedValue(mockProgram);
+      jest
+        .spyOn(service, 'findProgramOrThrow')
+        .mockResolvedValue(mockProgram as any);
+      jest.spyOn(programRepository, 'save').mockResolvedValue(mockProgram);
+
+      // Act & Assert
+      await expect(service.updateProgram(1, updateProgramDto)).rejects.toThrow(
+        new HttpException(
+          "The following languages: 'zz' are not supported. Supported languages are: ar, en, es, fr, in, nl, pt_BR, tl, tr, uk",
+          HttpStatus.BAD_REQUEST,
+        ),
       );
     });
   });
