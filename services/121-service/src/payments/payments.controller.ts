@@ -217,10 +217,10 @@ export class PaymentsController {
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentSTART] })
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
-    description: 'Successfully started the payment',
+    description: 'Successfully executed the payment start or retry',
   })
   @ApiOperation({
-    summary: 'Start payment to send payment instructions to FSP',
+    summary: 'Start or Retry payment to send payment instructions to FSP',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
@@ -233,7 +233,7 @@ export class PaymentsController {
   })
   @HttpCode(HttpStatus.ACCEPTED)
   @Patch('programs/:programId/payments/:paymentId')
-  public async startPayment(
+  public async startOrRetryPayment(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('paymentId', ParseIntPipe) paymentId: number,
     @Query('retry') retry = 'false',

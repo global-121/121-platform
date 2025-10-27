@@ -132,25 +132,36 @@ export class PaymentsCreationService {
         note,
       });
       bulkActionResultPaymentDto.id = paymentId;
-      // ##TODO: make whole create payment sync now, instead of this part being async?
-      void this.initiatePayment({
-        userId,
-        programId,
-        paymentId,
-        transferValue,
-        referenceIds,
-      })
-        .catch((e) => {
-          this.azureLogService.logError(e, true);
-        })
-        .finally(() => {
-          // TODO: Remove this, along with all payment action saving?
-          void this.actionService.saveAction(
-            userId,
+
+      try {
+        await this.actionService.saveAction(
+          userId,
+          programId,
+          AdditionalActionType.paymentStarted,
+        );
+
+        const transactionCreationDetails =
+          await this.getTransactionCreationDetails({
+            referenceIds,
+            transferValue,
             programId,
-            AdditionalActionType.paymentFinished,
-          );
+          });
+
+        await this.transactionsService.createTransactionsAndEvents({
+          transactionCreationDetails,
+          paymentId,
+          userId,
         });
+      } catch (e) {
+        this.azureLogService.logError(e, true);
+      } finally {
+        // ##TODO: Remove this, along with all payment action saving?
+        void this.actionService.saveAction(
+          userId,
+          programId,
+          AdditionalActionType.paymentFinished,
+        );
+      }
     }
     return bulkActionResultPaymentDto;
   }
@@ -264,41 +275,6 @@ export class PaymentsCreationService {
       .andWhere('registration.status = :status', {
         status: RegistrationStatusEnum.included,
       });
-  }
-
-  // ##TODO: change this name, as it no longer makes sense. This is still part of createPayment, not of startPayment. Probably reorganize methods also.
-  private async initiatePayment({
-    userId,
-    programId,
-    paymentId,
-    transferValue,
-    referenceIds,
-  }: {
-    userId: number;
-    programId: number;
-    paymentId: number;
-    transferValue: number;
-    referenceIds: string[];
-  }): Promise<void> {
-    await this.actionService.saveAction(
-      userId,
-      programId,
-      AdditionalActionType.paymentStarted,
-    );
-
-    const transactionCreationDetails = await this.getTransactionCreationDetails(
-      {
-        referenceIds,
-        transferValue,
-        programId,
-      },
-    );
-
-    await this.transactionsService.createTransactionsAndEvents({
-      transactionCreationDetails,
-      paymentId,
-      userId,
-    });
   }
 
   private async getTransactionCreationDetails({
