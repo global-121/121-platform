@@ -1,11 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentsExecutionHelperService } from '@121-service/src/payments/services/payments-execution-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
@@ -16,9 +13,6 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
 
 @Injectable()
 export class PaymentsExecutionService {
-  @InjectRepository(PaymentEntity)
-  private readonly paymentRepository: Repository<PaymentEntity>;
-
   public constructor(
     private readonly actionService: ActionsService,
     private readonly azureLogService: AzureLogService,
