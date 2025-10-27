@@ -222,42 +222,38 @@ export class PaymentsController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
+  @ApiQuery({
+    name: 'retry',
+    required: false,
+    type: 'boolean',
+    description:
+      'Default is false. If set to true, then (1) all failed transactions of payment are retried or (2) with a filter on referenceIds passed via body. Only failed transactions will be sent again with the original amount. If retry=false, then no body is needed',
+  })
   @HttpCode(HttpStatus.ACCEPTED)
-  //##TODO: combine this with Patch retryPayment?
   @Patch('programs/:programId/payments/:paymentId')
   public async startPayment(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('paymentId', ParseIntPipe) paymentId: number,
+    @Query('retry') retry = 'false',
+    @Body() retryReferenceIds: RetryPaymentDto,
     @Req() req: ScopedUserRequest,
   ): Promise<void> {
     const userId = RequestHelper.getUserId(req);
-    await this.paymentsExecutionService.startPayment({
-      userId,
-      programId,
-      paymentId,
-    });
-  }
-
-  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentCREATE] })
-  @ApiOperation({
-    summary:
-      '[SCOPED] Send payout instruction to fsp to retry a payment. This retries failed payments with the original amount',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Patch('programs/:programId/payments')
-  public async retryPayment(
-    @Body() data: RetryPaymentDto,
-    @Param('programId', ParseIntPipe) programId: number,
-    @Req() req: ScopedUserRequest,
-  ): Promise<BulkActionResultDto> {
-    const userId = RequestHelper.getUserId(req);
-
-    return await this.paymentsExecutionService.retryPayment(
-      userId,
-      programId,
-      data.paymentId,
-      data.referenceIds,
-    );
+    const retryBoolean = retry === 'true';
+    if (retryBoolean) {
+      await this.paymentsExecutionService.retryPayment(
+        userId,
+        programId,
+        paymentId,
+        retryReferenceIds.referenceIds,
+      );
+    } else {
+      await this.paymentsExecutionService.startPayment({
+        userId,
+        programId,
+        paymentId,
+      });
+    }
   }
 
   @AuthenticatedUser({
