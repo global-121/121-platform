@@ -8,6 +8,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { messageTemplateGeneric } from '@121-service/src/seed-data/message-template/message-template-generic.const';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   createPayment,
   getTransactions,
@@ -27,10 +28,13 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
+import {
+  programIdPV,
+  registrationPV5,
+  registrationPV6,
+} from '@121-service/test/registrations/pagination/pagination-data';
 
-// ##TODO better describe and file name with extended scope of this test now
-describe('Do a payment to a PA with maxPayments=1', () => {
+describe('Start and create a payment separately', () => {
   const programId = programIdPV;
   const transferValue = 25;
   const registrationAh = {
@@ -53,7 +57,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       accessToken = await getAccessToken();
     });
 
-    it('should set registration to complete', async () => {
+    it('should set registration to complete on payment start when maxPayments is reached', async () => {
       // Arrange
       await importRegistrations(programId, [registrationAh], accessToken);
       await awaitChangeRegistrationStatus({
@@ -195,6 +199,67 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       expect(expectedMessages[0].attributes.contentType).toBe(
         MessageContentType.completed,
       );
+    });
+
+    it('should not start transactions of declined registrations', async () => {
+      // Arrange
+      const registrations = [registrationPV5, registrationPV6];
+      await importRegistrations(programId, registrations, accessToken);
+      await awaitChangeRegistrationStatus({
+        programId,
+        referenceIds: registrations.map((r) => r.referenceId),
+        status: RegistrationStatusEnum.included,
+        accessToken,
+      });
+      // only create, not start yet
+      const createPaymentResponse = await createPayment({
+        programId,
+        transferValue,
+        referenceIds: registrations.map((r) => r.referenceId),
+        accessToken,
+      });
+      const paymentId = createPaymentResponse.body.id;
+      await waitForPaymentTransactionsToComplete({
+        programId,
+        paymentReferenceIds: registrations.map((r) => r.referenceId),
+        accessToken,
+        maxWaitTimeMs: 20_000,
+        completeStatusses: [TransactionStatusEnum.created],
+      });
+
+      await awaitChangeRegistrationStatus({
+        programId,
+        referenceIds: [registrationPV5.referenceId],
+        status: RegistrationStatusEnum.declined,
+        accessToken,
+      });
+
+      // Act
+      await startPayment({
+        programId,
+        paymentId,
+        accessToken,
+      });
+      await waitFor(1_000); // small wait to ensure transactions are started. We cannot listen for specific non-created statuses here as one should stay on created
+
+      // Assert
+      const getTransactionsResponse = await getTransactions({
+        programId,
+        paymentId,
+        accessToken,
+      });
+      const transactions = getTransactionsResponse.body;
+
+      const createdTransactions = transactions.filter(
+        (t: any) => t.status === TransactionStatusEnum.created,
+      );
+      const nonCreatedTransactions = transactions.filter(
+        (t: any) => t.status !== TransactionStatusEnum.created,
+      );
+
+      expect(createPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(createdTransactions.length).toBe(1);
+      expect(nonCreatedTransactions.length).toBe(1);
     });
   });
 });

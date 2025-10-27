@@ -269,4 +269,22 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       .groupBy('transaction.status')
       .getRawMany();
   }
+
+  public async getTransactionsOfIncludedRegistrationsByPaymentId({
+    programId,
+    paymentId,
+  }: {
+    programId: number;
+    paymentId: number;
+  }): Promise<TransactionViewEntity[]> {
+    return this.find({
+      where: {
+        paymentId: Equal(paymentId),
+        registration: {
+          programId: Equal(programId),
+          registrationStatus: Equal(RegistrationStatusEnum.included),
+        },
+      },
+    });
+  }
 }
