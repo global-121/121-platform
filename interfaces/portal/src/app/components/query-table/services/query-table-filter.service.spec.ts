@@ -1,17 +1,17 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment -- Test file requires any types for mocking */
 import { TestBed } from '@angular/core/testing';
 
 import { QueryTableFilterService } from '~/components/query-table/services/query-table-filter.service';
 import { TrackingService } from '~/services/tracking.service';
 
 describe('QueryTableFilterService', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for mocking/test-setup
   let service: QueryTableFilterService<any>;
   let trackingService: jasmine.SpyObj<TrackingService>;
 
   beforeEach(() => {
     const trackingServiceSpy = jasmine.createSpyObj('TrackingService', [
       'trackEvent',
-    ]);
+    ]) as jasmine.SpyObj<TrackingService>;
 
     TestBed.configureTestingModule({
       providers: [

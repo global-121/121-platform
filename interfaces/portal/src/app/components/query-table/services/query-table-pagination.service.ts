@@ -30,6 +30,7 @@ export class QueryTablePaginationService<TData> {
       return totalRecords;
     },
   );
+
   readonly currentPageReportTemplate = computed(
     () => (selectedItemsCount?: number) => {
       const baseTemplate =
@@ -49,6 +50,7 @@ export class QueryTablePaginationService<TData> {
       );
     },
   );
+
   setServerSideTotalRecordsProvider(provider: () => number | undefined) {
     this.getServerSideTotalRecords = provider;
   }

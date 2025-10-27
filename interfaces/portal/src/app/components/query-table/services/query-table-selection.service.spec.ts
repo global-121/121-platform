@@ -1,11 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument, @typescript-eslint/unbound-method -- Test file requires any types for mocking */
 import { TestBed } from '@angular/core/testing';
 
 import { QueryTableSelectionService } from '~/components/query-table/services/query-table-selection.service';
-import { PaginateQueryService } from '~/services/paginate-query.service';
+import {
+  ActionDataWithPaginateQuery,
+  PaginateQueryService,
+} from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
 
 describe('QueryTableSelectionService', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for mocking/test-setup
   let service: QueryTableSelectionService<any>;
   let paginateQueryService: jasmine.SpyObj<PaginateQueryService>;
   let toastService: jasmine.SpyObj<ToastService>;
@@ -14,11 +17,11 @@ describe('QueryTableSelectionService', () => {
     const paginateQueryServiceSpy = jasmine.createSpyObj(
       'PaginateQueryService',
       ['selectionEventToActionData'],
-    );
+    ) as jasmine.SpyObj<PaginateQueryService>;
     const toastServiceSpy = jasmine.createSpyObj('ToastService', [
       'showGenericError',
       'showToast',
-    ]);
+    ]) as jasmine.SpyObj<ToastService>;
 
     TestBed.configureTestingModule({
       providers: [
@@ -57,8 +60,10 @@ describe('QueryTableSelectionService', () => {
   it('should handle select all functionality', () => {
     service.setServerSideTotalRecordsProvider(() => 100);
 
-    const selectAllEvent: any = { checked: true };
-    service.onSelectAllChange(selectAllEvent);
+    service.onSelectAllChange({
+      originalEvent: new Event('change'),
+      checked: true,
+    });
 
     expect(service.selectAll()).toBe(true);
     expect(service.selectedItems()).toEqual([]);
@@ -77,7 +82,9 @@ describe('QueryTableSelectionService', () => {
   });
 
   it('should show toast when no items are selected', () => {
-    paginateQueryService.selectionEventToActionData.and.returnValue({} as any);
+    paginateQueryService.selectionEventToActionData.and.returnValue(
+      {} as ActionDataWithPaginateQuery<unknown>,
+    );
 
     const result = service.getActionData({
       fieldForFilter: 'id',
@@ -90,6 +97,7 @@ describe('QueryTableSelectionService', () => {
     });
 
     expect(result).toBeUndefined();
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Mocking service methods in tests
     expect(toastService.showToast).toHaveBeenCalledWith({
       severity: 'error',
       detail: 'Please select items',

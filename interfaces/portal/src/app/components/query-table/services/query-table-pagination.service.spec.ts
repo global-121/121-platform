@@ -1,10 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument, @typescript-eslint/unbound-method -- Test file requires any types for mocking */
 import { TestBed } from '@angular/core/testing';
 
+import { TableLazyLoadEvent } from 'primeng/table';
+
 import { QueryTablePaginationService } from '~/components/query-table/services/query-table-pagination.service';
-import { PaginateQueryService } from '~/services/paginate-query.service';
+import {
+  PaginateQuery,
+  PaginateQueryService,
+} from '~/services/paginate-query.service';
 
 describe('QueryTablePaginationService', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for mocking/test-setup
   let service: QueryTablePaginationService<any>;
   let paginateQueryService: jasmine.SpyObj<PaginateQueryService>;
 
@@ -12,7 +17,7 @@ describe('QueryTablePaginationService', () => {
     const paginateQueryServiceSpy = jasmine.createSpyObj(
       'PaginateQueryService',
       ['convertPrimeNGLazyLoadEventToPaginateQuery'],
-    );
+    ) as jasmine.SpyObj<PaginateQueryService>;
 
     TestBed.configureTestingModule({
       providers: [
@@ -78,14 +83,14 @@ describe('QueryTablePaginationService', () => {
   });
 
   it('should process lazy load events and call update callback', () => {
-    const mockLazyLoadEvent: any = {
+    const mockLazyLoadEvent: TableLazyLoadEvent = {
       first: 0,
       rows: 10,
       sortField: 'name',
       sortOrder: 1,
     };
 
-    const mockPaginateQuery: any = {
+    const mockPaginateQuery: PaginateQuery = {
       page: 1,
       limit: 10,
       sortBy: [['name', 'ASC']],
@@ -99,13 +104,14 @@ describe('QueryTablePaginationService', () => {
     service.onLazyLoadEvent(mockLazyLoadEvent, updateCallback);
 
     expect(
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- Mocking service methods in tests
       paginateQueryService.convertPrimeNGLazyLoadEventToPaginateQuery,
     ).toHaveBeenCalledWith(mockLazyLoadEvent);
     expect(updateCallback).toHaveBeenCalledWith(mockPaginateQuery);
   });
 
   it('should not call update callback when conversion returns undefined', () => {
-    const mockLazyLoadEvent: any = { first: 0, rows: 10 };
+    const mockLazyLoadEvent: TableLazyLoadEvent = { first: 0, rows: 10 };
     paginateQueryService.convertPrimeNGLazyLoadEventToPaginateQuery.and.returnValue(
       undefined,
     );
