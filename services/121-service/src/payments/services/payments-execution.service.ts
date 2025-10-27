@@ -46,7 +46,6 @@ export class PaymentsExecutionService {
       type: PaymentEvent.started,
     });
 
-    // ##TODO add api-test on this scenario
     const transactionsOfIncludedRegistrations =
       await this.transactionViewScopedRepository.getTransactionsOfIncludedRegistrationsByPaymentId(
         {
