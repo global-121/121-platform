@@ -108,6 +108,12 @@ export class PaymentsReportingService {
         count: 0,
         amount: 0,
       },
+      [TransactionStatusEnum.created]: totalAmountPerStatus[
+        TransactionStatusEnum.created
+      ] || {
+        count: 0,
+        amount: 0,
+      },
     };
   }
 

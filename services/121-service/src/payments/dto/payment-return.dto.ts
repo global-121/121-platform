@@ -17,4 +17,7 @@ export class PaymentReturnDto {
 
   @ApiProperty({ example: { count: 3, amount: 75 }, type: CountAmountDto })
   failed: CountAmountDto;
+
+  @ApiProperty({ example: { count: 0, amount: 0 }, type: CountAmountDto })
+  created: CountAmountDto;
 }
