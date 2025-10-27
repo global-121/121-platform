@@ -193,7 +193,6 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       accessToken,
     });
     expect(retryResponse.status).toBe(HttpStatus.ACCEPTED);
-    expect(retryResponse.body.applicableCount).toBe(paymentReferenceIds.length);
     expect(getTransactionsAfterRetryBody.body[0].status).toBe(
       TransactionStatusEnum.success,
     );

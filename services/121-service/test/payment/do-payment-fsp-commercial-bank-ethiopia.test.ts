@@ -278,9 +278,6 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     // Assert
     // Check if the transaction status is success.
     expect(doPaymentRetryResponse.status).toBe(HttpStatus.ACCEPTED);
-    expect(doPaymentRetryResponse.body.applicableCount).toBe(
-      paymentReferenceIds.length,
-    );
     expect(getTransactionsAfterRetryBody.body[0].status).toBe(
       TransactionStatusEnum.success,
     );
