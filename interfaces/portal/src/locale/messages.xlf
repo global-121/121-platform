@@ -2000,6 +2000,15 @@
       <trans-unit id="7839102902838664367" datatype="html">
         <source>No results</source>
       </trans-unit>
+      <trans-unit id="query-table--clear-filter" datatype="html">
+        <source>Clear filter</source>
+      </trans-unit>
+      <trans-unit id="query-table--toggle-all" datatype="html">
+        <source>Toggle All</source>
+      </trans-unit>
+      <trans-unit id="query-table--toggle-row" datatype="html">
+        <source>Toggle row</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
