@@ -514,9 +514,9 @@ export class MetricsService {
           payment.paymentId,
         );
 
-      res[month].success += Number(aggregate.success.amount);
-      res[month].waiting += Number(aggregate.waiting.amount);
-      res[month].failed += Number(aggregate.failed.amount);
+      res[month].success += Number(aggregate.success.transferValue);
+      res[month].waiting += Number(aggregate.waiting.transferValue);
+      res[month].failed += Number(aggregate.failed.transferValue);
     }
     return res;
   }

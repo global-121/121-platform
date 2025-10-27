@@ -72,47 +72,49 @@ export class PaymentsReportingService {
         paymentId,
       });
 
-    const totalAmountPerStatus: Record<
+    const totalTransferValuePerStatus: Record<
       string,
-      { count: number; amount: number }
+      { count: number; transferValue: number }
     > = {};
 
     for (const row of statusAggregation) {
       const status = row.status;
 
-      if (!totalAmountPerStatus[status]) {
-        totalAmountPerStatus[status] = {
+      if (!totalTransferValuePerStatus[status]) {
+        totalTransferValuePerStatus[status] = {
           count: 0,
-          amount: 0,
+          transferValue: 0,
         };
       }
 
-      totalAmountPerStatus[status].count = Number(row.count);
-      totalAmountPerStatus[status].amount = Number(row.totalamount);
+      totalTransferValuePerStatus[status].count = Number(row.count);
+      totalTransferValuePerStatus[status].transferValue = Number(
+        row.totalTransferValue,
+      );
     }
     return {
-      [TransactionStatusEnum.success]: totalAmountPerStatus[
+      [TransactionStatusEnum.success]: totalTransferValuePerStatus[
         TransactionStatusEnum.success
       ] || {
         count: 0,
-        amount: 0,
+        transferValue: 0,
       },
-      [TransactionStatusEnum.waiting]: totalAmountPerStatus[
+      [TransactionStatusEnum.waiting]: totalTransferValuePerStatus[
         TransactionStatusEnum.waiting
       ] || {
         count: 0,
-        amount: 0,
+        transferValue: 0,
       },
       // TODO: as soon as this has changed update metric.model.ts in the frontend
-      failed: totalAmountPerStatus[TransactionStatusEnum.error] || {
+      failed: totalTransferValuePerStatus[TransactionStatusEnum.error] || {
         count: 0,
-        amount: 0,
+        transferValue: 0,
       },
-      [TransactionStatusEnum.created]: totalAmountPerStatus[
+      [TransactionStatusEnum.created]: totalTransferValuePerStatus[
         TransactionStatusEnum.created
       ] || {
         count: 0,
-        amount: 0,
+        transferValue: 0,
       },
     };
   }
