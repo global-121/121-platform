@@ -90,11 +90,11 @@ export class PaymentsExecutionService {
       applicableCount: 0,
       nonApplicableCount: 0,
     };
-    //   await this.registrationsBulkService.getBulkActionResult(
-    //     paginateQuery,
-    //     programId,
-    //     this.getPaymentBaseQuery(), // We need to create a separate queryBuilder object twice or it will be modified twice
-    //   );
+    await this.registrationsBulkService.getBulkActionResult(
+      paginateQuery,
+      programId,
+      this.getPaymentBaseQuery(), // We need to create a separate queryBuilder object twice or it will be modified twice
+    );
     // console.log('bulkActionResultDto: ', bulkActionResultDto);
 
     // If amount is not defined do not calculate the totalMultiplierSum
