@@ -46,15 +46,20 @@ export class PaymentsExecutionService {
       type: PaymentEvent.started,
     });
 
-    const transactions =
-      await this.paymentsReportingService.getTransactionsByPaymentId({
-        programId,
-        paymentId,
-      });
+    // ##TODO add api-test on this scenario
+    const transactionsOfIncludedRegistrations =
+      await this.transactionViewScopedRepository.getTransactionsOfIncludedRegistrationsByPaymentId(
+        {
+          programId,
+          paymentId,
+        },
+      );
 
     await this.paymentsExecutionHelperService.updatePaymentCountAndSetToCompleted(
       {
-        registrationIds: transactions.map((t) => t.registrationId),
+        registrationIds: transactionsOfIncludedRegistrations.map(
+          (t) => t.registrationId,
+        ),
         programId,
         userId,
       },
@@ -62,7 +67,7 @@ export class PaymentsExecutionService {
 
     await this.createTransactionJobs({
       programId,
-      transactionIds: transactions.map((t) => t.id),
+      transactionIds: transactionsOfIncludedRegistrations.map((t) => t.id),
       userId,
       isRetry: false,
     });
