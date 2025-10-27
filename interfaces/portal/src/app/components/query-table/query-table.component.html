@@ -41,7 +41,7 @@
       @if (isFiltered()) {
         <p-button
           label="Clear filters"
-          i18n-label="@@table-clear-filters"
+          i18n-label="@@query-table--clear-filters"
           [outlined]="true"
           rounded
           severity="contrast"
@@ -83,9 +83,9 @@
             [text]="true"
             [rounded]="true"
             [plain]="true"
-            aria-label="Toggle All"
+            aria-label="Toggle all"
             i18n-aria-label="@@query-table--toggle-all"
-            title="Toggle All"
+            title="Toggle all"
             i18n-title="@@query-table--toggle-all"
             [icon]="
               areAllRowsExpanded()
@@ -146,7 +146,8 @@
                       [optionLabel]="'label'"
                       [optionValue]="'value'"
                       placeholder="Choose option(s)"
-                      i18n-placeholder
+                      i18n-placeholder="
+                        @@query-table--filter-multiselect-placeholder"
                       class="[&_.p-multiselect-option]:text-nowrap"
                     >
                       <ng-template
@@ -187,10 +188,11 @@
       }
       @if (contextMenuItems()) {
         <!-- Extra column for the ellipsis button -->
-        <th i18n>Actions</th>
+        <th i18n="@@query-table--actions-column">Actions</th>
       }
     </tr>
   </ng-template>
+
   <ng-template
     pTemplate="body"
     let-item
@@ -305,6 +307,7 @@
       }
     </tr>
   </ng-template>
+
   <ng-template pTemplate="loadingbody">
     @for (row of [].constructor(table.rows); track $index) {
       <tr data-testid="query-table-loading">
@@ -330,6 +333,7 @@
       </tr>
     }
   </ng-template>
+
   <ng-template pTemplate="emptymessage">
     <tr
       data-testid="query-table-empty"
@@ -341,15 +345,11 @@
             <div class="flex items-center">
               <i class="pi pi-filter me-2 inline text-xl"></i>
 
-              <span
-                i18n
-                class="font-bold"
-                >No results found</span
-              >
+              <strong i18n="@@query-table--no-results">No results</strong>
             </div>
 
             <p
-              i18n
+              i18n="@@query-table--no-results-filters"
               class="my-4"
             >
               There are no records that match the selected filters, clear some
@@ -358,7 +358,7 @@
 
             <p-button
               label="Clear filters"
-              i18n-label="@@table-clear-filters"
+              i18n-label="@@query-table--clear-filters"
               link
               (click)="clearAllFilters()"
             />
@@ -372,15 +372,11 @@
               <div class="flex items-center">
                 <i class="pi pi-exclamation-circle me-2 inline text-xl"></i>
 
-                <span
-                  i18n
-                  class="font-bold"
-                  >No results</span
-                >
+                <strong i18n="@@query-table--no-results">No results</strong>
               </div>
 
               <p
-                i18n
+                i18n="@@query-table--no-results-text"
                 class="mt-4"
               >
                 There are no records to display.
@@ -391,6 +387,7 @@
       </td>
     </tr>
   </ng-template>
+
   @if (expandableRowTemplate()) {
     <ng-template
       #expandedrow
@@ -412,6 +409,7 @@
     </ng-template>
   }
 </p-table>
+
 @if (contextMenuItems()) {
   <!-- Opened when right-clicking on a row -->
   <p-contextMenu
