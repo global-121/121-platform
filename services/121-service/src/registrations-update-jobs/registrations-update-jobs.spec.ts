@@ -1,5 +1,3 @@
-//unit test for registrations-update-jobs
-
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
