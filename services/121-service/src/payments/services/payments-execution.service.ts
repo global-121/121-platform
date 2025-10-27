@@ -3,6 +3,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
+import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsExecutionHelperService } from '@121-service/src/payments/services/payments-execution-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
@@ -21,6 +23,7 @@ export class PaymentsExecutionService {
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
     private readonly paymentsExecutionHelperService: PaymentsExecutionHelperService,
     private readonly paymentsReportingService: PaymentsReportingService,
+    private readonly paymentEventsService: PaymentEventsService,
   ) {}
 
   public async startPayment({
@@ -36,6 +39,12 @@ export class PaymentsExecutionService {
     await this.paymentsProgressHelperService.checkPaymentInProgressAndThrow(
       programId,
     );
+
+    await this.paymentEventsService.createEventWithoutAttributes({
+      paymentId,
+      userId,
+      type: PaymentEvent.started,
+    });
 
     const transactions =
       await this.paymentsReportingService.getTransactionsByPaymentId({
