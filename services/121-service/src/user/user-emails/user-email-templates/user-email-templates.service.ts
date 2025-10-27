@@ -38,7 +38,7 @@ export class UserEmailTemplatesService {
         break;
       case UserEmailTemplateType.importValidationFailed:
         emailTemplate = buildTemplateImportValidationFailed(
-          userEmailTemplateInput,
+          sanitizedUserEmailTemplateInput,
         );
         break;
     }
