@@ -11,6 +11,7 @@ import { ExcelModule } from '@121-service/src/payments/fsp-integration/excel/exc
 import { PaymentEventsModule } from '@121-service/src/payments/payment-events/payment-events.module';
 import { PaymentsController } from '@121-service/src/payments/payments.controller';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
+import { PaymentsCreationService } from '@121-service/src/payments/services/payments-creation.service';
 import { PaymentsExcelFspService } from '@121-service/src/payments/services/payments-excel-fsp.service';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
 import { PaymentsExecutionHelperService } from '@121-service/src/payments/services/payments-execution-helper.service';
@@ -56,6 +57,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     MessageTemplateModule,
   ],
   providers: [
+    PaymentsCreationService,
     PaymentsExecutionService,
     PaymentsExecutionHelperService,
     PaymentsReportingService,

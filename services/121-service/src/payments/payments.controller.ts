@@ -39,6 +39,7 @@ import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-
 import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
 import { PaymentEventDataDto } from '@121-service/src/payments/payment-events/dtos/payment-event-data.dto';
 import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
+import { PaymentsCreationService } from '@121-service/src/payments/services/payments-creation.service';
 import { PaymentsExcelFspService } from '@121-service/src/payments/services/payments-excel-fsp.service';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
@@ -60,6 +61,7 @@ import { sendXlsxReponse } from '@121-service/src/utils/send-xlsx-response';
 @Controller()
 export class PaymentsController {
   public constructor(
+    private readonly paymentsCreationService: PaymentsCreationService,
     private readonly paymentsExecutionService: PaymentsExecutionService,
     private readonly paymentsReportingService: PaymentsReportingService,
     private readonly paymentsExcelFspService: PaymentsExcelFspService,
@@ -195,7 +197,7 @@ export class PaymentsController {
       );
     }
 
-    const result = await this.paymentsExecutionService.createPayment({
+    const result = await this.paymentsCreationService.createPayment({
       userId,
       programId,
       transferValue: data.transferValue,
