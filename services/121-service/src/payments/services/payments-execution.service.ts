@@ -64,7 +64,6 @@ export class PaymentsExecutionService {
     dryRun: boolean;
     note?: string;
   }): Promise<BulkActionResultPaymentDto> {
-    // ##TODO: this check should move to payment-start and no longer on payment-create?
     if (!dryRun) {
       await this.paymentsProgressHelperService.checkPaymentInProgressAndThrow(
         programId,
@@ -146,7 +145,6 @@ export class PaymentsExecutionService {
       });
       bulkActionResultPaymentDto.id = paymentId;
       // ##TODO: make whole create payment sync now, instead of this part being async?
-      // TODO: REFACTOR: userId not be passed down, but should be available in a context object; registrationsForPayment.length is redundant, as it is the same as referenceIds.length
       void this.initiatePayment({
         userId,
         programId,
@@ -329,7 +327,6 @@ export class PaymentsExecutionService {
       programId,
     );
 
-    // ##TODO more efficient way of doing this, as we only need ids?
     const transactions =
       await this.paymentsReportingService.getTransactionsByPaymentId({
         programId,
