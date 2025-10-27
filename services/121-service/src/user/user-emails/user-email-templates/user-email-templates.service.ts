@@ -41,10 +41,6 @@ export class UserEmailTemplatesService {
           userEmailTemplateInput,
         );
         break;
-      default:
-        throw new Error(
-          `Unsupported user email template type: ${userEmailTemplateType}`,
-        );
     }
 
     return emailTemplate;
