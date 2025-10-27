@@ -223,11 +223,13 @@ export async function retryPayment({
   referenceIds?: string[];
 }): Promise<request.Response> {
   return await getServer()
-    .patch(`/programs/${programId}/payments`)
+    .patch(`/programs/${programId}/payments/${paymentId}`)
     .set('Cookie', [accessToken])
     .send({
-      paymentId,
       referenceIds,
+    })
+    .query({
+      retry: true,
     });
 }
 

@@ -125,7 +125,6 @@ export class PaymentApiService extends DomainApiService {
     referenceIds: string[];
   }) {
     const body: Dto<RetryPaymentDto> = {
-      paymentId: Number(paymentId),
       referenceIds,
     };
 
@@ -133,8 +132,14 @@ export class PaymentApiService extends DomainApiService {
       Dto<BulkActionResultPaymentDto>
     >({
       method: 'PATCH',
-      endpoint: this.pathToQueryKey([...BASE_ENDPOINT(projectId)]).join('/'),
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(projectId),
+        paymentId,
+      ]).join('/'),
       body,
+      httpParams: {
+        retry: 'true',
+      },
     });
   }
 
