@@ -249,7 +249,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
     {
       status: TransactionStatusEnum;
       count: string;
-      totalamount: string;
+      totalTransferValue: string;
     }[]
   > {
     return await this.createQueryBuilder('transaction')
@@ -258,7 +258,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       .addSelect('COUNT(*)', 'count')
       .addSelect(
         'SUM(ROUND(transaction."transferValue"::numeric, 2))',
-        'totalamount',
+        'totalTransferValue',
       )
       .andWhere('p."programId" = :programId', {
         programId,
