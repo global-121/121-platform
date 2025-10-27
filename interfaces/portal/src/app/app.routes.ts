@@ -191,7 +191,7 @@ export const routes: Routes = [
             title:
               $localize`:@@page-title-project-settings-fsps:FSPs` +
               ' | ' +
-              $localize`:@@page-title-project-settings:Project settings`,
+              $localize`:@@page-title-project-settings:Settings`,
             loadComponent: () =>
               import(
                 '~/pages/project-settings-fsps/project-settings-fsps.page'
