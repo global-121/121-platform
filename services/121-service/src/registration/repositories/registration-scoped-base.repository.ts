@@ -9,7 +9,7 @@ import {
 import { FindReturnType } from 'typeorm/find-options/FindReturnType';
 
 import {
-  hasUserScope,
+  requestHasUser,
   ScopedQueryBuilder,
 } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
@@ -26,7 +26,7 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
   public async find<Options extends FindManyOptions<T>>(
     options?: Options,
   ): Promise<FindReturnType<T, Options['select'], Options['relations']>[]> {
-    if (!hasUserScope(this.request)) {
+    if (!requestHasUser(this.request)) {
       return this.repository.find(options);
     }
     const scopedOptions = convertToScopedOptions<T, Options>(
@@ -44,7 +44,7 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
     Options['select'],
     Options['relations']
   > | null> {
-    if (!hasUserScope(this.request)) {
+    if (!requestHasUser(this.request)) {
       return this.repository.findOne(options);
     }
     const scopedOptions = convertToScopedOptions<T, Options>(
@@ -58,7 +58,7 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
   public async findOneOrFail<Options extends FindOneOptions<T>>(
     options: Options,
   ): Promise<FindReturnType<T, Options['select'], Options['relations']>> {
-    if (!hasUserScope(this.request)) {
+    if (!requestHasUser(this.request)) {
       return this.repository.findOneOrFail(options);
     }
     const scopedOptions = convertToScopedOptions<T, Options>(
@@ -72,7 +72,7 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
   public async count<Options extends FindManyOptions<T>>(
     options?: Options,
   ): Promise<number> {
-    if (!hasUserScope(this.request)) {
+    if (!requestHasUser(this.request)) {
       return this.repository.count(options);
     }
 
@@ -86,7 +86,7 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
   }
 
   public createQueryBuilder(alias: string): ScopedQueryBuilder<T> {
-    if (!hasUserScope(this.request)) {
+    if (!requestHasUser(this.request)) {
       return new ScopedQueryBuilder(this.repository.createQueryBuilder(alias));
     }
     const qb = this.repository
