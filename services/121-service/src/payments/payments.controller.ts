@@ -177,7 +177,6 @@ export class PaymentsController {
     @Req() req: ScopedUserRequest,
     @Query('dryRun') dryRun = 'false', // Query decorator can be used in combination with Paginate decorator
   ): Promise<BulkActionResultPaymentDto> {
-    console.log('data: ', data);
     const userId = RequestHelper.getUserId(req);
 
     await this.registrationsPaginateService.throwIfNoPersonalReadPermission(

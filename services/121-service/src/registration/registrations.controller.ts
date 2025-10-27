@@ -270,7 +270,6 @@ export class RegistrationsController {
     @Param('programId', ParseIntPipe) programId: number,
     @Query('dryRun') dryRun = 'false',
   ): Promise<BulkActionResultDto> {
-    console.log('statusUpdateDto: ', statusUpdateDto);
     let permission: PermissionEnum | undefined;
     let messageContentType: MessageContentType | undefined;
     const userId = RequestHelper.getUserId(req);

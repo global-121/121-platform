@@ -82,20 +82,14 @@ export class PaymentsExecutionService {
         query,
         includePaymentAttributes: true,
       });
-    console.log('paginateQuery: ', paginateQuery);
 
     // Fill bulkActionResultDto with meta data of the payment being done
-    const bulkActionResultDto = {
-      totalFilterCount: 0,
-      applicableCount: 0,
-      nonApplicableCount: 0,
-    };
-    await this.registrationsBulkService.getBulkActionResult(
-      paginateQuery,
-      programId,
-      this.getPaymentBaseQuery(), // We need to create a separate queryBuilder object twice or it will be modified twice
-    );
-    // console.log('bulkActionResultDto: ', bulkActionResultDto);
+    const bulkActionResultDto =
+      await this.registrationsBulkService.getBulkActionResult(
+        paginateQuery,
+        programId,
+        this.getPaymentBaseQuery(), // We need to create a separate queryBuilder object twice or it will be modified twice
+      );
 
     // If amount is not defined do not calculate the totalMultiplierSum
     // This happens when you call the endpoint with dryRun=true
@@ -111,7 +105,6 @@ export class PaymentsExecutionService {
     // Get array of RegistrationViewEntity objects to be paid
     const registrationsForPayment =
       await this.getRegistrationsForPaymentChunked(programId, paginateQuery);
-    console.log('registrationsForPayment: ', registrationsForPayment.length);
 
     // Calculate the totalMultiplierSum and create an array with all FSPs for this payment
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
@@ -123,7 +116,6 @@ export class PaymentsExecutionService {
         totalMultiplierSum + registration.paymentAmountMultiplier;
       // This is only needed in actual doPayment call
     }
-    console.log('totalMultiplierSum: ', totalMultiplierSum);
 
     // Get unique programFspConfigurationNames in payment
     // Getting unique programFspConfigurationNames is relatively: with 131k registrations it takes ~36ms locally
@@ -157,7 +149,6 @@ export class PaymentsExecutionService {
         programId,
         note,
       });
-      console.log('paymentId: ', paymentId);
       bulkActionResultPaymentDto.id = paymentId;
       // TODO: REFACTOR: userId not be passed down, but should be available in a context object; registrationsForPayment.length is redundant, as it is the same as referenceIds.length
       void this.initiatePayment({
@@ -362,10 +353,6 @@ export class PaymentsExecutionService {
         programId,
       },
     );
-    console.log(
-      'transactionCreationDetails: ',
-      transactionCreationDetails.length,
-    );
 
     const transactionIds =
       await this.paymentsExecutionHelperService.createTransactionsAndUpdateRegistrationPaymentCount(
@@ -375,7 +362,6 @@ export class PaymentsExecutionService {
           userId,
         },
       );
-    console.log('transactionIds: ', transactionIds.length);
 
     await this.paymentsExecutionHelperService.setStatusToCompletedIfApplicable(
       programId,
