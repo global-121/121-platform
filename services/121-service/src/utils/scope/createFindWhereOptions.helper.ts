@@ -14,7 +14,10 @@ function getWhereQueryScope<T>(
   relationArrayToRegistration: string[],
 ): FindOptionsWhere<T> {
   const optionsCopy = options ? cloneDeep(options) : {};
-  for (const relation of [...relationArrayToRegistration]) {
+  const reversedRelationArrayToRegistration = [
+    ...relationArrayToRegistration,
+  ].reverse();
+  for (const relation of reversedRelationArrayToRegistration) {
     whereQueryScopeRelated = {
       [relation]: whereQueryScopeRelated,
     };
@@ -61,7 +64,7 @@ export function convertToScopedOptions<T, Options extends FindManyOptions<T>>(
   // since 'enableScope' is checked directly on the program relation.
   const whereQueryScope = getWhereQueryWithScope(
     baseOptions,
-    [...relationArrayToRegistration.reverse()],
+    relationArrayToRegistration,
     requestScope,
   );
   const whereQueryScopeEnabled = getWhereQueryToCheckIfScopeEnabled(
