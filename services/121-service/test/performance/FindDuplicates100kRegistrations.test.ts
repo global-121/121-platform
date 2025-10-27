@@ -16,6 +16,7 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 
 // For guaranteeing that test data generates duplicates we should use at least 10 as minimal duplication number for fast test and 17 for full load test
 const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '10'); // cronjob duplicate number should be 2^17 = 131072
+const totalRegistrations = Math.pow(2, duplicateNumber);
 const queryParams = {
   'filter.duplicateStatus': 'duplicate',
 };
@@ -56,14 +57,12 @@ describe('Find duplicates in 100k registrations within expected range', () => {
     // Assert
     expect(elapsedTime).toBeLessThan(testTimeout);
     expect(findDuplicatesResponse.statusCode).toBe(HttpStatus.OK);
-    /* eslint-disable jest/no-conditional-expect */
-    if (duplicateNumber === 10) {
-      expect(findDuplicatesResponse.body.meta.totalItems).toBeGreaterThan(50);
-      expect(findDuplicatesResponse.body.meta.totalItems).toBeLessThan(100);
-    } else if (duplicateNumber === 17) {
-      expect(findDuplicatesResponse.body.meta.totalItems).toBeGreaterThan(3000);
-      expect(findDuplicatesResponse.body.meta.totalItems).toBeLessThan(11000);
-    }
-    // TODO: use fractions of total registrations in assert, to be flexible towards other duplicateNumber values
+
+    const duplicatesFound = findDuplicatesResponse.body.meta.totalItems;
+    const minExpectedDuplicates = Math.floor(totalRegistrations * 0.02);
+    const maxExpectedDuplicates = Math.floor(totalRegistrations * 0.1);
+
+    expect(duplicatesFound).toBeGreaterThan(minExpectedDuplicates);
+    expect(duplicatesFound).toBeLessThan(maxExpectedDuplicates);
   });
 });
