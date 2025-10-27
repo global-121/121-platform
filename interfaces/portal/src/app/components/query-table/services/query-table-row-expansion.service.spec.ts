@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any -- Test file requires any types for mocking */
 import { TestBed } from '@angular/core/testing';
 
 import { QueryTableRowExpansionService } from '~/components/query-table/services/query-table-row-expansion.service';
 
 describe('QueryTableRowExpansionService', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for mocking/test-setup
   let service: QueryTableRowExpansionService<any>;
 
   const testItems = [
@@ -47,7 +47,7 @@ describe('QueryTableRowExpansionService', () => {
   });
 
   it('should handle empty item list correctly', () => {
-    const emptyItems: any[] = [];
+    const emptyItems: Record<string, number | string>[] = [];
 
     expect(service.areAllRowsExpanded()(emptyItems)).toBe(false);
 
