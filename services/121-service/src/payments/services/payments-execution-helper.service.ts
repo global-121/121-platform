@@ -29,7 +29,6 @@ export class PaymentsExecutionHelperService {
     programId: number;
     userId: number;
   }): Promise<void> {
-    // ##TODO: also move this here I think. Discuss.
     await this.registrationScopedRepository.increasePaymentCountByOne(
       registrationIds,
       2000,
