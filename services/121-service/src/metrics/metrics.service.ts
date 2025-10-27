@@ -433,8 +433,8 @@ export class MetricsService {
       .select(`to_char(registration.created, 'yyyy-mm-dd') as "created"`)
       .addSelect(`COUNT(*)`)
       .andWhere({ programId })
-      .groupBy(`to_char(created, 'yyyy-mm-dd')`)
-      .orderBy(`to_char(created, 'yyyy-mm-dd')`);
+      .groupBy(`to_char(registration.created, 'yyyy-mm-dd')`)
+      .orderBy(`to_char(registration.created, 'yyyy-mm-dd')`);
 
     if (startDate) {
       query.andWhere('registration.created >= :startDate', { startDate });

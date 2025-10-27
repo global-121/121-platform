@@ -6,12 +6,12 @@ import { CreateProgramAttachmentResponseDto } from '@121-service/src/programs/pr
 import { GetProgramAttachmentResponseDto } from '@121-service/src/programs/program-attachments/dtos/get-program-attachment-response.dto';
 import { ProgramAttachmentMapper } from '@121-service/src/programs/program-attachments/mapper/program-attachment.mapper';
 import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attachments/program-attachment.entity';
-import { ProgramAttachmentScopedRepository } from '@121-service/src/programs/program-attachments/program-attachment.repository';
+import { ProgramAttachmentRepository } from '@121-service/src/programs/program-attachments/program-attachment.repository';
 
 @Injectable()
 export class ProgramAttachmentsService {
   public constructor(
-    private readonly programAttachmentScopedRepository: ProgramAttachmentScopedRepository,
+    private readonly programAttachmentRepository: ProgramAttachmentRepository,
     @Inject(ContainerClient)
     private readonly containerClient: ContainerClient,
   ) {}
@@ -47,7 +47,7 @@ export class ProgramAttachmentsService {
     attachment.userId = userId;
 
     const savedAttachment =
-      await this.programAttachmentScopedRepository.save(attachment);
+      await this.programAttachmentRepository.save(attachment);
 
     return {
       id: savedAttachment.id,
@@ -57,7 +57,7 @@ export class ProgramAttachmentsService {
   public async getProgramAttachments(
     programId: number,
   ): Promise<GetProgramAttachmentResponseDto[]> {
-    const attachments = await this.programAttachmentScopedRepository.find({
+    const attachments = await this.programAttachmentRepository.find({
       where: { programId: Equal(programId) },
       relations: {
         user: true,
@@ -109,14 +109,13 @@ export class ProgramAttachmentsService {
     await blockBlobClient.deleteIfExists();
 
     // Delete from DB
-    await this.programAttachmentScopedRepository.remove(programAttachment);
+    await this.programAttachmentRepository.remove(programAttachment);
   }
 
   public async deleteAllProgramAttachments(programId: number): Promise<void> {
-    const programAttachments =
-      await this.programAttachmentScopedRepository.find({
-        where: { programId: Equal(programId) },
-      });
+    const programAttachments = await this.programAttachmentRepository.find({
+      where: { programId: Equal(programId) },
+    });
 
     await Promise.all(
       programAttachments.map(async (attachment) => {
@@ -127,7 +126,7 @@ export class ProgramAttachmentsService {
       }),
     );
 
-    await this.programAttachmentScopedRepository.remove(programAttachments);
+    await this.programAttachmentRepository.remove(programAttachments);
   }
 
   private async getProgramAttachmentAndBlockBlobClient({
@@ -140,13 +139,12 @@ export class ProgramAttachmentsService {
     programAttachment: ProgramAttachmentEntity;
     blockBlobClient: BlockBlobClient;
   }> {
-    const programAttachment =
-      await this.programAttachmentScopedRepository.findOne({
-        where: {
-          programId: Equal(programId),
-          id: Equal(attachmentId),
-        },
-      });
+    const programAttachment = await this.programAttachmentRepository.findOne({
+      where: {
+        programId: Equal(programId),
+        id: Equal(attachmentId),
+      },
+    });
 
     if (!programAttachment) {
       throw new HttpException(
