@@ -83,6 +83,10 @@
             [text]="true"
             [rounded]="true"
             [plain]="true"
+            aria-label="Toggle All"
+            i18n-aria-label="@@query-table--toggle-all"
+            title="Toggle All"
+            i18n-title="@@query-table--toggle-all"
             [icon]="
               areAllRowsExpanded()
                 ? 'pi pi-chevron-down'
@@ -170,6 +174,10 @@
                   icon="pi pi-filter-slash"
                   text
                   rounded
+                  aria-label="Clear filter"
+                  i18n-aria-label="@@query-table--clear-filter"
+                  title="Clear filter"
+                  i18n-title="@@query-table--clear-filter"
                   (onClick)="clearColumnFilter($event, columnFilter)"
                 />
               }
@@ -214,6 +222,10 @@
             [text]="true"
             [rounded]="true"
             [plain]="true"
+            aria-label="Toggle row"
+            i18n-aria-label="@@query-table--toggle-row"
+            title="Toggle row"
+            i18n-title="@@query-table--toggle-row"
             [icon]="
               expanded
                 ? 'pi pi-chevron-down'
