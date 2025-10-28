@@ -11,7 +11,7 @@ describe('QueryTableCellService', () => {
     TestBed.configureTestingModule({
       providers: [
         QueryTableCellService,
-        { provide: LOCALE_ID, useValue: 'en-US' },
+        { provide: LOCALE_ID, useValue: 'en-GB' },
       ],
     });
 

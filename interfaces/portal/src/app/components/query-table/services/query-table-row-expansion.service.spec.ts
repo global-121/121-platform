@@ -58,14 +58,14 @@ describe('QueryTableRowExpansionService', () => {
   it('should correctly identify partially expanded state', () => {
     service.updateExpandedRowKeys({
       1: true,
-      2: false,
+      2: true,
       // 3 is missing (implicitly false)
     });
 
     expect(service.areAllRowsExpanded()(testItems)).toBe(false);
   });
 
-  it('should update expanded row keys while preserving immutability', () => {
+  it("should update expanded row keys while triggering Angular's change detection correctly", () => {
     const originalKeys = { 1: true, 2: false };
 
     service.updateExpandedRowKeys(originalKeys);
