@@ -97,7 +97,6 @@ export class PaymentsCreationService {
     for (const registration of registrationsForPayment) {
       totalMultiplierSum =
         totalMultiplierSum + registration.paymentAmountMultiplier;
-      // This is only needed in actual doPayment call
     }
 
     // Get unique programFspConfigurationNames in payment
