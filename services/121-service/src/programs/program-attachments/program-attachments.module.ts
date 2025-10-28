@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { env } from '@121-service/src/env';
 import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attachments/program-attachment.entity';
-import { ProgramAttachmentScopedRepository } from '@121-service/src/programs/program-attachments/program-attachment.repository';
+import { ProgramAttachmentRepository } from '@121-service/src/programs/program-attachments/program-attachment.repository';
 import { ProgramAttachmentsController } from '@121-service/src/programs/program-attachments/program-attachments.controller';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
 
@@ -12,7 +12,7 @@ import { ProgramAttachmentsService } from '@121-service/src/programs/program-att
   imports: [TypeOrmModule.forFeature([ProgramAttachmentEntity])],
   providers: [
     ProgramAttachmentsService,
-    ProgramAttachmentScopedRepository,
+    ProgramAttachmentRepository,
     {
       provide: ContainerClient,
       useFactory: async () => {

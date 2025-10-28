@@ -61,10 +61,10 @@ export const indirectRelationConfig: EntityRelations = {
   LastTransactionEventEntity: ['transaction', 'registration'],
 };
 
-export function hasUserScope(
+export function requestHasUser(
   req: ScopedUserRequest,
 ): req is ScopedUserRequestWithUser {
-  return req?.user != undefined && req.user.scope !== '';
+  return req?.user != undefined;
 }
 
 @Injectable({ scope: Scope.REQUEST, durable: true })
@@ -103,7 +103,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
   public override async find<Options extends FindManyOptions<T>>(
     options?: Options,
   ): Promise<FindReturnType<T, Options['select'], Options['relations']>[]> {
-    if (!hasUserScope(this.request)) {
+    if (!requestHasUser(this.request)) {
       return this.repository.find(options);
     }
     const scopedOptions = convertToScopedOptions<T, Options>(
@@ -119,7 +119,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
   ): Promise<
     [FindReturnType<T, Options['select'], Options['relations']>[], number]
   > {
-    if (!hasUserScope(this.request)) {
+    if (!requestHasUser(this.request)) {
       return this.repository.findAndCount(options); // Pass undefined directly if no scope
     }
 
@@ -138,7 +138,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     Options['select'],
     Options['relations']
   > | null> {
-    if (!hasUserScope(this.request)) {
+    if (!requestHasUser(this.request)) {
       return this.repository.findOne(options);
     }
 
@@ -153,7 +153,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
   public override async findOneOrFail<Options extends FindOneOptions<T>>(
     options: Options,
   ): Promise<FindReturnType<T, Options['select'], Options['relations']>> {
-    if (!hasUserScope(this.request)) {
+    if (!requestHasUser(this.request)) {
       return this.repository.findOneOrFail(options);
     }
 
@@ -170,7 +170,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
   ): ScopedQueryBuilder<T> {
     let qb = this.repository.createQueryBuilder(queryBuilderAlias);
 
-    if (!hasUserScope(this.request)) {
+    if (!requestHasUser(this.request)) {
       return new ScopedQueryBuilder(qb);
     }
 
