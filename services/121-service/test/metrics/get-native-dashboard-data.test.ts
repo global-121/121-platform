@@ -77,15 +77,15 @@ describe('Get all payments aggregates', () => {
         expect.objectContaining({
           success: expect.objectContaining({
             count: 1,
-            amount: transferValue,
+            transferValue,
           }),
           waiting: expect.objectContaining({
             count: 1,
-            amount: transferValue,
+            transferValue,
           }),
           failed: expect.objectContaining({
             count: 1,
-            amount: transferValue,
+            transferValue,
           }),
         }),
       );
@@ -111,15 +111,15 @@ describe('Get all payments aggregates', () => {
         expect.objectContaining({
           success: expect.objectContaining({
             count: 1,
-            amount: transferValue,
+            transferValue,
           }),
           waiting: expect.objectContaining({
             count: 1,
-            amount: transferValue,
+            transferValue,
           }),
           failed: expect.objectContaining({
             count: 1,
-            amount: transferValue,
+            transferValue,
           }),
         }),
       );
@@ -163,6 +163,7 @@ describe('Get amount sent by month', () => {
         success: transferValue * 2,
         waiting: transferValue * 2,
         failed: transferValue * 2,
+        created: 0,
       });
     });
 
@@ -184,6 +185,7 @@ describe('Get amount sent by month', () => {
         success: transferValue,
         waiting: transferValue,
         failed: transferValue,
+        created: 0,
       });
     });
   });
