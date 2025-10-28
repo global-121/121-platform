@@ -87,8 +87,6 @@ The test is configured in:
 
 - [`.github/workflows/test_k6.yml`](../.github/workflows/test_k6.yml)
 
-The workflow runs the `retryFailedJobsOnStartupDuringQueueProcessing.js` test:
-
 ```yaml
 - name: Run retryFailedJobsOnStartupDuringQueueProcessing.js
   working-directory: ${{ env.k6TestsPath }}
