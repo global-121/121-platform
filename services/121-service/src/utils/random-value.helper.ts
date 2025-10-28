@@ -16,3 +16,7 @@ export function generateRandomNumerics(length: number): string {
 
   return result;
 }
+
+export function randomSort() {
+  return Math.random() - 0.5;
+}
