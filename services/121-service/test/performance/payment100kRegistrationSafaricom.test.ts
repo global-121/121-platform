@@ -25,7 +25,11 @@ import {
 // Safaricom is one of the payment providers which uses callbacks and therefore also has heavier/more complex
 // The other FSPs are simpler or similar to Safaricom so we decided to not test them
 
-const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^17 = 131072
+// For now test works with duplicate number 13 (8192 registrations)
+// Everything above that causes timeouts both locally and CI
+// In the future we can try to optimize the test/backend to handle bigger loads
+
+const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '13'); // cronjob duplicate number should be 2^17 = 131072
 // const duplicateTarget = Math.pow(2, duplicateNumber);
 const maxWaitTimeMs = 240_000; // 4 minutes
 const passRate = 10; // 10%
