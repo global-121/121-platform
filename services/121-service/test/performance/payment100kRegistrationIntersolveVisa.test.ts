@@ -24,12 +24,11 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 // The other FSPs are simpler or similar to Safaricom so we decided to not test them
 
 const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^17 = 131072
-const duplicateTarget = Math.pow(2, duplicateNumber);
 const maxWaitTimeMs = 240_000; // 4 minutes
 const passRate = 10; // 10%
 const maxRetryDurationMs = 4_800_000; // 80 minutes
 const delayBetweenAttemptsMs = 5_000; // 5 seconds
-const amount = 25;
+const transferValue = 25;
 const testTimeout = 5_400_000; // 90 minutes
 
 jest.setTimeout(testTimeout);
@@ -48,16 +47,7 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
       accessToken,
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
-    // Duplicate registration to be more than 100k
-    const duplicateRegistrationsResponse = await duplicateRegistrations({
-      powerNumberRegistration: duplicateNumber,
-      accessToken,
-      body: {
-        secret: env.RESET_SECRET,
-      },
-    });
-    expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
-    // Change status of all registrations to 'included'
+    // Change status of this registration to 'included'
     const changeStatusResponse = await changeRegistrationStatus({
       programId: programIdOCW,
       status: RegistrationStatusEnum.included,
@@ -67,15 +57,25 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
     // Wait for all status changes to be processed
     await waitForStatusChangeToComplete({
       programId: programIdOCW,
-      amountOfRegistrations: duplicateTarget,
+      amountOfRegistrations: 1,
       status: RegistrationStatusEnum.included,
       maxWaitTimeMs,
       accessToken,
     });
+    // Duplicate registration to be more than 100k
+    const duplicateRegistrationsResponse = await duplicateRegistrations({
+      powerNumberRegistration: duplicateNumber,
+      accessToken,
+      body: {
+        secret: env.RESET_SECRET,
+      },
+    });
+    expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
+
     // Do payment
     const doPaymentResponse = await doPayment({
       programId: programIdOCW,
-      transferValue: amount,
+      transferValue,
       referenceIds: [],
       accessToken,
     });

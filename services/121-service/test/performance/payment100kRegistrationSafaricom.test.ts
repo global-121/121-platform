@@ -25,17 +25,12 @@ import {
 // Safaricom is one of the payment providers which uses callbacks and therefore also has heavier/more complex
 // The other FSPs are simpler or similar to Safaricom so we decided to not test them
 
-// For now test works with duplicate number 13 (8192 registrations)
-// Everything above that causes timeouts both locally and CI
-// In the future we can try to optimize the test/backend to handle bigger loads
-
-const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '13'); // cronjob duplicate number should be 2^17 = 131072
-// const duplicateTarget = Math.pow(2, duplicateNumber);
+const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^17 = 131072
 const maxWaitTimeMs = 240_000; // 4 minutes
 const passRate = 10; // 10%
 const maxRetryDurationMs = 4_800_000; // 80 minutes
 const delayBetweenAttemptsMs = 5_000; // 5 seconds
-const amount = 25;
+const transferValue = 25;
 const testTimeout = 5_400_000; // 90 minutes
 
 jest.setTimeout(testTimeout);
@@ -64,7 +59,7 @@ describe('Do payment for 100k registrations with Safaricom within expected range
     // Wait for status change to be processed
     await waitForStatusChangeToComplete({
       programId: programIdSafaricom,
-      amountOfRegistrations: 1, //duplicateTarget,
+      amountOfRegistrations: 1,
       status: RegistrationStatusEnum.included,
       maxWaitTimeMs,
       accessToken,
@@ -82,7 +77,7 @@ describe('Do payment for 100k registrations with Safaricom within expected range
     // Do payment
     const doPaymentResponse = await doPayment({
       programId: programIdSafaricom,
-      transferValue: amount,
+      transferValue,
       referenceIds: [],
       accessToken,
     });
