@@ -1,6 +1,9 @@
 # K6 Testing Suite
+
 > See: <https://k6.io/docs/>
+
 ---
+
 > **Note:** This documentation covers what K6 is, why we use it, how to run it locally, and where to configure the Github Action workflow.
 
 ## What is K6?
@@ -36,6 +39,7 @@ This ensures the job queue recovery mechanism works correctly in failure scenari
 ### Prerequisites
 
 First, you must [install K6](https://k6.io/docs/get-started/installation/). For macOS users, the easiest way is:
+
 ```shell
 brew install k6
 ```
@@ -43,6 +47,7 @@ brew install k6
 ### Setup
 
 1. **Install K6 dependencies:**
+
 ```shell
 cd /k6
 npm install
@@ -58,16 +63,19 @@ npm install
 Since CI tests use a differently composed baseUrl, you may encounter extra slashes in your API calls when running locally. If this happens, remove the extra `+` and `'/'` from baseUrl in `./k6/models/config.js`.
 
 **Change from:**
+
 ```javascript
 baseUrl: __ENV.EXTERNAL_121_SERVICE_URL + '/' || 'http://localhost:3000/',
 ```
 
 **To:**
+
 ```javascript
 baseUrl: __ENV.EXTERNAL_121_SERVICE_URL || 'http://localhost:3000/',
 ```
 
 ### Running the Test
+
 ```shell
 cd /k6
 npm run test -- tests/retryFailedJobsOnStartupDuringQueueProcessing.js
@@ -76,9 +84,11 @@ npm run test -- tests/retryFailedJobsOnStartupDuringQueueProcessing.js
 ## CI Configuration
 
 The test is configured in:
+
 - [`.github/workflows/test_k6.yml`](../.github/workflows/test_k6.yml)
 
 The workflow runs the `retryFailedJobsOnStartupDuringQueueProcessing.js` test:
+
 ```yaml
 - name: Run retryFailedJobsOnStartupDuringQueueProcessing.js
   working-directory: ${{ env.k6TestsPath }}
