@@ -145,6 +145,10 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
         },
       });
     console.log('attributesWithDuplicateCheck: ', attributesWithDuplicateCheck);
+    if (attributesWithDuplicateCheck.length === 0) {
+      console.log('No attributes found with duplicateCheck=true');
+      return;
+    }
     const attributeIds = attributesWithDuplicateCheck.map((attr) => attr.id);
 
     // Find all attribute data records for those attributes
