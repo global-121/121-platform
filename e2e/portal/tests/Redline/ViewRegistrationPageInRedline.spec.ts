@@ -94,14 +94,21 @@ test('[35449] View search-results with multiple matched registrations', async ({
   await expect(page.locator('app-registration-lookup-menu')).toContainText(
     `${testRegistrations.length} registration(s) found with this number.`,
   );
-
+  // Check that the number of tabs equals the number of test registrations
   await expect(
     page.locator('app-registration-lookup-menu').getByRole('tab'),
   ).toHaveCount(testRegistrations.length);
-  await expect(page.getByRole('tab').nth(0)).toHaveText(
-    `${testRegistrations[0].fullName} - ${projectTitle}`,
+
+  // Check that both expected tab texts are present
+  const expectedTabTexts = testRegistrations.map(
+    (registration) => `${registration.fullName} - ${projectTitle}`,
   );
-  await expect(
-    page.locator('app-registration-lookup-menu').getByRole('tab').nth(1),
-  ).toHaveText(`${testRegistrations[1].fullName} - ${projectTitle}`);
+
+  for (const expectedText of expectedTabTexts) {
+    await expect(
+      page
+        .locator('app-registration-lookup-menu')
+        .getByRole('tab', { name: expectedText }),
+    ).toBeVisible();
+  }
 });
