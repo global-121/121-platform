@@ -11,17 +11,20 @@ describe('QueryTableSelectionService', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for mocking/test-setup
   let service: QueryTableSelectionService<any>;
   let paginateQueryService: jasmine.SpyObj<PaginateQueryService>;
-  let toastService: jasmine.SpyObj<ToastService>;
+
+  const showToastSpy = jasmine.createSpy();
 
   beforeEach(() => {
     const paginateQueryServiceSpy = jasmine.createSpyObj(
       'PaginateQueryService',
       ['selectionEventToActionData'],
     ) as jasmine.SpyObj<PaginateQueryService>;
-    const toastServiceSpy = jasmine.createSpyObj('ToastService', [
-      'showGenericError',
-      'showToast',
-    ]) as jasmine.SpyObj<ToastService>;
+
+    const toastServiceSpy = jasmine.createSpyObj<ToastService>(
+      'ToastService',
+      {},
+      { showToast: showToastSpy },
+    );
 
     TestBed.configureTestingModule({
       providers: [
@@ -35,7 +38,6 @@ describe('QueryTableSelectionService', () => {
     paginateQueryService = TestBed.inject(
       PaginateQueryService,
     ) as jasmine.SpyObj<PaginateQueryService>;
-    toastService = TestBed.inject(ToastService) as jasmine.SpyObj<ToastService>;
   });
 
   it('should be created and initialize with empty selection state', () => {
@@ -97,8 +99,7 @@ describe('QueryTableSelectionService', () => {
     });
 
     expect(result).toBeUndefined();
-    // eslint-disable-next-line @typescript-eslint/unbound-method -- Mocking service methods in tests
-    expect(toastService.showToast).toHaveBeenCalledWith({
+    expect(showToastSpy).toHaveBeenCalledWith({
       severity: 'error',
       detail: 'Please select items',
     });
