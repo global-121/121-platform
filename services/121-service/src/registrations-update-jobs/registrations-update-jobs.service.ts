@@ -99,14 +99,31 @@ export class RegistrationsUpdateJobsService {
   private formatErrorRecordsAsCsv(
     errorRecords: RegistrationUpdateErrorRecord[],
   ): string {
-    const csvHeader = 'referenceId, error\n';
-    const csvRows = errorRecords
-      .map((record) => `${record.referenceId}, ${record.errorMessage}`)
-      .join('\n');
-    const contentBytes = Buffer.from(csvHeader + csvRows, 'utf8').toString(
-      'base64',
-    );
+    const csvHeader = 'referenceId,error\n';
 
+    const csvRows = errorRecords
+      .map((record) => {
+        const referenceId = this.escapeCsvValue(String(record.referenceId));
+        const errorMessage = this.escapeCsvValue(String(record.errorMessage));
+        return `${referenceId},${errorMessage}`;
+      })
+      .join('\n');
+
+    const csvString = csvHeader + csvRows + '\n';
+    const contentBytes = Buffer.from(csvString, 'utf8').toString('base64');
     return contentBytes;
   }
+
+  private escapeCsvValue = (value: string): string => {
+    const needsQuoting =
+      value.includes(',') ||
+      value.includes('"') ||
+      value.includes('\n') ||
+      value.includes('\r');
+    let escaped = value.replace(/"/g, '""');
+    if (needsQuoting) {
+      escaped = `"${escaped}"`;
+    }
+    return escaped;
+  };
 }

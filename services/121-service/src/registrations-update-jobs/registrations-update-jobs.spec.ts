@@ -83,7 +83,7 @@ describe('RegistrationsUpdateJobsService', () => {
     registrationsService.validateInputAndUpdateRegistration.mockImplementation(
       async ({ referenceId }) => {
         if (referenceId === 'reg-2') {
-          throw new Error('Update failed for reg-2');
+          throw new Error('Update failed, reason: "bad, input" for reg-2');
         }
       },
     );
@@ -117,7 +117,10 @@ describe('RegistrationsUpdateJobsService', () => {
       callArg.userEmailTemplateInput.attachment.contentBytes,
       'base64',
     ).toString('utf8');
-    expect(decoded).toContain('referenceId, error');
-    expect(decoded).toContain('reg-2, Update failed for reg-2');
+    expect(decoded).toContain('referenceId,error');
+    // Expect proper CSV escaping: referenceId plain, error message quoted with internal quotes doubled
+    expect(decoded).toContain(
+      'reg-2,"Update failed, reason: ""bad, input"" for reg-2"',
+    );
   });
 });
