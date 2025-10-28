@@ -62,10 +62,10 @@ jobs:
         run: |
           curl https://github.com/grafana/k6/releases/download/v1.3.0/k6-v1.3.0-linux-amd64.tar.gz -L | tar xvz --strip-components 1
 
-      - name: Run retryFailedJobsOnStartupDuringQueueProcessing.js with DUPLICATE_NUMBER=7
+      - name: Run retryFailedJobsOnStartupDuringQueueProcessing.js
         working-directory: ${{ env.k6TestsPath }}
         run: |
-          DUPLICATE_NUMBER=7 npx dotenv -e ../services/.env -- ./k6 run tests/retryFailedJobsOnStartupDuringQueueProcessing.js
+          npx dotenv -e ../services/.env -- ./k6 run tests/retryFailedJobsOnStartupDuringQueueProcessing.js
 
       - name: Docker logs
         if: always()
