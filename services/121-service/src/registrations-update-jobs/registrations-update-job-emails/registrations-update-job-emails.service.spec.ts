@@ -1,13 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { EmailsService } from '@121-service/src/emails/emails.service';
-import { sanitizeEmailInput } from '@121-service/src/emails/helpers/sanitize-email-input';
 import { UpdateJobEmailType } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/enum/update-job-email-type.enum';
 import { UpdateJobEmailInput } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/interfaces/update-job-email-input.interface';
 import { RegistrationsUpdateJobEmailsService } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/registrations-update-job-emails.service';
 import { buildTemplateImportValidationFailed } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/templates/import-validation-failed.template';
 
-jest.mock('@121-service/src/emails/helpers/sanitize-email-input');
 jest.mock(
   '@121-service/src/registrations-update-jobs/registrations-update-job-emails/templates/import-validation-failed.template',
 );
@@ -20,9 +18,6 @@ describe('RegistrationsUpdateJobEmailsService', () => {
   let service: RegistrationsUpdateJobEmailsService;
   let emailsService: EmailsServiceMock;
 
-  const sanitizeEmailInputMock = sanitizeEmailInput as jest.MockedFunction<
-    typeof sanitizeEmailInput
-  >;
   const buildTemplateImportValidationFailedMock =
     buildTemplateImportValidationFailed as jest.MockedFunction<
       typeof buildTemplateImportValidationFailed
@@ -31,7 +26,6 @@ describe('RegistrationsUpdateJobEmailsService', () => {
   beforeEach(async () => {
     emailsService = new EmailsServiceMock();
 
-    sanitizeEmailInputMock.mockReset();
     buildTemplateImportValidationFailedMock.mockReset();
 
     const module: TestingModule = await Test.createTestingModule({
@@ -63,7 +57,6 @@ describe('RegistrationsUpdateJobEmailsService', () => {
       body: '<p>Some rows failed</p>',
     };
 
-    sanitizeEmailInputMock.mockReturnValueOnce(sanitizedInput);
     buildTemplateImportValidationFailedMock.mockReturnValueOnce(templateOutput);
 
     // Act
@@ -73,7 +66,6 @@ describe('RegistrationsUpdateJobEmailsService', () => {
     });
 
     // Assert
-    expect(sanitizeEmailInputMock).toHaveBeenCalledWith(updateJobEmailInput);
     expect(buildTemplateImportValidationFailedMock).toHaveBeenCalledWith(
       sanitizedInput,
     );

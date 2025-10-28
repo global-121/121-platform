@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
 import { EmailsService } from '@121-service/src/emails/emails.service';
-import { sanitizeEmailInput } from '@121-service/src/emails/helpers/sanitize-email-input';
 import { EmailData } from '@121-service/src/emails/interfaces/email-data.interface';
 import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
 import { UserEmailType } from '@121-service/src/user/user-emails/enum/user-email-type.enum';
@@ -9,6 +8,7 @@ import { UserEmailInput } from '@121-service/src/user/user-emails/interfaces/use
 import { buildTemplateAccountCreated } from '@121-service/src/user/user-emails/templates/account-created.template';
 import { buildTemplateAccountCreatedSSO } from '@121-service/src/user/user-emails/templates/account-created-sso.template';
 import { buildTemplatePasswordReset } from '@121-service/src/user/user-emails/templates/password-reset.template';
+import { stripHtmlTags } from '@121-service/src/utils/strip-html-tags.helper';
 
 @Injectable()
 export class UserEmailsService {
@@ -54,7 +54,10 @@ export class UserEmailsService {
     userEmailInput: UserEmailInput,
   ): EmailTemplate {
     let emailTemplate: EmailTemplate;
-    const sanitizedUserEmailInput = sanitizeEmailInput(userEmailInput);
+    const sanitizedUserEmailInput = {
+      ...userEmailInput,
+      displayName: stripHtmlTags(userEmailInput.displayName),
+    };
 
     switch (userEmailType) {
       case UserEmailType.accountCreated:

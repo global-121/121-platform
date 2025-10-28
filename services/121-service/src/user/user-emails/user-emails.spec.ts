@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { EmailsService } from '@121-service/src/emails/emails.service';
-import { sanitizeEmailInput } from '@121-service/src/emails/helpers/sanitize-email-input';
 import { UserEmailType } from '@121-service/src/user/user-emails/enum/user-email-type.enum';
 import { UserEmailInput } from '@121-service/src/user/user-emails/interfaces/user-email-input.interface';
 import { buildTemplateAccountCreated } from '@121-service/src/user/user-emails/templates/account-created.template';
@@ -9,7 +8,6 @@ import { buildTemplateAccountCreatedSSO } from '@121-service/src/user/user-email
 import { buildTemplatePasswordReset } from '@121-service/src/user/user-emails/templates/password-reset.template';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 
-jest.mock('@121-service/src/emails/helpers/sanitize-email-input');
 jest.mock(
   '@121-service/src/user/user-emails/templates/account-created.template',
 );
@@ -28,9 +26,6 @@ describe('UserEmailsService', () => {
   let service: UserEmailsService;
   let emailsService: EmailsServiceMock;
 
-  const sanitizeEmailInputMock = sanitizeEmailInput as jest.MockedFunction<
-    typeof sanitizeEmailInput
-  >;
   const buildTemplateAccountCreatedMock =
     buildTemplateAccountCreated as jest.MockedFunction<
       typeof buildTemplateAccountCreated
@@ -47,7 +42,6 @@ describe('UserEmailsService', () => {
   beforeEach(async () => {
     emailsService = new EmailsServiceMock();
 
-    sanitizeEmailInputMock.mockReset();
     buildTemplateAccountCreatedMock.mockReset();
     buildTemplateAccountCreatedSSOMock.mockReset();
     buildTemplatePasswordResetMock.mockReset();
@@ -106,7 +100,6 @@ describe('UserEmailsService', () => {
         body: `<p>${userEmailType} body</p>`,
       };
 
-      sanitizeEmailInputMock.mockReturnValueOnce(sanitizedInput);
       templateBuilder.mockReturnValueOnce(templateOutput);
 
       // Act
@@ -116,7 +109,6 @@ describe('UserEmailsService', () => {
       });
 
       // Assert
-      expect(sanitizeEmailInputMock).toHaveBeenCalledWith(userEmailInput);
       expect(templateBuilder).toHaveBeenCalledWith(sanitizedInput);
       expect(emailsService.sendEmail).toHaveBeenCalledWith({
         email: userEmailInput.email,
