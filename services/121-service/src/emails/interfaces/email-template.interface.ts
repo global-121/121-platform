@@ -1,4 +1,4 @@
-export interface UserEmailTemplate {
+export interface EmailTemplate {
   readonly subject: string;
   readonly body: string;
 }

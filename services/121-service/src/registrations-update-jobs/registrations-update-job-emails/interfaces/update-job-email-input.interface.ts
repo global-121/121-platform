@@ -1,8 +1,7 @@
-export interface UserEmailTemplateInput {
+export interface UpdateJobEmailInput {
   readonly email: string;
   readonly displayName: string;
-  readonly password?: string;
-  readonly attachment?: {
+  readonly attachment: {
     readonly name: string;
     readonly contentBytes: string;
   };

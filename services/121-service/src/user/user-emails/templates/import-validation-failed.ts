@@ -1,18 +1,18 @@
-import { UserEmailTemplateInput } from '@121-service/src/user/user-emails/interfaces/user-email-template-input.interface';
-import { UserEmailTemplate } from '@121-service/src/user/user-emails/user-email-templates/interfaces/user-email-template.interface';
-import { SUPPORT_EMAIL } from '@121-service/src/user/user-emails/user-email-templates/template-constants';
-import { wrapUserEmailContent } from '@121-service/src/user/user-emails/user-email-templates/template-content-wrapper';
+import { SUPPORT_EMAIL } from '@121-service/src/emails/email-constants';
+import { wrapWithEmailLayout } from '@121-service/src/emails/email-layout';
+import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
+import { UserEmailInput } from '@121-service/src/user/user-emails/interfaces/user-email-input.interface';
 
 /**
  * Create e-mail message for failed validations during registration import.
  */
 export const buildTemplateImportValidationFailed = (
-  userEmailTemplateInput: UserEmailTemplateInput,
-): UserEmailTemplate => {
+  userEmailInput: UserEmailInput,
+): EmailTemplate => {
   const subject = 'Registration Import - Validation Failed';
 
-  const body = wrapUserEmailContent(`
-    <p>Dear ${userEmailTemplateInput.displayName},</p>
+  const body = wrapWithEmailLayout(`
+    <p>Dear ${userEmailInput.displayName},</p>
     <p>
       During your recent registration import, some registrations could not be validated.
     </p>

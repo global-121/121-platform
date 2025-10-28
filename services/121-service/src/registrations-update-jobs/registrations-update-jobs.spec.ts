@@ -2,9 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
+import { UpdateJobEmailType } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/enum/update-job-email-type.enum';
 import { RegistrationsUpdateJobsService } from '@121-service/src/registrations-update-jobs/registrations-update-jobs.service';
 import { UserService } from '@121-service/src/user/user.service';
-import { UserEmailTemplateType } from '@121-service/src/user/user-emails/enum/user-email-template-type.enum';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 
 class RegistrationsServiceMock {
@@ -99,8 +99,8 @@ describe('RegistrationsUpdateJobsService', () => {
 
     expect(userEmailsService.sendUserEmail).toHaveBeenCalledWith(
       expect.objectContaining({
-        userEmailTemplateType: UserEmailTemplateType.importValidationFailed,
-        userEmailTemplateInput: expect.objectContaining({
+        userEmailType: UpdateJobEmailType.importValidationFailed,
+        userEmailInput: expect.objectContaining({
           email: 'owner@example.com',
           displayName: 'Owner User',
           attachment: expect.objectContaining({
@@ -114,7 +114,7 @@ describe('RegistrationsUpdateJobsService', () => {
     // Decode and verify attachment contains failing reference id and message
     const callArg = userEmailsService.sendUserEmail.mock.calls[0][0];
     const decoded = Buffer.from(
-      callArg.userEmailTemplateInput.attachment.contentBytes,
+      callArg.userEmailInput.attachment.contentBytes,
       'base64',
     ).toString('utf8');
     expect(decoded).toContain('referenceId,error');

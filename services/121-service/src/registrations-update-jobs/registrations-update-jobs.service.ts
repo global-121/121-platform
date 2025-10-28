@@ -4,16 +4,16 @@ import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/reg
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { RegistrationUpdateErrorRecord } from '@121-service/src/registrations-update-jobs/interfaces/registration-update-error-record.interface';
+import { UpdateJobEmailType } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/enum/update-job-email-type.enum';
+import { UpdateJobEmailInput } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/interfaces/update-job-email-input.interface';
+import { RegistrationsUpdateJobEmailsService } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/registrations-update-job-emails.service';
 import { UserService } from '@121-service/src/user/user.service';
-import { UserEmailTemplateType } from '@121-service/src/user/user-emails/enum/user-email-template-type.enum';
-import { UserEmailTemplateInput } from '@121-service/src/user/user-emails/interfaces/user-email-template-input.interface';
-import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 
 @Injectable()
 export class RegistrationsUpdateJobsService {
   constructor(
     private readonly registrationsService: RegistrationsService,
-    private readonly userEmailsService: UserEmailsService,
+    private readonly registrationsUpdateJobEmailsService: RegistrationsUpdateJobEmailsService,
     private readonly userService: UserService,
   ) {}
 
@@ -81,18 +81,15 @@ export class RegistrationsUpdateJobsService {
       registrationUpdateErrorRecords,
     );
 
-    const userEmailTemplateInput: UserEmailTemplateInput = {
+    const templateInput: UpdateJobEmailInput = {
       email: user.username,
       displayName: user.displayName,
-      attachment: {
-        name: 'failed-validations.csv',
-        contentBytes,
-      },
+      attachment: { name: 'failed-validations.csv', contentBytes },
     };
 
-    await this.userEmailsService.sendUserEmail({
-      userEmailTemplateInput,
-      userEmailTemplateType: UserEmailTemplateType.importValidationFailed,
+    await this.registrationsUpdateJobEmailsService.sendUpdateJobEmail({
+      updateJobEmailInput: templateInput,
+      updateJobEmailType: UpdateJobEmailType.importValidationFailed,
     });
   }
 
