@@ -214,6 +214,16 @@ class RegistrationsPage extends BasePage {
     await expect(registrationStatus).toHaveText(status);
   }
 
+  async validateEmptyField({ columnName }: { columnName: string }) {
+    await this.table.waitForLoaded();
+    const columnIndex = await this.getColumnIndexByHeaderText(columnName);
+    const tableCell = this.table.tableRows
+      .nth(0)
+      .locator('td')
+      .nth(columnIndex);
+    await expect(tableCell).toHaveText('');
+  }
+
   async goToRegistrationByName({
     registrationName,
   }: {
