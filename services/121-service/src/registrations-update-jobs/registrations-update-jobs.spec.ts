@@ -3,16 +3,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { UpdateJobEmailType } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/enum/update-job-email-type.enum';
+import { RegistrationsUpdateJobEmailsService } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/registrations-update-job-emails.service';
 import { RegistrationsUpdateJobsService } from '@121-service/src/registrations-update-jobs/registrations-update-jobs.service';
 import { UserService } from '@121-service/src/user/user.service';
-import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 
 class RegistrationsServiceMock {
   validateInputAndUpdateRegistration = jest.fn();
 }
 
-class UserEmailsServiceMock {
-  sendUserEmail = jest.fn();
+class RegistrationsUpdateJobEmailsServiceMock {
+  sendUpdateJobEmail = jest.fn();
 }
 
 class UserServiceMock {
@@ -26,17 +26,21 @@ class UserServiceMock {
 describe('RegistrationsUpdateJobsService', () => {
   let service: RegistrationsUpdateJobsService;
   let registrationsService: RegistrationsServiceMock;
-  let userEmailsService: UserEmailsServiceMock;
+  let registrationsUpdateJobEmailsService: RegistrationsUpdateJobEmailsServiceMock;
 
   beforeEach(async () => {
     registrationsService = new RegistrationsServiceMock();
-    userEmailsService = new UserEmailsServiceMock();
+    registrationsUpdateJobEmailsService =
+      new RegistrationsUpdateJobEmailsServiceMock();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RegistrationsUpdateJobsService,
         { provide: RegistrationsService, useValue: registrationsService },
-        { provide: UserEmailsService, useValue: userEmailsService },
+        {
+          provide: RegistrationsUpdateJobEmailsService,
+          useValue: registrationsUpdateJobEmailsService,
+        },
         { provide: UserService, useClass: UserServiceMock },
       ],
     }).compile();
@@ -65,7 +69,9 @@ describe('RegistrationsUpdateJobsService', () => {
     expect(
       registrationsService.validateInputAndUpdateRegistration,
     ).toHaveBeenCalledTimes(2);
-    expect(userEmailsService.sendUserEmail).not.toHaveBeenCalled();
+    expect(
+      registrationsUpdateJobEmailsService.sendUpdateJobEmail,
+    ).not.toHaveBeenCalled();
   });
 
   it('should process registrations update job with some failures and send email', async () => {
@@ -95,12 +101,16 @@ describe('RegistrationsUpdateJobsService', () => {
     expect(
       registrationsService.validateInputAndUpdateRegistration,
     ).toHaveBeenCalledTimes(2);
-    expect(userEmailsService.sendUserEmail).toHaveBeenCalledTimes(1);
+    expect(
+      registrationsUpdateJobEmailsService.sendUpdateJobEmail,
+    ).toHaveBeenCalledTimes(1);
 
-    expect(userEmailsService.sendUserEmail).toHaveBeenCalledWith(
+    expect(
+      registrationsUpdateJobEmailsService.sendUpdateJobEmail,
+    ).toHaveBeenCalledWith(
       expect.objectContaining({
-        userEmailType: UpdateJobEmailType.importValidationFailed,
-        userEmailInput: expect.objectContaining({
+        updateJobEmailType: UpdateJobEmailType.importValidationFailed,
+        updateJobEmailInput: expect.objectContaining({
           email: 'owner@example.com',
           displayName: 'Owner User',
           attachment: expect.objectContaining({
@@ -112,9 +122,10 @@ describe('RegistrationsUpdateJobsService', () => {
     );
 
     // Decode and verify attachment contains failing reference id and message
-    const callArg = userEmailsService.sendUserEmail.mock.calls[0][0];
+    const callArg =
+      registrationsUpdateJobEmailsService.sendUpdateJobEmail.mock.calls[0][0];
     const decoded = Buffer.from(
-      callArg.userEmailInput.attachment.contentBytes,
+      callArg.updateJobEmailInput.attachment.contentBytes,
       'base64',
     ).toString('utf8');
     expect(decoded).toContain('referenceId,error');
