@@ -3,9 +3,7 @@ import http from 'k6/http';
 import config from './config.js';
 const { baseUrl, credentials } = config;
 
-export default class loginModel {
-  constructor() {}
-
+export default class LoginModel {
   login() {
     const url = `${baseUrl}api/users/login`;
     const payload = JSON.stringify(credentials);

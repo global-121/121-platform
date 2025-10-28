@@ -90,6 +90,38 @@ export function importRegistrationsCSV(
     .attach('file', filePath);
 }
 
+export function duplicateRegistrations({
+  powerNumberRegistration,
+  accessToken,
+  body = {},
+}: {
+  powerNumberRegistration: number;
+  accessToken: string;
+  body: object;
+}): Promise<request.Response> {
+  return getServer()
+    .post('/scripts/duplicate-registrations')
+    .set('Cookie', [accessToken])
+    .query({ mockPowerNumberRegistrations: powerNumberRegistration })
+    .send(body);
+}
+
+export function exportRegistrations(
+  programId: number,
+  filter: string,
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer()
+    .get(`/programs/${programId}/metrics/export-list/registrations`)
+    .set('Cookie', [accessToken])
+    .query({
+      sortBy: 'registrationProgramId:DESC',
+      select: `referenceId,${filter}`,
+      format: 'json',
+    })
+    .send();
+}
+
 export function bulkUpdateRegistrationsCSV(
   programId: number,
   filePath: string,
@@ -282,7 +314,7 @@ export async function changeRegistrationStatus({
   } = {},
 }: {
   programId: number;
-  referenceIds: string[];
+  referenceIds?: string[];
   status: RegistrationStatusEnum;
   accessToken: string;
   options?: {
@@ -349,24 +381,30 @@ export async function awaitChangeRegistrationStatus({
     );
   }
 
-  await waitForStatusChangeToComplete(
+  await waitForStatusChangeToComplete({
     programId,
-    referenceIds.length,
+    amountOfRegistrations: referenceIds.length,
     status,
-    8_000,
+    maxWaitTimeMs: 8_000,
     accessToken,
-  );
+  });
 
   return result;
 }
 
-export async function waitForStatusChangeToComplete(
-  programId: number,
-  amountOfRegistrations: number,
-  status: string,
-  maxWaitTimeMs: number,
-  accessToken: string,
-): Promise<void> {
+export async function waitForStatusChangeToComplete({
+  programId,
+  amountOfRegistrations,
+  status,
+  maxWaitTimeMs,
+  accessToken,
+}: {
+  programId: number;
+  amountOfRegistrations: number;
+  status: string;
+  maxWaitTimeMs: number;
+  accessToken: string;
+}): Promise<void> {
   const startTime = Date.now();
   while (Date.now() - startTime < maxWaitTimeMs) {
     const eventsResult = await getRegistrationEvents({
@@ -736,7 +774,7 @@ export async function seedRegistrationsWithStatus(
   programId: number,
   accessToken: string,
   status: RegistrationStatusEnum,
-): Promise<void> {
+): Promise<request.Response> {
   const response = await importRegistrations(
     programId,
     registrations,
@@ -750,15 +788,17 @@ export async function seedRegistrationsWithStatus(
   }
 
   if (status === RegistrationStatusEnum.new) {
-    return;
+    return response; // returning something here to satisfy Typescript. This response is not actually used anywhere.
   }
 
-  await awaitChangeRegistrationStatus({
+  const statusChangeResponse = await awaitChangeRegistrationStatus({
     programId,
     referenceIds: registrations.map((r) => r.referenceId),
     status,
     accessToken,
   });
+
+  return statusChangeResponse;
 }
 
 export async function getRegistrationEvents({
@@ -894,4 +934,19 @@ export async function getActivities({
     .get(`/programs/${programId}/registrations/${registrationId}/activities`)
     .set('Cookie', [accessToken])
     .send();
+}
+
+export function jsonToCsv(data: Readonly<Record<string, unknown>>[]): string {
+  if (!data || data.length === 0) return '';
+  const headers = Object.keys(data[0]);
+  const csvRows = [headers.join(',')];
+
+  for (const item of data) {
+    const row = headers.map((header) => {
+      const value = item[header];
+      return `"${String(value).replace(/"/g, '""')}"`;
+    });
+    csvRows.push(row.join(','));
+  }
+  return csvRows.join('\n');
 }

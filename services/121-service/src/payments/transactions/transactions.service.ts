@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import chunk from 'lodash/chunk';
 
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
@@ -65,9 +66,10 @@ export class TransactionsService {
         transactionEventId: transaction.transactionEvents[0].id,
       }),
     );
-    await this.lastTransactionEventRepository.insert(
-      lastTransactionEventsToSave,
-    );
+    const chunkSize = 2000;
+    for (const chunked of chunk(lastTransactionEventsToSave, chunkSize)) {
+      await this.lastTransactionEventRepository.insert(chunked);
+    }
 
     return savedTransactions.map((t) => t.id);
   }

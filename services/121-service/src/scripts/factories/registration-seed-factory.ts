@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import chunk from 'lodash/chunk';
-import { DataSource, DeepPartial, Equal } from 'typeorm';
+import { DataSource, DeepPartial, Equal, In, Not } from 'typeorm';
 
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -121,6 +122,70 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
 
     console.log(
       `Updated ${dataToUpdate.length} phone numbers in attribute data`,
+    );
+  }
+
+  public async makeAttributesWithDuplicateCheckUnique(): Promise<void> {
+    console.log(
+      'Updating attributes with duplicateCheck=true in registration attribute data',
+    );
+
+    const attributeDataRepository = this.dataSource.getRepository(
+      RegistrationAttributeDataEntity,
+    );
+    const programRegistrationAttributeRepository =
+      this.dataSource.getRepository(ProgramRegistrationAttributeEntity);
+
+    // Find all program registration attributes with duplicateCheck=true
+    const attributesWithDuplicateCheck =
+      await programRegistrationAttributeRepository.find({
+        where: {
+          duplicateCheck: Equal(true),
+          name: Not(In(['phoneNumber', 'whatsappPhoneNumber'])),
+        },
+      });
+    console.log('attributesWithDuplicateCheck: ', attributesWithDuplicateCheck);
+    if (attributesWithDuplicateCheck.length === 0) {
+      console.log('No attributes found with duplicateCheck=true');
+      return;
+    }
+    const attributeIds = attributesWithDuplicateCheck.map((attr) => attr.id);
+
+    // Find all attribute data records for those attributes
+    const attributeDataRecords = await attributeDataRepository
+      .createQueryBuilder('rad')
+      .select('rad.id AS id')
+      .innerJoin('rad.programRegistrationAttribute', 'pra')
+      .leftJoin('rad.registration', 'r')
+      .addSelect('pra.name AS "attributeName"')
+      .addSelect('rad.value AS "value"')
+      .where('rad.programRegistrationAttributeId IN (:...attributeIds)', {
+        attributeIds,
+      })
+      .getRawMany();
+
+    // Update each attribute with a new unique value
+    const dataToUpdate: { id: number; value: string }[] = [];
+    for (const record of attributeDataRecords) {
+      const newValue = this.generateUniqueReferenceId();
+      dataToUpdate.push({
+        id: record.id,
+        value: newValue,
+      });
+    }
+
+    // Update in batches
+    const batchSize = 100;
+    for (const batch of chunk(dataToUpdate, batchSize)) {
+      await Promise.all(
+        batch.map(({ id, value }) =>
+          attributeDataRepository.update(id, { value }),
+        ),
+      );
+    }
+
+    console.log(
+      `Updated ${dataToUpdate.length} attributes with duplicateCheck=true in attribute data`,
     );
   }
 

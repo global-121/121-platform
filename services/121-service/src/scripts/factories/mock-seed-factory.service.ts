@@ -56,6 +56,8 @@ export class MockSeedFactoryService {
 
     await this.registrationFactory.makePhoneNumbersUnique();
 
+    await this.registrationFactory.makeAttributesWithDuplicateCheckUnique();
+
     console.log('**COMPLETED MULTIPLYING REGISTRATIONS**');
   }
 
