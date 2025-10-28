@@ -1,5 +1,9 @@
 import { SUPPORT_EMAIL } from '@121-service/src/emails/email-constants';
 
+/**
+ * Wrap the email content with the default email layout.
+ * @param content HTML-content of the email; Output within a white box, between header and footer
+ */
 export const wrapWithEmailLayout = (content: string): string => {
   return `
     <style>
