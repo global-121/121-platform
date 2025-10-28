@@ -96,7 +96,7 @@ export class ExcelService {
    * A pure function.
    */
   public joinRegistrationsAndTransactions(
-    orderedRegistrations: Awaited<
+    registrations: Awaited<
       ReturnType<
         RegistrationsPaginationService['getRegistrationViewsChunkedByPaginateQuery']
       >
@@ -105,16 +105,20 @@ export class ExcelService {
     exportColumns: string[],
   ): ExcelFspInstructions[] {
     // # of transactions and registrations should be the same or throw
-    if (transactions.length !== orderedRegistrations.length) {
+    if (transactions.length !== registrations.length) {
       throw new Error(
-        `Number of transactions (${transactions.length}) and registrations (${orderedRegistrations.length}) do not match`,
+        `Number of transactions (${transactions.length}) and registrations (${registrations.length}) do not match`,
       );
     }
     // This method joins the registrations and transactions arrays based on the referenceId.
-    // Both arrays are assumed to be sorted by referenceId. This allows us to use a two-pointer
+    // We sort both arrays by referenceId. This allows us to use a two-pointer
     // technique to join the arrays, which is more efficient than using a nested loop or the find method.
     const transactionsOrdered = transactions.sort((a, b) =>
       a.registration.referenceId.localeCompare(b.registration.referenceId),
+    );
+    // Make sure registrations are also ordered by referenceId
+    const orderedRegistrations = registrations.sort((a, b) =>
+      a.referenceId.localeCompare(b.referenceId),
     );
     let j = 0;
     const excelFspInstructions = orderedRegistrations.map((registration) => {
