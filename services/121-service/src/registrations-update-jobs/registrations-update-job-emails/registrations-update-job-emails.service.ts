@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
 import { EmailsService } from '@121-service/src/emails/emails.service';
+import { sanitizeEmailInput } from '@121-service/src/emails/helpers/sanitize-email-input';
 import { EmailData } from '@121-service/src/emails/interfaces/email-data.interface';
 import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
 import { UpdateJobEmailType } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/enum/update-job-email-type.enum';
 import { UpdateJobEmailInput } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/interfaces/update-job-email-input.interface';
 import { buildTemplateImportValidationFailed } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/templates/import-validation-failed.template';
-import { stripHtmlTags } from '@121-service/src/utils/strip-html-tags.helper';
 
 @Injectable()
 export class RegistrationsUpdateJobEmailsService {
@@ -53,8 +53,7 @@ export class RegistrationsUpdateJobEmailsService {
     updateJobEmailInput: UpdateJobEmailInput,
   ): EmailTemplate {
     let emailTemplate: EmailTemplate;
-    const sanitizedInput =
-      this.sanitizeUpdateJobEmailInput(updateJobEmailInput);
+    const sanitizedInput = sanitizeEmailInput(updateJobEmailInput);
 
     switch (updateJobEmailType) {
       case UpdateJobEmailType.importValidationFailed:
@@ -63,15 +62,5 @@ export class RegistrationsUpdateJobEmailsService {
     }
 
     return emailTemplate;
-  }
-
-  private sanitizeUpdateJobEmailInput(
-    updateJobEmailInput: UpdateJobEmailInput,
-  ): UpdateJobEmailInput {
-    const { displayName } = updateJobEmailInput;
-    return {
-      ...updateJobEmailInput,
-      displayName: stripHtmlTags(displayName),
-    };
   }
 }
