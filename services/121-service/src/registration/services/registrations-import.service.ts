@@ -287,10 +287,12 @@ export class RegistrationsImportService {
         );
       }
       if (program.paymentAmountMultiplierFormula) {
-        await this.inclusionScoreService.calculatePaymentAmountMultiplier(
-          program,
-          registration.referenceId,
-        );
+        await this.inclusionScoreService.calculatePaymentAmountMultiplier({
+          paymentAmountMultiplierFormula:
+            program.paymentAmountMultiplierFormula,
+          referenceId: registration.referenceId,
+          programId: registration.programId,
+        });
       }
     }
     await this.actionService.saveAction(

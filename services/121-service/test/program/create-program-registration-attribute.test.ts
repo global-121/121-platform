@@ -41,28 +41,28 @@ describe('Create program', () => {
 
   it('should post a program registration attribute', async () => {
     // Act
-    const createReponse = await postProgramRegistrationAttribute(
+    const createReponse = await postProgramRegistrationAttribute({
       programRegistrationAttribute,
-      programIdPV,
+      programId: programIdPV,
       accessToken,
-    );
+    });
     // Assert
     expect(createReponse.statusCode).toBe(HttpStatus.CREATED);
   });
 
   it('should not be able to post a registration attributes with a name that already exists', async () => {
     // Arrange
-    await postProgramRegistrationAttribute(
+    await postProgramRegistrationAttribute({
       programRegistrationAttribute,
-      programIdPV,
+      programId: programIdPV,
       accessToken,
-    );
+    });
     // Act
-    const createReponse2 = await postProgramRegistrationAttribute(
-      programRegistrationAttribute as any,
-      programIdPV,
+    const createReponse2 = await postProgramRegistrationAttribute({
+      programRegistrationAttribute: programRegistrationAttribute as any,
+      programId: programIdPV,
       accessToken,
-    );
+    });
     // Assert
     expect(createReponse2.statusCode).toBe(HttpStatus.BAD_REQUEST);
   });
@@ -76,11 +76,11 @@ describe('Create program', () => {
       };
       delete programRegistrationAttributeCopy[attribute];
 
-      const createResponse = await postProgramRegistrationAttribute(
-        programRegistrationAttributeCopy as any,
-        programIdPV,
+      const createResponse = await postProgramRegistrationAttribute({
+        programRegistrationAttribute: programRegistrationAttributeCopy as any,
+        programId: programIdPV,
         accessToken,
-      );
+      });
       // Assert
       expect(createResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
     }
@@ -99,11 +99,11 @@ describe('Create program', () => {
       programRegistrationAttributeCopy.name = name;
 
       // Act
-      const createReponse = await postProgramRegistrationAttribute(
-        programRegistrationAttributeCopy,
-        programIdPV,
+      const createReponse = await postProgramRegistrationAttribute({
+        programRegistrationAttribute: programRegistrationAttributeCopy,
+        programId: programIdPV,
         accessToken,
-      );
+      });
       // Assert
       expect(createReponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
     }

@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Parser } from 'expr-eval';
 import { Equal, Repository } from 'typeorm';
 
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
-
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 @Injectable()
 export class InclusionScoreService {
   @InjectRepository(ProgramEntity)
@@ -18,39 +18,65 @@ export class InclusionScoreService {
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationUtilsService: RegistrationUtilsService,
-    private readonly registrationDataService: RegistrationDataService,
+    private readonly registrationsPaginationService: RegistrationsPaginationService,
   ) {}
 
-  public async calculatePaymentAmountMultiplier(
-    program: ProgramEntity,
-    referenceId: string,
-  ): Promise<RegistrationEntity | undefined> {
-    if (!program.paymentAmountMultiplierFormula) {
+  // TODO: move to different service
+  public async calculatePaymentAmountMultiplier({
+    paymentAmountMultiplierFormula,
+    referenceId,
+    programId,
+  }: {
+    paymentAmountMultiplierFormula: string | null;
+    referenceId: string;
+    programId: number;
+  }): Promise<RegistrationEntity | undefined> {
+    const preprocessFormula = (formula: string) =>
+      formula.replace(/\$\{([a-zA-Z0-9_]+)\}/g, '$1');
+
+    if (!paymentAmountMultiplierFormula) {
       return;
     }
+    const registrations =
+      await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
+        { programId, referenceIds: [referenceId] },
+      );
+    const registration = registrations[0];
 
-    const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: Equal(referenceId) },
-      relations: ['data'],
-    });
-    const formulaParts = program.paymentAmountMultiplierFormula
-      .replace(/\s/g, '')
-      .split('+');
-    const constant = Number(formulaParts[0]);
-    formulaParts.shift(); // remove 'constant' from array
-    let paymentAmountMultiplier = constant;
-    for await (const factor of formulaParts) {
-      const factorElements = factor.replace(/\s/g, '').split('*');
-      const factorValue =
-        await this.registrationDataService.getRegistrationDataValueByName(
-          registration,
-          factorElements[1],
-        );
-      paymentAmountMultiplier +=
-        Number(factorElements[0]) * Number(factorValue);
+    const valueObject: Record<string, string | number> = {};
+    for (const [key, value] of Object.entries(registration)) {
+      // if it is a number, pass as number, else as string
+      // should we do this based on registration attribute type instead?
+      if (value != null) {
+        valueObject[key] = !isNaN(Number(value))
+          ? Number(value)
+          : String(value);
+      }
     }
-    registration.paymentAmountMultiplier = paymentAmountMultiplier;
-    return await this.registrationUtilsService.save(registration);
+    console.log(
+      '🚀 ~ InclusionScoreService ~ calculatePaymentAmountMultiplier ~ numericRegistrationProperties:',
+      valueObject,
+    );
+    const processedFormula = preprocessFormula(paymentAmountMultiplierFormula);
+    console.log(
+      '🚀 ~ InclusionScoreService ~ calculatePaymentAmountMultiplier ~ processedFormula:',
+      processedFormula,
+    );
+    const parser = new Parser();
+    const expr = parser.parse(processedFormula);
+    const paymentAmountMultiplier: number = expr.evaluate(valueObject); // result is 3
+    console.log(
+      '🚀 ~ InclusionScoreService ~ calculatePaymentAmountMultiplier ~ paymentAmountMultiplier:',
+      paymentAmountMultiplier,
+    );
+
+    await this.registrationScopedRepository.updateUnscoped(
+      { referenceId: registration.referenceId },
+      { paymentAmountMultiplier },
+    );
+    return this.registrationScopedRepository.findOneOrFail({
+      where: { referenceId: Equal(referenceId) },
+    });
   }
 
   public async calculateInclusionScore(referenceId: string): Promise<void> {
