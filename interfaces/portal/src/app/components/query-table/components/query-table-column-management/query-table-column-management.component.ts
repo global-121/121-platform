@@ -86,11 +86,11 @@ export class QueryTableColumnManagementComponent<
     });
   }
 
-  private getFieldNameList(fields: QueryTableColumn<TData>[]): string {
+  private getFieldNames(fields: QueryTableColumn<TData>[]): string[] {
     const fieldNames = Array.from(
       new Set(fields.map((col) => col.field)).values(),
     );
-    return fieldNames.sort().join(',');
+    return fieldNames;
   }
 
   onFormSubmit(): void {
@@ -100,20 +100,24 @@ export class QueryTableColumnManagementComponent<
       return;
     }
 
+    const selectedFieldNames = this.getFieldNames(selectedColumns);
+
     // update `selectedColumns` so the columns always appear in the same order in the table
     selectedColumns = this.columns().filter((col) =>
-      selectedColumns
-        .map((selectedCol) => selectedCol.field)
-        .includes(col.field),
+      selectedFieldNames.includes(col.field),
     );
 
-    const visibleFieldNames = this.getFieldNameList(this.visibleColumns());
-    const selectedFieldNames = this.getFieldNameList(selectedColumns);
+    const visibleFieldNamesString = this.getFieldNames(this.visibleColumns())
+      .sort()
+      .join(',');
+    const selectedFieldNamesString = selectedFieldNames.sort().join(',');
 
     this.trackingService.trackEvent({
       category: TrackingCategory.manageTableSettings,
       action: TrackingAction.clickProceedButton,
-      name: `columns:${visibleFieldNames === selectedFieldNames ? 'keep' : 'update'} to:${selectedFieldNames}`,
+      name: `columns:${
+        visibleFieldNamesString === selectedFieldNamesString ? 'keep' : 'update'
+      } to:${selectedFieldNamesString}`,
       value: selectedColumns.length,
     });
 
