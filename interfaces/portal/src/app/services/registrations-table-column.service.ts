@@ -289,11 +289,11 @@ export class RegistrationsTableColumnService {
 
         if (column.type === QueryTableColumnType.NUMERIC) {
           getCellText = (registration: Registration) => {
-            if (registration[column.field]) {
-              return registration[column.field] as string;
-            } else {
-              return ''; // no value should be shown as empty string
+            if (registration[column.field] === null) {
+              return '';
             }
+
+            return registration[column.field] as string;
           };
         }
 
