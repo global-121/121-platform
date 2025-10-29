@@ -28,6 +28,12 @@ const availableFsps = [
   FSP_SETTINGS[Fsps.onafriq].defaultLabel.en,
 ].filter((label): label is string => label !== undefined);
 
+const fspsNotConfiguredInKobo = [
+  FSP_SETTINGS[Fsps.safaricom].defaultLabel.en,
+  FSP_SETTINGS[Fsps.commercialBankEthiopia].defaultLabel.en,
+  FSP_SETTINGS[Fsps.onafriq].defaultLabel.en,
+].filter((label): label is string => label !== undefined);
+
 const fspsConfiguredInKobo = [
   FSP_SETTINGS[Fsps.intersolveVoucherPaper].defaultLabel.en,
   FSP_SETTINGS[Fsps.airtel].defaultLabel.en,
@@ -71,6 +77,12 @@ test('Add all available FSPs', async ({ page }) => {
   await test.step('Validate all FSPs are ready for configuration', async () => {
     await fspSettings.validateFspVisibility({
       fspNames: [...availableFsps, ...fspsToDelete],
+    });
+  });
+
+  await test.step('Add fsps that are not do not match kobo form configuration', async () => {
+    await fspSettings.validateFspConfigurationIsNotPresent({
+      fspNames: fspsNotConfiguredInKobo,
     });
   });
 

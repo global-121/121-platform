@@ -7,6 +7,8 @@ class FspSettingsPage extends BasePage {
   readonly addFspButton: Locator;
   readonly integrateFspButton: Locator;
   readonly fspCard: Locator;
+  readonly integrationErrorMessage: Locator;
+  readonly cancelButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -17,6 +19,8 @@ class FspSettingsPage extends BasePage {
       name: 'Integrate FSP',
     });
     this.fspCard = this.page.locator('app-card-with-link p-card');
+    this.integrationErrorMessage = this.page.getByText('Integration error');
+    this.cancelButton = this.page.getByRole('button', { name: 'Cancel' });
   }
 
   async clickEditFspSection() {
@@ -120,6 +124,33 @@ class FspSettingsPage extends BasePage {
       }
 
       await this.integrateFspButton.click();
+    }
+  }
+
+  async validateFspConfigurationIsNotPresent({
+    fspNames,
+  }: {
+    fspNames: string[];
+  }) {
+    for (const name of fspNames) {
+      // Check if we need to click "Add another FSP" first
+      await this.page.waitForTimeout(200); // Small wait to ensure button is loaded
+      if (await this.addFspButton.isVisible()) {
+        await this.addFspButton.click();
+      }
+      // Now proceed with selecting and configuring the FSP
+      await this.fspCard.filter({ hasText: name }).click();
+      await this.page.waitForTimeout(200); // Wait for inputs to load
+      const inputs = this.page.locator('input');
+      const inputCount = await inputs.count();
+      for (let i = 1; i < inputCount; i++) {
+        const input = inputs.nth(i);
+        await input.fill(name);
+      }
+      await this.integrateFspButton.click();
+      await expect(this.integrationErrorMessage).toBeVisible();
+      await this.page.waitForTimeout(200);
+      await this.cancelButton.click();
     }
   }
 
