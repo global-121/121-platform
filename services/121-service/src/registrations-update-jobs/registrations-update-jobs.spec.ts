@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
-import { UpdateJobEmailType } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/enum/update-job-email-type.enum';
 import { RegistrationsUpdateJobEmailsService } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/registrations-update-job-emails.service';
 import { RegistrationsUpdateJobsService } from '@121-service/src/registrations-update-jobs/registrations-update-jobs.service';
 import { UserService } from '@121-service/src/user/user.service';
@@ -109,7 +108,6 @@ describe('RegistrationsUpdateJobsService', () => {
       registrationsUpdateJobEmailsService.sendUpdateJobEmail,
     ).toHaveBeenCalledWith(
       expect.objectContaining({
-        updateJobEmailType: UpdateJobEmailType.importValidationFailed,
         updateJobEmailInput: expect.objectContaining({
           email: 'owner@example.com',
           displayName: 'Owner User',

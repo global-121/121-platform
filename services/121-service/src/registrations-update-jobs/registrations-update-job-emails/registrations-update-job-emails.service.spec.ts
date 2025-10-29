@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { EmailsService } from '@121-service/src/emails/emails.service';
-import { UpdateJobEmailType } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/enum/update-job-email-type.enum';
 import { UpdateJobEmailInput } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/interfaces/update-job-email-input.interface';
 import { RegistrationsUpdateJobEmailsService } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/registrations-update-job-emails.service';
 import { buildTemplateImportValidationFailed } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/templates/import-validation-failed.template';
@@ -62,7 +61,6 @@ describe('RegistrationsUpdateJobEmailsService', () => {
     // Act
     await service.sendUpdateJobEmail({
       updateJobEmailInput,
-      updateJobEmailType: UpdateJobEmailType.importValidationFailed,
     });
 
     // Assert

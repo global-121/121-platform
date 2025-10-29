@@ -4,7 +4,6 @@ import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/reg
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { RegistrationUpdateErrorRecord } from '@121-service/src/registrations-update-jobs/interfaces/registration-update-error-record.interface';
-import { UpdateJobEmailType } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/enum/update-job-email-type.enum';
 import { UpdateJobEmailInput } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/interfaces/update-job-email-input.interface';
 import { RegistrationsUpdateJobEmailsService } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/registrations-update-job-emails.service';
 import { UserService } from '@121-service/src/user/user.service';
@@ -73,7 +72,7 @@ export class RegistrationsUpdateJobsService {
 
     if (!user || !user.username) {
       throw new Error(
-        'User not found or has no email address for validation failure notification',
+        'User not found or has no email address for validation failure email',
       );
     }
 
@@ -89,7 +88,6 @@ export class RegistrationsUpdateJobsService {
 
     await this.registrationsUpdateJobEmailsService.sendUpdateJobEmail({
       updateJobEmailInput: templateInput,
-      updateJobEmailType: UpdateJobEmailType.importValidationFailed,
     });
   }
 
