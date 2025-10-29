@@ -36,7 +36,7 @@ import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-r
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 import { maskValueKeepEnd } from '@121-service/src/utils/mask-value.helper';
@@ -57,7 +57,7 @@ export class MessageIncomingService {
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
 
-  private readonly fallbackLanguage = LanguageEnum.en;
+  private readonly fallbackLanguage = UILanguageEnum.en;
   private readonly genericDefaultReplies = {
     en: 'This is an automated message. Your WhatsApp phone number is not recognized for any 121 program. For questions please contact the NGO.',
   };
@@ -594,7 +594,7 @@ export class MessageIncomingService {
   private async getMessageTemplateOrFallback(
     programId: number,
     key: ProgramNotificationEnum,
-    language: LanguageEnum,
+    language: UILanguageEnum,
   ): Promise<string | undefined> {
     const messageTemplates =
       await this.messageTemplateService.getMessageTemplatesByProgramId(

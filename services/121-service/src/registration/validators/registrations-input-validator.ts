@@ -19,7 +19,7 @@ import { ValidationRegistrationConfig } from '@121-service/src/registration/inte
 import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
 import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
 import { UserService } from '@121-service/src/user/user.service';
 
 type InputAttributeType = string | boolean | number | undefined | null;
@@ -473,7 +473,7 @@ export class RegistrationsInputValidator {
     typeOfInput: RegistrationValidationInputType;
   }): {
     errorObj: ValidateRegistrationErrorObject | undefined;
-    preferredLanguage: LanguageEnum | undefined;
+    preferredLanguage: UILanguageEnum | undefined;
   } {
     const errorObj = this.checkLanguage({
       preferredLanguage,
@@ -538,9 +538,9 @@ export class RegistrationsInputValidator {
   private updateLanguage(
     preferredLanguage: string | undefined,
     programLanguageMapping: object,
-  ): LanguageEnum | undefined {
+  ): UILanguageEnum | undefined {
     if (!preferredLanguage) {
-      return LanguageEnum.en;
+      return UILanguageEnum.en;
     }
     if (Object.keys(programLanguageMapping).includes(preferredLanguage)) {
       return programLanguageMapping[preferredLanguage];

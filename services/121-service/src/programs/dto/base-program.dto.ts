@@ -8,7 +8,7 @@ import {
   IsString,
 } from 'class-validator';
 
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
@@ -90,11 +90,11 @@ export abstract class BaseProgramDto {
   public readonly fullnameNamingConvention?: string[];
 
   @ApiProperty({
-    example: Object.values(LanguageEnum),
+    example: Object.values(UILanguageEnum),
   })
   @IsOptional()
   @IsArray()
-  public readonly languages?: WrapperType<LanguageEnum[]>;
+  public readonly languages?: WrapperType<UILanguageEnum[]>;
 
   @IsOptional()
   @IsBoolean()
