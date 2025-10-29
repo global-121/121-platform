@@ -64,7 +64,7 @@ export class PaymentsExecutionService {
         programFspConfigurationNames,
       );
 
-      await this.paymentEventsService.createEventWithoutAttributes({
+      await this.paymentEventsService.createEvent({
         paymentId,
         userId,
         type: PaymentEvent.started,
@@ -95,12 +95,17 @@ export class PaymentsExecutionService {
     }
   }
 
-  public async retryPayment(
-    userId: number,
-    programId: number,
-    paymentId: number,
-    referenceIds?: string[],
-  ): Promise<BulkActionResultRetryPaymentDto> {
+  public async retryPayment({
+    userId,
+    programId,
+    paymentId,
+    referenceIds,
+  }: {
+    userId: number;
+    programId: number;
+    paymentId: number;
+    referenceIds?: string[];
+  }): Promise<BulkActionResultRetryPaymentDto> {
     // check in-progress and set to in-progress
     await this.paymentsProgressHelperService.checkPaymentInProgressAndThrow(
       programId,

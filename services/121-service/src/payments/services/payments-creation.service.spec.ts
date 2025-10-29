@@ -36,7 +36,7 @@ describe('PaymentsCreationService', () => {
       checkFspConfigurationsOrThrow: jest.fn(),
     } as unknown as PaymentsHelperService;
     paymentEventsService = {
-      createEventWithoutAttributes: jest.fn(),
+      createEvent: jest.fn(),
       createNoteEvent: jest.fn(),
     } as unknown as PaymentEventsService;
     transactionsService = {
@@ -126,9 +126,7 @@ describe('PaymentsCreationService', () => {
 
     // Assert
     expect(actionsService.saveAction).toHaveBeenCalledTimes(2); // start & finish
-    expect(
-      paymentEventsService.createEventWithoutAttributes,
-    ).toHaveBeenCalledWith({
+    expect(paymentEventsService.createEvent).toHaveBeenCalledWith({
       userId: 1,
       paymentId: 123,
       type: PaymentEvent.created,
