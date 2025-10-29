@@ -1,18 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
-import { Equal, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
-import { getFspConfigurationRequiredProperties } from '@121-service/src/fsps/fsp-settings.helpers';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
-import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
+import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -20,7 +18,6 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
-import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Injectable()
 export class PaymentsCreationService {
@@ -29,10 +26,9 @@ export class PaymentsCreationService {
 
   public constructor(
     private readonly actionService: ActionsService,
-    private readonly azureLogService: AzureLogService,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
-    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly paymentsHelperService: PaymentsHelperService,
     private readonly paymentEventsService: PaymentEventsService,
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
     private readonly transactionsService: TransactionsService,
@@ -121,8 +117,15 @@ export class PaymentsCreationService {
       (registration) => registration.referenceId,
     );
 
-    if (!dryRun && referenceIds.length > 0) {
-      await this.checkFspConfigurationsOrThrow(
+    if (!dryRun) {
+      if (referenceIds.length < 1) {
+        throw new HttpException(
+          'No registrations found to create payment for',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      await this.paymentsHelperService.checkFspConfigurationsOrThrow(
         programId,
         programFspConfigurationNames,
       );
@@ -133,35 +136,31 @@ export class PaymentsCreationService {
       });
       bulkActionResultPaymentDto.id = paymentId;
 
-      try {
-        await this.actionService.saveAction(
-          userId,
+      // ##TODO: Refactor actions/payment-in-progress
+      await this.actionService.saveAction(
+        userId,
+        programId,
+        AdditionalActionType.paymentStarted,
+      );
+
+      const transactionCreationDetails =
+        await this.getTransactionCreationDetails({
+          referenceIds,
+          transferValue,
           programId,
-          AdditionalActionType.paymentStarted,
-        );
-
-        const transactionCreationDetails =
-          await this.getTransactionCreationDetails({
-            referenceIds,
-            transferValue,
-            programId,
-          });
-
-        await this.transactionsService.createTransactionsAndEvents({
-          transactionCreationDetails,
-          paymentId,
-          userId,
         });
-      } catch (e) {
-        this.azureLogService.logError(e, true);
-      } finally {
-        // ##TODO: Remove this, along with all payment action saving?
-        void this.actionService.saveAction(
-          userId,
-          programId,
-          AdditionalActionType.paymentFinished,
-        );
-      }
+
+      await this.transactionsService.createTransactionsAndEvents({
+        transactionCreationDetails,
+        paymentId,
+        userId,
+      });
+
+      void this.actionService.saveAction(
+        userId,
+        programId,
+        AdditionalActionType.paymentFinished,
+      );
     }
     return bulkActionResultPaymentDto;
   }
@@ -194,66 +193,6 @@ export class PaymentsCreationService {
     }
 
     return savedPaymentEntity.id;
-  }
-
-  private async checkFspConfigurationsOrThrow(
-    programId: number,
-    programFspConfigurationNames: string[],
-  ): Promise<void> {
-    const validationResults = await Promise.all(
-      programFspConfigurationNames.map((name) =>
-        this.validateMissingFspConfigurations(programId, name),
-      ),
-    );
-    const errorMessages = validationResults.flat();
-    if (errorMessages.length > 0) {
-      throw new HttpException(
-        `${errorMessages.join(', ')}`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-  }
-
-  private async validateMissingFspConfigurations(
-    programId: number,
-    programFspConfigurationName: string,
-  ): Promise<string[]> {
-    const config = await this.programFspConfigurationRepository.findOne({
-      where: {
-        name: Equal(programFspConfigurationName),
-        programId: Equal(programId),
-      },
-      relations: ['properties'],
-    });
-
-    const errorMessages: string[] = [];
-    if (!config) {
-      errorMessages.push(
-        `Missing Program FSP configuration with name ${programFspConfigurationName}`,
-      );
-      return errorMessages;
-    }
-
-    const requiredConfigurations = getFspConfigurationRequiredProperties(
-      config.fspName,
-    );
-    // Early return for FSP that don't have required configurations
-    if (!requiredConfigurations) {
-      return [];
-    }
-
-    for (const requiredConfiguration of requiredConfigurations) {
-      const foundConfig = config.properties.find(
-        (c) => c.name === requiredConfiguration,
-      );
-      if (!foundConfig) {
-        errorMessages.push(
-          `Missing required configuration ${requiredConfiguration} for FSP ${config.fspName}`,
-        );
-      }
-    }
-
-    return errorMessages;
   }
 
   private async getRegistrationsForPaymentChunked(
