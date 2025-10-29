@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
+import { ActionType } from '@121-service/src/actions/enum/action-type.enum';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
@@ -35,49 +35,64 @@ export class PaymentsExecutionService {
     programId: number;
     paymentId: number;
   }): Promise<void> {
+    // check in-progress and set to in-progress
     await this.paymentsProgressHelperService.checkPaymentInProgressAndThrow(
       programId,
     );
+    await this.actionService.saveAction(
+      userId,
+      programId,
+      ActionType.startBlockNewPayment,
+    );
 
-    const transactionsOfIncludedRegistrations =
-      await this.transactionViewScopedRepository.getTransactionsOfIncludedRegistrationsByPaymentId(
+    // do all operations in a try to make sure we always end with an unblock-payments action, also in case of failure
+    try {
+      const transactionsOfIncludedRegistrations =
+        await this.transactionViewScopedRepository.getTransactionsOfIncludedRegistrationsByPaymentId(
+          {
+            programId,
+            paymentId,
+          },
+        );
+
+      const programFspConfigurationNames: string[] =
+        transactionsOfIncludedRegistrations
+          .map((t) => t.programFspConfigurationName)
+          .filter((fsp) => fsp !== null);
+      await this.paymentsHelperService.checkFspConfigurationsOrThrow(
+        programId,
+        programFspConfigurationNames,
+      );
+
+      await this.paymentEventsService.createEventWithoutAttributes({
+        paymentId,
+        userId,
+        type: PaymentEvent.started,
+      });
+
+      await this.paymentsExecutionHelperService.updatePaymentCountAndSetToCompleted(
         {
+          registrationIds: transactionsOfIncludedRegistrations.map(
+            (t) => t.registrationId,
+          ),
           programId,
-          paymentId,
+          userId,
         },
       );
 
-    const programFspConfigurationNames: string[] =
-      transactionsOfIncludedRegistrations
-        .map((t) => t.programFspConfigurationName)
-        .filter((fsp) => fsp !== null);
-    await this.paymentsHelperService.checkFspConfigurationsOrThrow(
-      programId,
-      programFspConfigurationNames,
-    );
-
-    await this.paymentEventsService.createEventWithoutAttributes({
-      paymentId,
-      userId,
-      type: PaymentEvent.started,
-    });
-
-    await this.paymentsExecutionHelperService.updatePaymentCountAndSetToCompleted(
-      {
-        registrationIds: transactionsOfIncludedRegistrations.map(
-          (t) => t.registrationId,
-        ),
+      void this.createTransactionJobs({
         programId,
+        transactionIds: transactionsOfIncludedRegistrations.map((t) => t.id),
         userId,
-      },
-    );
-
-    await this.createTransactionJobs({
-      programId,
-      transactionIds: transactionsOfIncludedRegistrations.map((t) => t.id),
-      userId,
-      isRetry: false,
-    });
+        isRetry: false,
+      });
+    } finally {
+      await this.actionService.saveAction(
+        userId,
+        programId,
+        ActionType.endBlockNewPayment,
+      );
+    }
   }
 
   public async retryPayment(
@@ -86,38 +101,42 @@ export class PaymentsExecutionService {
     paymentId: number,
     referenceIds?: string[],
   ): Promise<BulkActionResultRetryPaymentDto> {
+    // check in-progress and set to in-progress
     await this.paymentsProgressHelperService.checkPaymentInProgressAndThrow(
       programId,
     );
-
-    const transactionDetails = await this.getRetryTransactionDetailsOrThrow({
-      programId,
-      paymentId,
-      inputReferenceIds: referenceIds,
-    });
-
     await this.actionService.saveAction(
       userId,
       programId,
-      AdditionalActionType.paymentStarted,
+      ActionType.startBlockNewPayment,
     );
 
-    void this.createTransactionJobs({
-      programId,
-      transactionIds: transactionDetails.map((t) => t.transactionId),
-      userId,
-      isRetry: true,
-    })
-      .catch((e) => {
-        this.azureLogService.logError(e, true);
-      })
-      .finally(() => {
-        void this.actionService.saveAction(
-          userId,
-          programId,
-          AdditionalActionType.paymentFinished,
-        );
+    let transactionDetails: {
+      transactionId: number;
+      programFspConfigurationName: string;
+    }[];
+    // do all operations UP TO starting the queue in a try, so that we can always end with a unblock-payments action, also in case of failure
+    // from the moment of starting the queue the in-progress checking is taken over by the queue
+    try {
+      transactionDetails = await this.getRetryTransactionDetailsOrThrow({
+        programId,
+        paymentId,
+        inputReferenceIds: referenceIds,
       });
+
+      void this.createTransactionJobs({
+        programId,
+        transactionIds: transactionDetails.map((t) => t.transactionId),
+        userId,
+        isRetry: true,
+      });
+    } finally {
+      void this.actionService.saveAction(
+        userId,
+        programId,
+        ActionType.endBlockNewPayment,
+      );
+    }
 
     const programFspConfigurationNames: string[] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms

@@ -1,15 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import {
-  ActionArray,
-  ActionType,
-} from '@121-service/src/actions/action.entity';
+import { ActionType } from '@121-service/src/actions/enum/action-type.enum';
 import { UserOwnerDto } from '@121-service/src/user/dto/user-owner.dto';
 
 export class ActionReturnDto {
   @ApiProperty({ example: 1, type: 'number' })
   id: number;
-  @ApiProperty({ example: 1, enum: ActionArray })
+  @ApiProperty({ example: 1, enum: ActionType })
   actionType: ActionType;
   @ApiProperty({ type: () => UserOwnerDto })
   user: UserOwnerDto;

@@ -21,6 +21,7 @@ import {
   registrationsOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
+// NOTE: these test focus on payment being in progress because of active queue. Being in-progress because of actions is too short to cover with API-tests (with low volumes) and is either way better already covered by unit test on payments-creation.service.spec.ts
 describe('Payment in progress', () => {
   let accessToken: string;
   const registrationReferenceIdsPV = registrationsPV.map((r) => r.referenceId);
@@ -129,7 +130,7 @@ describe('Payment in progress', () => {
 
   it('should be in progress when not yet completed combined', async () => {
     // Arrange
-    const paymentAmount = 25;
+    const transferValue = 25;
     const filterAllIncluded = { 'filter.status': '$in:included' };
 
     await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);
@@ -143,7 +144,7 @@ describe('Payment in progress', () => {
     // We do a payment and we do not wait for all transactions to complete
     const doPaymentResponse = await createAndStartPayment({
       programId: programIdPV,
-      transferValue: paymentAmount,
+      transferValue,
       referenceIds: [],
       accessToken,
       filter: filterAllIncluded,
@@ -159,14 +160,14 @@ describe('Payment in progress', () => {
 
     const doPaymentPvResultPaymentNext = await createAndStartPayment({
       programId: programIdPV,
-      transferValue: paymentAmount,
+      transferValue,
       referenceIds: [],
       accessToken,
       filter: filterAllIncluded,
     });
     const doPaymentOcwResultPaymentNext = await createAndStartPayment({
       programId: programIdOCW,
-      transferValue: paymentAmount,
+      transferValue,
       referenceIds: [],
       accessToken,
       filter: filterAllIncluded,

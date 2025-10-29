@@ -4,7 +4,6 @@ import chunk from 'lodash/chunk';
 import { Equal, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
@@ -295,11 +294,6 @@ export class RegistrationsImportService {
         );
       }
     }
-    await this.actionService.saveAction(
-      userId,
-      program.id,
-      AdditionalActionType.importRegistrations,
-    );
 
     return { aggregateImportResult: { countImported } };
   }
