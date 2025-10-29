@@ -1,5 +1,7 @@
 import test from '@playwright/test';
 
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getAccessToken,
@@ -11,7 +13,11 @@ import HomePage from '@121-e2e/portal/pages/HomePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
-const configuredFsps = ['Visa debit card', 'Albert Heijn voucher WhatsApp'];
+const configuredFsps = [
+  FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
+  FSP_SETTINGS[Fsps.intersolveVoucherWhatsapp].defaultLabel.en,
+].filter((label): label is string => label !== undefined);
+
 const visaConfigurationCi = [
   'Visa debit card',
   'test-INTERSOLVE_VISA_BRAND_CODE',

@@ -1,5 +1,7 @@
 import test from '@playwright/test';
 
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getAccessToken,
@@ -11,27 +13,29 @@ import HomePage from '@121-e2e/portal/pages/HomePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
-const fspsToDelete = ['Visa debit card', 'Albert Heijn voucher WhatsApp'];
+const fspsToDelete = [
+  FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
+  FSP_SETTINGS[Fsps.intersolveVoucherWhatsapp].defaultLabel.en,
+].filter((label): label is string => label !== undefined);
 
 const availableFsps = [
-  'Albert Heijn voucher paper',
-  'Safaricom',
-  'Airtel',
-  'Commercial Bank of Ethiopia',
-  'Nedbank',
-  'Onafriq',
-  'Visa debit card',
-  'Albert Heijn voucher WhatsApp',
-];
+  FSP_SETTINGS[Fsps.excel].defaultLabel.en,
+  FSP_SETTINGS[Fsps.intersolveVoucherPaper].defaultLabel.en,
+  FSP_SETTINGS[Fsps.safaricom].defaultLabel.en,
+  FSP_SETTINGS[Fsps.airtel].defaultLabel.en,
+  FSP_SETTINGS[Fsps.commercialBankEthiopia].defaultLabel.en,
+  FSP_SETTINGS[Fsps.nedbank].defaultLabel.en,
+  FSP_SETTINGS[Fsps.onafriq].defaultLabel.en,
+].filter((label): label is string => label !== undefined);
 
 const fspsConfiguredInKobo = [
-  'Albert Heijn voucher paper',
-  'Airtel',
-  'Nedbank',
-  'Visa debit card',
-  'Albert Heijn voucher WhatsApp',
-  'Excel Payment Instructions',
-];
+  FSP_SETTINGS[Fsps.intersolveVoucherPaper].defaultLabel.en,
+  FSP_SETTINGS[Fsps.airtel].defaultLabel.en,
+  FSP_SETTINGS[Fsps.nedbank].defaultLabel.en,
+  FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
+  FSP_SETTINGS[Fsps.intersolveVoucherWhatsapp].defaultLabel.en,
+  FSP_SETTINGS[Fsps.excel].defaultLabel.en,
+].filter((label): label is string => label !== undefined);
 
 // Arrange
 test.beforeEach(async ({ page }) => {
