@@ -1,10 +1,21 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/restrict-template-expressions -- Test file requires any types for mocking */
 import { LOCALE_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
+import {
+  QueryTableColumn,
+  QueryTableColumnType,
+} from '~/components/query-table/query-table.component';
 import { QueryTableCellService } from '~/components/query-table/services/query-table-cell.service';
 
+interface TestCellItem {
+  id: number;
+  name: string;
+  value?: number;
+  dateString?: string;
+}
+
 describe('QueryTableCellService', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for test-setup
   let service: QueryTableCellService<any>;
 
   beforeEach(() => {
@@ -24,11 +35,11 @@ describe('QueryTableCellService', () => {
 
   it('should return custom cell text when getCellText is provided', () => {
     const testItem = { id: 1, name: 'Test Item' };
-    const customColumn: any = {
+    const customColumn: QueryTableColumn<TestCellItem> = {
       header: 'Custom',
       field: 'name',
-      type: 'text',
-      getCellText: (item: any) => `Custom: ${item.name}`,
+      type: QueryTableColumnType.TEXT,
+      getCellText: (item) => `Custom: ${item.name}`,
     };
 
     const result = service.getCellText(customColumn, testItem);
@@ -38,7 +49,7 @@ describe('QueryTableCellService', () => {
 
   it('should return undefined for computed fields', () => {
     const testItem = { id: 1, name: 'Test Item' };
-    const computedColumn: any = {
+    const computedColumn: QueryTableColumn<TestCellItem> = {
       header: 'Computed',
       field: 'COMPUTED_FIELD',
     };
@@ -50,10 +61,10 @@ describe('QueryTableCellService', () => {
 
   it('should handle text columns correctly', () => {
     const testItem = { id: 1, name: 'Test Item' };
-    const textColumn: any = {
+    const textColumn: QueryTableColumn<TestCellItem> = {
       header: 'Name',
       field: 'name',
-      type: 'text',
+      type: QueryTableColumnType.TEXT,
     };
 
     const result = service.getCellText(textColumn, testItem);
@@ -63,10 +74,10 @@ describe('QueryTableCellService', () => {
 
   it('should handle numeric columns correctly', () => {
     const testItem = { id: 1, value: 42 };
-    const numericColumn: any = {
+    const numericColumn: QueryTableColumn<TestCellItem> = {
       header: 'Value',
       field: 'value',
-      type: 'numeric',
+      type: QueryTableColumnType.NUMERIC,
     };
 
     const result = service.getCellText(numericColumn, testItem);
@@ -76,10 +87,10 @@ describe('QueryTableCellService', () => {
 
   it('should handle date columns correctly', () => {
     const testItem = { id: 1, dateString: '2023-12-25T10:30:00Z' };
-    const dateColumn: any = {
+    const dateColumn: QueryTableColumn<TestCellItem> = {
       header: 'Date',
       field: 'dateString',
-      type: 'date',
+      type: QueryTableColumnType.DATE,
     };
 
     const result = service.getCellText(dateColumn, testItem);
@@ -90,10 +101,10 @@ describe('QueryTableCellService', () => {
   });
 
   it('should return correct column type when specified', () => {
-    const numericColumn: any = {
+    const numericColumn: QueryTableColumn<TestCellItem> = {
       header: 'Value',
       field: 'value',
-      type: 'numeric',
+      type: QueryTableColumnType.NUMERIC,
     };
 
     const result = service.getColumnType(numericColumn);
@@ -102,7 +113,7 @@ describe('QueryTableCellService', () => {
   });
 
   it('should default to TEXT type when not specified', () => {
-    const defaultColumn: any = {
+    const defaultColumn: QueryTableColumn<TestCellItem> = {
       header: 'Name',
       field: 'name',
     };
@@ -113,7 +124,7 @@ describe('QueryTableCellService', () => {
   });
 
   it('should return correct sort field when specified', () => {
-    const columnWithSortField: any = {
+    const columnWithSortField: QueryTableColumn<TestCellItem> = {
       header: 'Name',
       field: 'name',
       fieldForSort: 'value',
@@ -125,7 +136,7 @@ describe('QueryTableCellService', () => {
   });
 
   it('should return main field when no custom sort field specified', () => {
-    const defaultColumn: any = {
+    const defaultColumn: QueryTableColumn<TestCellItem> = {
       header: 'Name',
       field: 'name',
     };

@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { QueryTableColumnVisibilityService } from '~/components/query-table/services/query-table-column-visibility.service';
 
 describe('QueryTableColumnVisibilityService', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for mocking/test-setup
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for test-setup
   let service: QueryTableColumnVisibilityService<any>;
 
   const testColumns = [
