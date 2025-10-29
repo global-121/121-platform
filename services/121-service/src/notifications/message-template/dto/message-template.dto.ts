@@ -14,7 +14,7 @@ import {
 import { LocalizedString } from '@121-service/src//shared/types/localized-string.type';
 import { WrapperType } from '@121-service/src//wrapper.type';
 import { ContentSidMessageTypes } from '@121-service/src/notifications/message-template/const/content-sid-message-types.const';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
 
 export class CreateMessageTemplateDto {
   @ApiProperty({
@@ -26,8 +26,8 @@ export class CreateMessageTemplateDto {
 
   @ApiProperty()
   @IsString()
-  @IsEnum(LanguageEnum)
-  public readonly language: WrapperType<LanguageEnum>;
+  @IsEnum(UILanguageEnum)
+  public readonly language: WrapperType<UILanguageEnum>;
 
   @ApiProperty({
     example: { en: 'Template label' },
@@ -70,8 +70,8 @@ export class UpdateTemplateParamDto {
   @IsString()
   @Length(1, 255)
   public readonly type: string;
-  @IsEnum(LanguageEnum)
-  public readonly language: WrapperType<LanguageEnum>;
+  @IsEnum(UILanguageEnum)
+  public readonly language: WrapperType<UILanguageEnum>;
 }
 
 export class UpdateTemplateBodyDto {
@@ -121,6 +121,6 @@ export class DeleteTemplateParamDto {
 
 export class DeleteTemplateQueryDto {
   @IsOptional()
-  @IsEnum(LanguageEnum)
-  public readonly language?: WrapperType<LanguageEnum>;
+  @IsEnum(UILanguageEnum)
+  public readonly language?: WrapperType<UILanguageEnum>;
 }

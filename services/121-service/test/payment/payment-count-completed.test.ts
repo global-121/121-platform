@@ -8,7 +8,7 @@ import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dt
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { messageTemplateGeneric } from '@121-service/src/seed-data/message-template/message-template-generic.const';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
@@ -34,7 +34,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
   const transferValue = 25;
   const registrationAh = {
     referenceId: '63e62864557597e0b-AH',
-    preferredLanguage: LanguageEnum.en,
+    preferredLanguage: UILanguageEnum.en,
     paymentAmountMultiplier: 1,
     nameFirst: 'John',
     nameLast: 'Smith',

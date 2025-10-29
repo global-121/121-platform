@@ -36,7 +36,7 @@ import { RegistrationDataService } from '@121-service/src/registration/modules/r
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
@@ -52,7 +52,7 @@ export class IntersolveVoucherService {
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
 
-  private readonly fallbackLanguage = LanguageEnum.en;
+  private readonly fallbackLanguage = UILanguageEnum.en;
 
   public constructor(
     private readonly registrationUtilsService: RegistrationUtilsService,

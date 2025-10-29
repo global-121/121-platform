@@ -16,12 +16,12 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
 
 const defaultMessageJob = {
   whatsappPhoneNumber: '1234567890',
   phoneNumber: '1234567890',
-  preferredLanguage: LanguageEnum.en,
+  preferredLanguage: UILanguageEnum.en,
   referenceId: 'ref-test',
   message: 'test message',
   messageTemplateKey: 'messageTemplateKey',
@@ -64,7 +64,7 @@ describe('MessageQueuesService', () => {
     const registration = new RegistrationViewEntity();
     registration.id = 2;
     registration.referenceId = 'refview';
-    registration.preferredLanguage = LanguageEnum.fr;
+    registration.preferredLanguage = UILanguageEnum.fr;
     registration.phoneNumber = '234567891';
     registration.programId = 1;
     registration[DefaultRegistrationDataAttributeNames.whatsappPhoneNumber] =
@@ -107,7 +107,7 @@ describe('MessageQueuesService', () => {
     const registration = new RegistrationEntity();
     registration.id = 1;
     registration.referenceId = 'ref';
-    registration.preferredLanguage = LanguageEnum.en;
+    registration.preferredLanguage = UILanguageEnum.en;
     registration.phoneNumber = '1234567890';
     registration.programId = 1;
 
@@ -176,7 +176,7 @@ describe('MessageQueuesService', () => {
         Promise.resolve({
           message:
             'Hello {{fullName}}, how are you? Greetings from {{namePartnerOrganization}}',
-          language: LanguageEnum.en,
+          language: UILanguageEnum.en,
           type: 'test',
           label: null,
           programId: 2,

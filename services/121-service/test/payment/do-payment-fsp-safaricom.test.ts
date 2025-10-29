@@ -6,7 +6,7 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
@@ -33,7 +33,7 @@ describe('Do payment to 1 PA', () => {
     referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
     programFspConfigurationName: Fsps.safaricom,
     phoneNumber: '254708374149',
-    preferredLanguage: LanguageEnum.en,
+    preferredLanguage: UILanguageEnum.en,
     paymentAmountMultiplier: 1,
     maxPayments: 6,
     fullName: 'Barbara Floyd',
