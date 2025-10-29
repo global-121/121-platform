@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { QueryTableRowExpansionService } from '~/components/query-table/services/query-table-row-expansion.service';
 
 describe('QueryTableRowExpansionService', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for mocking/test-setup
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for test-setup
   let service: QueryTableRowExpansionService<any>;
 
   const testItems = [

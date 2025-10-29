@@ -9,7 +9,7 @@ import {
 } from '~/services/paginate-query.service';
 
 describe('QueryTablePaginationService', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for mocking/test-setup
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for test-setup
   let service: QueryTablePaginationService<any>;
   let paginateQueryService: jasmine.SpyObj<PaginateQueryService>;
 

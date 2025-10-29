@@ -8,7 +8,7 @@ import {
 import { ToastService } from '~/services/toast.service';
 
 describe('QueryTableSelectionService', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for mocking/test-setup
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for test-setup
   let service: QueryTableSelectionService<any>;
   let paginateQueryService: jasmine.SpyObj<PaginateQueryService>;
 
