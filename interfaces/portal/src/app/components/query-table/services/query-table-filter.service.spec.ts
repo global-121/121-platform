@@ -1,28 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 
 import { QueryTableFilterService } from '~/components/query-table/services/query-table-filter.service';
-import { TrackingService } from '~/services/tracking.service';
 
 describe('QueryTableFilterService', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for test-setup
   let service: QueryTableFilterService<any>;
-  // const trackEventSpy = jasmine.createSpy();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        QueryTableFilterService,
-        {
-          provide: TrackingService,
-          // useValue: jasmine.createSpyObj(
-          //   'TrackingService',
-          //   {},
-          //   {
-          //     trackEvent: trackEventSpy,
-          //   },
-          // ) as jasmine.SpyObj<TrackingService>,
-        },
-      ],
+      providers: [QueryTableFilterService],
     });
 
     service = TestBed.inject(QueryTableFilterService);
@@ -44,12 +30,10 @@ describe('QueryTableFilterService', () => {
     expect(service.isFiltered()).toBe(true);
   });
 
-  it('should clear all filters and trigger tracking event', () => {
+  it('should clear all filters', () => {
     const clearTableSpy = jasmine.createSpy('clearTable');
     const resetSelectionSpy = jasmine.createSpy('resetSelection');
     const localStorateSpy = spyOn(localStorage, 'removeItem');
-    const trackingService = TestBed.inject(TrackingService);
-    const trackEventSpy = spyOn(trackingService, 'trackEvent');
 
     service.globalFilterVisible.set(true);
 
@@ -63,6 +47,5 @@ describe('QueryTableFilterService', () => {
     expect(localStorateSpy).toHaveBeenCalledWith('test-key');
     expect(service.globalFilterVisible()).toBe(false);
     expect(resetSelectionSpy).toHaveBeenCalled();
-    expect(trackEventSpy).toHaveBeenCalled();
   });
 });
