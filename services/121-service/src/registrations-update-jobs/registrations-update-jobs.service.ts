@@ -3,10 +3,13 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
-import { RegistrationUpdateErrorRecord } from '@121-service/src/registrations-update-jobs/interfaces/registration-update-error-record.interface';
 import { UpdateJobEmailInput } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/interfaces/update-job-email-input.interface';
 import { RegistrationsUpdateJobEmailsService } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/registrations-update-job-emails.service';
 import { UserService } from '@121-service/src/user/user.service';
+import {
+  CSVRecord,
+  formatRecordsAsCsv,
+} from '@121-service/src/utils/format-records-as-csv.helper';
 
 @Injectable()
 export class RegistrationsUpdateJobsService {
@@ -19,7 +22,7 @@ export class RegistrationsUpdateJobsService {
   public async processRegistrationsUpdateJob(
     job: RegistrationsUpdateJobDto,
   ): Promise<void> {
-    const registrationUpdateErrorRecords: RegistrationUpdateErrorRecord[] =
+    const registrationUpdateErrorRecords: CSVRecord[] =
       await this.updateRegistrations(job);
 
     if (registrationUpdateErrorRecords.length > 0) {
@@ -32,8 +35,8 @@ export class RegistrationsUpdateJobsService {
 
   private async updateRegistrations(
     job: RegistrationsUpdateJobDto,
-  ): Promise<RegistrationUpdateErrorRecord[]> {
-    const registrationUpdateErrorRecords: RegistrationUpdateErrorRecord[] = [];
+  ): Promise<CSVRecord[]> {
+    const registrationUpdateErrorRecords: CSVRecord[] = [];
 
     for (const record of job.data) {
       const dto: UpdateRegistrationDto = {
@@ -65,7 +68,7 @@ export class RegistrationsUpdateJobsService {
   }
 
   private async sendValidationFailureEmail(
-    registrationUpdateErrorRecords: RegistrationUpdateErrorRecord[],
+    registrationUpdateErrorRecords: CSVRecord[],
     userId: RegistrationsUpdateJobDto['request']['userId'],
   ): Promise<void> {
     const user = await this.userService.findById(userId);
@@ -76,9 +79,7 @@ export class RegistrationsUpdateJobsService {
       );
     }
 
-    const contentBytes = this.formatErrorRecordsAsCsv(
-      registrationUpdateErrorRecords,
-    );
+    const contentBytes = formatRecordsAsCsv(registrationUpdateErrorRecords);
 
     const templateInput: UpdateJobEmailInput = {
       email: user.username,
@@ -90,35 +91,4 @@ export class RegistrationsUpdateJobsService {
       updateJobEmailInput: templateInput,
     });
   }
-
-  private formatErrorRecordsAsCsv(
-    errorRecords: RegistrationUpdateErrorRecord[],
-  ): string {
-    const csvHeader = 'referenceId,error\n';
-
-    const csvRows = errorRecords
-      .map((record) => {
-        const referenceId = this.escapeCsvValue(String(record.referenceId));
-        const errorMessage = this.escapeCsvValue(String(record.errorMessage));
-        return `${referenceId},${errorMessage}`;
-      })
-      .join('\n');
-
-    const csvString = csvHeader + csvRows + '\n';
-    const contentBytes = Buffer.from(csvString, 'utf8').toString('base64');
-    return contentBytes;
-  }
-
-  private escapeCsvValue = (value: string): string => {
-    const needsQuoting =
-      value.includes(',') ||
-      value.includes('"') ||
-      value.includes('\n') ||
-      value.includes('\r');
-    let escaped = value.replace(/"/g, '""');
-    if (needsQuoting) {
-      escaped = `"${escaped}"`;
-    }
-    return escaped;
-  };
 }
