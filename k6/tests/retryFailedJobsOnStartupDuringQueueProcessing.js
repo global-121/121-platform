@@ -1,4 +1,3 @@
-/* global __ENV */
 import { check, fail, sleep } from 'k6';
 import http from 'k6/http';
 import { Counter } from 'k6/metrics';
@@ -14,7 +13,7 @@ const resetPage = new ResetModel();
 const paymentsPage = new PaymentsModel();
 const loginPage = new LoginModel();
 
-const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '7'); // '7' leads to 128 registrations
+const duplicateNumber = '7'; // '7' leads to 128 registrations
 const programId = 3;
 const maxRetryDuration = 2000; // seconds
 const minPassRatePercentage = 100;
