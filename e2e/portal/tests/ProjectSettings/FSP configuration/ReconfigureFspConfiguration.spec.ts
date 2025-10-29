@@ -18,29 +18,19 @@ const configuredFsps = [
   FSP_SETTINGS[Fsps.intersolveVoucherWhatsapp].defaultLabel.en,
 ].filter((label): label is string => label !== undefined);
 
-const visaConfigurationCi = [
+const visaConfiguration = [
   'Visa debit card',
   'test-INTERSOLVE_VISA_BRAND_CODE',
   'TESTINTERSOLVEVISACOVERLETTERCODE',
   'test_INTERSOLVE_VISA_FUNDINGTOKEN_CODE',
 ];
-const visaConfigurationLocal = [
-  'Visa debit card',
-  'Ix906_01',
-  'RC01',
-  '6375100999151000001',
-];
+
 const newVisaConfiguration = [
   'PKO BPAY debit card',
   'UI_CPO1',
   'RC02',
   '510121323',
 ];
-
-// Configuration to use based on environment
-// eslint-disable-next-line n/no-process-env
-const isCI = process.env.CI === 'true';
-const visaConfiguration = isCI ? visaConfigurationCi : visaConfigurationLocal;
 
 // Arrange
 test.beforeEach(async ({ page }) => {
