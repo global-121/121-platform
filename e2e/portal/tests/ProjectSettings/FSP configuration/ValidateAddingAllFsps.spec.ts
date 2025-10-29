@@ -19,6 +19,7 @@ const fspsToDelete = [
 ].filter((label): label is string => label !== undefined);
 
 const availableFsps = [
+  ...fspsToDelete,
   FSP_SETTINGS[Fsps.excel].defaultLabel.en,
   FSP_SETTINGS[Fsps.intersolveVoucherPaper].defaultLabel.en,
   FSP_SETTINGS[Fsps.safaricom].defaultLabel.en,
@@ -28,7 +29,7 @@ const availableFsps = [
   FSP_SETTINGS[Fsps.onafriq].defaultLabel.en,
 ].filter((label): label is string => label !== undefined);
 
-const fspsNotConfiguredInKobo = [
+const fspsNotConfigurableForOcwProgram = [
   FSP_SETTINGS[Fsps.safaricom].defaultLabel.en,
   FSP_SETTINGS[Fsps.commercialBankEthiopia].defaultLabel.en,
   FSP_SETTINGS[Fsps.onafriq].defaultLabel.en,
@@ -76,13 +77,13 @@ test('Add all available FSPs', async ({ page }) => {
 
   await test.step('Validate all FSPs are ready for configuration', async () => {
     await fspSettings.validateFspVisibility({
-      fspNames: [...availableFsps, ...fspsToDelete],
+      fspNames: availableFsps,
     });
   });
 
   await test.step('Add fsps that are not do not match kobo form configuration', async () => {
     await fspSettings.validateFspConfigurationIsNotPresent({
-      fspNames: fspsNotConfiguredInKobo,
+      fspNames: fspsNotConfigurableForOcwProgram,
     });
   });
 
