@@ -26,10 +26,10 @@ const visaConfiguration = [
 ];
 
 const newVisaConfiguration = [
-  'PKO BPAY debit card',
-  'UI_CPO1',
-  'RC02',
-  '510121323',
+  'PKO BPAY debit card', // Fsp name
+  'UI_CPO1', // Brand code
+  'RC02', // Cover letter code
+  '510121323', // Funding token code
 ];
 
 // Arrange
