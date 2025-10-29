@@ -11,18 +11,25 @@ import {
 describe('QueryTablePaginationService', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for test-setup
   let service: QueryTablePaginationService<any>;
+
   let paginateQueryService: jasmine.SpyObj<PaginateQueryService>;
+  const convertPrimeNGLazyLoadEventToPaginateQuerySpy = jasmine.createSpy();
 
   beforeEach(() => {
-    const paginateQueryServiceSpy = jasmine.createSpyObj(
-      'PaginateQueryService',
-      ['convertPrimeNGLazyLoadEventToPaginateQuery'],
-    ) as jasmine.SpyObj<PaginateQueryService>;
-
     TestBed.configureTestingModule({
       providers: [
         QueryTablePaginationService,
-        { provide: PaginateQueryService, useValue: paginateQueryServiceSpy },
+        {
+          provide: PaginateQueryService,
+          useValue: jasmine.createSpyObj(
+            'PaginateQueryService',
+            {},
+            {
+              convertPrimeNGLazyLoadEventToPaginateQuery:
+                convertPrimeNGLazyLoadEventToPaginateQuerySpy,
+            },
+          ) as jasmine.SpyObj<PaginateQueryService>,
+        },
       ],
     });
 
@@ -103,10 +110,9 @@ describe('QueryTablePaginationService', () => {
 
     service.onLazyLoadEvent(mockLazyLoadEvent, updateCallback);
 
-    expect(
-      // eslint-disable-next-line @typescript-eslint/unbound-method -- Mocking service methods in tests
-      paginateQueryService.convertPrimeNGLazyLoadEventToPaginateQuery,
-    ).toHaveBeenCalledWith(mockLazyLoadEvent);
+    expect(convertPrimeNGLazyLoadEventToPaginateQuerySpy).toHaveBeenCalledWith(
+      mockLazyLoadEvent,
+    );
     expect(updateCallback).toHaveBeenCalledWith(mockPaginateQuery);
   });
 
