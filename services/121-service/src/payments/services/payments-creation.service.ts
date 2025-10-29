@@ -223,7 +223,7 @@ export class PaymentsCreationService {
     paymentEntity.programId = programId;
     const savedPaymentEntity = await this.paymentRepository.save(paymentEntity);
 
-    await this.paymentEventsService.createEventWithoutAttributes({
+    await this.paymentEventsService.createEvent({
       paymentId: savedPaymentEntity.id,
       userId,
       type: PaymentEvent.created,

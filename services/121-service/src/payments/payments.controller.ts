@@ -242,14 +242,21 @@ export class PaymentsController {
   ): Promise<void> {
     const userId = RequestHelper.getUserId(req);
     const retryBoolean = retry === 'true';
+
     if (retryBoolean) {
-      await this.paymentsExecutionService.retryPayment(
+      await this.paymentsExecutionService.retryPayment({
         userId,
         programId,
         paymentId,
-        retryReferenceIds.referenceIds,
-      );
+        referenceIds: retryReferenceIds.referenceIds,
+      });
     } else {
+      if (retryReferenceIds?.referenceIds?.length) {
+        throw new HttpException(
+          'When retry=false no body must be provided',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
       await this.paymentsExecutionService.startPayment({
         userId,
         programId,
