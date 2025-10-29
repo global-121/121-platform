@@ -100,11 +100,11 @@ test.describe('Export registrations with different formats and configurations', 
       await registrationsPage.configureTableColumns({
         columns: [
           'Reg. #',
-          'FSP',
-          'Address street',
-          'Phone Number',
-          'Scope',
           'Name',
+          'Phone Number',
+          'FSP',
+          'Scope',
+          'Address street',
         ],
         onlyGivenColumns: true,
       });
