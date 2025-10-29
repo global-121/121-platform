@@ -6,8 +6,8 @@ import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsExecutionHelperService } from '@121-service/src/payments/services/payments-execution-helper.service';
+import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
-import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { BulkActionResultRetryPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
@@ -22,7 +22,7 @@ export class PaymentsExecutionService {
     private readonly transactionJobsCreationService: TransactionJobsCreationService,
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
     private readonly paymentsExecutionHelperService: PaymentsExecutionHelperService,
-    private readonly paymentsReportingService: PaymentsReportingService,
+    private readonly paymentsHelperService: PaymentsHelperService,
     private readonly paymentEventsService: PaymentEventsService,
   ) {}
 
@@ -35,16 +35,9 @@ export class PaymentsExecutionService {
     programId: number;
     paymentId: number;
   }): Promise<void> {
-    // ##TODO put this here? What to do with actions?
     await this.paymentsProgressHelperService.checkPaymentInProgressAndThrow(
       programId,
     );
-
-    await this.paymentEventsService.createEventWithoutAttributes({
-      paymentId,
-      userId,
-      type: PaymentEvent.started,
-    });
 
     const transactionsOfIncludedRegistrations =
       await this.transactionViewScopedRepository.getTransactionsOfIncludedRegistrationsByPaymentId(
@@ -53,6 +46,21 @@ export class PaymentsExecutionService {
           paymentId,
         },
       );
+
+    const programFspConfigurationNames: string[] =
+      transactionsOfIncludedRegistrations
+        .map((t) => t.programFspConfigurationName)
+        .filter((fsp) => fsp !== null);
+    await this.paymentsHelperService.checkFspConfigurationsOrThrow(
+      programId,
+      programFspConfigurationNames,
+    );
+
+    await this.paymentEventsService.createEventWithoutAttributes({
+      paymentId,
+      userId,
+      type: PaymentEvent.started,
+    });
 
     await this.paymentsExecutionHelperService.updatePaymentCountAndSetToCompleted(
       {
