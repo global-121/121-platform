@@ -70,12 +70,12 @@ test('Add all available FSPs', async ({ page }) => {
 
   await test.step('Validate all FSPs are ready for configuration', async () => {
     await fspSettings.validateFspVisibility({
-      fspNames: availableFsps,
+      fspNames: [...availableFsps, ...fspsToDelete],
     });
   });
 
   await test.step('Add all available FSPs that match kobo form configuration', async () => {
-    await fspSettings.addFsp({ fspName: fspsConfiguredInKobo });
+    await fspSettings.addFsp({ fspNames: fspsConfiguredInKobo });
   });
 
   await test.step('Validate that only selected FSPs were configured', async () => {

@@ -85,8 +85,8 @@ class FspSettingsPage extends BasePage {
     await this.addFspButton.click();
   }
 
-  async addFsp({ fspName }: { fspName: string[] }) {
-    for (const name of fspName) {
+  async addFsp({ fspNames }: { fspNames: string[] }) {
+    for (const name of fspNames) {
       // Check if we need to click "Add another FSP" first
       await this.page.waitForTimeout(200); // Small wait to ensure button is loaded
       if (await this.addFspButton.isVisible()) {
