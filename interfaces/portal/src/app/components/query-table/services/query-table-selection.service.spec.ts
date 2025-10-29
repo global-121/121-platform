@@ -15,22 +15,23 @@ describe('QueryTableSelectionService', () => {
   const showToastSpy = jasmine.createSpy();
 
   beforeEach(() => {
-    const paginateQueryServiceSpy = jasmine.createSpyObj(
-      'PaginateQueryService',
-      ['selectionEventToActionData'],
-    ) as jasmine.SpyObj<PaginateQueryService>;
-
-    const toastServiceSpy = jasmine.createSpyObj<ToastService>(
-      'ToastService',
-      {},
-      { showToast: showToastSpy },
-    );
-
     TestBed.configureTestingModule({
       providers: [
         QueryTableSelectionService,
-        { provide: PaginateQueryService, useValue: paginateQueryServiceSpy },
-        { provide: ToastService, useValue: toastServiceSpy },
+        {
+          provide: PaginateQueryService,
+          useValue: jasmine.createSpyObj('PaginateQueryService', [
+            'selectionEventToActionData',
+          ]) as jasmine.SpyObj<PaginateQueryService>,
+        },
+        {
+          provide: ToastService,
+          useValue: jasmine.createSpyObj<ToastService>(
+            'ToastService',
+            {},
+            { showToast: showToastSpy },
+          ),
+        },
       ],
     });
 
