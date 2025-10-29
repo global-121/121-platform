@@ -2,11 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
-import {
-  ActionEntity,
-  ActionType,
-} from '@121-service/src/actions/action.entity';
+import { ActionEntity } from '@121-service/src/actions/action.entity';
 import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto';
+import { ActionType } from '@121-service/src/actions/enum/action-type.enum';
 import { ActionMapper } from '@121-service/src/actions/utils/action.mapper';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
@@ -19,19 +17,6 @@ export class ActionsService {
   private readonly userRepository: Repository<UserEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-
-  public async postAction(
-    userId: number,
-    programId: number,
-    actionType: ActionType,
-  ): Promise<ActionReturnDto> {
-    const savedAction = await this.saveAction(userId, programId, actionType);
-    const actionWithRelations = await this.actionRepository.findOne({
-      where: { id: Equal(savedAction.id) },
-      relations: ['user'],
-    });
-    return ActionMapper.entityToActionReturnDto(actionWithRelations!);
-  }
 
   public async saveAction(
     userId: number,

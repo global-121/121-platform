@@ -3,15 +3,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
 import { Repository } from 'typeorm';
 
-import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
+import { ActionType } from '@121-service/src/actions/enum/action-type.enum';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
+import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
+import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -50,11 +52,96 @@ export class PaymentsCreationService {
     note?: string;
   }): Promise<BulkActionResultPaymentDto> {
     if (!dryRun) {
+      // check in-progress and set to in-progress (only in real payment scenario)
       await this.paymentsProgressHelperService.checkPaymentInProgressAndThrow(
         programId,
       );
+      await this.actionService.saveAction(
+        userId,
+        programId,
+        ActionType.startBlockNewPayment,
+      );
     }
 
+    // put all operations in try, to be able to always end with an unblock-payments action, also in case of failure
+    try {
+      // First run the logic that is needed in both dryRun and real payment scenario
+      const {
+        bulkActionResultPaymentDto,
+        registrationsForPayment,
+        programFspConfigurationNames,
+      } = await this.createPaymentDryRunPart({
+        programId,
+        transferValue,
+        query,
+      });
+      if (!transferValue) {
+        return bulkActionResultPaymentDto;
+      }
+      if (registrationsForPayment.length < 1) {
+        throw new HttpException(
+          'No registrations found to create payment for',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      // Then run the logic that is only needed in real payment scenario
+      if (!dryRun) {
+        await this.paymentsHelperService.checkFspConfigurationsOrThrow(
+          programId,
+          programFspConfigurationNames,
+        );
+        const paymentId = await this.createPaymentAndEventsEntities({
+          userId,
+          programId,
+          note,
+        });
+        bulkActionResultPaymentDto.id = paymentId;
+
+        const referenceIds = registrationsForPayment.map(
+          (registration) => registration.referenceId,
+        );
+        const transactionCreationDetails =
+          await this.getTransactionCreationDetails({
+            referenceIds,
+            transferValue,
+            programId,
+          });
+
+        await this.transactionsService.createTransactionsAndEvents({
+          transactionCreationDetails,
+          paymentId,
+          userId,
+        });
+      }
+
+      // return in both dryRun and real payment scenario
+      return bulkActionResultPaymentDto;
+    } finally {
+      // make sure to unblock payments also in case of failure
+      if (!dryRun) {
+        await this.actionService.saveAction(
+          userId,
+          programId,
+          ActionType.endBlockNewPayment,
+        );
+      }
+    }
+  }
+
+  private async createPaymentDryRunPart({
+    programId,
+    transferValue,
+    query,
+  }: {
+    programId: number;
+    transferValue: number | undefined;
+    query: PaginateQuery;
+  }): Promise<{
+    bulkActionResultPaymentDto: BulkActionResultPaymentDto;
+    registrationsForPayment: MappedPaginatedRegistrationDto[];
+    programFspConfigurationNames: string[];
+  }> {
     // TODO: REFACTOR: Move what happens in setQueryPropertiesBulkAction into this function, and call a refactored version of getBulkActionResult/getPaymentBaseQuery (create solution design first)
     const paginateQuery =
       this.registrationsBulkService.setQueryPropertiesBulkAction({
@@ -75,8 +162,12 @@ export class PaymentsCreationService {
     // Calling with dryrun is true happens in the pa table when you try to do a payment to decide which registrations are selectable
     if (!transferValue) {
       return {
-        ...bulkActionResultDto,
-        sumPaymentAmountMultiplier: 0,
+        bulkActionResultPaymentDto: {
+          ...bulkActionResultDto,
+          sumPaymentAmountMultiplier: 0,
+          programFspConfigurationNames: [],
+        },
+        registrationsForPayment: [],
         programFspConfigurationNames: [],
       };
     }
@@ -112,57 +203,11 @@ export class PaymentsCreationService {
       programFspConfigurationNames,
     };
 
-    // Create an array of referenceIds to be paid
-    const referenceIds = registrationsForPayment.map(
-      (registration) => registration.referenceId,
-    );
-
-    if (!dryRun) {
-      if (referenceIds.length < 1) {
-        throw new HttpException(
-          'No registrations found to create payment for',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-
-      await this.paymentsHelperService.checkFspConfigurationsOrThrow(
-        programId,
-        programFspConfigurationNames,
-      );
-      const paymentId = await this.createPaymentAndEventsEntities({
-        userId,
-        programId,
-        note,
-      });
-      bulkActionResultPaymentDto.id = paymentId;
-
-      // ##TODO: Refactor actions/payment-in-progress
-      await this.actionService.saveAction(
-        userId,
-        programId,
-        AdditionalActionType.paymentStarted,
-      );
-
-      const transactionCreationDetails =
-        await this.getTransactionCreationDetails({
-          referenceIds,
-          transferValue,
-          programId,
-        });
-
-      await this.transactionsService.createTransactionsAndEvents({
-        transactionCreationDetails,
-        paymentId,
-        userId,
-      });
-
-      void this.actionService.saveAction(
-        userId,
-        programId,
-        AdditionalActionType.paymentFinished,
-      );
-    }
-    return bulkActionResultPaymentDto;
+    return {
+      bulkActionResultPaymentDto,
+      registrationsForPayment,
+      programFspConfigurationNames,
+    };
   }
 
   private async createPaymentAndEventsEntities({

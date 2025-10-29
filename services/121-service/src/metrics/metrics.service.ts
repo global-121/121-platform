@@ -79,7 +79,6 @@ export class MetricsService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    await this.actionService.saveAction(userId, programId, type);
 
     const permission =
       userPermissionMapByExportType[

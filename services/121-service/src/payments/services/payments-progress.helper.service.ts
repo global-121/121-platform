@@ -2,8 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
 import Redis from 'ioredis';
 
-import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
+import { ActionType } from '@121-service/src/actions/enum/action-type.enum';
 import {
   getRedisSetName,
   REDIS_CLIENT,
@@ -46,7 +46,7 @@ export class PaymentsProgressHelperService {
   ): Promise<boolean> {
     const latestPaymentStartedAction = await this.actionService.getLatestAction(
       programId,
-      AdditionalActionType.paymentStarted,
+      ActionType.startBlockNewPayment,
     );
     // If never started, then not in progress, return early
     if (!latestPaymentStartedAction) {
@@ -56,7 +56,7 @@ export class PaymentsProgressHelperService {
     const latestPaymentFinishedAction =
       await this.actionService.getLatestAction(
         programId,
-        AdditionalActionType.paymentFinished,
+        ActionType.endBlockNewPayment,
       );
     // If started, but never finished, then in progress
     if (!latestPaymentFinishedAction) {

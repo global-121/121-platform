@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import {
-  ActionEntity,
-  AdditionalActionType,
-} from '@121-service/src/actions/action.entity';
+import { ActionEntity } from '@121-service/src/actions/action.entity';
 import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto';
+import { ActionType } from '@121-service/src/actions/enum/action-type.enum';
 import { ActionMapper } from '@121-service/src/actions/utils/action.mapper';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { UserOwnerDto } from '@121-service/src/user/dto/user-owner.dto';
@@ -40,7 +38,7 @@ describe('Action mapper', () => {
     };
     const actionEntity: ActionEntity = {
       id: actionId,
-      actionType: AdditionalActionType.importRegistrations,
+      actionType: ActionType.endBlockNewPayment,
       user,
       program: {} as ProgramEntity,
       userId,
@@ -54,7 +52,7 @@ describe('Action mapper', () => {
     };
     const expectedResult: ActionReturnDto = {
       id: actionId,
-      actionType: AdditionalActionType.importRegistrations,
+      actionType: ActionType.endBlockNewPayment,
       user: expectedUserOwnerResult,
       created: createdDate,
     };
