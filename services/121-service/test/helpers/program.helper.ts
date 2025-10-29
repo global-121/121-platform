@@ -18,7 +18,7 @@ import {
 } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SecretDto } from '@121-service/src/scripts/scripts.controller';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   getMessageHistory,
@@ -698,7 +698,7 @@ export async function updateMessageTemplate({
 }: {
   programId: number;
   type: string;
-  language: LanguageEnum;
+  language: UILanguageEnum;
   body: UpdateTemplateBodyDto;
   accessToken: string;
 }): Promise<request.Response> {

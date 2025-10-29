@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
 
 import { AppRoutes } from '~/app.routes';
 import { FullscreenStepperDialogComponent } from '~/components/fullscreen-stepper-dialog/fullscreen-stepper-dialog.component';
@@ -116,10 +116,10 @@ export class CreateProgramDialogComponent {
     >) =>
       this.programApiService.createProgram({
         titlePortal: {
-          [LanguageEnum.en]: name,
+          [UILanguageEnum.en]: name,
         },
         description: {
-          [LanguageEnum.en]: description,
+          [UILanguageEnum.en]: description,
         },
         budget,
         currency,

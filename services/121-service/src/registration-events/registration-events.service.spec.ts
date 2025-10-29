@@ -8,7 +8,7 @@ import { RegistrationEventEntity } from '@121-service/src/registration-events/en
 import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
 import { RegistrationEventScopedRepository } from '@121-service/src/registration-events/registration-event.repository';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserService } from '@121-service/src/user/user.service';
@@ -63,7 +63,7 @@ function getViewRegistration(): RegistrationViewEntity {
     registrationCreated: '2024-02-19T14:21:11.163Z',
     referenceId: '7e9bdf2118b3fb4ece93b6458815ab86',
     phoneNumber: '46631834076',
-    preferredLanguage: LanguageEnum.en,
+    preferredLanguage: UILanguageEnum.en,
     inclusionScore: 0,
     paymentAmountMultiplier: 1,
     fspName: Fsps.intersolveVisa,

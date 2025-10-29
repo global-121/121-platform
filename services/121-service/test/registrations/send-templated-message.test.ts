@@ -2,7 +2,7 @@ import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
 import { processMessagePlaceholders } from '@121-service/test/helpers/assert.helper';
 import {
   getMessageTemplates,
@@ -28,7 +28,7 @@ describe('Sending templated message', () => {
   const programId = programIdPV; // status change templates are only available for PV
   const registrationAh = {
     referenceId: '63e62864557597e0d-AH',
-    preferredLanguage: LanguageEnum.en,
+    preferredLanguage: UILanguageEnum.en,
     paymentAmountMultiplier: 1,
     nameFirst: 'John',
     nameLast: 'Smith',

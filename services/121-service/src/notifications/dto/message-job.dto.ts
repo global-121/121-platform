@@ -1,12 +1,12 @@
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 export class MessageJobDto {
   messageProcessType: MessageProcessType;
   registrationId: number;
   referenceId: string;
-  preferredLanguage: LanguageEnum;
+  preferredLanguage: UILanguageEnum;
   whatsappPhoneNumber?: string;
   phoneNumber?: string;
   programId: number;

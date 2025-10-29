@@ -16,7 +16,7 @@ import {
 import { ProgramFspConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-response.dto';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
@@ -188,7 +188,7 @@ export class ProgramReturnDto {
 
   @ApiProperty({ example: ['en', 'nl'] })
   @IsArray()
-  public readonly languages: WrapperType<LanguageEnum[]>;
+  public readonly languages: WrapperType<UILanguageEnum[]>;
 
   @ApiProperty({ example: false })
   @IsBoolean()

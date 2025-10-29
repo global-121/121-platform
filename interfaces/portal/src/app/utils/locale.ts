@@ -1,6 +1,6 @@
 import { isDevMode } from '@angular/core';
 
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
 
 import { environment } from '~environment';
 
@@ -40,12 +40,12 @@ export const getAvailableLanguages = () =>
       value: locale,
     }));
 
-export const getLanguageEnumFromLocale = (locale: Locale): LanguageEnum => {
+export const getLanguageEnumFromLocale = (locale: Locale): UILanguageEnum => {
   switch (locale) {
     case Locale.en:
-      return LanguageEnum.en;
+      return UILanguageEnum.en;
     default:
-      return LanguageEnum[locale];
+      return UILanguageEnum[locale];
   }
 };
 

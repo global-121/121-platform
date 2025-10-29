@@ -17,7 +17,7 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 @ViewEntity({
@@ -137,7 +137,7 @@ export class RegistrationViewEntity {
   public phoneNumber?: string;
 
   @ViewColumn()
-  public preferredLanguage: LanguageEnum;
+  public preferredLanguage: UILanguageEnum;
 
   @ViewColumn()
   public inclusionScore: number;

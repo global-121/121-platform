@@ -3,7 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import { ContentSidMessageTypes } from '@121-service/src/notifications/message-template/const/content-sid-message-types.const';
 import { CreateMessageTemplateDto } from '@121-service/src/notifications/message-template/dto/message-template.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
 import {
   deleteMessageTemplate,
   getMessageTemplates,
@@ -20,7 +20,7 @@ describe('Message template', () => {
   const programId = 1;
   const regularType = 'regular-type';
   const contentSidType = ContentSidMessageTypes[0]; // Using first content SID type
-  const language = LanguageEnum.en;
+  const language = UILanguageEnum.en;
   const baseTemplateData = {
     isSendMessageTemplate: true,
     label: { en: 'test' },

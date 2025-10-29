@@ -5,7 +5,7 @@
  * * Optionally: Add a country-code in capitals separated with an underscore. (For example: "nl_BE")
  * */
 
-export enum LanguageEnum {
+export enum UILanguageEnum {
   en = 'en',
   ar = 'ar',
   tl = 'tl',
