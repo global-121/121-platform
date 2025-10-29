@@ -6,24 +6,26 @@ import { TrackingService } from '~/services/tracking.service';
 describe('QueryTableFilterService', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for test-setup
   let service: QueryTableFilterService<any>;
-  let trackingService: jasmine.SpyObj<TrackingService>;
+  // const trackEventSpy = jasmine.createSpy();
 
   beforeEach(() => {
-    const trackingServiceSpy = jasmine.createSpyObj('TrackingService', [
-      'trackEvent',
-    ]) as jasmine.SpyObj<TrackingService>;
-
     TestBed.configureTestingModule({
       providers: [
         QueryTableFilterService,
-        { provide: TrackingService, useValue: trackingServiceSpy },
+        {
+          provide: TrackingService,
+          // useValue: jasmine.createSpyObj(
+          //   'TrackingService',
+          //   {},
+          //   {
+          //     trackEvent: trackEventSpy,
+          //   },
+          // ) as jasmine.SpyObj<TrackingService>,
+        },
       ],
     });
 
     service = TestBed.inject(QueryTableFilterService);
-    trackingService = TestBed.inject(
-      TrackingService,
-    ) as jasmine.SpyObj<TrackingService>;
   });
 
   it('should be created and initialize with correct default state', () => {
@@ -45,8 +47,10 @@ describe('QueryTableFilterService', () => {
   it('should clear all filters and trigger tracking event', () => {
     const clearTableSpy = jasmine.createSpy('clearTable');
     const resetSelectionSpy = jasmine.createSpy('resetSelection');
+    const localStorateSpy = spyOn(localStorage, 'removeItem');
+    const trackingService = TestBed.inject(TrackingService);
+    const trackEventSpy = spyOn(trackingService, 'trackEvent');
 
-    spyOn(localStorage, 'removeItem');
     service.globalFilterVisible.set(true);
 
     service.clearAllFilters({
@@ -56,11 +60,9 @@ describe('QueryTableFilterService', () => {
     });
 
     expect(clearTableSpy).toHaveBeenCalled();
-    // eslint-disable-next-line @typescript-eslint/unbound-method -- Mocking localStorage in tests
-    expect(localStorage.removeItem).toHaveBeenCalledWith('test-key');
+    expect(localStorateSpy).toHaveBeenCalledWith('test-key');
     expect(service.globalFilterVisible()).toBe(false);
     expect(resetSelectionSpy).toHaveBeenCalled();
-    // eslint-disable-next-line @typescript-eslint/unbound-method -- Mocking service methods in tests
-    expect(trackingService.trackEvent).toHaveBeenCalled();
+    expect(trackEventSpy).toHaveBeenCalled();
   });
 });
