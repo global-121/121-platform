@@ -18,7 +18,7 @@ export const formatRecordsAsCsv = (records: CSVRecord[]): string => {
   return contentBytes;
 };
 
-export const escapeCsvValue = (value: string): string => {
+const escapeCsvValue = (value: string): string => {
   const needsQuoting =
     value.includes(',') ||
     value.includes('"') ||
