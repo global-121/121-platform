@@ -1,8 +1,8 @@
 import { HttpException, Injectable } from '@nestjs/common';
 
-import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
+import { RegistrationsUpdateJobDto } from '@121-service/src/registrations-update-jobs/dto/registrations-update-job.dto';
 import { UpdateJobEmailInput } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/interfaces/update-job-email-input.interface';
 import { RegistrationsUpdateJobEmailsService } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/registrations-update-job-emails.service';
 import { UserService } from '@121-service/src/user/user.service';
@@ -73,6 +73,7 @@ export class RegistrationsUpdateJobsService {
   ): Promise<void> {
     const user = await this.userService.findById(userId);
 
+    //nog met tys checken of dit ok is
     if (!user || !user.username) {
       throw new Error(
         'User not found or has no email address for validation failure email',
@@ -87,8 +88,8 @@ export class RegistrationsUpdateJobsService {
       attachment: { name: 'failed-validations.csv', contentBytes },
     };
 
-    await this.registrationsUpdateJobEmailsService.sendUpdateJobEmail({
-      updateJobEmailInput: templateInput,
-    });
+    await this.registrationsUpdateJobEmailsService.sendUpdateJobEmail(
+      templateInput,
+    );
   }
 }

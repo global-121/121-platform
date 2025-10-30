@@ -266,7 +266,7 @@ export class RegistrationsInputValidator {
           }
 
           if (att.type === RegistrationAttributeTypes.tel) {
-            // return on bulk (pre queue); this is a slow validation
+            // return on bulk (pre queue); this is a slow validation, so we only do this post queue
             if (RegistrationValidationInputType.bulkUpdate === typeOfInput) {
               return;
             }

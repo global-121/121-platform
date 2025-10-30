@@ -7,15 +7,14 @@ export const formatRecordsAsCsv = (records: CSVRecord[]): string => {
   const csvRows = records
     .map((record) => {
       for (const key of keyNames) {
-        record[key] = escapeCsvValue(String(record[key]));
+        record[key] = escapeCsvValue(record[key]);
       }
       return keyNames.map((key) => record[key]).join(',');
     })
     .join('\n');
 
   const csvString = csvHeader + csvRows + '\n';
-  const contentBytes = Buffer.from(csvString, 'utf8').toString('base64');
-  return contentBytes;
+  return Buffer.from(csvString, 'utf8').toString('base64');
 };
 
 const escapeCsvValue = (value: string): string => {

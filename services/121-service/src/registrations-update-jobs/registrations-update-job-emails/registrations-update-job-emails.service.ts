@@ -11,11 +11,9 @@ import { stripHtmlTags } from '@121-service/src/utils/strip-html-tags.helper';
 export class RegistrationsUpdateJobEmailsService {
   constructor(private readonly emailsService: EmailsService) {}
 
-  public async sendUpdateJobEmail({
-    updateJobEmailInput,
-  }: {
-    updateJobEmailInput: UpdateJobEmailInput;
-  }): Promise<void> {
+  public async sendUpdateJobEmail(
+    updateJobEmailInput: UpdateJobEmailInput,
+  ): Promise<void> {
     const emailData: EmailData =
       this.buildUpdateJobEmailData(updateJobEmailInput);
 
