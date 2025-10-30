@@ -80,7 +80,6 @@ export class ProjectSettingsTeamPageComponent {
         this.toastService.showToast({
           detail: $localize`User removed`,
         });
-        void this.projectApiService.invalidateCache(this.projectId);
       },
       onError: () => {
         this.toastService.showGenericError();

@@ -10,7 +10,6 @@ import { FormsModule } from '@angular/forms';
 import {
   injectMutation,
   injectQuery,
-  QueryClient,
 } from '@tanstack/angular-query-experimental';
 import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
@@ -56,7 +55,6 @@ export class ProjectRegistrationDebitCardsPageComponent {
 
   private readonly registrationApiService = inject(RegistrationApiService);
   private readonly toastService = inject(ToastService);
-  private readonly queryClient = inject(QueryClient);
   private readonly projectApiService = inject(ProjectApiService);
 
   registration = injectQuery(
@@ -211,7 +209,6 @@ export class ProjectRegistrationDebitCardsPageComponent {
       this.toastService.showToast({
         detail: $localize`Card successfully updated`,
       });
-      this.invalidateWalletQuery();
     },
   }));
 
@@ -233,18 +230,8 @@ export class ProjectRegistrationDebitCardsPageComponent {
       this.toastService.showToast({
         detail: $localize`Card successfully replaced`,
       });
-      this.invalidateWalletQuery();
     },
   }));
 
   readonly currencyCode = computed(() => this.project.data()?.currency);
-
-  private invalidateWalletQuery() {
-    void this.queryClient.invalidateQueries({
-      queryKey: this.registrationApiService.getWalletWithCardsByReferenceId(
-        this.projectId,
-        this.referenceId,
-      )().queryKey,
-    });
-  }
 }

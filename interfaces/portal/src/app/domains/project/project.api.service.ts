@@ -435,16 +435,4 @@ export class ProjectApiService extends DomainApiService {
       });
     };
   }
-
-  public invalidateCache(projectId?: Signal<number | string>): Promise<void> {
-    const path: (Signal<number | string> | string)[] = [BASE_ENDPOINT];
-
-    if (projectId) {
-      path.push(projectId);
-    }
-
-    return this.queryClient.invalidateQueries({
-      queryKey: this.pathToQueryKey(path),
-    });
-  }
 }

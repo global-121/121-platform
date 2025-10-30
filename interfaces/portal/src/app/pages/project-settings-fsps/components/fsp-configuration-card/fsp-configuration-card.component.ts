@@ -119,9 +119,6 @@ export class FspConfigurationCardComponent {
         configurationName: this.configuration().name,
       }),
     onSuccess: () => {
-      void this.projectApiService.invalidateCache(this.projectId);
-      void this.fspConfigurationApiService.invalidateCache(this.projectId);
-
       this.toastService.showToast({
         detail: `FSP deleted.`,
       });
