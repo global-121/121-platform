@@ -29,6 +29,7 @@ export enum AppRoutes {
   projectSettings = 'settings',
   projectSettingsFsps = 'fsps',
   projectSettingsInformation = 'information',
+  projectSettingsRegistrationData = 'registration-data',
   projectSettingsTeam = 'team',
   registrationByReferenceId = 'registration-by-reference-id',
   registrationLookup = 'registration-lookup',
@@ -196,6 +197,20 @@ export const routes: Routes = [
               import(
                 '~/pages/project-settings-fsps/project-settings-fsps.page'
               ).then((x) => x.ProjectSettingsFspsPageComponent),
+            canActivate: [
+              authCapabilitiesGuard((authService) => authService.isAdmin),
+            ],
+          },
+          {
+            path: AppRoutes.projectSettingsRegistrationData,
+            title:
+              $localize`:@@page-title-project-settings-registration-data:Registration data` +
+              ' | ' +
+              $localize`:@@page-title-project-settings:Project settings`,
+            loadComponent: () =>
+              import(
+                '~/pages/project-settings-registration-data/project-settings-registration-data.page'
+              ).then((x) => x.ProjectSettingsRegistrationDataPageComponent),
             canActivate: [
               authCapabilitiesGuard((authService) => authService.isAdmin),
             ],

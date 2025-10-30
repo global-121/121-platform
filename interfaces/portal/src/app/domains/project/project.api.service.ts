@@ -6,6 +6,7 @@ import { unique } from 'radashi';
 
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
+import { UpdateProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
@@ -63,6 +64,7 @@ export class ProjectApiService extends DomainApiService {
   }
 
   getProject(projectId: Signal<number | string | undefined>) {
+    // XXX: add different type for processResponse (adding translatedLabel to programRegistrationAttributes)
     return this.generateQueryOptions<Project>({
       path: [BASE_ENDPOINT, projectId],
       enabled: () => !!projectId(),
@@ -77,6 +79,22 @@ export class ProjectApiService extends DomainApiService {
             }),
           );
         }
+
+        project.programRegistrationAttributes =
+          project.programRegistrationAttributes.map((attribute) => {
+            const translatedLabel = this.translatableStringService.translate(
+              attribute.label,
+            );
+            return {
+              ...attribute,
+              translatedLabel:
+                translatedLabel ??
+                (isGenericAttribute(attribute.name)
+                  ? ATTRIBUTE_LABELS[attribute.name]
+                  : undefined) ??
+                attribute.name,
+            };
+          });
 
         return project;
       },
@@ -243,7 +261,7 @@ export class ProjectApiService extends DomainApiService {
           );
           return {
             ...attribute,
-            label:
+            translatedLabel:
               translatedLabel ??
               (isGenericAttribute(attribute.name)
                 ? ATTRIBUTE_LABELS[attribute.name]
@@ -251,6 +269,22 @@ export class ProjectApiService extends DomainApiService {
               attribute.name,
           };
         }),
+    });
+  }
+
+  updateProjectRegistrationAttribute({
+    projectId,
+    programRegistrationAttributeName,
+    attribute,
+  }: {
+    projectId: Signal<number | string>;
+    programRegistrationAttributeName: string;
+    attribute: Dto<UpdateProgramRegistrationAttributeDto>;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'PATCH',
+      endpoint: `${BASE_ENDPOINT}/${projectId().toString()}/registration-attributes/${programRegistrationAttributeName}`,
+      body: attribute,
     });
   }
 
