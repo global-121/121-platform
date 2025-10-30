@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
-import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
 import { ProcessNameRegistration } from '@121-service/src/registration/enum/process-name-registration.enum';
+import { RegistrationsUpdateJobDto } from '@121-service/src/registrations-update-jobs/dto/registrations-update-job.dto';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class QueueRegistrationUpdateService {
     private readonly queuesService: QueuesRegistryService,
   ) {}
 
-  public async addRegistrationUpdateToQueue(
+  public async addRegistrationsUpdateToQueue(
     job: Omit<RegistrationsUpdateJobDto, 'request'>,
   ): Promise<void> {
     // UsedId has to be defined, else there would have been an auth error

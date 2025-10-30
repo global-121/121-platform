@@ -129,6 +129,10 @@ graph LR
   RegistrationsModule-->RegistrationEventsModule
   RegistrationsModule-->RegistrationUtilsModule
   RegistrationsModule-->UserModule
+  RegistrationsUpdateJobEmailsModule-->EmailsModule
+  RegistrationsUpdateJobsModule-->RegistrationsModule
+  RegistrationsUpdateJobsModule-->RegistrationsUpdateJobEmailsModule
+  RegistrationsUpdateJobsModule-->UserModule
   SafaricomModule-->QueuesRegistryModule
   SafaricomModule-->RedisModule
   SafaricomReconciliationModule-->QueuesRegistryModule
@@ -163,7 +167,6 @@ graph LR
   TransactionsModule-->TransactionEventsModule
   TransactionsModule-->UserModule
   UserEmailsModule-->EmailsModule
-  UserEmailsModule-->UserEmailTemplatesModule
   UserModule-->UserEmailsModule
   WhatsappModule-->ImageCodeModule
   WhatsappModule-->MessageTemplateModule

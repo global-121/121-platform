@@ -8,6 +8,7 @@ import * as jwt from 'jsonwebtoken';
 import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
+import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/email-constants';
 import { env } from '@121-service/src/env';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
@@ -42,9 +43,8 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
-import { UserEmailTemplateType } from '@121-service/src/user/user-emails/enum/user-email-template-type.enum';
-import { UserEmailTemplateInput } from '@121-service/src/user/user-emails/interfaces/user-email-template-input.interface';
-import { DEFAULT_DISPLAY_NAME } from '@121-service/src/user/user-emails/user-email-templates/template-constants';
+import { UserEmailType } from '@121-service/src/user/user-emails/enum/user-email-type.enum';
+import { UserEmailInput } from '@121-service/src/user/user-emails/interfaces/user-email-input.interface';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 const tokenExpirationDays = 14;
@@ -277,21 +277,20 @@ export class UserService {
         throw new Error('username is missing');
       }
 
-      const userEmailTemplateInput: UserEmailTemplateInput = {
+      const userEmailInput: UserEmailInput = {
         email: userEntity.username,
         displayName: userEntity.displayName ?? DEFAULT_DISPLAY_NAME,
         password,
       };
 
-      const userEmailTemplateType: UserEmailTemplateType =
-        env.USE_SSO_AZURE_ENTRA
-          ? UserEmailTemplateType.accountCreatedForSSO
-          : UserEmailTemplateType.accountCreated;
+      const userEmailType: UserEmailType = env.USE_SSO_AZURE_ENTRA
+        ? UserEmailType.accountCreatedForSSO
+        : UserEmailType.accountCreated;
 
-      await this.userEmailsService.sendUserEmail(
-        userEmailTemplateInput,
-        userEmailTemplateType,
-      );
+      await this.userEmailsService.send({
+        userEmailInput,
+        userEmailType,
+      });
     }
   }
 
@@ -939,16 +938,16 @@ export class UserService {
     user.password = this.hashPassword(password, user.salt);
     await this.userRepository.save(user);
 
-    const userEmailTemplateInput: UserEmailTemplateInput = {
+    const userEmailInput: UserEmailInput = {
       email: user.username,
       displayName: user.displayName ?? DEFAULT_DISPLAY_NAME,
       password,
     };
 
-    await this.userEmailsService.sendUserEmail(
-      userEmailTemplateInput,
-      UserEmailTemplateType.passwordReset,
-    );
+    await this.userEmailsService.send({
+      userEmailInput,
+      userEmailType: UserEmailType.passwordReset,
+    });
   }
 
   private generateSalt(): string {

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import chunk from 'lodash/chunk';
 import { Equal, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
@@ -13,7 +14,6 @@ import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/en
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
-import { RegistrationsUpdateJobDto as RegistrationUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import {
@@ -32,6 +32,7 @@ import { QueueRegistrationUpdateService } from '@121-service/src/registration/se
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsInputValidatorHelpers } from '@121-service/src/registration/validators/registrations-input.validator.helper';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
+import { RegistrationsUpdateJobDto } from '@121-service/src/registrations-update-jobs/dto/registrations-update-job.dto';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
 const BATCH_SIZE = 500;
@@ -74,18 +75,19 @@ export class RegistrationsImportService {
     // The rest of the checks will be done in the queue (the user will get no feedback of this)
     await this.validateBulkUpdateInput(bulkUpdateRecords, programId, userId);
 
+    const REGISTRATIONS_PER_JOB = 100;
+    const chunks = chunk(bulkUpdateRecords, REGISTRATIONS_PER_JOB);
+
     // Prepare the job array to push to the queue
-    const updateJobs: Omit<RegistrationUpdateJobDto, 'request'>[] =
-      bulkUpdateRecords.map((record) => {
-        const referenceId = record['referenceId'] as string;
-        delete record['referenceId'];
+    const updateJobs: Omit<RegistrationsUpdateJobDto, 'request'>[] = chunks.map(
+      (recordsChunk) => {
         return {
-          referenceId,
-          data: record,
+          data: recordsChunk,
           programId,
           reason,
         };
-      });
+      },
+    );
 
     // Call to redis as concurrent operations in a batch
     for (let start = 0; start < updateJobs.length; start += BATCH_SIZE) {
@@ -94,7 +96,7 @@ export class RegistrationsImportService {
         updateJobs
           .slice(start, end)
           .map((job) =>
-            this.queueRegistrationUpdateService.addRegistrationUpdateToQueue(
+            this.queueRegistrationUpdateService.addRegistrationsUpdateToQueue(
               job,
             ),
           ),

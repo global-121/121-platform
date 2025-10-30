@@ -27,7 +27,6 @@ import { RegistrationAttributeDataEntity } from '@121-service/src/registration/e
 import { UniqueRegistrationPairEntity } from '@121-service/src/registration/entities/unique-registration-pair.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utils/registration-utils.module';
-import { RegistrationUpdateProcessor } from '@121-service/src/registration/processors/registrations-update.processor';
 import { RegistrationsController } from '@121-service/src/registration/registrations.controller';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
@@ -87,7 +86,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     RegistrationScopedRepository,
     RegistrationViewScopedRepository,
     FileImportService,
-    RegistrationUpdateProcessor,
     RegistrationsInputValidator,
     createScopedRepositoryProvider(IntersolveVoucherEntity),
     createScopedRepositoryProvider(TwilioMessageEntity),
