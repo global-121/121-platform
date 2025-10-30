@@ -6,7 +6,10 @@ import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
 import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconciliation-feedback.dto';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
-import { ExcelStatusColumn } from '@121-service/src/payments/reconciliation/excel/excel-status-column.const';
+import {
+  ExcelErrorMessageColumn,
+  ExcelStatusColumn,
+} from '@121-service/src/payments/reconciliation/excel/excel-status-column.const';
 import { ExcelReconciliationFeedbackService } from '@121-service/src/payments/reconciliation/excel/services/excel-reconciliation-feedback.service';
 import { ExcelReconciliationValidationService } from '@121-service/src/payments/reconciliation/excel/services/excel-reconciliation-validation.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
@@ -74,7 +77,7 @@ export class ExcelReconciliationService {
       );
       templates.push({
         name: fspConfig.name,
-        template: [matchColumn, ExcelStatusColumn],
+        template: [matchColumn, ExcelStatusColumn, ExcelErrorMessageColumn],
       });
     }
 
