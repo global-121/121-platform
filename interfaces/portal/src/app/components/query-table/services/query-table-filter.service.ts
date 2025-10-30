@@ -7,6 +7,7 @@ import {
   QueryTableColumn,
   QueryTableColumnType,
 } from '~/components/query-table/query-table.component';
+import { QueryTableCellService } from '~/components/query-table/services/query-table-cell.service';
 import {
   TrackingAction,
   TrackingCategory,
@@ -15,6 +16,7 @@ import {
 
 export class QueryTableFilterService<TData> {
   private readonly trackingService = inject(TrackingService);
+  private readonly cellService = inject(QueryTableCellService);
 
   readonly tableFilters = signal<
     Record<string, FilterMetadata | FilterMetadata[] | undefined>
@@ -83,7 +85,7 @@ export class QueryTableFilterService<TData> {
   }
 
   getColumnMatchMode(column: QueryTableColumn<TData>): FilterMatchMode {
-    const type = column.type ?? QueryTableColumnType.TEXT;
+    const type = this.cellService.getColumnType(column);
     switch (type) {
       case QueryTableColumnType.MULTISELECT:
         return FilterMatchMode.IN;
@@ -91,6 +93,7 @@ export class QueryTableFilterService<TData> {
       case QueryTableColumnType.NUMERIC:
         return FilterMatchMode.EQUALS;
       case QueryTableColumnType.TEXT:
+      default:
         return FilterMatchMode.CONTAINS;
     }
   }
@@ -98,14 +101,8 @@ export class QueryTableFilterService<TData> {
   getColumnMatchModeOptions(
     column: QueryTableColumn<TData>,
   ): { label: string; value: FilterMatchMode }[] | undefined {
-    const type = column.type ?? QueryTableColumnType.TEXT;
+    const type = this.cellService.getColumnType(column);
     switch (type) {
-      case QueryTableColumnType.TEXT:
-        return [
-          { label: $localize`Contains`, value: FilterMatchMode.CONTAINS },
-          { label: $localize`Equal to`, value: FilterMatchMode.EQUALS },
-          { label: $localize`Not equal to`, value: FilterMatchMode.NOT_EQUALS },
-        ];
       case QueryTableColumnType.NUMERIC:
         return [
           { label: $localize`Equal to`, value: FilterMatchMode.EQUALS },
@@ -131,6 +128,13 @@ export class QueryTableFilterService<TData> {
       case QueryTableColumnType.MULTISELECT:
         // For multiselect, we do not have multiple match modes
         return undefined;
+      case QueryTableColumnType.TEXT:
+      default:
+        return [
+          { label: $localize`Contains`, value: FilterMatchMode.CONTAINS },
+          { label: $localize`Equal to`, value: FilterMatchMode.EQUALS },
+          { label: $localize`Not equal to`, value: FilterMatchMode.NOT_EQUALS },
+        ];
     }
   }
 
@@ -176,8 +180,7 @@ export class QueryTableFilterService<TData> {
     filters: Record<string, FilterMetadata | FilterMetadata[] | undefined>,
   ) {
     this.tableFilters.set({
-      // clone to make sure to trigger change detection
-      // https://stackoverflow.com/a/77532370
+      // Clone to make sure to trigger change detection. See: https://stackoverflow.com/a/77532370
       ...filters,
     });
   }

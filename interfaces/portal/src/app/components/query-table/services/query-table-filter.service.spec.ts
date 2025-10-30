@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
+import { QueryTableCellService } from '~/components/query-table/services/query-table-cell.service';
 import { QueryTableFilterService } from '~/components/query-table/services/query-table-filter.service';
 
 describe('QueryTableFilterService', () => {
@@ -8,7 +9,7 @@ describe('QueryTableFilterService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [QueryTableFilterService],
+      providers: [QueryTableFilterService, QueryTableCellService],
     });
 
     service = TestBed.inject(QueryTableFilterService);
