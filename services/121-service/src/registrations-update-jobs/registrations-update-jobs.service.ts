@@ -3,13 +3,11 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { RegistrationsUpdateJobDto } from '@121-service/src/registrations-update-jobs/dto/registrations-update-job.dto';
+import { ErrorRecord } from '@121-service/src/registrations-update-jobs/interfaces/error-record.interface';
 import { UpdateJobEmailInput } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/interfaces/update-job-email-input.interface';
 import { RegistrationsUpdateJobEmailsService } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/registrations-update-job-emails.service';
 import { UserService } from '@121-service/src/user/user.service';
-import {
-  CSVRecord,
-  formatRecordsAsCsv,
-} from '@121-service/src/utils/format-records-as-csv.helper';
+import { arrayToXlsx } from '@121-service/src/utils/send-xlsx-response';
 
 @Injectable()
 export class RegistrationsUpdateJobsService {
@@ -22,7 +20,7 @@ export class RegistrationsUpdateJobsService {
   public async processRegistrationsUpdateJob(
     job: RegistrationsUpdateJobDto,
   ): Promise<void> {
-    const registrationUpdateErrorRecords: CSVRecord[] =
+    const registrationUpdateErrorRecords: ErrorRecord[] =
       await this.updateRegistrations(job);
 
     if (registrationUpdateErrorRecords.length > 0) {
@@ -35,8 +33,8 @@ export class RegistrationsUpdateJobsService {
 
   private async updateRegistrations(
     job: RegistrationsUpdateJobDto,
-  ): Promise<CSVRecord[]> {
-    const registrationUpdateErrorRecords: CSVRecord[] = [];
+  ): Promise<ErrorRecord[]> {
+    const registrationUpdateErrorRecords: ErrorRecord[] = [];
 
     for (const record of job.data) {
       const dto: UpdateRegistrationDto = {
@@ -68,19 +66,20 @@ export class RegistrationsUpdateJobsService {
   }
 
   private async sendValidationFailureEmail(
-    registrationUpdateErrorRecords: CSVRecord[],
-    userId: RegistrationsUpdateJobDto['request']['userId'],
+    registrationUpdateErrorRecords: ErrorRecord[],
+    userId: number,
   ): Promise<void> {
     const user = await this.userService.findById(userId);
 
-    //nog met tys checken of dit ok is
     if (!user || !user.username) {
       throw new Error(
         'User not found or has no email address for validation failure email',
       );
     }
 
-    const contentBytes = formatRecordsAsCsv(registrationUpdateErrorRecords);
+    const contentBytes = arrayToXlsx(registrationUpdateErrorRecords).toString(
+      'base64',
+    );
 
     const templateInput: UpdateJobEmailInput = {
       email: user.username,
@@ -88,8 +87,6 @@ export class RegistrationsUpdateJobsService {
       attachment: { name: 'failed-validations.csv', contentBytes },
     };
 
-    await this.registrationsUpdateJobEmailsService.sendUpdateJobEmail(
-      templateInput,
-    );
+    await this.registrationsUpdateJobEmailsService.send(templateInput);
   }
 }

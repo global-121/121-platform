@@ -130,7 +130,6 @@ graph LR
   RegistrationsModule-->RegistrationUtilsModule
   RegistrationsModule-->UserModule
   RegistrationsUpdateJobEmailsModule-->EmailsModule
-  RegistrationsUpdateJobsModule-->EmailsModule
   RegistrationsUpdateJobsModule-->RegistrationsModule
   RegistrationsUpdateJobsModule-->RegistrationsUpdateJobEmailsModule
   RegistrationsUpdateJobsModule-->UserModule

@@ -287,7 +287,7 @@ export class UserService {
         ? UserEmailType.accountCreatedForSSO
         : UserEmailType.accountCreated;
 
-      await this.userEmailsService.sendUserEmail({
+      await this.userEmailsService.send({
         userEmailInput,
         userEmailType,
       });
@@ -944,7 +944,7 @@ export class UserService {
       password,
     };
 
-    await this.userEmailsService.sendUserEmail({
+    await this.userEmailsService.send({
       userEmailInput,
       userEmailType: UserEmailType.passwordReset,
     });

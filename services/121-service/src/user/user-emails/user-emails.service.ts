@@ -14,31 +14,34 @@ import { stripHtmlTags } from '@121-service/src/utils/strip-html-tags.helper';
 export class UserEmailsService {
   constructor(private readonly emailsService: EmailsService) {}
 
-  public async sendUserEmail({
+  public async send({
     userEmailInput,
     userEmailType,
   }: {
     userEmailInput: UserEmailInput;
     userEmailType: UserEmailType;
   }): Promise<void> {
-    const emailData: EmailData = this.buildUserEmailData(
+    const emailData: EmailData = this.buildUserEmailData({
       userEmailType,
       userEmailInput,
-    );
+    });
 
     await this.emailsService.sendEmail(emailData);
   }
 
-  private buildUserEmailData(
-    userEmailType: UserEmailType,
-    userEmailInput: UserEmailInput,
-  ): EmailData {
+  private buildUserEmailData({
+    userEmailType,
+    userEmailInput,
+  }: {
+    userEmailType: UserEmailType;
+    userEmailInput: UserEmailInput;
+  }): EmailData {
     const { email } = userEmailInput;
 
-    const template: EmailTemplate = this.buildUserEmailTemplate(
+    const template: EmailTemplate = this.buildUserEmailTemplate({
       userEmailType,
       userEmailInput,
-    );
+    });
 
     const userEmailData: EmailData = {
       email,
@@ -49,10 +52,13 @@ export class UserEmailsService {
     return userEmailData;
   }
 
-  private buildUserEmailTemplate(
-    userEmailType: UserEmailType,
-    userEmailInput: UserEmailInput,
-  ): EmailTemplate {
+  private buildUserEmailTemplate({
+    userEmailType,
+    userEmailInput,
+  }: {
+    userEmailType: UserEmailType;
+    userEmailInput: UserEmailInput;
+  }): EmailTemplate {
     let emailTemplate: EmailTemplate;
     const sanitizedUserEmailInput = {
       ...userEmailInput,

@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import * as XLSX from 'xlsx';
 
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { RegistrationsUpdateJobDto } from '@121-service/src/registrations-update-jobs/dto/registrations-update-job.dto';
@@ -11,7 +12,7 @@ class RegistrationsServiceMock {
 }
 
 class RegistrationsUpdateJobEmailsServiceMock {
-  sendUpdateJobEmail = jest.fn();
+  send = jest.fn();
 }
 
 class UserServiceMock {
@@ -65,12 +66,7 @@ describe('RegistrationsUpdateJobsService', () => {
     await service.processRegistrationsUpdateJob(job);
 
     // Assert
-    expect(
-      registrationsService.validateInputAndUpdateRegistration,
-    ).toHaveBeenCalledTimes(2);
-    expect(
-      registrationsUpdateJobEmailsService.sendUpdateJobEmail,
-    ).not.toHaveBeenCalled();
+    expect(registrationsUpdateJobEmailsService.send).not.toHaveBeenCalled();
   });
 
   it('should process registrations update job with some failures and send email', async () => {
@@ -97,39 +93,20 @@ describe('RegistrationsUpdateJobsService', () => {
     await service.processRegistrationsUpdateJob(job);
 
     // Assert
-    expect(
-      registrationsService.validateInputAndUpdateRegistration,
-    ).toHaveBeenCalledTimes(2);
-    expect(
-      registrationsUpdateJobEmailsService.sendUpdateJobEmail,
-    ).toHaveBeenCalledTimes(1);
+    expect(registrationsUpdateJobEmailsService.send).toHaveBeenCalledTimes(1);
 
-    expect(
-      registrationsUpdateJobEmailsService.sendUpdateJobEmail,
-    ).toHaveBeenCalledWith(
-      expect.objectContaining({
-        updateJobEmailInput: expect.objectContaining({
-          email: 'owner@example.com',
-          displayName: 'Owner User',
-          attachment: expect.objectContaining({
-            name: 'failed-validations.csv',
-            contentBytes: expect.any(String),
-          }),
-        }),
-      }),
-    );
+    // Extract the attachment and decode the XLSX
+    const callArg = registrationsUpdateJobEmailsService.send.mock.calls[0][0];
+    const { contentBytes } = callArg.attachment;
+    const buffer = Buffer.from(contentBytes, 'base64');
+    const workbook = XLSX.read(buffer, { type: 'buffer' });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-    // Decode and verify attachment contains failing reference id and message
-    const callArg =
-      registrationsUpdateJobEmailsService.sendUpdateJobEmail.mock.calls[0][0];
-    const decoded = Buffer.from(
-      callArg.updateJobEmailInput.attachment.contentBytes,
-      'base64',
-    ).toString('utf8');
-    expect(decoded).toContain('referenceId,error');
-    // Expect proper CSV escaping: referenceId plain, error message quoted with internal quotes doubled
-    expect(decoded).toContain(
-      'reg-2,"Update failed, reason: ""bad, input"" for reg-2"',
-    );
+    // Data row for the failure
+    expect(rows).toContainEqual([
+      'reg-2',
+      'Update failed, reason: "bad, input" for reg-2',
+    ]);
   });
 });

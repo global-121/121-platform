@@ -59,7 +59,7 @@ describe('RegistrationsUpdateJobEmailsService', () => {
     buildTemplateImportValidationFailedMock.mockReturnValueOnce(templateOutput);
 
     // Act
-    await service.sendUpdateJobEmail(updateJobEmailInput);
+    await service.send(updateJobEmailInput);
 
     // Assert
     expect(buildTemplateImportValidationFailedMock).toHaveBeenCalledWith(
