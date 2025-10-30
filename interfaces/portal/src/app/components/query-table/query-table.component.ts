@@ -87,7 +87,7 @@ export type QueryTableColumn<TData, TField = Leaves<TData> & string> = {
       type?:
         | QueryTableColumnType.DATE
         | QueryTableColumnType.NUMERIC
-        | QueryTableColumnType.TEXT; // defaults to QueryTableColumnType.TEXT
+        | QueryTableColumnType.TEXT; // Default/fallback-type!
       getCellText?: (item: TData) => string;
       getCellRouterLink?: (item: TData) => RouterLink['routerLink'];
     }
