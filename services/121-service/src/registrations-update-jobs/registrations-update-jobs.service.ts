@@ -51,13 +51,12 @@ export class RegistrationsUpdateJobsService {
         });
       } catch (error) {
         if (error instanceof HttpException) {
-          throw error;
-        } else {
           registrationUpdateErrorRecords.push({
             referenceId: record.referenceId as string,
-            errorMessage:
-              error instanceof Error ? error.message : String(error),
+            errorMessage: String(error),
           });
+        } else {
+          throw error;
         }
       }
     }

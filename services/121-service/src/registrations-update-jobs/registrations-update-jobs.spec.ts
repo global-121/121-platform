@@ -1,3 +1,4 @@
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as XLSX from 'xlsx';
 
@@ -84,7 +85,10 @@ describe('RegistrationsUpdateJobsService', () => {
     registrationsService.validateInputAndUpdateRegistration.mockImplementation(
       async ({ referenceId }) => {
         if (referenceId === 'reg-2') {
-          throw new Error('Update failed, reason: "bad, input" for reg-2');
+          throw new HttpException(
+            'Update failed, reason: "bad, input" for reg-2',
+            HttpStatus.BAD_REQUEST,
+          );
         }
       },
     );
@@ -103,10 +107,11 @@ describe('RegistrationsUpdateJobsService', () => {
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-    // Data row for the failure
-    expect(rows).toContainEqual([
+    // Header row and data row assertions
+    expect(rows[0]).toEqual(['referenceId', 'errorMessage']);
+    expect(rows[1]).toEqual([
       'reg-2',
-      'Update failed, reason: "bad, input" for reg-2',
+      'HttpException: Update failed, reason: "bad, input" for reg-2',
     ]);
   });
 });
