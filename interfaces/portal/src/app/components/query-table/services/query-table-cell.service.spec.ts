@@ -38,7 +38,6 @@ describe('QueryTableCellService', () => {
     const customColumn: QueryTableColumn<TestCellItem> = {
       header: 'Custom',
       field: 'name',
-      type: QueryTableColumnType.TEXT,
       getCellText: (item) => `Custom: ${item.name}`,
     };
 
@@ -64,7 +63,6 @@ describe('QueryTableCellService', () => {
     const textColumn: QueryTableColumn<TestCellItem> = {
       header: 'Name',
       field: 'name',
-      type: QueryTableColumnType.TEXT,
     };
 
     const result = service.getCellText(textColumn, testItem);

@@ -20,8 +20,7 @@ export class QueryTableRowExpansionService<TData extends { id: PropertyKey }> {
 
   updateExpandedRowKeys(expandedRowKeys: Record<PropertyKey, boolean>) {
     this.expandedRowKeys.set({
-      // clone to make sure to trigger change detection
-      // https://stackoverflow.com/a/77532370
+      // Clone to make sure to trigger change detection. See: https://stackoverflow.com/a/77532370
       ...expandedRowKeys,
     });
   }
