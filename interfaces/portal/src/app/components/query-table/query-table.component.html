@@ -41,7 +41,7 @@
       @if (isFiltered()) {
         <p-button
           label="Clear filters"
-          i18n-label="@@table-clear-filters"
+          i18n-label="@@query-table--clear-filters"
           [outlined]="true"
           rounded
           severity="contrast"
@@ -68,6 +68,7 @@
       }
     </div>
   </ng-template>
+
   <ng-template pTemplate="header">
     <tr>
       @if (enableSelection()) {
@@ -83,6 +84,10 @@
             [text]="true"
             [rounded]="true"
             [plain]="true"
+            aria-label="Toggle all"
+            i18n-aria-label="@@query-table--toggle-all"
+            title="Toggle all"
+            i18n-title="@@query-table--toggle-all"
             [icon]="
               areAllRowsExpanded()
                 ? 'pi pi-chevron-down'
@@ -142,7 +147,8 @@
                       [optionLabel]="'label'"
                       [optionValue]="'value'"
                       placeholder="Choose option(s)"
-                      i18n-placeholder
+                      i18n-placeholder="
+                        @@query-table--filter-multiselect-placeholder"
                       class="[&_.p-multiselect-option]:text-nowrap"
                     >
                       <ng-template
@@ -170,6 +176,10 @@
                   icon="pi pi-filter-slash"
                   text
                   rounded
+                  aria-label="Clear filter"
+                  i18n-aria-label="@@query-table--clear-filter"
+                  title="Clear filter"
+                  i18n-title="@@query-table--clear-filter"
                   (onClick)="clearColumnFilter($event, columnFilter)"
                 />
               }
@@ -179,10 +189,11 @@
       }
       @if (contextMenuItems()) {
         <!-- Extra column for the ellipsis button -->
-        <th i18n>Actions</th>
+        <th i18n="@@query-table--actions-column">Actions</th>
       }
     </tr>
   </ng-template>
+
   <ng-template
     pTemplate="body"
     let-item
@@ -190,9 +201,7 @@
   >
     <tr
       [pContextMenuRow]="item"
-      [ngClass]="{
-        'bg-purple-50': expanded,
-      }"
+      [ngClass]="{ 'bg-purple-50': expanded }"
     >
       @if (enableSelection()) {
         <td style="width: 0">
@@ -216,6 +225,10 @@
             [text]="true"
             [rounded]="true"
             [plain]="true"
+            aria-label="Toggle row"
+            i18n-aria-label="@@query-table--toggle-row"
+            title="Toggle row"
+            i18n-title="@@query-table--toggle-row"
             [icon]="
               expanded
                 ? 'pi pi-chevron-down'
@@ -240,8 +253,8 @@
             @let cellText = getCellText(column, item);
             @if (column.type === 'multiselect') {
               @if (column.displayAsChip) {
-                @if (column.getCellChipData) {
-                  @let chipData = column.getCellChipData(item);
+                @let chipData = column.getCellChipData?.(item);
+                @if (chipData) {
                   <app-colored-chip
                     [label]="chipData.chipLabel"
                     [variant]="chipData.chipVariant"
@@ -256,25 +269,22 @@
                 <span class="inline-flex items-center">
                   @let icon = getMultiSelectCellIcon(column, item);
                   @if (icon) {
-                    <span class="me-2 inline leading-0"
-                      ><i [ngClass]="[icon, 'mt-0.25 text-xl']"></i>
+                    <span class="me-2 inline leading-0">
+                      <i [ngClass]="[icon, 'mt-0.25 text-xl']"></i>
                     </span>
                   }
                   <span>{{ cellText }}</span>
                 </span>
               }
             } @else {
-              @let routerLink =
-                column.getCellRouterLink
-                  ? column.getCellRouterLink(item)
-                  : undefined;
-
+              @let routerLink = column.getCellRouterLink?.(item);
               @if (routerLink) {
                 <a
                   [routerLink]="routerLink"
                   class="hover:underline focus:underline"
-                  >{{ cellText }}</a
                 >
+                  {{ cellText }}
+                </a>
               } @else {
                 {{ cellText }}
               }
@@ -298,6 +308,7 @@
       }
     </tr>
   </ng-template>
+
   <ng-template pTemplate="loadingbody">
     @for (row of [].constructor(table.rows); track $index) {
       <tr data-testid="query-table-loading">
@@ -323,6 +334,7 @@
       </tr>
     }
   </ng-template>
+
   <ng-template pTemplate="emptymessage">
     <tr
       data-testid="query-table-empty"
@@ -334,16 +346,11 @@
             <div class="flex items-center">
               <i class="pi pi-filter me-2 inline text-xl"></i>
 
-              <span
-                i18n
-                class="font-bold"
-              >
-                No results found
-              </span>
+              <strong i18n="@@query-table--no-results">No results</strong>
             </div>
 
             <p
-              i18n
+              i18n="@@query-table--no-results-filters"
               class="my-4"
             >
               There are no records that match the selected filters, clear some
@@ -352,7 +359,7 @@
 
             <p-button
               label="Clear filters"
-              i18n-label="@@table-clear-filters"
+              i18n-label="@@query-table--clear-filters"
               link
               (click)="clearAllFilters()"
             />
@@ -366,16 +373,11 @@
               <div class="flex items-center">
                 <i class="pi pi-exclamation-circle me-2 inline text-xl"></i>
 
-                <span
-                  i18n
-                  class="font-bold"
-                >
-                  No results
-                </span>
+                <strong i18n="@@query-table--no-results">No results</strong>
               </div>
 
               <p
-                i18n
+                i18n="@@query-table--no-results-text"
                 class="mt-4"
               >
                 There are no records to display.
@@ -386,6 +388,7 @@
       </td>
     </tr>
   </ng-template>
+
   @if (expandableRowTemplate()) {
     <ng-template
       #expandedrow
@@ -407,6 +410,7 @@
     </ng-template>
   }
 </p-table>
+
 @if (contextMenuItems()) {
   <!-- Opened when right-clicking on a row -->
   <p-contextMenu
