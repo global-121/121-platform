@@ -76,7 +76,7 @@ test('Reconfigure FSP', async ({ page }) => {
   });
 
   await test.step('Validate new Visa debit card was reconfigured', async () => {
-    await fspSettings.openEditFspConfigurationByName('PKO BPAY debit card');
+    await fspSettings.openEditFspConfigurationByName(newVisaConfiguration[0]);
     await fspSettings.validateFspConfiguration(newVisaConfiguration);
   });
 });
