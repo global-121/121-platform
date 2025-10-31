@@ -148,7 +148,7 @@ export class RegistrationAttributeService {
       case GenericRegistrationAttributes.preferredLanguage:
         return project.languages.map((language) => ({
           value: language,
-          label: LANGUAGE_ENUM_LABEL[language],
+          label: LANGUAGE_ENUM_LABEL[language] ?? language,
         }));
       case GenericRegistrationAttributes.programFspConfigurationName:
         return project.programFspConfigurations.map((fspConfig) => ({
