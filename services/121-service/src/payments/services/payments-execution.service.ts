@@ -35,18 +35,26 @@ export class PaymentsExecutionService {
     );
 
     try {
-      const transactionsOfIncludedRegistrations =
-        await this.transactionViewScopedRepository.getTransactionsOfIncludedRegistrationsByPaymentId(
+      const transactionsToStart =
+        await this.transactionViewScopedRepository.getCreatedTransactionsOfIncludedRegistrations(
           {
             programId,
             paymentId,
           },
         );
+      if (transactionsToStart.length === 0) {
+        throw new HttpException(
+          {
+            errors:
+              'No created transactions found for included registrations for this payment.',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
 
-      const programFspConfigurationNames: string[] =
-        transactionsOfIncludedRegistrations
-          .map((t) => t.programFspConfigurationName)
-          .filter((fsp) => fsp !== null);
+      const programFspConfigurationNames: string[] = transactionsToStart
+        .map((t) => t.programFspConfigurationName)
+        .filter((fsp) => fsp !== null);
       await this.paymentsHelperService.checkFspConfigurationsOrThrow(
         programId,
         programFspConfigurationNames,
@@ -60,9 +68,7 @@ export class PaymentsExecutionService {
 
       await this.paymentsExecutionHelperService.updatePaymentCountAndSetToCompleted(
         {
-          registrationIds: transactionsOfIncludedRegistrations.map(
-            (t) => t.registrationId,
-          ),
+          registrationIds: transactionsToStart.map((t) => t.registrationId),
           programId,
           userId,
         },
@@ -72,7 +78,7 @@ export class PaymentsExecutionService {
       // Else do not await and unlock the payments in a finally on that block
       await this.createTransactionJobs({
         programId,
-        transactionIds: transactionsOfIncludedRegistrations.map((t) => t.id),
+        transactionIds: transactionsToStart.map((t) => t.id),
         userId,
         isRetry: false,
       });
