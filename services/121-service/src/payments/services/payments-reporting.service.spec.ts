@@ -60,7 +60,7 @@ describe('PaymentsReportingService - getTransactions', () => {
     jest.spyOn(transactionScopedRepository, 'getTransactions');
     jest.spyOn(
       registrationPaginationService,
-      'getRegistrationViewsChunkedByReferenceIds',
+      'getRegistrationViewsByReferenceIds',
     );
 
     registrationPaginationService = unitRef.get(RegistrationsPaginationService);
@@ -98,7 +98,7 @@ describe('PaymentsReportingService - getTransactions', () => {
       jest
         .spyOn(
           registrationPaginationService,
-          'getRegistrationViewsChunkedByReferenceIds',
+          'getRegistrationViewsByReferenceIds',
         )
         .mockResolvedValue(mockRegistrationViews);
 

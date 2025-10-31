@@ -849,7 +849,7 @@ export class RegistrationsInputValidator {
       .filter((row) => row[GenericRegistrationAttributes.referenceId])
       .map((row) => row[GenericRegistrationAttributes.referenceId]);
     const originalRegistrations =
-      await this.registrationPaginationService.getRegistrationViewsChunkedByReferenceIds(
+      await this.registrationPaginationService.getRegistrationViewsByReferenceIds(
         { programId, referenceIds },
       );
     const originalRegistrationsMap = new Map(
