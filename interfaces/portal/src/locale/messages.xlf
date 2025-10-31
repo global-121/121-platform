@@ -1997,9 +1997,6 @@
       <trans-unit id="922512355272678698" datatype="html">
         <source>Learn more about updating selected registrations in the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/>.</source>
       </trans-unit>
-      <trans-unit id="3449555461443495960" datatype="html">
-        <source>You&apos;re about to start a payment.</source>
-      </trans-unit>
       <trans-unit id="3718000607419168275" datatype="html">
         <source>Click create payment, this will direct you to the payment page.</source>
       </trans-unit>
@@ -2011,6 +2008,21 @@
       </trans-unit>
       <trans-unit id="8616960384506541771" datatype="html">
         <source>Payment started successfully.</source>
+      </trans-unit>
+      <trans-unit id="1855612212035012249" datatype="html">
+        <source>TBD</source>
+      </trans-unit>
+      <trans-unit id="2294371994435809058" datatype="html">
+        <source>Click start payment to instigate the payment through your FSP.</source>
+      </trans-unit>
+      <trans-unit id="2886295542241968756" datatype="html">
+        <source>Your payment has been approved by all needed approvers.</source>
+      </trans-unit>
+      <trans-unit id="7392987714730903698" datatype="html">
+        <source>registrations</source>
+      </trans-unit>
+      <trans-unit id="7598652794919465551" datatype="html">
+        <source>Included in payment</source>
       </trans-unit>
     </body>
   </file>

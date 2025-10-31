@@ -14,6 +14,9 @@
       <app-start-payment
         [projectId]="projectId()"
         [paymentId]="paymentId()"
+        [fspList]="startPaymentFspList()"
+        [transactionCount]="startPaymentTransactionCount()"
+        [totalPaymentAmount]="startPaymentTotalPaymentAmount()"
       ></app-start-payment>
 
       @if (hasFspWithExportFileIntegration()) {

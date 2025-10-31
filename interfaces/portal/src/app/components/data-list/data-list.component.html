@@ -1,7 +1,8 @@
 <div
-  class="grid grid-cols-1 gap-x-5 md:grid-cols-2"
+  class="grid grid-cols-1 gap-x-5"
   [ngClass]="{
     '-mb-[2px] [clip-path:inset(0_0_2px_0)]': hideBottomBorder(),
+    'md:grid-cols-2': !forceOneColumn(),
   }"
 >
   @for (item of data(); track $index) {
