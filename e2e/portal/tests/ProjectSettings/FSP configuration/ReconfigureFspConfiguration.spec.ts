@@ -67,7 +67,7 @@ test('Reconfigure FSP', async ({ page }) => {
   });
 
   await test.step('Check Visa debit card configuration', async () => {
-    await fspSettings.openEditFspConfigurationByName('Visa debit card');
+    await fspSettings.openEditFspConfigurationByName(FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en);
     await fspSettings.validateFspConfiguration(visaConfiguration);
   });
 
