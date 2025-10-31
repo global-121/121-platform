@@ -13,6 +13,7 @@ import { FormDialogComponent } from '~/components/form-dialog/form-dialog.compon
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
+import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-start-payment',
@@ -28,6 +29,7 @@ export class StartPaymentComponent {
 
   private metricApiService = inject(MetricApiService);
   private paymentApiService = inject(PaymentApiService);
+  private toastService = inject(ToastService);
 
   readonly startPaymentDialog =
     viewChild.required<FormDialogComponent>('startPaymentDialog');
@@ -45,9 +47,16 @@ export class StartPaymentComponent {
         this.paymentId,
       );
       this.startPaymentDialog().hide();
-      // this.toastService.showToast({
-      //   detail: $localize`Reconciliation data imported successfully.`,
-      // });
+      this.toastService.showToast({
+        detail: $localize`Payment started successfully.`,
+      });
+    },
+    onError: (error: unknown) => {
+      this.toastService.showToast({
+        severity: 'error',
+        // summary: $localize`Failed to start payment.`,
+        detail: error instanceof Error ? error.message : String(error),
+      });
     },
   }));
 
