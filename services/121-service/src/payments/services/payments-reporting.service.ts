@@ -9,10 +9,10 @@ import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
-import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
+import { ProgramPaymentsLocksService } from '@121-service/src/programs/program-payment-locks/program-payment-locks.service';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import {
@@ -29,7 +29,7 @@ export class PaymentsReportingService {
 
   public constructor(
     private readonly paymentsReportingHelperService: PaymentsReportingHelperService,
-    private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
+    private readonly programPaymentsLocksService: ProgramPaymentsLocksService,
     private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
     private readonly registrationPaginationService: RegistrationsPaginationService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
@@ -124,7 +124,7 @@ export class PaymentsReportingService {
   ): Promise<ProgramPaymentsStatusDto> {
     return {
       inProgress:
-        await this.paymentsProgressHelperService.isPaymentInProgress(programId),
+        await this.programPaymentsLocksService.isPaymentInProgress(programId),
     };
   }
 

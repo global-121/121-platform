@@ -2,7 +2,6 @@
 
 ```mermaid
 graph LR
-  ActionsModule-->UserModule
   ActivitiesModule-->MessageModule
   ActivitiesModule-->NoteModule
   ActivitiesModule-->RegistrationEventsModule
@@ -21,11 +20,11 @@ graph LR
   CronjobModule-->OnafriqReconciliationModule
   ExcelModule-->RegistrationsModule
   ExcelModule-->TransactionsModule
-  ExcelReconcilicationModule-->ActionsModule
   ExcelReconcilicationModule-->ExcelModule
   ExcelReconcilicationModule-->PaymentsModule
   ExcelReconcilicationModule-->ProgramFspConfigurationsModule
   ExcelReconcilicationModule-->ProgramModule
+  ExcelReconcilicationModule-->ProgramPaymentLocksModule
   ExcelReconcilicationModule-->RegistrationsModule
   ExcelReconcilicationModule-->TransactionEventsModule
   ExcelReconcilicationModule-->TransactionsModule
@@ -66,7 +65,6 @@ graph LR
   MessageQueuesModule-->RegistrationDataModule
   MessageTemplateModule-->ProgramAttributesModule
   MessageTemplateModule-->UserModule
-  MetricsModule-->ActionsModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
   MetricsModule-->PaymentsModule
@@ -89,13 +87,13 @@ graph LR
   OnafriqReconciliationModule-->QueuesRegistryModule
   OnafriqReconciliationModule-->RedisModule
   OnafriqReconciliationModule-->TransactionsModule
-  PaymentsModule-->ActionsModule
   PaymentsModule-->ExcelModule
   PaymentsModule-->FspsModule
   PaymentsModule-->MessageTemplateModule
   PaymentsModule-->PaymentEventsModule
   PaymentsModule-->ProgramFspConfigurationsModule
   PaymentsModule-->ProgramModule
+  PaymentsModule-->ProgramPaymentLocksModule
   PaymentsModule-->RedisModule
   PaymentsModule-->RegistrationDataModule
   PaymentsModule-->RegistrationEventsModule
@@ -105,7 +103,6 @@ graph LR
   PaymentsModule-->TransactionQueuesModule
   PaymentsModule-->TransactionsModule
   PaymentsModule-->UserModule
-  ProgramModule-->ActionsModule
   ProgramModule-->FspsModule
   ProgramModule-->IntersolveVisaModule
   ProgramModule-->KoboConnectModule
@@ -114,9 +111,9 @@ graph LR
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->ProgramFspConfigurationsModule
   ProgramModule-->UserModule
+  ProgramPaymentLocksModule-->RedisModule
   RegistrationEventsModule-->UserModule
   RegistrationUtilsModule-->RegistrationDataModule
-  RegistrationsModule-->ActionsModule
   RegistrationsModule-->FspsModule
   RegistrationsModule-->IntersolveVisaModule
   RegistrationsModule-->LookupModule
@@ -156,7 +153,6 @@ graph LR
   TransactionJobsModule-->TransactionsModule
   TransactionQueuesModule-->QueuesRegistryModule
   TransactionQueuesModule-->RedisModule
-  TransactionsModule-->ActionsModule
   TransactionsModule-->MessageQueuesModule
   TransactionsModule-->MessageTemplateModule
   TransactionsModule-->RegistrationUtilsModule

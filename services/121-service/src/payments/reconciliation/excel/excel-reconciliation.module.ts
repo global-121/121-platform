@@ -12,6 +12,7 @@ import { TransactionEventsModule } from '@121-service/src/payments/transactions/
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { ProgramPaymentLocksModule } from '@121-service/src/programs/program-payment-locks/program-payment-locks.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
@@ -24,6 +25,7 @@ import { FileImportService } from '@121-service/src/utils/file-import/file-impor
     ExcelModule,
     RegistrationsModule,
     PaymentsModule,
+    ProgramPaymentLocksModule,
     ProgramFspConfigurationsModule,
     ProgramModule,
     TransactionEventsModule,
