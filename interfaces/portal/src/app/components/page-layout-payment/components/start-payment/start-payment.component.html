@@ -16,5 +16,15 @@
   [mutation]="startPaymentMutation"
   [mutationData]="undefined"
 >
-  <p i18n>You're about to start a payment.</p>
+  <p>
+    <span i18n>Your payment has been approved by all needed approvers.</span>
+    <br />
+    <span i18n
+      >Click start payment to instigate the payment through your FSP.</span
+    >
+  </p>
+  <app-data-list
+    [data]="dataList()"
+    [forceOneColumn]="true"
+  />
 </app-form-dialog>

@@ -47,7 +47,7 @@ export class FspConfigurationService {
         // if this "some" returns false, it means the attribute is missing
         !projectAttributes.some(
           (projectAttribute) =>
-            projectAttribute.name === attribute.name.toString(),
+            projectAttribute.name === (attribute.name as string),
         ),
     );
 
