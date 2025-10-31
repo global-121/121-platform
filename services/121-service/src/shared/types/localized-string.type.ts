@@ -1,3 +1,3 @@
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
 
-export type LocalizedString = Partial<Record<LanguageEnum, string>>;
+export type LocalizedString = Partial<Record<UILanguageEnum, string>>;
