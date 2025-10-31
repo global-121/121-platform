@@ -26,7 +26,7 @@ describe('ExcelService', () => {
         {
           provide: RegistrationsPaginationService,
           useValue: {
-            getRegistrationViewsChunkedByReferenceIds: jest.fn(),
+            getRegistrationViewsByReferenceIds: jest.fn(),
           },
         },
         {

@@ -149,9 +149,7 @@ describe('RegistrationsInputValidator', () => {
         {
           provide: RegistrationsPaginationService,
           useValue: {
-            getRegistrationViewsChunkedByReferenceIds: jest
-              .fn()
-              .mockResolvedValue([]),
+            getRegistrationViewsByReferenceIds: jest.fn().mockResolvedValue([]),
           },
         },
         {
