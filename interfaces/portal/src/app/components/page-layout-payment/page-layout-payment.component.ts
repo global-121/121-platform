@@ -152,4 +152,44 @@ export class PageLayoutPaymentComponent {
   readonly hasFspWithExportFileIntegration = computed(() =>
     projectHasFspWithExportFileIntegration(this.project.data()),
   );
+
+  readonly startPaymentFspList = computed<string>(() => {
+    if (!this.transactions.isSuccess()) {
+      return '';
+    }
+
+    return Array.from(
+      new Set(
+        this.transactions
+          .data()
+          .map((transaction) => transaction.programFspConfigurationName),
+      ),
+    ).join(', ');
+  });
+
+  readonly startPaymentTransactionCount = computed<string>(() => {
+    if (!this.payment.isSuccess()) {
+      return '';
+    }
+    return (
+      this.payment.data().created.count.toString() +
+      ' ' +
+      $localize`registrations`
+    );
+  });
+
+  readonly startPaymentTotalPaymentAmount = computed<string>(() => {
+    if (!this.payment.isSuccess()) {
+      return '';
+    }
+
+    return (
+      this.currencyPipe.transform(
+        this.payment.data().created.transferValue,
+        this.project.data()?.currency,
+        'symbol-narrow',
+        '1.2-2',
+      ) ?? '0'
+    );
+  });
 }
