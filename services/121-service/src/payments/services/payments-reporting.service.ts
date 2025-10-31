@@ -205,7 +205,7 @@ export class PaymentsReportingService {
 
     select.push(GenericRegistrationAttributes.referenceId);
     const registrationViews =
-      (await this.registrationPaginationService.getRegistrationViewsChunkedByReferenceIds(
+      (await this.registrationPaginationService.getRegistrationViewsByReferenceIds(
         { programId, referenceIds, select },
       )) as Omit<MappedPaginatedRegistrationDto, 'status'>[];
 

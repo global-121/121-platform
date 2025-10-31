@@ -20,6 +20,10 @@ describe('RegistrationBulkService', () => {
   let registrationsBulkService: RegistrationsBulkService;
   let queueMessageService: MessageQueuesService;
 
+  const registrationMock = {
+    namePartnerOrganization: 'testname',
+  };
+
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
       RegistrationsBulkService,
@@ -79,11 +83,7 @@ describe('RegistrationBulkService', () => {
       .spyOn(registrationsPaginationService as any, 'getPaginate')
       .mockImplementation(() => {
         return {
-          data: [
-            {
-              namePartnerOrganization: 'testname',
-            },
-          ],
+          data: [registrationMock],
           meta: {
             totalItems: 1,
             totalPages: 1,
@@ -91,6 +91,15 @@ describe('RegistrationBulkService', () => {
         };
       });
     queueMessageService = unitRef.get(MessageQueuesService);
+
+    jest
+      .spyOn(
+        registrationsPaginationService as any,
+        'getRegistrationViewsNoLimit',
+      )
+      .mockImplementation(() => {
+        return [registrationMock];
+      });
 
     jest
       .spyOn(queueMessageService as any, 'getPlaceholdersInMessageText')

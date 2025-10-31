@@ -77,10 +77,8 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
       return this.createQueryBuilder('registration').andWhere('1=0');
     }
     return this.queryBuilderFilterOutDeleted().andWhere(
-      'registration.referenceId IN (:...referenceIds)',
-      {
-        referenceIds,
-      },
+      'registration.referenceId = ANY(:referenceIds)', // Use = ANY(...) to prevent query being too long
+      { referenceIds },
     );
   }
 

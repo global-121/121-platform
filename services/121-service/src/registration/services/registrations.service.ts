@@ -96,13 +96,13 @@ export class RegistrationsService {
       .createQueryBuilder('registration')
       .andWhere({ referenceId });
     const paginateResult =
-      await this.registrationsPaginationService.getPaginate(
-        { path: '' },
+      await this.registrationsPaginationService.getPaginate({
+        query: { path: '' },
         programId,
-        true,
-        false,
+        hasPersonalReadPermission: true,
+        noLimit: false,
         queryBuilder,
-      );
+      });
     return paginateResult.data[0];
   }
 
@@ -120,13 +120,13 @@ export class RegistrationsService {
         id,
       });
     const paginateResult =
-      await this.registrationsPaginationService.getPaginate(
-        { path: '' },
+      await this.registrationsPaginationService.getPaginate({
+        query: { path: '' },
         programId,
-        true,
-        false,
+        hasPersonalReadPermission: true,
+        noLimit: false,
         queryBuilder,
-      );
+      });
     return paginateResult.data[0];
   }
 
@@ -795,7 +795,7 @@ export class RegistrationsService {
     // This is done to avoid duplicating the complex logic of retrieving full names, which is already implemented in the pagination service
     // TODO: In the future, this logic should be refactored to reside in the registration repository
     const registrationViews =
-      await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
+      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
         {
           programId,
           referenceIds,

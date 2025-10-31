@@ -92,5 +92,5 @@ export const PaginateConfigRegistrationWithoutSort: PaginateConfig<RegistrationV
 export const PaginateConfigRegistrationViewNoLimit: PaginateConfig<RegistrationViewEntity> =
   {
     ...PaginateConfigRegistrationView,
-    maxLimit: 0,
+    maxLimit: -1, // -1 means no limit in nestjs-paginate
   };

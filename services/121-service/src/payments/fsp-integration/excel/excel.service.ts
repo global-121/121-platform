@@ -36,9 +36,8 @@ export class ExcelService {
     );
     const referenceIds = transactions.map((t) => t.registration.referenceId);
 
-    const chunkSize = 10_000;
     const registrations =
-      await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
+      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
         {
           programId,
           select: [
@@ -47,7 +46,6 @@ export class ExcelService {
             ),
           ], // add referenceId (and deduplicate) to join transfer value later
           referenceIds,
-          chunkSize,
         },
       );
 
@@ -97,9 +95,7 @@ export class ExcelService {
    */
   public joinRegistrationsAndTransactions(
     registrations: Awaited<
-      ReturnType<
-        RegistrationsPaginationService['getRegistrationViewsChunkedByPaginateQuery']
-      >
+      ReturnType<RegistrationsPaginationService['getRegistrationViewsNoLimit']>
     >,
     transactions: TransactionEntity[],
     exportColumns: string[],

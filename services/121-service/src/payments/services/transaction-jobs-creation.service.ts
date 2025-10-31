@@ -574,12 +574,11 @@ export class TransactionJobsCreationService {
     const selectForPayment = [...defaultSelect, ...fspAttributeNames];
 
     const registrationViews =
-      await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
+      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
         {
           programId,
           referenceIds,
           select: selectForPayment,
-          chunkSize: 4000,
         },
       );
     return registrationViews;
