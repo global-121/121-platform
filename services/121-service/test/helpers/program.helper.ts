@@ -66,11 +66,15 @@ export async function getProgram(
     .set('Cookie', [accessToken]);
 }
 
-export async function postProgramRegistrationAttribute(
-  programRegistrationAttribute: ProgramRegistrationAttributeDto,
-  programId: number,
-  accessToken: string,
-): Promise<request.Response> {
+export async function postProgramRegistrationAttribute({
+  programRegistrationAttribute,
+  programId,
+  accessToken,
+}: {
+  programRegistrationAttribute: ProgramRegistrationAttributeDto;
+  programId: number;
+  accessToken: string;
+}): Promise<request.Response> {
   return await getServer()
     .post(`/programs/${programId}/registration-attributes`)
     .set('Cookie', [accessToken])
