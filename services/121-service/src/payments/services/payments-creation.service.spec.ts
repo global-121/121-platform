@@ -1,4 +1,3 @@
-import { ActionsService } from '@121-service/src/actions/actions.service';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsCreationService } from '@121-service/src/payments/services/payments-creation.service';
@@ -11,7 +10,6 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 describe('PaymentsCreationService', () => {
   let service: PaymentsCreationService;
   let paymentsProgressHelperService: PaymentsProgressHelperService;
-  let actionsService: ActionsService;
   let paymentsHelperService: PaymentsHelperService;
   let paymentEventsService: PaymentEventsService;
   let transactionsService: TransactionsService;
@@ -30,8 +28,10 @@ describe('PaymentsCreationService', () => {
   beforeEach(() => {
     paymentsProgressHelperService = {
       checkPaymentInProgressAndThrow: jest.fn(),
+      checkAndLockPaymentProgressOrThrow: jest.fn(),
+      unlockPaymentsForProgram: jest.fn(),
     } as unknown as PaymentsProgressHelperService;
-    actionsService = { saveAction: jest.fn() } as unknown as ActionsService;
+
     paymentsHelperService = {
       checkFspConfigurationsOrThrow: jest.fn(),
     } as unknown as PaymentsHelperService;
@@ -65,7 +65,6 @@ describe('PaymentsCreationService', () => {
     } as unknown as RegistrationsPaginationService;
 
     service = new PaymentsCreationService(
-      actionsService,
       registrationsBulkService,
       registrationsPaginationService,
       paymentsHelperService,
@@ -78,17 +77,24 @@ describe('PaymentsCreationService', () => {
     };
   });
 
-  it('should handle dryRun scenario and not call payment creation helpers', async () => {
+  it('should handle dryRun scenario and not call write function', async () => {
     const params = { ...basePaymentParams, dryRun: true };
     const result = await service.createPayment(params);
+
     expect(
-      paymentsProgressHelperService.checkPaymentInProgressAndThrow,
+      paymentsProgressHelperService.checkAndLockPaymentProgressOrThrow,
     ).not.toHaveBeenCalled();
-    expect(actionsService.saveAction).not.toHaveBeenCalled();
     expect(
-      paymentsHelperService.checkFspConfigurationsOrThrow,
+      paymentsProgressHelperService.unlockPaymentsForProgram,
     ).not.toHaveBeenCalled();
-    expect(result).toBeDefined();
+    expect(paymentEventsService.createEvent).not.toHaveBeenCalled();
+    expect(
+      transactionsService.createTransactionsAndEvents,
+    ).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      sumPaymentAmountMultiplier: 1,
+      programFspConfigurationNames: ['fspA'],
+    });
   });
 
   it('should successfully run with dryRun=false and call all helpers', async () => {
@@ -122,10 +128,11 @@ describe('PaymentsCreationService', () => {
       ...basePaymentParams,
       dryRun: false,
     });
-    console.log('result: ', result);
 
     // Assert
-    expect(actionsService.saveAction).toHaveBeenCalledTimes(2); // start & finish
+    expect(
+      paymentsProgressHelperService.unlockPaymentsForProgram,
+    ).toHaveBeenCalledWith(basePaymentParams.programId);
     expect(paymentEventsService.createEvent).toHaveBeenCalledWith({
       userId: 1,
       paymentId: 123,
@@ -166,7 +173,9 @@ describe('PaymentsCreationService', () => {
     await expect(service.createPayment(basePaymentParams)).rejects.toThrow(
       'Simulated error',
     );
-    expect(actionsService.saveAction).toHaveBeenCalledTimes(2); // start & finish
+    expect(
+      paymentsProgressHelperService.unlockPaymentsForProgram,
+    ).toHaveBeenCalledWith(basePaymentParams.programId);
   });
 
   it('should return early if no transferValue', async () => {
@@ -190,6 +199,8 @@ describe('PaymentsCreationService', () => {
       sumPaymentAmountMultiplier: 0,
       programFspConfigurationNames: [],
     });
-    expect(actionsService.saveAction).toHaveBeenCalledTimes(2); // start & finish
+    expect(
+      paymentsProgressHelperService.unlockPaymentsForProgram,
+    ).toHaveBeenCalledWith(basePaymentParams.programId);
   });
 });

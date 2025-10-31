@@ -2,7 +2,6 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
@@ -27,7 +26,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     ]),
     UserModule,
     HttpModule,
-    ActionsModule,
     MessageQueuesModule,
     MessageTemplateModule,
     RegistrationUtilsModule,
