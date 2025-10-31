@@ -1,5 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Inject } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Redis from 'ioredis';
 import { Equal, Repository } from 'typeorm';
@@ -8,21 +7,20 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { ProgramPaymentLockEntity } from '@121-service/src/programs/program-payment-locks/program-payment-lock.entity';
+import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
 
 @Injectable()
-export class PaymentsProgressHelperService {
-  @InjectRepository(ProgramEntity)
-  private programRepository: Repository<ProgramEntity>;
+export class ProgramPaymentsLocksService {
+  @InjectRepository(ProgramPaymentLockEntity)
+  private readonly programPaymentLocksRepository: Repository<ProgramPaymentLockEntity>;
   public constructor(
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {}
 
   public async unlockPaymentsForProgram(programId: number): Promise<void> {
-    await this.programRepository.update(programId, {
-      paymentsAreLocked: false,
-    });
+    await this.programPaymentLocksRepository.delete({ programId });
   }
 
   public async checkAndLockPaymentProgressOrThrow({
@@ -30,16 +28,16 @@ export class PaymentsProgressHelperService {
   }: {
     programId: number;
   }): Promise<void> {
+    // Atomic lock: insert will succeed only if no lock exists (unique constraint on programId).
+    // If another process inserts at the same time, Postgres guarantees only one succeeds.
     await this.checkPaymentInProgressAndThrow(programId);
-
-    const updateResult = await this.programRepository.update(
-      { id: programId, paymentsAreLocked: false },
-      { paymentsAreLocked: true },
-    );
-    // If no rows were affected, it means payments are already locked
-    // There is a small timeframe where this can happen after the previous check, but this is to be sure that a payment is not already in progress
-    if (updateResult.affected === 0) {
-      this.throwPaymentInProgressException();
+    try {
+      await this.programPaymentLocksRepository.insert({ programId });
+    } catch (err) {
+      if (err?.code === PostgresStatusCodes.UNIQUE_VIOLATION) {
+        this.throwPaymentInProgressException();
+      }
+      throw err;
     }
   }
 
@@ -52,14 +50,14 @@ export class PaymentsProgressHelperService {
   }
 
   public async isPaymentInProgress(programId: number): Promise<boolean> {
-    // First check if payments are locked in the program entity
-    const programPaymentsAreLocked =
-      await this.arePaymentsLockedForProgram(programId);
-    if (programPaymentsAreLocked) {
+    // Check if a lock entity exists for this program
+    const lock = await this.programPaymentLocksRepository.findOne({
+      where: { programId: Equal(programId) },
+    });
+    if (lock) {
       return true;
     }
-
-    // If no actions in progress, check if there are any payments in progress in the queue
+    // Optionally: check Redis queue for in-progress payments (if needed)
     return await this.isPaymentInProgressForProgramQueue(programId);
   }
 
@@ -68,16 +66,6 @@ export class PaymentsProgressHelperService {
       { errors: 'Payment is already in progress' },
       HttpStatus.BAD_REQUEST,
     );
-  }
-
-  private async arePaymentsLockedForProgram(
-    programId: number,
-  ): Promise<boolean> {
-    const program = await this.programRepository.findOneOrFail({
-      where: { id: Equal(programId) },
-      select: { paymentsAreLocked: true },
-    });
-    return program.paymentsAreLocked;
   }
 
   private async isPaymentInProgressForProgramQueue(

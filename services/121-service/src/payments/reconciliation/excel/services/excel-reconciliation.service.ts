@@ -9,12 +9,11 @@ import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/ex
 import { ExcelStatusColumn } from '@121-service/src/payments/reconciliation/excel/excel-status-column.const';
 import { ExcelReconciliationFeedbackService } from '@121-service/src/payments/reconciliation/excel/services/excel-reconciliation-feedback.service';
 import { ExcelReconciliationValidationService } from '@121-service/src/payments/reconciliation/excel/services/excel-reconciliation-validation.service';
-import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
-import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { ProgramPaymentsLocksService } from '@121-service/src/programs/program-payment-locks/program-payment-locks.service';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import {
@@ -31,11 +30,10 @@ export class ExcelReconciliationService {
     private readonly excelService: ExcelService,
     private readonly fileImportService: FileImportService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
-    private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
+    private readonly programPaymentsLocksService: ProgramPaymentsLocksService,
     private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
 
     private readonly transactionsService: TransactionsService,
-    private readonly transactionEventsScopedRepository: TransactionEventsScopedRepository,
     private readonly excelReconciliationValidationService: ExcelReconciliationValidationService,
     private readonly excelReconciliationFeedbackService: ExcelReconciliationFeedbackService,
   ) {}
@@ -102,9 +100,7 @@ export class ExcelReconciliationService {
     ////////////////////////////////////////////////////////////////////////////
     // Preparing
     ////////////////////////////////////////////////////////////////////////////
-    if (
-      await this.paymentsProgressHelperService.isPaymentInProgress(programId)
-    ) {
+    if (await this.programPaymentsLocksService.isPaymentInProgress(programId)) {
       throw new HttpException(
         'Cannot import FSP reconciliation data while payment is in progress',
         HttpStatus.BAD_REQUEST,
