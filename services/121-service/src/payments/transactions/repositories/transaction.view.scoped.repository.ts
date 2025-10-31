@@ -270,7 +270,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       .getRawMany();
   }
 
-  public async getTransactionsOfIncludedRegistrationsByPaymentId({
+  public async getCreatedTransactionsOfIncludedRegistrations({
     programId,
     paymentId,
   }: {
@@ -280,6 +280,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
     return this.find({
       where: {
         paymentId: Equal(paymentId),
+        status: Equal(TransactionStatusEnum.created),
         registration: {
           programId: Equal(programId),
           registrationStatus: Equal(RegistrationStatusEnum.included),
