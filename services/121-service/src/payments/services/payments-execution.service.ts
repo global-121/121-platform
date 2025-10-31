@@ -1,7 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import { ActionsService } from '@121-service/src/actions/actions.service';
-import { ActionType } from '@121-service/src/actions/enum/action-type.enum';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
@@ -11,13 +9,10 @@ import { PaymentsProgressHelperService } from '@121-service/src/payments/service
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { BulkActionResultRetryPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
-import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Injectable()
 export class PaymentsExecutionService {
   public constructor(
-    private readonly actionService: ActionsService,
-    private readonly azureLogService: AzureLogService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly transactionJobsCreationService: TransactionJobsCreationService,
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
@@ -35,17 +30,10 @@ export class PaymentsExecutionService {
     programId: number;
     paymentId: number;
   }): Promise<void> {
-    // check in-progress and set to in-progress
-    await this.paymentsProgressHelperService.checkPaymentInProgressAndThrow(
-      programId,
-    );
-    await this.actionService.saveAction(
-      userId,
-      programId,
-      ActionType.startBlockNewPayment,
+    await this.paymentsProgressHelperService.checkAndLockPaymentProgressOrThrow(
+      { programId },
     );
 
-    // do all operations in a try to make sure we always end with an unblock-payments action, also in case of failure
     try {
       const transactionsOfIncludedRegistrations =
         await this.transactionViewScopedRepository.getTransactionsOfIncludedRegistrationsByPaymentId(
@@ -80,17 +68,17 @@ export class PaymentsExecutionService {
         },
       );
 
-      void this.createTransactionJobs({
+      // TODO: Check how this performs with 130k registrations
+      // Else do not await and unlock the payments in a finally on that block
+      await this.createTransactionJobs({
         programId,
         transactionIds: transactionsOfIncludedRegistrations.map((t) => t.id),
         userId,
         isRetry: false,
       });
     } finally {
-      await this.actionService.saveAction(
-        userId,
+      await this.paymentsProgressHelperService.unlockPaymentsForProgram(
         programId,
-        ActionType.endBlockNewPayment,
       );
     }
   }
@@ -106,63 +94,49 @@ export class PaymentsExecutionService {
     paymentId: number;
     referenceIds?: string[];
   }): Promise<BulkActionResultRetryPaymentDto> {
-    // check in-progress and set to in-progress
-    await this.paymentsProgressHelperService.checkPaymentInProgressAndThrow(
-      programId,
-    );
-    await this.actionService.saveAction(
-      userId,
-      programId,
-      ActionType.startBlockNewPayment,
+    await this.paymentsProgressHelperService.checkAndLockPaymentProgressOrThrow(
+      { programId },
     );
 
-    let transactionDetails: {
-      transactionId: number;
-      programFspConfigurationName: string;
-    }[];
     // do all operations UP TO starting the queue in a try, so that we can always end with a unblock-payments action, also in case of failure
     // from the moment of starting the queue the in-progress checking is taken over by the queue
     try {
-      transactionDetails = await this.getRetryTransactionDetailsOrThrow({
+      const transactionDetails = await this.getRetryTransactionDetailsOrThrow({
         programId,
         paymentId,
         inputReferenceIds: referenceIds,
       });
 
-      void this.createTransactionJobs({
+      await this.createTransactionJobs({
         programId,
         transactionIds: transactionDetails.map((t) => t.transactionId),
         userId,
         isRetry: true,
       });
+      const programFspConfigurationNames: string[] = [];
+      // This loop is pretty fast: with 131k registrations it takes ~38ms
+      for (const transaction of transactionDetails) {
+        if (
+          !programFspConfigurationNames.includes(
+            transaction.programFspConfigurationName,
+          )
+        ) {
+          programFspConfigurationNames.push(
+            transaction.programFspConfigurationName,
+          );
+        }
+      }
+      return {
+        totalFilterCount: transactionDetails.length,
+        applicableCount: transactionDetails.length,
+        nonApplicableCount: 0,
+        programFspConfigurationNames,
+      };
     } finally {
-      void this.actionService.saveAction(
-        userId,
+      await this.paymentsProgressHelperService.unlockPaymentsForProgram(
         programId,
-        ActionType.endBlockNewPayment,
       );
     }
-
-    const programFspConfigurationNames: string[] = [];
-    // This loop is pretty fast: with 131k registrations it takes ~38ms
-    for (const transaction of transactionDetails) {
-      if (
-        !programFspConfigurationNames.includes(
-          transaction.programFspConfigurationName,
-        )
-      ) {
-        programFspConfigurationNames.push(
-          transaction.programFspConfigurationName,
-        );
-      }
-    }
-
-    return {
-      totalFilterCount: transactionDetails.length,
-      applicableCount: transactionDetails.length,
-      nonApplicableCount: 0,
-      programFspConfigurationNames,
-    };
   }
 
   private async createTransactionJobs({

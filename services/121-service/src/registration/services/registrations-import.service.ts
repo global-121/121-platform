@@ -4,7 +4,6 @@ import chunk from 'lodash/chunk';
 import { Equal, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-import { ActionsService } from '@121-service/src/actions/actions.service';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
@@ -45,7 +44,6 @@ export class RegistrationsImportService {
   private readonly programRepository: Repository<ProgramEntity>;
 
   public constructor(
-    private readonly actionService: ActionsService,
     private readonly inclusionScoreService: InclusionScoreService,
     private readonly programService: ProgramService,
     private readonly fileImportService: FileImportService,

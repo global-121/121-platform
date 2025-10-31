@@ -119,7 +119,7 @@ export async function createPayment({
 }: {
   programId: number;
   transferValue: number;
-  referenceIds: string[];
+  referenceIds?: string[];
   accessToken: string;
   filter?: Record<string, string>;
   note?: string;
