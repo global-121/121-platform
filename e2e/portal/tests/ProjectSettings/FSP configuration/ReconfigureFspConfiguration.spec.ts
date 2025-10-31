@@ -19,11 +19,14 @@ const configuredFsps = [
 ].filter((label): label is string => label !== undefined);
 
 const visaConfiguration = [
-  'Visa debit card',
-  'test-INTERSOLVE_VISA_BRAND_CODE',
-  'TESTINTERSOLVEVISACOVERLETTERCODE',
-  'test_INTERSOLVE_VISA_FUNDINGTOKEN_CODE',
-];
+  FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
+  // eslint-disable-next-line n/no-process-env
+  process.env.INTERSOLVE_VISA_BRAND_CODE,
+  // eslint-disable-next-line n/no-process-env
+  process.env.INTERSOLVE_VISA_COVER_LETTER_CODE,
+  // eslint-disable-next-line n/no-process-env
+  process.env.INTERSOLVE_VISA_FUNDING_TOKEN_CODE,
+].filter((item): item is string => item !== undefined);
 
 const newVisaConfiguration = [
   'PKO BPAY debit card', // Fsp name
