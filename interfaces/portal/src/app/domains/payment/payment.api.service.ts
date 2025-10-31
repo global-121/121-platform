@@ -115,6 +115,22 @@ export class PaymentApiService extends DomainApiService {
     });
   }
 
+  startPayment({
+    projectId,
+    paymentId,
+  }: {
+    projectId: Signal<number | string>;
+    paymentId: Signal<string>;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'PATCH',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(projectId),
+        paymentId,
+      ]).join('/'),
+    });
+  }
+
   retryFailedTransfers({
     projectId,
     paymentId,

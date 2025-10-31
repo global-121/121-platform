@@ -198,7 +198,7 @@ export class CreatePaymentComponent {
   readonly proceedLabel = computed(() =>
     this.currentStep() === 1
       ? $localize`Add to payment`
-      : $localize`Start payment`,
+      : $localize`Create payment`,
   );
 
   readonly cannotProceed = computed(

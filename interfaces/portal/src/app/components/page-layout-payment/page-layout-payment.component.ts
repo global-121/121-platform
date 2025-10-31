@@ -21,6 +21,7 @@ import { ImportReconciliationDataComponent } from '~/components/page-layout-paym
 import { PaymentMenuComponent } from '~/components/page-layout-payment/components/payment-menu/payment-menu.component';
 import { ProjectPaymentChartComponent } from '~/components/page-layout-payment/components/project-payment-chart/project-payment-chart.component';
 import { SinglePaymentExportComponent } from '~/components/page-layout-payment/components/single-payment-export/single-payment-export.component';
+import { StartPaymentComponent } from '~/components/page-layout-payment/components/start-payment/start-payment.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { PaymentAggregate } from '~/domains/payment/payment.model';
 import { ProjectApiService } from '~/domains/project/project.api.service';
@@ -40,6 +41,7 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
     SinglePaymentExportComponent,
     ImportReconciliationDataComponent,
     PaymentMenuComponent,
+    StartPaymentComponent,
   ],
   templateUrl: './page-layout-payment.component.html',
   styles: ``,

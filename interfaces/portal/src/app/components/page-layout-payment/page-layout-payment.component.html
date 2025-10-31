@@ -11,6 +11,11 @@
       <h1 class="me-auto">
         {{ paymentTitle() }}
       </h1>
+      <app-start-payment
+        [projectId]="projectId()"
+        [paymentId]="paymentId()"
+      ></app-start-payment>
+
       @if (hasFspWithExportFileIntegration()) {
         <app-import-reconciliation-data
           [paymentId]="paymentId()"
