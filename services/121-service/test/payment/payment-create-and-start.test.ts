@@ -133,7 +133,7 @@ describe('Start and create a payment separately', () => {
     expect(registrationAfterStart!.paymentCount).toBe(1);
   });
 
-  describe('process included registrations only on payment starts', () => {
+  describe('payment start', () => {
     let paymentId: number;
     beforeEach(async () => {
       const registrations = [registrationPV5, registrationPV6];
@@ -172,7 +172,7 @@ describe('Start and create a payment separately', () => {
         paymentId,
         accessToken,
       });
-      await waitFor(1_000); // small wait to ensure transactions are started. We cannot listen for specific non-created statuses here as one should stay on created
+      await waitFor(1_000); // We cannot just wait for the other transaction to complete, as we should give the time in theory for the declined transaction to also process, even though the assertion is that it shouldn't. Not giving it the time to in theory process, steps on the feet of the assertion.
 
       // Assert
       const getTransactionsResponse = await getTransactions({
