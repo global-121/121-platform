@@ -2012,6 +2012,9 @@
       <trans-unit id="5179155984601144030" datatype="html">
         <source>Create payment</source>
       </trans-unit>
+      <trans-unit id="8616960384506541771" datatype="html">
+        <source>Payment started successfully.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
