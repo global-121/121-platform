@@ -63,8 +63,8 @@ test('[29635] Create project successfully', async ({ page }) => {
     expect(basicInformationData).toEqual({
       '*Project name': projectInfo.name,
       'Project description': projectInfo.description,
-      'Start date': format(projectInfo.dateRange.start, 'dd MMMM yyyy'),
-      'End date': format(projectInfo.dateRange.end, 'dd MMMM yyyy'),
+      'Start date': format(projectInfo.dateRange.start, 'd MMMM yyyy'),
+      'End date': format(projectInfo.dateRange.end, 'd MMMM yyyy'),
       Location: projectInfo.location,
       '*Target registrations': projectInfo.targetRegistrations,
       'Enable validation': 'No',

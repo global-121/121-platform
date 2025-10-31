@@ -54,7 +54,9 @@ class ProjectSettingsPage extends BasePage {
       .click();
   }
 
-  async clickEditSectionByTitle(title: 'Basic information' | 'Budget') {
+  async clickEditProjectInformationSectionByTitle(
+    title: 'Basic information' | 'Budget',
+  ) {
     const editLabelMap = {
       'Basic information': 'Edit basic information',
       Budget: 'Edit budget',
