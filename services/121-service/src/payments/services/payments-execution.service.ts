@@ -5,9 +5,9 @@ import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/pay
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsExecutionHelperService } from '@121-service/src/payments/services/payments-execution-helper.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
-import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
+import { ProgramPaymentsLocksService } from '@121-service/src/programs/program-payment-locks/program-payment-locks.service';
 import { BulkActionResultRetryPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class PaymentsExecutionService {
   public constructor(
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly transactionJobsCreationService: TransactionJobsCreationService,
-    private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
+    private readonly programPaymentsLocksService: ProgramPaymentsLocksService,
     private readonly paymentsExecutionHelperService: PaymentsExecutionHelperService,
     private readonly paymentsHelperService: PaymentsHelperService,
     private readonly paymentEventsService: PaymentEventsService,
@@ -30,9 +30,9 @@ export class PaymentsExecutionService {
     programId: number;
     paymentId: number;
   }): Promise<void> {
-    await this.paymentsProgressHelperService.checkAndLockPaymentProgressOrThrow(
-      { programId },
-    );
+    await this.programPaymentsLocksService.checkAndLockPaymentProgressOrThrow({
+      programId,
+    });
 
     try {
       const transactionsOfIncludedRegistrations =
@@ -77,7 +77,7 @@ export class PaymentsExecutionService {
         isRetry: false,
       });
     } finally {
-      await this.paymentsProgressHelperService.unlockPaymentsForProgram(
+      await this.programPaymentsLocksService.unlockPaymentsForProgram(
         programId,
       );
     }
@@ -94,9 +94,9 @@ export class PaymentsExecutionService {
     paymentId: number;
     referenceIds?: string[];
   }): Promise<BulkActionResultRetryPaymentDto> {
-    await this.paymentsProgressHelperService.checkAndLockPaymentProgressOrThrow(
-      { programId },
-    );
+    await this.programPaymentsLocksService.checkAndLockPaymentProgressOrThrow({
+      programId,
+    });
 
     // do all operations UP TO starting the queue in a try, so that we can always end with a unblock-payments action, also in case of failure
     // from the moment of starting the queue the in-progress checking is taken over by the queue
@@ -133,7 +133,7 @@ export class PaymentsExecutionService {
         programFspConfigurationNames,
       };
     } finally {
-      await this.paymentsProgressHelperService.unlockPaymentsForProgram(
+      await this.programPaymentsLocksService.unlockPaymentsForProgram(
         programId,
       );
     }

@@ -15,7 +15,6 @@ import { PaymentsExcelFspService } from '@121-service/src/payments/services/paym
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
 import { PaymentsExecutionHelperService } from '@121-service/src/payments/services/payments-execution-helper.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
-import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
@@ -23,6 +22,7 @@ import { TransactionEventsModule } from '@121-service/src/payments/transactions/
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { ProgramPaymentLocksModule } from '@121-service/src/programs/program-payment-locks/program-payment-locks.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
@@ -54,6 +54,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     RegistrationEventsModule,
     TransactionEventsModule,
     MessageTemplateModule,
+    ProgramPaymentLocksModule,
   ],
   providers: [
     PaymentsCreationService,
@@ -61,7 +62,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     PaymentsExecutionHelperService,
     PaymentsReportingService,
     PaymentsReportingHelperService,
-    PaymentsProgressHelperService,
     PaymentsHelperService,
     TransactionJobsCreationService,
     PaymentsExcelFspService,
@@ -71,10 +71,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     createScopedRepositoryProvider(RegistrationAttributeDataEntity),
   ],
   controllers: [PaymentsController],
-  exports: [
-    PaymentsExecutionService,
-    PaymentsReportingService,
-    PaymentsProgressHelperService,
-  ],
+  exports: [PaymentsExecutionService, PaymentsReportingService],
 })
 export class PaymentsModule {}

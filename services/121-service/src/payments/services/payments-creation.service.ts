@@ -8,8 +8,8 @@ import { TransactionCreationDetails } from '@121-service/src/payments/interfaces
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
-import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramPaymentsLocksService } from '@121-service/src/programs/program-payment-locks/program-payment-locks.service';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
@@ -29,7 +29,7 @@ export class PaymentsCreationService {
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly paymentsHelperService: PaymentsHelperService,
     private readonly paymentEventsService: PaymentEventsService,
-    private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
+    private readonly programPaymentsLocksService: ProgramPaymentsLocksService,
     private readonly transactionsService: TransactionsService,
   ) {}
 
@@ -49,12 +49,12 @@ export class PaymentsCreationService {
     note?: string;
   }): Promise<BulkActionResultPaymentDto> {
     if (dryRun) {
-      await this.paymentsProgressHelperService.checkPaymentInProgressAndThrow(
+      await this.programPaymentsLocksService.checkPaymentInProgressAndThrow(
         programId,
       );
     } else {
       // Only lock payments when not a dry run
-      await this.paymentsProgressHelperService.checkAndLockPaymentProgressOrThrow(
+      await this.programPaymentsLocksService.checkAndLockPaymentProgressOrThrow(
         { programId },
       );
     }
@@ -109,7 +109,7 @@ export class PaymentsCreationService {
     } finally {
       if (!dryRun) {
         // make sure to unblock payments also in case of failure
-        await this.paymentsProgressHelperService.unlockPaymentsForProgram(
+        await this.programPaymentsLocksService.unlockPaymentsForProgram(
           programId,
         );
       }

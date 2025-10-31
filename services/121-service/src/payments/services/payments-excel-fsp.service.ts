@@ -4,12 +4,12 @@ import { Equal, In } from 'typeorm';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
-import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramPaymentsLocksService } from '@121-service/src/programs/program-payment-locks/program-payment-locks.service';
 
 // The functionality in this service was meant a generic implementation of FSPs that work by importing and exporting files like vodacash
 // but in the end we converged to using it only for a generically configurable excel based FSP integration
@@ -20,7 +20,7 @@ export class PaymentsExcelFspService {
   public constructor(
     private readonly excelService: ExcelService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
-    private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
+    private readonly programPaymentsLocksService: ProgramPaymentsLocksService,
     private readonly paymentsReportingService: PaymentsReportingService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
   ) {}
@@ -33,9 +33,7 @@ export class PaymentsExcelFspService {
     // Validation & preparation
     /////////////////////////////////////
 
-    if (
-      await this.paymentsProgressHelperService.isPaymentInProgress(programId)
-    ) {
+    if (await this.programPaymentsLocksService.isPaymentInProgress(programId)) {
       throw new HttpException(
         'Cannot export FSP instructions while payment is in progress',
         HttpStatus.BAD_REQUEST,

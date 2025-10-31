@@ -2,14 +2,14 @@ import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/pay
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsCreationService } from '@121-service/src/payments/services/payments-creation.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
-import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
+import { ProgramPaymentsLocksService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 
 describe('PaymentsCreationService', () => {
   let service: PaymentsCreationService;
-  let paymentsProgressHelperService: PaymentsProgressHelperService;
+  let programPaymentsLocksService: ProgramPaymentsLocksService;
   let paymentsHelperService: PaymentsHelperService;
   let paymentEventsService: PaymentEventsService;
   let transactionsService: TransactionsService;
@@ -26,11 +26,11 @@ describe('PaymentsCreationService', () => {
   };
 
   beforeEach(() => {
-    paymentsProgressHelperService = {
+    programPaymentsLocksService = {
       checkPaymentInProgressAndThrow: jest.fn(),
       checkAndLockPaymentProgressOrThrow: jest.fn(),
       unlockPaymentsForProgram: jest.fn(),
-    } as unknown as PaymentsProgressHelperService;
+    } as unknown as ProgramPaymentsLocksService;
 
     paymentsHelperService = {
       checkFspConfigurationsOrThrow: jest.fn(),
@@ -69,7 +69,7 @@ describe('PaymentsCreationService', () => {
       registrationsPaginationService,
       paymentsHelperService,
       paymentEventsService,
-      paymentsProgressHelperService,
+      programPaymentsLocksService,
       transactionsService,
     );
     (service as any).paymentRepository = {
@@ -82,10 +82,10 @@ describe('PaymentsCreationService', () => {
     const result = await service.createPayment(params);
 
     expect(
-      paymentsProgressHelperService.checkAndLockPaymentProgressOrThrow,
+      programPaymentsLocksService.checkAndLockPaymentProgressOrThrow,
     ).not.toHaveBeenCalled();
     expect(
-      paymentsProgressHelperService.unlockPaymentsForProgram,
+      programPaymentsLocksService.unlockPaymentsForProgram,
     ).not.toHaveBeenCalled();
     expect(paymentEventsService.createEvent).not.toHaveBeenCalled();
     expect(
@@ -131,7 +131,7 @@ describe('PaymentsCreationService', () => {
 
     // Assert
     expect(
-      paymentsProgressHelperService.unlockPaymentsForProgram,
+      programPaymentsLocksService.unlockPaymentsForProgram,
     ).toHaveBeenCalledWith(basePaymentParams.programId);
     expect(paymentEventsService.createEvent).toHaveBeenCalledWith({
       userId: 1,
@@ -174,7 +174,7 @@ describe('PaymentsCreationService', () => {
       'Simulated error',
     );
     expect(
-      paymentsProgressHelperService.unlockPaymentsForProgram,
+      programPaymentsLocksService.unlockPaymentsForProgram,
     ).toHaveBeenCalledWith(basePaymentParams.programId);
   });
 
@@ -200,7 +200,7 @@ describe('PaymentsCreationService', () => {
       programFspConfigurationNames: [],
     });
     expect(
-      paymentsProgressHelperService.unlockPaymentsForProgram,
+      programPaymentsLocksService.unlockPaymentsForProgram,
     ).toHaveBeenCalledWith(basePaymentParams.programId);
   });
 });
