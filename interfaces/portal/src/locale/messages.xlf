@@ -934,9 +934,6 @@
       <trans-unit id="5081696702832953928" datatype="html">
         <source>Some of the registrations you have selected are not eligible for this payment. Change your selection and try again</source>
       </trans-unit>
-      <trans-unit id="8074727237612649640" datatype="html">
-        <source>Review summary and click start payment.</source>
-      </trans-unit>
       <trans-unit id="5995232414192798763" datatype="html">
         <source>Financial Service Provider(s)</source>
       </trans-unit>
@@ -954,9 +951,6 @@
       </trans-unit>
       <trans-unit id="2077280297780026969" datatype="html">
         <source>Review payment summary and follow the next steps:</source>
-      </trans-unit>
-      <trans-unit id="4360422423466093126" datatype="html">
-        <source>Click start payment, this will direct you to the payment page.</source>
       </trans-unit>
       <trans-unit id="5677186522471416018" datatype="html">
         <source>Upload the file to the Financial Service Provider’s portal.</source>
@@ -2002,6 +1996,18 @@
       </trans-unit>
       <trans-unit id="922512355272678698" datatype="html">
         <source>Learn more about updating selected registrations in the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/>.</source>
+      </trans-unit>
+      <trans-unit id="3449555461443495960" datatype="html">
+        <source>You&apos;re about to start a payment.</source>
+      </trans-unit>
+      <trans-unit id="3718000607419168275" datatype="html">
+        <source>Click create payment, this will direct you to the payment page.</source>
+      </trans-unit>
+      <trans-unit id="4146714974043966714" datatype="html">
+        <source>Review summary and click create payment.</source>
+      </trans-unit>
+      <trans-unit id="5179155984601144030" datatype="html">
+        <source>Create payment</source>
       </trans-unit>
     </body>
   </file>

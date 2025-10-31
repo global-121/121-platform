@@ -1,0 +1,20 @@
+<p-button
+  label="Start payment"
+  i18n-label
+  (click)="openStartPaymentDialog()"
+  icon="pi pi-send"
+  [iconPos]="rtlHelper.createPosition('start')()"
+  rounded
+></p-button>
+
+<!-- ##TODO: don't use form-dialog for something that doesn't need input? -->
+<app-form-dialog
+  #startPaymentDialog
+  header="Start payment"
+  i18n-header
+  headerIcon="pi pi-send"
+  [mutation]="startPaymentMutation"
+  [mutationData]="undefined"
+>
+  <p i18n>You're about to start a payment.</p>
+</app-form-dialog>
