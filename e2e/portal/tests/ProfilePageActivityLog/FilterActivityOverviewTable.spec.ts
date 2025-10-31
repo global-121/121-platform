@@ -1,7 +1,7 @@
 import { type Page, test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { doPayment } from '@121-service/test/helpers/program.helper';
+import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
 import {
   getRegistrationIdByReferenceId,
   seedIncludedRegistrations,
@@ -37,7 +37,7 @@ test.beforeAll(async ({ browser }) => {
     accessToken,
   });
 
-  await doPayment({
+  await createAndStartPayment({
     programId: 2,
     transferValue: 100,
     referenceIds: paymentReferenceId,

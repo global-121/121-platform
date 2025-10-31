@@ -116,14 +116,15 @@ export class PageLayoutPaymentComponent {
       return '-';
     }
 
-    const totalAmount =
-      this.payment.data().failed.amount +
-      this.payment.data().success.amount +
-      this.payment.data().waiting.amount;
+    const totalTransferValue =
+      this.payment.data().failed.transferValue +
+      this.payment.data().success.transferValue +
+      this.payment.data().waiting.transferValue +
+      this.payment.data().created.transferValue;
 
     return (
       this.currencyPipe.transform(
-        totalAmount,
+        totalTransferValue,
         this.project.data()?.currency,
         'symbol-narrow',
         '1.2-2',
@@ -138,7 +139,7 @@ export class PageLayoutPaymentComponent {
 
     return (
       this.currencyPipe.transform(
-        this.payment.data().success.amount,
+        this.payment.data().success.transferValue,
         this.project.data()?.currency,
         'symbol-narrow',
         '1.0-0',

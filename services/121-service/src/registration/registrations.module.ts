@@ -2,7 +2,6 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { FspsModule } from '@121-service/src/fsps/fsp.module';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { LatestMessageEntity } from '@121-service/src/notifications/entities/latest-message.entity';
@@ -62,7 +61,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     UserModule,
     HttpModule,
     LookupModule,
-    ActionsModule,
     ProgramModule,
     FspsModule,
     MessageQueuesModule,

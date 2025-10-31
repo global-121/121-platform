@@ -249,7 +249,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
     {
       status: TransactionStatusEnum;
       count: string;
-      totalamount: string;
+      totalTransferValue: string;
     }[]
   > {
     return await this.createQueryBuilder('transaction')
@@ -258,7 +258,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       .addSelect('COUNT(*)', 'count')
       .addSelect(
         'SUM(ROUND(transaction."transferValue"::numeric, 2))',
-        'totalamount',
+        'totalTransferValue',
       )
       .andWhere('p."programId" = :programId', {
         programId,
@@ -268,5 +268,23 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       })
       .groupBy('transaction.status')
       .getRawMany();
+  }
+
+  public async getTransactionsOfIncludedRegistrationsByPaymentId({
+    programId,
+    paymentId,
+  }: {
+    programId: number;
+    paymentId: number;
+  }): Promise<TransactionViewEntity[]> {
+    return this.find({
+      where: {
+        paymentId: Equal(paymentId),
+        registration: {
+          programId: Equal(programId),
+          registrationStatus: Equal(RegistrationStatusEnum.included),
+        },
+      },
+    });
   }
 }

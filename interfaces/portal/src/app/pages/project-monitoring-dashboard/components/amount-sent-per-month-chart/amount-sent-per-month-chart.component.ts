@@ -87,6 +87,12 @@ export class AmountSentPerMonthChartComponent {
         data: this.data().map((a) => a[TransactionStatusEnum.waiting]),
         backgroundColor: tailwindConfig.theme.colors.yellow[500],
       },
+
+      {
+        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.created],
+        data: this.data().map((a) => a[TransactionStatusEnum.created]),
+        backgroundColor: tailwindConfig.theme.colors.grey[500],
+      },
     ],
   }));
 

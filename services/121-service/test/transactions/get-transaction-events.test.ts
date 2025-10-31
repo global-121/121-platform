@@ -1,10 +1,16 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { SYSTEM_USER } from '@121-service/src/payments/transactions/transaction-events/mappers/transaction-events.mapper';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { createPayment } from '@121-service/test/helpers/program.helper';
 import {
+  awaitChangeRegistrationStatus,
   getTransactionEvents,
+  importRegistrations,
   seedPaidRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -14,7 +20,7 @@ import {
 
 describe('Do payment to 1 PA with Fsp Onafriq', () => {
   const programId = 1;
-  const amount = 12327;
+  const transferValue = 12327;
   const baseRegistrationOnafriq = {
     referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
     programFspConfigurationName: Fsps.onafriq,
@@ -39,7 +45,11 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
   it('should return all transaction events with all expected fields and correct data types', async () => {
     // Arrange
-    await seedPaidRegistrations([registrationOnafriq], programId, amount);
+    await seedPaidRegistrations(
+      [registrationOnafriq],
+      programId,
+      transferValue,
+    );
 
     // Act
     // get transaction events
@@ -119,8 +129,36 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       // Accepts null or empty string, adjust if you want stricter
       expect([null, '']).toContain(event.errorMessage);
     });
+  });
 
-    // TODO. Currently we don't test if latest-event is bulk-inserted correctly in payments-execution.service. This is not so important and is hard to test.
-    // Instead, add this test as part of AB#37516, where payment creation and start will be split, which offers the possibility for testing the bulk-insert in between those steps.
+  it('should bulk insert transaction events correctly on payment creation', async () => {
+    // Arrange
+    await importRegistrations(programId, [registrationOnafriq], accessToken);
+    await awaitChangeRegistrationStatus({
+      programId,
+      referenceIds: [registrationOnafriq.referenceId],
+      status: RegistrationStatusEnum.included,
+      accessToken,
+    });
+    await createPayment({
+      programId,
+      referenceIds: [registrationOnafriq.referenceId],
+      transferValue,
+      accessToken,
+    });
+
+    // Act
+    // get transaction events
+    const transactionId = 1; // We could fetch this dynamically via getTransactions, but for simplicity, we assume it's 1 here.
+    const transactionEvents = await getTransactionEvents({
+      programId,
+      transactionId,
+      accessToken,
+    });
+    const { data } = transactionEvents.body;
+
+    // Assert
+    expect(transactionEvents.status).toBe(HttpStatus.OK);
+    expect(data.length).toBe(1); // only 'created' event at this stage
   });
 });

@@ -21,10 +21,12 @@ export const paymentLink = ({
 export const PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS: Record<PaymentEvent, string> =
   {
     [PaymentEvent.created]: $localize`:@@payment-event-log-item-type-created:Created`,
+    [PaymentEvent.started]: $localize`:@@payment-event-log-item-type-started:Started`,
     [PaymentEvent.note]: $localize`:@@payment-event-log-item-type-note:Note`,
   };
 
 export const PAYMENT_EVENT_LOG_ITEM_TYPE_ICONS: Record<PaymentEvent, string> = {
   [PaymentEvent.created]: 'pi pi-money-bill',
+  [PaymentEvent.started]: 'pi pi-send',
   [PaymentEvent.note]: 'pi pi-pen-to-square',
 };

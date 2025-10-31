@@ -13,7 +13,7 @@ const resetPage = new ResetModel();
 const paymentsPage = new PaymentsModel();
 const loginPage = new LoginModel();
 
-const duplicateNumber = '7'; // '7' leads to 128 registrations
+const duplicateNumber = 7; // '7' leads to 128 registrations
 const programId = 3;
 const maxRetryDuration = 2000; // seconds
 const minPassRatePercentage = 100;
@@ -68,7 +68,10 @@ export default function () {
   });
 
   // Do the payment
-  const doPayment = paymentsPage.createPayment(programId, transferValue);
+  const doPayment = paymentsPage.createAndStartPayment(
+    programId,
+    transferValue,
+  );
   checkAndFail(doPayment, {
     'Payment successfully done status 202': (r) => {
       if (r.status != 202) {

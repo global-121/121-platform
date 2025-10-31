@@ -2,7 +2,6 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { FspsModule } from '@121-service/src/fsps/fsp.module';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
@@ -11,9 +10,11 @@ import { ExcelModule } from '@121-service/src/payments/fsp-integration/excel/exc
 import { PaymentEventsModule } from '@121-service/src/payments/payment-events/payment-events.module';
 import { PaymentsController } from '@121-service/src/payments/payments.controller';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
+import { PaymentsCreationService } from '@121-service/src/payments/services/payments-creation.service';
 import { PaymentsExcelFspService } from '@121-service/src/payments/services/payments-excel-fsp.service';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
 import { PaymentsExecutionHelperService } from '@121-service/src/payments/services/payments-execution-helper.service';
+import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
@@ -39,7 +40,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     TypeOrmModule.forFeature([ProgramEntity, PaymentEntity]),
     UserModule,
     HttpModule,
-    ActionsModule,
     TransactionsModule,
     ExcelModule,
     RegistrationsModule,
@@ -56,11 +56,13 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     MessageTemplateModule,
   ],
   providers: [
+    PaymentsCreationService,
     PaymentsExecutionService,
     PaymentsExecutionHelperService,
     PaymentsReportingService,
     PaymentsReportingHelperService,
     PaymentsProgressHelperService,
+    PaymentsHelperService,
     TransactionJobsCreationService,
     PaymentsExcelFspService,
     LookupService,

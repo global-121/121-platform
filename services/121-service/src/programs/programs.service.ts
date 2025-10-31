@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { merge } from 'lodash';
 import { DataSource, Equal, QueryFailedError, Repository } from 'typeorm';
 
-import { ActionEntity } from '@121-service/src/actions/action.entity';
 import {
   FspConfigurationProperties,
   Fsps,
@@ -40,8 +39,6 @@ export class ProgramService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramRegistrationAttributeEntity)
   private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
-  @InjectRepository(ActionEntity)
-  public actionRepository: Repository<ActionEntity>;
 
   public constructor(
     private readonly dataSource: DataSource,

@@ -1622,6 +1622,9 @@
       <trans-unit id="payment-event-log-item-type-created" datatype="html">
         <source>Created</source>
       </trans-unit>
+      <trans-unit id="payment-event-log-item-type-started" datatype="html">
+        <source>Started</source>
+      </trans-unit>
       <trans-unit id="payment-event-log-item-type-note" datatype="html">
         <source>Note</source>
       </trans-unit>

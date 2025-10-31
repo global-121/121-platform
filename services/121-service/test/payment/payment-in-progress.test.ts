@@ -1,15 +1,33 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { PaymentEventDataDto } from '@121-service/src/payments/payment-events/dtos/payment-event-data.dto';
+import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionEventInterface } from '@121-service/src/payments/transactions/transaction-events/dto/transaction-event-data.dto';
+import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { registrationsPV } from '@121-service/test/fixtures/scoped-registrations';
 import {
-  doPayment,
+  registrationNotScopedPv,
+  registrationScopedTurkanaNorthPv,
+} from '@121-service/test/fixtures/scoped-registrations';
+import {
+  createAndStartPayment,
+  createPayment,
+  getPaymentEvents,
+  getPayments,
   getProgramPaymentsStatus,
+  getTransactions,
   retryPayment,
+  startPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
+import {
+  doPaymentAndWaitForCompletion,
+  getTransactionEvents,
+  seedIncludedRegistrations,
+  updateRegistration,
+} from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
@@ -17,9 +35,62 @@ import {
 import {
   programIdOCW,
   programIdPV,
-  registrationOCW4,
   registrationsOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
+
+const transferValue = 25;
+
+// const function to validate whether payement are in progress for multiple endpoints
+const getPaymentProgressStatusForMultipleEndpoints = async ({
+  programId,
+  accessToken,
+  paymentId,
+}: {
+  programId: number;
+  accessToken: string;
+  paymentId: number;
+}): Promise<{
+  paymentIsInProgress: boolean;
+  createPaymentBlocked: boolean;
+  startPaymentBlocked: boolean;
+  retryPaymentBlocked: boolean;
+}> => {
+  const [
+    createPaymentResponse,
+    startPaymentResponse,
+    retryPaymentResponse,
+    paymentsStatusResponse,
+  ] = await Promise.all([
+    createPayment({
+      programId,
+      transferValue,
+      accessToken,
+    }),
+    startPayment({ programId, paymentId, accessToken }),
+    retryPayment({
+      programId,
+      paymentId,
+      accessToken,
+    }),
+    getProgramPaymentsStatus(programId, accessToken),
+  ]);
+
+  const inProgressFromPaymentsStatus = paymentsStatusResponse.body.inProgress;
+
+  const is4xxStatus = (status: number) => status >= 400 && status < 500;
+  return {
+    paymentIsInProgress: inProgressFromPaymentsStatus,
+    createPaymentBlocked: is4xxStatus(createPaymentResponse.status),
+    startPaymentBlocked: is4xxStatus(startPaymentResponse.status),
+    retryPaymentBlocked: is4xxStatus(retryPaymentResponse.status),
+  };
+};
+
+// 5 registration for PV
+const registrationsPV = [
+  registrationNotScopedPv,
+  registrationScopedTurkanaNorthPv,
+];
 
 describe('Payment in progress', () => {
   let accessToken: string;
@@ -28,31 +99,16 @@ describe('Payment in progress', () => {
     (r) => r.referenceId,
   );
 
-  const registrationsVisaOcw = registrationsOCW.filter(
-    (r) => r.programFspConfigurationName === Fsps.intersolveVisa,
-  );
-  // Create a registration with a different referenceId from OCW registrations as the default ones from PV have no VISA
-  const registrationsVisaPV = [
-    { ...registrationOCW4, referenceId: '13e62864557597e5d' },
-    { ...registrationOCW4, referenceId: '13e62864557597e4d' },
-    { ...registrationOCW4, referenceId: '13e62864557597e3d' },
-    { ...registrationOCW4, referenceId: '13e62864557597e2d' },
-    { ...registrationOCW4, referenceId: '13e62864557597e1d' },
-    { ...registrationOCW4, referenceId: '13e62864557597e0d' },
-  ];
-
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
 
     accessToken = await getAccessToken();
+
+    await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);
   });
 
   it('should not be in progress after payment is completed', async () => {
     // Arrange
-    const transferValue = 25;
-    const filterAllIncluded = { 'filter.status': '$in:included' };
-
-    await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);
     await seedIncludedRegistrations(
       registrationsOCW,
       programIdOCW,
@@ -60,12 +116,11 @@ describe('Payment in progress', () => {
     );
 
     // We do a payment here and wait for it to complete
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId: programIdPV,
       transferValue,
-      referenceIds: [],
+      referenceIds: registrationReferenceIdsPV,
       accessToken,
-      filter: filterAllIncluded,
     });
     const paymentIdPvFirst = doPaymentResponse.body.id;
     await waitForPaymentTransactionsToComplete({
@@ -84,21 +139,19 @@ describe('Payment in progress', () => {
       await getProgramPaymentsStatus(programIdOCW, accessToken)
     ).body;
 
-    const doPaymentPvResultPaymentNext = await doPayment({
+    const doPaymentPvResultPaymentNext = await createAndStartPayment({
       programId: programIdPV,
       transferValue,
       referenceIds: [],
       accessToken,
-      filter: filterAllIncluded,
     });
     const paymentIdPvNext = doPaymentPvResultPaymentNext.body.id;
 
-    const doPaymentOcwResultPaymentNext = await doPayment({
+    const doPaymentOcwResultPaymentNext = await createAndStartPayment({
       programId: programIdOCW,
       transferValue,
       referenceIds: [],
       accessToken,
-      filter: filterAllIncluded,
     });
 
     const paymentIdOcw = doPaymentOcwResultPaymentNext.body.id;
@@ -127,12 +180,181 @@ describe('Payment in progress', () => {
     });
   });
 
-  it('should be in progress when not yet completed combined', async () => {
-    // Arrange
-    const paymentAmount = 25;
-    const filterAllIncluded = { 'filter.status': '$in:included' };
+  describe('payment action should happen only once when triggered concurrently', () => {
+    const concurrentRequestsCount = 5;
 
-    await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);
+    it('should only create one payment', async () => {
+      // Act
+      const paymentPromises: ReturnType<typeof createPayment>[] = [];
+      for (let i = 0; i < concurrentRequestsCount; i++) {
+        paymentPromises.push(
+          createPayment({
+            programId: programIdPV,
+            transferValue,
+            accessToken,
+          }),
+        );
+      }
+      const paymentResponses = await Promise.all(paymentPromises);
+      const createdPayments = paymentResponses.filter(
+        (res) => res.status === HttpStatus.ACCEPTED,
+      );
+      const blockedPayments = paymentResponses.filter(
+        (res) => res.status === HttpStatus.BAD_REQUEST,
+      );
+
+      const payments = await getPayments(programIdPV, accessToken);
+      const nrOfPayments = payments.body.length;
+
+      // Assert
+      expect(createdPayments.length).toBe(1);
+      expect(blockedPayments.length).toBe(4);
+      expect(nrOfPayments).toBe(1);
+    });
+
+    it('should only start payment once', async () => {
+      // Arrange
+      const paymentId = (
+        await createPayment({
+          programId: programIdPV,
+          transferValue,
+          accessToken,
+        })
+      ).body.id;
+
+      // Act
+      const startPaymentPromises: ReturnType<typeof startPayment>[] = [];
+      for (let i = 0; i < concurrentRequestsCount; i++) {
+        startPaymentPromises.push(
+          startPayment({ programId: programIdPV, paymentId, accessToken }),
+        );
+      }
+      const startPaymentResponses = await Promise.all(startPaymentPromises);
+      const startedPayments = startPaymentResponses.filter(
+        (res) => res.status === HttpStatus.ACCEPTED,
+      );
+      const blockedPayments = startPaymentResponses.filter(
+        (res) => res.status === HttpStatus.BAD_REQUEST,
+      );
+
+      await waitForPaymentTransactionsToComplete({
+        programId: programIdPV,
+        paymentReferenceIds: registrationReferenceIdsPV,
+        accessToken,
+        maxWaitTimeMs: 30_000,
+        paymentId,
+      });
+
+      const paymentEvents = await getPaymentEvents({
+        programId: programIdPV,
+        paymentId,
+        accessToken,
+      });
+
+      const startEvents = paymentEvents.body.data.filter(
+        (event: PaymentEventDataDto) => event.type === PaymentEvent.started,
+      );
+
+      // Assert
+      expect(startedPayments.length).toBe(1);
+      expect(blockedPayments.length).toBe(4);
+      expect(startEvents.length).toBe(1);
+    });
+
+    it('should only retry a payment once', async () => {
+      // Arrange
+      // update whatsapp numbers to ensure failed transaction
+      for (const registration of registrationsPV) {
+        await updateRegistration(
+          programIdPV,
+          registration.referenceId,
+          {
+            whatsappPhoneNumber: '15005550001',
+            programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
+          },
+          'test',
+          accessToken,
+        );
+      }
+
+      const paymentId = await doPaymentAndWaitForCompletion({
+        programId: programIdPV,
+        transferValue,
+        accessToken,
+        referenceIds: registrationReferenceIdsPV,
+        completeStatusses: [
+          TransactionStatusEnum.error,
+          TransactionStatusEnum.success,
+        ],
+      });
+
+      // Change programFspConfigurationName back so it the retry is successful
+      for (const registration of registrationsPV) {
+        await updateRegistration(
+          programIdPV,
+          registration.referenceId,
+          {
+            programFspConfigurationName:
+              registration.programFspConfigurationName,
+          },
+          'test',
+          accessToken,
+        );
+      }
+
+      // Act
+      const retryPaymentPromises: ReturnType<typeof retryPayment>[] = [];
+      for (let i = 0; i < concurrentRequestsCount; i++) {
+        retryPaymentPromises.push(
+          retryPayment({
+            programId: programIdPV,
+            paymentId,
+            accessToken,
+            referenceIds: registrationReferenceIdsPV,
+          }),
+        );
+      }
+      const retryPaymentResponses = await Promise.all(retryPaymentPromises);
+      const retriedPayments = retryPaymentResponses.filter(
+        (res) => res.status === HttpStatus.ACCEPTED,
+      );
+      const blockedPayments = retryPaymentResponses.filter(
+        (res) => res.status === HttpStatus.BAD_REQUEST,
+      );
+
+      await waitForPaymentTransactionsToComplete({
+        programId: programIdPV,
+        paymentReferenceIds: registrationReferenceIdsPV,
+        accessToken,
+        maxWaitTimeMs: 30_000,
+        paymentId,
+        completeStatusses: [TransactionStatusEnum.success],
+      });
+      const transactions = await getTransactions({
+        programId: programIdPV,
+        paymentId,
+        accessToken,
+      });
+      const transactionId = transactions.body[0].id;
+      const transactionEvents = await getTransactionEvents({
+        programId: programIdPV,
+        transactionId,
+        accessToken,
+      });
+      const retryEventsOfOneTransction = transactionEvents.body.data.filter(
+        (event: TransactionEventInterface) =>
+          event.type === TransactionEventType.retry,
+      );
+
+      // Assert
+      expect(retriedPayments.length).toBe(1);
+      expect(blockedPayments.length).toBe(4);
+      expect(retryEventsOfOneTransction.length).toBe(1);
+    });
+  });
+
+  it('should not be in progress for a different program', async () => {
+    // Arrange
     await seedIncludedRegistrations(
       registrationsOCW,
       programIdOCW,
@@ -141,12 +363,11 @@ describe('Payment in progress', () => {
 
     // Act
     // We do a payment and we do not wait for all transactions to complete
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId: programIdPV,
-      transferValue: paymentAmount,
+      transferValue,
       referenceIds: [],
       accessToken,
-      filter: filterAllIncluded,
     });
     const paymentIdPv = doPaymentResponse.body.id;
 
@@ -157,34 +378,31 @@ describe('Payment in progress', () => {
       await getProgramPaymentsStatus(programIdOCW, accessToken)
     ).body;
 
-    const doPaymentPvResultPaymentNext = await doPayment({
-      programId: programIdPV,
-      transferValue: paymentAmount,
-      referenceIds: [],
-      accessToken,
-      filter: filterAllIncluded,
-    });
-    const doPaymentOcwResultPaymentNext = await doPayment({
+    const doPaymentOcwResultPaymentNext = await createAndStartPayment({
       programId: programIdOCW,
-      transferValue: paymentAmount,
+      transferValue,
       referenceIds: [],
       accessToken,
-      filter: filterAllIncluded,
     });
 
-    const retryPaymentPvResult = await retryPayment({
-      programId: programIdPV,
-      paymentId: paymentIdPv,
-      accessToken,
-    });
+    const multiEndpointPaymentProgressPv =
+      await getPaymentProgressStatusForMultipleEndpoints({
+        programId: programIdPV,
+        accessToken,
+        paymentId: paymentIdPv,
+      });
 
     // Assert
     expect(getProgramPaymentsPvResult.inProgress).toBe(true);
     expect(getProgramPaymentsOcwResult.inProgress).toBe(false);
 
-    expect(doPaymentPvResultPaymentNext.status).toBe(HttpStatus.BAD_REQUEST);
     expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
-    expect(retryPaymentPvResult.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(multiEndpointPaymentProgressPv).toMatchObject({
+      paymentIsInProgress: true,
+      createPaymentBlocked: true,
+      startPaymentBlocked: true,
+      retryPaymentBlocked: true,
+    });
 
     // Cleanup to make sure nothing is in progress anymore
     await waitForPaymentTransactionsToComplete({
@@ -197,92 +415,6 @@ describe('Payment in progress', () => {
     await waitForPaymentTransactionsToComplete({
       programId: programIdOCW,
       paymentReferenceIds: registrationReferenceIdsOCW,
-      accessToken,
-      maxWaitTimeMs: 30_000,
-      paymentId: doPaymentOcwResultPaymentNext.body.id,
-    });
-  });
-
-  it('should be in progress when not yet completed visa only', async () => {
-    // Arrange
-    const paymentAmount = 25;
-    const filterAllIncluded = { 'filter.status': '$in:included' };
-
-    await seedIncludedRegistrations(
-      registrationsVisaPV,
-      programIdPV,
-      accessToken,
-    );
-    await seedIncludedRegistrations(
-      registrationsVisaOcw,
-      programIdOCW,
-      accessToken,
-    );
-
-    // Act
-    // We do a payment only for the PV program and we do not wait for all transactions to complete
-    const doPaymentResponse = await doPayment({
-      programId: programIdPV,
-      transferValue: paymentAmount,
-      referenceIds: [],
-      accessToken,
-      filter: filterAllIncluded,
-    });
-    const paymentIdPv = doPaymentResponse.body.id;
-
-    // PV program should be in progress, OCW should not
-    const getProgramPaymentsPvResult = (
-      await getProgramPaymentsStatus(programIdPV, accessToken)
-    ).body;
-    const getProgramPaymentsOcwResult = (
-      await getProgramPaymentsStatus(programIdOCW, accessToken)
-    ).body;
-
-    // We expect that doing the next payment fails since the previous payment is still in progress
-    const doPaymentPvResultPaymentNext = await doPayment({
-      programId: programIdPV,
-      transferValue: paymentAmount,
-      referenceIds: [],
-      accessToken,
-      filter: filterAllIncluded,
-    });
-    // We expect that retrying the payment fails since the previous payment is still in progress
-    const retryPaymentPvResult = await retryPayment({
-      programId: programIdPV,
-      paymentId: paymentIdPv,
-      accessToken,
-    });
-
-    // We expect that doing a payment for OCW succeeds since the previous payment is not in progress (the payment in progress is for PV)
-    const doPaymentOcwResultPaymentNext = await doPayment({
-      programId: programIdOCW,
-      transferValue: paymentAmount,
-      referenceIds: [],
-      accessToken,
-      filter: filterAllIncluded,
-    });
-
-    // Assert
-    // PV program should be in progress and new payments cannot be started
-    expect(getProgramPaymentsPvResult.inProgress).toBe(true);
-    expect(doPaymentPvResultPaymentNext.status).toBe(HttpStatus.BAD_REQUEST);
-    expect(retryPaymentPvResult.status).toBe(HttpStatus.BAD_REQUEST);
-
-    // OCW program should not be in progress and new payments can be started
-    expect(getProgramPaymentsOcwResult.inProgress).toBe(false);
-    expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
-
-    // Cleanup to make sure nothing is in progress anymore
-    await waitForPaymentTransactionsToComplete({
-      programId: programIdPV,
-      paymentReferenceIds: registrationsVisaPV.map((r) => r.referenceId),
-      accessToken,
-      maxWaitTimeMs: 30_000,
-      paymentId: paymentIdPv,
-    });
-    await waitForPaymentTransactionsToComplete({
-      programId: programIdOCW,
-      paymentReferenceIds: registrationsVisaOcw.map((r) => r.referenceId),
       accessToken,
       maxWaitTimeMs: 30_000,
       paymentId: doPaymentOcwResultPaymentNext.body.id,

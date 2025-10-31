@@ -7,7 +7,7 @@ import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/r
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
-  doPayment,
+  createAndStartPayment,
   getProgram,
   postProgramRegistrationAttribute,
 } from '@121-service/test/helpers/program.helper';
@@ -103,7 +103,7 @@ describe('Status Change Payment In Large Program', () => {
       maxRetryDurationMs,
     });
     // Do the payment with dryRun first
-    const paymentDryRunResponse = await doPayment({
+    const paymentDryRunResponse = await createAndStartPayment({
       programId: programIdOCW,
       referenceIds: [],
       accessToken,
@@ -112,7 +112,7 @@ describe('Status Change Payment In Large Program', () => {
     });
     expect(paymentDryRunResponse.statusCode).toBe(HttpStatus.OK);
     // Do payment
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId: programIdOCW,
       transferValue: amount,
       referenceIds: [],

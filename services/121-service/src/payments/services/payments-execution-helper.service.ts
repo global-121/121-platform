@@ -3,8 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageContentDetails } from '@121-service/src/notifications/interfaces/message-content-details.interface';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
-import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
-import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
@@ -13,7 +11,6 @@ import { RegistrationsBulkService } from '@121-service/src/registration/services
 @Injectable()
 export class PaymentsExecutionHelperService {
   public constructor(
-    private readonly transactionsService: TransactionsService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly programRepository: ProgramRepository,
     private readonly messageTemplateService: MessageTemplateService,
@@ -21,35 +18,23 @@ export class PaymentsExecutionHelperService {
   ) {}
 
   /**
-   * Creates transactions & events and updates registration payment counts.
-   * Returns created transaction ids.
+   * Updates payment count and sets status to completed if applicable
    */
-  public async createTransactionsAndUpdateRegistrationPaymentCount({
-    transactionCreationDetails,
-    paymentId,
+  public async updatePaymentCountAndSetToCompleted({
+    registrationIds,
+    programId,
     userId,
   }: {
-    transactionCreationDetails: TransactionCreationDetails[];
-    paymentId: number;
+    registrationIds: number[];
+    programId: number;
     userId: number;
-  }): Promise<number[]> {
-    if (transactionCreationDetails.length === 0) {
-      return [];
-    }
-
-    const transactionIds =
-      await this.transactionsService.createTransactionsAndEvents({
-        transactionCreationDetails,
-        paymentId,
-        userId,
-      });
-
+  }): Promise<void> {
     await this.registrationScopedRepository.increasePaymentCountByOne(
-      transactionCreationDetails.map((t) => t.registrationId),
+      registrationIds,
       2000,
     );
 
-    return transactionIds;
+    await this.setStatusToCompletedIfApplicable(programId, userId);
   }
 
   /**

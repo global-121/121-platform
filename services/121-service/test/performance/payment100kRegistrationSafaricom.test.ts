@@ -3,7 +3,7 @@ import { env } from 'process';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { doPayment } from '@121-service/test/helpers/program.helper';
+import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
 import {
   changeRegistrationStatus,
   duplicateRegistrations,
@@ -75,7 +75,7 @@ describe('Do payment for 100k registrations with Safaricom within expected range
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Do payment
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId: programIdSafaricom,
       transferValue,
       referenceIds: [],

@@ -57,23 +57,37 @@ describe('Payment Events API', () => {
     expect(meta).toMatchObject({
       count: expect.objectContaining({
         [PaymentEvent.created]: 1,
+        [PaymentEvent.started]: 1,
         [PaymentEvent.note]: 1,
       }),
-      total: 2,
+      total: 3,
     });
 
     // Check data structure
     expect(data).toBeInstanceOf(Array);
-    expect(data.length).toBe(2);
+    expect(data.length).toBe(3);
 
     // Check that we have a 'created' event
     const createdEvent = data.find(
       (event: any) => event.type === PaymentEvent.created,
     );
-
     expect(createdEvent).toMatchObject({
       id: expect.any(Number),
       type: PaymentEvent.created,
+      user: {
+        id: expect.any(Number),
+        username: env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      },
+      created: expect.any(String),
+    });
+
+    // Check that we have a 'started' event
+    const startedEvent = data.find(
+      (event: any) => event.type === PaymentEvent.started,
+    );
+    expect(startedEvent).toMatchObject({
+      id: expect.any(Number),
+      type: PaymentEvent.started,
       user: {
         id: expect.any(Number),
         username: env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,

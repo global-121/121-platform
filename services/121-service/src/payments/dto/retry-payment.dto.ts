@@ -1,11 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ArrayMaxSize, IsArray, IsNumber, IsOptional } from 'class-validator';
+import { ArrayMaxSize, IsArray, IsOptional } from 'class-validator';
 
 export class RetryPaymentDto {
-  @ApiProperty({ example: 1 })
-  @IsNumber()
-  public readonly paymentId: number;
-
   @ApiProperty({
     example: [
       '910c50be-f131-4b53-b06b-6506a40a2734',

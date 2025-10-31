@@ -909,13 +909,6 @@
     "returnType": "BulkActionResultDto"
   },
   {
-    "method": "patch",
-    "path": "/api/programs/{programId}/payments",
-    "params": [
-      "programId"
-    ]
-  },
-  {
     "method": "get",
     "path": "/api/programs/{programId}/payments/status",
     "params": [
@@ -930,6 +923,15 @@
       "programId"
     ],
     "returnType": "PaymentReturnDto"
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/payments/{paymentId}",
+    "params": [
+      "programId",
+      "paymentId",
+      "retry"
+    ]
   },
   {
     "method": "get",

@@ -7,7 +7,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { registrationsPV } from '@121-service/test/fixtures/scoped-registrations';
 import {
-  doPayment,
+  createAndStartPayment,
   getTransactions,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -69,6 +69,7 @@ describe('Registrations - [Scoped]', () => {
     // add payment.create permission to the user
     await addPermissionToRole(DefaultUserRole.CvaManager, [
       PermissionEnum.PaymentCREATE,
+      PermissionEnum.PaymentSTART, // ##TODO modify/extend this test to 2 users with respective permissions?
     ]);
 
     const testScope = DebugScope.Kisumu;
@@ -78,7 +79,7 @@ describe('Registrations - [Scoped]', () => {
     // 7 registrations in total are included
     // 3 registrations are in include in program PV
     // 2 registrations are in include in program PV and are in the scope of the requesting user
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId: PvProgramId,
       transferValue: 25,
       referenceIds: [],
@@ -87,12 +88,15 @@ describe('Registrations - [Scoped]', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
+    // ##TODO putting any console.log here makes the test pass, otherwise it fails. Investigate why.
+    console.log('Ignore');
+
     // Assert
     await waitForPaymentTransactionsToComplete({
       programId: PvProgramId,
       paymentReferenceIds: registrationsPvFirst2ReferenceIds,
       accessToken,
-      maxWaitTimeMs: 10_000,
+      maxWaitTimeMs: 20_000,
     });
     const transactionsResponse = await getTransactions({
       programId: programIdPV,

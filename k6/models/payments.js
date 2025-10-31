@@ -5,20 +5,34 @@ import config from './config.js';
 const { baseUrl } = config;
 
 export default class PaymentsModel {
-  createPayment(programId, amount) {
-    const url = `${baseUrl}api/programs/${programId}/payments`;
-    const payload = JSON.stringify({
+  createAndStartPayment(programId, amount) {
+    const urlCreate = `${baseUrl}api/programs/${programId}/payments`;
+    const payloadCreate = JSON.stringify({
       transferValue: amount,
     });
-    const params = {
+    const paramsCreate = {
       headers: {
         'Content-Type': 'application/json',
       },
       timeout: '600s', // sometimes this request takes a while, especially on GH actions
     };
-    // TODO: this fails 1/10 times
-    const res = http.post(url, payload, params);
-    return res;
+    const resCreate = http.post(urlCreate, payloadCreate, paramsCreate);
+    console.log('res: ', JSON.parse(resCreate.body));
+    const paymentId = JSON.parse(resCreate.body).id;
+    console.log('paymentId: ', paymentId);
+
+    sleep(5);
+
+    const urlStart = `${baseUrl}api/programs/${programId}/payments/${paymentId}`;
+    const payloadStart = JSON.stringify({});
+    const paramsStart = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      timeout: '600s', // sometimes this request takes a while, especially on GH actions
+    };
+    const resStart = http.patch(urlStart, payloadStart, paramsStart);
+    return resStart;
   }
 
   getPaymentResults(
