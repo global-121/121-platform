@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, In, Not } from 'typeorm';
 
-import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import {
   AggregatePerMonth,
@@ -49,7 +48,6 @@ export class MetricsService {
     private readonly registrationScopedViewRepository: RegistrationViewScopedRepository,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
-    private readonly actionService: ActionsService,
     private readonly registrationsPaginationsService: RegistrationsPaginationService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly userService: UserService,

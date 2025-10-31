@@ -2,7 +2,6 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { FspsModule } from '@121-service/src/fsps/fsp.module';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
@@ -41,7 +40,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     TypeOrmModule.forFeature([ProgramEntity, PaymentEntity]),
     UserModule,
     HttpModule,
-    ActionsModule,
     TransactionsModule,
     ExcelModule,
     RegistrationsModule,

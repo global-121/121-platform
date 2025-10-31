@@ -1,39 +1,61 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import Redis from 'ioredis';
+import { Equal, Repository } from 'typeorm';
 
-import { ActionsService } from '@121-service/src/actions/actions.service';
-import { ActionType } from '@121-service/src/actions/enum/action-type.enum';
 import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 
 @Injectable()
 export class PaymentsProgressHelperService {
+  @InjectRepository(ProgramEntity)
+  private programRepository: Repository<ProgramEntity>;
   public constructor(
-    private readonly actionService: ActionsService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {}
+
+  public async unlockPaymentsForProgram(programId: number): Promise<void> {
+    await this.programRepository.update(programId, {
+      paymentsAreLocked: false,
+    });
+  }
+
+  public async checkAndLockPaymentProgressOrThrow({
+    programId,
+  }: {
+    programId: number;
+  }): Promise<void> {
+    await this.checkPaymentInProgressAndThrow(programId);
+
+    const updateResult = await this.programRepository.update(
+      { id: programId, paymentsAreLocked: false },
+      { paymentsAreLocked: true },
+    );
+    // If no rows were affected, it means payments are already locked
+    // There is a small timeframe where this can happen after the previous check, but this is to be sure that a payment is not already in progress
+    if (updateResult.affected === 0) {
+      this.throwPaymentInProgressException();
+    }
+  }
 
   public async checkPaymentInProgressAndThrow(
     programId: number,
   ): Promise<void> {
     if (await this.isPaymentInProgress(programId)) {
-      throw new HttpException(
-        { errors: 'Payment is already in progress' },
-        HttpStatus.BAD_REQUEST,
-      );
+      this.throwPaymentInProgressException();
     }
   }
 
   public async isPaymentInProgress(programId: number): Promise<boolean> {
-    // check progress based on actions-table first
-    // Check if there are any actions in progress
-    const actionsInProgress =
-      await this.checkPaymentActionInProgress(programId);
-    if (actionsInProgress) {
+    // First check if payments are locked in the program entity
+    const programPaymentsAreLocked =
+      await this.arePaymentsLockedForProgram(programId);
+    if (programPaymentsAreLocked) {
       return true;
     }
 
@@ -41,31 +63,21 @@ export class PaymentsProgressHelperService {
     return await this.isPaymentInProgressForProgramQueue(programId);
   }
 
-  private async checkPaymentActionInProgress(
+  private throwPaymentInProgressException(): void {
+    throw new HttpException(
+      { errors: 'Payment is already in progress' },
+      HttpStatus.BAD_REQUEST,
+    );
+  }
+
+  private async arePaymentsLockedForProgram(
     programId: number,
   ): Promise<boolean> {
-    const latestPaymentStartedAction = await this.actionService.getLatestAction(
-      programId,
-      ActionType.startBlockNewPayment,
-    );
-    // If never started, then not in progress, return early
-    if (!latestPaymentStartedAction) {
-      return false;
-    }
-
-    const latestPaymentFinishedAction =
-      await this.actionService.getLatestAction(
-        programId,
-        ActionType.endBlockNewPayment,
-      );
-    // If started, but never finished, then in progress
-    if (!latestPaymentFinishedAction) {
-      return true;
-    }
-    // If started and finished, then compare timestamps
-    const startTimestamp = new Date(latestPaymentStartedAction?.created);
-    const finishTimestamp = new Date(latestPaymentFinishedAction?.created);
-    return finishTimestamp < startTimestamp;
+    const program = await this.programRepository.findOneOrFail({
+      where: { id: Equal(programId) },
+      select: { paymentsAreLocked: true },
+    });
+    return program.paymentsAreLocked;
   }
 
   private async isPaymentInProgressForProgramQueue(
