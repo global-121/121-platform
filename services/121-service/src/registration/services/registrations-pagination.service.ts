@@ -189,7 +189,7 @@ export class RegistrationsPaginationService {
   }
 
   /**
-   * Get a large amount of registration views not limited my a max per page.
+   * Get a large amount of registration views not limited by a max per page.
    * @param programId - The ID of the program.
    * @param paginateQuery - The paginate query to filter and sort the registrations.
    * @param queryBuilder - An optional query builder to use as a starting point.
