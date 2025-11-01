@@ -12,9 +12,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@eslint/js": "^9.36.0",
-    "@playwright/test": "^1.55.1",
-    "@types/express": "^4.17.23",
+    "@eslint/js": "^9.39.0",
+    "@playwright/test": "^1.56.1",
+    "@types/express": "^4.17.25",
     "@types/jest": "^30.0.0",
     "@types/node": "^20.x",
     "@types/supertest": "^6.0.3",
@@ -27,13 +27,13 @@
     "globals": "^16.4.0",
     "prettier": "^3.6.2",
     "supertest": "^7.1.4",
-    "typescript-eslint": "^8.45.0"
+    "typescript-eslint": "^8.46.2"
   },
   "dependencies": {
-    "@alex_neo/playwright-azure-reporter": "^1.16.0",
+    "@alex_neo/playwright-azure-reporter": "^1.16.2",
     "date-fns": "^4.1.0",
     "dotenv": "17.2.3",
-    "playwright": "^1.55.1",
+    "playwright": "^1.56.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   }
 }
