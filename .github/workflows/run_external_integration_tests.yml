@@ -21,7 +21,6 @@ jobs:
       matrix:
         include:
           - test_name: 'retryFailedJobsOnStartupDuringQueueProcessing.test.ts'
-            duplicate_number: '7'
 
     steps:
       - name: Check out repository code
@@ -53,8 +52,10 @@ jobs:
 
       - name: Run external integration test - ${{ matrix.test_name }}
         working-directory: ${{ env.workingDirectory }}
+        env:
+          EXTERNAL_121_SERVICE_URL: http://localhost:3000
         run: |
-          docker compose exec -e DUPLICATE_NUMBER=${{ matrix.duplicate_number }} 121-service npm run test:integration:all -t ${{ matrix.test_name }}
+          npm run test:integration:all -- test/performance/external/${{ matrix.test_name }}
 
       - name: Docker logs
         if: always()
