@@ -222,9 +222,12 @@ export class ExcelReconciliationService {
         },
       );
 
-    const matchColumnValuesForCurrentStatus = csvContents
-      .filter((r) => r[ExcelStatusColumn] === transactionStatus)
-      .map((r) => r[matchColumn]); // So a list of phone numbers or nationalIds
+    const recordsForCurrentStatus = csvContents.filter(
+      (record) => record[ExcelStatusColumn] === transactionStatus,
+    );
+    const matchColumnValuesForCurrentStatus = recordsForCurrentStatus.map(
+      (record) => record[matchColumn],
+    ); // So a list of phone numbers or nationalIds
     const transactionIdsToUpdate: number[] =
       await this.registrationViewScopedRepository.getTransactionIdsByPaymentAndRegistrationData(
         {
@@ -243,7 +246,7 @@ export class ExcelReconciliationService {
         ? new Map(
             transactionIdsToUpdate.map((transactionId, index) => [
               transactionId,
-              csvContents[index].errorMessage as string,
+              recordsForCurrentStatus[index].errorMessage as string,
             ]),
           )
         : new Map();
