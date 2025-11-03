@@ -44,7 +44,7 @@ test('[31971] Show payment summary', async ({ page }) => {
   });
 
   await test.step('Create payment', async () => {
-    await paymentsPage.createPayment();
+    await paymentsPage.createPayment({});
     await paymentsPage.validatePaymentSummary({
       fsp: fsps,
       registrationsNumber: numberOfPas,

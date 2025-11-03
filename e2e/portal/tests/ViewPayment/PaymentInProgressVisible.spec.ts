@@ -49,21 +49,18 @@ test('[32296] Show in progress banner and chip when payment is in progress', asy
   });
 
   await test.step('Do payment', async () => {
-    await paymentsPage.createPayment();
-    await paymentsPage.startPayment();
-    const paymentId = 1; // First payment in this context, so ID 1
-    // Assert redirection to payment overview page
+    await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
-      url.pathname.startsWith(
-        `/en-GB/project/${programIdOCW}/payments/${paymentId}`,
-      ),
+      url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
     );
+    await paymentPage.validateToastMessage('Payment created.');
+    await paymentPage.startPayment();
+    await paymentPage.validateToastMessage('Payment started successfully.');
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
-  await test.step('Validate payemnt in progress in Payment overview', async () => {
-    await paymentPage.validateToastMessage('Payment created.');
+  await test.step('Validate payment in progress in Payment overview', async () => {
     await paymentPage.validateInProgressChipIsPresent();
   });
 

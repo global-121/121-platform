@@ -53,12 +53,11 @@ test('[32303] [Excel fsp]: Import reconciliation data should work similar to imp
   });
 
   await test.step('Start payment', async () => {
-    await paymentsPage.createPayment();
-    await paymentsPage.startPayment();
-    // Assert redirection to payment overview page
+    await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/project/${programIdPV}/payments/1`),
     );
+    await paymentPage.startPayment();
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
