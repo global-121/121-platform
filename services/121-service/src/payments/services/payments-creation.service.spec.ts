@@ -99,20 +99,22 @@ describe('PaymentsCreationService', () => {
 
   it('should successfully run with dryRun=false and call all helpers', async () => {
     // Arrange
-    jest.spyOn(service as any, 'createPaymentDryRunPart').mockResolvedValue({
-      bulkActionResultPaymentDto: {
-        sumPaymentAmountMultiplier: 1,
-        programFspConfigurationNames: ['fspA'],
-      },
-      registrationsForPayment: [
-        {
-          referenceId: 'ref1',
-          paymentAmountMultiplier: 1,
-          programFspConfigurationName: 'fspA',
+    jest
+      .spyOn(service as any, 'getPaymentDryRunDetailsOrThrow')
+      .mockResolvedValue({
+        bulkActionResultPaymentDto: {
+          sumPaymentAmountMultiplier: 1,
+          programFspConfigurationNames: ['fspA'],
         },
-      ],
-      programFspConfigurationNames: ['fspA'],
-    });
+        registrationsForPayment: [
+          {
+            referenceId: 'ref1',
+            paymentAmountMultiplier: 1,
+            programFspConfigurationName: 'fspA',
+          },
+        ],
+        programFspConfigurationNames: ['fspA'],
+      });
     (
       paymentsHelperService.checkFspConfigurationsOrThrow as jest.Mock
     ).mockResolvedValue(undefined);
@@ -166,7 +168,7 @@ describe('PaymentsCreationService', () => {
       },
     ]);
     jest
-      .spyOn(service as any, 'createPaymentDryRunPart')
+      .spyOn(service as any, 'getPaymentDryRunDetailsOrThrow')
       .mockImplementation(() => {
         throw new Error('Simulated error');
       });
@@ -185,14 +187,16 @@ describe('PaymentsCreationService', () => {
       sumPaymentAmountMultiplier: 0,
       programFspConfigurationNames: [],
     });
-    jest.spyOn(service as any, 'createPaymentDryRunPart').mockResolvedValue({
-      bulkActionResultPaymentDto: {
-        sumPaymentAmountMultiplier: 0,
+    jest
+      .spyOn(service as any, 'getPaymentDryRunDetailsOrThrow')
+      .mockResolvedValue({
+        bulkActionResultPaymentDto: {
+          sumPaymentAmountMultiplier: 0,
+          programFspConfigurationNames: [],
+        },
+        registrationsForPayment: [],
         programFspConfigurationNames: [],
-      },
-      registrationsForPayment: [],
-      programFspConfigurationNames: [],
-    });
+      });
     const params = { ...basePaymentParams, transferValue: undefined };
     const result = await service.createPayment(params);
     expect(result).toEqual({
