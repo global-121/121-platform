@@ -63,11 +63,10 @@ test('[32298] Table should be a filtered list of registrations included in the t
 
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment();
-    await paymentsPage.startPayment();
-    // Assert redirection to payment overview page
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
     );
+    await paymentPage.startPayment();
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });

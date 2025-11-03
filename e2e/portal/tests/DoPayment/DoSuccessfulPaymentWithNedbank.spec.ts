@@ -51,20 +51,27 @@ test('[36080] Do successful payment for Nedbank fsp', async ({ page }) => {
   });
 
   await test.step('Do payment', async () => {
+    // Create payment
     await paymentsPage.createPayment();
-    await paymentsPage.startPayment();
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/project/${programIdNedbank}/payments/1`),
     );
-    // Run CRON job to process payment
-    await runCronJobDoNedbankReconciliation();
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validateToastMessageAndClose('Payment created.');
+
+    // start payment
+    await paymentPage.startPayment();
+    await paymentPage.validateToastMessageAndClose(
+      'Payment started successfully.',
+    );
+
+    // Run CRON job to process payment
+    await runCronJobDoNedbankReconciliation();
   });
 
   await test.step('Validate payment card', async () => {
-    await paymentPage.validateToastMessageAndClose('Payment created.');
     // In case of Nedbank, we need to wait for the payment to be processed
     // before we can validate the payment card
     // This way we can avoid reloading the page

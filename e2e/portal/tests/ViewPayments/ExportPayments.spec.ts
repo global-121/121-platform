@@ -11,6 +11,7 @@ import { registrationsOCW } from '@121-service/test/registrations/pagination/pag
 
 import ExportData from '@121-e2e/portal/components/ExportData';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
+import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 import HomePage from '../../pages/HomePage';
@@ -37,12 +38,19 @@ const navigateToPaymentsPage = async (paymentsPage: PaymentsPage) => {
   });
 };
 
-const createFivePayments = async (paymentsPage: PaymentsPage) => {
-  for (let i = 0; i < 5; i++) {
+const createFivePayments = async (
+  paymentsPage: PaymentsPage,
+  paymentPage: PaymentPage,
+  programIdOCW: number,
+) => {
+  for (let i = 1; i <= 5; i++) {
     await paymentsPage.createPayment();
-    await paymentsPage.startPayment();
+    await page.waitForURL((url) =>
+      url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/${i}`),
+    );
+    await paymentPage.startPayment();
     await paymentsPage.navigateToProgramPage('Payments');
-    await paymentsPage.dismissToast();
+    // await paymentsPage.dismissToast();
   }
 };
 
@@ -62,10 +70,11 @@ test.beforeAll(async ({ browser }) => {
   });
 
   const paymentsPage = new PaymentsPage(page);
+  const paymentPage = new PaymentPage(page);
 
   await navigateToPaymentsPage(paymentsPage);
 
-  await createFivePayments(paymentsPage);
+  await createFivePayments(paymentsPage, paymentPage, programIdOCW);
 });
 
 test('[35621] ExportPayments', async () => {
@@ -154,6 +163,6 @@ test('[36126] View available actions for a "view only" user', async () => {
   await test.step('Validate hidden buttons', async () => {
     await paymentsPage.exportButton.waitFor({ state: 'hidden' });
 
-    await paymentsPage.createPaymentButton.waitFor({ state: 'hidden' });
+    await paymentsPage.createNewPaymentButton.waitFor({ state: 'hidden' });
   });
 });

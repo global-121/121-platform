@@ -46,18 +46,24 @@ test('[31970] Do successful payment for Visa fsp', async ({ page }) => {
   });
 
   await test.step('Do payment', async () => {
+    // Create payment
     await paymentsPage.createPayment();
-    await paymentsPage.startPayment();
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validateToastMessageAndClose('Payment created.');
+
+    // start payment
+    await paymentPage.startPayment();
+    await paymentPage.validateToastMessageAndClose(
+      'Payment started successfully.',
+    );
   });
 
   await test.step('Validate payment card', async () => {
-    await paymentPage.validateToastMessageAndClose('Payment created.');
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.navigateToProgramPage('Payments');
     await paymentsPage.validatePaymentCard({

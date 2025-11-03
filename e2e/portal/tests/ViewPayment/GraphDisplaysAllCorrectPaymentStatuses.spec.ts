@@ -49,11 +49,10 @@ test('[32297] Graph should reflect transfer statuses', async ({ page }) => {
 
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment();
-    await paymentsPage.startPayment();
-    // Assert redirection to payment overview page
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
     );
+    await paymentPage.startPayment();
     // Assert payment overview page by payment date/ title
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
