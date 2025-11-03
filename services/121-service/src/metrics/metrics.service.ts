@@ -334,7 +334,9 @@ export class MetricsService {
       .select('SUM(transaction."transferValue"::numeric)', 'cashDisbursed')
       .leftJoin('transaction.payment', 'p')
       .andWhere({
-        status: Not(TransactionStatusEnum.error),
+        status: Not(
+          In([TransactionStatusEnum.error, TransactionStatusEnum.created]),
+        ),
       })
       .andWhere('p."programId" = :programId', { programId })
       .getRawOne();
