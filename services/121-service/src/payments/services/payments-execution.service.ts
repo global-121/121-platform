@@ -113,6 +113,12 @@ export class PaymentsExecutionService {
         inputReferenceIds: referenceIds,
       });
 
+      await this.paymentEventsService.createEvent({
+        paymentId,
+        userId,
+        type: PaymentEvent.retry,
+      });
+
       await this.createTransactionJobs({
         programId,
         transactionIds: transactionDetails.map((t) => t.transactionId),
