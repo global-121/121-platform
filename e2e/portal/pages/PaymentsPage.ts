@@ -9,10 +9,10 @@ import { PrimeNGDatePicker } from '../components/PrimeNGDatePicker';
 class PaymentsPage extends BasePage {
   readonly page: Page;
   readonly table: TableComponent;
-  readonly createPaymentButton: Locator;
+  readonly createNewPaymentButton: Locator;
   readonly addToPaymentButton: Locator;
   readonly fspSummary: Locator;
-  readonly startPaymentButton: Locator;
+  readonly createPaymentButton: Locator;
   readonly paymentTitle: Locator;
   readonly paymentSummaryMetrics: Locator;
   readonly paymentSummaryWithInstructions: Locator;
@@ -25,13 +25,15 @@ class PaymentsPage extends BasePage {
     super(page);
     this.page = page;
     this.table = new TableComponent(page);
-    this.createPaymentButton = this.page.getByRole('button', {
+    this.createNewPaymentButton = this.page.getByRole('button', {
       name: 'Create new payment',
     });
     this.addToPaymentButton = this.page.getByRole('button', {
       name: 'Add to payment',
     });
-    this.startPaymentButton = this.page.getByRole('button', { name: 'Start' });
+    this.createPaymentButton = this.page.getByRole('button', {
+      name: 'Create payment',
+    });
     this.fspSummary = this.page
       .locator('p-card')
       .filter({ hasText: 'Financial Service Provider(s' });
@@ -86,17 +88,23 @@ class PaymentsPage extends BasePage {
     );
   }
 
-  async createPayment() {
-    await this.createPaymentButton.click();
+  async createPayment({
+    note,
+    onlyStep1 = false,
+  }: {
+    note?: string;
+    onlyStep1?: boolean;
+  }) {
+    await this.createNewPaymentButton.click();
     await this.selectAllRegistrations();
     await this.addToPaymentButton.click();
-  }
-
-  async startPayment(note?: string) {
+    if (onlyStep1) {
+      return;
+    }
     if (note) {
       await this.addPaymentNote(note);
     }
-    await this.startPaymentButton.click();
+    await this.createPaymentButton.click();
   }
 
   async addPaymentNote(note: string) {
@@ -206,7 +214,7 @@ class PaymentsPage extends BasePage {
     }
 
     const expectedText = `
-      Review payment summary and follow the next steps: Click start payment, this will direct you to the payment page.
+      Review payment summary and follow the next steps: Click create payment, this will direct you to the payment page.
       Export the FSP instructions from the payment page. This is only possible once the payment is no longer in progress.
       Save the exported XLSX-file in the format required by the Financial Service Provider.
       Upload the file to the Financial Service Provider’s portal.
