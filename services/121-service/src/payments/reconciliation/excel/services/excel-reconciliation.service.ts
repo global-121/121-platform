@@ -240,6 +240,10 @@ export class ExcelReconciliationService {
       description: TransactionEventDescription.excelReconciliationFileUpload,
       userId,
       programFspConfigurationId,
+      errorMessage:
+        csvContents[0].errorMessage !== undefined
+          ? String(csvContents[0].errorMessage)
+          : '',
     });
   }
 }

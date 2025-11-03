@@ -93,8 +93,15 @@ export class TransactionEventsService {
       }),
     );
 
-    await this.transactionEventScopedRepository.save(transactionEvents, {
-      chunk: 1000,
-    });
+    const resultTransactionEvents =
+      await this.transactionEventScopedRepository.save(transactionEvents, {
+        chunk: 1000,
+      });
+
+    for (const resultTransactionEvent of resultTransactionEvents) {
+      await this.lastTransactionEventRepository.updateOrInsertFromTransactionEvent(
+        resultTransactionEvent,
+      );
+    }
   }
 }

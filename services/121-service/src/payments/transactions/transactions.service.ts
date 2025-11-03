@@ -107,12 +107,14 @@ export class TransactionsService {
     description,
     userId,
     programFspConfigurationId,
+    errorMessage,
   }: {
     newTransactionStatus: TransactionStatusEnum;
     transactionIds: number[];
     description: TransactionEventDescription;
     userId: number;
     programFspConfigurationId: number;
+    errorMessage?: string;
   }): Promise<void> {
     await this.transactionScopedRepository.update(transactionIds, {
       status: newTransactionStatus,
@@ -127,6 +129,7 @@ export class TransactionsService {
       type: TransactionEventType.processingStep,
       description,
       isSuccessfullyCompleted: eventsAreSuccessful,
+      errorMessage,
     });
   }
 
