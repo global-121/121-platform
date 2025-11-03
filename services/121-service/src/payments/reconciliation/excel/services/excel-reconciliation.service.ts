@@ -238,17 +238,23 @@ export class ExcelReconciliationService {
       return; // Nothing to do no transactions to update and no events to create
     }
 
+    const errorMessages: Map<number, string> =
+      transactionStatus === TransactionStatusEnum.error
+        ? new Map(
+            transactionIdsToUpdate.map((transactionId, index) => [
+              transactionId,
+              csvContents[index].errorMessage as string,
+            ]),
+          )
+        : new Map();
+
     await this.transactionsService.saveTransactionProgressBulk({
       newTransactionStatus: transactionStatus,
       transactionIds: transactionIdsToUpdate,
       description: TransactionEventDescription.excelReconciliationFileUpload,
       userId,
       programFspConfigurationId,
-      //TODO: awaiting Tys response
-      errorMessage:
-        csvContents[0].errorMessage !== undefined
-          ? String(csvContents[0].errorMessage)
-          : '',
+      errorMessages,
     });
   }
 }
