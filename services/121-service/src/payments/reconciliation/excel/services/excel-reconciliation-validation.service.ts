@@ -156,4 +156,18 @@ export class ExcelReconciliationValidationService {
       }
     }
   }
+
+  public validateErrorMessageColumn(csvContents: CsvContents): void {
+    for (const content of csvContents) {
+      if (
+        content.errorMessage &&
+        content.status === TransactionStatusEnum.success
+      ) {
+        throw new HttpException(
+          `Error message not allowed when status is success`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+  }
 }

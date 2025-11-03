@@ -136,6 +136,10 @@ export class ExcelReconciliationService {
 
     this.excelReconciliationValidationService.validateStatusColumn(csvContents);
 
+    this.excelReconciliationValidationService.validateErrorMessageColumn(
+      csvContents,
+    );
+
     const matchColumn =
       await this.excelReconciliationValidationService.validateOnlyOneMatchColumnIsUsedAndReturnIt(
         {
@@ -240,6 +244,7 @@ export class ExcelReconciliationService {
       description: TransactionEventDescription.excelReconciliationFileUpload,
       userId,
       programFspConfigurationId,
+      //TODO: awaiting Tys response
       errorMessage:
         csvContents[0].errorMessage !== undefined
           ? String(csvContents[0].errorMessage)
