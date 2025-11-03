@@ -44,7 +44,7 @@ jobs:
 
       - name: Run Services with Docker
         run: |
-          npm run start:services:ci
+          npm run start:services:ci:production
 
       - name: Wait for services to be ready
         run: |
