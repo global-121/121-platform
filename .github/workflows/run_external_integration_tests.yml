@@ -36,7 +36,7 @@ jobs:
       - name: Set ENV-variables for test-environment
         run: |
           cp ./services/.env.example services/.env
-          # grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
+          grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
 
       - name: Install dependencies
         working-directory: ${{ env.workingDirectory }}
@@ -55,7 +55,7 @@ jobs:
         env:
           EXTERNAL_121_SERVICE_URL: http://localhost:3000
         run: |
-          npm run test:integration:all -- test/performance/external/${{ matrix.test_name }}
+          npm run test:integration:external -- test/performance/external/${{ matrix.test_name }}
 
       - name: Docker logs
         if: always()
