@@ -28,6 +28,8 @@ import { ProjectApiService } from '~/domains/project/project.api.service';
 import { projectHasFspWithExportFileIntegration } from '~/domains/project/project.helper';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 
+import { TransactionStatusEnum } from '../../../../../../services/121-service/src/payments/transactions/enums/transaction-status.enum';
+
 @Component({
   selector: 'app-page-layout-payment',
   imports: [
@@ -191,5 +193,17 @@ export class PageLayoutPaymentComponent {
         '1.2-2',
       ) ?? '0'
     );
+  });
+
+  readonly showStartPaymentButton = computed<boolean>(() => {
+    if (!this.transactions.isSuccess()) {
+      return false;
+    }
+
+    return this.transactions
+      .data()
+      .some(
+        (transaction) => transaction.status === TransactionStatusEnum.created,
+      );
   });
 }
