@@ -88,10 +88,19 @@ class PaymentsPage extends BasePage {
     );
   }
 
-  async createPayment(note?: string) {
+  async createPayment({
+    note,
+    onlyStep1 = false,
+  }: {
+    note?: string;
+    onlyStep1?: boolean;
+  }) {
     await this.createNewPaymentButton.click();
     await this.selectAllRegistrations();
     await this.addToPaymentButton.click();
+    if (onlyStep1) {
+      return;
+    }
     if (note) {
       await this.addPaymentNote(note);
     }

@@ -55,7 +55,7 @@ test('[32304] Retry payments should put failed transactions back in pending and 
   });
 
   await test.step('Do payment', async () => {
-    await paymentsPage.createPayment();
+    await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/project/${programIdPV}/payments/1`),
     );

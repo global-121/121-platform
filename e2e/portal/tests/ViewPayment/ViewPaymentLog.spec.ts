@@ -49,7 +49,7 @@ test('[37781] View payment log, including note added to payment', async ({
   });
 
   await test.step('Do payment with note', async () => {
-    await paymentsPage.createPayment(note);
+    await paymentsPage.createPayment({ note });
     const paymentId = 1; // First payment in this context, so ID 1
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>

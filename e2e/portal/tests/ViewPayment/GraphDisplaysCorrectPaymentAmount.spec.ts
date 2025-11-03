@@ -48,7 +48,7 @@ test('[32299] Table should reflect the actual transfer values sent to the PAs in
   });
 
   await test.step('Do payment', async () => {
-    await paymentsPage.createPayment();
+    await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
     );

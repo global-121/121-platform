@@ -47,7 +47,7 @@ test('[31970] Do successful payment for Visa fsp', async ({ page }) => {
 
   await test.step('Do payment', async () => {
     // Create payment
-    await paymentsPage.createPayment();
+    await paymentsPage.createPayment({});
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),

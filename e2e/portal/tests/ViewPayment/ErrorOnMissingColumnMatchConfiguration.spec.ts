@@ -21,9 +21,6 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
-// Export Excel FSP payment list
-const amount = NLRCProgramPV.fixedTransferValue;
-
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
@@ -52,12 +49,6 @@ test('[32302] [Excel fsp]: Error message should be shown in case no matching col
   const paymentPage = new PaymentPage(page);
 
   const projectTitle = NLRCProgramPV.titlePortal.en;
-  const numberOfPas = registrationsPvExcel.length;
-  const defaultTransferValue = amount;
-  const defaultMaxTransferValue = registrationsPvExcel.reduce((output, pa) => {
-    return output + pa.paymentAmountMultiplier * defaultTransferValue;
-  }, 0);
-  const fsps: string[] = ['Excel Payment Instructions'];
 
   await test.step('Navigate to Program payments', async () => {
     await paymentsPage.selectProgram(projectTitle);
@@ -66,14 +57,7 @@ test('[32302] [Excel fsp]: Error message should be shown in case no matching col
   });
 
   await test.step('Do payment', async () => {
-    await paymentsPage.createPayment();
-    await paymentsPage.validateExcelFspInstructions();
-    await paymentsPage.validatePaymentSummary({
-      fsp: fsps,
-      registrationsNumber: numberOfPas,
-      currency: '€',
-      paymentAmount: defaultMaxTransferValue,
-    });
+    await paymentsPage.createPayment({ onlyStep1: true });
     await paymentPage.validateToastMessageAndClose(
       'Something went wrong: "Missing required configuration columnToMatch for FSP Excel"',
     );

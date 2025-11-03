@@ -54,7 +54,7 @@ test('[36009] Do successful payment for Safaricom fsp', async ({ page }) => {
 
   await test.step('Do payment', async () => {
     // Create payment
-    await paymentsPage.createPayment();
+    await paymentsPage.createPayment({});
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
       url.pathname.startsWith(

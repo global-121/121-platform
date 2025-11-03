@@ -50,7 +50,7 @@ test('[32300] Retry failed transfers', async ({ page }) => {
   });
 
   await test.step('Do payment', async () => {
-    await paymentsPage.createPayment();
+    await paymentsPage.createPayment({});
     await page.waitForURL((url) => url.pathname.startsWith(paymentPageUrl));
     await paymentPage.startPayment();
 

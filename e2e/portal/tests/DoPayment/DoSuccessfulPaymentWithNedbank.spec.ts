@@ -52,7 +52,7 @@ test('[36080] Do successful payment for Nedbank fsp', async ({ page }) => {
 
   await test.step('Do payment', async () => {
     // Create payment
-    await paymentsPage.createPayment();
+    await paymentsPage.createPayment({});
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/project/${programIdNedbank}/payments/1`),

@@ -49,7 +49,7 @@ test('[32296] Show in progress banner and chip when payment is in progress', asy
   });
 
   await test.step('Do payment', async () => {
-    await paymentsPage.createPayment();
+    await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
     );

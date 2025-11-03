@@ -59,7 +59,7 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
 
   await test.step('Create payment', async () => {
     // Create payment
-    await paymentsPage.createPayment();
+    await paymentsPage.createPayment({});
     await paymentsPage.validateExcelFspInstructions();
     await paymentsPage.validatePaymentSummary({
       fsp: fsps,

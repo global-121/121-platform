@@ -52,7 +52,7 @@ test('[35621] Export Payment Report should contain the right data', async ({
       await paymentsPage.navigateToProgramPage('Payments');
 
       // Create payment
-      await paymentsPage.createPayment();
+      await paymentsPage.createPayment({});
       // Assert redirection to payment overview page
       await page.waitForURL((url) =>
         url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/${i}`),

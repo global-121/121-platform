@@ -44,7 +44,7 @@ const createFivePayments = async (
   programIdOCW: number,
 ) => {
   for (let i = 1; i <= 5; i++) {
-    await paymentsPage.createPayment();
+    await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/${i}`),
     );
