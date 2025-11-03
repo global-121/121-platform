@@ -53,14 +53,12 @@ test('[32297] Graph should reflect transfer statuses', async ({ page }) => {
       url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
     );
     await paymentPage.startPayment();
-    // Assert payment overview page by payment date/ title
-    await page.waitForTimeout(1000); // ##TODO remove after merging new payment lock code
-    await page.goto(`/en-GB/project/${programIdOCW}/payments/1`); // ##TODO same
-    await paymentPage.waitForPaymentToComplete();
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
   await test.step('Graph displays all correct payment statuses', async () => {
+    await page.goto(`/en-GB/project/${programIdOCW}/payments/1`);
+    await paymentPage.waitForPaymentToComplete();
     await paymentPage.validateGraphStatus({
       pending: 0,
       successful: 16,

@@ -60,7 +60,7 @@ class PaymentPage extends BasePage {
   }
 
   async waitForPaymentToComplete() {
-    await this.page.waitForTimeout(500); // ##TODO for now needed to bridge in-progress gap between actions & queue. This will be solved later and this can be removed then.
+    await this.page.waitForTimeout(500); // TODO for now needed to bridge in-progress gap between actions & queue.
     const inProgressChip = this.page
       .locator('app-colored-chip')
       .getByLabel('In progress');
