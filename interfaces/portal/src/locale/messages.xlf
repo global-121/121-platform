@@ -2024,6 +2024,9 @@
       <trans-unit id="7598652794919465551" datatype="html">
         <source>Included in payment</source>
       </trans-unit>
+      <trans-unit id="515050170212939003" datatype="html">
+        <source>Click start payment, or make sure someone with the right permissions does so.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

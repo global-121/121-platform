@@ -215,6 +215,7 @@ class PaymentsPage extends BasePage {
 
     const expectedText = `
       Review payment summary and follow the next steps: Click create payment, this will direct you to the payment page.
+      Click start payment, or make sure someone with the right permissions does so.
       Export the FSP instructions from the payment page. This is only possible once the payment is no longer in progress.
       Save the exported XLSX-file in the format required by the Financial Service Provider.
       Upload the file to the Financial Service Provider’s portal.
