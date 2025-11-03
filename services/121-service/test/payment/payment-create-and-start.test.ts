@@ -4,13 +4,13 @@ import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/pay
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   createAndStartPayment,
   createPayment,
   getPaymentEvents,
   getTransactions,
   startPayment,
+  waitForPaymentNotInProgress,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
@@ -172,7 +172,13 @@ describe('Start and create a payment separately', () => {
         paymentId,
         accessToken,
       });
-      await waitFor(1_000); // We cannot just wait for the other transaction to complete, as we should give the time in theory for the declined transaction to also process, even though the assertion is that it shouldn't. Not giving it the time to in theory process, steps on the feet of the assertion.
+      // Wait for payment not in progress anymore instead of using waitForPaymentTransactionsToComplete. As we cannot just wait for the other transaction to complete, as we should give the time in theory for the declined transaction to also process, even though the assertion is that it shouldn't.
+      await waitForPaymentNotInProgress({
+        programId,
+        accessToken,
+      });
+
+      // await waitFor(1_000); /
 
       // Assert
       const getTransactionsResponse = await getTransactions({

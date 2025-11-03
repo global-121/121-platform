@@ -251,6 +251,33 @@ export async function getProgramPaymentsStatus(
     .set('Cookie', [accessToken]);
 }
 
+export async function waitForPaymentNotInProgress({
+  programId,
+  accessToken,
+  maxWaitTimeMs = 20000,
+  pollIntervalMs = 500,
+}: {
+  programId: number;
+  accessToken: string;
+  maxWaitTimeMs?: number;
+  pollIntervalMs?: number;
+}): Promise<void> {
+  const startTime = Date.now();
+  while (true) {
+    const result = (await getProgramPaymentsStatus(programId, accessToken))
+      .body;
+    if (result.inProgress === false) {
+      return;
+    }
+    if (Date.now() - startTime > maxWaitTimeMs) {
+      throw new Error(
+        `Timeout: Payment still in progress after ${maxWaitTimeMs}ms`,
+      );
+    }
+    await waitFor(pollIntervalMs);
+  }
+}
+
 export async function getTransactions({
   programId,
   paymentId,
