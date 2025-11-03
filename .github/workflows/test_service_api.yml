@@ -86,7 +86,7 @@ jobs:
           curl -d '{"secret":"fill_in_secret"}' -H "Content-Type: application/json" -X POST '${{ env.EXTERNAL_121_SERVICE_URL }}/api/test/kill-service' || true
           docker compose exec 121-service npm run coverage:report:integration
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: integration-test-coverage-report-${{ matrix.shard }}
           path: |
@@ -136,7 +136,7 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: 'npm run test:unit:coverage'
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: unit-test-coverage-report
           path: |
@@ -155,7 +155,7 @@ jobs:
           path: coverage
 
       - name: Save a single artifact with all of the coverage reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: merged-coverage-report
           path: coverage
