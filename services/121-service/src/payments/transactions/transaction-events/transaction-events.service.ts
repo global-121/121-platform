@@ -81,8 +81,8 @@ export class TransactionEventsService {
     isSuccessfullyCompleted: boolean;
     errorMessages: Map<number, string>;
   }): Promise<void> {
-    const transactionEvents = transactionIds.map((transactionId) => {
-      return this.transactionEventScopedRepository.create({
+    const transactionEvents = transactionIds.map((transactionId) =>
+      this.transactionEventScopedRepository.create({
         transactionId,
         programFspConfigurationId,
         userId,
@@ -90,8 +90,8 @@ export class TransactionEventsService {
         description,
         isSuccessfullyCompleted,
         errorMessage: errorMessages.get(transactionId),
-      });
-    });
+      }),
+    );
 
     const resultTransactionEvents =
       await this.transactionEventScopedRepository.save(transactionEvents, {
