@@ -561,6 +561,8 @@ npm run test:all           # Run all tests
 - ❌ Missing error handling in async operations
 - ❌ Circular dependencies between modules
 - ❌ Unsafe TypeORM where conditions
+- ❌ Using TypeORM's `queryBuilder` without using table aliases
+- ❌ Using TypeORM's `queryBuilder` when `.find`, `.findOne` or `.save` would suffice
 
 ## Additional Resources
 
