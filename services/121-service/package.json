@@ -27,7 +27,7 @@
     "test:unit:all": "jest --runInBand --config=jest.unit.config.js",
     "test:unit:watch": "npm run test:unit:all -- --watchAll",
     "test:unit:coverage": "npm run test:unit:all -- --coverage --coverageDirectory=coverage/unit",
-    "test:integration:all": "node --require=tsconfig-paths/register --expose-gc node_modules/.bin/jest --config=jest.integration.config.js --runInBand --detectOpenHandles --logHeapUsage",
+    "test:integration:all": "node --env-file=../.env --require=tsconfig-paths/register --expose-gc node_modules/.bin/jest --config=jest.integration.config.js --runInBand --detectOpenHandles --logHeapUsage",
     "test:integration:debug": "node --inspect-brk=0.0.0.0:9231 --require=tsconfig-paths/register --expose-gc node_modules/.bin/jest --config=jest.integration.config.js --runInBand --detectOpenHandles --logHeapUsage",
     "test:integration:watch": "npm run test:integration:all -- --watchAll",
     "coverage:report:unit": "echo 'This is generated with the test:unit:coverage script.' && exit 1",
