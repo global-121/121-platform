@@ -102,7 +102,7 @@ class BasePage {
   // To speed tests up we can validate the toast message and close it
   // without waiting for the toast to disappear after 6 seconds
   async validateToastMessageAndClose(message: string) {
-    await expect(this.toast).toBeVisible();
+    await expect(this.toast).toBeVisible({ timeout: 5000 });
     expect(await this.toast.textContent()).toContain(message);
     await this.dismissToast();
   }

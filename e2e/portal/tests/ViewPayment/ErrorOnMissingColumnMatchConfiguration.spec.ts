@@ -65,8 +65,7 @@ test('[32302] [Excel fsp]: Error message should be shown in case no matching col
     await paymentsPage.navigateToProgramPage('Payments');
   });
 
-  await test.step('Create payment', async () => {
-    // Create payment
+  await test.step('Do payment', async () => {
     await paymentsPage.createPayment();
     await paymentsPage.validateExcelFspInstructions();
     await paymentsPage.validatePaymentSummary({
@@ -75,13 +74,6 @@ test('[32302] [Excel fsp]: Error message should be shown in case no matching col
       currency: '€',
       paymentAmount: defaultMaxTransferValue,
     });
-    // Assert redirection to payment overview page
-    await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdPV}/payments/1`),
-    );
-
-    // start payment
-    await paymentPage.startPayment();
     await paymentPage.validateToastMessageAndClose(
       'Something went wrong: "Missing required configuration columnToMatch for FSP Excel"',
     );

@@ -54,12 +54,13 @@ test('[32297] Graph should reflect transfer statuses', async ({ page }) => {
     );
     await paymentPage.startPayment();
     // Assert payment overview page by payment date/ title
+    await page.waitForTimeout(1000); // ##TODO remove after merging new payment lock code
+    await page.goto(`/en-GB/project/${programIdOCW}/payments/1`); // ##TODO same
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
-  await test.step('Validate payemnt in progress in Payment overview', async () => {
-    await paymentPage.validateToastMessage('Payment created.');
+  await test.step('Graph displays all correct payment statuses', async () => {
     await paymentPage.validateGraphStatus({
       pending: 0,
       successful: 16,
