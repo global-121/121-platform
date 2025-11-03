@@ -4,13 +4,13 @@ import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/pay
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   createAndStartPayment,
   createPayment,
   getPaymentEvents,
   getTransactions,
   startPayment,
+  waitForPaymentNotInProgress,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
@@ -133,7 +133,7 @@ describe('Start and create a payment separately', () => {
     expect(registrationAfterStart!.paymentCount).toBe(1);
   });
 
-  describe('process included registrations only on payment starts', () => {
+  describe('payment start', () => {
     let paymentId: number;
     beforeEach(async () => {
       const registrations = [registrationPV5, registrationPV6];
@@ -172,7 +172,11 @@ describe('Start and create a payment separately', () => {
         paymentId,
         accessToken,
       });
-      await waitFor(1_000); // small wait to ensure transactions are started. We cannot listen for specific non-created statuses here as one should stay on created
+      // Wait for payment not in progress anymore instead of using waitForPaymentTransactionsToComplete. As we cannot just wait for the other transaction to complete, as we should give the time in theory for the declined transaction to also process, even though the assertion is that it shouldn't.
+      await waitForPaymentNotInProgress({
+        programId,
+        accessToken,
+      });
 
       // Assert
       const getTransactionsResponse = await getTransactions({
