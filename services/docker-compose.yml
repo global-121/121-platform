@@ -67,7 +67,7 @@ services:
         condition: service_healthy
         required: true
         restart: true
-    restart: on-failure
+    restart: always
 
   azurite:
     container_name: azurite
