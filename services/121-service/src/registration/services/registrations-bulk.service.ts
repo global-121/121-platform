@@ -177,12 +177,10 @@ export class RegistrationsBulkService {
     );
 
     if (!dryRun) {
-      const chunkSize = 10000;
       this.applySendMessages(
         paginateQuery,
         programId,
         message,
-        chunkSize,
         resultDto.applicableCount,
         usedPlaceholders,
         messageTemplateKey,
@@ -198,50 +196,33 @@ export class RegistrationsBulkService {
     paginateQuery: PaginateQuery,
     programId: number,
     message: string,
-    chunkSize: number,
     bulkSize: number,
     usedPlaceholders: string[],
     messageTemplateKey: string,
     userId: number,
   ): Promise<void> {
-    paginateQuery.limit = chunkSize;
-    const registrationsMetadata =
-      await this.registrationsPaginationService.getPaginate(
-        paginateQuery,
-        programId,
-        // TODO: Make this dynamic / a permission check
-        true,
-        false,
-        this.getBaseQuery(),
-      );
-
     const messageContentDetails: MessageContentDetails = {
       message,
       messageTemplateKey,
       messageContentType: MessageContentType.custom,
     };
 
-    for (let i = 0; i < (registrationsMetadata.meta.totalPages ?? 0); i++) {
-      paginateQuery.page = i + 1;
-      const registrationsForUpdate =
-        await this.registrationsPaginationService.getPaginate(
-          paginateQuery,
-          programId,
-          // TODO: Make this dynamic / a permission check
-          true,
-          false,
-          this.getBaseQuery(),
-        );
-      this.sendMessagesPerChunk({
-        registrations: registrationsForUpdate.data,
-        messageContentDetails,
-        bulksize: bulkSize,
-        usedPlaceholders,
-        userId,
-      }).catch((error) => {
-        this.azureLogService.logError(error, true);
+    const registrationsForUpdate =
+      await this.registrationsPaginationService.getRegistrationViewsNoLimit({
+        programId,
+        paginateQuery,
+        queryBuilder: this.getBaseQuery(),
       });
-    }
+
+    this.sendMessagesPerChunk({
+      registrations: registrationsForUpdate,
+      messageContentDetails,
+      bulksize: bulkSize,
+      usedPlaceholders,
+      userId,
+    }).catch((error) => {
+      this.azureLogService.logError(error, true);
+    });
   }
 
   public async getBulkActionResult(
@@ -250,21 +231,21 @@ export class RegistrationsBulkService {
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
   ): Promise<BulkActionResultDto> {
     const selectedRegistrations =
-      await this.registrationsPaginationService.getPaginate(
-        paginateQuery,
+      await this.registrationsPaginationService.getPaginate({
+        query: paginateQuery,
         programId,
-        true,
-        false,
-      );
+        hasPersonalReadPermission: true,
+        noLimit: false,
+      });
 
     const applicableRegistrations =
-      await this.registrationsPaginationService.getPaginate(
-        paginateQuery,
+      await this.registrationsPaginationService.getPaginate({
+        query: paginateQuery,
         programId,
-        true,
-        false,
+        hasPersonalReadPermission: true,
+        noLimit: false,
         queryBuilder,
-      );
+      });
 
     return {
       totalFilterCount: selectedRegistrations.meta.totalItems ?? 0,
@@ -437,7 +418,7 @@ export class RegistrationsBulkService {
       GenericRegistrationAttributes.status,
     ];
     const registrationsForUpdate =
-      await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
+      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
         { programId, referenceIds, select: selectedColumns },
       );
 
@@ -484,7 +465,7 @@ export class RegistrationsBulkService {
     selectedColumns.push(GenericRegistrationAttributes.phoneNumber);
 
     const registrationsToSendMessageTo =
-      await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
+      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
         { programId, referenceIds, select: selectedColumns },
       );
 
@@ -514,12 +495,11 @@ export class RegistrationsBulkService {
       newStatus,
     );
     const data =
-      await this.registrationsPaginationService.getRegistrationViewsChunkedByPaginateQuery(
+      await this.registrationsPaginationService.getRegistrationViewsNoLimit({
         programId,
         paginateQuery,
-        10000,
         queryBuilder,
-      );
+      });
 
     return data.map((r) => r.referenceId);
   }
@@ -576,29 +556,29 @@ export class RegistrationsBulkService {
     const chunkSize = 10000;
     paginateQuery.limit = chunkSize;
     const registrationForDeleteMeta =
-      await this.registrationsPaginationService.getPaginate(
-        paginateQuery,
+      await this.registrationsPaginationService.getPaginate({
+        query: paginateQuery,
         programId,
-        true,
-        false,
-        this.getStatusUpdateBaseQuery(
+        hasPersonalReadPermission: true,
+        noLimit: false,
+        queryBuilder: this.getStatusUpdateBaseQuery(
           allowedCurrentStatuses,
           RegistrationStatusEnum.deleted,
         ),
-      );
+      });
 
     for (let i = 0; i < (registrationForDeleteMeta.meta.totalPages ?? 0); i++) {
       const registrationPaginateObject =
-        await this.registrationsPaginationService.getPaginate(
-          paginateQuery,
+        await this.registrationsPaginationService.getPaginate({
+          query: paginateQuery,
           programId,
-          true,
-          false,
-          this.getStatusUpdateBaseQuery(
+          hasPersonalReadPermission: true,
+          noLimit: false,
+          queryBuilder: this.getStatusUpdateBaseQuery(
             allowedCurrentStatuses,
             RegistrationStatusEnum.deleted,
           ),
-        );
+        });
 
       await this.deleteRegistrationsChunk({
         registrationsForDelete: registrationPaginateObject.data,

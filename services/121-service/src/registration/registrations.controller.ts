@@ -161,12 +161,12 @@ export class RegistrationsController {
       query,
     );
 
-    return await this.registrationsPaginateService.getPaginate(
+    return await this.registrationsPaginateService.getPaginate({
       query,
-      Number(programId),
-      hasPersonalRead,
-      false,
-    );
+      programId: Number(programId),
+      hasPersonalReadPermission: hasPersonalRead,
+      noLimit: false,
+    });
   }
 
   @AuthenticatedUser({

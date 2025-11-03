@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import chunk from 'lodash/chunk';
 import {
   FilterOperator,
   paginate,
@@ -12,7 +11,6 @@ import { Equal, Repository } from 'typeorm';
 
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
-import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import {
   AllowedFiltersNumber,
   AllowedFiltersString,
@@ -43,16 +41,21 @@ export class RegistrationsPaginationService {
   public constructor(
     private readonly programService: ProgramService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
-    private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
   ) {}
 
-  public async getPaginate(
-    query: PaginateQuery,
-    programId: number,
-    hasPersonalReadPermission: boolean,
-    noLimit: boolean,
-    queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>,
-  ): Promise<FindAllRegistrationsResultDto> {
+  public async getPaginate({
+    query,
+    programId,
+    hasPersonalReadPermission,
+    noLimit,
+    queryBuilder,
+  }: {
+    query: PaginateQuery;
+    programId: number;
+    hasPersonalReadPermission: boolean;
+    noLimit: boolean;
+    queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>;
+  }): Promise<FindAllRegistrationsResultDto> {
     // Deep clone query here to prevent mutation out of this function
     query = structuredClone(query);
 
@@ -61,7 +64,7 @@ export class RegistrationsPaginationService {
       // These setting are needed to get all registrations
       // This is used for doing bulk updates with a filter
       paginateConfigCopy = { ...PaginateConfigRegistrationViewNoLimit };
-      query.limit = 0;
+      query.limit = -1; // -1 means no limit in nestjs-paginate
     }
 
     const orignalSelect = query.select ? [...query.select] : [];
@@ -186,106 +189,60 @@ export class RegistrationsPaginationService {
   }
 
   /**
-   * Get a large amount of registration views by using paginate query in chunks.
-   * This method works around memory limitations by processing the registrations in chunks.
+   * Get a large amount of registration views not limited by a max per page.
    * @param programId - The ID of the program.
    * @param paginateQuery - The paginate query to filter and sort the registrations.
-   * @param chunkSize - The size of each chunk.
-   * @param baseQuery - An optional base query builder to use as a starting point.
+   * @param queryBuilder - An optional query builder to use as a starting point.
    * @returns An array of registration views.
    */
-  public async getRegistrationViewsChunkedByPaginateQuery(
-    programId: number,
-    paginateQuery: PaginateQuery,
-    chunkSize: number,
-    baseQuery?: ScopedQueryBuilder<RegistrationViewEntity>,
-  ) {
-    paginateQuery.limit = chunkSize;
+  public async getRegistrationViewsNoLimit({
+    programId,
+    paginateQuery,
+    queryBuilder,
+  }: {
+    programId: number;
+    paginateQuery: PaginateQuery;
+    queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>;
+  }) {
     paginateQuery.page = 1;
-    let totalPages = 1;
 
-    let allRegistrations: Awaited<
-      ReturnType<RegistrationsPaginationService['getPaginate']>
-    >['data'] = [];
+    const paginateResult = await this.getPaginate({
+      query: paginateQuery,
+      programId,
+      hasPersonalReadPermission: true,
+      noLimit: true,
+      queryBuilder: queryBuilder ? queryBuilder.clone() : undefined,
+    });
 
-    for (let i = 0; i < totalPages; i++) {
-      const paginateResult = await this.getPaginate(
-        paginateQuery,
-        programId,
-        true,
-        false,
-        baseQuery ? baseQuery.clone() : undefined, // We need to create a separate queryBuilder object twice or it will be modified twice
-      );
-      totalPages = paginateResult.meta.totalPages ?? 0;
-      paginateQuery.page = paginateQuery.page + 1;
-      allRegistrations = allRegistrations.concat(...paginateResult.data);
-    }
-    return allRegistrations;
+    return paginateResult.data;
   }
 
   /**
-   * Get a large amount of registration views by their reference IDs. This method works around query length limitations by processing the reference IDs in chunks.
+   * Get a large amount of registration views by their reference IDs. This method works around query length limitations by using ANY().
    * @param programId - The ID of the program.
    * @param referenceIds - The reference IDs of the registrations.
    * @param select - The fields to select.
-   * @param chunkSize - The size of each chunk.
    */
-  public async getRegistrationViewsChunkedByReferenceIds({
+  public async getRegistrationViewsByReferenceIds({
     programId,
     referenceIds,
     select,
-    chunkSize,
   }: {
     programId: number;
     referenceIds: string[];
     select?: string[];
-    chunkSize?: number;
   }): Promise<MappedPaginatedRegistrationDto[]> {
-    const defaultChunkSize = 20000;
-    const effectiveChunkSize = chunkSize || defaultChunkSize;
+    const querybuilder =
+      this.registrationViewScopedRepository.createQueryBuilderToGetRegistrationViewsByReferenceIds(
+        referenceIds,
+      );
 
-    // Ensure that the a new queryBuilder is created for a chunk of referenceIds because limited query length
-    const allResults: MappedPaginatedRegistrationDto[] = [];
-
-    const chunks = chunk(referenceIds, effectiveChunkSize);
-    for (const currentChunk of chunks) {
-      const querybuilder =
-        this.registrationViewScopedRepository.createQueryBuilderToGetRegistrationViewsByReferenceIds(
-          currentChunk,
-        );
-      const chunkResults = await this.getFirstPageOfPaginatedRegistrations({
-        paginateQuery: { select, limit: effectiveChunkSize, path: '' },
-        limit: effectiveChunkSize,
-        programId,
-        baseQuery: querybuilder,
-      });
-      allResults.push(...chunkResults);
-    }
-
-    return allResults;
-  }
-
-  private async getFirstPageOfPaginatedRegistrations({
-    paginateQuery,
-    limit,
-    programId,
-    baseQuery,
-  }: {
-    paginateQuery: PaginateQuery;
-    limit: number;
-    programId: number;
-    baseQuery?: ScopedQueryBuilder<RegistrationViewEntity>;
-  }) {
-    paginateQuery.limit = limit;
-    paginateQuery.page = 1;
-    const paginateResult = await this.getPaginate(
-      paginateQuery,
+    const result = await this.getRegistrationViewsNoLimit({
+      paginateQuery: { select, path: '' },
       programId,
-      true,
-      false,
-      baseQuery ? baseQuery.clone() : undefined,
-    );
-    return paginateResult.data;
+      queryBuilder: querybuilder,
+    });
+    return result;
   }
 
   public async throwIfNoPersonalReadPermission(

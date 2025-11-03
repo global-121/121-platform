@@ -104,7 +104,11 @@ export class PaymentsExecutionService {
 
     // Get array of RegistrationViewEntity objects to be paid
     const registrationsForPayment =
-      await this.getRegistrationsForPaymentChunked(programId, paginateQuery);
+      await this.registrationsPaginationService.getRegistrationViewsNoLimit({
+        programId,
+        paginateQuery,
+        queryBuilder: this.getPaymentBaseQuery(),
+      });
 
     // Calculate the totalMultiplierSum and create an array with all FSPs for this payment
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
@@ -303,20 +307,6 @@ export class PaymentsExecutionService {
     }
 
     return errorMessages;
-  }
-
-  private async getRegistrationsForPaymentChunked(
-    programId: number,
-    paginateQuery: PaginateQuery,
-  ) {
-    const chunkSize = 4000;
-
-    return await this.registrationsPaginationService.getRegistrationViewsChunkedByPaginateQuery(
-      programId,
-      paginateQuery,
-      chunkSize,
-      this.getPaymentBaseQuery(),
-    );
   }
 
   private getPaymentBaseQuery(): ScopedQueryBuilder<RegistrationViewEntity> {
@@ -540,7 +530,7 @@ export class PaymentsExecutionService {
     const programFspConfigurationIdColumn: keyof RegistrationViewEntity =
       'programFspConfigurationId';
     const registrations =
-      await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
+      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
         {
           programId,
           referenceIds,
@@ -549,7 +539,6 @@ export class PaymentsExecutionService {
             GenericRegistrationAttributes.paymentAmountMultiplier,
             programFspConfigurationIdColumn,
           ],
-          chunkSize: 4000,
         },
       );
 

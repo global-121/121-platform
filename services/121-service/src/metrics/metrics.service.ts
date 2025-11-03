@@ -204,23 +204,20 @@ export class MetricsService {
       .createQueryBuilder('registration')
       .andWhere({ programId });
 
-    const chunkSize = 10000;
     const paginateQueryForBulk = {
       path: 'registration',
       filter: paginationQuery.filter,
-      limit: chunkSize,
       page: 1,
       select: paginationQuery.select,
       search: paginationQuery.search,
     };
 
     const data =
-      await this.registrationsPaginationsService.getRegistrationViewsChunkedByPaginateQuery(
+      await this.registrationsPaginationsService.getRegistrationViewsNoLimit({
         programId,
-        paginateQueryForBulk,
-        chunkSize,
+        paginateQuery: paginateQueryForBulk,
         queryBuilder,
-      );
+      });
     return data;
   }
 
