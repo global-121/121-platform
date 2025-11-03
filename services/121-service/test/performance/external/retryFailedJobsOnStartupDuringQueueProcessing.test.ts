@@ -83,11 +83,14 @@ describe('Retry Failed Jobs On Startup During Queue Processing', () => {
     // Wait long enough so that jobs are added to the queue but not finished processing
     await waitFor(5_000);
     // Kill 121 service to simulate crash during queue processing
-    await kill121Service();
+    void kill121Service().catch(() => {
+      // Ignore error of the service being killed that causes: 'Error: socket hang up'
+    });
     // Wait for the service to restart and become available
     let serviceUp = false;
     while (!serviceUp) {
-      await waitFor(1_000); // Wait for 1 second before pinging again
+      console.log('Waiting for 121 service to restart...');
+      await waitFor(1_000);
       serviceUp = await isServiceUp();
     }
     // Assert
