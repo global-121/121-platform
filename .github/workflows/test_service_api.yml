@@ -72,12 +72,16 @@ jobs:
 
       - name: Run Services with Docker
         run: |
-          npm run start:services:ci
+          npm run start:services:ci:production
+
+      - name: Wait for services to be ready
+        run: |
+          timeout 90s sh -c 'until curl http://localhost:3000/api -I; do echo "Waiting for the 121-service to be running..."; sleep 1; done'
 
       - name: Run integration tests with Jest
         working-directory: ${{ env.workingDirectory }}
         run: |
-          docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
+          npm run test:integration:all -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
 
       # For more info, see services/121-service/README.md#Integration-test-coverage
       - name: Generate lcov report from 121-service
