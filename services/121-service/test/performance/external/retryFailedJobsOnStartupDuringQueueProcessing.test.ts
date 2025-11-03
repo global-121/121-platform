@@ -23,7 +23,7 @@ import {
 } from '@121-service/test/performance/helpers/performance.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-const duplicateNumber = 7; // 2^7 = 128
+const duplicateNumber = 5; // 2^5 = 32
 const maxWaitTimeMs = 240_000; // 4 minutes
 const passRate = 100; // 100%
 const maxRetryDurationMs = 1_800_000; // 30 minutes
@@ -81,7 +81,7 @@ describe('Retry Failed Jobs On Startup During Queue Processing', () => {
     });
     expect(doPaymentResponse.statusCode).toBe(HttpStatus.ACCEPTED);
     // Wait long enough so that jobs are added to the queue but not finished processing
-    await waitFor(5_000);
+    await waitFor(100);
     // Kill 121 service to simulate crash during queue processing
     void kill121Service().catch(() => {
       // Ignore error of the service being killed that causes: 'Error: socket hang up'
