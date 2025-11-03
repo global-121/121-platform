@@ -3,7 +3,7 @@ name: 'Run External Integration Test: Retry Failed Jobs'
 on:
   push:
     branches:
-      - Piotrk39/refactor.move-remaining-k6-tests
+      - Piotrk39/refactor.move-remaining-k6-test
   schedule:
     - cron: '42 1 * * 1-5'
   workflow_dispatch:
