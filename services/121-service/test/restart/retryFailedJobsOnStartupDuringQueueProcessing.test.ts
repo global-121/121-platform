@@ -37,7 +37,6 @@ describe('Retry Failed Jobs On Startup During Queue Processing', () => {
 
   it('Setup, do payment, kill service and restart', async () => {
     // Arrange
-    const startTime = Date.now();
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
     // Upload registration
@@ -62,7 +61,7 @@ describe('Retry Failed Jobs On Startup During Queue Processing', () => {
       maxWaitTimeMs,
       accessToken,
     });
-    // Duplicate registration to be 128
+    // Duplicate registration to be 32
     const duplicateRegistrationsResponse = await duplicateRegistrations({
       powerNumberRegistration: duplicateNumber,
       accessToken,
@@ -81,7 +80,7 @@ describe('Retry Failed Jobs On Startup During Queue Processing', () => {
     });
     expect(doPaymentResponse.statusCode).toBe(HttpStatus.ACCEPTED);
     // Wait long enough so that jobs are added to the queue but not finished processing
-    await waitFor(100);
+    await waitFor(1_000);
     // Kill 121 service to simulate crash during queue processing
     void kill121Service().catch(() => {
       // Ignore error of the service being killed that causes: 'Error: socket hang up'
@@ -95,7 +94,7 @@ describe('Retry Failed Jobs On Startup During Queue Processing', () => {
     }
     // Assert
     // Check payment results to have 100% success rate
-    await getPaymentResults({
+    const paymentResults = await getPaymentResults({
       programId: programIdOCW,
       paymentId: 1,
       accessToken,
@@ -105,7 +104,7 @@ describe('Retry Failed Jobs On Startup During Queue Processing', () => {
       delayBetweenAttemptsMs,
       verbose: true,
     });
-    const elapsedTime = Date.now() - startTime;
-    expect(elapsedTime).toBeLessThan(testTimeout);
+
+    expect(paymentResults.success).toBe(true);
   });
 });
