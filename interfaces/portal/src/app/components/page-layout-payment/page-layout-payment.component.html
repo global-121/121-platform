@@ -11,6 +11,7 @@
       <h1 class="me-auto">
         {{ paymentTitle() }}
       </h1>
+      <!-- @if (canStartPayment()) ##TODO insert here once FE is merged in -->
       @if (hasFspWithExportFileIntegration()) {
         <app-import-reconciliation-data
           [paymentId]="paymentId()"
