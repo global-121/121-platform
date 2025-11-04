@@ -95,7 +95,7 @@ class RtlHelperServiceStub {
   }
 
   createRtlFriendlyChevronIcon() {
-    return signal('pi pi-chevron-right');
+    return signal('classnames');
   }
 }
 
