@@ -74,6 +74,10 @@ jobs:
         run: |
           npm run start:services:ci:production
 
+      - name: Wait for services to be ready
+        run: |
+          timeout 90s sh -c 'until curl http://localhost:3000/api -I; do echo "Waiting for the 121-service to be running..."; sleep 1; done'
+
       - name: Run integration tests with Jest
         working-directory: ${{ env.workingDirectory }}
         # Ignore the retryFailedJobsOnStartupDuringQueueProcessing test in this job because it requires :production mode
