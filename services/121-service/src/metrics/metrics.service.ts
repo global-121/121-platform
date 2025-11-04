@@ -159,6 +159,7 @@ export class MetricsService {
         delete row['registrationProgramId'];
       }
 
+      // If the label is multilingual, use the English string as the label.
       if (typeof row['programFspConfigurationLabel'] === 'object') {
         const preferredLanguage = 'en';
         row['programFspConfigurationLabel'] = row[
