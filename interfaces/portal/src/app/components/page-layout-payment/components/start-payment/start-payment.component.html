@@ -7,7 +7,7 @@
   rounded
 ></p-button>
 
-<!-- ##TODO: don't use form-dialog for something that doesn't need input? -->
+<!-- TODO: don't use form-dialog for something that doesn't need input -->
 <app-form-dialog
   #startPaymentDialog
   header="Start payment"
@@ -15,10 +15,10 @@
   headerIcon="pi pi-send"
   [mutation]="startPaymentMutation"
   [mutationData]="undefined"
+  proceedLabel="Start payment"
+  i18n-proceedLabel
 >
   <p>
-    <span i18n>Your payment has been approved by all needed approvers.</span>
-    <br />
     <span i18n
       >Click start payment to instigate the payment through your FSP.</span
     >

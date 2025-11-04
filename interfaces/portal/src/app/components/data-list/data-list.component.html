@@ -19,10 +19,12 @@
           class="py-1"
         />
       } @else {
-        <strong class="me-1">{{ item.label | translatableString }}:</strong>
-        @if (item.tooltip) {
-          <app-info-tooltip [message]="item.tooltip" />
-        }
+        <div class="me-1">
+          <strong>{{ item.label | translatableString }}:</strong>
+          @if (item.tooltip) {
+            <app-info-tooltip [message]="item.tooltip" />
+          }
+        </div>
         @if (item.chipLabel && item.chipVariant) {
           <app-colored-chip
             [variant]="item.chipVariant"

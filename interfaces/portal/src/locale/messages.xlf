@@ -2018,9 +2018,6 @@
       <trans-unit id="2294371994435809058" datatype="html">
         <source>Click start payment to instigate the payment through your FSP.</source>
       </trans-unit>
-      <trans-unit id="2886295542241968756" datatype="html">
-        <source>Your payment has been approved by all needed approvers.</source>
-      </trans-unit>
       <trans-unit id="7392987714730903698" datatype="html">
         <source>registrations</source>
       </trans-unit>

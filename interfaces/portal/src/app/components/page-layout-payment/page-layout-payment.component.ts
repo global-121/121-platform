@@ -14,6 +14,10 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
 
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FspDto } from '@121-service/src/fsps/fsp.dto';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+
 import { AppRoutes } from '~/app.routes';
 import { MetricTileComponent } from '~/components/metric-tile/metric-tile.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
@@ -27,6 +31,7 @@ import { PaymentAggregate } from '~/domains/payment/payment.model';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { projectHasFspWithExportFileIntegration } from '~/domains/project/project.helper';
 import { RtlHelperService } from '~/services/rtl-helper.service';
+import { TranslatableStringService } from '~/services/translatable-string.service';
 
 import { TransactionStatusEnum } from '../../../../../../services/121-service/src/payments/transactions/enums/transaction-status.enum';
 
@@ -59,6 +64,9 @@ export class PageLayoutPaymentComponent {
   readonly locale = inject(LOCALE_ID);
   readonly paymentApiService = inject(PaymentApiService);
   readonly projectApiService = inject(ProjectApiService);
+  readonly translatableStringService = inject(TranslatableStringService);
+
+  readonly fspSettings = signal<Record<Fsps, FspDto>>(FSP_SETTINGS);
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   paymentStatus = injectQuery(
@@ -166,8 +174,29 @@ export class PageLayoutPaymentComponent {
           .data()
           .map((transaction) => transaction.programFspConfigurationName),
       ),
-    ).join(', ');
+    )
+      .map((fspName) => this.fspLabel(fspName)())
+      .join(', ');
   });
+
+  readonly fspLabel = (fspName: string) =>
+    computed<string>(() => {
+      if (!this.fspSettings()[fspName]) {
+        return fspName;
+      }
+
+      const setting = this.fspSettings()[fspName] as FspDto;
+
+      const translatedFspLabel = this.translatableStringService.translate(
+        setting.defaultLabel,
+      );
+
+      if (!translatedFspLabel) {
+        return fspName;
+      }
+
+      return translatedFspLabel;
+    });
 
   readonly startPaymentTransactionCount = computed<string>(() => {
     if (!this.payment.isSuccess()) {
