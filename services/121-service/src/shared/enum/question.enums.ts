@@ -1,6 +1,6 @@
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
 
 export interface QuestionOption {
   option: string;
-  label: LocalizedString;
+  label: LocalizedStringForUI;
 }

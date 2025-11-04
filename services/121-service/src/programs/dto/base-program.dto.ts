@@ -8,8 +8,8 @@ import {
   IsString,
 } from 'class-validator';
 
-import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { RegistrationPreferredLanguageEnum } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 /**
@@ -40,7 +40,7 @@ export abstract class BaseProgramDto {
 
   @ApiProperty({ example: { en: 'description' } })
   @IsOptional()
-  public readonly description?: LocalizedString;
+  public readonly description?: LocalizedStringForUI;
 
   @ApiProperty({ example: '2020-01-01T00:01:00.000Z' })
   @IsOptional()
@@ -90,11 +90,11 @@ export abstract class BaseProgramDto {
   public readonly fullnameNamingConvention?: string[];
 
   @ApiProperty({
-    example: Object.values(UILanguageEnum),
+    example: Object.values(RegistrationPreferredLanguageEnum),
   })
   @IsOptional()
   @IsArray()
-  public readonly languages?: WrapperType<UILanguageEnum[]>;
+  public readonly languages?: WrapperType<RegistrationPreferredLanguageEnum[]>;
 
   @IsOptional()
   @IsBoolean()

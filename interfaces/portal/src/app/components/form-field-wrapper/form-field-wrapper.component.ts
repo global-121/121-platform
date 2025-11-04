@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
@@ -14,7 +14,7 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormFieldWrapperComponent {
-  readonly label = input.required<LocalizedString | string>();
+  readonly label = input.required<LocalizedStringForUI | string>();
   readonly labelTooltip = input<string>();
   readonly isRequired = input<boolean>();
   readonly errorMessage = input<false | string>();

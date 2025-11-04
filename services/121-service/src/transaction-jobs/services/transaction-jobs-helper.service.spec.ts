@@ -10,7 +10,7 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
-import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
+import { RegistrationPreferredLanguageEnum } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 
 const mockedRegistration: RegistrationEntity = {
@@ -18,7 +18,7 @@ const mockedRegistration: RegistrationEntity = {
   referenceId: 'ref-123',
   registrationStatus: RegistrationStatusEnum.included,
   paymentCount: 0,
-  preferredLanguage: UILanguageEnum.en,
+  preferredLanguage: RegistrationPreferredLanguageEnum.en,
 } as RegistrationEntity;
 
 describe('TransactionJobsHelperService', () => {

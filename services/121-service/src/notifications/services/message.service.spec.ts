@@ -11,13 +11,13 @@ import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsap
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
-import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
+import { RegistrationPreferredLanguageEnum } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 const defaultMessageJob = {
   whatsappPhoneNumber: '1234567890',
   phoneNumber: '1234567890',
-  preferredLanguage: UILanguageEnum.en,
+  preferredLanguage: RegistrationPreferredLanguageEnum.en,
   referenceId: 'ref-test',
   programId: 1,
   message: 'test message',

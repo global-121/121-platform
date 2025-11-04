@@ -1,14 +1,14 @@
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
 
 // Configuration for a single message template
 interface SeedMessageTemplateConfigRecord {
   isSendMessageTemplate: boolean;
   isWhatsappTemplate: boolean;
-  label?: LocalizedString;
+  label?: LocalizedStringForUI;
 
   // Content properties (either message or contentSid may be present)
-  message?: LocalizedString;
-  contentSid?: LocalizedString;
+  message?: LocalizedStringForUI;
+  contentSid?: LocalizedStringForUI;
 }
 
 // Disabled eslint rule else the interface would be converted to a 'type'

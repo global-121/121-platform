@@ -11,10 +11,10 @@ import {
   ValidateIf,
 } from 'class-validator';
 
-import { LocalizedString } from '@121-service/src//shared/types/localized-string.type';
 import { WrapperType } from '@121-service/src//wrapper.type';
 import { ContentSidMessageTypes } from '@121-service/src/notifications/message-template/const/content-sid-message-types.const';
-import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
+import { RegistrationPreferredLanguageEnum } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
 
 export class CreateMessageTemplateDto {
   @ApiProperty({
@@ -26,15 +26,15 @@ export class CreateMessageTemplateDto {
 
   @ApiProperty()
   @IsString()
-  @IsEnum(UILanguageEnum)
-  public readonly language: WrapperType<UILanguageEnum>;
+  @IsEnum(RegistrationPreferredLanguageEnum)
+  public readonly language: WrapperType<RegistrationPreferredLanguageEnum>;
 
   @ApiProperty({
     example: { en: 'Template label' },
   })
   @IsNotEmpty()
   @ValidateIf((o) => o.isSendMessageTemplate)
-  public readonly label: LocalizedString;
+  public readonly label: LocalizedStringForUI;
 
   @ApiProperty({
     example: 'Hello {{fullName}}, welcome to 121!',
@@ -70,8 +70,8 @@ export class UpdateTemplateParamDto {
   @IsString()
   @Length(1, 255)
   public readonly type: string;
-  @IsEnum(UILanguageEnum)
-  public readonly language: WrapperType<UILanguageEnum>;
+  @IsEnum(RegistrationPreferredLanguageEnum)
+  public readonly language: WrapperType<RegistrationPreferredLanguageEnum>;
 }
 
 export class UpdateTemplateBodyDto {
@@ -107,7 +107,7 @@ export class UpdateTemplateBodyDto {
     description: 'Localized label for the template',
   })
   @IsOptional()
-  public readonly label?: LocalizedString;
+  public readonly label?: LocalizedStringForUI;
 }
 
 export class DeleteTemplateParamDto {
@@ -121,6 +121,6 @@ export class DeleteTemplateParamDto {
 
 export class DeleteTemplateQueryDto {
   @IsOptional()
-  @IsEnum(UILanguageEnum)
-  public readonly language?: WrapperType<UILanguageEnum>;
+  @IsEnum(RegistrationPreferredLanguageEnum)
+  public readonly language?: WrapperType<RegistrationPreferredLanguageEnum>;
 }

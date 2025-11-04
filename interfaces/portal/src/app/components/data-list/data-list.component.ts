@@ -16,7 +16,7 @@ import { RouterLink } from '@angular/router';
 
 import { SkeletonModule } from 'primeng/skeleton';
 
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
 import { getRandomInt } from '@121-service/src/utils/random-value.helper';
 
 import {
@@ -28,7 +28,7 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
 export type DataListItem = {
-  label: LocalizedString | string;
+  label: LocalizedStringForUI | string;
   tooltip?: string;
   loading?: boolean;
   chipLabel?: string;
@@ -60,11 +60,11 @@ export type DataListItem = {
   | {
       type: 'options';
       value: string | string[];
-      options?: { value: string; label?: LocalizedString | string }[];
+      options?: { value: string; label?: LocalizedStringForUI | string }[];
     }
   | {
       type?: 'text';
-      value?: LocalizedString | null | string;
+      value?: LocalizedStringForUI | null | string;
       routerLink?: RouterLink['routerLink'];
     }
 );

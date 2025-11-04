@@ -19,7 +19,7 @@ import { RegistrationViewEntity } from '@121-service/src/registration/entities/r
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
-import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
+import { RegistrationPreferredLanguageEnum } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 
 @Injectable()
@@ -114,7 +114,8 @@ export class TransactionJobsHelperService {
     )?.message;
     if (!messageContent) {
       messageContent = templates.find(
-        (template) => template.language === UILanguageEnum.en,
+        (template) =>
+          template.language === RegistrationPreferredLanguageEnum.en,
       )?.message;
     }
     // Note: messageContent is possible undefined/null here, so we're assuming here that the message processor will handle this properly.

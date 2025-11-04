@@ -18,7 +18,7 @@ import { RegistrationValidationInputType } from '@121-service/src/registration/e
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
-import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
+import { RegistrationPreferredLanguageEnum } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UserService } from '@121-service/src/user/user.service';
 
 const programId = 1;
@@ -292,7 +292,7 @@ describe('RegistrationsInputValidator', () => {
     const csvArray = [
       {
         namePartnerOrganization: 'ABC',
-        preferredLanguage: UILanguageEnum.en,
+        preferredLanguage: RegistrationPreferredLanguageEnum.en,
         maxPayments: '5',
         nameFirst: 'Test',
         nameLast: 'Test',

@@ -13,7 +13,7 @@ import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-cod
 import { BaseProgramDto } from '@121-service/src/programs/dto/base-program.dto';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 // This declared at the top of the file because it is used in the CreateProgramDto and else it is not defined yet
@@ -92,7 +92,7 @@ const exampleAttributes: ProgramRegistrationAttributeDto[] = [
 export class CreateProgramDto extends BaseProgramDto {
   @ApiProperty({ example: { en: 'title' } })
   @IsNotEmpty()
-  public readonly titlePortal: LocalizedString;
+  public readonly titlePortal: LocalizedStringForUI;
 
   @ApiProperty({ example: 'MWK' })
   @IsNotEmpty()

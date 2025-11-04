@@ -17,6 +17,7 @@ import { ProgramEntity } from '@121-service/src/programs/entities/program.entity
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
+import { RegistrationPreferredLanguageEnum } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
 // TODO: Consider Refactoring this service as intersolve voucher is the only fsp with a cron-service.
 // Also it makes sense a separation of concerns that an fsp specific service does not know it's called by a cronjob.
@@ -33,7 +34,8 @@ export class IntersolveVoucherCronService {
   @InjectRepository(ProgramEntity)
   public programRepository: Repository<ProgramEntity>;
 
-  private readonly fallbackLanguage = 'en';
+  private readonly fallbackRegistrationPreferredLanguage =
+    RegistrationPreferredLanguageEnum.en;
 
   public constructor(
     private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
@@ -214,6 +216,6 @@ export class IntersolveVoucherCronService {
     if (registration && registration.preferredLanguage) {
       return registration.preferredLanguage;
     }
-    return this.fallbackLanguage;
+    return this.fallbackRegistrationPreferredLanguage;
   }
 }

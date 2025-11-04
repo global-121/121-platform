@@ -1,20 +1,13 @@
 /**
- * * Supported language-codes/locales
- * * See: <https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes>
- * * Make sure to use the 2-letter code from the "Set 1"-column.
- * * Optionally: Add a country-code in capitals separated with an underscore. (For example: "nl_BE")
- * */
-
+ * Supported locales for the User Interface.
+ * See: <https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes>
+ * Make sure to use the 2-letter code from the "Set 1"-column.
+ */
 export enum UILanguageEnum {
-  en = 'en',
   ar = 'ar',
-  tl = 'tl',
-  ptBR = 'pt_BR',
-  in = 'in',
+  en = 'en',
   nl = 'nl',
   es = 'es',
   fr = 'fr',
-  tr = 'tr',
-  uk = 'uk',
   sk = 'sk',
 }
