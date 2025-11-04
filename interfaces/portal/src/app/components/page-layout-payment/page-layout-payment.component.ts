@@ -14,6 +14,8 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
 
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+
 import { AppRoutes } from '~/app.routes';
 import { MetricTileComponent } from '~/components/metric-tile/metric-tile.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
@@ -25,6 +27,7 @@ import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { PaymentAggregate } from '~/domains/payment/payment.model';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { projectHasFspWithExportFileIntegration } from '~/domains/project/project.helper';
+import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 
 @Component({
@@ -55,6 +58,7 @@ export class PageLayoutPaymentComponent {
   readonly locale = inject(LOCALE_ID);
   readonly paymentApiService = inject(PaymentApiService);
   readonly projectApiService = inject(ProjectApiService);
+  private authService = inject(AuthService);
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   paymentStatus = injectQuery(
@@ -149,5 +153,16 @@ export class PageLayoutPaymentComponent {
 
   readonly hasFspWithExportFileIntegration = computed(() =>
     projectHasFspWithExportFileIntegration(this.project.data()),
+  );
+
+  readonly canStartPayment = computed(() =>
+    this.authService.hasAllPermissions({
+      projectId: this.projectId(),
+      requiredPermissions: [
+        PermissionEnum.PaymentREAD,
+        PermissionEnum.PaymentUPDATE,
+        PermissionEnum.PaymentTransactionREAD,
+      ],
+    }),
   );
 }

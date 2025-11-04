@@ -53,7 +53,7 @@ export class ImportReconciliationDataComponent {
       projectId: this.projectId(),
       requiredPermissions: [
         PermissionEnum.PaymentREAD,
-        PermissionEnum.PaymentCREATE,
+        PermissionEnum.PaymentUPDATE,
         PermissionEnum.PaymentTransactionREAD,
       ],
     }),
