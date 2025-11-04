@@ -19,11 +19,6 @@ interface Filter {
 }
 type ColumnsFilters = Record<string, Filter[]>;
 
-export interface TransactionRegistrationIdentifier {
-  transactionId: number;
-  matchColumnValue: string;
-}
-
 // TODO: Unit tests for this class should be created
 @Injectable({ scope: Scope.REQUEST, durable: true })
 export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepository<RegistrationViewEntity> {
@@ -301,10 +296,7 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
     });
 
     return new Map(
-      rows.map((row: TransactionRegistrationIdentifier) => [
-        row.matchColumnValue,
-        row.transactionId,
-      ]),
+      rows.map((row) => [row.matchColumnValue, row.transactionId]),
     );
   }
 
