@@ -230,28 +230,46 @@ export class ExcelReconciliationService {
     const matchColumnValuesForCurrentStatus = recordsForCurrentStatus.map(
       (record) => record[matchColumn],
     ); // So a list of phone numbers or nationalIds
-    const transactionIdsToUpdate: number[] =
-      await this.registrationViewScopedRepository.getTransactionIdsByPaymentAndRegistrationData(
+    // We need this pair to be able to correctly map an error message to it corresponding transaction id
+    const transactionAndRegistrationIdentifierPairs: Map<string, number> =
+      await this.registrationViewScopedRepository.getTransactionIdsMappedToMatchColumnValue(
         {
           paymentId,
           programRegistrationAttributeId,
           dataValues: matchColumnValuesForCurrentStatus,
         },
       );
+    const transactionIdsToUpdate = Array.from(
+      transactionAndRegistrationIdentifierPairs.values(),
+    );
 
     if (transactionIdsToUpdate.length === 0) {
       return; // Nothing to do no transactions to update and no events to create
     }
 
-    const errorMessages: Map<number, string> =
-      transactionStatus === TransactionStatusEnum.error
-        ? new Map(
-            transactionIdsToUpdate.map((transactionId, index) => [
-              transactionId,
-              recordsForCurrentStatus[index].errorMessage as string,
-            ]),
-          )
-        : new Map();
+    let errorMessages = new Map<number, string>();
+
+    if (transactionStatus === TransactionStatusEnum.error) {
+      const errorsByMatchValue = new Map<string, string>();
+      for (const record of recordsForCurrentStatus) {
+        const matchValue = record[matchColumn] as string;
+        const errorMessage = record[
+          ExcelReconciliationDefaultColumns.errorMessage
+        ] as string;
+        errorsByMatchValue.set(matchValue, errorMessage);
+      }
+
+      const messagesByTransactionId = new Map<number, string>();
+      for (const [
+        matchValue,
+        transactionId,
+      ] of transactionAndRegistrationIdentifierPairs) {
+        const errorMessage = errorsByMatchValue.get(matchValue) as string;
+        messagesByTransactionId.set(transactionId, errorMessage);
+      }
+
+      errorMessages = messagesByTransactionId;
+    }
 
     await this.transactionsService.saveTransactionProgressBulk({
       newTransactionStatus: transactionStatus,

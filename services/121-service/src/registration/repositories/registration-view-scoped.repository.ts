@@ -19,6 +19,11 @@ interface Filter {
 }
 type ColumnsFilters = Record<string, Filter[]>;
 
+export interface TransactionRegistrationIdentifier {
+  transactionId: number;
+  matchColumnValue: string;
+}
+
 // TODO: Unit tests for this class should be created
 @Injectable({ scope: Scope.REQUEST, durable: true })
 export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepository<RegistrationViewEntity> {
@@ -276,7 +281,7 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
     return uniqueFspConfigIds;
   }
 
-  public async getTransactionIdsByPaymentAndRegistrationData({
+  public async getTransactionIdsMappedToMatchColumnValue({
     paymentId,
     programRegistrationAttributeId,
     dataValues,
@@ -284,16 +289,23 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
     paymentId: number;
     programRegistrationAttributeId: number;
     dataValues: (string | number | boolean | undefined)[];
-  }): Promise<number[]> {
-    const result = await this.getQueryBuilderFilterByPaymentAndRegistrationData(
-      {
-        paymentId,
-        programRegistrationAttributeId,
-        dataValues,
-        select: ['transaction.id as "transactionId"'],
-      },
+  }): Promise<Map<string, number>> {
+    const rows = await this.getQueryBuilderFilterByPaymentAndRegistrationData({
+      paymentId,
+      programRegistrationAttributeId,
+      dataValues,
+      select: [
+        'transaction.id as "transactionId"',
+        'registrationData.value as "matchColumnValue"',
+      ],
+    });
+
+    return new Map(
+      rows.map((row: TransactionRegistrationIdentifier) => [
+        row.matchColumnValue,
+        row.transactionId,
+      ]),
     );
-    return result.map((r: any) => r.transactionId);
   }
 
   public async getReferenceIdsAndStatusesByPaymentForRegistrationData({
