@@ -24,7 +24,4 @@ fi
 log "Running lint-staged"
 npx lint-staged
 
-log "Running extract-i18n-if-changed script"
-(cd interfaces/portal && npm run extract-i18n:smart)
-
 log "All done"
