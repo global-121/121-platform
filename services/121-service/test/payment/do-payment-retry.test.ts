@@ -97,7 +97,11 @@ describe('Do payment retry', () => {
       [registrationSuccess, registrationError1, registrationWaiting],
       programId,
       amount,
-      Object.values(TransactionStatusEnum),
+      [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+        TransactionStatusEnum.waiting,
+      ],
     );
 
     // Act
