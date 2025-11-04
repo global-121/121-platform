@@ -51,10 +51,12 @@ export class AddPaymentUpdatePermission1762185324519
       (role) => role.role === 'cva-manager',
     );
     const paymentCreatePermission = 'payment.create' as PermissionEnum;
-    const paymentCreatePermissionEntity =
-      await permissionsRepository.findOneOrFail({
-        where: { name: Equal(paymentCreatePermission) },
-      });
+    const paymentCreatePermissionEntity = await permissionsRepository.findOne({
+      where: { name: Equal(paymentCreatePermission) },
+    });
+    if (!paymentCreatePermissionEntity) {
+      return;
+    }
 
     if (cvaManagerRole) {
       const hasPermission = cvaManagerRole.permissions.some(
