@@ -62,14 +62,6 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v5
 
-      - name: Set up Node.js version
-        uses: actions/setup-node@v6
-        with:
-          # See supported Node.js versions: https://github.com/Azure/app-service-linux-docs/blob/master/Runtime_Support/node_support.md
-          node-version-file: '${{ env.workingDirectory }}/.node-version'
-          cache: 'npm'
-          cache-dependency-path: '${{ env.workingDirectory }}/package-lock.json'
-
       - name: Set ENV-variables for test-environment
         run: |
           cp ./services/.env.example services/.env
@@ -78,17 +70,9 @@ jobs:
           # this is needed to collect coverage data during integration tests
           echo "COVERAGE_DEV_STARTUP_SUFFIX=:collect-coverage" >> $GITHUB_ENV
 
-      - name: Install dependencies
-        working-directory: ${{ env.workingDirectory }}
-        run: npm ci
-
       - name: Run Services with Docker
         run: |
           npm run start:services:ci
-
-      - name: Wait for services to be ready
-        run: |
-          timeout 90s sh -c 'until curl http://localhost:3000/api -I; do echo "Waiting for the 121-service to be running..."; sleep 1; done'
 
       - name: Run integration tests with Jest
         working-directory: ${{ env.workingDirectory }}
