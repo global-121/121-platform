@@ -306,7 +306,7 @@ export class IntersolveVisaService {
 
     // Update parent wallet: set linkedToVisaCustomer to true
     intersolveVisaParentWallet.isLinkedToVisaCustomer = true;
-    await this.intersolveVisaParentWalletScopedRepository.update(
+    await this.intersolveVisaParentWalletScopedRepository.updateUnscoped(
       intersolveVisaParentWallet.id,
       { isLinkedToVisaCustomer: true },
     );
@@ -366,7 +366,7 @@ export class IntersolveVisaService {
 
     // Update child wallet: set linkedToParentWallet to true
     intersolveVisaChildWallet.isLinkedToParentWallet = true;
-    await this.intersolveVisaChildWalletScopedRepository.update(
+    await this.intersolveVisaChildWalletScopedRepository.updateUnscoped(
       intersolveVisaChildWallet.id,
       { isLinkedToParentWallet: true },
     );
@@ -413,7 +413,7 @@ export class IntersolveVisaService {
     // If success, update child wallet: set isDebitCardCreated to true
     childWallet.isDebitCardCreated = true;
     childWallet.cardStatus = IntersolveVisaCardStatus.CardOk;
-    await this.intersolveVisaChildWalletScopedRepository.update(
+    await this.intersolveVisaChildWalletScopedRepository.updateUnscoped(
       childWallet.id,
       {
         isDebitCardCreated: true,
@@ -464,7 +464,7 @@ export class IntersolveVisaService {
       updatePayload.lastUsedDate =
         getTransactionInformationResultDto.lastTransactionDate;
     }
-    await this.intersolveVisaParentWalletScopedRepository.update(
+    await this.intersolveVisaParentWalletScopedRepository.updateUnscoped(
       intersolveVisaParentWallet.id,
       updatePayload as QueryDeepPartialEntity<IntersolveVisaParentWalletEntity>,
     );
@@ -509,7 +509,7 @@ export class IntersolveVisaService {
       updatePayload.isTokenBlocked = getTokenResult.blocked;
     }
 
-    await this.intersolveVisaChildWalletScopedRepository.update(
+    await this.intersolveVisaChildWalletScopedRepository.updateUnscoped(
       intersolveVisaChildWallet.id,
       updatePayload as QueryDeepPartialEntity<IntersolveVisaChildWalletEntity>,
     );
