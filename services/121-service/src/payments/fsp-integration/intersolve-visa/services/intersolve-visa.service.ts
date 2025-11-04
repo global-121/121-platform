@@ -665,17 +665,21 @@ export class IntersolveVisaService {
       intersolveVisaCustomer.intersolveVisaParentWallet
         .intersolveVisaChildWallets.length > 0
     ) {
-      intersolveVisaCustomer.intersolveVisaParentWallet =
-        await this.retrieveAndUpdateParentWallet(
-          intersolveVisaCustomer.intersolveVisaParentWallet,
-        );
       intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets[0] =
         await this.retrieveAndUpdateChildWallet(
           intersolveVisaCustomer.intersolveVisaParentWallet
             .intersolveVisaChildWallets[0],
         );
+      intersolveVisaCustomer.intersolveVisaParentWallet =
+        await this.retrieveAndUpdateParentWallet(
+          intersolveVisaCustomer.intersolveVisaParentWallet,
+        );
     }
 
+    console.log(
+      'intersolveVisaCustomer.intersolveVisaParentWallet: ',
+      intersolveVisaCustomer?.intersolveVisaParentWallet,
+    );
     // Calculate the amount that should be transferred. If the registration does not have customer yet the spendThisMonth and balance will be 0.
     return this.calculateLimitedTransferValue({
       transferValueInMajorUnit: inputTransferValueInMajorUnit,
