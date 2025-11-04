@@ -62,14 +62,14 @@ describe('IntersolveVisaService', () => {
         {
           provide: IntersolveVisaParentWalletScopedRepository,
           useValue: {
-            update: jest.fn(),
+            updateUnscoped: jest.fn(),
             findOneOrFail: jest.fn(),
           },
         },
         {
           provide: IntersolveVisaChildWalletScopedRepository,
           useValue: {
-            update: jest.fn(),
+            updateUnscoped: jest.fn(),
             findOneOrFail: jest.fn(),
           },
         },
@@ -94,7 +94,7 @@ describe('IntersolveVisaService', () => {
     jest
       .spyOn(customerRepo, 'findOneWithWalletsByRegistrationId')
       .mockResolvedValue(customer);
-    jest.spyOn(parentWalletRepo, 'update').mockImplementation();
+    jest.spyOn(parentWalletRepo, 'updateUnscoped').mockImplementation();
 
     customer = structuredClone(customer);
   });
@@ -121,12 +121,15 @@ describe('IntersolveVisaService', () => {
 
       await service.retrieveAndUpdateWallet(registrationId);
 
-      expect(parentWalletRepo.update).toHaveBeenCalledWith(parentWallet.id, {
-        balance: newBalance,
-        spentThisMonth,
-        lastUsedDate: newDate,
-        lastExternalUpdate: expect.any(Date),
-      });
+      expect(parentWalletRepo.updateUnscoped).toHaveBeenCalledWith(
+        parentWallet.id,
+        {
+          balance: newBalance,
+          spentThisMonth,
+          lastUsedDate: newDate,
+          lastExternalUpdate: expect.any(Date),
+        },
+      );
     });
 
     it('should NOT update lastUsedDate if lastTransactionDate is null', async () => {
@@ -138,11 +141,14 @@ describe('IntersolveVisaService', () => {
 
       await service.retrieveAndUpdateWallet(registrationId);
 
-      expect(parentWalletRepo.update).toHaveBeenCalledWith(parentWallet.id, {
-        balance: mockedToken.balance,
-        spentThisMonth,
-        lastExternalUpdate: expect.any(Date),
-      });
+      expect(parentWalletRepo.updateUnscoped).toHaveBeenCalledWith(
+        parentWallet.id,
+        {
+          balance: mockedToken.balance,
+          spentThisMonth,
+          lastExternalUpdate: expect.any(Date),
+        },
+      );
     });
   });
 
@@ -287,11 +293,11 @@ describe('IntersolveVisaService', () => {
       jest
         .spyOn(customerRepo, 'findWithWallets')
         .mockResolvedValue(customers as any);
-      jest.spyOn(parentWalletRepo, 'update');
+      jest.spyOn(parentWalletRepo, 'updateUnscoped');
       jest
         .spyOn(parentWalletRepo, 'findOneOrFail')
         .mockResolvedValue(parentWallet as any);
-      jest.spyOn(childWalletRepo, 'update');
+      jest.spyOn(childWalletRepo, 'updateUnscoped');
       jest
         .spyOn(childWalletRepo, 'findOneOrFail')
         .mockResolvedValue(parentWallet.intersolveVisaChildWallets[0] as any);
@@ -310,14 +316,14 @@ describe('IntersolveVisaService', () => {
       const result = await service.retrieveAndUpdateAllWalletsAndCards();
 
       expect(customerRepo.findWithWallets).toHaveBeenCalled();
-      expect(childWalletRepo.update).toHaveBeenCalledTimes(2);
-      expect(parentWalletRepo.update).toHaveBeenCalledTimes(2);
+      expect(childWalletRepo.updateUnscoped).toHaveBeenCalledTimes(2);
+      expect(parentWalletRepo.updateUnscoped).toHaveBeenCalledTimes(2);
       expect(result).toBe(2);
     });
 
     it('should log and continue on IntersolveVisaApiError', async () => {
       // Override only the mocks that differ for this test
-      const childWalletMock = jest.spyOn(childWalletRepo, 'update');
+      const childWalletMock = jest.spyOn(childWalletRepo, 'updateUnscoped');
 
       jest
         .spyOn(apiService, 'getToken')
@@ -336,7 +342,7 @@ describe('IntersolveVisaService', () => {
 
       expect(customerRepo.findWithWallets).toHaveBeenCalled();
       expect(childWalletMock).toHaveBeenCalledTimes(1);
-      expect(parentWalletRepo.update).toHaveBeenCalledTimes(1);
+      expect(parentWalletRepo.updateUnscoped).toHaveBeenCalledTimes(1);
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         'IntersolveVisaApiError occurred while retrieving and updating wallets for customer:',
         1,
