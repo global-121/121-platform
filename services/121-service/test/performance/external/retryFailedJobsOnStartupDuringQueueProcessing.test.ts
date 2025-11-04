@@ -26,10 +26,10 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 const duplicateNumber = 5; // 2^5 = 32
 const maxWaitTimeMs = 240_000; // 4 minutes
 const passRate = 100; // 100%
-const maxRetryDurationMs = 1_800_000; // 30 minutes
-const delayBetweenAttemptsMs = 5_000; // 5 seconds
+const maxRetryDurationMs = 30_000; // 30 seconds
+const delayBetweenAttemptsMs = 2_000; // 2 seconds
 const transferValue = 25;
-const testTimeout = 3_600_000; // 60 minutes
+const testTimeout = 50_000; // 50 seconds
 
 jest.setTimeout(testTimeout);
 describe('Retry Failed Jobs On Startup During Queue Processing', () => {
