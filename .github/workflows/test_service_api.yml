@@ -72,7 +72,7 @@ jobs:
 
       - name: Run Services with Docker
         run: |
-          npm run start:services:ci
+          npm run start:services:ci:production
 
       - name: Run integration tests with Jest
         working-directory: ${{ env.workingDirectory }}
