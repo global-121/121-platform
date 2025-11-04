@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity.js';
 
 import { env } from '@121-service/src/env';
 import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
@@ -148,18 +149,18 @@ export class IntersolveVisaService {
       );
     }
 
-    // Retrieve and update the parent wallet from Intersolve
-    const intersolveVisaParentWallet = await this.retrieveAndUpdateParentWallet(
-      customer.intersolveVisaParentWallet,
-    );
-
     // Retrieve and update the current wallet from Intersolve (= skip all substituted wallets)
     for (const childWallet of customer.intersolveVisaParentWallet
       .intersolveVisaChildWallets) {
       if (childWallet.walletStatus !== IntersolveVisaTokenStatus.Substituted) {
-        await this.retrieveAndUpdateChildWallet(childWallet);
+        await this.updateChildWallet(childWallet);
       }
     }
+
+    // Retrieve and update the parent wallet from Intersolve
+    const intersolveVisaParentWallet = await this.retrieveAndUpdateParentWallet(
+      customer.intersolveVisaParentWallet,
+    );
 
     return IntersolveVisaDtoMapper.mapParentWalletEntityToWalletDto(
       intersolveVisaParentWallet,
@@ -305,7 +306,7 @@ export class IntersolveVisaService {
 
     // Update parent wallet: set linkedToVisaCustomer to true
     intersolveVisaParentWallet.isLinkedToVisaCustomer = true;
-    await this.intersolveVisaParentWalletScopedRepository.update(
+    await this.intersolveVisaParentWalletScopedRepository.updateUnscoped(
       intersolveVisaParentWallet.id,
       { isLinkedToVisaCustomer: true },
     );
@@ -365,7 +366,7 @@ export class IntersolveVisaService {
 
     // Update child wallet: set linkedToParentWallet to true
     intersolveVisaChildWallet.isLinkedToParentWallet = true;
-    await this.intersolveVisaChildWalletScopedRepository.update(
+    await this.intersolveVisaChildWalletScopedRepository.updateUnscoped(
       intersolveVisaChildWallet.id,
       { isLinkedToParentWallet: true },
     );
@@ -412,7 +413,7 @@ export class IntersolveVisaService {
     // If success, update child wallet: set isDebitCardCreated to true
     childWallet.isDebitCardCreated = true;
     childWallet.cardStatus = IntersolveVisaCardStatus.CardOk;
-    await this.intersolveVisaChildWalletScopedRepository.update(
+    await this.intersolveVisaChildWalletScopedRepository.updateUnscoped(
       childWallet.id,
       {
         isDebitCardCreated: true,
@@ -428,6 +429,18 @@ export class IntersolveVisaService {
   private async retrieveAndUpdateParentWallet(
     intersolveVisaParentWallet: IntersolveVisaParentWalletEntity,
   ): Promise<IntersolveVisaParentWalletEntity> {
+    await this.updateParentWallet(intersolveVisaParentWallet);
+    const updatedParentWallet =
+      await this.intersolveVisaParentWalletScopedRepository.findOneOrFail({
+        where: { id: Equal(intersolveVisaParentWallet.id) },
+        relations: ['intersolveVisaChildWallets'],
+      });
+    return updatedParentWallet;
+  }
+
+  private async updateParentWallet(
+    intersolveVisaParentWallet: IntersolveVisaParentWalletEntity,
+  ): Promise<void> {
     // Get balance on the parent wallet
     const getTokenResult: GetTokenResult =
       await this.intersolveVisaApiService.getToken(
@@ -442,54 +455,64 @@ export class IntersolveVisaService {
 
     // If there is no new last transaction date, we do not update the lastUsedDate
     // Because we only get transactions information from a certain time period in the past and we do not want to overwrite the lastUsedDate null
+    const updatePayload: Partial<IntersolveVisaParentWalletEntity> = {
+      balance: getTokenResult.balance,
+      spentThisMonth: getTransactionInformationResultDto.spentThisMonth,
+      lastExternalUpdate: new Date(),
+    };
     if (getTransactionInformationResultDto.lastTransactionDate !== null) {
-      intersolveVisaParentWallet.lastUsedDate =
+      updatePayload.lastUsedDate =
         getTransactionInformationResultDto.lastTransactionDate;
     }
-
-    intersolveVisaParentWallet.balance = getTokenResult.balance;
-    intersolveVisaParentWallet.spentThisMonth =
-      getTransactionInformationResultDto.spentThisMonth;
-    intersolveVisaParentWallet.lastExternalUpdate = new Date();
-    intersolveVisaParentWallet =
-      await this.intersolveVisaParentWalletScopedRepository.save(
-        intersolveVisaParentWallet,
-      );
-    return intersolveVisaParentWallet;
+    await this.intersolveVisaParentWalletScopedRepository.updateUnscoped(
+      intersolveVisaParentWallet.id,
+      updatePayload as QueryDeepPartialEntity<IntersolveVisaParentWalletEntity>,
+    );
   }
 
   private async retrieveAndUpdateChildWallet(
     intersolveVisaChildWallet: IntersolveVisaChildWalletEntity,
   ): Promise<IntersolveVisaChildWalletEntity> {
+    await this.updateChildWallet(intersolveVisaChildWallet);
+    const updatedChildWallet =
+      await this.intersolveVisaChildWalletScopedRepository.findOneOrFail({
+        where: { id: Equal(intersolveVisaChildWallet.id) },
+      });
+    return updatedChildWallet;
+  }
+
+  private async updateChildWallet(
+    intersolveVisaChildWallet: IntersolveVisaChildWalletEntity,
+  ): Promise<void> {
     // Get child wallet information
     const getTokenResult: GetTokenResult =
       await this.intersolveVisaApiService.getToken(
         intersolveVisaChildWallet.tokenCode,
       );
 
+    const updatePayload: Partial<IntersolveVisaChildWalletEntity> = {
+      walletStatus: getTokenResult.status,
+      lastExternalUpdate: new Date(),
+    };
     // Get card status
     if (intersolveVisaChildWallet.isDebitCardCreated) {
       const GetPhysicalCardReturnDto: GetPhysicalCardResult =
         await this.intersolveVisaApiService.getPhysicalCard(
           intersolveVisaChildWallet.tokenCode,
         );
-      intersolveVisaChildWallet.cardStatus = GetPhysicalCardReturnDto.status;
+      updatePayload.cardStatus = GetPhysicalCardReturnDto.status;
     }
-
-    intersolveVisaChildWallet.walletStatus = getTokenResult.status;
 
     // Our mock service always return that a token is not blocked
     // However when we are using the mock service, we should not update the token status else it is always false when you refresh the registration page
     if (!env.MOCK_INTERSOLVE) {
-      intersolveVisaChildWallet.isTokenBlocked = getTokenResult.blocked;
+      updatePayload.isTokenBlocked = getTokenResult.blocked;
     }
-    intersolveVisaChildWallet.lastExternalUpdate = new Date();
 
-    intersolveVisaChildWallet =
-      await this.intersolveVisaChildWalletScopedRepository.save(
-        intersolveVisaChildWallet,
-      );
-    return intersolveVisaChildWallet;
+    await this.intersolveVisaChildWalletScopedRepository.updateUnscoped(
+      intersolveVisaChildWallet.id,
+      updatePayload as QueryDeepPartialEntity<IntersolveVisaChildWalletEntity>,
+    );
   }
 
   /**
@@ -642,14 +665,14 @@ export class IntersolveVisaService {
       intersolveVisaCustomer.intersolveVisaParentWallet
         .intersolveVisaChildWallets.length > 0
     ) {
-      intersolveVisaCustomer.intersolveVisaParentWallet =
-        await this.retrieveAndUpdateParentWallet(
-          intersolveVisaCustomer.intersolveVisaParentWallet,
-        );
       intersolveVisaCustomer.intersolveVisaParentWallet.intersolveVisaChildWallets[0] =
         await this.retrieveAndUpdateChildWallet(
           intersolveVisaCustomer.intersolveVisaParentWallet
             .intersolveVisaChildWallets[0],
+        );
+      intersolveVisaCustomer.intersolveVisaParentWallet =
+        await this.retrieveAndUpdateParentWallet(
+          intersolveVisaCustomer.intersolveVisaParentWallet,
         );
     }
 
@@ -727,12 +750,10 @@ export class IntersolveVisaService {
           if (
             childWallet.walletStatus !== IntersolveVisaTokenStatus.Substituted
           ) {
-            await this.retrieveAndUpdateChildWallet(childWallet);
+            await this.updateChildWallet(childWallet);
           }
         }
-        await this.retrieveAndUpdateParentWallet(
-          customer.intersolveVisaParentWallet,
-        );
+        await this.updateParentWallet(customer.intersolveVisaParentWallet);
       } catch (error) {
         if (error instanceof IntersolveVisaApiError) {
           // If the error is an IntersolveVisaApiError, we log it and continue with the next customer

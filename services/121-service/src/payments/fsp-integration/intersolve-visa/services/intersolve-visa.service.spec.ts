@@ -24,6 +24,7 @@ const originalDate = new Date('2023-01-01T00:00:00Z');
 parentWallet.lastUsedDate = originalDate;
 parentWallet.balance = 0;
 parentWallet.spentThisMonth = 0;
+parentWallet.lastExternalUpdate = new Date('2023-01-15T00:00:00Z');
 parentWallet.intersolveVisaChildWallets = [];
 
 const newBalance = 150;
@@ -61,13 +62,15 @@ describe('IntersolveVisaService', () => {
         {
           provide: IntersolveVisaParentWalletScopedRepository,
           useValue: {
-            save: jest.fn(),
+            updateUnscoped: jest.fn(),
+            findOneOrFail: jest.fn(),
           },
         },
         {
           provide: IntersolveVisaChildWalletScopedRepository,
           useValue: {
-            save: jest.fn(),
+            updateUnscoped: jest.fn(),
+            findOneOrFail: jest.fn(),
           },
         },
       ],
@@ -91,12 +94,21 @@ describe('IntersolveVisaService', () => {
     jest
       .spyOn(customerRepo, 'findOneWithWalletsByRegistrationId')
       .mockResolvedValue(customer);
+    jest.spyOn(parentWalletRepo, 'updateUnscoped').mockImplementation();
 
-    jest.spyOn(parentWalletRepo, 'save').mockImplementation(async (w) => w);
     customer = structuredClone(customer);
   });
 
   describe('retrieveAndUpdateWallet', () => {
+    beforeEach(() => {
+      jest.spyOn(parentWalletRepo, 'findOneOrFail').mockResolvedValue({
+        ...parentWallet,
+        lastUsedDate: newDate,
+        balance: newBalance,
+        spentThisMonth,
+      });
+    });
+
     it('should successfully retrieve and update wallet', async () => {
       jest.spyOn(apiService, 'getToken').mockResolvedValue({
         ...mockedToken,
@@ -107,11 +119,17 @@ describe('IntersolveVisaService', () => {
         spentThisMonth,
       });
 
-      const result = await service.retrieveAndUpdateWallet(registrationId);
+      await service.retrieveAndUpdateWallet(registrationId);
 
-      expect(result.lastUsedDate).toEqual(newDate);
-      expect(result.balance).toBe(newBalance);
-      expect(result.spentThisMonth).toBe(spentThisMonth);
+      expect(parentWalletRepo.updateUnscoped).toHaveBeenCalledWith(
+        parentWallet.id,
+        {
+          balance: newBalance,
+          spentThisMonth,
+          lastUsedDate: newDate,
+          lastExternalUpdate: expect.any(Date),
+        },
+      );
     });
 
     it('should NOT update lastUsedDate if lastTransactionDate is null', async () => {
@@ -121,10 +139,16 @@ describe('IntersolveVisaService', () => {
         spentThisMonth,
       });
 
-      const result = await service.retrieveAndUpdateWallet(registrationId);
+      await service.retrieveAndUpdateWallet(registrationId);
 
-      expect(result.lastUsedDate).toEqual(originalDate);
-      expect(result.spentThisMonth).toBe(spentThisMonth);
+      expect(parentWalletRepo.updateUnscoped).toHaveBeenCalledWith(
+        parentWallet.id,
+        {
+          balance: mockedToken.balance,
+          spentThisMonth,
+          lastExternalUpdate: expect.any(Date),
+        },
+      );
     });
   });
 
@@ -132,7 +156,7 @@ describe('IntersolveVisaService', () => {
     const registrationId = 123;
     const inputTransferValueInMajorUnit = 75;
     const newDate = new Date('2024-02-02T00:00:00Z');
-    const spentThisMonth = 10000; // 10 euro in cents
+    const spentThisMonth = 10000; // 100 euro in cents
 
     beforeEach(() => {
       jest.spyOn(apiService, 'getTransactionInformation').mockResolvedValue({
@@ -141,6 +165,12 @@ describe('IntersolveVisaService', () => {
       });
       jest.spyOn(apiService, 'getToken').mockResolvedValue({
         ...mockedToken,
+      });
+      jest.spyOn(parentWalletRepo, 'findOneOrFail').mockResolvedValue({
+        ...parentWallet,
+        lastUsedDate: newDate,
+        balance: mockedToken.balance,
+        spentThisMonth,
       });
     });
 
@@ -263,11 +293,13 @@ describe('IntersolveVisaService', () => {
       jest
         .spyOn(customerRepo, 'findWithWallets')
         .mockResolvedValue(customers as any);
+      jest.spyOn(parentWalletRepo, 'updateUnscoped');
       jest
-        .spyOn(parentWalletRepo, 'save')
+        .spyOn(parentWalletRepo, 'findOneOrFail')
         .mockResolvedValue(parentWallet as any);
+      jest.spyOn(childWalletRepo, 'updateUnscoped');
       jest
-        .spyOn(childWalletRepo, 'save')
+        .spyOn(childWalletRepo, 'findOneOrFail')
         .mockResolvedValue(parentWallet.intersolveVisaChildWallets[0] as any);
       jest.spyOn(apiService, 'getToken').mockResolvedValue({
         status: IntersolveVisaTokenStatus.Active,
@@ -284,16 +316,14 @@ describe('IntersolveVisaService', () => {
       const result = await service.retrieveAndUpdateAllWalletsAndCards();
 
       expect(customerRepo.findWithWallets).toHaveBeenCalled();
-      expect(childWalletRepo.save).toHaveBeenCalledTimes(2);
-      expect(parentWalletRepo.save).toHaveBeenCalledTimes(2);
+      expect(childWalletRepo.updateUnscoped).toHaveBeenCalledTimes(2);
+      expect(parentWalletRepo.updateUnscoped).toHaveBeenCalledTimes(2);
       expect(result).toBe(2);
     });
 
     it('should log and continue on IntersolveVisaApiError', async () => {
       // Override only the mocks that differ for this test
-      const childWalletSaveMock = jest
-        .spyOn(childWalletRepo, 'save')
-        .mockResolvedValue(new IntersolveVisaChildWalletEntity() as any);
+      const childWalletMock = jest.spyOn(childWalletRepo, 'updateUnscoped');
 
       jest
         .spyOn(apiService, 'getToken')
@@ -311,8 +341,8 @@ describe('IntersolveVisaService', () => {
       await service.retrieveAndUpdateAllWalletsAndCards();
 
       expect(customerRepo.findWithWallets).toHaveBeenCalled();
-      expect(childWalletSaveMock).toHaveBeenCalledTimes(1);
-      expect(parentWalletRepo.save).toHaveBeenCalledTimes(1);
+      expect(childWalletMock).toHaveBeenCalledTimes(1);
+      expect(parentWalletRepo.updateUnscoped).toHaveBeenCalledTimes(1);
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         'IntersolveVisaApiError occurred while retrieving and updating wallets for customer:',
         1,
