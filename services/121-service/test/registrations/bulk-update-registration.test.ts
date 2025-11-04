@@ -57,7 +57,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       addressHouseNumberAddition: null,
       preferredLanguage: 'ar',
       paymentAmountMultiplier: 2,
-      phoneNumber: '31612345678', // Include phone number update
+      phoneNumber: '31612345678',
     };
     const registrationDataThatWillChangePa2 = {
       fullName: 'updated name 2',
@@ -66,7 +66,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       addressHouseNumberAddition: 'updated',
       preferredLanguage: 'nl',
       paymentAmountMultiplier: 3,
-      phoneNumber: '31687654321', // Include phone number update
+      phoneNumber: '31687654321',
     };
 
     // Registration before patch
@@ -247,50 +247,5 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
 
     expect(pa1AfterPatch).toMatchObject(dataThatStaysTheSamePa1);
     expect(pa2AfterPatch).toMatchObject(dataThatStaysTheSamePa2);
-  });
-
-  it('Should handle bulk update with validation errors', async () => {
-    // This test verifies behavior when some registrations have validation errors
-    const bulkUpdateResult = await bulkUpdateRegistrationsCSV(
-      programIdOcw,
-      './test-registration-data/test-registrations-patch-OCW-phonenumbers-with-errors.csv',
-      accessToken,
-      'test-reason-with-errors',
-    );
-
-    // The system may reject the entire batch if there are critical validation errors,
-    // or it may accept valid rows and queue them for processing
-    expect([200, 400, 404]).toContain(bulkUpdateResult.statusCode);
-
-    // Email notifications are sent when individual registration updates fail during queue processing
-    // The exact behavior depends on where validation occurs (API level vs queue processing level)
-    // Detailed email notification testing is covered in bulk-update-email-notifications.test.ts
-  });
-
-  it('Should handle bulk update with duplicate phone numbers gracefully', async () => {
-    // Test edge case where multiple registrations would have the same phone number
-    // First, let's update one registration to have a specific phone number
-    const singleUpdateResult = await bulkUpdateRegistrationsCSV(
-      programIdOcw,
-      './test-registration-data/test-registrations-patch-OCW.csv',
-      accessToken,
-      'setup-for-duplicate-test',
-    );
-    expect(singleUpdateResult.statusCode).toBe(200);
-
-    // Wait for the first update to complete
-    await waitForBulkRegistrationChanges(
-      [
-        {
-          referenceId: referenceId1,
-          expectedPatch: { phoneNumber: '31612345678' },
-        },
-      ],
-      programIdOcw,
-      accessToken,
-    );
-
-    // The system should handle this gracefully (either allow it or provide proper error handling)
-    // Exact behavior depends on business rules for phone number uniqueness
   });
 });

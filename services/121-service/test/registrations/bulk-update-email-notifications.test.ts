@@ -8,11 +8,6 @@ import { RegistrationsUpdateJobEmailsService } from '@121-service/src/registrati
 import { RegistrationsUpdateJobsService } from '@121-service/src/registrations-update-jobs/registrations-update-jobs.service';
 import { UserService } from '@121-service/src/user/user.service';
 
-/**
- * PRACTICAL EXAMPLE: Testing Email Notifications with Mocked EmailsService
- *
- * This demonstrates how to test that emails are sent when bulk update validations fail
- */
 describe('Bulk Update Email Notifications', () => {
   let registrationsUpdateJobsService: RegistrationsUpdateJobsService;
   let emailsService: jest.Mocked<EmailsService>;
@@ -20,7 +15,6 @@ describe('Bulk Update Email Notifications', () => {
   let userService: jest.Mocked<UserService>;
 
   beforeEach(async () => {
-    // Create mocks
     const emailsServiceMock = {
       sendEmail: jest.fn().mockResolvedValue(undefined),
     };
@@ -37,7 +31,6 @@ describe('Bulk Update Email Notifications', () => {
       }),
     };
 
-    // Set up test module with mocked dependencies
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RegistrationsUpdateJobsService,
@@ -63,7 +56,7 @@ describe('Bulk Update Email Notifications', () => {
   });
 
   it('Should send error notification email when registration validations fail', async () => {
-    // Arrange: Set up registration service to fail for some records
+    // Arrange
     registrationsService.validateInputAndUpdateRegistration
       .mockResolvedValueOnce(undefined) // First record succeeds
       .mockRejectedValueOnce(
@@ -87,12 +80,12 @@ describe('Bulk Update Email Notifications', () => {
       request: { userId: 123, scope: 'test-scope' },
     };
 
-    // Act: Process the job
+    // Act
     await registrationsUpdateJobsService.processRegistrationsUpdateJob(
       jobWithMixedResults,
     );
 
-    // Assert: Verify that email notification was sent
+    // Assert
     expect(emailsService.sendEmail).toHaveBeenCalledTimes(1);
     expect(emailsService.sendEmail).toHaveBeenCalledWith({
       email: 'test-user@example.com',
@@ -106,17 +99,14 @@ describe('Bulk Update Email Notifications', () => {
       }),
     });
 
-    // Verify user lookup was called
     expect(userService.findById).toHaveBeenCalledWith(123);
-
-    // Verify registration service was called for each record
     expect(
       registrationsService.validateInputAndUpdateRegistration,
     ).toHaveBeenCalledTimes(3);
   });
 
   it('Should NOT send email when all registrations succeed', async () => {
-    // Arrange: Set up registration service to succeed for all records
+    // Arrange
     registrationsService.validateInputAndUpdateRegistration.mockResolvedValue(
       undefined,
     );
@@ -131,12 +121,12 @@ describe('Bulk Update Email Notifications', () => {
       request: { userId: 123, scope: 'test-scope' },
     };
 
-    // Act: Process the job
+    // Act
     await registrationsUpdateJobsService.processRegistrationsUpdateJob(
       jobWithSuccessResults,
     );
 
-    // Assert: Verify NO email was sent
+    // Assert
     expect(emailsService.sendEmail).not.toHaveBeenCalled();
     expect(userService.findById).not.toHaveBeenCalled();
   });
@@ -158,26 +148,12 @@ describe('Bulk Update Email Notifications', () => {
       request: { userId: 123, scope: 'test-scope' },
     };
 
-    // Act & Assert: Email failure currently causes job to throw
-    // This reveals that email failures are not handled gracefully
+    // Act & Assert
     await expect(
       registrationsUpdateJobsService.processRegistrationsUpdateJob(
         jobWithEmailFailure,
       ),
     ).rejects.toThrow('Email service unavailable');
-
-    // Verify email sending was attempted
     expect(emailsService.sendEmail).toHaveBeenCalledTimes(1);
   });
 });
-
-/**
- * This test suite demonstrates unit testing of email notifications for bulk update failures.
- *
- * Key insights discovered:
- * - Email attachments are generated in CSV format (not XLSX)
- * - Email failures currently cause job failures (not handled gracefully)
- * - Successful updates do not trigger email notifications
- *
- * For integration testing of bulk updates, see bulk-update-registration.test.ts
- */
