@@ -62,6 +62,13 @@ describe('PaymentsCreationService', () => {
         .mockResolvedValue([
           { id: 1, paymentAmountMultiplier: 1, programFspConfigurationId: 2 },
         ]),
+      getRegistrationViewsNoLimit: jest.fn().mockResolvedValue([
+        {
+          referenceId: 'ref1',
+          paymentAmountMultiplier: 1,
+          programFspConfigurationName: 'fspA',
+        },
+      ]),
     } as unknown as RegistrationsPaginationService;
 
     service = new PaymentsCreationService(
@@ -158,15 +165,6 @@ describe('PaymentsCreationService', () => {
     (
       registrationsBulkService.getBulkActionResult as jest.Mock
     ).mockResolvedValue({});
-    (
-      registrationsPaginationService.getRegistrationViewsNoLimit as jest.Mock
-    ).mockResolvedValue([
-      {
-        referenceId: 'ref1',
-        paymentAmountMultiplier: 1,
-        programFspConfigurationName: 'fspA',
-      },
-    ]);
     jest
       .spyOn(service as any, 'getPaymentDryRunDetailsOrThrow')
       .mockImplementation(() => {
