@@ -16,12 +16,12 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
+import { getPaymentResults } from '@121-service/test/performance/helpers/performance.helper';
+import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import {
-  getPaymentResults,
   isServiceUp,
   kill121Service,
-} from '@121-service/test/performance/helpers/performance.helper';
-import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
+} from '@121-service/test/restart/helpers/restart.helper';
 
 const duplicateNumber = 5; // 2^5 = 32
 const maxWaitTimeMs = 5_000; // 5 seconds
