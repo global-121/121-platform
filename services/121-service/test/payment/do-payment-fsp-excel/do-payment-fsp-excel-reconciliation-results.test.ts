@@ -67,6 +67,7 @@ describe('Do payment with Excel FSP', () => {
         {
           [matchColumn]: registrationWesteros2.phoneNumber,
           status: TransactionStatusEnum.error,
+          errorMessage: 'FSP reported failure for registrationWesteros2',
         },
         { [matchColumn]: '123456789', status: TransactionStatusEnum.error },
       ];
@@ -116,11 +117,15 @@ describe('Do payment with Excel FSP', () => {
         (t) => t.registrationReferenceId === registrationWesteros1.referenceId,
       );
       expect(transactionSuccess.status).toBe(TransactionStatusEnum.success);
+      expect([null, '']).toContain(transactionSuccess.errorMessage);
 
       const transactionError = transactionsResponse.body.find(
         (t) => t.registrationReferenceId === registrationWesteros2.referenceId,
       );
       expect(transactionError.status).toBe(TransactionStatusEnum.error);
+      expect(transactionError.errorMessage).toBe(
+        'FSP reported failure for registrationWesteros2',
+      );
 
       const transactionWaiting = transactionsResponse.body.find(
         (t) => t.registrationReferenceId === registrationWesteros3.referenceId,

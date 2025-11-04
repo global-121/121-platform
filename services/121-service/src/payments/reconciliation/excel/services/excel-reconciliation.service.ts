@@ -6,10 +6,7 @@ import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
 import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconciliation-feedback.dto';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
-import {
-  ExcelErrorMessageColumn,
-  ExcelStatusColumn,
-} from '@121-service/src/payments/reconciliation/excel/excel-status-column.const';
+import { ExcelReconciliationDefaultColumns } from '@121-service/src/payments/reconciliation/excel/excel-reconciliation-default-columns.enum';
 import { ExcelReconciliationFeedbackService } from '@121-service/src/payments/reconciliation/excel/services/excel-reconciliation-feedback.service';
 import { ExcelReconciliationValidationService } from '@121-service/src/payments/reconciliation/excel/services/excel-reconciliation-validation.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
@@ -77,7 +74,11 @@ export class ExcelReconciliationService {
       );
       templates.push({
         name: fspConfig.name,
-        template: [matchColumn, ExcelStatusColumn, ExcelErrorMessageColumn],
+        template: [
+          matchColumn,
+          ExcelReconciliationDefaultColumns.status,
+          ExcelReconciliationDefaultColumns.errorMessage,
+        ],
       });
     }
 
@@ -223,7 +224,8 @@ export class ExcelReconciliationService {
       );
 
     const recordsForCurrentStatus = csvContents.filter(
-      (record) => record[ExcelStatusColumn] === transactionStatus,
+      (record) =>
+        record[ExcelReconciliationDefaultColumns.status] === transactionStatus,
     );
     const matchColumnValuesForCurrentStatus = recordsForCurrentStatus.map(
       (record) => record[matchColumn],
