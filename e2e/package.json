@@ -1,5 +1,14 @@
 {
   "name": "e2e",
+  "author": "121.global",
+  "homepage": "https://121.global/",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/global-121/121-platform.git",
+    "directory": "e2e"
+  },
+  "private": true,
   "scripts": {
     "setup": "npm install && npx playwright install",
     "lint": "eslint \"**/*.{ts,js}\"",
@@ -8,9 +17,6 @@
     "test:update-snapshots": "npm run test -- --update-snapshots",
     "test:update-snapshots:specific": "npm run test -- --update-snapshots --grep"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@eslint/js": "^9.39.0",
     "@playwright/test": "^1.56.1",
