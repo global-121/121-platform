@@ -1,3 +1,3 @@
-referenceId,preferredLanguage,paymentAmountMultiplier,fullName,addressStreet,addressHouseNumber,addressHouseNumberAddition
-00dc9451-1273-484c-b2e8-ae21b51a96ab,ar,2,updated name1,newStreet1,2,
-01dc9451-1273-484c-b2e8-ae21b51a96ab,nl,3,updated name 2,newStreet2,3,updated
+referenceId,preferredLanguage,paymentAmountMultiplier,fullName,addressStreet,addressHouseNumber,addressHouseNumberAddition,phoneNumber
+00dc9451-1273-484c-b2e8-ae21b51a96ab,ar,2,updated name1,newStreet1,2,,31612345678
+01dc9451-1273-484c-b2e8-ae21b51a96ab,nl,3,updated name 2,newStreet2,3,updated,31687654321

@@ -83,7 +83,7 @@ export class RegistrationsUpdateJobsService {
     const templateInput: UpdateJobEmailInput = {
       email: user.username,
       displayName: user.displayName,
-      attachment: { name: 'failed-validations.csv', contentBytes },
+      attachment: { name: 'failed-validations.xlsx', contentBytes },
     };
 
     await this.registrationsUpdateJobEmailsService.send(templateInput);
