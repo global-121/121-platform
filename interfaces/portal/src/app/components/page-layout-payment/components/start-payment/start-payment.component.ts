@@ -74,9 +74,11 @@ export class StartPaymentComponent {
       chipVariant: 'blue',
     },
     {
+      // ##TODO: check with design team what should be the best label
       label: $localize`Total payment amount`,
       value: this.totalPaymentAmount(),
       type: 'text',
+      // ##TODO: wait for design team to provide copy
       tooltip: $localize`TBD`,
     },
   ]);
