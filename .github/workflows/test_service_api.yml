@@ -84,7 +84,7 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: |
           curl -d '{"secret":"fill_in_secret"}' -H "Content-Type: application/json" -X POST '${{ env.EXTERNAL_121_SERVICE_URL }}/api/test/kill-service' || true
-          npm run coverage:report:integration
+          docker compose exec 121-service npm run coverage:report:integration
 
       - uses: actions/upload-artifact@v5
         with:
