@@ -17,6 +17,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FspDto } from '@121-service/src/fsps/fsp.dto';
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
 import { MetricTileComponent } from '~/components/metric-tile/metric-tile.component';
@@ -30,6 +31,7 @@ import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { PaymentAggregate } from '~/domains/payment/payment.model';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { projectHasFspWithExportFileIntegration } from '~/domains/project/project.helper';
+import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
@@ -67,6 +69,7 @@ export class PageLayoutPaymentComponent {
   readonly translatableStringService = inject(TranslatableStringService);
 
   readonly fspSettings = signal<Record<Fsps, FspDto>>(FSP_SETTINGS);
+  private authService = inject(AuthService);
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   paymentStatus = injectQuery(
@@ -236,6 +239,16 @@ export class PageLayoutPaymentComponent {
       );
   });
 
+  readonly canStartPayment = computed(() =>
+    this.authService.hasAllPermissions({
+      projectId: this.projectId(),
+      requiredPermissions: [
+        PermissionEnum.PaymentREAD,
+        PermissionEnum.PaymentUPDATE,
+        PermissionEnum.PaymentTransactionREAD,
+      ],
+    }),
+  );
   isPaymentInProgress(): boolean | undefined {
     return (
       this.paymentStatus.isPending() ||
