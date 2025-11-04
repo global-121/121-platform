@@ -24,10 +24,10 @@ import {
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 const duplicateNumber = 5; // 2^5 = 32
-const maxWaitTimeMs = 240_000; // 4 minutes
+const maxWaitTimeMs = 5_000; // 5 seconds
 const passRate = 100; // 100%
 const maxRetryDurationMs = 30_000; // 30 seconds
-const delayBetweenAttemptsMs = 2_000; // 2 seconds
+const delayBetweenAttemptsMs = 3_000; // 3 seconds
 const transferValue = 25;
 const testTimeout = 50_000; // 50 seconds
 
