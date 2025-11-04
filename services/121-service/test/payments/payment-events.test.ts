@@ -31,7 +31,7 @@ describe('Payment Events API', () => {
     accessToken = await getAccessToken();
   });
 
-  it('should return payment events for a successful payment', async () => {
+  it('should return payment events for a payment that has successfully been retried', async () => {
     // Arrange
     const note = '121 is great!';
     // first seed a registration that will fail
