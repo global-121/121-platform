@@ -16,8 +16,8 @@ import {
 import { ProgramFspConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-response.dto';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { RegistrationPreferredLanguageEnum } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 // This declared at the top of the file because it is used in the dto class and else it is not defined yet
@@ -113,11 +113,11 @@ export class ProgramReturnDto {
   @ApiProperty({ example: { en: 'title' } })
   @IsNotEmpty()
   @IsOptional()
-  public readonly titlePortal?: LocalizedString;
+  public readonly titlePortal?: LocalizedStringForUI;
 
   @ApiProperty({ example: { en: 'description' } })
   @IsOptional()
-  public readonly description?: LocalizedString;
+  public readonly description?: LocalizedStringForUI;
 
   @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsNotEmpty()
@@ -188,7 +188,7 @@ export class ProgramReturnDto {
 
   @ApiProperty({ example: ['en', 'nl'] })
   @IsArray()
-  public readonly languages: WrapperType<UILanguageEnum[]>;
+  public readonly languages: WrapperType<RegistrationPreferredLanguageEnum[]>;
 
   @ApiProperty({ example: false })
   @IsBoolean()

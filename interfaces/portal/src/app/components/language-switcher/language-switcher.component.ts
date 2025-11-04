@@ -12,8 +12,8 @@ import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 
 import {
-  changeLanguage,
-  getAvailableLanguages,
+  changeUILanguage,
+  getAvailableUILanguages,
   getLocaleLabel,
   Locale,
 } from '~/utils/locale';
@@ -26,7 +26,7 @@ import {
 })
 export class LanguageSwitcherComponent {
   private locale = inject<Locale>(LOCALE_ID);
-  public languages = getAvailableLanguages();
+  public languages = getAvailableUILanguages();
   public readonly selectedLanguage = model(this.locale);
   public readonly selectedLanguageLabel = computed(() =>
     getLocaleLabel(this.selectedLanguage()),
@@ -37,7 +37,7 @@ export class LanguageSwitcherComponent {
       if (this.selectedLanguage() === this.locale) {
         return;
       }
-      changeLanguage(this.selectedLanguage());
+      changeUILanguage(this.selectedLanguage());
     });
   }
 }

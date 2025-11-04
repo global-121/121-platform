@@ -14,7 +14,7 @@ import { TransactionEventEntity } from '@121-service/src/payments/transactions/t
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
 
 @Unique('programFspConfigurationUnique', ['programId', 'name'])
 @Entity('program_fsp_configuration')
@@ -35,7 +35,7 @@ export class ProgramFspConfigurationEntity extends Base121Entity {
   public name: string;
 
   @Column('json')
-  public label: LocalizedString;
+  public label: LocalizedStringForUI;
 
   @OneToMany(
     (_type) => ProgramFspConfigurationPropertyEntity,

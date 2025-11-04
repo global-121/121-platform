@@ -16,7 +16,7 @@ import {
   GenericRegistrationAttributes,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { FinancialAttributes } from '@121-service/src/user/enum/registration-financial-attributes.const';
 
@@ -29,9 +29,9 @@ import {
   isGenericAttribute,
 } from '~/domains/program/program-attribute.helpers';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
-import { LANGUAGE_ENUM_LABEL } from '~/domains/registration/registration.helper';
 import { Registration } from '~/domains/registration/registration.model';
 import { AuthService } from '~/services/auth.service';
+import { GetRegistrationPreferredLanguageNameService } from '~/services/get-registration-preferrred-language-name.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
 const getGenericAttributeType = (
@@ -63,7 +63,7 @@ const getGenericAttributeType = (
 
 export interface NormalizedRegistrationAttribute {
   name: GenericRegistrationAttributes | string;
-  label: LocalizedString | string;
+  label: LocalizedStringForUI | string;
   editInfo?: string;
   isRequired: boolean;
   isEditable: boolean;
@@ -87,6 +87,9 @@ export class RegistrationAttributeService {
   private readonly registrationApiService = inject(RegistrationApiService);
   private readonly translatableStringService = inject(
     TranslatableStringService,
+  );
+  private readonly getRegistrationPreferredLanguageNameService = inject(
+    GetRegistrationPreferredLanguageNameService,
   );
 
   private hasPermissionsRequiredToEditAttribute({
@@ -148,7 +151,10 @@ export class RegistrationAttributeService {
       case GenericRegistrationAttributes.preferredLanguage:
         return program.languages.map((language) => ({
           value: language,
-          label: LANGUAGE_ENUM_LABEL[language],
+          label:
+            this.getRegistrationPreferredLanguageNameService.getRegistrationPreferredLanguageName(
+              language,
+            ),
         }));
       case GenericRegistrationAttributes.programFspConfigurationName:
         return program.programFspConfigurations.map((fspConfig) => ({

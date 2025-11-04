@@ -6,7 +6,7 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 export class FspDto {
@@ -17,7 +17,7 @@ export class FspDto {
   readonly integrationType: WrapperType<FspIntegrationType>;
 
   @ApiProperty({ example: { en: 'default label' } })
-  readonly defaultLabel: LocalizedString;
+  readonly defaultLabel: LocalizedStringForUI;
 
   @ApiProperty({
     example: [

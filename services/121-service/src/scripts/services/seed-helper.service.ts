@@ -30,7 +30,7 @@ import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
 import { SeedMessageTemplateConfig } from '@121-service/src/seed-data/message-template/interfaces/seed-message-template-config.interface';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
@@ -343,7 +343,7 @@ export class SeedHelperService {
       fsp: Fsps;
       properties: { name: string; value: string }[] | undefined;
       name?: string;
-      label: LocalizedString;
+      label: LocalizedStringForUI;
     },
     fspObject: FspDto,
     programId: number,
@@ -471,7 +471,7 @@ export class SeedHelperService {
     message: string,
     contentSid: string,
     isSendMessageTemplate: boolean,
-    label: LocalizedString,
+    label: LocalizedStringForUI,
   ): Promise<MessageTemplateEntity> {
     const messageTemplateEntity = new MessageTemplateEntity();
     messageTemplateEntity.program = program;

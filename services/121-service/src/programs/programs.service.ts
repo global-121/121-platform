@@ -28,7 +28,7 @@ import { ProgramAttachmentsService } from '@121-service/src/programs/program-att
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { nameConstraintQuestionsArray } from '@121-service/src/shared/const';
-import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
+import { RegistrationPreferredLanguageEnum } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserService } from '@121-service/src/user/user.service';
@@ -174,7 +174,9 @@ export class ProgramService {
     program.targetNrRegistrations = programData.targetNrRegistrations ?? null;
     program.tryWhatsAppFirst = !!programData.tryWhatsAppFirst;
     program.fullnameNamingConvention = fullnameNamingConvention;
-    program.languages = programData.languages ?? [UILanguageEnum.en];
+    program.languages = programData.languages ?? [
+      RegistrationPreferredLanguageEnum.en,
+    ];
     program.enableMaxPayments = !!programData.enableMaxPayments;
     program.enableScope = !!programData.enableScope;
     program.allowEmptyPhoneNumber = !!programData.allowEmptyPhoneNumber;
