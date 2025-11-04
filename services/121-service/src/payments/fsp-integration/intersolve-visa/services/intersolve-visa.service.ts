@@ -676,10 +676,6 @@ export class IntersolveVisaService {
         );
     }
 
-    console.log(
-      'intersolveVisaCustomer.intersolveVisaParentWallet: ',
-      intersolveVisaCustomer?.intersolveVisaParentWallet,
-    );
     // Calculate the amount that should be transferred. If the registration does not have customer yet the spendThisMonth and balance will be 0.
     return this.calculateLimitedTransferValue({
       transferValueInMajorUnit: inputTransferValueInMajorUnit,
