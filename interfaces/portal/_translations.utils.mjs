@@ -1,8 +1,10 @@
+export const ALL_AVAILABLE_LOCALES = 'ar,en-GB,es,fr,nl,sk';
+
 /**
  * @returns {string[]} - Required language-codes
  */
 export const getRequiredTranslations = () => {
-  const localesConfigValue = process.env.NG_LOCALES ?? '';
+  const localesConfigValue = process.env.NG_LOCALES || ALL_AVAILABLE_LOCALES;
   return localesConfigValue
     .split(',')
     .filter((lang) => lang !== '' && lang !== 'en' && lang !== 'en-GB')
