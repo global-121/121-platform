@@ -2039,6 +2039,36 @@
       <trans-unit id="page-title-project-project-settings|trim" datatype="html">
         <source>Project settings</source>
       </trans-unit>
+      <trans-unit id="3718000607419168275" datatype="html">
+        <source>Click create payment, this will direct you to the payment page.</source>
+      </trans-unit>
+      <trans-unit id="4146714974043966714" datatype="html">
+        <source>Review summary and click create payment.</source>
+      </trans-unit>
+      <trans-unit id="5179155984601144030" datatype="html">
+        <source>Create payment</source>
+      </trans-unit>
+      <trans-unit id="8616960384506541771" datatype="html">
+        <source>Payment started successfully.</source>
+      </trans-unit>
+      <trans-unit id="7392987714730903698" datatype="html">
+        <source>registrations</source>
+      </trans-unit>
+      <trans-unit id="515050170212939003" datatype="html">
+        <source>Click start payment, or make sure someone with the right permissions does so.</source>
+      </trans-unit>
+      <trans-unit id="4605701201545136761" datatype="html">
+        <source>Click start payment to initiate the payment through your FSP(s).</source>
+      </trans-unit>
+      <trans-unit id="718304168195158236" datatype="html">
+        <source>Total registrations</source>
+      </trans-unit>
+      <trans-unit id="inProgressChipLabel" datatype="html">
+        <source>In progress</source>
+      </trans-unit>
+      <trans-unit id="inProgressChipTooltip" datatype="html">
+        <source>The payment will be in progress while the transfers in the table below are loading.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
