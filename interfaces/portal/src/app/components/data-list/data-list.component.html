@@ -1,7 +1,8 @@
 <div
-  class="grid grid-cols-1 gap-x-5 md:grid-cols-2"
+  class="grid grid-cols-1 gap-x-5"
   [ngClass]="{
     '-mb-[2px] [clip-path:inset(0_0_2px_0)]': hideBottomBorder(),
+    'md:grid-cols-2': !forceOneColumn(),
   }"
 >
   @for (item of data(); track $index) {
@@ -18,10 +19,12 @@
           class="py-1"
         />
       } @else {
-        <strong class="me-1">{{ item.label | translatableString }}:</strong>
-        @if (item.tooltip) {
-          <app-info-tooltip [message]="item.tooltip" />
-        }
+        <div class="me-1">
+          <strong>{{ item.label | translatableString }}:</strong>
+          @if (item.tooltip) {
+            <app-info-tooltip [message]="item.tooltip" />
+          }
+        </div>
         @if (item.chipLabel && item.chipVariant) {
           <app-colored-chip
             [variant]="item.chipVariant"

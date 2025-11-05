@@ -58,24 +58,28 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
   });
 
   await test.step('Create payment', async () => {
-    await paymentsPage.createPayment();
+    // Create payment
+    await paymentsPage.createPayment({});
     await paymentsPage.validateExcelFspInstructions();
-  });
-
-  await test.step('Do payment', async () => {
     await paymentsPage.validatePaymentSummary({
       fsp: fsps,
       registrationsNumber: numberOfPas,
       currency: '€',
       paymentAmount: defaultMaxTransferValue,
     });
-    await paymentsPage.startPayment();
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/project/${programIdPV}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validateToastMessageAndClose('Payment created.');
+
+    // start payment
+    await paymentPage.startPayment();
+    await paymentPage.validateToastMessageAndClose(
+      'Payment started successfully.',
+    );
   });
 
   await test.step('Download payment instructions', async () => {

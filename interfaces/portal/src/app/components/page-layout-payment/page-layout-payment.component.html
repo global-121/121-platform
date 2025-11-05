@@ -11,6 +11,16 @@
       <h1 class="me-auto">
         {{ paymentTitle() }}
       </h1>
+      @if (showStartPaymentButton()) {
+        <app-start-payment
+          [projectId]="projectId()"
+          [paymentId]="paymentId()"
+          [fspList]="startPaymentFspList()"
+          [transactionCount]="startPaymentTransactionCount()"
+          [totalPaymentAmount]="startPaymentTotalPaymentAmount()"
+        ></app-start-payment>
+      }
+
       @if (hasFspWithExportFileIntegration()) {
         <app-import-reconciliation-data
           [paymentId]="paymentId()"
@@ -50,33 +60,19 @@
       </p-card>
     }
 
-    @if (
-      paymentStatus.isPending() ||
-      transactions.isPending() ||
-      paymentStatus.data()?.inProgress
-    ) {
-      <app-metric-tile
-        class="[grid-area:metric1]"
-        [pending]="paymentStatus.isPending() || transactions.isPending()"
-        [metricValue]="transactions.data()?.length"
-        metricLabel="Transfers sent"
-        i18n-metricLabel
-        chipLabel="In progress"
-        i18n-chipLabel
-        chipIcon="pi pi-spinner"
-        chipVariant="orange"
-        chipTooltip="The payment will be in progress while the number of transfers sent, total amount and registrations in the table below are loading."
-        i18n-chipTooltip
-      />
-    } @else {
-      <app-metric-tile
-        class="[grid-area:metric1]"
-        [pending]="false"
-        [metricValue]="transactions.data()?.length | number"
-        metricLabel="Registrations included"
-        i18n-metricLabel
-      />
-    }
+    <app-metric-tile
+      class="[grid-area:metric1]"
+      [pending]="paymentStatus.isPending() || transactions.isPending()"
+      [metricValue]="transactions.data()?.length | number"
+      metricLabel="Total registrations"
+      i18n-metricLabel
+      [chipIcon]="isPaymentInProgress() ? 'pi pi-spinner' : undefined"
+      [chipVariant]="isPaymentInProgress() ? 'orange' : undefined"
+      [chipLabel]="chipLabel()"
+      i18n-chipLabel="@@inProgressChipLabel"
+      [chipTooltip]="chipTooltip()"
+      i18n-chipTooltip="@@inProgressChipTooltip"
+    />
     <app-metric-tile
       class="[grid-area:metric2]"
       [pending]="false"

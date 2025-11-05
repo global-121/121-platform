@@ -18,10 +18,8 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
+import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
-
-// Export Excel FSP payment list
-const amount = NLRCProgramPV.fixedTransferValue;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
@@ -48,14 +46,9 @@ test('[32302] [Excel fsp]: Error message should be shown in case no matching col
   page,
 }) => {
   const paymentsPage = new PaymentsPage(page);
+  const paymentPage = new PaymentPage(page);
 
   const projectTitle = NLRCProgramPV.titlePortal.en;
-  const numberOfPas = registrationsPvExcel.length;
-  const defaultTransferValue = amount;
-  const defaultMaxTransferValue = registrationsPvExcel.reduce((output, pa) => {
-    return output + pa.paymentAmountMultiplier * defaultTransferValue;
-  }, 0);
-  const fsps: string[] = ['Excel Payment Instructions'];
 
   await test.step('Navigate to Program payments', async () => {
     await paymentsPage.selectProgram(projectTitle);
@@ -63,20 +56,9 @@ test('[32302] [Excel fsp]: Error message should be shown in case no matching col
     await paymentsPage.navigateToProgramPage('Payments');
   });
 
-  await test.step('Create payment', async () => {
-    await paymentsPage.createPayment();
-    await paymentsPage.validateExcelFspInstructions();
-  });
-
-  await test.step('Start payment and validate Error message', async () => {
-    await paymentsPage.validatePaymentSummary({
-      fsp: fsps,
-      registrationsNumber: numberOfPas,
-      currency: '€',
-      paymentAmount: defaultMaxTransferValue,
-    });
-    await paymentsPage.startPayment();
-    await paymentsPage.validateToastMessage(
+  await test.step('Do payment', async () => {
+    await paymentsPage.createPayment({ onlyStep1: true });
+    await paymentPage.validateToastMessageAndClose(
       'Something went wrong: "Missing required configuration columnToMatch for FSP Excel"',
     );
   });
