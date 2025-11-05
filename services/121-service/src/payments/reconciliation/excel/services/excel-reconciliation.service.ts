@@ -6,7 +6,7 @@ import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
 import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconciliation-feedback.dto';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
-import { ExcelStatusColumn } from '@121-service/src/payments/reconciliation/excel/excel-status-column.const';
+import { ExcelReconciliationDefaultColumns } from '@121-service/src/payments/reconciliation/excel/enum/excel-reconciliation-default-columns.enum';
 import { ExcelReconciliationFeedbackService } from '@121-service/src/payments/reconciliation/excel/services/excel-reconciliation-feedback.service';
 import { ExcelReconciliationValidationService } from '@121-service/src/payments/reconciliation/excel/services/excel-reconciliation-validation.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
@@ -74,7 +74,11 @@ export class ExcelReconciliationService {
       );
       templates.push({
         name: fspConfig.name,
-        template: [matchColumn, ExcelStatusColumn],
+        template: [
+          matchColumn,
+          ExcelReconciliationDefaultColumns.status,
+          ExcelReconciliationDefaultColumns.errorMessage,
+        ],
       });
     }
 
@@ -132,6 +136,10 @@ export class ExcelReconciliationService {
     );
 
     this.excelReconciliationValidationService.validateStatusColumn(csvContents);
+
+    this.excelReconciliationValidationService.validateErrorMessageColumn(
+      csvContents,
+    );
 
     const matchColumn =
       await this.excelReconciliationValidationService.validateOnlyOneMatchColumnIsUsedAndReturnIt(
@@ -215,10 +223,14 @@ export class ExcelReconciliationService {
         },
       );
 
-    const matchColumnValuesForCurrentStatus = csvContents
-      .filter((r) => r[ExcelStatusColumn] === transactionStatus)
-      .map((r) => r[matchColumn]); // So a list of phone numbers or nationalIds
-    const transactionIdsToUpdate: number[] =
+    const recordsForCurrentStatus: CsvContents = csvContents.filter(
+      (record) =>
+        record[ExcelReconciliationDefaultColumns.status] === transactionStatus,
+    );
+    const matchColumnValuesForCurrentStatus = recordsForCurrentStatus.map(
+      (record) => record[matchColumn],
+    ); // So a list of phone numbers or nationalIds
+    const transactionIdsToUpdate =
       await this.registrationViewScopedRepository.getTransactionIdsByPaymentAndRegistrationData(
         {
           paymentId,
@@ -231,12 +243,68 @@ export class ExcelReconciliationService {
       return; // Nothing to do no transactions to update and no events to create
     }
 
+    let errorMessages = new Map<number, string>();
+    if (transactionStatus === TransactionStatusEnum.error) {
+      errorMessages = await this.createErrorMessageMap({
+        paymentId,
+        programRegistrationAttributeId,
+        matchColumnValuesForCurrentStatus,
+        recordsForCurrentStatus,
+        matchColumn,
+      });
+    }
+
     await this.transactionsService.saveTransactionProgressBulk({
       newTransactionStatus: transactionStatus,
       transactionIds: transactionIdsToUpdate,
       description: TransactionEventDescription.excelReconciliationFileUpload,
       userId,
       programFspConfigurationId,
+      errorMessages,
     });
+  }
+
+  private async createErrorMessageMap({
+    paymentId,
+    programRegistrationAttributeId,
+    matchColumnValuesForCurrentStatus,
+    recordsForCurrentStatus,
+    matchColumn,
+  }: {
+    paymentId: number;
+    programRegistrationAttributeId: number;
+    matchColumnValuesForCurrentStatus: any[];
+    recordsForCurrentStatus: CsvContents;
+    matchColumn: string;
+  }): Promise<Map<number, string>> {
+    const errorMessages = new Map<number, string>();
+    const transactionIdsMappedToMatchColumnValue: Map<string, number> =
+      await this.registrationViewScopedRepository.getTransactionIdsMappedToMatchColumnValue(
+        {
+          paymentId,
+          programRegistrationAttributeId,
+          dataValues: matchColumnValuesForCurrentStatus,
+        },
+      );
+
+    const errorsMessagesMappedToMatchColumnValue = new Map<string, string>();
+    for (const record of recordsForCurrentStatus) {
+      errorsMessagesMappedToMatchColumnValue.set(
+        String(record[matchColumn]),
+        String(record[ExcelReconciliationDefaultColumns.errorMessage]),
+      );
+    }
+
+    for (const [
+      matchColumnValue,
+      transactionId,
+    ] of transactionIdsMappedToMatchColumnValue) {
+      const errorMessage = String(
+        errorsMessagesMappedToMatchColumnValue.get(matchColumnValue),
+      );
+      errorMessages.set(transactionId, errorMessage);
+    }
+
+    return errorMessages;
   }
 }

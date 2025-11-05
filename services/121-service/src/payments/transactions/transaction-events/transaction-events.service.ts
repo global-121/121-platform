@@ -71,7 +71,7 @@ export class TransactionEventsService {
     type,
     description,
     isSuccessfullyCompleted,
-    errorMessage,
+    errorMessages,
   }: {
     transactionIds: number[];
     programFspConfigurationId: number;
@@ -79,7 +79,7 @@ export class TransactionEventsService {
     type: TransactionEventType;
     description: TransactionEventDescription;
     isSuccessfullyCompleted: boolean;
-    errorMessage?: string;
+    errorMessages: Map<number, string>;
   }): Promise<void> {
     const transactionEvents = transactionIds.map((transactionId) =>
       this.transactionEventScopedRepository.create({
@@ -89,12 +89,17 @@ export class TransactionEventsService {
         type,
         description,
         isSuccessfullyCompleted,
-        errorMessage,
+        errorMessage: errorMessages.get(transactionId),
       }),
     );
 
-    await this.transactionEventScopedRepository.save(transactionEvents, {
-      chunk: 1000,
-    });
+    const resultTransactionEvents =
+      await this.transactionEventScopedRepository.save(transactionEvents, {
+        chunk: 1000,
+      });
+
+    await this.lastTransactionEventRepository.bulkUpdateFromTransactionEvents(
+      resultTransactionEvents,
+    );
   }
 }

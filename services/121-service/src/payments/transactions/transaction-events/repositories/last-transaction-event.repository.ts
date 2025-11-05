@@ -1,4 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
+import { chunk } from 'lodash';
 import { Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
@@ -33,6 +34,31 @@ export class LastTransactionEventRepository extends Repository<LastTransactionEv
     if ((updateResult.affected ?? 0) === 0) {
       // No rows were updated, so insert a new record
       await this.baseRepository.insert(lastTransactionEvent);
+    }
+  }
+
+  public async bulkUpdateFromTransactionEvents(
+    transactionEvents: TransactionEventEntity[],
+  ): Promise<void> {
+    if (transactionEvents.length === 0) {
+      return;
+    }
+
+    const values: QueryDeepPartialEntity<LastTransactionEventEntity>[] =
+      transactionEvents.map((transactionEvent) => ({
+        transactionId: transactionEvent.transactionId,
+        transactionEventId: transactionEvent.id,
+      }));
+
+    const chunks = chunk(values, 10000);
+    for (const transactionEventValuesChunk of chunks) {
+      await this.baseRepository
+        .createQueryBuilder()
+        .insert()
+        .into(LastTransactionEventEntity)
+        .values(transactionEventValuesChunk)
+        .orUpdate(['transactionEventId', 'updated'], ['transactionId'])
+        .execute();
     }
   }
 }

@@ -282,16 +282,39 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
     paymentId: number;
     programRegistrationAttributeId: number;
     dataValues: (string | number | boolean | undefined)[];
-  }): Promise<number[]> {
-    const result = await this.getQueryBuilderFilterByPaymentAndRegistrationData(
-      {
-        paymentId,
-        programRegistrationAttributeId,
-        dataValues,
-        select: ['transaction.id as "transactionId"'],
-      },
+  }): Promise<any[]> {
+    const rows = await this.getQueryBuilderFilterByPaymentAndRegistrationData({
+      paymentId,
+      programRegistrationAttributeId,
+      dataValues,
+      select: ['transaction.id as "transactionId"'],
+    });
+
+    return rows.map((row) => row.transactionId);
+  }
+
+  public async getTransactionIdsMappedToMatchColumnValue({
+    paymentId,
+    programRegistrationAttributeId,
+    dataValues,
+  }: {
+    paymentId: number;
+    programRegistrationAttributeId: number;
+    dataValues: (string | number | boolean | undefined)[];
+  }): Promise<Map<string, number>> {
+    const rows = await this.getQueryBuilderFilterByPaymentAndRegistrationData({
+      paymentId,
+      programRegistrationAttributeId,
+      dataValues,
+      select: [
+        'transaction.id as "transactionId"',
+        'registrationData.value as "matchColumnValue"',
+      ],
+    });
+
+    return new Map(
+      rows.map((row) => [row.matchColumnValue, row.transactionId]),
     );
-    return result.map((r: any) => r.transactionId);
   }
 
   public async getReferenceIdsAndStatusesByPaymentForRegistrationData({

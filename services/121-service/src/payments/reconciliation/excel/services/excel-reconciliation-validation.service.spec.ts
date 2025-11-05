@@ -63,4 +63,16 @@ describe('ExcelReconciliationValidationService - validateStatusColumn', () => {
       HttpException,
     );
   });
+
+  it('should throw if errorMessage is present for a successful transaction', () => {
+    const csvContents = [
+      {
+        status: TransactionStatusEnum.success,
+        errorMessage: 'Should not be here',
+      },
+    ];
+    expect(() => service.validateErrorMessageColumn(csvContents)).toThrow(
+      HttpException,
+    );
+  });
 });

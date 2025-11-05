@@ -4,7 +4,7 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { ExcelStatusColumn } from '@121-service/src/payments/reconciliation/excel/excel-status-column.const';
+import { ExcelReconciliationDefaultColumns } from '@121-service/src/payments/reconciliation/excel/enum/excel-reconciliation-default-columns.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
@@ -133,7 +133,7 @@ export class ExcelReconciliationValidationService {
 
   public validateStatusColumn(csvContents: CsvContents): void {
     // Validate status exists
-    const columnName = ExcelStatusColumn;
+    const columnName = ExcelReconciliationDefaultColumns.status;
     if (!csvContents[0][columnName]) {
       throw new HttpException(
         `The status column is missing. Please make sure the column is named '${columnName}'`,
@@ -151,6 +151,20 @@ export class ExcelReconciliationValidationService {
       if (!allowedStatusValues.includes(String(status))) {
         throw new HttpException(
           `Invalid status value '${status}'. Allowed values are: ${allowedStatusValues.join(', ')}`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+  }
+
+  public validateErrorMessageColumn(csvContents: CsvContents): void {
+    for (const content of csvContents) {
+      if (
+        content.errorMessage &&
+        content.status === TransactionStatusEnum.success
+      ) {
+        throw new HttpException(
+          `Error message not allowed when status is success`,
           HttpStatus.BAD_REQUEST,
         );
       }
