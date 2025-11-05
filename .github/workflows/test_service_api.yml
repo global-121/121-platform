@@ -77,6 +77,7 @@ jobs:
       - name: Run integration tests with Jest
         working-directory: ${{ env.workingDirectory }}
         run: |
+          # Ignore the retryFailedJobsOnStartupDuringQueueProcessing test in this job because it requires :production mode
           docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }} --testPathIgnorePatterns=retryFailedJobsOnStartupDuringQueueProcessing.test.ts
 
       # For more info, see services/121-service/README.md#Integration-test-coverage
@@ -142,6 +143,7 @@ jobs:
 
       - name: Run restart test with Jest
         working-directory: ${{ env.workingDirectory }}
+        # Running only the restart test as it requires the services to be started in :production mode
         run: 'npm run test:integration:all -- retryFailedJobsOnStartupDuringQueueProcessing.test.ts'
 
       - uses: actions/upload-artifact@v5
