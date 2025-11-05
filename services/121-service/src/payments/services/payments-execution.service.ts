@@ -42,6 +42,7 @@ export class PaymentsExecutionService {
             paymentId,
           },
         );
+
       if (transactionsToStart.length === 0) {
         throw new HttpException(
           {
@@ -52,9 +53,14 @@ export class PaymentsExecutionService {
         );
       }
 
-      const programFspConfigurationNames: string[] = transactionsToStart
-        .map((t) => t.programFspConfigurationName)
-        .filter((fsp) => fsp !== null);
+      const programFspConfigurationNames: string[] = Array.from(
+        new Set(
+          transactionsToStart
+            .map((t) => t.programFspConfigurationName)
+            .filter((fsp): fsp is string => fsp !== null),
+        ),
+      );
+
       await this.paymentsHelperService.checkFspConfigurationsOrThrow(
         programId,
         programFspConfigurationNames,
@@ -74,8 +80,6 @@ export class PaymentsExecutionService {
         },
       );
 
-      // TODO: Check how this performs with 130k registrations
-      // Else do not await and unlock the payments in a finally on that block
       await this.createTransactionJobs({
         programId,
         transactionIds: transactionsToStart.map((t) => t.id),
