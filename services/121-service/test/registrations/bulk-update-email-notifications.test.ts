@@ -131,8 +131,8 @@ describe('Bulk Update Email Notifications', () => {
     expect(userService.findById).not.toHaveBeenCalled();
   });
 
-  it('Should handle email sending failure gracefully', async () => {
-    // Arrange: Set up registration service to fail and email service to fail
+  it('Should handle email sending failure', async () => {
+    // Arrange
     registrationsService.validateInputAndUpdateRegistration.mockRejectedValueOnce(
       new HttpException('Validation failed', HttpStatus.BAD_REQUEST),
     );
