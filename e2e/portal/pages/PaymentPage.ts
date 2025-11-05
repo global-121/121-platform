@@ -18,6 +18,7 @@ class PaymentPage extends BasePage {
   readonly exportButton: Locator;
   readonly paymentLogTab: Locator;
   readonly paymentLogTable: Locator;
+  readonly startPaymentButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -32,9 +33,9 @@ class PaymentPage extends BasePage {
     this.importFileButton = this.page.getByRole('button', {
       name: 'Import file',
     });
-    this.proceedButton = this.page.getByRole('button', { name: 'Proceed' });
+    this.proceedButton = this.page.getByTestId('form-dialog-proceed-button');
     this.viewPaymentTitle = this.page.getByRole('heading', {
-      name: 'Payment',
+      name: /Payment \d{2}\/\d{2}\/\d{4}/,
     });
     this.paymentAmount = this.page.getByTestId('metric-tile-component');
     this.retryFailedTransfersButton = this.page.getByRole('button', {
@@ -48,9 +49,18 @@ class PaymentPage extends BasePage {
     });
     this.paymentLogTab = this.page.getByRole('tab', { name: 'Payment log' });
     this.paymentLogTable = this.page.getByTestId('payment-log-table');
+    this.startPaymentButton = this.page.getByRole('button', {
+      name: 'Start payment',
+    });
+  }
+
+  async startPayment() {
+    await this.startPaymentButton.click();
+    await this.proceedButton.click();
   }
 
   async waitForPaymentToComplete() {
+    await this.page.waitForTimeout(500); // TODO for now needed to bridge in-progress gap between actions & queue.
     const inProgressChip = this.page
       .locator('app-colored-chip')
       .getByLabel('In progress');
@@ -113,7 +123,9 @@ class PaymentPage extends BasePage {
   }
 
   async validateRetryFailedTransfersButtonToBeVisible() {
-    await expect(this.retryFailedTransfersButton).toBeVisible();
+    await expect(this.retryFailedTransfersButton).toBeVisible({
+      timeout: 5000,
+    });
   }
 
   async validateRetryFailedTransfersButtonToBeHidden() {
@@ -148,13 +160,15 @@ class PaymentPage extends BasePage {
 
   async validatePaymentLogEntries(expectedNote: string): Promise<void> {
     const rows = this.paymentLogTable.locator('tbody tr');
-    await expect(rows).toHaveCount(2);
+    await expect(rows).toHaveCount(3);
 
     const noteRow = rows.filter({ hasText: expectedNote });
     const createdRow = rows.filter({ hasText: 'Created' });
+    const startedRow = rows.filter({ hasText: 'Started' });
 
     await expect(noteRow).toBeVisible();
     await expect(createdRow).toBeVisible();
+    await expect(startedRow).toBeVisible();
   }
 
   async validatePaymentLog(expectedNote: string): Promise<void> {
