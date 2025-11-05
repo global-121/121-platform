@@ -9,6 +9,16 @@ export async function kill121Service(): Promise<request.Response> {
   });
 }
 
+export async function waitForServiceToBeUp(): Promise<boolean> {
+  let sericeUp = false;
+
+  console.log('Waiting for 121 service to be up...');
+  while (!serviceUp) {
+    serviceUp = await isServiceUp();
+    await waitFor(1_000);
+  }
+}
+
 export async function isServiceUp(): Promise<boolean> {
   return getServer()
     .get('/health/health')
