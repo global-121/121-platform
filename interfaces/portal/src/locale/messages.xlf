@@ -778,9 +778,6 @@
       <trans-unit id="1105070151875122157" datatype="html">
         <source>No Payments found</source>
       </trans-unit>
-      <trans-unit id="3307214558906712688" datatype="html">
-        <source>In progress</source>
-      </trans-unit>
       <trans-unit id="5004550577313573215" datatype="html">
         <source>Total amount</source>
       </trans-unit>
@@ -934,9 +931,6 @@
       <trans-unit id="5081696702832953928" datatype="html">
         <source>Some of the registrations you have selected are not eligible for this payment. Change your selection and try again</source>
       </trans-unit>
-      <trans-unit id="8074727237612649640" datatype="html">
-        <source>Review summary and click start payment.</source>
-      </trans-unit>
       <trans-unit id="5995232414192798763" datatype="html">
         <source>Financial Service Provider(s)</source>
       </trans-unit>
@@ -954,9 +948,6 @@
       </trans-unit>
       <trans-unit id="2077280297780026969" datatype="html">
         <source>Review payment summary and follow the next steps:</source>
-      </trans-unit>
-      <trans-unit id="4360422423466093126" datatype="html">
-        <source>Click start payment, this will direct you to the payment page.</source>
       </trans-unit>
       <trans-unit id="5677186522471416018" datatype="html">
         <source>Upload the file to the Financial Service Provider’s portal.</source>
@@ -1008,12 +999,6 @@
       </trans-unit>
       <trans-unit id="8108032945706896800" datatype="html">
         <source>You do not have permission to view this page.</source>
-      </trans-unit>
-      <trans-unit id="4324437964498958057" datatype="html">
-        <source>Transfers sent</source>
-      </trans-unit>
-      <trans-unit id="4585448172507601196" datatype="html">
-        <source>Registrations included</source>
       </trans-unit>
       <trans-unit id="3971565293367630153" datatype="html">
         <source>Retry transfers</source>
@@ -1110,9 +1095,6 @@
       </trans-unit>
       <trans-unit id="2276030451798485888" datatype="html">
         <source>Amount of money successfully transferred.</source>
-      </trans-unit>
-      <trans-unit id="4067653603451364018" datatype="html">
-        <source>The payment will be in progress while the number of transfers sent, total amount and registrations in the table below are loading.</source>
       </trans-unit>
       <trans-unit id="6371588679924903737" datatype="html">
         <source>Open in new tab</source>
@@ -2011,6 +1993,36 @@
       </trans-unit>
       <trans-unit id="payment-event-log-item-type-retry" datatype="html">
         <source>Retry</source>
+      </trans-unit>
+      <trans-unit id="3718000607419168275" datatype="html">
+        <source>Click create payment, this will direct you to the payment page.</source>
+      </trans-unit>
+      <trans-unit id="4146714974043966714" datatype="html">
+        <source>Review summary and click create payment.</source>
+      </trans-unit>
+      <trans-unit id="5179155984601144030" datatype="html">
+        <source>Create payment</source>
+      </trans-unit>
+      <trans-unit id="8616960384506541771" datatype="html">
+        <source>Payment started successfully.</source>
+      </trans-unit>
+      <trans-unit id="7392987714730903698" datatype="html">
+        <source>registrations</source>
+      </trans-unit>
+      <trans-unit id="515050170212939003" datatype="html">
+        <source>Click start payment, or make sure someone with the right permissions does so.</source>
+      </trans-unit>
+      <trans-unit id="4605701201545136761" datatype="html">
+        <source>Click start payment to initiate the payment through your FSP(s).</source>
+      </trans-unit>
+      <trans-unit id="718304168195158236" datatype="html">
+        <source>Total registrations</source>
+      </trans-unit>
+      <trans-unit id="inProgressChipLabel" datatype="html">
+        <source>In progress</source>
+      </trans-unit>
+      <trans-unit id="inProgressChipTooltip" datatype="html">
+        <source>The payment will be in progress while the transfers in the table below are loading.</source>
       </trans-unit>
     </body>
   </file>
