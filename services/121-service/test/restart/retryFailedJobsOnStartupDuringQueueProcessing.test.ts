@@ -85,13 +85,7 @@ describe('Retry Failed Jobs On Startup During Queue Processing', () => {
     void kill121Service().catch(() => {
       // Ignore error of the service being killed that causes: 'Error: socket hang up'
     });
-    // Wait for the service to restart and become available
-    let serviceUp = false;
-    while (!serviceUp) {
-      console.log('Waiting for 121 service to restart...');
-      await waitFor(1_000);
-      serviceUp = await isServiceUp();
-    }
+  await waitForServiceToBeUp();
     // Assert
     // Check payment results to have 100% success rate
     const paymentResults = await getPaymentResults({
