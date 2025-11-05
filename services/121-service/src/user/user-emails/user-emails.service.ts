@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
+import { env } from 'process';
 
 import { EmailsService } from '@121-service/src/emails/emails.service';
 import { EmailData } from '@121-service/src/emails/interfaces/email-data.interface';
@@ -22,20 +23,28 @@ export class UserEmailsService {
   public async handleUserEvent(
     payload: AccountCreatedEvent | PasswordResetEvent,
   ): Promise<void> {
-    const { email, displayName, password, userEmailType } = payload;
-    const userEmailInput: UserEmailInput = {
-      email,
-      displayName,
-      password,
-    };
+    let userEmailType: UserEmailType | undefined;
+    if (payload instanceof AccountCreatedEvent) {
+      userEmailType = env.USE_SSO_AZURE_ENTRA
+        ? UserEmailType.accountCreatedForSSO
+        : UserEmailType.accountCreated;
+    } else if (payload instanceof PasswordResetEvent) {
+      userEmailType = UserEmailType.passwordReset;
+    }
 
-    await this.send({
-      userEmailInput,
+    if (!userEmailType) {
+      throw new Error(
+        'UserEmailType could not be determined from event payload',
+      );
+    }
+
+    await this.sendUserEmail({
+      userEmailInput: payload,
       userEmailType,
     });
   }
 
-  public async send({
+  public async sendUserEmail({
     userEmailInput,
     userEmailType,
   }: {
