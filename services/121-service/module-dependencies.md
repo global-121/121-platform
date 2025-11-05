@@ -2,29 +2,37 @@
 
 ```mermaid
 graph LR
+  ActionsModule-->EventEmitterModule
+  ActionsModule-->UserModule
+  ActivitiesModule-->EventEmitterModule
   ActivitiesModule-->MessageModule
   ActivitiesModule-->NoteModule
   ActivitiesModule-->RegistrationEventsModule
   ActivitiesModule-->TransactionsModule
   ActivitiesModule-->UserModule
+  AirtelModule-->EventEmitterModule
   AirtelModule-->QueuesRegistryModule
   AirtelModule-->RedisModule
+  CommercialBankEthiopiaModule-->EventEmitterModule
   CommercialBankEthiopiaReconciliationModule-->CommercialBankEthiopiaModule
+  CommercialBankEthiopiaReconciliationModule-->EventEmitterModule
   CommercialBankEthiopiaReconciliationModule-->RegistrationsModule
   CronjobModule-->CommercialBankEthiopiaReconciliationModule
+  CronjobModule-->EventEmitterModule
   CronjobModule-->ExchangeRatesModule
   CronjobModule-->IntersolveVisaReconciliationModule
   CronjobModule-->IntersolveVoucherModule
   CronjobModule-->IntersolveVoucherReconciliationModule
   CronjobModule-->NedbankReconciliationModule
   CronjobModule-->OnafriqReconciliationModule
-  DebitCardsIntersolveVisaModule-->IntersolveVisaModule
-  DebitCardsIntersolveVisaModule-->MessageQueuesModule
-  DebitCardsIntersolveVisaModule-->ProgramFspConfigurationsModule
-  DebitCardsIntersolveVisaModule-->RegistrationDataModule
-  DebitCardsIntersolveVisaModule-->UserModule
+  DiscoveryModule-->EventEmitterModule
+  EmailsModule-->EventEmitterModule
+  EventEmitterModule-->DiscoveryModule
+  ExcelModule-->EventEmitterModule
   ExcelModule-->RegistrationsModule
   ExcelModule-->TransactionsModule
+  ExcelReconcilicationModule-->ActionsModule
+  ExcelReconcilicationModule-->EventEmitterModule
   ExcelReconcilicationModule-->ExcelModule
   ExcelReconcilicationModule-->PaymentsModule
   ExcelReconcilicationModule-->ProgramFspConfigurationsModule
@@ -32,10 +40,16 @@ graph LR
   ExcelReconcilicationModule-->RegistrationsModule
   ExcelReconcilicationModule-->TransactionEventsModule
   ExcelReconcilicationModule-->TransactionsModule
+  ExchangeRatesModule-->EventEmitterModule
   ExchangeRatesModule-->UserModule
+  FspsModule-->EventEmitterModule
   FspsModule-->UserModule
+  ImageCodeModule-->EventEmitterModule
+  IntersolveVisaModule-->EventEmitterModule
   IntersolveVisaModule-->UserModule
+  IntersolveVisaReconciliationModule-->EventEmitterModule
   IntersolveVisaReconciliationModule-->IntersolveVisaModule
+  IntersolveVoucherModule-->EventEmitterModule
   IntersolveVoucherModule-->ImageCodeModule
   IntersolveVoucherModule-->MessageQueuesModule
   IntersolveVoucherModule-->MessageTemplateModule
@@ -46,9 +60,13 @@ graph LR
   IntersolveVoucherModule-->TransactionEventsModule
   IntersolveVoucherModule-->TransactionsModule
   IntersolveVoucherModule-->UserModule
+  IntersolveVoucherReconciliationModule-->EventEmitterModule
   IntersolveVoucherReconciliationModule-->IntersolveVoucherModule
   IntersolveVoucherReconciliationModule-->ProgramFspConfigurationsModule
   IntersolveVoucherReconciliationModule-->ProgramModule
+  KoboConnectModule-->EventEmitterModule
+  LookupModule-->EventEmitterModule
+  MessageIncomingModule-->EventEmitterModule
   MessageIncomingModule-->ImageCodeModule
   MessageIncomingModule-->IntersolveVoucherModule
   MessageIncomingModule-->MessageQueuesModule
@@ -58,17 +76,22 @@ graph LR
   MessageIncomingModule-->TransactionsModule
   MessageIncomingModule-->UserModule
   MessageIncomingModule-->WhatsappModule
+  MessageModule-->EventEmitterModule
   MessageModule-->IntersolveVoucherModule
   MessageModule-->MessageQueuesModule
   MessageModule-->MessageTemplateModule
   MessageModule-->ProgramModule
   MessageModule-->SmsModule
   MessageModule-->WhatsappModule
+  MessageQueuesModule-->EventEmitterModule
   MessageQueuesModule-->ProgramAttributesModule
   MessageQueuesModule-->QueuesRegistryModule
   MessageQueuesModule-->RegistrationDataModule
+  MessageTemplateModule-->EventEmitterModule
   MessageTemplateModule-->ProgramAttributesModule
   MessageTemplateModule-->UserModule
+  MetricsModule-->ActionsModule
+  MetricsModule-->EventEmitterModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
   MetricsModule-->PaymentsModule
@@ -77,20 +100,28 @@ graph LR
   MetricsModule-->RegistrationEventsModule
   MetricsModule-->RegistrationsModule
   MetricsModule-->UserModule
+  NedbankModule-->EventEmitterModule
+  NedbankReconciliationModule-->EventEmitterModule
   NedbankReconciliationModule-->NedbankModule
   NedbankReconciliationModule-->TransactionEventsModule
   NedbankReconciliationModule-->TransactionsModule
+  NoteModule-->EventEmitterModule
   NoteModule-->RegistrationsModule
   NoteModule-->UserModule
+  OnafriqModule-->EventEmitterModule
   OnafriqModule-->ProgramFspConfigurationsModule
   OnafriqModule-->QueuesRegistryModule
   OnafriqModule-->RedisModule
+  OnafriqReconciliationModule-->EventEmitterModule
   OnafriqReconciliationModule-->OnafriqModule
   OnafriqReconciliationModule-->ProgramFspConfigurationsModule
   OnafriqReconciliationModule-->ProgramModule
   OnafriqReconciliationModule-->QueuesRegistryModule
   OnafriqReconciliationModule-->RedisModule
   OnafriqReconciliationModule-->TransactionsModule
+  PaymentEventsModule-->EventEmitterModule
+  PaymentsModule-->ActionsModule
+  PaymentsModule-->EventEmitterModule
   PaymentsModule-->ExcelModule
   PaymentsModule-->FspsModule
   PaymentsModule-->MessageTemplateModule
@@ -106,6 +137,11 @@ graph LR
   PaymentsModule-->TransactionQueuesModule
   PaymentsModule-->TransactionsModule
   PaymentsModule-->UserModule
+  ProgramAttachmentsModule-->EventEmitterModule
+  ProgramAttributesModule-->EventEmitterModule
+  ProgramFspConfigurationsModule-->EventEmitterModule
+  ProgramModule-->ActionsModule
+  ProgramModule-->EventEmitterModule
   ProgramModule-->FspsModule
   ProgramModule-->IntersolveVisaModule
   ProgramModule-->KoboConnectModule
@@ -114,9 +150,15 @@ graph LR
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->ProgramFspConfigurationsModule
   ProgramModule-->UserModule
+  QueuesRegistryModule-->EventEmitterModule
+  RedisModule-->EventEmitterModule
+  RegistrationDataModule-->EventEmitterModule
+  RegistrationEventsModule-->EventEmitterModule
   RegistrationEventsModule-->UserModule
+  RegistrationUtilsModule-->EventEmitterModule
   RegistrationUtilsModule-->RegistrationDataModule
-  RegistrationsModule-->DebitCardsIntersolveVisaModule
+  RegistrationsModule-->ActionsModule
+  RegistrationsModule-->EventEmitterModule
   RegistrationsModule-->FspsModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->MessageQueuesModule
@@ -129,19 +171,25 @@ graph LR
   RegistrationsModule-->RegistrationUtilsModule
   RegistrationsModule-->UserModule
   RegistrationsUpdateJobEmailsModule-->EmailsModule
+  RegistrationsUpdateJobEmailsModule-->EventEmitterModule
+  RegistrationsUpdateJobsModule-->EventEmitterModule
   RegistrationsUpdateJobsModule-->RegistrationsModule
   RegistrationsUpdateJobsModule-->RegistrationsUpdateJobEmailsModule
   RegistrationsUpdateJobsModule-->UserModule
+  SafaricomModule-->EventEmitterModule
   SafaricomModule-->QueuesRegistryModule
   SafaricomModule-->RedisModule
+  SafaricomReconciliationModule-->EventEmitterModule
   SafaricomReconciliationModule-->QueuesRegistryModule
   SafaricomReconciliationModule-->RedisModule
   SafaricomReconciliationModule-->SafaricomModule
   SafaricomReconciliationModule-->TransactionEventsModule
   SafaricomReconciliationModule-->TransactionsModule
+  SmsModule-->EventEmitterModule
+  TransactionEventsModule-->EventEmitterModule
   TransactionJobsModule-->AirtelModule
   TransactionJobsModule-->CommercialBankEthiopiaModule
-  TransactionJobsModule-->CooperativeBankOfOromiaModule
+  TransactionJobsModule-->EventEmitterModule
   TransactionJobsModule-->ExcelModule
   TransactionJobsModule-->FspsModule
   TransactionJobsModule-->IntersolveVisaModule
@@ -158,15 +206,18 @@ graph LR
   TransactionJobsModule-->SafaricomModule
   TransactionJobsModule-->TransactionEventsModule
   TransactionJobsModule-->TransactionsModule
+  TransactionQueuesModule-->EventEmitterModule
   TransactionQueuesModule-->QueuesRegistryModule
   TransactionQueuesModule-->RedisModule
+  TransactionsModule-->ActionsModule
+  TransactionsModule-->EventEmitterModule
   TransactionsModule-->MessageQueuesModule
   TransactionsModule-->MessageTemplateModule
   TransactionsModule-->RegistrationUtilsModule
   TransactionsModule-->TransactionEventsModule
   TransactionsModule-->UserModule
-  UserEmailsModule-->EmailsModule
-  UserModule-->UserEmailsModule
+  UserModule-->EventEmitterModule
+  WhatsappModule-->EventEmitterModule
   WhatsappModule-->ImageCodeModule
   WhatsappModule-->MessageTemplateModule
   WhatsappModule-->UserModule
