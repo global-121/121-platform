@@ -68,18 +68,15 @@ export class StartPaymentComponent {
       type: 'text',
     },
     {
-      label: $localize`Included in payment`,
+      label: $localize`Total registrations`,
       type: 'text',
       chipLabel: this.transactionCount(),
       chipVariant: 'blue',
     },
     {
-      // ##TODO: check with design team what should be the best label
-      label: $localize`Total payment amount`,
+      label: $localize`Total amount`,
       value: this.totalPaymentAmount(),
       type: 'text',
-      // ##TODO: wait for design team to provide copy
-      tooltip: $localize`TBD`,
     },
   ]);
 

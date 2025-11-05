@@ -235,4 +235,23 @@ export class PageLayoutPaymentComponent {
         (transaction) => transaction.status === TransactionStatusEnum.created,
       );
   });
+
+  isPaymentInProgress(): boolean | undefined {
+    return (
+      this.paymentStatus.isPending() ||
+      this.transactions.isPending() ||
+      this.paymentStatus.data()?.inProgress
+    );
+  }
+
+  chipLabel(): string | undefined {
+    return this.isPaymentInProgress()
+      ? $localize`:@@inProgressChipLabel:In progress`
+      : undefined;
+  }
+  chipTooltip(): string | undefined {
+    return this.isPaymentInProgress()
+      ? $localize`:@@inProgressChipTooltip:The payment will be in progress while the transfers in the table below are loading.`
+      : undefined;
+  }
 }
