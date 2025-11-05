@@ -173,7 +173,7 @@
               "@angular/localize/init"
             ],
             "tsConfig": "tsconfig.spec.json",
-            "include": ["src/**/*.spec.ts", "../*.spec.ts"],
+            "include": ["src/**/*.spec.ts", "./*.spec.ts"],
             "inlineStyleLanguage": "css",
             "codeCoverage": true,
             "progress": true,

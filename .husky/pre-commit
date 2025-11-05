@@ -7,7 +7,7 @@ ORANGE='\033[0;33m'
 NC='\033[0m' # No Color
 
 log() {
-  printf "${ORANGE}[pre-commit]${NC} $1\n"
+  printf "${ORANGE}[pre-commit]${NC} %s\n" "$1"
 }
 
 log "Running custom pre-commit hook defined in ./husky/pre-commit"
@@ -23,8 +23,5 @@ fi
 
 log "Running lint-staged"
 npx lint-staged
-
-log "Running extract-i18n-if-changed script"
-(cd interfaces/portal && npm run extract-i18n:smart)
 
 log "All done"
