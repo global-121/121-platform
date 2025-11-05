@@ -2000,6 +2000,9 @@
       <trans-unit id="922512355272678698" datatype="html">
         <source>Learn more about updating selected registrations in the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/>.</source>
       </trans-unit>
+      <trans-unit id="9102963095355753902" datatype="html">
+        <source>Slovak</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
