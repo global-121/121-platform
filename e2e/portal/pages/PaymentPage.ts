@@ -56,7 +56,7 @@ class PaymentPage extends BasePage {
 
   async startPayment() {
     await this.startPaymentButton.click();
-    await this.proceedButton.click();
+    await this.startPaymentButton.last().click(); // ##TODO: temporary fix for double button issue
   }
 
   async waitForPaymentToComplete() {
