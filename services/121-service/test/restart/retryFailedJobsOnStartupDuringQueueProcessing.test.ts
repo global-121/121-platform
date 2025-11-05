@@ -19,8 +19,8 @@ import {
 import { getPaymentResults } from '@121-service/test/performance/helpers/performance.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import {
-  isServiceUp,
   kill121Service,
+  waitForServiceToBeUp,
 } from '@121-service/test/restart/helpers/restart.helper';
 
 const duplicateNumber = 5; // 2^5 = 32
@@ -80,12 +80,13 @@ describe('Retry Failed Jobs On Startup During Queue Processing', () => {
     });
     expect(doPaymentResponse.statusCode).toBe(HttpStatus.ACCEPTED);
     // Wait long enough so that jobs are added to the queue but not finished processing
-    await waitFor(1_000);
+    await waitFor(2_000);
     // Kill 121 service to simulate crash during queue processing
     void kill121Service().catch(() => {
       // Ignore error of the service being killed that causes: 'Error: socket hang up'
     });
-  await waitForServiceToBeUp();
+    // Wait for service to be back up
+    await waitForServiceToBeUp();
     // Assert
     // Check payment results to have 100% success rate
     const paymentResults = await getPaymentResults({

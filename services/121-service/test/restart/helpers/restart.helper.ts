@@ -1,6 +1,7 @@
 import * as request from 'supertest';
 
 import { env } from '@121-service/src/env';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { getServer } from '@121-service/test/helpers/utility.helper';
 
 export async function kill121Service(): Promise<request.Response> {
@@ -10,13 +11,13 @@ export async function kill121Service(): Promise<request.Response> {
 }
 
 export async function waitForServiceToBeUp(): Promise<boolean> {
-  let sericeUp = false;
-
+  let serviceUp = false;
   console.log('Waiting for 121 service to be up...');
   while (!serviceUp) {
     serviceUp = await isServiceUp();
     await waitFor(1_000);
   }
+  return serviceUp;
 }
 
 export async function isServiceUp(): Promise<boolean> {
