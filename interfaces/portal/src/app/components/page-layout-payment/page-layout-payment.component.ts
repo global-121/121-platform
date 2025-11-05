@@ -135,7 +135,8 @@ export class PageLayoutPaymentComponent {
       this.payment.data().failed.transferValue +
       this.payment.data().success.transferValue +
       this.payment.data().waiting.transferValue +
-      this.payment.data().created.transferValue;
+      this.payment.data().pendingApproval.transferValue +
+      this.payment.data().approved.transferValue;
 
     return (
       this.currencyPipe.transform(
@@ -206,7 +207,7 @@ export class PageLayoutPaymentComponent {
       return '';
     }
     return (
-      this.payment.data().created.count.toString() +
+      this.payment.data().pendingApproval.count.toString() +
       ' ' +
       $localize`registrations`
     );
@@ -219,7 +220,7 @@ export class PageLayoutPaymentComponent {
 
     return (
       this.currencyPipe.transform(
-        this.payment.data().created.transferValue,
+        this.payment.data().pendingApproval.transferValue,
         this.project.data()?.currency,
         'symbol-narrow',
         '1.2-2',
@@ -235,7 +236,8 @@ export class PageLayoutPaymentComponent {
     return this.transactions
       .data()
       .some(
-        (transaction) => transaction.status === TransactionStatusEnum.created,
+        (transaction) =>
+          transaction.status === TransactionStatusEnum.pendingApproval,
       );
   });
 

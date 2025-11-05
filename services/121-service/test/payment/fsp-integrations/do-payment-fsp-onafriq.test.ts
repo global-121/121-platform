@@ -324,7 +324,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // NOTE 3: this is the critical assertion, as in case of a duplicate thirdPartyTransId error, the transaction should not be updated to an error status.
     // This test is not following the real-life use case of making 2 calls, but does test the different handling in the code of this type of error.
     expect(getTransactionsBody.body[0].status).toBe(
-      TransactionStatusEnum.created,
+      TransactionStatusEnum.pendingApproval,
     );
 
     const transactionEventDescriptions = await getTransactionEventDescriptions({

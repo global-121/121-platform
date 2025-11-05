@@ -194,7 +194,7 @@ export async function createAndStartPayment({
     accessToken,
     maxWaitTimeMs: 20_000,
     paymentId,
-    completeStatusses: [TransactionStatusEnum.created],
+    completeStatusses: [TransactionStatusEnum.pendingApproval],
   });
 
   const startPaymentResult = await startPayment({

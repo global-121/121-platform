@@ -7,7 +7,10 @@ import { PaymentsExecutionHelperService } from '@121-service/src/payments/servic
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { BulkActionResultRetryPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 
 @Injectable()
@@ -19,6 +22,7 @@ export class PaymentsExecutionService {
     private readonly paymentsExecutionHelperService: PaymentsExecutionHelperService,
     private readonly paymentsHelperService: PaymentsHelperService,
     private readonly paymentEventsService: PaymentEventsService,
+    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async startPayment({
@@ -65,10 +69,26 @@ export class PaymentsExecutionService {
         programFspConfigurationNames,
       );
 
+      // TODO these 2 actions will later be slit up. For now they are together.
+      await this.paymentEventsService.createEvent({
+        paymentId,
+        userId,
+        type: PaymentEvent.approved,
+      });
       await this.paymentEventsService.createEvent({
         paymentId,
         userId,
         type: PaymentEvent.started,
+      });
+
+      // update all transactions to 'approved'
+      await this.transactionsService.saveTransactionProgressBulk({
+        newTransactionStatus: TransactionStatusEnum.approved,
+        transactionIds: transactionsToStart.map((t) => t.id),
+        description: TransactionEventDescription.approved,
+        userId,
+        programFspConfigurationId:
+          transactionsToStart[0].programFspConfigurationId!, //##TODO handle multiple FSPs
       });
 
       await this.paymentsExecutionHelperService.updatePaymentCountAndSetToCompleted(

@@ -58,7 +58,7 @@ describe('Start and create a payment separately', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 20_000,
-      completeStatusses: [TransactionStatusEnum.created],
+      completeStatusses: [TransactionStatusEnum.pendingApproval],
     });
 
     // Assert 1 - before starting payment
@@ -84,7 +84,7 @@ describe('Start and create a payment separately', () => {
       paymentReferenceIds.length,
     );
     expect(transactionsBeforeStart[0].status).toBe(
-      TransactionStatusEnum.created,
+      TransactionStatusEnum.pendingApproval,
     );
     expect(registrationBeforeStart!.status).toBe(
       RegistrationStatusEnum.included,
@@ -151,7 +151,7 @@ describe('Start and create a payment separately', () => {
         paymentReferenceIds: registrations.map((r) => r.referenceId),
         accessToken,
         maxWaitTimeMs: 20_000,
-        completeStatusses: [TransactionStatusEnum.created],
+        completeStatusses: [TransactionStatusEnum.pendingApproval],
       });
 
       // Make one registration non-included
@@ -188,10 +188,10 @@ describe('Start and create a payment separately', () => {
       });
       const transactions = getTransactionsResponse.body;
       const unstartedTransactions = transactions.filter(
-        (t: any) => t.status === TransactionStatusEnum.created,
+        (t: any) => t.status === TransactionStatusEnum.pendingApproval,
       );
       const startedTransactions = transactions.filter(
-        (t: any) => t.status !== TransactionStatusEnum.created,
+        (t: any) => t.status !== TransactionStatusEnum.pendingApproval,
       );
 
       expect(unstartedTransactions.length).toBe(1);
@@ -246,7 +246,7 @@ describe('Start and create a payment separately', () => {
       });
       const transactions = getTransactionsResponse.body;
       const startedTransactions = transactions.filter(
-        (t: any) => t.status !== TransactionStatusEnum.created,
+        (t: any) => t.status !== TransactionStatusEnum.pendingApproval,
       );
       expect(startedTransactions.length).toBe(2);
 
