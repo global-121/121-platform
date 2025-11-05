@@ -17,6 +17,7 @@ export async function waitForServiceToBeUp(): Promise<void> {
     serviceUp = await isServiceUp();
     await waitFor(1_000);
   }
+  return serviceUp;
 }
 export async function isServiceUp(): Promise<boolean> {
   return getServer()
