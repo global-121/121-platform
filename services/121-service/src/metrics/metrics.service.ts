@@ -505,7 +505,8 @@ export class MetricsService {
           success: 0,
           waiting: 0,
           failed: 0,
-          created: 0,
+          pendingApproval: 0,
+          approved: 0,
         };
       }
 
@@ -518,7 +519,10 @@ export class MetricsService {
       res[month].success += Number(aggregate.success.transferValue);
       res[month].waiting += Number(aggregate.waiting.transferValue);
       res[month].failed += Number(aggregate.failed.transferValue);
-      res[month].created += Number(aggregate.pendingApproval.transferValue);
+      res[month].pendingApproval += Number(
+        aggregate.pendingApproval.transferValue,
+      );
+      res[month].approved += Number(aggregate.approved.transferValue);
     }
     return res;
   }
