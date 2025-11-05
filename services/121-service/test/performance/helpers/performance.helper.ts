@@ -253,10 +253,6 @@ async function processPaymentSummaryResponse(
       paymentId,
       accessToken,
     });
-    console.log(
-      'Payment summary response status:',
-      paymentSummaryResponse.body,
-    );
     if (!isResponseSuccessful(paymentSummaryResponse.status)) {
       if (verbose) {
         console.log(

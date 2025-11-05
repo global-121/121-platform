@@ -59,7 +59,7 @@ describe('Measure performance during payment', () => {
     expect(doPaymentResponse.statusCode).toBe(HttpStatus.ACCEPTED);
     // Assert
     // Check payment results have at least 50% success rate within 60 minutes
-    await getPaymentResults({
+    const paymentResults = await getPaymentResults({
       programId: programIdOCW,
       paymentId: 1,
       accessToken,
@@ -84,6 +84,7 @@ describe('Measure performance during payment', () => {
       'Your voucher can be picked up at the location',
     );
     expect(bulkMessageResponse.statusCode).toBe(HttpStatus.ACCEPTED);
+    expect(paymentResults.success).toBe(true);
     const elapsedTime = Date.now() - startTime;
     expect(elapsedTime).toBeLessThan(testTimeout);
   });

@@ -84,7 +84,7 @@ describe('Do payment for 100k registrations with Safaricom within expected range
     expect(doPaymentResponse.statusCode).toBe(HttpStatus.ACCEPTED);
     // Assert
     // Check payment results have at least 10% success rate within 80 minutes
-    await getPaymentResults({
+    const paymentResults = await getPaymentResults({
       programId: programIdSafaricom,
       paymentId: 1,
       accessToken,
@@ -94,6 +94,7 @@ describe('Do payment for 100k registrations with Safaricom within expected range
       delayBetweenAttemptsMs,
       verbose: true,
     });
+    expect(paymentResults.success).toBe(true);
     const elapsedTime = Date.now() - startTime;
     expect(elapsedTime).toBeLessThan(testTimeout);
   });
