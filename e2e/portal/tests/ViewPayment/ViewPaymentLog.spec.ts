@@ -47,8 +47,7 @@ test('View payment log, including note added to payment', async ({ page }) => {
   });
 
   await test.step('Do payment with note', async () => {
-    await paymentsPage.createPayment();
-    await paymentsPage.startPayment(note);
+    await paymentsPage.createPayment({ note });
     const paymentId = 1; // First payment in this context, so ID 1
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
@@ -56,6 +55,7 @@ test('View payment log, including note added to payment', async ({ page }) => {
         `/en-GB/project/${programIdOCW}/payments/${paymentId}`,
       ),
     );
+    await paymentPage.startPayment();
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });

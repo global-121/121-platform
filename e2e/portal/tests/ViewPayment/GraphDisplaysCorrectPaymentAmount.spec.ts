@@ -48,20 +48,19 @@ test('Table should reflect the actual transfer values sent to the PAs in this pa
   });
 
   await test.step('Do payment', async () => {
-    await paymentsPage.createPayment();
-    await paymentsPage.startPayment();
-    // Assert redirection to payment overview page
+    await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
     );
+    await paymentPage.validateToastMessage('Payment created.');
+    await paymentPage.startPayment();
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validateToastMessage('Payment started successfully.');
   });
 
   await test.step('Validate transfer value after "payment in progress" chip disappears in Payment overview', async () => {
-    await paymentPage.validateToastMessage('Payment created.');
     await paymentPage.waitForPaymentToComplete();
-
     await paymentPage.validateTransferValues({
       amount: defaultMaxTransferValue,
     });

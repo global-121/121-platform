@@ -55,8 +55,8 @@ test('Do failed payment for Safaricom fsp', async ({ page }) => {
   });
 
   await test.step('Do payment', async () => {
-    await paymentsPage.createPayment();
-    await paymentsPage.startPayment();
+    // Create payment
+    await paymentsPage.createPayment({});
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
       url.pathname.startsWith(
@@ -65,10 +65,16 @@ test('Do failed payment for Safaricom fsp', async ({ page }) => {
     );
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validateToastMessageAndClose('Payment created.');
+
+    // start payment
+    await paymentPage.startPayment();
+    await paymentPage.validateToastMessageAndClose(
+      'Payment started successfully.',
+    );
   });
 
   await test.step('Validate payment card with failed payment data', async () => {
-    await paymentPage.validateToastMessageAndClose('Payment created.');
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.navigateToProgramPage('Payments');
     // First try to validate the payment card where system still waits for the response from the PA with Voucher payment method.

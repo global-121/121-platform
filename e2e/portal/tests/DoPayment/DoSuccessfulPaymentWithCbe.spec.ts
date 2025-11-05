@@ -50,8 +50,22 @@ test('Do successful payment for Cbe fsp', async ({ page }) => {
   });
 
   await test.step('Do payment', async () => {
-    await paymentsPage.createPayment();
-    await paymentsPage.startPayment();
+    // Create payment
+    await paymentsPage.createPayment({});
+    // Assert redirection to payment overview page
+    await page.waitForURL((url) =>
+      url.pathname.startsWith(`/en-GB/project/${programIdCbe}/payments/1`),
+    );
+    // Assert payment overview page by payment date/ title
+    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validateToastMessageAndClose('Payment created.');
+
+    // start payment
+    await paymentPage.startPayment();
+    await paymentPage.validateToastMessageAndClose(
+      'Payment started successfully.',
+    );
+
     // Wait for payment transactions to complete
     await waitForPaymentTransactionsToComplete({
       programId: programIdCbe,
@@ -60,16 +74,9 @@ test('Do successful payment for Cbe fsp', async ({ page }) => {
       maxWaitTimeMs: 40_000,
       completeStatusses: [TransactionStatusEnum.success],
     });
-    // Assert redirection to payment overview page
-    await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdCbe}/payments/1`),
-    );
-    // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
   await test.step('Validate payment card', async () => {
-    await paymentPage.validateToastMessage('Payment created.');
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.navigateToProgramPage('Payments');
     await paymentsPage.validatePaymentCard({
