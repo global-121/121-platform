@@ -33,7 +33,7 @@ class PaymentPage extends BasePage {
     this.importFileButton = this.page.getByRole('button', {
       name: 'Import file',
     });
-    this.proceedButton = this.page.getByRole('button', { name: 'Proceed' });
+    this.proceedButton = this.page.getByTestId('form-dialog-proceed-button');
     this.viewPaymentTitle = this.page.getByRole('heading', {
       name: /Payment \d{2}\/\d{2}\/\d{4}/,
     });
