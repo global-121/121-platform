@@ -44,8 +44,8 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { AccountCreatedEvent } from '@121-service/src/user/events/account-created.event';
+import { PasswordResetEvent } from '@121-service/src/user/events/password-reset.event';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
-import { UserEmailType } from '@121-service/src/user/user-emails/enum/user-email-type.enum';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 
 const tokenExpirationDays = 14;
@@ -278,17 +278,10 @@ export class UserService {
         throw new Error('username is missing');
       }
 
-      //RESEARCH: does not need to be here
-      const userEmailType: UserEmailType = env.USE_SSO_AZURE_ENTRA
-        ? UserEmailType.accountCreatedForSSO
-        : UserEmailType.accountCreated;
-
-      // do we send an account created event or a send email event?
       const event = new AccountCreatedEvent(
         userEntity.username,
         userEntity.displayName ?? DEFAULT_DISPLAY_NAME,
         password,
-        userEmailType,
       );
       this.eventEmitter.emit('user.accountCreated', event);
     }
@@ -938,14 +931,12 @@ export class UserService {
     user.password = this.hashPassword(password, user.salt);
     await this.userRepository.save(user);
 
-    // do we send an account created event or a send email event?
-    const event = new AccountCreatedEvent(
+    const event = new PasswordResetEvent(
       user.username,
       user.displayName ?? DEFAULT_DISPLAY_NAME,
       password,
-      UserEmailType.passwordReset,
     );
-    this.eventEmitter.emit('user.accountCreated', event);
+    this.eventEmitter.emit('user.passwordReset', event);
   }
 
   private generateSalt(): string {

@@ -110,7 +110,7 @@ describe('UserEmailsService', () => {
       };
 
       // Act
-      await service.send({
+      await service.sendUserEmail({
         userEmailInput,
         userEmailType,
       });
