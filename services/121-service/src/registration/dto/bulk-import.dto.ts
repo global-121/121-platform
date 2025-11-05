@@ -11,7 +11,7 @@ import {
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationPreferredLanguageEnum } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 export enum ImportStatus {
@@ -22,8 +22,8 @@ export enum ImportStatus {
 }
 
 const fspArray = Object.values(Fsps).map((item) => String(item));
-const languageArray = Object.values(RegistrationPreferredLanguageEnum).map(
-  (item) => String(item),
+const languageArray = Object.values(RegistrationPreferredLanguage).map((item) =>
+  String(item),
 );
 class BulkImportDto {
   @ApiProperty()
@@ -48,9 +48,9 @@ class BulkImportDto {
     enum: languageArray,
     example: languageArray.join(' | '),
   })
-  @IsEnum(RegistrationPreferredLanguageEnum)
+  @IsEnum(RegistrationPreferredLanguage)
   @IsOptional()
-  public preferredLanguage?: WrapperType<RegistrationPreferredLanguageEnum>;
+  public preferredLanguage?: WrapperType<RegistrationPreferredLanguage>;
 
   @ApiProperty({ example: 'utrecht.houten' })
   @IsString()

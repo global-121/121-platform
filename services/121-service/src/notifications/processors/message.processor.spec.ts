@@ -8,12 +8,12 @@ import {
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageProcessorReplyOnIncoming } from '@121-service/src/notifications/processors/message.processor';
 import { MessageService } from '@121-service/src/notifications/services/message.service';
-import { RegistrationPreferredLanguageEnum } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
 const mockMessageJob: MessageJobDto = {
   registrationId: 1,
   referenceId: 'test-ref',
-  preferredLanguage: RegistrationPreferredLanguageEnum.en,
+  preferredLanguage: RegistrationPreferredLanguage.en,
   whatsappPhoneNumber: '1234567890',
   phoneNumber: '1234567890',
   programId: 1,

@@ -1,4 +1,4 @@
-import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
+import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
 /**
  * Example:
@@ -8,4 +8,4 @@ import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
  *   ar: 'مرحبا'
  * };
  */
-export type LocalizedStringForUI = Partial<Record<UILanguageEnum, string>>;
+export type LocalizedStringForUI = Partial<Record<UILanguage, string>>;

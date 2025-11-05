@@ -25,7 +25,7 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
-import { RegistrationPreferredLanguageEnum } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
 @Injectable()
 export class MessageQueuesService {
@@ -102,8 +102,7 @@ export class MessageQueuesService {
         registrationId: registration.id,
         referenceId: registration.referenceId,
         preferredLanguage:
-          registration.preferredLanguage ??
-          RegistrationPreferredLanguageEnum.en,
+          registration.preferredLanguage ?? RegistrationPreferredLanguage.en,
         whatsappPhoneNumber,
         phoneNumber: registration.phoneNumber ?? undefined,
         programId: registration.programId,

@@ -3,7 +3,7 @@
  * See: <https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes>
  */
 
-export enum RegistrationPreferredLanguageEnum {
+export enum RegistrationPreferredLanguage {
   aa = 'aa',
   ab = 'ab',
   ae = 'ae',

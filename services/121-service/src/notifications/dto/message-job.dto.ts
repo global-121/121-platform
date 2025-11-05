@@ -1,12 +1,12 @@
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
-import { RegistrationPreferredLanguageEnum } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
 
 export class MessageJobDto {
   messageProcessType: MessageProcessType;
   registrationId: number;
   referenceId: string;
-  preferredLanguage: RegistrationPreferredLanguageEnum;
+  preferredLanguage: RegistrationPreferredLanguage;
   whatsappPhoneNumber?: string;
   phoneNumber?: string;
   programId: number;

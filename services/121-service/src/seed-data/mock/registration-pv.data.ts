@@ -1,10 +1,10 @@
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { RegistrationPreferredLanguageEnum } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
 export const registrationAHWhatsapp = {
   referenceId: '1234abcd5678efgh',
-  preferredLanguage: RegistrationPreferredLanguageEnum.nl,
+  preferredLanguage: RegistrationPreferredLanguage.nl,
   paymentAmountMultiplier: 1,
   fullName: 'Juan Garcia',
   scope: 'utrecht.houten',
