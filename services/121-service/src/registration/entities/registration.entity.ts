@@ -33,7 +33,7 @@ import { RegistrationAttributeDataEntity } from '@121-service/src/registration/e
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
 import { ReferenceIdConstraints } from '@121-service/src/shared/const';
-import { RegistrationPreferredLanguageEnum } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
@@ -68,8 +68,8 @@ export class RegistrationEntity extends Base121Entity {
   public phoneNumber: string | null;
 
   @Column({ type: 'character varying', nullable: true })
-  @IsEnum(RegistrationPreferredLanguageEnum)
-  public preferredLanguage: WrapperType<RegistrationPreferredLanguageEnum | null>;
+  @IsEnum(RegistrationPreferredLanguage)
+  public preferredLanguage: WrapperType<RegistrationPreferredLanguage | null>;
 
   @Index({ unique: false })
   @Column({ type: 'integer', nullable: true })

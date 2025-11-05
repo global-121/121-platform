@@ -1,6 +1,6 @@
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
-import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
+import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
 interface RegistrationWithFspName extends RegistrationEntity {
   programFspConfigurationName?: string;
@@ -28,7 +28,7 @@ export const programIdCbe = 1;
 
 export const registrationOCW1 = {
   referenceId: '63e62864557597e0d',
-  preferredLanguage: UILanguageEnum.en,
+  preferredLanguage: UILanguage.en,
   paymentAmountMultiplier: 1,
   fullName: 'John Smith',
   phoneNumber: '14155236666',
@@ -43,7 +43,7 @@ export const registrationOCW1 = {
 
 export const registrationOCW2 = {
   referenceId: '22e62864557597e0d',
-  preferredLanguage: UILanguageEnum.en,
+  preferredLanguage: UILanguage.en,
   paymentAmountMultiplier: 1,
   fullName: 'Anna Hello',
   phoneNumber: '14155237775',
@@ -58,7 +58,7 @@ export const registrationOCW2 = {
 
 export const registrationOCW3 = {
   referenceId: '43e62864557597e0d',
-  preferredLanguage: UILanguageEnum.nl,
+  preferredLanguage: UILanguage.nl,
   paymentAmountMultiplier: 2,
   fullName: 'Sophia Johnson',
   phoneNumber: '14155236666',
@@ -73,7 +73,7 @@ export const registrationOCW3 = {
 
 export const registrationOCW4 = {
   referenceId: '54e62864557597e0d',
-  preferredLanguage: UILanguageEnum.nl,
+  preferredLanguage: UILanguage.nl,
   paymentAmountMultiplier: 3,
   fullName: 'Luiz Garcia',
   phoneNumber: '14155235555',
@@ -88,7 +88,7 @@ export const registrationOCW4 = {
 
 export const registrationOCW5 = {
   referenceId: '54e62864557597e034',
-  preferredLanguage: UILanguageEnum.nl,
+  preferredLanguage: UILanguage.nl,
   paymentAmountMultiplier: 3,
   fullName: 'Lars Larsson',
   phoneNumber: '14155235556',
@@ -98,7 +98,7 @@ export const registrationOCW5 = {
 
 export const registrationOCW6Fail = {
   referenceId: '54e6286jZ4mhkTtgjM',
-  preferredLanguage: UILanguageEnum.nl,
+  preferredLanguage: UILanguage.nl,
   paymentAmountMultiplier: 3,
   fullName: 'Test mock-fail-create-customer',
   phoneNumber: '14155235555',
@@ -128,7 +128,7 @@ export const registrationsVisa = [
 
 export const registrationPV5 = {
   referenceId: '44e62864557597e0d',
-  preferredLanguage: UILanguageEnum.nl,
+  preferredLanguage: UILanguage.nl,
   paymentAmountMultiplier: 1,
   fullName: 'Gemma Houtenbos',
   phoneNumber: '14155235556',
@@ -138,7 +138,7 @@ export const registrationPV5 = {
 
 export const registrationPV6 = {
   referenceId: 'asdf234f4gg4ag64545',
-  preferredLanguage: UILanguageEnum.nl,
+  preferredLanguage: UILanguage.nl,
   paymentAmountMultiplier: 1,
   fullName: 'Jan Janssen',
   phoneNumber: '14155235551',
@@ -148,7 +148,7 @@ export const registrationPV6 = {
 
 export const registrationPV7 = {
   referenceId: 'asdf234f4gg4ag64547',
-  preferredLanguage: UILanguageEnum.nl,
+  preferredLanguage: UILanguage.nl,
   paymentAmountMultiplier: 1,
   fullName: 'Joost Herlembach',
   phoneNumber: '14155235551',
@@ -163,7 +163,7 @@ export const registrationPV7 = {
 
 export const registrationPV8 = {
   referenceId: 'asdf234f4gg4ag64567',
-  preferredLanguage: UILanguageEnum.en,
+  preferredLanguage: UILanguage.en,
   paymentAmountMultiplier: 1,
   fullName: 'Jack Strong',
   phoneNumber: '14155235557',
@@ -178,7 +178,7 @@ export const registrationPV8 = {
 
 export const registrationPvMaxPayment = {
   referenceId: 'asdf234f4gg4ag64569',
-  preferredLanguage: UILanguageEnum.en,
+  preferredLanguage: UILanguage.en,
   paymentAmountMultiplier: 1,
   fullName: 'Arkadiusz Zbuczko',
   phoneNumber: '14155235559',
@@ -203,7 +203,7 @@ export const registrationsVoucher = [registrationPV5, registrationPV6];
 
 export const registrationPvScoped = {
   referenceId: '434e62869242497e1e',
-  preferredLanguage: UILanguageEnum.nl,
+  preferredLanguage: UILanguage.nl,
   paymentAmountMultiplier: 1,
   fullName: 'Freya Midgard',
   phoneNumber: '14155235554',
@@ -289,7 +289,7 @@ export const registrationWesteros4 = {
 export const registrationCbe = {
   referenceId: 'registration-cbe-1',
   phoneNumber: '14155238886',
-  preferredLanguage: UILanguageEnum.en,
+  preferredLanguage: UILanguage.en,
   paymentAmountMultiplier: 1,
   programFspConfigurationName: Fsps.commercialBankEthiopia,
   maxPayments: 3,
@@ -306,7 +306,7 @@ export const registrationSafaricom = {
   referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
   programFspConfigurationName: Fsps.safaricom,
   phoneNumber: '254708374149',
-  preferredLanguage: UILanguageEnum.en,
+  preferredLanguage: UILanguage.en,
   paymentAmountMultiplier: 1,
   maxPayments: 6,
   fullName: 'Barbara Floyd',
@@ -319,7 +319,7 @@ export const registrationsSafaricom = [registrationSafaricom];
 
 export const registrationPvExcel1 = {
   referenceId: '44e62864557597e0d',
-  preferredLanguage: UILanguageEnum.nl,
+  preferredLanguage: UILanguage.nl,
   paymentAmountMultiplier: 1,
   fullName: 'Gemma Houtenbos',
   phoneNumber: '14155235551',
@@ -334,7 +334,7 @@ export const registrationPvExcel1 = {
 
 export const registrationPvExcel2 = {
   referenceId: 'asdf234f4gg4ag64545',
-  preferredLanguage: UILanguageEnum.nl,
+  preferredLanguage: UILanguage.nl,
   paymentAmountMultiplier: 1,
   fullName: 'Jan Janssen',
   phoneNumber: '14155235552',
@@ -349,7 +349,7 @@ export const registrationPvExcel2 = {
 
 export const registrationPvExcel3 = {
   referenceId: 'asdf234f4gg4ag64547',
-  preferredLanguage: UILanguageEnum.nl,
+  preferredLanguage: UILanguage.nl,
   paymentAmountMultiplier: 1,
   fullName: 'Joost Herlembach',
   phoneNumber: '14155235553',
@@ -364,7 +364,7 @@ export const registrationPvExcel3 = {
 
 export const registrationPvExcel4 = {
   referenceId: 'asdf234f4gg4ag64567',
-  preferredLanguage: UILanguageEnum.en,
+  preferredLanguage: UILanguage.en,
   paymentAmountMultiplier: 1,
   fullName: 'Jack Strong',
   phoneNumber: '14155235557',
@@ -387,7 +387,7 @@ export const registrationsPvExcel = [
 export const registrationNedbank = {
   referenceId: 'registration-nedbank-1',
   phoneNumber: '27000000000',
-  preferredLanguage: UILanguageEnum.en,
+  preferredLanguage: UILanguage.en,
   paymentAmountMultiplier: 1,
   programFspConfigurationName: Fsps.nedbank,
   maxPayments: 3,
@@ -399,7 +399,7 @@ export const registrationsNedbank = [registrationNedbank];
 export const registrationAirtel = {
   referenceId: 'registration-airtel-1',
   phoneNumber: '260978980279',
-  preferredLanguage: UILanguageEnum.en,
+  preferredLanguage: UILanguage.en,
   paymentAmountMultiplier: 1,
   programFspConfigurationName: Fsps.airtel,
   maxPayments: 3,

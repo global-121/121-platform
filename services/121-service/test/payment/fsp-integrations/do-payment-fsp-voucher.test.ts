@@ -5,7 +5,7 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
+import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 import { getTransactionsIntersolveVoucher } from '@121-service/test/helpers/fsp-specific.helper';
 import {
   createAndStartPayment,
@@ -30,7 +30,7 @@ describe('Do payment to 1 PA', () => {
   const transferValue = 22;
   const registrationAh = {
     referenceId: '63e62864557597e0a-AH',
-    preferredLanguage: UILanguageEnum.en,
+    preferredLanguage: UILanguage.en,
     paymentAmountMultiplier: 1,
     fullName: 'John Smith',
     phoneNumber: '14155238886',

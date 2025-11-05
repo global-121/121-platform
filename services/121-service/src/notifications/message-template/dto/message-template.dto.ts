@@ -13,7 +13,7 @@ import {
 
 import { WrapperType } from '@121-service/src//wrapper.type';
 import { ContentSidMessageTypes } from '@121-service/src/notifications/message-template/const/content-sid-message-types.const';
-import { RegistrationPreferredLanguageEnum } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
 
 export class CreateMessageTemplateDto {
@@ -26,8 +26,8 @@ export class CreateMessageTemplateDto {
 
   @ApiProperty()
   @IsString()
-  @IsEnum(RegistrationPreferredLanguageEnum)
-  public readonly language: WrapperType<RegistrationPreferredLanguageEnum>;
+  @IsEnum(RegistrationPreferredLanguage)
+  public readonly language: WrapperType<RegistrationPreferredLanguage>;
 
   @ApiProperty({
     example: { en: 'Template label' },
@@ -70,8 +70,8 @@ export class UpdateTemplateParamDto {
   @IsString()
   @Length(1, 255)
   public readonly type: string;
-  @IsEnum(RegistrationPreferredLanguageEnum)
-  public readonly language: WrapperType<RegistrationPreferredLanguageEnum>;
+  @IsEnum(RegistrationPreferredLanguage)
+  public readonly language: WrapperType<RegistrationPreferredLanguage>;
 }
 
 export class UpdateTemplateBodyDto {
@@ -121,6 +121,6 @@ export class DeleteTemplateParamDto {
 
 export class DeleteTemplateQueryDto {
   @IsOptional()
-  @IsEnum(RegistrationPreferredLanguageEnum)
-  public readonly language?: WrapperType<RegistrationPreferredLanguageEnum>;
+  @IsEnum(RegistrationPreferredLanguage)
+  public readonly language?: WrapperType<RegistrationPreferredLanguage>;
 }
