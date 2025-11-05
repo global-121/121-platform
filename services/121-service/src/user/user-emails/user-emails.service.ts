@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 
 import { EmailsService } from '@121-service/src/emails/emails.service';
 import { EmailData } from '@121-service/src/emails/interfaces/email-data.interface';
 import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
+import { AccountCreatedEvent } from '@121-service/src/user/events/account-created.event';
+import { PasswordResetEvent } from '@121-service/src/user/events/password-reset.event';
 import { UserEmailType } from '@121-service/src/user/user-emails/enum/user-email-type.enum';
 import { UserEmailInput } from '@121-service/src/user/user-emails/interfaces/user-email-input.interface';
 import { buildTemplateAccountCreated } from '@121-service/src/user/user-emails/templates/account-created.template';
@@ -13,6 +16,24 @@ import { stripHtmlTags } from '@121-service/src/utils/strip-html-tags.helper';
 @Injectable()
 export class UserEmailsService {
   constructor(private readonly emailsService: EmailsService) {}
+
+  @OnEvent('user.accountCreated')
+  @OnEvent('user.passwordReset')
+  public async handleUserEvent(
+    payload: AccountCreatedEvent | PasswordResetEvent,
+  ): Promise<void> {
+    const { email, displayName, password, userEmailType } = payload;
+    const userEmailInput: UserEmailInput = {
+      email,
+      displayName,
+      password,
+    };
+
+    await this.send({
+      userEmailInput,
+      userEmailType,
+    });
+  }
 
   public async send({
     userEmailInput,

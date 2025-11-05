@@ -62,6 +62,7 @@
     "@nestjs/bull": "^11.0.4",
     "@nestjs/common": "^11.1.8",
     "@nestjs/core": "^11.1.8",
+    "@nestjs/event-emitter": "^3.0.1",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.8",
     "@nestjs/schedule": "^6.0.1",
