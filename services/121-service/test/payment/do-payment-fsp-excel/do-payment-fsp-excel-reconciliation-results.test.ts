@@ -51,6 +51,8 @@ describe('Do payment with Excel FSP', () => {
   describe('Import FSP reconciliation data', () => {
     it('Should update transaction status based on imported reconciliation data', async () => {
       // Arrange
+      const errorMessage = 'FSP reported failure for registrationWesteros2';
+
       pamymentIdWesteros = await seedPaidRegistrations(
         registrationsWesteros,
         programIdWesteros,
@@ -67,7 +69,7 @@ describe('Do payment with Excel FSP', () => {
         {
           [matchColumn]: registrationWesteros2.phoneNumber,
           status: TransactionStatusEnum.error,
-          errorMessage: 'FSP reported failure for registrationWesteros2',
+          errorMessage,
         },
         { [matchColumn]: '123456789', status: TransactionStatusEnum.error },
       ];
@@ -117,15 +119,13 @@ describe('Do payment with Excel FSP', () => {
         (t) => t.registrationReferenceId === registrationWesteros1.referenceId,
       );
       expect(transactionSuccess.status).toBe(TransactionStatusEnum.success);
-      expect([null, '']).toContain(transactionSuccess.errorMessage);
+      expect(transactionSuccess.errorMessage).toBeNull();
 
       const transactionError = transactionsResponse.body.find(
         (t) => t.registrationReferenceId === registrationWesteros2.referenceId,
       );
       expect(transactionError.status).toBe(TransactionStatusEnum.error);
-      expect(transactionError.errorMessage).toBe(
-        'FSP reported failure for registrationWesteros2',
-      );
+      expect(transactionError.errorMessage).toBe(errorMessage);
 
       const transactionWaiting = transactionsResponse.body.find(
         (t) => t.registrationReferenceId === registrationWesteros3.referenceId,

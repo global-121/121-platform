@@ -276,6 +276,25 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
     return uniqueFspConfigIds;
   }
 
+  public async getTransactionIdsByPaymentAndRegistrationData({
+    paymentId,
+    programRegistrationAttributeId,
+    dataValues,
+  }: {
+    paymentId: number;
+    programRegistrationAttributeId: number;
+    dataValues: (string | number | boolean | undefined)[];
+  }): Promise<any[]> {
+    const rows = await this.getQueryBuilderFilterByPaymentAndRegistrationData({
+      paymentId,
+      programRegistrationAttributeId,
+      dataValues,
+      select: ['transaction.id as "transactionId"'],
+    });
+
+    return rows.map((row) => row.transactionId);
+  }
+
   public async getTransactionIdsMappedToMatchColumnValue({
     paymentId,
     programRegistrationAttributeId,

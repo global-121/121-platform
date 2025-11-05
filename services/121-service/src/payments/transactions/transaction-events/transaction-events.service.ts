@@ -98,10 +98,8 @@ export class TransactionEventsService {
         chunk: 1000,
       });
 
-    for (const resultTransactionEvent of resultTransactionEvents) {
-      await this.lastTransactionEventRepository.updateOrInsertFromTransactionEvent(
-        resultTransactionEvent,
-      );
-    }
+    await this.lastTransactionEventRepository.bulkUpdateFromTransactionEvents(
+      resultTransactionEvents,
+    );
   }
 }

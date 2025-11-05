@@ -35,4 +35,30 @@ export class LastTransactionEventRepository extends Repository<LastTransactionEv
       await this.baseRepository.insert(lastTransactionEvent);
     }
   }
+
+  public async bulkUpdateFromTransactionEvents(
+    transactionEvents: TransactionEventEntity[],
+  ): Promise<void> {
+    if (transactionEvents.length === 0) {
+      return;
+    }
+
+    const values: QueryDeepPartialEntity<LastTransactionEventEntity>[] =
+      transactionEvents.map((transactionEvent) => ({
+        transactionId: transactionEvent.transactionId,
+        transactionEventId: transactionEvent.id,
+      }));
+
+    const CHUNK_SIZE = 1000;
+    for (let start = 0; start < values.length; start += CHUNK_SIZE) {
+      const chunk = values.slice(start, start + CHUNK_SIZE);
+      await this.baseRepository
+        .createQueryBuilder()
+        .insert()
+        .into(LastTransactionEventEntity)
+        .values(chunk)
+        .orUpdate(['transactionEventId', 'updated'], ['transactionId'])
+        .execute();
+    }
+  }
 }

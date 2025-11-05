@@ -4,7 +4,7 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { ExcelReconciliationDefaultColumns } from '@121-service/src/payments/reconciliation/excel/excel-reconciliation-default-columns.enum';
+import { ExcelReconciliationDefaultColumns } from '@121-service/src/payments/reconciliation/excel/enum/excel-reconciliation-default-columns.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
