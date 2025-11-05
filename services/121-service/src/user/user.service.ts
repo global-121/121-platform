@@ -46,7 +46,6 @@ import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { AccountCreatedEvent } from '@121-service/src/user/events/account-created.event';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
 import { UserEmailType } from '@121-service/src/user/user-emails/enum/user-email-type.enum';
-import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 
 const tokenExpirationDays = 14;
@@ -66,7 +65,6 @@ export class UserService {
 
   public constructor(
     @Inject(REQUEST) private readonly request: Request,
-    private readonly userEmailsService: UserEmailsService,
     private eventEmitter: EventEmitter2,
   ) {}
 
