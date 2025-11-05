@@ -1,13 +1,14 @@
 {
   "name": "mock-service",
   "author": "121.global",
-  "homepage": "https://www.121.global/",
+  "homepage": "https://121.global/",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/global-121/121-platform.git",
     "directory": "services/mock-service"
   },
+  "private": true,
   "main": "index.js",
   "scripts": {
     "lint": "eslint \"src/**/*.{ts,js}\"",
@@ -20,7 +21,6 @@
     "typecheck": "tsc --noEmit",
     "typecheck:dev": "tsc --noEmit --watch"
   },
-  "private": true,
   "engines": {
     "npm": ">=10.0.0",
     "node": ">=20.0.0"

@@ -1,5 +1,14 @@
 {
   "name": "portal",
+  "author": "121.global",
+  "homepage": "https://121.global/",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/global-121/121-platform.git",
+    "directory": "interfaces/portal"
+  },
+  "private": true,
   "scripts": {
     "ng": "ng",
     "postinstall": "cd ../../services/121-service && npm run install:dependencies-for-portal",
@@ -33,7 +42,6 @@
     "extract-i18n:smart": "node --env-file=.env ./_extract-i18n-if-changed.mjs",
     "knip": "knip"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^20.3.2",
     "@angular/common": "^20.3.2",
