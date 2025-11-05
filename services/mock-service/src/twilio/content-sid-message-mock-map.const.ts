@@ -30,7 +30,7 @@ export const ContentSidMessageMockMap = {
     'Este es un mensaje de la Cruz Roja.\n\nHay un mensaje esperándote. Por favor, responda “sí” a este mensaje para recibirlo.',
   nlPvGeneric:
     'Dit is een bericht van het Rode Kruis.\n\nEr staat een bericht klaar voor je. Antwoord met “ja” op dit bericht om het te ontvangen.',
-  pt_BRPvGeneric:
+  ptPvGeneric:
     'Esta mensagem é da Cruz Vermelha.\nHá uma mensagem à sua espera. Por favor, responda “sim” para a receber.',
   tlPvGeneric:
     'Ang mensaheng ito ay mula sa Red Cross.\n\nMay mensaheng naghihintay para sa iyo. Pa-click ang “oo” para matanggap ang mensaheng ito.',
@@ -46,7 +46,7 @@ export const ContentSidMessageMockMap = {
     'Éste es un mensaje de la Cruz Roja.\n\nSu bono de Albert Heijn está listo para ser enviado.\n\nPor favor responda "si" a éste mensaje para recibir:\n1. Éste bono semanal\n2. Cualquier bono anterior que aun no haya recibido.',
   nlPvPayment:
     'Dit is een bericht van het Rode Kruis.\n\nJe Albert Heijn supermarkt voucher is klaar om verzonden te worden.\n\nAntwoord met "ja" op dit bericht om het volgende te ontvangen:\n1. De voucher van deze week.\n2. Vorige vouchers die je nog niet hebt ontvangen.',
-  pt_BRPvPayment:
+  ptPvPayment:
     'Esta é uma mensagem da Cruz Vermelha.\n\nSeu vale de supermercado Albert Heijn está pronto para ser enviado.\n\nPor favor, responda "sim" a esta mensagem para receber:\n1. O vale desta semana.\n2. Qualquer vale anterior que você ainda não tenha recebido.',
   tlPvPayment:
     'Ang mensaheng ito ay galing sa Red Cross.\n\nAng iyong Albert Heijn supermarket voucher ay handa na para ipadala.\n\nMag-reply ng "oo" sa mensaheng ito upang makatanggap ng voucher.',
