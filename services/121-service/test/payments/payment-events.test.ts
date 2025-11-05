@@ -89,16 +89,17 @@ describe('Payment Events API', () => {
     expect(meta).toMatchObject({
       count: expect.objectContaining({
         [PaymentEvent.created]: 1,
+        [PaymentEvent.approved]: 1,
         [PaymentEvent.started]: 1,
         [PaymentEvent.retry]: 1,
         [PaymentEvent.note]: 1,
       }),
-      total: 4,
+      total: 5,
     });
 
     // Check data structure
     expect(data).toBeInstanceOf(Array);
-    expect(data.length).toBe(4);
+    expect(data.length).toBe(5);
 
     // Check that we have a 'created' event
     const createdEvent = data.find(
