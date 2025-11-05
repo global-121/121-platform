@@ -75,7 +75,7 @@ test('Do payment for excel fsp', async ({ page }) => {
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
     await paymentPage.validateToastMessageAndClose('Payment created.');
 
-    /// start payment
+    // start payment
     await paymentPage.startPayment();
     await paymentPage.validateToastMessageAndClose(
       'Payment started successfully.',
