@@ -1,4 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
+import { chunk } from 'lodash';
 import { Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
@@ -49,14 +50,13 @@ export class LastTransactionEventRepository extends Repository<LastTransactionEv
         transactionEventId: transactionEvent.id,
       }));
 
-    const CHUNK_SIZE = 1000;
-    for (let start = 0; start < values.length; start += CHUNK_SIZE) {
-      const chunk = values.slice(start, start + CHUNK_SIZE);
+    const chunks = chunk(values, 10000);
+    for (const transactionEventValuesChunk of chunks) {
       await this.baseRepository
         .createQueryBuilder()
         .insert()
         .into(LastTransactionEventEntity)
-        .values(chunk)
+        .values(transactionEventValuesChunk)
         .orUpdate(['transactionEventId', 'updated'], ['transactionId'])
         .execute();
     }

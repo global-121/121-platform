@@ -251,7 +251,6 @@ export class ExcelReconciliationService {
         matchColumnValuesForCurrentStatus,
         recordsForCurrentStatus,
         matchColumn,
-        errorMessages,
       });
     }
 
@@ -271,15 +270,14 @@ export class ExcelReconciliationService {
     matchColumnValuesForCurrentStatus,
     recordsForCurrentStatus,
     matchColumn,
-    errorMessages,
   }: {
     paymentId: number;
     programRegistrationAttributeId: number;
     matchColumnValuesForCurrentStatus: any[];
     recordsForCurrentStatus: CsvContents;
     matchColumn: string;
-    errorMessages: Map<number, string>;
   }): Promise<Map<number, string>> {
+    const errorMessages = new Map<number, string>();
     const transactionIdsMappedToMatchColumnValue: Map<string, number> =
       await this.registrationViewScopedRepository.getTransactionIdsMappedToMatchColumnValue(
         {
