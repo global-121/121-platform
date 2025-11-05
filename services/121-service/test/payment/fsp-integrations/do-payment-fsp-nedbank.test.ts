@@ -155,6 +155,7 @@ describe('Do payment', () => {
           });
         expect(transactionEventDescriptions).toEqual([
           TransactionEventDescription.created,
+          TransactionEventDescription.approved,
           TransactionEventDescription.initiated,
           TransactionEventDescription.nedbankVoucherCreationRequested,
           TransactionEventDescription.nedbankCallbackReceived,
@@ -217,6 +218,7 @@ describe('Do payment', () => {
           });
         expect(transactionEventDescriptions).toEqual([
           TransactionEventDescription.created,
+          TransactionEventDescription.approved,
           TransactionEventDescription.initiated,
           TransactionEventDescription.nedbankVoucherCreationRequested,
         ]);
@@ -273,6 +275,7 @@ describe('Do payment', () => {
           });
         expect(transactionEventDescriptions).toEqual([
           TransactionEventDescription.created,
+          TransactionEventDescription.approved,
           TransactionEventDescription.initiated,
           TransactionEventDescription.nedbankVoucherCreationRequested,
         ]);
@@ -335,6 +338,7 @@ describe('Do payment', () => {
           });
         expect(transactionEventDescriptions).toEqual([
           TransactionEventDescription.created,
+          TransactionEventDescription.approved,
           TransactionEventDescription.initiated,
           TransactionEventDescription.nedbankVoucherCreationRequested,
           TransactionEventDescription.nedbankCallbackReceived,

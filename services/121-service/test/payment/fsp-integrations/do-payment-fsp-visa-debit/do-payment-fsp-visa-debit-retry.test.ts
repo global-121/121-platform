@@ -113,6 +113,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     });
     expect(transactionEventDescriptions).toEqual([
       TransactionEventDescription.created,
+      TransactionEventDescription.approved,
       TransactionEventDescription.initiated,
       TransactionEventDescription.visaPaymentRequested,
       TransactionEventDescription.retry,

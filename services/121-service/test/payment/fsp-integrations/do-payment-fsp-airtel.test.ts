@@ -135,6 +135,7 @@ describe('Do payment with FSP: Airtel', () => {
     });
     expect(transactionEventDescriptions).toEqual([
       TransactionEventDescription.created,
+      TransactionEventDescription.approved,
       TransactionEventDescription.initiated,
       TransactionEventDescription.airtelRequestSent,
     ]);

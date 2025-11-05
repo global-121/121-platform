@@ -80,6 +80,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     });
     expect(transactionEventDescriptions).toEqual([
       TransactionEventDescription.created,
+      TransactionEventDescription.approved,
       TransactionEventDescription.initiated,
       TransactionEventDescription.commercialBankEthiopiaRequestSent,
     ]);
