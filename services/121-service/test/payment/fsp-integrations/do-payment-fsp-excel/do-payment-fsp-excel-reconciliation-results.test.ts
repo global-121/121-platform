@@ -193,6 +193,7 @@ describe('Do payment with Excel FSP', () => {
       expect(transaction.status).toBe(TransactionStatusEnum.error);
       expect(transactionEvents).toEqual([
         TransactionEventDescription.created,
+        TransactionEventDescription.approved,
         TransactionEventDescription.initiated,
         TransactionEventDescription.excelPreparationForExport,
         TransactionEventDescription.excelReconciliationFileUpload,
