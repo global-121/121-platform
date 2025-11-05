@@ -23,6 +23,9 @@ import {
   waitForServiceToBeUp,
 } from '@121-service/test/restart/helpers/restart.helper';
 
+// The test set up and it's enviroment differs a bit from all other integration and performance tests. The configuration of this test is explained in the wiki page linked below.
+// See: https://github.com/global-121/121-platform/wiki/Integration-tests/#exception-running-retryfailedjobsonstartupduringqueueprocessingtestts
+
 const duplicateNumber = 5; // 2^5 = 32
 const maxWaitTimeMs = 5_000; // 5 seconds
 const passRate = 100; // 100%

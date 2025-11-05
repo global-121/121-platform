@@ -76,8 +76,9 @@ jobs:
 
       - name: Run integration tests with Jest
         working-directory: ${{ env.workingDirectory }}
+        # Ignore the retryFailedJobsOnStartupDuringQueueProcessing test in this job because it requires :production mode
+        # See: https://github.com/global-121/121-platform/wiki/Integration-tests/#exception-running-retryfailedjobsonstartupduringqueueprocessingtestts
         run: |
-          # Ignore the retryFailedJobsOnStartupDuringQueueProcessing test in this job because it requires :production mode
           docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }} --testPathIgnorePatterns=retryFailedJobsOnStartupDuringQueueProcessing.test.ts
 
       # For more info, see services/121-service/README.md#Integration-test-coverage
