@@ -1,7 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import chunk from 'lodash/chunk';
 import { Equal, Repository } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
@@ -182,37 +181,28 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       fspName: Fsps;
     }[]
   > {
-    const chunkSize = 2000;
-    const results: {
-      transactionId: number;
-      transferValue: number;
-      referenceId: string;
-      fspName: Fsps;
-    }[] = [];
-
-    for (const idsChunk of chunk(transactionIds, chunkSize)) {
-      const chunkResult = await this.createQueryBuilder('transaction')
-        .innerJoinAndSelect('transaction.registration', 'registration')
-        .innerJoinAndSelect('registration.programFspConfiguration', 'fspConfig')
-        .andWhere('transaction.id IN (:...transactionIds)', {
-          transactionIds: idsChunk,
-        })
-        .select([
-          'transaction.id as "transactionId"',
-          'transaction.transferValue as "transferValue"',
-          'registration."referenceId" as "referenceId"',
-          '"fspConfig"."fspName" as "fspName"',
-        ])
-        .getRawMany<{
-          transactionId: number;
-          transferValue: number;
-          referenceId: string;
-          fspName: Fsps;
-        }>();
-      results.push(...chunkResult);
+    if (transactionIds.length === 0) {
+      return [];
     }
 
-    return results;
+    return await this.createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.registration', 'registration')
+      .innerJoinAndSelect('registration.programFspConfiguration', 'fspConfig')
+      .andWhere('transaction.id = ANY(:transactionIds)', {
+        transactionIds,
+      })
+      .select([
+        'transaction.id as "transactionId"',
+        'transaction.transferValue as "transferValue"',
+        'registration."referenceId" as "referenceId"',
+        '"fspConfig"."fspName" as "fspName"',
+      ])
+      .getRawMany<{
+        transactionId: number;
+        transferValue: number;
+        referenceId: string;
+        fspName: Fsps;
+      }>();
   }
 
   public async getPaymentIdByTransactionId(
