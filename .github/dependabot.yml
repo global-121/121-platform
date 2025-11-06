@@ -127,15 +127,3 @@ updates:
       # Dependencies below are ordered alphabetically!
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
-
-  - directory: '/k6'
-    package-ecosystem: npm
-    schedule:
-      interval: monthly
-      day: tuesday
-    open-pull-requests-limit: 5
-    versioning-strategy: increase
-    groups:
-      dependencies:
-        patterns:
-          - '*'

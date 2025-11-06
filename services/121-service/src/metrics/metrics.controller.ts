@@ -159,7 +159,7 @@ export class MetricsController {
     return await this.metricsService.getProgramStats(programId);
   }
 
-  // This endpoint is only used by the k6 tests, not by frontend.
+  // This endpoint is only used by the performance Jest tests, not by frontend.
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
   @ApiOperation({ summary: '[SCOPED] Get registration statuses with count' })
   @ApiParam({ name: 'programId', required: true })
