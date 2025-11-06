@@ -6,6 +6,7 @@ import { environment } from '~environment';
 
 const LOCAL_STORAGE_LOCALE_KEY = 'preferredLanguage';
 
+// NOTE: Make sure to align these languages with ALL_AVAILABLE_LOCALES in '_all_available-locales.mjs'
 export enum Locale {
   ar = 'ar',
   en = 'en-GB', // this has to be en-GB otherwise angular locale stuff doesn't work

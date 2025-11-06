@@ -1,8 +1,10 @@
+import { ALL_AVAILABLE_LOCALES } from './_all_available-locales.mjs';
+
 /**
  * @returns {string[]} - Required language-codes
  */
 export const getRequiredTranslations = () => {
-  const localesConfigValue = process.env.NG_LOCALES ?? '';
+  const localesConfigValue = process.env.NG_LOCALES || ALL_AVAILABLE_LOCALES;
   return localesConfigValue
     .split(',')
     .filter((lang) => lang !== '' && lang !== 'en' && lang !== 'en-GB')

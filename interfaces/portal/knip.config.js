@@ -1,21 +1,20 @@
 /** @type {import('knip').KnipConfig} */
 module.exports = {
-  entry: [
-    // Utility/script test-files:
-    '_env.utils.spec.ts',
-    '_matomo.utils.spec.ts',
-  ],
   ignoreDependencies: [
     '@angular/platform-browser-dynamic', // Probably not 100% required
     'primeicons',
-    // Known isues with devDependencies:
+    // Known issues with devDependencies:
     'autoprefixer',
     // Known issues with Unlisted dependencies:
     '@angular-eslint/builder',
     '@angular-devkit/build-angular',
   ],
   includeEntryExports: true,
-  project: ['src/**/*.ts', '**/_*.{mjs,js,ts}'],
+  project: [
+    'src/**/*.ts', // All Angular app/source files
+    '**/_*.{mjs,js,ts}', // All non-Angular utility scripts
+    'src/environments/environment.ts.template.mjs', // Specific workaround-file for ENV-variable loading
+  ],
   rules: {
     binaries: 'error',
     dependencies: 'error',

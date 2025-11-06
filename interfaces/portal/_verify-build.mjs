@@ -43,7 +43,7 @@ test(
       es: 'Mensaje personalizado',
       fr: 'Message personnalisé',
       nl: 'Custom bericht',
-      sl: 'Vlastná správa',
+      sk: 'Vlastná správa',
     };
 
     requiredTranslations.forEach((lang) => {
@@ -52,7 +52,7 @@ test(
       const test =
         `<trans-unit id="(message-content-type-custom)" datatype="html">` +
         `\\s*<source>Custom message\\s*</source>` +
-        `\\s*<target>\\s*${validTranslations[lang]}\\s*</target>` +
+        `\\s*<target>${validTranslations[lang]}</target>` +
         `\\s*</trans-unit>`;
 
       match(
