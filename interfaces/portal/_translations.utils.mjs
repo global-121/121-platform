@@ -1,4 +1,4 @@
-export const ALL_AVAILABLE_LOCALES = 'ar,en-GB,es,fr,nl,sk';
+import { ALL_AVAILABLE_LOCALES } from './_all_available-locales.mjs';
 
 /**
  * @returns {string[]} - Required language-codes
