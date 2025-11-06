@@ -78,24 +78,30 @@ export class SeedMockHelperService {
     await this.mockDataFactory.multiplyRegistrations(powerNr);
   }
 
-  public async extendRelatedDataToAllRegistrations(
-    powerNr: number,
-    programIds: number[],
-  ): Promise<void> {
-    await this.mockDataFactory.extendRelatedDataToAllRegistrations(
+  public async extendRelatedDataToAllRegistrations({
+    powerNr,
+    programIds,
+  }: {
+    powerNr: number;
+    programIds?: number[];
+  }): Promise<void> {
+    await this.mockDataFactory.extendRelatedDataToAllRegistrations({
       powerNr,
       programIds,
-    );
+    });
   }
 
-  public async multiplyTransactions(
-    nrPayments: number,
-    programIds: number[],
-  ): Promise<void> {
-    await this.mockDataFactory.extendPaymentsAndRelatedData(
+  public async extendPaymentsAndRelatedData({
+    nrPayments,
+    programIds,
+  }: {
+    nrPayments: number;
+    programIds?: number[];
+  }): Promise<void> {
+    await this.mockDataFactory.extendPaymentsAndRelatedData({
       nrPayments,
       programIds,
-    );
+    });
   }
 
   public async multiplyMessages(powerNr: number): Promise<void> {

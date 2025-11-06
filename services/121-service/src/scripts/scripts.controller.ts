@@ -133,6 +133,7 @@ export class ScriptsController {
     @Body() body: SecretDto,
     @Query('mockPowerNumberRegistrations')
     mockPowerNumberRegistrations: string,
+    @Query('mockNumberPayments') mockNumberPayments: string,
     @Res() res,
   ): Promise<void> {
     if (body.secret !== env.RESET_SECRET) {
@@ -145,7 +146,10 @@ export class ScriptsController {
           'Duplicating registrations is NOT allowed in production environments',
         );
     }
-    await this.scriptsService.duplicateData(mockPowerNumberRegistrations);
+    await this.scriptsService.duplicateData({
+      powerNrRegistrationsString: mockPowerNumberRegistrations,
+      nrPaymentsString: mockNumberPayments,
+    });
 
     return res
       .status(HttpStatus.CREATED)

@@ -118,7 +118,7 @@ describe('Registrations - [Scoped]', () => {
       registrationReferenceId: null,
       accessToken,
     });
-    const transactions = transactionResponse.body;
+    const transactions = transactionResponse.body.data;
 
     const refrenceIdsWithAllowedScope = registrationsPV
       .filter((r) => r.scope.startsWith(testScope))

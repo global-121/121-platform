@@ -6,8 +6,8 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
 import {
-  duplicateRegistrations,
   exportRegistrations,
+  mockRegistrationsAndPaymentData,
   seedRegistrationsWithStatus,
   sendMessage,
 } from '@121-service/test/helpers/registration.helper';
@@ -42,13 +42,14 @@ describe('Measure performance during payment', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.ACCEPTED);
     // Duplicate registration
-    const duplicateRegistrationsResponse = await duplicateRegistrations({
-      powerNumberRegistration: duplicateNumber,
-      accessToken,
-      body: {
-        secret: env.RESET_SECRET,
-      },
-    });
+    const duplicateRegistrationsResponse =
+      await mockRegistrationsAndPaymentData({
+        powerNumberRegistration: duplicateNumber,
+        accessToken,
+        body: {
+          secret: env.RESET_SECRET,
+        },
+      });
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
     // Do payment
     const doPaymentResponse = await createAndStartPayment({
@@ -62,7 +63,7 @@ describe('Measure performance during payment', () => {
     // Check payment results have at least 50% success rate within 60 minutes
     const paymentResults = await getPaymentResults({
       programId: programIdOCW,
-      paymentId: 1,
+      paymentId: doPaymentResponse.body.id,
       accessToken,
       totalAmountPowerOfTwo: duplicateNumber,
       passRate,

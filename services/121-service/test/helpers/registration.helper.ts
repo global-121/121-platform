@@ -91,19 +91,24 @@ export function importRegistrationsCSV(
     .attach('file', filePath);
 }
 
-export function duplicateRegistrations({
+export function mockRegistrationsAndPaymentData({
   powerNumberRegistration,
   accessToken,
   body = {},
+  numberOfPayments = 0,
 }: {
   powerNumberRegistration: number;
   accessToken: string;
   body: object;
+  numberOfPayments?: number;
 }): Promise<request.Response> {
   return getServer()
     .post('/scripts/duplicate-registrations')
     .set('Cookie', [accessToken])
-    .query({ mockPowerNumberRegistrations: powerNumberRegistration })
+    .query({
+      mockPowerNumberRegistrations: powerNumberRegistration,
+      mockNumberPayments: numberOfPayments,
+    })
     .send(body);
 }
 

@@ -23,14 +23,13 @@ export async function getTransactionsIntersolveVoucher({
   let attempts = 0;
   while (attempts <= 10) {
     attempts++;
-    getTransactionsBody = (
-      await getTransactions({
-        programId,
-        paymentId,
-        registrationReferenceId: referenceId,
-        accessToken,
-      })
-    ).body;
+    const transactionsResponse = await getTransactions({
+      programId,
+      paymentId,
+      registrationReferenceId: referenceId,
+      accessToken,
+    });
+    getTransactionsBody = transactionsResponse.body.data;
 
     if (
       getTransactionsBody.length > 0 &&
