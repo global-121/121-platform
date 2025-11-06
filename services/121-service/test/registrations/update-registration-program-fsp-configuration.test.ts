@@ -226,6 +226,7 @@ describe('Update program fsp configuration of PA', () => {
       registrationReferenceId: registrationPvScoped.referenceId,
       accessToken,
     });
+    const transactions = transactionsResponse.body.data;
 
     // Assert
     expect(response.statusCode).toBe(HttpStatus.OK);
@@ -233,8 +234,8 @@ describe('Update program fsp configuration of PA', () => {
       newProgramFspConfigurationName,
     );
     expect(transactionsResponse.text).toContain('success');
-    expect(
-      transactionsResponse.body[0].programFspConfigurationName,
-    ).toStrictEqual(newProgramFspConfigurationName);
+    expect(transactions[0].programFspConfigurationName).toStrictEqual(
+      newProgramFspConfigurationName,
+    );
   });
 });

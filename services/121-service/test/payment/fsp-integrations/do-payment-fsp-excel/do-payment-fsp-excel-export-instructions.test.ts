@@ -122,6 +122,7 @@ describe('Do payment with Excel FSP', () => {
     beforeEach(async () => {
       await seedPrograms();
     });
+
     it('Should return specified columns on Get FSP instruction with Excel-FSP when "columnsToExport" is set', async () => {
       // Arrange
 
@@ -141,7 +142,7 @@ describe('Do payment with Excel FSP', () => {
       const fspInstructions = fspInstructionsResponse.body;
 
       // Assert
-      for (const transaction of transactionsResponse.body) {
+      for (const transaction of transactionsResponse.body.data) {
         expect(transaction.status).toBe(TransactionStatusEnum.waiting);
       }
       // Sort fspInstructions by phoneNumber

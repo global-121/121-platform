@@ -143,7 +143,7 @@ export async function startPayment({
   accessToken: string;
 }): Promise<request.Response> {
   return await getServer()
-    .patch(`/programs/${programId}/payments/${paymentId}`)
+    .patch(`/programs/${programId}/payments/${paymentId}/start`)
     .set('Cookie', [accessToken])
     .send();
 }
@@ -204,21 +204,34 @@ export async function retryPayment({
   paymentId,
   accessToken,
   referenceIds,
+  filter,
+  search,
 }: {
   programId: number;
   paymentId: number;
   accessToken: string;
   referenceIds?: string[];
+  filter?: Record<string, string>;
+  search?: string;
 }): Promise<request.Response> {
+  const queryParams = {};
+  if (filter) {
+    for (const [key, value] of Object.entries(filter)) {
+      queryParams[key] = value;
+    }
+  }
+  if (search) {
+    queryParams['search'] = search;
+  }
+  if (referenceIds && referenceIds.length > 0) {
+    queryParams['filter.registrationReferenceId'] =
+      `$in:${referenceIds.join(',')}`;
+  }
+
   return await getServer()
-    .patch(`/programs/${programId}/payments/${paymentId}`)
+    .post(`/programs/${programId}/payments/${paymentId}/retry`)
     .set('Cookie', [accessToken])
-    .send({
-      referenceIds,
-    })
-    .query({
-      retry: true,
-    });
+    .query(queryParams);
 }
 
 export async function getPayments(
@@ -269,27 +282,53 @@ export async function waitForPaymentNotInProgress({
 export async function getTransactions({
   programId,
   paymentId,
-  registrationReferenceId,
   accessToken,
+  registrationReferenceId,
+  page,
+  limit,
+  sort,
+  filter,
+  search,
 }: {
   programId: number;
   paymentId: number;
-  registrationReferenceId?: string | null;
   accessToken: string;
+  registrationReferenceId?: string | null;
+  page?: number;
+  limit?: number;
+  filter?: Record<string, string>;
+  search?: string;
+  sort?: { field: string; direction: 'ASC' | 'DESC' };
 }): Promise<request.Response> {
-  const response = await getServer()
-    .get(`/programs/${programId}/payments/${paymentId}/transactions`)
-    .set('Cookie', [accessToken]);
-  if (
-    registrationReferenceId &&
-    response.body &&
-    Array.isArray(response.body)
-  ) {
-    response.body = response.body.filter(
-      (t) => t.registrationReferenceId === registrationReferenceId,
-    );
+  const queryParams: Record<string, string> = {};
+
+  if (page) {
+    queryParams['page'] = String(page);
   }
-  return response;
+  if (limit) {
+    queryParams['limit'] = String(limit);
+  }
+  if (filter) {
+    for (const [key, value] of Object.entries(filter)) {
+      queryParams[key] = value;
+    }
+  }
+  if (search) {
+    queryParams['search'] = search;
+  }
+  if (registrationReferenceId) {
+    // add filter
+    queryParams['filter.registrationReferenceId'] = registrationReferenceId;
+  }
+
+  if (sort) {
+    queryParams['sortBy'] = `${sort.field}:${sort.direction}`;
+  }
+
+  return await getServer()
+    .get(`/programs/${programId}/payments/${paymentId}/transactions`)
+    .set('Cookie', [accessToken])
+    .query(queryParams);
 }
 
 export async function exportTransactionsAsBuffer({
@@ -443,13 +482,14 @@ export async function waitForPaymentTransactionsToComplete({
     const paymentTransactions = await getTransactions({
       programId,
       paymentId,
-      registrationReferenceId: null,
       accessToken,
+      limit: 1000, // High number so we get all transactions in one go
     });
-    if (Array.isArray(paymentTransactions?.body)) {
+    const transactions = paymentTransactions.body.data;
+    if (Array.isArray(transactions)) {
       // Check if all transactions have a "complete" status
       allTransactionsComplete = paymentReferenceIds.every((referenceId) => {
-        const transaction = paymentTransactions.body.find(
+        const transaction = transactions.find(
           (txn) => txn.registrationReferenceId === referenceId,
         );
         return transaction && completeStatuses.includes(transaction.status);

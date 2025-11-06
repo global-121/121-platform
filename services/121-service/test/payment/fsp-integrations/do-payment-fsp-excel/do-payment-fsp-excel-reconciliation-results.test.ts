@@ -115,19 +115,20 @@ describe('Do payment with Excel FSP', () => {
         }
       }
       // Check for updated transaction if the status matches the imported status
-      const transactionSuccess = transactionsResponse.body.find(
+      const transactions = transactionsResponse.body.data;
+      const transactionSuccess = transactions.find(
         (t) => t.registrationReferenceId === registrationWesteros1.referenceId,
       );
       expect(transactionSuccess.status).toBe(TransactionStatusEnum.success);
       expect(transactionSuccess.errorMessage).toBeNull();
 
-      const transactionError = transactionsResponse.body.find(
+      const transactionError = transactions.find(
         (t) => t.registrationReferenceId === registrationWesteros2.referenceId,
       );
       expect(transactionError.status).toBe(TransactionStatusEnum.error);
       expect(transactionError.errorMessage).toBe(errorMessage);
 
-      const transactionWaiting = transactionsResponse.body.find(
+      const transactionWaiting = transactions.find(
         (t) => t.registrationReferenceId === registrationWesteros3.referenceId,
       );
       expect(transactionWaiting.status).toBe(TransactionStatusEnum.waiting);
@@ -179,7 +180,8 @@ describe('Do payment with Excel FSP', () => {
         registrationReferenceId: null,
         accessToken,
       });
-      const transaction = transactionsResponse.body.find(
+      const transactions = transactionsResponse.body.data;
+      const transaction = transactions.find(
         (t) => t.registrationReferenceId === registrationWesteros1.referenceId,
       );
 
