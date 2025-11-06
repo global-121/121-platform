@@ -1,9 +1,5 @@
 /** @type {import('knip').KnipConfig} */
 module.exports = {
-  entry: [
-    // Utility/script files:
-    'src/environments/environment.ts.template.mjs',
-  ],
   ignoreDependencies: [
     '@angular/platform-browser-dynamic', // Probably not 100% required
     'primeicons',
@@ -14,7 +10,11 @@ module.exports = {
     '@angular-devkit/build-angular',
   ],
   includeEntryExports: true,
-  project: ['src/**/*.ts', '**/_*.{mjs,js,ts}'],
+  project: [
+    'src/**/*.ts', // All Angular app/source files
+    '**/_*.{mjs,js,ts}', // All non-Angular utility scripts
+    'src/environments/environment.ts.template.mjs', // Specific workaround-file for ENV-variable loading
+  ],
   rules: {
     binaries: 'error',
     dependencies: 'error',
