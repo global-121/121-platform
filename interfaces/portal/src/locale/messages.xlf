@@ -1475,9 +1475,6 @@
       <trans-unit id="change-status-default-warning" datatype="html">
         <source>This action can not be applied to registrations you have selected.</source>
       </trans-unit>
-      <trans-unit id="187187500641108332" datatype="html">
-        <source><x equiv-text="{{ format }}" id="INTERPOLATION"/></source>
-      </trans-unit>
       <trans-unit id="5472961902515478637" datatype="html">
         <source>You&apos;re about to download a file for <x ctype="x-strong" equiv-text="&lt;strong &gt;" id="START_TAG_STRONG"/><x equiv-text="{{ exportSelectedActionData()?.count }}" id="INTERPOLATION"/> selected registration(s)<x ctype="x-strong" equiv-text="&lt;/strong &gt;" id="CLOSE_TAG_STRONG"/>.</source>
       </trans-unit>
