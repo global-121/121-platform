@@ -269,11 +269,12 @@ describe('Manage Fsp configurations', () => {
       registrationReferenceId: registrationOCW5.referenceId,
       accessToken,
     });
+    const transactions = getTranactions.body.data;
 
     // Assert
     expect(result.statusCode).toBe(HttpStatus.NO_CONTENT);
     expect(getResultConfig).not.toBeDefined();
-    expect(getTranactions.body[0].programFspConfigurationName).toBe(null);
+    expect(transactions[0].programFspConfigurationName).toBe(null);
   });
 
   it('should add program Fsp configuration properties to an existing program Fsp configuration', async () => {

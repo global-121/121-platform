@@ -1,10 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { PaginateQuery } from 'nestjs-paginate';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
+import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
@@ -22,6 +24,7 @@ export class PaymentsExecutionService {
     private readonly paymentsHelperService: PaymentsHelperService,
     private readonly paymentEventsService: PaymentEventsService,
     private readonly transactionsService: TransactionsService,
+    private readonly paymentsReportingService: PaymentsReportingService,
   ) {}
 
   public async startPayment({
@@ -188,12 +191,12 @@ export class PaymentsExecutionService {
     userId,
     programId,
     paymentId,
-    referenceIds,
+    paginateQuery,
   }: {
     userId: number;
     programId: number;
     paymentId: number;
-    referenceIds?: string[];
+    paginateQuery?: PaginateQuery;
   }): Promise<BulkActionResultRetryPaymentDto> {
     await this.paymentsProgressHelperService.checkAndLockPaymentProgressOrThrow(
       { programId },
@@ -202,6 +205,16 @@ export class PaymentsExecutionService {
     // do all operations UP TO starting the queue in a try, so that we can always end with a unblock-payments action, also in case of failure
     // from the moment of starting the queue the in-progress checking is taken over by the queue
     try {
+      let referenceIds: string[] | undefined;
+      if (paginateQuery?.search || paginateQuery?.filter) {
+        referenceIds =
+          await this.paymentsReportingService.getReferenceIdsForPaginateQuery({
+            programId,
+            paymentId,
+            paginateQuery,
+          });
+      }
+
       const transactionDetails = await this.getRetryTransactionDetailsOrThrow({
         programId,
         paymentId,

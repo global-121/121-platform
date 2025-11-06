@@ -101,8 +101,9 @@ describe('Registrations - [Scoped]', () => {
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(doPaymentResponse.body.applicableCount).toBe(2);
     // Also check if the right amount of transactions are created
-    expect(transactionsResponse.body.length).toBe(2);
-    const referenceIdsTransactions = transactionsResponse.body.map(
+    const transactions = transactionsResponse.body.data;
+    expect(transactions.length).toBe(2);
+    const referenceIdsTransactions = transactions.map(
       (t) => t.registrationReferenceId,
     );
 

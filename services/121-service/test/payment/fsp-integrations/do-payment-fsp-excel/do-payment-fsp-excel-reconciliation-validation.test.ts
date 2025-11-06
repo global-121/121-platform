@@ -55,7 +55,8 @@ describe('Reconciliate excel FSP data', () => {
       paymentId,
       accessToken,
     });
-    return transactionsResponse.body.map((transaction) => transaction.status);
+    const transactions = transactionsResponse.body.data;
+    return transactions.map((transaction) => transaction.status);
   };
 
   // No need to reset DB before each test, as we will only import reconciliation files unsuccessfully

@@ -32,12 +32,14 @@ export class MockSeedFactoryService {
   private readonly messageFactory: MessageSeedFactory;
   private readonly transactionFactory: TransactionSeedFactory;
   private readonly programRepository: Repository<ProgramEntity>;
+  private readonly registrationRepository: Repository<RegistrationEntity>;
 
   constructor(private readonly dataSource: DataSource) {
     this.registrationFactory = new RegistrationSeedFactory(dataSource);
     this.messageFactory = new MessageSeedFactory(dataSource);
     this.transactionFactory = new TransactionSeedFactory(dataSource);
     this.programRepository = dataSource.getRepository(ProgramEntity);
+    this.registrationRepository = dataSource.getRepository(RegistrationEntity);
   }
 
   public async multiplyRegistrations(powerNr: number): Promise<void> {
@@ -61,13 +63,19 @@ export class MockSeedFactoryService {
     console.log('**COMPLETED MULTIPLYING REGISTRATIONS**');
   }
 
-  public async extendRelatedDataToAllRegistrations(
-    powerNr: number,
-    programIds: number[],
-  ): Promise<void> {
+  public async extendRelatedDataToAllRegistrations({
+    powerNr,
+    programIds,
+  }: {
+    powerNr: number;
+    programIds?: number[];
+  }): Promise<void> {
     console.log(`**EXTENDING RELATED DATA TO ALL REGISTRATIONS**`);
 
-    for (const programId of programIds) {
+    const relevantProgramIds =
+      programIds ?? (await this.getProgramIdsThatHaveAtLeastOneRegistration());
+
+    for (const programId of relevantProgramIds) {
       // 1. Extend transactions for all registrations in each program
       await this.transactionFactory.extendTransactionsFirstPaymentToAllRegistrations(
         programId,
@@ -84,16 +92,27 @@ export class MockSeedFactoryService {
     console.log('**COMPLETED EXTENDING RELATED DATA TO ALL REGISTRATIONS**');
   }
 
-  public async extendPaymentsAndRelatedData(
-    nrPayments: number,
-    programIds: number[],
-  ): Promise<void> {
+  public async extendPaymentsAndRelatedData({
+    nrPayments,
+    programIds,
+  }: {
+    nrPayments: number;
+    programIds?: number[];
+  }): Promise<void> {
+    const relevantProgramIds =
+      programIds ?? (await this.getProgramIdsThatHaveAtLeastOneRegistration());
+
     console.log(
-      `**MULTIPLYING TRANSACTIONS: Extending to ${nrPayments} for programs ${programIds.join(', ')}**`,
+      `**MULTIPLYING TRANSACTIONS: Extending to ${nrPayments} for programs ${relevantProgramIds.join(', ')}**`,
     );
 
-    for (const programId of programIds) {
-      await this.extendPaymentsAndRelatedDataPerProgram(nrPayments, programId);
+    for (const programId of relevantProgramIds) {
+      if (nrPayments > 0) {
+        await this.extendPaymentsAndRelatedDataPerProgram(
+          nrPayments,
+          programId,
+        );
+      }
     }
 
     console.log('**COMPLETED MULTIPLYING TRANSACTIONS**');
@@ -544,5 +563,21 @@ export class MockSeedFactoryService {
     await this.dataSource.query(queryUnusedVouchers);
 
     console.log('**COMPLETED UPDATING DERIVED DATA**');
+  }
+
+  private async getProgramIdsThatHaveAtLeastOneRegistration(): Promise<
+    number[]
+  > {
+    const allProgramIds = await this.programRepository.find({ select: ['id'] });
+    const programIdsWithRegistrations: number[] = [];
+    for (const program of allProgramIds) {
+      const registrationCount = await this.registrationRepository.count({
+        where: { programId: Equal(program.id) },
+      });
+      if (registrationCount > 0) {
+        programIdsWithRegistrations.push(program.id);
+      }
+    }
+    return programIdsWithRegistrations;
   }
 }

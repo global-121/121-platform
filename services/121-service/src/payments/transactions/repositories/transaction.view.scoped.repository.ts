@@ -348,4 +348,21 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
         programFspConfigurationId: number;
       }>();
   }
+
+  public createQueryBuilderFilterByProgramAndPaymentId({
+    programId,
+    paymentId,
+  }: {
+    programId: number;
+    paymentId: number;
+  }): ReturnType<Repository<TransactionViewEntity>['createQueryBuilder']> {
+    return this.createQueryBuilder('transaction')
+      .leftJoin('transaction.payment', 'payment')
+      .andWhere('payment.programId = :programId', {
+        programId,
+      })
+      .andWhere('transaction.paymentId = :paymentId', {
+        paymentId,
+      });
+  }
 }

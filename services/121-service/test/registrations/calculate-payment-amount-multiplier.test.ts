@@ -66,11 +66,12 @@ describe('Set/calculate payment amount multiplier', () => {
       registrationReferenceId: importedRegistration.referenceId,
       accessToken,
     });
-    const transaction = transactionsResponse.body[0];
+    const transactions = transactionsResponse.body.data;
+    const transaction = transactions[0];
     // Assert
 
     expect(importedRegistration.paymentAmountMultiplier).toBe(nrOfDragons + 1);
-    expect(transaction.amount).toBe(transferValue * (nrOfDragons + 1));
+    expect(transaction.transferValue).toBe(transferValue * (nrOfDragons + 1));
   });
 
   it('should error if paymentAmountMultiplier is set while program has a formula', async () => {

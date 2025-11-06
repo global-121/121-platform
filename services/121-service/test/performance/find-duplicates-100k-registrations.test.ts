@@ -4,9 +4,9 @@ import { env } from 'process';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
-  duplicateRegistrations,
   getRegistrations,
   importRegistrations,
+  mockRegistrationsAndPaymentData,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -39,13 +39,15 @@ describe('Find duplicates in 100k registrations within expected range', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registration to be more than 100k
-    const duplicateRegistrationsResponse = await duplicateRegistrations({
-      powerNumberRegistration: duplicateNumber,
-      accessToken,
-      body: {
-        secret: env.RESET_SECRET,
-      },
-    });
+    const duplicateRegistrationsResponse =
+      await mockRegistrationsAndPaymentData({
+        powerNumberRegistration: duplicateNumber,
+        numberOfPayments: 0,
+        accessToken,
+        body: {
+          secret: env.RESET_SECRET,
+        },
+      });
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
     // Query for duplicate registrations
     const findDuplicatesResponse = await getRegistrations({
