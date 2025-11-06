@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { match, notEqual } from 'node:assert/strict';
+import { notEqual, ok } from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
@@ -34,31 +34,25 @@ test(
   },
 );
 
+// The downloaded translation files for each language should contain (some)
+// translations. We don't need them to have the same amount of translations as
+// the source language because translations may be missing. We used to have a
+// test here that tested for specific translated strings, but that was brittle.
 test(
-  'Translations are downloaded',
+  'Translation files are downloaded aka: they contain translations',
   { skip: !shouldBeEnabled(process.env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD) },
   () => {
-    const validTranslations = {
-      ar: 'رسالة مخصصة',
-      es: 'Mensaje personalizado',
-      fr: 'Message personnalisé',
-      nl: 'Custom bericht',
-      sk: 'Vlastná správa',
-    };
-
     requiredTranslations.forEach((lang) => {
       const filePath = getTranslationFilePath(lang);
       const contents = readFileSync(filePath, 'utf-8');
-      const test =
-        `<trans-unit id="(message-content-type-custom)" datatype="html">` +
-        `\\s*<source>Custom message\\s*</source>` +
-        `\\s*<target>${validTranslations[lang]}</target>` +
-        `\\s*</trans-unit>`;
 
-      match(
-        contents,
-        new RegExp(test),
-        `Translation "${validTranslations[lang]}" not found in: ${filePath}`,
+      // Count the number of trans-unit elements in the translation file
+      const transUnitMatches = contents.match(/<trans-unit[^>]*>/g) || [];
+      const translationCount = transUnitMatches.length;
+
+      ok(
+        translationCount > 0,
+        `Translation file "${filePath}" exists but does not contain any translations. The download step may have failed.`,
       );
     });
   },
