@@ -25,7 +25,6 @@ Static analysis, formatting, code-style, functionality, integration, etc:
 - [![Test Service: Code](https://github.com/global-121/121-platform/actions/workflows/test_service_code.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_service_code.yml)
 - [![Test Service: API Integration](https://github.com/global-121/121-platform/actions/workflows/test_service_api.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_service_api.yml)
 - [![Test: E2E (Portal)](https://github.com/global-121/121-platform/actions/workflows/test_e2e_portal.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_e2e_portal.yml)
-- [![Test: Performance](https://github.com/global-121/121-platform/actions/workflows/test_k6.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_k6.yml)
 
 See also: [Testing](#testing)
 
