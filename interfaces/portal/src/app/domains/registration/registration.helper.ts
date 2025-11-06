@@ -54,6 +54,7 @@ export const LANGUAGE_ENUM_LABEL: Record<LanguageEnum, string> = {
   in: $localize`Indonesian`,
   nl: $localize`Dutch`,
   pt_BR: $localize`Portuguese`,
+  sk: $localize`Slovak`,
   tl: $localize`Filipino`,
   tr: $localize`Turkish`,
   uk: $localize`Ukrainian`,

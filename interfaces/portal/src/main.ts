@@ -22,7 +22,7 @@ const main = async () => {
 
   if (localeInitialization.localeIsOutOfSyncWithUrl) {
     // Local storage locale takes precedence over locale in URL - even when the user has never visited the site before.
-    // This faciltates copy-pasting of URLs between colleagues with different locales
+    // This facilitates copy-pasting of URLs between colleagues with different locales
     // But it also means that the only way to change language is via the language dropdown
     const locale = localeInitialization.localStorageLocale;
     console.log(`Redirecting user to their preferred locale: ${locale}`);
@@ -45,6 +45,9 @@ const main = async () => {
       break;
     case Locale.nl:
       await import('@angular/common/locales/global/nl');
+      break;
+    case Locale.sk:
+      await import('@angular/common/locales/global/sk');
       break;
   }
 

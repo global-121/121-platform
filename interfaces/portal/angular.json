@@ -30,6 +30,10 @@
           "nl": {
             "translation": "src/locale/messages.nl.xlf",
             "subPath": "nl"
+          },
+          "sk": {
+            "translation": "src/locale/messages.sk.xlf",
+            "subPath": "sk"
           }
         }
       },
@@ -83,7 +87,7 @@
                   "maximumError": "4kB"
                 }
               ],
-              "localize": ["ar", "en", "es", "fr", "nl"],
+              "localize": ["ar", "en", "es", "fr", "nl", "sk"],
               "outputHashing": "all",
               "extractLicenses": true,
               "optimization": {
@@ -118,6 +122,9 @@
             },
             "nl": {
               "localize": ["nl"]
+            },
+            "sk": {
+              "localize": ["sk"]
             }
           },
           "defaultConfiguration": "development"
@@ -142,6 +149,9 @@
             },
             "nl": {
               "buildTarget": "portal:build:development,nl"
+            },
+            "sk": {
+              "buildTarget": "portal:build:development,sk"
             }
           },
           "defaultConfiguration": "development"

@@ -12,6 +12,7 @@ export enum Locale {
   es = 'es',
   fr = 'fr',
   nl = 'nl',
+  sk = 'sk',
 }
 
 export const getLocaleLabel = (locale: Locale): string => {
@@ -22,6 +23,7 @@ export const getLocaleLabel = (locale: Locale): string => {
     [Locale.es]: 'Español',
     [Locale.fr]: 'Français',
     [Locale.nl]: 'Nederlands',
+    [Locale.sk]: 'Slovenčina',
   };
 
   return localeLabels[locale];
