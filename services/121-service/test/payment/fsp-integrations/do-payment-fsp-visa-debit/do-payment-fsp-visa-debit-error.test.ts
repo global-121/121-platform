@@ -94,10 +94,11 @@ describe('Do failing payment with FSP Visa Debit', () => {
     expect(transactionsResponse.text).toContain(
       IntersolveVisa121ErrorText.createCustomerError,
     );
+    const transactions = transactionsResponse.body.data;
 
     const transactionEventDescriptions = await getTransactionEventDescriptions({
       programId: programIdVisa,
-      transactionId: transactionsResponse.body[0].id,
+      transactionId: transactions[0].id,
       accessToken,
     });
     expect(transactionEventDescriptions).toEqual([

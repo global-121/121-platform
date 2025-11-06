@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
-export class GetTransactionResponseDto {
+export class ExportTransactionResponseDto {
   @ApiProperty({ example: 1, type: 'number' })
   public id: number;
 

@@ -89,10 +89,11 @@ describe('Do successful payment with FSP Visa Debit', () => {
       paymentReferenceIds.length,
     );
     expect(transactionsResponse.text).toContain(TransactionStatusEnum.success);
+    const transactions = transactionsResponse.body.data;
 
     const transactionEventDescriptions = await getTransactionEventDescriptions({
       programId: programIdVisa,
-      transactionId: transactionsResponse.body[0].id,
+      transactionId: transactions[0].id,
       accessToken,
     });
     expect(transactionEventDescriptions).toEqual([
@@ -299,7 +300,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     });
 
     const expectedCalculatedTransferValuePa1 = 150 - 13000 / 100 - 1000 / 100; // = 10
-    expect(transactionsResponse1.body[0].amount).toBe(
+    expect(transactionsResponse1.body.data[0].transferValue).toBe(
       expectedCalculatedTransferValuePa1,
     );
     expect(transactionsResponse1.text).toContain(TransactionStatusEnum.success);
@@ -311,25 +312,25 @@ describe('Do successful payment with FSP Visa Debit', () => {
     );
 
     const expectedCalculatedTransferValuePa2 = 150 - 14000 / 100 - 1000 / 100; // = 0
-    expect(transactionsResponse2.body[0].amount).toBe(
+    expect(transactionsResponse2.body.data[0].transferValue).toBe(
       expectedCalculatedTransferValuePa2, // = 0 : A transaction of 0 is created
     );
     expect(transactionsResponse2.text).toContain(TransactionStatusEnum.success);
-    // Validate for one message where amount is 0 that it still sends a message with the amount 0, so people will know they have to spend money earlier next months
+    // Validate for one message where transferValue is 0 that it still sends a message with the amount 0, so people will know they have to spend money earlier next months
     expect(messagesHistoryPa2.body.map((msg) => msg.attributes.body)).toEqual(
       expect.arrayContaining([
         expect.stringContaining(`€${expectedCalculatedTransferValuePa2}`),
       ]),
     );
 
-    // should be able to payout the full amount
-    expect(transactionsResponse3.body[0].amount).toBe(
+    // should be able to payout the full transferValue
+    expect(transactionsResponse3.body.data[0].transferValue).toBe(
       transferValueVisa * registrationOCW3.paymentAmountMultiplier,
     );
     expect(transactionsResponse3.text).toContain(TransactionStatusEnum.success);
 
     // Kyc requirement
-    expect(transactionsResponse4.body[0].amount).toBe(
+    expect(transactionsResponse4.body.data[0].transferValue).toBe(
       // 150 - 6000 / 100 - 0, // = 90 maximum of 90 can be put on this card so we expect the amount to be 75
       75,
     );
