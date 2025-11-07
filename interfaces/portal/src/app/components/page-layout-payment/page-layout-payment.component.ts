@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -40,7 +40,6 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   imports: [
     PageLayoutComponent,
     CardModule,
-    DecimalPipe,
     ButtonModule,
     MetricTileComponent,
     ProjectPaymentChartComponent,
