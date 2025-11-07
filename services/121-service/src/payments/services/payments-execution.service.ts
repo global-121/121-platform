@@ -82,13 +82,18 @@ export class PaymentsExecutionService {
       });
 
       // update all transactions to 'approved'
+      const programFspConfigurationIdMap = new Map(
+        transactionsToStart.map((item) => [
+          item.id,
+          item.programFspConfigurationId!,
+        ]),
+      );
       await this.transactionsService.saveTransactionProgressBulk({
         newTransactionStatus: TransactionStatusEnum.approved,
         transactionIds: transactionsToStart.map((t) => t.id),
         description: TransactionEventDescription.approved,
         userId,
-        programFspConfigurationId:
-          transactionsToStart[0].programFspConfigurationId!, //##TODO handle multiple FSPs
+        programFspConfigurationIdMap,
       });
 
       await this.paymentsExecutionHelperService.updatePaymentCountAndSetToCompleted(
