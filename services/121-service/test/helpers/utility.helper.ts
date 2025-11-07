@@ -96,6 +96,13 @@ export async function getAccessTokenCvaManager(): Promise<string> {
   );
 }
 
+export async function getAccessTokenFinanceManager(): Promise<string> {
+  return await getAccessToken(
+    env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER,
+    env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_MANAGER,
+  );
+}
+
 export async function removeProgramAssignment(
   programId: number,
   userId: number,
