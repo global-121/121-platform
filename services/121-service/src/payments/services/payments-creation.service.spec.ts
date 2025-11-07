@@ -192,7 +192,13 @@ describe('PaymentsCreationService', () => {
           sumPaymentAmountMultiplier: 0,
           programFspConfigurationNames: [],
         },
-        registrationsForPayment: [],
+        registrationsForPayment: [
+          {
+            referenceId: 'ref1',
+            paymentAmountMultiplier: 1,
+            programFspConfigurationName: 'fspA',
+          },
+        ],
         programFspConfigurationNames: [],
       });
     const params = { ...basePaymentParams, transferValue: undefined };
