@@ -952,12 +952,6 @@
       <trans-unit id="5677186522471416018" datatype="html">
         <source>Upload the file to the Financial Service Provider’s portal.</source>
       </trans-unit>
-      <trans-unit id="8847988975348610068" datatype="html">
-        <source>Save the exported XLSX-file in the format required by the Financial Service Provider.</source>
-      </trans-unit>
-      <trans-unit id="614288202138197410" datatype="html">
-        <source>Export the FSP instructions from the payment page. This is only possible once the payment is no longer in progress.</source>
-      </trans-unit>
       <trans-unit id="export-fsp-payment-list" datatype="html">
         <source>Export FSP payment list</source>
       </trans-unit>
@@ -2009,9 +2003,6 @@
       <trans-unit id="7392987714730903698" datatype="html">
         <source>registrations</source>
       </trans-unit>
-      <trans-unit id="515050170212939003" datatype="html">
-        <source>Click start payment, or make sure someone with the right permissions does so.</source>
-      </trans-unit>
       <trans-unit id="4605701201545136761" datatype="html">
         <source>Click start payment to initiate the payment through your FSP(s).</source>
       </trans-unit>
@@ -2023,6 +2014,12 @@
       </trans-unit>
       <trans-unit id="inProgressChipTooltip" datatype="html">
         <source>The payment will be in progress while the transfers in the table below are loading.</source>
+      </trans-unit>
+      <trans-unit id="1307602065632249368" datatype="html">
+        <source>Export the FSP instructions and save the exported XLSX-file in the format required by the Financial Service Provider.</source>
+      </trans-unit>
+      <trans-unit id="2877620758967462039" datatype="html">
+        <source>When you want the payment to start, click approve and start payment or instruct the designated user to do so.</source>
       </trans-unit>
     </body>
   </file>
