@@ -35,8 +35,6 @@ import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
-import { TransactionStatusEnum } from '../../../../../../services/121-service/src/payments/transactions/enums/transaction-status.enum';
-
 @Component({
   selector: 'app-page-layout-payment',
   imports: [
@@ -125,6 +123,21 @@ export class PageLayoutPaymentComponent {
   readonly paymentTitle = computed(
     () => $localize`Payment` + ' ' + this.paymentDate(),
   );
+
+  readonly totalRegistrations = computed(() => {
+    if (!this.payment.isSuccess()) {
+      return '-';
+    }
+
+    const totalRegistrations =
+      this.payment.data().failed.count +
+      this.payment.data().success.count +
+      this.payment.data().waiting.count +
+      this.payment.data().pendingApproval.count +
+      this.payment.data().approved.count;
+
+    return totalRegistrations.toString();
+  });
 
   readonly totalPaymentAmount = computed(() => {
     if (!this.payment.isSuccess()) {
@@ -228,17 +241,15 @@ export class PageLayoutPaymentComponent {
     );
   });
 
-  readonly showStartPaymentButton = computed<boolean>(() => {
-    if (!this.transactions.isSuccess()) {
+  readonly showStartPaymentButton = computed<boolean | undefined>(() => {
+    if (!this.payment.isSuccess()) {
       return false;
     }
 
-    return this.transactions
-      .data()
-      .some(
-        (transaction) =>
-          transaction.status === TransactionStatusEnum.pendingApproval,
-      );
+    return (
+      this.payment.data().pendingApproval.count > 0 &&
+      !this.isPaymentInProgress()
+    );
   });
 
   readonly canStartPayment = computed(() =>

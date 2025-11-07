@@ -118,9 +118,12 @@ export class TransactionsService {
     programFspConfigurationIdMap: Map<number, number>;
     errorMessages?: Map<number, string>;
   }): Promise<void> {
-    await this.transactionScopedRepository.update(transactionIds, {
-      status: newTransactionStatus,
-    });
+    const chunkSize = 2000;
+    for (const idsChunk of chunk(transactionIds, chunkSize)) {
+      await this.transactionScopedRepository.update(idsChunk, {
+        status: newTransactionStatus,
+      });
+    }
     const eventsAreSuccessful =
       newTransactionStatus !== TransactionStatusEnum.error;
 
