@@ -41,9 +41,7 @@ test.beforeEach(async ({ page }) => {
   await basePage.selectProgram('NLRC Direct Digital Aid Program (PV)');
 });
 
-test('[31223] Delete registration with status "Validated"', async ({
-  page,
-}) => {
+test('Delete registration with status "Validated"', async ({ page }) => {
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
   // Act

@@ -42,7 +42,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[36848] Export unused vouchers unsuccessfully', async ({ page }) => {
+test('Export unused vouchers unsuccessfully', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
   const exportDataComponent = new ExportData(page);
 

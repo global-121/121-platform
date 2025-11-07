@@ -27,7 +27,7 @@ test.beforeEach(async ({}) => {
   accessToken = await getAccessToken();
 });
 
-test('[34619] User can view debit cards of a registration with a single active debit card', async ({
+test('User can view debit cards of a registration with a single active debit card', async ({
   page,
 }) => {
   // Prepare data - seed a registration with a payment to ensure they have a card
@@ -75,7 +75,7 @@ test('[34619] User can view debit cards of a registration with a single active d
   });
 });
 
-test('[34620] User does not find debit card of a person without payments', async ({
+test('User does not find debit card of a person without payments', async ({
   page,
 }) => {
   await seedIncludedRegistrations([registrationOCW1], projectId, accessToken);
@@ -116,7 +116,7 @@ test('[34620] User does not find debit card of a person without payments', async
   });
 });
 
-test('[34621] User can replace a debit card and view both new and old card', async ({
+test('User can replace a debit card and view both new and old card', async ({
   page,
 }) => {
   // Prepare data - seed a registration with a payment to ensure they have a card
@@ -232,7 +232,7 @@ test('[34621] User can replace a debit card and view both new and old card', asy
   });
 });
 
-test('[34622] User can pause and unpause a debit card', async ({ page }) => {
+test('User can pause and unpause a debit card', async ({ page }) => {
   // Prepare data - seed a registration with a payment to ensure they have a card
   await seedPaidRegistrations([registrationOCW1], projectId);
   registrationId = await getRegistrationIdByReferenceId({

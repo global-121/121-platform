@@ -27,7 +27,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[29337] Export all People Affected data changes', async ({ page }) => {
+test('Export all People Affected data changes', async ({ page }) => {
   const registrationsPage = new RegistrationsPage(page);
   const exportDataComponent = new ExportData(page);
 

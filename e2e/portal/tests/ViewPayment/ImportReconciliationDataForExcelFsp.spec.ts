@@ -33,7 +33,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[32303] [Excel fsp]: Import reconciliation data should work similar to import registration data', async ({
+test('[Excel fsp]: Import reconciliation data should work similar to import registration data', async ({
   page,
 }) => {
   const paymentPage = new PaymentPage(page);

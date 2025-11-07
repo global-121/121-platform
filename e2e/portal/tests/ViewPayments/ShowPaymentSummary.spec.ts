@@ -27,7 +27,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[31971] Show payment summary', async ({ page }) => {
+test('Show payment summary', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
 
   const projectTitle = 'NLRC OCW Program';
@@ -54,7 +54,7 @@ test('[31971] Show payment summary', async ({ page }) => {
   });
 });
 
-test('[31972] Validate empty payment page', async ({ page }) => {
+test('Validate empty payment page', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
 
   const projectTitle = 'NLRC OCW Program';

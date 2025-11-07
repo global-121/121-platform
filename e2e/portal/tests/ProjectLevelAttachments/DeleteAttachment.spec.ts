@@ -69,7 +69,7 @@ test.describe('Attachments on Project Level', () => {
     await projectMonitoring.selectTab({ tabName: 'Files' });
   });
 
-  test('[37586] Delete Attachment', async () => {
+  test('Delete Attachment', async () => {
     const projectMonitoring = new ProjectMonitoring(page);
     const tableComponent = new TableComponent(page);
 

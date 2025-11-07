@@ -32,7 +32,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[36009] Do successful payment for Safaricom fsp', async ({ page }) => {
+test('Do successful payment for Safaricom fsp', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = KRCSProgram.titlePortal.en;

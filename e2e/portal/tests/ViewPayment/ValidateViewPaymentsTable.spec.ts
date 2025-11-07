@@ -47,7 +47,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[32298] Table should be a filtered list of registrations included in the transfer', async ({
+test('Table should be a filtered list of registrations included in the transfer', async ({
   page,
 }) => {
   const paymentPage = new PaymentPage(page);

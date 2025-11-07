@@ -42,9 +42,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[29414] [Admin] View "Names" and "E-mails" on "Users" page', async ({
-  page,
-}) => {
+test('[Admin] View "Names" and "E-mails" on "Users" page', async ({ page }) => {
   const basePage = new BasePage(page);
   const users = new UsersPage(page);
 

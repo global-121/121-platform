@@ -26,7 +26,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[33854] Validate that duplicate badges are present in the UI', async ({
+test('Validate that duplicate badges are present in the UI', async ({
   page,
 }) => {
   const homePage = new HomePage(page);

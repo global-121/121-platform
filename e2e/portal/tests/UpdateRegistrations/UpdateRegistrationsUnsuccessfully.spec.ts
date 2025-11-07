@@ -29,7 +29,7 @@ test.beforeEach(async ({ page }) => {
 const fakeReferenceId =
   'this-is-not-the-greatest-reference-id-in-the-world-this-is-just-a-tribute';
 
-test('[36351] Wrong CSV should trigger error (wrong data, column name etc.)', async ({
+test('Wrong CSV should trigger error (wrong data, column name etc.)', async ({
   page,
 }) => {
   const registrationsPage = new RegistrationsPage(page);

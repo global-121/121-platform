@@ -34,7 +34,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[32304] Retry payments should put failed transactions back in pending and download the payment instructions file for those pending transactions', async ({
+test('Retry payments should put failed transactions back in pending and download the payment instructions file for those pending transactions', async ({
   page,
 }) => {
   const paymentsPage = new PaymentsPage(page);

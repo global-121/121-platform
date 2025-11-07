@@ -36,7 +36,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[29635] Create project successfully', async ({ page }) => {
+test('Create project successfully', async ({ page }) => {
   const homePage = new HomePage(page);
   const createProjectDialog = new CreateProjectDialog(page);
   const projectSettings = new ProjectSettingsPage(page);

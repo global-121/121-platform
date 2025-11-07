@@ -33,9 +33,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[29760] Users should be removable from "project team"', async ({
-  page,
-}) => {
+test('Users should be removable from "project team"', async ({ page }) => {
   const basePage = new BasePage(page);
   const manageTeam = new ProjectTeamPage(page);
   const projectTitle = 'Cash program Westeros';

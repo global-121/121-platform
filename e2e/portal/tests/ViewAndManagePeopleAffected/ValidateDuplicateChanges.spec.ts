@@ -28,7 +28,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[33856] After the data change of duplicate registration, both registrations get unique badge', async ({
+test('After the data change of duplicate registration, both registrations get unique badge', async ({
   page,
 }) => {
   const homePage = new HomePage(page);

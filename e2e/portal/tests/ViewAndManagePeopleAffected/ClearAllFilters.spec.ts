@@ -26,7 +26,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[31475] [Bug] Clear all filters does not work', async ({ page }) => {
+test('[Bug] Clear all filters does not work', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
 

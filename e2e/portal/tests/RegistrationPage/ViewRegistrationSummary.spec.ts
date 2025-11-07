@@ -18,9 +18,7 @@ const projectId = 2;
 let registrationId: number;
 let registrationProgramId: number;
 
-test('[34690] User should see a summary of a registration', async ({
-  page,
-}) => {
+test('User should see a summary of a registration', async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
 
   const accessToken = await getAccessToken();

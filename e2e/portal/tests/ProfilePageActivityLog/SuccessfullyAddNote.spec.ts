@@ -28,7 +28,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[36780] Successfully Add Note', async ({ page }) => {
+test('Successfully Add Note', async ({ page }) => {
   const registrationsPage = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
   const activityLogPage = new RegistrationActivityLogPage(page);

@@ -21,7 +21,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[35447] View Redline start-page (no search)', async ({ page }) => {
+test('View Redline start-page (no search)', async ({ page }) => {
   // Arrange
 
   // Act
@@ -33,7 +33,7 @@ test('[35447] View Redline start-page (no search)', async ({ page }) => {
   );
 });
 
-test('[35448] View error for no results', async ({ page }) => {
+test('View error for no results', async ({ page }) => {
   // Arrange
   const testPhoneNumber = '0000000000';
 
@@ -46,7 +46,7 @@ test('[35448] View error for no results', async ({ page }) => {
   );
 });
 
-test('[35450] View search-result with single matched registration', async ({
+test('View search-result with single matched registration', async ({
   page,
 }) => {
   // Arrange
@@ -71,7 +71,7 @@ test('[35450] View search-result with single matched registration', async ({
   });
 });
 
-test('[35449] View search-results with multiple matched registrations', async ({
+test('View search-results with multiple matched registrations', async ({
   page,
 }) => {
   // Arrange

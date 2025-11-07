@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[29368] Successfully import registrations', async ({ page }) => {
+test('Successfully import registrations', async ({ page }) => {
   const registrationsPage = new RegistrationsPage(page);
   const table = new TableComponent(page);
   const registrationsDataFilePath = path.resolve(

@@ -16,7 +16,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[29364] Download template for import registrations', async ({ page }) => {
+test('Download template for import registrations', async ({ page }) => {
   const registrationsPage = new RegistrationsPage(page);
 
   const projectTitle = NLRCProgramPV.titlePortal.en;

@@ -27,7 +27,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[33855] Validate that "Duplicate" banner is displayed in overview of duplicated registrations', async ({
+test('Validate that "Duplicate" banner is displayed in overview of duplicated registrations', async ({
   page,
 }) => {
   const homePage = new HomePage(page);

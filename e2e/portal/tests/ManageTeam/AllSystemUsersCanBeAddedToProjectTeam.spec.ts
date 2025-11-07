@@ -39,7 +39,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[29758] All system-users are available to be added to a "project team"', async ({
+test('All system-users are available to be added to a "project team"', async ({
   page,
 }) => {
   const basePage = new BasePage(page);

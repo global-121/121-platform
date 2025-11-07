@@ -17,7 +17,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[30868] [Admin] Reset users password', async ({ page }) => {
+test('[Admin] Reset users password', async ({ page }) => {
   const basePage = new BasePage(page);
   const users = new UsersPage(page);
 

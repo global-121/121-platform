@@ -17,7 +17,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[29369] Unsuccessfully import registrations', async ({ page }) => {
+test('Unsuccessfully import registrations', async ({ page }) => {
   const registrationsPage = new RegistrationsPage(page);
   const wrongRegistrationsDataFilePath = path.resolve(
     __dirname,

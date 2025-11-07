@@ -44,7 +44,7 @@ test.describe('Export Payments with Date Range', () => {
     await paymentsPage.navigateToProgramPage('Payments');
   });
 
-  test('[37534] Export payments with date range - Current', async () => {
+  test('Export payments with date range - Current', async () => {
     const paymentsPage = new PaymentsPage(page);
     const exportDataComponent = new ExportData(page);
 
@@ -69,7 +69,7 @@ test.describe('Export Payments with Date Range', () => {
     });
   });
 
-  test('[37548] Export payments with date range - Future', async () => {
+  test('Export payments with date range - Future', async () => {
     const paymentsPage = new PaymentsPage(page);
     const exportDataComponent = new ExportData(page);
 
@@ -93,7 +93,7 @@ test.describe('Export Payments with Date Range', () => {
     });
   });
 
-  test('[37549] Export payments with date range - Past', async () => {
+  test('Export payments with date range - Past', async () => {
     const paymentsPage = new PaymentsPage(page);
     const exportDataComponent = new ExportData(page);
 

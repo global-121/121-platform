@@ -15,7 +15,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[29761] "Scope" column should only be loaded when "enableScope": is set to true under the program configuration', async ({
+test('"Scope" column should only be loaded when "enableScope": is set to true under the program configuration', async ({
   page,
 }) => {
   const manageTeam = new ProjectTeamPage(page);
