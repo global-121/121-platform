@@ -5,7 +5,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
-import { doPayment } from '@121-service/test/helpers/program.helper';
+import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
 import {
   changeRegistrationStatus,
   duplicateRegistrations,
@@ -75,7 +75,7 @@ describe('Retry Failed Jobs On Startup During Queue Processing', () => {
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Do payment
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId: programIdOCW,
       transferValue,
       referenceIds: [],
