@@ -5,6 +5,8 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import {
   createPayment,
   getPaymentEvents,
@@ -21,6 +23,7 @@ import {
   waitForRegistrationToHaveUpdatedPaymentCount,
 } from '@121-service/test/helpers/registration.helper';
 import {
+  addPermissionToRole,
   getAccessToken,
   getAccessTokenScoped,
   resetDB,
@@ -254,7 +257,18 @@ describe('Payment start', () => {
   });
 
   it('should only start payment for scope of requesting user', async () => {
-    // Arrange
+    /////////////
+    // Arrange //
+    /////////////
+
+    // the scoped users are cva-manager by default, which doesn't have the payment start permission
+    await addPermissionToRole(DefaultUserRole.CvaManager, [
+      PermissionEnum.PaymentUPDATE,
+    ]);
+    const accessTokenKisumu = await getAccessTokenScoped(DebugScope.Kisumu);
+    const accessTokenTurkana = await getAccessTokenScoped(DebugScope.Turkana);
+
+    // add 2 registrations with different scope
     const registrationScopeKisumu = {
       ...registrationPV5,
       scope: DebugScope.Kisumu,
@@ -265,6 +279,7 @@ describe('Payment start', () => {
     };
     const registrations = [registrationScopeKisumu, registrationScopeTurkana];
     await seedIncludedRegistrations(registrations, programId, accessToken);
+
     // create payment by admin-user with full scope
     const createPaymentResponse = await createPayment({
       programId,
@@ -279,12 +294,13 @@ describe('Payment start', () => {
       maxWaitTimeMs: 20_000,
       completeStatusses: [TransactionStatusEnum.pendingApproval],
     });
-    const paymentId = createPaymentResponse.body.id;
 
-    const accessTokenKisumu = await getAccessTokenScoped(DebugScope.Kisumu);
-    const accessTokenTurkana = await getAccessTokenScoped(DebugScope.Turkana);
+    //////////////////
+    // Act & Assert //
+    //////////////////
 
     // Start payment with Kisumu-scoped user
+    const paymentId = createPaymentResponse.body.id;
     const startPaymentResponseKisumu = await startPayment({
       programId,
       paymentId,
@@ -296,6 +312,8 @@ describe('Payment start', () => {
       accessToken,
       maxWaitTimeMs: 5_000,
     });
+    expect(startPaymentResponseKisumu.status).toBe(HttpStatus.ACCEPTED);
+
     // get all transactions to assert only Kisumu one was started
     const getAllTransactionsResponse = await getTransactions({
       programId,
@@ -306,16 +324,14 @@ describe('Payment start', () => {
     const startedTransactions = allTransactions.filter(
       (t: any) => t.status !== TransactionStatusEnum.pendingApproval,
     );
-
-    expect(startPaymentResponseKisumu.status).toBe(HttpStatus.ACCEPTED);
     expect(startedTransactions.length).toBe(1);
 
+    // Try to start Kisumu again to assert that it fails
     const startPaymentResponseKisumuSecondAttempt = await startPayment({
       programId,
       paymentId,
       accessToken: accessTokenKisumu,
     });
-
     expect(startPaymentResponseKisumuSecondAttempt.status).toBe(
       HttpStatus.BAD_REQUEST,
     );
@@ -332,6 +348,7 @@ describe('Payment start', () => {
       accessToken,
       maxWaitTimeMs: 20_000,
     });
+
     // get all transactions to assert only Kisumu one was started
     const getAllTransactionsResponseEnd = await getTransactions({
       programId,
