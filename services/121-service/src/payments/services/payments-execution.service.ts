@@ -3,7 +3,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
-import { PaymentsExecutionHelperService } from '@121-service/src/payments/services/payments-execution-helper.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
@@ -20,7 +19,6 @@ export class PaymentsExecutionService {
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly transactionJobsCreationService: TransactionJobsCreationService,
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
-    private readonly paymentsExecutionHelperService: PaymentsExecutionHelperService,
     private readonly paymentsHelperService: PaymentsHelperService,
     private readonly paymentEventsService: PaymentEventsService,
     private readonly transactionsService: TransactionsService,

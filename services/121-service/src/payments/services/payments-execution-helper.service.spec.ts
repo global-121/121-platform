@@ -1,138 +1,129 @@
-import { TestBed } from '@automock/jest';
+// // ##TODO move these tests again to transaction-jobs-helper.service.spec.ts + switch from bulk to per-registration usage
+// describe('PaymentsExecutionHelperService - setStatusToCompletedIfApplicable', () => {
+//   let service: PaymentsExecutionHelperService;
 
-import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
-import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
-import { PaymentsExecutionHelperService } from '@121-service/src/payments/services/payments-execution-helper.service';
-import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
-import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
+//   let registrationScopedRepository: RegistrationScopedRepository;
+//   let programRepository: ProgramRepository;
+//   let messageTemplateService: MessageTemplateService;
+//   let registrationsBulkService: RegistrationsBulkService;
 
-describe('PaymentsExecutionHelperService - setStatusToCompletedIfApplicable', () => {
-  let service: PaymentsExecutionHelperService;
+//   beforeEach(async () => {
+//     jest.resetAllMocks();
 
-  let registrationScopedRepository: RegistrationScopedRepository;
-  let programRepository: ProgramRepository;
-  let messageTemplateService: MessageTemplateService;
-  let registrationsBulkService: RegistrationsBulkService;
+//     const { unit, unitRef } = TestBed.create(
+//       PaymentsExecutionHelperService,
+//     ).compile();
 
-  beforeEach(async () => {
-    jest.resetAllMocks();
+//     service = unit;
+//     registrationScopedRepository = unitRef.get<RegistrationScopedRepository>(
+//       RegistrationScopedRepository,
+//     );
+//     programRepository = unitRef.get<ProgramRepository>(ProgramRepository);
+//     messageTemplateService = unitRef.get<MessageTemplateService>(
+//       MessageTemplateService,
+//     );
+//     registrationsBulkService = unitRef.get<RegistrationsBulkService>(
+//       RegistrationsBulkService,
+//     );
+//   });
 
-    const { unit, unitRef } = TestBed.create(
-      PaymentsExecutionHelperService,
-    ).compile();
+//   it('does nothing when program.enableMaxPayments is false', async () => {
+//     const programIdDisabled = 1;
+//     const userId = 42;
 
-    service = unit;
-    registrationScopedRepository = unitRef.get<RegistrationScopedRepository>(
-      RegistrationScopedRepository,
-    );
-    programRepository = unitRef.get<ProgramRepository>(ProgramRepository);
-    messageTemplateService = unitRef.get<MessageTemplateService>(
-      MessageTemplateService,
-    );
-    registrationsBulkService = unitRef.get<RegistrationsBulkService>(
-      RegistrationsBulkService,
-    );
-  });
+//     jest.spyOn(programRepository, 'findByIdOrFail').mockResolvedValue({
+//       enableMaxPayments: false,
+//     } as any);
 
-  it('does nothing when program.enableMaxPayments is false', async () => {
-    const programIdDisabled = 1;
-    const userId = 42;
+//     await service.setStatusToCompletedIfApplicable(programIdDisabled, userId);
 
-    jest.spyOn(programRepository, 'findByIdOrFail').mockResolvedValue({
-      enableMaxPayments: false,
-    } as any);
+//     expect(
+//       registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
+//     ).not.toHaveBeenCalled();
+//   });
 
-    await service.setStatusToCompletedIfApplicable(programIdDisabled, userId);
+//   it('does nothing when there are no registrations to complete', async () => {
+//     const programIdNoReg = 2;
+//     const userId = 7;
 
-    expect(
-      registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
-    ).not.toHaveBeenCalled();
-  });
+//     jest.spyOn(programRepository, 'findByIdOrFail').mockResolvedValue({
+//       enableMaxPayments: true,
+//     } as any);
+//     jest
+//       .spyOn(registrationScopedRepository, 'getRegistrationsToComplete')
+//       .mockResolvedValue([] as any);
 
-  it('does nothing when there are no registrations to complete', async () => {
-    const programIdNoReg = 2;
-    const userId = 7;
+//     await service.setStatusToCompletedIfApplicable(programIdNoReg, userId);
 
-    jest.spyOn(programRepository, 'findByIdOrFail').mockResolvedValue({
-      enableMaxPayments: true,
-    } as any);
-    jest
-      .spyOn(registrationScopedRepository, 'getRegistrationsToComplete')
-      .mockResolvedValue([] as any);
+//     expect(
+//       registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
+//     ).not.toHaveBeenCalled();
+//   });
 
-    await service.setStatusToCompletedIfApplicable(programIdNoReg, userId);
+//   it('applies registration status change with template details when template is available', async () => {
+//     const programIdTemplate = 3;
+//     const userIdC = 99;
+//     const ref1 = 'ref-1';
 
-    expect(
-      registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
-    ).not.toHaveBeenCalled();
-  });
+//     jest.spyOn(programRepository, 'findByIdOrFail').mockResolvedValue({
+//       enableMaxPayments: true,
+//     } as any);
+//     jest
+//       .spyOn(registrationScopedRepository, 'getRegistrationsToComplete')
+//       .mockResolvedValue([{ referenceId: ref1 }] as any);
+//     jest
+//       .spyOn(messageTemplateService, 'isTemplateAvailable')
+//       .mockResolvedValue(true as any);
 
-  it('applies registration status change with template details when template is available', async () => {
-    const programIdTemplate = 3;
-    const userIdC = 99;
-    const ref1 = 'ref-1';
+//     await service.setStatusToCompletedIfApplicable(programIdTemplate, userIdC);
 
-    jest.spyOn(programRepository, 'findByIdOrFail').mockResolvedValue({
-      enableMaxPayments: true,
-    } as any);
-    jest
-      .spyOn(registrationScopedRepository, 'getRegistrationsToComplete')
-      .mockResolvedValue([{ referenceId: ref1 }] as any);
-    jest
-      .spyOn(messageTemplateService, 'isTemplateAvailable')
-      .mockResolvedValue(true as any);
+//     expect(
+//       registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
+//     ).toHaveBeenCalledWith(
+//       expect.objectContaining({
+//         referenceIds: [ref1],
+//         programId: programIdTemplate,
+//         registrationStatus: RegistrationStatusEnum.completed,
+//         userId: userIdC,
+//         messageContentDetails: {
+//           messageTemplateKey: RegistrationStatusEnum.completed,
+//           messageContentType: MessageContentType.completed,
+//           message: '',
+//         },
+//       }),
+//     );
+//   });
 
-    await service.setStatusToCompletedIfApplicable(programIdTemplate, userIdC);
+//   it('applies registration status change with empty messageContentDetails when template is not available', async () => {
+//     const programIdNoTemplate = 4;
+//     const userIdD = 100;
+//     const ref2 = 'ref-2';
 
-    expect(
-      registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
-    ).toHaveBeenCalledWith(
-      expect.objectContaining({
-        referenceIds: [ref1],
-        programId: programIdTemplate,
-        registrationStatus: RegistrationStatusEnum.completed,
-        userId: userIdC,
-        messageContentDetails: {
-          messageTemplateKey: RegistrationStatusEnum.completed,
-          messageContentType: MessageContentType.completed,
-          message: '',
-        },
-      }),
-    );
-  });
+//     jest.spyOn(programRepository, 'findByIdOrFail').mockResolvedValue({
+//       enableMaxPayments: true,
+//     } as any);
+//     jest
+//       .spyOn(registrationScopedRepository, 'getRegistrationsToComplete')
+//       .mockResolvedValue([{ referenceId: ref2 }] as any);
+//     jest
+//       .spyOn(messageTemplateService, 'isTemplateAvailable')
+//       .mockResolvedValue(false as any);
 
-  it('applies registration status change with empty messageContentDetails when template is not available', async () => {
-    const programIdNoTemplate = 4;
-    const userIdD = 100;
-    const ref2 = 'ref-2';
+//     await service.setStatusToCompletedIfApplicable(
+//       programIdNoTemplate,
+//       userIdD,
+//     );
 
-    jest.spyOn(programRepository, 'findByIdOrFail').mockResolvedValue({
-      enableMaxPayments: true,
-    } as any);
-    jest
-      .spyOn(registrationScopedRepository, 'getRegistrationsToComplete')
-      .mockResolvedValue([{ referenceId: ref2 }] as any);
-    jest
-      .spyOn(messageTemplateService, 'isTemplateAvailable')
-      .mockResolvedValue(false as any);
-
-    await service.setStatusToCompletedIfApplicable(
-      programIdNoTemplate,
-      userIdD,
-    );
-
-    expect(
-      registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
-    ).toHaveBeenCalledWith(
-      expect.objectContaining({
-        referenceIds: [ref2],
-        programId: programIdNoTemplate,
-        registrationStatus: RegistrationStatusEnum.completed,
-        userId: userIdD,
-        messageContentDetails: {},
-      }),
-    );
-  });
-});
+//     expect(
+//       registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
+//     ).toHaveBeenCalledWith(
+//       expect.objectContaining({
+//         referenceIds: [ref2],
+//         programId: programIdNoTemplate,
+//         registrationStatus: RegistrationStatusEnum.completed,
+//         userId: userIdD,
+//         messageContentDetails: {},
+//       }),
+//     );
+//   });
+// });
