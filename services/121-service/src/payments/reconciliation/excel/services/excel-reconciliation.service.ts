@@ -12,6 +12,7 @@ import { ExcelReconciliationValidationService } from '@121-service/src/payments/
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -261,6 +262,7 @@ export class ExcelReconciliationService {
       newTransactionStatus: transactionStatus,
       transactionIds: transactionIdsToUpdate,
       description: TransactionEventDescription.excelReconciliationFileUpload,
+      type: TransactionEventType.processingStep,
       userId,
       programFspConfigurationIdMap,
       errorMessages,

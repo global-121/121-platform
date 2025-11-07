@@ -105,6 +105,7 @@ export class TransactionsService {
     newTransactionStatus,
     transactionIds,
     description,
+    type,
     userId,
     programFspConfigurationIdMap,
     errorMessages,
@@ -112,6 +113,7 @@ export class TransactionsService {
     newTransactionStatus: TransactionStatusEnum;
     transactionIds: number[];
     description: TransactionEventDescription;
+    type: TransactionEventType;
     userId: number;
     programFspConfigurationIdMap: Map<number, number>;
     errorMessages?: Map<number, string>;
@@ -126,7 +128,7 @@ export class TransactionsService {
       transactionIds,
       programFspConfigurationIdMap,
       userId,
-      type: TransactionEventType.processingStep,
+      type,
       description,
       isSuccessfullyCompleted: eventsAreSuccessful,
       errorMessages: errorMessages ?? undefined,
