@@ -1,5 +1,6 @@
 export enum TransactionStatusEnum {
-  created = 'created',
+  pendingApproval = 'pendingApproval',
+  approved = 'approved',
   success = 'success',
   waiting = 'waiting',
   error = 'error',

@@ -1,5 +1,6 @@
 export enum TransactionEventDescription {
   created = 'Transfer created', // 'transfer' to align with front-end naming
+  approved = 'Transfer approved',
   initiated = 'Transfer started',
   retry = 'Transfer retried',
   // IMPORTANT: all descriptions below should be phrased generically, so they can be suffixed with either "succeeded" or "failed"

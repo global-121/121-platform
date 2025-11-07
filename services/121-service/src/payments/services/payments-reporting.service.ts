@@ -92,6 +92,7 @@ export class PaymentsReportingService {
         row.totalTransferValue,
       );
     }
+
     return {
       [TransactionStatusEnum.success]: totalTransferValuePerStatus[
         TransactionStatusEnum.success
@@ -110,8 +111,14 @@ export class PaymentsReportingService {
         count: 0,
         transferValue: 0,
       },
-      [TransactionStatusEnum.created]: totalTransferValuePerStatus[
-        TransactionStatusEnum.created
+      [TransactionStatusEnum.pendingApproval]: totalTransferValuePerStatus[
+        TransactionStatusEnum.pendingApproval
+      ] || {
+        count: 0,
+        transferValue: 0,
+      },
+      [TransactionStatusEnum.approved]: totalTransferValuePerStatus[
+        TransactionStatusEnum.approved
       ] || {
         count: 0,
         transferValue: 0,
