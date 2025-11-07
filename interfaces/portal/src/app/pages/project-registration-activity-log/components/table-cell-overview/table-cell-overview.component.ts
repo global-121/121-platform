@@ -126,7 +126,7 @@ export class TableCellOverviewComponent
         projectId: this.context().projectId(),
         requiredPermissions: [
           PermissionEnum.PaymentREAD,
-          PermissionEnum.PaymentCREATE,
+          PermissionEnum.PaymentUPDATE,
           PermissionEnum.PaymentTransactionREAD,
         ],
       })
