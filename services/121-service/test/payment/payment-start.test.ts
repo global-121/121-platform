@@ -279,7 +279,6 @@ describe('Payment start', () => {
     };
     const registrations = [registrationScopeKisumu, registrationScopeTurkana];
     await seedIncludedRegistrations(registrations, programId, accessToken);
-
     // create payment by admin-user with full scope
     const createPaymentResponse = await createPayment({
       programId,
@@ -348,7 +347,6 @@ describe('Payment start', () => {
       accessToken,
       maxWaitTimeMs: 20_000,
     });
-
     // get all transactions to assert only Kisumu one was started
     const getAllTransactionsResponseEnd = await getTransactions({
       programId,
