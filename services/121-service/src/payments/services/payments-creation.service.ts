@@ -68,9 +68,7 @@ export class PaymentsCreationService {
           transferValue,
           query,
         });
-      if (!transferValue) {
-        return bulkActionResultPaymentDto;
-      }
+
       if (registrationsForPayment.length < 1) {
         throw new HttpException(
           'No registrations found to create payment for',
@@ -78,7 +76,7 @@ export class PaymentsCreationService {
         );
       }
 
-      if (dryRun) {
+      if (dryRun || !transferValue) {
         return bulkActionResultPaymentDto;
       }
 

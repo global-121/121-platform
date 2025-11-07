@@ -1,0 +1,30 @@
+<p-button
+  label="Start payment"
+  i18n-label
+  (click)="openStartPaymentDialog()"
+  icon="pi pi-send"
+  [iconPos]="rtlHelper.createPosition('start')()"
+  rounded
+></p-button>
+
+<!-- TODO: don't use form-dialog for something that doesn't need input -->
+<app-form-dialog
+  #startPaymentDialog
+  header="Start payment"
+  i18n-header
+  headerIcon="pi pi-send"
+  [mutation]="startPaymentMutation"
+  [mutationData]="undefined"
+  proceedLabel="Start payment"
+  i18n-proceedLabel
+>
+  <p>
+    <span i18n
+      >Click start payment to initiate the payment through your FSP(s).</span
+    >
+  </p>
+  <app-data-list
+    [data]="dataList()"
+    [forceOneColumn]="true"
+  />
+</app-form-dialog>

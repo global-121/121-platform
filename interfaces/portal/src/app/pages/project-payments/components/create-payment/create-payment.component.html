@@ -56,7 +56,11 @@
         <p i18n>Review payment summary and follow the next steps:</p>
         <ol class="mt-2 list-decimal ps-6">
           <li i18n>
-            Click start payment, this will direct you to the payment page.
+            Click create payment, this will direct you to the payment page.
+          </li>
+          <li i18n>
+            Click start payment, or make sure someone with the right permissions
+            does so.
           </li>
           <li i18n>
             Export the FSP instructions from the payment page. This is only
@@ -71,7 +75,7 @@
           </li>
         </ol>
       } @else {
-        <p i18n>Review summary and click start payment.</p>
+        <p i18n>Review summary and click create payment.</p>
       }
       <p-card class="relative mt-5 block [&_.p-card-body]:py-2">
         <app-data-list [data]="paymentSummaryData()" />

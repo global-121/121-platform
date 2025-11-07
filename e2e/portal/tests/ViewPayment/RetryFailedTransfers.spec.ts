@@ -41,6 +41,7 @@ test('[32300] Retry failed transfers', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = NLRCProgram.titlePortal.en;
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
+  const paymentPageUrl = `/en-GB/project/${programIdOCW}/payments/1`;
 
   await test.step('Navigate to Program payments', async () => {
     await paymentsPage.selectProgram(projectTitle);
@@ -49,17 +50,19 @@ test('[32300] Retry failed transfers', async ({ page }) => {
   });
 
   await test.step('Do payment', async () => {
-    await paymentsPage.createPayment();
-    await paymentsPage.startPayment();
-    // Assert redirection to payment overview page
-    await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
-    );
+    await paymentsPage.createPayment({});
+    await page.waitForURL((url) => url.pathname.startsWith(paymentPageUrl));
+    await paymentPage.startPayment();
+
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
   await test.step('Check presence of retry button', async () => {
+    await paymentPage.waitForPaymentToComplete();
+    await page.goto(paymentPageUrl, {
+      waitUntil: 'networkidle',
+    });
     await paymentPage.validateRetryFailedTransfersButtonToBeVisible();
   });
 

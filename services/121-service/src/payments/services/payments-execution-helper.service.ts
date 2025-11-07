@@ -29,10 +29,9 @@ export class PaymentsExecutionHelperService {
     programId: number;
     userId: number;
   }): Promise<void> {
-    await this.registrationScopedRepository.increasePaymentCountByOne(
+    await this.registrationScopedRepository.increasePaymentCountByOne({
       registrationIds,
-      2000,
-    );
+    });
 
     await this.setStatusToCompletedIfApplicable(programId, userId);
   }
@@ -50,7 +49,6 @@ export class PaymentsExecutionHelperService {
     if (!program.enableMaxPayments) {
       return;
     }
-
     const registrationsToComplete =
       await this.registrationScopedRepository.getRegistrationsToComplete(
         programId,
