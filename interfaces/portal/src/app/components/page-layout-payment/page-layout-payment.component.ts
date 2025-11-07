@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -17,7 +17,6 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FspDto } from '@121-service/src/fsps/fsp.dto';
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
-import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
@@ -41,7 +40,6 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   imports: [
     PageLayoutComponent,
     CardModule,
-    DecimalPipe,
     ButtonModule,
     MetricTileComponent,
     ProjectPaymentChartComponent,
@@ -125,6 +123,21 @@ export class PageLayoutPaymentComponent {
   readonly paymentTitle = computed(
     () => $localize`Payment` + ' ' + this.paymentDate(),
   );
+
+  readonly totalRegistrations = computed(() => {
+    if (!this.payment.isSuccess()) {
+      return '-';
+    }
+
+    const totalRegistrations =
+      this.payment.data().failed.count +
+      this.payment.data().success.count +
+      this.payment.data().waiting.count +
+      this.payment.data().pendingApproval.count +
+      this.payment.data().approved.count;
+
+    return totalRegistrations.toString();
+  });
 
   readonly totalPaymentAmount = computed(() => {
     if (!this.payment.isSuccess()) {
@@ -228,17 +241,15 @@ export class PageLayoutPaymentComponent {
     );
   });
 
-  readonly showStartPaymentButton = computed<boolean>(() => {
-    if (!this.transactions.isSuccess()) {
+  readonly showStartPaymentButton = computed<boolean | undefined>(() => {
+    if (!this.payment.isSuccess()) {
       return false;
     }
 
-    return this.transactions
-      .data()
-      .some(
-        (transaction) =>
-          transaction.status === TransactionStatusEnum.pendingApproval,
-      );
+    return (
+      this.payment.data().pendingApproval.count > 0 &&
+      !this.isPaymentInProgress()
+    );
   });
 
   readonly canStartPayment = computed(() =>
