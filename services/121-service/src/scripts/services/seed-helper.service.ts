@@ -231,7 +231,7 @@ export class SeedHelperService {
           await this.assignAidworker(
             scopedUser.id,
             program.id,
-            [DefaultUserRole.FinanceManager],
+            [DefaultUserRole.CvaManager],
             debugScopeUser,
           );
         }
