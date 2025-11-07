@@ -2003,6 +2003,9 @@
       <trans-unit id="9102963095355753902" datatype="html">
         <source>Slovak</source>
       </trans-unit>
+      <trans-unit id="page-title-project-project-settings" datatype="html">
+        <source>Project settings</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
