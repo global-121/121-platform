@@ -30,6 +30,7 @@ function createMockTransaction(
     registrationProgramId: 2,
     registrationId: 3,
     registrationStatus: RegistrationStatusEnum.included,
+    registrationScope: 'some-scope',
     registrationReferenceId: referenceId,
   };
 }
