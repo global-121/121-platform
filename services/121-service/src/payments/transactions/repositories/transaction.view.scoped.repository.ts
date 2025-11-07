@@ -115,6 +115,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       registrationId: number;
       status: TransactionStatusEnum;
       registrationStatus: RegistrationStatusEnum;
+      registrationScope: string;
       amount: number;
       errorMessage: string | null;
       programFspConfigurationName: string;
@@ -131,6 +132,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
         'r.referenceId AS "registrationReferenceId"',
         'r.id AS "registrationId"',
         'r.registrationStatus AS "registrationStatus"',
+        'r.scope AS "registrationScope"',
         'transaction.status AS "status"',
         'transaction.transferValue AS "amount"',
         'transaction.errorMessage AS "errorMessage"',

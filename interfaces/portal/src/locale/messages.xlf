@@ -2036,6 +2036,9 @@
       <trans-unit id="transaction-status-approved" datatype="html">
         <source>Approved</source>
       </trans-unit>
+      <trans-unit id="833755501463008115" datatype="html">
+        <source>Registration Scope</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
