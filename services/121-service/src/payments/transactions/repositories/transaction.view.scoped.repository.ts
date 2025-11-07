@@ -260,7 +260,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       .getRawMany();
   }
 
-  public async getCreatedTransactionsOfIncludedRegistrations({
+  public async getTransactionsPendingApproval({
     programId,
     paymentId,
   }: {
@@ -269,12 +269,14 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
   }): Promise<TransactionViewEntity[]> {
     return this.find({
       where: {
-        paymentId: Equal(paymentId),
-        status: Equal(TransactionStatusEnum.pendingApproval),
-        registration: {
+        payment: {
+          id: Equal(paymentId),
           programId: Equal(programId),
-          registrationStatus: Equal(RegistrationStatusEnum.included),
         },
+        status: Equal(TransactionStatusEnum.pendingApproval),
+      },
+      relations: {
+        registration: true,
       },
     });
   }

@@ -3,12 +3,13 @@ import { HttpStatus } from '@nestjs/common';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  createAndStartPayment,
   createPayment,
   getPaymentEvents,
   getTransactions,
+  retryPayment,
   startPayment,
   waitForPaymentNotInProgress,
   waitForPaymentTransactionsToComplete,
@@ -21,6 +22,7 @@ import {
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
+  getAccessTokenScoped,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
@@ -163,7 +165,7 @@ describe('Payment start', () => {
       });
     });
 
-    it('should not start transactions of non-included registrations', async () => {
+    it('should fail transactions of non-included registrations', async () => {
       // Arrange > beforeEach
 
       // Act
@@ -185,18 +187,19 @@ describe('Payment start', () => {
         accessToken,
       });
       const transactions = getTransactionsResponse.body;
-      const unstartedTransactions = transactions.filter(
-        (t: any) => t.status === TransactionStatusEnum.pendingApproval,
-      );
       const startedTransactions = transactions.filter(
         (t: any) => t.status !== TransactionStatusEnum.pendingApproval,
       );
+      const failedTransactions = transactions.filter(
+        (t: any) => t.status === TransactionStatusEnum.error,
+      );
 
-      expect(unstartedTransactions.length).toBe(1);
-      expect(startedTransactions.length).toBe(1);
+      expect(startedTransactions.length).toBe(2);
+      expect(failedTransactions.length).toBe(1);
+      expect(failedTransactions[0].errorMessage).toMatchSnapshot();
     });
 
-    it('should facilitate 2nd payment start when "pendingApproval" transactions present', async () => {
+    it('should successfully retry failed transactions after being included again', async () => {
       // Arrange > beforeEach
       // start first payment
       await startPayment({
@@ -220,7 +223,7 @@ describe('Payment start', () => {
       });
 
       // Act - Start payment again
-      const startPaymentResponse = await startPayment({
+      const retryPaymentResponse = await retryPayment({
         programId,
         paymentId,
         accessToken,
@@ -235,7 +238,7 @@ describe('Payment start', () => {
       });
 
       // Assert
-      expect(startPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(retryPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
 
       const getTransactionsResponse = await getTransactions({
         programId,
@@ -243,56 +246,115 @@ describe('Payment start', () => {
         accessToken,
       });
       const transactions = getTransactionsResponse.body;
-      const startedTransactions = transactions.filter(
-        (t: any) => t.status !== TransactionStatusEnum.pendingApproval,
+      const successTransactions = transactions.filter(
+        (t: any) => t.status === TransactionStatusEnum.success,
       );
-      expect(startedTransactions.length).toBe(2);
-
-      const paymentEvents = await getPaymentEvents({
-        programId,
-        paymentId,
-        accessToken,
-      });
-      const paymentStartedEvents = paymentEvents.body.data.filter(
-        (e) => e.type === PaymentEvent.started,
-      );
-      expect(paymentStartedEvents.length).toBe(2); // two starts
+      expect(successTransactions.length).toBe(2);
     });
   });
 
-  it('should not facilitate 2nd payment when no created transactions for included registrations left', async () => {
+  it('should only start payment for scope of requesting user', async () => {
     // Arrange
-    await seedIncludedRegistrations(
-      [registrationPV5, registrationPV6],
-      programId,
-      accessToken,
-    );
-    const doPaymentResponse = await createAndStartPayment({
+    const registrationScopeKisumu = {
+      ...registrationPV5,
+      scope: DebugScope.Kisumu,
+    };
+    const registrationScopeTurkana = {
+      ...registrationPV6,
+      scope: DebugScope.Turkana,
+    };
+    const registrations = [registrationScopeKisumu, registrationScopeTurkana];
+    await seedIncludedRegistrations(registrations, programId, accessToken);
+    // create payment by admin-user with full scope
+    const createPaymentResponse = await createPayment({
       programId,
       transferValue,
-      referenceIds: [registrationPV5, registrationPV6].map(
-        (r) => r.referenceId,
-      ),
+      referenceIds: registrations.map((r) => r.referenceId),
       accessToken,
     });
     await waitForPaymentTransactionsToComplete({
       programId,
-      paymentReferenceIds: [registrationPV5, registrationPV6].map(
-        (r) => r.referenceId,
-      ),
+      paymentReferenceIds: registrations.map((r) => r.referenceId),
       accessToken,
-      maxWaitTimeMs: 10_000,
+      maxWaitTimeMs: 20_000,
+      completeStatusses: [TransactionStatusEnum.pendingApproval],
     });
-    const paymentId = doPaymentResponse.body.id;
+    const paymentId = createPaymentResponse.body.id;
 
-    // Act - try to start payment again
-    const startPaymentResponse2 = await startPayment({
+    const accessTokenKisumu = await getAccessTokenScoped(DebugScope.Kisumu);
+    const accessTokenTurkana = await getAccessTokenScoped(DebugScope.Turkana);
+
+    // Start payment with Kisumu-scoped user
+    const startPaymentResponseKisumu = await startPayment({
+      programId,
+      paymentId,
+      accessToken: accessTokenKisumu,
+    });
+    await waitForPaymentTransactionsToComplete({
+      programId,
+      paymentReferenceIds: [registrationScopeKisumu.referenceId],
+      accessToken,
+      maxWaitTimeMs: 5_000,
+    });
+    // get all transactions to assert only Kisumu one was started
+    const getAllTransactionsResponse = await getTransactions({
       programId,
       paymentId,
       accessToken,
     });
+    const allTransactions = getAllTransactionsResponse.body;
+    const startedTransactions = allTransactions.filter(
+      (t: any) => t.status !== TransactionStatusEnum.pendingApproval,
+    );
 
-    // Assert
-    expect(startPaymentResponse2.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(startPaymentResponseKisumu.status).toBe(HttpStatus.ACCEPTED);
+    expect(startedTransactions.length).toBe(1);
+
+    const startPaymentResponseKisumuSecondAttempt = await startPayment({
+      programId,
+      paymentId,
+      accessToken: accessTokenKisumu,
+    });
+
+    expect(startPaymentResponseKisumuSecondAttempt.status).toBe(
+      HttpStatus.BAD_REQUEST,
+    );
+
+    // Start payment with Turkana-scoped user
+    const startPaymentResponseTurkana = await startPayment({
+      programId,
+      paymentId,
+      accessToken: accessTokenTurkana,
+    });
+    await waitForPaymentTransactionsToComplete({
+      programId,
+      paymentReferenceIds: [registrationScopeTurkana.referenceId],
+      accessToken,
+      maxWaitTimeMs: 20_000,
+    });
+    // get all transactions to assert only Kisumu one was started
+    const getAllTransactionsResponseEnd = await getTransactions({
+      programId,
+      paymentId,
+      accessToken,
+    });
+    const allTransactionsEnd = getAllTransactionsResponseEnd.body;
+    const startedTransactionsEnd = allTransactionsEnd.filter(
+      (t: any) => t.status !== TransactionStatusEnum.pendingApproval,
+    );
+
+    expect(startPaymentResponseTurkana.status).toBe(HttpStatus.ACCEPTED);
+    expect(startedTransactionsEnd.length).toBe(2);
+
+    // Assert 2 payment started events
+    const paymentEvents = await getPaymentEvents({
+      programId,
+      paymentId,
+      accessToken,
+    });
+    const paymentStartedEvents = paymentEvents.body.data.filter(
+      (e) => e.type === PaymentEvent.started,
+    );
+    expect(paymentStartedEvents.length).toBe(2);
   });
 });
