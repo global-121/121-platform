@@ -79,7 +79,7 @@ export class TransactionEventsService {
     type: TransactionEventType;
     description: TransactionEventDescription;
     isSuccessfullyCompleted: boolean;
-    errorMessages: Map<number, string>;
+    errorMessages?: Map<number, string>;
   }): Promise<void> {
     const transactionEvents = transactionIds.map((transactionId) =>
       this.transactionEventScopedRepository.create({
@@ -89,7 +89,9 @@ export class TransactionEventsService {
         type,
         description,
         isSuccessfullyCompleted,
-        errorMessage: errorMessages.get(transactionId),
+        errorMessage: errorMessages
+          ? errorMessages.get(transactionId)
+          : undefined,
       }),
     );
 

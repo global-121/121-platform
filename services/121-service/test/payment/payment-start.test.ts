@@ -58,7 +58,7 @@ describe('Payment start', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 20_000,
-      completeStatusses: [TransactionStatusEnum.created],
+      completeStatusses: [TransactionStatusEnum.pendingApproval],
     });
 
     // Assert 1 - before starting payment
@@ -84,7 +84,7 @@ describe('Payment start', () => {
       paymentReferenceIds.length,
     );
     expect(transactionsBeforeStart[0].status).toBe(
-      TransactionStatusEnum.created,
+      TransactionStatusEnum.pendingApproval,
     );
     expect(registrationBeforeStart!.status).toBe(
       RegistrationStatusEnum.included,
@@ -151,7 +151,7 @@ describe('Payment start', () => {
         paymentReferenceIds: registrations.map((r) => r.referenceId),
         accessToken,
         maxWaitTimeMs: 20_000,
-        completeStatusses: [TransactionStatusEnum.created],
+        completeStatusses: [TransactionStatusEnum.pendingApproval],
       });
 
       // Make one registration non-included
@@ -186,17 +186,17 @@ describe('Payment start', () => {
       });
       const transactions = getTransactionsResponse.body;
       const unstartedTransactions = transactions.filter(
-        (t: any) => t.status === TransactionStatusEnum.created,
+        (t: any) => t.status === TransactionStatusEnum.pendingApproval,
       );
       const startedTransactions = transactions.filter(
-        (t: any) => t.status !== TransactionStatusEnum.created,
+        (t: any) => t.status !== TransactionStatusEnum.pendingApproval,
       );
 
       expect(unstartedTransactions.length).toBe(1);
       expect(startedTransactions.length).toBe(1);
     });
 
-    it('should facilitate 2nd payment start when created transactions present', async () => {
+    it('should facilitate 2nd payment start when "pendingApproval" transactions present', async () => {
       // Arrange > beforeEach
       // start first payment
       await startPayment({
@@ -244,7 +244,7 @@ describe('Payment start', () => {
       });
       const transactions = getTransactionsResponse.body;
       const startedTransactions = transactions.filter(
-        (t: any) => t.status !== TransactionStatusEnum.created,
+        (t: any) => t.status !== TransactionStatusEnum.pendingApproval,
       );
       expect(startedTransactions.length).toBe(2);
 
