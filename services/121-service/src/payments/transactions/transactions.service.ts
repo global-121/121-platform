@@ -106,14 +106,14 @@ export class TransactionsService {
     transactionIds,
     description,
     userId,
-    programFspConfigurationId,
+    programFspConfigurationIdMap,
     errorMessages,
   }: {
     newTransactionStatus: TransactionStatusEnum;
     transactionIds: number[];
     description: TransactionEventDescription;
     userId: number;
-    programFspConfigurationId: number;
+    programFspConfigurationIdMap: Map<number, number>;
     errorMessages?: Map<number, string>;
   }): Promise<void> {
     await this.transactionScopedRepository.update(transactionIds, {
@@ -124,7 +124,7 @@ export class TransactionsService {
 
     await this.transactionEventsService.createEventsBulk({
       transactionIds,
-      programFspConfigurationId,
+      programFspConfigurationIdMap,
       userId,
       type: TransactionEventType.processingStep,
       description,
