@@ -67,7 +67,8 @@ export const getChipDataByTransactionStatus = (
     value: status,
     labels: TRANSACTION_STATUS_LABELS,
     chipVariants: {
-      [TransactionStatusEnum.created]: 'grey',
+      [TransactionStatusEnum.pendingApproval]: 'orange',
+      [TransactionStatusEnum.approved]: 'purple',
       [TransactionStatusEnum.waiting]: 'blue',
       [TransactionStatusEnum.error]: 'red',
       [TransactionStatusEnum.success]: 'green',

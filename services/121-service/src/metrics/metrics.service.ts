@@ -332,7 +332,11 @@ export class MetricsService {
       .leftJoin('transaction.payment', 'p')
       .andWhere({
         status: Not(
-          In([TransactionStatusEnum.error, TransactionStatusEnum.created]),
+          In([
+            TransactionStatusEnum.error,
+            TransactionStatusEnum.pendingApproval,
+            TransactionStatusEnum.approved,
+          ]),
         ),
       })
       .andWhere('p."programId" = :programId', { programId })
@@ -514,7 +518,7 @@ export class MetricsService {
       res[month].success += Number(aggregate.success.transferValue);
       res[month].waiting += Number(aggregate.waiting.transferValue);
       res[month].failed += Number(aggregate.failed.transferValue);
-      res[month].created += Number(aggregate.created.transferValue);
+      res[month].created += Number(aggregate.pendingApproval.transferValue);
     }
     return res;
   }

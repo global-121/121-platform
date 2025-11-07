@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -907,9 +907,6 @@
       <trans-unit id="3545183022492788567" datatype="html">
         <source>A payment is currently in progress. Please wait until it has finished.</source>
       </trans-unit>
-      <trans-unit id="4207014437413577720" datatype="html">
-        <source>Start payment</source>
-      </trans-unit>
       <trans-unit id="4746344653872488527" datatype="html">
         <source>Export payment list</source>
       </trans-unit>
@@ -1782,7 +1779,7 @@
         <source>Transfer <x equiv-text="this.paymentDate()" id="PH"/> - transfer history</source>
       </trans-unit>
       <trans-unit id="transaction-status-created" datatype="html">
-        <source>Created</source>
+        <source>Pending approval</source>
       </trans-unit>
       <trans-unit id="3578644052206125685" datatype="html">
         <source>Ukrainian</source>
@@ -2003,9 +2000,6 @@
       <trans-unit id="7392987714730903698" datatype="html">
         <source>registrations</source>
       </trans-unit>
-      <trans-unit id="4605701201545136761" datatype="html">
-        <source>Click start payment to initiate the payment through your FSP(s).</source>
-      </trans-unit>
       <trans-unit id="718304168195158236" datatype="html">
         <source>Total registrations</source>
       </trans-unit>
@@ -2029,6 +2023,18 @@
       </trans-unit>
       <trans-unit id="page-title-project-project-settings|trim" datatype="html">
         <source>Project settings</source>
+      </trans-unit>
+      <trans-unit id="6191781315346853958" datatype="html">
+        <source>Click approve and start payment to initiate the payment through your FSP(s).</source>
+      </trans-unit>
+      <trans-unit id="7179709347265925601" datatype="html">
+        <source>Approve and start payment</source>
+      </trans-unit>
+      <trans-unit id="payment-event-log-item-type-approved" datatype="html">
+        <source>Approved</source>
+      </trans-unit>
+      <trans-unit id="transaction-status-approved" datatype="html">
+        <source>Approved</source>
       </trans-unit>
     </body>
   </file>

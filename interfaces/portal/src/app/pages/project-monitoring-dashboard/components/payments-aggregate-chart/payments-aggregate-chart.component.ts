@@ -88,6 +88,24 @@ export class PaymentsAggregateChartComponent {
     labels: this.labels(),
     datasets: [
       {
+        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.pendingApproval],
+        data: this.data().map(
+          (payment) =>
+            payment[TransactionStatusEnum.pendingApproval][
+              this.aggregateType()
+            ],
+        ),
+        backgroundColor: tailwindConfig.theme.colors.orange[500],
+      },
+      {
+        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.approved],
+        data: this.data().map(
+          (payment) =>
+            payment[TransactionStatusEnum.approved][this.aggregateType()],
+        ),
+        backgroundColor: tailwindConfig.theme.colors.purple[500],
+      },
+      {
         label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.error],
         data: this.data().map(
           // TODO: once payments-reporting.services.ts is using enums, use TransactionStatusEnum.error here instead of 'failed'
@@ -110,14 +128,6 @@ export class PaymentsAggregateChartComponent {
             payment[TransactionStatusEnum.waiting][this.aggregateType()],
         ),
         backgroundColor: tailwindConfig.theme.colors.yellow[500],
-      },
-      {
-        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.created],
-        data: this.data().map(
-          (payment) =>
-            payment[TransactionStatusEnum.created][this.aggregateType()],
-        ),
-        backgroundColor: tailwindConfig.theme.colors.grey[500],
       },
     ],
   }));

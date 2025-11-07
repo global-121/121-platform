@@ -59,7 +59,7 @@ describe('Get program stats', () => {
       paymentReferenceIds: [registrationPV8.referenceId],
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: [TransactionStatusEnum.created],
+      completeStatusses: [TransactionStatusEnum.pendingApproval],
       paymentId,
     });
 
