@@ -249,6 +249,7 @@ export class PageLayoutPaymentComponent {
       ],
     }),
   );
+  
   isPaymentInProgress(): boolean | undefined {
     return (
       this.paymentStatus.isPending() ||
