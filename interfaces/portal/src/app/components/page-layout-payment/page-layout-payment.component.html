@@ -11,7 +11,7 @@
       <h1 class="me-auto">
         {{ paymentTitle() }}
       </h1>
-      @if (showStartPaymentButton()) {
+      @if (showStartPaymentButton() && canStartPayment()) {
         <app-start-payment
           [projectId]="projectId()"
           [paymentId]="paymentId()"
