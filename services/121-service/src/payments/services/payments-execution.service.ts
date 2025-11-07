@@ -84,7 +84,7 @@ export class PaymentsExecutionService {
         type: PaymentEvent.started,
       });
 
-      // update all transactions to 'approved'
+      // update all "included" transactions to 'approved' ..
       const programFspConfigurationIdMap = new Map<number, number>(
         transactionsPendingApproval.map((item) => [
           item.id,
@@ -95,7 +95,7 @@ export class PaymentsExecutionService {
         (t) =>
           t.registration.registrationStatus === RegistrationStatusEnum.included,
       );
-      if (transactionsToStart.length === 0) {
+      if (transactionsToStart.length > 0) {
         await this.transactionsService.saveTransactionProgressBulk({
           newTransactionStatus: TransactionStatusEnum.approved,
           transactionIds: transactionsToStart.map((t) => t.id),
@@ -106,6 +106,7 @@ export class PaymentsExecutionService {
         });
       }
 
+      // .. and all "non-included" transactions to failed
       const transactionsToFail = transactionsPendingApproval.filter(
         (t) =>
           t.registration.registrationStatus !== RegistrationStatusEnum.included,
@@ -138,6 +139,7 @@ export class PaymentsExecutionService {
         },
       );
 
+      // start the queue for all approved transactions
       await this.createTransactionJobs({
         programId,
         transactionIds: transactionsToStart.map((t) => t.id),
