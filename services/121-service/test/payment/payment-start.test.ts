@@ -29,7 +29,7 @@ import {
   registrationPV6,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-describe('Start and create a payment separately', () => {
+describe('Payment start', () => {
   let accessToken: string;
   const programId = programIdPV;
   const transferValue = 25;
@@ -133,7 +133,7 @@ describe('Start and create a payment separately', () => {
     expect(registrationAfterStart!.paymentCount).toBe(1);
   });
 
-  describe('payment start', () => {
+  describe('with included and non-included registrations', () => {
     let paymentId: number;
     beforeEach(async () => {
       const registrations = [registrationPV5, registrationPV6];
@@ -177,8 +177,6 @@ describe('Start and create a payment separately', () => {
         programId,
         accessToken,
       });
-
-      // await waitFor(1_000); /
 
       // Assert
       const getTransactionsResponse = await getTransactions({
