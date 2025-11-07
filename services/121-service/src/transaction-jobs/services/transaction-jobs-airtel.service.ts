@@ -9,7 +9,6 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
-import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
 
@@ -19,7 +18,6 @@ export class TransactionJobsAirtelService {
     private readonly airtelService: AirtelService,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
     private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
-    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async processAirtelTransactionJob(
@@ -35,6 +33,8 @@ export class TransactionJobsAirtelService {
       transactionId: transactionJob.transactionId,
       userId: transactionJob.userId,
       programFspConfigurationId: transactionJob.programFspConfigurationId,
+      programId: transactionJob.programId,
+      referenceId: transactionJob.referenceId,
     };
     await this.transactionJobsHelperService.createInitiatedOrRetryTransactionEvent(
       {
@@ -48,12 +48,14 @@ export class TransactionJobsAirtelService {
       status: TransactionStatusEnum,
       errorText?: string,
     ) => {
-      await this.transactionsService.saveTransactionProgress({
-        context: transactionEventContext,
-        newTransactionStatus: status,
-        errorMessage: errorText,
-        description: TransactionEventDescription.airtelRequestSent,
-      });
+      await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRelatedData(
+        {
+          context: transactionEventContext,
+          newTransactionStatus: status,
+          errorMessage: errorText,
+          description: TransactionEventDescription.airtelRequestSent,
+        },
+      );
     };
 
     /*

@@ -345,35 +345,15 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
   }
 
   public async increasePaymentCountByOne({
-    registrationIds,
+    referenceId,
   }: {
-    registrationIds: number[];
+    referenceId: string;
   }): Promise<void> {
-    if (registrationIds.length === 0) {
-      return;
-    }
-
     await this.repository
       .createQueryBuilder('registration')
       .update()
       .set({ paymentCount: () => '"paymentCount" + 1' })
-      .andWhere('registration.id = ANY(:registrationIds)', {
-        registrationIds,
-      })
+      .andWhere({ referenceId: Equal(referenceId) })
       .execute();
-  }
-
-  public async getRegistrationsToComplete(
-    programId: number,
-  ): Promise<RegistrationEntity[]> {
-    const registrationsToComplete = await this.repository
-      .createQueryBuilder('registration')
-      .andWhere('registration."paymentCount" >= registration."maxPayments"')
-      .andWhere('registration."registrationStatus" != :completedStatus', {
-        completedStatus: RegistrationStatusEnum.completed,
-      })
-      .andWhere('registration."programId" = :programId', { programId })
-      .getMany();
-    return registrationsToComplete;
   }
 }
