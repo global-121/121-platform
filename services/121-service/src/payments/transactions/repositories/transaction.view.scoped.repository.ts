@@ -133,6 +133,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
         'r.id AS "registrationId"',
         'r.registrationStatus AS "registrationStatus"',
         'r.scope AS "registrationScope"',
+        'program.enableScope AS "programHasScope"',
         'transaction.status AS "status"',
         'transaction.transferValue AS "amount"',
         'transaction.errorMessage AS "errorMessage"',
@@ -140,6 +141,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       ])
       .leftJoin('transaction.registration', 'r')
       .leftJoin('transaction.payment', 'p')
+      .leftJoin('p.program', 'program')
       .andWhere('p.programId = :programId', {
         programId,
       });
@@ -170,7 +172,17 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       );
     }
 
-    return query.getRawMany();
+    const transactions = await query.getRawMany();
+    // Remove programHasScope helper field and conditionally remove registrationScope
+    const programHasScope =
+      transactions.length > 0 ? transactions[0].programHasScope : false;
+    for (const row of transactions) {
+      delete row.programHasScope;
+      if (!programHasScope) {
+        delete row.registrationScope;
+      }
+    }
+    return transactions;
   }
 
   public async getTransactionJobCreationDetails(
