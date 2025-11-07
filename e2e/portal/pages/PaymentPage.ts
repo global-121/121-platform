@@ -160,14 +160,16 @@ class PaymentPage extends BasePage {
 
   async validatePaymentLogEntries(expectedNote: string): Promise<void> {
     const rows = this.paymentLogTable.locator('tbody tr');
-    await expect(rows).toHaveCount(3);
+    await expect(rows).toHaveCount(4);
 
     const noteRow = rows.filter({ hasText: expectedNote });
     const createdRow = rows.filter({ hasText: 'Created' });
+    const approvedRow = rows.filter({ hasText: 'Approved' });
     const startedRow = rows.filter({ hasText: 'Started' });
 
     await expect(noteRow).toBeVisible();
     await expect(createdRow).toBeVisible();
+    await expect(approvedRow).toBeVisible();
     await expect(startedRow).toBeVisible();
   }
 
