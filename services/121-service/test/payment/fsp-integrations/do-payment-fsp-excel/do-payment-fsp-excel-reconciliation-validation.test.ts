@@ -101,8 +101,8 @@ describe('Reconciliate excel FSP data', () => {
     });
   });
 
-  // ##TODO: fix this test as part of refactoring out actions/payment-in-progress
-  it.skip('Should throw an error when a payment is in progress', async () => {
+  // ##TODO this is still flaky
+  it('Should throw an error when a payment is in progress', async () => {
     // Arrange
     const reconciliationData = [
       {
@@ -123,7 +123,7 @@ describe('Reconciliate excel FSP data', () => {
       paymentId,
       accessToken,
       maxWaitTimeMs: 10_000,
-      completeStatusses: [TransactionStatusEnum.created],
+      completeStatusses: [TransactionStatusEnum.pendingApproval],
       paymentReferenceIds: referenceIdsWesteros,
     });
     // Do not await this call, to simulate payment in progress
