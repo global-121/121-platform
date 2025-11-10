@@ -3,14 +3,21 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class CooperativeBankOromiaMockService {
   public transaction(body: object): object {
+    console.log(
+      'Mock Cooperative Bank Oromia transaction called with body:',
+      body,
+    );
     return {
-      status: 'SUCCESS',
-      transaction_id: 'mock-transaction-id-12345',
-      amount: body['Data'].amount,
-      currency: body['Data'].currency,
-      from_account: body['Data'].from_account,
-      to_account: body['Data'].to_account,
-      description: body['Data'].description,
+      status: 'success',
+      data: {
+        transfer_id: 'txn_adb41kkwi',
+        from_account: 'acc_123456',
+        to_account: 'acc_789012',
+        amount: 100,
+        currency: 'USD',
+        status: 'completed',
+        created_at: '2025-11-10T14:05:15.746Z',
+      },
     };
   }
 }
