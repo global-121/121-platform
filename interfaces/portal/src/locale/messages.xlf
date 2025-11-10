@@ -137,23 +137,8 @@
       <trans-unit id="3284816784388197103" datatype="html">
         <source>Project not found. Please check the URL and try again.</source>
       </trans-unit>
-      <trans-unit id="table-clear-filters" datatype="html">
-        <source>Clear filters</source>
-      </trans-unit>
       <trans-unit id="table-quick-search" datatype="html">
         <source>Filter by keyword</source>
-      </trans-unit>
-      <trans-unit id="6467871397050565968" datatype="html">
-        <source>Choose option(s)</source>
-      </trans-unit>
-      <trans-unit id="3193976279273491157" datatype="html">
-        <source>Actions</source>
-      </trans-unit>
-      <trans-unit id="2236371857137398396" datatype="html">
-        <source>No results found</source>
-      </trans-unit>
-      <trans-unit id="9011868136618282915" datatype="html">
-        <source>There are no records that match the selected filters, clear some or all filters to continue.</source>
       </trans-unit>
       <trans-unit id="3871260480214506166" datatype="html">
         <source>Showing [first] to [last] of [totalRecords] records</source>
@@ -1123,12 +1108,6 @@
       <trans-unit id="37959892232763790" datatype="html">
         <source>Welcome to <x equiv-text="{{ project.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></source>
       </trans-unit>
-      <trans-unit id="11251344703259489" datatype="html">
-        <source>There are no records to display.</source>
-      </trans-unit>
-      <trans-unit id="4213825410774196775" datatype="html">
-        <source>No results</source>
-      </trans-unit>
       <trans-unit id="7585097972263982693" datatype="html">
         <source>Old FSP</source>
       </trans-unit>
@@ -1673,7 +1652,7 @@
       <trans-unit id="page-title-project-settings-team" datatype="html">
         <source>Project team</source>
       </trans-unit>
-      <trans-unit id="3737046735199959170" datatype="html">
+      <trans-unit id="page-title-project-project-settings" datatype="html">
         <source>Project settings</source>
       </trans-unit>
       <trans-unit id="5649335820714201159" datatype="html">
@@ -2000,11 +1979,35 @@
       <trans-unit id="922512355272678698" datatype="html">
         <source>Learn more about updating selected registrations in the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/>.</source>
       </trans-unit>
+      <trans-unit id="query-table--clear-filter" datatype="html">
+        <source>Clear filter</source>
+      </trans-unit>
+      <trans-unit id="query-table--clear-filters" datatype="html">
+        <source>Clear filters</source>
+      </trans-unit>
+      <trans-unit id="query-table--toggle-all" datatype="html">
+        <source>Toggle all</source>
+      </trans-unit>
+      <trans-unit id="query-table--toggle-row" datatype="html">
+        <source>Toggle row</source>
+      </trans-unit>
+      <trans-unit id="query-table--actions-column" datatype="html">
+        <source>Actions</source>
+      </trans-unit>
+      <trans-unit id="query-table--filter-multiselect-placeholder" datatype="html">
+        <source>Choose option(s)</source>
+      </trans-unit>
+      <trans-unit id="query-table--no-results" datatype="html">
+        <source>No results</source>
+      </trans-unit>
+      <trans-unit id="query-table--no-results-filters" datatype="html">
+        <source>There are no records that match the selected filters, clear some or all filters to continue.</source>
+      </trans-unit>
+      <trans-unit id="query-table--no-results-text" datatype="html">
+        <source>There are no records to display.</source>
+      </trans-unit>
       <trans-unit id="9102963095355753902" datatype="html">
         <source>Slovak</source>
-      </trans-unit>
-      <trans-unit id="page-title-project-project-settings" datatype="html">
-        <source>Project settings</source>
       </trans-unit>
     </body>
   </file>
