@@ -349,7 +349,7 @@ describe('Payment start', () => {
       maxWaitTimeMs: 20_000,
     });
 
-    // get all transactions to assert only Kisumu one was started
+    // get all transactions to assert all were started now
     const getAllTransactionsResponseEnd = await getTransactions({
       programId,
       paymentId,
