@@ -251,27 +251,32 @@ export class PageLayoutPaymentComponent {
   );
 
   readonly isPaymentApproved = computed(() => {
-    if (!this.transactions.isSuccess()) {
+    if (!this.payments.isSuccess()) {
       return false;
     }
 
-    return this.transactions
-      .data()
-      .some(
-        (transaction) => transaction.status !== TransactionStatusEnum.created,
-      );
+    const data = this.payment.data();
+
+    const failed = data?.failed.count ?? 0;
+    const success = data?.success.count ?? 0;
+    const waiting = data?.waiting.count ?? 0;
+
+    return failed + success + waiting > 0;
   });
+
   readonly statusBadgeLabel = computed(() => {
     if (!this.transactions.isSuccess()) {
       return '';
     }
 
+    // TODO: see if a payment status enum is needed
     if (this.isPaymentApproved()) {
-      return 'Approved';
+      return $localize`Approved`;
     }
 
-    return 'Pending approval';
+    return $localize`Pending approval`;
   });
+
   readonly statusBadgeColor = computed(() => {
     if (!this.transactions.isSuccess()) {
       return 'blue';
@@ -281,25 +286,25 @@ export class PageLayoutPaymentComponent {
       return 'purple';
     }
 
-    return 'yellow';
+    return 'orange';
   });
-  isPaymentInProgress(): boolean | undefined {
-    return (
+
+  readonly isPaymentInProgress = computed<boolean | undefined>(
+    () =>
       this.paymentStatus.isPending() ||
       this.transactions.isPending() ||
-      this.paymentStatus.data()?.inProgress
-    );
-  }
+      this.paymentStatus.data()?.inProgress,
+  );
 
-  chipLabel(): string | undefined {
-    return this.isPaymentInProgress()
+  readonly chipLabel = computed<string | undefined>(() =>
+    this.isPaymentInProgress()
       ? $localize`:@@inProgressChipLabel:In progress`
-      : undefined;
-  }
+      : undefined,
+  );
 
-  chipTooltip(): string | undefined {
-    return this.isPaymentInProgress()
+  readonly chipTooltip = computed<string | undefined>(() =>
+    this.isPaymentInProgress()
       ? $localize`:@@inProgressChipTooltip:The payment will be in progress while the transfers in the table below are loading.`
-      : undefined;
-  }
+      : undefined,
+  );
 }
