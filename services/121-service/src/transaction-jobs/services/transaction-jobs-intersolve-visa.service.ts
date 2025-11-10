@@ -8,8 +8,8 @@ import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
-import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { SaveTransactionProgressAndRelatedDataContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-related-data-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 
@@ -25,13 +25,14 @@ export class TransactionJobsIntersolveVisaService {
   public async processIntersolveVisaTransactionJob(
     transactionJob: IntersolveVisaTransactionJobDto,
   ): Promise<void> {
-    const transactionEventContext: TransactionEventCreationContext = {
-      transactionId: transactionJob.transactionId,
-      userId: transactionJob.userId,
-      programFspConfigurationId: transactionJob.programFspConfigurationId,
-      programId: transactionJob.programId,
-      referenceId: transactionJob.referenceId,
-    };
+    const transactionEventContext: SaveTransactionProgressAndRelatedDataContext =
+      {
+        transactionId: transactionJob.transactionId,
+        userId: transactionJob.userId,
+        programFspConfigurationId: transactionJob.programFspConfigurationId,
+        programId: transactionJob.programId,
+        referenceId: transactionJob.referenceId,
+      };
 
     await this.transactionJobsHelperService.createInitiatedOrRetryTransactionEvent(
       {

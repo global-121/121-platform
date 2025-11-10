@@ -4,7 +4,6 @@ import { UpdateResult } from 'typeorm';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
-import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { TransactionJobsSafaricomService } from '@121-service/src/transaction-jobs/services/transaction-jobs-safaricom.service';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
@@ -15,7 +14,6 @@ describe('TransactionJobsSafaricomService', () => {
   let safaricomTransferScopedRepository: SafaricomTransferScopedRepository;
   let transactionEventsScopedRepository: TransactionEventsScopedRepository;
   let transactionJobsHelperService: TransactionJobsHelperService;
-  let transactionsService: TransactionsService;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -36,7 +34,6 @@ describe('TransactionJobsSafaricomService', () => {
     transactionJobsHelperService = unitRef.get<TransactionJobsHelperService>(
       TransactionJobsHelperService,
     );
-    transactionsService = unitRef.get<TransactionsService>(TransactionsService);
 
     jest
       .spyOn(
@@ -90,7 +87,7 @@ describe('TransactionJobsSafaricomService', () => {
     );
     (safaricomService.doTransfer as jest.Mock).mockResolvedValue(undefined);
     (
-      transactionsService.saveTransactionProgress as jest.Mock
+      transactionJobsHelperService.saveTransactionProgressAndUpdateRelatedData as jest.Mock
     ).mockImplementation();
 
     await service.processSafaricomTransactionJob(transactionJob);

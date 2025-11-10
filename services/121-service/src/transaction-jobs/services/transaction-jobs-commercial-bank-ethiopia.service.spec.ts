@@ -3,7 +3,6 @@ import { TestBed } from '@automock/jest';
 import { CbeTransferScopedRepository } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.scoped.repository';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
-import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { TransactionJobsCommercialBankEthiopiaService } from '@121-service/src/transaction-jobs/services/transaction-jobs-commercial-bank-ethiopia.service';
@@ -16,7 +15,6 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
   let programFspConfigurationRepository: ProgramFspConfigurationRepository;
   let cbeTransferScopedRepository: CbeTransferScopedRepository;
   let transactionJobsHelperService: TransactionJobsHelperService;
-  let transactionsService: TransactionsService;
   let programRepository: ProgramRepository;
 
   // Shared variables
@@ -38,7 +36,6 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
     );
     cbeTransferScopedRepository = unitRef.get(CbeTransferScopedRepository);
     transactionJobsHelperService = unitRef.get(TransactionJobsHelperService);
-    transactionsService = unitRef.get(TransactionsService);
     programRepository = unitRef.get(ProgramRepository);
 
     credentials = { username: 'user', password: 'pass' };
@@ -103,7 +100,10 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
       });
 
     jest
-      .spyOn(transactionsService, 'saveTransactionProgress')
+      .spyOn(
+        transactionJobsHelperService,
+        'saveTransactionProgressAndUpdateRelatedData',
+      )
       .mockImplementation();
 
     await service.processCommercialBankEthiopiaTransactionJob(transactionJob);
@@ -148,7 +148,10 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
         errorMessage: null,
       });
     jest
-      .spyOn(transactionsService, 'saveTransactionProgress')
+      .spyOn(
+        transactionJobsHelperService,
+        'saveTransactionProgressAndUpdateRelatedData',
+      )
       .mockImplementation();
 
     await service.processCommercialBankEthiopiaTransactionJob(
