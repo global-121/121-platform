@@ -406,11 +406,12 @@ Azure App Service uses deployment slots that can cause temporary database errors
 
 ### Hotfix-release Checklist
 
-Only in rare, very specific circumstances it might be required to do a "Hotfix-release". _**Only** when_:
+Only in rare, very specific circumstances it might be required to do a "hotfix-release". For example when:
 
-- a critical issue affects 1 (or a few) instances
-- some migration-steps are already in `main`
-- new (incomplete) features, that are not yet communicated to end-users, are already in `main`
+- A new (incomplete) feature, that is not yet communicated to end-users, is already in `main`
+- A (complex) migration-script, that would require an out-of-office-hours deployment, is already in `main`
+- Another issue that would pose (too big) a risk to deploy to any of the currently running instances.  
+  Consider however, that it is also possible to _**postpone**_ the deployment of a regular release, for a specific instance.
 
 This follows a similar process to regular release + deployment, with some small changes.
 
