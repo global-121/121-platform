@@ -77,7 +77,7 @@ export class RetryTransfersDialogComponent {
         ? 'retry-transaction:single'
         : 'retry-transaction:multiple';
     this.trackingService.trackEvent({
-      category: TrackingCategory.manageRetryTransactions,
+      category: TrackingCategory.manageTransactions,
       action: TrackingAction.clickRetryTransactionButton,
       name: eventName,
       value: referenceIds.length,
@@ -94,7 +94,7 @@ export class RetryTransfersDialogComponent {
     this.referenceIdsForRetryTransfers.set(referenceIds);
     this.retryTransfersConfirmationDialog().show({
       trackingEvent: {
-        category: TrackingCategory.manageRetryTransactions,
+        category: TrackingCategory.manageTransactions,
         action: TrackingAction.clickProceedButton,
         name: eventName,
         value: referenceIds.length,
