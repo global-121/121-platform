@@ -17,9 +17,11 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FspDto } from '@121-service/src/fsps/fsp.dto';
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
+import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { MetricTileComponent } from '~/components/metric-tile/metric-tile.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { ImportReconciliationDataComponent } from '~/components/page-layout-payment/components/import-reconciliation-data/import-reconciliation-data.component';
@@ -34,9 +36,6 @@ import { projectHasFspWithExportFileIntegration } from '~/domains/project/projec
 import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
-
-import { TransactionStatusEnum } from '../../../../../../services/121-service/src/payments/transactions/enums/transaction-status.enum';
-
 @Component({
   selector: 'app-page-layout-payment',
   imports: [
@@ -51,6 +50,7 @@ import { TransactionStatusEnum } from '../../../../../../services/121-service/sr
     ImportReconciliationDataComponent,
     PaymentMenuComponent,
     StartPaymentComponent,
+    ColoredChipComponent,
   ],
   templateUrl: './page-layout-payment.component.html',
   styles: ``,
@@ -250,6 +250,39 @@ export class PageLayoutPaymentComponent {
     }),
   );
 
+  readonly isPaymentApproved = computed(() => {
+    if (!this.transactions.isSuccess()) {
+      return false;
+    }
+
+    return this.transactions
+      .data()
+      .some(
+        (transaction) => transaction.status !== TransactionStatusEnum.created,
+      );
+  });
+  readonly statusBadgeLabel = computed(() => {
+    if (!this.transactions.isSuccess()) {
+      return '';
+    }
+
+    if (this.isPaymentApproved()) {
+      return 'Approved';
+    }
+
+    return 'Pending approval';
+  });
+  readonly statusBadgeColor = computed(() => {
+    if (!this.transactions.isSuccess()) {
+      return 'blue';
+    }
+
+    if (this.isPaymentApproved()) {
+      return 'purple';
+    }
+
+    return 'yellow';
+  });
   isPaymentInProgress(): boolean | undefined {
     return (
       this.paymentStatus.isPending() ||
@@ -263,6 +296,7 @@ export class PageLayoutPaymentComponent {
       ? $localize`:@@inProgressChipLabel:In progress`
       : undefined;
   }
+
   chipTooltip(): string | undefined {
     return this.isPaymentInProgress()
       ? $localize`:@@inProgressChipTooltip:The payment will be in progress while the transfers in the table below are loading.`
