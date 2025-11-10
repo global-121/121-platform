@@ -6,6 +6,7 @@ import { PaymentsReportingHelperService } from '@121-service/src/payments/servic
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
+import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -47,6 +48,7 @@ describe('PaymentsReportingService - getTransactions', () => {
   let programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository;
   let paymentsHelperService: PaymentsReportingHelperService;
   let paymentRepository: Repository<PaymentEntity>;
+  let programRepository: ProgramRepository;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -70,6 +72,7 @@ describe('PaymentsReportingService - getTransactions', () => {
     );
     paymentsHelperService = unitRef.get(PaymentsReportingHelperService);
     paymentRepository = unitRef.get('PaymentEntityRepository');
+    programRepository = unitRef.get(ProgramRepository);
 
     jest.spyOn<any, any>(service, 'getTransactions');
     jest.spyOn(paymentsHelperService, 'getSelectForExport');
@@ -79,6 +82,9 @@ describe('PaymentsReportingService - getTransactions', () => {
       'replaceDropdownValuesWithEnglishLabel',
     );
     jest.spyOn(paymentRepository, 'findOne').mockResolvedValue({});
+    jest.spyOn(programRepository, 'findOneOrFail').mockResolvedValue({
+      enableScope: true,
+    } as any);
   });
 
   describe('getTransactionsByPaymentId', () => {
@@ -148,6 +154,7 @@ describe('PaymentsReportingService - getTransactions', () => {
       expect(transactionScopedRepository.getTransactions).toHaveBeenCalledWith({
         programId,
         paymentId,
+        enableScope: true,
       });
       expect(result).toEqual([]);
     });

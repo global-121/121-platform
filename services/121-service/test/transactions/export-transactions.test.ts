@@ -92,7 +92,6 @@ describe('Export transactions', () => {
       registrationReferenceId: referenceId,
       registrationName: registrationSafaricom.fullName,
       registrationStatus: expect.any(String),
-      registrationScope: '',
       // Safaricom specific fields
       mpesaTransactionId: expect.any(String),
     });
