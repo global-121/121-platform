@@ -16,6 +16,11 @@ import { FormDialogComponent } from '~/components/form-dialog/form-dialog.compon
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ToastService } from '~/services/toast.service';
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingService,
+} from '~/services/tracking.service';
 
 @Component({
   selector: 'app-retry-transfers-dialog',
@@ -32,6 +37,7 @@ export class RetryTransfersDialogComponent {
   readonly metricApiService = inject(MetricApiService);
   readonly paymentApiService = inject(PaymentApiService);
   readonly toastService = inject(ToastService);
+  readonly trackingService = inject(TrackingService);
 
   paymentStatus = injectQuery(
     this.paymentApiService.getPaymentStatus(this.projectId),
@@ -66,6 +72,17 @@ export class RetryTransfersDialogComponent {
   }));
 
   public retryFailedTransfers({ referenceIds }: { referenceIds: string[] }) {
+    const eventName =
+      referenceIds.length === 1
+        ? 'retry-transaction:single'
+        : 'retry-transaction:multiple';
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageRetryTransactions,
+      action: TrackingAction.clickRetryTransactionButton,
+      name: eventName,
+      value: referenceIds.length,
+    });
+
     if (this.paymentStatus.data()?.inProgress) {
       this.toastService.showToast({
         severity: 'warn',
@@ -73,7 +90,15 @@ export class RetryTransfersDialogComponent {
       });
       return;
     }
+
     this.referenceIdsForRetryTransfers.set(referenceIds);
-    this.retryTransfersConfirmationDialog().show();
+    this.retryTransfersConfirmationDialog().show({
+      trackingEvent: {
+        category: TrackingCategory.manageRetryTransactions,
+        action: TrackingAction.clickProceedButton,
+        name: eventName,
+        value: referenceIds.length,
+      },
+    });
   }
 }

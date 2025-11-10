@@ -27,6 +27,7 @@ export enum TrackingCategory {
   export = 'Export',
   hiddenFeatures = 'Hidden Features',
   manageRegistrations = 'Manage Registrations',
+  manageRetryTransactions = 'Manage Retry Transactions',
   manageTableSettings = 'Manage Table-settings',
 }
 
@@ -48,6 +49,7 @@ export enum TrackingAction {
   clickManageTableButton = 'click: Manage Table Button',
   clickMoreActionsMenuButton = 'click: More-Actions-menu Button',
   clickProceedButton = 'click: Proceed Button',
+  clickRetryTransactionButton = 'click: Retry Transaction(s) Button',
   clickRevertToDefaultButton = 'click: Revert to Default Button',
   selectContextMenuOption = 'select: Context-menu Option',
   selectDropdownOption = 'select: Dropdown Option',
