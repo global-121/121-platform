@@ -1652,7 +1652,7 @@
       <trans-unit id="page-title-project-settings-team" datatype="html">
         <source>Project team</source>
       </trans-unit>
-      <trans-unit id="3737046735199959170" datatype="html">
+      <trans-unit id="page-title-project-project-settings" datatype="html">
         <source>Project settings</source>
       </trans-unit>
       <trans-unit id="5649335820714201159" datatype="html">
