@@ -4,7 +4,6 @@ import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
@@ -16,9 +15,8 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangeRegistrationStatus,
   getTransactionEventDescriptions,
-  importRegistrations,
+  seedIncludedRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -62,18 +60,11 @@ describe('Do payment to 1 PA', () => {
 
       // Arrange
       registrationSafaricom.phoneNumber = '254708374149';
-      await importRegistrations(
-        programId,
+      await seedIncludedRegistrations(
         [registrationSafaricom],
+        programId,
         accessToken,
       );
-
-      await awaitChangeRegistrationStatus({
-        programId,
-        referenceIds: [registrationSafaricom.referenceId],
-        status: RegistrationStatusEnum.included,
-        accessToken,
-      });
       const paymentReferenceIds = [registrationSafaricom.referenceId];
 
       // Act
@@ -127,23 +118,14 @@ describe('Do payment to 1 PA', () => {
       ]);
     });
 
-    it('should give error the initial safaricom api call', async () => {
-      // Act
-      // Call the update function
-
+    it('should yield error transaction when the initial safaricom api call gives error', async () => {
       // Arrange
       registrationSafaricom.phoneNumber = '254000000000';
-      await importRegistrations(
-        programId,
+      await seedIncludedRegistrations(
         [registrationSafaricom],
+        programId,
         accessToken,
       );
-      await awaitChangeRegistrationStatus({
-        programId,
-        referenceIds: [registrationSafaricom.referenceId],
-        status: RegistrationStatusEnum.included,
-        accessToken,
-      });
       const paymentReferenceIds = [registrationSafaricom.referenceId];
 
       // Act
@@ -160,7 +142,11 @@ describe('Do payment to 1 PA', () => {
         paymentReferenceIds,
         accessToken,
         maxWaitTimeMs: 4_000,
-        completeStatusses: Object.values(TransactionStatusEnum),
+        completeStatusses: [
+          TransactionStatusEnum.error,
+          TransactionStatusEnum.success,
+          TransactionStatusEnum.waiting,
+        ],
       });
 
       // Assert
@@ -178,28 +164,17 @@ describe('Do payment to 1 PA', () => {
       expect(getTransactionsBody.body[0].status).toBe(
         TransactionStatusEnum.error,
       );
-      expect(getTransactionsBody.body[0].errorMessage).toBe(
-        '401.002.01 - Error Occurred - Invalid Access Token - mocked_access_token',
-      );
+      expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
     });
 
     it('should successfully retry pay-out after an initial failure', async () => {
-      // Act
-      // Call the update function
-
       // Arrange
       registrationSafaricom.phoneNumber = '254000000000';
-      await importRegistrations(
-        programId,
+      await seedIncludedRegistrations(
         [registrationSafaricom],
+        programId,
         accessToken,
       );
-      await awaitChangeRegistrationStatus({
-        programId,
-        referenceIds: [registrationSafaricom.referenceId],
-        status: RegistrationStatusEnum.included,
-        accessToken,
-      });
       const paymentReferenceIds = [registrationSafaricom.referenceId];
 
       // Act
@@ -217,7 +192,11 @@ describe('Do payment to 1 PA', () => {
         paymentReferenceIds,
         accessToken,
         maxWaitTimeMs: 4_000,
-        completeStatusses: Object.values(TransactionStatusEnum),
+        completeStatusses: [
+          TransactionStatusEnum.error,
+          TransactionStatusEnum.success,
+          TransactionStatusEnum.waiting,
+        ],
       });
 
       // update PA
@@ -274,18 +253,11 @@ describe('Do payment to 1 PA', () => {
       // Arrange
       const magigPhoneNrTimeout = '254000000002';
       registrationSafaricom.phoneNumber = magigPhoneNrTimeout;
-      await importRegistrations(
-        programId,
+      await seedIncludedRegistrations(
         [registrationSafaricom],
+        programId,
         accessToken,
       );
-
-      await awaitChangeRegistrationStatus({
-        programId,
-        referenceIds: [registrationSafaricom.referenceId],
-        status: RegistrationStatusEnum.included,
-        accessToken,
-      });
       const paymentReferenceIds = [registrationSafaricom.referenceId];
 
       // Act

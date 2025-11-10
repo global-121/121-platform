@@ -69,7 +69,11 @@ test('[31211] Move PA(s) from status "Included" to "Completed"', async ({
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.waiting,
+        TransactionStatusEnum.error,
+      ],
     });
   });
 

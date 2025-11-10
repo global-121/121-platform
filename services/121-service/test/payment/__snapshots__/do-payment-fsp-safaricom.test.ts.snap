@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Do payment to 1 PA with FSP: Safaricom should yield error transaction when the initial safaricom api call gives error 1`] = `"401.002.01 - Error Occurred - Invalid Access Token - mocked_access_token"`;
