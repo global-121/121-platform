@@ -7,8 +7,8 @@ import { AirtelError } from '@121-service/src/payments/fsp-integration/airtel/er
 import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
-import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
+import { SaveTransactionProgressAndRelatedDataContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-related-data-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
 
@@ -29,13 +29,14 @@ export class TransactionJobsAirtelService {
       );
     }
 
-    const transactionEventContext: TransactionEventCreationContext = {
-      transactionId: transactionJob.transactionId,
-      userId: transactionJob.userId,
-      programFspConfigurationId: transactionJob.programFspConfigurationId,
-      programId: transactionJob.programId,
-      referenceId: transactionJob.referenceId,
-    };
+    const transactionEventContext: SaveTransactionProgressAndRelatedDataContext =
+      {
+        transactionId: transactionJob.transactionId,
+        userId: transactionJob.userId,
+        programFspConfigurationId: transactionJob.programFspConfigurationId,
+        programId: transactionJob.programId,
+        referenceId: transactionJob.referenceId,
+      };
     await this.transactionJobsHelperService.createInitiatedOrRetryTransactionEvent(
       {
         context: transactionEventContext,
