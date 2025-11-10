@@ -10,6 +10,10 @@
     <div class="flex items-center gap-x-4">
       <h1 class="me-auto">
         {{ paymentTitle() }}
+        <app-colored-chip
+          [label]="statusBadgeLabel()"
+          [variant]="statusBadgeColor()"
+        />
       </h1>
       @if (showStartPaymentButton()) {
         <app-start-payment
