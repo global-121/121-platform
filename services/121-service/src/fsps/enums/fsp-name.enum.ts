@@ -5,6 +5,7 @@ export enum Fsps {
   safaricom = 'Safaricom',
   airtel = 'Airtel',
   commercialBankEthiopia = 'Commercial-bank-ethiopia',
+  cooperativeBankOromia = 'Cooperative-bank-oromia',
   excel = 'Excel',
   nedbank = 'Nedbank',
   onafriq = 'Onafriq',
