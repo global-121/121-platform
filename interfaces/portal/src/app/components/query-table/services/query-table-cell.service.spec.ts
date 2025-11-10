@@ -33,7 +33,7 @@ describe('QueryTableCellService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return custom cell text when getCellText is provided', () => {
+  it('should use a custom cell-text function when provided', () => {
     const testItem = { id: 1, name: 'Test Item' };
     const customColumn: QueryTableColumn<TestCellItem> = {
       header: 'Custom',
@@ -46,7 +46,7 @@ describe('QueryTableCellService', () => {
     expect(result).toBe('Custom: Test Item');
   });
 
-  it('should return undefined for computed fields', () => {
+  it('should not output anything for computed fields', () => {
     const testItem = { id: 1, name: 'Test Item' };
     const computedColumn: QueryTableColumn<TestCellItem> = {
       header: 'Computed',
@@ -110,7 +110,7 @@ describe('QueryTableCellService', () => {
     expect(result).toBe('numeric');
   });
 
-  it('should default to TEXT type when not specified', () => {
+  it('should return default type when not specified', () => {
     const defaultColumn: QueryTableColumn<TestCellItem> = {
       header: 'Name',
       field: 'name',
