@@ -3,7 +3,6 @@ import { HttpStatus } from '@nestjs/common';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
@@ -14,9 +13,8 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangeRegistrationStatus,
   getTransactionEventDescriptions,
-  importRegistrations,
+  seedIncludedRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -51,14 +49,11 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
   it('should successfully pay-out', async () => {
     // Arrange
-    await importRegistrations(programId, [registrationOnafriq], accessToken);
-
-    await awaitChangeRegistrationStatus({
+    await seedIncludedRegistrations(
+      [registrationOnafriq],
       programId,
-      referenceIds: [registrationOnafriq.referenceId],
-      status: RegistrationStatusEnum.included,
       accessToken,
-    });
+    );
     const paymentReferenceIds = [registrationOnafriq.referenceId];
 
     // Act
@@ -114,13 +109,11 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
   it('should give error on the initial request based on magic phonenumber and succeed on retry', async () => {
     // Arrange
     registrationOnafriq.phoneNumberPayment = '24300000000'; // this magic number is configured in mock to return an error on request
-    await importRegistrations(programId, [registrationOnafriq], accessToken);
-    await awaitChangeRegistrationStatus({
+    await seedIncludedRegistrations(
+      [registrationOnafriq],
       programId,
-      referenceIds: [registrationOnafriq.referenceId],
-      status: RegistrationStatusEnum.included,
       accessToken,
-    });
+    );
     const paymentReferenceIds = [registrationOnafriq.referenceId];
 
     // Act
@@ -216,13 +209,11 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
   it('should give error via callback based on magic phonenumber', async () => {
     // Arrange
     registrationOnafriq.phoneNumberPayment = '24300000002'; // this magic number is configured in mock to return an error on callback
-    await importRegistrations(programId, [registrationOnafriq], accessToken);
-    await awaitChangeRegistrationStatus({
+    await seedIncludedRegistrations(
+      [registrationOnafriq],
       programId,
-      referenceIds: [registrationOnafriq.referenceId],
-      status: RegistrationStatusEnum.included,
       accessToken,
-    });
+    );
     const paymentReferenceIds = [registrationOnafriq.referenceId];
 
     // Act
@@ -281,13 +272,11 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // NOTE 1: we use a magic phone number here that is configured in the mock to return a duplicate thirdPartyTransId error on request.
     // We use this as we cannot actually easily test a duplicate thirdPartyTransId error in the mock.
     registrationOnafriq.phoneNumberPayment = '24300000001';
-    await importRegistrations(programId, [registrationOnafriq], accessToken);
-    await awaitChangeRegistrationStatus({
+    await seedIncludedRegistrations(
+      [registrationOnafriq],
       programId,
-      referenceIds: [registrationOnafriq.referenceId],
-      status: RegistrationStatusEnum.included,
       accessToken,
-    });
+    );
     const paymentReferenceIds = [registrationOnafriq.referenceId];
 
     // Act
@@ -304,7 +293,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: Object.values(TransactionStatusEnum), // this deliberatedly includes 'created' as in this scenario nothing happens to the original transaction so it stays on 'created'
     });
 
     // Assert

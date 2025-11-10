@@ -53,14 +53,17 @@ describe('Set/calculate payment amount multiplier', () => {
       referenceIds: [importedRegistration.referenceId],
       transferValue,
       accessToken,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.waiting,
+        TransactionStatusEnum.error,
+      ],
     });
 
     const transactionsResponse = await getTransactions({
       programId: programIdWesteros,
       paymentId,
       registrationReferenceId: importedRegistration.referenceId,
-
       accessToken,
     });
     const transaction = transactionsResponse.body[0];
