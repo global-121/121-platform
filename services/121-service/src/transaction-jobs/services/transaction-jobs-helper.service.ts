@@ -19,6 +19,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { SaveTransactionProgressAndRelatedDataContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-related-data-context.interface';
 
 @Injectable()
 export class TransactionJobsHelperService {
@@ -146,14 +147,14 @@ export class TransactionJobsHelperService {
     errorMessage,
   }: {
     newTransactionStatus: TransactionStatusEnum;
-    context: TransactionEventCreationContext;
+    context: SaveTransactionProgressAndRelatedDataContext;
     description: TransactionEventDescription;
     errorMessage?: string;
   }): Promise<void> {
     await this.updatePaymentCountAndSetToCompleted({
-      referenceId: context.referenceId!,
-      programId: context.programId!,
-      userId: context.userId!, //##TODO check null
+      referenceId: context.referenceId,
+      programId: context.programId,
+      userId: context.userId,
     });
 
     await this.transactionsService.saveTransactionProgress({
