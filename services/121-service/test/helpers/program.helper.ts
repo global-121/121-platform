@@ -368,12 +368,17 @@ export async function getFspInstructions(
     .query({ format: 'json' });
 }
 
-export async function importFspReconciliationData(
-  programId: number,
-  paymentId: number,
-  accessToken: string,
-  reconciliationData: object[],
-): Promise<request.Response> {
+export async function importFspReconciliationData({
+  programId,
+  paymentId,
+  accessToken,
+  reconciliationData,
+}: {
+  programId: number;
+  paymentId: number;
+  accessToken: string;
+  reconciliationData: object[];
+}): Promise<request.Response> {
   const csvString = jsonArrayToCsv(reconciliationData);
   const buffer = Buffer.from(csvString, 'utf-8');
   return await getServer()

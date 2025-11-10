@@ -8,9 +8,10 @@ import {
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  createAndStartPayment,
+  createPayment,
   getTransactions,
   importFspReconciliationData,
+  startPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import { postProgramFspConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
@@ -100,8 +101,7 @@ describe('Reconciliate excel FSP data', () => {
     });
   });
 
-  // ##TODO: fix this test as part of refactoring out actions/payment-in-progress
-  it.skip('Should throw an error when a payment is in progress', async () => {
+  it('Should throw an error when a payment is in progress', async () => {
     // Arrange
     const reconciliationData = [
       {
@@ -110,25 +110,40 @@ describe('Reconciliate excel FSP data', () => {
       },
     ];
 
-    // Do not await this call, to simulate payment in progress
-    void createAndStartPayment({
+    const createPaymentResponse = await createPayment({
       programId: programIdWesteros,
       transferValue,
       accessToken,
       referenceIds: referenceIdsWesteros,
     });
+    const paymentId = createPaymentResponse.body.id;
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdWesteros,
+      paymentId,
+      accessToken,
+      maxWaitTimeMs: 10_000,
+      completeStatusses: [TransactionStatusEnum.created],
+      paymentReferenceIds: referenceIdsWesteros,
+    });
+    // Do not await this call, to simulate payment in progress
+    void startPayment({
+      programId: programIdWesteros,
+      paymentId,
+      accessToken,
+    });
+
     // Act
-    const importResult = await importFspReconciliationData(
-      programIdWesteros,
+    const importResult = await importFspReconciliationData({
+      programId: programIdWesteros,
       paymentId,
       accessToken,
       reconciliationData,
-    );
+    });
 
     // Wait for payment transactions to complete, so it does not interfere with other tests
     await waitForPaymentTransactionsToComplete({
       programId: programIdWesteros,
-      paymentId: 2,
+      paymentId,
       accessToken,
       maxWaitTimeMs: 10_000,
       completeStatusses: [TransactionStatusEnum.waiting],
@@ -153,12 +168,12 @@ describe('Reconciliate excel FSP data', () => {
     ];
 
     // Act
-    const importResult = await importFspReconciliationData(
-      programIdWesteros,
+    const importResult = await importFspReconciliationData({
+      programId: programIdWesteros,
       paymentId,
       accessToken,
       reconciliationData,
-    );
+    });
     const transactionStatuses = await getTransactionStatusses();
 
     // Assert
@@ -178,12 +193,12 @@ describe('Reconciliate excel FSP data', () => {
     ];
 
     // Act
-    const importResult = await importFspReconciliationData(
-      programIdWesteros,
+    const importResult = await importFspReconciliationData({
+      programId: programIdWesteros,
       paymentId,
       accessToken,
       reconciliationData,
-    );
+    });
     const transactionStatuses = await getTransactionStatusses();
 
     // Assert
@@ -204,12 +219,12 @@ describe('Reconciliate excel FSP data', () => {
     }
 
     // Act
-    const importResult = await importFspReconciliationData(
-      programIdWesteros,
+    const importResult = await importFspReconciliationData({
+      programId: programIdWesteros,
       paymentId,
       accessToken,
       reconciliationData,
-    );
+    });
     const transactionStatuses = await getTransactionStatusses();
 
     // Assert
@@ -236,12 +251,12 @@ describe('Reconciliate excel FSP data', () => {
     ];
 
     // Act
-    const importResult = await importFspReconciliationData(
-      programIdWesteros,
+    const importResult = await importFspReconciliationData({
+      programId: programIdWesteros,
       paymentId,
       accessToken,
       reconciliationData,
-    );
+    });
     const transactionStatuses = await getTransactionStatusses();
 
     // Assert
@@ -266,12 +281,12 @@ describe('Reconciliate excel FSP data', () => {
     ];
 
     // Act
-    const importResult = await importFspReconciliationData(
-      programIdWesteros,
+    const importResult = await importFspReconciliationData({
+      programId: programIdWesteros,
       paymentId,
       accessToken,
       reconciliationData,
-    );
+    });
     const transactionStatuses = await getTransactionStatusses();
 
     // Assert
@@ -294,12 +309,12 @@ describe('Reconciliate excel FSP data', () => {
       },
     ];
     // Act
-    const importResult = await importFspReconciliationData(
-      programIdWesteros,
+    const importResult = await importFspReconciliationData({
+      programId: programIdWesteros,
       paymentId,
       accessToken,
       reconciliationData,
-    );
+    });
     const transactionStatuses = await getTransactionStatusses();
 
     // Assert
@@ -320,12 +335,12 @@ describe('Reconciliate excel FSP data', () => {
     ];
 
     // Act
-    const importResult = await importFspReconciliationData(
-      programIdWesteros,
+    const importResult = await importFspReconciliationData({
+      programId: programIdWesteros,
       paymentId,
       accessToken,
       reconciliationData,
-    );
+    });
     const transactionStatuses = await getTransactionStatusses();
 
     // Assert
