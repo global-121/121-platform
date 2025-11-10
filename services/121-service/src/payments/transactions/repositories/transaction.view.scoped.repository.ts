@@ -93,6 +93,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
     fromDate,
     toDate,
     fspSpecificJoinFields,
+    enableScope,
   }: {
     programId: number;
     paymentId?: number;
@@ -103,6 +104,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       attribute: string;
       alias: string;
     }[];
+    enableScope: boolean;
   }): Promise<
     ({
       paymentId: number;
@@ -132,8 +134,6 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
         'r.referenceId AS "registrationReferenceId"',
         'r.id AS "registrationId"',
         'r.registrationStatus AS "registrationStatus"',
-        'r.scope AS "registrationScope"',
-        'program.enableScope AS "programHasScope"',
         'transaction.status AS "status"',
         'transaction.transferValue AS "amount"',
         'transaction.errorMessage AS "errorMessage"',
@@ -141,7 +141,6 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       ])
       .leftJoin('transaction.registration', 'r')
       .leftJoin('transaction.payment', 'p')
-      .leftJoin('p.program', 'program')
       .andWhere('p.programId = :programId', {
         programId,
       });
@@ -154,6 +153,9 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
     }
     if (toDate) {
       query.andWhere('p.created <= :toDate', { toDate });
+    }
+    if (enableScope) {
+      query.addSelect('r.scope AS "registrationScope"');
     }
 
     if (!fspSpecificJoinFields) {
@@ -172,17 +174,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       );
     }
 
-    const transactions = await query.getRawMany();
-    // Remove programHasScope helper field and conditionally remove registrationScope
-    const programHasScope =
-      transactions.length > 0 ? transactions[0].programHasScope : false;
-    for (const row of transactions) {
-      delete row.programHasScope;
-      if (!programHasScope) {
-        delete row.registrationScope;
-      }
-    }
-    return transactions;
+    return await query.getRawMany();
   }
 
   public async getTransactionJobCreationDetails(
