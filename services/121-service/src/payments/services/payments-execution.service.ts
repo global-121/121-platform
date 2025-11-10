@@ -42,7 +42,6 @@ export class PaymentsExecutionService {
             paymentId,
           },
         );
-
       if (transactionsToStart.length === 0) {
         throw new HttpException(
           {

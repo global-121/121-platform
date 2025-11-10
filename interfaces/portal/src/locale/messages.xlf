@@ -2024,6 +2024,12 @@
       <trans-unit id="2877620758967462039" datatype="html">
         <source>When you want the payment to start, click approve and start payment or instruct the designated user to do so.</source>
       </trans-unit>
+      <trans-unit id="2656123100839645861" datatype="html">
+        <source>Pending approval</source>
+      </trans-unit>
+      <trans-unit id="5906272961955453157" datatype="html">
+        <source>Approved</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

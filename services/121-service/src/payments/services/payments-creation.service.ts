@@ -68,7 +68,6 @@ export class PaymentsCreationService {
           transferValue,
           query,
         });
-
       if (registrationsForPayment.length < 1) {
         throw new HttpException(
           'No registrations found to create payment for',
