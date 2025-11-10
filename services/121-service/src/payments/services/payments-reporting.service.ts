@@ -35,7 +35,7 @@ export class PaymentsReportingService {
     private readonly registrationPaginationService: RegistrationsPaginationService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentEventsService: PaymentEventsService,
-    private readonly programsRepository: ProgramRepository,
+    private readonly programRepository: ProgramRepository,
   ) {}
 
   public async getPayments({
@@ -205,7 +205,7 @@ export class PaymentsReportingService {
         programId,
       );
     const enableScope = (
-      await this.programsRepository.findOneOrFail({
+      await this.programRepository.findOneOrFail({
         where: { id: Equal(programId) },
       })
     ).enableScope;
