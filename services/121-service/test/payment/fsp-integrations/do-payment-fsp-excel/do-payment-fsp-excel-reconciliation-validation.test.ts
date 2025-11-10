@@ -8,11 +8,8 @@ import {
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  createPayment,
   getTransactions,
   importFspReconciliationData,
-  startPayment,
-  waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import { postProgramFspConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -40,9 +37,6 @@ describe('Reconciliate excel FSP data', () => {
     registrationWesteros2,
     registrationWesteros3,
   ];
-  const referenceIdsWesteros = registrationsWesteros.map(
-    (registration) => registration.referenceId,
-  );
   const phoneNumbersWesteros = registrationsWesteros.map(
     (registration) => registration.phoneNumber,
   );
@@ -65,7 +59,6 @@ describe('Reconciliate excel FSP data', () => {
   };
 
   // No need to reset DB before each test, as we will only import reconciliation files unsuccessfully
-
   beforeAll(async () => {
     await resetDB(SeedScript.testMultiple, __filename);
     accessToken = await getAccessToken();
@@ -101,63 +94,7 @@ describe('Reconciliate excel FSP data', () => {
     });
   });
 
-  it('Should throw an error when a payment is in progress', async () => {
-    // Arrange
-    const reconciliationData = [
-      {
-        [matchColumn]: registrationWesteros1.phoneNumber,
-        [statusColumn]: TransactionStatusEnum.success,
-      },
-    ];
-
-    const createPaymentResponse = await createPayment({
-      programId: programIdWesteros,
-      transferValue,
-      accessToken,
-      referenceIds: referenceIdsWesteros,
-    });
-    const paymentId = createPaymentResponse.body.id;
-    await waitForPaymentTransactionsToComplete({
-      programId: programIdWesteros,
-      paymentId,
-      accessToken,
-      maxWaitTimeMs: 10_000,
-      completeStatusses: [TransactionStatusEnum.created],
-      paymentReferenceIds: referenceIdsWesteros,
-    });
-    // Do not await this call, to simulate payment in progress
-    void startPayment({
-      programId: programIdWesteros,
-      paymentId,
-      accessToken,
-    });
-
-    // Act
-    const importResult = await importFspReconciliationData({
-      programId: programIdWesteros,
-      paymentId,
-      accessToken,
-      reconciliationData,
-    });
-
-    // Wait for payment transactions to complete, so it does not interfere with other tests
-    await waitForPaymentTransactionsToComplete({
-      programId: programIdWesteros,
-      paymentId,
-      accessToken,
-      maxWaitTimeMs: 10_000,
-      completeStatusses: [TransactionStatusEnum.waiting],
-      paymentReferenceIds: referenceIdsWesteros,
-    });
-
-    const transactionStatuses = await getTransactionStatusses();
-
-    // Assert
-    expect(importResult.statusCode).toBe(HttpStatus.BAD_REQUEST);
-    expect(importResult.body).toMatchSnapshot();
-    // Expect that all transactions are still waiting after failed reconciliation attempts - no changes should be made
-    expect(transactionStatuses).toEqual(waitingTransactionStatusses);
-  });
+  // NOTE: error because payment is in progress is covered in unit test excel-reconciliation.service.spec.ts
 
   it('Should give an error when status column is missing', async () => {
     // Arrange
