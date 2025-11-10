@@ -181,7 +181,11 @@ export class TransactionJobsHelperService {
       referenceId,
     });
 
-    await this.setStatusToCompletedIfApplicable(referenceId, programId, userId);
+    await this.setStatusToCompletedIfApplicable({
+      referenceId,
+      programId,
+      userId,
+    });
   }
 
   /**
@@ -189,13 +193,25 @@ export class TransactionJobsHelperService {
    * This mirrors the previous orchestration logic but has no external side-effects
    * beyond calling the registrationsBulkService to apply status changes and send messages.
    */
-  public async setStatusToCompletedIfApplicable(
-    referenceId: string,
-    programId: number,
-    userId: number,
-  ): Promise<void> {
+  public async setStatusToCompletedIfApplicable({
+    referenceId,
+    programId,
+    userId,
+  }: {
+    referenceId: string;
+    programId: number;
+    userId: number;
+  }): Promise<void> {
     const program = await this.programRepository.findByIdOrFail(programId);
     if (!program.enableMaxPayments) {
+      return;
+    }
+
+    const shouldChangeStatusToCompleted =
+      await this.registrationScopedRepository.shouldChangeStatusToCompleted({
+        referenceId,
+      });
+    if (!shouldChangeStatusToCompleted) {
       return;
     }
 
@@ -214,7 +230,7 @@ export class TransactionJobsHelperService {
 
     await this.registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds(
       {
-        referenceIds: [referenceId], // ##TODO use non-bulk version of this? In general change/optimize this method for per-registration usage?
+        referenceIds: [referenceId], // ##TODO use a non-bulk version of this? In general change/optimize this method for per-registration usage?
         programId,
         registrationStatus: RegistrationStatusEnum.completed,
         userId,

@@ -356,4 +356,23 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
       .andWhere({ referenceId: Equal(referenceId) })
       .execute();
   }
+
+  public async shouldChangeStatusToCompleted({
+    referenceId,
+  }: {
+    referenceId: string;
+  }): Promise<boolean> {
+    const registrationToComplete = await this.repository
+      .createQueryBuilder('registration')
+      .andWhere('registration."paymentCount" >= registration."maxPayments"')
+      .andWhere('registration."registrationStatus" != :completedStatus', {
+        completedStatus: RegistrationStatusEnum.completed,
+      })
+      .andWhere('registration."referenceId" = :referenceId', { referenceId })
+      .getOne();
+    if (!registrationToComplete) {
+      return false;
+    }
+    return true;
+  }
 }

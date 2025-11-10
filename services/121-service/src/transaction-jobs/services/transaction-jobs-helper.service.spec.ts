@@ -1,12 +1,16 @@
 import { TestBed } from '@automock/jest';
 import { UpdateResult } from 'typeorm';
 
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
+import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 
@@ -22,6 +26,9 @@ describe('TransactionJobsHelperService', () => {
   let service: TransactionJobsHelperService;
   let registrationScopedRepository: RegistrationScopedRepository;
   let transactionEventsService: TransactionEventsService;
+  let programRepository: ProgramRepository;
+  let messageTemplateService: MessageTemplateService;
+  let registrationsBulkService: RegistrationsBulkService;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -34,6 +41,13 @@ describe('TransactionJobsHelperService', () => {
     );
     transactionEventsService = unitRef.get<TransactionEventsService>(
       TransactionEventsService,
+    );
+    programRepository = unitRef.get<ProgramRepository>(ProgramRepository);
+    messageTemplateService = unitRef.get<MessageTemplateService>(
+      MessageTemplateService,
+    );
+    registrationsBulkService = unitRef.get<RegistrationsBulkService>(
+      RegistrationsBulkService,
     );
 
     jest
@@ -100,6 +114,121 @@ describe('TransactionJobsHelperService', () => {
         type: TransactionEventType.retry,
         description: TransactionEventDescription.retry,
       });
+    });
+  });
+
+  describe('setStatusToCompletedIfApplicable', () => {
+    it('does nothing when program.enableMaxPayments is false', async () => {
+      const programIdDisabled = 1;
+      const userId = 42;
+
+      jest.spyOn(programRepository, 'findByIdOrFail').mockResolvedValue({
+        enableMaxPayments: false,
+      } as any);
+
+      await service.setStatusToCompletedIfApplicable({
+        referenceId: mockedRegistration.referenceId,
+        programId: programIdDisabled,
+        userId,
+      });
+
+      expect(
+        registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('does nothing when there are no registrations to complete', async () => {
+      const programIdNoReg = 2;
+      const userId = 7;
+
+      jest.spyOn(programRepository, 'findByIdOrFail').mockResolvedValue({
+        enableMaxPayments: true,
+      } as any);
+      jest
+        .spyOn(registrationScopedRepository, 'shouldChangeStatusToCompleted')
+        .mockResolvedValue(false);
+
+      await service.setStatusToCompletedIfApplicable({
+        referenceId: mockedRegistration.referenceId,
+        programId: programIdNoReg,
+        userId,
+      });
+
+      expect(
+        registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('applies registration status change with template details when template is available', async () => {
+      const programIdTemplate = 3;
+      const userIdC = 99;
+      const ref1 = 'ref-1';
+
+      jest.spyOn(programRepository, 'findByIdOrFail').mockResolvedValue({
+        enableMaxPayments: true,
+      } as any);
+      jest
+        .spyOn(registrationScopedRepository, 'shouldChangeStatusToCompleted')
+        .mockResolvedValue(true);
+      jest
+        .spyOn(messageTemplateService, 'isTemplateAvailable')
+        .mockResolvedValue(true as any);
+
+      await service.setStatusToCompletedIfApplicable({
+        referenceId: ref1,
+        programId: programIdTemplate,
+        userId: userIdC,
+      });
+
+      expect(
+        registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({
+          referenceIds: [ref1],
+          programId: programIdTemplate,
+          registrationStatus: RegistrationStatusEnum.completed,
+          userId: userIdC,
+          messageContentDetails: {
+            messageTemplateKey: RegistrationStatusEnum.completed,
+            messageContentType: MessageContentType.completed,
+            message: '',
+          },
+        }),
+      );
+    });
+
+    it('applies registration status change with empty messageContentDetails when template is not available', async () => {
+      const programIdNoTemplate = 4;
+      const userIdD = 100;
+      const ref2 = 'ref-2';
+
+      jest.spyOn(programRepository, 'findByIdOrFail').mockResolvedValue({
+        enableMaxPayments: true,
+      } as any);
+      jest
+        .spyOn(registrationScopedRepository, 'shouldChangeStatusToCompleted')
+        .mockResolvedValue(true);
+      jest
+        .spyOn(messageTemplateService, 'isTemplateAvailable')
+        .mockResolvedValue(false as any);
+
+      await service.setStatusToCompletedIfApplicable({
+        referenceId: ref2,
+        programId: programIdNoTemplate,
+        userId: userIdD,
+      });
+
+      expect(
+        registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({
+          referenceIds: [ref2],
+          programId: programIdNoTemplate,
+          registrationStatus: RegistrationStatusEnum.completed,
+          userId: userIdD,
+          messageContentDetails: {},
+        }),
+      );
     });
   });
 });
