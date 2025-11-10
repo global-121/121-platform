@@ -404,7 +404,14 @@ Azure App Service uses deployment slots that can cause temporary database errors
 
 **Recognition**: Errors only appear during releases and disappear when you recheck the same endpoint.
 
-### Patch/Hotfix Checklist
+### Hotfix-release Checklist
+
+Only in rare, very specific circumstances it might be required to do a "hotfix-release". For example when:
+
+- A new (incomplete) feature, that is not yet communicated to end-users, is already in `main`
+- A (complex) migration-script, that would require an out-of-office-hours deployment, is already in `main`
+- Another issue that would pose (too big) a risk to deploy to any of the currently running instances.  
+  Consider however, that it is also possible to _**postpone**_ the deployment of a regular release, for a specific instance.
 
 This follows a similar process to regular release + deployment, with some small changes.
 
@@ -414,7 +421,7 @@ This follows a similar process to regular release + deployment, with some small 
   Verify the test-runs(s) on the hotfix-branch by looking at the status of the last commit on the [branches-overview](https://github.com/global-121/121-platform/branches/all?query=hotfix).
 - Create a new release + tag (see above) selecting the `hotfix/v*`-branch as target, and publish it.
 - Use the [deployment-workflows on GitHub Actions](https://github.com/global-121/121-platform/actions) to deploy the newly created _tag_ (**not the branch**). For each required instance.
-- After the hotfix has been released to production, follow standard procedures to merge the hotfix-branch into the `main`-branch.
+- After the hotfix has been released to production, follow standard procedures to get the hotfix-code into the `main`-branch.
 
 **Note:** Do not rebase/update the `hotfix/v*`-branch onto the `main`-branch until **AFTER** you have successfully deployed the hotfix to production.  
 The hotfix branch is created from a "dangling" commit, this makes the GitHub UI confused when you look at a PR between the newly created `hotfix`-branch and the `main`-branch. Any conflict warnings shown on GitHub are not relevant for the hotfix-_deployment_, they'll only need to be addressed to merge the hotfix into the `main`-branch afterwards.
