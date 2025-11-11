@@ -49,7 +49,7 @@ test.describe('Attachments on Project Level', () => {
     await projectMonitoring.selectTab({ tabName: 'Files' });
   });
 
-  test('[37585] Download Attachment', async () => {
+  test('Download Attachment', async () => {
     const projectMonitoring = new ProjectMonitoring(page);
 
     await test.step('Download and validate attachment', async () => {

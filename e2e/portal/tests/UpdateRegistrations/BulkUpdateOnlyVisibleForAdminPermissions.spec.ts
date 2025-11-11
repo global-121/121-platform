@@ -30,7 +30,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[36347] User does not have sufficient Role to bulk update with CSV (import modal not visible)', async ({
+test('User does not have sufficient Role to bulk update with CSV (import modal not visible)', async ({
   page,
 }) => {
   const registrationsPage = new RegistrationsPage(page);

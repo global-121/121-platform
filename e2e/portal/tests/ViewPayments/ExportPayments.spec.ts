@@ -68,7 +68,7 @@ test.beforeAll(async ({ browser }) => {
   await createFivePayments(paymentsPage);
 });
 
-test('[35621] ExportPayments', async () => {
+test('ExportPayments', async () => {
   const paymentsPage = new PaymentsPage(page);
   const exportDataComponent = new ExportData(page);
 
@@ -110,7 +110,7 @@ test('[35621] ExportPayments', async () => {
   });
 });
 
-test('[36125] View available actions for admin', async () => {
+test('View available actions for admin', async () => {
   const paymentsPage = new PaymentsPage(page);
 
   await test.step('Validate export options', async () => {
@@ -137,7 +137,7 @@ test('[36125] View available actions for admin', async () => {
   });
 });
 
-test('[36126] View available actions for a "view only" user', async () => {
+test('View available actions for a "view only" user', async () => {
   const homePage = new HomePage(page);
   await homePage.selectAccountOption('Logout');
 

@@ -32,7 +32,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[36081] Do successful payment for Cbe fsp', async ({ page }) => {
+test('Do successful payment for Cbe fsp', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = CbeProgram.titlePortal.en;

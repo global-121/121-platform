@@ -42,7 +42,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[33879] After the data change of 1 out of 3 duplicates, only 1 registration gets unique badge', async ({
+test('After the data change of 1 out of 3 duplicates, only 1 registration gets unique badge', async ({
   page,
 }) => {
   const homePage = new HomePage(page);

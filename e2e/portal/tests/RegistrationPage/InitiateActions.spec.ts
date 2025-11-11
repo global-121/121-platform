@@ -37,7 +37,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[34649] User can initiate registration status changes from registration page', async ({
+test('User can initiate registration status changes from registration page', async ({
   page,
 }) => {
   const activityLogPage = new RegistrationActivityLogPage(page);
@@ -69,9 +69,7 @@ test('[34649] User can initiate registration status changes from registration pa
   }
 });
 
-test('[34650] User can open add note sidebar from action menu', async ({
-  page,
-}) => {
+test('User can open add note sidebar from action menu', async ({ page }) => {
   const activityLogPage = new RegistrationActivityLogPage(page);
 
   const actionName = 'Add note';
@@ -94,9 +92,7 @@ test('[34650] User can open add note sidebar from action menu', async ({
   });
 });
 
-test('[34651] User can open message dialog from action menu', async ({
-  page,
-}) => {
+test('User can open message dialog from action menu', async ({ page }) => {
   const activityLogPage = new RegistrationActivityLogPage(page);
 
   const actionName = 'Message';

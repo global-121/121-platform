@@ -28,7 +28,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[32299] Table should reflect the actual transfer values sent to the PAs in this payment', async ({
+test('Table should reflect the actual transfer values sent to the PAs in this payment', async ({
   page,
 }) => {
   const paymentPage = new PaymentPage(page);

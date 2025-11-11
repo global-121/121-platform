@@ -54,7 +54,7 @@ test.describe('Export registrations with different formats and configurations', 
     await page.close();
   });
 
-  test('[29358] Export Selected Registrations', async () => {
+  test('Export Selected Registrations', async () => {
     const registrationsPage = new RegistrationsPage(page);
     const exportDataComponent = new ExportData(page);
 
@@ -85,7 +85,7 @@ test.describe('Export registrations with different formats and configurations', 
     });
   });
 
-  test('[37356] Export should only have selected columns', async () => {
+  test('Export should only have selected columns', async () => {
     const registrationsPage = new RegistrationsPage(page);
     const exportDataComponent = new ExportData(page);
 

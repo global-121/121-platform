@@ -34,7 +34,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[32296] Show in progress banner and chip when payment is in progress', async ({
+test('Show in progress banner and chip when payment is in progress', async ({
   page,
 }) => {
   const paymentPage = new PaymentPage(page);

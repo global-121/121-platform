@@ -27,7 +27,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[30866] [Admin] View last login', async ({ page }) => {
+test('[Admin] View last login', async ({ page }) => {
   const basePage = new BasePage(page);
   const loginPage = new LoginPage(page);
   const home = new HomePage(page);

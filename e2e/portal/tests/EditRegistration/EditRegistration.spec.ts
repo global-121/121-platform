@@ -71,7 +71,7 @@ test.describe('Edit all the fields in registration Personal Information', () => 
     await page.close();
   });
 
-  test('[35284] Edit: Dropdown Selection fields', async () => {
+  test('Edit: Dropdown Selection fields', async () => {
     const personalInformationPage = new RegistrationPersonalInformationPage(
       page,
     );
@@ -91,7 +91,7 @@ test.describe('Edit all the fields in registration Personal Information', () => 
     });
   });
 
-  test('[35285] Edit: Text Input fields', async () => {
+  test('Edit: Text Input fields', async () => {
     const personalInformationPage = new RegistrationPersonalInformationPage(
       page,
     );
@@ -127,7 +127,7 @@ test.describe('Edit all the fields in registration Personal Information', () => 
     );
   });
 
-  test('[35286] Edit: Number Input fields', async () => {
+  test('Edit: Number Input fields', async () => {
     const personalInformationPage = new RegistrationPersonalInformationPage(
       page,
     );

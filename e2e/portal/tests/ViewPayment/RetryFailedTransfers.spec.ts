@@ -36,7 +36,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[32300] Retry failed transfers', async ({ page }) => {
+test('Retry failed transfers', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = NLRCProgram.titlePortal.en;

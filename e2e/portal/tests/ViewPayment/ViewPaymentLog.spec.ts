@@ -34,9 +34,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[37781] View payment log, including note added to payment', async ({
-  page,
-}) => {
+test('View payment log, including note added to payment', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = NLRCProgram.titlePortal.en;

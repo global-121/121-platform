@@ -69,7 +69,7 @@ test.describe('View available actions for admin', () => {
     await page.close();
   });
 
-  test('[34640] Admin should see action button on registration page', async () => {
+  test('Admin should see action button on registration page', async () => {
     // Assert
     const actionsButton = page.getByRole('button', { name: 'Actions' });
     await expect(actionsButton).toBeVisible();
@@ -124,7 +124,7 @@ test.describe('View available actions for CVA officer', () => {
     });
   });
 
-  test('[34640] CVA Officer should see action button on registration page', async () => {
+  test('CVA Officer should see action button on registration page', async () => {
     // Assert
     const actionsButton = page.getByRole('button', { name: 'Actions' });
     await expect(actionsButton).toBeVisible();
@@ -187,7 +187,7 @@ test.describe('View available actions for a "view only" user', () => {
     });
   });
 
-  test('[34640] "View Only" user should see action button on registration page', async () => {
+  test('"View Only" user should see action button on registration page', async () => {
     // Assert
     const actionsButton = page.getByRole('button', { name: 'Actions' });
     await expect(actionsButton).toBeVisible();

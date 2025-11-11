@@ -28,7 +28,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[31970] Do successful payment for Visa fsp', async ({ page }) => {
+test('Do successful payment for Visa fsp', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = NLRCProgram.titlePortal.en;

@@ -41,9 +41,7 @@ test.beforeEach(async ({ page }) => {
   await basePage.selectProgram('NLRC Direct Digital Aid Program (PV)');
 });
 
-test('[31215] Move PA(s) from status "Completed" to "Declined"', async ({
-  page,
-}) => {
+test('Move PA(s) from status "Completed" to "Declined"', async ({ page }) => {
   const accessToken = await getAccessToken();
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);

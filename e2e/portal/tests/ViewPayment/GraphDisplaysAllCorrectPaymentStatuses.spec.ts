@@ -35,7 +35,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[32297] Graph should reflect transfer statuses', async ({ page }) => {
+test('Graph should reflect transfer statuses', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = NLRCProgram.titlePortal.en;

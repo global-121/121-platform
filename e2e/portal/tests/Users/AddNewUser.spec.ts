@@ -19,7 +19,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[30867] [Admin] Add a user', async ({ page }) => {
+test('[Admin] Add a user', async ({ page }) => {
   const basePage = new BasePage(page);
   const users = new UsersPage(page);
 

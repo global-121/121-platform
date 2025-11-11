@@ -33,7 +33,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[36080] Do successful payment for Nedbank fsp', async ({ page }) => {
+test('Do successful payment for Nedbank fsp', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = NedbankProgram.titlePortal.en;

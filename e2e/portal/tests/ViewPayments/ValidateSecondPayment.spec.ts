@@ -47,7 +47,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[38338] Validate second payment is correctly displayed on payment card', async ({
+test('Validate second payment is correctly displayed on payment card', async ({
   page,
 }) => {
   const paymentsPage = new PaymentsPage(page);

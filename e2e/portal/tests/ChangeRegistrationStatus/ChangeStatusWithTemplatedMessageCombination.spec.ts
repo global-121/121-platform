@@ -53,7 +53,7 @@ test.describe('Change status of registration with and without templated message'
   });
 
   // Act
-  test('[35912] Change status of registration with templated message', async () => {
+  test('Change status of registration with templated message', async () => {
     const registrations = new RegistrationsPage(page);
     const tableComponent = new TableComponent(page);
     await test.step('Change status of first selected registration and send templated message', async () => {
@@ -77,7 +77,7 @@ test.describe('Change status of registration with and without templated message'
     });
   });
 
-  test('[35913] Change status of registration without templated message', async () => {
+  test('Change status of registration without templated message', async () => {
     const registrations = new RegistrationsPage(page);
     const tableComponent = new TableComponent(page);
     // Act

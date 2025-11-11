@@ -36,7 +36,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[31972] Do payment for excel fsp', async ({ page }) => {
+test('Do payment for excel fsp', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const exportDataComponent = new ExportData(page);

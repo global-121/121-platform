@@ -64,7 +64,7 @@ test.describe('Attachments on Project Level', () => {
     await projectMonitoring.selectTab({ tabName: 'Files' });
   });
 
-  test('[37582] Upload: Word, PDF, JPG and PNG attachments formats', async () => {
+  test('Upload: Word, PDF, JPG and PNG attachments formats', async () => {
     const projectMonitoring = new ProjectMonitoring(page);
     const tableComponent = new TableComponent(page);
 
@@ -93,7 +93,7 @@ test.describe('Attachments on Project Level', () => {
     });
   });
 
-  test('[37583] Error when uploading not accepted format', async () => {
+  test('Error when uploading not accepted format', async () => {
     const projectMonitoring = new ProjectMonitoring(page);
 
     await test.step('Upload file with unsupported format', async () => {
@@ -111,7 +111,7 @@ test.describe('Attachments on Project Level', () => {
     });
   });
 
-  test('[37584] Error when uploading file bigger than 100mb', async () => {
+  test('Error when uploading file bigger than 100mb', async () => {
     const projectMonitoring = new ProjectMonitoring(page);
 
     await test.step('Upload file bigger than 100mb', async () => {

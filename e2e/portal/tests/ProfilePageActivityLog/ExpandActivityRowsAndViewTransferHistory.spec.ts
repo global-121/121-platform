@@ -88,7 +88,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[34462] Expand rows of activity overview and view transfer history', async ({
+test('Expand rows of activity overview and view transfer history', async ({
   page,
 }) => {
   const activityLogPage = new RegistrationActivityLogPage(page);

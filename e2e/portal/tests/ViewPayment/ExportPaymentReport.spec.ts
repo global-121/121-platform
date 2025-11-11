@@ -33,7 +33,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[35621] Export Payment Report should contain the right data', async ({
+test('Export Payment Report should contain the right data', async ({
   page,
 }) => {
   const paymentPage = new PaymentPage(page);

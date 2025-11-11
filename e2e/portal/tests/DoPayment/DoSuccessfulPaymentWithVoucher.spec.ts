@@ -32,7 +32,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[36008] Do successful payment for Voucher fsp', async ({ page }) => {
+test('Do successful payment for Voucher fsp', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = NLRCProgram.titlePortal.en;

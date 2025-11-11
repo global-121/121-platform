@@ -26,7 +26,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[31197] Selection should show correct PA count for bulk action (Multiple PAs)', async ({
+test('Selection should show correct PA count for bulk action (Multiple PAs)', async ({
   page,
 }) => {
   const basePage = new BasePage(page);

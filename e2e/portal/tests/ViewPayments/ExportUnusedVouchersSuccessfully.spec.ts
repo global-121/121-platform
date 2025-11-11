@@ -54,7 +54,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[36847] Export unused vouchers successfully', async ({ page }) => {
+test('Export unused vouchers successfully', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
   const exportDataComponent = new ExportData(page);
 

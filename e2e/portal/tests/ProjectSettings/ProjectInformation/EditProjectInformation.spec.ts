@@ -29,7 +29,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.selectProgram('NLRC OCW program');
 });
 
-test('[38155] Edit Project Information', async ({ page }) => {
+test('Edit Project Information', async ({ page }) => {
   const registrations = new RegistrationsPage(page);
   const projectSettings = new ProjectSettingsPage(page);
 

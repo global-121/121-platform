@@ -42,7 +42,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
 });
 
-test('[34947] Filter registrations by Date selection', async ({ page }) => {
+test('Filter registrations by Date selection', async ({ page }) => {
   const tableComponent = new TableComponent(page);
   // Act & Assert
   await test.step('Filter registration created column by "Date is" date', async () => {

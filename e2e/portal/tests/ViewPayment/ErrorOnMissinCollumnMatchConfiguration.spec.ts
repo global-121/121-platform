@@ -44,7 +44,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[32302] [Excel fsp]: Error message should be shown in case no matching column was configured', async ({
+test('[Excel fsp]: Error message should be shown in case no matching column was configured', async ({
   page,
 }) => {
   const paymentsPage = new PaymentsPage(page);
