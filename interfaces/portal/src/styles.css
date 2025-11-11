@@ -407,6 +407,10 @@ svg-icon svg {
     @apply txt-body-s;
   }
 
+   /*
+   * Prevents PrimeIcons (.pi) from overflowing their containers during layout changes.
+   * See AB#38977 for details.
+   */
   .pi {
     contain: paint;
   }
