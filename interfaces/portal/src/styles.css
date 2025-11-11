@@ -406,4 +406,8 @@ svg-icon svg {
   .p-tooltip-text {
     @apply txt-body-s;
   }
+
+  .pi {
+    contain: paint;
+  }
 }
