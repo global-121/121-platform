@@ -102,7 +102,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     });
     expect(transactionEventDescriptions).toEqual([
       TransactionEventDescription.created,
-      TransactionEventDescription.approved,
+      TransactionEventDescription.approval,
       TransactionEventDescription.initiated,
       TransactionEventDescription.visaPaymentRequested,
     ]);
