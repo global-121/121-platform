@@ -10,7 +10,7 @@ class PaymentPage extends BasePage {
   readonly importReconciliationDataButton: Locator;
   readonly chooseFileButton: Locator;
   readonly importFileButton: Locator;
-  readonly proceedButton: Locator;
+  readonly approvePaymentButton: Locator;
   readonly viewPaymentTitle: Locator;
   readonly paymentAmount: Locator;
   readonly retryFailedTransfersButton: Locator;
@@ -33,7 +33,9 @@ class PaymentPage extends BasePage {
     this.importFileButton = this.page.getByRole('button', {
       name: 'Import file',
     });
-    this.proceedButton = this.page.getByTestId('form-dialog-proceed-button');
+    this.approvePaymentButton = this.page.getByTestId(
+      'form-dialog-proceed-button',
+    );
     this.viewPaymentTitle = this.page.getByRole('heading', {
       name: /Payment \d{2}\/\d{2}\/\d{4}/,
     });
@@ -50,22 +52,56 @@ class PaymentPage extends BasePage {
     this.paymentLogTab = this.page.getByRole('tab', { name: 'Payment log' });
     this.paymentLogTable = this.page.getByTestId('payment-log-table');
     this.startPaymentButton = this.page.getByRole('button', {
-      name: 'Start payment',
+      name: 'Approve and start payment',
     });
   }
 
   async startPayment() {
     await this.startPaymentButton.click();
-    await this.proceedButton.click();
+    await this.approvePaymentButton.click();
   }
 
   async waitForPaymentToComplete() {
-    await this.page.waitForTimeout(500); // TODO for now needed to bridge in-progress gap between actions & queue.
+    await this.page.waitForTimeout(500);
+    // TODO for now needed to bridge in-progress gap between actions & queue.
+    const approvedChip = this.page
+      .locator('app-colored-chip')
+      .getByLabel('Approved')
+      .first();
     const inProgressChip = this.page
       .locator('app-colored-chip')
       .getByLabel('In progress');
 
     await inProgressChip.waitFor({ state: 'hidden' });
+    await approvedChip.waitFor({ state: 'visible' });
+  }
+
+  async validatePendingApprovalChip({ isVisible }: { isVisible: boolean }) {
+    const pendingApprovalChips = this.page
+      .locator('app-colored-chip')
+      .getByLabel('Pending approval');
+    const allChips = await pendingApprovalChips.all();
+
+    if (isVisible) {
+      for (const chip of allChips) {
+        await expect(chip).toBeVisible();
+      }
+    } else {
+      for (const chip of allChips) {
+        await expect(chip).toBeHidden();
+      }
+    }
+  }
+
+  async validateApprovedChipIsPresent() {
+    const approvedChips = this.page
+      .locator('app-colored-chip')
+      .getByLabel('Approved');
+    const allChips = await approvedChips.all();
+
+    for (const chip of allChips) {
+      await expect(chip).toBeVisible();
+    }
   }
 
   async validateInProgressChipIsPresent() {

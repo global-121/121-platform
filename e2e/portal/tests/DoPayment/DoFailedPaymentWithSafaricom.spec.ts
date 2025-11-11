@@ -67,8 +67,11 @@ test('[36096] Do failed payment for Safaricom fsp', async ({ page }) => {
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
     await paymentPage.validateToastMessageAndClose('Payment created.');
 
-    // start payment
+    // start payment and validate status chips and badges
+    await paymentPage.validatePendingApprovalChip({ isVisible: true });
     await paymentPage.startPayment();
+    await paymentPage.validatePendingApprovalChip({ isVisible: false });
+    await paymentPage.validateApprovedChipIsPresent();
     await paymentPage.validateToastMessageAndClose(
       'Payment started successfully.',
     );
