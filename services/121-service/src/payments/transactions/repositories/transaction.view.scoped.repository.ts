@@ -332,14 +332,11 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
     }[]
   > {
     return this.createQueryBuilder('transaction')
-      .select(
-        'DISTINCT transaction.programFspConfigurationName',
-        'programFspConfigurationName',
-      )
-      .addSelect(
-        'transaction.programFspConfigurationId',
-        'programFspConfigurationId',
-      )
+      .select([
+        'transaction.programFspConfigurationName AS "programFspConfigurationName"',
+        'transaction.programFspConfigurationId AS "programFspConfigurationId"',
+      ])
+      .distinct(true)
       .leftJoin('transaction.payment', 'payment')
       .andWhere('payment.programId = :programId', { programId })
       .andWhere('transaction.paymentId = :paymentId', { paymentId })
