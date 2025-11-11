@@ -26,13 +26,6 @@ exports[`Reconciliate excel FSP data Should give an error when status column is 
 }
 `;
 
-exports[`Reconciliate excel FSP data Should throw an error when a payment is in progress 1`] = `
-{
-  "message": "Cannot import FSP reconciliation data while payment is in progress",
-  "statusCode": 400,
-}
-`;
-
 exports[`Reconciliate excel FSP data Should throw an error when importing data that is related to registrations that do not have the same Fsp config 1`] = `
 {
   "message": "Expected imported reconciliation to be related only to one FSP configuration, but found multiple",
