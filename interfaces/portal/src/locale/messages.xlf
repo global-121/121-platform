@@ -1811,9 +1811,6 @@
       <trans-unit id="819007450583343771" datatype="html">
         <source>Voucher</source>
       </trans-unit>
-      <trans-unit id="6553227732294230782" datatype="html">
-        <source>Transfer failed. Error: <x equiv-text="event.errorMessage" id="PH"/></source>
-      </trans-unit>
       <trans-unit id="157548652954522016" datatype="html">
         <source>Click to reconfigure</source>
       </trans-unit>

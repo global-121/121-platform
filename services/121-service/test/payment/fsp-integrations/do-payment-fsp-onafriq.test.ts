@@ -100,7 +100,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     });
     expect(transactionEventDescriptions).toEqual([
       TransactionEventDescription.created,
-      TransactionEventDescription.approved,
+      TransactionEventDescription.approval,
       TransactionEventDescription.initiated,
       TransactionEventDescription.onafriqRequestSent,
       TransactionEventDescription.onafriqCallbackReceived,
@@ -198,7 +198,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     });
     expect(transactionEventDescriptions).toEqual([
       TransactionEventDescription.created,
-      TransactionEventDescription.approved,
+      TransactionEventDescription.approval,
       TransactionEventDescription.initiated,
       TransactionEventDescription.onafriqRequestSent,
       TransactionEventDescription.retry,
@@ -262,7 +262,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     });
     expect(transactionEventDescriptions).toEqual([
       TransactionEventDescription.created,
-      TransactionEventDescription.approved,
+      TransactionEventDescription.approval,
       TransactionEventDescription.initiated,
       TransactionEventDescription.onafriqRequestSent,
       TransactionEventDescription.onafriqCallbackReceived,
@@ -326,7 +326,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     });
     expect(transactionEventDescriptions).toEqual([
       TransactionEventDescription.created,
-      TransactionEventDescription.approved,
+      TransactionEventDescription.approval,
       TransactionEventDescription.initiated,
     ]);
   });
