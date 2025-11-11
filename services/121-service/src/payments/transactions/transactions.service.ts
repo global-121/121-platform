@@ -4,6 +4,7 @@ import chunk from 'lodash/chunk';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
@@ -21,6 +22,7 @@ export class TransactionsService {
     private readonly transactionEventsScopedRepository: TransactionEventsScopedRepository,
     private readonly transactionEventsService: TransactionEventsService,
     private readonly lastTransactionEventRepository: LastTransactionEventRepository,
+    private readonly transactionRepository: TransactionRepository,
   ) {}
 
   public async createTransactionsAndEvents({
@@ -38,7 +40,7 @@ export class TransactionsService {
       transactionToSave.registrationId = item.registrationId;
       transactionToSave.transferValue = item.transferValue;
       transactionToSave.paymentId = paymentId;
-      transactionToSave.status = TransactionStatusEnum.created;
+      transactionToSave.status = TransactionStatusEnum.pendingApproval;
       transactionToSave.userId = userId;
 
       const transactionEvent = new TransactionEventEntity();
@@ -105,6 +107,7 @@ export class TransactionsService {
     newTransactionStatus,
     transactionIds,
     description,
+    type,
     userId,
     programFspConfigurationId,
     errorMessages,
@@ -112,13 +115,16 @@ export class TransactionsService {
     newTransactionStatus: TransactionStatusEnum;
     transactionIds: number[];
     description: TransactionEventDescription;
+    type: TransactionEventType;
     userId: number;
     programFspConfigurationId: number;
-    errorMessages: Map<number, string>;
+    errorMessages?: Map<number, string>;
   }): Promise<void> {
-    await this.transactionScopedRepository.update(transactionIds, {
-      status: newTransactionStatus,
-    });
+    await this.transactionRepository.updateTransactionsToNewStatus(
+      newTransactionStatus,
+      transactionIds,
+    );
+
     const eventsAreSuccessful =
       newTransactionStatus !== TransactionStatusEnum.error;
 
@@ -126,10 +132,10 @@ export class TransactionsService {
       transactionIds,
       programFspConfigurationId,
       userId,
-      type: TransactionEventType.processingStep,
+      type,
       description,
       isSuccessfullyCompleted: eventsAreSuccessful,
-      errorMessages,
+      errorMessages: errorMessages ?? undefined,
     });
   }
 

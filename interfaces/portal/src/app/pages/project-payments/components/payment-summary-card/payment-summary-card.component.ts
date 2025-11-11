@@ -60,7 +60,7 @@ export class PaymentSummaryCardComponent {
     const successCount = this.metrics.data()?.success.count ?? 0;
     const waitingCount = this.metrics.data()?.waiting.count ?? 0;
     const failedCount = this.metrics.data()?.failed.count ?? 0;
-    const createdCount = this.metrics.data()?.created.count ?? 0;
+    const createdCount = this.metrics.data()?.pendingApproval.count ?? 0;
 
     return successCount + waitingCount + failedCount + createdCount;
   });
@@ -69,7 +69,8 @@ export class PaymentSummaryCardComponent {
     const successAmount = this.metrics.data()?.success.transferValue ?? 0;
     const waitingAmount = this.metrics.data()?.waiting.transferValue ?? 0;
     const failedAmount = this.metrics.data()?.failed.transferValue ?? 0;
-    const createdAmount = this.metrics.data()?.created.transferValue ?? 0;
+    const createdAmount =
+      this.metrics.data()?.pendingApproval.transferValue ?? 0;
 
     return successAmount + waitingAmount + failedAmount + createdAmount;
   });

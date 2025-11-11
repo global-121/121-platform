@@ -85,9 +85,6 @@ describe('Registrations - [Scoped]', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
-    // ##TODO putting any console.log here makes the test pass, otherwise it fails. Investigate why.
-    console.log('Ignore');
-
     // Assert
     await waitForPaymentTransactionsToComplete({
       programId: PvProgramId,

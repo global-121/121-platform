@@ -1,5 +1,5 @@
 <p-button
-  label="Start payment"
+  label="Approve and start payment"
   i18n-label
   (click)="openStartPaymentDialog()"
   icon="pi pi-send"
@@ -10,17 +10,18 @@
 <!-- TODO: don't use form-dialog for something that doesn't need input -->
 <app-form-dialog
   #startPaymentDialog
-  header="Start payment"
+  header="Approve and start payment"
   i18n-header
   headerIcon="pi pi-send"
   [mutation]="startPaymentMutation"
   [mutationData]="undefined"
-  proceedLabel="Start payment"
+  proceedLabel="Approve and start payment"
   i18n-proceedLabel
 >
   <p>
     <span i18n
-      >Click start payment to initiate the payment through your FSP(s).</span
+      >Click approve and start payment to initiate the payment through your
+      FSP(s).</span
     >
   </p>
   <app-data-list

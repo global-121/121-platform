@@ -128,7 +128,7 @@ test('Expand rows of activity overview and view transfer history', async ({
 
     // Validate that transfer history table has correct number of rows
     await tableComponent.validateTransferHistoryTableRowCount({
-      expectedRowCount: 6, // created / initiated / voucher created / initial message sent / voucher message sent / message delivered
+      expectedRowCount: 7, // created / approved / initiated / voucher created / initial message sent / voucher message sent / message delivered
     });
   });
 });

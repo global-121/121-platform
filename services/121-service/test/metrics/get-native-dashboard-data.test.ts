@@ -163,7 +163,8 @@ describe('Get amount sent by month', () => {
         success: transferValue * 2,
         waiting: transferValue * 2,
         failed: transferValue * 2,
-        created: 0,
+        pendingApproval: 0,
+        approved: 0,
       });
     });
 
@@ -185,7 +186,8 @@ describe('Get amount sent by month', () => {
         success: transferValue,
         waiting: transferValue,
         failed: transferValue,
-        created: 0,
+        pendingApproval: 0,
+        approved: 0,
       });
     });
   });

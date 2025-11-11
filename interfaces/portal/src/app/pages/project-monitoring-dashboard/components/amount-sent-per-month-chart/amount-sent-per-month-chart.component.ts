@@ -73,6 +73,16 @@ export class AmountSentPerMonthChartComponent {
     labels: this.labels(),
     datasets: [
       {
+        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.pendingApproval],
+        data: this.data().map((a) => a[TransactionStatusEnum.pendingApproval]),
+        backgroundColor: tailwindConfig.theme.colors.orange[500],
+      },
+      {
+        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.approved],
+        data: this.data().map((a) => a[TransactionStatusEnum.approved]),
+        backgroundColor: tailwindConfig.theme.colors.purple[500],
+      },
+      {
         label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.error],
         data: this.data().map((a) => a.failed),
         backgroundColor: tailwindConfig.theme.colors.red[500],
@@ -86,12 +96,6 @@ export class AmountSentPerMonthChartComponent {
         label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.waiting],
         data: this.data().map((a) => a[TransactionStatusEnum.waiting]),
         backgroundColor: tailwindConfig.theme.colors.yellow[500],
-      },
-
-      {
-        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.created],
-        data: this.data().map((a) => a[TransactionStatusEnum.created]),
-        backgroundColor: tailwindConfig.theme.colors.grey[500],
       },
     ],
   }));

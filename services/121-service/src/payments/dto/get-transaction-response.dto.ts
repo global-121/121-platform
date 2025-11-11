@@ -48,6 +48,9 @@ export class GetTransactionResponseDto {
   @ApiProperty({ example: '12345', type: 'string' })
   public registrationReferenceId: string;
 
+  @ApiProperty({ example: '', type: 'string' })
+  public registrationScope: string;
+
   @ApiProperty({ example: 'Juan Garcia' })
   public registrationName?: string;
 }

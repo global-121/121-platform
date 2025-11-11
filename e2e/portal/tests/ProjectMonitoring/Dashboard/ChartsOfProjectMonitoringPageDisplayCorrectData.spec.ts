@@ -53,18 +53,24 @@ test('All Charts of Monitoring Dashboard tab display correct data', async ({
         failed: 0,
         successful: 5,
         pending: 0,
+        pendingApproval: 0,
+        approved: 0,
       },
       amountPerStatus: {
         date: formattedDate,
         failed: 0,
         successful: 200,
         pending: 0,
+        pendingApproval: 0,
+        approved: 0,
       },
       amountPerMonth: {
         date: formattedMonth,
         failed: 0,
         successful: 200,
         pending: 0,
+        pendingApproval: 0,
+        approved: 0,
       },
     });
   });
