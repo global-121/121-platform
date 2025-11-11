@@ -10,6 +10,7 @@ import {
   QueryClient,
   queryOptions,
 } from '@tanstack/angular-query-experimental';
+import { sortBy } from 'lodash';
 
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import {
@@ -148,14 +149,16 @@ export class RegistrationAttributeService {
     program: Program,
   ): { value: string; label?: string }[] | undefined {
     switch (attributeName) {
-      case GenericRegistrationAttributes.preferredLanguage:
-        return program.languages.map((language) => ({
+      case GenericRegistrationAttributes.preferredLanguage: {
+        const preferredLanguages = program.languages.map((language) => ({
           value: language,
           label:
             this.getRegistrationPreferredLanguageNameService.getRegistrationPreferredLanguageName(
               language,
             ),
         }));
+        return sortBy(preferredLanguages, 'label');
+      }
       case GenericRegistrationAttributes.programFspConfigurationName:
         return program.programFspConfigurations.map((fspConfig) => ({
           value: fspConfig.name,
