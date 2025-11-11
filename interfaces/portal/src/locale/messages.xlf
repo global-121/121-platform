@@ -2003,6 +2003,15 @@
       <trans-unit id="page-title-program-transaction-list" datatype="html">
         <source>Transaction list</source>
       </trans-unit>
+      <trans-unit id="1183614487113957266" datatype="html">
+        <source>Create new card</source>
+      </trans-unit>
+      <trans-unit id="5874573745311168789" datatype="html">
+        <source>hallo yuri hier moet je content laten zien om een nieuwe kaart aan te kunnen maken</source>
+      </trans-unit>
+      <trans-unit id="debit-card-create-new-card-dialog-header" datatype="html">
+        <source>Create new card</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

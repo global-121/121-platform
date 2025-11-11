@@ -3,6 +3,28 @@
   [registrationId]="registrationId()"
 >
   <div class="px-2">
+    <div class="flex w-full justify-center">
+      <div class="flex flex-col items-center justify-center">
+        <p-header i18n>
+          hallo yuri hier moet je content laten zien om een nieuwe kaart aan te
+          kunnen maken
+        </p-header>
+        <p-button
+          i18n
+          (click)="createNewCard()"
+        >
+          Create new card
+        </p-button>
+        <p-dialog
+          header="Create new card"
+          i18n-header="@@debit-card-create-new-card-dialog-header"
+          [modal]="true"
+          [closable]="true"
+          [dismissableMask]="true"
+          [style]="{ width: '400px' }"
+        ></p-dialog>
+      </div>
+    </div>
     @if (currentCard()) {
       <div class="my-auto ms-auto flex">
         @if (currentCardHasAction()('pause')) {
