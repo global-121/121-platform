@@ -33,7 +33,7 @@ To support multiple languages, we use the default Angular i18n features, see: <h
 
 See all supported/enabled languages at: [`angular.json`: ...`/i18n/locales`](angular.json).
 
-During development, only 1 language can be used.
+In "normal" development mode, only 1 language can be used. If you run the portal in debug-production mode (`npm start:debug-production`) you _can_ use multiple languages. Rebuilding the frontend takes a lot longer than in normal mode so it's not ideal.
 
 #### Translations
 
