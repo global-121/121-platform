@@ -318,4 +318,37 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       },
     });
   }
+
+  public async getUniqueProgramFspConfigForPendingApproval({
+    programId,
+    paymentId,
+  }: {
+    programId: number;
+    paymentId: number;
+  }): Promise<
+    {
+      programFspConfigurationName: string;
+      programFspConfigurationId: number;
+    }[]
+  > {
+    return this.createQueryBuilder('transaction')
+      .select(
+        'DISTINCT transaction.programFspConfigurationName',
+        'programFspConfigurationName',
+      )
+      .addSelect(
+        'transaction.programFspConfigurationId',
+        'programFspConfigurationId',
+      )
+      .leftJoin('transaction.payment', 'payment')
+      .andWhere('payment.programId = :programId', { programId })
+      .andWhere('transaction.paymentId = :paymentId', { paymentId })
+      .andWhere('transaction.status = :status', {
+        status: TransactionStatusEnum.pendingApproval,
+      })
+      .getRawMany<{
+        programFspConfigurationName: string;
+        programFspConfigurationId: number;
+      }>();
+  }
 }
