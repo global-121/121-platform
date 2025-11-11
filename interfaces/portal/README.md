@@ -37,7 +37,8 @@ In "normal" development mode, only 1 language can be used. If you run the portal
 
 #### Translations
 
-Translations are managed via the [Lokalise TMS-service](https://lokalise.com).  
+Translations are managed via the [Lokalise TMS-service](https://lokalise.com), a paid translation service. The translations live in [`.xlf`](https://en.wikipedia.org/wiki/XLIFF) files, only the source xlf file `messages.xlf` is version controlled, the others, like `messages.ar.xlf`, are not.
+
 To create a local build using the latest translations, the translation-files need to be downloaded from the Lokalise-API.
 
 For this, some credentials/variables need to be set in the `.env`-file:
@@ -53,7 +54,7 @@ After setting these variables, run the following command to verify the download 
 npm run build:download-translations
 ```
 
-After downloading, the translations will be available to use.
+This will download the translation files to `interfaces/portal/src/locale`. They will now be available to use.
 
 #### Using translations
 
