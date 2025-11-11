@@ -73,6 +73,7 @@ export class UsersPageComponent {
       field: 'lastLogin',
       header: $localize`Last login`,
       type: QueryTableColumnType.DATE,
+      disableFiltering: true,
     },
   ]);
 
