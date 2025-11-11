@@ -48,7 +48,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[35234] Edit: FSP', async ({ page }) => {
+test('Edit: FSP', async ({ page }) => {
   const personalInformationPage = new RegistrationPersonalInformationPage(page);
   const activityLogPage = new RegistrationActivityLogPage(page);
 

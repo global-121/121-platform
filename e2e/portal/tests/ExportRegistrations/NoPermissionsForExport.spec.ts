@@ -31,9 +31,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[29360] Viewing the export options without permission', async ({
-  page,
-}) => {
+test('Viewing the export options without permission', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
 

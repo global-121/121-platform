@@ -1,5 +1,4 @@
 import { defineConfig } from '@playwright/test';
-// import { AzureReporterOptions } from '@alex_neo/playwright-azure-reporter/dist/playwright-azure-reporter';
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -14,31 +13,7 @@ export default defineConfig({
     // eslint-disable-next-line n/no-process-env -- This environment variable `CI` is NOT used in the 121-service, thus not managed via the env.ts file.
     !!process.env.CI, // Fail the build on CI if you accidentally left test.only in the source code.
   retries: 1,
-  reporter: [
-    ['list'],
-    // [
-    //   '@alex_neo/playwright-azure-reporter',
-    //   {
-    //     orgUrl: process.env.AZURE_DEV_URL,
-    //     token: process.env.AZURE_DEVOPS_TOKEN,
-    //     planId: 27408,
-    //     projectName: '121 Platform',
-    //     environment: 'AQA',
-    //     logging: true,
-    //     testRunTitle: 'Playwright Test Suite',
-    //     publishTestResultsMode: 'testRun',
-    //     uploadAttachments: true,
-    //     attachmentsType: ['screenshot', 'video', 'trace'],
-    //     testRunConfig: {
-    //       owner: {
-    //         displayName: 'Krajewski, Piotr',
-    //       },
-    //       comment: 'Playwright Test Suite',
-    //       configurationIds: [],
-    //     },
-    //   } as AzureReporterOptions,
-    // ],
-  ],
+  reporter: [['list']],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   workers: 1,
   outputDir: './test-results',
@@ -67,11 +42,5 @@ export default defineConfig({
         channel: 'chromium',
       },
     },
-    // {
-    //   name: 'chrome',
-    //   use: {
-    //     channel: 'chrome',
-    //   },
-    // },
   ],
 });

@@ -46,9 +46,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[38377] Chip displays correct amount for second payment', async ({
-  page,
-}) => {
+test('Chip displays correct amount for second payment', async ({ page }) => {
   const basePage = new BasePage(page);
   const projectMonitoring = new ProjectMonitoring(page);
 

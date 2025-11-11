@@ -52,7 +52,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[30579] All elements of Monitoring page display correct data for OCW', async ({
+test('All elements of Monitoring page display correct data for OCW', async ({
   page,
 }) => {
   const basePage = new BasePage(page);
@@ -85,7 +85,7 @@ test('[30579] All elements of Monitoring page display correct data for OCW', asy
   });
 });
 
-test('[30326] All elements of Monitoring page display correct data for NLRC', async ({
+test('All elements of Monitoring page display correct data for NLRC', async ({
   page,
 }) => {
   const basePage = new BasePage(page);

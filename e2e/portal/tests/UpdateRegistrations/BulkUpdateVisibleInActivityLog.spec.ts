@@ -34,7 +34,7 @@ test.beforeEach(async ({ page }) => {
 
 const newName = 'Michael Scarn';
 
-test('[36352] Data should be updated according to selected columns and registrations', async ({
+test('Data should be updated according to selected columns and registrations', async ({
   page,
 }) => {
   const registrationsPage = new RegistrationsPage(page);

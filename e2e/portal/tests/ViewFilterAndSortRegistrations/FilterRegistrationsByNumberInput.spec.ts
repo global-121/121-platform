@@ -48,7 +48,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
 });
 
-test('[34948] Filter registrations by Input number', async ({ page }) => {
+test('Filter registrations by Input number', async ({ page }) => {
   const registrationsPage = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
 

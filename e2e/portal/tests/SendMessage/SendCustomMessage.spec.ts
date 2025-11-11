@@ -25,7 +25,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[31077] Send custom message', async ({ page }) => {
+test('Send custom message', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
   const activityLog = new RegistrationActivityLogPage(page);

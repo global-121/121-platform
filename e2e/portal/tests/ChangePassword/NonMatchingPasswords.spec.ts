@@ -20,7 +20,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[29311] Change password unsuccessfully (Current password incorrect)', async ({
+test('Change password unsuccessfully (Current password incorrect)', async ({
   page,
 }) => {
   const homePage = new HomePage(page);

@@ -24,7 +24,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[36880] Export debit card usage unsuccessfully', async ({ page }) => {
+test('Export debit card usage unsuccessfully', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
   const exportDataComponent = new ExportData(page);
 

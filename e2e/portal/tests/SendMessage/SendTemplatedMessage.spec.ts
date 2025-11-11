@@ -34,7 +34,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[31076] Send templated message', async ({ page }) => {
+test('Send templated message', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
   const activityLog = new RegistrationActivityLogPage(page);

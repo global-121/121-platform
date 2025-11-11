@@ -20,7 +20,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[29309] Change password successfully', async ({ page }) => {
+test('Change password successfully', async ({ page }) => {
   const homePage = new HomePage(page);
   const changePasswordPage = new ChangePasswordPage(page);
   const loginPage = new LoginPage(page);

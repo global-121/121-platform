@@ -145,7 +145,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[27493] Navigate to programme', async ({ page }) => {
+test('Navigate to programme', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await test.step('Should open PAs for registration', async () => {

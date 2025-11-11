@@ -43,7 +43,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[36878] Export debit card usage', async ({ page }) => {
+test('Export debit card usage', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
   const exportDataComponent = new ExportData(page);
 

@@ -28,7 +28,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[34664] Ignore duplicates', async ({ page }) => {
+test('Ignore duplicates', async ({ page }) => {
   const homePage = new HomePage(page);
   const registrations = new RegistrationsPage(page);
   const registrationActivityLogPage = new RegistrationActivityLogPage(page);

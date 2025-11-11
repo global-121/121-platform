@@ -30,7 +30,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[29359] Export 15000 PAs', async ({ page }) => {
+test('Export 15000 PAs', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrationsPage = new RegistrationsPage(page);
   const exportDataComponent = new ExportData(page);

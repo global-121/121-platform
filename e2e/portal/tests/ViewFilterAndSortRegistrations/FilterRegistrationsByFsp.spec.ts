@@ -40,7 +40,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
 });
 
-test('[34949] Filter registrations by FSP (from the bug)', async ({ page }) => {
+test('Filter registrations by FSP (from the bug)', async ({ page }) => {
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
   // Act & Assert

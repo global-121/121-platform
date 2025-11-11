@@ -31,7 +31,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[29759] Assign successfully roles to a user ', async ({ page }) => {
+test('Assign successfully roles to a user ', async ({ page }) => {
   const basePage = new BasePage(page);
   const manageTeam = new ProjectTeamPage(page);
   const projectTitle = 'Cash program Westeros';

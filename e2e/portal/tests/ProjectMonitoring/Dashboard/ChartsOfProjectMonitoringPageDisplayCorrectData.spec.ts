@@ -27,7 +27,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[30579] All Charts of Monitoring Dashboard tab display correct data', async ({
+test('All Charts of Monitoring Dashboard tab display correct data', async ({
   page,
 }) => {
   const projectMonitoring = new ProjectMonitoring(page);

@@ -29,7 +29,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[29748] All users assigned to the project should be visible', async ({
+test('All users assigned to the project should be visible', async ({
   page,
 }) => {
   const basePage = new BasePage(page);
