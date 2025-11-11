@@ -406,4 +406,12 @@ svg-icon svg {
   .p-tooltip-text {
     @apply txt-body-s;
   }
+
+   /*
+   * Prevents PrimeIcons (.pi) from overflowing their containers during layout changes.
+   * See AB#38977 for details.
+   */
+  .pi {
+    contain: paint;
+  }
 }
