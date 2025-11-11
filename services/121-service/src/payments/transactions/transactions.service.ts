@@ -4,6 +4,7 @@ import chunk from 'lodash/chunk';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
@@ -21,6 +22,7 @@ export class TransactionsService {
     private readonly transactionEventsScopedRepository: TransactionEventsScopedRepository,
     private readonly transactionEventsService: TransactionEventsService,
     private readonly lastTransactionEventRepository: LastTransactionEventRepository,
+    private readonly transactionRepository: TransactionRepository,
   ) {}
 
   public async createTransactionsAndEvents({
@@ -107,7 +109,7 @@ export class TransactionsService {
     description,
     type,
     userId,
-    programFspConfigurationIdMap,
+    programFspConfigurationId,
     errorMessages,
   }: {
     newTransactionStatus: TransactionStatusEnum;
@@ -115,22 +117,20 @@ export class TransactionsService {
     description: TransactionEventDescription;
     type: TransactionEventType;
     userId: number;
-    programFspConfigurationIdMap: Map<number, number>;
+    programFspConfigurationId: number;
     errorMessages?: Map<number, string>;
   }): Promise<void> {
-    await this.transactionScopedRepository
-      .createQueryBuilder('transaction')
-      .update()
-      .set({ status: newTransactionStatus })
-      .where('id = ANY(:ids)', { ids: transactionIds })
-      .execute();
+    await this.transactionRepository.updateTransactionsToNewStatus(
+      newTransactionStatus,
+      transactionIds,
+    );
 
     const eventsAreSuccessful =
       newTransactionStatus !== TransactionStatusEnum.error;
 
     await this.transactionEventsService.createEventsBulk({
       transactionIds,
-      programFspConfigurationIdMap,
+      programFspConfigurationId,
       userId,
       type,
       description,

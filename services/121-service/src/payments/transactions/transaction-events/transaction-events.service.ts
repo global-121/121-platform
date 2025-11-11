@@ -66,7 +66,7 @@ export class TransactionEventsService {
 
   public async createEventsBulk({
     transactionIds,
-    programFspConfigurationIdMap,
+    programFspConfigurationId,
     userId,
     type,
     description,
@@ -74,7 +74,7 @@ export class TransactionEventsService {
     errorMessages,
   }: {
     transactionIds: number[];
-    programFspConfigurationIdMap: Map<number, number>;
+    programFspConfigurationId: number;
     userId: number;
     type: TransactionEventType;
     description: TransactionEventDescription;
@@ -84,8 +84,7 @@ export class TransactionEventsService {
     const transactionEvents = transactionIds.map((transactionId) =>
       this.transactionEventScopedRepository.create({
         transactionId,
-        programFspConfigurationId:
-          programFspConfigurationIdMap.get(transactionId),
+        programFspConfigurationId,
         userId,
         type,
         description,

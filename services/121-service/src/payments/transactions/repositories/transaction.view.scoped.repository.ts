@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, Repository } from 'typeorm';
+import { Equal, FindOperator, Not, Repository } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
@@ -266,12 +266,42 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       .getRawMany();
   }
 
-  public async getTransactionsPendingApproval({
+  public async getPendingApprovalOfIncludedRegistrations({
     programId,
     paymentId,
   }: {
     programId: number;
     paymentId: number;
+  }): Promise<TransactionViewEntity[]> {
+    return this.getPendingApprovalTransactions({
+      programId,
+      paymentId,
+      registrationStatusCondition: Equal(RegistrationStatusEnum.included),
+    });
+  }
+
+  public async getPendingApprovalOfNonIncludedRegistrations({
+    programId,
+    paymentId,
+  }: {
+    programId: number;
+    paymentId: number;
+  }): Promise<TransactionViewEntity[]> {
+    return this.getPendingApprovalTransactions({
+      programId,
+      paymentId,
+      registrationStatusCondition: Not(Equal(RegistrationStatusEnum.included)),
+    });
+  }
+
+  private async getPendingApprovalTransactions({
+    programId,
+    paymentId,
+    registrationStatusCondition,
+  }: {
+    programId: number;
+    paymentId: number;
+    registrationStatusCondition: FindOperator<RegistrationStatusEnum>;
   }): Promise<TransactionViewEntity[]> {
     return this.find({
       where: {
@@ -280,9 +310,11 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
           programId: Equal(programId),
         },
         status: Equal(TransactionStatusEnum.pendingApproval),
-      },
-      relations: {
-        registration: true,
+        /* eslint-disable no-restricted-syntax -- we pass in Equal(...) or Not(Equal(...)) here */
+        registration: {
+          registrationStatus: registrationStatusCondition,
+        },
+        /* eslint-enable no-restricted-syntax */
       },
     });
   }

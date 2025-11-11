@@ -7,13 +7,13 @@ import { PaymentsExecutionHelperService } from '@121-service/src/payments/servic
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
+import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { BulkActionResultRetryPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 @Injectable()
 export class PaymentsExecutionService {
@@ -41,14 +41,25 @@ export class PaymentsExecutionService {
     );
 
     try {
-      const transactionsPendingApproval =
-        await this.transactionViewScopedRepository.getTransactionsPendingApproval(
+      // get all "pending approval" transactions for this payment
+      const transactionsToStart =
+        await this.transactionViewScopedRepository.getPendingApprovalOfIncludedRegistrations(
           {
             programId,
             paymentId,
           },
         );
-
+      const transactionsToFail =
+        await this.transactionViewScopedRepository.getPendingApprovalOfNonIncludedRegistrations(
+          {
+            programId,
+            paymentId,
+          },
+        );
+      const transactionsPendingApproval = [
+        ...transactionsToStart,
+        ...transactionsToFail,
+      ];
       if (transactionsPendingApproval.length === 0) {
         throw new HttpException(
           {
@@ -59,19 +70,26 @@ export class PaymentsExecutionService {
         );
       }
 
-      const programFspConfigurationNames: string[] = Array.from(
+      // check that all FSP configurations are still valid
+      const programFspConfigurations = Array.from(
         new Set(
           transactionsPendingApproval
-            .map((t) => t.programFspConfigurationName)
-            .filter((fsp): fsp is string => fsp !== null),
+            .filter((fsp) => fsp.programFspConfigurationName !== null)
+            .map((t) => {
+              return {
+                id: t.programFspConfigurationId,
+                name: t.programFspConfigurationName,
+              };
+            }),
         ),
       );
-
+      const fspConfigNames = programFspConfigurations.map((p) => p.name!);
       await this.paymentsHelperService.checkFspConfigurationsOrThrow(
         programId,
-        programFspConfigurationNames,
+        fspConfigNames,
       );
 
+      // store payment events
       // TODO these 2 actions will later be slit up. For now they are together.
       await this.paymentEventsService.createEvent({
         paymentId,
@@ -84,73 +102,106 @@ export class PaymentsExecutionService {
         type: PaymentEvent.started,
       });
 
-      // update all "included" transactions to 'approved' ..
-      const programFspConfigurationIdMap = new Map<number, number>(
-        transactionsPendingApproval.map((item) => [
-          item.id,
-          item.programFspConfigurationId!,
-        ]),
-      );
-      const transactionsToStart = transactionsPendingApproval.filter(
-        (t) =>
-          t.registration.registrationStatus === RegistrationStatusEnum.included,
-      );
-      if (transactionsToStart.length > 0) {
-        await this.transactionsService.saveTransactionProgressBulk({
-          newTransactionStatus: TransactionStatusEnum.approved,
-          transactionIds: transactionsToStart.map((t) => t.id),
-          description: TransactionEventDescription.approved,
-          type: TransactionEventType.approval,
-          userId,
-          programFspConfigurationIdMap,
-        });
-      }
-
-      // .. and all "non-included" transactions to failed
-      const transactionsToFail = transactionsPendingApproval.filter(
-        (t) =>
-          t.registration.registrationStatus !== RegistrationStatusEnum.included,
-      );
-      if (transactionsToFail.length > 0) {
-        await this.transactionsService.saveTransactionProgressBulk({
-          newTransactionStatus: TransactionStatusEnum.error,
-          transactionIds: transactionsToFail.map((t) => t.id),
-          description: TransactionEventDescription.notApproved,
-          type: TransactionEventType.approval,
-          userId,
-          programFspConfigurationIdMap,
-          errorMessages: new Map<number, string>(
-            transactionsToFail.map((t) => [
-              t.id,
-              'Registration did not have status included at the time of starting the payment',
-            ]),
-          ),
-        });
-      }
-
-      // Note: this includes also the failing transactions to be consistent with other failed transactions for now.
-      await this.paymentsExecutionHelperService.updatePaymentCountAndSetToCompleted(
-        {
-          registrationIds: transactionsPendingApproval.map(
-            (t) => t.registrationId,
-          ),
-          programId,
-          userId,
-        },
-      );
-
-      // start the queue for all approved transactions
-      await this.createTransactionJobs({
-        programId,
-        transactionIds: transactionsToStart.map((t) => t.id),
+      // process transactions to-fail and to-start
+      const fspConfigIds = programFspConfigurations.map((p) => p.id!);
+      await this.markTransactionsAsFailed(
+        transactionsToFail,
+        fspConfigIds,
         userId,
-        isRetry: false,
-      });
+        programId,
+      );
+      await this.markTransactionsAsApprovedAndStartQueue(
+        transactionsToStart,
+        fspConfigIds,
+        userId,
+        programId,
+      );
     } finally {
       await this.paymentsProgressHelperService.unlockPaymentsForProgram(
         programId,
       );
     }
+  }
+
+  private async markTransactionsAsApprovedAndStartQueue(
+    transactionsToStart: TransactionViewEntity[],
+    fspConfigIds: number[],
+    userId: number,
+    programId: number,
+  ) {
+    for (const programFspConfigurationId of fspConfigIds) {
+      // update all "included" transactions to 'approved' ..
+      const fspConfigTransactions = transactionsToStart.filter(
+        (t) => t.programFspConfigurationId === programFspConfigurationId,
+      );
+      if (fspConfigTransactions.length === 0) {
+        continue;
+      }
+      await this.transactionsService.saveTransactionProgressBulk({
+        newTransactionStatus: TransactionStatusEnum.approved,
+        transactionIds: fspConfigTransactions.map((t) => t.id),
+        description: TransactionEventDescription.approved,
+        type: TransactionEventType.approval,
+        userId,
+        programFspConfigurationId,
+      });
+    }
+
+    await this.paymentsExecutionHelperService.updatePaymentCountAndSetToCompleted(
+      {
+        registrationIds: transactionsToStart.map((t) => t.registrationId),
+        programId,
+        userId,
+      },
+    );
+
+    await this.createTransactionJobs({
+      programId,
+      transactionIds: transactionsToStart.map((t) => t.id),
+      userId,
+      isRetry: false,
+    });
+  }
+
+  private async markTransactionsAsFailed(
+    transactionsToFail: TransactionViewEntity[],
+    fspConfigIds: number[],
+    userId: number,
+    programId: number,
+  ) {
+    for (const programFspConfigurationId of fspConfigIds) {
+      // update all "non-included" transactions to 'failed' ..
+      const fspConfigTransactions = transactionsToFail.filter(
+        (t) => t.programFspConfigurationId === programFspConfigurationId,
+      );
+      if (fspConfigTransactions.length === 0) {
+        continue;
+      }
+      await this.transactionsService.saveTransactionProgressBulk({
+        newTransactionStatus: TransactionStatusEnum.error,
+        transactionIds: transactionsToFail.map((t) => t.id),
+        description: TransactionEventDescription.notApproved,
+        type: TransactionEventType.approval,
+        userId,
+        programFspConfigurationId,
+        errorMessages: new Map<number, string>(
+          transactionsToFail.map((t) => [
+            t.id,
+            'Registration did not have status included at the time of starting the payment',
+          ]),
+        ),
+      });
+    }
+
+    // NOTE 1: this is also done for failed transactions to be consistent with other failed transactions for now. Will be revised later.
+    // NOTE 2: This is for now done separately for approved and failed, for cleaner code. Note that this logic will soon move to the processing service anyway, so this won't matter any more.
+    await this.paymentsExecutionHelperService.updatePaymentCountAndSetToCompleted(
+      {
+        registrationIds: transactionsToFail.map((t) => t.registrationId),
+        programId,
+        userId,
+      },
+    );
   }
 
   public async retryPayment({

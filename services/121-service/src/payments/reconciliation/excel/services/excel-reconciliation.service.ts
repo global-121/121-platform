@@ -255,16 +255,13 @@ export class ExcelReconciliationService {
       });
     }
 
-    const programFspConfigurationIdMap = new Map<number, number>(
-      transactionIdsToUpdate.map((id) => [id, programFspConfigurationId]),
-    );
     await this.transactionsService.saveTransactionProgressBulk({
       newTransactionStatus: transactionStatus,
       transactionIds: transactionIdsToUpdate,
       description: TransactionEventDescription.excelReconciliationFileUpload,
       type: TransactionEventType.processingStep,
       userId,
-      programFspConfigurationIdMap,
+      programFspConfigurationId,
       errorMessages,
     });
   }
