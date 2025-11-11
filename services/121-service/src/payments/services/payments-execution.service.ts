@@ -129,7 +129,7 @@ export class PaymentsExecutionService {
       await this.transactionsService.saveTransactionProgressBulk({
         newTransactionStatus: TransactionStatusEnum.approved,
         transactionIds: fspConfigTransactions.map((t) => t.id),
-        description: TransactionEventDescription.approved,
+        description: TransactionEventDescription.approval,
         type: TransactionEventType.approval,
         userId,
         programFspConfigurationId,
@@ -180,7 +180,7 @@ export class PaymentsExecutionService {
       await this.transactionsService.saveTransactionProgressBulk({
         newTransactionStatus: TransactionStatusEnum.error,
         transactionIds: transactionsToFail.map((t) => t.id),
-        description: TransactionEventDescription.notApproved,
+        description: TransactionEventDescription.approval,
         type: TransactionEventType.approval,
         userId,
         programFspConfigurationId,

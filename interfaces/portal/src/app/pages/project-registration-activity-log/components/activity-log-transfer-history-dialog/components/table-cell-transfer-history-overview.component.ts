@@ -7,8 +7,6 @@ import {
   input,
 } from '@angular/core';
 
-import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
-
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
 import { TransactionEvent } from '~/domains/transaction/transaction.model';
 
@@ -39,21 +37,9 @@ export class TableCellTransferHistoryOverviewComponent
   readonly label = computed(() => {
     const event = this.value();
     if (event.errorMessage) {
-      // NOTE: This exception is needed purely for the migrated old transactions, where errorMessage has been put in the 'initiated' event. For new transactions, this will never be the case.
-      // Without this exception, this would yield a double past tense.
-      if (event.type === TransactionEventType.initiated) {
-        return $localize`Transfer failed. Error: ${event.errorMessage}`;
-      }
-      // ##TODO: this is the very clunky solution I came up with to make this work for failing because non-included.
-      if (event.type === TransactionEventType.approval) {
-        return `${event.description}. Error: ${event.errorMessage}`;
-      }
-      return `${event.description} failed. Error: ${event.errorMessage}`;
+      return `${event.description} - Error: ${event.errorMessage}`;
     }
-    if (event.type !== TransactionEventType.processingStep) {
-      return event.description;
-    }
-    return `${event.description} succeeded`;
+    return event.description;
   });
   readonly icon = computed(() => {
     const event = this.value();
