@@ -1,15 +1,16 @@
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import {
   getRegistrations,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
-  getAccessToken,
+  createAccessTokenWithPermissions,
   getAccessTokenCvaManager,
-  removePermissionsFromRole,
+} from '@121-service/test/helpers/utility.helper';
+import {
+  getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
@@ -19,6 +20,7 @@ import {
 
 describe('Load PA table', () => {
   describe(`Get registrations using paginate without "${PermissionEnum.RegistrationPersonalREAD}" permission`, () => {
+    let accessTokenPersonalReadOnly: string;
     beforeEach(async () => {
       await resetDB(SeedScript.nlrcMultiple, __filename);
       const accessTokenAdmin = await getAccessToken();
@@ -29,21 +31,22 @@ describe('Load PA table', () => {
         accessTokenAdmin,
       );
 
-      await removePermissionsFromRole(DefaultUserRole.CvaManager, [
-        PermissionEnum.RegistrationPersonalREAD,
-      ]);
+      accessTokenPersonalReadOnly = await createAccessTokenWithPermissions({
+        permissions: [PermissionEnum.RegistrationREAD],
+        programId: programIdOCW,
+        adminAccessToken: await getAccessToken(),
+      });
     });
 
     it(`should return all dynamic attributes when none explicitly requested`, async () => {
       // Arrange
       const requestedDynamicAttributes = undefined;
-      const accessTokenCvaManager = await getAccessTokenCvaManager();
 
       // Act
       const getRegistrationsResponse = await getRegistrations({
         programId: programIdOCW,
         attributes: requestedDynamicAttributes,
-        accessToken: accessTokenCvaManager,
+        accessToken: accessTokenPersonalReadOnly,
       });
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
@@ -73,14 +76,14 @@ describe('Load PA table', () => {
 
     it(`should only return the dynamic attributes requested`, async () => {
       // Arrange
-      const accessTokenCvaManager = await getAccessTokenCvaManager();
+
       const requestedDynamicAttributes = ['preferredLanguage', 'referenceId'];
 
       // Act
       const getRegistrationsResponse = await getRegistrations({
         programId: programIdOCW,
         attributes: requestedDynamicAttributes,
-        accessToken: accessTokenCvaManager,
+        accessToken: accessTokenPersonalReadOnly,
       });
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;

@@ -4,6 +4,7 @@ import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   registrationScopedKisumuEastPv,
   registrationScopedKisumuWestPv,
@@ -16,8 +17,8 @@ import {
   waitForDeleteRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
+  createAccessTokenWithPermissions,
   getAccessToken,
-  getAccessTokenCvaManager,
   getAccessTokenScoped,
   getServer,
   resetDB,
@@ -210,13 +211,18 @@ describe('Metric export list', () => {
   });
 
   it("should export failed when user doesn't have enough permission", async () => {
-    const accessTokenCvaManager = await getAccessTokenCvaManager();
+    const accessTokenNotEnoughPermissions =
+      await createAccessTokenWithPermissions({
+        permissions: [PermissionEnum.RegistrationPersonalEXPORT],
+        programId: PvProgramId,
+        adminAccessToken: accessToken,
+      });
 
     const response = await getServer()
       .get(
         `/programs/${PvProgramId}/metrics/export-list/${ExportType.unusedVouchers}`,
       )
-      .set('Cookie', [accessTokenCvaManager])
+      .set('Cookie', [accessTokenNotEnoughPermissions])
       .responseType('blob')
       .query({
         format: 'xlsx',

@@ -6,6 +6,9 @@ import { env } from '@121-service/src/env';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
+import { CreateProgramAssignmentDto } from '@121-service/src/user/dto/assign-aw-to-program.dto';
+import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
+import { CreateUserRoleDto } from '@121-service/src/user/dto/create-user-role.dto';
 import { UpdateUserRoleDto } from '@121-service/src/user/dto/update-user-role.dto';
 import { UserRoleResponseDTO } from '@121-service/src/user/dto/userrole-response.dto';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -137,30 +140,197 @@ export async function getRole(type: string): Promise<UserRoleResponseDTO> {
   return allRoles.find((role: UserRoleResponseDTO) => role.role === type);
 }
 
-export async function removePermissionsFromRole(
-  roleName: DefaultUserRole,
-  permissionsToRemove: PermissionEnum[],
-): Promise<void> {
-  const role = await getRole(roleName);
-  const adjustedPermissions = role.permissions?.filter(
-    (permission: PermissionEnum) => !permissionsToRemove.includes(permission),
-  );
-  await updatePermissionsOfRole(role.id, {
-    permissions: adjustedPermissions as PermissionEnum[],
-  });
+export async function createRole({
+  roleName,
+  label,
+  description,
+  permissions,
+  adminAccessToken,
+}: {
+  roleName: string;
+  label: string;
+  description: string;
+  permissions: PermissionEnum[];
+  adminAccessToken: string;
+}): Promise<number> {
+  const createRoleDto: CreateUserRoleDto = {
+    role: roleName,
+    label,
+    description,
+    permissions,
+  };
+
+  const createRoleResponse = await getServer()
+    .post('/roles')
+    .set('Cookie', [adminAccessToken])
+    .send(createRoleDto);
+
+  if (createRoleResponse.status !== HttpStatus.CREATED) {
+    throw new Error(
+      `Failed to create role: ${createRoleResponse.status} - ${JSON.stringify(createRoleResponse.body)}`,
+    );
+  }
+
+  return createRoleResponse.body.id;
 }
 
-export async function addPermissionToRole(
-  roleName: DefaultUserRole,
-  permissionsToAdd: PermissionEnum[],
-): Promise<void> {
-  const role = await getRole(roleName);
-  const permissionSet = new Set(role.permissions || []);
-  permissionsToAdd.forEach((permission) => permissionSet.add(permission));
-  const updatedPermissions = Array.from(permissionSet) as PermissionEnum[];
-  await updatePermissionsOfRole(role.id, {
-    permissions: updatedPermissions,
+export async function createUser({
+  username,
+  displayName,
+  adminAccessToken,
+}: {
+  username: string;
+  displayName: string;
+  adminAccessToken: string;
+}): Promise<void> {
+  const createUserDto: CreateUsersDto = {
+    users: [
+      {
+        username,
+        displayName,
+      },
+    ],
+  };
+
+  const createUserResponse = await getServer()
+    .post('/users')
+    .set('Cookie', [adminAccessToken])
+    .send(createUserDto);
+
+  if (createUserResponse.status !== HttpStatus.NO_CONTENT) {
+    throw new Error(
+      `Failed to create user: ${createUserResponse.status} - ${JSON.stringify(createUserResponse.body)}`,
+    );
+  }
+}
+
+/**
+ * Searches for a user by username within a program context
+ */
+export async function findUserByUsername({
+  programId,
+  username,
+  adminAccessToken,
+}: {
+  programId: number;
+  username: string;
+  adminAccessToken: string;
+}): Promise<number> {
+  const searchUserResponse = await getServer()
+    .get(`/programs/${programId}/users/search`)
+    .set('Cookie', [adminAccessToken])
+    .query({ username });
+
+  if (
+    searchUserResponse.status !== HttpStatus.OK ||
+    !searchUserResponse.body.length
+  ) {
+    throw new Error(
+      `Failed to find created user: ${searchUserResponse.status}`,
+    );
+  }
+
+  return searchUserResponse.body[0].id;
+}
+
+export async function assignUserToProgram({
+  programId,
+  userId,
+  roles,
+  scope,
+  adminAccessToken,
+}: {
+  programId: number;
+  userId: number;
+  roles: string[];
+  scope?: string;
+  adminAccessToken: string;
+}): Promise<void> {
+  const assignmentDto: CreateProgramAssignmentDto = {
+    roles: roles as DefaultUserRole[],
+    scope,
+  };
+
+  const assignmentResponse = await getServer()
+    .put(`/programs/${programId}/users/${userId}`)
+    .set('Cookie', [adminAccessToken])
+    .send(assignmentDto);
+
+  if (assignmentResponse.status !== HttpStatus.OK) {
+    throw new Error(
+      `Failed to assign user to program: ${assignmentResponse.status} - ${JSON.stringify(assignmentResponse.body)}`,
+    );
+  }
+}
+
+export async function createUserWithPermissions({
+  permissions,
+  programId,
+  adminAccessToken,
+  scope,
+}: {
+  permissions: PermissionEnum[];
+  programId: number;
+  adminAccessToken: string;
+  scope?: string;
+}): Promise<string> {
+  // Generate unique identifiers
+  const timestamp = Date.now();
+  const randomSuffix = Math.random().toString(36).substring(7);
+  const roleName = `test_role_${timestamp}_${randomSuffix}`;
+  const username = `test_user_${timestamp}_${randomSuffix}@example.org`;
+  const displayName = `Test User ${timestamp}`;
+
+  await createRole({
+    roleName,
+    label: `Test Role ${timestamp}`,
+    description: `Automatically created test role with permissions: ${permissions.join(', ')}`,
+    permissions,
+    adminAccessToken,
   });
+
+  await createUser({
+    username,
+    displayName,
+    adminAccessToken,
+  });
+
+  const userId = await findUserByUsername({
+    programId,
+    username,
+    adminAccessToken,
+  });
+
+  // Step 4: Assign user to program with the custom role
+  await assignUserToProgram({
+    programId,
+    userId,
+    roles: [roleName],
+    scope,
+    adminAccessToken,
+  });
+
+  return username;
+}
+
+export async function createAccessTokenWithPermissions({
+  permissions,
+  adminAccessToken,
+  programId,
+  scope,
+}: {
+  permissions: PermissionEnum[];
+  adminAccessToken: string;
+  programId: number;
+  scope?: string;
+}): Promise<string> {
+  const username = await createUserWithPermissions({
+    permissions,
+    programId,
+    adminAccessToken,
+    scope,
+  });
+  return getAccessToken(username, env.USERCONFIG_121_SERVICE_PASSWORD_TESTING);
 }
 
 function removeNestedProperties<T extends object>(
