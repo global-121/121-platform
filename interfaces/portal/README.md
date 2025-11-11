@@ -45,8 +45,8 @@ For this, some credentials/variables need to be set in the `.env`-file:
 
 - `NG_LOCALES` Can be empty, to get all available translations; Or set a comma-separated list of language-codes to limit the download to specific languages/locales.
 - `NG_DOWNLOAD_TRANSLATIONS_AT_BUILD=true`
-- `LOKALISE_PROJECT_ID` - See in Bitwarden/GitHub-environments
-- `LOKALISE_API_TOKEN` - Create one in your Lokalise-account or use the shared Development-token from Bitwarden
+- `LOKALISE_API_TOKEN`
+- `LOKALISE_PROJECT_ID`
 
 After setting these variables, run the following command to verify the download of translations:
 
