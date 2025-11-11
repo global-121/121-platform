@@ -331,9 +331,10 @@ export class MetricsService {
       .select('SUM(transaction."transferValue"::numeric)', 'cashDisbursed')
       .leftJoin('transaction.payment', 'p')
       .andWhere({
-        status: Not(
-          In([TransactionStatusEnum.error, TransactionStatusEnum.created]),
-        ),
+        status: In([
+          TransactionStatusEnum.success,
+          TransactionStatusEnum.waiting,
+        ]),
       })
       .andWhere('p."programId" = :programId', { programId })
       .getRawOne();
@@ -501,7 +502,8 @@ export class MetricsService {
           success: 0,
           waiting: 0,
           failed: 0,
-          created: 0,
+          pendingApproval: 0,
+          approved: 0,
         };
       }
 
@@ -514,7 +516,10 @@ export class MetricsService {
       res[month].success += Number(aggregate.success.transferValue);
       res[month].waiting += Number(aggregate.waiting.transferValue);
       res[month].failed += Number(aggregate.failed.transferValue);
-      res[month].created += Number(aggregate.created.transferValue);
+      res[month].pendingApproval += Number(
+        aggregate.pendingApproval.transferValue,
+      );
+      res[month].approved += Number(aggregate.approved.transferValue);
     }
     return res;
   }

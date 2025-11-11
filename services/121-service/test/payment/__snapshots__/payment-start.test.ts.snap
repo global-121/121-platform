@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Payment start with included and non-included registrations should fail transactions of non-included registrations 1`] = `"Registration did not have status included at the time of starting the payment"`;

@@ -31,5 +31,11 @@ export class PaymentReturnDto {
     example: { count: 0, transferValue: 0 },
     type: CountAndTransferValueDto,
   })
-  created: CountAndTransferValueDto;
+  pendingApproval: CountAndTransferValueDto;
+
+  @ApiProperty({
+    example: { count: 0, transferValue: 0 },
+    type: CountAndTransferValueDto,
+  })
+  approved: CountAndTransferValueDto;
 }

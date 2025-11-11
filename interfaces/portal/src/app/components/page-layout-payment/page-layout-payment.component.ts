@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -17,7 +17,6 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FspDto } from '@121-service/src/fsps/fsp.dto';
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
-import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
@@ -41,7 +40,6 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   imports: [
     PageLayoutComponent,
     CardModule,
-    DecimalPipe,
     ButtonModule,
     MetricTileComponent,
     ProjectPaymentChartComponent,
@@ -84,7 +82,11 @@ export class PageLayoutPaymentComponent {
     refetchInterval: this.refetchPayment() ? 1000 : undefined,
     success: (data: PaymentAggregate) => {
       if (
-        data.success.count + data.failed.count + data.waiting.count ===
+        data.success.count +
+          data.failed.count +
+          data.waiting.count +
+          data.approved.count +
+          data.pendingApproval.count ===
         this.transactions.data()?.length
       ) {
         this.refetchPayment.set(false);
@@ -126,6 +128,21 @@ export class PageLayoutPaymentComponent {
     () => $localize`Payment` + ' ' + this.paymentDate(),
   );
 
+  readonly totalRegistrations = computed(() => {
+    if (!this.payment.isSuccess()) {
+      return '-';
+    }
+
+    const totalRegistrations =
+      this.payment.data().failed.count +
+      this.payment.data().success.count +
+      this.payment.data().waiting.count +
+      this.payment.data().pendingApproval.count +
+      this.payment.data().approved.count;
+
+    return totalRegistrations.toString();
+  });
+
   readonly totalPaymentAmount = computed(() => {
     if (!this.payment.isSuccess()) {
       return '-';
@@ -135,7 +152,8 @@ export class PageLayoutPaymentComponent {
       this.payment.data().failed.transferValue +
       this.payment.data().success.transferValue +
       this.payment.data().waiting.transferValue +
-      this.payment.data().created.transferValue;
+      this.payment.data().pendingApproval.transferValue +
+      this.payment.data().approved.transferValue;
 
     return (
       this.currencyPipe.transform(
@@ -206,7 +224,7 @@ export class PageLayoutPaymentComponent {
       return '';
     }
     return (
-      this.payment.data().created.count.toString() +
+      this.payment.data().pendingApproval.count.toString() +
       ' ' +
       $localize`registrations`
     );
@@ -219,7 +237,7 @@ export class PageLayoutPaymentComponent {
 
     return (
       this.currencyPipe.transform(
-        this.payment.data().created.transferValue,
+        this.payment.data().pendingApproval.transferValue,
         this.project.data()?.currency,
         'symbol-narrow',
         '1.2-2',
@@ -227,16 +245,15 @@ export class PageLayoutPaymentComponent {
     );
   });
 
-  readonly showStartPaymentButton = computed<boolean>(() => {
-    if (!this.transactions.isSuccess()) {
+  readonly showStartPaymentButton = computed<boolean | undefined>(() => {
+    if (!this.payment.isSuccess()) {
       return false;
     }
 
-    return this.transactions
-      .data()
-      .some(
-        (transaction) => transaction.status === TransactionStatusEnum.created,
-      );
+    return (
+      this.payment.data().pendingApproval.count > 0 &&
+      !this.isPaymentInProgress()
+    );
   });
 
   readonly canStartPayment = computed(() =>
@@ -251,21 +268,22 @@ export class PageLayoutPaymentComponent {
   );
 
   readonly isPaymentApproved = computed(() => {
-    if (!this.payments.isSuccess()) {
+    if (!this.payment.isSuccess()) {
       return false;
     }
 
     const data = this.payment.data();
 
-    const failed = data?.failed.count ?? 0;
-    const success = data?.success.count ?? 0;
-    const waiting = data?.waiting.count ?? 0;
+    const failed = data.failed.count;
+    const success = data.success.count;
+    const waiting = data.waiting.count;
+    const approved = data.approved.count;
 
-    return failed + success + waiting > 0;
+    return failed + success + waiting + approved > 0;
   });
 
   readonly statusBadgeLabel = computed(() => {
-    if (!this.transactions.isSuccess()) {
+    if (!this.payment.isSuccess()) {
       return '';
     }
 
@@ -278,7 +296,7 @@ export class PageLayoutPaymentComponent {
   });
 
   readonly statusBadgeColor = computed(() => {
-    if (!this.transactions.isSuccess()) {
+    if (!this.payment.isSuccess()) {
       return 'blue';
     }
 

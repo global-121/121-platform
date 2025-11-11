@@ -68,8 +68,7 @@ describe('Registrations - [Scoped]', () => {
     // Arrange
     // add payment.create permission to the user
     await addPermissionToRole(DefaultUserRole.CvaManager, [
-      PermissionEnum.PaymentCREATE,
-      PermissionEnum.PaymentUPDATE, // ##TODO modify/extend this test to 2 users with respective permissions?
+      PermissionEnum.PaymentUPDATE,
     ]);
 
     const testScope = DebugScope.Kisumu;
@@ -87,9 +86,6 @@ describe('Registrations - [Scoped]', () => {
       filter: { 'filter.status': '$in:included' },
     });
     const paymentId = doPaymentResponse.body.id;
-
-    // ##TODO putting any console.log here makes the test pass, otherwise it fails. Investigate why.
-    console.log('Ignore');
 
     // Assert
     await waitForPaymentTransactionsToComplete({

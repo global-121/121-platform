@@ -112,6 +112,7 @@ describe('Do payment to 1 PA', () => {
         });
       expect(transactionEventDescriptions).toEqual([
         TransactionEventDescription.created,
+        TransactionEventDescription.approved,
         TransactionEventDescription.initiated,
         TransactionEventDescription.safaricomRequestSent,
         TransactionEventDescription.safaricomCallbackReceived,
@@ -241,6 +242,7 @@ describe('Do payment to 1 PA', () => {
         });
       expect(transactionEventDescriptions).toEqual([
         TransactionEventDescription.created,
+        TransactionEventDescription.approved,
         TransactionEventDescription.initiated,
         TransactionEventDescription.safaricomRequestSent,
         TransactionEventDescription.retry,

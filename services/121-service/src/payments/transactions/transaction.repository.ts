@@ -2,6 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 
 export class TransactionRepository extends Repository<TransactionEntity> {
   constructor(
@@ -30,5 +31,16 @@ export class TransactionRepository extends Repository<TransactionEntity> {
       .getRawMany();
 
     return lastThreePaymentIds.map((payment) => payment.paymentId);
+  }
+
+  public async updateTransactionsToNewStatus(
+    newTransactionStatus: TransactionStatusEnum,
+    transactionIds: number[],
+  ): Promise<void> {
+    await this.createQueryBuilder('transaction')
+      .update()
+      .set({ status: newTransactionStatus })
+      .where('id = ANY(:ids)', { ids: transactionIds })
+      .execute();
   }
 }

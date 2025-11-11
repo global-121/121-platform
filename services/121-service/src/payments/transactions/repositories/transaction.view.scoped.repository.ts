@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, Repository } from 'typeorm';
+import { Equal, FindOperator, Not, Repository } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
@@ -93,6 +93,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
     fromDate,
     toDate,
     fspSpecificJoinFields,
+    enableScope,
   }: {
     programId: number;
     paymentId?: number;
@@ -103,6 +104,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       attribute: string;
       alias: string;
     }[];
+    enableScope: boolean;
   }): Promise<
     ({
       paymentId: number;
@@ -115,6 +117,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       registrationId: number;
       status: TransactionStatusEnum;
       registrationStatus: RegistrationStatusEnum;
+      registrationScope: string;
       amount: number;
       errorMessage: string | null;
       programFspConfigurationName: string;
@@ -151,6 +154,9 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
     if (toDate) {
       query.andWhere('p.created <= :toDate', { toDate });
     }
+    if (enableScope) {
+      query.addSelect('r.scope AS "registrationScope"');
+    }
 
     if (!fspSpecificJoinFields) {
       return query.getRawMany();
@@ -168,7 +174,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       );
     }
 
-    return query.getRawMany();
+    return await query.getRawMany();
   }
 
   public async getTransactionJobCreationDetails(
@@ -260,22 +266,86 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       .getRawMany();
   }
 
-  public async getCreatedTransactionsOfIncludedRegistrations({
+  public async getPendingApprovalOfIncludedRegistrations({
     programId,
     paymentId,
   }: {
     programId: number;
     paymentId: number;
   }): Promise<TransactionViewEntity[]> {
+    return this.getPendingApprovalTransactions({
+      programId,
+      paymentId,
+      registrationStatusCondition: Equal(RegistrationStatusEnum.included),
+    });
+  }
+
+  public async getPendingApprovalOfNonIncludedRegistrations({
+    programId,
+    paymentId,
+  }: {
+    programId: number;
+    paymentId: number;
+  }): Promise<TransactionViewEntity[]> {
+    return this.getPendingApprovalTransactions({
+      programId,
+      paymentId,
+      registrationStatusCondition: Not(Equal(RegistrationStatusEnum.included)),
+    });
+  }
+
+  private async getPendingApprovalTransactions({
+    programId,
+    paymentId,
+    registrationStatusCondition,
+  }: {
+    programId: number;
+    paymentId: number;
+    registrationStatusCondition: FindOperator<RegistrationStatusEnum>;
+  }): Promise<TransactionViewEntity[]> {
     return this.find({
       where: {
-        paymentId: Equal(paymentId),
-        status: Equal(TransactionStatusEnum.created),
-        registration: {
+        payment: {
+          id: Equal(paymentId),
           programId: Equal(programId),
-          registrationStatus: Equal(RegistrationStatusEnum.included),
         },
+        status: Equal(TransactionStatusEnum.pendingApproval),
+        /* eslint-disable no-restricted-syntax -- we pass in Equal(...) or Not(Equal(...)) here */
+        registration: {
+          registrationStatus: registrationStatusCondition,
+        },
+        /* eslint-enable no-restricted-syntax */
       },
     });
+  }
+
+  public async getUniqueProgramFspConfigForPendingApproval({
+    programId,
+    paymentId,
+  }: {
+    programId: number;
+    paymentId: number;
+  }): Promise<
+    {
+      programFspConfigurationName: string;
+      programFspConfigurationId: number;
+    }[]
+  > {
+    return this.createQueryBuilder('transaction')
+      .select([
+        'transaction.programFspConfigurationName AS "programFspConfigurationName"',
+        'transaction.programFspConfigurationId AS "programFspConfigurationId"',
+      ])
+      .distinct(true)
+      .leftJoin('transaction.payment', 'payment')
+      .andWhere('payment.programId = :programId', { programId })
+      .andWhere('transaction.paymentId = :paymentId', { paymentId })
+      .andWhere('transaction.status = :status', {
+        status: TransactionStatusEnum.pendingApproval,
+      })
+      .getRawMany<{
+        programFspConfigurationName: string;
+        programFspConfigurationId: number;
+      }>();
   }
 }

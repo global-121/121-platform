@@ -13,6 +13,7 @@ import { PaymentsProgressHelperService } from '@121-service/src/payments/service
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
+import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import {
@@ -34,6 +35,7 @@ export class PaymentsReportingService {
     private readonly registrationPaginationService: RegistrationsPaginationService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentEventsService: PaymentEventsService,
+    private readonly programRepository: ProgramRepository,
   ) {}
 
   public async getPayments({
@@ -92,6 +94,7 @@ export class PaymentsReportingService {
         row.totalTransferValue,
       );
     }
+
     return {
       [TransactionStatusEnum.success]: totalTransferValuePerStatus[
         TransactionStatusEnum.success
@@ -110,8 +113,14 @@ export class PaymentsReportingService {
         count: 0,
         transferValue: 0,
       },
-      [TransactionStatusEnum.created]: totalTransferValuePerStatus[
-        TransactionStatusEnum.created
+      [TransactionStatusEnum.pendingApproval]: totalTransferValuePerStatus[
+        TransactionStatusEnum.pendingApproval
+      ] || {
+        count: 0,
+        transferValue: 0,
+      },
+      [TransactionStatusEnum.approved]: totalTransferValuePerStatus[
+        TransactionStatusEnum.approved
       ] || {
         count: 0,
         transferValue: 0,
@@ -195,6 +204,11 @@ export class PaymentsReportingService {
       await this.paymentsReportingHelperService.getFspSpecificJoinFields(
         programId,
       );
+    const enableScope = (
+      await this.programRepository.findOneOrFail({
+        where: { id: Equal(programId) },
+      })
+    ).enableScope;
 
     const transactions =
       await this.transactionViewScopedRepository.getTransactions({
@@ -203,6 +217,7 @@ export class PaymentsReportingService {
         fromDate,
         toDate,
         fspSpecificJoinFields,
+        enableScope,
       });
 
     if (!transactions || transactions.length === 0) {

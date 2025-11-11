@@ -67,7 +67,7 @@
     <app-metric-tile
       class="[grid-area:metric1]"
       [pending]="paymentStatus.isPending() || transactions.isPending()"
-      [metricValue]="transactions.data()?.length | number"
+      [metricValue]="totalRegistrations()"
       metricLabel="Total registrations"
       i18n-metricLabel
       [chipIcon]="isPaymentInProgress() ? 'pi pi-spinner' : undefined"
