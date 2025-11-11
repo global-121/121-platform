@@ -26,6 +26,7 @@
     "code:portal": "code ./interfaces/portal/",
     "code:121-service": "code ./services/121-service/",
     "code:mock-service": "code ./services/mock-service/",
+    "typecheck": "echo 'Not available here! Run inside the sub-folder of a specific package/component.' && exit 0",
     "test": "echo 'See README.md#testing \\n\\n' && npm run test:all",
     "test:all": "npx npm-run-all --npm-path npm --print-label --parallel test:prettier test:portal test:services",
     "test:prettier": "npx prettier --config=./.prettierrc.yml --check \"**/*.{md,json,yml,scss}\"",

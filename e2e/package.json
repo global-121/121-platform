@@ -11,6 +11,7 @@
   "private": true,
   "scripts": {
     "setup": "npm install && npx playwright install",
+    "typecheck": "npx tsc --noEmit",
     "lint": "eslint \"**/*.{ts,js}\"",
     "fix": "npm run lint -- --fix",
     "test": "playwright test --config=playwright.config.ts",
