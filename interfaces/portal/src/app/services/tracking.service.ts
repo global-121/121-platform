@@ -27,8 +27,8 @@ export enum TrackingCategory {
   export = 'Export',
   hiddenFeatures = 'Hidden Features',
   manageRegistrations = 'Manage Registrations',
-  manageRetryTransactions = 'Manage Retry Transactions',
   manageTableSettings = 'Manage Table-settings',
+  manageTransactions = 'Manage Transactions',
 }
 
 /**
