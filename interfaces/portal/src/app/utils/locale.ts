@@ -1,6 +1,6 @@
 import { isDevMode } from '@angular/core';
 
-import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
+import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
 import { environment } from '~environment';
 
@@ -8,11 +8,11 @@ import { environment } from '~environment';
  * "locale" in this file always refers to Angular locale IDs, e.g. "en-GB",
  * "fr", "nl", etc.
  *
- * We convert these into UILanguageEnum values where we communicate through the
+ * We convert these into UILanguage values where we communicate through the
  * browser or emails we send to users of the portal.
  *
  * Registrations have a preferredLanguage field which we do **not** convert to
- * UILanguageEnum values.
+ * UILanguage values.
  */
 
 // TODO: rename this to selectedUILanguage.
@@ -54,14 +54,14 @@ export const getAvailableUILanguages = () =>
 
 /**
  * @param {string} locale - Angular locale id
- * @return {string} UILanguageEnum
+ * @return {string} UILanguage
  */
-export const getUILanguageEnumFromLocale = (locale: Locale): UILanguageEnum => {
+export const getUILanguageFromLocale = (locale: Locale): UILanguage => {
   switch (locale) {
     case Locale.en:
-      return UILanguageEnum.en;
+      return UILanguage.en;
     default:
-      return UILanguageEnum[locale];
+      return UILanguage[locale];
   }
 };
 

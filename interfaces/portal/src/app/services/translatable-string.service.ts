@@ -1,9 +1,9 @@
 import { inject, Injectable, LOCALE_ID } from '@angular/core';
 
-import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
+import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
 
-import { getUILanguageEnumFromLocale, Locale } from '~/utils/locale';
+import { getUILanguageFromLocale, Locale } from '~/utils/locale';
 
 /**
  * The TranslatableStringService provides methods to translate localized
@@ -36,13 +36,13 @@ export class TranslatableStringService {
       return value.toString();
     }
 
-    const uiLanguage = getUILanguageEnumFromLocale(this.currentLocale);
+    const uiLanguage = getUILanguageFromLocale(this.currentLocale);
 
     if (value[uiLanguage]) {
       return value[uiLanguage];
     }
 
-    const fallbackLocaleValue = value[UILanguageEnum.en];
+    const fallbackLocaleValue = value[UILanguage.en];
 
     if (fallbackLocaleValue) {
       return fallbackLocaleValue;
@@ -50,7 +50,7 @@ export class TranslatableStringService {
 
     // If even the fallback-language is not available, return any other language's value
     if (typeof value === 'object' && Object.keys(value).length > 0) {
-      return value[Object.keys(value)[0] as UILanguageEnum];
+      return value[Object.keys(value)[0] as UILanguage];
     }
 
     return undefined;

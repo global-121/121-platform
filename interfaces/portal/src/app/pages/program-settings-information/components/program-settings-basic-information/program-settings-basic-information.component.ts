@@ -38,7 +38,7 @@ import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import {
   getLocaleLabel,
-  getUILanguageEnumFromLocale,
+  getUILanguageFromLocale,
   Locale,
 } from '~/utils/locale';
 
@@ -57,7 +57,7 @@ import {
 })
 export class ProgramSettingsBasicInformationComponent {
   private locale = inject<Locale>(LOCALE_ID);
-  private currentLocale = getUILanguageEnumFromLocale(this.locale);
+  private currentLocale = getUILanguageFromLocale(this.locale);
   languageName = getLocaleLabel(this.locale);
 
   readonly programId = input.required<string>();

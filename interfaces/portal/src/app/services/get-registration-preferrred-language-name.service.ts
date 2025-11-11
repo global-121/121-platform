@@ -1,15 +1,12 @@
 import { inject, Injectable, LOCALE_ID } from '@angular/core';
 
-import { RegistrationPreferredLanguageEnum } from '@121-service/src/shared/enum/registration-preferred-language.enum';
-import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
-import { getUILanguageEnumFromLocale, Locale } from '~/utils/locale';
+import { getUILanguageFromLocale, Locale } from '~/utils/locale';
 
 // Linguonym = the proper name of a language.
-type languageCodeToLinguonym = Record<
-  RegistrationPreferredLanguageEnum,
-  string
->;
+type languageCodeToLinguonym = Record<RegistrationPreferredLanguage, string>;
 
 const en: languageCodeToLinguonym = {
   ab: 'Abkhazian',
@@ -941,7 +938,7 @@ const fr: languageCodeToLinguonym = {
   zu: 'Zoulou',
 };
 
-const localeToLanguageNames: Record<UILanguageEnum, languageCodeToLinguonym> = {
+const localeToLanguageNames: Record<UILanguage, languageCodeToLinguonym> = {
   en,
   ar,
   nl,
@@ -971,9 +968,9 @@ export class GetRegistrationPreferredLanguageNameService {
    * getRegistrationPreferredLanguageName('de');
    */
   getRegistrationPreferredLanguageName(
-    languageCode: RegistrationPreferredLanguageEnum,
+    languageCode: RegistrationPreferredLanguage,
   ): string {
-    const languageEnumLocale = getUILanguageEnumFromLocale(this.currentLocale);
+    const languageEnumLocale = getUILanguageFromLocale(this.currentLocale);
     return localeToLanguageNames[languageEnumLocale][languageCode];
   }
 }
