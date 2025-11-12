@@ -10,6 +10,14 @@
     "params": []
   },
   {
+    "method": "post",
+    "path": "/api/registration-debit-cards/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards",
+    "params": [
+      "programId",
+      "referenceId"
+    ]
+  },
+  {
     "method": "get",
     "path": "/api/health/health",
     "params": []
