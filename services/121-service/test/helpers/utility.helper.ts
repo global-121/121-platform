@@ -313,7 +313,7 @@ export async function createUserWithPermissions({
     adminAccessToken,
   });
 
-  // Step 4: Assign user to program with the custom role
+  // Assign user to program with the custom role
   await assignUserToProgram({
     programId,
     userId,
