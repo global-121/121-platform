@@ -127,6 +127,18 @@ export async function updatePermissionsOfRole(
     .set('Cookie', [accessToken])
     .send(roleToUpdate);
 }
+export async function addPermissionToRole(
+  roleName: DefaultUserRole,
+  permissionsToAdd: PermissionEnum[],
+): Promise<void> {
+  const role = await getRole(roleName);
+  const permissionSet = new Set(role.permissions || []);
+  permissionsToAdd.forEach((permission) => permissionSet.add(permission));
+  const updatedPermissions = Array.from(permissionSet) as PermissionEnum[];
+  await updatePermissionsOfRole(role.id, {
+    permissions: updatedPermissions,
+  });
+}
 
 export async function getRole(type: string): Promise<UserRoleResponseDTO> {
   const accessToken = await getAccessToken();
