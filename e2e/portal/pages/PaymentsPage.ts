@@ -153,22 +153,32 @@ class PaymentsPage extends BasePage {
       .getByTitle(date)
       .textContent();
 
-    const includedRegistrationsElement = await card
-      .filter({ hasText: 'Included reg.' })
-      .textContent();
+    const includedRegistrationsLocator = card.filter({
+      hasText: 'Included reg.',
+    });
+    await includedRegistrationsLocator.waitFor({ state: 'visible' });
+    const includedRegistrationsElement =
+      await includedRegistrationsLocator.textContent();
 
     // Get the total amount element within the card
-    const totalAmountElement = await card
-      .filter({ hasText: 'Expected total amount' })
-      .textContent();
+    const totalAmountLocator = card.filter({
+      hasText: 'Expected total amount',
+    });
+    await totalAmountLocator.waitFor({ state: 'visible' });
+    const totalAmountElement = await totalAmountLocator.textContent();
 
-    const successfulTransfersElement = await card
-      .filter({ hasText: 'Amount successfully sent' })
-      .textContent();
+    const successfulTransfersLocator = card.filter({
+      hasText: 'Amount successfully sent',
+    });
+    await successfulTransfersLocator.waitFor({ state: 'visible' });
+    const successfulTransfersElement =
+      await successfulTransfersLocator.textContent();
 
-    const failedTransfersElement = await card
-      .filter({ hasText: 'Failed transfers' })
-      .textContent();
+    const failedTransfersLocator = card.filter({
+      hasText: 'Failed transfers',
+    });
+    await failedTransfersLocator.waitFor({ state: 'visible' });
+    const failedTransfersElement = await failedTransfersLocator.textContent();
 
     // Validate payment title
     expect(paymentTitle).toContain(date);
