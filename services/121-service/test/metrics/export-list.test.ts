@@ -31,7 +31,7 @@ import {
 
 describe('Metric export list', () => {
   const OcwProgramId = programIdOCW;
-  const PvProgramId = programIdPV;
+  const pvProgramId = programIdPV;
   let accessToken: string;
 
   beforeAll(async () => {
@@ -55,9 +55,9 @@ describe('Metric export list', () => {
       accessToken,
     });
 
-    await importRegistrations(PvProgramId, registrationsPV, accessToken);
+    await importRegistrations(pvProgramId, registrationsPV, accessToken);
     await awaitChangeRegistrationStatus({
-      programId: PvProgramId,
+      programId: pvProgramId,
       referenceIds: [registrationScopedKisumuWestPv.referenceId],
       status: RegistrationStatusEnum.included,
       accessToken,
@@ -95,7 +95,7 @@ describe('Metric export list', () => {
     // 2 registrations of program PV and are in the scope (Zeeland) of the requesting user
     // 1 of those 2 registrations has status 'new'
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
+      .get(`/programs/${pvProgramId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .query({
         ['filter.status']: `$ilike:new`,
@@ -124,7 +124,7 @@ describe('Metric export list', () => {
     // 2 registrations of program PV have an attribute that contains '011' (phonenumber)
     // 1 of those 2 registrations has status 'new'
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
+      .get(`/programs/${pvProgramId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .query({
         ['filter.status']: `$ilike:new`,
@@ -145,6 +145,8 @@ describe('Metric export list', () => {
 
   it('should export all registration attributes when no "select" is provided', async () => {
     // Act
+    accessToken = await getAccessToken();
+
     const getRegistrationsResponse = await getServer()
       .get(`/programs/${OcwProgramId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
@@ -173,7 +175,7 @@ describe('Metric export list', () => {
 
     // Act
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
+      .get(`/programs/${pvProgramId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .query({
         select: 'referenceId,fullName,phoneNumber',
@@ -194,7 +196,7 @@ describe('Metric export list', () => {
     accessToken = await getAccessTokenScoped(testScope);
 
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
+      .get(`/programs/${pvProgramId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .responseType('blob')
       .query({
@@ -214,13 +216,13 @@ describe('Metric export list', () => {
     const accessTokenNotEnoughPermissions =
       await createAccessTokenWithPermissions({
         permissions: [PermissionEnum.RegistrationPersonalEXPORT],
-        programId: PvProgramId,
+        programId: pvProgramId,
         adminAccessToken: accessToken,
       });
 
     const response = await getServer()
       .get(
-        `/programs/${PvProgramId}/metrics/export-list/${ExportType.unusedVouchers}`,
+        `/programs/${pvProgramId}/metrics/export-list/${ExportType.unusedVouchers}`,
       )
       .set('Cookie', [accessTokenNotEnoughPermissions])
       .responseType('blob')
