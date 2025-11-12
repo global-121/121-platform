@@ -31,6 +31,8 @@ import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/enti
 import { ProgramAttachmentsModule } from '@121-service/src/programs/program-attachments/program-attachments.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
+import { RegistrationDebitCardsController } from '@121-service/src/registration-debit-cards/registration-debit-cards.controller';
+import { RegistrationDebitCardsModule } from '@121-service/src/registration-debit-cards/registration-debit-cards.module';
 import { RegistrationsUpdateJobsModule } from '@121-service/src/registrations-update-jobs/registrations-update-jobs.module';
 import { ScriptsModule } from '@121-service/src/scripts/scripts.module';
 import { ProgramExistenceInterceptor } from '@121-service/src/shared/interceptors/program-existence.interceptor';
@@ -98,8 +100,13 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
     SafaricomReconciliationModule,
     OnafriqReconciliationModule,
     RegistrationsUpdateJobsModule,
+    RegistrationDebitCardsModule,
   ],
-  controllers: [AppController, TestController],
+  controllers: [
+    AppController,
+    TestController,
+    RegistrationDebitCardsController,
+  ],
   providers: [
     {
       provide: APP_GUARD,
