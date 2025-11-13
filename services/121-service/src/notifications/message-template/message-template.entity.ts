@@ -9,7 +9,7 @@ import {
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
+import { UILanguageTranslationPartial } from '@121-service/src/shared/types/ui-language-translation-partial.type';
 
 @Unique('uniqueTemplatePerTypeLanguageProgram', [
   'type',
@@ -24,7 +24,7 @@ export class MessageTemplateEntity extends Base121Entity {
   public type: string;
 
   @Column('json', { nullable: true })
-  public label: LocalizedStringForUI | null;
+  public label: UILanguageTranslationPartial | null;
 
   @Column()
   public language: string;

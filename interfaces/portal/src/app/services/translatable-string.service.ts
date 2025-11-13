@@ -1,7 +1,7 @@
 import { inject, Injectable, LOCALE_ID } from '@angular/core';
 
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
-import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
+import { UILanguageTranslationPartial } from '@121-service/src/shared/types/ui-language-translation-partial.type';
 
 import { getUILanguageFromLocale, Locale } from '~/utils/locale';
 
@@ -10,7 +10,7 @@ import { getUILanguageFromLocale, Locale } from '~/utils/locale';
  * strings.
  *
  * Certain data structures, mostly DTOs in the 121 system use
- * LocalizedStringForUI types to store strings in 1..n languages. This service
+ * UILanguageTranslationPartial types to store strings in 0..n languages. This service
  * can translate those strings. This can be done one by one using the
  * `translate` method, or for lists of strings using the `commaSeparatedList`
  * method.
@@ -22,7 +22,7 @@ export class TranslatableStringService {
   private currentLocale = inject<Locale>(LOCALE_ID);
 
   translate(
-    value: LocalizedStringForUI | null | number | string | undefined,
+    value: null | number | string | UILanguageTranslationPartial | undefined,
   ): string | undefined {
     if (value === null || value === undefined) {
       return undefined;
@@ -57,7 +57,7 @@ export class TranslatableStringService {
   }
 
   commaSeparatedList(
-    values: LocalizedStringForUI[] | string[],
+    values: string[] | UILanguageTranslationPartial[],
     style: Intl.ListFormatStyle = 'narrow',
   ): string {
     const list = values

@@ -19,7 +19,7 @@ import { LastTransactionEventEntity } from '@121-service/src/payments/transactio
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
-import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
+import { UILanguageTranslationPartial } from '@121-service/src/shared/types/ui-language-translation-partial.type';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
 @ViewEntity({
@@ -100,7 +100,7 @@ export class TransactionViewEntity extends Base121AuditedEntity {
   public programFspConfigurationId: number | null; // can be null if program fsp config was deleted
 
   @ViewColumn()
-  public programFspConfigurationLabel: LocalizedStringForUI | null; // can be null if program fsp config was deleted
+  public programFspConfigurationLabel: UILanguageTranslationPartial | null; // can be null if program fsp config was deleted
 
   @ViewColumn()
   public programFspConfigurationName: string | null; // can be null if program fsp config was deleted
