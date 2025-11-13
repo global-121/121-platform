@@ -2,7 +2,7 @@ import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type
 import { BaseActivity } from '@121-service/src/activities/interfaces/base-activity.interface';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
+import { UILanguageTranslationPartial } from '@121-service/src/shared/types/ui-language-translation-partial.type';
 
 export interface TransactionActivity extends BaseActivity {
   type: ActivityTypeEnum.Transaction;
@@ -14,7 +14,7 @@ export interface TransactionActivity extends BaseActivity {
     paymentDate: Date;
     updatedDate: Date;
     fspName: Fsps | null;
-    fspConfigurationLabel: LocalizedStringForUI | null;
+    fspConfigurationLabel: UILanguageTranslationPartial | null;
     fspConfigurationName: string | null;
     errorMessage: string | null;
   };

@@ -17,7 +17,7 @@ import {
   GenericRegistrationAttributes,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
+import { UILanguageTranslationPartial } from '@121-service/src/shared/types/ui-language-translation-partial.type';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { FinancialAttributes } from '@121-service/src/user/enum/registration-financial-attributes.const';
 
@@ -64,7 +64,7 @@ const getGenericAttributeType = (
 
 export interface NormalizedRegistrationAttribute {
   name: GenericRegistrationAttributes | string;
-  label: LocalizedStringForUI | string;
+  label: string | UILanguageTranslationPartial;
   editInfo?: string;
   isRequired: boolean;
   isEditable: boolean;

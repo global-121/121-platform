@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
-import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
+import { UILanguageTranslationPartial } from '@121-service/src/shared/types/ui-language-translation-partial.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 /**
@@ -40,7 +40,7 @@ export abstract class BaseProgramDto {
 
   @ApiProperty({ example: { en: 'description' } })
   @IsOptional()
-  public readonly description?: LocalizedStringForUI;
+  public readonly description?: UILanguageTranslationPartial;
 
   @ApiProperty({ example: '2020-01-01T00:01:00.000Z' })
   @IsOptional()

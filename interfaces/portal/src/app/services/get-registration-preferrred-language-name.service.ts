@@ -2,12 +2,16 @@ import { inject, Injectable, LOCALE_ID } from '@angular/core';
 
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
+import { RegistrationPreferredLanguageTranslationFull } from '@121-service/src/shared/types/registration-preferred-language-translation-full.type';
 
 import { getUILanguageFromLocale, Locale } from '~/utils/locale';
 
 // Linguonym = the proper name of a language.
-type languageCodeToLinguonym = Record<RegistrationPreferredLanguage, string>;
+// Just an alias, but better name locally.
+type languageCodeToLinguonym = RegistrationPreferredLanguageTranslationFull;
 
+// So, a map from language codes to linguonyms, for English.
+// The other mappings are below.
 const en: languageCodeToLinguonym = {
   ab: 'Abkhazian',
   aa: 'Afar',

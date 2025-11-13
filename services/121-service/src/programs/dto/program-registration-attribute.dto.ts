@@ -13,7 +13,7 @@ import {
 import { CreateOptionsDto } from '@121-service/src/programs/dto/create-options.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
-import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
+import { UILanguageTranslationPartial } from '@121-service/src/shared/types/ui-language-translation-partial.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 class BaseProgramRegistrationAttributeDto {
@@ -57,7 +57,7 @@ class BaseProgramRegistrationAttributeDto {
     required: false,
   })
   @IsOptional()
-  public placeholder?: LocalizedStringForUI;
+  public placeholder?: UILanguageTranslationPartial;
 
   @ApiProperty({
     example: false,
@@ -80,7 +80,7 @@ export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttr
     },
   })
   @IsNotEmpty()
-  public readonly label: LocalizedStringForUI;
+  public readonly label: UILanguageTranslationPartial;
 
   @ApiProperty({
     example: RegistrationAttributeTypes.text,
@@ -113,7 +113,7 @@ export class UpdateProgramRegistrationAttributeDto extends BaseProgramRegistrati
     required: false,
   })
   @IsOptional()
-  public readonly label?: WrapperType<LocalizedStringForUI>;
+  public readonly label?: WrapperType<UILanguageTranslationPartial>;
 
   @ApiProperty({
     example: RegistrationAttributeTypes.numeric,

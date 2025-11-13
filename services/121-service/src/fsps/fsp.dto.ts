@@ -6,7 +6,7 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
+import { UILanguageTranslationPartial } from '@121-service/src/shared/types/ui-language-translation-partial.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 export class FspDto {
@@ -17,7 +17,7 @@ export class FspDto {
   readonly integrationType: WrapperType<FspIntegrationType>;
 
   @ApiProperty({ example: { en: 'default label' } })
-  readonly defaultLabel: LocalizedStringForUI;
+  readonly defaultLabel: UILanguageTranslationPartial;
 
   @ApiProperty({
     example: [

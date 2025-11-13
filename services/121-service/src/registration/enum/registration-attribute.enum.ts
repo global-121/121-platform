@@ -1,5 +1,5 @@
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
-import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
+import { UILanguageTranslationPartial } from '@121-service/src/shared/types/ui-language-translation-partial.type';
 
 export enum DefaultRegistrationDataAttributeNames {
   phoneNumber = 'phoneNumber',
@@ -29,7 +29,7 @@ export class Attribute {
   public name: string;
   public type: RegistrationAttributeTypes;
   public isRequired?: boolean;
-  public label: LocalizedStringForUI | null;
+  public label: UILanguageTranslationPartial | null;
   public options?: QuestionOption[] | null;
   public pattern?: string | null;
 }

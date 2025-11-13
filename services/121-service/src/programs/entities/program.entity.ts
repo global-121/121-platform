@@ -11,7 +11,7 @@ import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attac
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
-import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
+import { UILanguageTranslationPartial } from '@121-service/src/shared/types/ui-language-translation-partial.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 @Entity('program')
@@ -20,7 +20,7 @@ export class ProgramEntity extends Base121Entity {
   public location: string | null;
 
   @Column('json', { nullable: true })
-  public titlePortal: LocalizedStringForUI | null;
+  public titlePortal: UILanguageTranslationPartial | null;
 
   @Column({ type: 'character varying', nullable: true })
   public ngo: string | null;
@@ -51,7 +51,7 @@ export class ProgramEntity extends Base121Entity {
   public targetNrRegistrations: number | null;
 
   @Column('json', { nullable: true })
-  public description: LocalizedStringForUI | null;
+  public description: UILanguageTranslationPartial | null;
 
   @Column({ default: true })
   public validation: boolean;

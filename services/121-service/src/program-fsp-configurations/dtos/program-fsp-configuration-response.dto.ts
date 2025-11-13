@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FspDto } from '@121-service/src/fsps/fsp.dto';
 import { ProgramFspConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-property-response.dto';
-import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
+import { UILanguageTranslationPartial } from '@121-service/src/shared/types/ui-language-translation-partial.type';
 
 type FspWithoutConfigProps = Omit<
   FspDto,
@@ -21,7 +21,7 @@ export class ProgramFspConfigurationResponseDto {
   public readonly name: string;
 
   @ApiProperty({ example: { en: 'FSP display name' } })
-  public readonly label: LocalizedStringForUI;
+  public readonly label: UILanguageTranslationPartial;
 
   /// Can sometimes be undefined if the Fsp has been removed from the codebase
   @ApiProperty()

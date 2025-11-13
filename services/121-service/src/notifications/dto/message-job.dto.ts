@@ -1,6 +1,6 @@
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
-import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
+import { UILanguageTranslationPartial } from '@121-service/src/shared/types/ui-language-translation-partial.type';
 
 export class MessageJobDto {
   messageProcessType: MessageProcessType;
@@ -27,7 +27,10 @@ export class MessageJobCustomDataDto {
   };
   pendingMessageId?: number;
   existingMessageSid?: string;
-  placeholderData?: Record<string, string | null | LocalizedStringForUI>;
+  placeholderData?: Record<
+    string,
+    string | null | UILanguageTranslationPartial
+  >;
 }
 
 export enum MessageProcessType {

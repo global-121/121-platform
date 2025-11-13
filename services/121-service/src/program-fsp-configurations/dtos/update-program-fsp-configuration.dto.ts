@@ -9,12 +9,12 @@ import {
 } from 'class-validator';
 
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
-import { LocalizedStringForUI } from '@121-service/src/shared/types/localized-string-for-ui.type';
+import { UILanguageTranslationPartial } from '@121-service/src/shared/types/ui-language-translation-partial.type';
 
 export class UpdateProgramFspConfigurationDto {
   @ApiProperty({ example: { en: 'FSP display name' } })
   @IsNotEmpty()
-  public readonly label: LocalizedStringForUI;
+  public readonly label: UILanguageTranslationPartial;
 
   @IsArray()
   @ValidateNested()
