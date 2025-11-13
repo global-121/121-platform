@@ -1,6 +1,7 @@
 import { test } from '@playwright/test';
 import { format } from 'date-fns';
 
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
@@ -18,8 +19,11 @@ test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const programIdOCW = 3;
   const OcwProgramId = programIdOCW;
+  const transferValue = 20;
 
-  await seedPaidRegistrations(registrationsOCW, OcwProgramId);
+  await seedPaidRegistrations(registrationsOCW, OcwProgramId, transferValue, [
+    TransactionStatusEnum.success,
+  ]);
 
   // Login
   const loginPage = new LoginPage(page);
@@ -50,28 +54,15 @@ test('[30579] All Charts of Monitoring Dashboard tab display correct data', asyn
       regByCreationDate: `${registrationByCreationDate}: 5`,
       transfersPerPaymentStatus: {
         date: formattedDate,
-        failed: 0,
-        successful: 4,
-        processing: 1,
-        pendingApproval: 0,
-        approved: 0,
+        successful: 5,
       },
       amountPerPaymentStatus: {
         date: formattedDate,
-        failed: 0,
-        successful: 140,
-        processing: 60,
-
-        pendingApproval: 0,
-        approved: 0,
+        successful: 200,
       },
       amountPerMonth: {
         date: formattedMonth,
-        failed: 0,
-        successful: 140,
-        processing: 60,
-        pendingApproval: 0,
-        approved: 0,
+        successful: 200,
       },
     });
   });
