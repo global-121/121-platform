@@ -299,5 +299,6 @@ export class ChangeStatusDialogComponent
     this.reason.set(undefined);
     this.reasonValidationErrorMessage.set(undefined);
     this.enableSendMessage.set(false);
+    this.customMessage?.set?.(undefined);
   }
 }
