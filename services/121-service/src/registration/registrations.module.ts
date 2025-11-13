@@ -13,7 +13,6 @@ import { MessageTemplateModule } from '@121-service/src/notifications/message-te
 import { LastMessageStatusService } from '@121-service/src/notifications/services/last-message-status.service';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
-import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/entities/intersolve-voucher.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
@@ -37,6 +36,7 @@ import { RegistrationsBulkService } from '@121-service/src/registration/services
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
+import { RegistrationDebitCardsModule } from '@121-service/src/registration-debit-cards/registration-debit-cards.module';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
 import { RegistrationEventsModule } from '@121-service/src/registration-events/registration-events.module';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
@@ -64,13 +64,13 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     ProgramModule,
     FspsModule,
     MessageQueuesModule,
-    IntersolveVisaModule,
     RegistrationDataModule,
     RegistrationUtilsModule,
     RegistrationEventsModule,
     ProgramFspConfigurationsModule,
     QueuesRegistryModule,
     MessageTemplateModule,
+    RegistrationDebitCardsModule,
   ],
   providers: [
     RegistrationsService,

@@ -64,7 +64,6 @@ import {
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { FinancialAttributes } from '@121-service/src/user/enum/registration-financial-attributes.const';
-import { UserService } from '@121-service/src/user/user.service';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @UseGuards(AuthenticatedUserGuard)
@@ -74,7 +73,6 @@ export class RegistrationsController {
     private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginateService: RegistrationsPaginationService,
     private readonly registrationsBulkService: RegistrationsBulkService,
-    private readonly userService: UserService,
   ) {}
 
   @ApiTags('programs/registrations')

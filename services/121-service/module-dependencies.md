@@ -109,10 +109,14 @@ graph LR
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->ProgramFspConfigurationsModule
   ProgramModule-->UserModule
+  RegistrationDebitCardsModule-->IntersolveVisaModule
+  RegistrationDebitCardsModule-->MessageQueuesModule
+  RegistrationDebitCardsModule-->ProgramFspConfigurationsModule
+  RegistrationDebitCardsModule-->RegistrationDataModule
+  RegistrationDebitCardsModule-->UserModule
   RegistrationEventsModule-->UserModule
   RegistrationUtilsModule-->RegistrationDataModule
   RegistrationsModule-->FspsModule
-  RegistrationsModule-->IntersolveVisaModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->MessageQueuesModule
   RegistrationsModule-->MessageTemplateModule
@@ -120,6 +124,7 @@ graph LR
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->QueuesRegistryModule
   RegistrationsModule-->RegistrationDataModule
+  RegistrationsModule-->RegistrationDebitCardsModule
   RegistrationsModule-->RegistrationEventsModule
   RegistrationsModule-->RegistrationUtilsModule
   RegistrationsModule-->UserModule
