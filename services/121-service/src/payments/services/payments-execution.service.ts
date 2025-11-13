@@ -134,14 +134,6 @@ export class PaymentsExecutionService {
       });
     }
 
-    await this.paymentsExecutionHelperService.updatePaymentCountAndSetToCompleted(
-      {
-        registrationIds: transactionsToStart.map((t) => t.registrationId),
-        programId,
-        userId,
-      },
-    );
-
     await this.createTransactionJobs({
       programId,
       transactionIds: transactionsToStart.map((t) => t.id),
@@ -190,16 +182,6 @@ export class PaymentsExecutionService {
         ),
       });
     }
-
-    // NOTE 1: this is also done for failed transactions to be consistent with other failed transactions for now. Will be revised later.
-    // NOTE 2: This is for now done separately for approved and failed, for cleaner code. Note that this logic will soon move to the processing service anyway, so this won't matter any more.
-    await this.paymentsExecutionHelperService.updatePaymentCountAndSetToCompleted(
-      {
-        registrationIds: transactionsToFail.map((t) => t.registrationId),
-        programId,
-        userId,
-      },
-    );
   }
 
   public async retryPayment({
