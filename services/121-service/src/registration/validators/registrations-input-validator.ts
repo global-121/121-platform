@@ -402,9 +402,12 @@ export class RegistrationsInputValidator {
   private createLanguageMapping(
     programLanguages: string[],
   ): Record<string, string> {
-    const languageNamesApi = new Intl.DisplayNames(['en'], {
-      type: 'language',
-    });
+    const languageNamesApi = new Intl.DisplayNames(
+      [RegistrationPreferredLanguage.en],
+      {
+        type: 'language',
+      },
+    );
     const mapping = {};
     for (const languageAbbr of programLanguages) {
       const fullNameLanguage = languageNamesApi.of(

@@ -134,7 +134,7 @@ export class MessageQueuesService {
         where: {
           type: Equal(messageTemplateKey),
           programId: Equal(programId),
-          language: Equal('en'), // use English to determine which placeholders are used
+          language: Equal(RegistrationPreferredLanguage.en), // use English to determine which placeholders are used
         },
       });
       if (!messageTemplate?.message) {
