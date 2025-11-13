@@ -202,7 +202,7 @@ class ProjectMonitoring extends BasePage {
     regPerDuplicateStatus,
     regByCreationDate,
     transfersPerPaymentStatus,
-    amountPerPayentStatus,
+    amountPerPaymentStatus,
     amountPerMonth,
   }: {
     regPerStatus: string;
@@ -219,7 +219,7 @@ class ProjectMonitoring extends BasePage {
       pendingApproval: number;
       approved: number;
     };
-    amountPerPayentStatus: {
+    amountPerPaymentStatus: {
       date: string;
       failed: number;
       successful: number;
@@ -253,7 +253,7 @@ class ProjectMonitoring extends BasePage {
       `Transfers per payment ${transfersPerPaymentStatus.date}: Successful: ${transfersPerPaymentStatus.successful.toString()}, Pending: ${transfersPerPaymentStatus.pending.toString()}`,
     );
     const amountSentPerPayment = barChartCanvas.getByLabel(
-      `Amount sent per payment ${amountPerPayentStatus.date}: Successful: ${amountPerPayentStatus.successful.toString()}, Pending: ${amountPerPayentStatus.pending.toString()}`,
+      `Amount sent per payment ${amountPerPaymentStatus.date}: Successful: ${amountPerPaymentStatus.successful.toString()}, Pending: ${amountPerPaymentStatus.pending.toString()}`,
     );
     const amountSentPerMonth = barChartCanvas.getByLabel(
       `Amount sent per month ${amountPerMonth.date}: Successful: ${amountPerMonth.successful.toString()}, Pending: ${amountPerMonth.pending.toString()}`,

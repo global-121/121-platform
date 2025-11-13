@@ -56,7 +56,7 @@ test('[30579] All Charts of Monitoring Dashboard tab display correct data', asyn
         pendingApproval: 0,
         approved: 0,
       },
-      amountPerPayentStatus: {
+      amountPerPaymentStatus: {
         date: formattedDate,
         failed: 0,
         successful: 140,
