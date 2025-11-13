@@ -2,7 +2,6 @@ import { inject, Injectable, LOCALE_ID } from '@angular/core';
 
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
-import { RegistrationPreferredLanguageTranslationFull } from '@121-service/src/shared/types/registration-preferred-language-translation-full.type';
 
 import { languageCodesToLinguonymsForArab } from '~/services/linguonyms/arab';
 import { languageCodesToLinguonymsForDutch } from '~/services/linguonyms/dutch';
@@ -10,6 +9,7 @@ import { languageCodesToLinguonymsForEnglish } from '~/services/linguonyms/engli
 import { languageCodesToLinguonymsForFrench } from '~/services/linguonyms/french';
 import { languageCodesToLinguonymsForSlovak } from '~/services/linguonyms/slovak';
 import { languageCodesToLinguonymsForSpanish } from '~/services/linguonyms/spanish';
+import { RegistrationPreferredLanguageTranslationFull } from '~/types/registration-preferred-language-translation-full.type';
 import { getUILanguageFromLocale, Locale } from '~/utils/locale';
 
 // Linguonym = the proper name of a language.
