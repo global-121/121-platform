@@ -36,7 +36,7 @@ export class RegistrationDebitCardsController {
     private readonly registrationDebitCardsService: RegistrationDebitCardsService,
   ) {}
 
-  // Re-issue card: this is placed in RegistrationsController because it also sends messages and searches by referenceId
+  // Re-issue card: this is placed in RegistrationDebitCardsController because it also sends messages and searches by referenceId
   @ApiTags('fsps/intersolve-visa')
   @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
   @ApiOperation({
