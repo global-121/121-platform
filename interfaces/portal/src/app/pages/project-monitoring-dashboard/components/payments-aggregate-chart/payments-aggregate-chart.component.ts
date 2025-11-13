@@ -87,13 +87,14 @@ export class PaymentsAggregateChartComponent {
   readonly chartDatasets = computed(() => {
     const datasets: ChartDataset[] = [];
 
-    const hasValues = (data: number[]) => data.some((value) => value > 0);
+    const hasAtLeastOnePositiveValue = (data: number[]) =>
+      data.some((value) => value > 0);
 
     const pendingApproval = this.data().map(
       (payment) =>
         payment[TransactionStatusEnum.pendingApproval][this.aggregateType()],
     );
-    if (hasValues(pendingApproval)) {
+    if (hasAtLeastOnePositiveValue(pendingApproval)) {
       datasets.push({
         label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.pendingApproval],
         data: pendingApproval,
@@ -105,7 +106,7 @@ export class PaymentsAggregateChartComponent {
       (payment) =>
         payment[TransactionStatusEnum.approved][this.aggregateType()],
     );
-    if (hasValues(approved)) {
+    if (hasAtLeastOnePositiveValue(approved)) {
       datasets.push({
         label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.approved],
         data: approved,
@@ -117,7 +118,7 @@ export class PaymentsAggregateChartComponent {
       // TODO: once payments-reporting.services.ts is using enums, use TransactionStatusEnum.error here instead of 'failed'
       (payment) => payment.failed[this.aggregateType()],
     );
-    if (hasValues(failed)) {
+    if (hasAtLeastOnePositiveValue(failed)) {
       datasets.push({
         label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.error],
         data: failed,
@@ -128,7 +129,7 @@ export class PaymentsAggregateChartComponent {
     const success = this.data().map(
       (payment) => payment[TransactionStatusEnum.success][this.aggregateType()],
     );
-    if (hasValues(success)) {
+    if (hasAtLeastOnePositiveValue(success)) {
       datasets.push({
         label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.success],
         data: success,
@@ -139,7 +140,7 @@ export class PaymentsAggregateChartComponent {
     const waiting = this.data().map(
       (payment) => payment[TransactionStatusEnum.waiting][this.aggregateType()],
     );
-    if (hasValues(waiting)) {
+    if (hasAtLeastOnePositiveValue(waiting)) {
       datasets.push({
         label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.waiting],
         data: waiting,
