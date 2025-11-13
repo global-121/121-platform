@@ -64,10 +64,11 @@ test('Badges and chart should display correct statuses during payment process', 
 
   await test.step('Validate "Pending approval" badges and details', async () => {
     await paymentPage.validateGraphStatus({
-      pending: 0,
+      pendingApproval: registrationsCount,
+      approved: 0,
+      processing: 0,
       successful: 0,
       failed: 0,
-      pendingApproval: registrationsCount,
     });
     await paymentPage.validateBadgeIsPresentByLabel({
       badgeName: pendingApprovalBadgeLabel,
@@ -89,7 +90,9 @@ test('Badges and chart should display correct statuses during payment process', 
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.validateToastMessage('Payment started successfully.');
     await paymentPage.validateGraphStatus({
-      pending: 0,
+      pendingApproval: 0,
+      approved: 0,
+      processing: 0,
       successful: registrationsCount,
       failed: 0,
     });

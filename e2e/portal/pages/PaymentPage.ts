@@ -127,9 +127,7 @@ class PaymentPage extends BasePage {
     processing,
     successful,
     failed,
-    pendingApproval,
   }: {
-    pendingApproval: number;
     approved: number;
     processing: number;
     successful: number;
