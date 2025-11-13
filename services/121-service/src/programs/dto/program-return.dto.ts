@@ -186,7 +186,12 @@ export class ProgramReturnDto {
   @IsOptional()
   public readonly fullnameNamingConvention?: string[];
 
-  @ApiProperty({ example: ['en', 'nl'] })
+  @ApiProperty({
+    example: [
+      RegistrationPreferredLanguage.en,
+      RegistrationPreferredLanguage.nl,
+    ],
+  })
   @IsArray()
   public readonly languages: WrapperType<RegistrationPreferredLanguage[]>;
 

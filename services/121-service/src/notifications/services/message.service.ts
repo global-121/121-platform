@@ -31,7 +31,7 @@ export class MessageService {
   @InjectRepository(MessageTemplateEntity)
   private readonly messageTemplateRepo: Repository<MessageTemplateEntity>;
 
-  private readonly fallbackLanguage = 'en';
+  private readonly fallbackLanguage = RegistrationPreferredLanguage.en;
 
   public constructor(
     private readonly whatsappService: WhatsappService,
