@@ -75,11 +75,8 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
     await paymentPage.validateToastMessageAndClose('Payment created.');
 
-    // start payment and validate status chips and badges
-    await paymentPage.validatePendingApprovalChip({ isVisible: true });
+    /// start payment
     await paymentPage.startPayment();
-    await paymentPage.validatePendingApprovalChip({ isVisible: false });
-    await paymentPage.validateApprovedChipIsPresent();
     await paymentPage.validateToastMessageAndClose(
       'Payment started successfully.',
     );

@@ -1,5 +1,4 @@
 import { test } from '@playwright/test';
-import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
@@ -26,7 +25,7 @@ test.beforeEach(async ({ page }) => {
     programIdOCW,
     accessToken,
   );
-  await resetDuplicateRegistrations(8);
+  await resetDuplicateRegistrations(3);
 
   // Login
   const loginPage = new LoginPage(page);
@@ -34,13 +33,10 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[32296] Show in progress banner and chip when payment is in progress', async ({
-  page,
-}) => {
+test('Badges should display correct statuses', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = NLRCProgram.titlePortal.en;
-  const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
     await paymentsPage.selectProgram(projectTitle);
@@ -53,23 +49,42 @@ test('[32296] Show in progress banner and chip when payment is in progress', asy
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
     );
-    await paymentPage.validateToastMessage('Payment created.');
-    await paymentPage.startPayment();
-    await paymentPage.validateToastMessage('Payment started successfully.');
-    // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
-  await test.step('Validate payment in progress in Payment overview', async () => {
+  await test.step('Validate "Pending approval" badges and details', async () => {
+    await paymentPage.validateGraphStatus({
+      pending: 0,
+      successful: 0,
+      failed: 0,
+      pendingApproval: 8,
+    });
     await paymentPage.validateBadgeIsPresentByLabel({
-      badgeName: 'In progress',
+      badgeName: 'Pending approval',
       isVisible: true,
-      count: 1,
+      count: 9,
     });
   });
 
-  await test.step('Validate payemnt in progress in Payments page', async () => {
-    await paymentPage.navigateToProgramPage('Payments');
-    await paymentsPage.validateInProgressBannerIsPresent();
+  await test.step('Validate Start Payment button is visible', async () => {
+    await paymentPage.validateStartPaymentButtonVisibility({ isVisible: true });
+  });
+
+  await test.step('Approve and start payment', async () => {
+    await paymentPage.startPayment();
+  });
+
+  await test.step('Validate Start Payment button is hidden', async () => {
+    await paymentPage.validateStartPaymentButtonVisibility({
+      isVisible: false,
+    });
+  });
+
+  await test.step('Validate all registrations have "Approved" badges', async () => {
+    await paymentPage.waitForPaymentToComplete();
+    await paymentPage.validateBadgeIsPresentByLabel({
+      badgeName: 'Approved',
+      isVisible: true,
+      count: 9,
+    });
   });
 });
