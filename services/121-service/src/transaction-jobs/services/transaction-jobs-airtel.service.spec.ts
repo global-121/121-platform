@@ -34,6 +34,7 @@ describe('TransactionJobsAirtelService', () => {
       programFspConfigurationId: transactionJob.programFspConfigurationId,
       programId: transactionJob.programId,
       referenceId: transactionJob.referenceId,
+      isRetry: transactionJob.isRetry,
     };
 
   beforeEach(async () => {

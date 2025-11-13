@@ -37,6 +37,7 @@ export class TransactionJobsNedbankService {
         programFspConfigurationId: transactionJob.programFspConfigurationId,
         programId: transactionJob.programId,
         referenceId: transactionJob.referenceId,
+        isRetry: transactionJob.isRetry,
       };
 
     // Create transaction event 'initiated' or 'retry'

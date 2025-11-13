@@ -7,6 +7,7 @@ import { MessageContentDetails } from '@121-service/src/notifications/interfaces
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
@@ -31,6 +32,7 @@ export class TransactionJobsHelperService {
     private readonly transactionsService: TransactionsService,
     private readonly programRepository: ProgramRepository,
     private readonly registrationsBulkService: RegistrationsBulkService,
+    private readonly transactionRepository: TransactionRepository,
   ) {}
 
   public async getRegistrationOrThrow(
@@ -150,11 +152,13 @@ export class TransactionJobsHelperService {
     description: TransactionEventDescription;
     errorMessage?: string;
   }): Promise<void> {
-    await this.updatePaymentCountAndSetToCompleted({
-      referenceId: context.referenceId,
-      programId: context.programId,
-      userId: context.userId,
-    });
+    if (!context.isRetry) {
+      await this.updatePaymentCountAndSetToCompleted({
+        referenceId: context.referenceId,
+        programId: context.programId,
+        userId: context.userId,
+      });
+    }
 
     await this.transactionsService.saveTransactionProgress({
       context,
@@ -176,9 +180,13 @@ export class TransactionJobsHelperService {
     programId: number;
     userId: number;
   }): Promise<void> {
-    // ##TODO build in a check that we only update once per transaction. Specifically also not on retry!
-    await this.registrationScopedRepository.increasePaymentCountByOne({
+    const newPaymentCount =
+      await this.transactionRepository.getPaymentCountByReferenceId(
+        referenceId,
+      );
+    await this.registrationScopedRepository.updatePaymentCount({
       referenceId,
+      paymentCount: newPaymentCount,
     });
 
     await this.setStatusToCompletedIfApplicable({

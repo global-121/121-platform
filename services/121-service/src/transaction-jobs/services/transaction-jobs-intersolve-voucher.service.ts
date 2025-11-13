@@ -25,6 +25,7 @@ export class TransactionJobsIntersolveVoucherService {
         programFspConfigurationId: transactionJob.programFspConfigurationId,
         programId: transactionJob.programId,
         referenceId: transactionJob.referenceId,
+        isRetry: transactionJob.isRetry,
       };
 
     await this.transactionJobsHelperService.createInitiatedOrRetryTransactionEvent(

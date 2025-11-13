@@ -344,15 +344,17 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     return wallets;
   }
 
-  public async increasePaymentCountByOne({
+  public async updatePaymentCount({
     referenceId,
+    paymentCount,
   }: {
     referenceId: string;
+    paymentCount: number;
   }): Promise<void> {
     await this.repository
       .createQueryBuilder('registration')
       .update()
-      .set({ paymentCount: () => '"paymentCount" + 1' })
+      .set({ paymentCount })
       .andWhere({ referenceId: Equal(referenceId) })
       .execute();
   }

@@ -22,6 +22,7 @@ export class TransactionJobsExcelService {
         programFspConfigurationId: transactionJob.programFspConfigurationId,
         programId: transactionJob.programId,
         referenceId: transactionJob.referenceId,
+        isRetry: transactionJob.isRetry,
       };
 
     // Create transaction event 'initiated' or 'retry'
