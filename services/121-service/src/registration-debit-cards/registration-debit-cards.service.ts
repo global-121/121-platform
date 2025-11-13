@@ -88,7 +88,7 @@ export class RegistrationDebitCardsService {
   /**
    * This function reissues a visa card and sends a message.
    * - It first retrieves the registration associated with the given reference ID and program ID and he Intersolve Visa configuration for the program.
-   * - It than checks that all required data fields are present in the registration data.
+   * - It then checks that all required data fields are present in the registration data.
    * - It then calls the Intersolve Visa service to reissue the card with the registration data and Intersolve Visa configuration.
    * - Finally, it adds a message to the queue to be sent to the registrant.
    *
