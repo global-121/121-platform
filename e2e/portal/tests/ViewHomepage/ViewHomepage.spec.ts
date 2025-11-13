@@ -13,7 +13,7 @@ test('Load Portal', async ({ page }) => {
   expect(await page.title()).toBe('121 Portal'); // This is the title in the downloaded HTML, not the rendered Angular-app page-title
 });
 
-test('View All projects', async ({ page }) => {
+test('View All programs', async ({ page }) => {
   // Arrange
   await resetDB(SeedScript.testMultiple, __filename);
   // Login
@@ -24,9 +24,9 @@ test('View All projects', async ({ page }) => {
   // Act
   await page.goto('/');
 
-  await page.waitForURL((url) => url.pathname.startsWith('/en-GB/projects'));
+  await page.waitForURL((url) => url.pathname.startsWith('/en-GB/programs'));
 
   // Assert
-  await expect(page.locator('h1')).toContainText('All projects');
-  await expect(page.locator('a[href^="/en-GB/project/"]')).toHaveCount(2);
+  await expect(page.locator('h1')).toContainText('All programs');
+  await expect(page.locator('a[href^="/en-GB/program/"]')).toHaveCount(2);
 });

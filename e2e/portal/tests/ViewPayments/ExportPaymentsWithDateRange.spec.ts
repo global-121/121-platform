@@ -23,7 +23,7 @@ pastDate.setDate(currentDate.getDate() - 1);
 // Arrange
 test.describe('Export Payments with Date Range', () => {
   let page: Page;
-  const projectTitle = 'NLRC OCW Program';
+  const programTitle = 'NLRC OCW Program';
 
   test.beforeAll(async ({ browser }) => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
@@ -40,7 +40,7 @@ test.describe('Export Payments with Date Range', () => {
     const paymentsPage = new PaymentsPage(page);
 
     await page.goto('/');
-    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(programTitle);
     await paymentsPage.navigateToProgramPage('Payments');
   });
 

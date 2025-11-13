@@ -39,10 +39,10 @@ test('Send templated message', async ({ page }) => {
   const registrations = new RegistrationsPage(page);
   const activityLog = new RegistrationActivityLogPage(page);
 
-  const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
+  const programTitle = 'NLRC Direct Digital Aid Program (PV)';
 
   await test.step('Select program', async () => {
-    await basePage.selectProgram(projectTitle);
+    await basePage.selectProgram(programTitle);
   });
 
   await test.step('Send templated message', async () => {
@@ -63,7 +63,7 @@ test('Send templated message', async ({ page }) => {
     await activityLog.validateLastMessageSent(englishMessageTemplate);
     // Validate Dutch message
     await page.goto('/');
-    await basePage.selectProgram(projectTitle);
+    await basePage.selectProgram(programTitle);
     await registrations.goToRegistrationByName({
       registrationName: 'Gemma Houtenbos',
     });

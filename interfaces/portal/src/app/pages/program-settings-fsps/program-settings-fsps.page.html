@@ -1,0 +1,14 @@
+<app-page-layout-program-settings [programId]="programId()">
+  <app-fsp-configuration-list
+    [programId]="programId()"
+    [(forceShowNewFspList)]="forceShowNewFspList"
+    (addFspConfiguration)="addFspConfiguration($event)"
+    (reconfigureFspConfiguration)="reconfigureFspConfiguration($event)"
+  />
+</app-page-layout-program-settings>
+
+<app-fsp-configuration-form-dialog
+  #fspConfigurationFormDialog
+  [programId]="programId()"
+  (configurationCompleted)="configurationCompleted($event)"
+/>

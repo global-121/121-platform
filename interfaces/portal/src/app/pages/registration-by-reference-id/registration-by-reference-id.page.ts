@@ -23,7 +23,7 @@ import { registrationLink } from '~/domains/registration/registration.helper';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationByReferenceIdPageComponent {
-  readonly projectId = input.required<string>();
+  readonly programId = input.required<string>();
   readonly referenceId = input.required<string>();
 
   readonly registrationApiService = inject(RegistrationApiService);
@@ -37,7 +37,7 @@ export class RegistrationByReferenceIdPageComponent {
 
   protected registrations = injectQuery(
     this.registrationApiService.getManyByQuery(
-      this.projectId,
+      this.programId,
       this.paginateQuery,
     ),
   );
@@ -51,7 +51,7 @@ export class RegistrationByReferenceIdPageComponent {
 
       void this.router.navigate(
         registrationLink({
-          projectId: registration.programId,
+          programId: registration.programId,
           registrationId: registration.id,
         }),
       );

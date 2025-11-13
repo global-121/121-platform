@@ -41,7 +41,7 @@ test('Retry payments should put failed transactions back in processing and downl
   const paymentPage = new PaymentPage(page);
   const exportDataComponent = new ExportData(page);
 
-  const projectTitle = NLRCProgramPV.titlePortal.en;
+  const programTitle = NLRCProgramPV.titlePortal.en;
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
   const reconciliationData = path.join(
     __dirname,
@@ -49,7 +49,7 @@ test('Retry payments should put failed transactions back in processing and downl
   );
 
   await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(programTitle);
 
     await paymentsPage.navigateToProgramPage('Payments');
   });
@@ -57,7 +57,7 @@ test('Retry payments should put failed transactions back in processing and downl
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdPV}/payments/1`),
+      url.pathname.startsWith(`/en-GB/program/${programIdPV}/payments/1`),
     );
     await paymentPage.startPayment();
     // Assert payment overview page by payment date/ title

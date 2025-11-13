@@ -14,7 +14,7 @@ import {
   FspConfiguration,
   FspFormField,
 } from '~/domains/fsp-configuration/fsp-configuration.model';
-import { AttributeWithTranslatedLabel } from '~/domains/project/project.model';
+import { AttributeWithTranslatedLabel } from '~/domains/program/program.model';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
 export type FspConfigurationFormGroup = FormGroup<
@@ -33,10 +33,10 @@ export class FspConfigurationService {
 
   getMissingRequiredAttributes({
     fspSetting,
-    projectAttributes,
+    programAttributes,
   }: {
     fspSetting: FspDto;
-    projectAttributes: AttributeWithTranslatedLabel[];
+    programAttributes: AttributeWithTranslatedLabel[];
   }) {
     const requiredAttributes = fspSetting.attributes.filter(
       (property) => property.isRequired,
@@ -45,9 +45,9 @@ export class FspConfigurationService {
     const missingRequiredAttribute = requiredAttributes.filter(
       (attribute) =>
         // if this "some" returns false, it means the attribute is missing
-        !projectAttributes.some(
-          (projectAttribute) =>
-            projectAttribute.name === (attribute.name as string),
+        !programAttributes.some(
+          (programAttribute) =>
+            programAttribute.name === (attribute.name as string),
         ),
     );
 

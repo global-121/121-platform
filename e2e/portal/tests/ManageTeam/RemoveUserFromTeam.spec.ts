@@ -5,7 +5,7 @@ import { resetDB } from '@121-service/test/helpers/utility.helper';
 
 import BasePage from '@121-e2e/portal/pages/BasePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import ProjectTeamPage from '@121-e2e/portal/pages/ProjectTeamPage';
+import ProgramTeamPage from '@121-e2e/portal/pages/ProgramTeamPage';
 
 const expectedInitialAssignedUsers = [
   'admin@example.org',
@@ -33,14 +33,14 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('Users should be removable from "project team"', async ({ page }) => {
+test('Users should be removable from "program team"', async ({ page }) => {
   const basePage = new BasePage(page);
-  const manageTeam = new ProjectTeamPage(page);
-  const projectTitle = 'Cash program Westeros';
+  const manageTeam = new ProgramTeamPage(page);
+  const programTitle = 'Cash program Westeros';
 
   await test.step('Select program and navigate to Manage team', async () => {
-    await basePage.selectProgram(projectTitle);
-    await basePage.navigateToProgramSettingsPage('Project team');
+    await basePage.selectProgram(programTitle);
+    await basePage.navigateToProgramSettingsPage('Program team');
   });
 
   await test.step('Validate assigned users are visible', async () => {

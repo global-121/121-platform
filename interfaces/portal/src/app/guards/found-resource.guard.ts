@@ -4,24 +4,24 @@ import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { QueryClient } from '@tanstack/angular-query-experimental';
 
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
-import { ProjectApiService } from '~/domains/project/project.api.service';
+import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 
-export type FoundResourceGuardType = 'payment' | 'project' | 'registration';
+export type FoundResourceGuardType = 'payment' | 'program' | 'registration';
 
 export const FOUND_RESOURCE_GUARD_QUERY_KEY = 'couldNotFindResource';
 
 export const foundResourceGuard: (
   resourceType: FoundResourceGuardType,
 ) => CanActivateFn = (resourceType: FoundResourceGuardType) =>
-  async function projectPermissionsCanActivateFn(
+  async function programPermissionsCanActivateFn(
     route: ActivatedRouteSnapshot,
   ) {
     const queryClient = inject(QueryClient);
     const router = inject(Router);
 
     const registrationApiService = inject(RegistrationApiService);
-    const projectApiService = inject(ProjectApiService);
+    const programApiService = inject(ProgramApiService);
     const paymentApiService = inject(PaymentApiService);
 
     let foundResource = false;
@@ -30,7 +30,7 @@ export const foundResourceGuard: (
       if (resourceType === 'registration') {
         const registration = await queryClient.fetchQuery(
           registrationApiService.getRegistrationById(
-            signal(route.params.projectId),
+            signal(route.params.programId),
             signal(route.params.registrationId),
           )(),
         );
@@ -38,7 +38,7 @@ export const foundResourceGuard: (
         foundResource = !!registration;
       } else if (resourceType === 'payment') {
         const payments = await queryClient.fetchQuery({
-          ...paymentApiService.getPayments(signal(route.params.projectId))(),
+          ...paymentApiService.getPayments(signal(route.params.programId))(),
           staleTime: 0,
         });
 
@@ -47,11 +47,11 @@ export const foundResourceGuard: (
             payment.paymentId === parseInt(route.params.paymentId as string),
         );
       } else {
-        const project = await queryClient.fetchQuery(
-          projectApiService.getProject(signal(route.params.projectId))(),
+        const program = await queryClient.fetchQuery(
+          programApiService.getProgram(signal(route.params.programId))(),
         );
 
-        foundResource = !!project;
+        foundResource = !!program;
       }
     } catch {
       foundResource = false;

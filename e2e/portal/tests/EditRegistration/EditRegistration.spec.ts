@@ -45,7 +45,7 @@ const login = async (page: Page, email?: string, password?: string) => {
 const goToEditPersonalInformationPage = async (page: Page) => {
   const activityLogPage = new RegistrationActivityLogPage(page);
   await activityLogPage.goto(
-    `/project/${programIdPV}/registrations/${registrationId}`,
+    `/program/${programIdPV}/registrations/${registrationId}`,
   );
   await activityLogPage.navigateToPersonalInformation();
 };

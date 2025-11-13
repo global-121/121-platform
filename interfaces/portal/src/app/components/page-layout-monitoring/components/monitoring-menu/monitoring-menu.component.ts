@@ -22,27 +22,27 @@ import { AuthService } from '~/services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MonitoringMenuComponent {
-  readonly projectId = input.required<string>();
+  readonly programId = input.required<string>();
 
   readonly authService = inject(AuthService);
 
   readonly navMenuItems = computed<MenuItem[]>(() => [
     {
-      label: $localize`:@@page-title-project-monitoring-powerbi:PowerBI`,
-      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectMonitoring}/${AppRoutes.projectMonitoringPowerBI}`,
+      label: $localize`:@@page-title-program-monitoring-powerbi:PowerBI`,
+      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${AppRoutes.programMonitoringPowerBI}`,
       icon: 'pi pi-chart-line',
     },
     {
-      label: $localize`:@@page-title-project-monitoring-dashboard:Dashboard`,
-      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectMonitoring}/${AppRoutes.projectMonitoringDashboard}`,
+      label: $localize`:@@page-title-program-monitoring-dashboard:Dashboard`,
+      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${AppRoutes.programMonitoringDashboard}`,
       icon: 'pi pi-chart-line',
     },
     {
-      label: $localize`:@@page-title-project-monitoring-files:Files`,
-      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectMonitoring}/${AppRoutes.projectMonitoringFiles}`,
+      label: $localize`:@@page-title-program-monitoring-files:Files`,
+      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${AppRoutes.programMonitoringFiles}`,
       icon: 'pi pi-file',
       visible: this.authService.hasPermission({
-        projectId: this.projectId(),
+        programId: this.programId(),
         requiredPermission: PermissionEnum.ProgramAttachmentsREAD,
       }),
     },

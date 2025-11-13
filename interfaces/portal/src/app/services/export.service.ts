@@ -17,7 +17,7 @@ import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/paym
 import { EventApiService } from '~/domains/event/event.api.service';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
-import { ProjectApiService } from '~/domains/project/project.api.service';
+import { ProgramApiService } from '~/domains/program/program.api.service';
 import { DownloadService } from '~/services/download.service';
 import {
   PaginateQuery,
@@ -43,7 +43,7 @@ export class ExportService {
   private eventApiService = inject(EventApiService);
   private metricApiService = inject(MetricApiService);
   private paymentApiService = inject(PaymentApiService);
-  private projectApiService = inject(ProjectApiService);
+  private programApiService = inject(ProgramApiService);
 
   private generateExportParams({
     format,
@@ -95,7 +95,7 @@ export class ExportService {
   }
 
   getExportCBEVerificationReportMutation(
-    projectId: Signal<number | string>,
+    programId: Signal<number | string>,
     toastService: ToastService,
   ): CreateMutationOptions<Dto<CommercialBankEthiopiaValidationReportDto>> {
     return {
@@ -103,7 +103,7 @@ export class ExportService {
         this.showStartExportToast(toastService);
 
         return await this.queryClient.fetchQuery(
-          this.projectApiService.getCbeVerificationReport(projectId)(),
+          this.programApiService.getCbeVerificationReport(programId)(),
         );
       },
       onSuccess: this.downloadService.downloadArrayToXlsx.bind(this),
@@ -111,7 +111,7 @@ export class ExportService {
   }
 
   getExportByTypeMutation(
-    projectId: Signal<number | string>,
+    programId: Signal<number | string>,
     toastService: ToastService,
   ): CreateMutationOptions<
     { file: Blob; filename: string },
@@ -157,20 +157,20 @@ export class ExportService {
 
         switch (type) {
           case 'payments':
-            query = this.projectApiService.getTransactions({
-              projectId,
+            query = this.programApiService.getTransactions({
+              programId,
               params,
             })();
             break;
           case 'registration-data-changes':
             query = this.eventApiService.getEvents({
-              projectId,
+              programId,
               params,
             })();
             break;
           default:
             query = this.metricApiService.exportMetrics({
-              projectId,
+              programId,
               type,
               params,
             })();
@@ -197,7 +197,7 @@ export class ExportService {
   }
 
   getExportFspInstructionsMutation(
-    projectId: Signal<number | string>,
+    programId: Signal<number | string>,
     toastService: ToastService,
   ): CreateMutationOptions<
     { data: Record<string, unknown>[]; fileName: string }[],
@@ -210,7 +210,7 @@ export class ExportService {
 
         const exportResult = await this.queryClient.fetchQuery(
           this.paymentApiService.exportFspInstructions({
-            projectId,
+            programId,
             paymentId,
           })(),
         );

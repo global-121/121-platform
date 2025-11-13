@@ -6,7 +6,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 import { NotificationApiService } from '~/domains/notification/notification.api.service';
-import { ProjectApiService } from '~/domains/project/project.api.service';
+import { ProgramApiService } from '~/domains/program/program.api.service';
 import {
   Registration,
   SendMessageData,
@@ -30,12 +30,12 @@ export class MessagingService {
   private queryClient = inject(QueryClient);
 
   private notificationApiService = inject(NotificationApiService);
-  private projectApiService = inject(ProjectApiService);
+  private programApiService = inject(ProgramApiService);
   private translatableStringService = inject(TranslatableStringService);
 
-  public getMessagePlaceholders(projectId: Signal<number | string>) {
-    return this.projectApiService.getProjectAttributes({
-      projectId,
+  public getMessagePlaceholders(programId: Signal<number | string>) {
+    return this.programApiService.getProgramAttributes({
+      programId,
       // This is the same combo used in the 121-service -> QueueMessageService.getPlaceholdersInMessageText
       includeProgramRegistrationAttributes: true,
       includeTemplateDefaultAttributes: true,
@@ -68,7 +68,7 @@ export class MessagingService {
 
   private async getMessageText(
     input: Partial<MessageInputData>,
-    projectId: Signal<number | string>,
+    programId: Signal<number | string>,
   ): Promise<string | undefined> {
     const sendMessageData = this.getSendMessageData(input);
     if (!sendMessageData) {
@@ -80,7 +80,7 @@ export class MessagingService {
     }
 
     const templates = await this.queryClient.fetchQuery(
-      this.notificationApiService.getMessageTemplates(projectId)(),
+      this.notificationApiService.getMessageTemplates(programId)(),
     );
 
     return templates.find(
@@ -90,21 +90,21 @@ export class MessagingService {
 
   public async getMessagePreview({
     input,
-    projectId,
+    programId,
     previewRegistration,
   }: {
     input: Partial<MessageInputData>;
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
     previewRegistration?: Registration;
   }): Promise<string> {
-    const messageText = await this.getMessageText(input, projectId);
+    const messageText = await this.getMessageText(input, programId);
 
     if (!messageText) {
       return '';
     }
 
     const placeholders = await this.queryClient.fetchQuery(
-      this.getMessagePlaceholders(projectId)(),
+      this.getMessagePlaceholders(programId)(),
     );
 
     if (placeholders.length === 0 || !previewRegistration) {
@@ -132,26 +132,26 @@ export class MessagingService {
 
   public async getTemplateByType({
     type,
-    projectId,
+    programId,
   }: {
     type?: string;
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
   }) {
     const templates = await this.queryClient.fetchQuery(
-      this.notificationApiService.getMessageTemplates(projectId)(),
+      this.notificationApiService.getMessageTemplates(programId)(),
     );
     return templates.find((template) => template.type === type);
   }
 
   public async getTemplateTypeByRegistrationStatus({
     status,
-    projectId,
+    programId,
   }: {
     status: RegistrationStatusEnum;
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
   }): Promise<string | undefined> {
     const templates = await this.queryClient.fetchQuery(
-      this.notificationApiService.getMessageTemplates(projectId)(),
+      this.notificationApiService.getMessageTemplates(programId)(),
     );
     return templates.find((template) => template.type === status.toLowerCase())
       ?.type;

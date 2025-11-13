@@ -33,7 +33,7 @@ test.beforeEach(async ({ page }) => {
 test('Do failed payment for Cbe fsp', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
-  const projectTitle = CbeProgram.titlePortal.en;
+  const programTitle = CbeProgram.titlePortal.en;
   const numberOfPas = registrationsCbe.length;
   const defaultTransferValue = CbeProgram.fixedTransferValue;
   const defaultMaxTransferValue = registrationsCbe.reduce((output, pa) => {
@@ -42,7 +42,7 @@ test('Do failed payment for Cbe fsp', async ({ page }) => {
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(programTitle);
 
     await paymentsPage.navigateToProgramPage('Payments');
   });
@@ -52,7 +52,7 @@ test('Do failed payment for Cbe fsp', async ({ page }) => {
     await paymentsPage.createPayment({});
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdCbe}/payments/1`),
+      url.pathname.startsWith(`/en-GB/program/${programIdCbe}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
@@ -75,7 +75,7 @@ test('Do failed payment for Cbe fsp', async ({ page }) => {
       successfulTransfers: 0,
       failedTransfers: numberOfPas,
       currency: CbeProgram.currency,
-      projectId: programIdCbe,
+      programId: programIdCbe,
     });
   });
 });

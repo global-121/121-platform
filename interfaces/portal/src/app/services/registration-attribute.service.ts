@@ -20,14 +20,14 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { FinancialAttributes } from '@121-service/src/user/enum/registration-financial-attributes.const';
 
-import { ProjectApiService } from '~/domains/project/project.api.service';
-import { projectHasInclusionScore } from '~/domains/project/project.helper';
-import { Project } from '~/domains/project/project.model';
+import { ProgramApiService } from '~/domains/program/program.api.service';
+import { programHasInclusionScore } from '~/domains/program/program.helper';
+import { Program } from '~/domains/program/program.model';
 import {
   ATTRIBUTE_EDIT_INFO,
   ATTRIBUTE_LABELS,
   isGenericAttribute,
-} from '~/domains/project/project-attribute.helpers';
+} from '~/domains/program/program-attribute.helpers';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { LANGUAGE_ENUM_LABEL } from '~/domains/registration/registration.helper';
 import { Registration } from '~/domains/registration/registration.model';
@@ -83,7 +83,7 @@ export class RegistrationAttributeService {
   private readonly queryClient = inject(QueryClient);
 
   private readonly authService = inject(AuthService);
-  private readonly projectApiService = inject(ProjectApiService);
+  private readonly programApiService = inject(ProgramApiService);
   private readonly registrationApiService = inject(RegistrationApiService);
   private readonly translatableStringService = inject(
     TranslatableStringService,
@@ -91,10 +91,10 @@ export class RegistrationAttributeService {
 
   private hasPermissionsRequiredToEditAttribute({
     attributeName,
-    projectId,
+    programId,
   }: {
     attributeName: string;
-    projectId: number | string;
+    programId: number | string;
   }) {
     let requiredPermission = PermissionEnum.RegistrationPersonalUPDATE;
 
@@ -113,21 +113,21 @@ export class RegistrationAttributeService {
     }
 
     return this.authService.hasPermission({
-      projectId,
+      programId,
       requiredPermission,
     });
   }
 
   private isEditableAttribute({
     attributeName,
-    project,
+    program,
   }: {
     attributeName: string;
-    project: Project;
+    program: Program;
   }) {
     const nonEditableAttributes = ['inclusionScore', 'paymentCountRemaining'];
 
-    if (project.paymentAmountMultiplierFormula) {
+    if (program.paymentAmountMultiplierFormula) {
       nonEditableAttributes.push('paymentAmountMultiplier');
     }
 
@@ -135,23 +135,23 @@ export class RegistrationAttributeService {
       !nonEditableAttributes.includes(attributeName) &&
       this.hasPermissionsRequiredToEditAttribute({
         attributeName,
-        projectId: project.id,
+        programId: program.id,
       })
     );
   }
 
   private getGenericAttributeOptions(
     attributeName: GenericRegistrationAttributes,
-    project: Project,
+    program: Program,
   ): { value: string; label?: string }[] | undefined {
     switch (attributeName) {
       case GenericRegistrationAttributes.preferredLanguage:
-        return project.languages.map((language) => ({
+        return program.languages.map((language) => ({
           value: language,
           label: LANGUAGE_ENUM_LABEL[language],
         }));
       case GenericRegistrationAttributes.programFspConfigurationName:
-        return project.programFspConfigurations.map((fspConfig) => ({
+        return program.programFspConfigurations.map((fspConfig) => ({
           value: fspConfig.name,
           label: this.translatableStringService.translate(fspConfig.label),
         }));
@@ -161,7 +161,7 @@ export class RegistrationAttributeService {
   }
 
   private getGenericAttributes(
-    project: Project,
+    program: Program,
     registration?: Registration,
   ): NormalizedRegistrationAttribute[] {
     const genericAttributeNames: GenericRegistrationAttributes[] = [
@@ -171,24 +171,24 @@ export class RegistrationAttributeService {
       GenericRegistrationAttributes.preferredLanguage,
     ];
 
-    if (project.enableScope) {
+    if (program.enableScope) {
       genericAttributeNames.push(GenericRegistrationAttributes.scope);
     }
 
-    if (project.enableMaxPayments) {
+    if (program.enableMaxPayments) {
       genericAttributeNames.push(
         GenericRegistrationAttributes.maxPayments,
         GenericRegistrationAttributes.paymentCountRemaining,
       );
     }
 
-    if (projectHasInclusionScore(project)) {
+    if (programHasInclusionScore(program)) {
       genericAttributeNames.push(GenericRegistrationAttributes.inclusionScore);
     }
 
     return genericAttributeNames.map((attributeName) => {
       const type = getGenericAttributeType(attributeName);
-      const options = this.getGenericAttributeOptions(attributeName, project);
+      const options = this.getGenericAttributeOptions(attributeName, program);
       const value: unknown = registration?.[attributeName];
 
       return {
@@ -200,30 +200,30 @@ export class RegistrationAttributeService {
         type,
         isEditable: this.isEditableAttribute({
           attributeName,
-          project,
+          program,
         }),
         isRequired:
           attributeName === GenericRegistrationAttributes.phoneNumber &&
-          !project.allowEmptyPhoneNumber,
+          !program.allowEmptyPhoneNumber,
       };
     });
   }
 
-  private async getProjectSpecificAttributes(
-    project: Project,
+  private async getProgramSpecificAttributes(
+    program: Program,
     registration?: Registration,
   ): Promise<NormalizedRegistrationAttribute[]> {
-    const projectAttributes = await this.queryClient.fetchQuery(
-      this.projectApiService.getProjectAttributes({
-        projectId: signal(project.id),
+    const programAttributes = await this.queryClient.fetchQuery(
+      this.programApiService.getProgramAttributes({
+        programId: signal(program.id),
         includeProgramRegistrationAttributes: true,
         includeTemplateDefaultAttributes: false,
       })(),
     );
 
-    return projectAttributes.map((attribute) => {
+    return programAttributes.map((attribute) => {
       const { isRequired, name, label, pattern, type } = attribute;
-      const options = project.programRegistrationAttributes
+      const options = program.programRegistrationAttributes
         .find((a) => a.name === name)
         ?.options?.map((option) => ({
           value: option.option,
@@ -241,7 +241,7 @@ export class RegistrationAttributeService {
         type,
         isEditable: this.isEditableAttribute({
           attributeName: attribute.name,
-          project,
+          program,
         }),
       };
     });
@@ -249,24 +249,24 @@ export class RegistrationAttributeService {
 
   getRegistrationAttributes(
     context: Signal<{
-      projectId: Signal<number | string>;
+      programId: Signal<number | string>;
       registrationId?: Signal<string>;
     }>,
   ) {
     return () => {
-      const { projectId, registrationId } = context();
+      const { programId, registrationId } = context();
 
       return queryOptions<NormalizedRegistrationAttribute[]>({
         queryKey: [
           'registrationAttributes',
-          projectId(),
+          programId(),
           registrationId && registrationId(),
           $localize,
           RegistrationAttributeTypes.text,
         ],
         queryFn: async () => {
-          const project = await this.queryClient.fetchQuery(
-            this.projectApiService.getProject(projectId)(),
+          const program = await this.queryClient.fetchQuery(
+            this.programApiService.getProgram(programId)(),
           );
 
           let registration: Registration | undefined;
@@ -274,24 +274,24 @@ export class RegistrationAttributeService {
           if (registrationId) {
             registration = await this.queryClient.fetchQuery(
               this.registrationApiService.getRegistrationById(
-                projectId,
+                programId,
                 registrationId,
               )(),
             );
           }
 
           const genericAttributes = this.getGenericAttributes(
-            project,
+            program,
             registration,
           );
-          const projectSpecificAttributes =
-            await this.getProjectSpecificAttributes(project, registration);
+          const programSpecificAttributes =
+            await this.getProgramSpecificAttributes(program, registration);
 
-          const allNameFields = project.fullnameNamingConvention
+          const allNameFields = program.fullnameNamingConvention
             ? this.translatableStringService.commaSeparatedList(
-                project.fullnameNamingConvention.map((namingConvention) =>
+                program.fullnameNamingConvention.map((namingConvention) =>
                   this.localizeAttribute({
-                    attributes: projectSpecificAttributes,
+                    attributes: programSpecificAttributes,
                     attributeName: namingConvention,
                   }),
                 ),
@@ -310,7 +310,7 @@ export class RegistrationAttributeService {
               isRequired: false,
             },
             ...genericAttributes,
-            ...projectSpecificAttributes.filter(
+            ...programSpecificAttributes.filter(
               (attribute) =>
                 // we show this in the generic attributes already
                 attribute.name !== 'phoneNumber',

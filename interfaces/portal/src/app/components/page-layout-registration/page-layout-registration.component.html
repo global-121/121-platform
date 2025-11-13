@@ -1,5 +1,5 @@
 <app-page-layout
-  [projectId]="projectId()"
+  [programId]="programId()"
   [parentPageLink]="parentLink()"
   [parentPageTitle]="parentTitle()"
   [pageTitle]="registrationTitle()"
@@ -11,7 +11,7 @@
       registration.data().duplicateStatus === 'duplicate')
   ) {
     <app-registration-duplicates-banner
-      [projectId]="projectId()"
+      [programId]="programId()"
       [registrationReferenceId]="registration.data()?.referenceId"
     />
   }
@@ -68,7 +68,7 @@
   <p-card styleClass="mt-6 [&_.p-card-body]:pt-3">
     <app-registration-menu
       data-testid="registration-menu"
-      [projectId]="projectId()"
+      [programId]="programId()"
       [registrationId]="registrationId()"
     />
     <ng-content></ng-content>
@@ -77,23 +77,23 @@
 
 <app-send-message-dialog
   #sendMessageDialog
-  [projectId]="projectId()"
+  [programId]="programId()"
 />
 
 <app-change-status-dialog
   #changeStatusDialog
-  [projectId]="projectId()"
+  [programId]="programId()"
 />
 
 <app-add-note-dialog
   #addNoteDialog
-  [projectId]="projectId()"
+  [programId]="programId()"
   [registrationId]="registrationId()"
 />
 
 <app-ignore-duplication-dialog
   #ignoreDuplicationDialog
-  [projectId]="projectId()"
+  [programId]="programId()"
   [registrationId]="registrationId()"
   [referenceId]="registration.data()?.referenceId ?? ''"
 />

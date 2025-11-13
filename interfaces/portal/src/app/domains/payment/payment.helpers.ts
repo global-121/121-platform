@@ -11,12 +11,12 @@ export const FSPS_WITH_VOUCHER_SUPPORT = [
 export const FSPS_WITH_PHYSICAL_CARD_SUPPORT = [Fsps.intersolveVisa];
 
 export const paymentLink = ({
-  projectId,
+  programId,
   paymentId,
 }: {
-  projectId: number | string;
+  programId: number | string;
   paymentId: number | string;
-}) => ['/', AppRoutes.project, projectId, AppRoutes.projectPayments, paymentId];
+}) => ['/', AppRoutes.program, programId, AppRoutes.programPayments, paymentId];
 
 export const PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS: Record<PaymentEvent, string> =
   {

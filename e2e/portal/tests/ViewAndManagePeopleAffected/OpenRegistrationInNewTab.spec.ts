@@ -33,10 +33,10 @@ test('Open registration in new tab and verify new tab', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
 
-  const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
+  const programTitle = 'NLRC Direct Digital Aid Program (PV)';
 
   await test.step('Select program', async () => {
-    await basePage.selectProgram(projectTitle);
+    await basePage.selectProgram(programTitle);
   });
 
   await test.step('Open registration in new tab', async () => {

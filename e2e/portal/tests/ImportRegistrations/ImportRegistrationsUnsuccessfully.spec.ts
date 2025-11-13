@@ -24,10 +24,10 @@ test('Unsuccessfully import registrations', async ({ page }) => {
     '../../../test-registration-data/test-registrations-OCW-scoped.csv',
   );
 
-  const projectTitle = NLRCProgramPV.titlePortal.en;
+  const programTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {
-    await registrationsPage.selectProgram(projectTitle);
+    await registrationsPage.selectProgram(programTitle);
   });
 
   await test.step('Import registrations to PV program successfully', async () => {

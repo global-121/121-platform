@@ -1,0 +1,37 @@
+<ng-container [formGroup]="formGroup">
+  <app-form-field-wrapper
+    label="Program name"
+    i18n-label
+    [errorMessage]="formFieldErrors()('name')"
+    [isRequired]="true"
+  >
+    <input
+      pInputText
+      type="text"
+      formControlName="name"
+      placeholder="Program name"
+      i18n-placeholder
+    />
+    <ng-container slot="details">
+      <p
+        i18n
+        class="text-grey-500 txt-system-s mt-1"
+      >
+        Max. 60 characters
+      </p>
+    </ng-container>
+  </app-form-field-wrapper>
+  <app-form-field-wrapper
+    label="Program description"
+    i18n-label
+    [errorMessage]="formFieldErrors()('description')"
+  >
+    <textarea
+      rows="5"
+      pTextarea
+      formControlName="description"
+      placeholder="Program description"
+      i18n-placeholder
+    ></textarea>
+  </app-form-field-wrapper>
+</ng-container>

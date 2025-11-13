@@ -18,7 +18,7 @@ import FormDialogComponent from '@121-e2e/portal/components/FormDialogComponent'
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationDebitCardPage from '@121-e2e/portal/pages/RegistrationDebitCardPage';
 
-const projectId = 3;
+const programId = 3;
 let registrationId: number;
 let accessToken: string;
 test.beforeEach(async ({}) => {
@@ -31,9 +31,9 @@ test('User can view debit cards of a registration with a single active debit car
   page,
 }) => {
   // Prepare data - seed a registration with a payment to ensure they have a card
-  await seedPaidRegistrations([registrationOCW1], projectId);
+  await seedPaidRegistrations([registrationOCW1], programId);
   registrationId = await getRegistrationIdByReferenceId({
-    programId: projectId,
+    programId,
     referenceId: registrationOCW1.referenceId,
     accessToken,
   });
@@ -46,7 +46,7 @@ test('User can view debit cards of a registration with a single active debit car
 
   const debitCardPage = new RegistrationDebitCardPage(page);
   await debitCardPage.goto(
-    `/project/${projectId}/registrations/${registrationId}/debit-cards`,
+    `/program/${programId}/registrations/${registrationId}/debit-cards`,
   );
 
   await test.step('User can view current debit card data', async () => {
@@ -78,9 +78,9 @@ test('User can view debit cards of a registration with a single active debit car
 test('User does not find debit card of a person without payments', async ({
   page,
 }) => {
-  await seedIncludedRegistrations([registrationOCW1], projectId, accessToken);
+  await seedIncludedRegistrations([registrationOCW1], programId, accessToken);
   registrationId = await getRegistrationIdByReferenceId({
-    programId: projectId,
+    programId,
     referenceId: registrationOCW1.referenceId,
     accessToken,
   });
@@ -95,7 +95,7 @@ test('User does not find debit card of a person without payments', async ({
 
   await test.step('User can view debit card menu', async () => {
     await debitCardPage.goto(
-      `/project/${projectId}/registrations/${registrationId}/debit-cards`,
+      `/program/${programId}/registrations/${registrationId}/debit-cards`,
     );
     await expect(page.getByTestId('registration-menu')).toBeVisible();
   });
@@ -120,9 +120,9 @@ test('User can replace a debit card and view both new and old card', async ({
   page,
 }) => {
   // Prepare data - seed a registration with a payment to ensure they have a card
-  await seedPaidRegistrations([registrationOCW1], projectId);
+  await seedPaidRegistrations([registrationOCW1], programId);
   registrationId = await getRegistrationIdByReferenceId({
-    programId: projectId,
+    programId,
     referenceId: registrationOCW1.referenceId,
     accessToken,
   });
@@ -135,7 +135,7 @@ test('User can replace a debit card and view both new and old card', async ({
 
   const debitCardPage = new RegistrationDebitCardPage(page);
   await debitCardPage.goto(
-    `/project/${projectId}/registrations/${registrationId}/debit-cards`,
+    `/program/${programId}/registrations/${registrationId}/debit-cards`,
   );
 
   let initialCardData: Record<string, string>;
@@ -234,9 +234,9 @@ test('User can replace a debit card and view both new and old card', async ({
 
 test('User can pause and unpause a debit card', async ({ page }) => {
   // Prepare data - seed a registration with a payment to ensure they have a card
-  await seedPaidRegistrations([registrationOCW1], projectId);
+  await seedPaidRegistrations([registrationOCW1], programId);
   registrationId = await getRegistrationIdByReferenceId({
-    programId: projectId,
+    programId,
     referenceId: registrationOCW1.referenceId,
     accessToken,
   });
@@ -249,7 +249,7 @@ test('User can pause and unpause a debit card', async ({ page }) => {
 
   const debitCardPage = new RegistrationDebitCardPage(page);
   await debitCardPage.goto(
-    `/project/${projectId}/registrations/${registrationId}/debit-cards`,
+    `/program/${programId}/registrations/${registrationId}/debit-cards`,
   );
 
   let initialCardData: Record<string, string>;

@@ -48,10 +48,10 @@ test('[Excel fsp]: Error message should be shown in case no matching column was 
   const paymentsPage = new PaymentsPage(page);
   const paymentPage = new PaymentPage(page);
 
-  const projectTitle = NLRCProgramPV.titlePortal.en;
+  const programTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(programTitle);
 
     await paymentsPage.navigateToProgramPage('Payments');
   });

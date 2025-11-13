@@ -39,12 +39,12 @@ test.beforeEach(async ({ page }) => {
 test('Retry failed transfers', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
-  const projectTitle = NLRCProgram.titlePortal.en;
+  const programTitle = NLRCProgram.titlePortal.en;
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
-  const paymentPageUrl = `/en-GB/project/${programIdOCW}/payments/1`;
+  const paymentPageUrl = `/en-GB/program/${programIdOCW}/payments/1`;
 
   await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(programTitle);
 
     await paymentsPage.navigateToProgramPage('Payments');
   });

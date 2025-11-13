@@ -22,7 +22,7 @@ import { MonitoringMenuComponent } from '~/components/page-layout-monitoring/com
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
-import { ProjectApiService } from '~/domains/project/project.api.service';
+import { ProgramApiService } from '~/domains/program/program.api.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Locale } from '~/utils/locale';
 
@@ -45,26 +45,26 @@ import { Locale } from '~/utils/locale';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageLayoutMonitoringComponent {
-  readonly projectId = input.required<string>();
+  readonly programId = input.required<string>();
 
   readonly locale = inject<Locale>(LOCALE_ID);
   readonly metricApiService = inject(MetricApiService);
-  readonly projectApiService = inject(ProjectApiService);
+  readonly programApiService = inject(ProgramApiService);
   readonly paymentApiService = inject(PaymentApiService);
   readonly translatableStringService = inject(TranslatableStringService);
 
-  project = injectQuery(this.projectApiService.getProject(this.projectId));
+  program = injectQuery(this.programApiService.getProgram(this.programId));
   metrics = injectQuery(() => ({
-    ...this.metricApiService.getProjectSummaryMetrics(this.projectId)(),
-    enabled: !!this.project.data()?.id,
+    ...this.metricApiService.getProgramSummaryMetrics(this.programId)(),
+    enabled: !!this.program.data()?.id,
   }));
   payments = injectQuery(() => ({
-    ...this.paymentApiService.getPayments(this.projectId)(),
-    enabled: !!this.project.data()?.id,
+    ...this.paymentApiService.getPayments(this.programId)(),
+    enabled: !!this.program.data()?.id,
   }));
   latestPayment = injectQuery(() => ({
     ...this.paymentApiService.getPayment({
-      projectId: this.projectId,
+      programId: this.programId,
       paymentId: this.latestPaymentNumber,
     })(),
     enabled: () => !!this.latestPaymentNumber(),
@@ -96,64 +96,64 @@ export class PageLayoutMonitoringComponent {
     return Math.max(...this.payments.data().map((p) => p.paymentId));
   });
 
-  readonly projectDescription = computed(() =>
-    this.translatableStringService.translate(this.project.data()?.description),
+  readonly programDescription = computed(() =>
+    this.translatableStringService.translate(this.program.data()?.description),
   );
 
-  readonly projectDescriptionData = computed(() => {
-    const projectData = this.project.data();
+  readonly programDescriptionData = computed(() => {
+    const programData = this.program.data();
 
     const listData: DataListItem[] = [
       {
         label: $localize`Targeted people`,
-        value: projectData?.targetNrRegistrations,
+        value: programData?.targetNrRegistrations,
         type: 'number',
       },
-      { label: $localize`Location`, value: projectData?.location },
+      { label: $localize`Location`, value: programData?.location },
       {
         label: $localize`Start date`,
-        value: projectData?.startDate,
+        value: programData?.startDate,
         type: 'date',
       },
       {
         label: $localize`End date`,
-        value: projectData?.endDate,
+        value: programData?.endDate,
         type: 'date',
       },
       {
         label: $localize`FSP(s)`,
         value:
-          projectData?.programFspConfigurations.map((fsp) => fsp.name) ?? [],
+          programData?.programFspConfigurations.map((fsp) => fsp.name) ?? [],
         type: 'options',
-        options: projectData?.programFspConfigurations.map((config) => ({
+        options: programData?.programFspConfigurations.map((config) => ({
           label: config.label,
           value: config.name,
         })),
       },
       {
         label: $localize`Budget`,
-        value: projectData?.budget,
+        value: programData?.budget,
         type: 'currency',
-        currencyCode: projectData?.currency,
+        currencyCode: programData?.currency,
       },
       {
         label: $localize`Duration`,
-        value: projectData?.distributionDuration
-          ? $localize`${projectData.distributionDuration}:count: disbursements`
+        value: programData?.distributionDuration
+          ? $localize`${programData.distributionDuration}:count: disbursements`
           : undefined,
       },
       {
         label: $localize`Base transfer value`,
-        value: projectData?.fixedTransferValue,
+        value: programData?.fixedTransferValue,
         type: 'currency',
-        currencyCode: projectData?.currency,
+        currencyCode: programData?.currency,
         tooltip: $localize`The base transfer value is multiplied by a set factor for each registration.\n\nFor example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.`,
       },
     ];
 
     return listData.map((item) => ({
       ...item,
-      loading: this.project.isPending(),
+      loading: this.program.isPending(),
     }));
   });
 }

@@ -35,10 +35,10 @@ test('User does not have sufficient Role to bulk update with CSV (import modal n
 }) => {
   const registrationsPage = new RegistrationsPage(page);
 
-  const projectTitle = NLRCProgramPV.titlePortal.en;
+  const programTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {
-    await registrationsPage.selectProgram(projectTitle);
+    await registrationsPage.selectProgram(programTitle);
   });
 
   await test.step('Select all registrations, open "Update registrations" dialog and validate "Update selected registrations" are not visible', async () => {

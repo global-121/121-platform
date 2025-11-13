@@ -44,7 +44,7 @@ test.beforeEach(async ({ page }) => {
   // Navigate to program
   await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
   await loginPage.goto(
-    `/project/${programIdPV}/registrations/${registrationId}`,
+    `/program/${programIdPV}/registrations/${registrationId}`,
   );
 });
 

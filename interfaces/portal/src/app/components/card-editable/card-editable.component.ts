@@ -37,7 +37,7 @@ export class CardEditableComponent<TMutationData = unknown> {
   readonly isEditing = model.required<boolean>();
   readonly editPencilTitle = input.required<string>();
 
-  // TODO: AB#38151 this mutation and mutationData should become required once the "project settings team"
+  // TODO: AB#38151 this mutation and mutationData should become required once the "program settings team"
   // page uses a mutation to update the checklist on save
   readonly mutation =
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- couldn't find a way to avoid any here

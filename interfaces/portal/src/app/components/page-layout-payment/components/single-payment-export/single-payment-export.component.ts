@@ -32,7 +32,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SinglePaymentExportComponent {
-  readonly projectId = input.required<string>();
+  readonly programId = input.required<string>();
   readonly paymentId = input.required<string>();
   readonly hasExportFileIntegration = input<boolean>(false);
 
@@ -60,7 +60,7 @@ export class SinglePaymentExportComponent {
 
   exportFspPaymentListMutation = injectMutation(() =>
     this.exportService.getExportFspInstructionsMutation(
-      this.projectId,
+      this.programId,
       this.toastService,
     ),
   );
@@ -71,14 +71,14 @@ export class SinglePaymentExportComponent {
 
   exportByTypeMutation = injectMutation(() =>
     this.exportService.getExportByTypeMutation(
-      this.projectId,
+      this.programId,
       this.toastService,
     ),
   );
 
   readonly canExportPaymentInstructions = computed(() =>
     this.authService.hasPermission({
-      projectId: this.projectId(),
+      programId: this.programId(),
       requiredPermission: PermissionEnum.PaymentFspInstructionREAD,
     }),
   );
@@ -106,7 +106,7 @@ export class SinglePaymentExportComponent {
     {
       label: this.paymentReportLabel(),
       visible: this.authService.hasAllPermissions({
-        projectId: this.projectId(),
+        programId: this.programId(),
         requiredPermissions: [
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,

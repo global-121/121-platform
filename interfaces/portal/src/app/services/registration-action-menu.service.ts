@@ -18,11 +18,11 @@ export class RegistrationActionMenuService {
 
   public canChangeStatus({
     status,
-    projectId,
+    programId,
     hasValidation,
   }: {
     status: RegistrationStatusChangeTarget;
-    projectId: string;
+    programId: string;
     hasValidation: boolean;
   }): boolean {
     if (status === RegistrationStatusEnum.validated && !hasValidation) {
@@ -42,48 +42,48 @@ export class RegistrationActionMenuService {
     };
 
     return this.authService.hasPermission({
-      projectId,
+      programId,
       requiredPermission: statusToPermissionMap[status],
     });
   }
 
-  public canSendMessage({ projectId }: { projectId: string }): boolean {
+  public canSendMessage({ programId }: { programId: string }): boolean {
     return this.authService.hasPermission({
-      projectId,
+      programId,
       requiredPermission: PermissionEnum.RegistrationNotificationCREATE,
     });
   }
 
   public createContextItemForRegistrationStatusChange({
     status,
-    projectId,
+    programId,
     hasValidation,
     command,
   }: {
     status: RegistrationStatusChangeTarget;
-    projectId: string;
+    programId: string;
     hasValidation: boolean;
     command: () => void;
   }) {
     return {
       label: REGISTRATION_STATUS_VERB[status],
       icon: REGISTRATION_STATUS_ICON[status],
-      visible: this.canChangeStatus({ status, projectId, hasValidation }),
+      visible: this.canChangeStatus({ status, programId, hasValidation }),
       command,
     };
   }
 
   public createContextItemForMessage({
-    projectId,
+    programId,
     command,
   }: {
-    projectId: string;
+    programId: string;
     command: () => void;
   }) {
     return {
       label: $localize`Message`,
       icon: 'pi pi-envelope',
-      visible: this.canSendMessage({ projectId }),
+      visible: this.canSendMessage({ programId }),
       command,
     };
   }

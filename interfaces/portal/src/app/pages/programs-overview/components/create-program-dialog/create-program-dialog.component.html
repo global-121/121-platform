@@ -1,0 +1,61 @@
+<app-fullscreen-stepper-dialog
+  #createProgramDialog
+  [dialogVisible]="currentStep() > 0"
+  (dialogVisibleChange)="currentStep.set($event ? 1 : 0)"
+  [currentStep]="currentStep()"
+  [proceedLabel]="proceedLabel()"
+  [cannotProceed]="createProgramMutation.isPending()"
+  [queryParamStep]="'create-program-step'"
+  (goBack)="goBack()"
+  (proceed)="goToNextStep()"
+>
+  <ng-template #header>
+    <i class="pi pi-plus me-2"></i>
+    <ng-container i18n>Create new program</ng-container>
+  </ng-template>
+  <ng-template #step>
+    <p-card>
+      <h2 i18n>Program name</h2>
+      <p
+        i18n
+        class="mb-4"
+      >
+        Add a name and description to your program to help your users find it.
+      </p>
+      <app-program-form-name #formName />
+    </p-card>
+  </ng-template>
+  <ng-template #step>
+    <p-card>
+      <h2
+        i18n
+        class="mb-4"
+      >
+        Program information
+      </h2>
+      <app-program-form-information #formInformation />
+    </p-card>
+  </ng-template>
+  <ng-template #step>
+    <p-card>
+      <h2
+        i18n
+        class="mb-4"
+      >
+        Budget
+      </h2>
+      <app-program-form-budget #formBudget />
+    </p-card>
+  </ng-template>
+  <ng-template #illustration>
+    <img
+      ngSrc="assets/create-program.svg"
+      height="439"
+      width="524"
+      alt=""
+      aria-hidden="true"
+      role="presentation"
+      class="mx-auto"
+    />
+  </ng-template>
+</app-fullscreen-stepper-dialog>

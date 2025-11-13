@@ -34,10 +34,10 @@ test('Wrong CSV should trigger error (wrong data, column name etc.)', async ({
 }) => {
   const registrationsPage = new RegistrationsPage(page);
 
-  const projectTitle = NLRCProgramPV.titlePortal.en;
+  const programTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {
-    await registrationsPage.selectProgram(projectTitle);
+    await registrationsPage.selectProgram(programTitle);
   });
 
   await test.step('Select all registrations and open "Update registrations" dialog', async () => {

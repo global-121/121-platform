@@ -17,8 +17,8 @@ import {
   QueryTableColumn,
   QueryTableColumnType,
 } from '~/components/query-table/query-table.component';
-import { ProjectApiService } from '~/domains/project/project.api.service';
-import { Project } from '~/domains/project/project.model';
+import { ProgramApiService } from '~/domains/program/program.api.service';
+import { Program } from '~/domains/program/program.model';
 import {
   DUPLICATE_STATUS_LABELS,
   REGISTRATION_STATUS_LABELS,
@@ -50,7 +50,7 @@ const DEFAULT_VISIBLE_FIELDS_SORTED: string[] = [
   'created',
 ];
 
-type FilterableGroup = Required<Project>['filterableAttributes'][number];
+type FilterableGroup = Required<Program>['filterableAttributes'][number];
 
 @Injectable({
   providedIn: 'root',
@@ -58,7 +58,7 @@ type FilterableGroup = Required<Project>['filterableAttributes'][number];
 export class RegistrationsTableColumnService {
   private readonly queryClient = inject(QueryClient);
 
-  private readonly projectApiService = inject(ProjectApiService);
+  private readonly programApiService = inject(ProgramApiService);
   private readonly registrationAttributeService = inject(
     RegistrationAttributeService,
   );
@@ -68,38 +68,38 @@ export class RegistrationsTableColumnService {
 
   /**
    * Get the columns for the registrations table.
-   * @param projectId Signal containing the project ID
+   * @param programId Signal containing the program ID
    * @returns Query options for the columns
    */
-  getColumns(projectId: Signal<number | string>) {
+  getColumns(programId: Signal<number | string>) {
     return () =>
       queryOptions<QueryTableColumn<Registration>[]>({
-        // eslint-disable-next-line @tanstack/query/exhaustive-deps -- eslint is complaining about missing projectId for some reason but it's wrong
-        queryKey: ['RegistrationsTableColumns', projectId().toString()],
+        // eslint-disable-next-line @tanstack/query/exhaustive-deps -- eslint is complaining about missing programId for some reason but it's wrong
+        queryKey: ['RegistrationsTableColumns', programId().toString()],
         queryFn: async () => {
-          const project = await this.queryClient.fetchQuery(
-            this.projectApiService.getProject(projectId)(),
+          const program = await this.queryClient.fetchQuery(
+            this.programApiService.getProgram(programId)(),
           );
 
           const registrationAttributes = await this.queryClient.fetchQuery(
             this.registrationAttributeService.getRegistrationAttributes(
               signal({
-                projectId,
+                programId,
               }),
             )(),
           );
 
-          const basicColumns = this.createBasicColumns(project);
-          const scopeColumns = this.createScopeColumns(project);
-          const projectSpecificColumns = this.createProjectSpecificColumns(
-            project,
+          const basicColumns = this.createBasicColumns(program);
+          const scopeColumns = this.createScopeColumns(program);
+          const programSpecificColumns = this.createProgramSpecificColumns(
+            program,
             registrationAttributes,
           );
 
           const allColumns = [
             ...basicColumns,
             ...scopeColumns,
-            ...projectSpecificColumns,
+            ...programSpecificColumns,
           ];
 
           return this.processColumns(allColumns);
@@ -107,14 +107,14 @@ export class RegistrationsTableColumnService {
       });
   }
 
-  invalidateCache(projectId: Signal<number | string>) {
+  invalidateCache(programId: Signal<number | string>) {
     return this.queryClient.invalidateQueries({
-      queryKey: this.getColumns(projectId)().queryKey,
+      queryKey: this.getColumns(programId)().queryKey,
     });
   }
 
   private createBasicColumns(
-    project: Project,
+    program: Program,
   ): QueryTableColumn<Registration>[] {
     return [
       {
@@ -124,7 +124,7 @@ export class RegistrationsTableColumnService {
           `Reg. #${registration.registrationProgramId.toString()}`,
         getCellRouterLink: (registration) =>
           registrationLink({
-            projectId: project.id,
+            programId: program.id,
             registrationId: registration.id,
           }),
         type: QueryTableColumnType.NUMERIC,
@@ -139,7 +139,7 @@ export class RegistrationsTableColumnService {
         header: $localize`:@@registration-full-name:Name`,
         getCellRouterLink: (registration) =>
           registrationLink({
-            projectId: project.id,
+            programId: program.id,
             registrationId: registration.id,
           }),
         fieldForFilter: 'fullName',
@@ -175,7 +175,7 @@ export class RegistrationsTableColumnService {
         field: 'programFspConfigurationName',
         header: $localize`FSP`,
         type: QueryTableColumnType.MULTISELECT,
-        options: project.programFspConfigurations.map((config) => ({
+        options: program.programFspConfigurations.map((config) => ({
           label: this.translatableStringService.translate(config.label) ?? '',
           value: config.name,
         })),
@@ -191,9 +191,9 @@ export class RegistrationsTableColumnService {
   }
 
   private createScopeColumns(
-    project: Project,
+    program: Program,
   ): QueryTableColumn<Registration>[] {
-    if (!project.enableScope) {
+    if (!program.enableScope) {
       return [];
     }
 
@@ -209,17 +209,17 @@ export class RegistrationsTableColumnService {
     ];
   }
 
-  private createProjectSpecificColumns(
-    project: Project,
+  private createProgramSpecificColumns(
+    program: Program,
     registrationAttributes: NormalizedRegistrationAttribute[],
   ): QueryTableColumn<Registration>[] {
-    if (!project.filterableAttributes) {
+    if (!program.filterableAttributes) {
       return [];
     }
 
     const columns: QueryTableColumn<Registration>[] = [];
 
-    for (const filterableGroup of project.filterableAttributes) {
+    for (const filterableGroup of program.filterableAttributes) {
       if (filterableGroup.group === 'paAttributes') {
         columns.push(
           ...this.createPaAttributeColumns(

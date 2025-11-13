@@ -1,5 +1,5 @@
 <app-page-layout
-  [projectId]="projectId()"
+  [programId]="programId()"
   [parentPageLink]="allPaymentsLink()"
   parentPageTitle="All Payments"
   i18n-parentPageTitle
@@ -28,11 +28,11 @@
       @if (hasFspWithExportFileIntegration()) {
         <app-import-reconciliation-data
           [paymentId]="paymentId()"
-          [projectId]="projectId()"
+          [programId]="programId()"
         />
       }
       <app-single-payment-export
-        [projectId]="projectId()"
+        [programId]="programId()"
         [paymentId]="paymentId()"
         [hasExportFileIntegration]="hasFspWithExportFileIntegration()"
       />
@@ -58,9 +58,9 @@
         >
           Transfers data
         </p>
-        <app-project-payment-chart
+        <app-program-payment-chart
           [paymentDetails]="paymentDetails"
-        ></app-project-payment-chart>
+        ></app-program-payment-chart>
       </p-card>
     }
 
@@ -97,7 +97,7 @@
       styleClass="[&_.p-card-body]:pt-3"
     >
       <app-payment-menu
-        [projectId]="projectId()"
+        [programId]="programId()"
         [paymentId]="paymentId()"
       />
       <ng-content></ng-content>

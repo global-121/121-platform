@@ -31,9 +31,9 @@ const login = async ({
 };
 
 const navigateToPaymentsPage = async (paymentsPage: PaymentsPage) => {
-  const projectTitle = 'NLRC OCW Program';
+  const programTitle = 'NLRC OCW Program';
   await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(programTitle);
     await paymentsPage.navigateToProgramPage('Payments');
   });
 };

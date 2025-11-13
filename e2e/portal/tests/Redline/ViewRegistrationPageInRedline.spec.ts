@@ -42,7 +42,7 @@ test('View error for no results', async ({ page }) => {
 
   // Assert
   await expect(page.locator('body')).toContainText(
-    "We couldn't find any information linked to this person's phone number in the projects you have access to on the 121 Platform.",
+    "We couldn't find any information linked to this person's phone number in the programs you have access to on the 121 Platform.",
   );
 });
 
@@ -65,7 +65,7 @@ test('View search-result with single matched registration', async ({
   await page.waitForURL((url) => {
     return (
       url.pathname.endsWith(
-        `/en-GB/project/${programIdWesteros}/registrations/${testProgramRegistrationId}/activity-log`,
+        `/en-GB/program/${programIdWesteros}/registrations/${testProgramRegistrationId}/activity-log`,
       ) && url.search.endsWith(`?phonenumber=${testPhoneNumber}`)
     );
   });
@@ -75,7 +75,7 @@ test('View search-results with multiple matched registrations', async ({
   page,
 }) => {
   // Arrange
-  const projectTitle = 'Cash program Westeros';
+  const programTitle = 'Cash program Westeros';
   const testPhoneNumber = registrationWesteros1.phoneNumber;
   const registrationWithSamePhoneNumber = {
     ...registrationWesteros2,
@@ -101,7 +101,7 @@ test('View search-results with multiple matched registrations', async ({
 
   // Check that both expected tab texts are present
   const expectedTabTexts = testRegistrations.map(
-    (registration) => `${registration.fullName} - ${projectTitle}`,
+    (registration) => `${registration.fullName} - ${programTitle}`,
   );
 
   for (const expectedText of expectedTabTexts) {

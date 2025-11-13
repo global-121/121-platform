@@ -37,11 +37,11 @@ test.beforeEach(async ({ page }) => {
 test('View payment log, including note added to payment', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
-  const projectTitle = NLRCProgram.titlePortal.en;
+  const programTitle = NLRCProgram.titlePortal.en;
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(programTitle);
 
     await paymentsPage.navigateToProgramPage('Payments');
   });
@@ -52,7 +52,7 @@ test('View payment log, including note added to payment', async ({ page }) => {
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
       url.pathname.startsWith(
-        `/en-GB/project/${programIdOCW}/payments/${paymentId}`,
+        `/en-GB/program/${programIdOCW}/payments/${paymentId}`,
       ),
     );
     await paymentPage.startPayment();

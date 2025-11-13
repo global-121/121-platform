@@ -35,10 +35,10 @@ test('Export 15000 PAs', async ({ page }) => {
   const registrationsPage = new RegistrationsPage(page);
   const exportDataComponent = new ExportData(page);
 
-  const projectTitle = NLRCProgramPV.titlePortal.en;
+  const programTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {
-    await basePage.selectProgram(projectTitle);
+    await basePage.selectProgram(programTitle);
   });
 
   await test.step('Export list and validate XLSX file downloaded', async () => {

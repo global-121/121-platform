@@ -1,0 +1,15 @@
+<app-page-layout-monitoring [programId]="programId()">
+  @let monitoringDashboardUrl = this.program.data()?.monitoringDashboardUrl;
+  @if (monitoringDashboardUrl) {
+    <app-monitoring-iframe [url]="monitoringDashboardUrl" />
+  } @else {
+    <p
+      i18n
+      class="text-grey-500 txt-system-s py-8 text-center"
+    >
+      No PowerBI dashboard has been configured for this program, please contact
+      <a href="mailto:support@121.global">support&#64;121.global</a>
+      to set this up
+    </p>
+  }
+</app-page-layout-monitoring>

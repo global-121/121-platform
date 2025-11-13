@@ -22,7 +22,7 @@ import {
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActivityLogPage';
 
-const projectId = 2;
+const programId = 2;
 let registrationId: number;
 
 const reset = async () => {
@@ -46,7 +46,7 @@ const login = async (page: Page, email?: string, password?: string) => {
 const goToActivityLogPage = async (page: Page) => {
   const activityLogPage = new RegistrationActivityLogPage(page);
   await activityLogPage.goto(
-    `/project/${projectId}/registrations/${registrationId}`,
+    `/program/${programId}/registrations/${registrationId}`,
   );
   return activityLogPage;
 };

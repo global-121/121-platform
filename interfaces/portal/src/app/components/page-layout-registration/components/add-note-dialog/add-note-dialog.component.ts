@@ -18,7 +18,7 @@ import { TextareaModule } from 'primeng/textarea';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
-import { ProjectApiService } from '~/domains/project/project.api.service';
+import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
@@ -40,19 +40,19 @@ type AddNoteFormGroup =
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddNoteDialogComponent {
-  private projectApiService = inject(ProjectApiService);
+  private programApiService = inject(ProgramApiService);
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
 
-  readonly projectId = input.required<string>();
+  readonly programId = input.required<string>();
   readonly registrationId = input.required<string>();
 
   readonly formDialog = viewChild.required<FormDialogComponent>('formDialog');
 
-  project = injectQuery(this.projectApiService.getProject(this.projectId));
+  program = injectQuery(this.programApiService.getProgram(this.programId));
   registration = injectQuery(
     this.registrationApiService.getRegistrationById(
-      this.projectId,
+      this.programId,
       this.registrationId,
     ),
   );
@@ -76,8 +76,8 @@ export class AddNoteDialogComponent {
         throw new Error('Registration reference ID is missing');
       }
 
-      return this.projectApiService.addRegistrationNote({
-        projectId: this.projectId,
+      return this.programApiService.addRegistrationNote({
+        programId: this.programId,
         registrationReferenceId,
         note,
       });
@@ -87,7 +87,7 @@ export class AddNoteDialogComponent {
         detail: $localize`Note successfully added.`,
       });
       void this.registrationApiService.invalidateCache({
-        projectId: this.projectId,
+        programId: this.programId,
       });
     },
   }));

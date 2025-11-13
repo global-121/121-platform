@@ -136,7 +136,7 @@ class PaymentsPage extends BasePage {
     successfulTransfers,
     failedTransfers,
     currency = '€',
-    projectId,
+    programId,
     paymentId = 1,
   }: {
     date: string;
@@ -145,11 +145,11 @@ class PaymentsPage extends BasePage {
     successfulTransfers: number;
     failedTransfers: number;
     currency?: string;
-    projectId: number;
+    programId: number;
     paymentId?: number;
   }) {
     // Locate the specific payment card using the payment link and then navigate to its ancestor card element
-    const hrefLocatorUrl = `"/en-GB/project/${projectId}/payments/${paymentId}"`;
+    const hrefLocatorUrl = `"/en-GB/program/${programId}/payments/${paymentId}"`;
     const card = this.page
       .locator(`a[href=${hrefLocatorUrl}]`)
       .locator('xpath=ancestor::*[@data-pc-name="card"]')
@@ -292,19 +292,19 @@ class PaymentsPage extends BasePage {
       .getByText('No Payments found', { exact: true })
       .waitFor({ state: 'attached' });
     await this.page
-      .getByText('There are no payments for this project yet.', { exact: true })
+      .getByText('There are no payments for this program yet.', { exact: true })
       .waitFor({ state: 'attached' });
 
     const noPaymentsFoundVisible = await this.page
       .getByText('No Payments found', { exact: true })
       .isVisible();
 
-    // Check if the "There are no payments for this project yet." message is visible
-    const noPaymentsForProjectVisible = await this.page
-      .getByText('There are no payments for this project yet.', { exact: true })
+    // Check if the "There are no payments for this program yet." message is visible
+    const noPaymentsForProgramVisible = await this.page
+      .getByText('There are no payments for this program yet.', { exact: true })
       .isVisible();
 
-    return noPaymentsFoundVisible && noPaymentsForProjectVisible;
+    return noPaymentsFoundVisible && noPaymentsForProgramVisible;
   }
 }
 

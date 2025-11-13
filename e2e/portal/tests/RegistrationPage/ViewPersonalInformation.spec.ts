@@ -14,7 +14,7 @@ import { registrationWesteros4 } from '@121-service/test/registrations/paginatio
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationPersonalInformationPage from '@121-e2e/portal/pages/RegistrationPersonalInformationPage';
 
-const projectId = 2;
+const programId = 2;
 let registrationId: number;
 let accessToken: string;
 
@@ -34,12 +34,12 @@ test('User can view the registration data of registration that has all data type
 }) => {
   await seedIncludedRegistrations(
     [registrationWesteros4],
-    projectId,
+    programId,
     accessToken,
   );
 
   registrationId = await getRegistrationIdByReferenceId({
-    programId: projectId,
+    programId,
     referenceId: registrationWesteros4.referenceId,
     accessToken,
   });
@@ -68,7 +68,7 @@ test('User can view the registration data of registration that has all data type
   const personalInfoPage = new RegistrationPersonalInformationPage(page);
 
   await personalInfoPage.goto(
-    `/project/${projectId}/registrations/${registrationId}/personal-information`,
+    `/program/${programId}/registrations/${registrationId}/personal-information`,
   );
 
   const personalInfo = await personalInfoPage.personalInformationDataList();
@@ -89,12 +89,12 @@ test('User can view the registration data of registration that has only the requ
   };
   await seedIncludedRegistrations(
     [registrationWithOnlyRequiredData],
-    projectId,
+    programId,
     accessToken,
   );
 
   registrationId = await getRegistrationIdByReferenceId({
-    programId: projectId,
+    programId,
     referenceId: registrationWithOnlyRequiredData.referenceId,
     accessToken,
   });
@@ -123,7 +123,7 @@ test('User can view the registration data of registration that has only the requ
   const personalInfoPage = new RegistrationPersonalInformationPage(page);
 
   await personalInfoPage.goto(
-    `/project/${projectId}/registrations/${registrationId}/personal-information`,
+    `/program/${programId}/registrations/${registrationId}/personal-information`,
   );
 
   const personalInfo = await personalInfoPage.personalInformationDataList();

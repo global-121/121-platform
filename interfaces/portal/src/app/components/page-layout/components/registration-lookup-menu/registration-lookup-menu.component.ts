@@ -10,7 +10,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 
 import { TabsMenuComponent } from '~/components/tabs-menu/tabs-menu.component';
-import { ProjectApiService } from '~/domains/project/project.api.service';
+import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { registrationLink } from '~/domains/registration/registration.helper';
 import { TranslatableStringService } from '~/services/translatable-string.service';
@@ -25,11 +25,11 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
 export class RegistrationLookupMenuComponent {
   readonly phonenumber = input.required<string>();
 
-  readonly projectApiService = inject(ProjectApiService);
+  readonly programApiService = inject(ProgramApiService);
   readonly registrationApiService = inject(RegistrationApiService);
   readonly translatableStringService = inject(TranslatableStringService);
 
-  assignedProjects = injectQuery(this.projectApiService.getAssignedProjects());
+  assignedPrograms = injectQuery(this.programApiService.getAssignedPrograms());
   registrations = injectQuery(
     this.registrationApiService.getRegistrationsByPhonenumber({
       phonenumber: this.phonenumber,
@@ -40,7 +40,7 @@ export class RegistrationLookupMenuComponent {
     const menuItems: MenuItem[] = [];
 
     if (
-      !this.assignedProjects.isSuccess() ||
+      !this.assignedPrograms.isSuccess() ||
       !this.registrations.isSuccess() ||
       this.registrations.data().length <= 1
     ) {
@@ -48,17 +48,17 @@ export class RegistrationLookupMenuComponent {
     }
 
     for (const registration of this.registrations.data()) {
-      const project = this.assignedProjects.data()[registration.programId];
+      const program = this.assignedPrograms.data()[registration.programId];
 
-      if (!project) {
+      if (!program) {
         continue;
       }
 
       menuItems.push({
-        label: `${registration.name ?? ''} - ${this.translatableStringService.translate(project.titlePortal) ?? ''}`,
+        label: `${registration.name ?? ''} - ${this.translatableStringService.translate(program.titlePortal) ?? ''}`,
         routerLink: registrationLink({
           registrationId: registration.id,
-          projectId: project.id,
+          programId: program.id,
         }),
       });
     }

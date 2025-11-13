@@ -39,7 +39,7 @@ test('[Excel fsp]: Import reconciliation data should work similar to import regi
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
 
-  const projectTitle = NLRCProgramPV.titlePortal.en;
+  const programTitle = NLRCProgramPV.titlePortal.en;
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
   const reconciliationData = path.resolve(
     __dirname,
@@ -47,7 +47,7 @@ test('[Excel fsp]: Import reconciliation data should work similar to import regi
   );
 
   await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(programTitle);
 
     await paymentsPage.navigateToProgramPage('Payments');
   });
@@ -55,7 +55,7 @@ test('[Excel fsp]: Import reconciliation data should work similar to import regi
   await test.step('Start payment', async () => {
     await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdPV}/payments/1`),
+      url.pathname.startsWith(`/en-GB/program/${programIdPV}/payments/1`),
     );
     await paymentPage.startPayment();
     // Assert payment overview page by payment date/ title

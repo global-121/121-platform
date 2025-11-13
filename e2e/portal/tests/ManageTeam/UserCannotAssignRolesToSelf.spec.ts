@@ -10,7 +10,7 @@ import {
 
 import BasePage from '@121-e2e/portal/pages/BasePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import ProjectTeamPage from '@121-e2e/portal/pages/ProjectTeamPage';
+import ProgramTeamPage from '@121-e2e/portal/pages/ProgramTeamPage';
 
 const programId = 2;
 
@@ -31,13 +31,13 @@ test.beforeEach(async ({ page }) => {
 
 test('User cannot assign role to self', async ({ page }) => {
   const basePage = new BasePage(page);
-  const manageTeam = new ProjectTeamPage(page);
-  const projectTitle = 'Cash program Westeros';
+  const manageTeam = new ProgramTeamPage(page);
+  const programTitle = 'Cash program Westeros';
 
   // Arrange
   await test.step('Select program and navigate to Manage team', async () => {
-    await basePage.selectProgram(projectTitle);
-    await basePage.navigateToProgramSettingsPage('Project team');
+    await basePage.selectProgram(programTitle);
+    await basePage.navigateToProgramSettingsPage('Program team');
   });
 
   // Act

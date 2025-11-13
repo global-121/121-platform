@@ -135,56 +135,56 @@ export class AuthService {
     });
   }
 
-  public getAssignedProjectIds(): number[] {
+  public getAssignedProgramIds(): number[] {
     return this.user ? Object.keys(this.user.permissions).map(Number) : [];
   }
 
-  private isAssignedToProject({
-    projectId,
+  private isAssignedToProgram({
+    programId,
     user,
   }: {
-    projectId: number | string;
+    programId: number | string;
     user?: LocalStorageUser | null;
   }): boolean {
     user = user ?? this.user;
     return (
       !!user?.permissions &&
-      Object.keys(user.permissions).includes(String(projectId))
+      Object.keys(user.permissions).includes(String(programId))
     );
   }
 
   public hasPermission({
-    projectId,
+    programId,
     requiredPermission,
     user,
   }: {
-    projectId: number | string;
+    programId: number | string;
     requiredPermission: PermissionEnum;
     user?: LocalStorageUser | null;
   }): boolean {
     user = user ?? this.user;
     // During development: Use this to simulate a user not having a certain permission
-    // user!.permissions[projectId] = user!.permissions[projectId].filter(
+    // user!.permissions[programId] = user!.permissions[programId].filter(
     //   (p) => p !== PermissionEnum.RegistrationNotificationREAD,
     // );
 
     return (
       !!user?.permissions &&
-      this.isAssignedToProject({ projectId, user }) &&
-      user.permissions[Number(projectId)].includes(requiredPermission)
+      this.isAssignedToProgram({ programId, user }) &&
+      user.permissions[Number(programId)].includes(requiredPermission)
     );
   }
 
   public hasAllPermissions({
-    projectId,
+    programId,
     requiredPermissions,
   }: {
-    projectId: number | string;
+    programId: number | string;
     requiredPermissions: PermissionEnum[];
   }): boolean {
     return requiredPermissions.every((permissionName) =>
       this.hasPermission({
-        projectId,
+        programId,
         requiredPermission: permissionName,
         user: this.user,
       }),
@@ -198,8 +198,8 @@ export class AuthService {
   }
 
   public hasDeprecatedPermissions(user: LocalStorageUser): boolean {
-    for (const projectId of Object.keys(user.permissions)) {
-      for (const permission of user.permissions[Number(projectId)]) {
+    for (const programId of Object.keys(user.permissions)) {
+      for (const permission of user.permissions[Number(programId)]) {
         if (!VALID_PERMISSIONS.has(permission)) {
           return true;
         }

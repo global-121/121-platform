@@ -30,10 +30,10 @@ test('Send custom message', async ({ page }) => {
   const registrations = new RegistrationsPage(page);
   const activityLog = new RegistrationActivityLogPage(page);
 
-  const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
+  const programTitle = 'NLRC Direct Digital Aid Program (PV)';
 
   await test.step('Select program', async () => {
-    await basePage.selectProgram(projectTitle);
+    await basePage.selectProgram(programTitle);
   });
 
   await test.step('Send custom message', async () => {

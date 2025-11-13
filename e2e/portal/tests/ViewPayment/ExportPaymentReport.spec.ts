@@ -40,10 +40,10 @@ test('Export Payment Report should contain the right data', async ({
   const paymentsPage = new PaymentsPage(page);
   const exportDataComponent = new ExportData(page);
 
-  const projectTitle = NLRCProgram.titlePortal.en;
+  const programTitle = NLRCProgram.titlePortal.en;
 
   await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(programTitle);
   });
 
   for (let i = 1; i <= 2; i++) {
@@ -55,7 +55,7 @@ test('Export Payment Report should contain the right data', async ({
       await paymentsPage.createPayment({});
       // Assert redirection to payment overview page
       await page.waitForURL((url) =>
-        url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/${i}`),
+        url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/${i}`),
       );
       // start payment
       await paymentPage.startPayment();

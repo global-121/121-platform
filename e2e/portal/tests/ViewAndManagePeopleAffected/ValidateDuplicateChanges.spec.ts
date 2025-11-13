@@ -37,12 +37,12 @@ test('After the data change of duplicate registration, both registrations get un
   const registrationPersonalInformationPage =
     new RegistrationPersonalInformationPage(page);
 
-  const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
+  const programTitle = 'NLRC Direct Digital Aid Program (PV)';
 
   const duplicateRegistration = registrationsPV[1]; // 'Jan Janssen'
 
   await test.step('Select program', async () => {
-    await homePage.selectProgram(projectTitle);
+    await homePage.selectProgram(programTitle);
   });
 
   await test.step('Wait for registrations to load', async () => {

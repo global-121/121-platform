@@ -8,9 +8,9 @@ import { DomainApiService } from '~/domains/domain-api.service';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { Dto } from '~/utils/dto-type';
 
-const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
+const BASE_ENDPOINT = (programId: Signal<number | string>) => [
   'programs',
-  projectId,
+  programId,
   'fsp-configurations',
 ];
 
@@ -18,9 +18,9 @@ const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
   providedIn: 'root',
 })
 export class FspConfigurationApiService extends DomainApiService {
-  getFspConfigurations(projectId: Signal<number | string>) {
+  getFspConfigurations(programId: Signal<number | string>) {
     return this.generateQueryOptions<FspConfiguration[]>({
-      path: BASE_ENDPOINT(projectId),
+      path: BASE_ENDPOINT(programId),
       processResponse: (response) => {
         // This guarantees some consistency in the order of FSP configurations shown in the UI
         // Without this, the order would depend on the order in which the configurations were
@@ -36,32 +36,32 @@ export class FspConfigurationApiService extends DomainApiService {
   }
 
   createFspConfiguration({
-    projectId,
+    programId,
     configuration,
   }: {
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
     configuration: Dto<CreateProgramFspConfigurationDto>;
   }) {
     return this.httpWrapperService.perform121ServiceRequest<FspConfiguration>({
       method: 'POST',
-      endpoint: this.pathToQueryKey([...BASE_ENDPOINT(projectId)]).join('/'),
+      endpoint: this.pathToQueryKey([...BASE_ENDPOINT(programId)]).join('/'),
       body: configuration,
     });
   }
 
   updateFspConfiguration({
-    projectId,
+    programId,
     configurationName,
     configuration,
   }: {
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
     configurationName: string;
     configuration: Dto<UpdateProgramFspConfigurationDto>;
   }) {
     return this.httpWrapperService.perform121ServiceRequest<FspConfiguration>({
       method: 'PATCH',
       endpoint: this.pathToQueryKey([
-        ...BASE_ENDPOINT(projectId),
+        ...BASE_ENDPOINT(programId),
         configurationName,
       ]).join('/'),
       body: configuration,
@@ -69,24 +69,24 @@ export class FspConfigurationApiService extends DomainApiService {
   }
 
   deleteFspConfiguration({
-    projectId,
+    programId,
     configurationName,
   }: {
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
     configurationName: string;
   }) {
     return this.httpWrapperService.perform121ServiceRequest<undefined>({
       method: 'DELETE',
       endpoint: this.pathToQueryKey([
-        ...BASE_ENDPOINT(projectId),
+        ...BASE_ENDPOINT(programId),
         configurationName,
       ]).join('/'),
     });
   }
 
-  public invalidateCache(projectId: Signal<number | string>): Promise<void> {
+  public invalidateCache(programId: Signal<number | string>): Promise<void> {
     return this.queryClient.invalidateQueries({
-      queryKey: this.pathToQueryKey(BASE_ENDPOINT(projectId)),
+      queryKey: this.pathToQueryKey(BASE_ENDPOINT(programId)),
     });
   }
 }
