@@ -690,7 +690,7 @@
   },
   {
     "method": "post",
-    "path": "/api/registration-debit-cards/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards",
     "params": [
       "programId",
       "referenceId"
@@ -698,7 +698,7 @@
   },
   {
     "method": "patch",
-    "path": "/api/registration-debit-cards/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/{tokenCode}",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/{tokenCode}",
     "params": [
       "programId",
       "referenceId",
@@ -708,7 +708,7 @@
   },
   {
     "method": "patch",
-    "path": "/api/registration-debit-cards/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
     "params": [
       "referenceId",
       "programId"
@@ -717,7 +717,7 @@
   },
   {
     "method": "get",
-    "path": "/api/registration-debit-cards/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
     "params": [
       "referenceId",
       "programId"
@@ -726,7 +726,7 @@
   },
   {
     "method": "post",
-    "path": "/api/registration-debit-cards/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/contact-information",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/contact-information",
     "params": [
       "programId",
       "referenceId"

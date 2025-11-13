@@ -11,6 +11,7 @@ import {
   Post,
   Query,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiOperation,
@@ -21,12 +22,14 @@ import {
 } from '@nestjs/swagger';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { RegistrationDebitCardsService } from '@121-service/src/registration-debit-cards/registration-debit-cards.service';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
 
-@Controller('registration-debit-cards')
+@UseGuards(AuthenticatedUserGuard)
+@Controller()
 export class RegistrationDebitCardsController {
   public constructor(
     private readonly userService: UserService,
@@ -56,7 +59,6 @@ export class RegistrationDebitCardsController {
     @Req() req,
   ): Promise<void> {
     const userId = req.user.id;
-
     await this.registrationDebitCardsService.reissueCardAndSendMessage(
       referenceId,
       programId,
