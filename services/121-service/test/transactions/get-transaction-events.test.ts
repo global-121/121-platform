@@ -5,7 +5,7 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { SYSTEM_USER } from '@121-service/src/payments/transactions/transaction-events/mappers/transaction-events.mapper';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { createPayment } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
@@ -26,7 +26,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     programFspConfigurationName: Fsps.onafriq,
     phoneNumber: '24311111111',
     phoneNumberPayment: '24322222222',
-    preferredLanguage: UILanguage.en,
+    preferredLanguage: RegistrationPreferredLanguage.en,
     paymentAmountMultiplier: 1,
     maxPayments: 6,
     firstName: 'Barbara',

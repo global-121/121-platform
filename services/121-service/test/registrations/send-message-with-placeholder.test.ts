@@ -1,7 +1,7 @@
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
 import {
   getMessageHistory,
@@ -18,7 +18,7 @@ describe('Send custom message with placeholders', () => {
   const programId = programIdPV;
   const registrationAh = {
     referenceId: '63e62864557597e0c-AH',
-    preferredLanguage: UILanguage.en,
+    preferredLanguage: RegistrationPreferredLanguage.en,
     paymentAmountMultiplier: 2,
     fullName: 'John Smith',
     phoneNumber: '14155238886',

@@ -5,7 +5,7 @@ import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { OnafriqReconciliationReport } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/interfaces/onafriq-reconciliation-report.interface';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -21,7 +21,7 @@ describe('Export reconciliation report', () => {
     programFspConfigurationName: Fsps.onafriq,
     phoneNumber: '24311111111',
     phoneNumberPayment: '24322222222',
-    preferredLanguage: UILanguage.en,
+    preferredLanguage: RegistrationPreferredLanguage.en,
     paymentAmountMultiplier: 1,
     maxPayments: 6,
     firstName: 'Barbara',
