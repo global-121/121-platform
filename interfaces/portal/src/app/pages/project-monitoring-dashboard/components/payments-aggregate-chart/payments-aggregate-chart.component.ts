@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { ChartData } from 'chart.js';
+import { ChartData, ChartDataset } from 'chart.js';
 import { ChartModule } from 'primeng/chart';
 import tailwindConfig from 'tailwind.config';
 
@@ -84,52 +84,76 @@ export class PaymentsAggregateChartComponent {
     }),
   );
 
+  readonly chartDatasets = computed(() => {
+    const datasets: ChartDataset[] = [];
+
+    const hasAtLeastOnePositiveValue = (data: number[]) =>
+      data.some((value) => value > 0);
+
+    const pendingApproval = this.data().map(
+      (payment) =>
+        payment[TransactionStatusEnum.pendingApproval][this.aggregateType()],
+    );
+    if (hasAtLeastOnePositiveValue(pendingApproval)) {
+      datasets.push({
+        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.pendingApproval],
+        data: pendingApproval,
+        backgroundColor: tailwindConfig.theme.colors.orange[500],
+      });
+    }
+
+    const approved = this.data().map(
+      (payment) =>
+        payment[TransactionStatusEnum.approved][this.aggregateType()],
+    );
+    if (hasAtLeastOnePositiveValue(approved)) {
+      datasets.push({
+        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.approved],
+        data: approved,
+        backgroundColor: tailwindConfig.theme.colors.purple[500],
+      });
+    }
+
+    const failed = this.data().map(
+      // TODO: once payments-reporting.services.ts is using enums, use TransactionStatusEnum.error here instead of 'failed'
+      (payment) => payment.failed[this.aggregateType()],
+    );
+    if (hasAtLeastOnePositiveValue(failed)) {
+      datasets.push({
+        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.error],
+        data: failed,
+        backgroundColor: tailwindConfig.theme.colors.red[500],
+      });
+    }
+
+    const success = this.data().map(
+      (payment) => payment[TransactionStatusEnum.success][this.aggregateType()],
+    );
+    if (hasAtLeastOnePositiveValue(success)) {
+      datasets.push({
+        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.success],
+        data: success,
+        backgroundColor: tailwindConfig.theme.colors.green[500],
+      });
+    }
+
+    const waiting = this.data().map(
+      (payment) => payment[TransactionStatusEnum.waiting][this.aggregateType()],
+    );
+    if (hasAtLeastOnePositiveValue(waiting)) {
+      datasets.push({
+        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.waiting],
+        data: waiting,
+        backgroundColor: tailwindConfig.theme.colors.yellow[500],
+      });
+    }
+
+    return datasets;
+  });
+
   readonly chartData = computed<ChartData>(() => ({
     labels: this.labels(),
-    datasets: [
-      {
-        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.pendingApproval],
-        data: this.data().map(
-          (payment) =>
-            payment[TransactionStatusEnum.pendingApproval][
-              this.aggregateType()
-            ],
-        ),
-        backgroundColor: tailwindConfig.theme.colors.orange[500],
-      },
-      {
-        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.approved],
-        data: this.data().map(
-          (payment) =>
-            payment[TransactionStatusEnum.approved][this.aggregateType()],
-        ),
-        backgroundColor: tailwindConfig.theme.colors.purple[500],
-      },
-      {
-        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.error],
-        data: this.data().map(
-          // TODO: once payments-reporting.services.ts is using enums, use TransactionStatusEnum.error here instead of 'failed'
-          (payment) => payment.failed[this.aggregateType()],
-        ),
-        backgroundColor: tailwindConfig.theme.colors.red[500],
-      },
-      {
-        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.success],
-        data: this.data().map(
-          (payment) =>
-            payment[TransactionStatusEnum.success][this.aggregateType()],
-        ),
-        backgroundColor: tailwindConfig.theme.colors.green[500],
-      },
-      {
-        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.waiting],
-        data: this.data().map(
-          (payment) =>
-            payment[TransactionStatusEnum.waiting][this.aggregateType()],
-        ),
-        backgroundColor: tailwindConfig.theme.colors.yellow[500],
-      },
-    ],
+    datasets: this.chartDatasets(),
   }));
 
   readonly chartTextAlternative = computed(() =>

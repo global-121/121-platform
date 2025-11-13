@@ -201,8 +201,8 @@ class ProjectMonitoring extends BasePage {
     regPerStatus,
     regPerDuplicateStatus,
     regByCreationDate,
-    statusPerPayment,
-    amountPerStatus,
+    transfersPerPaymentStatus,
+    amountPerPaymentStatus,
     amountPerMonth,
   }: {
     regPerStatus: string;
@@ -211,7 +211,7 @@ class ProjectMonitoring extends BasePage {
       unique: number;
     };
     regByCreationDate: string;
-    statusPerPayment: {
+    transfersPerPaymentStatus: {
       date: string;
       failed: number;
       successful: number;
@@ -219,7 +219,7 @@ class ProjectMonitoring extends BasePage {
       pendingApproval: number;
       approved: number;
     };
-    amountPerStatus: {
+    amountPerPaymentStatus: {
       date: string;
       failed: number;
       successful: number;
@@ -248,14 +248,15 @@ class ProjectMonitoring extends BasePage {
     const registrationsByCreationDate = lineChartCanvas.getByLabel(
       `Registrations by creation date (last 2 weeks) ${regByCreationDate}`,
     );
+
     const transfersPerPayment = barChartCanvas.getByLabel(
-      `Transfers per payment ${statusPerPayment.date}: Pending approval: ${statusPerPayment.pendingApproval.toString()}, Approved: ${statusPerPayment.approved.toString()}, Failed: ${statusPerPayment.failed.toString()}, Successful: ${statusPerPayment.successful.toString()}`,
+      `Transfers per payment ${transfersPerPaymentStatus.date}: Successful: ${transfersPerPaymentStatus.successful.toString()}, Pending: ${transfersPerPaymentStatus.pending.toString()}`,
     );
     const amountSentPerPayment = barChartCanvas.getByLabel(
-      `Amount sent per payment ${amountPerStatus.date}: Pending approval: ${amountPerStatus.pendingApproval.toString()}, Approved: ${amountPerStatus.approved.toString()}, Failed: ${amountPerStatus.failed.toString()}, Successful: ${amountPerStatus.successful.toString()}`,
+      `Amount sent per payment ${amountPerPaymentStatus.date}: Successful: ${amountPerPaymentStatus.successful.toString()}, Pending: ${amountPerPaymentStatus.pending.toString()}`,
     );
     const amountSentPerMonth = barChartCanvas.getByLabel(
-      `Amount sent per month ${amountPerMonth.date}: Pending approval: ${amountPerMonth.pendingApproval.toString()}, Approved: ${amountPerMonth.approved.toString()}, Failed: ${amountPerMonth.failed.toString()}, Successful: ${amountPerMonth.successful.toString()}`,
+      `Amount sent per month ${amountPerMonth.date}: Successful: ${amountPerMonth.successful.toString()}, Pending: ${amountPerMonth.pending.toString()}`,
     );
     // Validate charts data
     await expect(registrationsPerStatus).toBeVisible();
