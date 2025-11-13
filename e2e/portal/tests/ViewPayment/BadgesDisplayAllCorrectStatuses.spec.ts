@@ -73,18 +73,18 @@ test('Badges should display correct statuses', async ({ page }) => {
     await paymentPage.startPayment();
   });
 
-  await test.step('Validate Start Payment button is hidden', async () => {
-    await paymentPage.validateStartPaymentButtonVisibility({
-      isVisible: false,
-    });
-  });
-
   await test.step('Validate all registrations have "Approved" badges', async () => {
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.validateBadgeIsPresentByLabel({
       badgeName: 'Approved',
       isVisible: true,
       count: 9,
+    });
+  });
+
+  await test.step('Validate Start Payment button is hidden', async () => {
+    await paymentPage.validateStartPaymentButtonVisibility({
+      isVisible: false,
     });
   });
 });
