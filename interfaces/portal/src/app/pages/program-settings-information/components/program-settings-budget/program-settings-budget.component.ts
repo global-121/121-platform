@@ -25,7 +25,7 @@ import {
   ProgramFormBudgetComponent,
 } from '~/components/program-form-budget/program-form-budget.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
-import { PROJECT_FORM_TOOLTIPS } from '~/domains/program/program.helper';
+import { PROGRAM_FORM_TOOLTIPS } from '~/domains/program/program.helper';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 
@@ -100,7 +100,7 @@ export class ProgramSettingsBudgetComponent {
       {
         label: '*' + $localize`Currency`,
         value: programData?.currency,
-        tooltip: PROJECT_FORM_TOOLTIPS.currency,
+        tooltip: PROGRAM_FORM_TOOLTIPS.currency,
         type: 'text',
       },
       {
@@ -108,7 +108,7 @@ export class ProgramSettingsBudgetComponent {
         value: programData?.distributionDuration,
         type: 'number',
         fullWidth: true,
-        tooltip: PROJECT_FORM_TOOLTIPS.distributionDuration,
+        tooltip: PROGRAM_FORM_TOOLTIPS.distributionDuration,
       },
       {
         label: '*' + $localize`Fixed transfer value`,

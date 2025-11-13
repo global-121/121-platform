@@ -63,7 +63,7 @@ export const fspConfigurationNamesHaveIntegrationType = ({
   );
 };
 
-export const PROJECT_ATTACHMENT_FILE_TYPE_LABELS: Record<
+export const PROGRAM_ATTACHMENT_FILE_TYPE_LABELS: Record<
   ProgramAttachmentFileType,
   string
 > = {
@@ -72,7 +72,7 @@ export const PROJECT_ATTACHMENT_FILE_TYPE_LABELS: Record<
   [ProgramAttachmentFileType.PDF]: $localize`:@@program-attachment-file-type-pdf:PDF`,
 };
 
-export const PROJECT_ATTACHMENT_FILE_TYPE_ICONS: Record<
+export const PROGRAM_ATTACHMENT_FILE_TYPE_ICONS: Record<
   ProgramAttachmentFileType,
   string
 > = {
@@ -81,7 +81,7 @@ export const PROJECT_ATTACHMENT_FILE_TYPE_ICONS: Record<
   [ProgramAttachmentFileType.PDF]: 'pi pi-file-pdf text-red-500',
 };
 
-export const PROJECT_FORM_TOOLTIPS = {
+export const PROGRAM_FORM_TOOLTIPS = {
   targetRegistrations: $localize`The amount of people/households your program plans to reach.`,
   validationProcess: $localize`This enables an additional registration status: "${REGISTRATION_STATUS_LABELS[RegistrationStatusEnum.validated]}".`,
   enableScope: $localize`Scope allows you to control which team members have access to specific registrations, based on the scope they are assigned to in the program team's page.

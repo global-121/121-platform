@@ -35,8 +35,8 @@ import {
 } from '~/components/query-table/query-table.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import {
-  PROJECT_ATTACHMENT_FILE_TYPE_ICONS,
-  PROJECT_ATTACHMENT_FILE_TYPE_LABELS,
+  PROGRAM_ATTACHMENT_FILE_TYPE_ICONS,
+  PROGRAM_ATTACHMENT_FILE_TYPE_LABELS,
 } from '~/domains/program/program.helper';
 import {
   ProgramAttachment,
@@ -114,9 +114,9 @@ export class ProgramMonitoringFilesPageComponent {
       header: $localize`File type`,
       type: QueryTableColumnType.MULTISELECT,
       options: Object.values(ProgramAttachmentFileType).map((type) => ({
-        label: PROJECT_ATTACHMENT_FILE_TYPE_LABELS[type],
+        label: PROGRAM_ATTACHMENT_FILE_TYPE_LABELS[type],
         value: type,
-        icon: PROJECT_ATTACHMENT_FILE_TYPE_ICONS[type],
+        icon: PROGRAM_ATTACHMENT_FILE_TYPE_ICONS[type],
       })),
     },
     {

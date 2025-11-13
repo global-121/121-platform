@@ -17,7 +17,7 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
-import { PROJECT_FORM_TOOLTIPS } from '~/domains/program/program.helper';
+import { PROGRAM_FORM_TOOLTIPS } from '~/domains/program/program.helper';
 import { Program } from '~/domains/program/program.model';
 import { generateFieldErrors } from '~/utils/form-validation';
 
@@ -90,5 +90,5 @@ export class ProgramFormInformationComponent {
     });
   });
 
-  readonly PROJECT_FORM_TOOLTIPS = PROJECT_FORM_TOOLTIPS;
+  readonly PROGRAM_FORM_TOOLTIPS = PROGRAM_FORM_TOOLTIPS;
 }

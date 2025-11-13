@@ -31,7 +31,7 @@ import {
   ProgramNameFormGroup,
 } from '~/components/program-form-name/program-form-name.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
-import { PROJECT_FORM_TOOLTIPS } from '~/domains/program/program.helper';
+import { PROGRAM_FORM_TOOLTIPS } from '~/domains/program/program.helper';
 import { AuthService } from '~/services/auth.service';
 import { RegistrationsTableColumnService } from '~/services/registrations-table-column.service';
 import { ToastService } from '~/services/toast.service';
@@ -183,21 +183,21 @@ export class ProgramSettingsBasicInformationComponent {
         value: programData?.targetNrRegistrations,
         fullWidth: true,
         type: 'number',
-        tooltip: PROJECT_FORM_TOOLTIPS.targetRegistrations,
+        tooltip: PROGRAM_FORM_TOOLTIPS.targetRegistrations,
       },
       {
         label: $localize`Enable validation`,
         value: programData?.validation ?? false,
         fullWidth: true,
         type: 'boolean',
-        tooltip: PROJECT_FORM_TOOLTIPS.validationProcess,
+        tooltip: PROGRAM_FORM_TOOLTIPS.validationProcess,
       },
       {
         label: $localize`Enable scope`,
         value: programData?.enableScope ?? false,
         fullWidth: true,
         type: 'boolean',
-        tooltip: PROJECT_FORM_TOOLTIPS.enableScope,
+        tooltip: PROGRAM_FORM_TOOLTIPS.enableScope,
       },
     ];
 

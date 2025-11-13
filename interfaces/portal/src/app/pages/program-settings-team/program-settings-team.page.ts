@@ -27,7 +27,7 @@ import {
 } from '~/components/query-table/query-table.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { ProgramUserWithRolesLabel } from '~/domains/program/program.model';
-import { AddProgramTeamUserDialogComponent } from '~/pages/program-settings-team/components/add-project-team-user-dialog/add-program-team-user-dialog.component';
+import { AddProgramTeamUserDialogComponent } from '~/pages/program-settings-team/components/add-program-team-user-dialog/add-program-team-user-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
