@@ -215,7 +215,7 @@ class ProjectMonitoring extends BasePage {
       date: string;
       failed: number;
       successful: number;
-      pending: number;
+      processing: number;
       pendingApproval: number;
       approved: number;
     };
@@ -223,7 +223,7 @@ class ProjectMonitoring extends BasePage {
       date: string;
       failed: number;
       successful: number;
-      pending: number;
+      processing: number;
       pendingApproval: number;
       approved: number;
     };
@@ -231,7 +231,7 @@ class ProjectMonitoring extends BasePage {
       date: string;
       failed: number;
       successful: number;
-      pending: number;
+      processing: number;
       pendingApproval: number;
       approved: number;
     };
