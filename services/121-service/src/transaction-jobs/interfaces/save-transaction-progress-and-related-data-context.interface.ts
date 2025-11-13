@@ -5,4 +5,5 @@ export interface SaveTransactionProgressAndRelatedDataContext
   userId: number; // not nullable in this case
   programId: number;
   referenceId: string;
+  isRetry: boolean;
 }

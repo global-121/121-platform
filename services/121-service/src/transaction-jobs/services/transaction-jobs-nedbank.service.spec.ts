@@ -33,6 +33,7 @@ const mockedTransactionContext: SaveTransactionProgressAndRelatedDataContext = {
     mockedNedbankTransactionJob.programFspConfigurationId,
   programId: mockedNedbankTransactionJob.programId,
   referenceId: mockedNedbankTransactionJob.referenceId,
+  isRetry: mockedNedbankTransactionJob.isRetry,
 };
 
 describe('TransactionJobsNedbankService', () => {

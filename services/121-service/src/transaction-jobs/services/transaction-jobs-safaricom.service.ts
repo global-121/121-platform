@@ -33,6 +33,7 @@ export class TransactionJobsSafaricomService {
         programFspConfigurationId: transactionJob.programFspConfigurationId,
         programId: transactionJob.programId,
         referenceId: transactionJob.referenceId,
+        isRetry: transactionJob.isRetry,
       };
 
     // 1. Create transaction event 'initiated' or 'retry'
