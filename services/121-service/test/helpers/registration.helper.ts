@@ -9,7 +9,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
-import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   createAndStartPayment,
@@ -48,7 +48,7 @@ export function createOcwRegistrationForImport({
       referenceId !== undefined
         ? referenceId
         : `ref-${Math.random().toString(36).substring(2, 10)}`,
-    preferredLanguage: UILanguage.en,
+    preferredLanguage: RegistrationPreferredLanguage.en,
     paymentAmountMultiplier:
       paymentAmountMultiplier !== undefined ? paymentAmountMultiplier : 1,
     fullName: fullName !== undefined ? fullName : 'Default Name',
