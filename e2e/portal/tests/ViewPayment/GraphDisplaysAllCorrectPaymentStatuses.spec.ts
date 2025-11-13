@@ -60,7 +60,9 @@ test('[32297] Graph should reflect transfer statuses', async ({ page }) => {
     await page.goto(`/en-GB/project/${programIdOCW}/payments/1`);
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.validateGraphStatus({
-      pending: 0,
+      pendingApproval: 0,
+      approved: 0,
+      processing: 0,
       successful: 16,
       failed: 16,
     });

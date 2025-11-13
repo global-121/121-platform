@@ -956,7 +956,7 @@
         <source>Successful</source>
       </trans-unit>
       <trans-unit id="transaction-status-waiting" datatype="html">
-        <source>Pending</source>
+        <source>Processing</source>
       </trans-unit>
       <trans-unit id="3595291210637281374" datatype="html">
         <source>Transfers data</source>
@@ -978,9 +978,6 @@
       </trans-unit>
       <trans-unit id="3971565293367630153" datatype="html">
         <source>Retry transfers</source>
-      </trans-unit>
-      <trans-unit id="7113199794780283377" datatype="html">
-        <source>You are about to retry <x equiv-text="{{ referenceIdsForRetryTransfers().length }}" id="INTERPOLATION"/> payment(s). The transfer status will change to Pending until received by the registration.</source>
       </trans-unit>
       <trans-unit id="retry-failed-transfers" datatype="html">
         <source>Retry failed transfer(s)</source>
@@ -2035,6 +2032,9 @@
       </trans-unit>
       <trans-unit id="833755501463008115" datatype="html">
         <source>Registration Scope</source>
+      </trans-unit>
+      <trans-unit id="4830186564201736103" datatype="html">
+        <source>You are about to retry <x equiv-text="{{ referenceIdsForRetryTransfers().length }}" id="INTERPOLATION"/> payment(s). The transfer status will change to Processing until received by the registration.</source>
       </trans-unit>
     </body>
   </file>

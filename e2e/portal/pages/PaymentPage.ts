@@ -88,11 +88,15 @@ class PaymentPage extends BasePage {
   }
 
   async validateGraphStatus({
-    pending,
+    pendingApproval,
+    approved,
+    processing,
     successful,
     failed,
   }: {
-    pending: number;
+    pendingApproval: number;
+    approved: number;
+    processing: number;
     successful: number;
     failed: number;
   }) {
@@ -105,7 +109,7 @@ class PaymentPage extends BasePage {
         .trim();
 
       expect(graphText).toContain(
-        `Pending: ${pending}, Successful: ${successful}, Failed: ${failed}`,
+        `Pending approval: ${pendingApproval}, Approved: ${approved}, Processing: ${processing}, Successful: ${successful}, Failed: ${failed}`,
       );
     } else {
       throw new Error('Graph attribute is null');

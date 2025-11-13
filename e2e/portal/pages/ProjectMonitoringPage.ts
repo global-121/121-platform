@@ -197,6 +197,32 @@ class ProjectMonitoring extends BasePage {
 
   // Charts assertions only registrations per status are checked by string because the chart is responsive
   // And if we would like to check every possible status it make the assertion very complicated
+  // Helper to build chart label string based on present statuses
+  private buildChartLabel({
+    prefix,
+    date,
+    statuses,
+  }: {
+    prefix: string;
+    date: string;
+    statuses: Record<string, number>;
+  }): string {
+    const statusLabels: Record<string, string> = {
+      pendingApproval: 'Pending approval',
+      approved: 'Approved',
+      processing: 'Processing',
+      successful: 'Successful',
+      failed: 'Failed',
+    };
+    const parts: string[] = [];
+    for (const key of Object.keys(statusLabels)) {
+      if (typeof statuses[key] === 'number') {
+        parts.push(`${statusLabels[key]}: ${statuses[key].toString()}`);
+      }
+    }
+    return `${prefix} ${date}: ${parts.join(', ')}`;
+  }
+
   async assertDashboardCharts({
     regPerStatus,
     regPerDuplicateStatus,
@@ -213,27 +239,27 @@ class ProjectMonitoring extends BasePage {
     regByCreationDate: string;
     transfersPerPaymentStatus: {
       date: string;
-      failed: number;
-      successful: number;
-      pending: number;
-      pendingApproval: number;
-      approved: number;
+      failed?: number;
+      successful?: number;
+      processing?: number;
+      pendingApproval?: number;
+      approved?: number;
     };
     amountPerPaymentStatus: {
       date: string;
-      failed: number;
-      successful: number;
-      pending: number;
-      pendingApproval: number;
-      approved: number;
+      failed?: number;
+      successful?: number;
+      processing?: number;
+      pendingApproval?: number;
+      approved?: number;
     };
     amountPerMonth: {
       date: string;
-      failed: number;
-      successful: number;
-      pending: number;
-      pendingApproval: number;
-      approved: number;
+      failed?: number;
+      successful?: number;
+      processing?: number;
+      pendingApproval?: number;
+      approved?: number;
     };
   }) {
     const barChartCanvas = this.page.locator('p-chart[type="bar"]');
@@ -249,14 +275,33 @@ class ProjectMonitoring extends BasePage {
       `Registrations by creation date (last 2 weeks) ${regByCreationDate}`,
     );
 
+    const { date: transfersDate, ...transfersStatuses } =
+      transfersPerPaymentStatus;
+    const { date: amountPerPaymentDate, ...amountPerPaymentStatuses } =
+      amountPerPaymentStatus;
+    const { date: amountPerMonthDate, ...amountPerMonthStatuses } =
+      amountPerMonth;
+
     const transfersPerPayment = barChartCanvas.getByLabel(
-      `Transfers per payment ${transfersPerPaymentStatus.date}: Successful: ${transfersPerPaymentStatus.successful.toString()}, Pending: ${transfersPerPaymentStatus.pending.toString()}`,
+      this.buildChartLabel({
+        prefix: 'Transfers per payment',
+        date: transfersDate,
+        statuses: transfersStatuses,
+      }),
     );
     const amountSentPerPayment = barChartCanvas.getByLabel(
-      `Amount sent per payment ${amountPerPaymentStatus.date}: Successful: ${amountPerPaymentStatus.successful.toString()}, Pending: ${amountPerPaymentStatus.pending.toString()}`,
+      this.buildChartLabel({
+        prefix: 'Amount sent per payment',
+        date: amountPerPaymentDate,
+        statuses: amountPerPaymentStatuses,
+      }),
     );
     const amountSentPerMonth = barChartCanvas.getByLabel(
-      `Amount sent per month ${amountPerMonth.date}: Successful: ${amountPerMonth.successful.toString()}, Pending: ${amountPerMonth.pending.toString()}`,
+      this.buildChartLabel({
+        prefix: 'Amount sent per month',
+        date: amountPerMonthDate,
+        statuses: amountPerMonthStatuses,
+      }),
     );
     // Validate charts data
     await expect(registrationsPerStatus).toBeVisible();
