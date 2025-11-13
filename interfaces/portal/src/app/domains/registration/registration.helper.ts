@@ -2,7 +2,7 @@ import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type
 import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { UILanguageEnum } from '@121-service/src/shared/enum/ui-language.enum';
+import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
 import { AppRoutes } from '~/app.routes';
 
@@ -46,7 +46,7 @@ export const DUPLICATE_STATUS_LABELS: Record<DuplicateStatus, string> = {
   [DuplicateStatus.unique]: $localize`:@@duplicate-status-unique:Unique`,
 };
 
-export const LANGUAGE_ENUM_LABEL: Record<UILanguageEnum, string> = {
+export const LANGUAGE_ENUM_LABEL: Record<UILanguage, string> = {
   ar: $localize`Arabic`,
   en: $localize`English`,
   nl: $localize`Dutch`,
