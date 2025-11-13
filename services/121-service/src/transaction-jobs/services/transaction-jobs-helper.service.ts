@@ -139,7 +139,6 @@ export class TransactionJobsHelperService {
     });
   }
 
-  // ##TODO: better name to distinguish from other saveTransactionProgress methods that do not update payment count (bulk? external?)
   public async saveTransactionProgressAndUpdateRelatedData({
     newTransactionStatus,
     context,
@@ -177,7 +176,7 @@ export class TransactionJobsHelperService {
     programId: number;
     userId: number;
   }): Promise<void> {
-    // ##TODO build in a check that we only update once per transaction
+    // ##TODO build in a check that we only update once per transaction. Specifically also not on retry!
     await this.registrationScopedRepository.increasePaymentCountByOne({
       referenceId,
     });
