@@ -35,7 +35,6 @@ function generateModuleDependencyGraph(app: INestApplication): void {
   const edges = SpelunkerModule.findGraphEdges(root);
   const genericModules = [
     // Sorted alphabetically
-    'ActionModule',
     'ApplicationModule',
     'AuthModule',
     'BullModule',

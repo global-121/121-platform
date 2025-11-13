@@ -11,7 +11,6 @@ AB#XXXX <!--- Replace this with a reference to a DevOps/backlog-issue -->
 - [ ] I have asked the design team to review these changes, or: The changes do not touch the UI/UX
 - [ ] I have made sure that all automated checks pass before requesting a review
 - [ ] I do not need any deviation from our PR guidelines
-- [ ] I have updated the [121 Service Module Dependency Diagram in the wiki](https://github.com/global-121/121-platform/wiki/121-Service-Module-Diagram) when the 121 module dependencies have changed.
 
 ## Portal preview-deployment
 
