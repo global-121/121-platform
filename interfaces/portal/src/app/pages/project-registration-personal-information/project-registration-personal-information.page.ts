@@ -125,12 +125,8 @@ export class ProjectRegistrationPersonalInformationPageComponent
     ),
   );
 
-  async onRegistrationUpdated() {
+  onRegistrationUpdated() {
     this.isEditing.set(false);
-    void this.metricApiService.invalidateCache(this.projectId);
-    await this.registrationApiService.invalidateCache({
-      projectId: this.projectId,
-    });
     void this.registrationAttributes.refetch();
   }
 

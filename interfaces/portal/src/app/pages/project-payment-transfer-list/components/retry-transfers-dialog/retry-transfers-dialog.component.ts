@@ -55,19 +55,8 @@ export class RetryTransfersDialogComponent {
         paymentId: this.paymentId(),
         referenceIds,
       }),
-    onSuccess: () => {
-      void this.metricApiService.invalidateCache(this.projectId);
-      void this.paymentApiService.invalidateCache(
-        this.projectId,
-        this.paymentId,
-      );
-      setTimeout(() => {
-        void this.metricApiService.invalidateCache(this.projectId);
-        void this.paymentApiService.invalidateCache(
-          this.projectId,
-          this.paymentId,
-        );
-      }, 500);
+    meta: {
+      invalidateCacheAgainAfterDelay: 500,
     },
   }));
 

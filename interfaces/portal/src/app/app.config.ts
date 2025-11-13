@@ -17,6 +17,7 @@ import {
 } from '@angular/router';
 
 import {
+  MutationCache,
   provideTanStackQuery,
   QueryClient,
 } from '@tanstack/angular-query-experimental';
@@ -29,6 +30,40 @@ import { CustomPageTitleStrategy } from '~/app.title-strategy';
 import { AuthService } from '~/services/auth.service';
 import { TrackingService } from '~/services/tracking.service';
 import { Locale } from '~/utils/locale';
+
+declare module '@tanstack/angular-query-experimental' {
+  interface Register {
+    mutationMeta: {
+      invalidateCacheAgainAfterDelay?: number;
+    };
+  }
+}
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    },
+  },
+  mutationCache: new MutationCache({
+    // eslint-disable-next-line max-params -- we don't control this function signature
+    onSuccess: async (_data, _variables, _context, mutation) => {
+      await queryClient.invalidateQueries();
+
+      if (!mutation.options.meta?.invalidateCacheAgainAfterDelay) {
+        return;
+      }
+
+      // Some requests have a slight delay between a mutation
+      // response and the moment the updated data is available in queries.
+      // To accommodate for this, we invalidate queries a second time after
+      // a short delay.
+      setTimeout(() => {
+        void queryClient.invalidateQueries();
+      }, mutation.options.meta.invalidateCacheAgainAfterDelay);
+    },
+  }),
+});
 
 export const getAppConfig = (locale: Locale): ApplicationConfig => ({
   providers: [
@@ -61,15 +96,7 @@ export const getAppConfig = (locale: Locale): ApplicationConfig => ({
         clear: $localize`:@@generic-clear:Clear`,
       },
     }),
-    provideTanStackQuery(
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            staleTime: 1000 * 60 * 5, // 5 minutes
-          },
-        },
-      }),
-    ),
+    provideTanStackQuery(queryClient),
     ...AuthService.APP_PROVIDERS,
     ...TrackingService.APP_PROVIDERS,
     { provide: TitleStrategy, useClass: CustomPageTitleStrategy },
