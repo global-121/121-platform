@@ -91,12 +91,12 @@ export class RegistrationDebitCardsController {
     @Req() req,
   ) {
     const userId = req.user.id;
-    const permisson = pause
+    const permission = pause
       ? PermissionEnum.FspDebitCardBLOCK
       : PermissionEnum.FspDebitCardUNBLOCK;
 
     const hasPermission = await this.userService.canActivate(
-      [permisson],
+      [permission],
       programId,
       userId,
     );
