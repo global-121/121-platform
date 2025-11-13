@@ -99,6 +99,7 @@ class PaymentPage extends BasePage {
     const badge = this.page.locator('app-colored-chip').getByLabel(badgeName);
     const allBadges = await badge.all();
     const badgeCount = allBadges.length;
+    console.log('badgeCount: ', badgeCount);
 
     if (isVisible) {
       for (const badgeElement of allBadges) {

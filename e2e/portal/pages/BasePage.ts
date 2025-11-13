@@ -128,6 +128,11 @@ class BasePage {
     await expect(this.toast).toBeHidden();
   }
 
+  async waitForPageLoad() {
+    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
+  }
+
   async validateFormError({ errorText }: { errorText: string }) {
     await this.page.waitForLoadState('networkidle');
     await this.formError.waitFor();

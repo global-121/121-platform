@@ -17,6 +17,14 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
+const duplicateNumberOfRegistrations = 3;
+const registrationsCount = Math.pow(2, duplicateNumberOfRegistrations);
+const totalBadges = registrationsCount + 1; // +1 for top chart badge
+
+const approvedBadgeLabel = 'Approved';
+const successfulBadgeLabel = 'Successful';
+const pendingApprovalBadgeLabel = 'Pending approval';
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
@@ -25,7 +33,7 @@ test.beforeEach(async ({ page }) => {
     programIdOCW,
     accessToken,
   );
-  await resetDuplicateRegistrations(3);
+  await resetDuplicateRegistrations(duplicateNumberOfRegistrations);
 
   // Login
   const loginPage = new LoginPage(page);
@@ -33,7 +41,9 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('Badges should display correct statuses', async ({ page }) => {
+test('Badges and chart should display correct statuses during payment process', async ({
+  page,
+}) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = NLRCProgram.titlePortal.en;
@@ -49,6 +59,7 @@ test('Badges should display correct statuses', async ({ page }) => {
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
     );
+    await paymentPage.dismissToast();
   });
 
   await test.step('Validate "Pending approval" badges and details', async () => {
@@ -56,12 +67,13 @@ test('Badges should display correct statuses', async ({ page }) => {
       pending: 0,
       successful: 0,
       failed: 0,
-      pendingApproval: 8,
+      pendingApproval: registrationsCount,
     });
     await paymentPage.validateBadgeIsPresentByLabel({
-      badgeName: 'Pending approval',
+      badgeName: pendingApprovalBadgeLabel,
       isVisible: true,
-      count: 9,
+      // Those are all registrations badges plus top chart badges 8 + 1
+      count: totalBadges,
     });
   });
 
@@ -73,12 +85,31 @@ test('Badges should display correct statuses', async ({ page }) => {
     await paymentPage.startPayment();
   });
 
-  await test.step('Validate all registrations have "Approved" badges', async () => {
+  await test.step('Validate top of the chart has "Approved" badge', async () => {
     await paymentPage.waitForPaymentToComplete();
+    await paymentPage.validateToastMessage('Payment started successfully.');
+    await paymentPage.validateGraphStatus({
+      pending: 0,
+      successful: registrationsCount,
+      failed: 0,
+    });
+    // Reload the page because Successful badges are not displayed without reload
+    await page.goto(`/en-GB/project/${programIdOCW}/payments/1`);
+    await paymentPage.waitForPageLoad();
+    // Validate badges
     await paymentPage.validateBadgeIsPresentByLabel({
-      badgeName: 'Approved',
+      badgeName: approvedBadgeLabel,
       isVisible: true,
-      count: 9,
+      count: 1,
+    });
+    await paymentPage.validateBadgeIsPresentByLabel({
+      badgeName: successfulBadgeLabel,
+      isVisible: true,
+      count: registrationsCount,
+    });
+    await paymentPage.validateBadgeIsPresentByLabel({
+      badgeName: pendingApprovalBadgeLabel,
+      isVisible: false,
     });
   });
 
