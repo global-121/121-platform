@@ -64,8 +64,6 @@ describe('Registrations - [Scoped]', () => {
 
   it('should payout all registrations within the scope of the requesting user', async () => {
     // Arrange
-    // add payment.create permission to the user
-
     const testScope = DebugScope.Kisumu;
     const accessTokenScoped = await createAccessTokenWithPermissions({
       permissions: Object.values(PermissionEnum),
