@@ -10,14 +10,6 @@
     "params": []
   },
   {
-    "method": "post",
-    "path": "/api/registration-debit-cards/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards",
-    "params": [
-      "programId",
-      "referenceId"
-    ]
-  },
-  {
     "method": "get",
     "path": "/api/health/health",
     "params": []
@@ -678,50 +670,6 @@
     ]
   },
   {
-    "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards",
-    "params": [
-      "programId",
-      "referenceId"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/{tokenCode}",
-    "params": [
-      "programId",
-      "referenceId",
-      "tokenCode",
-      "pause"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
-    "params": [
-      "referenceId",
-      "programId"
-    ],
-    "returnType": "IntersolveVisaWalletDto"
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
-    "params": [
-      "referenceId",
-      "programId"
-    ],
-    "returnType": "IntersolveVisaWalletDto"
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/contact-information",
-    "params": [
-      "programId",
-      "referenceId"
-    ]
-  },
-  {
     "method": "get",
     "path": "/api/programs/{programId}/registrations/{id}",
     "params": [
@@ -737,6 +685,50 @@
       "format",
       "toDate",
       "fromDate",
+      "referenceId"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/registration-debit-cards/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards",
+    "params": [
+      "programId",
+      "referenceId"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/registration-debit-cards/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/{tokenCode}",
+    "params": [
+      "programId",
+      "referenceId",
+      "tokenCode",
+      "pause"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/registration-debit-cards/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
+    "params": [
+      "referenceId",
+      "programId"
+    ],
+    "returnType": "IntersolveVisaWalletDto"
+  },
+  {
+    "method": "get",
+    "path": "/api/registration-debit-cards/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
+    "params": [
+      "referenceId",
+      "programId"
+    ],
+    "returnType": "IntersolveVisaWalletDto"
+  },
+  {
+    "method": "post",
+    "path": "/api/registration-debit-cards/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/contact-information",
+    "params": [
+      "programId",
       "referenceId"
     ]
   },

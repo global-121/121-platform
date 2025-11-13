@@ -22,15 +22,15 @@ import {
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
-import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
+import { RegistrationDebitCardsService } from '@121-service/src/registration-debit-cards/registration-debit-cards.service';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
 
 @Controller('registration-debit-cards')
 export class RegistrationDebitCardsController {
   public constructor(
-    private readonly registrationsService: RegistrationsService,
     private readonly userService: UserService,
+    private readonly registrationDebitCardsService: RegistrationDebitCardsService,
   ) {}
 
   // Re-issue card: this is placed in RegistrationsController because it also sends messages and searches by referenceId
@@ -57,7 +57,7 @@ export class RegistrationDebitCardsController {
   ): Promise<void> {
     const userId = req.user.id;
 
-    await this.registrationsService.reissueCardAndSendMessage(
+    await this.registrationDebitCardsService.reissueCardAndSendMessage(
       referenceId,
       programId,
       userId,
@@ -110,7 +110,7 @@ export class RegistrationDebitCardsController {
       );
     }
 
-    return await this.registrationsService.pauseCardAndSendMessage(
+    return await this.registrationDebitCardsService.pauseCardAndSendMessage(
       referenceId,
       programId,
       tokenCode,
@@ -141,7 +141,7 @@ export class RegistrationDebitCardsController {
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<IntersolveVisaWalletDto> {
-    return await this.registrationsService.retrieveAndUpdateIntersolveVisaWalletAndCards(
+    return await this.registrationDebitCardsService.retrieveAndUpdateIntersolveVisaWalletAndCards(
       referenceId,
       programId,
     );
@@ -169,7 +169,7 @@ export class RegistrationDebitCardsController {
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<IntersolveVisaWalletDto> {
-    return await this.registrationsService.getIntersolveVisaWalletAndCards(
+    return await this.registrationDebitCardsService.getIntersolveVisaWalletAndCards(
       referenceId,
       programId,
     );
@@ -192,7 +192,7 @@ export class RegistrationDebitCardsController {
     @Param('programId', ParseIntPipe) programId: number,
     @Param('referenceId') referenceId: string,
   ): Promise<void> {
-    return await this.registrationsService.getRegistrationAndSendContactInformationToIntersolve(
+    return await this.registrationDebitCardsService.getRegistrationAndSendContactInformationToIntersolve(
       referenceId,
       programId,
     );
