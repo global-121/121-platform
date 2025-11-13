@@ -63,8 +63,7 @@ export class SeedHelperService {
       const programData = await this.importData(programPath);
       const programEntity = await this.addProgram(programData, isApiTests);
 
-      // Add message templates
-      await this.addMessageTemplates(program.messageTemplate, programEntity);
+      await this.addMessageTemplate(program.messageTemplate, programEntity);
 
       // Add default users
       const debugScopes = Object.values(DebugScope);
@@ -429,16 +428,16 @@ export class SeedHelperService {
     ]);
   }
 
-  public async addMessageTemplates(
-    messageTemplates: SeedMessageTemplateConfig,
+  public async addMessageTemplate(
+    messageTemplate: SeedMessageTemplateConfig,
     program: ProgramEntity,
   ): Promise<void> {
     const messageTemplateRepo = this.dataSource.getRepository(
       MessageTemplateEntity,
     );
-    for (const messageType of Object.keys(messageTemplates)) {
-      const messageObject = messageTemplates[messageType].message;
-      const contentSidObject = messageTemplates[messageType].contentSid;
+    for (const messageType of Object.keys(messageTemplate)) {
+      const messageObject = messageTemplate[messageType].message;
+      const contentSidObject = messageTemplate[messageType].contentSid;
 
       const messageLanguages = messageObject ? Object.keys(messageObject) : [];
       const contentSidLanguages = contentSidObject
@@ -455,8 +454,8 @@ export class SeedHelperService {
           language,
           messageObject?.[language],
           contentSidObject?.[language],
-          messageTemplates[messageType].isSendMessageTemplate,
-          messageTemplates[messageType]?.label?.[language] ?? null,
+          messageTemplate[messageType].isSendMessageTemplate,
+          messageTemplate[messageType]?.label?.[language] ?? null,
         );
 
         await messageTemplateRepo.save(template);
