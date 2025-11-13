@@ -5,7 +5,6 @@ import { Equal, In, Repository } from 'typeorm';
 
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
-import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
@@ -21,6 +20,7 @@ import { RegistrationsService } from '@121-service/src/registration/services/reg
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
+import { RegistrationDebitCardsService } from '@121-service/src/registration-debit-cards/registration-debit-cards.service';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserService } from '@121-service/src/user/user.service';
@@ -37,6 +37,17 @@ describe('RegistrationsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RegistrationsService,
+        {
+          provide: RegistrationDebitCardsService,
+          useValue: {
+            retrieveAndUpdateIntersolveVisaWalletAndCards: jest.fn(),
+            getIntersolveVisaWalletAndCards: jest.fn(),
+            reissueCardAndSendMessage: jest.fn(),
+            sendCustomerInformationToIntersolve: jest.fn(),
+            pauseCardAndSendMessage: jest.fn(),
+            getRegistrationAndSendContactInformationToIntersolve: jest.fn(),
+          },
+        },
         {
           provide: RegistrationScopedRepository,
           useValue: {
@@ -112,13 +123,6 @@ describe('RegistrationsService', () => {
           useValue: {
             saveData: jest.fn(),
             deleteProgramRegistrationAttributeData: jest.fn(),
-          },
-        },
-        {
-          provide: IntersolveVisaService,
-          useValue: {
-            hasIntersolveCustomer: jest.fn(),
-            retrieveAndUpdateWallet: jest.fn(),
           },
         },
         {
