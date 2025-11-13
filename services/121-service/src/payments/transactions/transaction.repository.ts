@@ -49,7 +49,8 @@ export class TransactionRepository extends Repository<TransactionEntity> {
   ): Promise<number> {
     const result = await this.createQueryBuilder('transaction')
       .select('COUNT(DISTINCT transaction."paymentId")', 'paymentCount')
-      .where('transaction."referenceId" = :referenceId', { referenceId })
+      .leftJoin('transaction.registration', 'registration')
+      .where('registration."referenceId" = :referenceId', { referenceId })
       .getRawOne();
     if (!result) {
       return 0;
