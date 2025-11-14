@@ -25,7 +25,7 @@ export enum IntersolveVisaCardStatus {
   CardExpired = 'CARD_EXPIRED',
 }
 
-// This is a magic number that will cause the transfer to fail due to a duplicate operation reference (idempotency key)
+// This is a magic number that will cause the transaction to fail due to a duplicate operation reference (idempotency key)
 // It's used in the API tests to verify that the API handles this case correctly
 const MAGIC_FAIL_OPERATION_REFERENCE_AMOUNT = 15.15;
 
@@ -752,8 +752,8 @@ export class IntersolveVisaMockService {
         },
       };
     }
-    if (toToken.includes('mock-fail-transfer')) {
-      // We assume this is the correct response for a failed transfer
+    if (toToken.includes('mock-fail-transaction')) {
+      // We assume this is the correct response for a failed transaction
       // However I do not know a scenario where this would fail, maybe when our token code does not exist or is out of funding
       return {
         status: HttpStatus.NOT_FOUND,
@@ -763,7 +763,7 @@ export class IntersolveVisaMockService {
           errors: [
             {
               code: 'NOT_FOUND',
-              description: 'We mocked that transfer failed',
+              description: 'We mocked that transaction failed',
             },
           ],
         },

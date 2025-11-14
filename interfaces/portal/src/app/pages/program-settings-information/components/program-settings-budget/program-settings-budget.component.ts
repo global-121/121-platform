@@ -104,7 +104,7 @@ export class ProgramSettingsBudgetComponent {
         type: 'text',
       },
       {
-        label: $localize`Default transfers per registration`,
+        label: $localize`Default transactions per registration`,
         value: programData?.distributionDuration,
         type: 'number',
         fullWidth: true,

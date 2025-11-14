@@ -32,7 +32,7 @@ import {
   registrationLink,
 } from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
-import { RetryTransfersDialogComponent } from '~/pages/program-payment-transfer-list/components/retry-transfers-dialog/retry-transfers-dialog.component';
+import { RetryTransactionsDialogComponent } from '~/pages/program-payment-transaction-list/components/retry-transactions-dialog/retry-transactions-dialog.component';
 import { ActivityLogTableCellContext } from '~/pages/program-registration-activity-log/program-registration-activity-log.page';
 import { AuthService } from '~/services/auth.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
@@ -45,7 +45,7 @@ import { Locale } from '~/utils/locale';
     ColoredChipComponent,
     NgClass,
     ButtonModule,
-    RetryTransfersDialogComponent,
+    RetryTransactionsDialogComponent,
     RouterLink,
   ],
   templateUrl: './table-cell-overview.component.html',
@@ -59,8 +59,10 @@ export class TableCellOverviewComponent
   readonly context = input.required<ActivityLogTableCellContext>();
   locale = inject<Locale>(LOCALE_ID);
 
-  readonly retryTransfersDialog =
-    viewChild.required<RetryTransfersDialogComponent>('retryTransfersDialog');
+  readonly retryTransactionsDialog =
+    viewChild.required<RetryTransactionsDialogComponent>(
+      'retryTransactionsDialog',
+    );
 
   readonly registrationAttributeService = inject(RegistrationAttributeService);
   readonly authService = inject(AuthService);
@@ -119,7 +121,7 @@ export class TableCellOverviewComponent
     }
   });
 
-  readonly canRetryTransfer = computed(() => {
+  readonly canRetryTransaction = computed(() => {
     const item = this.value();
     if (
       !this.authService.hasAllPermissions({
@@ -157,13 +159,13 @@ export class TableCellOverviewComponent
     });
   });
 
-  retryTransfer() {
+  retryTransaction() {
     const referenceId = this.context().referenceId;
     if (!referenceId) {
       return;
     }
     const referenceIds = [referenceId];
-    this.retryTransfersDialog().retryFailedTransfers({
+    this.retryTransactionsDialog().retryFailedTransactions({
       referenceIds,
     });
   }

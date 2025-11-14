@@ -77,7 +77,7 @@ export const ACTIVITY_LOG_ITEM_TYPE_LABELS: Record<ActivityTypeEnum, string> = {
   [ActivityTypeEnum.Message]: $localize`:@@activity-log-item-type-message:Message`,
   [ActivityTypeEnum.Note]: $localize`:@@activity-log-item-type-note:Note`,
   [ActivityTypeEnum.StatusChange]: $localize`:@@activity-log-item-type-status-update:Status update`,
-  [ActivityTypeEnum.Transaction]: $localize`:@@activity-log-item-type-transfer:Transfer`,
+  [ActivityTypeEnum.Transaction]: $localize`:@@activity-log-item-type-transaction:Transaction`,
   [ActivityTypeEnum.IgnoredDuplicate]: $localize`:@@activity-log-item-type-duplication:Duplication`,
 };
 

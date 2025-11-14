@@ -25,26 +25,26 @@ export class TransactionQueuesService {
   ) {}
 
   public async addIntersolveVisaTransactionJobs(
-    transferJobs: IntersolveVisaTransactionJobDto[],
+    visaTransactionJobs: IntersolveVisaTransactionJobDto[],
   ): Promise<void> {
-    for (const transferJob of transferJobs) {
+    for (const visaTransactionJob of visaTransactionJobs) {
       const job =
         await this.queuesService.transactionJobIntersolveVisaQueue.add(
           JobNames.default,
-          transferJob,
+          visaTransactionJob,
         );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
     }
   }
 
   public async addIntersolveVoucherTransactionJobs(
-    transferJobs: IntersolveVoucherTransactionJobDto[],
+    voucherTransactionJobs: IntersolveVoucherTransactionJobDto[],
   ): Promise<void> {
-    for (const transferJob of transferJobs) {
+    for (const voucherTransactionJob of voucherTransactionJobs) {
       const job =
         await this.queuesService.transactionJobIntersolveVoucherQueue.add(
           JobNames.default,
-          transferJob,
+          voucherTransactionJob,
         );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
     }

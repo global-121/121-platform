@@ -60,12 +60,12 @@ class CreateProgramDialog {
   async fillInStep3({
     fundsAvailable,
     currency,
-    defaultTransferAmount,
+    defaultNrOfTransactions,
     fixedTransferValue,
   }: {
     fundsAvailable: string;
     currency: string;
-    defaultTransferAmount: string;
+    defaultNrOfTransactions: string;
     fixedTransferValue: string;
   }) {
     await this.page.getByLabel('Funds available').fill(fundsAvailable);
@@ -74,8 +74,8 @@ class CreateProgramDialog {
       .getByRole('option', { name: currency, exact: true })
       .click();
     await this.page
-      .getByLabel('Default transfers per registration')
-      .fill(defaultTransferAmount);
+      .getByLabel('Default transactions per registration')
+      .fill(defaultNrOfTransactions);
     await this.page
       .getByLabel('*Fixed transfer value')
       .fill(fixedTransferValue);

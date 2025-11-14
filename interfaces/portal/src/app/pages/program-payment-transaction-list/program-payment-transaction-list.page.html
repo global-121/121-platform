@@ -24,23 +24,23 @@
       table-actions
       class="me-2 flex grow justify-end"
     >
-      @if (canRetryTransfers()) {
+      @if (canRetryTransactions()) {
         <p-button
-          label="Retry failed transfer(s)"
-          i18n-label="@@retry-failed-transfers"
+          label="Retry failed transaction(s)"
+          i18n-label="@@retry-failed-transactions"
           rounded
           outlined
           icon="pi pi-refresh"
           [iconPos]="rtlHelper.createPosition('start')()"
-          (click)="retryFailedTransfers()"
+          (click)="retryFailedTransactions()"
         />
       }
     </div>
   </app-query-table>
 </app-page-layout-payment>
 
-<app-retry-transfers-dialog
-  #retryTransfersDialog
+<app-retry-transactions-dialog
+  #retryTransactionsDialog
   [programId]="programId()"
   [paymentId]="paymentId()"
 />

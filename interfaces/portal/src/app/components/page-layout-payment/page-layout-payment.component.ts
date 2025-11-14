@@ -322,7 +322,7 @@ export class PageLayoutPaymentComponent {
 
   readonly chipTooltip = computed<string | undefined>(() =>
     this.isPaymentInProgress()
-      ? $localize`:@@inProgressChipTooltip:The payment will be in progress while the transfers in the table below are loading.`
+      ? $localize`:@@inProgressChipTooltip:The payment will be in progress while the transactions in the table below are loading.`
       : undefined,
   );
 }

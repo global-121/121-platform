@@ -73,24 +73,25 @@ class TableComponent {
     await this.table.getByTestId('expand-all-rows-button').click();
   }
 
-  async clickViewTransferHistoryButtonInRow() {
+  async clickViewTransactionHistoryButtonInRow() {
     const button = this.table
-      .getByTestId('view-transfer-history-button')
+      .getByTestId('view-transaction-history-button')
       .first();
     await button.click();
   }
 
-  async validateTransferHistoryTableRowCount({
+  async validateTransactionHistoryTableRowCount({
     expectedRowCount,
   }: {
     expectedRowCount: number;
   }) {
-    const transferHistoryTable = this.page.getByTestId(
-      'transfer-history-table',
+    const transactionHistoryTable = this.page.getByTestId(
+      'transaction-history-table',
     );
-    await expect(transferHistoryTable).toBeVisible();
-    const transferHistoryTableRows = transferHistoryTable.locator('tbody tr');
-    const rowCount = await transferHistoryTableRows.count();
+    await expect(transactionHistoryTable).toBeVisible();
+    const transactionHistoryTableRows =
+      transactionHistoryTable.locator('tbody tr');
+    const rowCount = await transactionHistoryTableRows.count();
     expect(rowCount).toBe(expectedRowCount);
   }
 

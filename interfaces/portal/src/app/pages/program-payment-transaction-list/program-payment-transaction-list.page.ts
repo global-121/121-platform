@@ -38,7 +38,7 @@ import {
   registrationLink,
 } from '~/domains/registration/registration.helper';
 import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
-import { RetryTransfersDialogComponent } from '~/pages/program-payment-transfer-list/components/retry-transfers-dialog/retry-transfers-dialog.component';
+import { RetryTransactionsDialogComponent } from '~/pages/program-payment-transaction-list/components/retry-transactions-dialog/retry-transactions-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
@@ -46,21 +46,21 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
 import { getOriginUrl } from '~/utils/url-helper';
 
 @Component({
-  selector: 'app-program-payment-transfer-list',
+  selector: 'app-program-payment-transaction-list',
   imports: [
     PageLayoutPaymentComponent,
     CardModule,
     QueryTableComponent,
     ButtonModule,
     SkeletonModule,
-    RetryTransfersDialogComponent,
+    RetryTransactionsDialogComponent,
   ],
-  templateUrl: './program-payment-transfer-list.page.html',
+  templateUrl: './program-payment-transaction-list.page.html',
   styles: ``,
   providers: [CurrencyPipe, DatePipe, DecimalPipe, ToastService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProgramPaymentTransferListPageComponent {
+export class ProgramPaymentTransactionListPageComponent {
   // this is injected by the router
   readonly programId = input.required<string>();
   readonly paymentId = input.required<string>();
@@ -76,8 +76,10 @@ export class ProgramPaymentTransferListPageComponent {
 
   readonly table =
     viewChild.required<QueryTableComponent<PaymentTransaction, never>>('table');
-  readonly retryTransfersDialog =
-    viewChild.required<RetryTransfersDialogComponent>('retryTransfersDialog');
+  readonly retryTransactionsDialog =
+    viewChild.required<RetryTransactionsDialogComponent>(
+      'retryTransactionsDialog',
+    );
 
   readonly contextMenuSelection = signal<PaymentTransaction | undefined>(
     undefined,
@@ -132,7 +134,7 @@ export class ProgramPaymentTransferListPageComponent {
       },
       {
         field: 'status',
-        header: $localize`Transfer status`,
+        header: $localize`Transaction status`,
         type: QueryTableColumnType.MULTISELECT,
         options: Object.values(TransactionStatusEnum).map((status) => ({
           label: TRANSACTION_STATUS_LABELS[status],
@@ -213,13 +215,13 @@ export class ProgramPaymentTransferListPageComponent {
         },
       },
       {
-        label: $localize`Retry failed transfers`,
+        label: $localize`Retry failed transactions`,
         icon: 'pi pi-refresh',
         command: () => {
-          this.retryFailedTransfers({ triggeredFromContextMenu: true });
+          this.retryFailedTransactions({ triggeredFromContextMenu: true });
         },
         visible:
-          this.canRetryTransfers() &&
+          this.canRetryTransactions() &&
           transaction.status === TransactionStatusEnum.error,
       },
     ];
@@ -229,7 +231,7 @@ export class ProgramPaymentTransferListPageComponent {
     () => `program-payment-table-${this.programId()}-${this.paymentId()}`,
   );
 
-  readonly canRetryTransfers = computed(() => {
+  readonly canRetryTransactions = computed(() => {
     if (
       !this.authService.hasAllPermissions({
         programId: this.programId(),
@@ -252,7 +254,7 @@ export class ProgramPaymentTransferListPageComponent {
       .some((payment) => payment.status === TransactionStatusEnum.error);
   });
 
-  retryFailedTransfers({
+  retryFailedTransactions({
     triggeredFromContextMenu = false,
   }: {
     triggeredFromContextMenu?: boolean;
@@ -279,7 +281,7 @@ export class ProgramPaymentTransferListPageComponent {
       (transaction) => transaction.registrationReferenceId,
     );
 
-    this.retryTransfersDialog().retryFailedTransfers({
+    this.retryTransactionsDialog().retryFailedTransactions({
       referenceIds,
     });
   }

@@ -131,7 +131,7 @@ export class PaymentApiService extends DomainApiService {
     });
   }
 
-  retryFailedTransfers({
+  retryFailedTransactions({
     programId,
     paymentId,
     referenceIds,

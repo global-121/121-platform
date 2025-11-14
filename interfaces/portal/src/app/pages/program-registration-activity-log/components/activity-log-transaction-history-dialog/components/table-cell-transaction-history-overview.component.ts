@@ -11,7 +11,7 @@ import { TableCellComponent } from '~/components/query-table/components/table-ce
 import { TransactionEvent } from '~/domains/transaction/transaction.model';
 
 @Component({
-  selector: 'app-table-cell-transfer-history-overview',
+  selector: 'app-table-cell-transaction-history-overview',
   imports: [],
   template: `
     <span class="inline-flex items-center">
@@ -27,7 +27,7 @@ import { TransactionEvent } from '~/domains/transaction/transaction.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DatePipe],
 })
-export class TableCellTransferHistoryOverviewComponent
+export class TableCellTransactionHistoryOverviewComponent
   implements TableCellComponent<TransactionEvent>
 {
   readonly value = input.required<TransactionEvent>();

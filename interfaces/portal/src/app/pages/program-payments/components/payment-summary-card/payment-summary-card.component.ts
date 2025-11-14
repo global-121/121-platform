@@ -115,7 +115,7 @@ export class PaymentSummaryCardComponent {
       },
       {
         value: this.decimalPipe.transform(this.metrics.data()?.failed.count),
-        label: $localize`Failed transfers`,
+        label: $localize`Failed transactions`,
         showAlert: this.showFailedAlert(),
       },
       {

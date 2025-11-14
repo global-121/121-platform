@@ -108,10 +108,10 @@ export class NedbankReconciliationService {
     errorCode?: string,
   ): Promise<string | undefined> {
     if (voucherStatus === NedbankVoucherStatus.REFUNDED) {
-      return 'Voucher has been refunded by Nedbank. If you retry this transfer, the person will receive a new voucher.';
+      return 'Voucher has been refunded by Nedbank. If you retry this transaction, the person will receive a new voucher.';
     }
     if (errorCode === NedbankErrorCode.voucherNotFound) {
-      return 'Nedbank voucher was not found, something went wrong when creating the voucher. Please retry the transfer.';
+      return 'Nedbank voucher was not found, something went wrong when creating the voucher. Please retry the transaction.';
     }
     // There is no specific error message for tooManyRequestsForThisVoucher
     // As the transaction will stay on waiting status so the user will never see the error message

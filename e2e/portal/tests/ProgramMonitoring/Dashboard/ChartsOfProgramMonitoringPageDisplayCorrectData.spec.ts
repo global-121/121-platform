@@ -52,7 +52,7 @@ test('All Charts of Monitoring Dashboard tab display correct data', async ({
         unique: 3,
       },
       regByCreationDate: `${registrationByCreationDate}: 5`,
-      transfersPerPaymentStatus: {
+      transactionsPerPaymentStatus: {
         date: formattedDate,
         successful: 5,
       },

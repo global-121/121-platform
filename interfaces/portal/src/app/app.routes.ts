@@ -20,7 +20,7 @@ export enum AppRoutes {
   programMonitoringPowerBI = 'powerbi',
   programPaymentLog = 'payment-log',
   programPayments = 'payments',
-  programPaymentTransferList = 'transfer-list',
+  programPaymentTransactionList = 'transaction-list',
   programRegistrationActivityLog = 'activity-log',
   programRegistrationDebitCards = 'debit-cards',
   programRegistrationPersonalInformation = 'personal-information',
@@ -301,12 +301,12 @@ export const routes: Routes = [
             canActivate: [foundResourceGuard('payment')],
             children: [
               {
-                path: AppRoutes.programPaymentTransferList,
-                title: $localize`:@@page-title-program-transfer-list:Transfer list`,
+                path: AppRoutes.programPaymentTransactionList,
+                title: $localize`:@@page-title-program-transaction-list:Transaction list`,
                 loadComponent: () =>
                   import(
-                    '~/pages/program-payment-transfer-list/program-payment-transfer-list.page'
-                  ).then((x) => x.ProgramPaymentTransferListPageComponent),
+                    '~/pages/program-payment-transaction-list/program-payment-transaction-list.page'
+                  ).then((x) => x.ProgramPaymentTransactionListPageComponent),
               },
               {
                 path: AppRoutes.programPaymentLog,
@@ -319,7 +319,7 @@ export const routes: Routes = [
               {
                 path: ``,
                 pathMatch: 'full',
-                redirectTo: AppRoutes.programPaymentTransferList,
+                redirectTo: AppRoutes.programPaymentTransactionList,
               },
             ],
           },

@@ -1,11 +1,11 @@
 export enum TransactionEventDescription {
   // 1. Generic events
-  created = 'Transfer created', // 'transfer' to align with front-end naming
-  initiated = 'Transfer started',
-  retry = 'Transfer retried',
+  created = 'Transaction created',
+  initiated = 'Transaction started',
+  retry = 'Transaction retried',
   // IMPORTANT: all descriptions below should be phrased generically with a noun instead of with a verb that implies success (like 'started' above), as these steps can fail or succeed.
   // TODO re-evaluate this setup as it is prone to mistakes, yields ugly UX copy, and is not translatable
-  approval = 'Transfer approval', // this is not FSP-specific but is generically phrased with a noun instead of a verb because it can fail.
+  approval = 'Transaction approval', // this is not FSP-specific but is generically phrased with a noun instead of a verb because it can fail.
   // 2. FSP-specific events (of type 'processingStep')
   onafriqRequestSent = 'Onafriq payment request',
   onafriqCallbackReceived = 'Onafriq payment distribution',

@@ -27,8 +27,8 @@ export class PaymentMenuComponent {
 
   readonly navMenuItems = computed<MenuItem[]>(() => [
     {
-      label: $localize`:@@page-title-program-transfer-list:Transfer list`,
-      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programPayments}/${this.paymentId()}/${AppRoutes.programPaymentTransferList}`,
+      label: $localize`:@@page-title-program-transaction-list:Transaction list`,
+      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programPayments}/${this.paymentId()}/${AppRoutes.programPaymentTransactionList}`,
       icon: 'pi pi-table',
     },
     {
