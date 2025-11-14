@@ -957,6 +957,7 @@
       "filter.registrationStatus",
       "filter.registrationReferenceId",
       "filter.registrationProgramId",
+      "filter.registrationScope",
       "search",
       "searchBy"
     ]
@@ -1004,6 +1005,7 @@
       "filter.registrationStatus",
       "filter.registrationReferenceId",
       "filter.registrationProgramId",
+      "filter.registrationScope",
       "sortBy",
       "search",
       "searchBy"

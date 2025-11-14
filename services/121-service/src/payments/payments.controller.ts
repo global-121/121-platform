@@ -45,7 +45,6 @@ import { GetPaymentsDto } from '@121-service/src/payments/dto/get-payments.dto';
 import { PaginatedTransactionDto } from '@121-service/src/payments/dto/paginated-transaction.dto';
 import { PaymentReturnDto } from '@121-service/src/payments/dto/payment-return.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
-import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
 import { PaymentEventDataDto } from '@121-service/src/payments/payment-events/dtos/payment-event-data.dto';
 import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
 import { PaymentsCreationService } from '@121-service/src/payments/services/payments-creation.service';
@@ -282,7 +281,6 @@ export class PaymentsController {
   @HttpCode(HttpStatus.ACCEPTED)
   @Post('programs/:programId/payments/:paymentId/retry')
   public async retryPayment(
-    @Body() data: RetryPaymentDto,
     @Param('programId', ParseIntPipe) programId: number,
     @Param('paymentId', ParseIntPipe) paymentId: number,
     @Query() paginateQuery: PaginateQuery,
