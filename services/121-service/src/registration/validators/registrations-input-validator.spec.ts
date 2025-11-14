@@ -18,7 +18,7 @@ import { RegistrationValidationInputType } from '@121-service/src/registration/e
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UserService } from '@121-service/src/user/user.service';
 
 const programId = 1;
@@ -90,7 +90,7 @@ const dynamicAttributes: Partial<ProgramRegistrationAttributeEntity>[] = [
 const program = {
   id: 1,
   name: 'Test Program',
-  languages: ['en'],
+  languages: [RegistrationPreferredLanguage.en],
   enableMaxPayments: true,
   enableScope: true,
   programFspConfigurations: [
@@ -172,7 +172,7 @@ describe('RegistrationsInputValidator', () => {
     const csvArray = [
       {
         referenceId: '00dc9451-1273-484c-b2e8-ae21b51a96ab',
-        preferredLanguage: 'en',
+        preferredLanguage: RegistrationPreferredLanguage.en,
         paymentAmountMultiplier: 2,
         lastName: 'Updated Last Name',
         phoneNumber: '14155238880',
@@ -208,14 +208,17 @@ describe('RegistrationsInputValidator', () => {
       Fsps.intersolveVoucherWhatsapp,
     );
     expect(result[0]).toHaveProperty('paymentAmountMultiplier', 2);
-    expect(result[0]).toHaveProperty('preferredLanguage', 'en');
+    expect(result[0]).toHaveProperty(
+      'preferredLanguage',
+      RegistrationPreferredLanguage.en,
+    );
   });
 
   it('should throw an error for invalid reference ID format', async () => {
     const csvArray = [
       {
         referenceId: '!@#$',
-        preferredLanguage: 'en',
+        preferredLanguage: RegistrationPreferredLanguage.en,
         paymentAmountMultiplier: 2,
         lastName: 'Updated Last Name',
         phoneNumber: '14155238880',
@@ -246,7 +249,7 @@ describe('RegistrationsInputValidator', () => {
     const csvArray = [
       {
         programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
-        preferredLanguage: 'en',
+        preferredLanguage: RegistrationPreferredLanguage.en,
       },
     ];
     const programId = 1;
@@ -270,7 +273,7 @@ describe('RegistrationsInputValidator', () => {
     const csvArray = [
       {
         programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
-        preferredLanguage: 'en',
+        preferredLanguage: RegistrationPreferredLanguage.en,
       },
     ];
 
@@ -292,7 +295,7 @@ describe('RegistrationsInputValidator', () => {
     const csvArray = [
       {
         namePartnerOrganization: 'ABC',
-        preferredLanguage: LanguageEnum.en,
+        preferredLanguage: RegistrationPreferredLanguage.en,
         maxPayments: '5',
         nameFirst: 'Test',
         nameLast: 'Test',
@@ -360,7 +363,7 @@ describe('RegistrationsInputValidator', () => {
 
     const csvArray = [
       {
-        preferredLanguage: 'en',
+        preferredLanguage: RegistrationPreferredLanguage.en,
         paymentAmountMultiplier: '1',
         lastName: '',
         phoneNumber: '',
@@ -396,7 +399,7 @@ describe('RegistrationsInputValidator', () => {
       },
       paymentAmountMultiplier: 1,
       scope: '',
-      preferredLanguage: 'en',
+      preferredLanguage: RegistrationPreferredLanguage.en,
       phoneNumber: null,
       programFspConfigurationName: 'Excel',
     };

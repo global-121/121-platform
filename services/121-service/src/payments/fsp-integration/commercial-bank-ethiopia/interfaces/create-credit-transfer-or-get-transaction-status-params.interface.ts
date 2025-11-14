@@ -1,11 +1,11 @@
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { UILanguageTranslationPartial } from '@121-service/src/shared/types/ui-language-translation-partial.type';
 
 export interface CreateCreditTransferOrGetTransactionStatusParams {
   debitTheirRef: string;
   bankAccountNumber: string;
   currency: string | null;
   ngoName: string | null;
-  titlePortal: LocalizedString | null;
+  titlePortal: UILanguageTranslationPartial | null;
   fullName: string;
   amount: number;
 }

@@ -12,7 +12,7 @@ import { TransactionEventsService } from '@121-service/src/payments/transactions
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
 @Injectable()
 export class TransactionJobsHelperService {
@@ -103,7 +103,7 @@ export class TransactionJobsHelperService {
     )?.message;
     if (!messageContent) {
       messageContent = templates.find(
-        (template) => template.language === LanguageEnum.en,
+        (template) => template.language === RegistrationPreferredLanguage.en,
       )?.message;
     }
     // Note: messageContent is possible undefined/null here, so we're assuming here that the message processor will handle this properly.

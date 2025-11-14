@@ -36,7 +36,7 @@ import { RegistrationDataService } from '@121-service/src/registration/modules/r
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
@@ -52,7 +52,8 @@ export class IntersolveVoucherService {
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
 
-  private readonly fallbackLanguage = LanguageEnum.en;
+  private readonly fallbackRegistrationPreferredLanguage =
+    RegistrationPreferredLanguage.en;
 
   public constructor(
     private readonly registrationUtilsService: RegistrationUtilsService,
@@ -318,7 +319,9 @@ export class IntersolveVoucherService {
     const program = await this.programRepository.findOneByOrFail({
       id: programId,
     });
-    const language = registration.preferredLanguage || this.fallbackLanguage;
+    const language =
+      registration.preferredLanguage ||
+      this.fallbackRegistrationPreferredLanguage;
     const contentSid = await this.getNotificationContentSid({
       program,
       type: ProgramNotificationEnum.whatsappPayment,
@@ -363,7 +366,8 @@ export class IntersolveVoucherService {
 
     const fallbackNotification = messageTemplates.find(
       (template) =>
-        template.type === type && template.language === this.fallbackLanguage,
+        template.type === type &&
+        template.language === this.fallbackRegistrationPreferredLanguage,
     );
     if (fallbackNotification?.contentSid) {
       return fallbackNotification.contentSid;

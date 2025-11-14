@@ -17,7 +17,7 @@ import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/wha
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Injectable()
@@ -31,7 +31,7 @@ export class MessageService {
   @InjectRepository(MessageTemplateEntity)
   private readonly messageTemplateRepo: Repository<MessageTemplateEntity>;
 
-  private readonly fallbackLanguage = 'en';
+  private readonly fallbackLanguage = RegistrationPreferredLanguage.en;
 
   public constructor(
     private readonly whatsappService: WhatsappService,
@@ -436,7 +436,7 @@ export class MessageService {
       MessageJobCustomDataDto['placeholderData'],
       undefined | null
     >,
-    preferredLanguage: LanguageEnum,
+    preferredLanguage: RegistrationPreferredLanguage,
   ): Promise<string> {
     let messageText = messageTextWithPlaceholders;
     const language = preferredLanguage || this.fallbackLanguage;
