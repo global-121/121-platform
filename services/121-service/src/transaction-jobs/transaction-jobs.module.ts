@@ -6,6 +6,7 @@ import { MessageQueuesModule } from '@121-service/src/notifications/message-queu
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { AirtelModule } from '@121-service/src/payments/fsp-integration/airtel/airtel.module';
 import { CommercialBankEthiopiaModule } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.module';
+import { CooperativeBankOfOromiaModule } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/cooperative-bank-of-oromia.module';
 import { ExcelModule } from '@121-service/src/payments/fsp-integration/excel/excel.module';
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
@@ -24,6 +25,7 @@ import { RegistrationsModule } from '@121-service/src/registration/registrations
 import { RegistrationEventsModule } from '@121-service/src/registration-events/registration-events.module';
 import { TransactionJobsProcessorAirtel } from '@121-service/src/transaction-jobs/processors/transaction-jobs-airtel.processor';
 import { TransactionJobsProcessorCommercialBankEthiopia } from '@121-service/src/transaction-jobs/processors/transaction-jobs-commercial-bank-ethiopia.processor';
+import { TransactionJobsProcessorCooperativeBankOfOromia } from '@121-service/src/transaction-jobs/processors/transaction-jobs-cooperative-bank-of-oromia.processor';
 import { TransactionJobsProcessorExcel } from '@121-service/src/transaction-jobs/processors/transaction-jobs-excel.processor';
 import { TransactionJobsProcessorIntersolveVisa } from '@121-service/src/transaction-jobs/processors/transaction-jobs-intersolve-visa.processor';
 import { TransactionJobsProcessorIntersolveVoucher } from '@121-service/src/transaction-jobs/processors/transaction-jobs-intersolve-voucher.processor';
@@ -32,6 +34,7 @@ import { TransactionJobsProcessorOnafriq } from '@121-service/src/transaction-jo
 import { TransactionJobsProcessorSafaricom } from '@121-service/src/transaction-jobs/processors/transaction-jobs-safaricom.processor';
 import { TransactionJobsAirtelService } from '@121-service/src/transaction-jobs/services/transaction-jobs-airtel.service';
 import { TransactionJobsCommercialBankEthiopiaService } from '@121-service/src/transaction-jobs/services/transaction-jobs-commercial-bank-ethiopia.service';
+import { TransactionJobsCooperativeBankOfOromiaService } from '@121-service/src/transaction-jobs/services/transaction-jobs-cooperative-bank-of-oromia.service';
 import { TransactionJobsExcelService } from '@121-service/src/transaction-jobs/services/transaction-jobs-excel.service';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { TransactionJobsIntersolveVisaService } from '@121-service/src/transaction-jobs/services/transaction-jobs-intersolve-visa.service';
@@ -49,6 +52,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     IntersolveVoucherModule,
     SafaricomModule,
     AirtelModule,
+    CooperativeBankOfOromiaModule,
     NedbankModule,
     ProgramFspConfigurationsModule,
     OnafriqModule,
@@ -68,6 +72,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     TransactionJobsNedbankService,
     TransactionJobsSafaricomService,
     TransactionJobsAirtelService,
+    TransactionJobsCooperativeBankOfOromiaService,
     TransactionJobsIntersolveVisaService,
     TransactionJobsIntersolveVoucherService,
     TransactionJobsOnafriqService,
@@ -77,6 +82,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     TransactionJobsProcessorIntersolveVoucher,
     TransactionJobsProcessorSafaricom,
     TransactionJobsProcessorAirtel,
+    TransactionJobsProcessorCooperativeBankOfOromia,
     TransactionJobsProcessorNedbank,
     TransactionJobsProcessorOnafriq,
     TransactionJobsProcessorCommercialBankEthiopia,

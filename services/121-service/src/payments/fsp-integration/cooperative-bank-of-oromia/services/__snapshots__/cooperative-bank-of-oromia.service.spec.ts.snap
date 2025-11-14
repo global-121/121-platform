@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`CooperativeBankOfOromiaService attemptOrCheckDisbursement should throw an CooperativeBankOfOromiaError if disburse returns ambiguous 1`] = `"CooperativeBankOfOromia Error: Please use the CooperativeBankOfOromia Mobiquity portal to find out the status of the transaction. CooperativeBankOfOromia transaction id: mock-transaction-id - Status: Ambiguous - (mock ambiguous message)"`;
+
+exports[`CooperativeBankOfOromiaService attemptOrCheckDisbursement should throw an CooperativeBankOfOromiaError if disburse returns fail 1`] = `"CooperativeBankOfOromia Error: mock failure message"`;
+
+exports[`CooperativeBankOfOromiaService attemptOrCheckDisbursement should throw an CooperativeBankOfOromiaError if the phoneNumber has the wrong length 1`] = `"CooperativeBankOfOromia Error: does not have a valid phone number"`;
+
+exports[`CooperativeBankOfOromiaService attemptOrCheckDisbursement when disburse call returns "duplicate" if enquire endpoint returns "fail" we should get an CooperativeBankOfOromiaError 1`] = `"CooperativeBankOfOromia Error: mock failure message"`;

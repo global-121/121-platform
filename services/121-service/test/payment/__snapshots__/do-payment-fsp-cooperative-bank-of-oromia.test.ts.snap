@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Do payment with FSP: CooperativeBankOfOromia should create a transaction with status error when we do a payment with an invalid phonenumber 1`] = `"CooperativeBankOfOromia Error: Mobile number entered is incorrect. (DP00900001012)"`;
