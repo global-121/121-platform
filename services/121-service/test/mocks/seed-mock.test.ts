@@ -59,9 +59,10 @@ describe('Mock registrations', () => {
         registrationReferenceId: null,
         accessToken,
       });
+      const transactions = transactionsResponse.body.data;
 
       // Assert 4 transactions per payment (one for each registration)
-      expect(transactionsResponse.body.length).toBe(4);
+      expect(transactions.length).toBe(4);
       expect(transactionsResponse.text).toContain(
         TransactionStatusEnum.success,
       );

@@ -91,7 +91,9 @@ describe('Do payment', () => {
           registrationReferenceId: registrationNedbank.referenceId,
           accessToken,
         });
-        const transactionBeforeCronJob = getTransactionsBeforeCronjob.body[0];
+        const transactionsBeforeCronJob =
+          getTransactionsBeforeCronjob.body.data;
+        const transactionBeforeCronJob = transactionsBeforeCronJob[0];
 
         // Cronjob should update the status of the transaction
         await runCronJobDoNedbankReconciliation();
@@ -112,7 +114,8 @@ describe('Do payment', () => {
           registrationReferenceId: registrationNedbank.referenceId,
           accessToken,
         });
-        const transactionAfterCronJob = getTransactionsAfterCronjob.body[0];
+        const transactionsAfterCronJob = getTransactionsAfterCronjob.body.data;
+        const transactionAfterCronJob = transactionsAfterCronJob[0];
 
         const exportTransactionResponse =
           await exportTransactionsByDateRangeJson({
@@ -150,7 +153,7 @@ describe('Do payment', () => {
         const transactionEventDescriptions =
           await getTransactionEventDescriptions({
             programId,
-            transactionId: getTransactionsAfterCronjob.body[0].id,
+            transactionId: transactionsAfterCronJob[0].id,
             accessToken,
           });
         expect(transactionEventDescriptions).toEqual([
@@ -197,23 +200,22 @@ describe('Do payment', () => {
           ],
         });
 
-        const getTransactionsBody = (
-          await getTransactions({
-            programId,
-            paymentId,
-            registrationReferenceId: registrationFailDebitorAccount.referenceId,
-            accessToken,
-          })
-        ).body;
+        const getTransactionsResponse = await getTransactions({
+          programId,
+          paymentId,
+          registrationReferenceId: registrationFailDebitorAccount.referenceId,
+          accessToken,
+        });
+        const transactions = getTransactionsResponse.body.data;
 
         // Assert
-        expect(getTransactionsBody[0].status).toBe(TransactionStatusEnum.error);
-        expect(getTransactionsBody[0].errorMessage).toMatchSnapshot();
+        expect(transactions[0].status).toBe(TransactionStatusEnum.error);
+        expect(transactions[0].errorMessage).toMatchSnapshot();
 
         const transactionEventDescriptions =
           await getTransactionEventDescriptions({
             programId,
-            transactionId: getTransactionsBody[0].id,
+            transactionId: transactions[0].id,
             accessToken,
           });
         expect(transactionEventDescriptions).toEqual([
@@ -254,23 +256,22 @@ describe('Do payment', () => {
           ],
         });
 
-        const getTransactionsBody = (
-          await getTransactions({
-            programId,
-            paymentId,
-            registrationReferenceId: registrationNedbank.referenceId,
-            accessToken,
-          })
-        ).body;
+        const getTransactionsResponse = await getTransactions({
+          programId,
+          paymentId,
+          registrationReferenceId: registrationNedbank.referenceId,
+          accessToken,
+        });
+        const transactions = getTransactionsResponse.body.data;
 
         // Assert
-        expect(getTransactionsBody[0].status).toBe(TransactionStatusEnum.error);
-        expect(getTransactionsBody[0].errorMessage).toMatchSnapshot();
+        expect(transactions[0].status).toBe(TransactionStatusEnum.error);
+        expect(transactions[0].errorMessage).toMatchSnapshot();
 
         const transactionEventDescriptions =
           await getTransactionEventDescriptions({
             programId,
-            transactionId: getTransactionsBody[0].id,
+            transactionId: transactions[0].id,
             accessToken,
           });
         expect(transactionEventDescriptions).toEqual([
@@ -317,23 +318,22 @@ describe('Do payment', () => {
 
         await runCronJobDoNedbankReconciliation();
 
-        const getTransactionsBody = (
-          await getTransactions({
-            programId,
-            paymentId,
-            registrationReferenceId: registrationFailPhoneNumber.referenceId,
-            accessToken,
-          })
-        ).body;
+        const getTransactionsResponse = await getTransactions({
+          programId,
+          paymentId,
+          registrationReferenceId: registrationFailPhoneNumber.referenceId,
+          accessToken,
+        });
+        const transactions = getTransactionsResponse.body.data;
 
         // Assert
-        expect(getTransactionsBody[0].status).toBe(TransactionStatusEnum.error);
-        expect(getTransactionsBody[0].errorMessage).toMatchSnapshot();
+        expect(transactions[0].status).toBe(TransactionStatusEnum.error);
+        expect(transactions[0].errorMessage).toMatchSnapshot();
 
         const transactionEventDescriptions =
           await getTransactionEventDescriptions({
             programId,
-            transactionId: getTransactionsBody[0].id,
+            transactionId: transactions[0].id,
             accessToken,
           });
         expect(transactionEventDescriptions).toEqual([
