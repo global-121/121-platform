@@ -13,7 +13,7 @@ import { SelectModule } from 'primeng/select';
 
 import {
   changeLocale,
-  getAvailableUILanguages,
+  getAvailableLocales,
   getLocaleLabel,
   Locale,
 } from '~/utils/locale';
@@ -26,7 +26,7 @@ import {
 })
 export class LanguageSwitcherComponent {
   private locale = inject<Locale>(LOCALE_ID);
-  public languages = getAvailableUILanguages();
+  public languages = getAvailableLocales();
   public readonly selectedLanguage = model(this.locale);
   public readonly selectedLanguageLabel = computed(() =>
     getLocaleLabel(this.selectedLanguage()),

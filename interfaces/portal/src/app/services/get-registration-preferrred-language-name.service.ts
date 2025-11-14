@@ -27,7 +27,10 @@ export type languageCodeToLinguonym =
  * - localeToLanguageNames['nl']['de'] === 'Duits'
  * - localeToLanguageNames['en']['de'] === 'German'
  */
-const localeToLanguageNames: Record<UILanguage, languageCodeToLinguonym> = {
+export const uiLanguageToLanguageNames: Record<
+  UILanguage,
+  languageCodeToLinguonym
+> = {
   en: languageCodesToLinguonymsForEnglish,
   ar: languageCodesToLinguonymsForArab,
   nl: languageCodesToLinguonymsForDutch,
@@ -60,7 +63,7 @@ export class GetRegistrationPreferredLanguageNameService {
   getRegistrationPreferredLanguageName(
     languageCode: RegistrationPreferredLanguage,
   ): string {
-    const languageEnumLocale = getUILanguageFromLocale(this.currentLocale);
-    return localeToLanguageNames[languageEnumLocale][languageCode];
+    const UILanguage = getUILanguageFromLocale(this.currentLocale);
+    return uiLanguageToLanguageNames[UILanguage][languageCode];
   }
 }

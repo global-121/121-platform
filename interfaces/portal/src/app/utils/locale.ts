@@ -2,6 +2,7 @@ import { isDevMode } from '@angular/core';
 
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
+import { uiLanguageToLanguageNames } from '~/services/get-registration-preferrred-language-name.service';
 import { environment } from '~environment';
 
 /**
@@ -20,29 +21,32 @@ const LOCAL_STORAGE_LOCALE_KEY = 'preferredLanguage';
 
 // NOTE: Make sure to align these languages with ALL_AVAILABLE_LOCALES in '_all_available-locales.mjs'
 export enum Locale {
-  ar = 'ar',
+  /* eslint-disable @typescript-eslint/prefer-literal-enum-member -- emphasize the relationship between this enum and UILanguage */
+  ar = UILanguage.ar,
   en = 'en-GB', // this has to be en-GB otherwise angular locale stuff doesn't work
-  es = 'es',
-  fr = 'fr',
-  nl = 'nl',
-  sk = 'sk',
+  es = UILanguage.es,
+  fr = UILanguage.fr,
+  nl = UILanguage.nl,
+  sk = UILanguage.sk,
+  /* eslint-enable @typescript-eslint/prefer-literal-enum-member -- emphasize the relationship between this enum and UILanguage */
 }
 
-export const getLocaleLabel = (locale: Locale): string => {
-  // NOTE: These labels are never-to-be-translated, they need to appear in their own language for easier recognition by users.
-  const localeLabels = {
-    [Locale.ar]: 'العربية',
-    [Locale.en]: 'English',
-    [Locale.es]: 'Español',
-    [Locale.fr]: 'Français',
-    [Locale.nl]: 'Nederlands',
-    [Locale.sk]: 'Slovenčina',
-  };
-
-  return localeLabels[locale];
+const localeToUILanguageMap: Record<Locale, UILanguage> = {
+  [Locale.ar]: UILanguage.ar,
+  [Locale.en]: UILanguage.en,
+  [Locale.es]: UILanguage.es,
+  [Locale.fr]: UILanguage.fr,
+  [Locale.nl]: UILanguage.nl,
+  [Locale.sk]: UILanguage.sk,
 };
 
-export const getAvailableUILanguages = () =>
+export const getLocaleLabel = (locale: Locale): string => {
+  const UILanguage = getUILanguageFromLocale(locale);
+  // The name for "language X" in language X.
+  return uiLanguageToLanguageNames[UILanguage][UILanguage];
+};
+
+export const getAvailableLocales = () =>
   environment.locales
     .split(',')
     .map((locale) => locale.trim())
@@ -56,14 +60,8 @@ export const getAvailableUILanguages = () =>
  * @param {string} locale - Angular locale id
  * @return {string} UILanguage
  */
-export const getUILanguageFromLocale = (locale: Locale): UILanguage => {
-  switch (locale) {
-    case Locale.en:
-      return UILanguage.en;
-    default:
-      return UILanguage[locale];
-  }
-};
+export const getUILanguageFromLocale = (locale: Locale): UILanguage =>
+  localeToUILanguageMap[locale];
 
 const isValidLocale = (locale: string): locale is Locale =>
   Object.values(Locale).includes(locale as Locale);
