@@ -145,13 +145,7 @@ export class RegistrationViewsMapper {
   ): unknown {
     const english = RegistrationPreferredLanguage.en;
     const selectedOption = attribute.options?.find((o) => o.option === value);
-    if (
-      selectedOption &&
-      selectedOption.label &&
-      selectedOption.label[english]
-    ) {
-      return selectedOption.label[english];
-    }
-    return value;
+
+    return selectedOption?.label?.[english] ?? value;
   }
 }
