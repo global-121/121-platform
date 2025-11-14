@@ -6,7 +6,6 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import {
   createPayment,
   getPaymentEvents,
@@ -23,9 +22,8 @@ import {
   waitForRegistrationToHaveUpdatedPaymentCount,
 } from '@121-service/test/helpers/registration.helper';
 import {
-  addPermissionToRole,
+  createAccessTokenWithPermissions,
   getAccessToken,
-  getAccessTokenScoped,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
@@ -261,12 +259,18 @@ describe('Payment start', () => {
     // Arrange //
     /////////////
 
-    // the scoped users are cva-manager by default, which doesn't have the payment start permission
-    await addPermissionToRole(DefaultUserRole.CvaManager, [
-      PermissionEnum.PaymentUPDATE,
-    ]);
-    const accessTokenKisumu = await getAccessTokenScoped(DebugScope.Kisumu);
-    const accessTokenTurkana = await getAccessTokenScoped(DebugScope.Turkana);
+    const accessTokenKisumu = await createAccessTokenWithPermissions({
+      permissions: Object.values(PermissionEnum),
+      programId,
+      scope: DebugScope.Kisumu,
+      adminAccessToken: accessToken,
+    });
+    const accessTokenTurkana = await createAccessTokenWithPermissions({
+      permissions: Object.values(PermissionEnum),
+      programId,
+      scope: DebugScope.Turkana,
+      adminAccessToken: accessToken,
+    });
 
     // add 2 registrations with different scope
     const registrationScopeKisumu = {
