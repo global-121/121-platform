@@ -2036,63 +2036,6 @@
       <trans-unit id="page-title-program-transaction-list" datatype="html">
         <source>Transaction list</source>
       </trans-unit>
-      <trans-unit id="page-title-project-project-settings|trim" datatype="html">
-        <source>Project settings</source>
-      </trans-unit>
-      <trans-unit id="3718000607419168275" datatype="html">
-        <source>Click create payment, this will direct you to the payment page.</source>
-      </trans-unit>
-      <trans-unit id="4146714974043966714" datatype="html">
-        <source>Review summary and click create payment.</source>
-      </trans-unit>
-      <trans-unit id="5179155984601144030" datatype="html">
-        <source>Create payment</source>
-      </trans-unit>
-      <trans-unit id="8616960384506541771" datatype="html">
-        <source>Payment started successfully.</source>
-      </trans-unit>
-      <trans-unit id="7392987714730903698" datatype="html">
-        <source>registrations</source>
-      </trans-unit>
-      <trans-unit id="718304168195158236" datatype="html">
-        <source>Total registrations</source>
-      </trans-unit>
-      <trans-unit id="inProgressChipLabel" datatype="html">
-        <source>In progress</source>
-      </trans-unit>
-      <trans-unit id="inProgressChipTooltip" datatype="html">
-        <source>The payment will be in progress while the transfers in the table below are loading.</source>
-      </trans-unit>
-      <trans-unit id="1307602065632249368" datatype="html">
-        <source>Export the FSP instructions and save the exported XLSX-file in the format required by the Financial Service Provider.</source>
-      </trans-unit>
-      <trans-unit id="2656123100839645861" datatype="html">
-        <source>Pending approval</source>
-      </trans-unit>
-      <trans-unit id="2877620758967462039" datatype="html">
-        <source>When you want the payment to start, click approve and start payment or instruct the designated user to do so.</source>
-      </trans-unit>
-      <trans-unit id="5906272961955453157" datatype="html">
-        <source>Approved</source>
-      </trans-unit>
-      <trans-unit id="page-title-project-project-settings|trim" datatype="html">
-        <source>Project settings</source>
-      </trans-unit>
-      <trans-unit id="6191781315346853958" datatype="html">
-        <source>Click approve and start payment to initiate the payment through your FSP(s).</source>
-      </trans-unit>
-      <trans-unit id="7179709347265925601" datatype="html">
-        <source>Approve and start payment</source>
-      </trans-unit>
-      <trans-unit id="payment-event-log-item-type-approved" datatype="html">
-        <source>Approved</source>
-      </trans-unit>
-      <trans-unit id="transaction-status-approved" datatype="html">
-        <source>Approved</source>
-      </trans-unit>
-      <trans-unit id="833755501463008115" datatype="html">
-        <source>Registration Scope</source>
-      </trans-unit>
     </body>
   </file>
 </xliff>
