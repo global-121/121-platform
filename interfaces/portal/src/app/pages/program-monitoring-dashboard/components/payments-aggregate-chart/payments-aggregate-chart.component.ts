@@ -49,7 +49,7 @@ export class PaymentsAggregateChartComponent {
   readonly title = computed(() =>
     this.aggregateType() === 'transferValue'
       ? $localize`Amount sent per payment`
-      : $localize`Transfers per payment`,
+      : $localize`Transactions per payment`,
   );
 
   query = injectQuery(() => ({

@@ -23,14 +23,14 @@ import {
 } from '~/services/tracking.service';
 
 @Component({
-  selector: 'app-retry-transfers-dialog',
+  selector: 'app-retry-transactions-dialog',
   imports: [FormDialogComponent],
-  templateUrl: './retry-transfers-dialog.component.html',
+  templateUrl: './retry-transactions-dialog.component.html',
   styles: ``,
   providers: [ToastService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RetryTransfersDialogComponent {
+export class RetryTransactionsDialogComponent {
   readonly programId = input.required<string>();
   readonly paymentId = input.required<string>();
 
@@ -43,14 +43,16 @@ export class RetryTransfersDialogComponent {
     this.paymentApiService.getPaymentStatus(this.programId),
   );
 
-  readonly referenceIdsForRetryTransfers = signal<string[]>([]);
+  readonly referenceIdsForRetryTransactions = signal<string[]>([]);
 
-  readonly retryTransfersConfirmationDialog =
-    viewChild.required<FormDialogComponent>('retryTransfersConfirmationDialog');
+  readonly retryTransactionsConfirmationDialog =
+    viewChild.required<FormDialogComponent>(
+      'retryTransactionsConfirmationDialog',
+    );
 
-  retryFailedTransfersMutation = injectMutation(() => ({
+  retryFailedTransactionsMutation = injectMutation(() => ({
     mutationFn: (referenceIds: string[]) =>
-      this.paymentApiService.retryFailedTransfers({
+      this.paymentApiService.retryFailedTransactions({
         programId: this.programId,
         paymentId: this.paymentId(),
         referenceIds,
@@ -71,7 +73,7 @@ export class RetryTransfersDialogComponent {
     },
   }));
 
-  public retryFailedTransfers({ referenceIds }: { referenceIds: string[] }) {
+  public retryFailedTransactions({ referenceIds }: { referenceIds: string[] }) {
     const eventName =
       referenceIds.length === 1
         ? 'retry-transaction:single'
@@ -91,8 +93,8 @@ export class RetryTransfersDialogComponent {
       return;
     }
 
-    this.referenceIdsForRetryTransfers.set(referenceIds);
-    this.retryTransfersConfirmationDialog().show({
+    this.referenceIdsForRetryTransactions.set(referenceIds);
+    this.retryTransactionsConfirmationDialog().show({
       trackingEvent: {
         category: TrackingCategory.manageTransactions,
         action: TrackingAction.clickProceedButton,

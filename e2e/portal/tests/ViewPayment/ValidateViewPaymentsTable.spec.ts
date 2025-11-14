@@ -47,7 +47,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('Table should be a filtered list of registrations included in the transfer', async ({
+test('Table should be a filtered list of registrations included in the transaction', async ({
   page,
 }) => {
   const paymentPage = new PaymentPage(page);
@@ -76,7 +76,7 @@ test('Table should be a filtered list of registrations included in the transfer'
     await paymentPage.table.sortAndValidateColumnByName('Reg.');
     await paymentPage.table.sortAndValidateColumnByName('Name');
     await paymentPage.table.sortAndValidateColumnByName('Registration status');
-    await paymentPage.table.sortAndValidateColumnByName('Transfer status');
+    await paymentPage.table.sortAndValidateColumnByName('Transaction status');
     await paymentPage.table.sortAndValidateColumnByName('Reason');
     await paymentPage.table.sortAndValidateColumnByName('Transfer value');
     await paymentPage.table.sortAndValidateColumnByName('FSP');

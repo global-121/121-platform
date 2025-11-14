@@ -1,0 +1,16 @@
+<app-form-dialog
+  #retryTransactionsConfirmationDialog
+  header="Retry failed transaction(s)"
+  i18n-header="@@retry-failed-transactions"
+  headerIcon="pi pi-refresh"
+  proceedLabel="Retry transactions"
+  i18n-proceedLabel
+  [mutation]="retryFailedTransactionsMutation"
+  [mutationData]="referenceIdsForRetryTransactions()"
+>
+  <p i18n>
+    You are about to retry
+    {{ referenceIdsForRetryTransactions().length }} payment(s). The transaction
+    status will change to Processing until received by the registration.
+  </p>
+</app-form-dialog>

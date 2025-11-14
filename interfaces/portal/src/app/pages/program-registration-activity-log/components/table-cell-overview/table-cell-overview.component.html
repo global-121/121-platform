@@ -33,21 +33,21 @@
     </a>
   }
 
-  @if (canRetryTransfer()) {
+  @if (canRetryTransaction()) {
     <p-button
-      label="Retry transfer"
-      i18n-label="@@retry-transfer"
+      label="Retry transaction"
+      i18n-label="@@retry-transaction"
       rounded
       size="small"
-      (click)="retryTransfer()"
+      (click)="retryTransaction()"
     />
   }
 </div>
 
 @let payment = paymentId();
 @if (payment) {
-  <app-retry-transfers-dialog
-    #retryTransfersDialog
+  <app-retry-transactions-dialog
+    #retryTransactionsDialog
     [programId]="context().programId()"
     [paymentId]="payment"
   />

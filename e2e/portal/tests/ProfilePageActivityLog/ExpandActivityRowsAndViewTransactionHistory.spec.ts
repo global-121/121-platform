@@ -88,7 +88,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('Expand rows of activity overview and view transfer history', async ({
+test('Expand rows of activity overview and view transaction history', async ({
   page,
 }) => {
   const activityLogPage = new RegistrationActivityLogPage(page);
@@ -107,7 +107,7 @@ test('Expand rows of activity overview and view transfer history', async ({
     // Mitigate the timeout issue when the table is not fully loaded
     await tableComponent.filterColumnByDropDownSelection({
       columnName: 'Activity',
-      selection: 'Transfer',
+      selection: 'Transaction',
     });
     await tableComponent.clearAllFilters();
     // Validate amount of rows before expanding
@@ -122,12 +122,12 @@ test('Expand rows of activity overview and view transfer history', async ({
     });
   });
 
-  await test.step('View transfer history and validate table contents', async () => {
-    // Click view transfer history button in first row
-    await tableComponent.clickViewTransferHistoryButtonInRow();
+  await test.step('View transaction history and validate table contents', async () => {
+    // Click view transaction history button in first row
+    await tableComponent.clickViewTransactionHistoryButtonInRow();
 
-    // Validate that transfer history table has correct number of rows
-    await tableComponent.validateTransferHistoryTableRowCount({
+    // Validate that transaction history table has correct number of rows
+    await tableComponent.validateTransactionHistoryTableRowCount({
       expectedRowCount: 7, // created / approved / initiated / voucher created / initial message sent / voucher message sent / message delivered
     });
   });

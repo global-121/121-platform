@@ -26,7 +26,7 @@ import {
 } from '~/domains/payment/payment.helpers';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { Activity } from '~/domains/registration/registration.model';
-import { ActivityLogTransferHistoryDialogComponent } from '~/pages/program-registration-activity-log/components/activity-log-transfer-history-dialog/activity-log-transfer-history-dialog.component';
+import { ActivityLogTransactionHistoryDialogComponent } from '~/pages/program-registration-activity-log/components/activity-log-transaction-history-dialog/activity-log-transaction-history-dialog.component';
 import { ActivityLogVoucherDialogComponent } from '~/pages/program-registration-activity-log/components/activity-log-voucher-dialog/activity-log-voucher-dialog.component';
 import { ActivityLogTableCellContext } from '~/pages/program-registration-activity-log/program-registration-activity-log.page';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
@@ -181,7 +181,7 @@ export class ActivityLogExpandedRowComponent
             value: updatedDate,
             type: 'text',
             detailAction: {
-              component: ActivityLogTransferHistoryDialogComponent,
+              component: ActivityLogTransactionHistoryDialogComponent,
               inputs: {
                 programId: this.context().programId(),
                 transactionId: attributes.transactionId,

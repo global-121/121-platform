@@ -79,8 +79,8 @@ test('Do successful payment for Safaricom fsp', async ({ page }) => {
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
-      successfulTransfers: defaultMaxTransferValue,
-      failedTransfers: 0,
+      successfulTransactions: defaultMaxTransferValue,
+      failedTransactions: 0,
       currency: KRCSProgram.currency,
       programId: programIdSafaricom,
     });

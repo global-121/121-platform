@@ -71,21 +71,23 @@ test.afterEach(async () => {
   await tableComponent.clearAllFilters();
 });
 
-['Transfer', 'Message', 'Data change', 'Status update'].forEach((activity) => {
-  test(`[34461] Filter activity overview table by  ${activity}`, async ({}) => {
-    const tableComponent = new TableComponent(page);
+['Transaction', 'Message', 'Data change', 'Status update'].forEach(
+  (activity) => {
+    test(`[34461] Filter activity overview table by  ${activity}`, async ({}) => {
+      const tableComponent = new TableComponent(page);
 
-    // Act
-    await test.step(`Filter activity log on "${activity}".`, async () => {
-      await tableComponent.filterColumnByDropDownSelection({
-        columnName: 'Activity',
-        selection: activity,
+      // Act
+      await test.step(`Filter activity log on "${activity}".`, async () => {
+        await tableComponent.filterColumnByDropDownSelection({
+          columnName: 'Activity',
+          selection: activity,
+        });
+      });
+
+      // Assert
+      await test.step(`Validating whether "${activity}" is visible.`, async () => {
+        await tableComponent.validateFirstLogActivity(activity);
       });
     });
-
-    // Assert
-    await test.step(`Validating whether "${activity}" is visible.`, async () => {
-      await tableComponent.validateFirstLogActivity(activity);
-    });
-  });
-});
+  },
+);

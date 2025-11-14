@@ -1,11 +1,11 @@
 <p-button
-  label="View transfer history"
+  label="View transaction history"
   i18n-label
   (click)="dialogVisible.set(true)"
   outlined
   rounded
   size="small"
-  data-testid="view-transfer-history-button"
+  data-testid="view-transaction-history-button"
 />
 <p-dialog
   [header]="dialogHeader()"
@@ -16,21 +16,21 @@
   appendTo="body"
 >
   @defer {
-    @if (transferEventLog.isSuccess()) {
+    @if (transactionEventLog.isSuccess()) {
       <app-query-table
-        [items]="transferEvents()"
+        [items]="transactionEvents()"
         [isPending]="false"
         [columns]="columns()"
-        localStorageKey="transfer-history-table"
+        localStorageKey="transaction-history-table"
         [tableCellContext]="tableCellContext()"
         [initialSortField]="'created'"
         [initialSortOrder]="-1"
-        data-testid="transfer-history-table"
+        data-testid="transaction-history-table"
       />
-    } @else if (transferEventLog.isPending()) {
+    } @else if (transactionEventLog.isPending()) {
       <p-skeleton height="24rem" />
     } @else {
-      <p>{{ transferEventLog.error()?.message }}</p>
+      <p>{{ transactionEventLog.error()?.message }}</p>
     }
   }
 </p-dialog>

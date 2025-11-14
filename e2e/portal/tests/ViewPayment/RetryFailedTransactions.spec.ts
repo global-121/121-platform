@@ -36,7 +36,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('Retry failed transfers', async ({ page }) => {
+test('Retry failed transactions', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const programTitle = NLRCProgram.titlePortal.en;
@@ -63,7 +63,7 @@ test('Retry failed transfers', async ({ page }) => {
     await page.goto(paymentPageUrl, {
       waitUntil: 'networkidle',
     });
-    await paymentPage.validateRetryFailedTransfersButtonToBeVisible();
+    await paymentPage.validateRetryFailedTransactionsButtonToBeVisible();
   });
 
   await test.step('Retry payment with correct PA values', async () => {
@@ -76,10 +76,10 @@ test('Retry failed transfers', async ({ page }) => {
       'automated test',
       accessToken,
     );
-    await paymentPage.retryFailedTransfers();
+    await paymentPage.retryFailedTransactions();
   });
 
   await test.step('Check presence of retry button', async () => {
-    await paymentPage.validateRetryFailedTransfersButtonToBeHidden();
+    await paymentPage.validateRetryFailedTransactionsButtonToBeHidden();
   });
 });

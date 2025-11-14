@@ -13,8 +13,8 @@ class PaymentPage extends BasePage {
   readonly approveAndStartPaymentButton: Locator;
   readonly viewPaymentTitle: Locator;
   readonly paymentAmount: Locator;
-  readonly retryFailedTransfersButton: Locator;
-  readonly popupRetryTransferButton: Locator;
+  readonly retryFailedTransactionsButton: Locator;
+  readonly popupRetryTransactionButton: Locator;
   readonly exportButton: Locator;
   readonly paymentLogTab: Locator;
   readonly paymentLogTable: Locator;
@@ -40,11 +40,11 @@ class PaymentPage extends BasePage {
       name: /Payment \d{2}\/\d{2}\/\d{4}/,
     });
     this.paymentAmount = this.page.getByTestId('metric-tile-component');
-    this.retryFailedTransfersButton = this.page.getByRole('button', {
-      name: 'Retry failed transfer(s)',
+    this.retryFailedTransactionsButton = this.page.getByRole('button', {
+      name: 'Retry failed transaction(s)',
     });
-    this.popupRetryTransferButton = this.page.getByRole('button', {
-      name: 'Retry transfers',
+    this.popupRetryTransactionButton = this.page.getByRole('button', {
+      name: 'Retry transactions',
     });
     this.exportButton = this.page.getByRole('button', {
       name: 'Export',
@@ -163,27 +163,27 @@ class PaymentPage extends BasePage {
     expect(normalizedPaymentAmountText).toContain(amount.toString());
   }
 
-  async validateRetryFailedTransfersButtonToBeVisible() {
-    await expect(this.retryFailedTransfersButton).toBeVisible({
+  async validateRetryFailedTransactionsButtonToBeVisible() {
+    await expect(this.retryFailedTransactionsButton).toBeVisible({
       timeout: 5000,
     });
   }
 
-  async validateRetryFailedTransfersButtonToBeHidden() {
-    await expect(this.retryFailedTransfersButton).toBeHidden();
+  async validateRetryFailedTransactionsButtonToBeHidden() {
+    await expect(this.retryFailedTransactionsButton).toBeHidden();
   }
 
-  async retryFailedTransfers() {
+  async retryFailedTransactions() {
     await this.table.filterColumnByDropDownSelection({
-      columnName: 'Transfer status',
+      columnName: 'Transaction status',
       selection: 'Failed',
     });
 
     await this.table.selectAll();
 
-    await this.retryFailedTransfersButton.click();
+    await this.retryFailedTransactionsButton.click();
 
-    await this.popupRetryTransferButton.click();
+    await this.popupRetryTransactionButton.click();
   }
 
   async importReconciliationData(filePath: string) {

@@ -227,7 +227,7 @@ class ProgramMonitoring extends BasePage {
     regPerStatus,
     regPerDuplicateStatus,
     regByCreationDate,
-    transfersPerPaymentStatus,
+    transactionsPerPaymentStatus,
     amountPerPaymentStatus,
     amountPerMonth,
   }: {
@@ -237,7 +237,7 @@ class ProgramMonitoring extends BasePage {
       unique: number;
     };
     regByCreationDate: string;
-    transfersPerPaymentStatus: {
+    transactionsPerPaymentStatus: {
       date: string;
       failed?: number;
       successful?: number;
@@ -275,18 +275,18 @@ class ProgramMonitoring extends BasePage {
       `Registrations by creation date (last 2 weeks) ${regByCreationDate}`,
     );
 
-    const { date: transfersDate, ...transfersStatuses } =
-      transfersPerPaymentStatus;
+    const { date: transactionsDate, ...transactionsStatuses } =
+      transactionsPerPaymentStatus;
     const { date: amountPerPaymentDate, ...amountPerPaymentStatuses } =
       amountPerPaymentStatus;
     const { date: amountPerMonthDate, ...amountPerMonthStatuses } =
       amountPerMonth;
 
-    const transfersPerPayment = barChartCanvas.getByLabel(
+    const transactionsPerPayment = barChartCanvas.getByLabel(
       this.buildChartLabel({
-        prefix: 'Transfers per payment',
-        date: transfersDate,
-        statuses: transfersStatuses,
+        prefix: 'Transactions per payment',
+        date: transactionsDate,
+        statuses: transactionsStatuses,
       }),
     );
     const amountSentPerPayment = barChartCanvas.getByLabel(
@@ -307,7 +307,7 @@ class ProgramMonitoring extends BasePage {
     await expect(registrationsPerStatus).toBeVisible();
     await expect(registrationsPerDuplicateStatus).toBeVisible();
     await expect(registrationsByCreationDate).toBeVisible();
-    await expect(transfersPerPayment).toBeVisible();
+    await expect(transactionsPerPayment).toBeVisible();
     await expect(amountSentPerPayment).toBeVisible();
     await expect(amountSentPerMonth).toBeVisible();
   }

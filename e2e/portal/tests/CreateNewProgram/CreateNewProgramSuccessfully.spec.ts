@@ -23,7 +23,7 @@ const programInfo = {
   fundsAvailable: '200',
   currency: CurrencyCode.CAD,
   paymentFrequency: '2-months',
-  defaultTransferAmount: '200',
+  defaultTransactionAmount: '200',
   fixedTransferValue: '100',
 };
 
@@ -75,7 +75,8 @@ test('Create program successfully', async ({ page }) => {
     expect(budgetData).toEqual({
       'Funds available': programInfo.fundsAvailable,
       '*Currency': programInfo.currency,
-      'Default transfers per registration': programInfo.defaultTransferAmount,
+      'Default transactions per registration':
+        programInfo.defaultTransactionAmount,
       '*Fixed transfer value': programInfo.fixedTransferValue,
     });
   });

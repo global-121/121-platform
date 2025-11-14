@@ -88,5 +88,5 @@ export const PROGRAM_FORM_TOOLTIPS = {
 
 To use this feature, make sure scope is defined in your integrated Kobo form or Excel table.`,
   currency: $localize`Should be an ISO 4217 currency code (full list available on Wikipedia).`,
-  distributionDuration: $localize`The number of times a registration will receive transfers in the program by default.`,
+  distributionDuration: $localize`The number of times a registration will receive transactions in the program by default.`,
 };

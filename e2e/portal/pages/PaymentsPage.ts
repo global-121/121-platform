@@ -133,8 +133,8 @@ class PaymentsPage extends BasePage {
     date,
     registrationsNumber,
     paymentAmount,
-    successfulTransfers,
-    failedTransfers,
+    successfulTransactions,
+    failedTransactions,
     currency = '€',
     programId,
     paymentId = 1,
@@ -142,8 +142,8 @@ class PaymentsPage extends BasePage {
     date: string;
     registrationsNumber: number;
     paymentAmount: number;
-    successfulTransfers: number;
-    failedTransfers: number;
+    successfulTransactions: number;
+    failedTransactions: number;
     currency?: string;
     programId: number;
     paymentId?: number;
@@ -170,12 +170,12 @@ class PaymentsPage extends BasePage {
       .filter({ hasText: 'Expected total amount' })
       .textContent();
 
-    const successfulTransfersElement = await card
+    const successfulTransactionsElement = await card
       .filter({ hasText: 'Amount successfully sent' })
       .textContent();
 
-    const failedTransfersElement = await card
-      .filter({ hasText: 'Failed transfers' })
+    const failedTransactionsElement = await card
+      .filter({ hasText: 'Failed transactions' })
       .textContent();
 
     // Validate payment title
@@ -187,13 +187,16 @@ class PaymentsPage extends BasePage {
     // Validate payment amount and currency
     await this.validateNumericValue(totalAmountElement, paymentAmount);
     expect(totalAmountElement).toContain(currency);
-    // Validate successful transfers
+    // Validate successful transactions
     await this.validateNumericValue(
-      successfulTransfersElement,
-      successfulTransfers,
+      successfulTransactionsElement,
+      successfulTransactions,
     );
-    // Validate failed transfers
-    await this.validateNumericValue(failedTransfersElement, failedTransfers);
+    // Validate failed transactions
+    await this.validateNumericValue(
+      failedTransactionsElement,
+      failedTransactions,
+    );
   }
 
   async openPaymentByDate({ date }: { date: string }) {

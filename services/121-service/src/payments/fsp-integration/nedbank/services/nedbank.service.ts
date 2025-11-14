@@ -79,7 +79,7 @@ export class NedbankService {
           // This situation can occur if:
           // 1. The server crashed during the transaction job before the voucher was created.
           // 2. We never received a response from Nedbank when creating the voucher.
-          // In this case, we update the transaction status to 'error' so that the user can retry the transfer.
+          // In this case, we update the transaction status to 'error' so that the user can retry the transaction.
           return {
             status: NedbankVoucherStatus.FAILED,
             errorMessage,

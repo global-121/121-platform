@@ -267,8 +267,8 @@
       <trans-unit id="activity-log-item-type-status-update" datatype="html">
         <source>Status update</source>
       </trans-unit>
-      <trans-unit id="activity-log-item-type-transfer" datatype="html">
-        <source>Transfer</source>
+      <trans-unit id="activity-log-item-type-transaction" datatype="html">
+        <source>Transaction</source>
       </trans-unit>
       <trans-unit id="1846542227840529109" datatype="html">
         <source>Current Password</source>
@@ -742,9 +742,6 @@
       <trans-unit id="5004550577313573215" datatype="html">
         <source>Total amount</source>
       </trans-unit>
-      <trans-unit id="9023742269421706395" datatype="html">
-        <source>Failed transfers</source>
-      </trans-unit>
       <trans-unit id="page-title-program-payment" datatype="html">
         <source>Payment</source>
       </trans-unit>
@@ -910,17 +907,11 @@
       <trans-unit id="export-fsp-payment-list" datatype="html">
         <source>Export FSP payment list</source>
       </trans-unit>
-      <trans-unit id="504281469996866803" datatype="html">
-        <source>Retry failed transfers</source>
-      </trans-unit>
       <trans-unit id="5156383097673576773" datatype="html">
         <source>Fail reason</source>
       </trans-unit>
       <trans-unit id="5169543313827462176" datatype="html">
         <source>Transfer value</source>
-      </trans-unit>
-      <trans-unit id="908038299240128268" datatype="html">
-        <source>Transfer status</source>
       </trans-unit>
       <trans-unit id="transaction-status-error" datatype="html">
         <source>Failed</source>
@@ -930,9 +921,6 @@
       </trans-unit>
       <trans-unit id="transaction-status-waiting" datatype="html">
         <source>Processing</source>
-      </trans-unit>
-      <trans-unit id="3595291210637281374" datatype="html">
-        <source>Transfers data</source>
       </trans-unit>
       <trans-unit id="9047634939215362248" datatype="html">
         <source>Registrations selected:</source>
@@ -949,11 +937,8 @@
       <trans-unit id="8108032945706896800" datatype="html">
         <source>You do not have permission to view this page.</source>
       </trans-unit>
-      <trans-unit id="3971565293367630153" datatype="html">
-        <source>Retry transfers</source>
-      </trans-unit>
-      <trans-unit id="retry-failed-transfers" datatype="html">
-        <source>Retry failed transfer(s)</source>
+      <trans-unit id="retry-failed-transactions" datatype="html">
+        <source>Retry failed transaction(s)</source>
       </trans-unit>
       <trans-unit id="payment-report" datatype="html">
         <source>Payment report</source>
@@ -1085,7 +1070,7 @@
         <source>Operation not possible.</source>
       </trans-unit>
       <trans-unit id="attribute-edit-info-maxPayments" datatype="html">
-        <source>Maximum amount of transfers to be received. Keeping field empty to remove the limit.</source>
+        <source>Maximum amount of transactions to be received. Keeping field empty to remove the limit.</source>
       </trans-unit>
       <trans-unit id="attribute-edit-info-paymentAmountMultiplier" datatype="html">
         <source>The transfer value will be multiplied by this number to calculate the payment amount.</source>
@@ -1249,8 +1234,8 @@
       <trans-unit id="2976767115406008475" datatype="html">
         <source>Registration out of scope or not found - please check URL or contact your supervisor</source>
       </trans-unit>
-      <trans-unit id="retry-transfer" datatype="html">
-        <source>Retry transfer</source>
+      <trans-unit id="retry-transaction" datatype="html">
+        <source>Retry transaction</source>
       </trans-unit>
       <trans-unit id="402937248192485030" datatype="html">
         <source>* Leaving this field empty means the team member will have access to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>all registrations<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></source>
@@ -1312,9 +1297,6 @@
       </trans-unit>
       <trans-unit id="4782986825591367550" datatype="html">
         <source>Use <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>@<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/> to add personalized fields.</source>
-      </trans-unit>
-      <trans-unit id="8618812090050599119" datatype="html">
-        <source>Import the file sent by the FSP to see the transfer status of the registrations included in this payment.</source>
       </trans-unit>
       <trans-unit id="4970172669399649769" datatype="html">
         <source>Make sure to match the required format of the template CSV-file.</source>
@@ -1514,9 +1496,6 @@
       <trans-unit id="page-title-program-monitoring-files" datatype="html">
         <source>Files</source>
       </trans-unit>
-      <trans-unit id="page-title-program-transfer-list" datatype="html">
-        <source>Transfer list</source>
-      </trans-unit>
       <trans-unit id="3915966149686975421" datatype="html">
         <source>Optional</source>
       </trans-unit>
@@ -1598,9 +1577,6 @@
       <trans-unit id="3033425005384068594" datatype="html">
         <source>Budget details saved successfully.</source>
       </trans-unit>
-      <trans-unit id="4290180916762570350" datatype="html">
-        <source>Default transfers per registration</source>
-      </trans-unit>
       <trans-unit id="4327471061205783634" datatype="html">
         <source>Currency</source>
       </trans-unit>
@@ -1639,9 +1615,6 @@
       </trans-unit>
       <trans-unit id="4275051684912699373" datatype="html">
         <source>Amount sent per payment</source>
-      </trans-unit>
-      <trans-unit id="8988239608752913304" datatype="html">
-        <source>Transfers per payment</source>
       </trans-unit>
       <trans-unit id="page-title-program-monitoring-dashboard" datatype="html">
         <source>Dashboard</source>
@@ -1694,14 +1667,8 @@
       <trans-unit id="4031190280739566335" datatype="html">
         <source>Last updated</source>
       </trans-unit>
-      <trans-unit id="5402222769341074130" datatype="html">
-        <source>View transfer history</source>
-      </trans-unit>
       <trans-unit id="6566240598427787934" datatype="html">
         <source>Part of payment</source>
-      </trans-unit>
-      <trans-unit id="7833274025744181866" datatype="html">
-        <source>Transfer <x equiv-text="this.paymentDate()" id="PH"/> - transfer history</source>
       </trans-unit>
       <trans-unit id="transaction-status-created" datatype="html">
         <source>Pending approval</source>
@@ -1940,9 +1907,6 @@
       <trans-unit id="833755501463008115" datatype="html">
         <source>Registration Scope</source>
       </trans-unit>
-      <trans-unit id="4830186564201736103" datatype="html">
-        <source>You are about to retry <x equiv-text="{{ referenceIdsForRetryTransfers().length }}" id="INTERPOLATION"/> payment(s). The transfer status will change to Processing until received by the registration.</source>
-      </trans-unit>
       <trans-unit id="1028435406816881383" datatype="html">
         <source>Program successfully created.</source>
       </trans-unit>
@@ -2000,9 +1964,6 @@
       <trans-unit id="5670622821110743398" datatype="html">
         <source>Program information</source>
       </trans-unit>
-      <trans-unit id="610147942593300072" datatype="html">
-        <source>The number of times a registration will receive transfers in the program by default.</source>
-      </trans-unit>
       <trans-unit id="6582831988869863310" datatype="html">
         <source>You&apos;re about to edit the user <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ userToEdit()?.username }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> in your program team.</source>
       </trans-unit>
@@ -2035,6 +1996,45 @@
       </trans-unit>
       <trans-unit id="9211474991659273932" datatype="html">
         <source>Create new program</source>
+      </trans-unit>
+      <trans-unit id="1199603176168206482" datatype="html">
+        <source>Retry failed transactions</source>
+      </trans-unit>
+      <trans-unit id="1297402576657440154" datatype="html">
+        <source>Transactions per payment</source>
+      </trans-unit>
+      <trans-unit id="1492117270122731608" datatype="html">
+        <source>Transaction status</source>
+      </trans-unit>
+      <trans-unit id="1795641661238305703" datatype="html">
+        <source>Transaction <x equiv-text="this.paymentDate()" id="PH"/> - transaction history</source>
+      </trans-unit>
+      <trans-unit id="2237091885146155993" datatype="html">
+        <source>View transaction history</source>
+      </trans-unit>
+      <trans-unit id="239975678969392453" datatype="html">
+        <source>Retry transactions</source>
+      </trans-unit>
+      <trans-unit id="4560183233589622481" datatype="html">
+        <source>Default transactions per registration</source>
+      </trans-unit>
+      <trans-unit id="5401665902200154604" datatype="html">
+        <source>Import the file sent by the FSP to see the transaction status of the registrations included in this payment.</source>
+      </trans-unit>
+      <trans-unit id="651664891309642077" datatype="html">
+        <source>Failed transactions</source>
+      </trans-unit>
+      <trans-unit id="7021486754795195923" datatype="html">
+        <source>Transactions data</source>
+      </trans-unit>
+      <trans-unit id="3961897641515491838" datatype="html">
+        <source>You are about to retry <x equiv-text="{{ referenceIdsForRetryTransactions().length }}" id="INTERPOLATION"/> payment(s). The transaction status will change to Processing until received by the registration.</source>
+      </trans-unit>
+      <trans-unit id="5544945972793965092" datatype="html">
+        <source>The number of times a registration will receive transactions in the program by default.</source>
+      </trans-unit>
+      <trans-unit id="page-title-program-transaction-list" datatype="html">
+        <source>Transaction list</source>
       </trans-unit>
     </body>
   </file>
