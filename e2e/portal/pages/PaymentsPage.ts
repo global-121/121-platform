@@ -150,19 +150,39 @@ class PaymentsPage extends BasePage {
   }) {
     // Locate the specific payment card using the payment link and then navigate to its ancestor card element
     const hrefLocatorUrl = `"/en-GB/program/${programId}/payments/${paymentId}"`;
-    const card = this.page
-      .locator(`a[href=${hrefLocatorUrl}]`)
-      .locator('xpath=ancestor::*[@data-pc-name="card"]')
-      .getByTestId('payment-summary-metrics')
-      .locator('app-metric-container');
 
-    await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForTimeout(3000); // Ensure all dynamic content is loaded
+    // First, wait for the card link to exist
+    const cardLink = this.page.locator(`a[href=${hrefLocatorUrl}]`);
+    await cardLink.waitFor({ state: 'visible', timeout: 30000 });
 
-    const paymentTitle = await this.page
-      .locator(`a[href=${hrefLocatorUrl}]`)
-      .getByTitle(date)
-      .textContent();
+    // Wait for the card container to be present
+    const cardContainer = cardLink.locator(
+      'xpath=ancestor::*[@data-pc-name="card"]',
+    );
+    const cardMetrics = cardContainer.getByTestId('payment-summary-metrics');
+
+    // Wait for the metrics container to be visible (this indicates loading is complete)
+    await cardMetrics.waitFor({ state: 'visible', timeout: 30000 });
+
+    // Wait for loading indicators to disappear
+    const loadingSelectors = [
+      '[data-pc-section="loadingicon"]',
+      '.p-skeleton',
+      '.p-progressbar',
+    ];
+
+    for (const selector of loadingSelectors) {
+      const loadingElement = cardContainer.locator(selector);
+      if (await loadingElement.isVisible()) {
+        await loadingElement.waitFor({ state: 'hidden', timeout: 30000 });
+      }
+    }
+
+    // Wait for metric containers to have actual data
+    const card = cardMetrics.locator('app-metric-container');
+    await card.first().waitFor({ state: 'visible', timeout: 30000 });
+
+    const paymentTitle = await cardLink.getByTitle(date).textContent();
 
     const includedRegistrationsElement = await card
       .filter({ hasText: 'Included reg.' })
