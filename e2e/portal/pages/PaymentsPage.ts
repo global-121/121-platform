@@ -161,9 +161,12 @@ class PaymentsPage extends BasePage {
       .getByTitle(date)
       .textContent();
 
-    const includedRegistrationsElement = await card
-      .filter({ hasText: 'Included reg.' })
-      .textContent();
+    const includedRegistrationsLocator = card.filter({
+      hasText: 'Included reg.',
+    });
+    await includedRegistrationsLocator.waitFor({ state: 'visible' });
+    const includedRegistrationsElement =
+      await includedRegistrationsLocator.textContent();
 
     // Get the total amount element within the card
     const totalAmountElement = await card
