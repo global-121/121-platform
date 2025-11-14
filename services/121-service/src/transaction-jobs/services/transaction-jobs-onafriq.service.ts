@@ -63,7 +63,7 @@ export class TransactionJobsOnafriqService {
     // 3. Create or update Onafriq Transaction with thirdPartyTransId
     await this.upsertOnafriqTransaction(thirdPartyTransId, transactionJob);
 
-    // 4. Start the transfer, if failure: update to error transaction and return early
+    // 4. Start the transaction, if failure: update to error transaction and return early
     try {
       const requestIdentity = await this.getOnafriqFspConfig(
         transactionJob.programFspConfigurationId,

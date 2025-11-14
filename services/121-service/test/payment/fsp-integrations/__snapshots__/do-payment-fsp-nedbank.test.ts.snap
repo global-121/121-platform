@@ -8,4 +8,4 @@ exports[`Do payment with FSP: Nedbank when create order API call gives a valid r
 
 exports[`Do payment with FSP: Nedbank when create order API call gives a valid response should successfully do a payment 1`] = `"ref1-27000000000"`;
 
-exports[`Do payment with FSP: Nedbank when the create order API call times out should update the transaction status to failed in the nedbank cronjob if the voucher is not found 1`] = `"Nedbank voucher was not found, something went wrong when creating the voucher. Please retry the transfer."`;
+exports[`Do payment with FSP: Nedbank when the create order API call times out should update the transaction status to failed in the nedbank cronjob if the voucher is not found 1`] = `"Nedbank voucher was not found, something went wrong when creating the voucher. Please retry the transaction."`;
