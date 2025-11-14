@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -1816,9 +1816,6 @@
       </trans-unit>
       <trans-unit id="query-table--no-results-text" datatype="html">
         <source>There are no records to display.</source>
-      </trans-unit>
-      <trans-unit id="9102963095355753902" datatype="html">
-        <source>Slovak</source>
       </trans-unit>
       <trans-unit id="payment-event-log-item-type-retry" datatype="html">
         <source>Retry</source>
