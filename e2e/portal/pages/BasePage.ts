@@ -102,7 +102,7 @@ class BasePage {
   // To speed tests up we can validate the toast message and close it
   // without waiting for the toast to disappear after 6 seconds
   async validateToastMessageAndClose(message: string) {
-    await expect(this.toast).toBeVisible();
+    await expect(this.toast).toBeVisible({ timeout: 5000 });
     expect(await this.toast.textContent()).toContain(message);
     await this.dismissToast();
   }
@@ -126,6 +126,11 @@ class BasePage {
   async dismissToast() {
     await this.toast.getByRole('button').click();
     await expect(this.toast).toBeHidden();
+  }
+
+  async waitForPageLoad() {
+    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async validateFormError({ errorText }: { errorText: string }) {

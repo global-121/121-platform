@@ -8,7 +8,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { getTransactionsIntersolveVoucher } from '@121-service/test/helpers/fsp-specific.helper';
 import {
-  doPayment,
+  createAndStartPayment,
   getTransactions,
   waitForMessagesToComplete,
   waitForPaymentTransactionsToComplete,
@@ -57,7 +57,7 @@ describe('Do payment to 1 PA', () => {
       );
 
       // Act
-      const doPaymentResponse = await doPayment({
+      const doPaymentResponse = await createAndStartPayment({
         programId,
         transferValue,
         referenceIds: paymentReferenceIds,
@@ -113,6 +113,7 @@ describe('Do payment to 1 PA', () => {
         });
       expect(transactionEventDescriptions).toEqual([
         TransactionEventDescription.created,
+        TransactionEventDescription.approval,
         TransactionEventDescription.initiated,
         TransactionEventDescription.intersolveVoucherCreationRequest,
         TransactionEventDescription.intersolveVoucherInitialMessageSent,
@@ -288,7 +289,7 @@ describe('Do payment to 1 PA', () => {
       );
 
       // Act
-      const doPaymentResponse = await doPayment({
+      const doPaymentResponse = await createAndStartPayment({
         programId,
         transferValue,
         referenceIds: paymentReferenceIds,

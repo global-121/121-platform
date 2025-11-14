@@ -179,6 +179,13 @@ export class ProjectPaymentTransferListPageComponent {
       },
     ];
 
+    if (this.project.data().enableScope) {
+      projectPaymentColumns.splice(3, 0, {
+        field: 'registrationScope',
+        header: $localize`Registration Scope`,
+      });
+    }
+
     return projectPaymentColumns;
   });
 
@@ -228,7 +235,7 @@ export class ProjectPaymentTransferListPageComponent {
         projectId: this.projectId(),
         requiredPermissions: [
           PermissionEnum.PaymentREAD,
-          PermissionEnum.PaymentCREATE,
+          PermissionEnum.PaymentUPDATE,
           PermissionEnum.PaymentTransactionREAD,
         ],
       })

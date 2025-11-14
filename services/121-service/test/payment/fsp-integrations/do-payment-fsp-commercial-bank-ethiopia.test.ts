@@ -4,7 +4,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  doPayment,
+  createAndStartPayment,
   getTransactions,
   retryPayment,
   waitForPaymentTransactionsToComplete,
@@ -38,7 +38,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     await seedIncludedRegistrations([registrationCbe], programId, accessToken);
 
     // Act
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
@@ -80,6 +80,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     });
     expect(transactionEventDescriptions).toEqual([
       TransactionEventDescription.created,
+      TransactionEventDescription.approval,
       TransactionEventDescription.initiated,
       TransactionEventDescription.commercialBankEthiopiaRequestSent,
     ]);
@@ -101,7 +102,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     );
 
     // Act
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId,
 
       transferValue,
@@ -155,7 +156,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     );
 
     // Act
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
@@ -207,7 +208,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
       accessToken,
     );
 
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
@@ -277,10 +278,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
 
     // Assert
     // Check if the transaction status is success.
-    expect(doPaymentRetryResponse.status).toBe(HttpStatus.OK);
-    expect(doPaymentRetryResponse.body.applicableCount).toBe(
-      paymentReferenceIds.length,
-    );
+    expect(doPaymentRetryResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(getTransactionsAfterRetryBody.body[0].status).toBe(
       TransactionStatusEnum.success,
     );

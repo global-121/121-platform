@@ -75,12 +75,12 @@ describe('Do payment with Excel FSP', () => {
       ];
 
       // Act
-      const importResult = await importFspReconciliationData(
-        programIdWesteros,
-        pamymentIdWesteros,
+      const importResult = await importFspReconciliationData({
+        programId: programIdWesteros,
+        paymentId: pamymentIdWesteros,
         accessToken,
-        reconciliationDataIronbank,
-      );
+        reconciliationData: reconciliationDataIronbank,
+      });
       const importResultRecords = JSON.parse(importResult.text).importResult;
 
       await waitForPaymentTransactionsToComplete({
@@ -150,12 +150,12 @@ describe('Do payment with Excel FSP', () => {
       ];
 
       // First import
-      await importFspReconciliationData(
-        programIdWesteros,
-        pamymentIdWesteros,
+      await importFspReconciliationData({
+        programId: programIdWesteros,
+        paymentId: pamymentIdWesteros,
         accessToken,
-        reconciliationDataIronbank,
-      );
+        reconciliationData: reconciliationDataIronbank,
+      });
 
       // Re-import with different status
 
@@ -166,12 +166,12 @@ describe('Do payment with Excel FSP', () => {
         },
       ];
 
-      await importFspReconciliationData(
-        programIdWesteros,
-        pamymentIdWesteros,
+      await importFspReconciliationData({
+        programId: programIdWesteros,
+        paymentId: pamymentIdWesteros,
         accessToken,
-        reconciliationDataIronbankOverwrite,
-      );
+        reconciliationData: reconciliationDataIronbankOverwrite,
+      });
 
       const transactionsResponse = await getTransactions({
         programId: programIdWesteros,
@@ -193,6 +193,7 @@ describe('Do payment with Excel FSP', () => {
       expect(transaction.status).toBe(TransactionStatusEnum.error);
       expect(transactionEvents).toEqual([
         TransactionEventDescription.created,
+        TransactionEventDescription.approval,
         TransactionEventDescription.initiated,
         TransactionEventDescription.excelPreparationForExport,
         TransactionEventDescription.excelReconciliationFileUpload,

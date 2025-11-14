@@ -1,20 +1,41 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-class CountAmountDto {
+class CountAndTransferValueDto {
   @ApiProperty({ example: 0 })
   count: number;
 
   @ApiProperty({ example: 0 })
-  amount: number;
+  transferValue: number;
 }
 
 export class PaymentReturnDto {
-  @ApiProperty({ example: { count: 0, amount: 0 }, type: CountAmountDto })
-  success: CountAmountDto;
+  @ApiProperty({
+    example: { count: 0, transferValue: 0 },
+    type: CountAndTransferValueDto,
+  })
+  success: CountAndTransferValueDto;
 
-  @ApiProperty({ example: { count: 0, amount: 0 }, type: CountAmountDto })
-  waiting: CountAmountDto;
+  @ApiProperty({
+    example: { count: 0, transferValue: 0 },
+    type: CountAndTransferValueDto,
+  })
+  waiting: CountAndTransferValueDto;
 
-  @ApiProperty({ example: { count: 3, amount: 75 }, type: CountAmountDto })
-  failed: CountAmountDto;
+  @ApiProperty({
+    example: { count: 3, transferValue: 75 },
+    type: CountAndTransferValueDto,
+  })
+  failed: CountAndTransferValueDto;
+
+  @ApiProperty({
+    example: { count: 0, transferValue: 0 },
+    type: CountAndTransferValueDto,
+  })
+  pendingApproval: CountAndTransferValueDto;
+
+  @ApiProperty({
+    example: { count: 0, transferValue: 0 },
+    type: CountAndTransferValueDto,
+  })
+  approved: CountAndTransferValueDto;
 }

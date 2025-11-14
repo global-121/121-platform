@@ -10,7 +10,7 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { ImportRegistrationsDto } from '@121-service/src/registration/dto/bulk-import.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  doPayment,
+  createAndStartPayment,
   exportTransactionsByDateRangeJson,
   getTransactions,
   retryPayment,
@@ -65,7 +65,7 @@ describe('Do payment', () => {
         );
 
         // Act
-        const doPaymentResponse = await doPayment({
+        const doPaymentResponse = await createAndStartPayment({
           programId,
           transferValue,
           referenceIds: paymentReferenceIds,
@@ -155,6 +155,7 @@ describe('Do payment', () => {
           });
         expect(transactionEventDescriptions).toEqual([
           TransactionEventDescription.created,
+          TransactionEventDescription.approval,
           TransactionEventDescription.initiated,
           TransactionEventDescription.nedbankVoucherCreationRequested,
           TransactionEventDescription.nedbankCallbackReceived,
@@ -176,7 +177,7 @@ describe('Do payment', () => {
         );
 
         // Act
-        const doPaymentResponse = await doPayment({
+        const doPaymentResponse = await createAndStartPayment({
           programId,
           transferValue,
           referenceIds: paymentReferenceIds,
@@ -217,6 +218,7 @@ describe('Do payment', () => {
           });
         expect(transactionEventDescriptions).toEqual([
           TransactionEventDescription.created,
+          TransactionEventDescription.approval,
           TransactionEventDescription.initiated,
           TransactionEventDescription.nedbankVoucherCreationRequested,
         ]);
@@ -232,7 +234,7 @@ describe('Do payment', () => {
         );
 
         // Act
-        const doPaymentResponse = await doPayment({
+        const doPaymentResponse = await createAndStartPayment({
           programId,
           transferValue: amountOver6000,
           referenceIds: paymentReferenceIds,
@@ -273,6 +275,7 @@ describe('Do payment', () => {
           });
         expect(transactionEventDescriptions).toEqual([
           TransactionEventDescription.created,
+          TransactionEventDescription.approval,
           TransactionEventDescription.initiated,
           TransactionEventDescription.nedbankVoucherCreationRequested,
         ]);
@@ -292,7 +295,7 @@ describe('Do payment', () => {
         );
 
         // Act
-        const doPaymentResponse = await doPayment({
+        const doPaymentResponse = await createAndStartPayment({
           programId,
           transferValue,
           referenceIds: paymentReferenceIds,
@@ -335,6 +338,7 @@ describe('Do payment', () => {
           });
         expect(transactionEventDescriptions).toEqual([
           TransactionEventDescription.created,
+          TransactionEventDescription.approval,
           TransactionEventDescription.initiated,
           TransactionEventDescription.nedbankVoucherCreationRequested,
           TransactionEventDescription.nedbankCallbackReceived,
@@ -356,7 +360,7 @@ describe('Do payment', () => {
         );
 
         // Act
-        await doPayment({
+        await createAndStartPayment({
           programId,
           transferValue,
           referenceIds: paymentReferenceIds,
@@ -412,7 +416,7 @@ describe('Do payment', () => {
           programId,
           accessToken,
         );
-        const doPaymentResponse = await doPayment({
+        const doPaymentResponse = await createAndStartPayment({
           programId,
           transferValue,
           referenceIds: [registrationFailDebitorAccount.referenceId],
@@ -618,7 +622,7 @@ describe('Do payment', () => {
         });
 
         // Act
-        const doPaymentResponse = await doPayment({
+        const doPaymentResponse = await createAndStartPayment({
           programId,
           transferValue,
           referenceIds: paymentReferenceIds,

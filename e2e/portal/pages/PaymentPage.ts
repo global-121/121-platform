@@ -10,7 +10,7 @@ class PaymentPage extends BasePage {
   readonly importReconciliationDataButton: Locator;
   readonly chooseFileButton: Locator;
   readonly importFileButton: Locator;
-  readonly proceedButton: Locator;
+  readonly approveAndStartPaymentButton: Locator;
   readonly viewPaymentTitle: Locator;
   readonly paymentAmount: Locator;
   readonly retryFailedTransfersButton: Locator;
@@ -18,6 +18,7 @@ class PaymentPage extends BasePage {
   readonly exportButton: Locator;
   readonly paymentLogTab: Locator;
   readonly paymentLogTable: Locator;
+  readonly startPaymentButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -32,9 +33,11 @@ class PaymentPage extends BasePage {
     this.importFileButton = this.page.getByRole('button', {
       name: 'Import file',
     });
-    this.proceedButton = this.page.getByRole('button', { name: 'Proceed' });
+    this.approveAndStartPaymentButton = this.page.getByTestId(
+      'form-dialog-proceed-button',
+    );
     this.viewPaymentTitle = this.page.getByRole('heading', {
-      name: 'Payment',
+      name: /Payment \d{2}\/\d{2}\/\d{4}/,
     });
     this.paymentAmount = this.page.getByTestId('metric-tile-component');
     this.retryFailedTransfersButton = this.page.getByRole('button', {
@@ -48,22 +51,63 @@ class PaymentPage extends BasePage {
     });
     this.paymentLogTab = this.page.getByRole('tab', { name: 'Payment log' });
     this.paymentLogTable = this.page.getByTestId('payment-log-table');
+    this.startPaymentButton = this.page.getByRole('button', {
+      name: 'Approve and start payment',
+    });
+  }
+
+  async startPayment() {
+    await this.startPaymentButton.click();
+    await this.approveAndStartPaymentButton.click();
+  }
+
+  async validateStartPaymentButtonVisibility({
+    isVisible,
+  }: {
+    isVisible: boolean;
+  }) {
+    if (isVisible) {
+      await expect(this.startPaymentButton).toBeVisible();
+    } else {
+      await expect(this.startPaymentButton).toBeHidden();
+    }
   }
 
   async waitForPaymentToComplete() {
+    await this.page.waitForTimeout(500); // TODO for now needed to bridge in-progress gap between actions & queue.
+    const approvedChip = this.page
+      .locator('app-colored-chip')
+      .getByLabel('Approved')
+      .first();
     const inProgressChip = this.page
       .locator('app-colored-chip')
       .getByLabel('In progress');
 
     await inProgressChip.waitFor({ state: 'hidden' });
+    await approvedChip.waitFor({ state: 'visible' });
   }
 
-  async validateInProgressChipIsPresent() {
-    const inProgressChip = this.page
-      .locator('app-colored-chip')
-      .getByLabel('In progress');
+  async validateBadgeIsPresentByLabel({
+    badgeName,
+    isVisible,
+    count,
+  }: {
+    badgeName: string;
+    isVisible: boolean;
+    count?: number;
+  }) {
+    const badge = this.page.locator('app-colored-chip').getByLabel(badgeName);
+    const allBadges = await badge.all();
+    const badgeCount = allBadges.length;
 
-    await expect(inProgressChip).toBeVisible();
+    if (isVisible) {
+      for (const badgeElement of allBadges) {
+        await expect(badgeElement).toBeVisible();
+      }
+      expect(badgeCount).toBe(count);
+    } else {
+      await expect(badge).toBeHidden();
+    }
   }
 
   async validatePaymentsDetailsPageByDate(date: string) {
@@ -78,13 +122,17 @@ class PaymentPage extends BasePage {
   }
 
   async validateGraphStatus({
-    pending,
+    pendingApproval,
+    approved,
+    processing,
     successful,
     failed,
   }: {
-    pending: number;
+    approved: number;
+    processing: number;
     successful: number;
     failed: number;
+    pendingApproval?: number;
   }) {
     await this.page.waitForTimeout(1000); // Wait for the graph to be updated after the loader is hidden
     const graph = await this.page.locator('canvas').getAttribute('aria-label');
@@ -95,10 +143,13 @@ class PaymentPage extends BasePage {
         .trim();
 
       expect(graphText).toContain(
-        `Pending: ${pending}, Successful: ${successful}, Failed: ${failed}`,
+        `Pending approval: ${pendingApproval}, Approved: ${approved}, Processing: ${processing}, Successful: ${successful}, Failed: ${failed}`,
       );
     } else {
       throw new Error('Graph attribute is null');
+    }
+    if (pendingApproval) {
+      expect(graph).toContain(`Pending approval: ${pendingApproval}`);
     }
   }
 
@@ -113,7 +164,9 @@ class PaymentPage extends BasePage {
   }
 
   async validateRetryFailedTransfersButtonToBeVisible() {
-    await expect(this.retryFailedTransfersButton).toBeVisible();
+    await expect(this.retryFailedTransfersButton).toBeVisible({
+      timeout: 5000,
+    });
   }
 
   async validateRetryFailedTransfersButtonToBeHidden() {
@@ -148,13 +201,17 @@ class PaymentPage extends BasePage {
 
   async validatePaymentLogEntries(expectedNote: string): Promise<void> {
     const rows = this.paymentLogTable.locator('tbody tr');
-    await expect(rows).toHaveCount(2);
+    await expect(rows).toHaveCount(4);
 
     const noteRow = rows.filter({ hasText: expectedNote });
     const createdRow = rows.filter({ hasText: 'Created' });
+    const approvedRow = rows.filter({ hasText: 'Approved' });
+    const startedRow = rows.filter({ hasText: 'Started' });
 
     await expect(noteRow).toBeVisible();
     await expect(createdRow).toBeVisible();
+    await expect(approvedRow).toBeVisible();
+    await expect(startedRow).toBeVisible();
   }
 
   async validatePaymentLog(expectedNote: string): Promise<void> {

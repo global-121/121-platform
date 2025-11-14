@@ -60,7 +60,7 @@ export class ExcelReconciliationController {
     );
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentCREATE] })
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentUPDATE] })
   @ApiOperation({
     summary: '[SCOPED] Upload payment reconciliation data from FSP per payment',
   })

@@ -11,5 +11,7 @@ export class AggregatePerMonth {
     success: number;
     waiting: number;
     failed: number;
+    pendingApproval: number;
+    approved: number;
   };
 }

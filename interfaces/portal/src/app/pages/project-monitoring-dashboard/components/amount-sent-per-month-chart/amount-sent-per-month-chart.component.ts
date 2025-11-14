@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { ChartData } from 'chart.js';
+import { ChartData, ChartDataset } from 'chart.js';
 import { ChartModule } from 'primeng/chart';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -69,25 +69,73 @@ export class AmountSentPerMonthChartComponent {
     }),
   );
 
+  readonly chartDataDatasets = computed(() => {
+    const datasets: ChartDataset[] = [];
+
+    const hasValues = (data: number[]) => data.some((value) => value > 0);
+
+    const pendingApproval = this.data().map(
+      (aggregate) => aggregate[TransactionStatusEnum.pendingApproval],
+    );
+    if (hasValues(pendingApproval)) {
+      datasets.push({
+        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.pendingApproval],
+        data: pendingApproval,
+        backgroundColor: tailwindConfig.theme.colors.orange[500],
+      });
+    }
+
+    const approved = this.data().map(
+      (aggregate) => aggregate[TransactionStatusEnum.approved],
+    );
+    if (hasValues(approved)) {
+      datasets.push({
+        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.approved],
+        data: approved,
+        backgroundColor: tailwindConfig.theme.colors.purple[500],
+      });
+    }
+
+    const failed = this.data().map(
+      // TODO: once payments-reporting.services.ts is using enums, use TransactionStatusEnum.error here instead of 'failed'
+      (aggregate) => aggregate.failed,
+    );
+    if (hasValues(failed)) {
+      datasets.push({
+        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.error],
+        data: failed,
+        backgroundColor: tailwindConfig.theme.colors.red[500],
+      });
+    }
+
+    const success = this.data().map(
+      (aggregate) => aggregate[TransactionStatusEnum.success],
+    );
+    if (hasValues(success)) {
+      datasets.push({
+        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.success],
+        data: success,
+        backgroundColor: tailwindConfig.theme.colors.green[500],
+      });
+    }
+
+    const waiting = this.data().map(
+      (aggregate) => aggregate[TransactionStatusEnum.waiting],
+    );
+    if (hasValues(waiting)) {
+      datasets.push({
+        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.waiting],
+        data: waiting,
+        backgroundColor: tailwindConfig.theme.colors.yellow[500],
+      });
+    }
+
+    return datasets;
+  });
+
   readonly chartData = computed<ChartData>(() => ({
     labels: this.labels(),
-    datasets: [
-      {
-        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.error],
-        data: this.data().map((a) => a.failed),
-        backgroundColor: tailwindConfig.theme.colors.red[500],
-      },
-      {
-        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.success],
-        data: this.data().map((a) => a[TransactionStatusEnum.success]),
-        backgroundColor: tailwindConfig.theme.colors.green[500],
-      },
-      {
-        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.waiting],
-        data: this.data().map((a) => a[TransactionStatusEnum.waiting]),
-        backgroundColor: tailwindConfig.theme.colors.yellow[500],
-      },
-    ],
+    datasets: this.chartDataDatasets(),
   }));
 
   readonly chartTextAlternative = computed(() =>

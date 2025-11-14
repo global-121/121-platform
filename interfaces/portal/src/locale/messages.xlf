@@ -763,9 +763,6 @@
       <trans-unit id="1105070151875122157" datatype="html">
         <source>No Payments found</source>
       </trans-unit>
-      <trans-unit id="3307214558906712688" datatype="html">
-        <source>In progress</source>
-      </trans-unit>
       <trans-unit id="5004550577313573215" datatype="html">
         <source>Total amount</source>
       </trans-unit>
@@ -910,17 +907,11 @@
       <trans-unit id="3545183022492788567" datatype="html">
         <source>A payment is currently in progress. Please wait until it has finished.</source>
       </trans-unit>
-      <trans-unit id="4207014437413577720" datatype="html">
-        <source>Start payment</source>
-      </trans-unit>
       <trans-unit id="4746344653872488527" datatype="html">
         <source>Export payment list</source>
       </trans-unit>
       <trans-unit id="5081696702832953928" datatype="html">
         <source>Some of the registrations you have selected are not eligible for this payment. Change your selection and try again</source>
-      </trans-unit>
-      <trans-unit id="8074727237612649640" datatype="html">
-        <source>Review summary and click start payment.</source>
       </trans-unit>
       <trans-unit id="5995232414192798763" datatype="html">
         <source>Financial Service Provider(s)</source>
@@ -940,17 +931,8 @@
       <trans-unit id="2077280297780026969" datatype="html">
         <source>Review payment summary and follow the next steps:</source>
       </trans-unit>
-      <trans-unit id="4360422423466093126" datatype="html">
-        <source>Click start payment, this will direct you to the payment page.</source>
-      </trans-unit>
       <trans-unit id="5677186522471416018" datatype="html">
         <source>Upload the file to the Financial Service Provider’s portal.</source>
-      </trans-unit>
-      <trans-unit id="8847988975348610068" datatype="html">
-        <source>Save the exported XLSX-file in the format required by the Financial Service Provider.</source>
-      </trans-unit>
-      <trans-unit id="614288202138197410" datatype="html">
-        <source>Export the FSP instructions from the payment page. This is only possible once the payment is no longer in progress.</source>
       </trans-unit>
       <trans-unit id="export-fsp-payment-list" datatype="html">
         <source>Export FSP payment list</source>
@@ -974,7 +956,7 @@
         <source>Successful</source>
       </trans-unit>
       <trans-unit id="transaction-status-waiting" datatype="html">
-        <source>Pending</source>
+        <source>Processing</source>
       </trans-unit>
       <trans-unit id="3595291210637281374" datatype="html">
         <source>Transfers data</source>
@@ -994,17 +976,8 @@
       <trans-unit id="8108032945706896800" datatype="html">
         <source>You do not have permission to view this page.</source>
       </trans-unit>
-      <trans-unit id="4324437964498958057" datatype="html">
-        <source>Transfers sent</source>
-      </trans-unit>
-      <trans-unit id="4585448172507601196" datatype="html">
-        <source>Registrations included</source>
-      </trans-unit>
       <trans-unit id="3971565293367630153" datatype="html">
         <source>Retry transfers</source>
-      </trans-unit>
-      <trans-unit id="7113199794780283377" datatype="html">
-        <source>You are about to retry <x equiv-text="{{ referenceIdsForRetryTransfers().length }}" id="INTERPOLATION"/> payment(s). The transfer status will change to Pending until received by the registration.</source>
       </trans-unit>
       <trans-unit id="retry-failed-transfers" datatype="html">
         <source>Retry failed transfer(s)</source>
@@ -1095,9 +1068,6 @@
       </trans-unit>
       <trans-unit id="2276030451798485888" datatype="html">
         <source>Amount of money successfully transferred.</source>
-      </trans-unit>
-      <trans-unit id="4067653603451364018" datatype="html">
-        <source>The payment will be in progress while the number of transfers sent, total amount and registrations in the table below are loading.</source>
       </trans-unit>
       <trans-unit id="6371588679924903737" datatype="html">
         <source>Open in new tab</source>
@@ -1598,6 +1568,9 @@
       <trans-unit id="payment-event-log-item-type-created" datatype="html">
         <source>Created</source>
       </trans-unit>
+      <trans-unit id="payment-event-log-item-type-started" datatype="html">
+        <source>Started</source>
+      </trans-unit>
       <trans-unit id="payment-event-log-item-type-note" datatype="html">
         <source>Note</source>
       </trans-unit>
@@ -1803,7 +1776,7 @@
         <source>Transfer <x equiv-text="this.paymentDate()" id="PH"/> - transfer history</source>
       </trans-unit>
       <trans-unit id="transaction-status-created" datatype="html">
-        <source>Created</source>
+        <source>Pending approval</source>
       </trans-unit>
       <trans-unit id="3578644052206125685" datatype="html">
         <source>Ukrainian</source>
@@ -1834,9 +1807,6 @@
       </trans-unit>
       <trans-unit id="819007450583343771" datatype="html">
         <source>Voucher</source>
-      </trans-unit>
-      <trans-unit id="6553227732294230782" datatype="html">
-        <source>Transfer failed. Error: <x equiv-text="event.errorMessage" id="PH"/></source>
       </trans-unit>
       <trans-unit id="157548652954522016" datatype="html">
         <source>Click to reconfigure</source>
@@ -2005,6 +1975,66 @@
       </trans-unit>
       <trans-unit id="9102963095355753902" datatype="html">
         <source>Slovak</source>
+      </trans-unit>
+      <trans-unit id="payment-event-log-item-type-retry" datatype="html">
+        <source>Retry</source>
+      </trans-unit>
+      <trans-unit id="3718000607419168275" datatype="html">
+        <source>Click create payment, this will direct you to the payment page.</source>
+      </trans-unit>
+      <trans-unit id="4146714974043966714" datatype="html">
+        <source>Review summary and click create payment.</source>
+      </trans-unit>
+      <trans-unit id="5179155984601144030" datatype="html">
+        <source>Create payment</source>
+      </trans-unit>
+      <trans-unit id="8616960384506541771" datatype="html">
+        <source>Payment started successfully.</source>
+      </trans-unit>
+      <trans-unit id="7392987714730903698" datatype="html">
+        <source>registrations</source>
+      </trans-unit>
+      <trans-unit id="718304168195158236" datatype="html">
+        <source>Total registrations</source>
+      </trans-unit>
+      <trans-unit id="inProgressChipLabel" datatype="html">
+        <source>In progress</source>
+      </trans-unit>
+      <trans-unit id="inProgressChipTooltip" datatype="html">
+        <source>The payment will be in progress while the transfers in the table below are loading.</source>
+      </trans-unit>
+      <trans-unit id="1307602065632249368" datatype="html">
+        <source>Export the FSP instructions and save the exported XLSX-file in the format required by the Financial Service Provider.</source>
+      </trans-unit>
+      <trans-unit id="2656123100839645861" datatype="html">
+        <source>Pending approval</source>
+      </trans-unit>
+      <trans-unit id="2877620758967462039" datatype="html">
+        <source>When you want the payment to start, click approve and start payment or instruct the designated user to do so.</source>
+      </trans-unit>
+      <trans-unit id="5906272961955453157" datatype="html">
+        <source>Approved</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-project-settings|trim" datatype="html">
+        <source>Project settings</source>
+      </trans-unit>
+      <trans-unit id="6191781315346853958" datatype="html">
+        <source>Click approve and start payment to initiate the payment through your FSP(s).</source>
+      </trans-unit>
+      <trans-unit id="7179709347265925601" datatype="html">
+        <source>Approve and start payment</source>
+      </trans-unit>
+      <trans-unit id="payment-event-log-item-type-approved" datatype="html">
+        <source>Approved</source>
+      </trans-unit>
+      <trans-unit id="transaction-status-approved" datatype="html">
+        <source>Approved</source>
+      </trans-unit>
+      <trans-unit id="833755501463008115" datatype="html">
+        <source>Registration Scope</source>
+      </trans-unit>
+      <trans-unit id="4830186564201736103" datatype="html">
+        <source>You are about to retry <x equiv-text="{{ referenceIdsForRetryTransfers().length }}" id="INTERPOLATION"/> payment(s). The transfer status will change to Processing until received by the registration.</source>
       </trans-unit>
     </body>
   </file>

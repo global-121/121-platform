@@ -39,6 +39,7 @@ import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-
 import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
 import { PaymentEventDataDto } from '@121-service/src/payments/payment-events/dtos/payment-event-data.dto';
 import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
+import { PaymentsCreationService } from '@121-service/src/payments/services/payments-creation.service';
 import { PaymentsExcelFspService } from '@121-service/src/payments/services/payments-excel-fsp.service';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
@@ -60,6 +61,7 @@ import { sendXlsxReponse } from '@121-service/src/utils/send-xlsx-response';
 @Controller()
 export class PaymentsController {
   public constructor(
+    private readonly paymentsCreationService: PaymentsCreationService,
     private readonly paymentsExecutionService: PaymentsExecutionService,
     private readonly paymentsReportingService: PaymentsReportingService,
     private readonly paymentsExcelFspService: PaymentsExcelFspService,
@@ -127,17 +129,17 @@ export class PaymentsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Dry run result for doing a payment - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'Dry run result for creating a payment - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
     description:
-      'Doing the payment was successfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'Creating payment and transactions successfully - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiOperation({
-    summary: '[SCOPED] Send payout instruction to fsps',
+    summary: '[SCOPED] Created payment and transactions',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @PaginatedSwaggerDocs(
@@ -195,7 +197,7 @@ export class PaymentsController {
       );
     }
 
-    const result = await this.paymentsExecutionService.createPayment({
+    const result = await this.paymentsCreationService.createPayment({
       userId,
       programId,
       transferValue: data.transferValue,
@@ -212,26 +214,55 @@ export class PaymentsController {
     return result;
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentCREATE] })
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentUPDATE] })
+  @ApiResponse({
+    status: HttpStatus.ACCEPTED,
+    description: 'Successfully executed the payment start or retry',
+  })
   @ApiOperation({
-    summary:
-      '[SCOPED] Send payout instruction to fsp to retry a payment. This retries failed payments with the original amount',
+    summary: 'Start or Retry payment to send payment instructions to FSP',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Patch('programs/:programId/payments')
-  public async retryPayment(
-    @Body() data: RetryPaymentDto,
+  @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
+  @ApiQuery({
+    name: 'retry',
+    required: false,
+    type: 'boolean',
+    description:
+      'Default is false. If set to true, then (1) all failed transactions of payment are retried or (2) with a filter on referenceIds passed via body. Only failed transactions will be sent again with the original amount. If retry=false, then no body is needed',
+  })
+  @HttpCode(HttpStatus.ACCEPTED)
+  @Patch('programs/:programId/payments/:paymentId')
+  public async startOrRetryPayment(
     @Param('programId', ParseIntPipe) programId: number,
+    @Param('paymentId', ParseIntPipe) paymentId: number,
+    @Query('retry') retry = 'false',
+    @Body() retryReferenceIds: RetryPaymentDto,
     @Req() req: ScopedUserRequest,
-  ): Promise<BulkActionResultDto> {
+  ): Promise<void> {
     const userId = RequestHelper.getUserId(req);
+    const retryBoolean = retry === 'true';
 
-    return await this.paymentsExecutionService.retryPayment(
-      userId,
-      programId,
-      data.paymentId,
-      data.referenceIds,
-    );
+    if (retryBoolean) {
+      await this.paymentsExecutionService.retryPayment({
+        userId,
+        programId,
+        paymentId,
+        referenceIds: retryReferenceIds.referenceIds,
+      });
+    } else {
+      if (retryReferenceIds?.referenceIds?.length) {
+        throw new HttpException(
+          'When retry=false no body must be provided',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      await this.paymentsExecutionService.startPayment({
+        userId,
+        programId,
+        paymentId,
+      });
+    }
   }
 
   @AuthenticatedUser({

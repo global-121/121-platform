@@ -80,7 +80,7 @@ export class SeedInit implements InterfaceScript {
         role: DefaultUserRole.ProgramAdmin,
         label: 'Program Admin',
         permissions: Object.values(PermissionEnum).filter(
-          (p) => p !== PermissionEnum.PaymentCREATE,
+          (p) => p !== PermissionEnum.PaymentUPDATE,
         ),
       },
       {
@@ -122,6 +122,7 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.ProgramAttachmentsREAD,
           PermissionEnum.ProgramAttachmentsCREATE,
+          PermissionEnum.PaymentCREATE,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherREAD,
@@ -181,6 +182,7 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.ProgramAttachmentsREAD,
           PermissionEnum.ProgramAttachmentsCREATE,
           PermissionEnum.PaymentCREATE,
+          PermissionEnum.PaymentUPDATE,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentFspInstructionREAD,

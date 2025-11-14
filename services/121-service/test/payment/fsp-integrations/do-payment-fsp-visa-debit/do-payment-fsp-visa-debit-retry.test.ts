@@ -11,7 +11,7 @@ import {
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  doPayment,
+  createAndStartPayment,
   getTransactions,
   retryPayment,
   waitForPaymentTransactionsToComplete,
@@ -55,7 +55,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
@@ -113,6 +113,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     });
     expect(transactionEventDescriptions).toEqual([
       TransactionEventDescription.created,
+      TransactionEventDescription.approval,
       TransactionEventDescription.initiated,
       TransactionEventDescription.visaPaymentRequested,
       TransactionEventDescription.retry,
@@ -134,7 +135,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,

@@ -21,10 +21,16 @@ export const paymentLink = ({
 export const PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS: Record<PaymentEvent, string> =
   {
     [PaymentEvent.created]: $localize`:@@payment-event-log-item-type-created:Created`,
+    [PaymentEvent.approved]: $localize`:@@payment-event-log-item-type-approved:Approved`,
+    [PaymentEvent.started]: $localize`:@@payment-event-log-item-type-started:Started`,
+    [PaymentEvent.retry]: $localize`:@@payment-event-log-item-type-retry:Retry`,
     [PaymentEvent.note]: $localize`:@@payment-event-log-item-type-note:Note`,
   };
 
 export const PAYMENT_EVENT_LOG_ITEM_TYPE_ICONS: Record<PaymentEvent, string> = {
   [PaymentEvent.created]: 'pi pi-money-bill',
+  [PaymentEvent.approved]: 'pi pi-check-circle',
+  [PaymentEvent.started]: 'pi pi-send',
+  [PaymentEvent.retry]: 'pi pi-refresh',
   [PaymentEvent.note]: 'pi pi-pen-to-square',
 };

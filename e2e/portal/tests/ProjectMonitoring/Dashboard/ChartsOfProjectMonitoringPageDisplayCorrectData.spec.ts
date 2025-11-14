@@ -1,6 +1,7 @@
 import { test } from '@playwright/test';
 import { format } from 'date-fns';
 
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
@@ -18,8 +19,11 @@ test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const programIdOCW = 3;
   const OcwProgramId = programIdOCW;
+  const transferValue = 20;
 
-  await seedPaidRegistrations(registrationsOCW, OcwProgramId);
+  await seedPaidRegistrations(registrationsOCW, OcwProgramId, transferValue, [
+    TransactionStatusEnum.success,
+  ]);
 
   // Login
   const loginPage = new LoginPage(page);
@@ -48,23 +52,17 @@ test('All Charts of Monitoring Dashboard tab display correct data', async ({
         unique: 3,
       },
       regByCreationDate: `${registrationByCreationDate}: 5`,
-      statusPerPayment: {
+      transfersPerPaymentStatus: {
         date: formattedDate,
-        failed: 0,
         successful: 5,
-        pending: 0,
       },
-      amountPerStatus: {
+      amountPerPaymentStatus: {
         date: formattedDate,
-        failed: 0,
         successful: 200,
-        pending: 0,
       },
       amountPerMonth: {
         date: formattedMonth,
-        failed: 0,
         successful: 200,
-        pending: 0,
       },
     });
   });

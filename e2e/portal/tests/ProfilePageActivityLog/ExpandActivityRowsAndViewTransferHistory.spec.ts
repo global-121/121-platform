@@ -5,7 +5,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 import {
-  doPayment,
+  createAndStartPayment,
   waitForMessagesToComplete,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -38,7 +38,7 @@ test.beforeEach(async ({ page }) => {
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
 
-  const paymentResponse = await doPayment({
+  const paymentResponse = await createAndStartPayment({
     programId: 2,
     transferValue: 100,
     referenceIds: [referenceIdPV5],
@@ -128,7 +128,7 @@ test('Expand rows of activity overview and view transfer history', async ({
 
     // Validate that transfer history table has correct number of rows
     await tableComponent.validateTransferHistoryTableRowCount({
-      expectedRowCount: 6, // created / initiated / voucher created / initial message sent / voucher message sent / message delivered
+      expectedRowCount: 7, // created / approved / initiated / voucher created / initial message sent / voucher message sent / message delivered
     });
   });
 });

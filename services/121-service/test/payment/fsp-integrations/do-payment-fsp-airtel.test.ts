@@ -4,7 +4,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  doPayment,
+  createAndStartPayment,
   getTransactions,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -43,7 +43,7 @@ describe('Do payment with FSP: Airtel', () => {
     );
 
     // Act
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
@@ -96,7 +96,7 @@ describe('Do payment with FSP: Airtel', () => {
     );
 
     // Act
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
@@ -135,6 +135,7 @@ describe('Do payment with FSP: Airtel', () => {
     });
     expect(transactionEventDescriptions).toEqual([
       TransactionEventDescription.created,
+      TransactionEventDescription.approval,
       TransactionEventDescription.initiated,
       TransactionEventDescription.airtelRequestSent,
     ]);
@@ -157,7 +158,7 @@ describe('Do payment with FSP: Airtel', () => {
     );
 
     // Act
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
@@ -209,7 +210,7 @@ describe('Do payment with FSP: Airtel', () => {
     );
 
     // Act
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
@@ -258,7 +259,7 @@ describe('Do payment with FSP: Airtel', () => {
     );
 
     // Act
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse = await createAndStartPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,

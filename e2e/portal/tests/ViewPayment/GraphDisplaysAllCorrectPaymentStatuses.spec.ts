@@ -48,21 +48,21 @@ test('Graph should reflect transfer statuses', async ({ page }) => {
   });
 
   await test.step('Do payment', async () => {
-    await paymentsPage.createPayment();
-    await paymentsPage.startPayment();
-    // Assert redirection to payment overview page
+    await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
     );
-    // Assert payment overview page by payment date/ title
-    await paymentPage.waitForPaymentToComplete();
+    await paymentPage.startPayment();
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
-  await test.step('Validate payemnt in progress in Payment overview', async () => {
-    await paymentPage.validateToastMessage('Payment created.');
+  await test.step('Graph displays all correct payment statuses', async () => {
+    await page.goto(`/en-GB/project/${programIdOCW}/payments/1`);
+    await paymentPage.waitForPaymentToComplete();
     await paymentPage.validateGraphStatus({
-      pending: 0,
+      pendingApproval: 0,
+      approved: 0,
+      processing: 0,
       successful: 16,
       failed: 16,
     });

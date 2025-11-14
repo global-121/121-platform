@@ -510,6 +510,7 @@ npm run lint # linting
 - Use TypeORM migrations for schema changes
 - Test migrations thoroughly before deployment
 - Keep migration files minimal and focused
+- Always include "121-service" schema in raw SQL queries when referencing tables of the 121-service
 
 ## Environment & Configuration
 
