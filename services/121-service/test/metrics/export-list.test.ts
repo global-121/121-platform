@@ -231,9 +231,7 @@ describe('Metric export list', () => {
   it('should return 400 Bad Request for invalid exportType', async () => {
     const invalidExportType = 'notAValidType';
     const response = await getServer()
-      .get(
-        `/programs/${programIdPVbla}/metrics/export-list/${invalidExportType}`,
-      )
+      .get(`/programs/${programIdPV}/metrics/export-list/${invalidExportType}`)
       .set('Cookie', [adminAccessToken])
       .send();
 
