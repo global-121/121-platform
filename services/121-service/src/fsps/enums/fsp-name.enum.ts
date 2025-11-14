@@ -4,6 +4,7 @@ export enum Fsps {
   intersolveVisa = 'Intersolve-visa',
   safaricom = 'Safaricom',
   airtel = 'Airtel',
+  cooperativeBankOfOromia = 'Cooperative-bank-of-oromia',
   commercialBankEthiopia = 'Commercial-bank-ethiopia',
   excel = 'Excel',
   nedbank = 'Nedbank',

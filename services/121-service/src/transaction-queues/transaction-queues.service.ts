@@ -9,6 +9,7 @@ import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-r
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
 import { CommercialBankEthiopiaTransactionJobDto } from '@121-service/src/transaction-queues/dto/commercial-bank-ethiopia-transaction-job.dto';
+import { CooperativeBankOfOromiaTransactionJobDto } from '@121-service/src/transaction-queues/dto/cooperative-bank-of-oromia-transaction-job.dto';
 import { ExcelTransactionJobDto } from '@121-service/src/transaction-queues/dto/excel-transaction-job.dto';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { IntersolveVoucherTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-voucher-transaction-job.dto';
@@ -69,6 +70,18 @@ export class TransactionQueuesService {
       const job = await this.queuesService.transactionJobAirtelQueue.add(
         JobNames.default,
         airtelTransactionJob,
+      );
+      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+    }
+  }
+
+  public async addCooperativeBankOfOromiaTransactionJobs(
+    cooperativeBankOfOromiaTransactionJobs: CooperativeBankOfOromiaTransactionJobDto[],
+  ): Promise<void> {
+    for (const cooperativeBankOfOromiaTransactionJob of cooperativeBankOfOromiaTransactionJobs) {
+      const job = await this.queuesService.transactionJobCooperativeBankOfOromiaQueue.add(
+        JobNames.default,
+        cooperativeBankOfOromiaTransactionJob,
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
     }

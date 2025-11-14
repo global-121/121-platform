@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`CooperativeBankOfOromiaApiService disburse authenticate calls authenticate endpoint 1`] = `
+[
+  {
+    "name": "Content-type",
+    "value": "application/json",
+  },
+]
+`;
+
+exports[`CooperativeBankOfOromiaApiService disburse authenticate throws an CooperativeBankOfOromiaApiError when authentication call fails because of network error 1`] = `"CooperativeBankOfOromia API Error: authentication failed: Network error"`;
+
+exports[`CooperativeBankOfOromiaApiService disburse authenticate throws an CooperativeBankOfOromiaApiError when authentication call fails because of unknown response 1`] = `"CooperativeBankOfOromia API Error: authentication failed: unclear response from CooperativeBankOfOromia API"`;
+
+exports[`CooperativeBankOfOromiaApiService disburse authenticate throws an CooperativeBankOfOromiaApiError when authentication was unsuccessful because of invalid secrets 1`] = `"CooperativeBankOfOromia API Error: authentication failed: invalid_client - Invalid client authentication"`;
+
+exports[`CooperativeBankOfOromiaApiService disburse authenticated throws an CooperativeBankOfOromiaApiError when there's a network error 1`] = `"CooperativeBankOfOromia API Error: disburse failed, could not complete request: Network error"`;
+
+exports[`CooperativeBankOfOromiaApiService enquire calls authenticate endpoint 1`] = `
+[
+  {
+    "name": "Content-type",
+    "value": "application/json",
+  },
+]
+`;
+
+exports[`CooperativeBankOfOromiaApiService enquire correctly calls enquire endpoint 1`] = `
+{
+  "message": "SUCCESS (DP00900001001)",
+  "result": "success",
+}
+`;
+
+exports[`CooperativeBankOfOromiaApiService enquire correctly calls enquire endpoint 2`] = `
+[
+  "http://mock-service:3001/api/fsp/cooperative-bank-of-oromia/standard/v2/disbursements/mock-transaction-id?transactionType=B2C",
+  [
+    {
+      "name": "Accept",
+      "value": "*/*",
+    },
+    {
+      "name": "Authorization",
+      "value": "Bearer mock-access-token",
+    },
+    {
+      "name": "Content-type",
+      "value": "application/json",
+    },
+    {
+      "name": "X-country",
+      "value": "ZM",
+    },
+    {
+      "name": "X-currency",
+      "value": "ZMW",
+    },
+  ],
+]
+`;
+
+exports[`CooperativeBankOfOromiaApiService enquire throws an CooperativeBankOfOromiaApiError when there's a network error 1`] = `"CooperativeBankOfOromia API Error: enquire failed, could not complete request: Network error"`;
