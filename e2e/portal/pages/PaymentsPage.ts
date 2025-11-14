@@ -133,8 +133,8 @@ class PaymentsPage extends BasePage {
     date,
     registrationsNumber,
     paymentAmount,
-    successfulTransactions,
-    failedTransactions,
+    successfulTransfers,
+    failedTransfers,
     currency = '€',
     programId,
     paymentId = 1,
@@ -142,8 +142,8 @@ class PaymentsPage extends BasePage {
     date: string;
     registrationsNumber: number;
     paymentAmount: number;
-    successfulTransactions: number;
-    failedTransactions: number;
+    successfulTransfers: number;
+    failedTransfers: number;
     currency?: string;
     programId: number;
     paymentId?: number;
@@ -155,7 +155,9 @@ class PaymentsPage extends BasePage {
       .locator('xpath=ancestor::*[@data-pc-name="card"]')
       .getByTestId('payment-summary-metrics')
       .locator('app-metric-container');
-    await card.first().waitFor({ state: 'visible' });
+
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForLoadState('networkidle');
 
     const paymentTitle = await this.page
       .locator(`a[href=${hrefLocatorUrl}]`)
@@ -171,12 +173,12 @@ class PaymentsPage extends BasePage {
       .filter({ hasText: 'Expected total amount' })
       .textContent();
 
-    const successfulTransactionsElement = await card
+    const successfulTransfersElement = await card
       .filter({ hasText: 'Amount successfully sent' })
       .textContent();
 
-    const failedTransactionsElement = await card
-      .filter({ hasText: 'Failed transactions' })
+    const failedTransfersElement = await card
+      .filter({ hasText: 'Failed transfers' })
       .textContent();
 
     // Validate payment title
@@ -188,16 +190,13 @@ class PaymentsPage extends BasePage {
     // Validate payment amount and currency
     await this.validateNumericValue(totalAmountElement, paymentAmount);
     expect(totalAmountElement).toContain(currency);
-    // Validate successful transactions
+    // Validate successful transfers
     await this.validateNumericValue(
-      successfulTransactionsElement,
-      successfulTransactions,
+      successfulTransfersElement,
+      successfulTransfers,
     );
-    // Validate failed transactions
-    await this.validateNumericValue(
-      failedTransactionsElement,
-      failedTransactions,
-    );
+    // Validate failed transfers
+    await this.validateNumericValue(failedTransfersElement, failedTransfers);
   }
 
   async openPaymentByDate({ date }: { date: string }) {
