@@ -1,6 +1,7 @@
 /**
  * The language a registration/PA prefers to read. Used for messages.
  * See: <https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes>
+ * This is "Set 1" which are all 2 letter codes. The list does change sometimes.
  */
 
 export enum RegistrationPreferredLanguage {
