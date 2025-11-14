@@ -11,7 +11,7 @@ import { sensitivePropertyString } from '@121-service/src/program-fsp-configurat
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
-import { AttributeWithTranslatedLabel } from '~/domains/project/project.model';
+import { AttributeWithTranslatedLabel } from '~/domains/program/program.model';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
 
 const createStubExistingConfiguration = (
@@ -36,7 +36,7 @@ const createStubExistingConfiguration = (
   ...partial,
 });
 
-const createProjectAttribute = (
+const createProgramAttribute = (
   name: string,
 ): AttributeWithTranslatedLabel => ({
   name,
@@ -57,15 +57,15 @@ describe('FspConfigurationService', () => {
   });
 
   describe('getMissingRequiredAttributes', () => {
-    it('should return missing required attributes when project lacks them', () => {
+    it('should return missing required attributes when program lacks them', () => {
       const fspSetting = FSP_SETTINGS[Fsps.intersolveVisa];
-      const projectAttributes = [
-        createProjectAttribute(FspAttributes.fullName),
+      const programAttributes = [
+        createProgramAttribute(FspAttributes.fullName),
       ];
 
       const missing = service.getMissingRequiredAttributes({
         fspSetting,
-        projectAttributes,
+        programAttributes,
       });
       // Intersolve Visa required attributes except fullName
       expect(missing.map((a) => a.name)).toEqual([
@@ -77,20 +77,20 @@ describe('FspConfigurationService', () => {
       ]);
     });
 
-    it('should return empty array when project has all required attributes', () => {
+    it('should return empty array when program has all required attributes', () => {
       const fspSetting = FSP_SETTINGS[Fsps.intersolveVisa];
-      const projectAttributes = [
-        createProjectAttribute(FspAttributes.fullName),
-        createProjectAttribute(FspAttributes.addressCity),
-        createProjectAttribute(FspAttributes.addressHouseNumber),
-        createProjectAttribute(FspAttributes.addressPostalCode),
-        createProjectAttribute(FspAttributes.addressStreet),
-        createProjectAttribute(FspAttributes.phoneNumber),
+      const programAttributes = [
+        createProgramAttribute(FspAttributes.fullName),
+        createProgramAttribute(FspAttributes.addressCity),
+        createProgramAttribute(FspAttributes.addressHouseNumber),
+        createProgramAttribute(FspAttributes.addressPostalCode),
+        createProgramAttribute(FspAttributes.addressStreet),
+        createProgramAttribute(FspAttributes.phoneNumber),
       ];
 
       const missing = service.getMissingRequiredAttributes({
         fspSetting,
-        projectAttributes,
+        programAttributes,
       });
       expect(missing).toEqual([]);
     });

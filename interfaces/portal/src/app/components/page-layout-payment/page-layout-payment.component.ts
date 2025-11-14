@@ -25,13 +25,13 @@ import { MetricTileComponent } from '~/components/metric-tile/metric-tile.compon
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { ImportReconciliationDataComponent } from '~/components/page-layout-payment/components/import-reconciliation-data/import-reconciliation-data.component';
 import { PaymentMenuComponent } from '~/components/page-layout-payment/components/payment-menu/payment-menu.component';
-import { ProjectPaymentChartComponent } from '~/components/page-layout-payment/components/project-payment-chart/project-payment-chart.component';
+import { ProgramPaymentChartComponent } from '~/components/page-layout-payment/components/program-payment-chart/program-payment-chart.component';
 import { SinglePaymentExportComponent } from '~/components/page-layout-payment/components/single-payment-export/single-payment-export.component';
 import { StartPaymentComponent } from '~/components/page-layout-payment/components/start-payment/start-payment.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { PaymentAggregate } from '~/domains/payment/payment.model';
-import { ProjectApiService } from '~/domains/project/project.api.service';
-import { projectHasFspWithExportFileIntegration } from '~/domains/project/project.helper';
+import { ProgramApiService } from '~/domains/program/program.api.service';
+import { programHasFspWithExportFileIntegration } from '~/domains/program/program.helper';
 import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
@@ -42,7 +42,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     CardModule,
     ButtonModule,
     MetricTileComponent,
-    ProjectPaymentChartComponent,
+    ProgramPaymentChartComponent,
     SkeletonModule,
     SinglePaymentExportComponent,
     ImportReconciliationDataComponent,
@@ -56,26 +56,26 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageLayoutPaymentComponent {
-  readonly projectId = input.required<string>();
+  readonly programId = input.required<string>();
   readonly paymentId = input.required<string>();
 
   readonly rtlHelper = inject(RtlHelperService);
   readonly currencyPipe = inject(CurrencyPipe);
   readonly locale = inject(LOCALE_ID);
   readonly paymentApiService = inject(PaymentApiService);
-  readonly projectApiService = inject(ProjectApiService);
+  readonly programApiService = inject(ProgramApiService);
   readonly translatableStringService = inject(TranslatableStringService);
 
   readonly fspSettings = signal<Record<Fsps, FspDto>>(FSP_SETTINGS);
   private authService = inject(AuthService);
 
-  project = injectQuery(this.projectApiService.getProject(this.projectId));
+  program = injectQuery(this.programApiService.getProgram(this.programId));
   paymentStatus = injectQuery(
-    this.paymentApiService.getPaymentStatus(this.projectId),
+    this.paymentApiService.getPaymentStatus(this.programId),
   );
   payment = injectQuery(() => ({
     ...this.paymentApiService.getPayment({
-      projectId: this.projectId,
+      programId: this.programId,
       paymentId: this.paymentId,
     })(),
     // Refetch the data every second if a payment count !== transactions count
@@ -93,10 +93,10 @@ export class PageLayoutPaymentComponent {
       }
     },
   }));
-  payments = injectQuery(this.paymentApiService.getPayments(this.projectId));
+  payments = injectQuery(this.paymentApiService.getPayments(this.programId));
   transactions = injectQuery(
     this.paymentApiService.getPaymentTransactions({
-      projectId: this.projectId,
+      programId: this.programId,
       paymentId: this.paymentId,
     }),
   );
@@ -105,9 +105,9 @@ export class PageLayoutPaymentComponent {
 
   readonly allPaymentsLink = computed(() => [
     '/',
-    AppRoutes.project,
-    this.projectId(),
-    AppRoutes.projectPayments,
+    AppRoutes.program,
+    this.programId(),
+    AppRoutes.programPayments,
   ]);
 
   readonly paymentDate = computed(() => {
@@ -158,7 +158,7 @@ export class PageLayoutPaymentComponent {
     return (
       this.currencyPipe.transform(
         totalTransferValue,
-        this.project.data()?.currency,
+        this.program.data()?.currency,
         'symbol-narrow',
         '1.2-2',
       ) ?? '0'
@@ -173,7 +173,7 @@ export class PageLayoutPaymentComponent {
     return (
       this.currencyPipe.transform(
         this.payment.data().success.transferValue,
-        this.project.data()?.currency,
+        this.program.data()?.currency,
         'symbol-narrow',
         '1.0-0',
       ) ?? '0'
@@ -181,7 +181,7 @@ export class PageLayoutPaymentComponent {
   });
 
   readonly hasFspWithExportFileIntegration = computed(() =>
-    projectHasFspWithExportFileIntegration(this.project.data()),
+    programHasFspWithExportFileIntegration(this.program.data()),
   );
 
   readonly startPaymentFspList = computed<string>(() => {
@@ -238,7 +238,7 @@ export class PageLayoutPaymentComponent {
     return (
       this.currencyPipe.transform(
         this.payment.data().pendingApproval.transferValue,
-        this.project.data()?.currency,
+        this.program.data()?.currency,
         'symbol-narrow',
         '1.2-2',
       ) ?? '0'
@@ -258,7 +258,7 @@ export class PageLayoutPaymentComponent {
 
   readonly canStartPayment = computed(() =>
     this.authService.hasAllPermissions({
-      projectId: this.projectId(),
+      programId: this.programId(),
       requiredPermissions: [
         PermissionEnum.PaymentREAD,
         PermissionEnum.PaymentUPDATE,

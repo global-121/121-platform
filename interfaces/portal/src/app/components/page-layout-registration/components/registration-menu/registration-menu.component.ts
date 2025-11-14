@@ -14,7 +14,7 @@ import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 
 import { AppRoutes } from '~/app.routes';
 import { TabsMenuComponent } from '~/components/tabs-menu/tabs-menu.component';
-import { ProjectApiService } from '~/domains/project/project.api.service';
+import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 
 @Component({
@@ -24,34 +24,34 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationMenuComponent {
-  readonly projectId = input.required<string>();
+  readonly programId = input.required<string>();
   readonly registrationId = input.required<string>();
 
   readonly registrationApiService = inject(RegistrationApiService);
-  readonly projectApiService = inject(ProjectApiService);
+  readonly programApiService = inject(ProgramApiService);
 
   registration = injectQuery(
     this.registrationApiService.getRegistrationById(
-      this.projectId,
+      this.programId,
       this.registrationId,
     ),
   );
-  project = injectQuery(this.projectApiService.getProject(this.projectId));
+  program = injectQuery(this.programApiService.getProgram(this.programId));
 
   readonly navMenuItems = computed<MenuItem[]>(() => [
     {
-      label: $localize`:@@page-title-project-registrations-activity-log:Activity log`,
-      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectRegistrations}/${this.registrationId()}/${AppRoutes.projectRegistrationActivityLog}`,
+      label: $localize`:@@page-title-program-registrations-activity-log:Activity log`,
+      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programRegistrations}/${this.registrationId()}/${AppRoutes.programRegistrationActivityLog}`,
       icon: 'pi pi-list',
     },
     {
-      label: $localize`:@@page-title-project-registrations-personal-information:Personal information`,
-      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectRegistrations}/${this.registrationId()}/${AppRoutes.projectRegistrationPersonalInformation}`,
+      label: $localize`:@@page-title-program-registrations-personal-information:Personal information`,
+      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programRegistrations}/${this.registrationId()}/${AppRoutes.programRegistrationPersonalInformation}`,
       icon: 'pi pi-id-card',
     },
     {
-      label: $localize`:@@page-title-project-registrations-debit-cards:Debit cards`,
-      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectRegistrations}/${this.registrationId()}/${AppRoutes.projectRegistrationDebitCards}`,
+      label: $localize`:@@page-title-program-registrations-debit-cards:Debit cards`,
+      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programRegistrations}/${this.registrationId()}/${AppRoutes.programRegistrationDebitCards}`,
       icon: 'pi pi-credit-card',
       visible: this.registration.data()?.fspName === Fsps.intersolveVisa,
     },

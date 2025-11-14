@@ -51,7 +51,7 @@ test('Validate second payment is correctly displayed on payment card', async ({
   page,
 }) => {
   const paymentsPage = new PaymentsPage(page);
-  const projectTitle = NLRCProgram.titlePortal.en;
+  const programTitle = NLRCProgram.titlePortal.en;
   const numberOfPas = registrationsVisa.length;
   const defaultMaxTransferValue = registrationsVisa.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * transferValueForSecondPayment;
@@ -59,7 +59,7 @@ test('Validate second payment is correctly displayed on payment card', async ({
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(programTitle);
     await paymentsPage.navigateToProgramPage('Payments');
   });
 
@@ -70,7 +70,7 @@ test('Validate second payment is correctly displayed on payment card', async ({
       registrationsNumber: numberOfPas,
       successfulTransfers: defaultMaxTransferValue,
       failedTransfers: 0,
-      projectId: 3,
+      programId: 3,
       paymentId: 2,
     });
   });

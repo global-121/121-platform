@@ -1,0 +1,112 @@
+<app-form-dialog
+  #formDialog
+  [formGroup]="formGroup"
+  [mutation]="assignUserMutation"
+  [mutationData]="formGroup.getRawValue()"
+  [header]="dialogHeader()"
+  [headerIcon]="dialogHeaderIcon()"
+  [proceedLabel]="dialogProceedLabel()"
+>
+  <p class="mb-4">
+    @if (!isEditing()) {
+      <ng-container i18n
+        >Choose a user from the dropdown and assign one or more
+        roles.</ng-container
+      >
+    } @else {
+      <ng-container i18n
+        >You're about to edit the user <b>{{ userToEdit()?.username }}</b> in
+        your program team.</ng-container
+      >
+    }
+    <br />
+    <ng-container i18n="@@generic-more-info-in-manual">
+      For more information see the <app-manual-link />.
+    </ng-container>
+  </p>
+  <app-form-field-wrapper
+    label="Select a user"
+    i18n-label
+    [errorMessage]="formFieldErrors()('userValue')"
+  >
+    <p-select
+      [options]="availableUsers()"
+      [optionLabel]="'username'"
+      [optionValue]="'id'"
+      [filter]="true"
+      formControlName="userValue"
+      placeholder="Type or select"
+      i18n-placeholder="@@generic-type-or-select"
+      [loading]="availableUsersIsLoading()"
+    >
+    </p-select>
+  </app-form-field-wrapper>
+
+  <app-form-field-wrapper
+    label="Select role(s)"
+    i18n-label
+    [errorMessage]="formFieldErrors()('rolesValue')"
+  >
+    <p-multiSelect
+      [options]="roles.data()"
+      [optionLabel]="'label'"
+      [optionValue]="'role'"
+      formControlName="rolesValue"
+      placeholder="Type or select"
+      i18n-placeholder="@@generic-type-or-select"
+      [showToggleAll]="false"
+      [overlayOptions]="{
+        target: '@parent',
+      }"
+      [loading]="roles.isPending()"
+      [disabled]="userIsUpdatingItself()"
+    >
+    </p-multiSelect>
+    @if (userIsUpdatingItself()) {
+      <ng-container slot="details">
+        <p
+          i18n
+          class="my-2"
+        >
+          Users cannot change their own roles
+        </p>
+        <p
+          i18n
+          class="my-2"
+        ></p>
+      </ng-container>
+    }
+  </app-form-field-wrapper>
+
+  @if (enableScope()) {
+    <app-form-field-wrapper
+      label="Assign scope*"
+      i18n-label
+      [errorMessage]="formFieldErrors()('scopeValue')"
+    >
+      <input
+        pInputText
+        type="text"
+        formControlName="scopeValue"
+        autocomplete="off"
+        class="font-mono"
+      />
+      <ng-container slot="details">
+        <p
+          i18n
+          class="text-grey-500 txt-system-s mt-2 mb-1"
+        >
+          * Leaving this field empty means the team member will have access to
+          <strong>all registrations</strong>
+        </p>
+        <p
+          i18n
+          class="text-grey-500 txt-system-s"
+        >
+          * To use a subscope type a dot between the scope and subscope (e.g.
+          <code>amsterdam.west</code>)
+        </p>
+      </ng-container>
+    </app-form-field-wrapper>
+  }
+</app-form-dialog>

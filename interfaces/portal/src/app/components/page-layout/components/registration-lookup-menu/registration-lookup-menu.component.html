@@ -1,5 +1,5 @@
 <div class="txt-system-s w-full bg-purple-300 px-6 py-5 lg:px-24">
-  @if (registrations.isPending() || assignedProjects.isPending()) {
+  @if (registrations.isPending() || assignedPrograms.isPending()) {
     <ng-container i18n>Loading...</ng-container>
   } @else if (registrations.data()?.length) {
     <span i18n>
@@ -11,7 +11,7 @@
   } @else {
     <ng-container i18n>
       We couldn't find any information linked to this person's phone number in
-      the projects you have access to on the 121 Platform.
+      the programs you have access to on the 121 Platform.
     </ng-container>
   }
 </div>

@@ -37,7 +37,7 @@ test.beforeEach(async ({ page }) => {
 test('Do failed payment for Safaricom fsp', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
-  const projectTitle = KRCSProgram.titlePortal.en;
+  const programTitle = KRCSProgram.titlePortal.en;
   const numberOfPas = registrationsSafaricom.length;
   const defaultTransferValue = KRCSProgram.fixedTransferValue;
   const defaultMaxTransferValue = registrationsSafaricom.reduce(
@@ -49,7 +49,7 @@ test('Do failed payment for Safaricom fsp', async ({ page }) => {
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(programTitle);
 
     await paymentsPage.navigateToProgramPage('Payments');
   });
@@ -60,7 +60,7 @@ test('Do failed payment for Safaricom fsp', async ({ page }) => {
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
       url.pathname.startsWith(
-        `/en-GB/project/${programIdSafaricom}/payments/1`,
+        `/en-GB/program/${programIdSafaricom}/payments/1`,
       ),
     );
     // Assert payment overview page by payment date/ title
@@ -85,7 +85,7 @@ test('Do failed payment for Safaricom fsp', async ({ page }) => {
       successfulTransfers: 0,
       failedTransfers: numberOfPas,
       currency: KRCSProgram.currency,
-      projectId: programIdSafaricom,
+      programId: programIdSafaricom,
     });
   });
 });

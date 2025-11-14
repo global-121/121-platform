@@ -36,11 +36,11 @@ import { IgnoreDuplicationDialogComponent } from '~/components/page-layout-regis
 import { RegistrationDuplicatesBannerComponent } from '~/components/page-layout-registration/components/registration-duplicates-banner/registration-duplicates-banner.component';
 import { RegistrationMenuComponent } from '~/components/page-layout-registration/components/registration-menu/registration-menu.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
-import { ProjectApiService } from '~/domains/project/project.api.service';
+import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { RegistrationStatusChangeTarget } from '~/domains/registration/registration.model';
-import { ChangeStatusDialogComponent } from '~/pages/project-registrations/components/change-status-dialog/change-status-dialog.component';
-import { SendMessageDialogComponent } from '~/pages/project-registrations/components/send-message-dialog/send-message-dialog.component';
+import { ChangeStatusDialogComponent } from '~/pages/program-registrations/components/change-status-dialog/change-status-dialog.component';
+import { SendMessageDialogComponent } from '~/pages/program-registrations/components/send-message-dialog/send-message-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import { PaginateQueryService } from '~/services/paginate-query.service';
 import { RegistrationActionMenuService } from '~/services/registration-action-menu.service';
@@ -71,11 +71,11 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageLayoutRegistrationComponent {
-  readonly projectId = input.required<string>();
+  readonly programId = input.required<string>();
   readonly registrationId = input.required<string>();
 
   private authService = inject(AuthService);
-  readonly projectApiService = inject(ProjectApiService);
+  readonly programApiService = inject(ProgramApiService);
   readonly registrationApiService = inject(RegistrationApiService);
   readonly registrationLookupService = inject(RegistrationLookupService);
   readonly translatableStringService = inject(TranslatableStringService);
@@ -93,10 +93,10 @@ export class PageLayoutRegistrationComponent {
   readonly addNoteDialog =
     viewChild.required<AddNoteDialogComponent>('addNoteDialog');
 
-  project = injectQuery(this.projectApiService.getProject(this.projectId));
+  program = injectQuery(this.programApiService.getProgram(this.programId));
   registration = injectQuery(
     this.registrationApiService.getRegistrationById(
-      this.projectId,
+      this.programId,
       this.registrationId,
     ),
   );
@@ -117,7 +117,7 @@ export class PageLayoutRegistrationComponent {
           visible: this.canUpdatePersonalData(),
         },
         this.registrationMenuService.createContextItemForMessage({
-          projectId: this.projectId(),
+          programId: this.programId(),
           command: () => {
             this.sendMessage();
           },
@@ -188,7 +188,7 @@ export class PageLayoutRegistrationComponent {
         type: 'text',
       },
     ];
-    if (this.project.data()?.enableScope) {
+    if (this.program.data()?.enableScope) {
       listData.push({
         label: $localize`:@@registration-scope:Scope`,
         value: registrationRawData?.scope,
@@ -207,16 +207,16 @@ export class PageLayoutRegistrationComponent {
       ? undefined
       : [
           '/',
-          AppRoutes.project,
-          this.projectId(),
-          AppRoutes.projectRegistrations,
+          AppRoutes.program,
+          this.programId(),
+          AppRoutes.programRegistrations,
         ],
   );
 
   readonly parentTitle = computed(() =>
     this.registrationLookupService.isActive()
       ? this.translatableStringService.translate(
-          this.project.data()?.titlePortal,
+          this.program.data()?.titlePortal,
         )
       : $localize`All Registrations`,
   );
@@ -229,20 +229,20 @@ export class PageLayoutRegistrationComponent {
 
   readonly canViewPersonalData = computed(() =>
     this.authService.hasPermission({
-      projectId: this.projectId(),
+      programId: this.programId(),
       requiredPermission: PermissionEnum.RegistrationPersonalREAD,
     }),
   );
   readonly canUpdatePersonalData = computed(() =>
     this.authService.hasPermission({
-      projectId: this.projectId(),
+      programId: this.programId(),
       requiredPermission: PermissionEnum.RegistrationPersonalUPDATE,
     }),
   );
 
   readonly canIgnoreDuplication = computed(() =>
     this.authService.hasAllPermissions({
-      projectId: this.projectId(),
+      programId: this.programId(),
       requiredPermissions: [
         PermissionEnum.RegistrationPersonalUPDATE,
         PermissionEnum.RegistrationDuplicationDELETE,
@@ -299,8 +299,8 @@ export class PageLayoutRegistrationComponent {
     return this.registrationMenuService.createContextItemForRegistrationStatusChange(
       {
         status,
-        projectId: this.projectId(),
-        hasValidation: this.project.data()?.validation ?? false,
+        programId: this.programId(),
+        hasValidation: this.program.data()?.validation ?? false,
         command: () => {
           this.changeStatus({
             status,

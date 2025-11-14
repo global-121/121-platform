@@ -6,19 +6,19 @@ import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import {
-  ProjectAggregatePerMonth,
-  ProjectAggregatePerPayment,
-  ProjectMetrics,
-  ProjectRegistrationCountByDate,
-  ProjectRegistrationsCountByStatus,
-  ProjectRegistrationStatusStats,
+  ProgramAggregatePerMonth,
+  ProgramAggregatePerPayment,
+  ProgramMetrics,
+  ProgramRegistrationCountByDate,
+  ProgramRegistrationsCountByStatus,
+  ProgramRegistrationStatusStats,
 } from '~/domains/metric/metric.model';
 import { unknownArrayToCsvBlob } from '~/utils/csv-helpers';
 import { Dto } from '~/utils/dto-type';
 
-const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
+const BASE_ENDPOINT = (programId: Signal<number | string>) => [
   'programs',
-  projectId,
+  programId,
   'metrics',
 ];
 
@@ -26,18 +26,18 @@ const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
   providedIn: 'root',
 })
 export class MetricApiService extends DomainApiService {
-  getProjectSummaryMetrics(projectId: Signal<number | string>) {
-    return this.generateQueryOptions<ProjectMetrics>({
-      path: [...BASE_ENDPOINT(projectId), 'program-stats-summary'],
+  getProgramSummaryMetrics(programId: Signal<number | string>) {
+    return this.generateQueryOptions<ProgramMetrics>({
+      path: [...BASE_ENDPOINT(programId), 'program-stats-summary'],
     });
   }
 
   exportMetrics({
-    projectId,
+    programId,
     type,
     params,
   }: {
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
     type: ExportType;
     params: Exclude<HttpParamsOptions['fromObject'], undefined>; // `params` should/will always have a value
   }) {
@@ -48,60 +48,60 @@ export class MetricApiService extends DomainApiService {
 
     if (params.format === 'json') {
       return this.generateQueryOptions<Dto<FileDto>, Blob>({
-        path: [...BASE_ENDPOINT(projectId), 'export-list', type],
+        path: [...BASE_ENDPOINT(programId), 'export-list', type],
         params,
         processResponse: (response) => unknownArrayToCsvBlob(response.data), // TODO: The response.fileName is not used here we should consider using it or refactoring it out of the backend
       });
     }
 
     return this.generateQueryOptions<Blob>({
-      path: [...BASE_ENDPOINT(projectId), 'export-list', type],
+      path: [...BASE_ENDPOINT(programId), 'export-list', type],
       params,
       responseAsBlob: true,
     });
   }
 
   getRegistrationCountByStatus({
-    projectId,
+    programId,
   }: {
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
   }) {
     return this.generateQueryOptions<
-      ProjectRegistrationStatusStats[],
-      ProjectRegistrationsCountByStatus
+      ProgramRegistrationStatusStats[],
+      ProgramRegistrationsCountByStatus
     >({
-      path: [...BASE_ENDPOINT(projectId), 'registration-status'],
+      path: [...BASE_ENDPOINT(programId), 'registration-status'],
       processResponse: (response) =>
         response.reduce((statusObject, currentStatus) => {
           statusObject[currentStatus.status] = currentStatus.statusCount;
 
           return statusObject;
-        }, {} as ProjectRegistrationsCountByStatus),
+        }, {} as ProgramRegistrationsCountByStatus),
     });
   }
 
   getAllPaymentsAggregates({
-    projectId,
+    programId,
     limitNumberOfPayments,
   }: {
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
     limitNumberOfPayments?: string;
   }) {
     let params = {};
     if (limitNumberOfPayments) {
       params = { ...params, limitNumberOfPayments };
     }
-    return this.generateQueryOptions<ProjectAggregatePerPayment[]>({
-      path: [...BASE_ENDPOINT(projectId), 'all-payments-aggregates'],
+    return this.generateQueryOptions<ProgramAggregatePerPayment[]>({
+      path: [...BASE_ENDPOINT(programId), 'all-payments-aggregates'],
       params,
     });
   }
 
   getAmountSentByMonth({
-    projectId,
+    programId,
     limitNumberOfPayments,
   }: {
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
     limitNumberOfPayments?: number;
   }) {
     let params = {};
@@ -111,17 +111,17 @@ export class MetricApiService extends DomainApiService {
         limitNumberOfPayments: limitNumberOfPayments.toString(),
       };
     }
-    return this.generateQueryOptions<ProjectAggregatePerMonth>({
-      path: [...BASE_ENDPOINT(projectId), 'amount-sent-by-month'],
+    return this.generateQueryOptions<ProgramAggregatePerMonth>({
+      path: [...BASE_ENDPOINT(programId), 'amount-sent-by-month'],
       params,
     });
   }
 
   getRegistrationCountByDate({
-    projectId,
+    programId,
     startDate,
   }: {
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
     startDate?: string;
   }) {
     let params = {};
@@ -129,15 +129,15 @@ export class MetricApiService extends DomainApiService {
       params = { ...params, startDate };
     }
 
-    return this.generateQueryOptions<ProjectRegistrationCountByDate>({
-      path: [...BASE_ENDPOINT(projectId), 'registration-count-by-date'],
+    return this.generateQueryOptions<ProgramRegistrationCountByDate>({
+      path: [...BASE_ENDPOINT(programId), 'registration-count-by-date'],
       params,
     });
   }
 
-  public invalidateCache(projectId: Signal<number | string>): Promise<void> {
+  public invalidateCache(programId: Signal<number | string>): Promise<void> {
     return this.queryClient.invalidateQueries({
-      queryKey: this.pathToQueryKey(BASE_ENDPOINT(projectId)),
+      queryKey: this.pathToQueryKey(BASE_ENDPOINT(programId)),
     });
   }
 }

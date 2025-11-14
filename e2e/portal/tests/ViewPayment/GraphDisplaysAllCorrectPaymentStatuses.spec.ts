@@ -38,11 +38,11 @@ test.beforeEach(async ({ page }) => {
 test('Graph should reflect transfer statuses', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
-  const projectTitle = NLRCProgram.titlePortal.en;
+  const programTitle = NLRCProgram.titlePortal.en;
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(programTitle);
 
     await paymentsPage.navigateToProgramPage('Payments');
   });
@@ -50,14 +50,14 @@ test('Graph should reflect transfer statuses', async ({ page }) => {
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
+      url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
     );
     await paymentPage.startPayment();
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
   await test.step('Graph displays all correct payment statuses', async () => {
-    await page.goto(`/en-GB/project/${programIdOCW}/payments/1`);
+    await page.goto(`/en-GB/program/${programIdOCW}/payments/1`);
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.validateGraphStatus({
       pendingApproval: 0,

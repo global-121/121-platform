@@ -34,14 +34,14 @@ test('Validate that "Duplicate" banner is displayed in overview of duplicated re
   const registrations = new RegistrationsPage(page);
   const registrationActivityLogPage = new RegistrationActivityLogPage(page);
 
-  const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
+  const programTitle = 'NLRC Direct Digital Aid Program (PV)';
 
   const duplicateRegistrationA = registrationsPV[1]; // 'Jan Janssen'
   const duplicateRegistrationB = registrationsPV[2]; // 'Joost Herlembach'
   const uniqueRegistration = registrationsPV[0]; // 'Gemma Houtenbos'
 
   await test.step('Select program', async () => {
-    await homePage.selectProgram(projectTitle);
+    await homePage.selectProgram(programTitle);
   });
 
   await test.step('Wait for registrations to load', async () => {

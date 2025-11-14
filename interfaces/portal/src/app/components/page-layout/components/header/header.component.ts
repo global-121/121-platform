@@ -51,7 +51,7 @@ export class HeaderComponent {
   private authService = inject(AuthService);
   readonly rtlHelper = inject(RtlHelperService);
 
-  readonly projectId = input<string>();
+  readonly programId = input<string>();
 
   readonly userName = computed(() => this.authService.user?.username);
 
@@ -76,8 +76,8 @@ export class HeaderComponent {
   readonly sidebarLinks = computed(() => {
     const links = [
       {
-        label: $localize`:@@page-title-all-projects:All projects`,
-        routerLink: `/${AppRoutes.projects}`,
+        label: $localize`:@@page-title-all-programs:All programs`,
+        routerLink: `/${AppRoutes.programs}`,
       },
     ];
 

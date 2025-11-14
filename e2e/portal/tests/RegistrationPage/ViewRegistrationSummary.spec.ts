@@ -14,7 +14,7 @@ import { registrationPvScoped } from '@121-service/test/registrations/pagination
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActivityLogPage';
 
-const projectId = 2;
+const programId = 2;
 let registrationId: number;
 let registrationProgramId: number;
 
@@ -22,10 +22,10 @@ test('User should see a summary of a registration', async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
 
   const accessToken = await getAccessToken();
-  await seedPaidRegistrations([registrationPvScoped], projectId);
+  await seedPaidRegistrations([registrationPvScoped], programId);
   const searchRegistrationResponse = await searchRegistrationByReferenceId(
     registrationPvScoped.referenceId,
-    projectId,
+    programId,
     accessToken,
   );
   const registration = searchRegistrationResponse.body.data[0];
@@ -37,7 +37,7 @@ test('User should see a summary of a registration', async ({ page }) => {
   await loginPage.login();
   const activityLogPage = new RegistrationActivityLogPage(page);
   await activityLogPage.goto(
-    `/project/${projectId}/registrations/${registrationId}`,
+    `/program/${programId}/registrations/${registrationId}`,
   );
 
   await test.step('Validate registration title', async () => {

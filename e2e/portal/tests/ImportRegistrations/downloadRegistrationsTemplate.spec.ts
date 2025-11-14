@@ -19,10 +19,10 @@ test.beforeEach(async ({ page }) => {
 test('Download template for import registrations', async ({ page }) => {
   const registrationsPage = new RegistrationsPage(page);
 
-  const projectTitle = NLRCProgramPV.titlePortal.en;
+  const programTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {
-    await registrationsPage.selectProgram(projectTitle);
+    await registrationsPage.selectProgram(programTitle);
   });
 
   await test.step('Export import template and validate CSV files columns', async () => {

@@ -30,7 +30,7 @@ test.beforeEach(async ({ page }) => {
 test('Show payment summary', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
 
-  const projectTitle = 'NLRC OCW Program';
+  const programTitle = 'NLRC OCW Program';
   const fsps: string[] = ['Albert Heijn voucher WhatsApp', 'Visa debit card'];
   const numberOfPas = registrationsOCW.length;
   const defaultTransferValue = NLRCProgram.fixedTransferValue;
@@ -39,7 +39,7 @@ test('Show payment summary', async ({ page }) => {
   }, 0);
 
   await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(programTitle);
     await paymentsPage.navigateToProgramPage('Payments');
   });
 
@@ -57,10 +57,10 @@ test('Show payment summary', async ({ page }) => {
 test('Validate empty payment page', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
 
-  const projectTitle = 'NLRC OCW Program';
+  const programTitle = 'NLRC OCW Program';
 
   await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(programTitle);
     await paymentsPage.navigateToProgramPage('Payments');
   });
 

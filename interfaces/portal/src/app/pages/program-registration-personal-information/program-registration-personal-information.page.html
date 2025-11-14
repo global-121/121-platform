@@ -1,0 +1,36 @@
+<app-page-layout-registration
+  [programId]="programId()"
+  [registrationId]="registrationId()"
+>
+  <div class="px-2">
+    @if (!registrationAttributes.isSuccess()) {
+      <p-skeleton height="24rem" />
+    } @else {
+      @if (!isEditing()) {
+        @if (canUpdatePersonalInformation()) {
+          <div class="text-end">
+            <p-button
+              label="Edit information"
+              i18n-label
+              (click)="isEditing.set(true)"
+              icon="pi pi-pencil"
+              [iconPos]="rtlHelper.createPosition('start')()"
+              outlined
+              rounded
+            />
+          </div>
+        }
+        <app-data-list [data]="dataList()"> </app-data-list>
+      } @else {
+        <app-edit-personal-information
+          #editPersonalInformation
+          [programId]="programId()"
+          [registrationId]="registrationId()"
+          [attributeList]="registrationAttributes.data()"
+          (cancelEditing)="isEditing.set(false)"
+          (registrationUpdated)="onRegistrationUpdated()"
+        />
+      }
+    }
+  </div>
+</app-page-layout-registration>

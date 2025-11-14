@@ -61,7 +61,7 @@ test.beforeAll(async ({ browser }) => {
   const activityLogPage = new RegistrationActivityLogPage(page);
   await test.step('Navigate to registration activity log', async () => {
     await activityLogPage.goto(
-      `/project/${programIdPV}/registrations/${registrationId}`,
+      `/program/${programIdPV}/registrations/${registrationId}`,
     );
   });
 });

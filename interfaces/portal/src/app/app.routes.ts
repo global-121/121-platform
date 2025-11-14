@@ -6,30 +6,30 @@ import { authGuard } from '~/guards/auth.guard';
 import { authCapabilitiesGuard } from '~/guards/auth-capabilities.guard';
 import { foundResourceGuard } from '~/guards/found-resource.guard';
 import { pendingChangesGuard } from '~/guards/pending-changes.guard';
-import { projectPermissionsGuard } from '~/guards/project-permissions-guard';
+import { programPermissionsGuard } from '~/guards/program-permissions-guard';
 
 export enum AppRoutes {
   authCallback = 'auth-callback',
   changePassword = 'change-password',
   login = 'login',
   privacy = 'privacy',
-  project = 'project',
-  projectMonitoring = 'monitoring',
-  projectMonitoringDashboard = 'dashboard',
-  projectMonitoringFiles = 'files',
-  projectMonitoringPowerBI = 'powerbi',
-  projectPaymentLog = 'payment-log',
-  projectPayments = 'payments',
-  projectPaymentTransferList = 'transfer-list',
-  projectRegistrationActivityLog = 'activity-log',
-  projectRegistrationDebitCards = 'debit-cards',
-  projectRegistrationPersonalInformation = 'personal-information',
-  projectRegistrations = 'registrations',
-  projects = 'projects',
-  projectSettings = 'settings',
-  projectSettingsFsps = 'fsps',
-  projectSettingsInformation = 'information',
-  projectSettingsTeam = 'team',
+  program = 'program',
+  programMonitoring = 'monitoring',
+  programMonitoringDashboard = 'dashboard',
+  programMonitoringFiles = 'files',
+  programMonitoringPowerBI = 'powerbi',
+  programPaymentLog = 'payment-log',
+  programPayments = 'payments',
+  programPaymentTransferList = 'transfer-list',
+  programRegistrationActivityLog = 'activity-log',
+  programRegistrationDebitCards = 'debit-cards',
+  programRegistrationPersonalInformation = 'personal-information',
+  programRegistrations = 'registrations',
+  programs = 'programs',
+  programSettings = 'settings',
+  programSettingsFsps = 'fsps',
+  programSettingsInformation = 'information',
+  programSettingsTeam = 'team',
   registrationByReferenceId = 'registration-by-reference-id',
   registrationLookup = 'registration-lookup',
   snake = 'snake',
@@ -80,11 +80,11 @@ export const routes: Routes = [
     ],
   },
   {
-    path: AppRoutes.projects,
-    title: $localize`:@@page-title-all-projects:All projects`,
+    path: AppRoutes.programs,
+    title: $localize`:@@page-title-all-programs:All programs`,
     loadComponent: () =>
-      import('~/pages/projects-overview/projects-overview.page').then(
-        (x) => x.ProjectsOverviewPageComponent,
+      import('~/pages/programs-overview/programs-overview.page').then(
+        (x) => x.ProgramsOverviewPageComponent,
       ),
     canActivate: [authGuard],
   },
@@ -111,46 +111,46 @@ export const routes: Routes = [
     ],
   },
   {
-    path: `${AppRoutes.project}/:projectId`,
-    canActivate: [authGuard, foundResourceGuard('project')],
+    path: `${AppRoutes.program}/:programId`,
+    canActivate: [authGuard, foundResourceGuard('program')],
     children: [
       {
-        path: AppRoutes.projectMonitoring,
+        path: AppRoutes.programMonitoring,
         children: [
           {
-            path: AppRoutes.projectMonitoringPowerBI,
+            path: AppRoutes.programMonitoringPowerBI,
             title:
-              $localize`:@@page-title-project-monitoring-powerbi:PowerBI` +
+              $localize`:@@page-title-program-monitoring-powerbi:PowerBI` +
               ' | ' +
-              $localize`:@@page-title-project-monitoring:Monitoring`,
+              $localize`:@@page-title-program-monitoring:Monitoring`,
             loadComponent: () =>
               import(
-                '~/pages/project-monitoring-powerbi/project-monitoring-powerbi.page'
-              ).then((x) => x.ProjectMonitoringPowerbiPageComponent),
+                '~/pages/program-monitoring-powerbi/program-monitoring-powerbi.page'
+              ).then((x) => x.ProgramMonitoringPowerbiPageComponent),
           },
           {
-            path: AppRoutes.projectMonitoringDashboard,
+            path: AppRoutes.programMonitoringDashboard,
             title:
-              $localize`:@@page-title-project-monitoring-dashboard:Dashboard` +
+              $localize`:@@page-title-program-monitoring-dashboard:Dashboard` +
               ' | ' +
-              $localize`:@@page-title-project-monitoring:Monitoring`,
+              $localize`:@@page-title-program-monitoring:Monitoring`,
             loadComponent: () =>
               import(
-                '~/pages/project-monitoring-dashboard/project-monitoring-dashboard.page'
-              ).then((x) => x.ProjectMonitoringDashboardPageComponent),
+                '~/pages/program-monitoring-dashboard/program-monitoring-dashboard.page'
+              ).then((x) => x.ProgramMonitoringDashboardPageComponent),
           },
           {
-            path: AppRoutes.projectMonitoringFiles,
+            path: AppRoutes.programMonitoringFiles,
             title:
-              $localize`:@@page-title-project-monitoring-files:Files` +
+              $localize`:@@page-title-program-monitoring-files:Files` +
               ' | ' +
-              $localize`:@@page-title-project-monitoring:Monitoring`,
+              $localize`:@@page-title-program-monitoring:Monitoring`,
             loadComponent: () =>
               import(
-                '~/pages/project-monitoring-files/project-monitoring-files.page'
-              ).then((x) => x.ProjectMonitoringFilesPageComponent),
+                '~/pages/program-monitoring-files/program-monitoring-files.page'
+              ).then((x) => x.ProgramMonitoringFilesPageComponent),
             canActivate: [
-              projectPermissionsGuard({
+              programPermissionsGuard({
                 permission: PermissionEnum.ProgramAttachmentsREAD,
               }),
             ],
@@ -158,60 +158,60 @@ export const routes: Routes = [
           {
             path: ``,
             pathMatch: 'full',
-            redirectTo: AppRoutes.projectMonitoringPowerBI,
+            redirectTo: AppRoutes.programMonitoringPowerBI,
           },
         ],
       },
       {
-        path: AppRoutes.projectSettings,
-        title: $localize`:@@page-title-project-settings:Settings`,
+        path: AppRoutes.programSettings,
+        title: $localize`:@@page-title-program-settings:Settings`,
         children: [
           {
-            path: AppRoutes.projectSettingsInformation,
+            path: AppRoutes.programSettingsInformation,
             title:
-              $localize`Project information` +
+              $localize`Program information` +
               ' | ' +
-              $localize`:@@page-title-project-settings:Settings`,
+              $localize`:@@page-title-program-settings:Settings`,
             loadComponent: () =>
               import(
-                '~/pages/project-settings-information/project-settings-information.page'
-              ).then((x) => x.ProjectSettingsInformationPageComponent),
+                '~/pages/program-settings-information/program-settings-information.page'
+              ).then((x) => x.ProgramSettingsInformationPageComponent),
             canActivate: [
-              projectPermissionsGuard({
+              programPermissionsGuard({
                 permission: PermissionEnum.ProgramUPDATE,
                 fallbackRoute: [
-                  AppRoutes.projectSettings,
-                  AppRoutes.projectSettingsTeam,
+                  AppRoutes.programSettings,
+                  AppRoutes.programSettingsTeam,
                 ],
               }),
             ],
           },
           {
-            path: AppRoutes.projectSettingsFsps,
+            path: AppRoutes.programSettingsFsps,
             title:
-              $localize`:@@page-title-project-settings-fsps:FSPs` +
+              $localize`:@@page-title-program-settings-fsps:FSPs` +
               ' | ' +
-              $localize`:@@page-title-project-project-settings:Project settings`,
+              $localize`:@@page-title-program-program-settings:Program settings`,
             loadComponent: () =>
               import(
-                '~/pages/project-settings-fsps/project-settings-fsps.page'
-              ).then((x) => x.ProjectSettingsFspsPageComponent),
+                '~/pages/program-settings-fsps/program-settings-fsps.page'
+              ).then((x) => x.ProgramSettingsFspsPageComponent),
             canActivate: [
               authCapabilitiesGuard((authService) => authService.isAdmin),
             ],
           },
           {
-            path: AppRoutes.projectSettingsTeam,
+            path: AppRoutes.programSettingsTeam,
             title:
-              $localize`:@@page-title-project-settings-team:Project team` +
+              $localize`:@@page-title-program-settings-team:Program team` +
               ' | ' +
-              $localize`:@@page-title-project-settings:Settings`,
+              $localize`:@@page-title-program-settings:Settings`,
             loadComponent: () =>
               import(
-                '~/pages/project-settings-team/project-settings-team.page'
-              ).then((x) => x.ProjectSettingsTeamPageComponent),
+                '~/pages/program-settings-team/program-settings-team.page'
+              ).then((x) => x.ProgramSettingsTeamPageComponent),
             canActivate: [
-              projectPermissionsGuard({
+              programPermissionsGuard({
                 permission: PermissionEnum.AidWorkerProgramREAD,
               }),
             ],
@@ -219,81 +219,81 @@ export const routes: Routes = [
           {
             path: ``,
             pathMatch: 'full',
-            redirectTo: AppRoutes.projectSettingsInformation,
+            redirectTo: AppRoutes.programSettingsInformation,
           },
         ],
       },
       {
-        path: AppRoutes.projectRegistrations,
+        path: AppRoutes.programRegistrations,
         children: [
           {
             path: ``,
-            title: $localize`:@@page-title-project-registrations:Registrations`,
+            title: $localize`:@@page-title-program-registrations:Registrations`,
             loadComponent: () =>
               import(
-                '~/pages/project-registrations/project-registrations.page'
-              ).then((x) => x.ProjectRegistrationsPageComponent),
+                '~/pages/program-registrations/program-registrations.page'
+              ).then((x) => x.ProgramRegistrationsPageComponent),
           },
           {
             path: `:registrationId`,
-            title: $localize`:@@page-title-project-registration-details:Registration details`,
+            title: $localize`:@@page-title-program-registration-details:Registration details`,
             canActivate: [foundResourceGuard('registration')],
             children: [
               {
-                path: AppRoutes.projectRegistrationActivityLog,
+                path: AppRoutes.programRegistrationActivityLog,
                 title:
-                  $localize`:@@page-title-project-registrations-activity-log:Activity log` +
+                  $localize`:@@page-title-program-registrations-activity-log:Activity log` +
                   ' | ' +
-                  $localize`:@@page-title-project-registration-details:Registration details`,
+                  $localize`:@@page-title-program-registration-details:Registration details`,
                 loadComponent: () =>
                   import(
-                    '~/pages/project-registration-activity-log/project-registration-activity-log.page'
-                  ).then((x) => x.ProjectRegistrationActivityLogPageComponent),
+                    '~/pages/program-registration-activity-log/program-registration-activity-log.page'
+                  ).then((x) => x.ProgramRegistrationActivityLogPageComponent),
               },
               {
-                path: AppRoutes.projectRegistrationPersonalInformation,
+                path: AppRoutes.programRegistrationPersonalInformation,
                 title:
-                  $localize`:@@page-title-project-registrations-personal-information:Personal information` +
+                  $localize`:@@page-title-program-registrations-personal-information:Personal information` +
                   ' | ' +
-                  $localize`:@@page-title-project-registration-details:Registration details`,
+                  $localize`:@@page-title-program-registration-details:Registration details`,
                 canDeactivate: [pendingChangesGuard],
                 loadComponent: () =>
                   import(
-                    '~/pages/project-registration-personal-information/project-registration-personal-information.page'
+                    '~/pages/program-registration-personal-information/program-registration-personal-information.page'
                   ).then(
                     (x) =>
-                      x.ProjectRegistrationPersonalInformationPageComponent,
+                      x.ProgramRegistrationPersonalInformationPageComponent,
                   ),
               },
               {
-                path: AppRoutes.projectRegistrationDebitCards,
+                path: AppRoutes.programRegistrationDebitCards,
                 title:
-                  $localize`:@@page-title-project-registrations-debit-cards:Debit cards` +
+                  $localize`:@@page-title-program-registrations-debit-cards:Debit cards` +
                   ' | ' +
-                  $localize`:@@page-title-project-registration-details:Registration details`,
+                  $localize`:@@page-title-program-registration-details:Registration details`,
                 loadComponent: () =>
                   import(
-                    '~/pages/project-registration-debit-cards/project-registration-debit-cards.page'
-                  ).then((x) => x.ProjectRegistrationDebitCardsPageComponent),
+                    '~/pages/program-registration-debit-cards/program-registration-debit-cards.page'
+                  ).then((x) => x.ProgramRegistrationDebitCardsPageComponent),
               },
               {
                 path: ``,
                 pathMatch: 'full',
-                redirectTo: AppRoutes.projectRegistrationActivityLog,
+                redirectTo: AppRoutes.programRegistrationActivityLog,
               },
             ],
           },
         ],
       },
       {
-        path: AppRoutes.projectPayments,
+        path: AppRoutes.programPayments,
         children: [
           {
             path: ``,
-            title: $localize`:@@page-title-project-payments:Payments`,
+            title: $localize`:@@page-title-program-payments:Payments`,
             loadComponent: () =>
-              import('~/pages/project-payments/project-payments.page').then(
-                (x) => x.ProjectPaymentsPageComponent,
+              import('~/pages/program-payments/program-payments.page').then(
+                (x) => x.ProgramPaymentsPageComponent,
               ),
           },
           {
@@ -301,25 +301,25 @@ export const routes: Routes = [
             canActivate: [foundResourceGuard('payment')],
             children: [
               {
-                path: AppRoutes.projectPaymentTransferList,
-                title: $localize`:@@page-title-project-transfer-list:Transfer list`,
+                path: AppRoutes.programPaymentTransferList,
+                title: $localize`:@@page-title-program-transfer-list:Transfer list`,
                 loadComponent: () =>
                   import(
-                    '~/pages/project-payment-transfer-list/project-payment-transfer-list.page'
-                  ).then((x) => x.ProjectPaymentTransferListPageComponent),
+                    '~/pages/program-payment-transfer-list/program-payment-transfer-list.page'
+                  ).then((x) => x.ProgramPaymentTransferListPageComponent),
               },
               {
-                path: AppRoutes.projectPaymentLog,
-                title: $localize`:@@page-title-project-payment-log:Payment log`,
+                path: AppRoutes.programPaymentLog,
+                title: $localize`:@@page-title-program-payment-log:Payment log`,
                 loadComponent: () =>
                   import(
-                    '~/pages/project-payment-log/project-payment-log.page'
-                  ).then((x) => x.ProjectPaymentLogPageComponent),
+                    '~/pages/program-payment-log/program-payment-log.page'
+                  ).then((x) => x.ProgramPaymentLogPageComponent),
               },
               {
                 path: ``,
                 pathMatch: 'full',
-                redirectTo: AppRoutes.projectPaymentTransferList,
+                redirectTo: AppRoutes.programPaymentTransferList,
               },
             ],
           },
@@ -336,7 +336,7 @@ export const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: AppRoutes.projectRegistrations,
+        redirectTo: AppRoutes.programRegistrations,
       },
     ],
   },
@@ -349,13 +349,13 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: AppRoutes.project,
-    redirectTo: AppRoutes.projects,
+    path: AppRoutes.program,
+    redirectTo: AppRoutes.programs,
     pathMatch: 'full',
   },
-  { path: '', redirectTo: AppRoutes.projects, pathMatch: 'full' },
+  { path: '', redirectTo: AppRoutes.programs, pathMatch: 'full' },
   {
     path: '**',
-    redirectTo: AppRoutes.projects,
+    redirectTo: AppRoutes.programs,
   },
 ];

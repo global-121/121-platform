@@ -18,7 +18,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { QueryTableComponent } from '~/components/query-table/query-table.component';
-import { ProjectApiService } from '~/domains/project/project.api.service';
+import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { Registration } from '~/domains/registration/registration.model';
 import { PaginateQuery } from '~/services/paginate-query.service';
@@ -32,7 +32,7 @@ import { RegistrationsTableColumnService } from '~/services/registrations-table-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationsTableComponent {
-  readonly projectId = input.required<string>();
+  readonly programId = input.required<string>();
   readonly contextMenuItems = input<MenuItem[]>();
   readonly localStorageKey = input<string>();
   readonly overrideFilters = input<Exclude<PaginateQuery['filter'], undefined>>(
@@ -43,7 +43,7 @@ export class RegistrationsTableComponent {
   readonly emptyMessage =
     contentChild<TemplateRef<unknown>>('tableEmptyMessage');
 
-  private projectApiService = inject(ProjectApiService);
+  private programApiService = inject(ProgramApiService);
   private registrationApiService = inject(RegistrationApiService);
   private registrationsTableColumnService = inject(
     RegistrationsTableColumnService,
@@ -73,19 +73,19 @@ export class RegistrationsTableComponent {
     };
   });
 
-  protected project = injectQuery(
-    this.projectApiService.getProject(this.projectId),
+  protected program = injectQuery(
+    this.programApiService.getProgram(this.programId),
   );
 
   protected registrationsResponse = injectQuery(
     this.registrationApiService.getManyByQuery(
-      this.projectId,
+      this.programId,
       this.registrationsPaginateQuery,
     ),
   );
 
   protected tableColumns = injectQuery(
-    this.registrationsTableColumnService.getColumns(this.projectId),
+    this.registrationsTableColumnService.getColumns(this.programId),
   );
 
   protected readonly registrations = computed(
@@ -96,7 +96,7 @@ export class RegistrationsTableComponent {
   );
 
   protected readonly columns = computed(() => {
-    if (!this.project.isSuccess() || !this.tableColumns.isSuccess()) {
+    if (!this.program.isSuccess() || !this.tableColumns.isSuccess()) {
       return [];
     }
     const registrationTableColumns = this.tableColumns.data();

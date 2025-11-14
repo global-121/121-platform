@@ -9,15 +9,15 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 
 import { Dto } from '~/utils/dto-type';
 
-export type ProjectMetrics = Dto<ProgramStats>;
-export type ProjectRegistrationStatusStats = Dto<RegistrationStatusStats>;
-export type ProjectRegistrationsCountByStatus = Record<
+export type ProgramMetrics = Dto<ProgramStats>;
+export type ProgramRegistrationStatusStats = Dto<RegistrationStatusStats>;
+export type ProgramRegistrationsCountByStatus = Record<
   RegistrationStatusEnum,
   number
 >;
-export type ProjectAggregatePerPayment = Dto<AggregatePerPayment>;
-export type ProjectAggregatePerMonth = Dto<AggregatePerMonth>;
-export type ProjectRegistrationCountByDate = Dto<RegistrationCountByDate>;
+export type ProgramAggregatePerPayment = Dto<AggregatePerPayment>;
+export type ProgramAggregatePerMonth = Dto<AggregatePerMonth>;
+export type ProgramRegistrationCountByDate = Dto<RegistrationCountByDate>;
 
 export interface SummaryMetric {
   value: null | number | string | undefined;

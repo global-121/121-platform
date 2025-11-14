@@ -36,7 +36,7 @@ test.beforeEach(async ({ page }) => {
 test('Do successful payment for Nedbank fsp', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
-  const projectTitle = NedbankProgram.titlePortal.en;
+  const programTitle = NedbankProgram.titlePortal.en;
   const numberOfPas = registrationsNedbank.length;
   const defaultTransferValue = NedbankProgram.fixedTransferValue;
   const defaultMaxTransferValue = registrationsNedbank.reduce((output, pa) => {
@@ -45,7 +45,7 @@ test('Do successful payment for Nedbank fsp', async ({ page }) => {
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(programTitle);
 
     await paymentsPage.navigateToProgramPage('Payments');
   });
@@ -55,7 +55,7 @@ test('Do successful payment for Nedbank fsp', async ({ page }) => {
     await paymentsPage.createPayment({});
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdNedbank}/payments/1`),
+      url.pathname.startsWith(`/en-GB/program/${programIdNedbank}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
@@ -85,7 +85,7 @@ test('Do successful payment for Nedbank fsp', async ({ page }) => {
       successfulTransfers: defaultMaxTransferValue,
       failedTransfers: 0,
       currency: NedbankProgram.currencySymbol,
-      projectId: programIdNedbank,
+      programId: programIdNedbank,
     });
   });
 });

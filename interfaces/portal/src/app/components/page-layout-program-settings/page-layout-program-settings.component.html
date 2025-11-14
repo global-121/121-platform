@@ -1,0 +1,32 @@
+<app-page-layout [programId]="programId()">
+  <div class="grid w-full gap-4 md:grid-cols-10">
+    <aside class="md:col-span-2">
+      <h1
+        i18n="@@page-title-program-program-settings|trim"
+        class="pb-6"
+      >
+        Program settings
+      </h1>
+      <ul class="space-y-3">
+        @for (item of menuItems(); track $index) {
+          @if (item.visible) {
+            <li>
+              <a
+                [routerLink]="item.routerLink"
+                routerLinkActive="text-purple !border-l-purple"
+                class="txt-body-m hover:text-purple focus:text-purple flex items-center gap-2 border-l border-l-transparent ps-1 font-semibold text-black"
+              >
+                <i [class]="item.icon"></i>
+                {{ item.label }}
+              </a>
+            </li>
+          }
+        }
+      </ul>
+    </aside>
+    <main class="md:col-span-6">
+      <ng-content></ng-content>
+    </main>
+    <aside class="md:col-span-2"></aside>
+  </div>
+</app-page-layout>

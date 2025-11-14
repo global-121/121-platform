@@ -10,7 +10,7 @@ class BasePage {
   readonly page: Page;
   readonly logo: Locator;
   readonly languageDropdown: PrimeNGDropdown;
-  readonly projectHeader: Locator;
+  readonly programHeader: Locator;
   readonly sidebar: Locator;
   readonly sidebarToggle: Locator;
   readonly accountDropdown: Locator;
@@ -28,7 +28,7 @@ class BasePage {
       page,
       testId: 'language-dropdown',
     });
-    this.projectHeader = this.page.getByTestId('project-header');
+    this.programHeader = this.page.getByTestId('program-header');
     this.sidebar = this.page.getByTestId('sidebar');
     this.sidebarToggle = this.page.getByTestId('sidebar-toggle');
     this.accountDropdown = this.page.getByRole('button', { name: 'Account' });
@@ -55,7 +55,7 @@ class BasePage {
   async navigateToProgramPage(
     pageName: 'Registrations' | 'Payments' | 'Monitoring' | 'Settings',
   ) {
-    const tab = this.projectHeader.getByRole('tab', { name: pageName });
+    const tab = this.programHeader.getByRole('tab', { name: pageName });
     await expect(async () => {
       await expect(tab).toBeVisible();
       await tab.click();
@@ -63,7 +63,7 @@ class BasePage {
   }
 
   async navigateToProgramSettingsPage(
-    pageName: 'Project information' | 'Project team',
+    pageName: 'Program information' | 'Program team',
   ) {
     await this.navigateToProgramPage('Settings');
     const link = this.page.getByRole('link', { name: pageName });

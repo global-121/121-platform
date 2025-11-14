@@ -31,7 +31,7 @@ test.beforeEach(async ({ page }) => {
 test('Do successful payment for Visa fsp', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
-  const projectTitle = NLRCProgram.titlePortal.en;
+  const programTitle = NLRCProgram.titlePortal.en;
   const numberOfPas = registrationsVisa.length;
   const defaultTransferValue = NLRCProgram.fixedTransferValue;
   const defaultMaxTransferValue = registrationsVisa.reduce((output, pa) => {
@@ -40,7 +40,7 @@ test('Do successful payment for Visa fsp', async ({ page }) => {
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(programTitle);
 
     await paymentsPage.navigateToProgramPage('Payments');
   });
@@ -50,7 +50,7 @@ test('Do successful payment for Visa fsp', async ({ page }) => {
     await paymentsPage.createPayment({});
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
+      url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
@@ -72,7 +72,7 @@ test('Do successful payment for Visa fsp', async ({ page }) => {
       registrationsNumber: numberOfPas,
       successfulTransfers: defaultMaxTransferValue,
       failedTransfers: 0,
-      projectId: programIdOCW,
+      programId: programIdOCW,
     });
   });
 });

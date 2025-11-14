@@ -20,20 +20,20 @@ import { AuthService } from '~/services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaymentMenuComponent {
-  readonly projectId = input.required<string>();
+  readonly programId = input.required<string>();
   readonly paymentId = input.required<string>();
 
   readonly authService = inject(AuthService);
 
   readonly navMenuItems = computed<MenuItem[]>(() => [
     {
-      label: $localize`:@@page-title-project-transfer-list:Transfer list`,
-      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectPayments}/${this.paymentId()}/${AppRoutes.projectPaymentTransferList}`,
+      label: $localize`:@@page-title-program-transfer-list:Transfer list`,
+      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programPayments}/${this.paymentId()}/${AppRoutes.programPaymentTransferList}`,
       icon: 'pi pi-table',
     },
     {
-      label: $localize`:@@page-title-project-payment-log:Payment log`,
-      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectPayments}/${this.paymentId()}/${AppRoutes.projectPaymentLog}`,
+      label: $localize`:@@page-title-program-payment-log:Payment log`,
+      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programPayments}/${this.paymentId()}/${AppRoutes.programPaymentLog}`,
       icon: 'pi pi-list',
     },
   ]);

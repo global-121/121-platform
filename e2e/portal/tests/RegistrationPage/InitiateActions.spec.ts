@@ -17,7 +17,7 @@ import {
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActivityLogPage';
 
-const projectId = 2;
+const programId = 2;
 let registrationId: number;
 
 test.beforeEach(async ({ page }) => {
@@ -47,7 +47,7 @@ test('User can initiate registration status changes from registration page', asy
   for (const actionName of statusChangeActions) {
     await test.step('Navigate to registration', async () => {
       await activityLogPage.goto(
-        `/project/${projectId}/registrations/${registrationId}`,
+        `/program/${programId}/registrations/${registrationId}`,
       );
     });
 
@@ -76,7 +76,7 @@ test('User can open add note sidebar from action menu', async ({ page }) => {
 
   await test.step('Navigate to registration', async () => {
     await activityLogPage.goto(
-      `/project/${projectId}/registrations/${registrationId}`,
+      `/program/${programId}/registrations/${registrationId}`,
     );
   });
 
@@ -99,7 +99,7 @@ test('User can open message dialog from action menu', async ({ page }) => {
 
   await test.step('Navigate to registration', async () => {
     await activityLogPage.goto(
-      `/project/${projectId}/registrations/${registrationId}`,
+      `/program/${programId}/registrations/${registrationId}`,
     );
   });
 

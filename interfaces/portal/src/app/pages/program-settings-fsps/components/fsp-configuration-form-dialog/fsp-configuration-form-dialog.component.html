@@ -1,0 +1,54 @@
+<app-form-dialog
+  #configurationDialog
+  [header]="configurationDialogHeader()"
+  headerIcon="pi pi-money-bill"
+  [formGroup]="formGroup()"
+  [mutation]="configureFsp"
+  [mutationData]="formGroup().getRawValue()"
+  proceedLabel="Integrate FSP"
+  i18n-proceedLabel
+>
+  <p
+    i18n
+    class="mb-4"
+  >
+    For more information about how to integrate this FSP see the
+    <app-manual-link />.
+  </p>
+
+  @for (fspFormField of fspFormFields(); track fspFormField.name) {
+    <app-fsp-configuration-property-form-field
+      [programId]="programId()"
+      [formGroup]="formGroup()"
+      [fspFormField]="fspFormField"
+    />
+  }
+</app-form-dialog>
+
+<app-form-dialog
+  #integrationErrorDialog
+  [mutation]="retryConfigureFsp"
+  [mutationData]="undefined"
+  header="Integration error"
+  i18n-header
+  headerIcon="pi pi-exclamation-triangle"
+  proceedLabel="Try again"
+  i18n-proceedLabel
+>
+  <p i18n>
+    We couldn't configure this FSP due to missing fields in your Kobo form.
+    Please add the following fields to your Kobo form. Save the form, redeploy
+    it, and refresh the integration to try again.
+  </p>
+  <ol class="my-4 list-inside list-decimal ps-4">
+    @for (attribute of missingIntegrationAttributes(); track attribute.name) {
+      <li i18n>
+        FSP "{{ fspLabel() }}" is missing required field
+        <b>"{{ attribute.name }}"</b>
+      </li>
+    }
+  </ol>
+  <p i18n>
+    Learn more about how to integrate Kobo forms in the <app-manual-link />.
+  </p>
+</app-form-dialog>

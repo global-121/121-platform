@@ -1,7 +1,7 @@
 <app-page-layout
-  [projectId]="projectId()"
+  [programId]="programId()"
   pageTitle="Monitoring"
-  i18n-pageTitle="@@page-title-project-monitoring"
+  i18n-pageTitle="@@page-title-program-monitoring"
 >
   <div
     class="grid gap-5 [grid-template-areas:'metric1_metric2''metric3_metric4''description_description''content_content'] md:grid-cols-[16rem_16rem_1fr] md:[grid-template-areas:'metric1_metric2_description''metric3_metric4_description''content_content_content']"
@@ -36,11 +36,11 @@
       [pending]="metrics.isPending()"
       [chipLabel]="(payments.data()?.length ?? 0) + ' payment(s) done'"
       chipVariant="purple"
-      chipTooltip="Amount of payments done in the project so far."
+      chipTooltip="Amount of payments done in the program so far."
       i18n-chipTooltip
       [metricValue]="
         remainingBudget()
-          | currency: project.data()?.currency : 'symbol-narrow' : '1.0-0'
+          | currency: program.data()?.currency : 'symbol-narrow' : '1.0-0'
       "
       metricLabel="Remaining budget"
       data-testid="metric-remaining-budget"
@@ -56,7 +56,7 @@
         latestPaymentAmount
           ? '+ ' +
             (latestPaymentAmount
-              | currency: project.data()?.currency : 'symbol-narrow' : '1.0-0')
+              | currency: program.data()?.currency : 'symbol-narrow' : '1.0-0')
           : '—'
       "
       chipIcon="pi pi-money-bill"
@@ -65,7 +65,7 @@
       chipVariant="blue"
       [metricValue]="
         metrics.data()?.cashDisbursed
-          | currency: project.data()?.currency : 'symbol-narrow' : '1.0-0'
+          | currency: program.data()?.currency : 'symbol-narrow' : '1.0-0'
       "
       metricLabel="Cash disbursed"
       data-testid="metric-cash-disbursed"
@@ -74,24 +74,24 @@
 
     <p-card
       class="[grid-area:description] [&_.p-card]:h-full [&_.p-card-body]:h-full"
-      data-testid="metric-project-description"
+      data-testid="metric-program-description"
     >
       <div class="border-grey-300 border-b pb-3">
         <p
           i18n
           class="mb-1 font-semibold"
         >
-          Project description:
+          Program description:
         </p>
-        @if (project.isPending()) {
+        @if (program.isPending()) {
           <app-skeleton-inline />
         } @else {
-          {{ projectDescription() || '—' }}
+          {{ programDescription() || '—' }}
         }
       </div>
-      <app-data-list [data]="projectDescriptionData()" />
+      <app-data-list [data]="programDescriptionData()" />
     </p-card>
-    @if (project.isPending()) {
+    @if (program.isPending()) {
       <p-skeleton
         class="[grid-area:content]"
         height="8rem"
@@ -104,7 +104,7 @@
       >
         <app-monitoring-menu
           data-testid="monitoring-menu"
-          [projectId]="projectId()"
+          [programId]="programId()"
         />
         <ng-content></ng-content>
       </p-card>

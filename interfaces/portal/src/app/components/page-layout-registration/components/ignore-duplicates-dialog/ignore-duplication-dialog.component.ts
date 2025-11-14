@@ -47,13 +47,13 @@ type IgnoreDuplicationFormGroup =
 export class IgnoreDuplicationDialogComponent {
   private registrationApiService = inject(RegistrationApiService);
   private metricApiService = inject(MetricApiService);
-  readonly projectId = input.required<string>();
+  readonly programId = input.required<string>();
   readonly referenceId = input.required<string>();
   readonly registrationId = input.required<string>();
 
   duplicates = injectQuery(() => ({
     ...this.registrationApiService.getDuplicates({
-      projectId: this.projectId,
+      programId: this.programId,
 
       referenceId: this.referenceId(),
     })(),
@@ -88,15 +88,15 @@ export class IgnoreDuplicationDialogComponent {
       reason,
     }: ReturnType<IgnoreDuplicationFormGroup['getRawValue']>) =>
       this.registrationApiService.ignoreDuplication({
-        projectId: this.projectId,
+        programId: this.programId,
         registrationIds: this.duplicatesRegistrationIds(),
         reason,
       }),
     onSuccess: () => {
       this.formGroup.reset();
-      void this.metricApiService.invalidateCache(this.projectId);
+      void this.metricApiService.invalidateCache(this.programId);
       return this.registrationApiService.invalidateCache({
-        projectId: this.projectId,
+        programId: this.programId,
       });
     },
   }));

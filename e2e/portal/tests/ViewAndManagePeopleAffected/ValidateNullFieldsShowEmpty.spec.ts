@@ -30,10 +30,10 @@ test('Validate that null fields show empty in the table', async ({ page }) => {
   const homePage = new HomePage(page);
   const registrations = new RegistrationsPage(page);
 
-  const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
+  const programTitle = 'NLRC Direct Digital Aid Program (PV)';
 
   await test.step('Select program', async () => {
-    await homePage.selectProgram(projectTitle);
+    await homePage.selectProgram(programTitle);
   });
 
   await test.step('Wait for registrations to load', async () => {

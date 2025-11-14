@@ -1,0 +1,19 @@
+<app-button-menu
+  label="Import"
+  i18n-label
+  [menuItems]="importOptions()"
+  [icon]="'pi pi-download'"
+  [outlined]="true"
+/>
+
+<app-import-registrations
+  [programId]="programId()"
+  [(dialogVisible)]="importNewRegistrationsDialogVisible"
+/>
+
+<app-update-registrations
+  [programId]="programId()"
+  [actionData]="updateSelectedRegistrationsActionData()"
+  [(dialogVisible)]="updateExistingRegistrationsDialogVisible"
+  (updateSuccess)="onUpdateSuccess()"
+></app-update-registrations>

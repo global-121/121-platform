@@ -32,12 +32,12 @@ export class RegistrationDuplicatesBannerComponent {
   readonly router = inject(Router);
   readonly translatableStringService = inject(TranslatableStringService);
 
-  readonly projectId = input.required<string>();
+  readonly programId = input.required<string>();
   readonly registrationReferenceId = input<string>();
 
   duplicates = injectQuery(() => ({
     ...this.registrationApiService.getDuplicates({
-      projectId: this.projectId,
+      programId: this.programId,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- guaranteed by enabled
       referenceId: this.registrationReferenceId()!,
     })(),
@@ -45,5 +45,5 @@ export class RegistrationDuplicatesBannerComponent {
   }));
 
   registrationLink = (registrationId: number | string) =>
-    registrationLink({ projectId: this.projectId(), registrationId });
+    registrationLink({ programId: this.programId(), registrationId });
 }

@@ -40,10 +40,10 @@ test('Data should be updated according to selected columns and registrations', a
   const registrationsPage = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
 
-  const projectTitle = NLRCProgramPV.titlePortal.en;
+  const programTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {
-    await registrationsPage.selectProgram(projectTitle);
+    await registrationsPage.selectProgram(programTitle);
   });
 
   await test.step('Select all registrations and open "Update registrations" dialog', async () => {

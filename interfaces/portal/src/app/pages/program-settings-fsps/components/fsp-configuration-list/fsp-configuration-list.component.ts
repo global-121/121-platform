@@ -1,0 +1,69 @@
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  model,
+  output,
+} from '@angular/core';
+
+import { injectQuery } from '@tanstack/angular-query-experimental';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+
+import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
+import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
+import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
+import { FSP_IMAGE_URLS } from '~/domains/fsp-configuration/fsp-configuration.helper';
+import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
+import { FspConfigurationCardComponent } from '~/pages/program-settings-fsps/components/fsp-configuration-card/fsp-configuration-card.component';
+import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
+
+@Component({
+  selector: 'app-fsp-configuration-list',
+  imports: [
+    CardModule,
+    ButtonModule,
+    SkeletonInlineComponent,
+    FspConfigurationCardComponent,
+    CardWithLinkComponent,
+    TranslatableStringPipe,
+  ],
+  templateUrl: './fsp-configuration-list.component.html',
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class FspConfigurationListComponent {
+  readonly programId = input.required<string>();
+  readonly forceShowNewFspList = model.required<boolean>();
+  readonly addFspConfiguration = output<Fsps>();
+  readonly reconfigureFspConfiguration = output<FspConfiguration>();
+
+  readonly fspConfigurationApiService = inject(FspConfigurationApiService);
+
+  fspConfigurations = injectQuery(
+    this.fspConfigurationApiService.getFspConfigurations(this.programId),
+  );
+
+  FSP_IMAGE_URLS = FSP_IMAGE_URLS;
+
+  readonly configurableFsps = computed(() =>
+    Object.values(FSP_SETTINGS).filter(this.canConfigureFsp.bind(this)),
+  );
+
+  private canConfigureFsp({ name }: { name: Fsps }) {
+    if (name === Fsps.excel) {
+      // Can always add multiple Excel FSP configurations
+      return true;
+    }
+
+    // For other FSPs, only allow adding if not already configured
+    return this.fspConfigurations
+      .data()
+      ?.every((fspConfiguration) => fspConfiguration.fspName !== name);
+  }
+}

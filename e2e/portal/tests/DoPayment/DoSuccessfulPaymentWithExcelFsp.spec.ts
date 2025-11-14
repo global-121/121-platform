@@ -41,7 +41,7 @@ test('Do payment for excel fsp', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
   const exportDataComponent = new ExportData(page);
 
-  const projectTitle = NLRCProgramPV.titlePortal.en;
+  const programTitle = NLRCProgramPV.titlePortal.en;
   const numberOfPas = registrationsPvExcel.length;
   const defaultTransferValue = amount;
   const defaultMaxTransferValue = registrationsPvExcel.reduce((output, pa) => {
@@ -52,7 +52,7 @@ test('Do payment for excel fsp', async ({ page }) => {
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(programTitle);
 
     await paymentsPage.navigateToProgramPage('Payments');
   });
@@ -69,7 +69,7 @@ test('Do payment for excel fsp', async ({ page }) => {
     });
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdPV}/payments/1`),
+      url.pathname.startsWith(`/en-GB/program/${programIdPV}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);

@@ -92,15 +92,15 @@ export const ACTIVITY_LOG_ITEM_TYPE_ICONS: Record<ActivityTypeEnum, string> = {
 };
 
 export const registrationLink = ({
-  projectId,
+  programId,
   registrationId,
 }: {
-  projectId: number | string;
+  programId: number | string;
   registrationId: number | string;
 }) => [
   '/',
-  AppRoutes.project,
-  projectId,
-  AppRoutes.projectRegistrations,
+  AppRoutes.program,
+  programId,
+  AppRoutes.programRegistrations,
   registrationId,
 ];

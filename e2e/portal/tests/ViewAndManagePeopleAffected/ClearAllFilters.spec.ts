@@ -30,10 +30,10 @@ test('[Bug] Clear all filters does not work', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
 
-  const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
+  const programTitle = 'NLRC Direct Digital Aid Program (PV)';
 
   await test.step('Select program', async () => {
-    await basePage.selectProgram(projectTitle);
+    await basePage.selectProgram(programTitle);
   });
 
   await test.step('Apply filter and then clear all filters', async () => {

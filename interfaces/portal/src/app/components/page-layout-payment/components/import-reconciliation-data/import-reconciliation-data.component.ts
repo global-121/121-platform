@@ -36,7 +36,7 @@ import { ToastService } from '~/services/toast.service';
 })
 export class ImportReconciliationDataComponent {
   readonly rtlHelper = inject(RtlHelperService);
-  readonly projectId = input.required<string>();
+  readonly programId = input.required<string>();
   readonly paymentId = input.required<string>();
 
   private queryClient = inject(QueryClient);
@@ -50,7 +50,7 @@ export class ImportReconciliationDataComponent {
 
   readonly canImportReconciliationData = computed(() =>
     this.authService.hasAllPermissions({
-      projectId: this.projectId(),
+      programId: this.programId(),
       requiredPermissions: [
         PermissionEnum.PaymentREAD,
         PermissionEnum.PaymentUPDATE,
@@ -62,7 +62,7 @@ export class ImportReconciliationDataComponent {
   downloadReconciliationTemplatesMutation = injectMutation(() => ({
     mutationFn: () =>
       this.queryClient.fetchQuery(
-        this.paymentApiService.getReconciliationDataTemplates(this.projectId)(),
+        this.paymentApiService.getReconciliationDataTemplates(this.programId)(),
       ),
     onSuccess: (templates) => {
       templates.forEach(({ name, template }) => {
@@ -85,15 +85,15 @@ export class ImportReconciliationDataComponent {
       }
 
       return this.paymentApiService.importReconciliationData({
-        projectId: this.projectId,
+        programId: this.programId,
         paymentId: this.paymentId,
         file,
       });
     },
     onSuccess: (response) => {
-      void this.metricApiService.invalidateCache(this.projectId);
+      void this.metricApiService.invalidateCache(this.programId);
       void this.paymentApiService.invalidateCache(
-        this.projectId,
+        this.programId,
         this.paymentId,
       );
       this.dialogVisible.set(false);

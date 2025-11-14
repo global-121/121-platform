@@ -1,0 +1,43 @@
+<p-button
+  label="Upload file"
+  i18n-label
+  rounded
+  outlined
+  icon="pi pi-upload"
+  [iconPos]="rtlHelper.createPosition('start')()"
+  (click)="dialogVisible.set(true)"
+/>
+
+<app-import-file-dialog
+  [(dialogVisible)]="dialogVisible"
+  [mutation]="uploadFileMutation"
+  [additionalFormGroups]="[uploadFileFormGroup]"
+  accept="image/png,image/jpeg,image/gif,image/webp,pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  header="Upload file"
+  i18n-header
+>
+  <ng-container pre-file-input>
+    <p i18n>
+      Import PDF, PNG, JPG or DOC files to your program. The files will be
+      available for viewing and exporting to users with the permission to view
+      files.
+    </p>
+  </ng-container>
+  <ng-container post-file-input>
+    <div [formGroup]="uploadFileFormGroup">
+      <app-form-field-wrapper
+        label="File name"
+        i18n-label
+        [errorMessage]="uploadFileFormFieldErrors()('filename')"
+      >
+        <input
+          type="text"
+          formControlName="filename"
+          pInputText
+          placeholder="Name the file for easy identification"
+          i18n-placeholder
+        />
+      </app-form-field-wrapper>
+    </div>
+  </ng-container>
+</app-import-file-dialog>

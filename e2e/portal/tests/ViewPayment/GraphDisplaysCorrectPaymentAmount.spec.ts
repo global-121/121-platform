@@ -33,7 +33,7 @@ test('Table should reflect the actual transfer values sent to the PAs in this pa
 }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
-  const projectTitle = NLRCProgram.titlePortal.en;
+  const programTitle = NLRCProgram.titlePortal.en;
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   const defaultTransferValue = NLRCProgram.fixedTransferValue;
@@ -42,7 +42,7 @@ test('Table should reflect the actual transfer values sent to the PAs in this pa
   }, 0);
 
   await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(programTitle);
 
     await paymentsPage.navigateToProgramPage('Payments');
   });
@@ -50,7 +50,7 @@ test('Table should reflect the actual transfer values sent to the PAs in this pa
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
+      url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
     );
     await paymentPage.validateToastMessage('Payment created.');
     await paymentPage.startPayment();

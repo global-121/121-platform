@@ -8,9 +8,9 @@ import {
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { getLanguageEnumFromLocale, Locale } from '~/utils/locale';
 
-const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
+const BASE_ENDPOINT = (programId: Signal<number | string>) => [
   'notifications',
-  projectId,
+  programId,
 ];
 
 @Injectable({
@@ -22,13 +22,13 @@ export class NotificationApiService extends DomainApiService {
     TranslatableStringService,
   );
 
-  getMessageTemplates(projectId: Signal<number | string | undefined>) {
+  getMessageTemplates(programId: Signal<number | string | undefined>) {
     return this.generateQueryOptions<
       MessageTemplate[],
       MessageTemplateWithTranslatedLabel[]
     >({
       path: [
-        ...BASE_ENDPOINT(projectId as Signal<number | string>),
+        ...BASE_ENDPOINT(programId as Signal<number | string>),
         'message-templates',
       ],
       processResponse: (response) =>
@@ -46,14 +46,14 @@ export class NotificationApiService extends DomainApiService {
               $localize`<UNNAMED TEMPLATE>`,
           }))
           .sort((a, b) => a.label.localeCompare(b.label)),
-      enabled: () => !!projectId(),
+      enabled: () => !!programId(),
     });
   }
 
   public invalidateMessageTemplates(
-    projectId: Signal<number | string>,
+    programId: Signal<number | string>,
   ): Promise<void> {
-    const path = [...BASE_ENDPOINT(projectId), 'message-templates'];
+    const path = [...BASE_ENDPOINT(programId), 'message-templates'];
 
     return this.queryClient.invalidateQueries({
       queryKey: this.pathToQueryKey(path),

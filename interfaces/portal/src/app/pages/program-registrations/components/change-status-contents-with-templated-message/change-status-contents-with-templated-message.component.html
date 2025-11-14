@@ -1,0 +1,17 @@
+@if (enableSendMessage()) {
+  <p
+    i18n
+    class="my-5"
+  >
+    The following message will be sent to each registration in their language.
+  </p>
+  <app-custom-message-preview
+    [programId]="programId()"
+    [previewRegistration]="previewRegistration()"
+    [messageData]="messageData()"
+  ></app-custom-message-preview>
+}
+<app-change-status-submit-buttons
+  [isMutating]="isMutating()"
+  (cancelClick)="cancelClick()"
+/>

@@ -1,5 +1,5 @@
 <div class="flex min-h-screen flex-col">
-  <app-header [projectId]="projectId()" />
+  <app-header [programId]="programId()" />
   <div class="flex flex-1 flex-col">
     @if (pageLoadError()) {
       <div class="w-full px-6 lg:px-24">
@@ -14,8 +14,8 @@
     @let lookupPhonenumber = registrationLookupService.phonenumber();
     @if (registrationLookupService.isActive() && lookupPhonenumber) {
       <app-registration-lookup-menu [phonenumber]="lookupPhonenumber" />
-    } @else if (projectId()) {
-      <app-project-menu [projectId]="projectId()!" />
+    } @else if (programId()) {
+      <app-program-menu [programId]="programId()!" />
     }
     <div class="flex-1 p-6 lg:px-24">
       @if (pageTitle()) {

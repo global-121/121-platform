@@ -1,0 +1,23 @@
+<app-card-editable
+  header="Budget"
+  i18n-header="@@card-title-program-settings-budget"
+  editPencilTitle="Edit budget"
+  i18n-editPencilTitle
+  [canEdit]="canEdit()"
+  [(isEditing)]="isEditing"
+  [formGroup]="formGroup()"
+  [mutation]="updateProgramMutation"
+  [mutationData]="formGroup()?.getRawValue()"
+>
+  @if (!isEditing()) {
+    <app-data-list
+      [data]="dataListData()"
+      data-testid="program-budget-data-list"
+    />
+  } @else {
+    <app-program-form-budget
+      #programFormBudget
+      [program]="program.data()"
+    />
+  }
+</app-card-editable>

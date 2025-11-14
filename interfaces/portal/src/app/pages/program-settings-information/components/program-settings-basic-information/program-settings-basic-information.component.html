@@ -1,0 +1,39 @@
+<app-card-editable
+  header="Basic information"
+  i18n-header="@@card-title-program-settings-basic-information"
+  editPencilTitle="Edit basic information"
+  i18n-editPencilTitle
+  [canEdit]="canEdit()"
+  [(isEditing)]="isEditing"
+  [formGroup]="formGroup()"
+  [mutation]="updateProgramMutation"
+  [mutationData]="formGroup()?.getRawValue()"
+>
+  <p
+    i18n
+    class="mb-4"
+  >
+    Enter the basic details of your program, these details will define your
+    program's setup and structure.
+  </p>
+
+  @if (!isEditing()) {
+    <app-data-list
+      [data]="programBasicInformationData()"
+      data-testid="program-basic-information-data-list"
+    />
+  } @else {
+    <p class="mb-4">
+      <strong i18n>Editing in {{ languageName }}.</strong><br />
+      <span i18n>Save and switch language to translate relevant details.</span>
+    </p>
+    <app-program-form-name
+      #programFormName
+      [program]="program.data()"
+    />
+    <app-program-form-information
+      #programFormInformation
+      [program]="program.data()"
+    />
+  }
+</app-card-editable>

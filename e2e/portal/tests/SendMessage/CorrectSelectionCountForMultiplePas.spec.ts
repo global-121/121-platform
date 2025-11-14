@@ -32,10 +32,10 @@ test('Selection should show correct PA count for bulk action (Multiple PAs)', as
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
 
-  const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
+  const programTitle = 'NLRC Direct Digital Aid Program (PV)';
 
   await test.step('Select program', async () => {
-    await basePage.selectProgram(projectTitle);
+    await basePage.selectProgram(programTitle);
   });
 
   await test.step('Apply bulk action on multiple PAs', async () => {

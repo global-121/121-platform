@@ -13,13 +13,13 @@ import { SkeletonModule } from 'primeng/skeleton';
 
 import { FooterComponent } from '~/components/page-layout/components/footer/footer.component';
 import { HeaderComponent } from '~/components/page-layout/components/header/header.component';
-import { ProjectMenuComponent } from '~/components/page-layout/components/project-menu/project-menu.component';
+import { ProgramMenuComponent } from '~/components/page-layout/components/program-menu/program-menu.component';
 import { RegistrationLookupMenuComponent } from '~/components/page-layout/components/registration-lookup-menu/registration-lookup-menu.component';
 import {
   FOUND_RESOURCE_GUARD_QUERY_KEY,
   FoundResourceGuardType,
 } from '~/guards/found-resource.guard';
-import { PERMISSION_DENIED_QUERY_KEY } from '~/guards/project-permissions-guard';
+import { PERMISSION_DENIED_QUERY_KEY } from '~/guards/program-permissions-guard';
 import { RegistrationLookupService } from '~/services/registration-lookup.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 
@@ -27,7 +27,7 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
   selector: 'app-page-layout',
   imports: [
     HeaderComponent,
-    ProjectMenuComponent,
+    ProgramMenuComponent,
     FooterComponent,
     CardModule,
     MessageModule,
@@ -48,7 +48,7 @@ export class PageLayoutComponent {
   readonly parentPageTitle = input<string>();
   readonly parentPageLink = input<RouterLink['routerLink']>();
 
-  readonly projectId = input<string>();
+  readonly programId = input<string>();
 
   readonly isPending = input<boolean>();
 
@@ -70,8 +70,8 @@ export class PageLayoutComponent {
     }
 
     switch (notFoundResource) {
-      case 'project':
-        return $localize`Project not found. Please check the URL and try again.`;
+      case 'program':
+        return $localize`Program not found. Please check the URL and try again.`;
       case 'registration':
         return $localize`Registration out of scope or not found - please check URL or contact your supervisor`;
       case 'payment':

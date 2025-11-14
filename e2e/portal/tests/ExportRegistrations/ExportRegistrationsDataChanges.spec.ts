@@ -31,10 +31,10 @@ test('Export all People Affected data changes', async ({ page }) => {
   const registrationsPage = new RegistrationsPage(page);
   const exportDataComponent = new ExportData(page);
 
-  const projectTitle = NLRCProgramPV.titlePortal.en;
+  const programTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {
-    await registrationsPage.selectProgram(projectTitle);
+    await registrationsPage.selectProgram(programTitle);
   });
 
   await test.step('Export list and validate XLSX files downloaded', async () => {

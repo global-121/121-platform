@@ -59,8 +59,8 @@
         <source>Logout</source>
         <note priority="1" from="description">Menu-item</note>
       </trans-unit>
-      <trans-unit id="page-title-all-projects" datatype="html">
-        <source>All projects</source>
+      <trans-unit id="page-title-all-programs" datatype="html">
+        <source>All programs</source>
       </trans-unit>
       <trans-unit id="page-title-users" datatype="html">
         <source>Users</source>
@@ -74,13 +74,13 @@
       <trans-unit id="5641945527911431559" datatype="html">
         <source>Error: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></source>
       </trans-unit>
-      <trans-unit id="page-title-project-registrations" datatype="html">
+      <trans-unit id="page-title-program-registrations" datatype="html">
         <source>Registrations</source>
       </trans-unit>
-      <trans-unit id="page-title-project-payments" datatype="html">
+      <trans-unit id="page-title-program-payments" datatype="html">
         <source>Payments</source>
       </trans-unit>
-      <trans-unit id="page-title-project-monitoring" datatype="html">
+      <trans-unit id="page-title-program-monitoring" datatype="html">
         <source>Monitoring</source>
       </trans-unit>
       <trans-unit id="add-note" datatype="html">
@@ -125,17 +125,14 @@
       <trans-unit id="4309697217076303455" datatype="html">
         <source><x equiv-text="paymentCount.toString()" id="count"/> (out of <x equiv-text="maxPayments.toString()" id="totalCount"/>)</source>
       </trans-unit>
-      <trans-unit id="page-title-project-registrations-activity-log" datatype="html">
+      <trans-unit id="page-title-program-registrations-activity-log" datatype="html">
         <source>Activity log</source>
       </trans-unit>
-      <trans-unit id="page-title-project-registrations-personal-information" datatype="html">
+      <trans-unit id="page-title-program-registrations-personal-information" datatype="html">
         <source>Personal information</source>
       </trans-unit>
-      <trans-unit id="page-title-project-registrations-debit-cards" datatype="html">
+      <trans-unit id="page-title-program-registrations-debit-cards" datatype="html">
         <source>Debit cards</source>
-      </trans-unit>
-      <trans-unit id="3284816784388197103" datatype="html">
-        <source>Project not found. Please check the URL and try again.</source>
       </trans-unit>
       <trans-unit id="table-quick-search" datatype="html">
         <source>Filter by keyword</source>
@@ -361,9 +358,6 @@
       <trans-unit id="3046019795799616878" datatype="html">
         <source>Registrations with the status “included”.</source>
       </trans-unit>
-      <trans-unit id="6651655904432464973" datatype="html">
-        <source>Amount of payments done in the project so far.</source>
-      </trans-unit>
       <trans-unit id="2756397788360043544" datatype="html">
         <source>Remaining budget</source>
       </trans-unit>
@@ -372,12 +366,6 @@
       </trans-unit>
       <trans-unit id="668066055906448779" datatype="html">
         <source>Cash disbursed</source>
-      </trans-unit>
-      <trans-unit id="3783659685891310731" datatype="html">
-        <source>Project description:</source>
-      </trans-unit>
-      <trans-unit id="2801963853605151683" datatype="html">
-        <source>No PowerBI dashboard has been configured for this project, please contact <x ctype="x-a" equiv-text="&lt;a href=&quot;mailto:support@121.global&quot;&gt;" id="START_LINK"/>support@121.global<x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/> to set this up</source>
       </trans-unit>
       <trans-unit id="2342712167124906317" datatype="html">
         <source>Targeted people</source>
@@ -401,7 +389,7 @@
         <source>Duration</source>
       </trans-unit>
       <trans-unit id="3382782841789683257" datatype="html">
-        <source><x equiv-text="projectData.distributionDuration" id="count"/> disbursements</source>
+        <source><x equiv-text="programData.distributionDuration" id="count"/> disbursements</source>
       </trans-unit>
       <trans-unit id="926636196686296455" datatype="html">
         <source>Base transfer value</source>
@@ -604,9 +592,6 @@
       <trans-unit id="remove-user-button" datatype="html">
         <source>Remove user</source>
       </trans-unit>
-      <trans-unit id="8875170340911342447" datatype="html">
-        <source>You&apos;re about to remove <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.username }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> (<x equiv-text="{{ selectedUser()?.allRolesLabel }}" id="INTERPOLATION_1"/>) from your team.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>They will not have access to the project anymore.</source>
-      </trans-unit>
       <trans-unit id="8117831125016931547" datatype="html">
         <source>User removed</source>
       </trans-unit>
@@ -628,11 +613,8 @@
       <trans-unit id="generic-edit" datatype="html">
         <source>Edit</source>
       </trans-unit>
-      <trans-unit id="add-project-label" datatype="html">
-        <source>Add project</source>
-      </trans-unit>
-      <trans-unit id="2046529380163546074" datatype="html">
-        <source>Project successfully created.</source>
+      <trans-unit id="add-program-label" datatype="html">
+        <source>Add program</source>
       </trans-unit>
       <trans-unit id="7148904805726439689" datatype="html">
         <source>Target registrations</source>
@@ -645,12 +627,6 @@
       </trans-unit>
       <trans-unit id="7476141645378496788" datatype="html">
         <source>No payments yet</source>
-      </trans-unit>
-      <trans-unit id="7935811228673267610" datatype="html">
-        <source>No Projects found</source>
-      </trans-unit>
-      <trans-unit id="8561412171255849133" datatype="html">
-        <source>You are not assigned to any project(s) yet, contact the admin/supervisor to start using the 121 portal.</source>
       </trans-unit>
       <trans-unit id="4145496584631696119" datatype="html">
         <source>Role</source>
@@ -766,13 +742,10 @@
       <trans-unit id="5004550577313573215" datatype="html">
         <source>Total amount</source>
       </trans-unit>
-      <trans-unit id="5847820864343475107" datatype="html">
-        <source>There are no payments for this project yet.</source>
-      </trans-unit>
       <trans-unit id="9023742269421706395" datatype="html">
         <source>Failed transfers</source>
       </trans-unit>
-      <trans-unit id="page-title-project-payment" datatype="html">
+      <trans-unit id="page-title-program-payment" datatype="html">
         <source>Payment</source>
       </trans-unit>
       <trans-unit id="6909842392958829581" datatype="html">
@@ -1076,7 +1049,7 @@
         <source>Payment status chart.</source>
       </trans-unit>
       <trans-unit id="37959892232763790" datatype="html">
-        <source>Welcome to <x equiv-text="{{ project.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></source>
+        <source>Welcome to <x equiv-text="{{ program.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></source>
       </trans-unit>
       <trans-unit id="7585097972263982693" datatype="html">
         <source>Old FSP</source>
@@ -1132,9 +1105,6 @@
       <trans-unit id="attribute-edit-info-paymentCountRemaining" datatype="html">
         <source>This field is calculated by subtracting the sent payments from the planned payments. If the limit is removed from the planned payments this field will be empty.</source>
       </trans-unit>
-      <trans-unit id="4009667361617596446" datatype="html">
-        <source>We couldn&apos;t find any information linked to this person&apos;s phone number in the projects you have access to on the 121 Platform.</source>
-      </trans-unit>
       <trans-unit id="3894950702316166331" datatype="html">
         <source>Loading...</source>
       </trans-unit>
@@ -1150,7 +1120,7 @@
       <trans-unit id="page-title-login" datatype="html">
         <source>Log in</source>
       </trans-unit>
-      <trans-unit id="page-title-project-registration-details" datatype="html">
+      <trans-unit id="page-title-program-registration-details" datatype="html">
         <source>Registration details</source>
       </trans-unit>
       <trans-unit id="1579692722565712588" datatype="html">
@@ -1203,12 +1173,6 @@
       </trans-unit>
       <trans-unit id="2512429297957946940" datatype="html">
         <source>We only use necessary cookies to be able to let users log in to the 121 Platform. These cookies are not used to track any (returning) use of the 121 Platform over time.</source>
-      </trans-unit>
-      <trans-unit id="337088933774172577" datatype="html">
-        <source>We retain your e-mail address for as long as a project/program is stored on the 121 Platform.</source>
-      </trans-unit>
-      <trans-unit id="3619477798940026244" datatype="html">
-        <source>We retain your e-mail address and name for as long as you are a user associated with a project/program on the 121 Platform.</source>
       </trans-unit>
       <trans-unit id="3805310091097915389" datatype="html">
         <source>How long we keep information</source>
@@ -1499,11 +1463,8 @@
       <trans-unit id="8819989029832903215" datatype="html">
         <source>Export payments</source>
       </trans-unit>
-      <trans-unit id="page-title-project-monitoring-powerbi" datatype="html">
+      <trans-unit id="page-title-program-monitoring-powerbi" datatype="html">
         <source>PowerBI</source>
-      </trans-unit>
-      <trans-unit id="1670621573113868453" datatype="html">
-        <source>Import PDF, PNG, JPG or DOC files to your project. The files will be available for viewing and exporting to users with the permission to view files.</source>
       </trans-unit>
       <trans-unit id="2300247576851644080" datatype="html">
         <source>File name</source>
@@ -1541,19 +1502,19 @@
       <trans-unit id="generic-delete" datatype="html">
         <source>Delete</source>
       </trans-unit>
-      <trans-unit id="project-attachment-file-type-document" datatype="html">
+      <trans-unit id="program-attachment-file-type-document" datatype="html">
         <source>Document</source>
       </trans-unit>
-      <trans-unit id="project-attachment-file-type-image" datatype="html">
+      <trans-unit id="program-attachment-file-type-image" datatype="html">
         <source>Image</source>
       </trans-unit>
-      <trans-unit id="project-attachment-file-type-pdf" datatype="html">
+      <trans-unit id="program-attachment-file-type-pdf" datatype="html">
         <source>PDF</source>
       </trans-unit>
-      <trans-unit id="page-title-project-monitoring-files" datatype="html">
+      <trans-unit id="page-title-program-monitoring-files" datatype="html">
         <source>Files</source>
       </trans-unit>
-      <trans-unit id="page-title-project-transfer-list" datatype="html">
+      <trans-unit id="page-title-program-transfer-list" datatype="html">
         <source>Transfer list</source>
       </trans-unit>
       <trans-unit id="3915966149686975421" datatype="html">
@@ -1562,7 +1523,7 @@
       <trans-unit id="8433732438274024544" datatype="html">
         <source>Add note</source>
       </trans-unit>
-      <trans-unit id="page-title-project-payment-log" datatype="html">
+      <trans-unit id="page-title-program-payment-log" datatype="html">
         <source>Payment log</source>
       </trans-unit>
       <trans-unit id="payment-event-log-item-type-created" datatype="html">
@@ -1601,14 +1562,11 @@
       <trans-unit id="541221802269521915" datatype="html">
         <source>Add user to team</source>
       </trans-unit>
-      <trans-unit id="create-project" datatype="html">
-        <source>Create project</source>
+      <trans-unit id="create-program" datatype="html">
+        <source>Create program</source>
       </trans-unit>
       <trans-unit id="5918723526444903137" datatype="html">
         <source>Add user</source>
-      </trans-unit>
-      <trans-unit id="2431444055894735117" datatype="html">
-        <source>You&apos;re about to edit the user <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ userToEdit()?.username }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> in your project team.</source>
       </trans-unit>
       <trans-unit id="7000649363168371045" datatype="html">
         <source>Save changes</source>
@@ -1616,29 +1574,17 @@
       <trans-unit id="7187838764371214919" datatype="html">
         <source>Edit user</source>
       </trans-unit>
-      <trans-unit id="page-title-project-settings" datatype="html">
+      <trans-unit id="page-title-program-settings" datatype="html">
         <source>Settings</source>
       </trans-unit>
-      <trans-unit id="page-title-project-settings-team" datatype="html">
-        <source>Project team</source>
+      <trans-unit id="page-title-program-settings-team" datatype="html">
+        <source>Program team</source>
       </trans-unit>
-      <trans-unit id="page-title-project-project-settings" datatype="html">
-        <source>Project settings</source>
+      <trans-unit id="page-title-program-program-settings" datatype="html">
+        <source>Program settings</source>
       </trans-unit>
       <trans-unit id="5649335820714201159" datatype="html">
         <source>Edit team</source>
-      </trans-unit>
-      <trans-unit id="2178250716184970067" datatype="html">
-        <source>Scope allows you to control which team members have access to specific registrations, based on the scope they are assigned to in the project team&apos;s page. To use this feature, make sure scope is defined in your integrated Kobo form or Excel table.</source>
-      </trans-unit>
-      <trans-unit id="2651912264744301649" datatype="html">
-        <source>Project name</source>
-      </trans-unit>
-      <trans-unit id="307238733755178044" datatype="html">
-        <source>Enter the basic details of your project, these details will define your project&apos;s setup and structure.</source>
-      </trans-unit>
-      <trans-unit id="3102652680104066178" datatype="html">
-        <source>Project description</source>
       </trans-unit>
       <trans-unit id="3768927257183755959" datatype="html">
         <source>Save</source>
@@ -1648,12 +1594,6 @@
       </trans-unit>
       <trans-unit id="6001336690636833920" datatype="html">
         <source>Basic information details saved successfully.</source>
-      </trans-unit>
-      <trans-unit id="6230534888092191953" datatype="html">
-        <source>Project information</source>
-      </trans-unit>
-      <trans-unit id="7243649521435718104" datatype="html">
-        <source>Use &quot;scope&quot; in this project</source>
       </trans-unit>
       <trans-unit id="3033425005384068594" datatype="html">
         <source>Budget details saved successfully.</source>
@@ -1670,14 +1610,11 @@
       <trans-unit id="7003847942368840790" datatype="html">
         <source>Funds available</source>
       </trans-unit>
-      <trans-unit id="card-title-project-settings-basic-information" datatype="html">
+      <trans-unit id="card-title-program-settings-basic-information" datatype="html">
         <source>Basic information</source>
       </trans-unit>
-      <trans-unit id="card-title-project-settings-budget" datatype="html">
+      <trans-unit id="card-title-program-settings-budget" datatype="html">
         <source>Budget</source>
-      </trans-unit>
-      <trans-unit id="1321992891688971593" datatype="html">
-        <source>Use &quot;validation&quot; in this project</source>
       </trans-unit>
       <trans-unit id="773471341435150258" datatype="html">
         <source>Enable validation</source>
@@ -1687,9 +1624,6 @@
       </trans-unit>
       <trans-unit id="6820887192467365708" datatype="html">
         <source>Edit basic information</source>
-      </trans-unit>
-      <trans-unit id="7689060614126076538" datatype="html">
-        <source>Add users to your project team and assign roles to them.</source>
       </trans-unit>
       <trans-unit id="6342731461089211149" datatype="html">
         <source>Should be an ISO 4217 currency code (full list available on Wikipedia).</source>
@@ -1709,7 +1643,7 @@
       <trans-unit id="8988239608752913304" datatype="html">
         <source>Transfers per payment</source>
       </trans-unit>
-      <trans-unit id="page-title-project-monitoring-dashboard" datatype="html">
+      <trans-unit id="page-title-program-monitoring-dashboard" datatype="html">
         <source>Dashboard</source>
       </trans-unit>
       <trans-unit id="2483631699978730341" datatype="html">
@@ -1729,12 +1663,6 @@
       </trans-unit>
       <trans-unit id="4941441939532394435" datatype="html">
         <source>This field needs to be at least <x equiv-text="min" id="PH"/>.</source>
-      </trans-unit>
-      <trans-unit id="5449434756196250816" datatype="html">
-        <source>The number of times a registration will receive transfers in the project by default.</source>
-      </trans-unit>
-      <trans-unit id="6415562046042900466" datatype="html">
-        <source>The amount of people/households your project plans to reach.</source>
       </trans-unit>
       <trans-unit id="message-content-type-completed" datatype="html">
         <source>Completed</source>
@@ -1787,17 +1715,8 @@
       <trans-unit id="3423420597317106513" datatype="html">
         <source>Budget</source>
       </trans-unit>
-      <trans-unit id="4312496512919678092" datatype="html">
-        <source>Add a name and description to your project to help your users find it.</source>
-      </trans-unit>
-      <trans-unit id="5036339937977262552" datatype="html">
-        <source>Project information</source>
-      </trans-unit>
       <trans-unit id="6962699013778688473" datatype="html">
         <source>Continue</source>
-      </trans-unit>
-      <trans-unit id="7113499429942611780" datatype="html">
-        <source>Create new project</source>
       </trans-unit>
       <trans-unit id="6456009373504868195" datatype="html">
         <source>Please correct the errors in the form.</source>
@@ -1834,9 +1753,6 @@
       </trans-unit>
       <trans-unit id="4151726167516719564" datatype="html">
         <source>Select 1 or more</source>
-      </trans-unit>
-      <trans-unit id="444188195724727657" datatype="html">
-        <source>Missing required attributes for FSP integration. Please add them to the project registration form before trying again.</source>
       </trans-unit>
       <trans-unit id="4578833766272403833" datatype="html">
         <source>Cover letter code</source>
@@ -1898,17 +1814,11 @@
       <trans-unit id="7799902377740606724" datatype="html">
         <source>Select 1</source>
       </trans-unit>
-      <trans-unit id="8190847041640657748" datatype="html">
-        <source>Choose an FSP from the FSPs integrated to this instance. You can add multiple FSPs to the same project. If you wish to integrate a new FSP, contact the 121 support team or talk to the account manager.</source>
-      </trans-unit>
       <trans-unit id="8270214591182392971" datatype="html">
         <source>Brand code</source>
       </trans-unit>
       <trans-unit id="8738732372986673558" datatype="html">
         <source>Copy to clipboard</source>
-      </trans-unit>
-      <trans-unit id="9175933158540522211" datatype="html">
-        <source>You&apos;re about to remove the &quot;<x equiv-text="{{ fspConfigurationLabel() }}" id="INTERPOLATION"/>&quot; FSP configuration from your project. Payments with this FSP will not go through, Registrations with this FSP will not be paid unless changed to an integrated FSP.</source>
       </trans-unit>
       <trans-unit id="9190469470269882637" datatype="html">
         <source>Integrate FSP</source>
@@ -1916,7 +1826,7 @@
       <trans-unit id="9202925211917001608" datatype="html">
         <source>Columns to export</source>
       </trans-unit>
-      <trans-unit id="page-title-project-settings-fsps" datatype="html">
+      <trans-unit id="page-title-program-settings-fsps" datatype="html">
         <source>FSPs</source>
       </trans-unit>
       <trans-unit id="remove-fsp" datatype="html">
@@ -1939,9 +1849,6 @@
       </trans-unit>
       <trans-unit id="3164665420660802024" datatype="html">
         <source>Learn more in the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/>.</source>
-      </trans-unit>
-      <trans-unit id="4712858822519497895" datatype="html">
-        <source>There are no registrations in this project yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Learn more about importing registrations in your project in the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/>.</source>
       </trans-unit>
       <trans-unit id="922512355272678698" datatype="html">
         <source>Learn more about updating selected registrations in the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/>.</source>
@@ -2015,8 +1922,8 @@
       <trans-unit id="5906272961955453157" datatype="html">
         <source>Approved</source>
       </trans-unit>
-      <trans-unit id="page-title-project-project-settings|trim" datatype="html">
-        <source>Project settings</source>
+      <trans-unit id="page-title-program-program-settings|trim" datatype="html">
+        <source>Program settings</source>
       </trans-unit>
       <trans-unit id="6191781315346853958" datatype="html">
         <source>Click approve and start payment to initiate the payment through your FSP(s).</source>
@@ -2035,6 +1942,99 @@
       </trans-unit>
       <trans-unit id="4830186564201736103" datatype="html">
         <source>You are about to retry <x equiv-text="{{ referenceIdsForRetryTransfers().length }}" id="INTERPOLATION"/> payment(s). The transfer status will change to Processing until received by the registration.</source>
+      </trans-unit>
+      <trans-unit id="1028435406816881383" datatype="html">
+        <source>Program successfully created.</source>
+      </trans-unit>
+      <trans-unit id="2239341109551503569" datatype="html">
+        <source>We retain your e-mail address for as long as a program is stored on the 121 Platform.</source>
+      </trans-unit>
+      <trans-unit id="2274060600492062037" datatype="html">
+        <source>Use &quot;validation&quot; in this program</source>
+      </trans-unit>
+      <trans-unit id="2459708623953075527" datatype="html">
+        <source>Import PDF, PNG, JPG or DOC files to your program. The files will be available for viewing and exporting to users with the permission to view files.</source>
+      </trans-unit>
+      <trans-unit id="2774043188236022214" datatype="html">
+        <source>Amount of payments done in the program so far.</source>
+      </trans-unit>
+      <trans-unit id="3197779733407994120" datatype="html">
+        <source>Use &quot;scope&quot; in this program</source>
+      </trans-unit>
+      <trans-unit id="4171707170007579661" datatype="html">
+        <source>Program information</source>
+      </trans-unit>
+      <trans-unit id="4377586797924397639" datatype="html">
+        <source>Program description:</source>
+      </trans-unit>
+      <trans-unit id="4821724891066824263" datatype="html">
+        <source>You&apos;re about to remove the &quot;<x equiv-text="{{ fspConfigurationLabel() }}" id="INTERPOLATION"/>&quot; FSP configuration from your program. Payments with this FSP will not go through, Registrations with this FSP will not be paid unless changed to an integrated FSP.</source>
+      </trans-unit>
+      <trans-unit id="4899062938754891176" datatype="html">
+        <source>Program name</source>
+      </trans-unit>
+      <trans-unit id="4972704594467578361" datatype="html">
+        <source>You&apos;re about to remove <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.username }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> (<x equiv-text="{{ selectedUser()?.allRolesLabel }}" id="INTERPOLATION_1"/>) from your team.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>They will not have access to the program anymore.</source>
+      </trans-unit>
+      <trans-unit id="4996479555480005226" datatype="html">
+        <source>Program description</source>
+      </trans-unit>
+      <trans-unit id="5106050439674974101" datatype="html">
+        <source>Choose an FSP from the FSPs integrated to this instance. You can add multiple FSPs to the same program. If you wish to integrate a new FSP, contact the 121 support team or talk to the account manager.</source>
+      </trans-unit>
+      <trans-unit id="5166054978384837872" datatype="html">
+        <source>Add a name and description to your program to help your users find it.</source>
+      </trans-unit>
+      <trans-unit id="5308113426415499804" datatype="html">
+        <source>You are not assigned to any program(s) yet, contact the admin/supervisor to start using the 121 portal.</source>
+      </trans-unit>
+      <trans-unit id="5316564489973237014" datatype="html">
+        <source>The amount of people/households your program plans to reach.</source>
+      </trans-unit>
+      <trans-unit id="5485741466952031761" datatype="html">
+        <source>We couldn&apos;t find any information linked to this person&apos;s phone number in the programs you have access to on the 121 Platform.</source>
+      </trans-unit>
+      <trans-unit id="566208731639813177" datatype="html">
+        <source>Scope allows you to control which team members have access to specific registrations, based on the scope they are assigned to in the program team&apos;s page. To use this feature, make sure scope is defined in your integrated Kobo form or Excel table.</source>
+      </trans-unit>
+      <trans-unit id="5670622821110743398" datatype="html">
+        <source>Program information</source>
+      </trans-unit>
+      <trans-unit id="610147942593300072" datatype="html">
+        <source>The number of times a registration will receive transfers in the program by default.</source>
+      </trans-unit>
+      <trans-unit id="6582831988869863310" datatype="html">
+        <source>You&apos;re about to edit the user <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ userToEdit()?.username }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> in your program team.</source>
+      </trans-unit>
+      <trans-unit id="6819146217568220494" datatype="html">
+        <source>There are no payments for this program yet.</source>
+      </trans-unit>
+      <trans-unit id="7099962161415430032" datatype="html">
+        <source>We retain your e-mail address and name for as long as you are a user associated with a program on the 121 Platform.</source>
+      </trans-unit>
+      <trans-unit id="7364054681305096413" datatype="html">
+        <source>There are no registrations in this program yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Learn more about importing registrations in your program in the <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/>.</source>
+      </trans-unit>
+      <trans-unit id="7551809975407590402" datatype="html">
+        <source>Missing required attributes for FSP integration. Please add them to the program registration form before trying again.</source>
+      </trans-unit>
+      <trans-unit id="8135595255350159325" datatype="html">
+        <source>No Programs found</source>
+      </trans-unit>
+      <trans-unit id="8140989446664265922" datatype="html">
+        <source>Enter the basic details of your program, these details will define your program&apos;s setup and structure.</source>
+      </trans-unit>
+      <trans-unit id="8404737252518090392" datatype="html">
+        <source>Add users to your program team and assign roles to them.</source>
+      </trans-unit>
+      <trans-unit id="8486771973563673732" datatype="html">
+        <source>No PowerBI dashboard has been configured for this program, please contact <x ctype="x-a" equiv-text="&lt;a href=&quot;mailto:support@121.global&quot;&gt;" id="START_LINK"/>support@121.global<x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/> to set this up</source>
+      </trans-unit>
+      <trans-unit id="9015320956537592957" datatype="html">
+        <source>Program not found. Please check the URL and try again.</source>
+      </trans-unit>
+      <trans-unit id="9211474991659273932" datatype="html">
+        <source>Create new program</source>
       </trans-unit>
     </body>
   </file>

@@ -32,10 +32,10 @@ test('Validate that duplicate badges are present in the UI', async ({
   const homePage = new HomePage(page);
   const registrations = new RegistrationsPage(page);
 
-  const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
+  const programTitle = 'NLRC Direct Digital Aid Program (PV)';
 
   await test.step('Select program', async () => {
-    await homePage.selectProgram(projectTitle);
+    await homePage.selectProgram(programTitle);
   });
 
   await test.step('Wait for registrations to load', async () => {

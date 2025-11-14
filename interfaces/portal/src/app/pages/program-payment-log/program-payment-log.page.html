@@ -1,0 +1,15 @@
+<app-page-layout-payment
+  [programId]="programId()"
+  [paymentId]="paymentId()"
+>
+  <app-query-table
+    [items]="paymentEvents()"
+    [isPending]="false"
+    [columns]="columns()"
+    localStorageKey="payment-log-table"
+    [tableCellContext]="tableCellContext()"
+    [initialSortField]="'created'"
+    [initialSortOrder]="-1"
+    data-testid="payment-log-table"
+  />
+</app-page-layout-payment>

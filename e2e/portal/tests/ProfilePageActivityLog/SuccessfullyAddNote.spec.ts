@@ -33,10 +33,10 @@ test('Successfully Add Note', async ({ page }) => {
   const tableComponent = new TableComponent(page);
   const activityLogPage = new RegistrationActivityLogPage(page);
 
-  const projectTitle = NLRCProgramPV.titlePortal.en;
+  const programTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {
-    await registrationsPage.selectProgram(projectTitle);
+    await registrationsPage.selectProgram(programTitle);
   });
 
   await test.step('Go to registration', async () => {

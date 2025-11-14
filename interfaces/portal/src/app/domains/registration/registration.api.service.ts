@@ -19,9 +19,9 @@ import {
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { Dto } from '~/utils/dto-type';
 
-const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
+const BASE_ENDPOINT = (programId: Signal<number | string>) => [
   'programs',
-  projectId,
+  programId,
   'registrations',
 ];
 
@@ -30,54 +30,54 @@ const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
 })
 export class RegistrationApiService extends DomainApiService {
   getManyByQuery(
-    projectId: Signal<number | string>,
+    programId: Signal<number | string>,
     paginateQuery: Signal<PaginateQuery | undefined>,
   ) {
     return this.generateQueryOptions<FindAllRegistrationsResult>({
-      path: [...BASE_ENDPOINT(projectId)],
+      path: [...BASE_ENDPOINT(programId)],
       paginateQuery: paginateQuery as Signal<PaginateQuery>,
       enabled: () => !!paginateQuery(),
     });
   }
 
   getRegistrationById(
-    projectId: Signal<number | string | undefined>,
+    programId: Signal<number | string | undefined>,
     registrationId: Signal<string | undefined>,
   ) {
     return this.generateQueryOptions<Registration>({
       path: [
-        ...BASE_ENDPOINT(projectId as Signal<number | string>),
+        ...BASE_ENDPOINT(programId as Signal<number | string>),
         registrationId,
       ],
-      enabled: () => !!projectId() && !!registrationId(),
+      enabled: () => !!programId() && !!registrationId(),
     });
   }
 
   getDuplicates({
-    projectId,
+    programId,
     referenceId,
   }: {
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
     referenceId: string;
   }) {
     return this.generateQueryOptions<DuplicatesResult[]>({
-      path: [...BASE_ENDPOINT(projectId), referenceId, 'duplicates'],
+      path: [...BASE_ENDPOINT(programId), referenceId, 'duplicates'],
     });
   }
 
   ignoreDuplication({
-    projectId,
+    programId,
     registrationIds,
     reason,
   }: {
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
     registrationIds: number[];
     reason: string;
   }) {
     return this.httpWrapperService.perform121ServiceRequest({
       method: 'POST',
       endpoint: this.pathToQueryKey([
-        ...BASE_ENDPOINT(projectId),
+        ...BASE_ENDPOINT(programId),
         'uniques',
       ]).join('/'),
       body: {
@@ -88,12 +88,12 @@ export class RegistrationApiService extends DomainApiService {
   }
 
   patchRegistration({
-    projectId,
+    programId,
     referenceId,
     data,
     reason,
   }: {
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
     referenceId: string;
     data: UpdateRegistrationDto['data'];
     reason: string;
@@ -106,24 +106,24 @@ export class RegistrationApiService extends DomainApiService {
     return this.httpWrapperService.perform121ServiceRequest<Registration>({
       method: 'PATCH',
       endpoint: this.pathToQueryKey([
-        ...BASE_ENDPOINT(projectId),
+        ...BASE_ENDPOINT(programId),
         referenceId,
       ]).join('/'),
       body,
     });
   }
 
-  getImportTemplate(projectId: Signal<number | string>) {
+  getImportTemplate(programId: Signal<number | string>) {
     return this.generateQueryOptions<string[]>({
-      path: [...BASE_ENDPOINT(projectId), 'import', 'template'],
+      path: [...BASE_ENDPOINT(programId), 'import', 'template'],
     });
   }
 
   importRegistrations({
-    projectId,
+    programId,
     file,
   }: {
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
     file: File;
   }) {
     const formData = new FormData();
@@ -132,7 +132,7 @@ export class RegistrationApiService extends DomainApiService {
     return this.httpWrapperService.perform121ServiceRequest<Dto<ImportResult>>({
       method: 'POST',
       endpoint: this.pathToQueryKey([
-        ...BASE_ENDPOINT(projectId),
+        ...BASE_ENDPOINT(programId),
         'import',
       ]).join('/'),
       body: formData,
@@ -141,11 +141,11 @@ export class RegistrationApiService extends DomainApiService {
   }
 
   updateRegistrations({
-    projectId,
+    programId,
     file,
     reason,
   }: {
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
     file: File;
     reason: string;
   }) {
@@ -155,18 +155,18 @@ export class RegistrationApiService extends DomainApiService {
 
     return this.httpWrapperService.perform121ServiceRequest<unknown>({
       method: 'PATCH',
-      endpoint: this.pathToQueryKey([...BASE_ENDPOINT(projectId)]).join('/'),
+      endpoint: this.pathToQueryKey([...BASE_ENDPOINT(programId)]).join('/'),
       body: formData,
       isUpload: true,
     });
   }
 
   sendMessage({
-    projectId,
+    programId,
     paginateQuery,
     messageData,
   }: {
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
     paginateQuery: PaginateQuery | undefined;
     messageData: SendMessageData;
   }) {
@@ -187,7 +187,7 @@ export class RegistrationApiService extends DomainApiService {
     return this.httpWrapperService.perform121ServiceRequest({
       method: 'POST',
       endpoint: this.pathToQueryKey([
-        ...BASE_ENDPOINT(projectId),
+        ...BASE_ENDPOINT(programId),
         'message',
       ]).join('/'),
       body,
@@ -199,14 +199,14 @@ export class RegistrationApiService extends DomainApiService {
   }
 
   changeStatus({
-    projectId,
+    programId,
     paginateQuery,
     status,
     reason,
     messageData,
     dryRun = true,
   }: {
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
     paginateQuery: PaginateQuery | undefined;
     status: RegistrationStatusEnum;
     reason?: string | undefined;
@@ -240,8 +240,8 @@ export class RegistrationApiService extends DomainApiService {
       status === RegistrationStatusEnum.deleted ? 'DELETE' : 'PATCH';
     const endpoint =
       status === RegistrationStatusEnum.deleted
-        ? this.pathToQueryKey([...BASE_ENDPOINT(projectId)]).join('/')
-        : this.pathToQueryKey([...BASE_ENDPOINT(projectId), 'status']).join(
+        ? this.pathToQueryKey([...BASE_ENDPOINT(programId)]).join('/')
+        : this.pathToQueryKey([...BASE_ENDPOINT(programId), 'status']).join(
             '/',
           );
 
@@ -256,21 +256,21 @@ export class RegistrationApiService extends DomainApiService {
   }
 
   getActivityLog(
-    projectId: Signal<number | string>,
+    programId: Signal<number | string>,
     registrationId: Signal<number | string>,
   ) {
     return this.generateQueryOptions<ActitivitiesResponse>({
-      path: [...BASE_ENDPOINT(projectId), registrationId, 'activities'],
+      path: [...BASE_ENDPOINT(programId), registrationId, 'activities'],
     });
   }
 
   getWalletWithCardsByReferenceId(
-    projectId: Signal<number | string>,
+    programId: Signal<number | string>,
     referenceId: Signal<string | undefined>,
   ) {
     return this.generateQueryOptions<WalletWithCards>({
       path: [
-        ...BASE_ENDPOINT(projectId),
+        ...BASE_ENDPOINT(programId),
         referenceId,
         'fsps',
         'intersolve-visa',
@@ -282,18 +282,18 @@ export class RegistrationApiService extends DomainApiService {
   }
 
   changeCardPauseStatus({
-    projectId,
+    programId,
     referenceId,
     tokenCode,
     pauseStatus,
   }: {
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
     referenceId: string;
     tokenCode: string;
     pauseStatus: boolean;
   }) {
     const endpoint = this.pathToQueryKey([
-      ...BASE_ENDPOINT(projectId),
+      ...BASE_ENDPOINT(programId),
       referenceId,
       'fsps',
       'intersolve-visa',
@@ -312,14 +312,14 @@ export class RegistrationApiService extends DomainApiService {
   }
 
   reissueCard({
-    projectId,
+    programId,
     referenceId,
   }: {
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
     referenceId: string;
   }) {
     const endpoint = this.pathToQueryKey([
-      ...BASE_ENDPOINT(projectId),
+      ...BASE_ENDPOINT(programId),
       referenceId,
       'fsps',
       'intersolve-visa',
@@ -347,11 +347,11 @@ export class RegistrationApiService extends DomainApiService {
   }
 
   public async invalidateCache({
-    projectId,
+    programId,
   }: {
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
   }): Promise<void> {
-    const path = [...BASE_ENDPOINT(projectId)];
+    const path = [...BASE_ENDPOINT(programId)];
 
     return this.queryClient.invalidateQueries({
       queryKey: this.pathToQueryKey(path),

@@ -9,7 +9,7 @@ import { RouterLink } from '@angular/router';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
 
-import { ProjectApiService } from '~/domains/project/project.api.service';
+import { ProgramApiService } from '~/domains/program/program.api.service';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 
 @Component({
@@ -20,12 +20,12 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LogoComponent {
-  private projectApiService = inject(ProjectApiService);
+  private programApiService = inject(ProgramApiService);
 
-  readonly projectId = input<string>();
-  readonly projectTitle = computed(() => this.project.data()?.titlePortal);
+  readonly programId = input<string>();
+  readonly programTitle = computed(() => this.program.data()?.titlePortal);
 
-  public project = injectQuery(
-    this.projectApiService.getProject(this.projectId),
+  public program = injectQuery(
+    this.programApiService.getProgram(this.programId),
   );
 }

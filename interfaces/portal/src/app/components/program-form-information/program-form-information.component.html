@@ -1,0 +1,83 @@
+<ng-container [formGroup]="formGroup">
+  <div class="flex w-full flex-row gap-4 [&>*]:w-1/2">
+    <app-form-field-wrapper
+      label="Start Date"
+      i18n-label
+      [errorMessage]="formFieldErrors()('startDate')"
+    >
+      <p-datepicker
+        formControlName="startDate"
+        [maxDate]="formGroup.getRawValue().endDate"
+        [showClear]="true"
+        appendTo="body"
+      />
+    </app-form-field-wrapper>
+
+    <app-form-field-wrapper
+      label="End Date"
+      i18n-label
+      [errorMessage]="formFieldErrors()('endDate')"
+    >
+      <p-datepicker
+        formControlName="endDate"
+        [minDate]="formGroup.getRawValue().startDate"
+        [showClear]="true"
+        appendTo="body"
+      />
+    </app-form-field-wrapper>
+  </div>
+  <app-form-field-wrapper
+    label="Location"
+    i18n-label
+    [errorMessage]="formFieldErrors()('location')"
+  >
+    <input
+      pInputText
+      type="text"
+      formControlName="location"
+      placeholder="Location"
+      i18n-placeholder
+    />
+  </app-form-field-wrapper>
+  <app-form-field-wrapper
+    label="Target registrations"
+    i18n-label
+    [errorMessage]="formFieldErrors()('targetNrRegistrations')"
+    [isRequired]="true"
+    [labelTooltip]="PROGRAM_FORM_TOOLTIPS.targetRegistrations"
+  >
+    <input
+      pInputText
+      type="number"
+      formControlName="targetNrRegistrations"
+      placeholder="Target registrations"
+      i18n-placeholder
+    />
+  </app-form-field-wrapper>
+  <div class="mt-4 flex justify-items-center">
+    <p-toggleSwitch
+      inputId="validation"
+      formControlName="validation"
+    />
+    <label
+      class="ms-2 me-1"
+      for="validation"
+      i18n
+      >Use "validation" in this program</label
+    >
+    <app-info-tooltip [message]="PROGRAM_FORM_TOOLTIPS.validationProcess" />
+  </div>
+  <div class="mt-4 flex justify-items-center">
+    <p-toggleSwitch
+      inputId="enableScope"
+      formControlName="enableScope"
+    />
+    <label
+      class="ms-2 me-1"
+      for="enableScope"
+      i18n
+      >Use "scope" in this program</label
+    >
+    <app-info-tooltip [message]="PROGRAM_FORM_TOOLTIPS.enableScope" />
+  </div>
+</ng-container>
