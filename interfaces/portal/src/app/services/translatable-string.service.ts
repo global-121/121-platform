@@ -38,22 +38,30 @@ export class TranslatableStringService {
 
     const uiLanguage = getUILanguageFromLocale(this.currentLocale);
 
-    if (value[uiLanguage]) {
-      return value[uiLanguage];
+    // New name because we've type-narrowed.
+    const translationMapping = value;
+    if (translationMapping[uiLanguage]) {
+      return translationMapping[uiLanguage];
     }
 
-    const fallbackLocaleValue = value[UILanguage.en];
+    const fallbackLocaleValue = translationMapping[UILanguage.en];
 
     if (fallbackLocaleValue) {
       return fallbackLocaleValue;
     }
+    // Even the fallback-language is not available.
+    // I think TypeScript prevents us from ever reaching this point.
 
-    // If even the fallback-language is not available, return any other language's value
-    if (typeof value === 'object' && Object.keys(value).length > 0) {
-      return value[Object.keys(value)[0] as UILanguage];
+    if (typeof translationMapping !== 'object') {
+      return undefined;
     }
 
-    return undefined;
+    if (Object.keys(translationMapping).length === 0) {
+      return undefined;
+    }
+
+    // Just the first available language.
+    return translationMapping[Object.keys(translationMapping)[0] as UILanguage];
   }
 
   commaSeparatedList(
