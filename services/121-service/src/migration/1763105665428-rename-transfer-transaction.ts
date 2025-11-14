@@ -5,6 +5,8 @@ export class RenameTransferTransaction1763105665428
 {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
+      CREATE INDEX IF NOT EXISTS idx_transaction_event_description ON "121-service".transaction_event(description);
+
       UPDATE "121-service".transaction_event
       SET description = 'Transaction created'
       WHERE description = 'Transfer created';
@@ -20,6 +22,8 @@ export class RenameTransferTransaction1763105665428
       UPDATE "121-service".transaction_event
       SET description = 'Transaction approval'
       WHERE description = 'Transfer approval';
+
+      DROP INDEX IF EXISTS idx_transaction_event_description;
     `);
   }
 
