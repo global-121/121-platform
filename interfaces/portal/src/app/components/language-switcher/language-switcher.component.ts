@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 
 import {
-  changeUILanguage,
+  changeLocale,
   getAvailableUILanguages,
   getLocaleLabel,
   Locale,
@@ -37,7 +37,7 @@ export class LanguageSwitcherComponent {
       if (this.selectedLanguage() === this.locale) {
         return;
       }
-      changeUILanguage(this.selectedLanguage());
+      changeLocale(this.selectedLanguage());
     });
   }
 }
