@@ -1875,7 +1875,7 @@
         <source>In progress</source>
       </trans-unit>
       <trans-unit id="inProgressChipTooltip" datatype="html">
-        <source>The payment will be in progress while the transfers in the table below are loading.</source>
+        <source>The payment will be in progress while the transactions in the table below are loading.</source>
       </trans-unit>
       <trans-unit id="1307602065632249368" datatype="html">
         <source>Export the FSP instructions and save the exported XLSX-file in the format required by the Financial Service Provider.</source>
