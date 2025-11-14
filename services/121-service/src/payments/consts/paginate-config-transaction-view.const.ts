@@ -27,7 +27,10 @@ const filterableColumns: Partial<{
   registrationStatus: AllowedFiltersString,
   registrationReferenceId: AllowedFiltersString,
   registrationProgramId: AllowedFiltersNumber,
+  registrationScope: AllowedFiltersString,
 };
+
+const maxLimit = -1; // No limit
 
 const columns = Object.keys(
   filterableColumns,
@@ -38,7 +41,7 @@ export const PaginateConfigTransactionView: PaginateConfig<TransactionViewEntity
       filterableColumns[col]?.includes(FilterOperator.ILIKE),
     ),
     ignoreSearchByInQueryParam: true,
-    maxLimit: -1,
+    maxLimit,
     sortableColumns: columns,
     filterableColumns,
   };
@@ -47,7 +50,7 @@ export const PaginateConfigTransactionViewOnlyFilters: PaginateConfig<Transactio
   {
     searchableColumns: columns,
     ignoreSearchByInQueryParam: true,
-    maxLimit: -1,
+    maxLimit,
     sortableColumns: [],
     filterableColumns: {
       ...PaginateConfigTransactionView.filterableColumns,
