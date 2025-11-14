@@ -1,4 +1,5 @@
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import {
   bulkUpdateRegistrationsCSV,
   importRegistrationsCSV,
@@ -63,7 +64,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       addressStreet: 'newStreet2',
       addressHouseNumber: '3',
       addressHouseNumberAddition: 'updated',
-      preferredLanguage: 'nl',
+      preferredLanguage: RegistrationPreferredLanguage.nl,
       paymentAmountMultiplier: 3,
     };
 
