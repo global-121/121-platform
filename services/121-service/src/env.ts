@@ -115,6 +115,8 @@ export const env = createEnv({
     USERCONFIG_121_SERVICE_EMAIL_VIEW_WITHOUT_PII: z.email().optional(),
     USERCONFIG_121_SERVICE_PASSWORD_VIEW_WITHOUT_PII: z.string().optional(),
 
+    USERCONFIG_121_SERVICE_PASSWORD_TESTING: z.string().optional(),
+
     // Scheduled(cron) Activities
     CRON_GET_DAILY_EXCHANGE_RATES: z.stringbool().default(false),
     CRON_INTERSOLVE_VOUCHER_CANCEL_FAILED_CARDS: z.stringbool().default(false),

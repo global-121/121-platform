@@ -8,7 +8,6 @@ import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-c
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import {
   doPayment,
   getTransactions,
@@ -21,8 +20,8 @@ import {
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
 import {
+  createAccessTokenWithPermissions,
   getAccessToken,
-  removePermissionsFromRole,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { registrationPvScoped } from '@121-service/test/registrations/pagination/pagination-data';
@@ -127,12 +126,17 @@ describe('Update program fsp configuration of PA', () => {
 
   it('should fail when updating program fsp configuration without right permission', async () => {
     // Arrange
-    accessToken = await setupNlrcEnvironment();
+    await setupNlrcEnvironment();
 
-    await removePermissionsFromRole(DefaultUserRole.Admin, [
-      PermissionEnum.RegistrationFspConfigUPDATE,
-    ]);
-    accessToken = await getAccessToken();
+    const accessTokenNoFspConfigUpdate = await createAccessTokenWithPermissions(
+      {
+        permissions: Object.values(PermissionEnum).filter(
+          (p) => p !== PermissionEnum.RegistrationFspConfigUPDATE,
+        ),
+        programId: programIdOcw,
+        adminAccessToken: accessToken,
+      },
+    );
 
     // Intersolve-visa and Intersolve-voucher-whatsapp both have 'whatsappPhoneNumber' as required, so this would succeed apart from the permission
     const newProgramFspConfigurationName = 'Intersolve-voucher-whatsapp';
@@ -147,7 +151,7 @@ describe('Update program fsp configuration of PA', () => {
       registrationVisa.referenceId,
       dataUpdate,
       reason,
-      accessToken,
+      accessTokenNoFspConfigUpdate,
     );
 
     // Assert

@@ -3,8 +3,10 @@ import { test } from '@playwright/test';
 import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
+  createUserWithPermissions,
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
@@ -25,9 +27,16 @@ test.beforeEach(async ({ page }) => {
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/');
+  const userName = await createUserWithPermissions({
+    permissions: Object.values(PermissionEnum).filter(
+      (permission) => permission !== PermissionEnum.RegistrationPersonalEXPORT,
+    ),
+    programId: programIdPV,
+    adminAccessToken: accessToken,
+  });
   await loginPage.login(
-    env.USERCONFIG_121_SERVICE_EMAIL_VIEW_WITHOUT_PII ?? '',
-    env.USERCONFIG_121_SERVICE_PASSWORD_VIEW_WITHOUT_PII ?? '',
+    userName,
+    env.USERCONFIG_121_SERVICE_PASSWORD_TESTING ?? '',
   );
 });
 

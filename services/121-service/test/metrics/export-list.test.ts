@@ -4,6 +4,7 @@ import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   registrationScopedKisumuEastPv,
   registrationScopedKisumuWestPv,
@@ -16,8 +17,8 @@ import {
   waitForDeleteRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
+  createAccessTokenWithPermissions,
   getAccessToken,
-  getAccessTokenCvaManager,
   getAccessTokenScoped,
   getServer,
   resetDB,
@@ -29,45 +30,43 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Metric export list', () => {
-  const OcwProgramId = programIdOCW;
-  const PvProgramId = programIdPV;
-  let accessToken: string;
+  let adminAccessToken: string;
 
   beforeAll(async () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
 
-    accessToken = await getAccessToken();
-    await importRegistrations(OcwProgramId, registrationsOCW, accessToken);
+    adminAccessToken = await getAccessToken();
+    await importRegistrations(programIdOCW, registrationsOCW, adminAccessToken);
     await deleteRegistrations({
-      programId: OcwProgramId,
+      programId: programIdOCW,
       referenceIds: [registrationsOCW[0].referenceId],
-      accessToken,
+      accessToken: adminAccessToken,
     });
     await waitForDeleteRegistrations({
-      programId: OcwProgramId,
+      programId: programIdOCW,
       referenceIds: [registrationsOCW[0].referenceId],
     });
     await awaitChangeRegistrationStatus({
-      programId: OcwProgramId,
+      programId: programIdOCW,
       referenceIds: [registrationsOCW[1].referenceId],
       status: RegistrationStatusEnum.included,
-      accessToken,
+      accessToken: adminAccessToken,
     });
 
-    await importRegistrations(PvProgramId, registrationsPV, accessToken);
+    await importRegistrations(programIdPV, registrationsPV, adminAccessToken);
     await awaitChangeRegistrationStatus({
-      programId: PvProgramId,
+      programId: programIdPV,
       referenceIds: [registrationScopedKisumuWestPv.referenceId],
       status: RegistrationStatusEnum.included,
-      accessToken,
+      accessToken: adminAccessToken,
     });
   });
 
   it('should export all registrations of a single program regardless of status', async () => {
     // Act
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${OcwProgramId}/metrics/export-list/registrations`)
-      .set('Cookie', [accessToken])
+      .get(`/programs/${programIdOCW}/metrics/export-list/registrations`)
+      .set('Cookie', [adminAccessToken])
       .send();
 
     // Assert
@@ -86,7 +85,7 @@ describe('Metric export list', () => {
   it('should return all filtered registrations from 1 program using a filter for included and a scoped user', async () => {
     // Arrange
     const testScope = DebugScope.Kisumu;
-    accessToken = await getAccessTokenScoped(testScope);
+    const testScopeAccessToken = await getAccessTokenScoped(testScope);
 
     // Act
     // 8 registrations in total are registered
@@ -94,8 +93,8 @@ describe('Metric export list', () => {
     // 2 registrations of program PV and are in the scope (Zeeland) of the requesting user
     // 1 of those 2 registrations has status 'new'
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
-      .set('Cookie', [accessToken])
+      .get(`/programs/${programIdPV}/metrics/export-list/registrations`)
+      .set('Cookie', [testScopeAccessToken])
       .query({
         ['filter.status']: `$ilike:new`,
       })
@@ -114,17 +113,14 @@ describe('Metric export list', () => {
   });
 
   it('should return all filtered registrations from 1 program using a filter and search query', async () => {
-    // Arrange
-    accessToken = await getAccessToken(); // gets admin access token
-
     // Act
     // 8 registrations in total are registered
     // 4 registrations are in include in program PV
     // 2 registrations of program PV have an attribute that contains '011' (phonenumber)
     // 1 of those 2 registrations has status 'new'
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
-      .set('Cookie', [accessToken])
+      .get(`/programs/${programIdPV}/metrics/export-list/registrations`)
+      .set('Cookie', [adminAccessToken])
       .query({
         ['filter.status']: `$ilike:new`,
         search: `011`,
@@ -143,10 +139,9 @@ describe('Metric export list', () => {
   });
 
   it('should export all registration attributes when no "select" is provided', async () => {
-    // Act
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${OcwProgramId}/metrics/export-list/registrations`)
-      .set('Cookie', [accessToken])
+      .get(`/programs/${programIdOCW}/metrics/export-list/registrations`)
+      .set('Cookie', [adminAccessToken])
       .send();
 
     // Assert
@@ -167,13 +162,10 @@ describe('Metric export list', () => {
   });
 
   it('should support using "select" to retrieve a specific subset of columns', async () => {
-    // Arrange
-    accessToken = await getAccessToken(); // gets admin access token
-
     // Act
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
-      .set('Cookie', [accessToken])
+      .get(`/programs/${programIdPV}/metrics/export-list/registrations`)
+      .set('Cookie', [adminAccessToken])
       .query({
         select: 'referenceId,fullName,phoneNumber',
       })
@@ -190,11 +182,11 @@ describe('Metric export list', () => {
   it('should export in excel format', async () => {
     // Arrange
     const testScope = DebugScope.Kisumu;
-    accessToken = await getAccessTokenScoped(testScope);
+    const testScopeAccessToken = await getAccessTokenScoped(testScope);
 
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
-      .set('Cookie', [accessToken])
+      .get(`/programs/${programIdPV}/metrics/export-list/registrations`)
+      .set('Cookie', [testScopeAccessToken])
       .responseType('blob')
       .query({
         format: 'xlsx',
@@ -210,13 +202,18 @@ describe('Metric export list', () => {
   });
 
   it("should export failed when user doesn't have enough permission", async () => {
-    const accessTokenCvaManager = await getAccessTokenCvaManager();
+    const accessTokenNotEnoughPermissions =
+      await createAccessTokenWithPermissions({
+        permissions: [PermissionEnum.RegistrationPersonalEXPORT],
+        programId: programIdPV,
+        adminAccessToken,
+      });
 
     const response = await getServer()
       .get(
-        `/programs/${PvProgramId}/metrics/export-list/${ExportType.unusedVouchers}`,
+        `/programs/${programIdPV}/metrics/export-list/${ExportType.unusedVouchers}`,
       )
-      .set('Cookie', [accessTokenCvaManager])
+      .set('Cookie', [accessTokenNotEnoughPermissions])
       .responseType('blob')
       .query({
         format: 'xlsx',
@@ -235,7 +232,7 @@ describe('Metric export list', () => {
     const invalidExportType = 'notAValidType';
     const response = await getServer()
       .get(`/programs/${programIdPV}/metrics/export-list/${invalidExportType}`)
-      .set('Cookie', [accessToken])
+      .set('Cookie', [adminAccessToken])
       .send();
 
     expect(response.status).toBe(HttpStatus.BAD_REQUEST);

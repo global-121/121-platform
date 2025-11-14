@@ -1,15 +1,13 @@
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import {
   getRegistrations,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
+import { createAccessTokenWithPermissions } from '@121-service/test/helpers/utility.helper';
 import {
   getAccessToken,
-  getAccessTokenCvaManager,
-  removePermissionsFromRole,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
@@ -19,6 +17,7 @@ import {
 
 describe('Load PA table', () => {
   describe(`Get registrations using paginate without "${PermissionEnum.RegistrationPersonalREAD}" permission`, () => {
+    let accessTokenPersonalReadOnly: string;
     beforeEach(async () => {
       await resetDB(SeedScript.nlrcMultiple, __filename);
       const accessTokenAdmin = await getAccessToken();
@@ -29,21 +28,22 @@ describe('Load PA table', () => {
         accessTokenAdmin,
       );
 
-      await removePermissionsFromRole(DefaultUserRole.CvaManager, [
-        PermissionEnum.RegistrationPersonalREAD,
-      ]);
+      accessTokenPersonalReadOnly = await createAccessTokenWithPermissions({
+        permissions: [PermissionEnum.RegistrationREAD],
+        programId: programIdOCW,
+        adminAccessToken: await getAccessToken(),
+      });
     });
 
     it(`should return all dynamic attributes when none explicitly requested`, async () => {
       // Arrange
       const requestedDynamicAttributes = undefined;
-      const accessTokenCvaManager = await getAccessTokenCvaManager();
 
       // Act
       const getRegistrationsResponse = await getRegistrations({
         programId: programIdOCW,
         attributes: requestedDynamicAttributes,
-        accessToken: accessTokenCvaManager,
+        accessToken: accessTokenPersonalReadOnly,
       });
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
@@ -73,14 +73,14 @@ describe('Load PA table', () => {
 
     it(`should only return the dynamic attributes requested`, async () => {
       // Arrange
-      const accessTokenCvaManager = await getAccessTokenCvaManager();
+
       const requestedDynamicAttributes = ['preferredLanguage', 'referenceId'];
 
       // Act
       const getRegistrationsResponse = await getRegistrations({
         programId: programIdOCW,
         attributes: requestedDynamicAttributes,
-        accessToken: accessTokenCvaManager,
+        accessToken: accessTokenPersonalReadOnly,
       });
       const data = getRegistrationsResponse.body.data;
       const meta = getRegistrationsResponse.body.meta;
@@ -94,32 +94,5 @@ describe('Load PA table', () => {
       expect(data[0]).toStrictEqual(expectedValueObject);
       expect(meta.totalItems).toBe(1);
     });
-  });
-  // This test is flaky when run separately it always passes but when run with other tests it fails 70% of a time
-  it.skip(`should only return the dynamic attributes requested that are not "personal"`, async () => {
-    // Arrange
-    const accessTokenCvaManager = await getAccessTokenCvaManager();
-    const requestedDynamicAttributes = ['phoneNumber', 'preferredLanguage'];
-
-    // Act
-    const getRegistrationsResponse = await getRegistrations({
-      programId: programIdOCW,
-      attributes: requestedDynamicAttributes,
-      accessToken: accessTokenCvaManager,
-    });
-    const data = getRegistrationsResponse.body.data;
-    const meta = getRegistrationsResponse.body.meta;
-
-    const expectedValueObject = {
-      preferredLanguage: registrationOCW1.preferredLanguage,
-    };
-    const notExpectedValueObject = {
-      phoneNumber: registrationOCW1.phoneNumber,
-    };
-
-    // Assert
-    expect(data[0]).toMatchObject(expectedValueObject);
-    expect(data[0]).not.toMatchObject(notExpectedValueObject);
-    expect(meta.totalItems).toBe(1);
   });
 });

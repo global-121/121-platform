@@ -959,6 +959,9 @@ export class UserService {
   }
 
   private generateStrongPassword(): string {
+    if (IS_DEVELOPMENT && env.USERCONFIG_121_SERVICE_PASSWORD_TESTING) {
+      return env.USERCONFIG_121_SERVICE_PASSWORD_TESTING;
+    }
     return crypto.randomBytes(30).toString('base64').slice(0, 25);
   }
 }

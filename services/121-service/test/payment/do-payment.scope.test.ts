@@ -4,7 +4,6 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { registrationsPV } from '@121-service/test/fixtures/scoped-registrations';
 import {
   doPayment,
@@ -16,9 +15,8 @@ import {
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
-  addPermissionToRole,
+  createAccessTokenWithPermissions,
   getAccessToken,
-  getAccessTokenScoped,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
@@ -66,13 +64,13 @@ describe('Registrations - [Scoped]', () => {
 
   it('should payout all registrations within the scope of the requesting user', async () => {
     // Arrange
-    // add payment.create permission to the user
-    await addPermissionToRole(DefaultUserRole.CvaManager, [
-      PermissionEnum.PaymentCREATE,
-    ]);
-
     const testScope = DebugScope.Kisumu;
-    const accessTokenScoped = await getAccessTokenScoped(testScope);
+    const accessTokenScoped = await createAccessTokenWithPermissions({
+      permissions: Object.values(PermissionEnum),
+      programId: PvProgramId,
+      scope: testScope,
+      adminAccessToken: accessToken,
+    });
 
     // Act
     // 7 registrations in total are included
