@@ -19,7 +19,7 @@ import { ToolbarModule } from 'primeng/toolbar';
 
 import { AppRoutes } from '~/app.routes';
 import { ButtonMenuComponent } from '~/components/button-menu/button-menu.component';
-import { LanguageSwitcherComponent } from '~/components/language-switcher/language-switcher.component';
+import { LocaleSwitcherComponent } from '~/components/locale-switcher/locale-switcher.component';
 import { LogoComponent } from '~/components/logo/logo.component';
 import { HealthWidgetComponent } from '~/components/page-layout/components/health-widget/health-widget.component';
 import { AuthService } from '~/services/auth.service';
@@ -37,7 +37,7 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
     FormsModule,
     LogoComponent,
     HealthWidgetComponent,
-    LanguageSwitcherComponent,
+    LocaleSwitcherComponent,
     ButtonMenuComponent,
     RouterLink,
     RouterLinkActive,
