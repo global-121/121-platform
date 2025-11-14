@@ -344,36 +344,37 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     return wallets;
   }
 
-  public async increasePaymentCountByOne({
-    registrationIds,
+  public async updatePaymentCount({
+    referenceId,
+    paymentCount,
   }: {
-    registrationIds: number[];
+    referenceId: string;
+    paymentCount: number;
   }): Promise<void> {
-    if (registrationIds.length === 0) {
-      return;
-    }
-
     await this.repository
       .createQueryBuilder('registration')
       .update()
-      .set({ paymentCount: () => '"paymentCount" + 1' })
-      .andWhere('registration.id = ANY(:registrationIds)', {
-        registrationIds,
-      })
+      .set({ paymentCount })
+      .andWhere({ referenceId: Equal(referenceId) })
       .execute();
   }
 
-  public async getRegistrationsToComplete(
-    programId: number,
-  ): Promise<RegistrationEntity[]> {
-    const registrationsToComplete = await this.repository
+  public async shouldChangeStatusToCompleted({
+    referenceId,
+  }: {
+    referenceId: string;
+  }): Promise<boolean> {
+    const registrationToComplete = await this.repository
       .createQueryBuilder('registration')
       .andWhere('registration."paymentCount" >= registration."maxPayments"')
       .andWhere('registration."registrationStatus" != :completedStatus', {
         completedStatus: RegistrationStatusEnum.completed,
       })
-      .andWhere('registration."programId" = :programId', { programId })
-      .getMany();
-    return registrationsToComplete;
+      .andWhere('registration."referenceId" = :referenceId', { referenceId })
+      .getOne();
+    if (!registrationToComplete) {
+      return false;
+    }
+    return true;
   }
 }

@@ -13,7 +13,6 @@ import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { PaymentsCreationService } from '@121-service/src/payments/services/payments-creation.service';
 import { PaymentsExcelFspService } from '@121-service/src/payments/services/payments-excel-fsp.service';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
-import { PaymentsExecutionHelperService } from '@121-service/src/payments/services/payments-execution-helper.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
@@ -58,7 +57,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
   providers: [
     PaymentsCreationService,
     PaymentsExecutionService,
-    PaymentsExecutionHelperService,
     PaymentsReportingService,
     PaymentsReportingHelperService,
     PaymentsProgressHelperService,
