@@ -27,46 +27,46 @@ const headersToPojo = (headers: Headers) => {
 export class CooperativeBankOfOromiaApiService {
   private readonly encryptedPin: string;
   private tokenSet: TokenSet;
-  private readonly airtelClientId: string | undefined;
-  private readonly airtelClientSecret: string | undefined;
+  private readonly cooperativeBankOfOromiaClientId: string | undefined;
+  private readonly cooperativeBankOfOromiaClientSecret: string | undefined;
   private readonly countryCode: string;
   private readonly currencyCode: string;
-  private readonly airtelAuthenticateURL: URL;
-  private readonly airtelDisbursementAndEnquiryV2URL: URL;
+  private readonly cooperativeBankOfOromiaAuthenticateURL: URL;
+  private readonly cooperativeBankOfOromiaDisbursementAndEnquiryV2URL: URL;
 
   public constructor(
     private readonly httpService: CustomHttpService,
-    private readonly airtelEncryptionService: CooperativeBankOfOromiaEncryptionService,
-    private readonly airtelApiHelperService: CooperativeBankOfOromiaApiHelperService,
+    private readonly cooperativeBankOfOromiaEncryptionService: CooperativeBankOfOromiaEncryptionService,
+    private readonly cooperativeBankOfOromiaApiHelperService: CooperativeBankOfOromiaApiHelperService,
   ) {
     const cooperativeBankOfOromiaDisbursementPin = env.COOPERATIVE_BANK_OF_OROMIA_DISBURSEMENT_PIN;
-    const airtelDisbursementV1PinEncryptionPublicKey =
+    const cooperativeBankOfOromiaDisbursementV1PinEncryptionPublicKey =
       env.COOPERATIVE_BANK_OF_OROMIA_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY;
 
     // No need to re-encrypt the same value for every request.
-    if (cooperativeBankOfOromiaDisbursementPin && airtelDisbursementV1PinEncryptionPublicKey) {
-      this.encryptedPin = this.airtelEncryptionService.encryptPinV1(
+    if (cooperativeBankOfOromiaDisbursementPin && cooperativeBankOfOromiaDisbursementV1PinEncryptionPublicKey) {
+      this.encryptedPin = this.cooperativeBankOfOromiaEncryptionService.encryptPinV1(
         cooperativeBankOfOromiaDisbursementPin,
-        airtelDisbursementV1PinEncryptionPublicKey,
+        cooperativeBankOfOromiaDisbursementV1PinEncryptionPublicKey,
       );
     }
 
-    this.airtelClientId = env.COOPERATIVE_BANK_OF_OROMIA_CLIENT_ID;
-    this.airtelClientSecret = env.COOPERATIVE_BANK_OF_OROMIA_CLIENT_SECRET;
+    this.cooperativeBankOfOromiaClientId = env.COOPERATIVE_BANK_OF_OROMIA_CLIENT_ID;
+    this.cooperativeBankOfOromiaClientSecret = env.COOPERATIVE_BANK_OF_OROMIA_CLIENT_SECRET;
 
     this.countryCode = 'ZM';
     this.currencyCode = 'ZMW';
 
-    let airtelApiBaseUrl: URL;
+    let cooperativeBankOfOromiaApiBaseUrl: URL;
     if (env.MOCK_COOPERATIVE_BANK_OF_OROMIA || !env.COOPERATIVE_BANK_OF_OROMIA_API_URL) {
-      airtelApiBaseUrl = new URL('api/fsp/cooperative-bank-of-oromia/', env.MOCK_SERVICE_URL);
+      cooperativeBankOfOromiaApiBaseUrl = new URL('api/fsp/cooperative-bank-of-oromia/', env.MOCK_SERVICE_URL);
     } else {
-      airtelApiBaseUrl = new URL(env.COOPERATIVE_BANK_OF_OROMIA_API_URL);
+      cooperativeBankOfOromiaApiBaseUrl = new URL(env.COOPERATIVE_BANK_OF_OROMIA_API_URL);
     }
-    this.airtelAuthenticateURL = new URL('auth/oauth2/token', airtelApiBaseUrl);
-    this.airtelDisbursementAndEnquiryV2URL = new URL(
+    this.cooperativeBankOfOromiaAuthenticateURL = new URL('auth/oauth2/token', cooperativeBankOfOromiaApiBaseUrl);
+    this.cooperativeBankOfOromiaDisbursementAndEnquiryV2URL = new URL(
       'standard/v2/disbursements/',
-      airtelApiBaseUrl,
+      cooperativeBankOfOromiaApiBaseUrl,
     );
   }
 
@@ -83,7 +83,7 @@ export class CooperativeBankOfOromiaApiService {
     message: string;
   }> {
     await this.authenticate();
-    const url = this.airtelDisbursementAndEnquiryV2URL;
+    const url = this.cooperativeBankOfOromiaDisbursementAndEnquiryV2URL;
     const headers = this.addAuthHeaders(
       new Headers({
         Accept: '*/*',
@@ -130,7 +130,7 @@ export class CooperativeBankOfOromiaApiService {
     await this.authenticate();
     const url = new URL(
       cooperativeBankOfOromiaTransactionId,
-      this.airtelDisbursementAndEnquiryV2URL,
+      this.cooperativeBankOfOromiaDisbursementAndEnquiryV2URL,
     );
     url.searchParams.append('transactionType', 'B2C');
     const headers = this.addAuthHeaders(
@@ -174,8 +174,8 @@ export class CooperativeBankOfOromiaApiService {
 
     const payload: CooperativeBankOfOromiaApiAuthenticationRequestBodyDto = {
       grant_type: 'client_credentials',
-      client_id: this.airtelClientId,
-      client_secret: this.airtelClientSecret,
+      client_id: this.cooperativeBankOfOromiaClientId,
+      client_secret: this.cooperativeBankOfOromiaClientSecret,
     };
 
     let response;
@@ -184,7 +184,7 @@ export class CooperativeBankOfOromiaApiService {
       // Refactor: add validation.
       response = await this.httpService.post<
         AxiosResponse<CooperativeBankOfOromiaApiAuthenticationResponseBodyDto>
-      >(this.airtelAuthenticateURL.href, payload, headersToPojo(headers));
+      >(this.cooperativeBankOfOromiaAuthenticateURL.href, payload, headersToPojo(headers));
     } catch (error) {
       throw new CooperativeBankOfOromiaApiError(`authentication failed: ${error.message}`);
     }
@@ -258,13 +258,13 @@ export class CooperativeBankOfOromiaApiService {
     let potentialResponseCode: string | undefined;
 
     if (
-      this.airtelApiHelperService.isAirtelDisbursementOrEnquiryResponseBodyDto(
+      this.cooperativeBankOfOromiaApiHelperService.isAirtelDisbursementOrEnquiryResponseBodyDto(
         response.data,
       )
     ) {
       potentialResponseCode = response.data.status?.response_code;
       const result =
-        this.airtelApiHelperService.getDisbursementResultForResponseCode(
+        this.cooperativeBankOfOromiaApiHelperService.getDisbursementResultForResponseCode(
           potentialResponseCode,
         );
       return {
@@ -276,7 +276,7 @@ export class CooperativeBankOfOromiaApiService {
     // If we get here, the response is not the expected CooperativeBankOfOromia API response. However, we still want to return a result
     // So this an unexpected response is still shown to the user.
     const result =
-      this.airtelApiHelperService.getDisbursementResultForResponseCode(
+      this.cooperativeBankOfOromiaApiHelperService.getDisbursementResultForResponseCode(
         potentialResponseCode,
       );
     return {
