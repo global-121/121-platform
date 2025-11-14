@@ -23,7 +23,7 @@ const programInfo = {
   fundsAvailable: '200',
   currency: CurrencyCode.CAD,
   paymentFrequency: '2-months',
-  defaultTransactionAmount: '200',
+  defaultNrOfTransactions: '5',
   fixedTransferValue: '100',
 };
 
@@ -76,7 +76,7 @@ test('Create program successfully', async ({ page }) => {
       'Funds available': programInfo.fundsAvailable,
       '*Currency': programInfo.currency,
       'Default transactions per registration':
-        programInfo.defaultTransactionAmount,
+        programInfo.defaultNrOfTransactions,
       '*Fixed transfer value': programInfo.fixedTransferValue,
     });
   });
