@@ -16,7 +16,7 @@ import { environment } from '~environment';
  * UILanguage values.
  */
 
-// TODO: rename this to selectedUILanguage.
+// TODO: rename this to selectedLocale. Will require a migration.
 const LOCAL_STORAGE_LOCALE_KEY = 'preferredLanguage';
 
 // NOTE: Make sure to align these languages with ALL_AVAILABLE_LOCALES in '_all_available-locales.mjs'
