@@ -29,7 +29,7 @@ import { ToastService } from '~/services/toast.service';
 })
 export class StartPaymentComponent {
   readonly rtlHelper = inject(RtlHelperService);
-  readonly projectId = input.required<string>();
+  readonly programId = input.required<string>();
   readonly paymentId = input.required<string>();
   readonly fspList = input.required<string>();
   readonly transactionCount = input.required<string>();
@@ -45,13 +45,13 @@ export class StartPaymentComponent {
   startPaymentMutation = injectMutation(() => ({
     mutationFn: () =>
       this.paymentApiService.startPayment({
-        projectId: this.projectId,
+        programId: this.programId,
         paymentId: this.paymentId,
       }),
     onSuccess: () => {
-      void this.metricApiService.invalidateCache(this.projectId);
+      void this.metricApiService.invalidateCache(this.programId);
       void this.paymentApiService.invalidateCache(
-        this.projectId,
+        this.programId,
         this.paymentId,
       );
       this.startPaymentDialog().hide();

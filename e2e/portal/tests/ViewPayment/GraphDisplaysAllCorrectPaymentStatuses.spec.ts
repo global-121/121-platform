@@ -57,7 +57,7 @@ test('Graph should reflect transfer statuses', async ({ page }) => {
   });
 
   await test.step('Graph displays all correct payment statuses', async () => {
-    await page.goto(`/en-GB/project/${programIdOCW}/payments/1`);
+    await page.goto(`/en-GB/program/${programIdOCW}/payments/1`);
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.validateGraphStatus({
       pendingApproval: 0,

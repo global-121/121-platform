@@ -54,7 +54,7 @@ test('Do successful payment for Cbe fsp', async ({ page }) => {
     await paymentsPage.createPayment({});
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdCbe}/payments/1`),
+      url.pathname.startsWith(`/en-GB/program/${programIdCbe}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);

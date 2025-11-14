@@ -46,10 +46,10 @@ test('Badges and chart should display correct statuses during payment process', 
 }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
-  const projectTitle = NLRCProgram.titlePortal.en;
+  const programTitle = NLRCProgram.titlePortal.en;
 
   await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.selectProgram(programTitle);
 
     await paymentsPage.navigateToProgramPage('Payments');
   });
@@ -57,7 +57,7 @@ test('Badges and chart should display correct statuses during payment process', 
   await test.step('Create payment', async () => {
     await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
+      url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
     );
     await paymentPage.dismissToast();
   });
@@ -97,7 +97,7 @@ test('Badges and chart should display correct statuses during payment process', 
       failed: 0,
     });
     // Reload the page because Successful badges are not displayed without reload
-    await page.goto(`/en-GB/project/${programIdOCW}/payments/1`);
+    await page.goto(`/en-GB/program/${programIdOCW}/payments/1`);
     await paymentPage.waitForPageLoad();
     // Validate badges
     await paymentPage.validateBadgeIsPresentByLabel({

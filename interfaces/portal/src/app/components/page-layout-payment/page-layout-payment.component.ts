@@ -238,7 +238,7 @@ export class PageLayoutPaymentComponent {
     return (
       this.currencyPipe.transform(
         this.payment.data().pendingApproval.transferValue,
-        this.project.data()?.currency,
+        this.program.data()?.currency,
         'symbol-narrow',
         '1.2-2',
       ) ?? '0'
@@ -258,7 +258,7 @@ export class PageLayoutPaymentComponent {
 
   readonly canStartPayment = computed(() =>
     this.authService.hasAllPermissions({
-      projectId: this.projectId(),
+      programId: this.programId(),
       requiredPermissions: [
         PermissionEnum.PaymentREAD,
         PermissionEnum.PaymentUPDATE,

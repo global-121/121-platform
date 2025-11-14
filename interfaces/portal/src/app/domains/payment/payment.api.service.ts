@@ -116,16 +116,16 @@ export class PaymentApiService extends DomainApiService {
   }
 
   startPayment({
-    projectId,
+    programId,
     paymentId,
   }: {
-    projectId: Signal<number | string>;
+    programId: Signal<number | string>;
     paymentId: Signal<string>;
   }) {
     return this.httpWrapperService.perform121ServiceRequest({
       method: 'PATCH',
       endpoint: this.pathToQueryKey([
-        ...BASE_ENDPOINT(projectId),
+        ...BASE_ENDPOINT(programId),
         paymentId,
       ]).join('/'),
     });

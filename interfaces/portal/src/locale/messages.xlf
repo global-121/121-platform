@@ -1922,8 +1922,8 @@
       <trans-unit id="5906272961955453157" datatype="html">
         <source>Approved</source>
       </trans-unit>
-      <trans-unit id="page-title-project-project-settings|trim" datatype="html">
-        <source>Project settings</source>
+      <trans-unit id="page-title-program-program-settings|trim" datatype="html">
+        <source>Program settings</source>
       </trans-unit>
       <trans-unit id="6191781315346853958" datatype="html">
         <source>Click approve and start payment to initiate the payment through your FSP(s).</source>

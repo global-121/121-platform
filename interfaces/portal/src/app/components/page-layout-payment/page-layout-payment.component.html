@@ -17,7 +17,7 @@
       </h1>
       @if (showStartPaymentButton() && canStartPayment()) {
         <app-start-payment
-          [projectId]="projectId()"
+          [programId]="programId()"
           [paymentId]="paymentId()"
           [fspList]="startPaymentFspList()"
           [transactionCount]="startPaymentTransactionCount()"
