@@ -82,8 +82,8 @@ test('Do successful payment for Nedbank fsp', async ({ page }) => {
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
-      successfulTransactions: defaultMaxTransferValue,
-      failedTransactions: 0,
+      successfulTransfers: defaultMaxTransferValue,
+      failedTransfers: 0,
       currency: NedbankProgram.currencySymbol,
       programId: programIdNedbank,
     });
