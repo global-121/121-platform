@@ -1281,7 +1281,7 @@
         <source>Download the template</source>
       </trans-unit>
       <trans-unit id="language-switcher-selected" datatype="html">
-        <source>Language: <x equiv-text="{{ selectedLanguageLabel() }}" id="INTERPOLATION"/></source>
+        <source>Language: <x equiv-text="{{ selectedLocaleLabel() }}" id="INTERPOLATION"/></source>
       </trans-unit>
       <trans-unit id="ignore-duplication" datatype="html">
         <source>Ignore duplication</source>
