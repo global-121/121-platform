@@ -44,6 +44,7 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
       .addSelect('registration.registrationStatus', 'registrationStatus')
       .addSelect('registration.registrationProgramId', 'registrationProgramId')
       .addSelect('registration.referenceId', 'registrationReferenceId')
+      .addSelect('registration.scope', 'registrationScope')
       .from(TransactionEntity, 't')
       .innerJoin(LastTransactionEventEntity, 'lte', 't.id = lte.transactionId')
       .leftJoin(
@@ -146,4 +147,7 @@ export class TransactionViewEntity {
 
   @ViewColumn()
   public registrationReferenceId: string | null;
+
+  @ViewColumn()
+  public registrationScope: string | null;
 }
