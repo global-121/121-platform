@@ -1,15 +1,15 @@
 <p-select
-  [options]="languages"
-  [(ngModel)]="selectedLanguage"
+  [options]="locales"
+  [(ngModel)]="selectedLocale"
   [showClear]="false"
   styleClass="w-full"
-  data-testid="language-dropdown"
+  data-testid="locale-dropdown"
 >
   <ng-template pTemplate="selectedItem">
     <div class="flex w-full items-center gap-2">
       <i class="pi pi-globe text-xl"></i>
       <div i18n="@@language-switcher-selected">
-        Language: {{ selectedLanguageLabel() }}
+        Language: {{ selectedLocaleLabel() }}
       </div>
     </div>
   </ng-template>

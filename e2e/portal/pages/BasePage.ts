@@ -9,7 +9,7 @@ import { PrimeNGDropdown } from '@121-e2e/portal/components/PrimeNGDropdown';
 class BasePage {
   readonly page: Page;
   readonly logo: Locator;
-  readonly languageDropdown: PrimeNGDropdown;
+  readonly localeDropdown: PrimeNGDropdown;
   readonly programHeader: Locator;
   readonly sidebar: Locator;
   readonly sidebarToggle: Locator;
@@ -24,9 +24,9 @@ class BasePage {
     this.page = page;
 
     this.logo = this.page.getByTestId('logo');
-    this.languageDropdown = new PrimeNGDropdown({
+    this.localeDropdown = new PrimeNGDropdown({
       page,
-      testId: 'language-dropdown',
+      testId: 'locale-dropdown',
     });
     this.programHeader = this.page.getByTestId('program-header');
     this.sidebar = this.page.getByTestId('sidebar');
@@ -79,7 +79,7 @@ class BasePage {
 
   async changeLanguage(language: string) {
     await this.openSidebar();
-    await this.languageDropdown.selectOption({ label: language });
+    await this.localeDropdown.selectOption({ label: language });
   }
 
   async openAccountDropdown() {

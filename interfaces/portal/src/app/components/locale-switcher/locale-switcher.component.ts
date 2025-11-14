@@ -19,25 +19,25 @@ import {
 } from '~/utils/locale';
 
 @Component({
-  selector: 'app-language-switcher',
+  selector: 'app-locale-switcher',
   imports: [FormsModule, SelectModule],
-  templateUrl: './language-switcher.component.html',
+  templateUrl: './locale-switcher.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LanguageSwitcherComponent {
+export class LocaleSwitcherComponent {
   private locale = inject<Locale>(LOCALE_ID);
-  public languages = getAvailableLocales();
-  public readonly selectedLanguage = model(this.locale);
-  public readonly selectedLanguageLabel = computed(() =>
-    getLocaleLabel(this.selectedLanguage()),
+  public locales = getAvailableLocales();
+  public readonly selectedLocale = model(this.locale);
+  public readonly selectedLocaleLabel = computed(() =>
+    getLocaleLabel(this.selectedLocale()),
   );
 
   constructor() {
     effect(() => {
-      if (this.selectedLanguage() === this.locale) {
+      if (this.selectedLocale() === this.locale) {
         return;
       }
-      changeLocale(this.selectedLanguage());
+      changeLocale(this.selectedLocale());
     });
   }
 }
