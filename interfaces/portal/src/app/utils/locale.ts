@@ -128,7 +128,7 @@ export const getLocaleForInitialization = ({
  *
  * @param {string} desiredLocale - Angular locale id
  */
-export const changeUILanguage = (desiredLocale: Locale): void => {
+export const changeLocale = (desiredLocale: Locale): void => {
   // persist locale in locale storage
   localStorage.setItem(LOCAL_STORAGE_LOCALE_KEY, desiredLocale);
 

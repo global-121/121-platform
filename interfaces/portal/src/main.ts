@@ -6,7 +6,7 @@ import { AppComponent } from '~/app.component';
 import { getAppConfig } from '~/app.config';
 import { registerChartDefaults } from '~/utils/chart';
 import {
-  changeUILanguage,
+  changeLocale,
   getLocaleForInitialization,
   Locale,
 } from '~/utils/locale';
@@ -26,7 +26,7 @@ const main = async () => {
     // But it also means that the only way to change language is via the language dropdown
     const locale = localeInitialization.localStorageLocale;
     console.log(`Redirecting user to their preferred locale: ${locale}`);
-    changeUILanguage(locale);
+    changeLocale(locale);
     return;
   }
 
