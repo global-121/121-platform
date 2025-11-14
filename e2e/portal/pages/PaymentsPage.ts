@@ -155,6 +155,7 @@ class PaymentsPage extends BasePage {
       .locator('xpath=ancestor::*[@data-pc-name="card"]')
       .getByTestId('payment-summary-metrics')
       .locator('app-metric-container');
+    await card.first().waitFor({ state: 'visible' });
 
     const paymentTitle = await this.page
       .locator(`a[href=${hrefLocatorUrl}]`)
