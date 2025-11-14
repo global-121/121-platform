@@ -8,7 +8,7 @@ export const languageCodesToLinguonymsForArab: languageCodeToLinguonym = {
   ak: 'لغة أكانية',
   am: 'لغة أمهرية',
   an: 'لغة أراغونية',
-  ar: 'لغة عربية',
+  ar: 'العربية',
   as: 'لغة آسامية',
   av: 'لغة أوارية',
   ay: 'لغة أيمارا',
