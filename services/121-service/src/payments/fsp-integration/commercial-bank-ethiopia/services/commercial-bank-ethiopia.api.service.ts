@@ -272,7 +272,7 @@ export class CommercialBankEthiopiaApiService {
         resultDescription: 'Unknown error occurred.',
       };
 
-      if (error.code === 'ENOTFOUND') {
+      if (['ENOTFOUND', 'ECONNREFUSED', 'ETIMEDOUT'].includes(error.code)) {
         console.error(
           'Failed because of CBE connection error. Please try again later',
         );
