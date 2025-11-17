@@ -74,12 +74,12 @@ describe('Do payment with Excel FSP', () => {
 
     // Westeros registrations use Excel FSP, so the status we wait for is
     // 'waiting'. No other status makes sense here.
-    excelPaymentIdWesteros = await seedPaidRegistrations(
-      registrationsWesteros,
-      programIdWesteros,
+    excelPaymentIdWesteros = await seedPaidRegistrations({
+      registrations: registrationsWesteros,
+      programId: programIdWesteros,
       amount,
-      [TransactionStatusEnum.waiting],
-    );
+      completeStatuses: [TransactionStatusEnum.waiting],
+    });
 
     // also do another payment with a different fsp to test export where there is not transaction with excel fsp
     const voucherRegistrationWesteros = {
@@ -90,12 +90,15 @@ describe('Do payment with Excel FSP', () => {
     };
 
     // We want to wait until it's complete so, wait for success or error.
-    voucherPaymentIdWesteros = await seedPaidRegistrations(
-      [voucherRegistrationWesteros],
-      programIdWesteros,
+    voucherPaymentIdWesteros = await seedPaidRegistrations({
+      registrations: [voucherRegistrationWesteros],
+      programId: programIdWesteros,
       amount,
-      [TransactionStatusEnum.success, TransactionStatusEnum.error],
-    );
+      completeStatuses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
+    });
 
     ////////////////////////////
     // Setup Validation program
@@ -104,12 +107,15 @@ describe('Do payment with Excel FSP', () => {
     // This adds more data, the goal is to *not* see this data in the exports.
     // Specifically, this enables testing if transactions and registrations have the same length (see excel.service.ts)
     // For CBE we don't have status awaiting, so only wait for success or error.
-    paymentIdCbe = await seedPaidRegistrations(
-      registrationsProgramWithValidation,
-      programIdCbe,
+    paymentIdCbe = await seedPaidRegistrations({
+      registrations: registrationsProgramWithValidation,
+      programId: programIdCbe,
       amount,
-      [TransactionStatusEnum.success, TransactionStatusEnum.error],
-    );
+      completeStatuses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
+    });
   };
 
   describe('Export FSP instructions successfully', () => {

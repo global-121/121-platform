@@ -16,7 +16,10 @@ import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 // Arrange
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
-  await seedPaidRegistrations([registrationPV5], programIdPV); // Seeds a registration that does not have Visa as fsp so there is not debit card usage to export
+  await seedPaidRegistrations({
+    registrations: [registrationPV5],
+    programId: programIdPV,
+  }); // Seeds a registration that does not have Visa as fsp so there is not debit card usage to export
 
   // Login
   const loginPage = new LoginPage(page);

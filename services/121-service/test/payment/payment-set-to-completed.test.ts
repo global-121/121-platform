@@ -32,9 +32,12 @@ describe('Set registration to completed after payment', () => {
   it('should set registration to complete on payment start when maxPayments is reached', async () => {
     // Arrange & Act
     const registration = { ...registrationPV5, maxPayments: 1 };
-    await seedPaidRegistrations([registration], programId, transferValue, [
-      TransactionStatusEnum.success,
-    ]);
+    await seedPaidRegistrations({
+      registrations: [registration],
+      programId,
+      amount: transferValue,
+      completeStatuses: [TransactionStatusEnum.success],
+    });
     const paymentReferenceIds = [registration.referenceId];
 
     // Assert - status change

@@ -137,7 +137,10 @@ test.beforeEach(async ({ page }) => {
   const programIdOCW = 3;
   const OcwProgramId = programIdOCW;
 
-  await seedPaidRegistrations(registrationsOCW, OcwProgramId);
+  await seedPaidRegistrations({
+    registrations: registrationsOCW,
+    programId: OcwProgramId,
+  });
 
   // Login
   const loginPage = new LoginPage(page);

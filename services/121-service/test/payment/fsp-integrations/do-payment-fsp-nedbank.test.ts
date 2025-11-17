@@ -486,7 +486,7 @@ describe('Do payment', () => {
           };
           registrations.push(registration);
         }
-        await seedPaidRegistrations(registrations, programId);
+        await seedPaidRegistrations({ registrations, programId });
 
         // Act
         await runCronJobDoNedbankReconciliation();
@@ -516,7 +516,10 @@ describe('Do payment', () => {
         };
 
         // Act
-        await seedPaidRegistrations([registrationFailTimeout], programId);
+        await seedPaidRegistrations({
+          registrations: [registrationFailTimeout],
+          programId,
+        });
         const transactionsExportBeforeCronResponse =
           await exportTransactionsByDateRangeJson({
             programId,
@@ -563,7 +566,10 @@ describe('Do payment', () => {
           phoneNumber: NedbankMockNumber.failTimoutSimulate, // This phone number will simulate a time-out in our mock service
           referenceId: NebankGetOrderMockReference.orderNotFound, // This referenceId will be copied to the orderCreateReference and this will simulate a not found order in our mock service when we try to get the order
         };
-        await seedPaidRegistrations([registrationFailTimeout], programId);
+        await seedPaidRegistrations({
+          registrations: [registrationFailTimeout],
+          programId,
+        });
         const transactionExportBeforeCronResponse =
           await exportTransactionsByDateRangeJson({
             programId,

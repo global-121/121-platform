@@ -22,7 +22,10 @@ test('User should see a summary of a registration', async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
 
   const accessToken = await getAccessToken();
-  await seedPaidRegistrations([registrationPvScoped], programId);
+  await seedPaidRegistrations({
+    registrations: [registrationPvScoped],
+    programId,
+  });
   const searchRegistrationResponse = await searchRegistrationByReferenceId(
     registrationPvScoped.referenceId,
     programId,

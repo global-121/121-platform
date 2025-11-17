@@ -56,7 +56,10 @@ describe('Do payment retry', () => {
 
   it('should thrown an error if payment does not exist yet', async () => {
     // Arrange
-    await seedPaidRegistrations([registrationSuccess], programId);
+    await seedPaidRegistrations({
+      registrations: [registrationSuccess],
+      programId,
+    });
 
     // Act
     const nonExistingPaymentId = 9999;
@@ -73,10 +76,10 @@ describe('Do payment retry', () => {
 
   it('should thrown an error if payment has no failed transactions', async () => {
     // Arrange
-    const successfulPaymentId = await seedPaidRegistrations(
-      [registrationSuccess],
+    const successfulPaymentId = await seedPaidRegistrations({
+      registrations: [registrationSuccess],
       programId,
-    );
+    });
 
     // Act
     const retryResponse = await retryPayment({
@@ -93,16 +96,20 @@ describe('Do payment retry', () => {
   it('should retry all failed transactions if no referenceId filter is used', async () => {
     // Arrange
     const transferValue = 230;
-    const paymentId = await seedPaidRegistrations(
-      [registrationSuccess, registrationError1, registrationWaiting],
+    const paymentId = await seedPaidRegistrations({
+      registrations: [
+        registrationSuccess,
+        registrationError1,
+        registrationWaiting,
+      ],
       programId,
-      transferValue,
-      [
+      amount: transferValue,
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
         TransactionStatusEnum.waiting,
       ],
-    );
+    });
 
     // Act
     await updateRegistration(
@@ -161,12 +168,19 @@ describe('Do payment retry', () => {
   it('should retry only the failed transaction for the specified referenceId', async () => {
     // Arrange
     const transferValue = 230;
-    const paymentId = await seedPaidRegistrations(
-      [registrationSuccess, registrationError1, registrationError2],
+    const paymentId = await seedPaidRegistrations({
+      registrations: [
+        registrationSuccess,
+        registrationError1,
+        registrationError2,
+      ],
       programId,
-      transferValue,
-      [TransactionStatusEnum.success, TransactionStatusEnum.error],
-    );
+      amount: transferValue,
+      completeStatuses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
+    });
 
     const paymentAggregatesBeforeRetry = await getPaymentSummary({
       programId,
@@ -231,12 +245,15 @@ describe('Do payment retry', () => {
   it('should thrown an error if referenceId filter is used but no failed transactions found for that referenceId', async () => {
     // Arrange
     const amount = 230;
-    const paymentId = await seedPaidRegistrations(
-      [registrationSuccess, registrationError1],
+    const paymentId = await seedPaidRegistrations({
+      registrations: [registrationSuccess, registrationError1],
       programId,
       amount,
-      [TransactionStatusEnum.success, TransactionStatusEnum.error],
-    );
+      completeStatuses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
+    });
 
     // Act
     // Do retry with filter on referenceId of registrationSuccess (which has no failed transaction)

@@ -33,12 +33,12 @@ const seedTwoPayments = async () => {
     TransactionStatusEnum.waiting,
   ];
   // Arrange
-  await seedPaidRegistrations(
-    registrationsPV,
-    programIdPV,
-    transferValue,
-    completeStatusses,
-  );
+  await seedPaidRegistrations({
+    registrations: registrationsPV,
+    programId: programIdPV,
+    amount: transferValue,
+    completeStatuses: completeStatusses,
+  });
 
   // Add a second payment to return two aggregates in the response
   await doPaymentAndWaitForCompletion({

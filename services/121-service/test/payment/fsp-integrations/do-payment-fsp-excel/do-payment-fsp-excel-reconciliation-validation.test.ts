@@ -63,12 +63,12 @@ describe('Reconciliate excel FSP data', () => {
     await resetDB(SeedScript.testMultiple, __filename);
     accessToken = await getAccessToken();
 
-    await seedPaidRegistrations(
-      registrationsWesteros,
-      programIdWesteros,
-      transferValue,
-      [TransactionStatusEnum.waiting],
-    );
+    await seedPaidRegistrations({
+      registrations: registrationsWesteros,
+      programId: programIdWesteros,
+      amount: transferValue,
+      completeStatuses: [TransactionStatusEnum.waiting],
+    });
 
     const excelFspConfigWithDifferentMatchColumn = {
       fspName: Fsps.excel,

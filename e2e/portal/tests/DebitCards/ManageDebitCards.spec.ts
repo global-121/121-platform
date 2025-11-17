@@ -31,7 +31,7 @@ test('User can view debit cards of a registration with a single active debit car
   page,
 }) => {
   // Prepare data - seed a registration with a payment to ensure they have a card
-  await seedPaidRegistrations([registrationOCW1], programId);
+  await seedPaidRegistrations({ registrations: [registrationOCW1], programId });
   registrationId = await getRegistrationIdByReferenceId({
     programId,
     referenceId: registrationOCW1.referenceId,
@@ -120,7 +120,7 @@ test('User can replace a debit card and view both new and old card', async ({
   page,
 }) => {
   // Prepare data - seed a registration with a payment to ensure they have a card
-  await seedPaidRegistrations([registrationOCW1], programId);
+  await seedPaidRegistrations({ registrations: [registrationOCW1], programId });
   registrationId = await getRegistrationIdByReferenceId({
     programId,
     referenceId: registrationOCW1.referenceId,
@@ -234,7 +234,8 @@ test('User can replace a debit card and view both new and old card', async ({
 
 test('User can pause and unpause a debit card', async ({ page }) => {
   // Prepare data - seed a registration with a payment to ensure they have a card
-  await seedPaidRegistrations([registrationOCW1], programId);
+  await seedPaidRegistrations({ registrations: [registrationOCW1], programId });
+
   registrationId = await getRegistrationIdByReferenceId({
     programId,
     referenceId: registrationOCW1.referenceId,

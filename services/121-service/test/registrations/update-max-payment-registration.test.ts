@@ -31,7 +31,10 @@ describe('Update maxPayments of PA', () => {
       { maxPayments: testPayments },
       registrationPvScoped,
     );
-    await seedPaidRegistrations([registration], programIdPv);
+    await seedPaidRegistrations({
+      registrations: [registration],
+      programId: programIdPv,
+    });
   });
 
   it('should successfully update maxPayments without status change', async () => {

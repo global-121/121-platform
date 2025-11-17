@@ -32,7 +32,10 @@ describe('Issue new Visa debit card', () => {
 
   it('should successfully issue a new Visa Debit card', async () => {
     // Arrange
-    await seedPaidRegistrations([registrationVisa], programIdVisa);
+    await seedPaidRegistrations({
+      registrations: [registrationVisa],
+      programId: programIdVisa,
+    });
 
     // Block the card first. This is because this usually happens before issuing a new card in practice
     const visaWalletResponseBeforeBlock = await getVisaWalletsAndDetails(
@@ -86,7 +89,10 @@ describe('Issue new Visa debit card', () => {
   it('should fail to issue a new Visa Debit card if phonenumber is missing & successfully reissue after phonenumber is updated again', async () => {
     // Arrange
     const programIdPv = 2;
-    await seedPaidRegistrations([registrationVisa], programIdPv);
+    await seedPaidRegistrations({
+      registrations: [registrationVisa],
+      programId: programIdPv,
+    });
     const wrongPhoneNumber = '4534565434565434';
 
     await updateRegistration(

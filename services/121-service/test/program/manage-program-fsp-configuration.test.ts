@@ -195,7 +195,10 @@ describe('Manage Fsp configurations', () => {
 
   it('should not delete existing program Fsp configuration because of active registrations with that config', async () => {
     // Prepare
-    await seedPaidRegistrations([registrationOCW5], programIdVisa);
+    await seedPaidRegistrations({
+      registrations: [registrationOCW5],
+      programId: programIdVisa,
+    });
 
     // Act
     const name = seededFspConfigVoucher.fsp;
@@ -221,7 +224,10 @@ describe('Manage Fsp configurations', () => {
   // Checking this exception in api test because it's hard to unit test the more complex transaction querybuilder part
   it('deleting program Fsp configuration with existing transactions should set programFspConfigurationId of transactions to null', async () => {
     // Prepare
-    await seedPaidRegistrations([registrationOCW5], programIdVisa);
+    await seedPaidRegistrations({
+      registrations: [registrationOCW5],
+      programId: programIdVisa,
+    });
 
     await awaitChangeRegistrationStatus({
       programId: programIdVisa,

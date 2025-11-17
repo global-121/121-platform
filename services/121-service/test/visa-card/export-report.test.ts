@@ -29,7 +29,10 @@ describe('Export Visa debit card report', () => {
 
   it('should successfully generate a report of all Visa Debit cards', async () => {
     // Arrange
-    await seedPaidRegistrations([registrationVisa], programIdVisa);
+    await seedPaidRegistrations({
+      registrations: [registrationVisa],
+      programId: programIdVisa,
+    });
 
     // To ensure that the export also works if there are multiple cards for one person
     await issueNewVisaCard(

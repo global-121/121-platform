@@ -33,8 +33,14 @@ describe('Delete program', () => {
     accessToken = await getAccessToken();
 
     // Create some test data which should be cascaded deleted
-    await seedPaidRegistrations(registrationsOCW, programIdOCW);
-    await seedPaidRegistrations(registrationsPV, programIdPV);
+    await seedPaidRegistrations({
+      registrations: registrationsOCW,
+      programId: programIdOCW,
+    });
+    await seedPaidRegistrations({
+      registrations: registrationsPV,
+      programId: programIdPV,
+    });
 
     // Act + Assert
     const secretDto = { secret: env.RESET_SECRET };
@@ -65,7 +71,10 @@ describe('Delete program', () => {
     await resetDB(SeedScript.cbeProgram, __filename);
     accessToken = await getAccessToken();
 
-    await seedPaidRegistrations([registrationCbe], programIdCbe);
+    await seedPaidRegistrations({
+      registrations: [registrationCbe],
+      programId: programIdCbe,
+    });
     await startCbeValidationProcess(programIdCbe, accessToken);
 
     // Act + Assert

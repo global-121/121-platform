@@ -42,12 +42,12 @@ describe('Export transactions', () => {
     });
 
     const fromDate = new Date().toISOString();
-    const paymentId = await seedPaidRegistrations(
-      [registrationSafaricom],
+    const paymentId = await seedPaidRegistrations({
+      registrations: [registrationSafaricom],
       programId,
-      transferValue,
-      [TransactionStatusEnum.success],
-    );
+      amount: transferValue,
+      completeStatuses: [TransactionStatusEnum.success],
+    });
     const toDate = new Date().toISOString();
 
     // Act
@@ -101,11 +101,11 @@ describe('Export transactions', () => {
     // Arrange
 
     // Payment that should not be exported
-    await seedPaidRegistrations(
-      [registrationSafaricom],
+    await seedPaidRegistrations({
+      registrations: [registrationSafaricom],
       programId,
-      transferValue,
-    );
+      amount: transferValue,
+    });
 
     const fromDate = new Date().toISOString();
 
@@ -159,11 +159,11 @@ describe('Export transactions', () => {
     // Arrange
 
     // Payment 1
-    await seedPaidRegistrations(
-      [registrationSafaricom],
+    await seedPaidRegistrations({
+      registrations: [registrationSafaricom],
       programId,
-      transferValue,
-    );
+      amount: transferValue,
+    });
 
     // Payment 2
     const paymentIdOfSecondPayment = await doPaymentAndWaitForCompletion({
