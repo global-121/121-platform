@@ -126,7 +126,7 @@ describe('Update program fsp configuration of PA', () => {
 
   it('should fail when updating program fsp configuration without right permission', async () => {
     // Arrange
-    await setupNlrcEnvironment();
+    accessToken = await setupNlrcEnvironment();
 
     const accessTokenNoFspConfigUpdate = await createAccessTokenWithPermissions(
       {
