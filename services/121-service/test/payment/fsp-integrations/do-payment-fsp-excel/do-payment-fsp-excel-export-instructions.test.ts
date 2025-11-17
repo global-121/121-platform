@@ -91,7 +91,7 @@ describe('Do payment with Excel FSP', () => {
       [voucherRegistrationWesteros],
       programIdWesteros,
       amount,
-      [TransactionStatusEnum.waiting],
+      [TransactionStatusEnum.success, TransactionStatusEnum.error],
     );
 
     ////////////////////////////
@@ -100,11 +100,12 @@ describe('Do payment with Excel FSP', () => {
 
     // Do more tests with multiple programs, to include data isolation in tests
     // Specifically, this enables testing if transactions and registrations have the same length (see excel.service.ts)
+    // For CBE we don't have status awaiting, so only wait for success or error.
     paymentIdCbe = await seedPaidRegistrations(
       registrationsProgramWithValidation,
       programIdCbe,
       amount,
-      [TransactionStatusEnum.success],
+      [TransactionStatusEnum.success, TransactionStatusEnum.error],
     );
   };
 
