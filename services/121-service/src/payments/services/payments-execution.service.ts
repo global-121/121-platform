@@ -198,6 +198,15 @@ export class PaymentsExecutionService {
     paymentId: number;
     paginateQuery: PaginateQuery;
   }): Promise<BulkActionResultRetryPaymentDto> {
+    console.log(
+      '🚀 ~ PaymentsExecutionService ~ retryPayment ~ paymentId:',
+      paymentId,
+    );
+    await this.paymentsReportingService.findPaymentOrThrow(
+      programId,
+      paymentId,
+    );
+
     await this.paymentsProgressHelperService.checkAndLockPaymentProgressOrThrow(
       { programId },
     );
@@ -212,7 +221,7 @@ export class PaymentsExecutionService {
           paginateQuery,
         });
 
-      const transactionDetails = await this.getRetryTransactionDetails({
+      const transactionDetails = await this.getRetryTransactionDetailsOrThrow({
         programId,
         paymentId,
         inputReferenceIds: referenceIds,
@@ -294,7 +303,7 @@ export class PaymentsExecutionService {
     }
   }
 
-  private async getRetryTransactionDetails({
+  private async getRetryTransactionDetailsOrThrow({
     programId,
     paymentId,
     inputReferenceIds,
@@ -323,6 +332,11 @@ export class PaymentsExecutionService {
           inputReferenceIds?.includes(t.registrationReferenceId),
         )
       : failedTransactionForPayment;
+
+    if (transactionsToRetry.length === 0) {
+      const errors = `No failed transactions found for this filter.`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
 
     return transactionsToRetry.map((t) => {
       return {
