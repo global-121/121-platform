@@ -63,7 +63,7 @@ export class MockSeedFactoryService {
     console.log('**COMPLETED MULTIPLYING REGISTRATIONS**');
   }
 
-  public async extendRelatedDataToAllRegistrations({
+  public async alignOtherDataWithRegistrations({
     powerNr,
     programIds,
   }: {
@@ -92,7 +92,7 @@ export class MockSeedFactoryService {
     console.log('**COMPLETED EXTENDING RELATED DATA TO ALL REGISTRATIONS**');
   }
 
-  public async extendPaymentsAndRelatedData({
+  public async addExtraPaymentsAndAlignRelatedData({
     nrPayments,
     programIds,
   }: {
@@ -108,7 +108,7 @@ export class MockSeedFactoryService {
 
     for (const programId of relevantProgramIds) {
       if (nrPayments > 0) {
-        await this.extendPaymentsAndRelatedDataPerProgram(
+        await this.addExtraPaymentsAndAlignRelatedDataPerProgram(
           nrPayments,
           programId,
         );
@@ -118,7 +118,7 @@ export class MockSeedFactoryService {
     console.log('**COMPLETED MULTIPLYING TRANSACTIONS**');
   }
 
-  public async extendPaymentsAndRelatedDataPerProgram(
+  public async addExtraPaymentsAndAlignRelatedDataPerProgram(
     nrPayments: number,
     programId: number,
   ): Promise<void> {

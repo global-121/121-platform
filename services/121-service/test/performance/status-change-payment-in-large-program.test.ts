@@ -12,8 +12,8 @@ import {
   postProgramRegistrationAttribute,
 } from '@121-service/test/helpers/program.helper';
 import {
+  duplicateRegistrationsAndPaymentData,
   importRegistrations,
-  mockRegistrationsAndPaymentData,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -79,7 +79,7 @@ describe('Status Change Payment In Large Program', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registration between 20k - 50k
-    const mockResponse = await mockRegistrationsAndPaymentData({
+    const mockResponse = await duplicateRegistrationsAndPaymentData({
       powerNumberRegistration: duplicateNumber,
       accessToken,
       body: {

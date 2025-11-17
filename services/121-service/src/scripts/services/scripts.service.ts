@@ -89,10 +89,12 @@ export class ScriptsService {
       });
 
     await this.seedMockHelper.multiplyRegistrations(powerNrRegistrations);
-    await this.seedMockHelper.extendRelatedDataToAllRegistrations({
+    await this.seedMockHelper.alignOtherDataWithRegistrations({
       powerNr: powerNrRegistrations,
     });
-    await this.seedMockHelper.extendPaymentsAndRelatedData({ nrPayments }); // Ensure payment related data is extended
+    await this.seedMockHelper.addExtraPaymentsAndAlignRelatedData({
+      nrPayments,
+    }); // Ensure payment related data is extended
     await this.seedMockHelper.updateDerivedData();
     await this.seedMockHelper.updateSequenceNumbers();
     await this.seedMockHelper.introduceDuplicates();

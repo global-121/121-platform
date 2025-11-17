@@ -8,8 +8,8 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
 import {
   changeRegistrationStatus,
+  duplicateRegistrationsAndPaymentData,
   importRegistrations,
-  mockRegistrationsAndPaymentData,
   waitForStatusChangeToComplete,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -65,7 +65,7 @@ describe('Retry Failed Jobs On Startup During Queue Processing', () => {
       accessToken,
     });
     // Duplicate registration to be 32
-    const mockResponse = await mockRegistrationsAndPaymentData({
+    const mockResponse = await duplicateRegistrationsAndPaymentData({
       powerNumberRegistration: duplicateNumber,
       accessToken,
       body: {

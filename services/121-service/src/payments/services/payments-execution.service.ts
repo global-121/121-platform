@@ -218,10 +218,6 @@ export class PaymentsExecutionService {
     paymentId: number;
     paginateQuery: PaginateQuery;
   }): Promise<BulkActionResultRetryPaymentDto> {
-    console.log(
-      '🚀 ~ PaymentsExecutionService ~ retryPayment ~ paymentId:',
-      paymentId,
-    );
     await this.paymentsReportingService.findPaymentOrThrow(
       programId,
       paymentId,

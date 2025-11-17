@@ -69,13 +69,15 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     await this.seedMockHelper.multiplyRegistrations(powerNrRegistrations);
 
     // 3. Extend all data to all registrations (transactions and related data for payment 1, messages, etc.)
-    await this.seedMockHelper.extendRelatedDataToAllRegistrations({
+    await this.seedMockHelper.alignOtherDataWithRegistrations({
       powerNr: powerNrRegistrations,
       programIds,
     });
 
     // 4. Extend all payment-related data to multiple payments
-    await this.seedMockHelper.extendPaymentsAndRelatedData({ nrPayments });
+    await this.seedMockHelper.addExtraPaymentsAndAlignRelatedData({
+      nrPayments,
+    });
 
     // 5. Extend all message-related data to multiple messages
     await this.seedMockHelper.multiplyMessages(powerNrMessages);

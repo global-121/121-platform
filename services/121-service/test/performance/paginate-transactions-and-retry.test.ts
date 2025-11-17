@@ -8,7 +8,7 @@ import {
   retryPayment,
 } from '@121-service/test/helpers/program.helper';
 import {
-  mockRegistrationsAndPaymentData,
+  duplicateRegistrationsAndPaymentData,
   seedPaidRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
@@ -55,7 +55,7 @@ describe('Retry payment for 100k registrations with Safaricom within expected ra
       accessToken,
     );
     // Duplicate registrations
-    const mockResponse = await mockRegistrationsAndPaymentData({
+    const mockResponse = await duplicateRegistrationsAndPaymentData({
       powerNumberRegistration: duplicateNumber,
       numberOfPayments: 1,
       accessToken,
