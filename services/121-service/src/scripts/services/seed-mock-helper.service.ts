@@ -257,9 +257,9 @@ export class SeedMockHelperService {
     paymentId: number,
     accessToken: string,
   ): Promise<any> {
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/payments/${paymentId}`;
+    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/payments/${paymentId}/start`;
     const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
 
-    await this.httpService.patch(url, {}, headers);
+    await this.httpService.post(url, {}, headers);
   }
 }
