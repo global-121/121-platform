@@ -672,14 +672,26 @@ export class IntersolveVisaApiService {
       }
     }
 
-    const response = await this.httpService.request<ResponseDtoType>({
+    const url = `${intersolveVisaApiUrl}/${intersolveVisaApiPath}/v1/${endpoint}`;
+    let response = await this.httpService.request<ResponseDtoType>({
       method,
-      url: `${intersolveVisaApiUrl}/${intersolveVisaApiPath}/v1/${endpoint}`,
+      url,
       payload,
       headers,
     });
 
-    const errorMessage = this.createErrorMessageIfRequestFailed(response);
+    let errorMessage = this.createErrorMessageIfRequestFailed(response);
+
+    // Retry once if GET and errorMessage is set
+    if (errorMessage && method === 'GET') {
+      response = await this.httpService.request<ResponseDtoType>({
+        method,
+        url,
+        payload,
+        headers,
+      });
+      errorMessage = this.createErrorMessageIfRequestFailed(response);
+    }
 
     // If the response contains errors
     if (errorMessage) {

@@ -59,12 +59,24 @@ export class IntersolveVoucherReconciliationService {
             await this.programFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
               vouchersToUpdate[0].id,
             );
+          const errorVoucherIds: number[] = [];
           for await (const voucher of vouchersToUpdate) {
-            await this.intersolveVoucherService.getAndUpdateBalance(
-              voucher,
-              programId,
-              credentials,
-            );
+            try {
+              await this.intersolveVoucherService.getAndUpdateBalance(
+                voucher,
+                programId,
+                credentials,
+              );
+            } catch (error) {
+              // Save up errors until we reach 10, then fail the job to prevent excessive API calls
+              errorVoucherIds.push(voucher.id);
+              if (errorVoucherIds.length >= 10) {
+                throw new Error(
+                  `10 IntersolveVoucherApiErrors occurred while updating all balances, for vouchers: ${errorVoucherIds.join(', ')}
+                      . Failing job to prevent excessive API calls.`,
+                );
+              }
+            }
           }
         }
         id += 1000;
@@ -125,13 +137,26 @@ export class IntersolveVoucherReconciliationService {
             previouslyUnusedVouchers[0].id,
           );
 
+        const errorVoucherIds: number[] = [];
         for await (const voucher of previouslyUnusedVouchers) {
           totalVouchersUpdated++;
-          await this.intersolveVoucherService.getAndUpdateBalance(
-            voucher,
-            programId,
-            credentials,
-          );
+          try {
+            await this.intersolveVoucherService.getAndUpdateBalance(
+              voucher,
+              programId,
+              credentials,
+            );
+          } catch (error) {
+            // Save up errors until we reach 10, then fail the job to prevent excessive API calls
+            errorVoucherIds.push(voucher.id);
+            if (errorVoucherIds.length >= 10) {
+              throw new Error(
+                `10 errors occurred while updating all balances via cronjob, for vouchers: ${errorVoucherIds.join(
+                  ', ',
+                )}. Failing job to prevent excessive API calls.`,
+              );
+            }
+          }
         }
       }
       id += 1000;

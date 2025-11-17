@@ -121,7 +121,7 @@ export class IntersolveVoucherApiService {
       pin,
     );
 
-    const responseBody = env.MOCK_INTERSOLVE
+    let responseBody = env.MOCK_INTERSOLVE
       ? await this.intersolveMock.post(payload, username, password)
       : await this.soapService.post(
           payload,
@@ -130,6 +130,26 @@ export class IntersolveVoucherApiService {
           password,
           env.INTERSOLVE_URL,
         );
+
+    // retry once if failed request
+    let errorMessage = this.createErrorMessageIfRequestFailed(responseBody);
+    if (errorMessage) {
+      responseBody = env.MOCK_INTERSOLVE
+        ? await this.intersolveMock.post(payload, username, password)
+        : await this.soapService.post(
+            payload,
+            IntersolveVoucherSoapElements.LoyaltyHeader,
+            username,
+            password,
+            env.INTERSOLVE_URL,
+          );
+      errorMessage = this.createErrorMessageIfRequestFailed(responseBody);
+    }
+
+    if (errorMessage) {
+      throw new Error(errorMessage);
+    }
+
     const result = {
       resultCode: responseBody.GetCardResponse.ResultCode._text,
       resultDescription: responseBody.GetCardResponse.ResultDescription._text,
@@ -140,6 +160,22 @@ export class IntersolveVoucherApiService {
       ),
     };
     return result;
+  }
+
+  private createErrorMessageIfRequestFailed(responseBody): string | undefined {
+    if (!responseBody) {
+      return 'Intersolve URL could not be reached.';
+    }
+    if (!responseBody.GetCardResponse) {
+      return "Intersolve response did not contain a 'GetCardResponse' field.";
+    }
+    if (!responseBody.GetCardResponse.ResultCode) {
+      return "Intersolve response did not contain a 'ResultCode' field.";
+    }
+    if (!responseBody.GetCardResponse.ResultDescription) {
+      return "Intersolve response did not contain a 'ResultDescription' field.";
+    }
+    return undefined;
   }
 
   public async markAsToCancelByRefPos(refPos: number): Promise<void> {
