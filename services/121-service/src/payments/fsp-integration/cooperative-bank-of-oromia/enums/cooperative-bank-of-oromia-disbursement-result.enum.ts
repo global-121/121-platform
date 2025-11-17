@@ -1,6 +1,4 @@
-export enum CooperativeBankOfOromiaDisbursementResultEnum {
+export enum CooperativeBankOfOromiaTransferResultEnum {
   success = 'success',
-  duplicate = 'duplicate',
   fail = 'fail',
-  ambiguous = 'ambiguous',
 }

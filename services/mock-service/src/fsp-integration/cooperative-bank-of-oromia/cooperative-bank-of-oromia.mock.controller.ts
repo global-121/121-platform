@@ -2,39 +2,65 @@ import {
   BadRequestException,
   Body,
   Controller,
-  ForbiddenException,
-  Get,
   Headers,
   HttpCode,
   HttpStatus,
-  Param,
   Post,
-  Query,
 } from '@nestjs/common';
 import {
   ApiHeader,
   ApiOperation,
-  ApiParam,
-  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
-import {
-  CooperativeBankOfOromiaAuthToken,
-  CooperativeBankOfOromiaMockService,
-} from '@mock-service/src/fsp-integration/cooperative-bank-of-oromia/cooperative-bank-of-oromia.mock.service';
-import { CooperativeBankOfOromiaAuthenticateRequestDto } from '@mock-service/src/fsp-integration/cooperative-bank-of-oromia/dto/cooperative-bank-of-oromia-authenticate-request.dto';
-import { CooperativeBankOfOromiaAuthenticateResponseFailDto } from '@mock-service/src/fsp-integration/cooperative-bank-of-oromia/dto/cooperative-bank-of-oromia-authenticate-response-fail.dto';
-import { CooperativeBankOfOromiaAuthenticateResponseSuccessDto } from '@mock-service/src/fsp-integration/cooperative-bank-of-oromia/dto/cooperative-bank-of-oromia-authenticate-response-success.dto';
-import { CooperativeBankOfOromiaAuthenticatedRequestHeadersDto } from '@mock-service/src/fsp-integration/cooperative-bank-of-oromia/dto/cooperative-bank-of-oromia-authenticated-request-headers.dto';
-import { CooperativeBankOfOromiaDisbursementV2RequestDto } from '@mock-service/src/fsp-integration/cooperative-bank-of-oromia/dto/cooperative-bank-of-oromia-disbursementv2-request.dto';
-import { CooperativeBankOfOromiaDisbursementV2ResponseSuccessDto } from '@mock-service/src/fsp-integration/cooperative-bank-of-oromia/dto/cooperative-bank-of-oromia-disbursementv2-response-success.dto';
+import { CooperativeBankOfOromiaMockService } from '@mock-service/src/fsp-integration/cooperative-bank-of-oromia/cooperative-bank-of-oromia.mock.service';
 
 @ApiTags('fsp/cooperative-bank-of-oromia')
-@Controller('fsp/cooperative-bank-of-oromia')
+@Controller()
 export class CooperativeBankOfOromiaMockController {
-  public constructor(private readonly airtelMockService: CooperativeBankOfOromiaMockService) {}
+  public constructor(private readonly mockService: CooperativeBankOfOromiaMockService) {}
+
+  @ApiOperation({ summary: 'Initiate Payment' })
+  @Post('payments')
+  @HttpCode(200)
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token for API authentication',
+    required: true,
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Payment initiated successfully',
+    example: {
+      status: 'success',
+      data: {
+        transfer_id: 'txn_k389djrzn',
+        from_account: 'acc_123456',
+        to_account: 'acc_789012',
+        amount: 100,
+        currency: 'USD',
+        status: 'completed',
+        created_at: '2025-11-17T10:04:54.925Z',
+      },
+    },
+  })
+  public async initiatePayment(
+    @Headers() headers: Record<string, string>,
+    @Body() body: any,
+  ): Promise<any> {
+    const response = await this.mockService.initiatePayment({
+      headers,
+      body,
+    });
+    
+    if ('error' in response) {
+      throw new BadRequestException(response);
+    }
+    
+    return response;
+  }
+}
 
   @ApiOperation({ summary: 'Get Oauth2 access token' })
   @Post('auth/oauth2/token')

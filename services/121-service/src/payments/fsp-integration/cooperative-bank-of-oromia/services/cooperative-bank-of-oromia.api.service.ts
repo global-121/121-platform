@@ -1,16 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
-import { TokenSet } from 'openid-client';
 
 import { env } from '@121-service/src/env';
-import { CooperativeBankOfOromiaApiAuthenticationRequestBodyDto } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-authentication-request-body.dto';
-import { CooperativeBankOfOromiaApiAuthenticationResponseBodyDto } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-authentication-response-body.dto';
-import { CooperativeBankOfOromiaApiDisbursementRequestBodyDto } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-disbursement-request-body.dto';
-import { CooperativeBankOfOromiaApiRequestTypeEnum } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/enums/cooperative-bank-of-oromia-api-request-type.enum';
-import { CooperativeBankOfOromiaDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/enums/cooperative-bank-of-oromia-disbursement-result.enum';
+import { CooperativeBankOfOromiaApiPaymentRequestBodyDto } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-payment-request-body.dto';
+import { CooperativeBankOfOromiaApiPaymentResponseBodyDto } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-payment-response-body.dto';
+import { CooperativeBankOfOromiaTransferResultEnum } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/enums/cooperative-bank-of-oromia-disbursement-result.enum';
 import { CooperativeBankOfOromiaApiError } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/errors/cooperative-bank-of-oromia-api.error';
-import { CooperativeBankOfOromiaApiHelperService } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.api.helper.service';
-import { CooperativeBankOfOromiaEncryptionService } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.encryption.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 // Remove when we use Headers in the custom HTTP service.
@@ -25,79 +20,75 @@ const headersToPojo = (headers: Headers) => {
 
 @Injectable()
 export class CooperativeBankOfOromiaApiService {
-  private readonly encryptedPin: string;
-  private tokenSet: TokenSet;
-  private readonly cooperativeBankOfOromiaClientId: string | undefined;
-  private readonly cooperativeBankOfOromiaClientSecret: string | undefined;
-  private readonly countryCode: string;
-  private readonly currencyCode: string;
-  private readonly cooperativeBankOfOromiaAuthenticateURL: URL;
-  private readonly cooperativeBankOfOromiaDisbursementAndEnquiryV2URL: URL;
+  private readonly apiKey: string | undefined;
+  private readonly cooperativeBankOfOromiaApiBaseUrl: URL;
 
-  public constructor(
-    private readonly httpService: CustomHttpService,
-    private readonly cooperativeBankOfOromiaEncryptionService: CooperativeBankOfOromiaEncryptionService,
-    private readonly cooperativeBankOfOromiaApiHelperService: CooperativeBankOfOromiaApiHelperService,
-  ) {
-    const cooperativeBankOfOromiaDisbursementPin = env.COOPERATIVE_BANK_OF_OROMIA_DISBURSEMENT_PIN;
-    const cooperativeBankOfOromiaDisbursementV1PinEncryptionPublicKey =
-      env.COOPERATIVE_BANK_OF_OROMIA_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY;
-
-    // No need to re-encrypt the same value for every request.
-    if (cooperativeBankOfOromiaDisbursementPin && cooperativeBankOfOromiaDisbursementV1PinEncryptionPublicKey) {
-      this.encryptedPin = this.cooperativeBankOfOromiaEncryptionService.encryptPinV1(
-        cooperativeBankOfOromiaDisbursementPin,
-        cooperativeBankOfOromiaDisbursementV1PinEncryptionPublicKey,
-      );
-    }
-
-    this.cooperativeBankOfOromiaClientId = env.COOPERATIVE_BANK_OF_OROMIA_CLIENT_ID;
-    this.cooperativeBankOfOromiaClientSecret = env.COOPERATIVE_BANK_OF_OROMIA_CLIENT_SECRET;
-
-    this.countryCode = 'ZM';
-    this.currencyCode = 'ZMW';
+  public constructor(private readonly httpService: CustomHttpService) {
+    this.apiKey = env.COOPERATIVE_BANK_OF_OROMIA_CLIENT_ID; // Using CLIENT_ID as API_KEY
 
     let cooperativeBankOfOromiaApiBaseUrl: URL;
     if (env.MOCK_COOPERATIVE_BANK_OF_OROMIA || !env.COOPERATIVE_BANK_OF_OROMIA_API_URL) {
-      cooperativeBankOfOromiaApiBaseUrl = new URL('api/fsp/cooperative-bank-of-oromia/', env.MOCK_SERVICE_URL);
+      cooperativeBankOfOromiaApiBaseUrl = new URL('api/', env.MOCK_SERVICE_URL);
     } else {
       cooperativeBankOfOromiaApiBaseUrl = new URL(env.COOPERATIVE_BANK_OF_OROMIA_API_URL);
     }
-    this.cooperativeBankOfOromiaAuthenticateURL = new URL('auth/oauth2/token', cooperativeBankOfOromiaApiBaseUrl);
-    this.cooperativeBankOfOromiaDisbursementAndEnquiryV2URL = new URL(
-      'standard/v2/disbursements/',
-      cooperativeBankOfOromiaApiBaseUrl,
-    );
+    this.cooperativeBankOfOromiaApiBaseUrl = cooperativeBankOfOromiaApiBaseUrl;
   }
 
-  public async disburse({
+  public async initiateTransfer({
     cooperativeBankOfOromiaTransactionId,
-    phoneNumberWithoutCountryCode,
+    phoneNumber,
     amount,
   }: {
     cooperativeBankOfOromiaTransactionId: string;
-    phoneNumberWithoutCountryCode: string;
+    phoneNumber: string;
     amount: number;
   }): Promise<{
-    result: CooperativeBankOfOromiaDisbursementResultEnum;
+    result: CooperativeBankOfOromiaTransferResultEnum;
     message: string;
   }> {
-    await this.authenticate();
-    const url = this.cooperativeBankOfOromiaDisbursementAndEnquiryV2URL;
-    const headers = this.addAuthHeaders(
-      new Headers({
-        Accept: '*/*',
-        'Content-Type': 'application/json',
-        'X-Country': this.countryCode,
-        'X-Currency': this.currencyCode,
-      }),
-    );
+    const url = new URL('payments', this.cooperativeBankOfOromiaApiBaseUrl);
+    const headers = new Headers({
+      'Authorization': `Bearer ${this.apiKey}`,
+      'Content-Type': 'application/json',
+    });
 
-    const payload: CooperativeBankOfOromiaApiDisbursementRequestBodyDto = {
-      payee: {
-        currency: this.currencyCode,
-        msisdn: phoneNumberWithoutCountryCode,
-      },
+    const payload: CooperativeBankOfOromiaApiPaymentRequestBodyDto = {
+      from_account: '1234567890', // TODO: Configure actual from_account
+      to_account: phoneNumber,
+      amount,
+      currency: 'USD', // TODO: Configure actual currency
+      paymentType: 'domestic',
+      status: 'completed',
+    };
+
+    let response: AxiosResponse<CooperativeBankOfOromiaApiPaymentResponseBodyDto>;
+
+    try {
+      response = await this.httpService.post<
+        AxiosResponse<CooperativeBankOfOromiaApiPaymentResponseBodyDto>
+      >(url.href, payload, headersToPojo(headers));
+    } catch (error) {
+      return {
+        result: CooperativeBankOfOromiaTransferResultEnum.fail,
+        message: `Transfer failed: ${error.message}`,
+      };
+    }
+
+    // Check if the response indicates success
+    if (response.data && response.data.status === 'success') {
+      return {
+        result: CooperativeBankOfOromiaTransferResultEnum.success,
+        message: 'Transfer completed successfully',
+      };
+    }
+
+    return {
+      result: CooperativeBankOfOromiaTransferResultEnum.fail,
+      message: 'Transfer failed',
+    };
+  }
+}
       // The docs say "Reference for service / goods purchased."
       // We can just use a static non-relevant value here. Needs to be alphanumeric and 4 - 64 characters long.
       reference: '1234',
