@@ -8,7 +8,7 @@ import {
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
   createAndStartPayment,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
@@ -71,7 +71,7 @@ describe('Do payment with filter', () => {
       accessToken,
       maxWaitTimeMs: 10_000,
     });
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,
@@ -107,7 +107,7 @@ describe('Do payment with filter', () => {
       accessToken,
       maxWaitTimeMs: 10_000,
     });
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,
@@ -145,7 +145,7 @@ describe('Do payment with filter', () => {
       accessToken,
       maxWaitTimeMs: 10_000,
     });
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,
@@ -181,7 +181,7 @@ describe('Do payment with filter', () => {
       accessToken,
       maxWaitTimeMs: 10_000,
     });
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,
@@ -218,7 +218,7 @@ describe('Do payment with filter', () => {
       accessToken,
       maxWaitTimeMs: 10_000,
     });
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,

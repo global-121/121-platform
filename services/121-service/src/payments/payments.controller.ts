@@ -35,7 +35,7 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import {
   PaginateConfigTransactionView,
-  PaginateConfigTransactionViewOnlyFilters,
+  PaginateConfigTransactionViewRetry,
 } from '@121-service/src/payments/consts/paginate-config-transaction-view.const';
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
 import { ExportTransactionResponseDto } from '@121-service/src/payments/dto/export-transaction-response.dto';
@@ -260,7 +260,7 @@ export class PaymentsController {
   })
   @PaginatedSwaggerDocs(
     TransactionViewEntity,
-    PaginateConfigTransactionViewOnlyFilters,
+    PaginateConfigTransactionViewRetry,
   )
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
@@ -283,7 +283,7 @@ export class PaymentsController {
   public async retryPayment(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('paymentId', ParseIntPipe) paymentId: number,
-    @Query() paginateQuery: PaginateQuery,
+    @Paginate() paginateQuery: PaginateQuery,
     @Req() req: ScopedUserRequest,
   ): Promise<BulkActionResultDto> {
     const userId = RequestHelper.getUserId(req);

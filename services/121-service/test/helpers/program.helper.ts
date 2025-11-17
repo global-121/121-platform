@@ -231,7 +231,8 @@ export async function retryPayment({
   return await getServer()
     .post(`/programs/${programId}/payments/${paymentId}/retry`)
     .set('Cookie', [accessToken])
-    .query(queryParams);
+    .query(queryParams)
+    .send();
 }
 
 export async function getPayments(
@@ -279,7 +280,7 @@ export async function waitForPaymentNotInProgress({
   }
 }
 
-export async function getTransactions({
+export async function getTransactionsByPaymentIdPaginated({
   programId,
   paymentId,
   accessToken,
@@ -479,7 +480,7 @@ export async function waitForPaymentTransactionsToComplete({
 
   while (Date.now() - startTime < maxWaitTimeMs && !allTransactionsComplete) {
     // Get payment transactions
-    const paymentTransactions = await getTransactions({
+    const paymentTransactions = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       accessToken,

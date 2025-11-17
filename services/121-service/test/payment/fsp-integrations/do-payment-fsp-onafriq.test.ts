@@ -8,7 +8,7 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   createAndStartPayment,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   retryPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -77,7 +77,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     });
 
     // Assert
-    const getTransactionsBody = await getTransactions({
+    const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,
@@ -139,7 +139,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     });
 
     // Assert
-    const getTransactionsBody = await getTransactions({
+    const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,
@@ -180,12 +180,13 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     });
 
     // Assert
-    const getTransactionsAfterRetryBody = await getTransactions({
-      programId,
-      paymentId,
-      registrationReferenceId: registrationOnafriq.referenceId,
-      accessToken,
-    });
+    const getTransactionsAfterRetryBody =
+      await getTransactionsByPaymentIdPaginated({
+        programId,
+        paymentId,
+        registrationReferenceId: registrationOnafriq.referenceId,
+        accessToken,
+      });
     expect(retryResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(retryResponse.body.applicableCount).toBe(paymentReferenceIds.length);
     expect(getTransactionsAfterRetryBody.body.data[0].status).toBe(
@@ -240,7 +241,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     });
 
     // Assert
-    const getTransactionsBody = await getTransactions({
+    const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,
@@ -303,7 +304,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // NOTE 2: We also assert that no callback comes in, so we must give some time for the callback to potentially come in, as the assertion is not valuable otherwise.
     await waitFor(1_000);
 
-    const getTransactionsBody = await getTransactions({
+    const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,

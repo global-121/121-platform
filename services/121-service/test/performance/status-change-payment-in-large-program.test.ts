@@ -80,15 +80,14 @@ describe('Status Change Payment In Large Program', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registration between 20k - 50k
-    const duplicateRegistrationsResponse =
-      await mockRegistrationsAndPaymentData({
-        powerNumberRegistration: duplicateNumber,
-        accessToken,
-        body: {
-          secret: env.RESET_SECRET,
-        },
-      });
-    expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
+    const mockResponse = await mockRegistrationsAndPaymentData({
+      powerNumberRegistration: duplicateNumber,
+      accessToken,
+      body: {
+        secret: env.RESET_SECRET,
+      },
+    });
+    expect(mockResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Assert
     // Get program with registrations and validate load time is less than 300ms

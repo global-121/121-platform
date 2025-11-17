@@ -9,7 +9,7 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   createAndStartPayment,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   patchProgram,
   retryPayment,
   waitForPaymentTransactionsToComplete,
@@ -88,7 +88,7 @@ describe('Do payment to 1 PA', () => {
       });
 
       // Assert
-      const getTransactionsBody = await getTransactions({
+      const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
         programId,
         paymentId,
         registrationReferenceId: registrationSafaricom.referenceId,
@@ -151,7 +151,7 @@ describe('Do payment to 1 PA', () => {
       });
 
       // Assert
-      const getTransactionsBody = await getTransactions({
+      const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
         programId,
         paymentId,
         registrationReferenceId: registrationSafaricom.referenceId,
@@ -219,7 +219,7 @@ describe('Do payment to 1 PA', () => {
       await waitFor(2_000);
 
       // Assert
-      const getTransactionsBody = await getTransactions({
+      const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
         programId,
         paymentId,
         registrationReferenceId: registrationSafaricom.referenceId,
@@ -283,7 +283,7 @@ describe('Do payment to 1 PA', () => {
       });
 
       // Assert
-      const getTransactionsBody = await getTransactions({
+      const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
         programId,
         paymentId,
         registrationReferenceId: registrationSafaricom.referenceId,

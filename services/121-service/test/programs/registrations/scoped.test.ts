@@ -7,7 +7,7 @@ import {
   registrationScopedKisumuWestPv,
   registrationsPV,
 } from '@121-service/test/fixtures/scoped-registrations';
-import { getTransactions } from '@121-service/test/helpers/program.helper';
+import { getTransactionsByPaymentIdPaginated } from '@121-service/test/helpers/program.helper';
 import {
   importRegistrations,
   seedPaidRegistrations,
@@ -112,7 +112,7 @@ describe('Registrations - [Scoped]', () => {
     accessToken = await getAccessTokenScoped(testScope);
 
     // Act
-    const transactionResponse = await getTransactions({
+    const transactionResponse = await getTransactionsByPaymentIdPaginated({
       programId: PvProgramId,
       paymentId: 1,
       registrationReferenceId: null,
