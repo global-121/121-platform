@@ -368,7 +368,7 @@ describe('Payment start', () => {
         paymentId,
         accessToken,
       });
-    const allTransactionsEnd = getAllTransactionsResponseEnd.body;
+    const allTransactionsEnd = getAllTransactionsResponseEnd.body.data;
     const startedTransactionsEnd = allTransactionsEnd.filter(
       (t: any) => t.status !== TransactionStatusEnum.pendingApproval,
     );
