@@ -6,8 +6,8 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
 import {
   changeRegistrationStatus,
+  duplicateRegistrationsAndPaymentData,
   importRegistrations,
-  mockRegistrationsAndPaymentData,
   waitForStatusChangeToComplete,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -65,7 +65,7 @@ describe('Do payment for 100k registrations with Safaricom within expected range
       accessToken,
     });
     // Duplicate registration to be more than 100k
-    const mockResponse = await mockRegistrationsAndPaymentData({
+    const mockResponse = await duplicateRegistrationsAndPaymentData({
       powerNumberRegistration: duplicateNumber,
       accessToken,
       body: {
