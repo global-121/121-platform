@@ -12,6 +12,7 @@ import { AppController } from '@121-service/src/app.controller';
 import { AuthModule } from '@121-service/src/auth/auth.module';
 import { THROTTLING_LIMIT_GENERIC } from '@121-service/src/config';
 import { CronjobModule } from '@121-service/src/cronjob/cronjob.module';
+import { DebitCardsIntersolveVisaModule } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.module';
 import { EmailsModule } from '@121-service/src/emails/emails.module';
 import { env } from '@121-service/src/env';
 import { ExchangeRatesModule } from '@121-service/src/exchange-rates/exchange-rates.module';
@@ -31,7 +32,6 @@ import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/enti
 import { ProgramAttachmentsModule } from '@121-service/src/programs/program-attachments/program-attachments.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
-import { RegistrationDebitCardsModule } from '@121-service/src/registration-debit-cards/registration-debit-cards.module';
 import { RegistrationsUpdateJobsModule } from '@121-service/src/registrations-update-jobs/registrations-update-jobs.module';
 import { ScriptsModule } from '@121-service/src/scripts/scripts.module';
 import { ProgramExistenceInterceptor } from '@121-service/src/shared/interceptors/program-existence.interceptor';
@@ -99,7 +99,7 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
     SafaricomReconciliationModule,
     OnafriqReconciliationModule,
     RegistrationsUpdateJobsModule,
-    RegistrationDebitCardsModule,
+    DebitCardsIntersolveVisaModule,
   ],
   controllers: [AppController, TestController],
   providers: [

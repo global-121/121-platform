@@ -18,6 +18,11 @@ graph LR
   CronjobModule-->IntersolveVoucherReconciliationModule
   CronjobModule-->NedbankReconciliationModule
   CronjobModule-->OnafriqReconciliationModule
+  DebitCardsIntersolveVisaModule-->IntersolveVisaModule
+  DebitCardsIntersolveVisaModule-->MessageQueuesModule
+  DebitCardsIntersolveVisaModule-->ProgramFspConfigurationsModule
+  DebitCardsIntersolveVisaModule-->RegistrationDataModule
+  DebitCardsIntersolveVisaModule-->UserModule
   ExcelModule-->RegistrationsModule
   ExcelModule-->TransactionsModule
   ExcelReconcilicationModule-->ExcelModule
@@ -109,13 +114,9 @@ graph LR
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->ProgramFspConfigurationsModule
   ProgramModule-->UserModule
-  RegistrationDebitCardsModule-->IntersolveVisaModule
-  RegistrationDebitCardsModule-->MessageQueuesModule
-  RegistrationDebitCardsModule-->ProgramFspConfigurationsModule
-  RegistrationDebitCardsModule-->RegistrationDataModule
-  RegistrationDebitCardsModule-->UserModule
   RegistrationEventsModule-->UserModule
   RegistrationUtilsModule-->RegistrationDataModule
+  RegistrationsModule-->DebitCardsIntersolveVisaModule
   RegistrationsModule-->FspsModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->MessageQueuesModule
@@ -124,7 +125,6 @@ graph LR
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->QueuesRegistryModule
   RegistrationsModule-->RegistrationDataModule
-  RegistrationsModule-->RegistrationDebitCardsModule
   RegistrationsModule-->RegistrationEventsModule
   RegistrationsModule-->RegistrationUtilsModule
   RegistrationsModule-->UserModule

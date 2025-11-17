@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, FindOneOptions, In, Repository } from 'typeorm';
 
+import { DebitCardsIntersolveVisaService } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.service';
 import { env } from '@121-service/src/env';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
@@ -39,7 +40,6 @@ import { InclusionScoreService } from '@121-service/src/registration/services/in
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
-import { RegistrationDebitCardsService } from '@121-service/src/registration-debit-cards/registration-debit-cards.service';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -70,7 +70,7 @@ export class RegistrationsService {
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationsInputValidator: RegistrationsInputValidator,
     private readonly uniqueRegistrationPairRepository: UniqueRegistrationPairRepository,
-    private readonly registrationDebitCardsService: RegistrationDebitCardsService,
+    private readonly debitCardsIntersolveVisaService: DebitCardsIntersolveVisaService,
   ) {}
 
   // This methods can be used to get the same formatted data as the pagination query using referenceId
@@ -570,7 +570,7 @@ export class RegistrationsService {
       env.INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION &&
       intersolveVisaAttributeNames.includes(attribute)
     ) {
-      await this.registrationDebitCardsService.sendCustomerInformationToIntersolve(
+      await this.debitCardsIntersolveVisaService.sendCustomerInformationToIntersolve(
         registration,
       );
     }

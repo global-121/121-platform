@@ -21,23 +21,22 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+import { DebitCardsIntersolveVisaService } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.service';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
-import { RegistrationDebitCardsService } from '@121-service/src/registration-debit-cards/registration-debit-cards.service';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
 
 @UseGuards(AuthenticatedUserGuard)
+@ApiTags('fsps/intersolve-visa')
 @Controller()
-export class RegistrationDebitCardsController {
+export class DebitCardsIntersolveVisaController {
   public constructor(
     private readonly userService: UserService,
-    private readonly registrationDebitCardsService: RegistrationDebitCardsService,
+    private readonly debitCardsIntersolveVisaService: DebitCardsIntersolveVisaService,
   ) {}
 
-  // Re-issue card: this is placed in RegistrationDebitCardsController because it also sends messages and searches by referenceId
-  @ApiTags('fsps/intersolve-visa')
   @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
   @ApiOperation({
     summary: '[SCOPED] Re-issue card: replace existing card with a new card.',
@@ -59,14 +58,13 @@ export class RegistrationDebitCardsController {
     @Req() req,
   ): Promise<void> {
     const userId = req.user.id;
-    await this.registrationDebitCardsService.reissueCardAndSendMessage(
+    await this.debitCardsIntersolveVisaService.reissueCardAndSendMessage(
       referenceId,
       programId,
       userId,
     );
   }
 
-  @ApiTags('fsps/intersolve-visa')
   @AuthenticatedUser()
   @ApiOperation({
     summary: '[SCOPED] [EXTERNALLY USED] Pause Intersolve Visa Card',
@@ -112,7 +110,7 @@ export class RegistrationDebitCardsController {
       );
     }
 
-    return await this.registrationDebitCardsService.pauseCardAndSendMessage(
+    return await this.debitCardsIntersolveVisaService.pauseCardAndSendMessage(
       referenceId,
       programId,
       tokenCode,
@@ -121,7 +119,6 @@ export class RegistrationDebitCardsController {
     );
   }
 
-  @ApiTags('fsps/intersolve-visa')
   @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardREAD] })
   @ApiOperation({
     summary:
@@ -143,13 +140,12 @@ export class RegistrationDebitCardsController {
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<IntersolveVisaWalletDto> {
-    return await this.registrationDebitCardsService.retrieveAndUpdateIntersolveVisaWalletAndCards(
+    return await this.debitCardsIntersolveVisaService.retrieveAndUpdateIntersolveVisaWalletAndCards(
       referenceId,
       programId,
     );
   }
 
-  @ApiTags('fsps/intersolve-visa')
   @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardREAD] })
   @ApiOperation({
     summary:
@@ -171,7 +167,7 @@ export class RegistrationDebitCardsController {
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<IntersolveVisaWalletDto> {
-    return await this.registrationDebitCardsService.getIntersolveVisaWalletAndCards(
+    return await this.debitCardsIntersolveVisaService.getIntersolveVisaWalletAndCards(
       referenceId,
       programId,
     );
@@ -194,7 +190,7 @@ export class RegistrationDebitCardsController {
     @Param('programId', ParseIntPipe) programId: number,
     @Param('referenceId') referenceId: string,
   ): Promise<void> {
-    return await this.registrationDebitCardsService.getRegistrationAndSendContactInformationToIntersolve(
+    return await this.debitCardsIntersolveVisaService.getRegistrationAndSendContactInformationToIntersolve(
       referenceId,
       programId,
     );

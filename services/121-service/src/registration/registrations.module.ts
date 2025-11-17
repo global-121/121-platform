@@ -2,6 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { DebitCardsIntersolveVisaModule } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.module';
 import { FspsModule } from '@121-service/src/fsps/fsp.module';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { LatestMessageEntity } from '@121-service/src/notifications/entities/latest-message.entity';
@@ -36,7 +37,6 @@ import { RegistrationsBulkService } from '@121-service/src/registration/services
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
-import { RegistrationDebitCardsModule } from '@121-service/src/registration-debit-cards/registration-debit-cards.module';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
 import { RegistrationEventsModule } from '@121-service/src/registration-events/registration-events.module';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
@@ -70,7 +70,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     ProgramFspConfigurationsModule,
     QueuesRegistryModule,
     MessageTemplateModule,
-    RegistrationDebitCardsModule,
+    DebitCardsIntersolveVisaModule,
   ],
   providers: [
     RegistrationsService,

@@ -22,7 +22,7 @@ import { RegistrationDataScopedRepository } from '@121-service/src/registration/
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 
 @Injectable()
-export class RegistrationDebitCardsService {
+export class DebitCardsIntersolveVisaService {
   public constructor(
     private readonly queueMessageService: MessageQueuesService,
     private readonly intersolveVisaService: IntersolveVisaService,
@@ -31,6 +31,9 @@ export class RegistrationDebitCardsService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
   ) {}
 
+  // TODO: duplicate of Registrations.service getRegistrationOrThrow
+  // Registrations.service is now dependent on RegistrationDebitCards.service
+  // Need to refactor to avoid circular dependency
   public async getRegistrationOrThrow({
     referenceId,
     relations = [],
@@ -90,7 +93,7 @@ export class RegistrationDebitCardsService {
    * - It first retrieves the registration associated with the given reference ID and program ID and he Intersolve Visa configuration for the program.
    * - It then checks that all required data fields are present in the registration data.
    * - It then calls the Intersolve Visa service to reissue the card with the registration data and Intersolve Visa configuration.
-   * - Finally, it adds a message to the queue to be sent to the registrant.
+   * - Finally, it adds a message to the queue to be sent to the registration.
    *
    * @param {string} referenceId - The reference ID of the registration.
    * @param {number} programId - The ID of the program.
@@ -276,8 +279,8 @@ export class RegistrationDebitCardsService {
   }
 
   /**
-   * Pauses or unpauses a card associated with a given token code and sends a message to the registrant.
-   * - It retrieves the registration, pauses or unpauses the card, sends a message to the registrant, and returns the updated wallet.
+   * Pauses or unpauses a card associated with a given token code and sends a message to the registration.
+   * - It retrieves the registration, pauses or unpauses the card, sends a message to the registration, and returns the updated wallet.
    *
    * @param {string} referenceId - The reference ID of the registration.
    * @param {number} programId - The ID of the program.
