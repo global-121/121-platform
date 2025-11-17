@@ -677,6 +677,8 @@ export async function getMessageHistoryUntilX(
   return getMessageHistoryUntilX(programId, referenceId, accessToken, x);
 }
 
+// It's easy to get this wrong, not every FSP uses the same set of
+// TransactionStatusEnums. You need to know what you're doing at the callsite.
 export async function seedPaidRegistrations(
   registrations: any[],
   programId: number,
