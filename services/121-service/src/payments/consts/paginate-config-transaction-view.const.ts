@@ -46,13 +46,13 @@ export const PaginateConfigTransactionView: PaginateConfig<TransactionViewEntity
     filterableColumns,
   };
 
-export const PaginateConfigTransactionViewOnlyFilters: PaginateConfig<TransactionViewEntity> =
+export const PaginateConfigTransactionViewRetry: PaginateConfig<TransactionViewEntity> =
   {
-    searchableColumns: columns,
+    searchableColumns: columns.filter((col) =>
+      filterableColumns[col]?.includes(FilterOperator.ILIKE),
+    ),
     ignoreSearchByInQueryParam: true,
     maxLimit,
     sortableColumns: [],
-    filterableColumns: {
-      ...PaginateConfigTransactionView.filterableColumns,
-    },
+    filterableColumns,
   };

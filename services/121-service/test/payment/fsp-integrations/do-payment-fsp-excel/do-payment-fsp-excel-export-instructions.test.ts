@@ -11,7 +11,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import programTest from '@121-service/src/seed-data/program/program-test.json';
 import {
   getFspInstructions,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
 } from '@121-service/test/helpers/program.helper';
 import {
   deleteProgramFspConfigurationProperty,
@@ -127,7 +127,7 @@ describe('Do payment with Excel FSP', () => {
       // Arrange
 
       // Act
-      const transactionsResponse = await getTransactions({
+      const transactionsResponse = await getTransactionsByPaymentIdPaginated({
         programId: programIdWesteros,
         paymentId: excelPaymentIdWesteros,
         registrationReferenceId: null,

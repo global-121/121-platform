@@ -7,7 +7,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { registrationsPV } from '@121-service/test/fixtures/scoped-registrations';
 import {
   createAndStartPayment,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
@@ -92,7 +92,7 @@ describe('Registrations - [Scoped]', () => {
       accessToken,
       maxWaitTimeMs: 20_000,
     });
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdPV,
       paymentId,
       registrationReferenceId: null,

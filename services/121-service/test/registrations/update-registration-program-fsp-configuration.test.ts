@@ -10,7 +10,7 @@ import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   createAndStartPayment,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import { postProgramFspConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
@@ -220,7 +220,7 @@ describe('Update program fsp configuration of PA', () => {
       maxWaitTimeMs: 30_000,
     });
 
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdPv,
       paymentId: payment,
       registrationReferenceId: registrationPvScoped.referenceId,

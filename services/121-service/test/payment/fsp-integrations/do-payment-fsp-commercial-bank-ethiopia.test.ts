@@ -5,7 +5,7 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   createAndStartPayment,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   retryPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -57,7 +57,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     });
 
     // Assert
-    const getTransactionsBody = await getTransactions({
+    const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationCbe.referenceId,
@@ -122,7 +122,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     });
 
     // Assert
-    const getTransactionsBody = await getTransactions({
+    const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationCbeWithError.referenceId,
@@ -175,7 +175,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     });
 
     // Assert
-    const getTransactionsBody = await getTransactions({
+    const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationCbeWithTimeout.referenceId,
@@ -226,7 +226,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
       ],
     });
 
-    const getTransactionsBody = await getTransactions({
+    const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationCbeWithTimeout.referenceId,
@@ -269,12 +269,13 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
       completeStatuses: [TransactionStatusEnum.success],
     });
 
-    const getTransactionsAfterRetryBody = await getTransactions({
-      programId,
-      paymentId,
-      registrationReferenceId: registrationCbeWithTimeout.referenceId,
-      accessToken,
-    });
+    const getTransactionsAfterRetryBody =
+      await getTransactionsByPaymentIdPaginated({
+        programId,
+        paymentId,
+        registrationReferenceId: registrationCbeWithTimeout.referenceId,
+        accessToken,
+      });
 
     // Assert
     // Check if the transaction status is success.

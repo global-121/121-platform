@@ -9,7 +9,7 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 import { getTransactionsIntersolveVoucher } from '@121-service/test/helpers/fsp-specific.helper';
 import {
   createAndStartPayment,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   waitForMessagesToComplete,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -217,7 +217,7 @@ describe('Do payment to 1 PA', () => {
         minimumNumberOfMessagesPerReferenceId: 1,
       });
 
-      const getTransactionsBody = await getTransactions({
+      const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
         programId,
         paymentId,
         registrationReferenceId: registrationAhCopy.referenceId,
@@ -263,7 +263,7 @@ describe('Do payment to 1 PA', () => {
         minimumNumberOfMessagesPerReferenceId: 1,
       });
 
-      const getTransactionsBody = await getTransactions({
+      const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
         programId,
         paymentId,
         registrationReferenceId: registrationAhCopy.referenceId,
