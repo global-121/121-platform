@@ -5,7 +5,7 @@ This document summarizes the scaffolding work done to add Cooperative Bank of Or
 
 ## Files Created/Modified
 
-### New Files Created (37 files copied from Airtel)
+### New Files Created (31 files copied from Airtel)
 
 #### Core FSP Integration Module
 - `services/121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/`
@@ -46,9 +46,8 @@ This document summarizes the scaffolding work done to add Cooperative Bank of Or
   - `dto/` directory with 6 DTO files
 
 #### Tests
-- `services/121-service/test/payment/do-payment-fsp-cooperative-bank-of-oromia.test.ts`
+- `services/121-service/test/payment/do-payment-fsp-cooperative-bank-of-oromia.test.ts` - Integration test for happy flow
 - `services/121-service/test/payment/__snapshots__/do-payment-fsp-cooperative-bank-of-oromia.test.ts.snap`
-- Unit test files for all services (`.spec.ts` files with snapshots)
 
 #### Supporting Files
 - `e2e/test-registration-data/test-registrations-CooperativeBankOfOromia.csv`

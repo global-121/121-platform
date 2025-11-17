@@ -34,8 +34,8 @@ This is a **scaffolded copy** of the Airtel FSP implementation, created as a sta
 
 #### 3. Testing
 
-- [ ] Update unit tests with real test scenarios
-- [ ] Create integration tests with sandbox/test environment
+- [ ] Add comprehensive unit tests for services
+- [ ] Expand integration tests with sandbox/test environment
 - [ ] Update mock service to reflect actual API behavior
 - [ ] Perform end-to-end testing with test credentials
 
@@ -62,7 +62,7 @@ This is a **scaffolded copy** of the Airtel FSP implementation, created as a sta
 - **DTOs**: All request/response DTOs in `dtos/` directory
 - **Errors**: Custom error classes in `errors/` directory
 - **Enums**: Status and type enums in `enums/` directory
-- **Tests**: Unit test files (need updating)
+- **Tests**: One integration test for happy flow payment scenario
 
 ### Environment Variables
 
