@@ -269,7 +269,7 @@ describe('Do payment retry', () => {
     });
 
     // Assert
-    expect(retryResponse.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(retryResponse.status).toBe(HttpStatus.NOT_FOUND);
     expect(retryResponse.body).toMatchSnapshot();
   });
 
