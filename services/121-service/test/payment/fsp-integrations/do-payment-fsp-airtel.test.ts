@@ -5,7 +5,7 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   createAndStartPayment,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
@@ -116,7 +116,7 @@ describe('Do payment with FSP: Airtel', () => {
         TransactionStatusEnum.waiting,
       ],
     });
-    const getTransactionsResult = await getTransactions({
+    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationAirtelSuccessTransaction.referenceId,
@@ -178,7 +178,7 @@ describe('Do payment with FSP: Airtel', () => {
         TransactionStatusEnum.waiting,
       ],
     });
-    const getTransactionsResult = await getTransactions({
+    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId:
@@ -230,7 +230,7 @@ describe('Do payment with FSP: Airtel', () => {
         TransactionStatusEnum.waiting,
       ],
     });
-    const getTransactionsResult = await getTransactions({
+    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId:
@@ -279,7 +279,7 @@ describe('Do payment with FSP: Airtel', () => {
         TransactionStatusEnum.waiting,
       ],
     });
-    const getTransactionsResult = await getTransactions({
+    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationAirtelAmbiguousError.referenceId,

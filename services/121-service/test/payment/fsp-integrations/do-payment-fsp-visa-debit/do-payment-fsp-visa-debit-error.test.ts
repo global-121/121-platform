@@ -17,7 +17,7 @@ import {
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   createAndStartPayment,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import { deleteProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
@@ -80,7 +80,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     });
 
     // Assert
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId,
       registrationReferenceId: registrationVisa.referenceId,
@@ -142,7 +142,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     });
 
     // Assert
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId,
       registrationReferenceId: registrationVisa.referenceId,
@@ -191,7 +191,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     });
 
     // Assert
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId,
       registrationReferenceId: registrationVisa.referenceId,
@@ -240,7 +240,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     });
 
     // Assert
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId,
       registrationReferenceId: registrationVisa.referenceId,
@@ -310,7 +310,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     });
 
     // Assert
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId: paymentId2,
       registrationReferenceId: registrationVisa.referenceId,
@@ -402,7 +402,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentId,
     });
 
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId,
       registrationReferenceId: registrationVisa.referenceId,

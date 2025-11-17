@@ -6,7 +6,7 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   importFspReconciliationData,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -96,7 +96,7 @@ describe('Do payment with Excel FSP', () => {
           TransactionStatusEnum.error,
         ],
       });
-      const transactionsResponse = await getTransactions({
+      const transactionsResponse = await getTransactionsByPaymentIdPaginated({
         programId: programIdWesteros,
         paymentId: pamymentIdWesteros,
         registrationReferenceId: null,
@@ -174,7 +174,7 @@ describe('Do payment with Excel FSP', () => {
         reconciliationData: reconciliationDataIronbankOverwrite,
       });
 
-      const transactionsResponse = await getTransactions({
+      const transactionsResponse = await getTransactionsByPaymentIdPaginated({
         programId: programIdWesteros,
         paymentId: pamymentIdWesteros,
         registrationReferenceId: null,

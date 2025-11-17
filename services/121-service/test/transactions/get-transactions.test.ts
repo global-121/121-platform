@@ -9,7 +9,7 @@ import {
   registrationScopedKisumuWestPv,
   registrationsPV,
 } from '@121-service/test/fixtures/scoped-registrations';
-import { getTransactions } from '@121-service/test/helpers/program.helper';
+import { getTransactionsByPaymentIdPaginated } from '@121-service/test/helpers/program.helper';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -47,7 +47,7 @@ describe('Registrations - [Scoped]', () => {
       FSP_SETTINGS[registrationScopedKisumuWestPv.programFspConfigurationName];
 
     // Act
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdPV,
       paymentId: paymentIdPv,
       accessToken,
@@ -89,7 +89,7 @@ describe('Registrations - [Scoped]', () => {
     // 8 registrations in total are included
     // 4 registrations are in include in program PV
     // 2 registrations are in include in program PV and are in the scope (Zeeland) of the requesting user
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdPV,
       paymentId: paymentIdPv,
       registrationReferenceId: null,
@@ -120,7 +120,7 @@ describe('Registrations - [Scoped]', () => {
       const accessToken = await getAccessToken();
 
       // Act
-      const transactionsResponse = await getTransactions({
+      const transactionsResponse = await getTransactionsByPaymentIdPaginated({
         programId: programIdPV,
         paymentId: paymentIdPv,
         accessToken,
@@ -141,7 +141,7 @@ describe('Registrations - [Scoped]', () => {
       const accessToken = await getAccessToken();
 
       // Act
-      const transactionsResponse = await getTransactions({
+      const transactionsResponse = await getTransactionsByPaymentIdPaginated({
         programId: programIdPV,
         paymentId: paymentIdPv,
         accessToken,
@@ -167,7 +167,7 @@ describe('Registrations - [Scoped]', () => {
       ];
 
       // Act
-      const transactionsResponse = await getTransactions({
+      const transactionsResponse = await getTransactionsByPaymentIdPaginated({
         programId: programIdPV,
         paymentId: paymentIdPv,
         accessToken,
@@ -191,7 +191,7 @@ describe('Registrations - [Scoped]', () => {
       const accessToken = await getAccessToken();
 
       // Act
-      const transactionsResponse = await getTransactions({
+      const transactionsResponse = await getTransactionsByPaymentIdPaginated({
         programId: programIdPV,
         paymentId: paymentIdPv,
         accessToken,

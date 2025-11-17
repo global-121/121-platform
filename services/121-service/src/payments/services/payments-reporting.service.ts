@@ -302,6 +302,7 @@ export class PaymentsReportingService {
           paymentId,
         },
       );
+
     const result = await paginate<TransactionViewEntity>(
       paginateQuery,
       queryBuilder,
@@ -329,7 +330,10 @@ export class PaymentsReportingService {
       paymentId,
       paginateQuery,
     });
+
     const referenceIds = result.data.map((t) => t.registrationReferenceId);
-    return referenceIds.filter((id) => id !== null && id !== undefined);
+    return referenceIds.filter(
+      (referenceId) => referenceId !== null && referenceId !== undefined,
+    );
   }
 }

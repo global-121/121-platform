@@ -196,7 +196,7 @@ export class PaymentsExecutionService {
     userId: number;
     programId: number;
     paymentId: number;
-    paginateQuery?: PaginateQuery;
+    paginateQuery: PaginateQuery;
   }): Promise<BulkActionResultRetryPaymentDto> {
     await this.paymentsProgressHelperService.checkAndLockPaymentProgressOrThrow(
       { programId },
@@ -205,17 +205,14 @@ export class PaymentsExecutionService {
     // do all operations UP TO starting the queue in a try, so that we can always end with a unblock-payments action, also in case of failure
     // from the moment of starting the queue the in-progress checking is taken over by the queue
     try {
-      let referenceIds: string[] | undefined;
-      if (paginateQuery?.search || paginateQuery?.filter) {
-        referenceIds =
-          await this.paymentsReportingService.getReferenceIdsForPaginateQuery({
-            programId,
-            paymentId,
-            paginateQuery,
-          });
-      }
+      const referenceIds =
+        await this.paymentsReportingService.getReferenceIdsForPaginateQuery({
+          programId,
+          paymentId,
+          paginateQuery,
+        });
 
-      const transactionDetails = await this.getRetryTransactionDetailsOrThrow({
+      const transactionDetails = await this.getRetryTransactionDetails({
         programId,
         paymentId,
         inputReferenceIds: referenceIds,
@@ -297,14 +294,14 @@ export class PaymentsExecutionService {
     }
   }
 
-  private async getRetryTransactionDetailsOrThrow({
+  private async getRetryTransactionDetails({
     programId,
     paymentId,
     inputReferenceIds,
   }: {
     programId: number;
     paymentId: number;
-    inputReferenceIds?: string[];
+    inputReferenceIds: string[];
   }): Promise<
     { transactionId: number; programFspConfigurationName: string }[]
   > {
@@ -319,20 +316,6 @@ export class PaymentsExecutionService {
     if (!referenceIdsWithLatestTransactionFailedForPayment.length) {
       const errors = 'No failed transactions found for this payment.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
-    // Throw an error if incoming referenceIds are not part of the failed transactions for this payment
-    if (inputReferenceIds) {
-      for (const referenceId of inputReferenceIds) {
-        if (
-          !referenceIdsWithLatestTransactionFailedForPayment.includes(
-            referenceId,
-          )
-        ) {
-          const errors = `The registration with referenceId ${referenceId} does not have a failed transaction for this payment.`;
-          throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-        }
-      }
     }
 
     const transactionsToRetry = inputReferenceIds

@@ -9,7 +9,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   createPayment,
   getPaymentEvents,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   retryPayment,
   startPayment,
   waitForPaymentNotInProgress,
@@ -65,12 +65,13 @@ describe('Payment start', () => {
     });
 
     // Assert 1 - before starting payment
-    const getTransactionsBeforeStartResponse = await getTransactions({
-      programId,
-      paymentId,
-      registrationReferenceId: registrationAh.referenceId,
-      accessToken,
-    });
+    const getTransactionsBeforeStartResponse =
+      await getTransactionsByPaymentIdPaginated({
+        programId,
+        paymentId,
+        registrationReferenceId: registrationAh.referenceId,
+        accessToken,
+      });
     const transactionsBeforeStart = getTransactionsBeforeStartResponse.body;
 
     const registrations = await getRegistrations({
@@ -108,12 +109,13 @@ describe('Payment start', () => {
     });
 
     // Assert 2 - after payment
-    const getTransactionsAfterStartResponse = await getTransactions({
-      programId,
-      paymentId,
-      registrationReferenceId: registrationAh.referenceId,
-      accessToken,
-    });
+    const getTransactionsAfterStartResponse =
+      await getTransactionsByPaymentIdPaginated({
+        programId,
+        paymentId,
+        registrationReferenceId: registrationAh.referenceId,
+        accessToken,
+      });
     const transactionsAfterStart = getTransactionsAfterStartResponse.body;
     // Wait for registration to be updated
     const registrationAfterStart =
@@ -182,11 +184,13 @@ describe('Payment start', () => {
       });
 
       // Assert
-      const getTransactionsResponse = await getTransactions({
-        programId,
-        paymentId,
-        accessToken,
-      });
+      const getTransactionsResponse = await getTransactionsByPaymentIdPaginated(
+        {
+          programId,
+          paymentId,
+          accessToken,
+        },
+      );
       const transactions = getTransactionsResponse.body;
       const startedTransactions = transactions.filter(
         (t: any) => t.status !== TransactionStatusEnum.pendingApproval,
@@ -241,11 +245,13 @@ describe('Payment start', () => {
       // Assert
       expect(retryPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
 
-      const getTransactionsResponse = await getTransactions({
-        programId,
-        paymentId,
-        accessToken,
-      });
+      const getTransactionsResponse = await getTransactionsByPaymentIdPaginated(
+        {
+          programId,
+          paymentId,
+          accessToken,
+        },
+      );
       const transactions = getTransactionsResponse.body;
       const successTransactions = transactions.filter(
         (t: any) => t.status === TransactionStatusEnum.success,
@@ -319,11 +325,12 @@ describe('Payment start', () => {
     expect(startPaymentResponseKisumu.status).toBe(HttpStatus.ACCEPTED);
 
     // get all transactions to assert only Kisumu one was started
-    const getAllTransactionsResponse = await getTransactions({
-      programId,
-      paymentId,
-      accessToken,
-    });
+    const getAllTransactionsResponse =
+      await getTransactionsByPaymentIdPaginated({
+        programId,
+        paymentId,
+        accessToken,
+      });
     const allTransactions = getAllTransactionsResponse.body;
     const startedTransactions = allTransactions.filter(
       (t: any) => t.status !== TransactionStatusEnum.pendingApproval,
@@ -354,11 +361,12 @@ describe('Payment start', () => {
     });
 
     // get all transactions to assert all were started now
-    const getAllTransactionsResponseEnd = await getTransactions({
-      programId,
-      paymentId,
-      accessToken,
-    });
+    const getAllTransactionsResponseEnd =
+      await getTransactionsByPaymentIdPaginated({
+        programId,
+        paymentId,
+        accessToken,
+      });
     const allTransactionsEnd = getAllTransactionsResponseEnd.body;
     const startedTransactionsEnd = allTransactionsEnd.filter(
       (t: any) => t.status !== TransactionStatusEnum.pendingApproval,

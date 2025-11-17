@@ -229,8 +229,8 @@ describe('Do payment retry', () => {
       accessToken,
     });
 
-    // // Assert
-    // // Only the failed transaction should be retried
+    // Assert
+    // Only the failed transaction should be retried
     expect(retryResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(retryResponse.body.applicableCount).toBe(1);
     expect(retryResponse.body.totalFilterCount).toBe(1);
@@ -327,14 +327,14 @@ describe('Do payment retry', () => {
     expect(retryResponse.body.applicableCount).toBe(1);
     expect(retryResponse.body.totalFilterCount).toBe(1);
 
-    // Verify that only the failed transaction for registrationError1 is retried and now succeeded, while registrationError2 is still failed
+    // Verify that only the failed transaction for registrationError2 is retried and now succeeded, while registrationError1 is still failed
     expect(paymentAggregatesBeforeRetry.body).toMatchObject({
-      success: { count: 1, amount },
-      failed: { count: 2, amount: amount * 2 },
+      success: { count: 1, transferValue: amount },
+      failed: { count: 2, transferValue: amount * 2 },
     });
     expect(paymentAggregatesAfterRetry.body).toMatchObject({
-      success: { count: 2, amount: amount * 2 },
-      failed: { count: 1, amount },
+      success: { count: 2, transferValue: amount * 2 },
+      failed: { count: 1, transferValue: amount },
     });
   });
 });

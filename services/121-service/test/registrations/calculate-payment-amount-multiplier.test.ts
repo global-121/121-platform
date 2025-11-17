@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { getTransactions } from '@121-service/test/helpers/program.helper';
+import { getTransactionsByPaymentIdPaginated } from '@121-service/test/helpers/program.helper';
 import {
   doPaymentAndWaitForCompletion,
   importRegistrations,
@@ -60,7 +60,7 @@ describe('Set/calculate payment amount multiplier', () => {
       ],
     });
 
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdWesteros,
       paymentId,
       registrationReferenceId: importedRegistration.referenceId,

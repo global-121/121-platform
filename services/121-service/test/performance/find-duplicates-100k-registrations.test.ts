@@ -39,16 +39,15 @@ describe('Find duplicates in 100k registrations within expected range', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registration to be more than 100k
-    const duplicateRegistrationsResponse =
-      await mockRegistrationsAndPaymentData({
-        powerNumberRegistration: duplicateNumber,
-        numberOfPayments: 0,
-        accessToken,
-        body: {
-          secret: env.RESET_SECRET,
-        },
-      });
-    expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
+    const mockResponse = await mockRegistrationsAndPaymentData({
+      powerNumberRegistration: duplicateNumber,
+      numberOfPayments: 0,
+      accessToken,
+      body: {
+        secret: env.RESET_SECRET,
+      },
+    });
+    expect(mockResponse.statusCode).toBe(HttpStatus.CREATED);
     // Query for duplicate registrations
     const findDuplicatesResponse = await getRegistrations({
       programId: programIdOCW,

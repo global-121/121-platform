@@ -65,15 +65,14 @@ describe('Retry Failed Jobs On Startup During Queue Processing', () => {
       accessToken,
     });
     // Duplicate registration to be 32
-    const duplicateRegistrationsResponse =
-      await mockRegistrationsAndPaymentData({
-        powerNumberRegistration: duplicateNumber,
-        accessToken,
-        body: {
-          secret: env.RESET_SECRET,
-        },
-      });
-    expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
+    const mockResponse = await mockRegistrationsAndPaymentData({
+      powerNumberRegistration: duplicateNumber,
+      accessToken,
+      body: {
+        secret: env.RESET_SECRET,
+      },
+    });
+    expect(mockResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Do payment
     const doPaymentResponse = await createAndStartPayment({
