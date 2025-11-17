@@ -12,7 +12,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   createAndStartPayment,
   exportTransactionsByDateRangeJson,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   retryPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -85,12 +85,13 @@ describe('Do payment', () => {
           ],
         });
 
-        const getTransactionsBeforeCronjob = await getTransactions({
-          programId,
-          paymentId,
-          registrationReferenceId: registrationNedbank.referenceId,
-          accessToken,
-        });
+        const getTransactionsBeforeCronjob =
+          await getTransactionsByPaymentIdPaginated({
+            programId,
+            paymentId,
+            registrationReferenceId: registrationNedbank.referenceId,
+            accessToken,
+          });
         const transactionsBeforeCronJob =
           getTransactionsBeforeCronjob.body.data;
         const transactionBeforeCronJob = transactionsBeforeCronJob[0];
@@ -108,12 +109,13 @@ describe('Do payment', () => {
           ],
         });
 
-        const getTransactionsAfterCronjob = await getTransactions({
-          programId,
-          paymentId,
-          registrationReferenceId: registrationNedbank.referenceId,
-          accessToken,
-        });
+        const getTransactionsAfterCronjob =
+          await getTransactionsByPaymentIdPaginated({
+            programId,
+            paymentId,
+            registrationReferenceId: registrationNedbank.referenceId,
+            accessToken,
+          });
         const transactionsAfterCronJob = getTransactionsAfterCronjob.body.data;
         const transactionAfterCronJob = transactionsAfterCronJob[0];
 
@@ -200,12 +202,13 @@ describe('Do payment', () => {
           ],
         });
 
-        const getTransactionsResponse = await getTransactions({
-          programId,
-          paymentId,
-          registrationReferenceId: registrationFailDebitorAccount.referenceId,
-          accessToken,
-        });
+        const getTransactionsResponse =
+          await getTransactionsByPaymentIdPaginated({
+            programId,
+            paymentId,
+            registrationReferenceId: registrationFailDebitorAccount.referenceId,
+            accessToken,
+          });
         const transactions = getTransactionsResponse.body.data;
 
         // Assert
@@ -256,12 +259,13 @@ describe('Do payment', () => {
           ],
         });
 
-        const getTransactionsResponse = await getTransactions({
-          programId,
-          paymentId,
-          registrationReferenceId: registrationNedbank.referenceId,
-          accessToken,
-        });
+        const getTransactionsResponse =
+          await getTransactionsByPaymentIdPaginated({
+            programId,
+            paymentId,
+            registrationReferenceId: registrationNedbank.referenceId,
+            accessToken,
+          });
         const transactions = getTransactionsResponse.body.data;
 
         // Assert
@@ -318,12 +322,13 @@ describe('Do payment', () => {
 
         await runCronJobDoNedbankReconciliation();
 
-        const getTransactionsResponse = await getTransactions({
-          programId,
-          paymentId,
-          registrationReferenceId: registrationFailPhoneNumber.referenceId,
-          accessToken,
-        });
+        const getTransactionsResponse =
+          await getTransactionsByPaymentIdPaginated({
+            programId,
+            paymentId,
+            registrationReferenceId: registrationFailPhoneNumber.referenceId,
+            accessToken,
+          });
         const transactions = getTransactionsResponse.body.data;
 
         // Assert

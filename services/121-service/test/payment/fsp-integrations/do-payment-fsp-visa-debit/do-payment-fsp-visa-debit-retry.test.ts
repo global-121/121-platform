@@ -12,7 +12,7 @@ import {
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   createAndStartPayment,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   retryPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -93,7 +93,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     await waitFor(2_000);
 
     // Assert
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId,
       registrationReferenceId: registrationVisa.referenceId,
@@ -174,7 +174,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     await waitFor(2_000);
 
     // Assert
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId,
       registrationReferenceId: registrationVisa.referenceId,

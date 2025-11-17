@@ -4,7 +4,7 @@ import { env } from 'process';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   retryPayment,
 } from '@121-service/test/helpers/program.helper';
 import {
@@ -55,30 +55,30 @@ describe('Retry payment for 100k registrations with Safaricom within expected ra
       accessToken,
     );
     // Duplicate registrations
-    const duplicateRegistrationsResponse =
-      await mockRegistrationsAndPaymentData({
-        powerNumberRegistration: duplicateNumber,
-        numberOfPayments: 1,
-        accessToken,
-        body: {
-          secret: env.RESET_SECRET,
-        },
-      });
-    expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
+    const mockResponse = await mockRegistrationsAndPaymentData({
+      powerNumberRegistration: duplicateNumber,
+      numberOfPayments: 1,
+      accessToken,
+      body: {
+        secret: env.RESET_SECRET,
+      },
+    });
+    expect(mockResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Get one page of transaction to test the duration of the api response
     const getTransactionsStartTime = Date.now();
-    const paginatedTransactionsResponse = await getTransactions({
-      programId: programIdSafaricom,
-      accessToken,
-      page: 1,
-      limit: 10,
-      paymentId,
-      search: '3', // This is random filter to reduce result set, it seems likely that referenceIds contain '3'
-      filter: {
-        'filter.registrationReferenceId': '2', // This is random filter to reduce result set, it seems likely that referenceIds contain '2'
-      },
-    });
+    const paginatedTransactionsResponse =
+      await getTransactionsByPaymentIdPaginated({
+        programId: programIdSafaricom,
+        accessToken,
+        page: 1,
+        limit: 10,
+        paymentId,
+        search: '3', // This is random filter to reduce result set, it seems likely that referenceIds contain '3'
+        filter: {
+          'filter.registrationReferenceId': '2', // This is random filter to reduce result set, it seems likely that referenceIds contain '2'
+        },
+      });
     const getTransactionsElapsedTime = Date.now() - getTransactionsStartTime;
 
     const twoSeconds = 2 * 1000;
@@ -89,7 +89,7 @@ describe('Retry payment for 100k registrations with Safaricom within expected ra
     // Get all transactions to simulate export
     const supportedNumberOrRegistrations = 100_000; // Adjust based on expected supported number
     const getAllTransactionsStartTime = Date.now();
-    const allTransactionsResponse = await getTransactions({
+    const allTransactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdSafaricom,
       accessToken,
       paymentId,
@@ -114,12 +114,12 @@ describe('Retry payment for 100k registrations with Safaricom within expected ra
       filter: { 'filter.status': `${TransactionStatusEnum.error}` },
     });
 
-    const totalPayments = Math.pow(2, duplicateNumber);
+    const totalTransactions = Math.pow(2, duplicateNumber);
     const patchRetryRequestElapsedTime =
       Date.now() - patchRetryRequestStartTime;
     const fourMinutes = 4 * 60 * 1000;
     expect(patchRetryRequestElapsedTime).toBeLessThan(fourMinutes);
     expect(doPaymentResponse.statusCode).toBe(HttpStatus.ACCEPTED);
-    expect(doPaymentResponse.body.applicableCount).toBe(totalPayments);
+    expect(doPaymentResponse.body.applicableCount).toBe(totalTransactions);
   });
 });

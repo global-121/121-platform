@@ -63,16 +63,15 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
       accessToken,
     });
     // Duplicate registration to be more than 100k
-    const duplicateRegistrationsResponse =
-      await mockRegistrationsAndPaymentData({
-        powerNumberRegistration: duplicateNumber,
-        numberOfPayments: 0,
-        accessToken,
-        body: {
-          secret: env.RESET_SECRET,
-        },
-      });
-    expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
+    const mockResponse = await mockRegistrationsAndPaymentData({
+      powerNumberRegistration: duplicateNumber,
+      numberOfPayments: 0,
+      accessToken,
+      body: {
+        secret: env.RESET_SECRET,
+      },
+    });
+    expect(mockResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Do payment
     const doPaymentResponse = await createAndStartPayment({

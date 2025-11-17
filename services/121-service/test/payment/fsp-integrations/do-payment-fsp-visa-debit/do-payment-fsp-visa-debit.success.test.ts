@@ -13,7 +13,7 @@ import {
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   createAndStartPayment,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   waitForMessagesToComplete,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -77,7 +77,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     });
 
     // Assert
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId,
       registrationReferenceId: registrationVisa.referenceId,
@@ -154,7 +154,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     });
 
     // Assert
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId: secondPaymentId,
       registrationReferenceId: registrationVisa.referenceId,
@@ -262,7 +262,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     });
 
     // Assert
-    const transactionsResponse1 = await getTransactions({
+    const transactionsResponse1 = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId: paymentId2,
       registrationReferenceId: registrationVisa.referenceId,
@@ -274,7 +274,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
       accessToken,
     );
 
-    const transactionsResponse2 = await getTransactions({
+    const transactionsResponse2 = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId: paymentId2,
       registrationReferenceId: registrationOCW2.referenceId,
@@ -286,13 +286,13 @@ describe('Do successful payment with FSP Visa Debit', () => {
       accessToken,
     );
 
-    const transactionsResponse3 = await getTransactions({
+    const transactionsResponse3 = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId: paymentId2,
       registrationReferenceId: registrationOCW3.referenceId,
       accessToken,
     });
-    const transactionsResponse4 = await getTransactions({
+    const transactionsResponse4 = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId: paymentId2,
       registrationReferenceId: registrationOCW4.referenceId,
