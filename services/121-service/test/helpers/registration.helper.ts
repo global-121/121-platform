@@ -91,7 +91,7 @@ export function importRegistrationsCSV(
     .attach('file', filePath);
 }
 
-export function mockRegistrationsAndPaymentData({
+export function duplicateRegistrationsAndPaymentData({
   powerNumberRegistration,
   accessToken,
   body = {},

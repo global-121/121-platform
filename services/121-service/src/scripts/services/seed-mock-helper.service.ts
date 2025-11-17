@@ -78,27 +78,28 @@ export class SeedMockHelperService {
     await this.mockDataFactory.multiplyRegistrations(powerNr);
   }
 
-  public async extendRelatedDataToAllRegistrations({
+  public async alignOtherDataWithRegistrations({
     powerNr,
     programIds,
   }: {
     powerNr: number;
     programIds?: number[];
   }): Promise<void> {
-    await this.mockDataFactory.extendRelatedDataToAllRegistrations({
+    await this.mockDataFactory.alignOtherDataWithRegistrations({
       powerNr,
       programIds,
     });
   }
 
-  public async extendPaymentsAndRelatedData({
+  // TODO: Split into two methods: one for adding payments, one for aligning related data
+  public async addExtraPaymentsAndAlignRelatedData({
     nrPayments,
     programIds,
   }: {
     nrPayments: number;
     programIds?: number[];
   }): Promise<void> {
-    await this.mockDataFactory.extendPaymentsAndRelatedData({
+    await this.mockDataFactory.addExtraPaymentsAndAlignRelatedData({
       nrPayments,
       programIds,
     });
