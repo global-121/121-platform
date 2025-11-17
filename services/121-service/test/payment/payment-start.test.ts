@@ -72,7 +72,8 @@ describe('Payment start', () => {
         registrationReferenceId: registrationAh.referenceId,
         accessToken,
       });
-    const transactionsBeforeStart = getTransactionsBeforeStartResponse.body;
+    const transactionsBeforeStart =
+      getTransactionsBeforeStartResponse.body.data;
 
     const registrations = await getRegistrations({
       programId,
@@ -116,7 +117,7 @@ describe('Payment start', () => {
         registrationReferenceId: registrationAh.referenceId,
         accessToken,
       });
-    const transactionsAfterStart = getTransactionsAfterStartResponse.body;
+    const transactionsAfterStart = getTransactionsAfterStartResponse.body.data;
     // Wait for registration to be updated
     const registrationAfterStart =
       await waitForRegistrationToHaveUpdatedPaymentCount({
@@ -191,7 +192,7 @@ describe('Payment start', () => {
           accessToken,
         },
       );
-      const transactions = getTransactionsResponse.body;
+      const transactions = getTransactionsResponse.body.data;
       const startedTransactions = transactions.filter(
         (t: any) => t.status !== TransactionStatusEnum.pendingApproval,
       );
@@ -252,7 +253,7 @@ describe('Payment start', () => {
           accessToken,
         },
       );
-      const transactions = getTransactionsResponse.body;
+      const transactions = getTransactionsResponse.body.data;
       const successTransactions = transactions.filter(
         (t: any) => t.status === TransactionStatusEnum.success,
       );
@@ -331,7 +332,7 @@ describe('Payment start', () => {
         paymentId,
         accessToken,
       });
-    const allTransactions = getAllTransactionsResponse.body;
+    const allTransactions = getAllTransactionsResponse.body.data;
     const startedTransactions = allTransactions.filter(
       (t: any) => t.status !== TransactionStatusEnum.pendingApproval,
     );
