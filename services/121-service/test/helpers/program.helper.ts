@@ -143,7 +143,7 @@ export async function startPayment({
   accessToken: string;
 }): Promise<request.Response> {
   return await getServer()
-    .patch(`/programs/${programId}/payments/${paymentId}/start`)
+    .post(`/programs/${programId}/payments/${paymentId}/start`)
     .set('Cookie', [accessToken])
     .send();
 }
