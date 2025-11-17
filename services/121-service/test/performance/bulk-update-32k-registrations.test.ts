@@ -7,10 +7,10 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
   bulkUpdateRegistrationsCSV,
+  duplicateRegistrationsAndPaymentData,
   exportRegistrations,
   importRegistrations,
   jsonToCsv,
-  mockRegistrationsAndPaymentData,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -38,7 +38,7 @@ describe('Bulk update 32k registrations', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registration to be 32k
-    const mockResponse = await mockRegistrationsAndPaymentData({
+    const mockResponse = await duplicateRegistrationsAndPaymentData({
       powerNumberRegistration: duplicateNumber,
       accessToken,
       body: {

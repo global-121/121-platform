@@ -335,7 +335,7 @@ describe('Payment in progress', () => {
         paymentId,
         accessToken,
       });
-      const transactionId = transactions.body[0].id;
+      const transactionId = transactions.body.data[0].id;
       const transactionEvents = await getTransactionEvents({
         programId: programIdPV,
         transactionId,

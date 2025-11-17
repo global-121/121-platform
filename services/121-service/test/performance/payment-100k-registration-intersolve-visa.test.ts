@@ -7,8 +7,8 @@ import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data
 import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
 import {
   changeRegistrationStatus,
+  duplicateRegistrationsAndPaymentData,
   importRegistrations,
-  mockRegistrationsAndPaymentData,
   waitForStatusChangeToComplete,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -64,7 +64,7 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
       accessToken,
     });
     // Duplicate registration to be more than 100k
-    const mockResponse = await mockRegistrationsAndPaymentData({
+    const mockResponse = await duplicateRegistrationsAndPaymentData({
       powerNumberRegistration: duplicateNumber,
       numberOfPayments: 0,
       accessToken,
