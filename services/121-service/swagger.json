@@ -670,6 +670,25 @@
     ]
   },
   {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/{id}",
+    "params": [
+      "programId",
+      "id"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registration-events",
+    "params": [
+      "programId",
+      "format",
+      "toDate",
+      "fromDate",
+      "referenceId"
+    ]
+  },
+  {
     "method": "post",
     "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards",
     "params": [
@@ -710,25 +729,6 @@
     "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/contact-information",
     "params": [
       "programId",
-      "referenceId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/registrations/{id}",
-    "params": [
-      "programId",
-      "id"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/registration-events",
-    "params": [
-      "programId",
-      "format",
-      "toDate",
-      "fromDate",
       "referenceId"
     ]
   },

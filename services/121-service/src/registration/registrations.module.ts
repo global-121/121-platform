@@ -2,6 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { DebitCardsIntersolveVisaModule } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.module';
 import { FspsModule } from '@121-service/src/fsps/fsp.module';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { LatestMessageEntity } from '@121-service/src/notifications/entities/latest-message.entity';
@@ -13,7 +14,6 @@ import { MessageTemplateModule } from '@121-service/src/notifications/message-te
 import { LastMessageStatusService } from '@121-service/src/notifications/services/last-message-status.service';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
-import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/entities/intersolve-voucher.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
@@ -64,13 +64,13 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     ProgramModule,
     FspsModule,
     MessageQueuesModule,
-    IntersolveVisaModule,
     RegistrationDataModule,
     RegistrationUtilsModule,
     RegistrationEventsModule,
     ProgramFspConfigurationsModule,
     QueuesRegistryModule,
     MessageTemplateModule,
+    DebitCardsIntersolveVisaModule,
   ],
   providers: [
     RegistrationsService,

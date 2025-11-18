@@ -12,6 +12,7 @@ import { AppController } from '@121-service/src/app.controller';
 import { AuthModule } from '@121-service/src/auth/auth.module';
 import { THROTTLING_LIMIT_GENERIC } from '@121-service/src/config';
 import { CronjobModule } from '@121-service/src/cronjob/cronjob.module';
+import { DebitCardsIntersolveVisaModule } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.module';
 import { EmailsModule } from '@121-service/src/emails/emails.module';
 import { env } from '@121-service/src/env';
 import { ExchangeRatesModule } from '@121-service/src/exchange-rates/exchange-rates.module';
@@ -98,6 +99,7 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
     SafaricomReconciliationModule,
     OnafriqReconciliationModule,
     RegistrationsUpdateJobsModule,
+    DebitCardsIntersolveVisaModule,
   ],
   controllers: [AppController, TestController],
   providers: [
