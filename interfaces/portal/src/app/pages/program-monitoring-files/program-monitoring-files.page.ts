@@ -49,7 +49,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
 import { getUniqueUserOptions } from '~/utils/unique-users';
 
 @Component({
-  selector: 'app-monitoring-files',
+  selector: 'app-program-monitoring-files',
   imports: [
     QueryTableComponent,
     ButtonModule,
