@@ -35,7 +35,7 @@ describe('RegistrationsService', () => {
   let registrationEventsService: RegistrationEventsService;
 
   beforeEach(async () => {
-    const module: TestingModule §= await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
           provide: IntersolveVisaDataSynchronizationService,
@@ -45,10 +45,8 @@ describe('RegistrationsService', () => {
         },
         RegistrationsService,
         {
-          provide: IntersolveVisaAccountManagementService,
-          useValue: {
-            sendCustomerInformationToIntersolve: jest.fn(),
-          },
+          provide: DebitCardsIntersolveVisaService,
+          useValue: {},
         },
         {
           provide: RegistrationScopedRepository,
