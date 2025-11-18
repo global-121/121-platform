@@ -18,7 +18,7 @@ HEALTHCHECK \
 FROM base AS production
 
 # Include centrally shared, vendored resources
-COPY ./vendor/* ./vendor/
+COPY ./vendor/ ./vendor/
 
 # Prepare dependencies install-step
 COPY ./package*.json ./
