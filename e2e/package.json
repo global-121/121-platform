@@ -41,6 +41,6 @@
     "date-fns": "^4.1.0",
     "dotenv": "17.2.3",
     "playwright": "^1.56.1",
-    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+    "xlsx": "file:../vendor/xlsx-0.20.3.tgz"
   }
 }
