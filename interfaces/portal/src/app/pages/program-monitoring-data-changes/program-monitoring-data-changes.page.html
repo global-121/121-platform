@@ -1,0 +1,12 @@
+<app-page-layout-monitoring [programId]="programId()">
+  <app-query-table
+    [columns]="columns()"
+    localStorageKey="program-monitoring-data-changes"
+    [items]="[]"
+    [isPending]="true"
+    [initialSortField]="'created'"
+    [initialSortOrder]="-1"
+  >
+    <!-- WIP -->
+  </app-query-table>
+</app-page-layout-monitoring>
