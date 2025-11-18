@@ -195,4 +195,20 @@ export class IntersolveVisaAccountManagementController {
       programId,
     );
   }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @Post(
+    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/link-card',
+  )
+  public async linkDebitCardToRegistration(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('referenceId') referenceId: string,
+    @Param('cardNumber') cardNumber: string,
+  ): Promise<void> {
+    return await this.debitCardsIntersolveVisaService.linkDebitCardToRegistration(
+      referenceId,
+      programId,
+      cardNumber,
+    );
+  }
 }
