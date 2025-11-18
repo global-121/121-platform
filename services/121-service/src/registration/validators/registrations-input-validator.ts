@@ -408,6 +408,8 @@ export class RegistrationsInputValidator {
         type: 'language',
       },
     );
+    // This will no longer be necessary when we validate program languages to be
+    // only valid ISO language codes from Set1 (so 2 letters).
     const mapping = {};
     for (const languageAbbr of programLanguages) {
       const fullNameLanguage = languageNamesApi.of(
