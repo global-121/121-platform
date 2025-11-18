@@ -87,7 +87,7 @@ describe('TransactionJobsSafaricomService', () => {
     );
     (safaricomService.doTransfer as jest.Mock).mockResolvedValue(undefined);
     (
-      transactionJobsHelperService.saveTransactionProgressAndUpdateRelatedData as jest.Mock
+      transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration as jest.Mock
     ).mockImplementation();
 
     await service.processSafaricomTransactionJob(transactionJob);

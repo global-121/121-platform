@@ -30,7 +30,7 @@ describe('TransactionJobsOnafriqService', () => {
     } as any;
     transactionJobsHelperService = {
       createInitiatedOrRetryTransactionEvent: jest.fn(),
-      saveTransactionProgressAndUpdateRelatedData: jest.fn(),
+      saveTransactionProgressAndUpdateRegistration: jest.fn(),
     } as any;
     programFspConfigurationRepository = {
       getPropertiesByNamesOrThrow: jest.fn(),

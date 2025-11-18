@@ -77,7 +77,7 @@ export class NedbankReconciliationService {
       );
     }
 
-    await this.transactionsService.saveTransactionProgressFromExternalSource({
+    await this.transactionsService.saveProgressFromExternalSource({
       transactionId,
       description: TransactionEventDescription.nedbankCallbackReceived,
       newTransactionStatus,

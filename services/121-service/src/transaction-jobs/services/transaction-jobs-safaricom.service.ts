@@ -8,8 +8,9 @@ import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
-import { SaveTransactionProgressAndRelatedDataContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-related-data-context.interface';
+import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
@@ -26,15 +27,11 @@ export class TransactionJobsSafaricomService {
   public async processSafaricomTransactionJob(
     transactionJob: SafaricomTransactionJobDto,
   ): Promise<void> {
-    const transactionEventContext: SaveTransactionProgressAndRelatedDataContext =
-      {
-        transactionId: transactionJob.transactionId,
-        userId: transactionJob.userId,
-        programFspConfigurationId: transactionJob.programFspConfigurationId,
-        programId: transactionJob.programId,
-        referenceId: transactionJob.referenceId,
-        isRetry: transactionJob.isRetry,
-      };
+    const transactionEventContext: TransactionEventCreationContext = {
+      transactionId: transactionJob.transactionId,
+      userId: transactionJob.userId,
+      programFspConfigurationId: transactionJob.programFspConfigurationId,
+    };
 
     // 1. Create transaction event 'initiated' or 'retry'
     await this.transactionJobsHelperService.createInitiatedOrRetryTransactionEvent(
@@ -61,6 +58,14 @@ export class TransactionJobsSafaricomService {
     );
 
     // 4. Start the transfer, if failure update to error transaction and return early
+    const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
+      {
+        ...transactionEventContext,
+        userId: transactionJob.userId!,
+        programId: transactionJob.programId,
+        referenceId: transactionJob.referenceId,
+        isRetry: transactionJob.isRetry,
+      };
     try {
       await this.safaricomService.doTransfer({
         transferValue: transactionJob.transferValue,
@@ -75,9 +80,9 @@ export class TransactionJobsSafaricomService {
         return;
       } else if (error instanceof SafaricomApiError) {
         // store error transactionEvent and update transaction to 'error'
-        await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRelatedData(
+        await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration(
           {
-            context: transactionEventContext,
+            context: saveTransactionProgressAndUpdateRegistrationContext,
             description: TransactionEventDescription.safaricomRequestSent,
             errorMessage: error.message,
             newTransactionStatus: TransactionStatusEnum.error,
@@ -90,9 +95,9 @@ export class TransactionJobsSafaricomService {
     }
 
     // 5. store success transactionEvent and update transaction to 'waiting'
-    await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRelatedData(
+    await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration(
       {
-        context: transactionEventContext,
+        context: saveTransactionProgressAndUpdateRegistrationContext,
         description: TransactionEventDescription.safaricomRequestSent,
         newTransactionStatus: TransactionStatusEnum.waiting,
       },

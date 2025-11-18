@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { SaveTransactionProgressAndRelatedDataContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-related-data-context.interface';
+import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { IntersolveVoucherTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-voucher-transaction-job.dto';
 
@@ -18,15 +19,11 @@ export class TransactionJobsIntersolveVoucherService {
   public async processIntersolveVoucherTransactionJob(
     transactionJob: IntersolveVoucherTransactionJobDto,
   ): Promise<void> {
-    const transactionEventContext: SaveTransactionProgressAndRelatedDataContext =
-      {
-        transactionId: transactionJob.transactionId,
-        userId: transactionJob.userId,
-        programFspConfigurationId: transactionJob.programFspConfigurationId,
-        programId: transactionJob.programId,
-        referenceId: transactionJob.referenceId,
-        isRetry: transactionJob.isRetry,
-      };
+    const transactionEventContext: TransactionEventCreationContext = {
+      transactionId: transactionJob.transactionId,
+      userId: transactionJob.userId,
+      programFspConfigurationId: transactionJob.programFspConfigurationId,
+    };
 
     await this.transactionJobsHelperService.createInitiatedOrRetryTransactionEvent(
       {
@@ -57,9 +54,19 @@ export class TransactionJobsIntersolveVoucherService {
       return;
     }
 
-    await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRelatedData(
+    const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
       {
-        context: transactionEventContext,
+        transactionId: transactionJob.transactionId,
+        userId: transactionJob.userId,
+        programFspConfigurationId: transactionJob.programFspConfigurationId,
+        programId: transactionJob.programId,
+        referenceId: transactionJob.referenceId,
+        isRetry: transactionJob.isRetry,
+      };
+
+    await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration(
+      {
+        context: saveTransactionProgressAndUpdateRegistrationContext,
         description:
           TransactionEventDescription.intersolveVoucherCreationRequest,
         newTransactionStatus: sendIndividualPaymentResult.status,

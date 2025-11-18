@@ -3,8 +3,9 @@ import { AirtelError } from '@121-service/src/payments/fsp-integration/airtel/er
 import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
-import { SaveTransactionProgressAndRelatedDataContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-related-data-context.interface';
+import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsAirtelService } from '@121-service/src/transaction-jobs/services/transaction-jobs-airtel.service';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
@@ -27,11 +28,15 @@ describe('TransactionJobsAirtelService', () => {
     phoneNumber: '123',
   };
 
-  const transactionEventContext: SaveTransactionProgressAndRelatedDataContext =
+  const transactionEventContext: TransactionEventCreationContext = {
+    transactionId: transactionJob.transactionId,
+    userId: transactionJob.userId,
+    programFspConfigurationId: transactionJob.programFspConfigurationId,
+  };
+  const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
     {
-      transactionId: transactionJob.transactionId,
-      userId: transactionJob.userId,
-      programFspConfigurationId: transactionJob.programFspConfigurationId,
+      ...transactionEventContext,
+      userId: transactionJob.userId!,
       programId: transactionJob.programId,
       referenceId: transactionJob.referenceId,
       isRetry: transactionJob.isRetry,
@@ -41,7 +46,7 @@ describe('TransactionJobsAirtelService', () => {
     airtelService = { attemptOrCheckDisbursement: jest.fn() } as any;
     transactionJobsHelperService = {
       createInitiatedOrRetryTransactionEvent: jest.fn(),
-      saveTransactionProgressAndUpdateRelatedData: jest.fn(),
+      saveTransactionProgressAndUpdateRegistration: jest.fn(),
     } as any;
     transactionEventScopedRepository = {
       countFailedTransactionAttempts: jest.fn().mockResolvedValue(6),
@@ -117,9 +122,9 @@ describe('TransactionJobsAirtelService', () => {
 
       // Assert
       expect(
-        transactionJobsHelperService.saveTransactionProgressAndUpdateRelatedData,
+        transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration,
       ).toHaveBeenCalledWith({
-        context: transactionEventContext,
+        context: saveTransactionProgressAndUpdateRegistrationContext,
         description: TransactionEventDescription.airtelRequestSent,
         newTransactionStatus: TransactionStatusEnum.success,
         errorMessage: undefined,
@@ -141,9 +146,9 @@ describe('TransactionJobsAirtelService', () => {
       await service.processAirtelTransactionJob(transactionJob);
 
       expect(
-        transactionJobsHelperService.saveTransactionProgressAndUpdateRelatedData,
+        transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration,
       ).toHaveBeenCalledWith({
-        context: transactionEventContext,
+        context: saveTransactionProgressAndUpdateRegistrationContext,
         description: TransactionEventDescription.airtelRequestSent,
         newTransactionStatus: TransactionStatusEnum.waiting,
         errorMessage: 'Airtel Error: mock-ambiguous-message',
@@ -160,9 +165,9 @@ describe('TransactionJobsAirtelService', () => {
       await service.processAirtelTransactionJob(transactionJob);
 
       expect(
-        transactionJobsHelperService.saveTransactionProgressAndUpdateRelatedData,
+        transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration,
       ).toHaveBeenCalledWith({
-        context: transactionEventContext,
+        context: saveTransactionProgressAndUpdateRegistrationContext,
         description: TransactionEventDescription.airtelRequestSent,
         newTransactionStatus: TransactionStatusEnum.error,
         errorMessage: 'Airtel Error: mock-fail-message',

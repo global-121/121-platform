@@ -47,14 +47,9 @@ export class TransactionRepository extends Repository<TransactionEntity> {
   public async getPaymentCountByReferenceId(
     referenceId: string,
   ): Promise<number> {
-    const result = await this.createQueryBuilder('transaction')
-      .select('COUNT(DISTINCT transaction."paymentId")', 'paymentCount')
+    return await this.createQueryBuilder('transaction')
       .leftJoin('transaction.registration', 'registration')
       .where('registration."referenceId" = :referenceId', { referenceId })
-      .getRawOne();
-    if (!result) {
-      return 0;
-    }
-    return result.paymentCount;
+      .getCount();
   }
 }

@@ -8,10 +8,11 @@ import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-in
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/services/nedbank.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { SaveTransactionProgressAndRelatedDataContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-related-data-context.interface';
+import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
@@ -30,15 +31,11 @@ export class TransactionJobsNedbankService {
   public async processNedbankTransactionJob(
     transactionJob: NedbankTransactionJobDto,
   ): Promise<void> {
-    const transactionEventContext: SaveTransactionProgressAndRelatedDataContext =
-      {
-        transactionId: transactionJob.transactionId,
-        userId: transactionJob.userId,
-        programFspConfigurationId: transactionJob.programFspConfigurationId,
-        programId: transactionJob.programId,
-        referenceId: transactionJob.referenceId,
-        isRetry: transactionJob.isRetry,
-      };
+    const transactionEventContext: TransactionEventCreationContext = {
+      transactionId: transactionJob.transactionId,
+      userId: transactionJob.userId,
+      programFspConfigurationId: transactionJob.programFspConfigurationId,
+    };
 
     // Create transaction event 'initiated' or 'retry'
     await this.transactionJobsHelperService.createInitiatedOrRetryTransactionEvent(
@@ -110,6 +107,14 @@ export class TransactionJobsNedbankService {
     // Create the voucher via Nedbank API and update the transaction if an error occurs
     // Updating the transaction on succesfull voucher creation is not needed as it is already in the 'waiting' state
     // and will be updated to success (or error) via the reconciliation process
+    const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
+      {
+        ...transactionEventContext,
+        userId: transactionJob.userId!,
+        programId: transactionJob.programId,
+        referenceId: transactionJob.referenceId,
+        isRetry: transactionJob.isRetry,
+      };
     let nedbankVoucherStatus: NedbankVoucherStatus;
     try {
       nedbankVoucherStatus = await this.nedbankService.createVoucher({
@@ -129,9 +134,9 @@ export class TransactionJobsNedbankService {
         );
 
         // Update the transaction to error, so it won't be picked up by the reconciliation process
-        await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRelatedData(
+        await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration(
           {
-            context: transactionEventContext,
+            context: saveTransactionProgressAndUpdateRegistrationContext,
             description:
               TransactionEventDescription.nedbankVoucherCreationRequested,
             errorMessage: error?.message,
@@ -150,9 +155,9 @@ export class TransactionJobsNedbankService {
       { status: nedbankVoucherStatus },
     );
 
-    await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRelatedData(
+    await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration(
       {
-        context: transactionEventContext,
+        context: saveTransactionProgressAndUpdateRegistrationContext,
         description:
           TransactionEventDescription.nedbankVoucherCreationRequested,
         newTransactionStatus: TransactionStatusEnum.waiting, // This will only go to 'success' via callback

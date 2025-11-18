@@ -102,7 +102,7 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
     jest
       .spyOn(
         transactionJobsHelperService,
-        'saveTransactionProgressAndUpdateRelatedData',
+        'saveTransactionProgressAndUpdateRegistration',
       )
       .mockImplementation();
 
@@ -150,7 +150,7 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
     jest
       .spyOn(
         transactionJobsHelperService,
-        'saveTransactionProgressAndUpdateRelatedData',
+        'saveTransactionProgressAndUpdateRegistration',
       )
       .mockImplementation();
 

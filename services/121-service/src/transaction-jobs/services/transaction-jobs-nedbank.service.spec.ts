@@ -6,10 +6,11 @@ import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-in
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/services/nedbank.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { SaveTransactionProgressAndRelatedDataContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-related-data-context.interface';
+import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { TransactionJobsNedbankService } from '@121-service/src/transaction-jobs/services/transaction-jobs-nedbank.service';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
@@ -26,15 +27,20 @@ const mockedNedbankTransactionJob: NedbankTransactionJobDto = {
   programFspConfigurationId: 1,
 };
 
-const mockedTransactionContext: SaveTransactionProgressAndRelatedDataContext = {
+const mockedTransactionEventContext: TransactionEventCreationContext = {
   userId: mockedNedbankTransactionJob.userId,
   transactionId: mockedNedbankTransactionJob.transactionId,
   programFspConfigurationId:
     mockedNedbankTransactionJob.programFspConfigurationId,
-  programId: mockedNedbankTransactionJob.programId,
-  referenceId: mockedNedbankTransactionJob.referenceId,
-  isRetry: mockedNedbankTransactionJob.isRetry,
 };
+const mockedSaveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
+  {
+    ...mockedTransactionEventContext,
+    userId: mockedNedbankTransactionJob.userId!,
+    programId: mockedNedbankTransactionJob.programId,
+    referenceId: mockedNedbankTransactionJob.referenceId,
+    isRetry: mockedNedbankTransactionJob.isRetry,
+  };
 
 describe('TransactionJobsNedbankService', () => {
   let service: TransactionJobsNedbankService;
@@ -110,7 +116,7 @@ describe('TransactionJobsNedbankService', () => {
       transactionJobsHelperService.createInitiatedOrRetryTransactionEvent,
     ).toHaveBeenCalledWith(
       expect.objectContaining({
-        context: mockedTransactionContext,
+        context: mockedTransactionEventContext,
         isRetry: mockedNedbankTransactionJob.isRetry,
       }),
     );
@@ -138,7 +144,7 @@ describe('TransactionJobsNedbankService', () => {
       { status: NedbankVoucherStatus.PENDING },
     );
     expect(
-      transactionJobsHelperService.saveTransactionProgressAndUpdateRelatedData,
+      transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration,
     ).toHaveBeenCalled();
   });
 
@@ -155,9 +161,9 @@ describe('TransactionJobsNedbankService', () => {
 
     // Assert
     expect(
-      transactionJobsHelperService.saveTransactionProgressAndUpdateRelatedData,
+      transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration,
     ).toHaveBeenCalledWith({
-      context: mockedTransactionContext,
+      context: mockedSaveTransactionProgressAndUpdateRegistrationContext,
       description: TransactionEventDescription.nedbankVoucherCreationRequested,
       errorMessage,
       newTransactionStatus: TransactionStatusEnum.error,

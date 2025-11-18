@@ -109,7 +109,7 @@ export class SafaricomReconciliationService {
     );
 
     // store transaction progress
-    await this.transactionsService.saveTransactionProgressFromExternalSource({
+    await this.transactionsService.saveProgressFromExternalSource({
       transactionId: safaricomTransfer.transactionId,
       description: TransactionEventDescription.safaricomCallbackReceived,
       newTransactionStatus: transactionStatus,
@@ -126,7 +126,7 @@ export class SafaricomReconciliationService {
           safaricomTimeoutCallbackJob.originatorConversationId,
         );
 
-      await this.transactionsService.saveTransactionProgressFromExternalSource({
+      await this.transactionsService.saveProgressFromExternalSource({
         transactionId: safaricomTransfer.transactionId,
         description: TransactionEventDescription.safaricomCallbackReceived,
         newTransactionStatus: TransactionStatusEnum.error,

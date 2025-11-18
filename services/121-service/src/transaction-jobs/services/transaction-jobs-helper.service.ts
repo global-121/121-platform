@@ -20,7 +20,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { SaveTransactionProgressAndRelatedDataContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-related-data-context.interface';
+import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 
 @Injectable()
 export class TransactionJobsHelperService {
@@ -141,14 +141,14 @@ export class TransactionJobsHelperService {
     });
   }
 
-  public async saveTransactionProgressAndUpdateRelatedData({
-    newTransactionStatus,
+  public async saveTransactionProgressAndUpdateRegistration({
     context,
+    newTransactionStatus,
     description,
     errorMessage,
   }: {
+    context: SaveTransactionProgressAndUpdateRegistrationContext;
     newTransactionStatus: TransactionStatusEnum;
-    context: SaveTransactionProgressAndRelatedDataContext;
     description: TransactionEventDescription;
     errorMessage?: string;
   }): Promise<void> {
@@ -160,8 +160,12 @@ export class TransactionJobsHelperService {
       });
     }
 
-    await this.transactionsService.saveTransactionProgress({
-      context,
+    await this.transactionsService.saveProgress({
+      context: {
+        transactionId: context.transactionId,
+        userId: context.userId,
+        programFspConfigurationId: context.programFspConfigurationId,
+      },
       description,
       errorMessage,
       newTransactionStatus,
@@ -180,13 +184,13 @@ export class TransactionJobsHelperService {
     programId: number;
     userId: number;
   }): Promise<void> {
-    const newPaymentCount =
+    const paymentCount =
       await this.transactionRepository.getPaymentCountByReferenceId(
         referenceId,
       );
     await this.registrationScopedRepository.updatePaymentCount({
       referenceId,
-      paymentCount: newPaymentCount,
+      paymentCount,
     });
 
     await this.setStatusToCompletedIfApplicable({

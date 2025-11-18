@@ -70,7 +70,7 @@ describe('TransactionJobsIntersolveVoucherService', () => {
       ).toHaveBeenCalled();
       expect(intersolveVoucherService.sendIndividualPayment).toHaveBeenCalled();
       expect(
-        transactionJobsHelperService.saveTransactionProgressAndUpdateRelatedData,
+        transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration,
       ).toHaveBeenCalled();
     });
   });

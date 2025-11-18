@@ -1,9 +1,9 @@
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 
-export interface SaveTransactionProgressAndRelatedDataContext
+export interface SaveTransactionProgressAndUpdateRegistrationContext
   extends TransactionEventCreationContext {
-  userId: number; // not nullable in this case
-  programId: number;
+  userId: number; // not nullable in this context
   referenceId: string;
+  programId: number;
   isRetry: boolean;
 }
