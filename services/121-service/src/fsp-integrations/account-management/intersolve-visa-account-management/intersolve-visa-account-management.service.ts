@@ -380,4 +380,19 @@ export class IntersolveVisaAccountManagementService {
       );
     }
   }
+
+  public async linkDebitCardToRegistration(
+    referenceId: string,
+    programId: number,
+    cardNumber: string,
+  ): Promise<void> {
+    const registration = await this.getRegistrationOrThrow({
+      referenceId,
+      programId,
+    });
+    // Link debit card to registration
+    console.log('calling linkDebitCardToRegistration');
+    console.log('card number:', cardNumber);
+    console.log('registration id:', registration.id);
+  }
 }

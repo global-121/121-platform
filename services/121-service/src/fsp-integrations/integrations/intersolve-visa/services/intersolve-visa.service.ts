@@ -59,6 +59,45 @@ export class IntersolveVisaService {
     transferValueInMajorUnit,
     transferReference,
   }: DoTransferOrIssueCardParams): Promise<DoTransferOrIssueCardResult> {
+    const cardData = await this.issueCard({
+      registrationId,
+      createCustomerReference,
+      name,
+      contactInformation,
+      brandCode,
+      coverLetterCode,
+    });
+
+    // Transfer money from the client's funding token to the parent token
+    if (transferValueInMajorUnit > 0) {
+      await this.intersolveVisaApiService.transfer({
+        fromTokenCode: fundingTokenCode,
+        toTokenCode: cardData.tokenCode,
+        amount: transferValueInMajorUnit,
+        reference: transferReference,
+      });
+    }
+    return {
+      isNewCardCreated: cardData.isNewCardCreated,
+      amountTransferredInMajorUnit: transferValueInMajorUnit,
+    };
+  }
+
+  private async issueCard({
+    registrationId,
+    createCustomerReference,
+    name,
+    contactInformation,
+    brandCode,
+    coverLetterCode,
+  }: {
+    registrationId: number;
+    createCustomerReference: string;
+    name: string;
+    contactInformation: ContactInformation;
+    brandCode: string;
+    coverLetterCode: string;
+  }) {
     const intersolveVisaCustomer = await this.getCustomerOrCreate({
       registrationId,
       createCustomerReference,
@@ -96,18 +135,9 @@ export class IntersolveVisaService {
       coverLetterCode,
     });
 
-    // Transfer money from the client's funding token to the parent token
-    if (transferValueInMajorUnit > 0) {
-      await this.intersolveVisaApiService.transfer({
-        fromTokenCode: fundingTokenCode,
-        toTokenCode: intersolveVisaParentWallet.tokenCode,
-        amount: transferValueInMajorUnit,
-        reference: transferReference,
-      });
-    }
     return {
       isNewCardCreated: createDebitCardReturn.isNewCardCreated,
-      amountTransferredInMajorUnit: transferValueInMajorUnit,
+      tokenCode: intersolveVisaParentWallet.tokenCode,
     };
   }
 
