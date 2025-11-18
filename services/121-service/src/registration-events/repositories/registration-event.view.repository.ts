@@ -1,0 +1,35 @@
+import { Inject } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { RegistrationEventViewEntity } from '@121-service/src/registration-events/entities/registration-event.view.entity';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+
+export class RegistrationEventViewScopedRepository extends ScopedRepository<RegistrationEventViewEntity> {
+  constructor(
+    @Inject(REQUEST) request: ScopedUserRequest,
+    @InjectRepository(RegistrationEventViewEntity)
+    repository: Repository<RegistrationEventViewEntity>,
+  ) {
+    super(request, repository);
+  }
+
+  // ##TODO: can this take over some or all of normal repository methods as well?
+
+  public createQueryBuilderFilterByProgramId({
+    programId,
+  }: {
+    programId: number;
+  }): ReturnType<
+    Repository<RegistrationEventViewEntity>['createQueryBuilder']
+  > {
+    return this.createQueryBuilder('event').andWhere(
+      'event.programId = :programId',
+      {
+        programId,
+      },
+    );
+  }
+}
