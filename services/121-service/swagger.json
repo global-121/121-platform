@@ -703,6 +703,7 @@
     ]
   },
   {
+<<<<<<< HEAD
     "method": "get",
     "path": "/api/programs/{programId}/registration-events/monitoring",
     "params": [
@@ -719,6 +720,64 @@
     ]
   },
   {
+=======
+<<<<<<< HEAD
+=======
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards",
+    "params": [
+      "programId",
+      "referenceId"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/{tokenCode}",
+    "params": [
+      "programId",
+      "referenceId",
+      "tokenCode",
+      "pause"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
+    "params": [
+      "referenceId",
+      "programId"
+    ],
+    "returnType": "IntersolveVisaWalletDto"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
+    "params": [
+      "referenceId",
+      "programId"
+    ],
+    "returnType": "IntersolveVisaWalletDto"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/contact-information",
+    "params": [
+      "programId",
+      "referenceId"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/link-card",
+    "params": [
+      "programId",
+      "referenceId",
+      "cardNumber"
+    ]
+  },
+  {
+>>>>>>> 0c6a80401 (working e2e connection)
+>>>>>>> eae73cbca (working e2e connection)
     "method": "put",
     "path": "/api/programs/{programId}/fsps/cooperative-bank-of-oromia/accounts",
     "params": [

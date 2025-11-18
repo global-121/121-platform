@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   input,
+  model,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -15,6 +16,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { Dialog } from 'primeng/dialog';
+import { InputNumber } from 'primeng/inputnumber';
 
 import { VisaCardAction } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-action.enum';
 
@@ -43,6 +45,7 @@ import { ToastService } from '~/services/toast.service';
     FormDialogComponent,
     PageLayoutRegistrationComponent,
     Dialog,
+    InputNumber,
   ],
   providers: [ToastService],
   templateUrl: './program-registration-debit-cards.page.html',
