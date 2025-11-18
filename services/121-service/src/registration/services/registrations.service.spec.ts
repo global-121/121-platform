@@ -34,14 +34,12 @@ describe('RegistrationsService', () => {
   let registrationEventsService: RegistrationEventsService;
 
   beforeEach(async () => {
-    const module: TestingModule §= await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       providers: [
         RegistrationsService,
         {
           provide: DebitCardsIntersolveVisaService,
-          useValue: {
-            sendCustomerInformationToIntersolve: jest.fn(),
-          },
+          useValue: {},
         },
         {
           provide: RegistrationScopedRepository,
