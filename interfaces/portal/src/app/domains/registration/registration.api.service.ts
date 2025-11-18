@@ -364,20 +364,21 @@ export class RegistrationApiService extends DomainApiService {
     cardNumber,
   }: {
     programId: Signal<number | string>;
-    referenceId: Signal<string>;
+    referenceId: Signal<string | undefined>;
     cardNumber: Signal<string>;
   }) {
-    return this.generateQueryOptions<Registration>({
-      path: [
-        ...BASE_ENDPOINT(programId),
-        referenceId,
-        'fsps',
-        'intersolve-visa',
-        'link-card',
-      ],
+    const endpoint = this.pathToQueryKey([
+      ...BASE_ENDPOINT(programId),
+      referenceId,
+      'fsps',
+      'intersolve-visa',
+      'link-card',
+    ]).join('/');
+
+    return this.httpWrapperService.perform121ServiceRequest({
       method: 'POST',
-      enabled: () => !!referenceId(),
-      params: { cardNumber },
+      endpoint,
+      httpParams: { cardNumber: cardNumber() },
     });
   }
 }

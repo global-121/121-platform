@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   input,
+  model,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -16,6 +17,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { Dialog } from 'primeng/dialog';
+import { InputNumber } from 'primeng/inputnumber';
 
 import { VisaCardAction } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-card-action.enum';
 
@@ -44,6 +46,7 @@ import { ToastService } from '~/services/toast.service';
     FormDialogComponent,
     PageLayoutRegistrationComponent,
     Dialog,
+    InputNumber,
   ],
   providers: [ToastService],
   templateUrl: './program-registration-debit-cards.page.html',
@@ -242,6 +245,8 @@ export class ProgramRegistrationDebitCardsPageComponent {
 
   readonly currencyCode = computed(() => this.program.data()?.currency);
 
+  public readonly dialogVisible = model(false);
+  public readonly cardNumber = model('');
   private invalidateWalletQuery() {
     void this.queryClient.invalidateQueries({
       queryKey: this.registrationApiService.getWalletWithCardsByReferenceId(
@@ -251,11 +256,12 @@ export class ProgramRegistrationDebitCardsPageComponent {
     });
   }
 
-  createNewCard() {
+  public async createNewCard() {
     console.log('Create new card clicked');
-  }
-
-  createNewCardDialogClosed() {
-    console.log('Create new card dialog closed');
+    await this.registrationApiService.linkCardToRegistration({
+      programId: this.programId,
+      referenceId: this.referenceId,
+      cardNumber: this.cardNumber,
+    });
   }
 }
