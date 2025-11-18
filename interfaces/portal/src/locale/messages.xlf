@@ -2006,6 +2006,24 @@
       <trans-unit id="8386352594791941612" datatype="html">
         <source>Debit account number</source>
       </trans-unit>
+      <trans-unit id="2908948907515933437" datatype="html">
+        <source>Changed by</source>
+      </trans-unit>
+      <trans-unit id="5313814086308604647" datatype="html">
+        <source>Old value</source>
+      </trans-unit>
+      <trans-unit id="6431684363092868013" datatype="html">
+        <source>[export status &amp; data changes]</source>
+      </trans-unit>
+      <trans-unit id="6678171760523373674" datatype="html">
+        <source>New value</source>
+      </trans-unit>
+      <trans-unit id="6768832079771465748" datatype="html">
+        <source>Field changed</source>
+      </trans-unit>
+      <trans-unit id="page-title-program-monitoring-data-changes" datatype="html">
+        <source>Data changes</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
