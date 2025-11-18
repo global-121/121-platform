@@ -85,6 +85,7 @@ export class ProgramPaymentChartComponent {
         beginAtZero: true,
         ticks: {
           crossAlign: 'far',
+          padding: 8,
         },
         grid: {
           display: false,
