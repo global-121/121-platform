@@ -682,7 +682,7 @@ export class IntersolveVisaApiService {
 
     let errorMessage = this.createErrorMessageIfRequestFailed(response);
 
-    // Retry once if GET and errorMessage is set
+    // Retry failing GET request once
     if (errorMessage && method === 'GET') {
       response = await this.httpService.request<ResponseDtoType>({
         method,

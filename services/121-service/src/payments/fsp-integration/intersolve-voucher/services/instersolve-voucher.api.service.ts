@@ -10,6 +10,7 @@ import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/f
 import { IntersolveVoucherResultCode } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-result-code.enum';
 import { IntersolveVoucherSoapElements } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-soap.enum';
 import { IntersolveVoucherMockService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/instersolve-voucher.mock';
+import { IntersolveGetCardSoapResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/interfaces/intersolve-get-card-soap-response.interface';
 import { SoapService } from '@121-service/src/utils/soap/soap.service';
 
 @Injectable()
@@ -121,28 +122,20 @@ export class IntersolveVoucherApiService {
       pin,
     );
 
-    let responseBody = env.MOCK_INTERSOLVE
-      ? await this.intersolveMock.post(payload, username, password)
-      : await this.soapService.post(
-          payload,
-          IntersolveVoucherSoapElements.LoyaltyHeader,
-          username,
-          password,
-          env.INTERSOLVE_URL,
-        );
+    let responseBody = await this.makeGetCardCall({
+      payload,
+      username,
+      password,
+    });
 
     // retry once if failed request
     let errorMessage = this.createErrorMessageIfRequestFailed(responseBody);
     if (errorMessage) {
-      responseBody = env.MOCK_INTERSOLVE
-        ? await this.intersolveMock.post(payload, username, password)
-        : await this.soapService.post(
-            payload,
-            IntersolveVoucherSoapElements.LoyaltyHeader,
-            username,
-            password,
-            env.INTERSOLVE_URL,
-          );
+      responseBody = await this.makeGetCardCall({
+        payload,
+        username,
+        password,
+      });
       errorMessage = this.createErrorMessageIfRequestFailed(responseBody);
     }
 
@@ -151,18 +144,42 @@ export class IntersolveVoucherApiService {
     }
 
     const result = {
-      resultCode: responseBody.GetCardResponse.ResultCode._text,
-      resultDescription: responseBody.GetCardResponse.ResultDescription._text,
-      status: responseBody.GetCardResponse.Card?.Status?._text,
-      balance: parseInt(responseBody.GetCardResponse.Card?.Balance?._text),
+      resultCode: responseBody.GetCardResponse!.ResultCode!._text,
+      resultDescription: responseBody.GetCardResponse!.ResultDescription!._text,
+      status: responseBody.GetCardResponse!.Card?.Status?._text ?? '',
+      balance: parseInt(
+        responseBody.GetCardResponse!.Card?.Balance?._text ?? '0',
+      ),
       balanceFactor: parseInt(
-        responseBody.GetCardResponse.Card?.BalanceFactor?._text,
+        responseBody.GetCardResponse!.Card?.BalanceFactor?._text ?? '0',
       ),
     };
     return result;
   }
 
-  private createErrorMessageIfRequestFailed(responseBody): string | undefined {
+  private async makeGetCardCall({
+    payload,
+    username,
+    password,
+  }: {
+    payload: any;
+    username: string;
+    password: string;
+  }): Promise<IntersolveGetCardSoapResponse> {
+    return env.MOCK_INTERSOLVE
+      ? await this.intersolveMock.post(payload, username, password)
+      : await this.soapService.post(
+          payload,
+          IntersolveVoucherSoapElements.LoyaltyHeader,
+          username,
+          password,
+          env.INTERSOLVE_URL,
+        );
+  }
+
+  private createErrorMessageIfRequestFailed(
+    responseBody: IntersolveGetCardSoapResponse,
+  ): string | undefined {
     if (!responseBody) {
       return 'Intersolve URL could not be reached.';
     }

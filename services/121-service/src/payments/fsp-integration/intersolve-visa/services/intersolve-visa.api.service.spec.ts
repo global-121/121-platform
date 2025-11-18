@@ -20,15 +20,6 @@ describe('IntersolveVisaApiService - intersolveApiRequest retry logic', () => {
     service.getAuthenticationToken = jest.fn().mockResolvedValue('token');
   });
 
-  function makeResponse({
-    status = 200,
-    statusText = 'OK',
-    data = {},
-    errors = undefined,
-  } = {}) {
-    return { status, statusText, data: { ...data, errors } };
-  }
-
   it('retries once if GET and first response is error, succeeds on second', async () => {
     mockHttpService.request
       .mockResolvedValueOnce({ data: {} }) // missing 'status' field
@@ -46,7 +37,7 @@ describe('IntersolveVisaApiService - intersolveApiRequest retry logic', () => {
 
   it('throws if GET and both requests fail', async () => {
     mockHttpService.request.mockResolvedValue(
-      makeResponse({ data: {} }), // missing 'status' field
+      { data: {} }, // no status property at top level
     );
 
     await expect(
@@ -61,9 +52,10 @@ describe('IntersolveVisaApiService - intersolveApiRequest retry logic', () => {
   });
 
   it('does not retry if GET and first request succeeds', async () => {
-    mockHttpService.request.mockResolvedValue(
-      makeResponse({ status: 200, statusText: 'OK' }),
-    );
+    mockHttpService.request.mockResolvedValue({
+      status: 200,
+      statusText: 'OK',
+    });
     const result = await service['intersolveApiRequest']({
       errorPrefix: 'Test',
       method: 'GET',
@@ -76,7 +68,7 @@ describe('IntersolveVisaApiService - intersolveApiRequest retry logic', () => {
 
   it('does not retry for POST even if first request fails', async () => {
     mockHttpService.request.mockResolvedValue(
-      makeResponse({ data: {} }), // missing 'status' field
+      { data: {} }, // no status property at top level
     );
     await expect(
       service['intersolveApiRequest']({

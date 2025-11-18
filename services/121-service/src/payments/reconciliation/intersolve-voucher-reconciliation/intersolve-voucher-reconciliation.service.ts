@@ -18,11 +18,45 @@ export class IntersolveVoucherReconciliationService {
     private readonly intersolveVoucherScopedRepository: ScopedRepository<IntersolveVoucherEntity>,
   ) {}
 
+  private async updateVouchersWithErrorHandling(
+    vouchers: IntersolveVoucherEntity[],
+    programId: number,
+    credentials: any,
+    errorMessagePrefix: string,
+    incrementBeforeTry: boolean,
+  ): Promise<number> {
+    let updatedCount = 0;
+    const errorVoucherIds: number[] = [];
+    for await (const voucher of vouchers) {
+      if (incrementBeforeTry) {
+        updatedCount++;
+      }
+      try {
+        await this.intersolveVoucherService.getAndUpdateBalance(
+          voucher,
+          programId,
+          credentials,
+        );
+        if (!incrementBeforeTry) {
+          updatedCount++;
+        }
+      } catch (error) {
+        errorVoucherIds.push(voucher.id);
+        if (errorVoucherIds.length >= 10) {
+          throw new Error(
+            `${errorMessagePrefix} ${errorVoucherIds.join(', ')}. Failing job to prevent excessive API calls.`,
+          );
+        }
+      }
+    }
+    return updatedCount;
+  }
+
   public async getAndUpdateBalancesForProgram(
     programId: number,
     jobName: IntersolveVoucherJobName,
   ): Promise<void> {
-    if (jobName === IntersolveVoucherJobName.getLastestVoucherBalance) {
+    if (jobName === IntersolveVoucherJobName.getLatestVoucherBalance) {
       const maxId = (
         await this.intersolveVoucherScopedRepository
           .createQueryBuilder('voucher')
@@ -41,7 +75,7 @@ export class IntersolveVoucherReconciliationService {
         // Query gets all vouchers that need to be checked these can be:
         // 1) Vouchers with null (which have never been checked)
         // 2) Voucher with a balance of not 0 (which could have been used more in the meantime)
-        const q = await this.intersolveVoucherScopedRepository
+        const query = this.intersolveVoucherScopedRepository
           .createQueryBuilder('voucher')
           .leftJoinAndSelect('voucher.image', 'image')
           .leftJoinAndSelect('image.registration', 'registration')
@@ -53,31 +87,19 @@ export class IntersolveVoucherReconciliationService {
             programId,
           });
 
-        const vouchersToUpdate = await q.getMany();
+        const vouchersToUpdate = await query.getMany();
         if (vouchersToUpdate.length > 0) {
           const credentials =
             await this.programFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
               vouchersToUpdate[0].id,
             );
-          const errorVoucherIds: number[] = [];
-          for await (const voucher of vouchersToUpdate) {
-            try {
-              await this.intersolveVoucherService.getAndUpdateBalance(
-                voucher,
-                programId,
-                credentials,
-              );
-            } catch (error) {
-              // Save up errors until we reach 10, then fail the job to prevent excessive API calls
-              errorVoucherIds.push(voucher.id);
-              if (errorVoucherIds.length >= 10) {
-                throw new Error(
-                  `10 IntersolveVoucherApiErrors occurred while updating all balances, for vouchers: ${errorVoucherIds.join(', ')}
-                      . Failing job to prevent excessive API calls.`,
-                );
-              }
-            }
-          }
+          await this.updateVouchersWithErrorHandling(
+            vouchersToUpdate,
+            programId,
+            credentials,
+            '10 errors occurred while updating all balances, for vouchers:',
+            false,
+          );
         }
         id += 1000;
       }
@@ -136,28 +158,13 @@ export class IntersolveVoucherReconciliationService {
           await this.programFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
             previouslyUnusedVouchers[0].id,
           );
-
-        const errorVoucherIds: number[] = [];
-        for await (const voucher of previouslyUnusedVouchers) {
-          totalVouchersUpdated++;
-          try {
-            await this.intersolveVoucherService.getAndUpdateBalance(
-              voucher,
-              programId,
-              credentials,
-            );
-          } catch (error) {
-            // Save up errors until we reach 10, then fail the job to prevent excessive API calls
-            errorVoucherIds.push(voucher.id);
-            if (errorVoucherIds.length >= 10) {
-              throw new Error(
-                `10 errors occurred while updating all balances via cronjob, for vouchers: ${errorVoucherIds.join(
-                  ', ',
-                )}. Failing job to prevent excessive API calls.`,
-              );
-            }
-          }
-        }
+        totalVouchersUpdated += await this.updateVouchersWithErrorHandling(
+          previouslyUnusedVouchers,
+          programId,
+          credentials,
+          '10 errors occurred while updating all balances via cronjob, for vouchers:',
+          true,
+        );
       }
       id += 1000;
     }
