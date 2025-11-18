@@ -56,14 +56,11 @@ export class TransactionJobsIntersolveVoucherService {
 
     const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
       {
-        transactionId: transactionJob.transactionId,
-        userId: transactionJob.userId,
-        programFspConfigurationId: transactionJob.programFspConfigurationId,
+        transactionEventContext,
         programId: transactionJob.programId,
         referenceId: transactionJob.referenceId,
         isRetry: transactionJob.isRetry,
       };
-
     await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration(
       {
         context: saveTransactionProgressAndUpdateRegistrationContext,

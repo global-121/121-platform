@@ -156,16 +156,12 @@ export class TransactionJobsHelperService {
       await this.updatePaymentCountAndSetToCompleted({
         referenceId: context.referenceId,
         programId: context.programId,
-        userId: context.userId,
+        userId: context.transactionEventContext.userId!,
       });
     }
 
     await this.transactionsService.saveProgress({
-      context: {
-        transactionId: context.transactionId,
-        userId: context.userId,
-        programFspConfigurationId: context.programFspConfigurationId,
-      },
+      context: context.transactionEventContext,
       description,
       errorMessage,
       newTransactionStatus,

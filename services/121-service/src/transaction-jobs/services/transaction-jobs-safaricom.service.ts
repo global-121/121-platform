@@ -60,8 +60,7 @@ export class TransactionJobsSafaricomService {
     // 4. Start the transfer, if failure update to error transaction and return early
     const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
       {
-        ...transactionEventContext,
-        userId: transactionJob.userId!,
+        transactionEventContext,
         programId: transactionJob.programId,
         referenceId: transactionJob.referenceId,
         isRetry: transactionJob.isRetry,

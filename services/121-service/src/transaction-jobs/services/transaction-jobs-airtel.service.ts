@@ -49,8 +49,7 @@ export class TransactionJobsAirtelService {
     ) => {
       const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
         {
-          ...transactionEventContext,
-          userId: transactionJob.userId!,
+          transactionEventContext,
           programId: transactionJob.programId,
           referenceId: transactionJob.referenceId,
           isRetry: transactionJob.isRetry,

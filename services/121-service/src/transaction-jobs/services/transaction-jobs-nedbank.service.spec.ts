@@ -27,16 +27,15 @@ const mockedNedbankTransactionJob: NedbankTransactionJobDto = {
   programFspConfigurationId: 1,
 };
 
-const mockedTransactionEventContext: TransactionEventCreationContext = {
+const transactionEventContext: TransactionEventCreationContext = {
   userId: mockedNedbankTransactionJob.userId,
   transactionId: mockedNedbankTransactionJob.transactionId,
   programFspConfigurationId:
     mockedNedbankTransactionJob.programFspConfigurationId,
 };
-const mockedSaveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
+const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
   {
-    ...mockedTransactionEventContext,
-    userId: mockedNedbankTransactionJob.userId!,
+    transactionEventContext,
     programId: mockedNedbankTransactionJob.programId,
     referenceId: mockedNedbankTransactionJob.referenceId,
     isRetry: mockedNedbankTransactionJob.isRetry,
@@ -116,7 +115,7 @@ describe('TransactionJobsNedbankService', () => {
       transactionJobsHelperService.createInitiatedOrRetryTransactionEvent,
     ).toHaveBeenCalledWith(
       expect.objectContaining({
-        context: mockedTransactionEventContext,
+        context: transactionEventContext,
         isRetry: mockedNedbankTransactionJob.isRetry,
       }),
     );
@@ -163,7 +162,7 @@ describe('TransactionJobsNedbankService', () => {
     expect(
       transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration,
     ).toHaveBeenCalledWith({
-      context: mockedSaveTransactionProgressAndUpdateRegistrationContext,
+      context: saveTransactionProgressAndUpdateRegistrationContext,
       description: TransactionEventDescription.nedbankVoucherCreationRequested,
       errorMessage,
       newTransactionStatus: TransactionStatusEnum.error,

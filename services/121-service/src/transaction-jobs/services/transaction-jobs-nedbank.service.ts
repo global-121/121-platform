@@ -109,8 +109,7 @@ export class TransactionJobsNedbankService {
     // and will be updated to success (or error) via the reconciliation process
     const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
       {
-        ...transactionEventContext,
-        userId: transactionJob.userId!,
+        transactionEventContext,
         programId: transactionJob.programId,
         referenceId: transactionJob.referenceId,
         isRetry: transactionJob.isRetry,
