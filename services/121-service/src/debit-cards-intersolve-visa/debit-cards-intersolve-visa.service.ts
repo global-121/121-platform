@@ -31,9 +31,9 @@ export class DebitCardsIntersolveVisaService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
   ) {}
 
-  // TODO: duplicate of Registrations.service getRegistrationOrThrow
-  // Registrations.service is now dependent on RegistrationDebitCards.service
-  // Need to refactor to avoid circular dependency
+  // TODO: duplicate of RegistrationsService getRegistrationOrThrow
+  // Injecting RegistrationsService instead of duplicating method is not possible due to circular dependency
+  // Refactor RegistrationsService to not be dependent on DebitCardsIntersolveVisaService, then inject RegistrationsService here.
   public async getRegistrationOrThrow({
     referenceId,
     relations = [],

@@ -29,7 +29,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
 
 @UseGuards(AuthenticatedUserGuard)
-@ApiTags('fsps/intersolve-visa')
+@ApiTags('fsps/debit-cards-intersolve-visa')
 @Controller()
 export class DebitCardsIntersolveVisaController {
   public constructor(
