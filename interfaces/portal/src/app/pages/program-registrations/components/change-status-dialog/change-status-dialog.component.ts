@@ -279,8 +279,26 @@ export class ChangeStatusDialogComponent
     this.changeStatusMutation.mutate({ dryRun: true });
   }
 
+  onKeyboardSubmit(): void {
+    // Prevent "Enter"-key from submitting for 'sensitive' status changes like "Delete";
+    // Only as a quick workaround, before we have properly refactored several dialogs and their form-validation-logic. See AB#39194
+    if (this.status() === RegistrationStatusEnum.deleted) {
+      return;
+    }
+
+    this.onFormSubmit();
+  }
+
   onChangeStatusCancel() {
     this.dialogVisible.set(false);
     this.changeStatusMutation.reset();
+
+    // Manual reset the input that might already be given;
+    // These steps are only necessary while they're not properly part of a FormGroup that can reset on close of the dialog
+    // See AB#39194
+    this.reason.set(undefined);
+    this.reasonValidationErrorMessage.set(undefined);
+    this.enableSendMessage.set(false);
+    this.customMessage.set(undefined);
   }
 }
