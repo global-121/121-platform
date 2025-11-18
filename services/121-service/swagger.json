@@ -747,6 +747,15 @@
     ]
   },
   {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/link-card",
+    "params": [
+      "programId",
+      "referenceId",
+      "cardNumber"
+    ]
+  },
+  {
     "method": "put",
     "path": "/api/programs/{programId}/fsps/cooperative-bank-of-oromia/accounts",
     "params": [
@@ -760,15 +769,6 @@
       "programId"
     ],
     "returnType": "CooperativeBankOfOromiaAccountValidationReportDto"
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/link-card",
-    "params": [
-      "programId",
-      "referenceId",
-      "cardNumber"
-    ]
   },
   {
     "method": "post",
