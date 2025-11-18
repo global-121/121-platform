@@ -65,7 +65,8 @@ export class ProgramPaymentChartComponent {
   chartOptions = {
     indexAxis: 'y',
     responsive: true,
-    maintainAspectRatio: false,
+    maintainAspectRatio: true,
+    aspectRatio: 2.5,
     borderRadius: 4,
     layout: {
       padding: {
