@@ -689,6 +689,25 @@
     ]
   },
   {
+    "method": "get",
+    "path": "/api/programs/{programId}/registration-events/paginated",
+    "params": [
+      "programId",
+      "page",
+      "limit",
+      "filter.id",
+      "filter.registrationProgramId",
+      "filter.programId",
+      "filter.fieldChanged",
+      "filter.oldValue",
+      "filter.newValue",
+      "filter.reason",
+      "sortBy",
+      "search",
+      "searchBy"
+    ]
+  },
+  {
     "method": "post",
     "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards",
     "params": [

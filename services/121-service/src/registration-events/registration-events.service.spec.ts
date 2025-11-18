@@ -6,8 +6,8 @@ import { RegistrationViewEntity } from '@121-service/src/registration/entities/r
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
 import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
-import { RegistrationEventScopedRepository } from '@121-service/src/registration-events/registration-event.repository';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
+import { RegistrationEventScopedRepository } from '@121-service/src/registration-events/repositories/registration-event.repository';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
