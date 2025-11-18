@@ -40,7 +40,7 @@ describe('RegistrationsService', () => {
         {
           provide: DebitCardsIntersolveVisaService,
           useValue: {
-            getRegistrationAndSendContactInformationToIntersolve: jest.fn(),
+            sendCustomerInformationToIntersolve: jest.fn(),
           },
         },
         {
