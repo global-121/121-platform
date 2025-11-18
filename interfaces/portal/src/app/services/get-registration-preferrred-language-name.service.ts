@@ -31,12 +31,12 @@ export const uiLanguageToLanguageNames: Record<
   UILanguage,
   languageCodeToLinguonym
 > = {
-  en: languageCodesToLinguonymsForEnglish,
-  ar: languageCodesToLinguonymsForArab,
-  nl: languageCodesToLinguonymsForDutch,
-  es: languageCodesToLinguonymsForSpanish,
-  fr: languageCodesToLinguonymsForFrench,
-  sk: languageCodesToLinguonymsForSlovak,
+  [UILanguage.en]: languageCodesToLinguonymsForEnglish,
+  [UILanguage.ar]: languageCodesToLinguonymsForArab,
+  [UILanguage.nl]: languageCodesToLinguonymsForDutch,
+  [UILanguage.es]: languageCodesToLinguonymsForSpanish,
+  [UILanguage.fr]: languageCodesToLinguonymsForFrench,
+  [UILanguage.sk]: languageCodesToLinguonymsForSlovak,
 };
 
 /**
