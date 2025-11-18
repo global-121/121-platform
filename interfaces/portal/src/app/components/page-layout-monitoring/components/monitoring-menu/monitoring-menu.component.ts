@@ -38,6 +38,11 @@ export class MonitoringMenuComponent {
       icon: 'pi pi-chart-line',
     },
     {
+      label: $localize`:@@page-title-program-monitoring-data-changes:Data changes`,
+      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${AppRoutes.programMonitoringDataChanges}`,
+      icon: 'pi pi-refresh',
+    },
+    {
       label: $localize`:@@page-title-program-monitoring-files:Files`,
       routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${AppRoutes.programMonitoringFiles}`,
       icon: 'pi pi-file',
