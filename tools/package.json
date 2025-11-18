@@ -5,7 +5,8 @@
     "setup": "cp -i .env.example .env",
     "postinstall": "npm run setup",
     "check-versions": "node check-versions.mjs",
-    "download-logs": "node --env-file=.env download-logs.mjs"
+    "download-logs": "node --env-file=.env download-logs.mjs",
+    "upgrade-sheetjs": "node --env-file=.env upgrade-sheetjs.mjs"
   },
   "dependencies": {
     "@azure/identity": "^4.5.0",
