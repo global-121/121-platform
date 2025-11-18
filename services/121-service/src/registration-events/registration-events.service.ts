@@ -3,19 +3,24 @@ import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Job } from 'bull';
 import { isEqual, isMatch, isObject } from 'lodash';
+import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
+import { PaginateConfigRegistrationEventView } from '@121-service/src/registration-events/const/paginate-config-registration-event-view.const';
 import { GetRegistrationEventDto } from '@121-service/src/registration-events/dto/get-registration-event.dto';
 import { GetRegistrationEventXlsxDto } from '@121-service/src/registration-events/dto/get-registration-event-xlsx.dto';
+import { PaginatedRegistrationEventDto } from '@121-service/src/registration-events/dto/paginated-registration-events.dto';
 import { RegistrationEventSearchOptionsDto } from '@121-service/src/registration-events/dto/registration-event-search-options.dto';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
+import { RegistrationEventViewEntity } from '@121-service/src/registration-events/entities/registration-event.view.entity';
 import { RegistrationEventAttributeEntity } from '@121-service/src/registration-events/entities/registration-event-attribute.entity';
 import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
 import { RegistrationEventAttributeKeyEnum } from '@121-service/src/registration-events/enum/registration-event-attribute-key.enum';
 import { CreateForIgnoredDuplicatePair } from '@121-service/src/registration-events/interfaces/create-for-ignored-duplicate-pair.interface';
 import { createFromRegistrationViewsOptions } from '@121-service/src/registration-events/interfaces/create-from-registration-views-options.interface';
 import { RegistrationIdentifiers } from '@121-service/src/registration-events/interfaces/registration-identifiers.interface';
-import { RegistrationEventScopedRepository } from '@121-service/src/registration-events/registration-event.repository';
+import { RegistrationEventScopedRepository } from '@121-service/src/registration-events/repositories/registration-event.repository';
+import { RegistrationEventViewScopedRepository } from '@121-service/src/registration-events/repositories/registration-event.view.repository';
 import { ValueExtractor } from '@121-service/src/registration-events/utils/registration-events.helpers';
 import { RegistrationEventsMapper } from '@121-service/src/registration-events/utils/registration-events.mapper';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
@@ -34,6 +39,7 @@ export class RegistrationEventsService {
     @Inject(REQUEST) private request: ScopedUserRequest,
     @Inject(JOB_REF) private readonly jobRef: Job,
     private readonly userService: UserService,
+    private readonly registrationEventViewScopedRepository: RegistrationEventViewScopedRepository,
   ) {}
 
   public async getEventsAsJson({
@@ -66,6 +72,28 @@ export class RegistrationEventsService {
       programId,
       searchOptions,
     );
+  }
+
+  public async getEventsPaginated(
+    programId: number,
+    paginateQuery: PaginateQuery,
+  ) {
+    const queryBuilder =
+      this.registrationEventViewScopedRepository.createQueryBuilderFilterByProgramId(
+        {
+          programId,
+        },
+      );
+
+    const result = await paginate<RegistrationEventViewEntity>(
+      paginateQuery,
+      queryBuilder,
+      {
+        ...PaginateConfigRegistrationEventView,
+      },
+    );
+
+    return result as Paginated<PaginatedRegistrationEventDto>; // This typeconversion is done to make our frontend happy as it cannot deal with typeorm entities
   }
 
   /**
