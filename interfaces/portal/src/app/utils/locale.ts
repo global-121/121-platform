@@ -2,7 +2,7 @@ import { isDevMode } from '@angular/core';
 
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
-import { uiLanguageToLanguageNames } from '~/services/get-registration-preferrred-language-name.service';
+import { getLinguonym } from '~/utils/get-linguonym';
 import { environment } from '~environment';
 
 /**
@@ -41,9 +41,11 @@ const localeToUILanguageMap: Record<Locale, UILanguage> = {
 };
 
 export const getLocaleLabel = (locale: Locale): string => {
-  const UILanguage = getUILanguageFromLocale(locale);
-  // The name for "language X" in language X.
-  return uiLanguageToLanguageNames[UILanguage][UILanguage];
+  const uiLanguage = getUILanguageFromLocale(locale);
+  return getLinguonym({
+    languageToDisplayNameOf: uiLanguage,
+    languageToShowNameIn: uiLanguage,
+  });
 };
 
 export const getAvailableLocales = () =>
