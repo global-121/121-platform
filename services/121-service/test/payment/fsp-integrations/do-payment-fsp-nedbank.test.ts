@@ -78,7 +78,7 @@ describe('Do payment', () => {
           paymentReferenceIds,
           accessToken,
           maxWaitTimeMs: 30_000,
-          completeStatusses: [
+          completeStatuses: [
             TransactionStatusEnum.success,
             TransactionStatusEnum.error,
             TransactionStatusEnum.waiting,
@@ -100,7 +100,7 @@ describe('Do payment', () => {
           paymentReferenceIds,
           accessToken,
           maxWaitTimeMs: 6_000,
-          completeStatusses: [
+          completeStatuses: [
             TransactionStatusEnum.success,
             TransactionStatusEnum.error,
           ],
@@ -190,7 +190,7 @@ describe('Do payment', () => {
           paymentReferenceIds,
           accessToken,
           maxWaitTimeMs: 30_000,
-          completeStatusses: [
+          completeStatuses: [
             TransactionStatusEnum.success,
             TransactionStatusEnum.error,
             TransactionStatusEnum.waiting,
@@ -247,7 +247,7 @@ describe('Do payment', () => {
           paymentReferenceIds,
           accessToken,
           maxWaitTimeMs: 30_000,
-          completeStatusses: [
+          completeStatuses: [
             TransactionStatusEnum.success,
             TransactionStatusEnum.error,
             TransactionStatusEnum.waiting,
@@ -308,7 +308,7 @@ describe('Do payment', () => {
           paymentReferenceIds,
           accessToken,
           maxWaitTimeMs: 30_000,
-          completeStatusses: [
+          completeStatuses: [
             TransactionStatusEnum.success,
             TransactionStatusEnum.error,
             TransactionStatusEnum.waiting,
@@ -372,7 +372,7 @@ describe('Do payment', () => {
           paymentReferenceIds,
           accessToken,
           maxWaitTimeMs: 30_000,
-          completeStatusses: [
+          completeStatuses: [
             TransactionStatusEnum.success,
             TransactionStatusEnum.error,
             TransactionStatusEnum.waiting,
@@ -428,7 +428,7 @@ describe('Do payment', () => {
           paymentReferenceIds: [registrationFailDebitorAccount.referenceId],
           accessToken,
           maxWaitTimeMs: 5_000,
-          completeStatusses: [TransactionStatusEnum.error],
+          completeStatuses: [TransactionStatusEnum.error],
         });
         const exportPaymentBeforeRetryResponse =
           await exportTransactionsByDateRangeJson({
@@ -456,7 +456,7 @@ describe('Do payment', () => {
           paymentReferenceIds: [registrationFailDebitorAccount.referenceId],
           accessToken,
           maxWaitTimeMs: 5000,
-          completeStatusses: [TransactionStatusEnum.waiting],
+          completeStatuses: [TransactionStatusEnum.waiting],
         });
         const exportPaymentAfterRetryReponse =
           await exportTransactionsByDateRangeJson({

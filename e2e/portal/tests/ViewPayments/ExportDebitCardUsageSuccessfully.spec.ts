@@ -34,7 +34,7 @@ test.beforeEach(async ({ page }) => {
     ),
     accessToken,
     maxWaitTimeMs: 2_000,
-    completeStatusses: [
+    completeStatuses: [
       TransactionStatusEnum.success,
       TransactionStatusEnum.waiting,
     ],

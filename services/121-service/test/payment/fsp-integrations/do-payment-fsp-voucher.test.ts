@@ -204,7 +204,7 @@ describe('Do payment to 1 PA', () => {
         transferValue,
         referenceIds: paymentReferenceIds,
         accessToken,
-        completeStatusses: [
+        completeStatuses: [
           TransactionStatusEnum.success,
           TransactionStatusEnum.error,
         ],
@@ -249,7 +249,7 @@ describe('Do payment to 1 PA', () => {
         transferValue,
         referenceIds: paymentReferenceIds,
         accessToken,
-        completeStatusses: [
+        completeStatuses: [
           TransactionStatusEnum.success,
           TransactionStatusEnum.error,
           TransactionStatusEnum.waiting,

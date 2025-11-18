@@ -52,7 +52,7 @@ test.beforeEach(async ({ page }) => {
     paymentReferenceIds: [referenceIdPV5],
     accessToken,
     maxWaitTimeMs: 2_000,
-    completeStatusses: [
+    completeStatuses: [
       TransactionStatusEnum.success,
       TransactionStatusEnum.waiting,
     ],

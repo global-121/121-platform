@@ -81,7 +81,7 @@ describe('Do payment to 1 PA', () => {
         paymentReferenceIds,
         accessToken,
         maxWaitTimeMs: 4_000,
-        completeStatusses: [
+        completeStatuses: [
           TransactionStatusEnum.success,
           TransactionStatusEnum.error,
         ],
@@ -143,7 +143,7 @@ describe('Do payment to 1 PA', () => {
         paymentReferenceIds,
         accessToken,
         maxWaitTimeMs: 4_000,
-        completeStatusses: [
+        completeStatuses: [
           TransactionStatusEnum.error,
           TransactionStatusEnum.success,
           TransactionStatusEnum.waiting,
@@ -193,7 +193,7 @@ describe('Do payment to 1 PA', () => {
         paymentReferenceIds,
         accessToken,
         maxWaitTimeMs: 4_000,
-        completeStatusses: [
+        completeStatuses: [
           TransactionStatusEnum.error,
           TransactionStatusEnum.success,
           TransactionStatusEnum.waiting,
@@ -276,7 +276,7 @@ describe('Do payment to 1 PA', () => {
         paymentReferenceIds,
         accessToken,
         maxWaitTimeMs: 4_000,
-        completeStatusses: [
+        completeStatuses: [
           TransactionStatusEnum.success,
           TransactionStatusEnum.error,
         ],

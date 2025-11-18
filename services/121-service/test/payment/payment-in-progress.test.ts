@@ -282,7 +282,7 @@ describe('Payment in progress', () => {
         transferValue,
         accessToken,
         referenceIds: registrationReferenceIdsPV,
-        completeStatusses: [
+        completeStatuses: [
           TransactionStatusEnum.error,
           TransactionStatusEnum.success,
         ],
@@ -328,7 +328,7 @@ describe('Payment in progress', () => {
         accessToken,
         maxWaitTimeMs: 30_000,
         paymentId,
-        completeStatusses: [TransactionStatusEnum.success],
+        completeStatuses: [TransactionStatusEnum.success],
       });
       const transactions = await getTransactions({
         programId: programIdPV,

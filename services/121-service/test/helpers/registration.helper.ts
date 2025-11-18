@@ -683,7 +683,7 @@ export async function seedPaidRegistrations({
   registrations,
   programId,
   amount = 20,
-  completeStatuses: completeStatusses = [
+  completeStatuses = [
     TransactionStatusEnum.success,
     TransactionStatusEnum.waiting,
   ],
@@ -702,7 +702,7 @@ export async function seedPaidRegistrations({
     referenceIds: registrationReferenceIds,
     transferValue: amount,
     accessToken,
-    completeStatusses,
+    completeStatuses,
   });
 }
 
@@ -711,7 +711,7 @@ export async function doPaymentAndWaitForCompletion({
   referenceIds,
   transferValue,
   accessToken,
-  completeStatusses = [
+  completeStatuses = [
     TransactionStatusEnum.success,
     TransactionStatusEnum.waiting,
   ],
@@ -721,7 +721,7 @@ export async function doPaymentAndWaitForCompletion({
   referenceIds: string[];
   transferValue: number;
   accessToken: string;
-  completeStatusses?: TransactionStatusEnum[];
+  completeStatuses?: TransactionStatusEnum[];
   note?: string;
 }): Promise<number> {
   const doPaymentResponse = await createAndStartPayment({
@@ -738,7 +738,7 @@ export async function doPaymentAndWaitForCompletion({
     paymentReferenceIds: referenceIds,
     accessToken,
     maxWaitTimeMs: 30_000,
-    completeStatusses,
+    completeStatuses,
     paymentId,
   });
   return paymentId;

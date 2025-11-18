@@ -25,7 +25,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
-// This test takes a lot of time because there are my statusses to check
+// This test takes a lot of time because there are my statuses to check
 jest.setTimeout(40_000);
 
 describe('Load Visa debit cards and details', () => {

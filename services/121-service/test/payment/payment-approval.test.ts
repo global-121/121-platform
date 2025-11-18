@@ -79,7 +79,7 @@ describe('Payment approval flow', () => {
       paymentReferenceIds: [registrationAh.referenceId],
       accessToken: adminAccessToken,
       maxWaitTimeMs: 5000,
-      completeStatusses: [TransactionStatusEnum.success],
+      completeStatuses: [TransactionStatusEnum.success],
     });
 
     // Assert

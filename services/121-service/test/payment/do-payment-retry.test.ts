@@ -139,7 +139,7 @@ describe('Do payment retry', () => {
       paymentId,
       accessToken,
       maxWaitTimeMs: 5000,
-      completeStatusses: [TransactionStatusEnum.success],
+      completeStatuses: [TransactionStatusEnum.success],
     });
 
     const paymentAggregatesAfterRetry = await getPaymentSummary({
@@ -218,7 +218,7 @@ describe('Do payment retry', () => {
       paymentId,
       accessToken,
       maxWaitTimeMs: 5000,
-      completeStatusses: [TransactionStatusEnum.success],
+      completeStatuses: [TransactionStatusEnum.success],
     });
 
     const paymentAggregatesAfterRetry = await getPaymentSummary({

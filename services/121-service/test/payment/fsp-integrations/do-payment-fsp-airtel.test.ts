@@ -57,7 +57,7 @@ describe('Do payment with FSP: Airtel', () => {
       paymentId,
       accessToken,
       maxWaitTimeMs: 30_000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
         TransactionStatusEnum.waiting,
@@ -110,7 +110,7 @@ describe('Do payment with FSP: Airtel', () => {
       paymentId,
       accessToken,
       maxWaitTimeMs: 30_000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
         TransactionStatusEnum.waiting,
@@ -172,7 +172,7 @@ describe('Do payment with FSP: Airtel', () => {
       paymentId,
       accessToken,
       maxWaitTimeMs: 30_000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
         TransactionStatusEnum.waiting,
@@ -224,7 +224,7 @@ describe('Do payment with FSP: Airtel', () => {
       paymentId,
       accessToken,
       maxWaitTimeMs: 30_000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
         TransactionStatusEnum.waiting,
@@ -273,7 +273,7 @@ describe('Do payment with FSP: Airtel', () => {
       paymentId,
       accessToken,
       maxWaitTimeMs: 30_000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
         TransactionStatusEnum.waiting,

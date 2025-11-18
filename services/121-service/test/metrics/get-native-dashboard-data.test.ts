@@ -27,7 +27,7 @@ registrationPV6.whatsappPhoneNumber = noIncomingMessagePhoneNumber;
 const registrationsPV = [registrationPV6, registrationPV7, registrationPV8];
 
 const seedTwoPayments = async () => {
-  const completeStatusses = [
+  const completeStatuses = [
     TransactionStatusEnum.success,
     TransactionStatusEnum.error,
     TransactionStatusEnum.waiting,
@@ -37,7 +37,7 @@ const seedTwoPayments = async () => {
     registrations: registrationsPV,
     programId: programIdPV,
     amount: transferValue,
-    completeStatuses: completeStatusses,
+    completeStatuses,
   });
 
   // Add a second payment to return two aggregates in the response
@@ -46,7 +46,7 @@ const seedTwoPayments = async () => {
     transferValue,
     referenceIds: registrationsPV.map((r) => r.referenceId),
     accessToken,
-    completeStatusses,
+    completeStatuses,
   });
 };
 

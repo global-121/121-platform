@@ -91,7 +91,7 @@ describe('Do payment with Excel FSP', () => {
         ], // Only wait for the transactions that should change
         accessToken,
         maxWaitTimeMs: 10_000,
-        completeStatusses: [
+        completeStatuses: [
           TransactionStatusEnum.success,
           TransactionStatusEnum.error,
         ],

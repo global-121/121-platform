@@ -50,7 +50,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],
@@ -115,7 +115,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],
@@ -168,7 +168,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],
@@ -220,7 +220,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],
@@ -266,7 +266,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4000,
-      completeStatusses: [TransactionStatusEnum.success],
+      completeStatuses: [TransactionStatusEnum.success],
     });
 
     const getTransactionsAfterRetryBody = await getTransactions({

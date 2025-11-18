@@ -53,7 +53,7 @@ describe('Set/calculate payment amount multiplier', () => {
       referenceIds: [importedRegistration.referenceId],
       transferValue,
       accessToken,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.waiting,
         TransactionStatusEnum.error,
