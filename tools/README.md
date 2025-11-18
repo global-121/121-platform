@@ -29,7 +29,7 @@ Similar to the 121 Status-page: <https://status.121.global>, but from the comman
 
 ### `npm run upgrade-sheetjs`
 
-To upgrade the version of SheetJS we use for use in all components of the 121 Platform.
+To upgrade the version of SheetJS we use in all components of the 121 Platform.
 
 #### Usage
 
