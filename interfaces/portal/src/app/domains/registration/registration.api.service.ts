@@ -357,4 +357,27 @@ export class RegistrationApiService extends DomainApiService {
       queryKey: this.pathToQueryKey(path),
     });
   }
+
+  public linkCardToRegistration({
+    programId,
+    referenceId,
+    cardNumber,
+  }: {
+    programId: Signal<number | string>;
+    referenceId: Signal<string>;
+    cardNumber: Signal<string>;
+  }) {
+    return this.generateQueryOptions<Registration>({
+      path: [
+        ...BASE_ENDPOINT(programId),
+        referenceId,
+        'fsps',
+        'intersolve-visa',
+        'link-card',
+      ],
+      method: 'POST',
+      enabled: () => !!referenceId(),
+      params: { cardNumber },
+    });
+  }
 }
