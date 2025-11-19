@@ -93,11 +93,13 @@ export function importRegistrationsCSV(
 
 export function duplicateRegistrationsAndPaymentData({
   powerNumberRegistration,
+  includeEvents = false,
   accessToken,
   body = {},
   numberOfPayments = 0,
 }: {
   powerNumberRegistration: number;
+  includeEvents?: boolean;
   accessToken: string;
   body: object;
   numberOfPayments?: number;
@@ -108,6 +110,7 @@ export function duplicateRegistrationsAndPaymentData({
     .query({
       mockPowerNumberRegistrations: powerNumberRegistration,
       mockNumberPayments: numberOfPayments,
+      includeEvents,
     })
     .send(body);
 }
@@ -437,69 +440,43 @@ export async function waitForStatusChangeToComplete({
 /**
  * It's only useful to call this function on bulk updates, because single updates happen synchronously
  */
-export async function waitForBulkRegistrationChanges({
-  expectedChangesOrPatch,
-  programId,
-  accessToken,
+export async function waitForBulkRegistrationChanges(
+  expectedChanges: {
+    referenceId: string;
+    expectedPatch: Record<string, any>;
+  }[],
+  programId: number,
+  accessToken: string,
   maxWaitTimeMs = 10000,
   pollIntervalMs = 500,
-}: {
-  expectedChangesOrPatch:
-    | { referenceId: string; expectedPatch: Record<string, any> }[]
-    | { expectedPatch: Record<string, any> };
-  programId: number;
-  accessToken: string;
-  maxWaitTimeMs?: number;
-  pollIntervalMs?: number;
-}): Promise<void> {
+): Promise<void> {
   const startTime = Date.now();
 
-  // Case 1: Array of { referenceId, expectedPatch }
-  if (Array.isArray(expectedChangesOrPatch)) {
-    while (Date.now() - startTime < maxWaitTimeMs) {
-      const allMatch = await Promise.all(
-        expectedChangesOrPatch.map(async ({ referenceId, expectedPatch }) => {
-          const result = await searchRegistrationByReferenceId(
-            referenceId,
-            programId,
-            accessToken,
-          );
-          const registration = result.body.data[0];
-          const filteredPatch = Object.entries(expectedPatch)
-            .filter(([_, value]) => value !== null)
-            .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
-          return registration && isMatch(registration, filteredPatch);
-        }),
-      );
-      if (allMatch.every(Boolean)) {
-        return;
-      }
-      await waitFor(pollIntervalMs);
-    }
-    throw new Error('Timed out waiting for registration changes');
-  }
-
-  // Case 2: Single { expectedPatch } for all registrations
-  const { expectedPatch } = expectedChangesOrPatch;
   while (Date.now() - startTime < maxWaitTimeMs) {
-    const result = await getRegistrations({
-      programId,
-      accessToken,
-      limit: 100000,
-      page: 1,
-    });
-    const registrations = result.body.data || [];
-    const filteredPatch = Object.entries(expectedPatch)
-      .filter(([_, value]) => value !== null)
-      .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
-    const allMatch = registrations.every((registration: any) =>
-      isMatch(registration, filteredPatch),
+    const allMatch = await Promise.all(
+      expectedChanges.map(async ({ referenceId, expectedPatch }) => {
+        const result = await searchRegistrationByReferenceId(
+          referenceId,
+          programId,
+          accessToken,
+        );
+        const registration = result.body.data[0];
+        // Filter out null values. Because if you remove a field from a registration it will not be returned from the api
+        const filteredPatch = Object.entries(expectedPatch)
+          .filter(([_, value]) => value !== null)
+          .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
+
+        return registration && isMatch(registration, filteredPatch);
+      }),
     );
-    if (registrations.length > 0 && allMatch) {
+
+    if (allMatch.every(Boolean)) {
       return;
     }
+
     await waitFor(pollIntervalMs);
   }
+
   throw new Error('Timed out waiting for registration changes');
 }
 

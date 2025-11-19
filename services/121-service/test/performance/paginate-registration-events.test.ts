@@ -1,23 +1,17 @@
 import { HttpStatus } from '@nestjs/common';
-import * as fs from 'fs';
-import path from 'path';
 import { env } from 'process';
 
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { MASS_UPDATE_ROW_LIMIT } from '@121-service/src/registration/services/registrations-import.service';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { getRegistrationEventsPaginated } from '@121-service/test/helpers/program.helper';
 import {
-  bulkUpdateRegistrationsCSV,
   changeRegistrationStatus,
   duplicateRegistrations,
-  exportRegistrations,
   importRegistrations,
-  jsonToCsv,
-  waitForBulkRegistrationChanges,
+  updateRegistration,
   waitForStatusChangeToComplete,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -26,9 +20,9 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^17 = 131072
+const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '17'); // cronjob duplicate number should be 2^17 = 131072
 
-const supportedNumberOfRecords = 300_000; // Adjust based on expected supported number
+const supportedNumberOfRecords = 400_000; // Adjust based on expected supported number. This is enough for 3 * 2^17 events
 const maxWaitTimeMs = 240_000; // 4 minutes
 const testTimeout = 5_400_000; // 90 minutes
 
@@ -50,18 +44,7 @@ describe('Get paginated registrations events', () => {
       accessToken,
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
-
-    // Duplicate registrations
-    const duplicateRegistrationsResponse = await duplicateRegistrations({
-      powerNumberRegistration: duplicateNumber,
-      accessToken,
-      body: {
-        secret: env.RESET_SECRET,
-      },
-    });
-    expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
-
-    // Change status of all registration to 'included'
+    // Change status of registration to 'included'
     const changeStatusResponse = await changeRegistrationStatus({
       programId: programIdOCW,
       status: RegistrationStatusEnum.included,
@@ -75,53 +58,24 @@ describe('Get paginated registrations events', () => {
       maxWaitTimeMs,
       accessToken,
     });
-
-    // Do bulk update by ..
-    // .. first export registrations
-    const exportRegistrationsResponse = await exportRegistrations(
+    // Make data change for registration
+    await updateRegistration(
       programIdOCW,
-      GenericRegistrationAttributes.preferredLanguage,
+      registrationVisa.referenceId,
+      { [GenericRegistrationAttributes.preferredLanguage]: LanguageEnum.ar },
+      'test',
       accessToken,
     );
-    expect(exportRegistrationsResponse.statusCode).toBe(HttpStatus.OK);
-    // .. then change preferredLanguage to Arabic
-    const responseObj = exportRegistrationsResponse.body;
-    const registrations = responseObj.data;
-    for (const registration of registrations) {
-      registration.preferredLanguage = LanguageEnum.ar;
-    }
-    // Split into chunks of 50,000 as this is the import-limit
-    const chunkSize = MASS_UPDATE_ROW_LIMIT;
-    for (let i = 0; i < registrations.length; i += chunkSize) {
-      console.log('i: ', i);
-      const chunk = registrations.slice(i, i + chunkSize);
-      const csvFile = jsonToCsv(chunk);
-      const tempFilePath = path.join(
-        __dirname,
-        `registrations-part-${i / chunkSize + 1}.csv`,
-      );
-      fs.writeFileSync(tempFilePath, csvFile);
-      const startTime = Date.now();
-      const bulkUpdate = await bulkUpdateRegistrationsCSV(
-        programIdOCW,
-        tempFilePath,
-        accessToken,
-        'bulk update',
-      );
-      const elapsedTime = Date.now() - startTime;
-      fs.unlinkSync(tempFilePath);
-      expect(elapsedTime).toBeLessThan(80_000); // 80000 ms = 80 seconds
-      expect(bulkUpdate.statusCode).toBe(HttpStatus.OK);
-    }
-    // Wait for bulk update to complete
-    await waitForBulkRegistrationChanges({
-      expectedChangesOrPatch: {
-        expectedPatch: { preferredLanguage: LanguageEnum.ar },
-      },
-      programId: programIdOCW,
+    // Duplicate registrations > including registration-events
+    const duplicateRegistrationsResponse = await duplicateRegistrations({
+      powerNumberRegistration: duplicateNumber,
+      includeEvents: true,
       accessToken,
-      maxWaitTimeMs: testTimeout, // this takes very long
+      body: {
+        secret: env.RESET_SECRET,
+      },
     });
+    expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Get one page of events to test the duration of the api response
     const getEventsStartTime = Date.now();
@@ -138,7 +92,7 @@ describe('Get paginated registrations events', () => {
     const getEventsElapsedTime = Date.now() - getEventsStartTime;
 
     const twoSeconds = 2 * 1000;
-    expect(getEventsElapsedTime).toBeLessThan(twoSeconds);
+    expect(getEventsElapsedTime).toBeLessThan(twoSeconds); // local time was 911ms
 
     expect(paginatedEventsResponse.statusCode).toBe(HttpStatus.OK);
 
@@ -151,11 +105,11 @@ describe('Get paginated registrations events', () => {
       limit: supportedNumberOfRecords,
     });
     const allEvents = allEventsResponse.body.data;
-    const expectedEvents = Math.pow(2, duplicateNumber) * 2 + 1; // each registration has 2 events (status change + bulk update) + there is one initial status change event for the first imported registration
+    const expectedEvents = Math.pow(2, duplicateNumber) * 3; // each registration has 2 status changes and 1 data change
     expect(allEvents.length).toBe(expectedEvents);
     const getAllEventsElapsedTime = Date.now() - getAllEventsStartTime;
 
-    const twoMinutes = 2 * 60 * 1000;
-    expect(getAllEventsElapsedTime).toBeLessThan(twoMinutes);
+    const tenSeconds = 10 * 1000;
+    expect(getAllEventsElapsedTime).toBeLessThan(tenSeconds); // local time was 6471ms
   });
 });
