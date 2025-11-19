@@ -65,7 +65,6 @@ export class ProgramPaymentChartComponent {
   chartOptions = {
     indexAxis: 'y',
     responsive: true,
-    maintainAspectRatio: false,
     borderRadius: 4,
     layout: {
       padding: {
@@ -86,6 +85,7 @@ export class ProgramPaymentChartComponent {
         beginAtZero: true,
         ticks: {
           crossAlign: 'far',
+          padding: 8,
         },
         grid: {
           display: false,
