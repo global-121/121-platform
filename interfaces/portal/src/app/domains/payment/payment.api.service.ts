@@ -3,7 +3,6 @@ import { Injectable, Signal } from '@angular/core';
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
-import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 
@@ -13,8 +12,8 @@ import {
   PaymentAggregate,
   PaymentEventsResponse,
   PaymentStatus,
-  PaymentTransaction,
 } from '~/domains/payment/payment.model';
+import { FindAllTransactionsResult } from '~/domains/transaction/transaction.model';
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { unknownArrayToCsvBlob } from '~/utils/csv-helpers';
 import { Dto } from '~/utils/dto-type';
@@ -68,17 +67,20 @@ export class PaymentApiService extends DomainApiService {
   getPaymentTransactions({
     programId,
     paymentId,
+    paginateQuery,
   }: {
     programId: Signal<number | string | undefined>;
     paymentId: Signal<number | string | undefined>;
+    paginateQuery: Signal<PaginateQuery | undefined>;
   }) {
-    return this.generateQueryOptions<PaymentTransaction[]>({
+    return this.generateQueryOptions<FindAllTransactionsResult>({
       path: [
         ...BASE_ENDPOINT(programId as Signal<number | string>),
         paymentId,
         'transactions',
       ],
-      enabled: () => !!programId() && !!paymentId(),
+      paginateQuery: paginateQuery as Signal<PaginateQuery>,
+      enabled: () => !!programId() && !!paymentId() && !!paginateQuery,
     });
   }
 
@@ -131,19 +133,15 @@ export class PaymentApiService extends DomainApiService {
     });
   }
 
+  // ##TODO: add paginateQuery
   retryFailedTransactions({
     programId,
     paymentId,
-    referenceIds,
   }: {
     programId: Signal<number | string>;
     paymentId: number | string;
     referenceIds: string[];
   }) {
-    const body: Dto<RetryPaymentDto> = {
-      referenceIds,
-    };
-
     return this.httpWrapperService.perform121ServiceRequest<
       Dto<BulkActionResultPaymentDto>
     >({
@@ -152,7 +150,6 @@ export class PaymentApiService extends DomainApiService {
         ...BASE_ENDPOINT(programId),
         paymentId,
       ]).join('/'),
-      body,
       httpParams: {
         retry: 'true',
       },
