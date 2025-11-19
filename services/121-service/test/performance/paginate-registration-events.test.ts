@@ -5,7 +5,7 @@ import { GenericRegistrationAttributes } from '@121-service/src/registration/enu
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { getRegistrationEventsPaginated } from '@121-service/test/helpers/program.helper';
 import {
   changeRegistrationStatus,
@@ -62,7 +62,10 @@ describe('Get paginated registrations events', () => {
     await updateRegistration(
       programIdOCW,
       registrationVisa.referenceId,
-      { [GenericRegistrationAttributes.preferredLanguage]: LanguageEnum.ar },
+      {
+        [GenericRegistrationAttributes.preferredLanguage]:
+          RegistrationPreferredLanguage.ar,
+      },
       'test',
       accessToken,
     );
