@@ -10,6 +10,7 @@ import { TransactionEventCreationContext } from '@121-service/src/payments/trans
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { TransactionJobsNedbankService } from '@121-service/src/transaction-jobs/services/transaction-jobs-nedbank.service';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
@@ -26,12 +27,18 @@ const mockedNedbankTransactionJob: NedbankTransactionJobDto = {
   programFspConfigurationId: 1,
 };
 
-const mockedTransactionContext: TransactionEventCreationContext = {
+const transactionEventContext: TransactionEventCreationContext = {
   userId: mockedNedbankTransactionJob.userId,
   transactionId: mockedNedbankTransactionJob.transactionId,
   programFspConfigurationId:
     mockedNedbankTransactionJob.programFspConfigurationId,
 };
+const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
+  {
+    transactionEventContext,
+    referenceId: mockedNedbankTransactionJob.referenceId,
+    isRetry: mockedNedbankTransactionJob.isRetry,
+  };
 
 describe('TransactionJobsNedbankService', () => {
   let service: TransactionJobsNedbankService;
@@ -107,7 +114,7 @@ describe('TransactionJobsNedbankService', () => {
       transactionJobsHelperService.createInitiatedOrRetryTransactionEvent,
     ).toHaveBeenCalledWith(
       expect.objectContaining({
-        context: mockedTransactionContext,
+        context: transactionEventContext,
         isRetry: mockedNedbankTransactionJob.isRetry,
       }),
     );
@@ -134,7 +141,9 @@ describe('TransactionJobsNedbankService', () => {
       { orderCreateReference: expect.any(String) },
       { status: NedbankVoucherStatus.PENDING },
     );
-    expect(transactionsService.saveTransactionProgress).toHaveBeenCalled();
+    expect(
+      transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration,
+    ).toHaveBeenCalled();
   });
 
   it('should update transaction and voucher to error/failed if NedbankError is thrown', async () => {
@@ -149,8 +158,10 @@ describe('TransactionJobsNedbankService', () => {
     await service.processNedbankTransactionJob(mockedNedbankTransactionJob);
 
     // Assert
-    expect(transactionsService.saveTransactionProgress).toHaveBeenCalledWith({
-      context: mockedTransactionContext,
+    expect(
+      transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration,
+    ).toHaveBeenCalledWith({
+      context: saveTransactionProgressAndUpdateRegistrationContext,
       description: TransactionEventDescription.nedbankVoucherCreationRequested,
       errorMessage,
       newTransactionStatus: TransactionStatusEnum.error,

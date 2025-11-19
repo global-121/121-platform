@@ -1,18 +1,26 @@
 import { Injectable } from '@nestjs/common';
+import { Equal } from 'typeorm';
 
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { MessageContentDetails } from '@121-service/src/notifications/interfaces/message-content-details.interface';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 
 @Injectable()
 export class TransactionJobsHelperService {
@@ -21,6 +29,9 @@ export class TransactionJobsHelperService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly queueMessageService: MessageQueuesService,
     private readonly transactionEventsService: TransactionEventsService,
+    private readonly transactionsService: TransactionsService,
+    private readonly registrationsBulkService: RegistrationsBulkService,
+    private readonly transactionRepository: TransactionRepository,
   ) {}
 
   public async getRegistrationOrThrow(
@@ -127,5 +138,108 @@ export class TransactionJobsHelperService {
       bulksize: bulkSize,
       userId,
     });
+  }
+
+  public async saveTransactionProgressAndUpdateRegistration({
+    context,
+    newTransactionStatus,
+    description,
+    errorMessage,
+  }: {
+    context: SaveTransactionProgressAndUpdateRegistrationContext;
+    newTransactionStatus: TransactionStatusEnum;
+    description: TransactionEventDescription;
+    errorMessage?: string;
+  }): Promise<void> {
+    if (!context.isRetry) {
+      await this.updatePaymentCountAndSetToCompleted({
+        referenceId: context.referenceId,
+        userId: context.transactionEventContext.userId!,
+      });
+    }
+
+    await this.transactionsService.saveProgress({
+      context: context.transactionEventContext,
+      description,
+      errorMessage,
+      newTransactionStatus,
+    });
+  }
+
+  /**
+   * Updates payment count and sets status to completed if applicable
+   */
+  public async updatePaymentCountAndSetToCompleted({
+    referenceId,
+    userId,
+  }: {
+    referenceId: string;
+    userId: number;
+  }): Promise<void> {
+    const paymentCount =
+      await this.transactionRepository.getPaymentCountByReferenceId(
+        referenceId,
+      );
+    await this.registrationScopedRepository.updatePaymentCount({
+      referenceId,
+      paymentCount,
+    });
+
+    await this.setStatusToCompletedIfApplicable({
+      referenceId,
+      userId,
+    });
+  }
+
+  /**
+   * Checks program settings and completes registrations when applicable.
+   */
+  public async setStatusToCompletedIfApplicable({
+    referenceId,
+    userId,
+  }: {
+    referenceId: string;
+    userId: number;
+  }): Promise<void> {
+    const registrationWithProgram =
+      await this.registrationScopedRepository.findOneOrFail({
+        where: { referenceId: Equal(referenceId) },
+        relations: { program: true },
+      });
+    const program = registrationWithProgram.program;
+    if (!program.enableMaxPayments) {
+      return;
+    }
+
+    const shouldChangeStatusToCompleted =
+      await this.registrationScopedRepository.shouldChangeStatusToCompleted({
+        referenceId,
+      });
+    if (!shouldChangeStatusToCompleted) {
+      return;
+    }
+
+    const isTemplateAvailable =
+      await this.messageTemplateService.isTemplateAvailable(
+        program.id,
+        RegistrationStatusEnum.completed,
+      );
+    const messageContentDetails: MessageContentDetails = isTemplateAvailable
+      ? {
+          messageTemplateKey: RegistrationStatusEnum.completed,
+          messageContentType: MessageContentType.completed,
+          message: '',
+        }
+      : {};
+
+    await this.registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds(
+      {
+        referenceIds: [referenceId],
+        programId: program.id,
+        registrationStatus: RegistrationStatusEnum.completed,
+        userId,
+        messageContentDetails,
+      },
+    );
   }
 }

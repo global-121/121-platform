@@ -2,7 +2,6 @@ import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name
 import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integration/onafriq/entities/onafriq-transaction.entity';
 import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.service';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
-import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
@@ -18,7 +17,6 @@ describe('TransactionJobsOnafriqService', () => {
   let transactionEventsScopedRepository: jest.Mocked<TransactionEventsScopedRepository>;
   let transactionJobsHelperService: jest.Mocked<TransactionJobsHelperService>;
   let programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
-  let transactionsService: jest.Mocked<TransactionsService>;
 
   beforeEach(async () => {
     onafriqService = { createTransaction: jest.fn() } as any;
@@ -32,9 +30,7 @@ describe('TransactionJobsOnafriqService', () => {
     } as any;
     transactionJobsHelperService = {
       createInitiatedOrRetryTransactionEvent: jest.fn(),
-    } as any;
-    transactionsService = {
-      saveTransactionProgress: jest.fn(),
+      saveTransactionProgressAndUpdateRegistration: jest.fn(),
     } as any;
     programFspConfigurationRepository = {
       getPropertiesByNamesOrThrow: jest.fn(),
@@ -46,7 +42,6 @@ describe('TransactionJobsOnafriqService', () => {
       transactionJobsHelperService,
       programFspConfigurationRepository,
       transactionEventsScopedRepository,
-      transactionsService,
     );
   });
 

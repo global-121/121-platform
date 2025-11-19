@@ -255,7 +255,7 @@ export class ExcelReconciliationService {
       });
     }
 
-    await this.transactionsService.saveTransactionProgressBulk({
+    await this.transactionsService.saveProgressBulk({
       newTransactionStatus: transactionStatus,
       transactionIds: transactionIdsToUpdate,
       description: TransactionEventDescription.excelReconciliationFileUpload,

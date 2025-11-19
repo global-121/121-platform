@@ -74,13 +74,22 @@ describe('Set registration to completed after payment', () => {
     );
 
     const messageHistory = messageHistoryResponse.body;
-    const expectedMessages = messageHistory.filter((message) =>
+    const completedMessages = messageHistory.filter((message) =>
       expectedMessageTranslations.includes(message.attributes.body),
     );
-    expect(expectedMessages.length).toBe(1);
-    expect(expectedMessages[0].attributes.status).not.toBe(TwilioStatus.failed);
-    expect(expectedMessages[0].attributes.contentType).toBe(
+    expect(completedMessages.length).toBe(1);
+    const completedMessage = completedMessages[0];
+    expect(completedMessage.attributes.status).not.toBe(TwilioStatus.failed);
+    expect(completedMessage.attributes.contentType).toBe(
       MessageContentType.completed,
+    );
+
+    const initialVoucherMessage = messageHistory.find(
+      (message) =>
+        message.attributes.contentType === MessageContentType.paymentTemplated,
+    );
+    expect(new Date(initialVoucherMessage!.created).getTime()).toBeLessThan(
+      new Date(completedMessage.created).getTime(),
     );
   });
 });

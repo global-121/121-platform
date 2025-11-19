@@ -10,9 +10,9 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
-import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { OnafriqTransactionJobDto } from '@121-service/src/transaction-queues/dto/onafriq-transaction-job.dto';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
@@ -27,7 +27,6 @@ export class TransactionJobsOnafriqService {
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
-    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async processOnafriqTransactionJob(
@@ -64,6 +63,12 @@ export class TransactionJobsOnafriqService {
     await this.upsertOnafriqTransaction(thirdPartyTransId, transactionJob);
 
     // 4. Start the transaction, if failure: update to error transaction and return early
+    const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
+      {
+        transactionEventContext,
+        referenceId: transactionJob.referenceId,
+        isRetry: transactionJob.isRetry,
+      };
     try {
       const requestIdentity = await this.getOnafriqFspConfig(
         transactionJob.programFspConfigurationId,
@@ -87,12 +92,14 @@ export class TransactionJobsOnafriqService {
         return;
       } else if (error instanceof OnafriqError) {
         // store error transactionEvent and update transaction to 'error'
-        await this.transactionsService.saveTransactionProgress({
-          context: transactionEventContext,
-          description: TransactionEventDescription.onafriqRequestSent,
-          errorMessage: error.message,
-          newTransactionStatus: TransactionStatusEnum.error,
-        });
+        await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration(
+          {
+            context: saveTransactionProgressAndUpdateRegistrationContext,
+            description: TransactionEventDescription.onafriqRequestSent,
+            errorMessage: error.message,
+            newTransactionStatus: TransactionStatusEnum.error,
+          },
+        );
         return;
       } else {
         throw error;
@@ -100,11 +107,13 @@ export class TransactionJobsOnafriqService {
     }
 
     // 5. store success transactionEvent and update transaction to 'waiting'
-    await this.transactionsService.saveTransactionProgress({
-      context: transactionEventContext,
-      description: TransactionEventDescription.onafriqRequestSent,
-      newTransactionStatus: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
-    });
+    await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration(
+      {
+        context: saveTransactionProgressAndUpdateRegistrationContext,
+        description: TransactionEventDescription.onafriqRequestSent,
+        newTransactionStatus: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
+      },
+    );
   }
 
   private async upsertOnafriqTransaction(

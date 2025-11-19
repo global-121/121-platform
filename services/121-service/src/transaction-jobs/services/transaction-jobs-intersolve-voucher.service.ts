@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
-import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { IntersolveVoucherTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-voucher-transaction-job.dto';
 
@@ -14,7 +14,6 @@ export class TransactionJobsIntersolveVoucherService {
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
-    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async processIntersolveVoucherTransactionJob(
@@ -55,11 +54,20 @@ export class TransactionJobsIntersolveVoucherService {
       return;
     }
 
-    await this.transactionsService.saveTransactionProgress({
-      context: transactionEventContext,
-      description: TransactionEventDescription.intersolveVoucherCreationRequest,
-      newTransactionStatus: sendIndividualPaymentResult.status,
-      errorMessage: sendIndividualPaymentResult.message ?? undefined,
-    });
+    const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
+      {
+        transactionEventContext,
+        referenceId: transactionJob.referenceId,
+        isRetry: transactionJob.isRetry,
+      };
+    await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration(
+      {
+        context: saveTransactionProgressAndUpdateRegistrationContext,
+        description:
+          TransactionEventDescription.intersolveVoucherCreationRequest,
+        newTransactionStatus: sendIndividualPaymentResult.status,
+        errorMessage: sendIndividualPaymentResult.message ?? undefined,
+      },
+    );
   }
 }

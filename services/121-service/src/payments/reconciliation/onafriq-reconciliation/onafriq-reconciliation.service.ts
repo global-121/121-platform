@@ -106,7 +106,7 @@ export class OnafriqReconciliationService {
         return; // Exit early for unexpected status codes
     }
 
-    await this.transactionsService.saveTransactionProgressFromExternalSource({
+    await this.transactionsService.saveProgressFromExternalSource({
       transactionId,
       description: TransactionEventDescription.onafriqCallbackReceived,
       newTransactionStatus: transactionStatus,

@@ -155,7 +155,7 @@ describe('Export transactions', () => {
     });
   });
 
-  it('should filter transactions based payment', async () => {
+  it('should filter transactions based on payment', async () => {
     // Arrange
 
     // Payment 1

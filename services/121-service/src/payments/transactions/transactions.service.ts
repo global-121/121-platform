@@ -76,7 +76,7 @@ export class TransactionsService {
     return savedTransactions.map((t) => t.id);
   }
 
-  public async saveTransactionProgress({
+  public async saveProgress({
     context,
     description,
     errorMessage,
@@ -103,7 +103,7 @@ export class TransactionsService {
     }
   }
 
-  public async saveTransactionProgressBulk({
+  public async saveProgressBulk({
     newTransactionStatus,
     transactionIds,
     description,
@@ -152,7 +152,7 @@ export class TransactionsService {
   }
 
   // Used upon e.g. callbacks, but also upon intersolve-voucher incoming message
-  public async saveTransactionProgressFromExternalSource({
+  public async saveProgressFromExternalSource({
     transactionId,
     description,
     errorMessage,
@@ -174,7 +174,7 @@ export class TransactionsService {
       programFspConfigurationId: latestEvent.programFspConfigurationId,
     };
 
-    await this.saveTransactionProgress({
+    await this.saveProgress({
       context,
       description,
       errorMessage,

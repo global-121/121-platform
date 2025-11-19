@@ -420,7 +420,7 @@ export class IntersolveVoucherService {
       return;
     }
 
-    await this.transactionsService.saveTransactionProgressFromExternalSource({
+    await this.transactionsService.saveProgressFromExternalSource({
       transactionId,
       description: TransactionEventDescription.intersolveVoucherMessageCallback,
       newTransactionStatus: newTransactionStatus as TransactionStatusEnum,
@@ -450,7 +450,7 @@ export class IntersolveVoucherService {
     userId: number;
     programFspConfigurationId: number;
   }): Promise<void> {
-    await this.transactionsService.saveTransactionProgress({
+    await this.transactionsService.saveProgress({
       context: {
         transactionId,
         userId,
@@ -671,7 +671,7 @@ export class IntersolveVoucherService {
     messageSid?: string;
     intersolveVoucherId: number;
   }): Promise<void> {
-    await this.transactionsService.saveTransactionProgressFromExternalSource({
+    await this.transactionsService.saveProgressFromExternalSource({
       transactionId,
       description:
         TransactionEventDescription.intersolveVoucherVoucherMessageSent,
