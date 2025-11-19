@@ -11,7 +11,7 @@ import {
   registrationVisa,
   transferValueVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 
@@ -115,7 +115,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     await this.seedMockHelper.awaitChangePaData({
       programId,
       referenceId: registration.referenceId,
-      data: { preferredLanguage: LanguageEnum.ar },
+      data: { preferredLanguage: RegistrationPreferredLanguage.ar },
       reason: 'Seed',
       accessToken,
     });
