@@ -7,7 +7,7 @@ import {
   ViewEntity,
 } from 'typeorm';
 
-import { Base121AuditedEntity } from '@121-service/src/base-audited.entity';
+import { Base121OptionalAuditedEntity } from '@121-service/src/base-audited.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
 import { RegistrationEventAttributeEntity } from '@121-service/src/registration-events/entities/registration-event-attribute.entity';
@@ -54,6 +54,7 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
         CASE
           WHEN event.type = '${RegistrationEventEnum.registrationStatusChange}' THEN 'Status'
           WHEN event.type = '${RegistrationEventEnum.registrationDataChange}' THEN attributes."fieldName"
+          WHEN event.type = '${RegistrationEventEnum.fspChange}' THEN 'FSP'
           ELSE NULL
         END
       `,
@@ -72,16 +73,17 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
         RegistrationEntity,
         'registration',
         'registration.id = event.registrationId',
-      );
+      )
+      .where(`event.type != '${RegistrationEventEnum.ignoredDuplicate}'`); // ##TODO for now exclude this, but figure out what to do
   },
 })
-export class RegistrationEventViewEntity extends Base121AuditedEntity {
+export class RegistrationEventViewEntity extends Base121OptionalAuditedEntity {
   @ManyToOne(() => UserEntity, { onDelete: 'NO ACTION' })
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;
 
   @ViewColumn()
-  public registrationProgramId: string;
+  public registrationProgramId: number;
 
   @ViewColumn()
   public programId: number;
@@ -90,11 +92,11 @@ export class RegistrationEventViewEntity extends Base121AuditedEntity {
   public fieldChanged: string;
 
   @ViewColumn()
-  public oldValue: string;
+  public oldValue: string | null;
 
   @ViewColumn()
   public newValue: string;
 
   @ViewColumn()
-  public reason: string;
+  public reason: string | null;
 }
