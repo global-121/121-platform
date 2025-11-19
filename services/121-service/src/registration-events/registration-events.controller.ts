@@ -111,11 +111,6 @@ export class RegistrationEventsController {
     summary: '[SCOPED] Get paginated registration-events for this programId',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Retrieved registration-events',
-    type: [GetRegistrationEventDto], // ##TODO this is not correct, update.
-  })
   @PaginatedSwaggerDocs(
     RegistrationEventViewEntity,
     PaginateConfigRegistrationEventView,
