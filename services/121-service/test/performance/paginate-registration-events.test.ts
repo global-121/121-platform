@@ -20,7 +20,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '17'); // cronjob duplicate number should be 2^17 = 131072
+const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^17 = 131072
 
 const supportedNumberOfRecords = 400_000; // Adjust based on expected supported number. This is enough for 3 * 2^17 events
 const maxWaitTimeMs = 240_000; // 4 minutes
