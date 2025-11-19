@@ -34,7 +34,7 @@ import { RegistrationsUpdateJobDto } from '@121-service/src/registrations-update
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
 const BATCH_SIZE = 500;
-const MASS_UPDATE_ROW_LIMIT = 50_000;
+export const MASS_UPDATE_ROW_LIMIT = 50_000;
 
 @Injectable()
 export class RegistrationsImportService {
