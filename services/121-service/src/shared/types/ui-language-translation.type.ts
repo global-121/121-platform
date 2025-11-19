@@ -1,11 +1,9 @@
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
-import { TranslationPartial } from '@121-service/src/shared/types/translation-partial.type';
+import { Translation } from '@121-service/src/shared/types/translation.type';
 
 /**
  * An object that contains 0..n string translations for languages the UI
- * supports. Use this if you want to allow incomplete translations.
- *
- * For what "partial translation" means, see TranslationPartial.
+ * supports.
  *
  * The non-English UI languages will often be incompletely translated because
  * each time we add a string to the source language (English) it can take some
@@ -20,4 +18,4 @@ import { TranslationPartial } from '@121-service/src/shared/types/translation-pa
  *   en: 'Hello',
  * };
  */
-export type UILanguageTranslationPartial = TranslationPartial<UILanguage>;
+export type UILanguageTranslation = Translation<UILanguage>;

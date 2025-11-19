@@ -1,9 +1,9 @@
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
-import { TranslationPartial } from '@121-service/src/shared/types/translation-partial.type';
+import { Translation } from '@121-service/src/shared/types/translation.type';
 
 /**
  * An object that contains 0..n string translations for registration preferred
- * languages. Use this if you want to allow incomplete translations.
+ * languages.
  *
  * Example
  * {
@@ -12,5 +12,5 @@ import { TranslationPartial } from '@121-service/src/shared/types/translation-pa
  *   nl: 'Hallo',
  * };
  */
-export type RegistrationPreferredLanguageTranslationPartial =
-  TranslationPartial<RegistrationPreferredLanguage>;
+export type RegistrationPreferredLanguageTranslation =
+  Translation<RegistrationPreferredLanguage>;

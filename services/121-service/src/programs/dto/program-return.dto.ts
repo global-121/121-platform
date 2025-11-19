@@ -17,7 +17,7 @@ import { ProgramFspConfigurationResponseDto } from '@121-service/src/program-fsp
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
-import { UILanguageTranslationPartial } from '@121-service/src/shared/types/ui-language-translation-partial.type';
+import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 // This declared at the top of the file because it is used in the dto class and else it is not defined yet
@@ -113,11 +113,11 @@ export class ProgramReturnDto {
   @ApiProperty({ example: { en: 'title' } })
   @IsNotEmpty()
   @IsOptional()
-  public readonly titlePortal?: UILanguageTranslationPartial;
+  public readonly titlePortal?: UILanguageTranslation;
 
   @ApiProperty({ example: { en: 'description' } })
   @IsOptional()
-  public readonly description?: UILanguageTranslationPartial;
+  public readonly description?: UILanguageTranslation;
 
   @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsNotEmpty()

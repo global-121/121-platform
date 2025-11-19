@@ -10,9 +10,9 @@ import { Language } from '@121-service/src/shared/types/language.type';
  *
  * TLanguage can be either RegistrationPreferredLanguage or UILanguage.
  *
- * "Partial translation" means that a variable of this type *may* have a key for
- * a given language.
+ * We use Partial<...> here because translations will often be "incomplete" aka:
+ * not have a string for each language.
  */
-export type TranslationPartial<TLanguage extends Language> = Partial<
+export type Translation<TLanguage extends Language> = Partial<
   Record<TLanguage, string>
 >;

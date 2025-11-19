@@ -14,7 +14,7 @@ import {
 import { WrapperType } from '@121-service/src//wrapper.type';
 import { ContentSidMessageTypes } from '@121-service/src/notifications/message-template/const/content-sid-message-types.const';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
-import { UILanguageTranslationPartial } from '@121-service/src/shared/types/ui-language-translation-partial.type';
+import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
 export class CreateMessageTemplateDto {
   @ApiProperty({
@@ -34,7 +34,7 @@ export class CreateMessageTemplateDto {
   })
   @IsNotEmpty()
   @ValidateIf((o) => o.isSendMessageTemplate)
-  public readonly label: UILanguageTranslationPartial;
+  public readonly label: UILanguageTranslation;
 
   @ApiProperty({
     example: 'Hello {{fullName}}, welcome to 121!',
@@ -107,7 +107,7 @@ export class UpdateTemplateBodyDto {
     description: 'Localized label for the template',
   })
   @IsOptional()
-  public readonly label?: UILanguageTranslationPartial;
+  public readonly label?: UILanguageTranslation;
 }
 
 export class DeleteTemplateParamDto {

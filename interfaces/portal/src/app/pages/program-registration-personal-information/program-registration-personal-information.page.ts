@@ -13,7 +13,7 @@ import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
 
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { UILanguageTranslationPartial } from '@121-service/src/shared/types/ui-language-translation-partial.type';
+import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import {
@@ -118,7 +118,7 @@ export class ProgramRegistrationPersonalInformationPageComponent
             return {
               ...attribute,
               type: 'text',
-              value: value as string | UILanguageTranslationPartial,
+              value: value as string | UILanguageTranslation,
             };
         }
       },
