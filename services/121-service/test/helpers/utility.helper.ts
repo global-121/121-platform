@@ -25,12 +25,14 @@ export function getServer(): TestAgent<request.Test> {
 export function resetDB(
   seedScript: SeedScript,
   resetIdentifier: string,
+  includeEvents = false,
 ): Promise<request.Response> {
   return getServer()
     .post('/scripts/reset')
     .query({
       script: seedScript,
       isApiTests: true,
+      includeEvents,
       resetIdentifier,
     })
     .send({

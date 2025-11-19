@@ -94,8 +94,8 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     );
     expect(bulkUpdateResult.statusCode).toBe(200);
 
-    await waitForBulkRegistrationChanges({
-      expectedChangesOrPatch: [
+    await waitForBulkRegistrationChanges(
+      [
         {
           referenceId: referenceId1,
           expectedPatch: registrationDataThatWillChangePa1,
@@ -105,9 +105,9 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
           expectedPatch: registrationDataThatWillChangePa2,
         },
       ],
-      programId: programIdOcw,
+      programIdOcw,
       accessToken,
-    });
+    );
 
     const searchByReferenceIdAfterPatchPa1 =
       await searchRegistrationByReferenceId(
@@ -193,8 +193,8 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     );
     expect(bulkUpdateResult.statusCode).toBe(200);
 
-    await waitForBulkRegistrationChanges({
-      expectedChangesOrPatch: [
+    await waitForBulkRegistrationChanges(
+      [
         {
           referenceId: referenceId1,
           expectedPatch: registrationDataThatWillChangePa1,
@@ -204,9 +204,9 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
           expectedPatch: registrationDataThatWillChangePa2,
         },
       ],
-      programId: programIdOcw,
+      programIdOcw,
       accessToken,
-    });
+    );
 
     const searchByReferenceIdAfterPatchPa1 =
       await searchRegistrationByReferenceId(
