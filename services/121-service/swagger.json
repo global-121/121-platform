@@ -782,6 +782,7 @@
     "path": "/api/scripts/reset",
     "params": [
       "mockPowerNumberRegistrations",
+      "includeEvents",
       "resetIdentifier",
       "mockNumberPayments",
       "mockPowerNumberMessages",
@@ -795,7 +796,8 @@
     "method": "post",
     "path": "/api/scripts/duplicate-registrations",
     "params": [
-      "mockPowerNumberRegistrations"
+      "mockPowerNumberRegistrations",
+      "includeEvents"
     ]
   },
   {
