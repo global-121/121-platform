@@ -9,7 +9,7 @@ import {
 } from '@121-service/src/notifications/message-template/dto/message-template.dto';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
 @Injectable()
 export class MessageTemplateService {
@@ -23,7 +23,7 @@ export class MessageTemplateService {
   public async getMessageTemplatesByProgramId(
     programId: number,
     type?: string,
-    language?: LanguageEnum,
+    language?: RegistrationPreferredLanguage,
   ): Promise<MessageTemplateEntity[]> {
     let where: FindOptionsWhere<MessageTemplateEntity> = { programId };
 
@@ -111,7 +111,7 @@ export class MessageTemplateService {
   public async updateMessageTemplate(
     programId: number,
     type: string,
-    language: LanguageEnum,
+    language: RegistrationPreferredLanguage,
     updateMessageTemplateDto: UpdateTemplateBodyDto,
   ): Promise<MessageTemplateEntity> {
     const template = await this.messageTemplateRepository.findOne({
@@ -148,7 +148,7 @@ export class MessageTemplateService {
   public async deleteMessageTemplate(
     programId: number,
     messageType: string,
-    language?: LanguageEnum,
+    language?: RegistrationPreferredLanguage,
   ): Promise<DeleteResult> {
     if (language) {
       return await this.messageTemplateRepository.delete({

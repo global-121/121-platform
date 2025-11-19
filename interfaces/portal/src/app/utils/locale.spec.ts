@@ -1,5 +1,7 @@
 import { enableProdMode } from '@angular/core';
 
+import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
+
 import { getLocaleForInitialization, Locale } from '~/utils/locale';
 
 describe('getLocaleForInitialization', () => {
@@ -30,7 +32,7 @@ describe('getLocaleForInitialization', () => {
 
     const localeInfo = getLocaleForInitialization({
       defaultLocale: 'en-GB',
-      urlLocale: 'nl',
+      urlLocale: UILanguage.nl,
     });
 
     expect(localeInfo).toEqual({ locale: Locale.nl });
@@ -47,15 +49,15 @@ describe('getLocaleForInitialization', () => {
     expect(localeInfo).toEqual({ locale: Locale.en });
 
     localeInfo = getLocaleForInitialization({
-      defaultLocale: 'nl',
-      urlLocale: 'nl',
+      defaultLocale: UILanguage.nl,
+      urlLocale: UILanguage.nl,
     });
 
     expect(localeInfo).toEqual({ locale: Locale.nl });
   });
 
   it('should prompt to change language when the local storage locale is out of sync with the url locale', () => {
-    spyOn(window.localStorage, 'getItem').and.callFake(() => 'nl');
+    spyOn(window.localStorage, 'getItem').and.callFake(() => UILanguage.nl);
 
     const localeInfo = getLocaleForInitialization({
       defaultLocale: 'en-GB',
@@ -72,7 +74,7 @@ describe('getLocaleForInitialization', () => {
     spyOn(window.localStorage, 'getItem').and.callFake(() => null);
 
     const localeInfo = getLocaleForInitialization({
-      defaultLocale: 'nl',
+      defaultLocale: UILanguage.nl,
       urlLocale: 'en-GB',
     });
 

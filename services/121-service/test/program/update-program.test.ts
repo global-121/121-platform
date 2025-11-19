@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { patchProgram } from '@121-service/test/helpers/program.helper';
 import {
   getAccessToken,
@@ -29,7 +29,10 @@ describe('Update program', () => {
       monitoringDashboardUrl: 'https://example.org/new-dashboard',
       fullnameNamingConvention: ['firstName', 'lastName'],
       tryWhatsAppFirst: true,
-      languages: [LanguageEnum.en, LanguageEnum.nl],
+      languages: [
+        RegistrationPreferredLanguage.en,
+        RegistrationPreferredLanguage.nl,
+      ],
     };
 
     // Act

@@ -3,7 +3,7 @@ import { inject, Injectable, Signal } from '@angular/core';
 import { QueryClient } from '@tanstack/angular-query-experimental';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
 import { NotificationApiService } from '~/domains/notification/notification.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
@@ -114,9 +114,9 @@ export class MessagingService {
     return placeholders.reduce((output, attribute) => {
       const translatedAttribute = this.translatableStringService.translate(
         previewRegistration[attribute.name] as
-          | LocalizedString
           | number
-          | string,
+          | string
+          | UILanguageTranslation,
       );
 
       if (translatedAttribute === undefined) {

@@ -17,8 +17,8 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
 @ViewEntity({
   name: 'registration_view',
@@ -137,7 +137,7 @@ export class RegistrationViewEntity {
   public phoneNumber?: string;
 
   @ViewColumn()
-  public preferredLanguage: LanguageEnum;
+  public preferredLanguage: RegistrationPreferredLanguage;
 
   @ViewColumn()
   public inclusionScore: number;
@@ -155,7 +155,7 @@ export class RegistrationViewEntity {
   public programFspConfigurationName: string;
 
   @ViewColumn()
-  public programFspConfigurationLabel: LocalizedString;
+  public programFspConfigurationLabel: UILanguageTranslation;
 
   /** This is an "auto" incrementing field with a registration ID per program. */
   @ViewColumn()

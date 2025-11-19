@@ -30,7 +30,7 @@ import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
 import { SeedMessageTemplateConfig } from '@121-service/src/seed-data/message-template/interfaces/seed-message-template-config.interface';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
@@ -63,8 +63,7 @@ export class SeedHelperService {
       const programData = await this.importData(programPath);
       const programEntity = await this.addProgram(programData, isApiTests);
 
-      // Add message templates
-      await this.addMessageTemplates(program.messageTemplate, programEntity);
+      await this.addMessageTemplate(program.messageTemplate, programEntity);
 
       // Add default users
       const debugScopes = Object.values(DebugScope);
@@ -343,7 +342,7 @@ export class SeedHelperService {
       fsp: Fsps;
       properties: { name: string; value: string }[] | undefined;
       name?: string;
-      label: LocalizedString;
+      label: UILanguageTranslation;
     },
     fspObject: FspDto,
     programId: number,
@@ -429,16 +428,16 @@ export class SeedHelperService {
     ]);
   }
 
-  public async addMessageTemplates(
-    messageTemplates: SeedMessageTemplateConfig,
+  public async addMessageTemplate(
+    messageTemplate: SeedMessageTemplateConfig,
     program: ProgramEntity,
   ): Promise<void> {
     const messageTemplateRepo = this.dataSource.getRepository(
       MessageTemplateEntity,
     );
-    for (const messageType of Object.keys(messageTemplates)) {
-      const messageObject = messageTemplates[messageType].message;
-      const contentSidObject = messageTemplates[messageType].contentSid;
+    for (const messageType of Object.keys(messageTemplate)) {
+      const messageObject = messageTemplate[messageType].message;
+      const contentSidObject = messageTemplate[messageType].contentSid;
 
       const messageLanguages = messageObject ? Object.keys(messageObject) : [];
       const contentSidLanguages = contentSidObject
@@ -455,8 +454,8 @@ export class SeedHelperService {
           language,
           messageObject?.[language],
           contentSidObject?.[language],
-          messageTemplates[messageType].isSendMessageTemplate,
-          messageTemplates[messageType]?.label?.[language] ?? null,
+          messageTemplate[messageType].isSendMessageTemplate,
+          messageTemplate[messageType]?.label?.[language] ?? null,
         );
 
         await messageTemplateRepo.save(template);
@@ -471,7 +470,7 @@ export class SeedHelperService {
     message: string,
     contentSid: string,
     isSendMessageTemplate: boolean,
-    label: LocalizedString,
+    label: UILanguageTranslation,
   ): Promise<MessageTemplateEntity> {
     const messageTemplateEntity = new MessageTemplateEntity();
     messageTemplateEntity.program = program;

@@ -7,12 +7,12 @@ import { ProgramService } from '@121-service/src/programs/programs.service';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
 describe('RegistrationsImportService', () => {
   let registrationsImportService: RegistrationsImportService;
 
-  const language = LanguageEnum.en;
+  const language = RegistrationPreferredLanguage.en;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(

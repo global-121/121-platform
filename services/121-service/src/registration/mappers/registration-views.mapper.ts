@@ -7,6 +7,7 @@ import {
 } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
 type RegistrationViewWithoutData = Omit<RegistrationViewEntity, 'data'>;
 
@@ -142,10 +143,9 @@ export class RegistrationViewsMapper {
     attribute: ProgramRegistrationAttributeEntity,
     value: unknown,
   ): unknown {
+    const english = RegistrationPreferredLanguage.en;
     const selectedOption = attribute.options?.find((o) => o.option === value);
-    if (selectedOption && selectedOption.label && selectedOption.label['en']) {
-      return selectedOption.label['en'];
-    }
-    return value;
+
+    return selectedOption?.label?.[english] ?? value;
   }
 }

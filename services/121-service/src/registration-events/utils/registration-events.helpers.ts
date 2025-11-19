@@ -1,12 +1,12 @@
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
 export class ValueExtractor {
   // Function to get the 'en' value or fallback to the first object property value
   static getLocalizedStringOrFallback(
-    value: LocalizedString | unknown, // Use unknown if the value could be anything
+    value: UILanguageTranslation | unknown, // Use unknown if the value could be anything
   ): string | null {
     if (typeof value === 'object' && value !== null) {
-      return (value as LocalizedString)?.en || Object.values(value)[0];
+      return (value as UILanguageTranslation)?.en || Object.values(value)[0];
     }
     return null;
   }

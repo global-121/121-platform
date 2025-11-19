@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
 export class CreateOptionsDto {
   @ApiProperty()
@@ -10,5 +10,5 @@ export class CreateOptionsDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  public readonly label: LocalizedString;
+  public readonly label: UILanguageTranslation;
 }

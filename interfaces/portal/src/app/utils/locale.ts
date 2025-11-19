@@ -1,36 +1,54 @@
 import { isDevMode } from '@angular/core';
 
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
+import { getLinguonym } from '~/utils/get-linguonym';
 import { environment } from '~environment';
 
+/**
+ * "locale" in this file always refers to Angular locale IDs, e.g. "en-GB",
+ * "fr", "nl", etc.
+ *
+ * We convert these into UILanguage values where we communicate through the
+ * browser or emails we send to users of the portal.
+ *
+ * Registrations have a preferredLanguage field which we do **not** convert to
+ * UILanguage values.
+ */
+
+// TODO: rename this to selectedLocale. Will require a migration.
 const LOCAL_STORAGE_LOCALE_KEY = 'preferredLanguage';
 
 // NOTE: Make sure to align these languages with ALL_AVAILABLE_LOCALES in '_all_available-locales.mjs'
 export enum Locale {
-  ar = 'ar',
+  /* eslint-disable @typescript-eslint/prefer-literal-enum-member -- emphasize the relationship between this enum and UILanguage */
+  ar = UILanguage.ar,
   en = 'en-GB', // this has to be en-GB otherwise angular locale stuff doesn't work
-  es = 'es',
-  fr = 'fr',
-  nl = 'nl',
-  sk = 'sk',
+  es = UILanguage.es,
+  fr = UILanguage.fr,
+  nl = UILanguage.nl,
+  sk = UILanguage.sk,
+  /* eslint-enable @typescript-eslint/prefer-literal-enum-member -- emphasize the relationship between this enum and UILanguage */
 }
 
-export const getLocaleLabel = (locale: Locale): string => {
-  // NOTE: These labels are never-to-be-translated, they need to appear in their own language for easier recognition by users.
-  const localeLabels = {
-    [Locale.ar]: 'العربية',
-    [Locale.en]: 'English',
-    [Locale.es]: 'Español',
-    [Locale.fr]: 'Français',
-    [Locale.nl]: 'Nederlands',
-    [Locale.sk]: 'Slovenčina',
-  };
-
-  return localeLabels[locale];
+const localeToUILanguageMap: Record<Locale, UILanguage> = {
+  [Locale.ar]: UILanguage.ar,
+  [Locale.en]: UILanguage.en,
+  [Locale.es]: UILanguage.es,
+  [Locale.fr]: UILanguage.fr,
+  [Locale.nl]: UILanguage.nl,
+  [Locale.sk]: UILanguage.sk,
 };
 
-export const getAvailableLanguages = () =>
+export const getLocaleLabel = (locale: Locale): string => {
+  const uiLanguage = getUILanguageFromLocale(locale);
+  return getLinguonym({
+    languageToDisplayNameOf: uiLanguage,
+    languageToShowNameIn: uiLanguage,
+  });
+};
+
+export const getAvailableLocales = () =>
   environment.locales
     .split(',')
     .map((locale) => locale.trim())
@@ -40,14 +58,12 @@ export const getAvailableLanguages = () =>
       value: locale,
     }));
 
-export const getLanguageEnumFromLocale = (locale: Locale): LanguageEnum => {
-  switch (locale) {
-    case Locale.en:
-      return LanguageEnum.en;
-    default:
-      return LanguageEnum[locale];
-  }
-};
+/**
+ * @param {string} locale - Angular locale id
+ * @return {string} UILanguage
+ */
+export const getUILanguageFromLocale = (locale: Locale): UILanguage =>
+  localeToUILanguageMap[locale];
 
 const isValidLocale = (locale: string): locale is Locale =>
   Object.values(Locale).includes(locale as Locale);
@@ -86,27 +102,33 @@ export const getLocaleForInitialization = ({
     );
   }
 
-  const localStorageLanguage =
+  const localStorageLocale =
     localStorage.getItem(LOCAL_STORAGE_LOCALE_KEY) ?? defaultLocale;
 
-  if (!isValidLocale(localStorageLanguage)) {
+  if (!isValidLocale(localStorageLocale)) {
     // This in theory should never happen
     // But to be on the safe side, we revert to locale in URL
     localStorage.setItem(LOCAL_STORAGE_LOCALE_KEY, urlLocale);
     return { locale: urlLocale };
   }
 
-  if (urlLocale !== localStorageLanguage) {
+  if (urlLocale !== localStorageLocale) {
     return {
-      localStorageLocale: localStorageLanguage,
+      localStorageLocale,
       localeIsOutOfSyncWithUrl: true,
     };
   }
 
-  return { locale: localStorageLanguage };
+  return { locale: localStorageLocale };
 };
 
-export const changeLanguage = (desiredLocale: Locale): void => {
+/**
+ * Changes the locale in localStorage and redirects to the URL with the desired
+ * locale.
+ *
+ * @param {string} desiredLocale - Angular locale id
+ */
+export const changeLocale = (desiredLocale: Locale): void => {
   // persist locale in locale storage
   localStorage.setItem(LOCAL_STORAGE_LOCALE_KEY, desiredLocale);
 

@@ -979,33 +979,6 @@
       <trans-unit id="attribute-label-status" datatype="html">
         <source>Status</source>
       </trans-unit>
-      <trans-unit id="153799456510623899" datatype="html">
-        <source>Portuguese</source>
-      </trans-unit>
-      <trans-unit id="1703221125772306676" datatype="html">
-        <source>Filipino</source>
-      </trans-unit>
-      <trans-unit id="3071065188816255493" datatype="html">
-        <source>Dutch</source>
-      </trans-unit>
-      <trans-unit id="5190825892106392539" datatype="html">
-        <source>Spanish</source>
-      </trans-unit>
-      <trans-unit id="5682359291233237791" datatype="html">
-        <source>Turkish</source>
-      </trans-unit>
-      <trans-unit id="5866254605255506989" datatype="html">
-        <source>English</source>
-      </trans-unit>
-      <trans-unit id="6269202464699193298" datatype="html">
-        <source>Arabic</source>
-      </trans-unit>
-      <trans-unit id="7633754075223722162" datatype="html">
-        <source>French</source>
-      </trans-unit>
-      <trans-unit id="8312065814232621608" datatype="html">
-        <source>Indonesian</source>
-      </trans-unit>
       <trans-unit id="4957123542385348986" datatype="html">
         <source>Amount successfully sent</source>
       </trans-unit>
@@ -1308,7 +1281,7 @@
         <source>Download the template</source>
       </trans-unit>
       <trans-unit id="language-switcher-selected" datatype="html">
-        <source>Language: <x equiv-text="{{ selectedLanguageLabel() }}" id="INTERPOLATION"/></source>
+        <source>Language: <x equiv-text="{{ selectedLocaleLabel() }}" id="INTERPOLATION"/></source>
       </trans-unit>
       <trans-unit id="ignore-duplication" datatype="html">
         <source>Ignore duplication</source>
@@ -1673,9 +1646,6 @@
       <trans-unit id="transaction-status-created" datatype="html">
         <source>Pending approval</source>
       </trans-unit>
-      <trans-unit id="3578644052206125685" datatype="html">
-        <source>Ukrainian</source>
-      </trans-unit>
       <trans-unit id="4034832711447871121" datatype="html">
         <source>Max. 60 characters</source>
       </trans-unit>
@@ -1846,9 +1816,6 @@
       </trans-unit>
       <trans-unit id="query-table--no-results-text" datatype="html">
         <source>There are no records to display.</source>
-      </trans-unit>
-      <trans-unit id="9102963095355753902" datatype="html">
-        <source>Slovak</source>
       </trans-unit>
       <trans-unit id="payment-event-log-item-type-retry" datatype="html">
         <source>Retry</source>

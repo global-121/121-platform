@@ -10,8 +10,8 @@ import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/en
 import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attachments/program-attachment.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 @Entity('program')
@@ -20,7 +20,7 @@ export class ProgramEntity extends Base121Entity {
   public location: string | null;
 
   @Column('json', { nullable: true })
-  public titlePortal: LocalizedString | null;
+  public titlePortal: UILanguageTranslation | null;
 
   @Column({ type: 'character varying', nullable: true })
   public ngo: string | null;
@@ -51,7 +51,7 @@ export class ProgramEntity extends Base121Entity {
   public targetNrRegistrations: number | null;
 
   @Column('json', { nullable: true })
-  public description: LocalizedString | null;
+  public description: UILanguageTranslation | null;
 
   @Column({ default: true })
   public validation: boolean;
@@ -84,7 +84,7 @@ export class ProgramEntity extends Base121Entity {
   public fullnameNamingConvention: string[] | null;
 
   @Column('json', { default: [] })
-  public languages: LanguageEnum[];
+  public languages: RegistrationPreferredLanguage[];
 
   @Column({ default: false })
   public enableMaxPayments: boolean;

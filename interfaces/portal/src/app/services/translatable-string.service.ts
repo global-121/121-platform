@@ -1,10 +1,20 @@
 import { inject, Injectable, LOCALE_ID } from '@angular/core';
 
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
+import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
-import { getLanguageEnumFromLocale, Locale } from '~/utils/locale';
+import { getUILanguageFromLocale, Locale } from '~/utils/locale';
 
+/**
+ * The TranslatableStringService provides methods to translate localized
+ * strings.
+ *
+ * Certain data structures, mostly DTOs in the 121 system use
+ * UILanguageTranslation types to store strings in 0..n languages. This service
+ * can translate those strings. This can be done one by one using the
+ * `translate` method, or for lists of strings using the `commaSeparatedList`
+ * method.
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -12,7 +22,7 @@ export class TranslatableStringService {
   private currentLocale = inject<Locale>(LOCALE_ID);
 
   translate(
-    value: LocalizedString | null | number | string | undefined,
+    value: null | number | string | UILanguageTranslation | undefined,
   ): string | undefined {
     if (value === null || value === undefined) {
       return undefined;
@@ -26,28 +36,36 @@ export class TranslatableStringService {
       return value.toString();
     }
 
-    const languageEnumLocale = getLanguageEnumFromLocale(this.currentLocale);
+    const uiLanguage = getUILanguageFromLocale(this.currentLocale);
 
-    if (value[languageEnumLocale]) {
-      return value[languageEnumLocale];
+    // New name because we've type-narrowed.
+    const translationMapping = value;
+    if (translationMapping[uiLanguage]) {
+      return translationMapping[uiLanguage];
     }
 
-    const fallbackLocaleValue = value[LanguageEnum.en];
+    const fallbackLocaleValue = translationMapping[UILanguage.en];
 
     if (fallbackLocaleValue) {
       return fallbackLocaleValue;
     }
+    // Even the fallback-language is not available.
+    // I think TypeScript prevents us from ever reaching this point.
 
-    // If even the fallback-language is not available, return any other language's value
-    if (typeof value === 'object' && Object.keys(value).length > 0) {
-      return value[Object.keys(value)[0] as LanguageEnum];
+    if (typeof translationMapping !== 'object') {
+      return undefined;
     }
 
-    return undefined;
+    if (Object.keys(translationMapping).length === 0) {
+      return undefined;
+    }
+
+    // Just the first available language.
+    return translationMapping[Object.keys(translationMapping)[0] as UILanguage];
   }
 
   commaSeparatedList(
-    values: LocalizedString[] | string[],
+    values: string[] | UILanguageTranslation[],
     style: Intl.ListFormatStyle = 'narrow',
   ): string {
     const list = values

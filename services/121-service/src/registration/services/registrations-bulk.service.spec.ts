@@ -7,7 +7,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/test-helpers/createQueryBuilderMock.helper';
 
 describe('RegistrationBulkService', () => {
@@ -50,7 +50,7 @@ describe('RegistrationBulkService', () => {
           return Promise.resolve({
             id: 1,
             name: 'test',
-            language: LanguageEnum.en,
+            language: RegistrationPreferredLanguage.en,
             type: RegistrationStatusEnum.new,
             message: 'test message',
             programId: 2,

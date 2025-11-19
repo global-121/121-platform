@@ -27,6 +27,7 @@ import { RegistrationScopedRepository } from '@121-service/src/registration/repo
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { dateSort } from '@121-service/src/utils/dateSort';
@@ -159,8 +160,9 @@ export class MetricsService {
         delete row['registrationProgramId'];
       }
 
+      // If the label is multilingual, use the English string as the label.
       if (typeof row['programFspConfigurationLabel'] === 'object') {
-        const preferredLanguage = 'en';
+        const preferredLanguage = RegistrationPreferredLanguage.en;
         row['programFspConfigurationLabel'] = row[
           'programFspConfigurationLabel'
         ]?.[preferredLanguage] as string | undefined;

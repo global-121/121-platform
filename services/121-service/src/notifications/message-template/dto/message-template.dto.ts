@@ -11,10 +11,10 @@ import {
   ValidateIf,
 } from 'class-validator';
 
-import { LocalizedString } from '@121-service/src//shared/types/localized-string.type';
 import { WrapperType } from '@121-service/src//wrapper.type';
 import { ContentSidMessageTypes } from '@121-service/src/notifications/message-template/const/content-sid-message-types.const';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
 export class CreateMessageTemplateDto {
   @ApiProperty({
@@ -26,15 +26,15 @@ export class CreateMessageTemplateDto {
 
   @ApiProperty()
   @IsString()
-  @IsEnum(LanguageEnum)
-  public readonly language: WrapperType<LanguageEnum>;
+  @IsEnum(RegistrationPreferredLanguage)
+  public readonly language: WrapperType<RegistrationPreferredLanguage>;
 
   @ApiProperty({
     example: { en: 'Template label' },
   })
   @IsNotEmpty()
   @ValidateIf((o) => o.isSendMessageTemplate)
-  public readonly label: LocalizedString;
+  public readonly label: UILanguageTranslation;
 
   @ApiProperty({
     example: 'Hello {{fullName}}, welcome to 121!',
@@ -70,8 +70,8 @@ export class UpdateTemplateParamDto {
   @IsString()
   @Length(1, 255)
   public readonly type: string;
-  @IsEnum(LanguageEnum)
-  public readonly language: WrapperType<LanguageEnum>;
+  @IsEnum(RegistrationPreferredLanguage)
+  public readonly language: WrapperType<RegistrationPreferredLanguage>;
 }
 
 export class UpdateTemplateBodyDto {
@@ -107,7 +107,7 @@ export class UpdateTemplateBodyDto {
     description: 'Localized label for the template',
   })
   @IsOptional()
-  public readonly label?: LocalizedString;
+  public readonly label?: UILanguageTranslation;
 }
 
 export class DeleteTemplateParamDto {
@@ -121,6 +121,6 @@ export class DeleteTemplateParamDto {
 
 export class DeleteTemplateQueryDto {
   @IsOptional()
-  @IsEnum(LanguageEnum)
-  public readonly language?: WrapperType<LanguageEnum>;
+  @IsEnum(RegistrationPreferredLanguage)
+  public readonly language?: WrapperType<RegistrationPreferredLanguage>;
 }

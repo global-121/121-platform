@@ -22,7 +22,7 @@
       "name": "fullName",
       "label": {
         "en": "Name",
-        "et_AM": "ስም"
+        "am": "ስም"
       },
       "type": "text",
       "options": null,
@@ -37,7 +37,7 @@
       "name": "phoneNumber",
       "label": {
         "en": "Phone number",
-        "et_AM": "ስልክ ቁጥር"
+        "am": "ስልክ ቁጥር"
       },
       "type": "tel",
       "options": null,
@@ -53,7 +53,7 @@
       "name": "idNumber",
       "label": {
         "en": "ID Card number",
-        "et_AM": "የመታውቂያ ቁጥር"
+        "am": "የመታውቂያ ቁጥር"
       },
       "type": "text",
       "options": null,
@@ -69,7 +69,7 @@
       "name": "age",
       "label": {
         "en": "Age",
-        "et_AM": "እድሜ"
+        "am": "እድሜ"
       },
       "type": "numeric",
       "options": null,
@@ -85,7 +85,7 @@
       "name": "gender",
       "label": {
         "en": "Gender",
-        "et_AM": "ጾታ"
+        "am": "ጾታ"
       },
       "type": "dropdown",
       "options": [
@@ -93,14 +93,14 @@
           "option": "male",
           "label": {
             "en": "Male",
-            "et_AM": "ወንድ"
+            "am": "ወንድ"
           }
         },
         {
           "option": "female",
           "label": {
             "en": "Female",
-            "et_AM": "ሴት"
+            "am": "ሴት"
           }
         }
       ],
@@ -128,7 +128,7 @@
     }
   ],
   "fullnameNamingConvention": ["fullName"],
-  "languages": ["en", "et_AM"],
+  "languages": ["en", "am"],
   "enableMaxPayments": true,
   "enableScope": false,
   "allowEmptyPhoneNumber": false,
