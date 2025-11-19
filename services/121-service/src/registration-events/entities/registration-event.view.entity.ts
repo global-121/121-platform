@@ -18,29 +18,6 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
 @ViewEntity({
   name: 'registration_event_view',
   expression: (dataSource: DataSource) => {
-    // Subquery to aggregate attributes per event
-    const attributesAggregate = dataSource
-      .createQueryBuilder()
-      .select('attr.eventId', 'eventId')
-      .addSelect(
-        `MAX(CASE WHEN attr.key = '${RegistrationEventAttributeKeyEnum.fieldName}' THEN attr.value END)`,
-        'fieldName',
-      )
-      .addSelect(
-        `MAX(CASE WHEN attr.key = '${RegistrationEventAttributeKeyEnum.oldValue}' THEN attr.value END)`,
-        'oldValue',
-      )
-      .addSelect(
-        `MAX(CASE WHEN attr.key = '${RegistrationEventAttributeKeyEnum.newValue}' THEN attr.value END)`,
-        'newValue',
-      )
-      .addSelect(
-        `MAX(CASE WHEN attr.key = '${RegistrationEventAttributeKeyEnum.reason}' THEN attr.value END)`,
-        'reason',
-      )
-      .from(RegistrationEventAttributeEntity, 'attr')
-      .groupBy('attr.eventId');
-
     return dataSource
       .createQueryBuilder()
       .select('event.id', 'id')
@@ -53,26 +30,41 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
         `
         CASE
           WHEN event.type = '${RegistrationEventEnum.registrationStatusChange}' THEN 'Status'
-          WHEN event.type = '${RegistrationEventEnum.registrationDataChange}' THEN attributes."fieldName"
+          WHEN event.type = '${RegistrationEventEnum.registrationDataChange}' THEN "fieldNameAttr"."value"
           WHEN event.type = '${RegistrationEventEnum.fspChange}' THEN 'FSP'
           ELSE NULL
         END
       `,
         'fieldChanged',
       )
-      .addSelect('attributes."oldValue"', 'oldValue')
-      .addSelect('attributes."newValue"', 'newValue')
-      .addSelect('attributes."reason"', 'reason')
+      .addSelect('oldValueAttr.value', 'oldValue')
+      .addSelect('newValueAttr.value', 'newValue')
+      .addSelect('reasonAttr.value', 'reason')
       .from(RegistrationEventEntity, 'event')
-      .leftJoin(
-        '(' + attributesAggregate.getQuery() + ')',
-        'attributes',
-        'attributes."eventId" = event.id',
-      )
       .leftJoin(
         RegistrationEntity,
         'registration',
         'registration.id = event.registrationId',
+      )
+      .leftJoin(
+        RegistrationEventAttributeEntity,
+        'fieldNameAttr',
+        `fieldNameAttr.eventId = event.id AND fieldNameAttr.key = '${RegistrationEventAttributeKeyEnum.fieldName}'`,
+      )
+      .leftJoin(
+        RegistrationEventAttributeEntity,
+        'oldValueAttr',
+        `oldValueAttr.eventId = event.id AND oldValueAttr.key = '${RegistrationEventAttributeKeyEnum.oldValue}'`,
+      )
+      .leftJoin(
+        RegistrationEventAttributeEntity,
+        'newValueAttr',
+        `newValueAttr.eventId = event.id AND newValueAttr.key = '${RegistrationEventAttributeKeyEnum.newValue}'`,
+      )
+      .leftJoin(
+        RegistrationEventAttributeEntity,
+        'reasonAttr',
+        `reasonAttr.eventId = event.id AND reasonAttr.key = '${RegistrationEventAttributeKeyEnum.reason}'`,
       )
       .where(`event.type != '${RegistrationEventEnum.ignoredDuplicate}'`); // ##TODO for now exclude this, but figure out what to do
   },
