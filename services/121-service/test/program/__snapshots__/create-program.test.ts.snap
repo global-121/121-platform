@@ -14,8 +14,8 @@ exports[`Create program should post a program: Create program response for progr
     {
       "isRequired": false,
       "label": {
+        "am": "እድሜ",
         "en": "Age",
-        "et_AM": "እድሜ",
       },
       "name": "age",
       "type": "numeric",
@@ -31,8 +31,8 @@ exports[`Create program should post a program: Create program response for progr
     {
       "isRequired": false,
       "label": {
+        "am": "ስም",
         "en": "Name",
-        "et_AM": "ስም",
       },
       "name": "fullName",
       "type": "text",
@@ -40,8 +40,8 @@ exports[`Create program should post a program: Create program response for progr
     {
       "isRequired": false,
       "label": {
+        "am": "ጾታ",
         "en": "Gender",
-        "et_AM": "ጾታ",
       },
       "name": "gender",
       "type": "dropdown",
@@ -49,8 +49,8 @@ exports[`Create program should post a program: Create program response for progr
     {
       "isRequired": false,
       "label": {
+        "am": "የመታውቂያ ቁጥር",
         "en": "ID Card number",
-        "et_AM": "የመታውቂያ ቁጥር",
       },
       "name": "idNumber",
       "type": "text",
@@ -58,8 +58,8 @@ exports[`Create program should post a program: Create program response for progr
     {
       "isRequired": false,
       "label": {
+        "am": "ስልክ ቁጥር",
         "en": "Phone number",
-        "et_AM": "ስልክ ቁጥር",
       },
       "name": "phoneNumber",
       "type": "tel",
@@ -272,7 +272,7 @@ exports[`Create program should post a program: Create program response for progr
   "id": 5,
   "languages": [
     "en",
-    "et_AM",
+    "am",
   ],
   "location": "Ethiopia",
   "monitoringDashboardUrl": null,
@@ -281,8 +281,8 @@ exports[`Create program should post a program: Create program response for progr
     {
       "isRequired": false,
       "label": {
+        "am": "እድሜ",
         "en": "Age",
-        "et_AM": "እድሜ",
       },
       "name": "age",
       "type": "numeric",
@@ -298,8 +298,8 @@ exports[`Create program should post a program: Create program response for progr
     {
       "isRequired": false,
       "label": {
+        "am": "ስም",
         "en": "Name",
-        "et_AM": "ስም",
       },
       "name": "fullName",
       "type": "text",
@@ -307,8 +307,8 @@ exports[`Create program should post a program: Create program response for progr
     {
       "isRequired": false,
       "label": {
+        "am": "ጾታ",
         "en": "Gender",
-        "et_AM": "ጾታ",
       },
       "name": "gender",
       "type": "dropdown",
@@ -316,8 +316,8 @@ exports[`Create program should post a program: Create program response for progr
     {
       "isRequired": false,
       "label": {
+        "am": "የመታውቂያ ቁጥር",
         "en": "ID Card number",
-        "et_AM": "የመታውቂያ ቁጥር",
       },
       "name": "idNumber",
       "type": "text",
@@ -325,8 +325,8 @@ exports[`Create program should post a program: Create program response for progr
     {
       "isRequired": false,
       "label": {
+        "am": "ስልክ ቁጥር",
         "en": "Phone number",
-        "et_AM": "ስልክ ቁጥር",
       },
       "name": "phoneNumber",
       "type": "tel",
@@ -341,8 +341,8 @@ exports[`Create program should post a program: Create program response for progr
       "includeInTransactionExport": true,
       "isRequired": false,
       "label": {
+        "am": "እድሜ",
         "en": "Age",
-        "et_AM": "እድሜ",
       },
       "name": "age",
       "options": null,
@@ -380,8 +380,8 @@ exports[`Create program should post a program: Create program response for progr
       "includeInTransactionExport": true,
       "isRequired": false,
       "label": {
+        "am": "ስም",
         "en": "Name",
-        "et_AM": "ስም",
       },
       "name": "fullName",
       "options": null,
@@ -399,22 +399,22 @@ exports[`Create program should post a program: Create program response for progr
       "includeInTransactionExport": true,
       "isRequired": false,
       "label": {
+        "am": "ጾታ",
         "en": "Gender",
-        "et_AM": "ጾታ",
       },
       "name": "gender",
       "options": [
         {
           "label": {
+            "am": "ወንድ",
             "en": "Male",
-            "et_AM": "ወንድ",
           },
           "option": "male",
         },
         {
           "label": {
+            "am": "ሴት",
             "en": "Female",
-            "et_AM": "ሴት",
           },
           "option": "female",
         },
@@ -433,8 +433,8 @@ exports[`Create program should post a program: Create program response for progr
       "includeInTransactionExport": true,
       "isRequired": false,
       "label": {
+        "am": "የመታውቂያ ቁጥር",
         "en": "ID Card number",
-        "et_AM": "የመታውቂያ ቁጥር",
       },
       "name": "idNumber",
       "options": null,
@@ -452,8 +452,8 @@ exports[`Create program should post a program: Create program response for progr
       "includeInTransactionExport": true,
       "isRequired": false,
       "label": {
+        "am": "ስልክ ቁጥር",
         "en": "Phone number",
-        "et_AM": "ስልክ ቁጥር",
       },
       "name": "phoneNumber",
       "options": null,
