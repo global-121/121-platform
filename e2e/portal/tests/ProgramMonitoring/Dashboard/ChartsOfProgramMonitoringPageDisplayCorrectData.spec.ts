@@ -21,9 +21,12 @@ test.beforeEach(async ({ page }) => {
   const OcwProgramId = programIdOCW;
   const transferValue = 20;
 
-  await seedPaidRegistrations(registrationsOCW, OcwProgramId, transferValue, [
-    TransactionStatusEnum.success,
-  ]);
+  await seedPaidRegistrations({
+    registrations: registrationsOCW,
+    programId: OcwProgramId,
+    amount: transferValue,
+    completeStatuses: [TransactionStatusEnum.success],
+  });
 
   // Login
   const loginPage = new LoginPage(page);

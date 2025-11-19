@@ -40,10 +40,15 @@ describe('Export reconciliation report', () => {
 
   it('should successfully generate reconciliation report', async () => {
     // Arrange
-    await seedPaidRegistrations([registrationOnafriq], programId, amount, [
-      TransactionStatusEnum.success,
-      TransactionStatusEnum.error,
-    ]);
+    await seedPaidRegistrations({
+      registrations: [registrationOnafriq],
+      programId,
+      amount,
+      completeStatuses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
+    });
 
     // Act
     const response = await getServer()

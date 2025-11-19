@@ -22,7 +22,10 @@ import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
-  await seedPaidRegistrations(registrationsOCW, programIdOCW);
+  await seedPaidRegistrations({
+    registrations: registrationsOCW,
+    programId: programIdOCW,
+  });
 
   await waitForPaymentTransactionsToComplete({
     programId: programIdOCW,
@@ -31,7 +34,7 @@ test.beforeEach(async ({ page }) => {
     ),
     accessToken,
     maxWaitTimeMs: 2_000,
-    completeStatusses: [
+    completeStatuses: [
       TransactionStatusEnum.success,
       TransactionStatusEnum.waiting,
     ],

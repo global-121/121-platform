@@ -130,7 +130,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: [TransactionStatusEnum.success],
+      completeStatuses: [TransactionStatusEnum.success],
       paymentId: firstPaymentId,
     });
 
@@ -148,7 +148,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: [TransactionStatusEnum.success],
+      completeStatuses: [TransactionStatusEnum.success],
       paymentId: secondPaymentId,
     });
 
@@ -213,7 +213,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
       paymentReferenceIds: referenceIds,
       accessToken,
       maxWaitTimeMs: 6_000,
-      completeStatusses: [TransactionStatusEnum.success],
+      completeStatuses: [TransactionStatusEnum.success],
       paymentId: paymentId1,
     });
     await waitForMessagesToComplete({
@@ -247,7 +247,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
       paymentReferenceIds: referenceIds,
       accessToken,
       maxWaitTimeMs: 6_000,
-      completeStatusses: [TransactionStatusEnum.success],
+      completeStatuses: [TransactionStatusEnum.success],
       paymentId: paymentId2,
     });
     await waitForMessagesToComplete({

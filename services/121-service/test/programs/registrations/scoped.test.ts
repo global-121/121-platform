@@ -99,8 +99,14 @@ describe('Registrations - [Scoped]', () => {
   // This tests if the ScopedRepository of entities related to registrations is working correctly
   it('should get only transactions that from 1 program within the scope of the requesting user', async () => {
     // Arrange
-    await seedPaidRegistrations(registrationsPV, PvProgramId);
-    await seedPaidRegistrations(registrationsOCW, OcwProgramId);
+    await seedPaidRegistrations({
+      registrations: registrationsPV,
+      programId: PvProgramId,
+    });
+    await seedPaidRegistrations({
+      registrations: registrationsOCW,
+      programId: OcwProgramId,
+    });
 
     const testScope = DebugScope.Kisumu;
     accessToken = await getAccessTokenScoped(testScope);

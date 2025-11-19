@@ -28,8 +28,14 @@ describe('Registrations - [Scoped]', () => {
 
   beforeAll(async () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
-    await seedPaidRegistrations(registrationsOCW, OcwProgramId);
-    paymentIdPv = await seedPaidRegistrations(registrationsPV, PvProgramId);
+    await seedPaidRegistrations({
+      registrations: registrationsOCW,
+      programId: OcwProgramId,
+    });
+    paymentIdPv = await seedPaidRegistrations({
+      registrations: registrationsPV,
+      programId: PvProgramId,
+    });
   });
 
   it('should return transactions with all expected fields and correct data types', async () => {

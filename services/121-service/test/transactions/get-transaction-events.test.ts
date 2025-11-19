@@ -45,11 +45,11 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
   it('should return all transaction events with all expected fields and correct data types', async () => {
     // Arrange
-    await seedPaidRegistrations(
-      [registrationOnafriq],
+    await seedPaidRegistrations({
+      registrations: [registrationOnafriq],
       programId,
-      transferValue,
-    );
+      amount: transferValue,
+    });
 
     // Act
     // get transaction events

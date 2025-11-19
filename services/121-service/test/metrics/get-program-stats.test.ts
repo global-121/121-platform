@@ -36,10 +36,15 @@ describe('Get program stats', () => {
     // Set up 2 registrations of which 1 fails (visa)
     registrationPV7.fullName = 'mock-fail-create-customer';
     const registrationsPV = [registrationPV6, registrationPV7];
-    await seedPaidRegistrations(registrationsPV, programIdPV, transferValue, [
-      TransactionStatusEnum.success,
-      TransactionStatusEnum.error,
-    ]);
+    await seedPaidRegistrations({
+      registrations: registrationsPV,
+      programId: programIdPV,
+      amount: transferValue,
+      completeStatuses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
+    });
     // Also add a non-started transaction
     await seedIncludedRegistrations(
       [registrationPV8],
@@ -59,7 +64,7 @@ describe('Get program stats', () => {
       paymentReferenceIds: [registrationPV8.referenceId],
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: [TransactionStatusEnum.pendingApproval],
+      completeStatuses: [TransactionStatusEnum.pendingApproval],
       paymentId,
     });
 

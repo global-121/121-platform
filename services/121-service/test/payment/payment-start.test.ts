@@ -61,7 +61,7 @@ describe('Payment start', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 20_000,
-      completeStatusses: [TransactionStatusEnum.pendingApproval],
+      completeStatuses: [TransactionStatusEnum.pendingApproval],
     });
 
     // Assert 1 - before starting payment
@@ -154,7 +154,7 @@ describe('Payment start', () => {
         paymentReferenceIds: registrations.map((r) => r.referenceId),
         accessToken,
         maxWaitTimeMs: 20_000,
-        completeStatusses: [TransactionStatusEnum.pendingApproval],
+        completeStatuses: [TransactionStatusEnum.pendingApproval],
       });
 
       // Make one registration non-included
@@ -296,7 +296,7 @@ describe('Payment start', () => {
       paymentReferenceIds: registrations.map((r) => r.referenceId),
       accessToken,
       maxWaitTimeMs: 20_000,
-      completeStatusses: [TransactionStatusEnum.pendingApproval],
+      completeStatuses: [TransactionStatusEnum.pendingApproval],
     });
 
     //////////////////

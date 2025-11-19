@@ -67,7 +67,7 @@ test('Move PA(s) from status "Included" to "Completed"', async ({ page }) => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.waiting,
         TransactionStatusEnum.error,

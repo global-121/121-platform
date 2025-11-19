@@ -33,7 +33,10 @@ describe('Update registration data of registration with visa customer', () => {
   // We have no way to easily validate if the mock service is properly called, so we only check if no errors are thrown when updating a registration with a visa customer.
   it('should get a success response when updating registration data of a registration with a visa customer', async () => {
     // Arrange
-    await seedPaidRegistrations([registrationVisaCopy], programIdVisa);
+    await seedPaidRegistrations({
+      registrations: [registrationVisaCopy],
+      programId: programIdVisa,
+    });
 
     // Act
     const responseUpdateBeforeFspChange = await updateRegistration(

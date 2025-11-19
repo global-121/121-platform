@@ -47,7 +47,7 @@ describe('Payment Events API', () => {
       referenceIds: [registrationSafaricom.referenceId],
       accessToken,
       note,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.waiting,
         TransactionStatusEnum.error,
@@ -71,7 +71,7 @@ describe('Payment Events API', () => {
       paymentReferenceIds: [registrationSafaricom.referenceId],
       accessToken,
       maxWaitTimeMs: 4000,
-      completeStatusses: [TransactionStatusEnum.success],
+      completeStatuses: [TransactionStatusEnum.success],
     });
 
     // Act

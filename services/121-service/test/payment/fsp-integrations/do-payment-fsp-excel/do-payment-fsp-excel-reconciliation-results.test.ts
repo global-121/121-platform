@@ -53,12 +53,12 @@ describe('Do payment with Excel FSP', () => {
       // Arrange
       const errorMessage = 'FSP reported failure for registrationWesteros2';
 
-      pamymentIdWesteros = await seedPaidRegistrations(
-        registrationsWesteros,
-        programIdWesteros,
+      pamymentIdWesteros = await seedPaidRegistrations({
+        registrations: registrationsWesteros,
+        programId: programIdWesteros,
         amount,
-        [TransactionStatusEnum.waiting],
-      );
+        completeStatuses: [TransactionStatusEnum.waiting],
+      });
 
       // construct reconciliation-file here
       const reconciliationDataIronbank = [
@@ -91,7 +91,7 @@ describe('Do payment with Excel FSP', () => {
         ], // Only wait for the transactions that should change
         accessToken,
         maxWaitTimeMs: 10_000,
-        completeStatusses: [
+        completeStatuses: [
           TransactionStatusEnum.success,
           TransactionStatusEnum.error,
         ],
@@ -135,12 +135,12 @@ describe('Do payment with Excel FSP', () => {
 
     it('Should overwrite previous reconciliation data upload and create events', async () => {
       // Arrange
-      pamymentIdWesteros = await seedPaidRegistrations(
-        [registrationWesteros1],
-        programIdWesteros,
+      pamymentIdWesteros = await seedPaidRegistrations({
+        registrations: [registrationWesteros1],
+        programId: programIdWesteros,
         amount,
-        [TransactionStatusEnum.waiting],
-      );
+        completeStatuses: [TransactionStatusEnum.waiting],
+      });
 
       const reconciliationDataIronbank = [
         {

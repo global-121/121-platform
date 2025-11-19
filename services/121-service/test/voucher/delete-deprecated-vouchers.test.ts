@@ -23,7 +23,10 @@ describe('Delete deprecated vouchers', () => {
 
   it(`should not delete images that are not older than a day`, async () => {
     // Arrange
-    await seedPaidRegistrations([registrationPV5], programIdPV);
+    await seedPaidRegistrations({
+      registrations: [registrationPV5],
+      programId: programIdPV,
+    });
 
     // Act
     const response = await removeDeprecatedImageCodes({ accessToken });
@@ -41,7 +44,10 @@ describe('Delete deprecated vouchers', () => {
 
   it(`should delete image that is older than a day`, async () => {
     // Arrange
-    await seedPaidRegistrations([registrationPV5], programIdPV);
+    await seedPaidRegistrations({
+      registrations: [registrationPV5],
+      programId: programIdPV,
+    });
 
     // Act
     // pretend that it is 2 days later

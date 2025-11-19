@@ -41,14 +41,14 @@ describe('Reconciliate excel FSP data', () => {
     (registration) => registration.phoneNumber,
   );
 
-  const waitingTransactionStatusses = Array(registrationsWesteros.length).fill(
+  const waitingTransactionStatuses = Array(registrationsWesteros.length).fill(
     TransactionStatusEnum.waiting,
   );
 
   const matchColumn = FspAttributes.phoneNumber;
   const statusColumn = 'status';
 
-  const getTransactionStatusses = async () => {
+  const getTransactionStatuses = async () => {
     // Validate that transactions are still waiting
     const transactionsResponse = await getTransactions({
       programId: programIdWesteros,
@@ -63,12 +63,12 @@ describe('Reconciliate excel FSP data', () => {
     await resetDB(SeedScript.testMultiple, __filename);
     accessToken = await getAccessToken();
 
-    await seedPaidRegistrations(
-      registrationsWesteros,
-      programIdWesteros,
-      transferValue,
-      [TransactionStatusEnum.waiting],
-    );
+    await seedPaidRegistrations({
+      registrations: registrationsWesteros,
+      programId: programIdWesteros,
+      amount: transferValue,
+      completeStatuses: [TransactionStatusEnum.waiting],
+    });
 
     const excelFspConfigWithDifferentMatchColumn = {
       fspName: Fsps.excel,
@@ -111,13 +111,13 @@ describe('Reconciliate excel FSP data', () => {
       accessToken,
       reconciliationData,
     });
-    const transactionStatuses = await getTransactionStatusses();
+    const transactionStatuses = await getTransactionStatuses();
 
     // Assert
     expect(importResult.statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(importResult.body).toMatchSnapshot();
     // Expect that all transactions are still waiting after failed reconciliation attempts - no changes should be made
-    expect(transactionStatuses).toEqual(waitingTransactionStatusses);
+    expect(transactionStatuses).toEqual(waitingTransactionStatuses);
   });
 
   it('Should give an error when status column has invalid values', async () => {
@@ -136,13 +136,13 @@ describe('Reconciliate excel FSP data', () => {
       accessToken,
       reconciliationData,
     });
-    const transactionStatuses = await getTransactionStatusses();
+    const transactionStatuses = await getTransactionStatuses();
 
     // Assert
     expect(importResult.statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(importResult.body).toMatchSnapshot();
     // Expect that all transactions are still waiting after failed reconciliation attempts - no changes should be made
-    expect(transactionStatuses).toEqual(waitingTransactionStatusses);
+    expect(transactionStatuses).toEqual(waitingTransactionStatuses);
   });
 
   it('Should give an error when importing over 10.000 records', async () => {
@@ -162,13 +162,13 @@ describe('Reconciliate excel FSP data', () => {
       accessToken,
       reconciliationData,
     });
-    const transactionStatuses = await getTransactionStatusses();
+    const transactionStatuses = await getTransactionStatuses();
 
     // Assert
     expect(importResult.statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(importResult.body).toMatchSnapshot();
     // Expect that all transactions are still waiting after failed reconciliation attempts - no changes should be made
-    expect(transactionStatuses).toEqual(waitingTransactionStatusses);
+    expect(transactionStatuses).toEqual(waitingTransactionStatuses);
   });
 
   it('Should give an error when match there is more than one match column in the import', async () => {
@@ -194,13 +194,13 @@ describe('Reconciliate excel FSP data', () => {
       accessToken,
       reconciliationData,
     });
-    const transactionStatuses = await getTransactionStatusses();
+    const transactionStatuses = await getTransactionStatuses();
 
     // Assert
     expect(importResult.statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(importResult.body).toMatchSnapshot();
     // Expect that all transactions are still waiting after failed reconciliation attempts - no changes should be made
-    expect(transactionStatuses).toEqual(waitingTransactionStatusses);
+    expect(transactionStatuses).toEqual(waitingTransactionStatuses);
   });
 
   it('Should throw an error when there are duplicate values in the match column', async () => {
@@ -224,13 +224,13 @@ describe('Reconciliate excel FSP data', () => {
       accessToken,
       reconciliationData,
     });
-    const transactionStatuses = await getTransactionStatusses();
+    const transactionStatuses = await getTransactionStatuses();
 
     // Assert
     expect(importResult.statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(importResult.body).toMatchSnapshot();
     // Expect that all transactions are still waiting after failed reconciliation attempts - no changes should be made
-    expect(transactionStatuses).toEqual(waitingTransactionStatusses);
+    expect(transactionStatuses).toEqual(waitingTransactionStatuses);
   });
 
   it('Should throw an error when importing data that is related to registrations that do not have the same Fsp config', async () => {
@@ -252,13 +252,13 @@ describe('Reconciliate excel FSP data', () => {
       accessToken,
       reconciliationData,
     });
-    const transactionStatuses = await getTransactionStatusses();
+    const transactionStatuses = await getTransactionStatuses();
 
     // Assert
     expect(importResult.statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(importResult.body).toMatchSnapshot();
     // Expect that all transactions are still waiting after failed reconciliation attempts - no changes should be made
-    expect(transactionStatuses).toEqual(waitingTransactionStatusses);
+    expect(transactionStatuses).toEqual(waitingTransactionStatuses);
   });
 
   it('Should throw an error when no transactions are found for the the import', async () => {
@@ -278,12 +278,12 @@ describe('Reconciliate excel FSP data', () => {
       accessToken,
       reconciliationData,
     });
-    const transactionStatuses = await getTransactionStatusses();
+    const transactionStatuses = await getTransactionStatuses();
 
     // Assert
     expect(importResult.statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(importResult.body).toMatchSnapshot();
     // Expect that all transactions are still waiting after failed reconciliation attempts - no changes should be made
-    expect(transactionStatuses).toEqual(waitingTransactionStatusses);
+    expect(transactionStatuses).toEqual(waitingTransactionStatuses);
   });
 });

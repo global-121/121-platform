@@ -68,7 +68,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],
@@ -148,7 +148,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],

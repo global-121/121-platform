@@ -27,7 +27,10 @@ test.describe('Export Payments with Date Range', () => {
 
   test.beforeAll(async ({ browser }) => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
-    await seedPaidRegistrations([registrationOCW5], programIdOCW);
+    await seedPaidRegistrations({
+      registrations: [registrationOCW5],
+      programId: programIdOCW,
+    });
 
     page = await browser.newPage();
     // Login

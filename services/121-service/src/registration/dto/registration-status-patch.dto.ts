@@ -6,7 +6,7 @@ import { IsNotBothPresent } from '@121-service/src/registration/validators/is-no
 import { IsOptionalIf } from '@121-service/src/registration/validators/is-optional-if.class.validator';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
-const registrationStatussesForWhichReasonIsRequired = [
+const registrationStatusesForWhichReasonIsRequired = [
   RegistrationStatusEnum.declined,
   RegistrationStatusEnum.deleted,
   RegistrationStatusEnum.paused,
@@ -34,7 +34,7 @@ export class RegistrationStatusPatchDto {
   public readonly messageTemplateKey?: string;
 
   @ApiProperty({
-    description: `Reason is the same for all registration status changes in one API-call. Required for status changes to ${registrationStatussesForWhichReasonIsRequired.join(
+    description: `Reason is the same for all registration status changes in one API-call. Required for status changes to ${registrationStatusesForWhichReasonIsRequired.join(
       ', ',
     )}.`,
     example: 'Reason for update',
@@ -42,8 +42,7 @@ export class RegistrationStatusPatchDto {
   @IsString()
   @IsNotEmpty()
   @IsOptionalIf(
-    (obj) =>
-      !registrationStatussesForWhichReasonIsRequired.includes(obj.status),
+    (obj) => !registrationStatusesForWhichReasonIsRequired.includes(obj.status),
   )
   public readonly reason?: string;
 }

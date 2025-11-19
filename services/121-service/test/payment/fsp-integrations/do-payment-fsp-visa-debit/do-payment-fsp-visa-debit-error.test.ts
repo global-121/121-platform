@@ -73,7 +73,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],
@@ -134,7 +134,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],
@@ -183,7 +183,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],
@@ -232,7 +232,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],
@@ -281,7 +281,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],
@@ -301,7 +301,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],
@@ -394,7 +394,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],

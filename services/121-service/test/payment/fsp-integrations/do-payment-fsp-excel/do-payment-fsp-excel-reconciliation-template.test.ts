@@ -29,12 +29,12 @@ describe('Reconciliate excel FSP data', () => {
   beforeAll(async () => {
     await resetDB(SeedScript.testMultiple, __filename);
 
-    await seedPaidRegistrations(
-      registrationsWesteros,
-      programIdWesteros,
+    await seedPaidRegistrations({
+      registrations: registrationsWesteros,
+      programId: programIdWesteros,
       amount,
-      [TransactionStatusEnum.waiting],
-    );
+      completeStatuses: [TransactionStatusEnum.waiting],
+    });
   });
 
   it('should give me a CSV template when I request it', async () => {

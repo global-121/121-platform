@@ -37,7 +37,10 @@ describe('(Un)Block visa debit card', () => {
       referenceId: 'test-registration-visa--block-card',
       whatsappPhoneNumber: noWhatsappSetup,
     };
-    await seedPaidRegistrations([testRegistration], programIdVisa);
+    await seedPaidRegistrations({
+      registrations: [testRegistration],
+      programId: programIdVisa,
+    });
     const visaWalletResponseBefore = await getVisaWalletsAndDetails(
       programIdVisa,
       testRegistration.referenceId,
@@ -93,7 +96,10 @@ describe('(Un)Block visa debit card', () => {
       referenceId: 'test-registration-visa--unblock-card',
       whatsappPhoneNumber: noWhatsappSetup,
     };
-    await seedPaidRegistrations([testRegistration], programIdVisa);
+    await seedPaidRegistrations({
+      registrations: [testRegistration],
+      programId: programIdVisa,
+    });
 
     const visaWalletResponseBefore = await getVisaWalletsAndDetails(
       programIdVisa,

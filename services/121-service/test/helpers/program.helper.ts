@@ -194,7 +194,7 @@ export async function createAndStartPayment({
     accessToken,
     maxWaitTimeMs: 20_000,
     paymentId,
-    completeStatusses: [TransactionStatusEnum.pendingApproval],
+    completeStatuses: [TransactionStatusEnum.pendingApproval],
   });
 
   const startPaymentResult = await startPayment({
@@ -437,14 +437,14 @@ export async function waitForPaymentTransactionsToComplete({
   paymentReferenceIds,
   accessToken,
   maxWaitTimeMs,
-  completeStatusses = [TransactionStatusEnum.success],
+  completeStatuses = [TransactionStatusEnum.success],
   paymentId: paymentId = 1,
 }: {
   programId: number;
   paymentReferenceIds: string[];
   accessToken: string;
   maxWaitTimeMs: number;
-  completeStatusses?: string[];
+  completeStatuses?: string[];
   paymentId?: number;
 }): Promise<void> {
   const startTime = Date.now();
@@ -464,7 +464,7 @@ export async function waitForPaymentTransactionsToComplete({
         const transaction = paymentTransactions.body.find(
           (txn) => txn.registrationReferenceId === referenceId,
         );
-        return transaction && completeStatusses.includes(transaction.status);
+        return transaction && completeStatuses.includes(transaction.status);
       });
     }
 

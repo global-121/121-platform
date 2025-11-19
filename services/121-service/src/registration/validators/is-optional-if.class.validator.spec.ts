@@ -2,10 +2,10 @@ import { IsString, validate } from 'class-validator';
 
 import { IsOptionalIf } from '@121-service/src/registration/validators/is-optional-if.class.validator';
 
-const statussesForWhichReasonIsOptional = ['included', 'validated'];
+const statusesForWhichReasonIsOptional = ['included', 'validated'];
 
 class TestDto {
-  @IsOptionalIf((obj) => statussesForWhichReasonIsOptional.includes(obj.status))
+  @IsOptionalIf((obj) => statusesForWhichReasonIsOptional.includes(obj.status))
   @IsString()
   reason?: string;
 

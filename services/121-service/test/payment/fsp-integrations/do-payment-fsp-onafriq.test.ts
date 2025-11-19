@@ -70,7 +70,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],
@@ -131,7 +131,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.waiting,
         TransactionStatusEnum.error,
@@ -176,7 +176,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4000,
-      completeStatusses: [TransactionStatusEnum.success],
+      completeStatuses: [TransactionStatusEnum.success],
     });
 
     // Assert
@@ -232,7 +232,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: [
+      completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],
@@ -295,7 +295,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum), // this deliberatedly includes 'created' as in this scenario nothing happens to the original transaction so it stays on 'created'
+      completeStatuses: Object.values(TransactionStatusEnum), // this deliberatedly includes 'created' as in this scenario nothing happens to the original transaction so it stays on 'created'
     });
 
     // Assert
