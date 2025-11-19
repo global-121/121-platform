@@ -6,7 +6,6 @@ import { MessageTemplateService } from '@121-service/src/notifications/message-t
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
-import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
@@ -26,7 +25,6 @@ describe('TransactionJobsHelperService', () => {
   let service: TransactionJobsHelperService;
   let registrationScopedRepository: RegistrationScopedRepository;
   let transactionEventsService: TransactionEventsService;
-  let programRepository: ProgramRepository;
   let messageTemplateService: MessageTemplateService;
   let registrationsBulkService: RegistrationsBulkService;
 
@@ -42,7 +40,6 @@ describe('TransactionJobsHelperService', () => {
     transactionEventsService = unitRef.get<TransactionEventsService>(
       TransactionEventsService,
     );
-    programRepository = unitRef.get<ProgramRepository>(ProgramRepository);
     messageTemplateService = unitRef.get<MessageTemplateService>(
       MessageTemplateService,
     );
@@ -122,13 +119,14 @@ describe('TransactionJobsHelperService', () => {
       const programIdDisabled = 1;
       const userId = 42;
 
-      jest.spyOn(programRepository, 'findByIdOrFail').mockResolvedValue({
-        enableMaxPayments: false,
-      } as any);
+      jest
+        .spyOn(registrationScopedRepository, 'findOneOrFail')
+        .mockResolvedValue({
+          program: { enableMaxPayments: false, id: programIdDisabled },
+        } as any);
 
       await service.setStatusToCompletedIfApplicable({
         referenceId: mockedRegistration.referenceId,
-        programId: programIdDisabled,
         userId,
       });
 
@@ -141,16 +139,17 @@ describe('TransactionJobsHelperService', () => {
       const programIdNoReg = 2;
       const userId = 7;
 
-      jest.spyOn(programRepository, 'findByIdOrFail').mockResolvedValue({
-        enableMaxPayments: true,
-      } as any);
+      jest
+        .spyOn(registrationScopedRepository, 'findOneOrFail')
+        .mockResolvedValue({
+          program: { enableMaxPayments: true, id: programIdNoReg },
+        } as any);
       jest
         .spyOn(registrationScopedRepository, 'shouldChangeStatusToCompleted')
         .mockResolvedValue(false);
 
       await service.setStatusToCompletedIfApplicable({
         referenceId: mockedRegistration.referenceId,
-        programId: programIdNoReg,
         userId,
       });
 
@@ -164,9 +163,11 @@ describe('TransactionJobsHelperService', () => {
       const userIdC = 99;
       const ref1 = 'ref-1';
 
-      jest.spyOn(programRepository, 'findByIdOrFail').mockResolvedValue({
-        enableMaxPayments: true,
-      } as any);
+      jest
+        .spyOn(registrationScopedRepository, 'findOneOrFail')
+        .mockResolvedValue({
+          program: { enableMaxPayments: true, id: programIdTemplate },
+        } as any);
       jest
         .spyOn(registrationScopedRepository, 'shouldChangeStatusToCompleted')
         .mockResolvedValue(true);
@@ -176,7 +177,6 @@ describe('TransactionJobsHelperService', () => {
 
       await service.setStatusToCompletedIfApplicable({
         referenceId: ref1,
-        programId: programIdTemplate,
         userId: userIdC,
       });
 
@@ -202,9 +202,11 @@ describe('TransactionJobsHelperService', () => {
       const userIdD = 100;
       const ref2 = 'ref-2';
 
-      jest.spyOn(programRepository, 'findByIdOrFail').mockResolvedValue({
-        enableMaxPayments: true,
-      } as any);
+      jest
+        .spyOn(registrationScopedRepository, 'findOneOrFail')
+        .mockResolvedValue({
+          program: { enableMaxPayments: true, id: programIdNoTemplate },
+        } as any);
       jest
         .spyOn(registrationScopedRepository, 'shouldChangeStatusToCompleted')
         .mockResolvedValue(true);
@@ -214,7 +216,6 @@ describe('TransactionJobsHelperService', () => {
 
       await service.setStatusToCompletedIfApplicable({
         referenceId: ref2,
-        programId: programIdNoTemplate,
         userId: userIdD,
       });
 

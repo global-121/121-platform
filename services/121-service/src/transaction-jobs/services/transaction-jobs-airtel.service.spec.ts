@@ -36,7 +36,6 @@ describe('TransactionJobsAirtelService', () => {
   const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
     {
       transactionEventContext,
-      programId: transactionJob.programId,
       referenceId: transactionJob.referenceId,
       isRetry: transactionJob.isRetry,
     };

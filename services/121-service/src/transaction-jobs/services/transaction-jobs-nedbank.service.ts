@@ -66,7 +66,6 @@ export class TransactionJobsNedbankService {
     } else {
       // Update transaction status to waiting, this is to ensure that this transactions is not retried as we are about to create the voucher
       // If this job fails after this point due to a timout from nedbank the reconciliation process will pick it up and set it to success or error, so it can be retried if needed
-      // ##TODO should this already lead to paymentCount/completed update? Are there more cases like this?
       await this.transactionsService.updateTransactionStatus({
         transactionId: transactionJob.transactionId,
         status: TransactionStatusEnum.waiting,
@@ -110,7 +109,6 @@ export class TransactionJobsNedbankService {
     const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
       {
         transactionEventContext,
-        programId: transactionJob.programId,
         referenceId: transactionJob.referenceId,
         isRetry: transactionJob.isRetry,
       };

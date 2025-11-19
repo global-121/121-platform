@@ -3,6 +3,5 @@ import { TransactionEventCreationContext } from '@121-service/src/payments/trans
 export interface SaveTransactionProgressAndUpdateRegistrationContext {
   transactionEventContext: TransactionEventCreationContext;
   referenceId: string;
-  programId: number;
   isRetry: boolean;
 }

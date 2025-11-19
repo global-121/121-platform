@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Equal } from 'typeorm';
 
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
@@ -13,7 +14,6 @@ import { TransactionEventType } from '@121-service/src/payments/transactions/tra
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -30,7 +30,6 @@ export class TransactionJobsHelperService {
     private readonly queueMessageService: MessageQueuesService,
     private readonly transactionEventsService: TransactionEventsService,
     private readonly transactionsService: TransactionsService,
-    private readonly programRepository: ProgramRepository,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly transactionRepository: TransactionRepository,
   ) {}
@@ -155,7 +154,6 @@ export class TransactionJobsHelperService {
     if (!context.isRetry) {
       await this.updatePaymentCountAndSetToCompleted({
         referenceId: context.referenceId,
-        programId: context.programId,
         userId: context.transactionEventContext.userId!,
       });
     }
@@ -173,11 +171,9 @@ export class TransactionJobsHelperService {
    */
   public async updatePaymentCountAndSetToCompleted({
     referenceId,
-    programId,
     userId,
   }: {
     referenceId: string;
-    programId: number;
     userId: number;
   }): Promise<void> {
     const paymentCount =
@@ -191,26 +187,26 @@ export class TransactionJobsHelperService {
 
     await this.setStatusToCompletedIfApplicable({
       referenceId,
-      programId,
       userId,
     });
   }
 
   /**
    * Checks program settings and completes registrations when applicable.
-   * This mirrors the previous orchestration logic but has no external side-effects
-   * beyond calling the registrationsBulkService to apply status changes and send messages.
    */
   public async setStatusToCompletedIfApplicable({
     referenceId,
-    programId,
     userId,
   }: {
     referenceId: string;
-    programId: number;
     userId: number;
   }): Promise<void> {
-    const program = await this.programRepository.findByIdOrFail(programId);
+    const registrationWithProgram =
+      await this.registrationScopedRepository.findOneOrFail({
+        where: { referenceId: Equal(referenceId) },
+        relations: { program: true },
+      });
+    const program = registrationWithProgram.program;
     if (!program.enableMaxPayments) {
       return;
     }
@@ -225,7 +221,7 @@ export class TransactionJobsHelperService {
 
     const isTemplateAvailable =
       await this.messageTemplateService.isTemplateAvailable(
-        programId,
+        program.id,
         RegistrationStatusEnum.completed,
       );
     const messageContentDetails: MessageContentDetails = isTemplateAvailable
@@ -238,8 +234,8 @@ export class TransactionJobsHelperService {
 
     await this.registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds(
       {
-        referenceIds: [referenceId], // ##TODO use a non-bulk version of this? In general change/optimize this method for per-registration usage?
-        programId,
+        referenceIds: [referenceId],
+        programId: program.id,
         registrationStatus: RegistrationStatusEnum.completed,
         userId,
         messageContentDetails,

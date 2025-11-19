@@ -36,7 +36,6 @@ const transactionEventContext: TransactionEventCreationContext = {
 const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
   {
     transactionEventContext,
-    programId: mockedNedbankTransactionJob.programId,
     referenceId: mockedNedbankTransactionJob.referenceId,
     isRetry: mockedNedbankTransactionJob.isRetry,
   };

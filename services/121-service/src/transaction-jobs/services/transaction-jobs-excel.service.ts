@@ -34,7 +34,6 @@ export class TransactionJobsExcelService {
     const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
       {
         transactionEventContext,
-        programId: transactionJob.programId,
         referenceId: transactionJob.referenceId,
         isRetry: transactionJob.isRetry,
       };
