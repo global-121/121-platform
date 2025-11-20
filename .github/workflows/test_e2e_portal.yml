@@ -109,7 +109,7 @@ jobs:
         env:
           BASE_URL: http://localhost:8088
         run: |
-          npm test -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
+          npm test -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }} tests/DoPayment/DoFailedPaymentWithCbe.spec.ts
 
       - uses: actions/upload-artifact@v5
         if: always()
