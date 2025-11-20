@@ -175,7 +175,7 @@ class PaymentsPage extends BasePage {
       .textContent();
 
     const failedTransfersElement = await card
-      .filter({ hasText: 'Failed transfers' })
+      .filter({ hasText: 'Failed transactions' })
       .textContent();
 
     // Validate payment title
