@@ -257,7 +257,6 @@ export class ProgramRegistrationDebitCardsPageComponent {
   }
 
   public async createNewCard() {
-    console.log('Create new card clicked');
     await this.registrationApiService.linkCardToRegistration({
       programId: this.programId,
       referenceId: this.referenceId,

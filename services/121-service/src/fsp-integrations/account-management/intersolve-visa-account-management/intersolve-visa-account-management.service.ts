@@ -6,6 +6,7 @@ import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/in
 import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
+import { IntersolveVisaApiService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa-api.service';
 import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
 import {
   FspConfigurationProperties,
@@ -20,6 +21,7 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 
 @Injectable()
 export class IntersolveVisaAccountManagementService {
@@ -29,6 +31,8 @@ export class IntersolveVisaAccountManagementService {
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
+    private readonly registrationsPaginationService: RegistrationsPaginationService,
+    private readonly intersolveVisaApiService: IntersolveVisaApiService,
   ) {}
 
   // TODO: duplicate of RegistrationsService getRegistrationOrThrow
@@ -334,15 +338,55 @@ export class IntersolveVisaAccountManagementService {
   public async linkDebitCardToRegistration(
     referenceId: string,
     programId: number,
-    cardNumber: string,
+    tokenCode: string,
   ): Promise<void> {
     const registration = await this.getRegistrationOrThrow({
       referenceId,
       programId,
     });
-    // Link debit card to registration
-    console.log('calling linkDebitCardToRegistration');
-    console.log('card number:', cardNumber);
-    console.log('registration id:', registration.id);
+    const tokenResult = await this.intersolveVisaApiService.getToken(tokenCode);
+
+    if (tokenResult.holderId !== null) {
+      throw new HttpException(
+        `Card is alrealdy linked to another customer at Intersolve.`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const registrationView =
+      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
+        {
+          programId,
+          referenceIds: [referenceId],
+        },
+      );
+    const contactInformation: ContactInformation = {
+      addressStreet: registrationView[0]['addressStreet'],
+      addressHouseNumber: registrationView[0]['addressHouseNumber'],
+      addressHouseNumberAddition:
+        registrationView[0]['addressHouseNumberAddition'],
+      addressPostalCode: registrationView[0]['addressPostalCode'],
+      addressCity: registrationView[0]['addressCity'],
+      phoneNumber: String(registrationView[0]['phoneNumber']),
+    };
+
+    const intersolveVisaCustomer =
+      await this.intersolveVisaService.getCustomerOrCreate({
+        registrationId: registration.id,
+        createCustomerReference: referenceId,
+        name: String(registrationView[0]['name']),
+        contactInformation,
+      });
+
+    const intersolveVisaParentWallet =
+      await this.intersolveVisaService.getParentWalletOrCreate({
+        intersolveVisaCustomer,
+        brandCode: 'fix this',
+      });
+
+    await this.intersolveVisaService.linkParentWalletToCustomerIfUnlinked({
+      intersolveVisaCustomer,
+      intersolveVisaParentWallet,
+    });
   }
 }
