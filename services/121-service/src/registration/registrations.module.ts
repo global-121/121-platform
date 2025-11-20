@@ -2,7 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { DebitCardsIntersolveVisaModule } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.module';
+//import { DebitCardsIntersolveVisaModule } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.module';
 import { FspsModule } from '@121-service/src/fsps/fsp.module';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { LatestMessageEntity } from '@121-service/src/notifications/entities/latest-message.entity';
@@ -70,7 +70,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     ProgramFspConfigurationsModule,
     QueuesRegistryModule,
     MessageTemplateModule,
-    DebitCardsIntersolveVisaModule,
+    //DebitCardsIntersolveVisaModule,
   ],
   providers: [
     RegistrationsService,
