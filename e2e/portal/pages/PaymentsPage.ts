@@ -183,7 +183,7 @@ class PaymentsPage extends BasePage {
     // );
     // paymentSummaryMetrics:   Included reg.  1
     const card = this.page
-      .locator('[data-pc-name="card"]')
+      .getByTestId('card-with-link')
       .filter({ has: cardTitleLocator })
       .getByTestId('payment-summary-metrics')
       .locator('app-metric-container');
