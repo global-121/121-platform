@@ -150,36 +150,41 @@ class PaymentsPage extends BasePage {
   }) {
     // Locate the specific payment card using the payment link and then navigate to its ancestor card element
     const hrefLocatorUrl = `"/en-GB/program/${programId}/payments/${paymentId}"`;
-    const paymentTitle = await this.page
-      .locator(`a[href=${hrefLocatorUrl}]`)
-      .getByTitle(date)
-      .textContent();
-    const pageLocator = this.page.locator(`a[href=${hrefLocatorUrl}]`);
-    console.log('pageLocator: ', await pageLocator.textContent());
-    const cardLocator = pageLocator.locator(
-      'xpath=ancestor::*[@data-pc-name="card"]',
-    );
-    console.log('cardLocator: ', await cardLocator.textContent());
-    const paymentSummaryMetricsLocator = cardLocator.getByTestId(
-      'payment-summary-metrics',
-    );
-    console.log(
-      'paymentSummaryMetricsLocator: ',
-      await paymentSummaryMetricsLocator.textContent(),
-    );
-    const paymentSummaryMetrics = paymentSummaryMetricsLocator.locator(
-      'app-metric-container',
-    );
-    console.log(
-      'paymentSummaryMetrics: ',
-      await paymentSummaryMetrics
-        .filter({ hasText: 'Included reg.' })
-        .textContent(),
-    );
+    const cardTitleLocator = this.page.locator(`a[href=${hrefLocatorUrl}]`);
+    const paymentTitle = await cardTitleLocator.getByTitle(date).textContent();
+    // console.log('pageLocator: ', await pageLocator.textContent());
+
+    // const child = page.getByText('Hello');
+    // const parent = page.getByRole('listitem').filter({ has: child });
+    // const cardLocator2 = this.page.locator(`[data-pc-name="card"]`).filter({
+    //   has: pageLocator,
+    // });
+    // console.log('cardLocator2: ', await cardLocator2.textContent());
+
+    // const cardLocator = pageLocator.locator(
+    //   'xpath=ancestor::*[@data-pc-name="card"]',
+    // );
+    // console.log('cardLocator: ', await cardLocator.textContent());
+    // const paymentSummaryMetricsLocator = cardLocator.getByTestId(
+    //   'payment-summary-metrics',
+    // );
+    // console.log(
+    //   'paymentSummaryMetricsLocator: ',
+    //   await paymentSummaryMetricsLocator.textContent(),
+    // );
+    // const paymentSummaryMetrics = paymentSummaryMetricsLocator.locator(
+    //   'app-metric-container',
+    // );
+    // console.log(
+    //   'paymentSummaryMetrics: ',
+    //   await paymentSummaryMetrics
+    //     .filter({ hasText: 'Included reg.' })
+    //     .textContent(),
+    // );
     // paymentSummaryMetrics:   Included reg.  1
     const card = this.page
-      .locator(`a[href=${hrefLocatorUrl}]`)
-      .locator('xpath=ancestor::*[@data-pc-name="card"]')
+      .locator('[data-pc-name="card"]')
+      .filter({ has: cardTitleLocator })
       .getByTestId('payment-summary-metrics')
       .locator('app-metric-container');
 
