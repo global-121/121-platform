@@ -68,8 +68,8 @@ test('Validate second payment is correctly displayed on payment card', async ({
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
-      successfulTransactions: defaultMaxTransferValue,
-      failedTransactions: 0,
+      successfulTransfers: defaultMaxTransferValue,
+      failedTransfers: 0,
       programId: 3,
       paymentId: 2,
     });
