@@ -13,7 +13,10 @@ import { env } from '@121-service/src/env';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
-import { InterfaceNames } from '@121-service/src/shared/enum/interface-names.enum';
+import {
+  INTERFACE_NAME_HEADER,
+  InterfaceNames,
+} from '@121-service/src/shared/enum/interface-names.enum';
 import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
 import {
   CreateProgramAssignmentDto,
@@ -600,8 +603,7 @@ export class UserService {
   }
 
   public getInterfaceKeyByHeader(): string {
-    const headerKey = 'x-121-interface';
-    const originInterface = this.request.headers[headerKey];
+    const originInterface = this.request.headers[INTERFACE_NAME_HEADER];
     switch (originInterface) {
       case InterfaceNames.portal:
         return CookieNames.portal;
