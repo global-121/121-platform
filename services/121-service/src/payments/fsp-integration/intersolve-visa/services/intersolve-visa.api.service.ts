@@ -188,6 +188,7 @@ export class IntersolveVisaApiService {
     let blocked;
     let status;
     let balance;
+    let holderId;
     const tokenData = getTokenResponseDto.data.data;
     if (tokenData?.balances) {
       const balanceObject = tokenData.balances.find(
@@ -203,10 +204,14 @@ export class IntersolveVisaApiService {
     if (tokenData?.blocked === true || tokenData?.blocked === false) {
       blocked = tokenData.blocked;
     }
+    if (tokenData?.holderId) {
+      holderId = tokenData.holderId;
+    }
     const getTokenResult: GetTokenResult = {
       blocked,
       status,
       balance,
+      holderId,
     };
 
     return getTokenResult;

@@ -98,8 +98,10 @@ export class IntersolveVisaService {
     brandCode: string;
     coverLetterCode: string;
   }) {
+    //TODO:
     const intersolveVisaCustomer = await this.getCustomerOrCreate({
       registrationId,
+      //referenceId
       createCustomerReference,
       name,
       contactInformation,
@@ -114,6 +116,7 @@ export class IntersolveVisaService {
       intersolveVisaCustomer,
       intersolveVisaParentWallet,
     });
+    //End TODO:
 
     const intersolveVisaChildWallets = await this.getChildWalletsOrCreateOne({
       intersolveVisaParentWallet,
@@ -235,7 +238,7 @@ export class IntersolveVisaService {
     );
   }
 
-  private async getCustomerOrCreate({
+  public async getCustomerOrCreate({
     registrationId,
     createCustomerReference,
     name,
@@ -280,7 +283,7 @@ export class IntersolveVisaService {
     return intersolveVisaCustomer;
   }
 
-  private async getParentWalletOrCreate({
+  public async getParentWalletOrCreate({
     intersolveVisaCustomer,
     brandCode,
   }: {
@@ -317,7 +320,7 @@ export class IntersolveVisaService {
     return savedIntersolveVisaParentWallet;
   }
 
-  private async linkParentWalletToCustomerIfUnlinked({
+  public async linkParentWalletToCustomerIfUnlinked({
     intersolveVisaCustomer,
     intersolveVisaParentWallet,
   }: {
