@@ -12,7 +12,10 @@ import { get } from 'radashi';
 import { lastValueFrom, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
-import { InterfaceNames } from '@121-service/src/shared/enum/interface-names.enum';
+import {
+  INTERFACE_NAME_HEADER,
+  InterfaceNames,
+} from '@121-service/src/shared/enum/interface-names.enum';
 
 import { getUserFromLocalStorage } from '~/utils/local-storage';
 import { environment } from '~environment';
@@ -42,7 +45,7 @@ export class HttpWrapperService {
     let headers = new HttpHeaders({
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      'X-121-Interface': InterfaceNames.portal,
+      [INTERFACE_NAME_HEADER]: InterfaceNames.portal,
     });
 
     if (isUpload) {
