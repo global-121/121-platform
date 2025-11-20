@@ -11,6 +11,7 @@ import { IntersolveVoucherResultCode } from '@121-service/src/payments/fsp-integ
 import { IntersolveVoucherSoapElements } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-soap.enum';
 import { IntersolveVoucherMockService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/instersolve-voucher.mock';
 import { IntersolveGetCardSoapResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/interfaces/intersolve-get-card-soap-response.interface';
+import { repeatAttempt } from '@121-service/src/utils/repeat-attempt';
 import { SoapService } from '@121-service/src/utils/soap/soap.service';
 
 @Injectable()
@@ -122,26 +123,32 @@ export class IntersolveVoucherApiService {
       pin,
     );
 
-    let responseBody = await this.makeGetCardCall({
+    const withArgs = {
       payload,
       username,
       password,
+    };
+    const res = await repeatAttempt<
+      typeof withArgs,
+      IntersolveGetCardSoapResponse,
+      string | undefined,
+      string
+    >({
+      attemptTo: this.makeGetCardCall.bind(this),
+      withArgs,
+      processResponse: this.createErrorMessageIfRequestFailed.bind(this),
+      isError: Boolean, // If processResponse returned a string, it's an error
+      attemptsRemaining: 1,
     });
 
-    // retry once if failed request
-    let errorMessage = this.createErrorMessageIfRequestFailed(responseBody);
-    if (errorMessage) {
-      responseBody = await this.makeGetCardCall({
-        payload,
-        username,
-        password,
-      });
-      errorMessage = this.createErrorMessageIfRequestFailed(responseBody);
+    const { success, error } = res;
+
+    if (error) {
+      throw new Error(error);
     }
 
-    if (errorMessage) {
-      throw new Error(errorMessage);
-    }
+    // Someday: use better typing to avoid this cast
+    const responseBody = success as IntersolveGetCardSoapResponse;
 
     const result = {
       resultCode: responseBody.GetCardResponse!.ResultCode!._text,

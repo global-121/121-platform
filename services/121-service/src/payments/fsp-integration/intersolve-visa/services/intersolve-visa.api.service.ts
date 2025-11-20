@@ -29,6 +29,7 @@ import { ContactInformation } from '@121-service/src/payments/fsp-integration/in
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
+import { repeatAttempt } from '@121-service/src/utils/repeat-attempt';
 import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
@@ -672,33 +673,31 @@ export class IntersolveVisaApiService {
       }
     }
 
-    const url = `${intersolveVisaApiUrl}/${intersolveVisaApiPath}/v1/${endpoint}`;
-    let response = await this.httpService.request<ResponseDtoType>({
+    const withArgs = {
       method,
-      url,
+      url: `${intersolveVisaApiUrl}/${intersolveVisaApiPath}/v1/${endpoint}`,
       payload,
       headers,
+    };
+    const { success, error } = await repeatAttempt<
+      typeof withArgs,
+      ResponseDtoType,
+      string | undefined,
+      string
+    >({
+      attemptTo: this.httpService.request.bind(this.httpService),
+      withArgs,
+      processResponse: this.createErrorMessageIfRequestFailed.bind(this),
+      retryIf: method === 'GET', // only retry GET requests
+      isError: Boolean, // If processResponse returned a string, it's an error
+      attemptsRemaining: 1,
     });
 
-    let errorMessage = this.createErrorMessageIfRequestFailed(response);
-
-    // Retry failing GET request once
-    if (errorMessage && method === 'GET') {
-      response = await this.httpService.request<ResponseDtoType>({
-        method,
-        url,
-        payload,
-        headers,
-      });
-      errorMessage = this.createErrorMessageIfRequestFailed(response);
+    if (error) {
+      throw new IntersolveVisaApiError(`${errorPrefix}: ${error}`);
+    } else {
+      return success as ResponseDtoType;
     }
-
-    // If the response contains errors
-    if (errorMessage) {
-      throw new IntersolveVisaApiError(`${errorPrefix}: ${errorMessage}`);
-    }
-
-    return response;
   }
 
   private createErrorMessageIfRequestFailed<
