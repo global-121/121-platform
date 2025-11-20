@@ -704,6 +704,7 @@
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     "method": "get",
     "path": "/api/programs/{programId}/registration-events/monitoring",
     "params": [
@@ -778,6 +779,8 @@
   {
 >>>>>>> 0c6a80401 (working e2e connection)
 >>>>>>> eae73cbca (working e2e connection)
+=======
+>>>>>>> 73696ff10 (WIP backend)
     "method": "put",
     "path": "/api/programs/{programId}/fsps/cooperative-bank-of-oromia/accounts",
     "params": [
