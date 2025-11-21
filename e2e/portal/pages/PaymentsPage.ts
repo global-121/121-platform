@@ -162,35 +162,36 @@ class PaymentsPage extends BasePage {
       .filter({ hasText: 'Included reg.' })
       .textContent();
 
-    // Get the total amount element within the card
     const totalAmountElement = await card
       .filter({ hasText: 'Expected total amount' })
       .textContent();
 
-    const successfulTransfersElement = await card
+    const successfulTransactionsElement = await card
       .filter({ hasText: 'Amount successfully sent' })
       .textContent();
 
-    const failedTransfersElement = await card
+    const failedTransactionsElement = await card
       .filter({ hasText: 'Failed transactions' })
       .textContent();
 
-    // Validate payment title
     expect(paymentTitle).toContain(date);
-    // Validate included registrations
+
     expect(includedRegistrationsElement).toContain(
       registrationsNumber.toString(),
     );
-    // Validate payment amount and currency
+
     await this.validateNumericValue(totalAmountElement, paymentAmount);
     expect(totalAmountElement).toContain(currency);
-    // Validate successful transfers
+
     await this.validateNumericValue(
-      successfulTransfersElement,
+      successfulTransactionsElement,
       successfulTransactions,
     );
-    // Validate failed transfers
-    await this.validateNumericValue(failedTransfersElement, failedTransactions);
+
+    await this.validateNumericValue(
+      failedTransactionsElement,
+      failedTransactions,
+    );
   }
 
   async openPaymentByDate({ date }: { date: string }) {
