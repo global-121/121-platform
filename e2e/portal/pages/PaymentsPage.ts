@@ -133,8 +133,8 @@ class PaymentsPage extends BasePage {
     date,
     registrationsNumber,
     paymentAmount,
-    successfulTransfers,
-    failedTransfers,
+    successfulTransactions,
+    failedTransactions,
     currency = '€',
     programId,
     paymentId = 1,
@@ -142,8 +142,8 @@ class PaymentsPage extends BasePage {
     date: string;
     registrationsNumber: number;
     paymentAmount: number;
-    successfulTransfers: number;
-    failedTransfers: number;
+    successfulTransactions: number;
+    failedTransactions: number;
     currency?: string;
     programId: number;
     paymentId?: number;
@@ -187,10 +187,10 @@ class PaymentsPage extends BasePage {
     // Validate successful transfers
     await this.validateNumericValue(
       successfulTransfersElement,
-      successfulTransfers,
+      successfulTransactions,
     );
     // Validate failed transfers
-    await this.validateNumericValue(failedTransfersElement, failedTransfers);
+    await this.validateNumericValue(failedTransfersElement, failedTransactions);
   }
 
   async openPaymentByDate({ date }: { date: string }) {

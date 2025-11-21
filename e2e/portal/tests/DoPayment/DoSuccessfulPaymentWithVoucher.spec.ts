@@ -75,8 +75,8 @@ test('Do successful payment for Voucher fsp', async ({ page }) => {
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
-      successfulTransfers: defaultMaxTransferValue,
-      failedTransfers: 0,
+      successfulTransactions: defaultMaxTransferValue,
+      failedTransactions: 0,
       programId: programIdPV,
     });
   });

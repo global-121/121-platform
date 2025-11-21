@@ -72,8 +72,8 @@ test('Do failed payment for Cbe fsp', async ({ page }) => {
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
-      successfulTransfers: 0,
-      failedTransfers: numberOfPas,
+      successfulTransactions: 0,
+      failedTransactions: numberOfPas,
       currency: CbeProgram.currency,
       programId: programIdCbe,
     });
