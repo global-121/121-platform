@@ -344,6 +344,7 @@ export class IntersolveVisaAccountManagementService {
       referenceId,
       programId,
     });
+    // Check if card exists and is unlinked
     const tokenResult = await this.intersolveVisaApiService.getToken(tokenCode);
 
     if (tokenResult.holderId !== null) {
@@ -352,7 +353,9 @@ export class IntersolveVisaAccountManagementService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    // END: Check if card exists and is unlinked
 
+    // Standard registration flow
     const registrationView =
       await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
         {
@@ -388,5 +391,13 @@ export class IntersolveVisaAccountManagementService {
       intersolveVisaCustomer,
       intersolveVisaParentWallet,
     });
+    // END: Standard registration flow
+
+    // Link card to customer at Intersolve
+    // await this.intersolveVisaService.linkCardToCustomer({
+    //   registrationId: registration.id,
+    //   tokenCode,
+    // });
+    // END: Link card to customer at Intersolve
   }
 }
