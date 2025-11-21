@@ -9,8 +9,8 @@ import { IntersolveIssueCardResponse } from '@121-service/src/payments/fsp-integ
 import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/entities/intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherResultCode } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-result-code.enum';
 import { IntersolveVoucherSoapElements } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-soap.enum';
-import { IntersolveVoucherMockService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/instersolve-voucher.mock';
 import { IntersolveGetCardSoapResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/interfaces/intersolve-get-card-soap-response.interface';
+import { IntersolveVoucherMockService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.mock';
 import { SoapService } from '@121-service/src/utils/soap/soap.service';
 
 @Injectable()
