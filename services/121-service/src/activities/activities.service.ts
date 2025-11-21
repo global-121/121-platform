@@ -9,7 +9,7 @@ import { MessageByRegistrationId } from '@121-service/src/notifications/types/tw
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { GetAuditedTransactionViews } from '@121-service/src/payments/transactions/types/get-audited-tranaction-views.type';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
-import { RegistrationEventScopedRepository } from '@121-service/src/registration-events/registration-event.repository';
+import { RegistrationEventScopedRepository } from '@121-service/src/registration-events/repositories/registration-event.repository';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
 

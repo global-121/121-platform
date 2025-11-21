@@ -93,17 +93,22 @@ export function importRegistrationsCSV(
 
 export function duplicateRegistrations({
   powerNumberRegistration,
+  includeEvents = false,
   accessToken,
   body = {},
 }: {
   powerNumberRegistration: number;
+  includeEvents?: boolean;
   accessToken: string;
   body: object;
 }): Promise<request.Response> {
   return getServer()
     .post('/scripts/duplicate-registrations')
     .set('Cookie', [accessToken])
-    .query({ mockPowerNumberRegistrations: powerNumberRegistration })
+    .query({
+      mockPowerNumberRegistrations: powerNumberRegistration,
+      includeEvents,
+    })
     .send(body);
 }
 

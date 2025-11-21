@@ -18,12 +18,16 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
+import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
+import { PaginateConfigRegistrationEventView } from '@121-service/src/registration-events/const/paginate-config-registration-event-view.const';
+import { FindAllRegistrationEventsResultDto } from '@121-service/src/registration-events/dto/find-all-registration-events-result.dto';
 import { GetRegistrationEventDto } from '@121-service/src/registration-events/dto/get-registration-event.dto';
 import { GetRegistrationEventsQueryDto } from '@121-service/src/registration-events/dto/get-registration-event-query.dto';
+import { RegistrationEventViewEntity } from '@121-service/src/registration-events/entities/registration-event.view.entity';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -95,5 +99,26 @@ export class RegistrationEventsController {
       throw new HttpException({ errors: errorNoData }, HttpStatus.NOT_FOUND);
     }
     res.send(result);
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationPersonalREAD] })
+  @ApiOperation({
+    summary: '[SCOPED] Get paginated registration-events for this programId',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @PaginatedSwaggerDocs(
+    RegistrationEventViewEntity,
+    PaginateConfigRegistrationEventView,
+  )
+  @Get('programs/:programId/registration-events/paginated') // ##TODO: change api-path and/or merge with existing endpoints
+  public async getRegistrationEventsPaginated(
+    @Paginate() paginateQuery: PaginateQuery,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<FindAllRegistrationEventsResultDto> {
+    return await this.registrationEventsService.getEventsPaginated(
+      programId,
+      paginateQuery,
+    );
   }
 }

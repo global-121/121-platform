@@ -17,7 +17,6 @@ import {
 import {
   injectMutation,
   injectQuery,
-  QueryClient,
 } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -50,7 +49,7 @@ import { generateFieldErrors } from '~/utils/form-validation';
 import { getUniqueUserOptions } from '~/utils/unique-users';
 
 @Component({
-  selector: 'app-monitoring-files',
+  selector: 'app-program-monitoring-files',
   imports: [
     QueryTableComponent,
     ButtonModule,
@@ -71,7 +70,6 @@ export class ProgramMonitoringFilesPageComponent {
 
   readonly authService = inject(AuthService);
   readonly downloadService = inject(DownloadService);
-  readonly queryClient = inject(QueryClient);
   readonly programApiService = inject(ProgramApiService);
   readonly toastService = inject(ToastService);
 
