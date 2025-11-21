@@ -59,49 +59,8 @@ export class IntersolveVisaService {
     transferValueInMajorUnit,
     transferReference,
   }: DoTransferOrIssueCardParams): Promise<DoTransferOrIssueCardResult> {
-    const cardData = await this.issueCard({
-      registrationId,
-      createCustomerReference,
-      name,
-      contactInformation,
-      brandCode,
-      coverLetterCode,
-    });
-
-    // Transfer money from the client's funding token to the parent token
-    if (transferValueInMajorUnit > 0) {
-      await this.intersolveVisaApiService.transfer({
-        fromTokenCode: fundingTokenCode,
-        toTokenCode: cardData.tokenCode,
-        amount: transferValueInMajorUnit,
-        reference: transferReference,
-      });
-    }
-    return {
-      isNewCardCreated: cardData.isNewCardCreated,
-      amountTransferredInMajorUnit: transferValueInMajorUnit,
-    };
-  }
-
-  private async issueCard({
-    registrationId,
-    createCustomerReference,
-    name,
-    contactInformation,
-    brandCode,
-    coverLetterCode,
-  }: {
-    registrationId: number;
-    createCustomerReference: string;
-    name: string;
-    contactInformation: ContactInformation;
-    brandCode: string;
-    coverLetterCode: string;
-  }) {
-    //TODO:
     const intersolveVisaCustomer = await this.getCustomerOrCreate({
       registrationId,
-      //referenceId
       createCustomerReference,
       contactInformation,
     });
@@ -115,7 +74,6 @@ export class IntersolveVisaService {
       intersolveVisaCustomer,
       intersolveVisaParentWallet,
     });
-    //End TODO:
 
     const intersolveVisaChildWallets = await this.getChildWalletsOrCreateOne({
       intersolveVisaParentWallet,
@@ -138,9 +96,18 @@ export class IntersolveVisaService {
       coverLetterCode,
     });
 
+    // Transfer money from the client's funding token to the parent token
+    if (transferValueInMajorUnit > 0) {
+      await this.intersolveVisaApiService.transfer({
+        fromTokenCode: fundingTokenCode,
+        toTokenCode: intersolveVisaParentWallet.tokenCode,
+        amount: transferValueInMajorUnit,
+        reference: transferReference,
+      });
+    }
     return {
       isNewCardCreated: createDebitCardReturn.isNewCardCreated,
-      tokenCode: intersolveVisaParentWallet.tokenCode,
+      amountTransferredInMajorUnit: transferValueInMajorUnit,
     };
   }
 
