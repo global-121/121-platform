@@ -71,6 +71,7 @@ export class TransactionJobsCooperativeBankOfOromiaService {
         transactionJob.transactionId,
       );
 
+    // This is the idempotency key
     const cooperativeBankOfOromiaMessageId = this.generateMessageId({
       referenceId: transactionJob.referenceId,
       transactionId: transactionJob.transactionId,

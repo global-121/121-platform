@@ -3,8 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CooperativeBankOfOromiaApiPaymentResponseBodyDto } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-payment-response-body.dto';
 import { CooperativeBankOfOromiaApiTransferRequestBodyDto } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-transfer-request-body.dto';
 import { CooperativeBankOfOromiaTransferResultEnum } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/enums/cooperative-bank-of-oromia-disbursement-result.enum';
+import { CooperativeBankOfOromiaApiHelperService } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.api.helper.service';
 import { CooperativeBankOfOromiaApiService } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia-api.service';
-import { CooperativeBankOfOromiaApiHelperService } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia-api-helper.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 const transferInput = {
@@ -57,7 +57,7 @@ describe('CooperativeBankOfOromiaApiService', () => {
   });
 
   describe('authentication flow', () => {
-    it('should return initiate transfer if authenticate is successful', async () => {
+    it('should call initiate transfer if authenticate is successful', async () => {
       // Mock httpService.post to return a token on first call and transfer response on second call
       const mockAuthResponse = {
         data: { access_token: 'mock-access-token', expires_in: 10000 },

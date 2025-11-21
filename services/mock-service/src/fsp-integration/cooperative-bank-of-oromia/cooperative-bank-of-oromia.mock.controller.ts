@@ -69,7 +69,7 @@ export class CooperativeBankOfOromiaMockController {
   @Post('oauth2/token')
   // CooperativeBankOfOromia API responds with 200
   @HttpCode(200)
-  public async getAccessToken(
+  public async getOauth2Token(
     @Headers() headers: Record<string, string>,
     @Body() body: any, // TODO: change to dto
   ): Promise<CooperativeBankOfOromiaAuthenticateResponseSuccessDto> {

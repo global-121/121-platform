@@ -9,8 +9,9 @@ import { CooperativeBankOfOromiaApiPaymentResponseBodyDto } from '@121-service/s
 import { CooperativeBankOfOromiaApiTransferRequestBodyDto } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-transfer-request-body.dto';
 import { CooperativeBankOfOromiaTransferResultEnum } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/enums/cooperative-bank-of-oromia-disbursement-result.enum';
 import { CooperativeBankOfOromiaApiError } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/errors/cooperative-bank-of-oromia-api.error';
-import { CooperativeBankOfOromiaApiHelperService } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia-api-helper.service';
+import { CooperativeBankOfOromiaApiHelperService } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.api.helper.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
 @Injectable()
 export class CooperativeBankOfOromiaApiService {
@@ -18,10 +19,9 @@ export class CooperativeBankOfOromiaApiService {
   private readonly cooperativeBankOfOromiaTransferURL: URL;
   private readonly cooperativeBankOfOromiaAuthenticateURL: URL;
 
-  // client id and secret are used for authentication
-
   public constructor(
     private readonly httpService: CustomHttpService,
+    private readonly tokenValidationService: TokenValidationService,
     private readonly cooperativeBankOfOromiaApiHelperService: CooperativeBankOfOromiaApiHelperService,
   ) {
     const transferUrlPart = 'nrc/1.0.0/transfer'; // This path is the same on UAT and Production
@@ -85,13 +85,11 @@ export class CooperativeBankOfOromiaApiService {
       }
     }
 
-    const headers = this.addAuthHeaders({
-      headers: new Headers({
-        Accept: '*/*',
-        'Content-Type': 'application/json',
-      }),
-      tokenSet,
+    const headers = new Headers({
+      Accept: '*/*',
+      'Content-Type': 'application/json',
     });
+    headers.append('Authorization', `Bearer ${tokenSet.access_token}`);
 
     const payload: CooperativeBankOfOromiaApiTransferRequestBodyDto =
       this.cooperativeBankOfOromiaApiHelperService.buildTransferPayload({
@@ -118,30 +116,14 @@ export class CooperativeBankOfOromiaApiService {
       };
     }
 
-    // Check if the response indicates success
     return this.cooperativeBankOfOromiaApiHelperService.handleTransferResponse(
       response.data,
     );
   }
 
-  private addAuthHeaders({
-    headers,
-    tokenSet,
-  }: {
-    headers: Headers;
-    tokenSet: TokenSet;
-  }): Headers {
-    headers.append('Authorization', `Bearer ${tokenSet.access_token}`);
-    return headers;
-  }
-
   private async authenticate(): Promise<TokenSet> {
     // Return cached token if still valid
-    if (
-      this.tokenSet &&
-      this.tokenSet.expires_at &&
-      Date.now() < this.tokenSet.expires_at
-    ) {
+    if (this.tokenValidationService.isTokenValid(this.tokenSet)) {
       return this.tokenSet;
     }
 
@@ -176,7 +158,7 @@ export class CooperativeBankOfOromiaApiService {
     const responseData = response.data;
 
     // If secrets are invalid we get this specific response.
-    if ('error' in responseData && 'error_description' in responseData) {
+    if ('error' in responseData || 'error_description' in responseData) {
       throw new CooperativeBankOfOromiaApiError(
         `authentication failed: ${responseData.error} - ${responseData.error_description}`,
       );
@@ -191,9 +173,7 @@ export class CooperativeBankOfOromiaApiService {
         'authentication failed: unclear response from CooperativeBankOfOromia API',
       );
     }
-
-    // We subtract 5 seconds to ensure we don't use an expired token.
-    const expiresAtUnixTimestamp = (expiresInSeconds - 5) * 1000 + Date.now();
+    const expiresAtUnixTimestamp = expiresInSeconds * 1000 + Date.now();
 
     this.tokenSet = new TokenSet({
       access_token: accessToken,

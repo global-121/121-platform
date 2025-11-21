@@ -199,7 +199,7 @@ describe('Do payment with FSP: CooperativeBankOfOromia', () => {
     expect(transaction.errorMessage).toMatchSnapshot();
   });
 
-  it('Should set transaction to succes on a `duplicate messageId` error', async () => {
+  it('Should set transaction to success on a `duplicate messageId` error', async () => {
     const registrationDuplicateTransaction = {
       ...registrationCooperativeBankOfOromia,
       referenceId: appendUuidToBaseId(

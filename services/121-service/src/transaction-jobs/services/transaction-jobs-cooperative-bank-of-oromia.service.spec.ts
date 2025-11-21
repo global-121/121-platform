@@ -64,7 +64,7 @@ describe('TransactionJobsCooperativeBankOfOromiaService', () => {
       programId: 1,
       bulkSize: 1,
     };
-    const job2 = { ...job1 };
+    const job2 = { ...job1, isRetry: true };
 
     // Mock countFailedTransactionAttempts to return different values;
     transactionEventsScopedRepository.countFailedTransactionAttempts = jest
