@@ -337,7 +337,7 @@ export class IntersolveVisaService {
     return [intersolveVisaChildWallet];
   }
 
-  private async linkChildWalletToParentWalletIfUnlinked(
+  public async linkChildWalletToParentWalletIfUnlinked(
     intersolveVisaParentWallet: IntersolveVisaParentWalletEntity,
     intersolveVisaChildWallet: IntersolveVisaChildWalletEntity,
   ): Promise<void> {
