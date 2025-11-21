@@ -436,6 +436,8 @@ export class UserProfileComponent implements OnInit {
 - **Integration Tests**: Jest configuration in `jest.integration.config.js`
 - **Coverage**: Separate reports for unit and integration tests
 - **Patterns**: Use helper functions, clean test data, mock external dependencies
+- **Guidelines**
+  - Do not test private methods directly
 
 ### Frontend Testing
 
