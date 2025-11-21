@@ -32,7 +32,6 @@ export class IntersolveVisaAccountManagementService {
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
-    private readonly intersolveVisaApiService: IntersolveVisaApiService,
   ) {}
 
   // TODO: duplicate of RegistrationsService getRegistrationOrThrow
@@ -345,9 +344,10 @@ export class IntersolveVisaAccountManagementService {
       programId,
     });
     // Check if card exists and is unlinked
-    const tokenResult = await this.intersolveVisaApiService.getToken(tokenCode);
+    const intersolveVisaChildWallet =
+      await this.intersolveVisaService.getWallet(tokenCode);
 
-    if (tokenResult.holderId !== null) {
+    if (intersolveVisaChildWallet.holderId !== null) {
       throw new HttpException(
         `Card is alrealdy linked to another customer at Intersolve.`,
         HttpStatus.BAD_REQUEST,
@@ -394,10 +394,10 @@ export class IntersolveVisaAccountManagementService {
     // END: Standard registration flow
 
     // Link card to customer at Intersolve
-    // await this.intersolveVisaService.linkCardToCustomer({
-    //   registrationId: registration.id,
-    //   tokenCode,
-    // });
+    // await this.intersolveVisaService.linkChildWalletToParentWalletIfUnlinked(
+    //   intersolveVisaParentWallet,
+    //   intersolveVisaChildWallet,
+    // );
     // END: Link card to customer at Intersolve
   }
 }
