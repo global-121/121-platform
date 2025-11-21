@@ -17,7 +17,6 @@
     "outDir": "./dist",
     "checkJs": true,
     "resolveJsonModule": true,
-    // "baseUrl": "./",
     "types": ["express", "node", "jest"],
     "typeRoots": [
       "./node_modules/@types",
