@@ -8,17 +8,23 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "strictPropertyInitialization": false,
+    "noImplicitAny": false,
+    "useUnknownInCatchVariables": false,
     "moduleResolution": "bundler",
-    "noImplicitAny": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "outDir": "./dist",
     "checkJs": true,
     "resolveJsonModule": true,
-    "baseUrl": "./",
+    "types": ["express", "node", "jest"],
+    "typeRoots": ["./node_modules/@types"],
     "paths": {
       "@121-service/*": ["./../services/121-service/*"],
-      "@121-e2e/*": ["./*"]
+      "@121-e2e/*": ["./*"],
+      "typeorm/*": ["./../services/121-service/node_modules/typeorm/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.spec.ts"],
+  "include": ["**/*.ts", "**/*.spec.ts", "types/**/*.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

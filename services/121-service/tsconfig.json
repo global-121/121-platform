@@ -25,7 +25,6 @@
     "types": ["express", "node", "jest"],
     "typeRoots": ["./node_modules/@types"],
     "resolveJsonModule": true,
-    "baseUrl": "./",
     "paths": {
       "@121-service/*": ["./*"],
       "typeorm/*": ["./node_modules/typeorm/*"] // Add explicit location of custom TypeORM fork
