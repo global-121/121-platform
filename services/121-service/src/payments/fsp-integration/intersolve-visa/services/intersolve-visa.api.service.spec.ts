@@ -20,63 +20,50 @@ describe('IntersolveVisaApiService - intersolveApiRequest retry logic', () => {
     service.getAuthenticationToken = jest.fn().mockResolvedValue('token');
   });
 
-  it('retries once if GET and first response is error, succeeds on second', async () => {
-    mockHttpService.request
-      .mockResolvedValueOnce({ data: {} }) // missing 'status' field
-      .mockResolvedValueOnce({ status: 200, statusText: 'OK', data: {} });
+  describe('if GET request', () => {
+    it('retries once if first response is error, succeeds on second', async () => {
+      mockHttpService.request
+        .mockResolvedValueOnce({ data: {} }) // missing 'status' field
+        .mockResolvedValueOnce({
+          status: 200,
+          statusText: 'OK',
+          data: { data: {} },
+        });
 
-    const result = await service['intersolveApiRequest']({
-      errorPrefix: 'Test',
-      method: 'GET',
-      endpoint: 'foo',
-      apiPath: 'wallet',
+      await service.getToken('tokenCode');
+      // By this test not throwing an error, we implicitly assert that the second call succeeded
+      expect(mockHttpService.request).toHaveBeenCalledTimes(2);
     });
-    expect(result).toBeDefined();
-    expect(mockHttpService.request).toHaveBeenCalledTimes(2);
+
+    it('throws if both requests fail', async () => {
+      mockHttpService.request.mockResolvedValue(
+        { data: {} }, // no status property at top level
+      );
+
+      await expect(service.getToken('tokenCode')).rejects.toThrow(
+        IntersolveVisaApiError,
+      );
+      expect(mockHttpService.request).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not retry if first request succeeds', async () => {
+      mockHttpService.request.mockResolvedValue({
+        status: 200,
+        statusText: 'OK',
+        data: { data: {} },
+      });
+      await service.getToken('tokenCode');
+      // By this test not throwing an error, we implicitly assert that the call succeeded
+      expect(mockHttpService.request).toHaveBeenCalledTimes(1);
+    });
   });
 
-  it('throws if GET and both requests fail', async () => {
-    mockHttpService.request.mockResolvedValue(
-      { data: {} }, // no status property at top level
-    );
-
-    await expect(
-      service['intersolveApiRequest']({
-        errorPrefix: 'Test',
-        method: 'GET',
-        endpoint: 'foo',
-        apiPath: 'wallet',
-      }),
-    ).rejects.toThrow(IntersolveVisaApiError);
-    expect(mockHttpService.request).toHaveBeenCalledTimes(2);
-  });
-
-  it('does not retry if GET and first request succeeds', async () => {
-    mockHttpService.request.mockResolvedValue({
-      status: 200,
-      statusText: 'OK',
-    });
-    const result = await service['intersolveApiRequest']({
-      errorPrefix: 'Test',
-      method: 'GET',
-      endpoint: 'foo',
-      apiPath: 'wallet',
-    });
-    expect(result).toBeDefined();
-    expect(mockHttpService.request).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not retry for POST even if first request fails', async () => {
+  it('if POST request, it does not retry even if first request fails', async () => {
     mockHttpService.request.mockResolvedValue(
       { data: {} }, // no status property at top level
     );
     await expect(
-      service['intersolveApiRequest']({
-        errorPrefix: 'Test',
-        method: 'POST',
-        endpoint: 'foo',
-        apiPath: 'wallet',
-      }),
+      service.issueToken({ brandCode: 'VISA', activate: true }),
     ).rejects.toThrow(IntersolveVisaApiError);
     expect(mockHttpService.request).toHaveBeenCalledTimes(1);
   });

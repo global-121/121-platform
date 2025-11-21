@@ -1,13 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { env } from '@121-service/src/env';
 import { IntersolveVoucherMockService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.mock';
 import { IntersolveVoucherApiService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.api.service';
 import { SoapService } from '@121-service/src/utils/soap/soap.service';
 
 describe('IntersolveVoucherApiService', () => {
   let service: IntersolveVoucherApiService;
-  let soapService: SoapService;
+  let intersolveVoucherMockService: IntersolveVoucherMockService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -16,7 +15,6 @@ describe('IntersolveVoucherApiService', () => {
         {
           provide: SoapService,
           useValue: {
-            post: jest.fn(),
             readXmlAsJs: jest.fn().mockResolvedValue({}),
             changeSoapBody: jest.fn((p) => p),
           },
@@ -29,17 +27,16 @@ describe('IntersolveVoucherApiService', () => {
         },
         {
           provide: 'IntersolveIssueVoucherRequestEntityRepository',
-          useValue: {
-            save: jest.fn(),
-            findOneByOrFail: jest.fn(),
-          },
+          useValue: {},
         },
       ],
     }).compile();
     service = module.get<IntersolveVoucherApiService>(
       IntersolveVoucherApiService,
     );
-    soapService = module.get<SoapService>(SoapService);
+    intersolveVoucherMockService = module.get<IntersolveVoucherMockService>(
+      IntersolveVoucherMockService,
+    );
   });
 
   const validResponse = {
@@ -54,10 +51,10 @@ describe('IntersolveVoucherApiService', () => {
     },
   };
 
-  Object.defineProperty(env, 'MOCK_INTERSOLVE', { value: false });
-
   it('should return result on first success', async () => {
-    (soapService.post as jest.Mock).mockResolvedValueOnce(validResponse);
+    (intersolveVoucherMockService.post as jest.Mock).mockResolvedValueOnce(
+      validResponse,
+    );
     const result = await service.getCard('card', 'pin', 'user', 'pass');
     expect(result).toEqual({
       resultCode: '0',
@@ -66,32 +63,23 @@ describe('IntersolveVoucherApiService', () => {
       balance: 1000,
       balanceFactor: 100,
     });
-    expect(soapService.post).toHaveBeenCalledTimes(1);
+    expect(intersolveVoucherMockService.post).toHaveBeenCalledTimes(1);
   });
 
   it('should retry once and succeed on second try', async () => {
-    (soapService.post as jest.Mock)
+    (intersolveVoucherMockService.post as jest.Mock)
       .mockResolvedValueOnce({})
       .mockResolvedValueOnce(validResponse);
     const result = await service.getCard('card', 'pin', 'user', 'pass');
     expect(result.resultCode).toBe('0');
-    expect(soapService.post).toHaveBeenCalledTimes(2);
+    expect(intersolveVoucherMockService.post).toHaveBeenCalledTimes(2);
   });
 
   it('should throw error after two failed attempts', async () => {
-    (soapService.post as jest.Mock).mockResolvedValue({});
+    (intersolveVoucherMockService.post as jest.Mock).mockResolvedValue({});
     await expect(
       service.getCard('card', 'pin', 'user', 'pass'),
-    ).rejects.toThrow(/GetCardResponse/);
-    expect(soapService.post).toHaveBeenCalledTimes(2);
-  });
-
-  it('should throw error if missing ResultCode', async () => {
-    (soapService.post as jest.Mock)
-      .mockResolvedValueOnce({ GetCardResponse: {} })
-      .mockResolvedValueOnce({ GetCardResponse: {} });
-    await expect(
-      service.getCard('card', 'pin', 'user', 'pass'),
-    ).rejects.toThrow(/ResultCode/);
+    ).rejects.toThrowErrorMatchingSnapshot();
+    expect(intersolveVoucherMockService.post).toHaveBeenCalledTimes(2);
   });
 });

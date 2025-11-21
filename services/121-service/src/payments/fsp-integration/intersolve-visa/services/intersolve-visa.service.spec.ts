@@ -321,7 +321,7 @@ describe('IntersolveVisaService', () => {
       expect(result).toBe(2);
     });
 
-    it('should log and continue on IntersolveVisaApiError', async () => {
+    it('should log and continue on 1 IntersolveVisaApiError', async () => {
       // Override only the mocks that differ for this test
       const childWalletMock = jest.spyOn(childWalletRepo, 'updateUnscoped');
 
@@ -349,6 +349,40 @@ describe('IntersolveVisaService', () => {
         'API error',
       );
       consoleErrorSpy.mockRestore();
+    });
+
+    it('should throw when 10 IntersolveVisaApiErrors occur', async () => {
+      const customers = Array.from({ length: 10 }, (_, i) => ({
+        registrationId: i + 1,
+        intersolveVisaParentWallet: parentWallet,
+      }));
+      jest
+        .spyOn(customerRepo, 'findWithWallets')
+        .mockResolvedValue(customers as any);
+      jest.spyOn(apiService, 'getToken').mockImplementation(() => {
+        throw new IntersolveVisaApiError('API error');
+      });
+
+      await expect(
+        service.retrieveAndUpdateAllWalletsAndCards(),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+
+    it('should NOT throw when 9 IntersolveVisaApiErrors occur', async () => {
+      const customers = Array.from({ length: 9 }, (_, i) => ({
+        registrationId: i + 1,
+        intersolveVisaParentWallet: parentWallet,
+      }));
+      jest
+        .spyOn(customerRepo, 'findWithWallets')
+        .mockResolvedValue(customers as any);
+      jest.spyOn(apiService, 'getToken').mockImplementation(() => {
+        throw new IntersolveVisaApiError('API error');
+      });
+
+      await expect(service.retrieveAndUpdateAllWalletsAndCards()).resolves.toBe(
+        9,
+      );
     });
   });
 });

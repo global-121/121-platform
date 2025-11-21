@@ -681,9 +681,12 @@ export class IntersolveVisaApiService {
     });
 
     let errorMessage = this.createErrorMessageIfRequestFailed(response);
+    if (!errorMessage) {
+      return response;
+    }
 
     // Retry failing GET request once
-    if (errorMessage && method === 'GET') {
+    if (method === 'GET') {
       response = await this.httpService.request<ResponseDtoType>({
         method,
         url,
@@ -692,13 +695,12 @@ export class IntersolveVisaApiService {
       });
       errorMessage = this.createErrorMessageIfRequestFailed(response);
     }
-
-    // If the response contains errors
-    if (errorMessage) {
-      throw new IntersolveVisaApiError(`${errorPrefix}: ${errorMessage}`);
+    if (!errorMessage) {
+      return response;
     }
 
-    return response;
+    // If the response contains errors
+    throw new IntersolveVisaApiError(`${errorPrefix}: ${errorMessage}`);
   }
 
   private createErrorMessageIfRequestFailed<

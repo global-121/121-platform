@@ -768,7 +768,7 @@ export class IntersolveVisaService {
 
           if (errorParentTokenCodes.length >= 10) {
             throw new Error(
-              `10 IntersolveVisaApiErrors occurred while retrieving and updating wallets and cards, for parent tokenCodes: ${errorParentTokenCodes.join(
+              `${errorParentTokenCodes.length} IntersolveVisaApiErrors occurred while retrieving and updating wallets and cards, for parent tokenCodes: ${errorParentTokenCodes.join(
                 ', ',
               )}. Aborting.`,
             );
