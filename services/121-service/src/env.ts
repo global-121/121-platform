@@ -257,6 +257,21 @@ export const env = createEnv({
       .optional(),
     AIRTEL_DISBURSEMENT_PIN: z.string().length(4).optional(),
     AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY: z.string().optional(),
+
+    // FSP: Cooperative Bank of Oromia
+    MOCK_COOPERATIVE_BANK_OF_OROMIA: z.stringbool().default(false),
+    COOPERATIVE_BANK_OF_OROMIA_ENABLED: z.stringbool().default(false),
+    COOPERATIVE_BANK_OF_OROMIA_BASE64_CREDENTIALS: z.string().optional(),
+    COOPERATIVE_BANK_OF_OROMIA_API_URL: z
+      .url()
+      .pipe(z.transform((url) => withoutTrailingSlash(url)))
+      .optional(),
+    COOPERATIVE_BANK_OF_OROMIA_AUTH_URL: z
+      .url()
+      .pipe(z.transform((url) => withoutTrailingSlash(url)))
+      .optional(),
+    // Cooperative Bank of Oromia recommends a MAX of 10 ALPHANUMERIC CHARACTERS
+    COOPERATIVE_BANK_OF_OROMIA_NARRATIVE: z.string().max(10).optional(),
   },
 
   createFinalSchema: (shape) =>

@@ -405,3 +405,14 @@ export const registrationAirtel = {
   maxPayments: 3,
   fullName: 'John Airtel Dimsum',
 };
+
+export const registrationCooperativeBankOfOromia = {
+  referenceId: 'registration-cooperative-bank-of-oromia-1',
+  phoneNumber: '14155238886',
+  preferredLanguage: RegistrationPreferredLanguage.en,
+  paymentAmountMultiplier: 1,
+  programFspConfigurationName: Fsps.cooperativeBankOfOromia,
+  maxPayments: 3,
+  fullName: 'example name for Cooperative Bank of Oromia mock mode',
+  bankAccountNumber: '1022200081754',
+};

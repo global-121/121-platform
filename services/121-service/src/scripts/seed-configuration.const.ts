@@ -54,6 +54,15 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
     ],
   },
   {
+    name: SeedScript.cooperativeBankOfOromiaProgram,
+    programs: [
+      {
+        program: 'program-cooperative-bank-of-oromia.json',
+        messageTemplate: messageTemplateGeneric,
+      },
+    ],
+  },
+  {
     name: SeedScript.safaricomProgram,
     programs: [
       {

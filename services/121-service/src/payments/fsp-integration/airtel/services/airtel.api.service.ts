@@ -13,16 +13,6 @@ import { AirtelApiHelperService } from '@121-service/src/payments/fsp-integratio
 import { AirtelEncryptionService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.encryption.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
-// Remove when we use Headers in the custom HTTP service.
-const headersToPojo = (headers: Headers) => {
-  const headersArray: { name: string; value: string }[] = [];
-  headers.forEach((value, key) => {
-    key = key[0].toUpperCase() + key.slice(1); // Capitalize the first letter of the header name
-    headersArray.push({ name: key, value });
-  });
-  return headersArray;
-};
-
 @Injectable()
 export class AirtelApiService {
   private readonly encryptedPin: string;
@@ -184,7 +174,11 @@ export class AirtelApiService {
       // Refactor: add validation.
       response = await this.httpService.post<
         AxiosResponse<AirtelApiAuthenticationResponseBodyDto>
-      >(this.airtelAuthenticateURL.href, payload, headersToPojo(headers));
+      >(
+        this.airtelAuthenticateURL.href,
+        payload,
+        this.httpService.headersToPojo(headers),
+      );
     } catch (error) {
       throw new AirtelApiError(`authentication failed: ${error.message}`);
     }
@@ -240,12 +234,12 @@ export class AirtelApiService {
         response = await this.httpService.post<AxiosResponse<unknown>>(
           url.href,
           payload,
-          headersToPojo(headers),
+          this.httpService.headersToPojo(headers),
         );
       } else if (requestType === AirtelApiRequestTypeEnum.enquire) {
         response = await this.httpService.get<AxiosResponse<unknown>>(
           url.href,
-          headersToPojo(headers),
+          this.httpService.headersToPojo(headers),
         );
       }
     } catch (error) {

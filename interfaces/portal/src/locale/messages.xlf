@@ -2003,6 +2003,9 @@
       <trans-unit id="page-title-program-transaction-list" datatype="html">
         <source>Transaction list</source>
       </trans-unit>
+      <trans-unit id="8386352594791941612" datatype="html">
+        <source>Debit account number</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

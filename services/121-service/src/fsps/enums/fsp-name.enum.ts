@@ -4,6 +4,7 @@ export enum Fsps {
   intersolveVisa = 'Intersolve-visa',
   safaricom = 'Safaricom',
   airtel = 'Airtel',
+  cooperativeBankOfOromia = 'Cooperative-bank-of-oromia',
   commercialBankEthiopia = 'Commercial-bank-ethiopia',
   excel = 'Excel',
   nedbank = 'Nedbank',
@@ -23,6 +24,9 @@ export enum FspConfigurationProperties {
   corporateCodeOnafriq = 'corporateCodeOnafriq',
   passwordOnafriq = 'passwordOnafriq',
   uniqueKeyOnafriq = 'uniqueKeyOnafriq',
+
+  // Cooperative Bank of Oromia
+  debitAccountNumber = 'debitAccountNumber',
 }
 
 export const FspConfigPropertyValueVisibility: Record<
@@ -41,4 +45,6 @@ export const FspConfigPropertyValueVisibility: Record<
   [FspConfigurationProperties.corporateCodeOnafriq]: true,
   [FspConfigurationProperties.passwordOnafriq]: false,
   [FspConfigurationProperties.uniqueKeyOnafriq]: false,
+  // Cooperative Bank of Oromia
+  [FspConfigurationProperties.debitAccountNumber]: true,
 };

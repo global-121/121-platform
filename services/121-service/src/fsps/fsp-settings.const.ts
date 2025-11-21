@@ -233,4 +233,27 @@ export const FSP_SETTINGS: Record<Fsps, FspDto> = {
       },
     ],
   },
+  [Fsps.cooperativeBankOfOromia]: {
+    name: Fsps.cooperativeBankOfOromia,
+    integrationType: FspIntegrationType.api,
+    defaultLabel: {
+      en: 'Cooperative Bank of Oromia',
+    },
+    attributes: [
+      {
+        name: FspAttributes.bankAccountNumber,
+        isRequired: true,
+      },
+      {
+        name: FspAttributes.fullName,
+        isRequired: true,
+      },
+    ],
+    configurationProperties: [
+      {
+        name: FspConfigurationProperties.debitAccountNumber,
+        isRequired: true,
+      },
+    ],
+  },
 };

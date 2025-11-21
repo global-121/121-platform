@@ -69,6 +69,18 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
     BullModule.registerQueue({
+      name: QueueNames.transactionJobsCooperativeBankOfOromia,
+      processors: [
+        {
+          path: 'src/transaction-jobs/processors/transaction-jobs-cooperative-bank-of-oromia.processor.ts',
+        },
+      ],
+      limiter: {
+        max: 20, // Max number of jobs processed
+        duration: 1000, // per duration in milliseconds
+      },
+    }),
+    BullModule.registerQueue({
       name: QueueNames.transactionJobsCommercialBankEthiopia,
       processors: [
         {

@@ -7,6 +7,7 @@ export enum QueueNames {
   transactionJobsNedbank = 'nedbank-transaction-jobs',
   transactionJobsOnafriq = 'onafriq-transaction-jobs',
   transactionJobsAirtel = 'airtel-transaction-jobs',
+  transactionJobsCooperativeBankOfOromia = 'cooperative-bank-of-oromia-transaction-jobs',
   transactionJobsExcel = 'excel-transaction-jobs',
 
   // payment callback jobs

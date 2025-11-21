@@ -18,6 +18,7 @@ export const FSP_CONFIGURATION_PROPERTY_LABELS: Record<
   [FspConfigurationProperties.corporateCodeOnafriq]: $localize`Corporate code`,
   [FspConfigurationProperties.passwordOnafriq]: $localize`Password`,
   [FspConfigurationProperties.uniqueKeyOnafriq]: $localize`Unique key`,
+  [FspConfigurationProperties.debitAccountNumber]: $localize`Debit account number`,
 };
 
 export const FSP_IMAGE_URLS: Record<Fsps, string> = {
@@ -30,4 +31,5 @@ export const FSP_IMAGE_URLS: Record<Fsps, string> = {
   [Fsps.excel]: 'assets/fsps/excel.png',
   [Fsps.nedbank]: 'assets/fsps/nedbank.png',
   [Fsps.onafriq]: 'assets/fsps/onafriq.jpg',
+  [Fsps.cooperativeBankOfOromia]: 'assets/fsps/cbo.png',
 };

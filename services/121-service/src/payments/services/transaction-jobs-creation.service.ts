@@ -9,6 +9,7 @@ import { RegistrationViewEntity } from '@121-service/src/registration/entities/r
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
 import { CommercialBankEthiopiaTransactionJobDto } from '@121-service/src/transaction-queues/dto/commercial-bank-ethiopia-transaction-job.dto';
+import { CooperativeBankOfOromiaTransactionJobDto } from '@121-service/src/transaction-queues/dto/cooperative-bank-of-oromia-transaction-job.dto';
 import { ExcelTransactionJobDto } from '@121-service/src/transaction-queues/dto/excel-transaction-job.dto';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { IntersolveVoucherTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-voucher-transaction-job.dto';
@@ -80,6 +81,14 @@ export class TransactionJobsCreationService {
         });
       case Fsps.airtel:
         return await this.createAndAddAirtelTransactionJobs({
+          transactionJobDetails,
+          programId,
+          userId,
+          isRetry,
+          fspName,
+        });
+      case Fsps.cooperativeBankOfOromia:
+        return await this.createAndAddCooperativeBankOfOromiaTransactionJobs({
           transactionJobDetails,
           programId,
           userId,
@@ -338,6 +347,56 @@ export class TransactionJobsCreationService {
     );
     await this.transactionQueuesService.addAirtelTransactionJobs(
       airtelTransferJobs,
+    );
+  }
+
+  /**
+   * Creates and adds Cooperative Bank of Oromia transaction jobs.
+   *
+   * This method is responsible for creating transaction jobs for Cooperative Bank of Oromia. It fetches necessary PA data and maps it to a FSP specific DTO.
+   * It then adds these jobs to the transaction queue.
+   *
+   * @returns {Promise<void>} A promise that resolves when the transaction jobs have been created and added.
+   *
+   */
+  private async createAndAddCooperativeBankOfOromiaTransactionJobs({
+    transactionJobDetails,
+    programId,
+    userId,
+    isRetry,
+    fspName,
+  }: {
+    transactionJobDetails: TransactionJobDetails[];
+    programId: number;
+    userId: number;
+    isRetry: boolean;
+    fspName: Fsps;
+  }): Promise<void> {
+    const { registrationViews, sharedJobsByReferenceId } =
+      await this.createSharedJobs({
+        transactionJobDetails,
+        programId,
+        userId,
+        isRetry,
+        fspName,
+      });
+
+    const cooperativeBankOfOromiaTransferJobs: CooperativeBankOfOromiaTransactionJobDto[] =
+      registrationViews.map(
+        (registrationView): CooperativeBankOfOromiaTransactionJobDto => {
+          const base = sharedJobsByReferenceId.get(
+            registrationView.referenceId,
+          );
+          return {
+            ...base!,
+            // FSP-specific additions:
+            bankAccountNumber:
+              registrationView[FspAttributes.bankAccountNumber]!,
+          };
+        },
+      );
+    await this.transactionQueuesService.addCooperativeBankOfOromiaTransactionJobs(
+      cooperativeBankOfOromiaTransferJobs,
     );
   }
 
