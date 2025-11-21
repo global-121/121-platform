@@ -15,7 +15,6 @@ import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-i
 import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { ContactInformation } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
-import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa.api.service';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
@@ -32,7 +31,6 @@ export class DebitCardsIntersolveVisaService {
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
-    private readonly intersolveVisaApiService: IntersolveVisaApiService,
   ) {}
 
   // TODO: duplicate of RegistrationsService getRegistrationOrThrow
@@ -345,9 +343,10 @@ export class DebitCardsIntersolveVisaService {
       programId,
     });
     // Check if card exists and is unlinked
-    const tokenResult = await this.intersolveVisaApiService.getToken(tokenCode);
+    const intersolveVisaChildWallet =
+      await this.intersolveVisaService.getWallet(tokenCode);
 
-    if (tokenResult.holderId !== null) {
+    if (intersolveVisaChildWallet.holderId !== null) {
       throw new HttpException(
         `Card is alrealdy linked to another customer at Intersolve.`,
         HttpStatus.BAD_REQUEST,
@@ -394,10 +393,10 @@ export class DebitCardsIntersolveVisaService {
     // END: Standard registration flow
 
     // Link card to customer at Intersolve
-    // await this.intersolveVisaService.linkCardToCustomer({
-    //   registrationId: registration.id,
-    //   tokenCode,
-    // });
+    // await this.intersolveVisaService.linkChildWalletToParentWalletIfUnlinked(
+    //   intersolveVisaParentWallet,
+    //   intersolveVisaChildWallet,
+    // );
     // END: Link card to customer at Intersolve
   }
 }
