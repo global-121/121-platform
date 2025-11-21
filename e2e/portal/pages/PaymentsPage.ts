@@ -150,22 +150,18 @@ class PaymentsPage extends BasePage {
   }) {
     // Locate the specific payment card using the payment link and then navigate to its ancestor card element
     const hrefLocatorUrl = `"/en-GB/program/${programId}/payments/${paymentId}"`;
+    const cardTitleLocator = this.page.locator(`a[href=${hrefLocatorUrl}]`);
+    const paymentTitle = await cardTitleLocator.getByTitle(date).textContent();
     const card = this.page
-      .locator(`a[href=${hrefLocatorUrl}]`)
-      .locator('xpath=ancestor::*[@data-pc-name="card"]')
+      .getByTestId('card-with-link')
+      .filter({ has: cardTitleLocator })
       .getByTestId('payment-summary-metrics')
       .locator('app-metric-container');
-
-    const paymentTitle = await this.page
-      .locator(`a[href=${hrefLocatorUrl}]`)
-      .getByTitle(date)
-      .textContent();
 
     const includedRegistrationsElement = await card
       .filter({ hasText: 'Included reg.' })
       .textContent();
 
-    // Get the total amount element within the card
     const totalAmountElement = await card
       .filter({ hasText: 'Expected total amount' })
       .textContent();
@@ -178,21 +174,20 @@ class PaymentsPage extends BasePage {
       .filter({ hasText: 'Failed transactions' })
       .textContent();
 
-    // Validate payment title
     expect(paymentTitle).toContain(date);
-    // Validate included registrations
+
     expect(includedRegistrationsElement).toContain(
       registrationsNumber.toString(),
     );
-    // Validate payment amount and currency
+
     await this.validateNumericValue(totalAmountElement, paymentAmount);
     expect(totalAmountElement).toContain(currency);
-    // Validate successful transactions
+
     await this.validateNumericValue(
       successfulTransactionsElement,
       successfulTransactions,
     );
-    // Validate failed transactions
+
     await this.validateNumericValue(
       failedTransactionsElement,
       failedTransactions,
