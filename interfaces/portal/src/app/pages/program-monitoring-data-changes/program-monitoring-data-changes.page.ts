@@ -88,7 +88,7 @@ export class ProgramMonitoringDataChangesPageComponent {
       getCellRouterLink: (event) =>
         registrationLink({
           programId: this.programId(),
-          registrationId: event.registrationId, // ## why is 'as number' needed?
+          registrationId: event.registrationId, // ##TODO: why is 'as number' needed?
         }),
       type: QueryTableColumnType.NUMERIC,
     },
