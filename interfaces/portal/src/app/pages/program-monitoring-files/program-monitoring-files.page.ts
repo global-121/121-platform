@@ -70,7 +70,6 @@ export class ProgramMonitoringFilesPageComponent {
 
   readonly authService = inject(AuthService);
   readonly downloadService = inject(DownloadService);
-  // readonly queryClient = inject(QueryClient);
   readonly programApiService = inject(ProgramApiService);
   readonly toastService = inject(ToastService);
 
