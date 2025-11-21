@@ -7,6 +7,7 @@ interface QueryBuilderMock {
   getMany?: () => any;
   getRawMany?: () => any;
   distinct?: () => QueryBuilderMock;
+  orderBy?: () => QueryBuilderMock;
 }
 
 export function generateMockCreateQueryBuilder(
@@ -20,6 +21,7 @@ export function generateMockCreateQueryBuilder(
     andWhere: () => mock,
     leftJoin: () => mock,
     distinct: () => mock,
+    orderBy: () => mock,
   };
 
   if (options.useGetMany) {
