@@ -183,6 +183,7 @@ export class ProgramAttributesService {
   ): Promise<Attribute[]> {
     let queryRegistrationAttr = this.programRegistrationAttributeEntity
       .createQueryBuilder('programRegistrationAttribute')
+      .orderBy('programRegistrationAttribute.created', 'ASC')
       .where({ program: { id: programId } });
 
     if (filterShowInRegistrationsTable) {
