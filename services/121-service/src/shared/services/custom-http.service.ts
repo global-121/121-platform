@@ -280,16 +280,6 @@ export class CustomHttpService {
     }
   }
 
-  // TODO: Instead of having this method we should use Headers in the http methods directly
-  public headersToPojo(headers: Headers) {
-    const headersArray: { name: string; value: string }[] = [];
-    headers.forEach((value, key) => {
-      key = key[0].toUpperCase() + key.slice(1); // Capitalize the first letter of the header name
-      headersArray.push({ name: key, value });
-    });
-    return headersArray;
-  }
-
   /**
    * Create an HTTPS agent with a certificate.
    * @param certificatePath The path to the certificate.
