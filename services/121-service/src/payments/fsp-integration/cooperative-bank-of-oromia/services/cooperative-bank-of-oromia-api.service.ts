@@ -129,8 +129,10 @@ export class CooperativeBankOfOromiaApiService {
     }
 
     // Uses different headers from the other endpoints.
-    const headers = new Headers();
-    headers.append('Content-Type', 'application/json');
+    const headers = new Headers({
+      Accept: '*/*',
+      'Content-Type': 'application/json',
+    });
     headers.append(
       'Authorization',
       `Basic ${env.COOPERATIVE_BANK_OF_OROMIA_BASE64_CREDENTIALS}`,
