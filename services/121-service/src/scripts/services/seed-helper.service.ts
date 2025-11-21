@@ -61,7 +61,7 @@ export class SeedHelperService {
       // Add program
       const programPath = `program/${program.program}`;
       const programData = await this.importData(programPath);
-      const programEntity = await this.addProgram(programData, isApiTests);
+      const programEntity = await this.addProgram(programData);
 
       await this.addMessageTemplate(program.messageTemplate, programEntity);
 
@@ -267,10 +267,7 @@ export class SeedHelperService {
     }
   }
 
-  public async addProgram(
-    programExample: any,
-    isApiTests: boolean,
-  ): Promise<ProgramEntity> {
+  public async addProgram(programExample: any): Promise<ProgramEntity> {
     const programRepository = this.dataSource.getRepository(ProgramEntity);
 
     const programRegistrationAttributeRepo = this.dataSource.getRepository(
@@ -279,11 +276,6 @@ export class SeedHelperService {
 
     const programExampleDump = JSON.stringify(programExample);
     const programFromJSON = JSON.parse(programExampleDump);
-
-    if (IS_DEVELOPMENT && !isApiTests) {
-      programFromJSON.published = true;
-    }
-
     const programReturn = await programRepository.save(programFromJSON);
 
     // Remove original program registration attributes and add it to a separate variable

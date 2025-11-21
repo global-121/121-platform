@@ -97,18 +97,6 @@ export async function patchProgramRegistrationAttribute({
     .send(programRegistrationAttribute);
 }
 
-export async function unpublishProgram(
-  programId: number,
-  accessToken: string,
-): Promise<request.Response> {
-  return await getServer()
-    .patch(`/programs/${programId}`)
-    .set('Cookie', [accessToken])
-    .send({
-      published: false,
-    });
-}
-
 export async function createPayment({
   programId,
   transferValue,
