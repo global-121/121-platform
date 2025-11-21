@@ -22,4 +22,5 @@ export enum TransactionEventDescription {
   intersolveVoucherMessageCallback = 'AH message delivery',
   excelPreparationForExport = 'Preparation for export',
   excelReconciliationFileUpload = 'Reconciliation file upload',
+  cooperativeBankOfOromiaRequestSent = 'Cooperative Bank of Oromia payment request',
 }

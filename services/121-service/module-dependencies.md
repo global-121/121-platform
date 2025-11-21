@@ -141,6 +141,7 @@ graph LR
   SafaricomReconciliationModule-->TransactionsModule
   TransactionJobsModule-->AirtelModule
   TransactionJobsModule-->CommercialBankEthiopiaModule
+  TransactionJobsModule-->CooperativeBankOfOromiaModule
   TransactionJobsModule-->ExcelModule
   TransactionJobsModule-->FspsModule
   TransactionJobsModule-->IntersolveVisaModule

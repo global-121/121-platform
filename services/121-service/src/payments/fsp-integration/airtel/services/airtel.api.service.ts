@@ -12,16 +12,7 @@ import { AirtelApiError } from '@121-service/src/payments/fsp-integration/airtel
 import { AirtelApiHelperService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.api.helper.service';
 import { AirtelEncryptionService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.encryption.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-
-// Remove when we use Headers in the custom HTTP service.
-const headersToPojo = (headers: Headers) => {
-  const headersArray: { name: string; value: string }[] = [];
-  headers.forEach((value, key) => {
-    key = key[0].toUpperCase() + key.slice(1); // Capitalize the first letter of the header name
-    headersArray.push({ name: key, value });
-  });
-  return headersArray;
-};
+import { headersToPojo } from '@121-service/src/utils/headers-to-pojo/headers-to-pojo';
 
 @Injectable()
 export class AirtelApiService {
