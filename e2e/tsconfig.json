@@ -18,9 +18,7 @@
     "checkJs": true,
     "resolveJsonModule": true,
     "types": ["express", "node", "jest"],
-    "typeRoots": [
-      "./node_modules/@types"
-    ],
+    "typeRoots": ["./node_modules/@types"],
     "paths": {
       "@121-service/*": ["./../services/121-service/*"],
       "@121-e2e/*": ["./*"],
