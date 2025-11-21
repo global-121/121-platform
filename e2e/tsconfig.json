@@ -19,8 +19,7 @@
     "resolveJsonModule": true,
     "types": ["express", "node", "jest"],
     "typeRoots": [
-      "./node_modules/@types",
-      "./../services/121-service/node_modules/@types"
+      "./node_modules/@types"
     ],
     "paths": {
       "@121-service/*": ["./../services/121-service/*"],
