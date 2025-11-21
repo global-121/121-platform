@@ -57,7 +57,7 @@ describe('CooperativeBankOfOromiaApiService', () => {
   });
 
   describe('authentication flow', () => {
-    it('should call initiate transfer if authenticate is successful', async () => {
+    it('should call post transfer if authenticate is successful', async () => {
       // Mock httpService.post to return a token on first call and transfer response on second call
       const mockAuthResponse = {
         data: { access_token: 'mock-access-token', expires_in: 10000 },
