@@ -17,7 +17,7 @@ import {
   getPaymentEvents,
   getPayments,
   getProgramPaymentsStatus,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   retryPayment,
   startPayment,
   waitForPaymentTransactionsToComplete,
@@ -330,12 +330,12 @@ describe('Payment in progress', () => {
         paymentId,
         completeStatuses: [TransactionStatusEnum.success],
       });
-      const transactions = await getTransactions({
+      const transactions = await getTransactionsByPaymentIdPaginated({
         programId: programIdPV,
         paymentId,
         accessToken,
       });
-      const transactionId = transactions.body[0].id;
+      const transactionId = transactions.body.data[0].id;
       const transactionEvents = await getTransactionEvents({
         programId: programIdPV,
         transactionId,

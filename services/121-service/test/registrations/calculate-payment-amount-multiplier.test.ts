@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { getTransactions } from '@121-service/test/helpers/program.helper';
+import { getTransactionsByPaymentIdPaginated } from '@121-service/test/helpers/program.helper';
 import {
   doPaymentAndWaitForCompletion,
   importRegistrations,
@@ -60,17 +60,18 @@ describe('Set/calculate payment amount multiplier', () => {
       ],
     });
 
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdWesteros,
       paymentId,
       registrationReferenceId: importedRegistration.referenceId,
       accessToken,
     });
-    const transaction = transactionsResponse.body[0];
+    const transactions = transactionsResponse.body.data;
+    const transaction = transactions[0];
     // Assert
 
     expect(importedRegistration.paymentAmountMultiplier).toBe(nrOfDragons + 1);
-    expect(transaction.amount).toBe(transferValue * (nrOfDragons + 1));
+    expect(transaction.transferValue).toBe(transferValue * (nrOfDragons + 1));
   });
 
   it('should error if paymentAmountMultiplier is set while program has a formula', async () => {

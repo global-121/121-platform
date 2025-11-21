@@ -78,24 +78,31 @@ export class SeedMockHelperService {
     await this.mockDataFactory.multiplyRegistrations(powerNr);
   }
 
-  public async extendRelatedDataToAllRegistrations(
-    powerNr: number,
-    programIds: number[],
-  ): Promise<void> {
-    await this.mockDataFactory.extendRelatedDataToAllRegistrations(
+  public async alignOtherDataWithRegistrations({
+    powerNr,
+    programIds,
+  }: {
+    powerNr: number;
+    programIds?: number[];
+  }): Promise<void> {
+    await this.mockDataFactory.alignOtherDataWithRegistrations({
       powerNr,
       programIds,
-    );
+    });
   }
 
-  public async multiplyTransactions(
-    nrPayments: number,
-    programIds: number[],
-  ): Promise<void> {
-    await this.mockDataFactory.extendPaymentsAndRelatedData(
+  // TODO: Split into two methods: one for adding payments, one for aligning related data
+  public async addExtraPaymentsAndAlignRelatedData({
+    nrPayments,
+    programIds,
+  }: {
+    nrPayments: number;
+    programIds?: number[];
+  }): Promise<void> {
+    await this.mockDataFactory.addExtraPaymentsAndAlignRelatedData({
       nrPayments,
       programIds,
-    );
+    });
   }
 
   public async multiplyMessages(powerNr: number): Promise<void> {
@@ -251,9 +258,9 @@ export class SeedMockHelperService {
     paymentId: number,
     accessToken: string,
   ): Promise<any> {
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/payments/${paymentId}`;
+    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/payments/${paymentId}/start`;
     const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
 
-    await this.httpService.patch(url, {}, headers);
+    await this.httpService.post(url, {}, headers);
   }
 }

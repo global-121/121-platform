@@ -2,7 +2,7 @@ import * as request from 'supertest';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
-import { getTransactions } from '@121-service/test/helpers/program.helper';
+import { getTransactionsByPaymentIdPaginated } from '@121-service/test/helpers/program.helper';
 import { getServer } from '@121-service/test/helpers/utility.helper';
 
 //////////////////////
@@ -23,14 +23,13 @@ export async function getTransactionsIntersolveVoucher({
   let attempts = 0;
   while (attempts <= 10) {
     attempts++;
-    getTransactionsBody = (
-      await getTransactions({
-        programId,
-        paymentId,
-        registrationReferenceId: referenceId,
-        accessToken,
-      })
-    ).body;
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
+      programId,
+      paymentId,
+      registrationReferenceId: referenceId,
+      accessToken,
+    });
+    getTransactionsBody = transactionsResponse.body.data;
 
     if (
       getTransactionsBody.length > 0 &&
