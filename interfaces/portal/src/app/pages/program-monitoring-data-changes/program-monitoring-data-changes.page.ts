@@ -15,9 +15,12 @@ import {
   QueryTableColumnType,
   QueryTableComponent,
 } from '~/components/query-table/query-table.component';
+import { EventApiService } from '~/domains/event/event.api.service';
+import { RegistrationEvent } from '~/domains/event/event.model';
 import { registrationLink } from '~/domains/registration/registration.helper';
-import { Activity } from '~/domains/registration/registration.model';
+import { PaginateQuery } from '~/services/paginate-query.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
+import { getUniqueUserOptions } from '~/utils/unique-users';
 
 @Component({
   selector: 'app-program-monitoring-data-changes',
@@ -28,10 +31,25 @@ import { RegistrationAttributeService } from '~/services/registration-attribute.
 })
 export class ProgramMonitoringDataChangesPageComponent {
   readonly programId = input.required<string>();
+  protected readonly paginateQuery = signal<PaginateQuery | undefined>({});
+  public readonly contextMenuRegistrationEvent = signal<
+    RegistrationEvent | undefined
+  >(undefined);
 
+  private readonly eventApiService = inject(EventApiService);
   private readonly registrationAttributeService = inject(
     RegistrationAttributeService,
   );
+
+  private readonly eventsPaginateQuery = computed<PaginateQuery>(() => {
+    const paginateQuery = this.paginateQuery() ?? {};
+    return {
+      ...paginateQuery,
+      filter: {
+        ...(paginateQuery.filter ?? {}),
+      },
+    };
+  });
 
   registrationAttributes = injectQuery(
     this.registrationAttributeService.getRegistrationAttributes(
@@ -40,43 +58,81 @@ export class ProgramMonitoringDataChangesPageComponent {
       }),
     ),
   );
-  readonly columns = computed<QueryTableColumn<Activity>[]>(() => [
+
+  eventsResponse = injectQuery(
+    this.eventApiService.getEventsPaginated({
+      programId: this.programId,
+      paginateQuery: this.eventsPaginateQuery,
+    }),
+  );
+  readonly events = computed(() => this.eventsResponse.data()?.data ?? []);
+  protected readonly totalEvents = computed(
+    () => this.eventsResponse.data()?.meta.totalItems ?? 0,
+  );
+
+  readonly columns = computed<QueryTableColumn<RegistrationEvent>[]>(() => [
     {
-      field: 'COMPUTED_FIELD',
+      field: 'fieldChanged',
       header: $localize`Field changed`,
-      getCellText: () =>
+      getCellText: (event) =>
         this.registrationAttributeService.localizeAttribute({
           attributes: this.registrationAttributes.data(),
-          attributeName: '',
+          attributeName: event.fieldChanged,
         }),
     },
     {
-      field: 'COMPUTED_FIELD',
+      field: 'registrationProgramId',
       header: $localize`Reg. #`,
-      getCellText: (entity) => $localize`Reg. #` + entity.id,
-      getCellRouterLink: (entity) =>
+      getCellText: (event) =>
+        $localize`Reg. # ${event.registrationProgramId.toString()}`,
+      getCellRouterLink: (event) =>
         registrationLink({
           programId: this.programId(),
-          registrationId: entity.id,
+          registrationId: event.registrationId, // ## why is 'as number' needed?
+        }),
+      type: QueryTableColumnType.NUMERIC,
+    },
+    {
+      field: 'newValue',
+      header: $localize`New value`,
+      getCellText: (event) =>
+        this.registrationAttributeService.localizeAttribute({
+          attributes: this.registrationAttributes.data(),
+          attributeName: event.fieldChanged,
+          attributeOptionValue: event.newValue,
         }),
     },
     {
-      field: 'COMPUTED_FIELD',
+      field: 'oldValue',
       header: $localize`Old value`,
+      getCellText: (event) =>
+        this.registrationAttributeService.localizeAttribute({
+          attributes: this.registrationAttributes.data(),
+          attributeName: event.fieldChanged,
+          attributeOptionValue: event.oldValue,
+        }),
     },
     {
-      field: 'COMPUTED_FIELD',
-      header: $localize`New value`,
-    },
-    {
-      field: 'user.username',
+      field: 'username',
       header: $localize`Changed by`,
       displayAsChip: true,
+      type: QueryTableColumnType.MULTISELECT,
+      options: getUniqueUserOptions(
+        this.events().map((e) => ({
+          user: { username: e.username },
+        })),
+      ),
     },
     {
       field: 'created',
       header: $localize`Date and time`,
       type: QueryTableColumnType.DATE,
     },
+    {
+      field: 'reason',
+      header: $localize`Change reason`, // ##TODO: reason should only pop into view upon horizontal scroll??
+    },
   ]);
+
+  // ##TODO create context menu item for 'go to profile'
 }

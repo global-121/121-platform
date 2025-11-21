@@ -16,6 +16,7 @@ export enum AppRoutes {
   program = 'program',
   programMonitoring = 'monitoring',
   programMonitoringDashboard = 'dashboard',
+  programMonitoringDataChanges = 'data-changes',
   programMonitoringFiles = 'files',
   programMonitoringPowerBI = 'powerbi',
   programPaymentLog = 'payment-log',
@@ -138,6 +139,17 @@ export const routes: Routes = [
               import(
                 '~/pages/program-monitoring-powerbi/program-monitoring-powerbi.page'
               ).then((x) => x.ProgramMonitoringPowerbiPageComponent),
+          },
+          {
+            path: AppRoutes.programMonitoringDataChanges,
+            title:
+              $localize`:@@page-title-program-monitoring-data-changes:Data changes` +
+              ' | ' +
+              $localize`:@@page-title-program-monitoring:Monitoring`,
+            loadComponent: () =>
+              import(
+                '~/pages/program-monitoring-data-changes/program-monitoring-data-changes.page'
+              ).then((x) => x.ProgramMonitoringDataChangesPageComponent),
           },
           {
             path: AppRoutes.programMonitoringFiles,
