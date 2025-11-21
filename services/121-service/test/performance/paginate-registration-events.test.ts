@@ -108,7 +108,7 @@ describe('Get paginated registrations events', () => {
       limit: supportedNumberOfRecords,
     });
     const allEvents = allEventsResponse.body.data;
-    const expectedEvents = Math.pow(2, duplicateNumber) * 3; // each registration has 2 status changes and 1 data change
+    const expectedEvents = Math.pow(2, duplicateNumber); // each registration has 1 data change. Status changes are excluded here for now.
     expect(allEvents.length).toBe(expectedEvents);
     const getAllEventsElapsedTime = Date.now() - getAllEventsStartTime;
 

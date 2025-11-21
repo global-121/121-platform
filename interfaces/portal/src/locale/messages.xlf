@@ -2024,9 +2024,6 @@
       <trans-unit id="5313814086308604647" datatype="html">
         <source>Old value</source>
       </trans-unit>
-      <trans-unit id="6431684363092868013" datatype="html">
-        <source>[export status &amp; data changes]</source>
-      </trans-unit>
       <trans-unit id="6678171760523373674" datatype="html">
         <source>New value</source>
       </trans-unit>
@@ -2035,6 +2032,9 @@
       </trans-unit>
       <trans-unit id="page-title-program-monitoring-data-changes" datatype="html">
         <source>Data changes</source>
+      </trans-unit>
+      <trans-unit id="1467442682545650796" datatype="html">
+        <source>Reg. # <x equiv-text="event.registrationProgramId.toString()" id="PH"/></source>
       </trans-unit>
     </body>
   </file>
