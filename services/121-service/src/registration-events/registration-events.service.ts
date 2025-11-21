@@ -7,6 +7,7 @@ import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { PaginateConfigRegistrationEventView } from '@121-service/src/registration-events/const/paginate-config-registration-event-view.const';
+import { FindAllRegistrationEventsResultDto } from '@121-service/src/registration-events/dto/find-all-registration-events-result.dto';
 import { GetRegistrationEventDto } from '@121-service/src/registration-events/dto/get-registration-event.dto';
 import { GetRegistrationEventXlsxDto } from '@121-service/src/registration-events/dto/get-registration-event-xlsx.dto';
 import { PaginatedRegistrationEventDto } from '@121-service/src/registration-events/dto/paginated-registration-events.dto';
@@ -77,7 +78,7 @@ export class RegistrationEventsService {
   public async getEventsPaginated(
     programId: number,
     paginateQuery: PaginateQuery,
-  ) {
+  ): Promise<FindAllRegistrationEventsResultDto> {
     const queryBuilder =
       this.registrationEventViewScopedRepository.createQueryBuilderFilterByProgramId(
         {
