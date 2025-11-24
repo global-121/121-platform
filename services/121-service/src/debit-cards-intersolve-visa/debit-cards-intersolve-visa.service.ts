@@ -180,6 +180,10 @@ export class DebitCardsIntersolveVisaService {
     }
     await this.sendCustomerInformationToIntersolve(registration);
 
+    const brandCode = intersolveVisaConfig.find(
+      (c) => c.name === FspConfigurationProperties.brandCode,
+    )?.value as string;
+
     try {
       await this.intersolveVisaService.reissueCard({
         registrationId: registration.id,
@@ -200,9 +204,7 @@ export class DebitCardsIntersolveVisaService {
         brandCode: intersolveVisaConfig.find(
           (c) => c.name === FspConfigurationProperties.brandCode,
         )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
-        coverLetterCode: intersolveVisaConfig.find(
-          (c) => c.name === FspConfigurationProperties.coverLetterCode,
-        )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+        coverLetterCode: brandCode,
       });
     } catch (error) {
       if (error instanceof IntersolveVisaApiError) {
@@ -338,10 +340,6 @@ export class DebitCardsIntersolveVisaService {
     programId: number,
     tokenCode: string,
   ): Promise<void> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      programId,
-    });
     // Check if card exists and is unlinked
     const intersolveVisaChildWallet =
       await this.intersolveVisaService.getWallet(tokenCode);
@@ -374,7 +372,7 @@ export class DebitCardsIntersolveVisaService {
 
     const intersolveVisaCustomer =
       await this.intersolveVisaService.getCustomerOrCreate({
-        registrationId: registration.id,
+        registrationId: registrationView[0]['id'],
         createCustomerReference: referenceId,
         name: String(registrationView[0]['name']),
         contactInformation,
@@ -395,8 +393,42 @@ export class DebitCardsIntersolveVisaService {
     // Link card to customer at Intersolve
     // await this.intersolveVisaService.linkChildWalletToParentWalletIfUnlinked(
     //   intersolveVisaParentWallet,
-    //   intersolveVisaChildWallet,
+    //   intersolveVisaChildWallet, // get child wallet entity
     // );
     // END: Link card to customer at Intersolve
+  }
+
+  public async replaceCard(
+    referenceId: string,
+    programId: number,
+    cardNumber: string,
+  ): Promise<void> {
+    const registrationView =
+      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
+        {
+          programId,
+          referenceIds: [referenceId],
+        },
+      );
+
+    const contactInformation: ContactInformation = {
+      addressStreet: registrationView[0]['addressStreet'],
+      addressHouseNumber: registrationView[0]['addressHouseNumber'],
+      addressHouseNumberAddition:
+        registrationView[0]['addressHouseNumberAddition'],
+      addressPostalCode: registrationView[0]['addressPostalCode'],
+      addressCity: registrationView[0]['addressCity'],
+      phoneNumber: String(registrationView[0]['phoneNumber']),
+    };
+
+    return await this.intersolveVisaService.reissueCard({
+      registrationId: registrationView[0]['id'],
+      reference: referenceId,
+      name: String(registrationView[0]['name']),
+      contactInformation,
+      brandCode: 'fix this',
+      coverLetterCode: 'fix this',
+      physicalCardToken: cardNumber,
+    });
   }
 }

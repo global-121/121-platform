@@ -566,14 +566,21 @@ export class IntersolveVisaService {
       );
     }
 
-    // Create new token at Intersolve
-    const issueTokenResult = await this.intersolveVisaApiService.issueToken({
-      brandCode: input.brandCode,
-      activate: false, // Child Wallets are always created deactivated
-      reference: env.MOCK_INTERSOLVE
-        ? intersolveVisaCustomer.holderId
-        : undefined,
-    });
+    let issueTokenResult;
+    if (!input.physicalCardToken) {
+      // Create new token at Intersolve
+      issueTokenResult = await this.intersolveVisaApiService.issueToken({
+        brandCode: input.brandCode,
+        activate: false, // Child Wallets are always created deactivated
+        reference: env.MOCK_INTERSOLVE
+          ? intersolveVisaCustomer.holderId
+          : undefined,
+      });
+    } else {
+      issueTokenResult = await this.intersolveVisaApiService.getToken(
+        input.physicalCardToken,
+      );
+    }
 
     // Substitute the old token with the new token at Intersolve
     await this.intersolveVisaApiService.substituteToken({
