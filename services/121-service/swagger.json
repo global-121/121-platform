@@ -1155,6 +1155,7 @@
     "params": [
       "programId",
       "referenceId",
+<<<<<<< HEAD
       "tokenCode",
       "pause"
     ]
@@ -1183,6 +1184,10 @@
     "params": [
       "programId",
       "referenceId"
+=======
+      "cardNumber",
+      "tokenCode"
+>>>>>>> df04223e3 (unit tests)
     ]
   },
   {
@@ -1190,6 +1195,7 @@
     "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/on-site/link",
     "params": [
       "programId",
+<<<<<<< HEAD
       "referenceId"
     ]
   },
@@ -1199,6 +1205,11 @@
     "params": [
       "programId",
       "referenceId"
+=======
+      "referenceId",
+      "cardNumber",
+      "tokenCode"
+>>>>>>> df04223e3 (unit tests)
     ]
   }
 ]
