@@ -44,9 +44,36 @@ jobs:
             - '!interfaces/portal/**.spec.ts'
             - '!**.md'
 
+  lint-code:
+    needs: path-filter
+    runs-on: ubuntu-latest
+    if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
+    environment: test
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '${{ env.e2eTestsPath }}/.node-version'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.e2eTestsPath }}/package-lock.json'
+
+      - name: Install E2E-Tests code-dependencies
+        working-directory: ${{ env.e2eTestsPath }}
+        run: |
+          npm ci
+
+      - name: Lint E2E-Tests code
+        working-directory: ${{ env.e2eTestsPath }}
+        run: 'npm run lint'
+
   test-shard:
     runs-on: ubuntu-latest
-    needs: path-filter
+    needs:
+      - path-filter
+      - lint-code
     if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
     environment: test
 
@@ -69,12 +96,9 @@ jobs:
 
       - name: Install E2E-Tests code-dependencies
         working-directory: ${{ env.e2eTestsPath }}
+        # We only need to install the tests' dependencies, so we can skip the `postinstall`-step
         run: |
-          npm ci
-
-      - name: Lint E2E-Tests code
-        working-directory: ${{ env.e2eTestsPath }}
-        run: 'npm run lint'
+          npm ci --ignore-scripts
 
       - name: Set ENV-variables for test-environment
         run: |

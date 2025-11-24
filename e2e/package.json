@@ -10,8 +10,10 @@
   },
   "private": true,
   "scripts": {
+    "postinstall": "cd ../services/121-service && npm run install:dependencies-for-portal",
     "setup": "npm install && npx playwright install",
     "typecheck": "npx tsc --noEmit",
+    "prelint": "npm run typecheck",
     "lint": "eslint \"**/*.{ts,js}\"",
     "fix": "npm run lint -- --fix",
     "test": "playwright test --config=playwright.config.ts",
@@ -21,8 +23,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@playwright/test": "^1.56.1",
-    "@types/express": "^4.17.25",
-    "@types/express-serve-static-core": "^5.1.0",
+    "@types/express": "^5.0.5",
     "@types/jest": "^30.0.0",
     "@types/multer": "^2.0.0",
     "@types/node": "^20.x",
