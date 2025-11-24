@@ -1113,5 +1113,23 @@
     "method": "post",
     "path": "/api/fsps/safaricom/timeout-callback",
     "params": []
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/link-card",
+    "params": [
+      "programId",
+      "referenceId",
+      "cardNumber"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/replace-card",
+    "params": [
+      "programId",
+      "referenceId",
+      "cardNumber"
+    ]
   }
 ]

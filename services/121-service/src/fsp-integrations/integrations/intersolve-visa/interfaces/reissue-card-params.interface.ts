@@ -7,4 +7,5 @@ export interface ReissueCardParams {
   readonly contactInformation: ContactInformation;
   readonly brandCode: string;
   readonly coverLetterCode: string;
+  readonly physicalCardToken?: string;
 }
