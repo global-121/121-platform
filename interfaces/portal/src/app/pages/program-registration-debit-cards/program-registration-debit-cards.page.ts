@@ -4,7 +4,6 @@ import {
   computed,
   inject,
   input,
-  model,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -15,8 +14,6 @@ import {
 import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { Dialog } from 'primeng/dialog';
-import { InputNumber } from 'primeng/inputnumber';
 
 import { VisaCardAction } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-action.enum';
 
@@ -44,8 +41,6 @@ import { ToastService } from '~/services/toast.service';
     ColoredChipComponent,
     FormDialogComponent,
     PageLayoutRegistrationComponent,
-    Dialog,
-    InputNumber,
   ],
   providers: [ToastService],
   templateUrl: './program-registration-debit-cards.page.html',
@@ -158,7 +153,6 @@ export class ProgramRegistrationDebitCardsPageComponent {
     const allCards = this.walletWithCards.data()?.cards;
 
     if (!allCards) {
-      console.log('No cards found in wallet');
       return [];
     }
 
