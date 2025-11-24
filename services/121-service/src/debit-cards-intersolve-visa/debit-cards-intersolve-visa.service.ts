@@ -381,7 +381,7 @@ export class DebitCardsIntersolveVisaService {
     const intersolveVisaParentWallet =
       await this.intersolveVisaService.getParentWalletOrCreate({
         intersolveVisaCustomer,
-        brandCode: 'fix this',
+        brandCode: FspConfigurationProperties.brandCode,
       });
 
     await this.intersolveVisaService.linkParentWalletToCustomerIfUnlinked({
@@ -391,18 +391,30 @@ export class DebitCardsIntersolveVisaService {
     // END: Standard registration flow
 
     // Link card to customer at Intersolve
-    // await this.intersolveVisaService.linkChildWalletToParentWalletIfUnlinked(
-    //   intersolveVisaParentWallet,
-    //   intersolveVisaChildWallet, // get child wallet entity
-    // );
+    await this.intersolveVisaService.linkWallets({
+      parentTokenCode: intersolveVisaParentWallet.tokenCode,
+      childTokenCode: tokenCode,
+    });
     // END: Link card to customer at Intersolve
   }
 
   public async replaceCard(
     referenceId: string,
     programId: number,
-    cardNumber: string,
+    tokenCode: string,
   ): Promise<void> {
+    // Check if card exists and is unlinked
+    const intersolveVisaChildWallet =
+      await this.intersolveVisaService.getWallet(tokenCode);
+
+    if (intersolveVisaChildWallet.holderId !== null) {
+      throw new HttpException(
+        `Card is alrealdy linked to another customer at Intersolve.`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    // END: Check if card exists and is unlinked
+
     const registrationView =
       await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
         {
@@ -426,9 +438,9 @@ export class DebitCardsIntersolveVisaService {
       reference: referenceId,
       name: String(registrationView[0]['name']),
       contactInformation,
-      brandCode: 'fix this',
-      coverLetterCode: 'fix this',
-      physicalCardToken: cardNumber,
+      brandCode: FspConfigurationProperties.brandCode,
+      coverLetterCode: FspConfigurationProperties.coverLetterCode,
+      physicalCardToken: tokenCode,
     });
   }
 }
