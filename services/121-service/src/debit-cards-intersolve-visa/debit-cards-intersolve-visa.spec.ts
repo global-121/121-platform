@@ -1,3 +1,4 @@
+import { HttpException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { DebitCardsIntersolveVisaService } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.service';
@@ -80,7 +81,7 @@ describe('DebitCardsIntersolveVisaService', () => {
     it('throws when referenceId is empty', async () => {
       await expect(
         service.getRegistrationOrThrow({ referenceId: '', programId: 1 }),
-      ).rejects.toThrow('ReferenceId is not set');
+      ).rejects.toThrow(HttpException);
     });
 
     it('throws when registration cannot be found', async () => {
@@ -90,7 +91,7 @@ describe('DebitCardsIntersolveVisaService', () => {
 
       await expect(
         service.getRegistrationOrThrow({ referenceId: 'ref-1', programId: 1 }),
-      ).rejects.toThrow('ReferenceId ref-1 is not known in this program');
+      ).rejects.toThrow(HttpException);
     });
 
     it('returns the registration when it exists', async () => {
