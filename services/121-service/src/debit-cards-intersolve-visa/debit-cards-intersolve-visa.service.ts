@@ -29,8 +29,8 @@ export class DebitCardsIntersolveVisaService {
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
-    private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly registrationUtilsService: RegistrationUtilsService,
+    private readonly registrationsPaginationService: RegistrationsPaginationService,
   ) {}
 
   public async retrieveAndUpdateIntersolveVisaWalletAndCards(
@@ -324,9 +324,7 @@ export class DebitCardsIntersolveVisaService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    // END: Check if card exists and is unlinked
 
-    // Standard registration flow
     const registrationView =
       await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
         {
@@ -334,6 +332,7 @@ export class DebitCardsIntersolveVisaService {
           referenceIds: [referenceId],
         },
       );
+
     const contactInformation: ContactInformation = {
       addressStreet: registrationView[0]['addressStreet'],
       addressHouseNumber: registrationView[0]['addressHouseNumber'],
@@ -362,14 +361,11 @@ export class DebitCardsIntersolveVisaService {
       intersolveVisaCustomer,
       intersolveVisaParentWallet,
     });
-    // END: Standard registration flow
 
-    // Link card to customer at Intersolve
     await this.intersolveVisaService.linkWallets({
       parentTokenCode: intersolveVisaParentWallet.tokenCode,
       childTokenCode: tokenCode,
     });
-    // END: Link card to customer at Intersolve
   }
 
   public async replaceCard(
@@ -387,7 +383,6 @@ export class DebitCardsIntersolveVisaService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    // END: Check if card exists and is unlinked
 
     const registrationView =
       await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
