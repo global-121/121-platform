@@ -142,6 +142,10 @@
         {
           "name": "fundingTokenCode",
           "value": "INTERSOLVE_VISA_FUNDINGTOKEN_CODE"
+        },
+        {
+          "name": "postalCardDistribution",
+          "value": "INTERSOLVE_VISA_POSTAL_CARD_DISTRIBUTION"
         }
       ]
     }

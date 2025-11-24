@@ -358,8 +358,8 @@ export class IntersolveVisaService {
     if (intersolveVisaChildWallet.isLinkedToParentWallet) {
       return;
     }
-    // if not, link child wallet to parent wallet (linkToken returns nothing if success and throw exception if failed)
-    await this.intersolveVisaApiService.linkToken({
+    // if not, link child wallet to parent wallet (linkWallet returns nothing if success and throw exception if failed)
+    await this.linkWallets({
       parentTokenCode: intersolveVisaParentWallet.tokenCode,
       childTokenCode: intersolveVisaChildWallet.tokenCode,
     });
@@ -842,5 +842,18 @@ export class IntersolveVisaService {
 
   public async getWallet(tokenCode: string) {
     return await this.intersolveVisaApiService.getToken(tokenCode);
+  }
+
+  public async linkWallets({
+    parentTokenCode,
+    childTokenCode,
+  }: {
+    parentTokenCode: string;
+    childTokenCode: string;
+  }) {
+    return await this.intersolveVisaApiService.linkToken({
+      parentTokenCode,
+      childTokenCode,
+    });
   }
 }
