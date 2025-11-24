@@ -8,9 +8,9 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "strictPropertyInitialization": false,
-    "noImplicitAny": false,
-    "useUnknownInCatchVariables": false,
+    "strictPropertyInitialization": false, // TODO: AB#39339
+    "noImplicitAny": false, // TODO: AB#39340
+    "useUnknownInCatchVariables": false, // TODO: AB#27718
     "moduleResolution": "bundler",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
