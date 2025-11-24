@@ -19,7 +19,7 @@ import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
-import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 
 @Injectable()
@@ -29,50 +29,20 @@ export class DebitCardsIntersolveVisaService {
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
-    private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
+    private readonly registrationUtilsService: RegistrationUtilsService,
   ) {}
-
-  // TODO: duplicate of RegistrationsService getRegistrationOrThrow
-  // Injecting RegistrationsService instead of duplicating method is not possible due to circular dependency
-  // Refactor RegistrationsService to not be dependent on DebitCardsIntersolveVisaService, then inject RegistrationsService here.
-  public async getRegistrationOrThrow({
-    referenceId,
-    relations = [],
-    programId,
-  }: {
-    referenceId: string;
-    relations?: (keyof RegistrationEntity)[];
-    programId?: number;
-  }): Promise<RegistrationEntity> {
-    if (!referenceId) {
-      const errors = `ReferenceId is not set`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    const registration =
-      await this.registrationScopedRepository.getWithRelationsByReferenceIdAndProgramId(
-        {
-          referenceId,
-          relations,
-          programId,
-        },
-      );
-    if (!registration) {
-      const errors = `ReferenceId ${referenceId} is not known in this program (within your scope).`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    return registration;
-  }
 
   public async retrieveAndUpdateIntersolveVisaWalletAndCards(
     referenceId: string,
     programId: number,
   ): Promise<IntersolveVisaWalletDto> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      relations: [],
-      programId,
-    });
+    const registration =
+      await this.registrationUtilsService.getRegistrationOrThrow({
+        referenceId,
+        relations: [],
+        programId,
+      });
     return await this.intersolveVisaService.retrieveAndUpdateWallet(
       registration.id,
     );
@@ -82,11 +52,12 @@ export class DebitCardsIntersolveVisaService {
     referenceId: string,
     programId: number,
   ): Promise<IntersolveVisaWalletDto> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      relations: [],
-      programId,
-    });
+    const registration =
+      await this.registrationUtilsService.getRegistrationOrThrow({
+        referenceId,
+        relations: [],
+        programId,
+      });
     return await this.intersolveVisaService.getWalletWithCards(registration.id);
   }
 
@@ -107,11 +78,12 @@ export class DebitCardsIntersolveVisaService {
     programId: number,
     userId: number,
   ) {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      programId,
-      relations: ['programFspConfiguration'],
-    });
+    const registration =
+      await this.registrationUtilsService.getRegistrationOrThrow({
+        referenceId,
+        programId,
+        relations: ['programFspConfiguration'],
+      });
     if (
       !registration.programFspConfigurationId ||
       registration.programFspConfiguration?.fspName !== Fsps.intersolveVisa
@@ -300,10 +272,11 @@ export class DebitCardsIntersolveVisaService {
     pause: boolean,
     userId: number,
   ): Promise<IntersolveVisaChildWalletEntity> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      programId,
-    });
+    const registration =
+      await this.registrationUtilsService.getRegistrationOrThrow({
+        referenceId,
+        programId,
+      });
     const updatedWallet = await this.intersolveVisaService.pauseCardOrThrow(
       tokenCode,
       pause,
@@ -328,10 +301,11 @@ export class DebitCardsIntersolveVisaService {
     referenceId: string,
     programId: number,
   ): Promise<void> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      programId,
-    });
+    const registration =
+      await this.registrationUtilsService.getRegistrationOrThrow({
+        referenceId,
+        programId,
+      });
     await this.sendCustomerInformationToIntersolve(registration);
   }
 

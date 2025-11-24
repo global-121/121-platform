@@ -22,6 +22,7 @@ graph LR
   DebitCardsIntersolveVisaModule-->MessageQueuesModule
   DebitCardsIntersolveVisaModule-->ProgramFspConfigurationsModule
   DebitCardsIntersolveVisaModule-->RegistrationDataModule
+  DebitCardsIntersolveVisaModule-->RegistrationUtilsModule
   DebitCardsIntersolveVisaModule-->RegistrationsModule
   DebitCardsIntersolveVisaModule-->UserModule
   ExcelModule-->RegistrationsModule
@@ -81,7 +82,7 @@ graph LR
   NedbankReconciliationModule-->NedbankModule
   NedbankReconciliationModule-->TransactionEventsModule
   NedbankReconciliationModule-->TransactionsModule
-  NoteModule-->RegistrationsModule
+  NoteModule-->RegistrationUtilsModule
   NoteModule-->UserModule
   OnafriqModule-->ProgramFspConfigurationsModule
   OnafriqModule-->QueuesRegistryModule
