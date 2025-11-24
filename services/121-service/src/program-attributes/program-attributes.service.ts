@@ -22,7 +22,7 @@ export class ProgramAttributesService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramRegistrationAttributeEntity)
-  private readonly programRegistrationAttributeEntity: Repository<ProgramRegistrationAttributeEntity>;
+  private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
 
   public getFilterableAttributes(program: ProgramEntity) {
     const genericPaAttributeFilters = [
@@ -163,7 +163,7 @@ export class ProgramAttributesService {
     programId: number,
   ): Promise<Attribute[]> {
     const programRegistrationAttributes = (
-      await this.programRegistrationAttributeEntity.find({
+      await this.programRegistrationAttributeRepository.find({
         where: { program: { id: Equal(programId) } },
       })
     ).map((c) => {
@@ -181,8 +181,9 @@ export class ProgramAttributesService {
     programId: number,
     filterShowInRegistrationsTable?: boolean,
   ): Promise<Attribute[]> {
-    let queryRegistrationAttr = this.programRegistrationAttributeEntity
+    let queryRegistrationAttr = this.programRegistrationAttributeRepository
       .createQueryBuilder('programRegistrationAttribute')
+      .orderBy('programRegistrationAttribute.created', 'ASC')
       .where({ program: { id: programId } });
 
     if (filterShowInRegistrationsTable) {
