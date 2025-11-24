@@ -2,10 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, FindOneOptions, In, Repository } from 'typeorm';
 
-// import { DebitCardsIntersolveVisaService } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.service';
-// import { env } from '@121-service/src/env';
-// import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-// import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+//import { DebitCardsIntersolveVisaService } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.service';
+import { env } from '@121-service/src/env';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -537,17 +537,17 @@ export class RegistrationsService {
     }
 
     //TODO: find a solution to prevent circular dependency
-    // const intersolveVisaAttributeNames = FSP_SETTINGS[
-    //   Fsps.intersolveVisa
-    // ].attributes.map((attr) => attr.name) as string[];
-    // if (
-    //   env.INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION &&
-    //   intersolveVisaAttributeNames.includes(attribute)
-    // ) {
-    //   await this.debitCardsIntersolveVisaService.sendCustomerInformationToIntersolve(
-    //     registration,
-    //   );
-    // }
+    const intersolveVisaAttributeNames = FSP_SETTINGS[
+      Fsps.intersolveVisa
+    ].attributes.map((attr) => attr.name) as string[];
+    if (
+      env.INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION &&
+      intersolveVisaAttributeNames.includes(attribute)
+    ) {
+      // await this.debitCardsIntersolveVisaService.sendCustomerInformationToIntersolve(
+      //   registration,
+      // );
+    }
 
     return this.registrationUtilsService.getRegistrationOrThrow({
       referenceId: savedRegistration.referenceId,
