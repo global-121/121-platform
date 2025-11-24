@@ -211,9 +211,7 @@ export class PageLayoutPaymentComponent {
     }
 
     /*
-      ##TODO: is this the best way to get all the FSP names?
-      as far as I understand, there is a limit to the amount of transactions
-      that can be returned by the paginateQuery. some FSPs could be missed
+      ##TODO: add new endpoint. see task AB#39347
     */
     return Array.from(
       new Set(

@@ -124,13 +124,9 @@ export class ProgramPaymentTransactionListPageComponent {
         field: 'registrationProgramId',
         header: $localize`Reg. #`,
         getCellText: (transaction) => {
-          // ##TODO: evaluate if this is the best approach
-          if (!transaction.registrationProgramId) {
-            return '';
-          }
-          return (
-            $localize`Reg. #` + transaction.registrationProgramId.toString()
-          );
+          const registrationId = transaction.registrationProgramId ?? '';
+
+          return $localize`Reg. #${registrationId}`;
         },
         getCellRouterLink: (transaction) =>
           registrationLink({
@@ -138,19 +134,6 @@ export class ProgramPaymentTransactionListPageComponent {
             registrationId: transaction.registrationId,
           }),
       },
-      /*
-        ##TODO: discuss with the backenders if there is a way to retrieve the registrationName
-        or with design/Tijs if we are happy with omitting it
-      */
-      // {
-      //   field: 'registrationName',
-      //   header: $localize`Name`,
-      //   getCellRouterLink: (transaction) =>
-      //     registrationLink({
-      //       programId: this.programId(),
-      //       registrationId: transaction.registrationId,
-      //     }),
-      // },
       {
         field: 'registrationStatus',
         header: $localize`Registration Status`,
