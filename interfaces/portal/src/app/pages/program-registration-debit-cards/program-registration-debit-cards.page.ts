@@ -4,7 +4,6 @@ import {
   computed,
   inject,
   input,
-  model,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -16,8 +15,6 @@ import {
 import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { Dialog } from 'primeng/dialog';
-import { InputNumber } from 'primeng/inputnumber';
 
 import { VisaCardAction } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-card-action.enum';
 
@@ -45,8 +42,6 @@ import { ToastService } from '~/services/toast.service';
     ColoredChipComponent,
     FormDialogComponent,
     PageLayoutRegistrationComponent,
-    Dialog,
-    InputNumber,
   ],
   providers: [ToastService],
   templateUrl: './program-registration-debit-cards.page.html',
@@ -160,7 +155,6 @@ export class ProgramRegistrationDebitCardsPageComponent {
     const allCards = this.walletWithCards.data()?.cards;
 
     if (!allCards) {
-      console.log('No cards found in wallet');
       return [];
     }
 
@@ -245,22 +239,12 @@ export class ProgramRegistrationDebitCardsPageComponent {
 
   readonly currencyCode = computed(() => this.program.data()?.currency);
 
-  public readonly dialogVisible = model(false);
-  public readonly cardNumber = model('');
   private invalidateWalletQuery() {
     void this.queryClient.invalidateQueries({
       queryKey: this.registrationApiService.getWalletWithCardsByReferenceId(
         this.programId,
         this.referenceId,
       )().queryKey,
-    });
-  }
-
-  public async createNewCard() {
-    await this.registrationApiService.linkCardToRegistration({
-      programId: this.programId,
-      referenceId: this.referenceId,
-      cardNumber: this.cardNumber,
     });
   }
 }
