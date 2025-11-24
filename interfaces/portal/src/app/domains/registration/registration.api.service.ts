@@ -405,4 +405,28 @@ export class RegistrationApiService extends DomainApiService {
       body,
     });
   }
+
+  public replaceCard({
+    programId,
+    referenceId,
+    cardNumber,
+  }: {
+    programId: Signal<number | string>;
+    referenceId: Signal<string | undefined>;
+    cardNumber: Signal<string>;
+  }) {
+    const endpoint = this.pathToQueryKey([
+      ...BASE_ENDPOINT(programId),
+      referenceId,
+      'fsps',
+      'intersolve-visa',
+      'replace-card',
+    ]).join('/');
+
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'POST',
+      endpoint,
+      httpParams: { cardNumber: cardNumber() },
+    });
+  }
 }
