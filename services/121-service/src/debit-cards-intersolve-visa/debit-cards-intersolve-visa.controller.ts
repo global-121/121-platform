@@ -211,4 +211,20 @@ export class DebitCardsIntersolveVisaController {
       cardNumber,
     );
   }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @Post(
+    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/replace-card',
+  )
+  public async replaceCard(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('referenceId') referenceId: string,
+    @Param('cardNumber') cardNumber: string,
+  ): Promise<void> {
+    return await this.debitCardsIntersolveVisaService.replaceCard(
+      referenceId,
+      programId,
+      cardNumber,
+    );
+  }
 }

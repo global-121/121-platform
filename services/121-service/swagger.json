@@ -1032,5 +1032,14 @@
       "referenceId",
       "cardNumber"
     ]
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/replace-card",
+    "params": [
+      "programId",
+      "referenceId",
+      "cardNumber"
+    ]
   }
 ]
