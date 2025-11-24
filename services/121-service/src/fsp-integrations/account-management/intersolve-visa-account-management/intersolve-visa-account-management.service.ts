@@ -20,7 +20,7 @@ import { MessageQueuesService } from '@121-service/src/notifications/message-que
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
-import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 
 @Injectable()
@@ -30,8 +30,8 @@ export class IntersolveVisaAccountManagementService {
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
-    private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
+    private readonly registrationUtilsService: RegistrationUtilsService,
   ) {}
 
   // TODO: duplicate of RegistrationsService getRegistrationOrThrow
@@ -69,11 +69,12 @@ export class IntersolveVisaAccountManagementService {
     referenceId: string,
     programId: number,
   ): Promise<IntersolveVisaWalletDto> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      relations: [],
-      programId,
-    });
+    const registration =
+      await this.registrationUtilsService.getRegistrationOrThrow({
+        referenceId,
+        relations: [],
+        programId,
+      });
     return await this.intersolveVisaService.retrieveAndUpdateWallet(
       registration.id,
     );
@@ -83,11 +84,12 @@ export class IntersolveVisaAccountManagementService {
     referenceId: string,
     programId: number,
   ): Promise<IntersolveVisaWalletDto> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      relations: [],
-      programId,
-    });
+    const registration =
+      await this.registrationUtilsService.getRegistrationOrThrow({
+        referenceId,
+        relations: [],
+        programId,
+      });
     return await this.intersolveVisaService.getWalletWithCards(registration.id);
   }
 
@@ -108,11 +110,12 @@ export class IntersolveVisaAccountManagementService {
     programId: number,
     userId: number,
   ) {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      programId,
-      relations: ['programFspConfiguration'],
-    });
+    const registration =
+      await this.registrationUtilsService.getRegistrationOrThrow({
+        referenceId,
+        programId,
+        relations: ['programFspConfiguration'],
+      });
     if (
       !registration.programFspConfigurationId ||
       registration.programFspConfiguration?.fspName !== Fsps.intersolveVisa
@@ -301,10 +304,11 @@ export class IntersolveVisaAccountManagementService {
     pause: boolean,
     userId: number,
   ): Promise<IntersolveVisaChildWalletEntity> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      programId,
-    });
+    const registration =
+      await this.registrationUtilsService.getRegistrationOrThrow({
+        referenceId,
+        programId,
+      });
     const updatedWallet = await this.intersolveVisaService.pauseCardOrThrow(
       tokenCode,
       pause,
@@ -329,10 +333,11 @@ export class IntersolveVisaAccountManagementService {
     referenceId: string,
     programId: number,
   ): Promise<void> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      programId,
-    });
+    const registration =
+      await this.registrationUtilsService.getRegistrationOrThrow({
+        referenceId,
+        programId,
+      });
     await this.sendCustomerInformationToIntersolve(registration);
   }
 
