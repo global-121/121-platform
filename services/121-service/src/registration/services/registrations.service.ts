@@ -542,7 +542,7 @@ export class RegistrationsService {
       attribute,
     });
 
-    return this.registrationUtilsService.getRegistrationOrThrow({
+    return this.getRegistrationOrThrow({
       referenceId: savedRegistration.referenceId,
       relations: ['program'],
     });
