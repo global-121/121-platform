@@ -197,6 +197,12 @@ export class DebitCardsIntersolveVisaController {
   }
 
   @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary: 'Link a physical debit card to a registration',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
   @Post(
     'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/link-card',
   )
@@ -213,6 +219,12 @@ export class DebitCardsIntersolveVisaController {
   }
 
   @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary: 'Replace a physical debit card from a registration',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
   @Post(
     'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/replace-card',
   )
