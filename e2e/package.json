@@ -10,6 +10,7 @@
   },
   "private": true,
   "scripts": {
+    "postinstall": "cd ../services/121-service && npm run install:dependencies-for-portal",
     "setup": "npm install && npx playwright install",
     "typecheck": "npx tsc --noEmit",
     "prelint": "npm run typecheck",
