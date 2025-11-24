@@ -172,34 +172,6 @@ export class RegistrationsService {
     return registrationAfterUpdate;
   }
 
-  public async getRegistrationOrThrow({
-    referenceId,
-    relations = [],
-    programId,
-  }: {
-    referenceId: string;
-    relations?: (keyof RegistrationEntity)[];
-    programId?: number;
-  }): Promise<RegistrationEntity> {
-    if (!referenceId) {
-      const errors = `ReferenceId is not set`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    const registration =
-      await this.registrationScopedRepository.getWithRelationsByReferenceIdAndProgramId(
-        {
-          referenceId,
-          relations,
-          programId,
-        },
-      );
-    if (!registration) {
-      const errors = `ReferenceId ${referenceId} is not known in this program (within your scope).`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    return registration;
-  }
-
   public async cleanCustomDataIfPhoneNr(
     customDataKey: string,
     customDataValue: string | number | string[] | boolean | null,
@@ -410,11 +382,12 @@ export class RegistrationsService {
     const { data: registrationDataInput, ...partialRegistrationInput } =
       validatedRegistrationInput;
 
-    let registrationToUpdate = await this.getRegistrationOrThrow({
-      referenceId,
-      relations: ['program'],
-      programId,
-    });
+    let registrationToUpdate =
+      await this.registrationUtilsService.getRegistrationOrThrow({
+        referenceId,
+        relations: ['program'],
+        programId,
+      });
     const program = registrationToUpdate.program;
 
     const oldViewRegistration =
@@ -558,7 +531,7 @@ export class RegistrationsService {
         registration.referenceId,
       );
     if (calculatedRegistration) {
-      return this.getRegistrationOrThrow({
+      return this.registrationUtilsService.getRegistrationOrThrow({
         referenceId: calculatedRegistration.referenceId,
       });
     }
@@ -576,7 +549,7 @@ export class RegistrationsService {
     //   );
     // }
 
-    return this.getRegistrationOrThrow({
+    return this.registrationUtilsService.getRegistrationOrThrow({
       referenceId: savedRegistration.referenceId,
       relations: ['program'],
     });
@@ -713,10 +686,11 @@ export class RegistrationsService {
     referenceId: string,
     programId: number,
   ): Promise<DuplicateReponseDto[]> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      programId,
-    });
+    const registration =
+      await this.registrationUtilsService.getRegistrationOrThrow({
+        referenceId,
+        programId,
+      });
     const duplicates = await this.registrationScopedRepository.getDuplicates({
       registrationId: registration.id,
       programId,
