@@ -574,7 +574,7 @@ export class RegistrationsService {
       contactInformation,
     });
 
-    return this.registrationUtilsService.getRegistrationOrThrow({
+    return this.getRegistrationOrThrow({
       referenceId: savedRegistration.referenceId,
       relations: ['program'],
     });

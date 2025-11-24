@@ -372,9 +372,7 @@ export class IntersolveVisaAccountManagementService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    // END: Check if card exists and is unlinked
 
-    // Standard registration flow
     const registrationView =
       await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
         {
@@ -382,6 +380,7 @@ export class IntersolveVisaAccountManagementService {
           referenceIds: [referenceId],
         },
       );
+
     const contactInformation: ContactInformation = {
       addressStreet: registrationView[0]['addressStreet'],
       addressHouseNumber: registrationView[0]['addressHouseNumber'],
@@ -410,14 +409,11 @@ export class IntersolveVisaAccountManagementService {
       intersolveVisaCustomer,
       intersolveVisaParentWallet,
     });
-    // END: Standard registration flow
 
-    // Link card to customer at Intersolve
     await this.intersolveVisaService.linkWallets({
       parentTokenCode: intersolveVisaParentWallet.tokenCode,
       childTokenCode: tokenCode,
     });
-    // END: Link card to customer at Intersolve
   }
 
   public async replaceCard(
@@ -435,7 +431,6 @@ export class IntersolveVisaAccountManagementService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    // END: Check if card exists and is unlinked
 
     const registrationView =
       await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
