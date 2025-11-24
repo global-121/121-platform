@@ -1,4 +1,3 @@
-import { HttpException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { DebitCardsIntersolveVisaService } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.service';
@@ -10,12 +9,12 @@ import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
-import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 
 describe('DebitCardsIntersolveVisaService', () => {
   let service: DebitCardsIntersolveVisaService;
-  let registrationScopedRepository: jest.Mocked<RegistrationScopedRepository>;
+  let registrationUtilsService: jest.Mocked<RegistrationUtilsService>;
   let intersolveVisaService: jest.Mocked<IntersolveVisaService>;
   let queueMessageService: jest.Mocked<MessageQueuesService>;
   let registrationsPaginationService: jest.Mocked<RegistrationsPaginationService>;
@@ -24,6 +23,12 @@ describe('DebitCardsIntersolveVisaService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         DebitCardsIntersolveVisaService,
+        {
+          provide: RegistrationUtilsService,
+          useValue: {
+            getRegistrationOrThrow: jest.fn(),
+          },
+        },
         {
           provide: MessageQueuesService,
           useValue: {
@@ -56,12 +61,6 @@ describe('DebitCardsIntersolveVisaService', () => {
           },
         },
         {
-          provide: RegistrationScopedRepository,
-          useValue: {
-            getWithRelationsByReferenceIdAndProgramId: jest.fn(),
-          },
-        },
-        {
           provide: RegistrationsPaginationService,
           useValue: {
             getRegistrationViewsByReferenceIds: jest.fn(),
@@ -71,39 +70,10 @@ describe('DebitCardsIntersolveVisaService', () => {
     }).compile();
 
     service = module.get(DebitCardsIntersolveVisaService);
+    registrationUtilsService = module.get(RegistrationUtilsService);
     queueMessageService = module.get(MessageQueuesService);
     intersolveVisaService = module.get(IntersolveVisaService);
-    registrationScopedRepository = module.get(RegistrationScopedRepository);
     registrationsPaginationService = module.get(RegistrationsPaginationService);
-  });
-
-  describe('getRegistrationOrThrow', () => {
-    it('throws when referenceId is empty', async () => {
-      await expect(
-        service.getRegistrationOrThrow({ referenceId: '', programId: 1 }),
-      ).rejects.toThrow(HttpException);
-    });
-
-    it('throws when registration cannot be found', async () => {
-      registrationScopedRepository.getWithRelationsByReferenceIdAndProgramId.mockResolvedValue(
-        null,
-      );
-
-      await expect(
-        service.getRegistrationOrThrow({ referenceId: 'ref-1', programId: 1 }),
-      ).rejects.toThrow(HttpException);
-    });
-
-    it('returns the registration when it exists', async () => {
-      const registration = { id: 10 } as RegistrationEntity;
-      registrationScopedRepository.getWithRelationsByReferenceIdAndProgramId.mockResolvedValue(
-        registration,
-      );
-
-      await expect(
-        service.getRegistrationOrThrow({ referenceId: 'ref-1', programId: 1 }),
-      ).resolves.toEqual(registration);
-    });
   });
 
   describe('linkDebitCardToRegistration', () => {
@@ -168,7 +138,7 @@ describe('DebitCardsIntersolveVisaService', () => {
 
     it('pauses a card and queues a notification', async () => {
       const wallet = { tokenCode: 'token' } as any;
-      registrationScopedRepository.getWithRelationsByReferenceIdAndProgramId.mockResolvedValue(
+      registrationUtilsService.getRegistrationOrThrow.mockResolvedValue(
         registration,
       );
       intersolveVisaService.pauseCardOrThrow.mockResolvedValue(wallet);
@@ -198,7 +168,7 @@ describe('DebitCardsIntersolveVisaService', () => {
 
     it('sends unpause notification when pause is false', async () => {
       const wallet = { tokenCode: 'token' } as any;
-      registrationScopedRepository.getWithRelationsByReferenceIdAndProgramId.mockResolvedValue(
+      registrationUtilsService.getRegistrationOrThrow.mockResolvedValue(
         registration,
       );
       intersolveVisaService.pauseCardOrThrow.mockResolvedValue(wallet);
