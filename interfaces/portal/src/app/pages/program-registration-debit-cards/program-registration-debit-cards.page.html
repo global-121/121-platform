@@ -3,43 +3,6 @@
   [registrationId]="registrationId()"
 >
   <div class="px-2">
-    <div class="flex flex-col gap-2">
-      <p-header i18n> No debit cards found </p-header>
-      <p-button
-        i18n
-        (click)="dialogVisible.set(true)"
-      >
-        Create new card
-      </p-button>
-      <p-dialog
-        [(visible)]="dialogVisible"
-        header="Create new card"
-        i18n-header="@@debit-card-create-new-card-dialog-header"
-        [modal]="true"
-        [closable]="true"
-        [dismissableMask]="true"
-        [style]="{ width: '400px' }"
-      >
-        <div class="flex flex-col gap-2">
-          <p-input-number
-            [(ngModel)]="cardNumber"
-            i18n-placeholder="
-              @@debit-card-create-new-card-dialog-card-number-placeholder"
-            placeholder="Enter card number"
-            [showButtons]="false"
-            [useGrouping]="false"
-            [style]="{ width: '100%' }"
-          ></p-input-number>
-          <p-button
-            i18n
-            (click)="createNewCard()"
-            label="Link card"
-            i18n-label
-            class="mt-4"
-          ></p-button>
-        </div>
-      </p-dialog>
-    </div>
     @if (currentCard()) {
       <div class="my-auto ms-auto flex">
         @if (currentCardHasAction()('pause')) {
