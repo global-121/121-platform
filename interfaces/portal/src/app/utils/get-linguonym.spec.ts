@@ -12,6 +12,6 @@ describe('getLinguonym', () => {
     expect(result).toBe('anglais');
   });
 
-  // The test for an invalid language code weirdly enough produces a different
+  // TODO: The test for an invalid language code weirdly enough produces a different
   // result here than in the browser. Investigate this later.
 });
