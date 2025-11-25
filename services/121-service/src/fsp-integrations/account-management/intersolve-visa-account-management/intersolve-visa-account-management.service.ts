@@ -179,9 +179,9 @@ export class IntersolveVisaAccountManagementService {
     }
     await this.sendCustomerInformationToIntersolve(registration);
 
-    const brandCode = intersolveVisaConfig.find(
-      (c) => c.name === FspConfigurationProperties.brandCode,
-    )?.value as string;
+    const brandCode = intersolveVisaConfig.get(
+      FspConfigurationProperties.brandCode,
+    ) as string;
 
     try {
       await this.intersolveVisaService.reissueCard({
@@ -380,9 +380,9 @@ export class IntersolveVisaAccountManagementService {
       registrationView[0]['programFspConfigurationId'],
     );
 
-    const brandCode = intersolveVisaConfig.find(
-      (c) => c.name === FspConfigurationProperties.brandCode,
-    )?.value as string;
+    const brandCode = intersolveVisaConfig.get(
+      FspConfigurationProperties.brandCode,
+    ) as string;
 
     const intersolveVisaParentWallet =
       await this.intersolveVisaService.getParentWalletOrCreate({
@@ -439,13 +439,13 @@ export class IntersolveVisaAccountManagementService {
       registrationView[0]['programFspConfigurationId'],
     );
 
-    const brandCode = intersolveVisaConfig.find(
-      (c) => c.name === FspConfigurationProperties.brandCode,
-    )?.value as string;
+    const brandCode = intersolveVisaConfig.get(
+      FspConfigurationProperties.brandCode,
+    ) as string;
 
-    const coverLetterCode = intersolveVisaConfig.find(
-      (c) => c.name === FspConfigurationProperties.coverLetterCode,
-    )?.value as string;
+    const coverLetterCode = intersolveVisaConfig.get(
+      FspConfigurationProperties.coverLetterCode,
+    ) as string;
 
     return await this.intersolveVisaService.reissueCard({
       registrationId: registrationView[0]['id'],
@@ -460,15 +460,22 @@ export class IntersolveVisaAccountManagementService {
 
   private async getIntersolveVisaConfig(
     programFspConfigurationId: number,
-  ): Promise<{ name: FspConfigurationProperties; value: string | string[] }[]> {
-    return await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow(
-      {
+  ): Promise<Map<FspConfigurationProperties, string | string[]>> {
+    const properties =
+      await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
         programFspConfigurationId,
         names: [
           FspConfigurationProperties.brandCode,
           FspConfigurationProperties.coverLetterCode,
         ],
-      },
-    );
+      });
+
+    const configMap = new Map<FspConfigurationProperties, string | string[]>();
+
+    properties.forEach(({ name, value }) => {
+      configMap.set(name, value);
+    });
+
+    return configMap;
   }
 }
