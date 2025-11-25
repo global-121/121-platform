@@ -206,7 +206,11 @@ export class IntersolveVisaAccountManagementController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+<<<<<<< HEAD
   @ApiBody({ type: TokenCodeDto })
+=======
+  @ApiQuery({ name: 'tokenCode', required: true, type: 'string' })
+>>>>>>> 8c0d51ea5 (some minor copilot suggestions)
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Card linked',

@@ -426,7 +426,7 @@ export class RegistrationApiService extends DomainApiService {
     return this.httpWrapperService.perform121ServiceRequest({
       method: 'POST',
       endpoint,
-      httpParams: { cardNumber: cardNumber() },
+      httpParams: { tokenCode: cardNumber() },
     });
   }
 }
