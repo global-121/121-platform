@@ -106,7 +106,7 @@ describe('DebitCardsIntersolveVisaService', () => {
 
       await expect(
         service.linkDebitCardToRegistration('ref-1', 1, 'token-1'),
-      ).rejects.toThrow('Card is alrealdy linked to another customer');
+      ).rejects.toThrow('Card is already linked to another customer');
     });
 
     it('links the card when wallet is unlinked', async () => {
