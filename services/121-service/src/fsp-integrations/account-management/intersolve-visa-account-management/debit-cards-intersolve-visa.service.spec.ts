@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { DebitCardsIntersolveVisaService } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.service';
+import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -18,6 +19,7 @@ describe('DebitCardsIntersolveVisaService', () => {
   let intersolveVisaService: jest.Mocked<IntersolveVisaService>;
   let queueMessageService: jest.Mocked<MessageQueuesService>;
   let registrationsPaginationService: jest.Mocked<RegistrationsPaginationService>;
+  let programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -74,6 +76,9 @@ describe('DebitCardsIntersolveVisaService', () => {
     queueMessageService = module.get(MessageQueuesService);
     intersolveVisaService = module.get(IntersolveVisaService);
     registrationsPaginationService = module.get(RegistrationsPaginationService);
+    programFspConfigurationRepository = module.get(
+      ProgramFspConfigurationRepository,
+    );
   });
 
   describe('linkDebitCardToRegistration', () => {
@@ -109,14 +114,35 @@ describe('DebitCardsIntersolveVisaService', () => {
         holderId: null,
       } as any);
       registrationsPaginationService.getRegistrationViewsByReferenceIds.mockResolvedValue(
-        registrationView,
+        [
+          {
+            ...registrationView[0],
+            programFspConfigurationId: 123, // any number is fine for the test
+          },
+        ] as any,
       );
+
       const customer = { id: 1 } as any;
       intersolveVisaService.getCustomerOrCreate.mockResolvedValue(customer);
+
       const parentWallet = { tokenCode: 'parent-token' } as any;
       intersolveVisaService.getParentWalletOrCreate.mockResolvedValue(
         parentWallet,
       );
+
+      // Mock FSP configuration repository to return brand/cover letter codes
+      (
+        programFspConfigurationRepository.getPropertiesByNamesOrThrow as jest.Mock
+      ).mockResolvedValue([
+        {
+          name: FspConfigurationProperties.brandCode,
+          value: 'BRAND',
+        },
+        {
+          name: FspConfigurationProperties.coverLetterCode,
+          value: 'COVER',
+        },
+      ]);
 
       await service.linkDebitCardToRegistration('ref-1', 1, 'child-token');
 
