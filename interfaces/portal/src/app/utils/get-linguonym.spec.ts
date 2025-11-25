@@ -1,0 +1,22 @@
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
+
+import { getLinguonym } from '~/utils/get-linguonym';
+
+describe('getLinguonym', () => {
+  it('should return correct linguonym for valid language codes', () => {
+    const result = getLinguonym({
+      languageToDisplayNameOf: RegistrationPreferredLanguage.en,
+      languageToShowNameIn: UILanguage.fr,
+    });
+    expect(result).toBe('anglais');
+  });
+
+  it('should fallback to original language code for invalid input', () => {
+    const result = getLinguonym({
+      languageToDisplayNameOf: 'invalid-code' as RegistrationPreferredLanguage,
+      languageToShowNameIn: UILanguage.fr,
+    });
+    expect(result).toBe('invalid-code');
+  });
+});
