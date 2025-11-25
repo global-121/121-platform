@@ -79,6 +79,12 @@ export class PaymentsReportingService {
       { count: number; transferValue: number }
     > = {};
 
+    const fspsInPayment =
+      await this.transactionViewScopedRepository.getAllFspsInPayment({
+        programId,
+        paymentId,
+      });
+
     for (const row of statusAggregation) {
       const status = row.status;
 
@@ -125,6 +131,7 @@ export class PaymentsReportingService {
         count: 0,
         transferValue: 0,
       },
+      fsps: fspsInPayment || [],
     };
   }
 
@@ -311,7 +318,7 @@ export class PaymentsReportingService {
       },
     );
 
-    return result as Paginated<PaginatedTransactionDto>; // This typeconversion is done to make our frontend happy as it cannot deal with typeorm entities
+    return result as Paginated<PaginatedTransactionDto>; // This type-conversion is done to make our frontend happy as it cannot deal with typeorm entities
   }
 
   public async getReferenceIdsForPaginateQuery({

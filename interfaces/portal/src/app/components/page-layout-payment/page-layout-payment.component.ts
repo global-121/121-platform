@@ -206,42 +206,21 @@ export class PageLayoutPaymentComponent {
   );
 
   readonly startPaymentFspList = computed<string>(() => {
-    if (!this.transactionsResponse.isSuccess()) {
+    if (!this.transactionsResponse.isSuccess() || !this.payment.isSuccess()) {
       return '';
     }
 
-    /*
-      ##TODO: add new endpoint. see task AB#39347
-    */
-    return Array.from(
-      new Set(
-        this.transactions().map(
-          (transaction) => transaction.programFspConfigurationName,
-        ),
-      ),
-    )
-      .map((fspName) => this.fspLabel(fspName ?? '')())
-      .join(', ');
-  });
-
-  readonly fspLabel = (fspName: string) =>
-    computed<string>(() => {
-      if (!this.fspSettings()[fspName]) {
-        return fspName;
-      }
-
-      const setting = this.fspSettings()[fspName] as FspDto;
-
-      const translatedFspLabel = this.translatableStringService.translate(
-        setting.defaultLabel,
+    const fspLabels = this.payment
+      .data()
+      .fsps.map(
+        (fsp) =>
+          fsp?.programFspConfigurationLabel ??
+          fsp?.programFspConfigurationName ??
+          '',
       );
 
-      if (!translatedFspLabel) {
-        return fspName;
-      }
-
-      return translatedFspLabel;
-    });
+    return this.translatableStringService.commaSeparatedList(fspLabels);
+  });
 
   readonly startPaymentTransactionCount = computed<string>(() => {
     if (!this.payment.isSuccess()) {
