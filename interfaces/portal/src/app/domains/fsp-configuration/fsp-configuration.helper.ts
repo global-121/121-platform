@@ -18,11 +18,8 @@ export const FSP_CONFIGURATION_PROPERTY_LABELS: Record<
   [FspConfigurationProperties.corporateCodeOnafriq]: $localize`Corporate code`,
   [FspConfigurationProperties.passwordOnafriq]: $localize`Password`,
   [FspConfigurationProperties.uniqueKeyOnafriq]: $localize`Unique key`,
-<<<<<<< HEAD
   [FspConfigurationProperties.debitAccountNumber]: $localize`Debit account number`,
-=======
   [FspConfigurationProperties.postalCardDistribution]: $localize`Postal card distribution`,
->>>>>>> e56284d9c (fsp config prop label)
 };
 
 export const FSP_IMAGE_URLS: Record<Fsps, string> = {
