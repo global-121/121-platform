@@ -2048,6 +2048,9 @@
       <trans-unit id="1467442682545650796" datatype="html">
         <source>Reg. # <x equiv-text="event.registrationProgramId.toString()" id="PH"/></source>
       </trans-unit>
+      <trans-unit id="registration-duplicate-status" datatype="html">
+        <source>Duplicate status</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
