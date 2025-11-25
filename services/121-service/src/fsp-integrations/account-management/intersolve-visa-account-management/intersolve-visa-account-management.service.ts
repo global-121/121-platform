@@ -390,9 +390,12 @@ export class IntersolveVisaAccountManagementService {
     const intersolveVisaChildWallet =
       await this.intersolveVisaService.getWallet(tokenCode);
 
-    if (intersolveVisaChildWallet.holderId !== null) {
+    if (
+      intersolveVisaChildWallet.holderId !== null &&
+      intersolveVisaChildWallet.holderId !== undefined
+    ) {
       throw new HttpException(
-        `Card is alrealdy linked to another customer at Intersolve.`,
+        `Card is already linked to another customer at Intersolve.`,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -457,9 +460,12 @@ export class IntersolveVisaAccountManagementService {
     const intersolveVisaChildWallet =
       await this.intersolveVisaService.getWallet(tokenCode);
 
-    if (intersolveVisaChildWallet.holderId !== null) {
+    if (
+      intersolveVisaChildWallet.holderId !== null &&
+      intersolveVisaChildWallet.holderId !== undefined
+    ) {
       throw new HttpException(
-        `Card is alrealdy linked to another customer at Intersolve.`,
+        `Card is already linked to another customer at Intersolve.`,
         HttpStatus.BAD_REQUEST,
       );
     }

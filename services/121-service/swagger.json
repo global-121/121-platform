@@ -1093,6 +1093,11 @@
     "params": [
       "programId",
       "referenceId",
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> f28a3c75d (some minor copilot suggestions)
       "tokenCode",
       "pause"
     ]
@@ -1121,6 +1126,15 @@
     "params": [
       "programId",
       "referenceId"
+<<<<<<< HEAD
+=======
+=======
+      "cardNumber",
+=======
+>>>>>>> 8c0d51ea5 (some minor copilot suggestions)
+      "tokenCode"
+>>>>>>> df04223e3 (unit tests)
+>>>>>>> f28a3c75d (some minor copilot suggestions)
     ]
   },
   {
@@ -1137,6 +1151,13 @@
     "params": [
       "programId",
       "referenceId"
+<<<<<<< HEAD
+=======
+=======
+      "referenceId",
+      "tokenCode"
+>>>>>>> df04223e3 (unit tests)
+>>>>>>> f28a3c75d (some minor copilot suggestions)
     ]
   }
 ]
