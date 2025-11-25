@@ -203,6 +203,10 @@ export class IntersolveVisaAccountManagementController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Card linked',
+  })
   @Post(
     'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/link-card',
   )
@@ -225,6 +229,10 @@ export class IntersolveVisaAccountManagementController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Card replaced',
+  })
   @Post(
     'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/replace-card',
   )
