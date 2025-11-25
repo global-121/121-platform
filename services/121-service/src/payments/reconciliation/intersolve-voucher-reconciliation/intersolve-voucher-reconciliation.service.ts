@@ -22,12 +22,12 @@ export class IntersolveVoucherReconciliationService {
     vouchers,
     programId,
     credentials,
-    activityDescription,
+    operationContext: activityDescription,
   }: {
     vouchers: IntersolveVoucherEntity[];
     programId: number;
     credentials: any;
-    activityDescription: string;
+    operationContext: string;
   }): Promise<number> {
     let updatedCount = 0;
     const errorVoucherIds: number[] = [];
@@ -100,7 +100,7 @@ export class IntersolveVoucherReconciliationService {
           vouchers: vouchersToUpdate,
           programId,
           credentials,
-          activityDescription: 'updating all balances via endpoint',
+          operationContext: 'via endpoint',
         });
       }
       id += 1000;
@@ -163,7 +163,7 @@ export class IntersolveVoucherReconciliationService {
           vouchers: previouslyUnusedVouchers,
           programId,
           credentials,
-          activityDescription: 'via cronjob',
+          operationContext: 'via cronjob',
         });
       }
       id += 1000;

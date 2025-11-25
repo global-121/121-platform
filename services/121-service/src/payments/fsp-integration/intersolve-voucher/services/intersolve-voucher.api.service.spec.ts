@@ -79,7 +79,9 @@ describe('IntersolveVoucherApiService', () => {
     (intersolveVoucherMockService.post as jest.Mock).mockResolvedValue({});
     await expect(
       service.getCard('card', 'pin', 'user', 'pass'),
-    ).rejects.toThrowErrorMatchingSnapshot();
+    ).rejects.toThrowErrorMatchingInlineSnapshot(
+      `"Intersolve response did not contain a 'GetCardResponse' field."`,
+    );
     expect(intersolveVoucherMockService.post).toHaveBeenCalledTimes(2);
   });
 });

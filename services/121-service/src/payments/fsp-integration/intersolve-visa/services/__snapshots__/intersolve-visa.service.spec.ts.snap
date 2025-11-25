@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
-
-exports[`IntersolveVisaService retrieveAndUpdateAllWalletsAndCards should throw when 10 IntersolveVisaApiErrors occur 1`] = `"10 IntersolveVisaApiErrors occurred while retrieving and updating wallets and cards, for parent tokenCodes: , , , , , , , , , . Aborting."`;

@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
-
-exports[`IntersolveVoucherApiService should throw error after two failed attempts 1`] = `"Intersolve response did not contain a 'GetCardResponse' field."`;

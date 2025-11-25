@@ -354,7 +354,10 @@ describe('IntersolveVisaService', () => {
     it('should throw when 10 IntersolveVisaApiErrors occur', async () => {
       const customers = Array.from({ length: 10 }, (_, i) => ({
         registrationId: i + 1,
-        intersolveVisaParentWallet: parentWallet,
+        intersolveVisaParentWallet: {
+          ...parentWallet,
+          tokenCode: `t${i + 1}`,
+        },
       }));
       jest
         .spyOn(customerRepo, 'findWithWallets')
@@ -365,7 +368,9 @@ describe('IntersolveVisaService', () => {
 
       await expect(
         service.retrieveAndUpdateAllWalletsAndCards(),
-      ).rejects.toThrowErrorMatchingSnapshot();
+      ).rejects.toThrowErrorMatchingInlineSnapshot(
+        `"10 IntersolveVisaApiErrors occurred while retrieving and updating wallets and cards, for parent tokenCodes: t1, t2, t3, t4, t5, t6, t7, t8, t9, t10. Aborting."`,
+      );
     });
 
     it('should NOT throw when 9 IntersolveVisaApiErrors occur', async () => {
