@@ -24,7 +24,7 @@ export const getLinguonym = ({
     // We catch this and fall back to the original language code, ex: 'et_AM'.
     possibleResult = names.of(languageToDisplayNameOf);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Error variable not needed.
-  } catch (_err) {
+  } catch (_) {
     // do nothing
   }
   return possibleResult ?? languageToDisplayNameOf;
