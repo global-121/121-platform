@@ -29,7 +29,10 @@ import { UserModule } from '@121-service/src/user/user.module';
     IntersolveVisaRegistrationAttributeChangeHandler,
     {
       provide: 'REGISTRATION_ATTRIBUTE_CHANGE_HANDLERS',
-      useExisting: IntersolveVisaRegistrationAttributeChangeHandler,
+      useFactory: (
+        handler: IntersolveVisaRegistrationAttributeChangeHandler,
+      ) => [handler],
+      inject: [IntersolveVisaRegistrationAttributeChangeHandler],
     },
   ],
   exports: [DebitCardsIntersolveVisaService],
