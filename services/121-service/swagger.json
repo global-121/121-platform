@@ -1120,7 +1120,6 @@
     "params": [
       "programId",
       "referenceId",
-      "cardNumber",
       "tokenCode"
     ]
   },
@@ -1130,7 +1129,6 @@
     "params": [
       "programId",
       "referenceId",
-      "cardNumber",
       "tokenCode"
     ]
   }
