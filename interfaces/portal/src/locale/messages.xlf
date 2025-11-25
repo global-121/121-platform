@@ -2006,18 +2006,6 @@
       <trans-unit id="8386352594791941612" datatype="html">
         <source>Debit account number</source>
       </trans-unit>
-      <trans-unit id="1183614487113957266" datatype="html">
-        <source>Create new card</source>
-      </trans-unit>
-      <trans-unit id="3176639329668271224" datatype="html">
-        <source>Link card</source>
-      </trans-unit>
-      <trans-unit id="3955978879688646668" datatype="html">
-        <source>No debit cards found</source>
-      </trans-unit>
-      <trans-unit id="debit-card-create-new-card-dialog-card-number-placeholder" datatype="html">
-        <source>Enter card number</source>
-      </trans-unit>
       <trans-unit id="8591287882066642064" datatype="html">
         <source>Postal card distribution</source>
       </trans-unit>
