@@ -202,7 +202,7 @@ export class IntersolveVisaAccountManagementController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
-  @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
+  @ApiQuery({ name: 'tokenCode', required: true, type: 'string' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Card linked',
@@ -213,12 +213,12 @@ export class IntersolveVisaAccountManagementController {
   public async linkDebitCardToRegistration(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('referenceId') referenceId: string,
-    @Param('cardNumber') cardNumber: string,
+    @Query('tokenCode') tokenCode: string,
   ): Promise<void> {
     return await this.debitCardsIntersolveVisaService.linkDebitCardToRegistration(
       referenceId,
       programId,
-      cardNumber,
+      tokenCode,
     );
   }
 
@@ -228,7 +228,7 @@ export class IntersolveVisaAccountManagementController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
-  @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
+  @ApiQuery({ name: 'tokenCode', required: true, type: 'string' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Card replaced',
@@ -239,12 +239,12 @@ export class IntersolveVisaAccountManagementController {
   public async replaceCard(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('referenceId') referenceId: string,
-    @Param('cardNumber') cardNumber: string,
+    @Query('tokenCode') tokenCode: string,
   ): Promise<void> {
     return await this.debitCardsIntersolveVisaService.replaceCard(
       referenceId,
       programId,
-      cardNumber,
+      tokenCode,
     );
   }
 }
