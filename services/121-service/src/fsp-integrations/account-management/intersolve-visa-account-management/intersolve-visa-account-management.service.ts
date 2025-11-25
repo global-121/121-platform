@@ -399,10 +399,18 @@ export class IntersolveVisaAccountManagementService {
         contactInformation,
       });
 
+    const intersolveVisaConfig = await this.getIntersolveVisaConfig(
+      registrationView[0]['programFspConfigurationId'],
+    );
+
+    const brandCode = intersolveVisaConfig.find(
+      (c) => c.name === FspConfigurationProperties.brandCode,
+    )?.value as string;
+
     const intersolveVisaParentWallet =
       await this.intersolveVisaService.getParentWalletOrCreate({
         intersolveVisaCustomer,
-        brandCode: FspConfigurationProperties.brandCode,
+        brandCode,
       });
 
     await this.intersolveVisaService.linkParentWalletToCustomerIfUnlinked({
@@ -450,14 +458,40 @@ export class IntersolveVisaAccountManagementService {
       phoneNumber: String(registrationView[0]['phoneNumber']),
     };
 
+    const intersolveVisaConfig = await this.getIntersolveVisaConfig(
+      registrationView[0]['programFspConfigurationId'],
+    );
+
+    const brandCode = intersolveVisaConfig.find(
+      (c) => c.name === FspConfigurationProperties.brandCode,
+    )?.value as string;
+
+    const coverLetterCode = intersolveVisaConfig.find(
+      (c) => c.name === FspConfigurationProperties.coverLetterCode,
+    )?.value as string;
+
     return await this.intersolveVisaService.reissueCard({
       registrationId: registrationView[0]['id'],
       reference: referenceId,
       name: String(registrationView[0]['name']),
       contactInformation,
-      brandCode: FspConfigurationProperties.brandCode,
-      coverLetterCode: FspConfigurationProperties.coverLetterCode,
+      brandCode,
+      coverLetterCode,
       physicalCardToken: tokenCode,
     });
+  }
+
+  private async getIntersolveVisaConfig(
+    programFspConfigurationId: number,
+  ): Promise<{ name: FspConfigurationProperties; value: string | string[] }[]> {
+    return await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow(
+      {
+        programFspConfigurationId,
+        names: [
+          FspConfigurationProperties.brandCode,
+          FspConfigurationProperties.coverLetterCode,
+        ],
+      },
+    );
   }
 }
