@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  Optional,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, FindOneOptions, In, Repository } from 'typeorm';
 
@@ -29,6 +35,7 @@ import {
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationValidationInputType } from '@121-service/src/registration/enum/registration-validation-input-type.enum';
 import { ErrorEnum } from '@121-service/src/registration/errors/registration-data.error';
+import { RegistrationAttributeChangeHandler } from '@121-service/src/registration/interfaces/registration-attribute-change-handler.interface';
 import { ValidationRegistrationConfig } from '@121-service/src/registration/interfaces/validate-registration-config.interface';
 import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
