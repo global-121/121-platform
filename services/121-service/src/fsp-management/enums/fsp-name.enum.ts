@@ -20,6 +20,7 @@ export enum FspConfigurationProperties {
   coverLetterCode = 'coverLetterCode',
   fundingTokenCode = 'fundingTokenCode',
   paymentReferencePrefix = 'paymentReferencePrefix',
+  postalCardDistribution = 'postalCardDistribution',
   //onafriq
   corporateCodeOnafriq = 'corporateCodeOnafriq',
   passwordOnafriq = 'passwordOnafriq',
@@ -40,6 +41,7 @@ export const FspConfigPropertyValueVisibility: Record<
   [FspConfigurationProperties.coverLetterCode]: true,
   [FspConfigurationProperties.fundingTokenCode]: true,
   [FspConfigurationProperties.paymentReferencePrefix]: true,
+  [FspConfigurationProperties.postalCardDistribution]: true,
   //onafriq
   [FspConfigurationProperties.corporateCodeOnafriq]: true,
   [FspConfigurationProperties.passwordOnafriq]: false,
