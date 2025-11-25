@@ -28,13 +28,20 @@ export const STATUS_CHANGE_STRING = 'Status';
           WHEN event.type = '${RegistrationEventEnum.registrationStatusChange}' THEN '${STATUS_CHANGE_STRING}'
           WHEN event.type = '${RegistrationEventEnum.registrationDataChange}' THEN "fieldNameAttr"."value"
           WHEN event.type = '${RegistrationEventEnum.fspChange}' THEN 'FSP'
+          WHEN event.type = '${RegistrationEventEnum.ignoredDuplicate}' THEN 'duplicateStatus'
           ELSE NULL
         END
       `,
         'fieldChanged',
       )
-      .addSelect('oldValueAttr.value', 'oldValue')
-      .addSelect('newValueAttr.value', 'newValue')
+      .addSelect(
+        `CASE WHEN event.type = '${RegistrationEventEnum.ignoredDuplicate}' THEN 'duplicate' ELSE oldValueAttr.value END`,
+        'oldValue',
+      )
+      .addSelect(
+        `CASE WHEN event.type = '${RegistrationEventEnum.ignoredDuplicate}' THEN 'unique' ELSE newValueAttr.value END`,
+        'newValue',
+      )
       .addSelect('reasonAttr.value', 'reason')
       .addSelect('user.username', 'username')
       .from(RegistrationEventEntity, 'event')
@@ -63,8 +70,7 @@ export const STATUS_CHANGE_STRING = 'Status';
         'reasonAttr',
         `reasonAttr.eventId = event.id AND reasonAttr.key = '${RegistrationEventAttributeKeyEnum.reason}'`,
       )
-      .leftJoin(UserEntity, 'user', 'user.id = event.userId')
-      .where(`event.type != '${RegistrationEventEnum.ignoredDuplicate}'`); // ##TODO for now exclude this, but figure out what to do
+      .leftJoin(UserEntity, 'user', 'user.id = event.userId');
   },
 })
 export class RegistrationEventViewEntity extends Base121Entity {
@@ -90,5 +96,5 @@ export class RegistrationEventViewEntity extends Base121Entity {
   public reason: string | null;
 
   @ViewColumn()
-  public username: string; // This seems easier here than extending Base121OptionalAuditedEntity and then joining username somewhere
+  public username: string; // This is easier than extending Base121OptionalAuditedEntity and then having to join username somewhere else
 }
