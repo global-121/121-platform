@@ -126,14 +126,9 @@ export class IntersolveVisaAccountManagementService {
       );
     }
 
-    const intersolveVisaConfig =
-      await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
-        programFspConfigurationId: registration.programFspConfigurationId,
-        names: [
-          FspConfigurationProperties.brandCode,
-          FspConfigurationProperties.coverLetterCode,
-        ],
-      });
+    const intersolveVisaConfig = await this.getIntersolveVisaConfig(
+      registration.programFspConfigurationId,
+    );
 
     //  TODO: REFACTOR: This 'ugly' code is now also in payments.service.createAndAddIntersolveVisaTransactionJobs. This should be refactored when there's a better way of getting registration data.
     const intersolveVisaAttributes =
@@ -205,9 +200,7 @@ export class IntersolveVisaAccountManagementService {
           addressCity: mappedRegistrationData[FspAttributes.addressCity],
           phoneNumber: mappedRegistrationData[FspAttributes.phoneNumber], // In the above for loop it is checked that this is not undefined or empty
         },
-        brandCode: intersolveVisaConfig.find(
-          (c) => c.name === FspConfigurationProperties.brandCode,
-        )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+        brandCode,
         coverLetterCode: brandCode,
       });
     } catch (error) {
@@ -383,10 +376,18 @@ export class IntersolveVisaAccountManagementService {
         contactInformation,
       });
 
+    const intersolveVisaConfig = await this.getIntersolveVisaConfig(
+      registrationView[0]['programFspConfigurationId'],
+    );
+
+    const brandCode = intersolveVisaConfig.find(
+      (c) => c.name === FspConfigurationProperties.brandCode,
+    )?.value as string;
+
     const intersolveVisaParentWallet =
       await this.intersolveVisaService.getParentWalletOrCreate({
         intersolveVisaCustomer,
-        brandCode: FspConfigurationProperties.brandCode,
+        brandCode,
       });
 
     await this.intersolveVisaService.linkParentWalletToCustomerIfUnlinked({
@@ -434,14 +435,40 @@ export class IntersolveVisaAccountManagementService {
       phoneNumber: String(registrationView[0]['phoneNumber']),
     };
 
+    const intersolveVisaConfig = await this.getIntersolveVisaConfig(
+      registrationView[0]['programFspConfigurationId'],
+    );
+
+    const brandCode = intersolveVisaConfig.find(
+      (c) => c.name === FspConfigurationProperties.brandCode,
+    )?.value as string;
+
+    const coverLetterCode = intersolveVisaConfig.find(
+      (c) => c.name === FspConfigurationProperties.coverLetterCode,
+    )?.value as string;
+
     return await this.intersolveVisaService.reissueCard({
       registrationId: registrationView[0]['id'],
       reference: referenceId,
       name: String(registrationView[0]['name']),
       contactInformation,
-      brandCode: FspConfigurationProperties.brandCode,
-      coverLetterCode: FspConfigurationProperties.coverLetterCode,
+      brandCode,
+      coverLetterCode,
       physicalCardToken: tokenCode,
     });
+  }
+
+  private async getIntersolveVisaConfig(
+    programFspConfigurationId: number,
+  ): Promise<{ name: FspConfigurationProperties; value: string | string[] }[]> {
+    return await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow(
+      {
+        programFspConfigurationId,
+        names: [
+          FspConfigurationProperties.brandCode,
+          FspConfigurationProperties.coverLetterCode,
+        ],
+      },
+    );
   }
 }
