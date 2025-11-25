@@ -130,63 +130,21 @@ export class IntersolveVisaAccountManagementService {
       registration.programFspConfigurationId,
     );
 
-    //  TODO: REFACTOR: This 'ugly' code is now also in payments.service.createAndAddIntersolveVisaTransactionJobs. This should be refactored when there's a better way of getting registration data.
-    const intersolveVisaAttributes =
-      FSP_SETTINGS[Fsps.intersolveVisa].attributes;
+    const mappedRegistrationData = await this.getRegistrationData(registration);
 
-    const intersolveVisaAttributeNames = intersolveVisaAttributes.map(
-      (q) => q.name,
-    );
-    const dataFieldNames = [
-      FspAttributes.fullName,
-      FspAttributes.phoneNumber,
-      ...intersolveVisaAttributeNames,
-    ];
-
-    const registrationData =
-      await this.registrationDataScopedRepository.getRegistrationDataArrayByName(
-        registration,
-        dataFieldNames,
-      );
-
-    if (!registrationData || registrationData.length === 0) {
-      throw new HttpException(
-        `No registration data found for referenceId: ${referenceId}`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    const mappedRegistrationData = registrationData.reduce(
-      (acc, { name, value }) => {
-        acc[name] = value;
-        return acc;
-      },
-      {},
-    );
-
-    for (const name of dataFieldNames) {
-      if (name === FspAttributes.addressHouseNumberAddition) continue; // Skip non-required property
-      if (
-        mappedRegistrationData[name] === null ||
-        mappedRegistrationData[name] === undefined ||
-        mappedRegistrationData[name] === ''
-      ) {
-        throw new HttpException(
-          `Property ${name} is undefined`,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-    }
     await this.sendCustomerInformationToIntersolve(registration);
 
     const brandCode = intersolveVisaConfig.get(
       FspConfigurationProperties.brandCode,
     ) as string;
 
+    const coverLetterCode = intersolveVisaConfig.get(
+      FspConfigurationProperties.coverLetterCode,
+    ) as string;
+
     try {
       await this.intersolveVisaService.reissueCard({
         registrationId: registration.id,
-        // Why do we need this?
         reference: registration.referenceId,
         name: mappedRegistrationData[FspAttributes.fullName],
         contactInformation: {
@@ -198,10 +156,10 @@ export class IntersolveVisaAccountManagementService {
           addressPostalCode:
             mappedRegistrationData[FspAttributes.addressPostalCode],
           addressCity: mappedRegistrationData[FspAttributes.addressCity],
-          phoneNumber: mappedRegistrationData[FspAttributes.phoneNumber], // In the above for loop it is checked that this is not undefined or empty
+          phoneNumber: mappedRegistrationData[FspAttributes.phoneNumber],
         },
         brandCode,
-        coverLetterCode: brandCode,
+        coverLetterCode,
       });
     } catch (error) {
       if (error instanceof IntersolveVisaApiError) {
@@ -339,48 +297,35 @@ export class IntersolveVisaAccountManagementService {
     programId: number,
     tokenCode: string,
   ): Promise<void> {
-    // Check if card exists and is unlinked
-    const intersolveVisaChildWallet =
-      await this.intersolveVisaService.getWallet(tokenCode);
+    await this.checkIfCardIsAlreadyLinked(tokenCode);
 
-    if (
-      intersolveVisaChildWallet.holderId !== null &&
-      intersolveVisaChildWallet.holderId !== undefined
-    ) {
-      throw new HttpException(
-        `Card is already linked to another customer at Intersolve.`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    const registration: RegistrationEntity =
+      await this.registrationUtilsService.getRegistrationOrThrow({
+        referenceId,
+        programId,
+      });
 
-    const registrationView =
-      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
-        {
-          programId,
-          referenceIds: [referenceId],
-        },
-      );
-
-    const contactInformation: ContactInformation = {
-      addressStreet: registrationView[0]['addressStreet'],
-      addressHouseNumber: registrationView[0]['addressHouseNumber'],
-      addressHouseNumberAddition:
-        registrationView[0]['addressHouseNumberAddition'],
-      addressPostalCode: registrationView[0]['addressPostalCode'],
-      addressCity: registrationView[0]['addressCity'],
-      phoneNumber: String(registrationView[0]['phoneNumber']),
-    };
+    const registrationData = await this.getRegistrationData(registration);
 
     const intersolveVisaCustomer =
       await this.intersolveVisaService.getCustomerOrCreate({
-        registrationId: registrationView[0]['id'],
+        registrationId: registration.id,
         createCustomerReference: referenceId,
-        name: String(registrationView[0]['name']),
-        contactInformation,
+        name: registrationData[FspAttributes.fullName],
+        contactInformation: {
+          addressStreet: registrationData[FspAttributes.addressStreet],
+          addressHouseNumber:
+            registrationData[FspAttributes.addressHouseNumber],
+          addressHouseNumberAddition:
+            registrationData[FspAttributes.addressHouseNumberAddition],
+          addressPostalCode: registrationData[FspAttributes.addressPostalCode],
+          addressCity: registrationData[FspAttributes.addressCity],
+          phoneNumber: registrationData[FspAttributes.phoneNumber],
+        },
       });
 
     const intersolveVisaConfig = await this.getIntersolveVisaConfig(
-      registrationView[0]['programFspConfigurationId'],
+      registration.programFspConfigurationId,
     );
 
     const brandCode = intersolveVisaConfig.get(
@@ -409,7 +354,101 @@ export class IntersolveVisaAccountManagementService {
     programId: number,
     tokenCode: string,
   ): Promise<void> {
-    // Check if card exists and is unlinked
+    await this.checkIfCardIsAlreadyLinked(tokenCode);
+
+    const registration =
+      await this.registrationUtilsService.getRegistrationOrThrow({
+        referenceId,
+      });
+
+    const registrationData = await this.getRegistrationData(registration);
+
+    const intersolveVisaConfig = await this.getIntersolveVisaConfig(
+      registrationData[registration.programFspConfigurationId],
+    );
+
+    const brandCode = intersolveVisaConfig.get(
+      FspConfigurationProperties.brandCode,
+    ) as string;
+
+    const coverLetterCode = intersolveVisaConfig.get(
+      FspConfigurationProperties.coverLetterCode,
+    ) as string;
+
+    return await this.intersolveVisaService.reissueCard({
+      registrationId: registration.id,
+      reference: registration.referenceId,
+      name: registrationData[FspAttributes.fullName],
+      contactInformation: {
+        addressStreet: registrationData[FspAttributes.addressStreet],
+        addressHouseNumber: registrationData[FspAttributes.addressHouseNumber],
+        addressHouseNumberAddition:
+          registrationData[FspAttributes.addressHouseNumberAddition],
+        addressPostalCode: registrationData[FspAttributes.addressPostalCode],
+        addressCity: registrationData[FspAttributes.addressCity],
+        phoneNumber: registrationData[FspAttributes.phoneNumber],
+      },
+      brandCode,
+      coverLetterCode,
+      physicalCardToken: tokenCode,
+    });
+  }
+
+  private async getRegistrationData(
+    registration: RegistrationEntity,
+  ): Promise<any> {
+    //  TODO: REFACTOR: This 'ugly' code is now also in payments.service.createAndAddIntersolveVisaTransactionJobs. This should be refactored when there's a better way of getting registration data.
+    const intersolveVisaAttributes =
+      FSP_SETTINGS[Fsps.intersolveVisa].attributes;
+
+    const intersolveVisaAttributeNames = intersolveVisaAttributes.map(
+      (q) => q.name,
+    );
+    const dataFieldNames = [
+      FspAttributes.fullName,
+      FspAttributes.phoneNumber,
+      ...intersolveVisaAttributeNames,
+    ];
+
+    const registrationData =
+      await this.registrationDataScopedRepository.getRegistrationDataArrayByName(
+        registration,
+        dataFieldNames,
+      );
+
+    if (!registrationData || registrationData.length === 0) {
+      throw new HttpException(
+        `No registration data found for referenceId: ${registration.referenceId}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const mappedRegistrationData = registrationData.reduce(
+      (acc, { name, value }) => {
+        acc[name] = value;
+        return acc;
+      },
+      {},
+    );
+
+    for (const name of dataFieldNames) {
+      if (name === FspAttributes.addressHouseNumberAddition) continue; // Skip non-required property
+      if (
+        mappedRegistrationData[name] === null ||
+        mappedRegistrationData[name] === undefined ||
+        mappedRegistrationData[name] === ''
+      ) {
+        throw new HttpException(
+          `Property ${name} is undefined`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+
+    return mappedRegistrationData;
+  }
+
+  private async checkIfCardIsAlreadyLinked(tokenCode: string): Promise<void> {
     const intersolveVisaChildWallet =
       await this.intersolveVisaService.getWallet(tokenCode);
 
@@ -422,46 +461,6 @@ export class IntersolveVisaAccountManagementService {
         HttpStatus.BAD_REQUEST,
       );
     }
-
-    const registrationView =
-      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
-        {
-          programId,
-          referenceIds: [referenceId],
-        },
-      );
-
-    const contactInformation: ContactInformation = {
-      addressStreet: registrationView[0]['addressStreet'],
-      addressHouseNumber: registrationView[0]['addressHouseNumber'],
-      addressHouseNumberAddition:
-        registrationView[0]['addressHouseNumberAddition'],
-      addressPostalCode: registrationView[0]['addressPostalCode'],
-      addressCity: registrationView[0]['addressCity'],
-      phoneNumber: String(registrationView[0]['phoneNumber']),
-    };
-
-    const intersolveVisaConfig = await this.getIntersolveVisaConfig(
-      registrationView[0]['programFspConfigurationId'],
-    );
-
-    const brandCode = intersolveVisaConfig.get(
-      FspConfigurationProperties.brandCode,
-    ) as string;
-
-    const coverLetterCode = intersolveVisaConfig.get(
-      FspConfigurationProperties.coverLetterCode,
-    ) as string;
-
-    return await this.intersolveVisaService.reissueCard({
-      registrationId: registrationView[0]['id'],
-      reference: referenceId,
-      name: String(registrationView[0]['name']),
-      contactInformation,
-      brandCode,
-      coverLetterCode,
-      physicalCardToken: tokenCode,
-    });
   }
 
   private async getIntersolveVisaConfig(
