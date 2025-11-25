@@ -4,10 +4,10 @@ import { IsEnum } from 'class-validator';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 export enum IntersolveVoucherJobName {
-  getLastestVoucherBalance = 'get-latest-voucher-balance',
+  getLatestVoucherBalance = 'get-latest-voucher-balance',
 }
 export class IntersolveVoucherJobDetails {
-  @ApiProperty({ example: IntersolveVoucherJobName.getLastestVoucherBalance })
+  @ApiProperty({ example: IntersolveVoucherJobName.getLatestVoucherBalance })
   @IsEnum(IntersolveVoucherJobName)
   public readonly name: WrapperType<IntersolveVoucherJobName>;
 }

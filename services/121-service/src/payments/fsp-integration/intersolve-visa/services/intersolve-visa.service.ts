@@ -740,6 +740,7 @@ export class IntersolveVisaService {
   public async retrieveAndUpdateAllWalletsAndCards(): Promise<number> {
     const customers =
       await this.intersolveVisaCustomerScopedRepository.findWithWallets();
+    const errorParentTokenCodes: string[] = [];
     for (const customer of customers) {
       if (!customer.intersolveVisaParentWallet) {
         continue;
@@ -756,13 +757,22 @@ export class IntersolveVisaService {
         await this.updateParentWallet(customer.intersolveVisaParentWallet);
       } catch (error) {
         if (error instanceof IntersolveVisaApiError) {
-          // If the error is an IntersolveVisaApiError, we log it and continue with the next customer
-          // We do this because we want to continue processing all customers even if one fails (as the intersolve api is sometimes unreliable)
+          errorParentTokenCodes.push(
+            customer.intersolveVisaParentWallet.tokenCode,
+          );
           console.error(
             'IntersolveVisaApiError occurred while retrieving and updating wallets for customer:',
             customer.registrationId,
             error.message,
           );
+
+          if (errorParentTokenCodes.length >= 10) {
+            throw new Error(
+              `${errorParentTokenCodes.length} IntersolveVisaApiErrors occurred while retrieving and updating wallets and cards, for parent tokenCodes: ${errorParentTokenCodes.join(
+                ', ',
+              )}. Aborting.`,
+            );
+          }
         } else {
           // If the error is not an IntersolveVisaApiError, we rethrow it
           throw error;

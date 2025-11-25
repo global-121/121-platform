@@ -18,57 +18,92 @@ export class IntersolveVoucherReconciliationService {
     private readonly intersolveVoucherScopedRepository: ScopedRepository<IntersolveVoucherEntity>,
   ) {}
 
+  private async updateVouchersWithErrorHandling({
+    vouchers,
+    programId,
+    credentials,
+    operationContext: activityDescription,
+  }: {
+    vouchers: IntersolveVoucherEntity[];
+    programId: number;
+    credentials: any;
+    operationContext: string;
+  }): Promise<number> {
+    let updatedCount = 0;
+    const errorVoucherIds: number[] = [];
+    const errorCountToThrowOn = 10;
+    for (const voucher of vouchers) {
+      updatedCount++;
+      try {
+        await this.intersolveVoucherService.getAndUpdateBalance(
+          voucher,
+          programId,
+          credentials,
+        );
+      } catch (error) {
+        errorVoucherIds.push(voucher.id);
+        if (errorVoucherIds.length >= errorCountToThrowOn) {
+          throw new Error(
+            `${errorVoucherIds.length} errors occurred while updating all balances ${activityDescription} for vouchers: ${errorVoucherIds.join(', ')}. Failing job to prevent excessive API calls.`,
+          );
+        }
+      }
+    }
+    return updatedCount;
+  }
+
   public async getAndUpdateBalancesForProgram(
     programId: number,
     jobName: IntersolveVoucherJobName,
   ): Promise<void> {
-    if (jobName === IntersolveVoucherJobName.getLastestVoucherBalance) {
-      const maxId = (
-        await this.intersolveVoucherScopedRepository
-          .createQueryBuilder('voucher')
-          .select('MAX(voucher.id)', 'max')
-          .leftJoin('voucher.image', 'image')
-          .leftJoin('image.registration', 'registration')
-          .andWhere('registration.programId = :programId', {
-            programId,
-          })
-          .getRawOne()
-      )?.max;
+    if (jobName !== IntersolveVoucherJobName.getLatestVoucherBalance) {
+      return;
+    }
 
-      // Run this in batches of 1,000 as it is performance-heavy
-      let id = 1;
-      while (id <= maxId) {
-        // Query gets all vouchers that need to be checked these can be:
-        // 1) Vouchers with null (which have never been checked)
-        // 2) Voucher with a balance of not 0 (which could have been used more in the meantime)
-        const q = await this.intersolveVoucherScopedRepository
-          .createQueryBuilder('voucher')
-          .leftJoinAndSelect('voucher.image', 'image')
-          .leftJoinAndSelect('image.registration', 'registration')
-          .andWhere('voucher.lastRequestedBalance IS DISTINCT from 0')
-          .andWhere(`voucher.id BETWEEN :id AND (:id + 1000 - 1)`, {
-            id,
-          })
-          .andWhere('registration.programId = :programId', {
-            programId,
-          });
+    const maxId = (
+      await this.intersolveVoucherScopedRepository
+        .createQueryBuilder('voucher')
+        .select('MAX(voucher.id)', 'max')
+        .leftJoin('voucher.image', 'image')
+        .leftJoin('image.registration', 'registration')
+        .andWhere('registration.programId = :programId', {
+          programId,
+        })
+        .getRawOne()
+    )?.max;
 
-        const vouchersToUpdate = await q.getMany();
-        if (vouchersToUpdate.length > 0) {
-          const credentials =
-            await this.programFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
-              vouchersToUpdate[0].id,
-            );
-          for await (const voucher of vouchersToUpdate) {
-            await this.intersolveVoucherService.getAndUpdateBalance(
-              voucher,
-              programId,
-              credentials,
-            );
-          }
-        }
-        id += 1000;
+    // Run this in batches of 1,000 as it is performance-heavy
+    let id = 1;
+    while (id <= maxId) {
+      // Query gets all vouchers that need to be checked these can be:
+      // 1) Vouchers with null (which have never been checked)
+      // 2) Voucher with a balance of not 0 (which could have been used more in the meantime)
+      const query = this.intersolveVoucherScopedRepository
+        .createQueryBuilder('voucher')
+        .leftJoinAndSelect('voucher.image', 'image')
+        .leftJoinAndSelect('image.registration', 'registration')
+        .andWhere('voucher.lastRequestedBalance IS DISTINCT from 0')
+        .andWhere(`voucher.id BETWEEN :id AND (:id + 1000 - 1)`, {
+          id,
+        })
+        .andWhere('registration.programId = :programId', {
+          programId,
+        });
+
+      const vouchersToUpdate = await query.getMany();
+      if (vouchersToUpdate.length > 0) {
+        const credentials =
+          await this.programFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
+            vouchersToUpdate[0].id,
+          );
+        await this.updateVouchersWithErrorHandling({
+          vouchers: vouchersToUpdate,
+          programId,
+          credentials,
+          operationContext: 'via endpoint',
+        });
       }
+      id += 1000;
     }
   }
 
@@ -124,15 +159,12 @@ export class IntersolveVoucherReconciliationService {
           await this.programFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
             previouslyUnusedVouchers[0].id,
           );
-
-        for await (const voucher of previouslyUnusedVouchers) {
-          totalVouchersUpdated++;
-          await this.intersolveVoucherService.getAndUpdateBalance(
-            voucher,
-            programId,
-            credentials,
-          );
-        }
+        totalVouchersUpdated += await this.updateVouchersWithErrorHandling({
+          vouchers: previouslyUnusedVouchers,
+          programId,
+          credentials,
+          operationContext: 'via cronjob',
+        });
       }
       id += 1000;
     }

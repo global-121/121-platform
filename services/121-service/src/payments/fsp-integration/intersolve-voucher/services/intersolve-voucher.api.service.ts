@@ -9,7 +9,9 @@ import { IntersolveIssueCardResponse } from '@121-service/src/payments/fsp-integ
 import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/entities/intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherResultCode } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-result-code.enum';
 import { IntersolveVoucherSoapElements } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-soap.enum';
-import { IntersolveVoucherMockService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/instersolve-voucher.mock';
+import { IntersolveGetCardSoapResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/interfaces/intersolve-get-card-soap-response.interface';
+import { IntersolveVoucherMockService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.mock';
+import { repeatAttempt } from '@121-service/src/utils/repeat-attempt';
 import { SoapService } from '@121-service/src/utils/soap/soap.service';
 
 @Injectable()
@@ -121,7 +123,57 @@ export class IntersolveVoucherApiService {
       pin,
     );
 
-    const responseBody = env.MOCK_INTERSOLVE
+    const withArgs = {
+      payload,
+      username,
+      password,
+    };
+    const res = await repeatAttempt<
+      typeof withArgs,
+      IntersolveGetCardSoapResponse,
+      string | undefined,
+      string
+    >({
+      attemptTo: this.makeGetCardCall.bind(this),
+      withArgs,
+      processResponse: this.createErrorMessageIfRequestFailed.bind(this),
+      isError: Boolean, // If processResponse returned a string, it's an error
+      attemptsRemaining: 1, // retry once
+    });
+
+    const { success, error } = res;
+
+    if (error) {
+      throw new Error(error);
+    }
+
+    // TODO: use better typing to avoid this cast
+    const responseBody = success as IntersolveGetCardSoapResponse;
+
+    const result = {
+      resultCode: responseBody.GetCardResponse!.ResultCode!._text,
+      resultDescription: responseBody.GetCardResponse!.ResultDescription!._text,
+      status: responseBody.GetCardResponse!.Card?.Status?._text ?? '',
+      balance: parseInt(
+        responseBody.GetCardResponse!.Card?.Balance?._text ?? '0',
+      ),
+      balanceFactor: parseInt(
+        responseBody.GetCardResponse!.Card?.BalanceFactor?._text ?? '0',
+      ),
+    };
+    return result;
+  }
+
+  private async makeGetCardCall({
+    payload,
+    username,
+    password,
+  }: {
+    payload: any;
+    username: string;
+    password: string;
+  }): Promise<IntersolveGetCardSoapResponse> {
+    return env.MOCK_INTERSOLVE
       ? await this.intersolveMock.post(payload, username, password)
       : await this.soapService.post(
           payload,
@@ -130,16 +182,24 @@ export class IntersolveVoucherApiService {
           password,
           env.INTERSOLVE_URL,
         );
-    const result = {
-      resultCode: responseBody.GetCardResponse.ResultCode._text,
-      resultDescription: responseBody.GetCardResponse.ResultDescription._text,
-      status: responseBody.GetCardResponse.Card?.Status?._text,
-      balance: parseInt(responseBody.GetCardResponse.Card?.Balance?._text),
-      balanceFactor: parseInt(
-        responseBody.GetCardResponse.Card?.BalanceFactor?._text,
-      ),
-    };
-    return result;
+  }
+
+  private createErrorMessageIfRequestFailed(
+    responseBody: IntersolveGetCardSoapResponse,
+  ): string | undefined {
+    if (!responseBody) {
+      return 'Intersolve URL could not be reached.';
+    }
+    if (!responseBody.GetCardResponse) {
+      return "Intersolve response did not contain a 'GetCardResponse' field.";
+    }
+    if (!responseBody.GetCardResponse.ResultCode) {
+      return "Intersolve response did not contain a 'ResultCode' field.";
+    }
+    if (!responseBody.GetCardResponse.ResultDescription) {
+      return "Intersolve response did not contain a 'ResultDescription' field.";
+    }
+    return undefined;
   }
 
   public async markAsToCancelByRefPos(refPos: number): Promise<void> {
