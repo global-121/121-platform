@@ -35,6 +35,10 @@ import { Activity } from '~/domains/registration/registration.model';
 import { RetryTransactionsDialogComponent } from '~/pages/program-payment-transaction-list/components/retry-transactions-dialog/retry-transactions-dialog.component';
 import { ActivityLogTableCellContext } from '~/pages/program-registration-activity-log/program-registration-activity-log.page';
 import { AuthService } from '~/services/auth.service';
+import {
+  FilterOperator,
+  PaginateQuery,
+} from '~/services/paginate-query.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
 import { Locale } from '~/utils/locale';
 
@@ -57,6 +61,7 @@ export class TableCellOverviewComponent
 {
   readonly value = input.required<Activity>();
   readonly context = input.required<ActivityLogTableCellContext>();
+
   locale = inject<Locale>(LOCALE_ID);
 
   readonly retryTransactionsDialog =
@@ -91,6 +96,22 @@ export class TableCellOverviewComponent
       return item.attributes.paymentId.toString();
     }
     return undefined;
+  });
+
+  readonly transactionPaginateQuery = computed(() => {
+    if (!this.paymentId() || !this.context().registrationId()) {
+      return undefined;
+    }
+
+    const registrationId = this.context().registrationId();
+
+    const paginateQuery: PaginateQuery = {
+      filter: {
+        registrationId: `${FilterOperator.EQ}:${registrationId}`,
+      },
+    };
+
+    return paginateQuery;
   });
 
   readonly overview = computed(() => {

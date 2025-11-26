@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
   signal,
@@ -15,6 +16,10 @@ import {
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
+import {
+  FilterOperator,
+  PaginateQuery,
+} from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
 import {
   TrackingAction,
@@ -33,6 +38,7 @@ import {
 export class RetryTransactionsDialogComponent {
   readonly programId = input.required<string>();
   readonly paymentId = input.required<string>();
+  readonly paginateQuery = input.required<PaginateQuery | undefined>();
 
   readonly metricApiService = inject(MetricApiService);
   readonly paymentApiService = inject(PaymentApiService);
@@ -51,11 +57,11 @@ export class RetryTransactionsDialogComponent {
     );
 
   retryFailedTransactionsMutation = injectMutation(() => ({
-    mutationFn: (referenceIds: string[]) =>
+    mutationFn: () =>
       this.paymentApiService.retryFailedTransactions({
         programId: this.programId,
         paymentId: this.paymentId(),
-        referenceIds,
+        paginateQuery: this.retryFailedTransactionsPaginateQuery,
       }),
     onSuccess: () => {
       void this.metricApiService.invalidateCache(this.programId);
@@ -72,6 +78,19 @@ export class RetryTransactionsDialogComponent {
       }, 500);
     },
   }));
+
+  readonly retryFailedTransactionsPaginateQuery = computed<PaginateQuery>(
+    () => {
+      const paginateQuery = {
+        ...this.paginateQuery(),
+        filter: {
+          ...this.paginateQuery()?.filter,
+          registrationReferenceId: `${FilterOperator.IN}:${this.referenceIdsForRetryTransactions().join(',')}`,
+        },
+      };
+      return paginateQuery;
+    },
+  );
 
   public retryFailedTransactions({ referenceIds }: { referenceIds: string[] }) {
     const eventName =

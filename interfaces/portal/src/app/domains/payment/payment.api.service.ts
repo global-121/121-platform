@@ -133,14 +133,14 @@ export class PaymentApiService extends DomainApiService {
     });
   }
 
-  // ##TODO: add paginateQuery
   retryFailedTransactions({
     programId,
     paymentId,
+    paginateQuery,
   }: {
     programId: Signal<number | string>;
     paymentId: number | string;
-    referenceIds: string[];
+    paginateQuery: Signal<PaginateQuery | undefined>;
   }) {
     return this.httpWrapperService.perform121ServiceRequest<
       Dto<BulkActionResultPaymentDto>
@@ -153,6 +153,7 @@ export class PaymentApiService extends DomainApiService {
       httpParams: {
         retry: 'true',
       },
+      body: paginateQuery(),
     });
   }
 

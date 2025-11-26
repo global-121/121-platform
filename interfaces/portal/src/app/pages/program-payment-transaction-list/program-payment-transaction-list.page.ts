@@ -88,11 +88,11 @@ export class ProgramPaymentTransactionListPageComponent {
     undefined,
   );
 
-  // ##TODO: make the paginate query paginate
   private readonly transactionsPaginateQuery = computed<PaginateQuery>(() => {
     const paginateQuery = this.paginateQuery() ?? {};
     return {
       ...paginateQuery,
+      ...(paginateQuery.filter ?? {}),
     };
   });
 
@@ -123,6 +123,7 @@ export class ProgramPaymentTransactionListPageComponent {
       {
         field: 'registrationProgramId',
         header: $localize`Reg. #`,
+        type: QueryTableColumnType.NUMERIC,
         getCellText: (transaction) => {
           const registrationId = transaction.registrationProgramId ?? '';
 
@@ -165,6 +166,7 @@ export class ProgramPaymentTransactionListPageComponent {
       {
         field: 'transferValue',
         header: $localize`Transfer value`,
+        type: QueryTableColumnType.NUMERIC,
         getCellText: (transaction) =>
           this.currencyPipe.transform(
             transaction.transferValue,
@@ -279,6 +281,10 @@ export class ProgramPaymentTransactionListPageComponent {
       fieldForFilter: 'registrationReferenceId',
       noSelectionToastMessage: $localize`:@@no-registrations-selected:Select one or more registrations and try again.`,
     });
+    console.log(
+      '🚀 ~ ProgramPaymentTransactionListPageComponent ~ retryFailedTransactions ~ actionData:',
+      actionData,
+    );
 
     if (!actionData) {
       return;
