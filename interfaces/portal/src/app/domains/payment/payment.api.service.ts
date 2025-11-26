@@ -125,10 +125,11 @@ export class PaymentApiService extends DomainApiService {
     paymentId: Signal<string>;
   }) {
     return this.httpWrapperService.perform121ServiceRequest({
-      method: 'PATCH',
+      method: 'POST',
       endpoint: this.pathToQueryKey([
         ...BASE_ENDPOINT(programId),
         paymentId,
+        'start',
       ]).join('/'),
     });
   }
@@ -145,14 +146,12 @@ export class PaymentApiService extends DomainApiService {
     return this.httpWrapperService.perform121ServiceRequest<
       Dto<BulkActionResultPaymentDto>
     >({
-      method: 'PATCH',
+      method: 'POST',
       endpoint: this.pathToQueryKey([
         ...BASE_ENDPOINT(programId),
         paymentId,
+        'retry',
       ]).join('/'),
-      httpParams: {
-        retry: 'true',
-      },
       body: paginateQuery(),
     });
   }
