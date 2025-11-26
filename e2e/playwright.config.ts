@@ -1,17 +1,15 @@
 import { defineConfig } from '@playwright/test';
 import dotenv from 'dotenv';
-import path from 'path';
 
-const envPath = path.resolve(__dirname, '../services/.env');
-dotenv.config({ path: envPath });
+dotenv.config({ path: '../services/.env' });
 
 export default defineConfig({
+  tsconfig: './tsconfig.json',
   testDir: './portal/tests',
   snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}{ext}',
   fullyParallel: false,
-  forbidOnly:
-    // eslint-disable-next-line n/no-process-env -- This environment variable `CI` is NOT used in the 121-service, thus not managed via the env.ts file.
-    !!process.env.CI, // Fail the build on CI if you accidentally left test.only in the source code.
+  // eslint-disable-next-line n/no-process-env -- This environment variable `CI` is NOT used in the 121-service, thus not managed via the env.ts file.
+  forbidOnly: !!process.env.CI, // Fail the build on CI if you accidentally left test.only in the source code.
   retries: 1,
   reporter: [['list']],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -38,9 +36,7 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: {
-        channel: 'chromium',
-      },
+      use: { channel: 'chromium' },
     },
   ],
 });
