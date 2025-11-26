@@ -11,6 +11,8 @@ graph LR
   AirtelModule-->RedisModule
   CommercialBankEthiopiaReconciliationModule-->CommercialBankEthiopiaModule
   CommercialBankEthiopiaReconciliationModule-->RegistrationsModule
+  CooperativeBankOfOromiaReconciliationModule-->CooperativeBankOfOromiaModule
+  CooperativeBankOfOromiaReconciliationModule-->RegistrationsModule
   CronjobModule-->CommercialBankEthiopiaReconciliationModule
   CronjobModule-->ExchangeRatesModule
   CronjobModule-->IntersolveVisaReconciliationModule

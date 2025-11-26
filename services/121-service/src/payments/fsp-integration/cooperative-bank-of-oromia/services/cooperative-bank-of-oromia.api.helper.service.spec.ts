@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { CooperativeBankOfOromiaApiPaymentResponseBodyDto } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-payment-response-body.dto';
+import { CooperativeBankOfOromiaApiTransferResponseBodyDto } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-transfer-response-body.dto';
 import { CooperativeBankOfOromiaTransferResultEnum } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/enums/cooperative-bank-of-oromia-disbursement-result.enum';
 import { CooperativeBankOfOromiaTransferMessageEnum } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/enums/cooperative-bank-of-oromia-transfer-messages.enum';
 import { CooperativeBankOfOromiaApiHelperService } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.api.helper.service';
@@ -24,7 +24,7 @@ describe('CooperativeBankOfOromiaApiHelperService', () => {
   });
 
   it('should return success when response.success is true', () => {
-    const response: CooperativeBankOfOromiaApiPaymentResponseBodyDto = {
+    const response: CooperativeBankOfOromiaApiTransferResponseBodyDto = {
       success: true,
     } as any;
     expect(service.handleTransferResponse(response)).toEqual({
@@ -33,7 +33,7 @@ describe('CooperativeBankOfOromiaApiHelperService', () => {
   });
 
   it('should return duplicate when error.messages is duplicateMessageId', () => {
-    const response: CooperativeBankOfOromiaApiPaymentResponseBodyDto = {
+    const response: CooperativeBankOfOromiaApiTransferResponseBodyDto = {
       success: false,
       error: {
         messages: CooperativeBankOfOromiaTransferMessageEnum.duplicateMessageId,
@@ -45,7 +45,7 @@ describe('CooperativeBankOfOromiaApiHelperService', () => {
   });
 
   it('should return fail and parse error message', () => {
-    const response: CooperativeBankOfOromiaApiPaymentResponseBodyDto = {
+    const response: CooperativeBankOfOromiaApiTransferResponseBodyDto = {
       success: false,
       error: {
         description: 'Some error',
@@ -61,7 +61,7 @@ describe('CooperativeBankOfOromiaApiHelperService', () => {
   });
 
   it('should return fail and unknown error message if error object is missing', () => {
-    const response: CooperativeBankOfOromiaApiPaymentResponseBodyDto = {
+    const response: CooperativeBankOfOromiaApiTransferResponseBodyDto = {
       success: false,
     } as any;
     expect(service.handleTransferResponse(response)).toEqual({

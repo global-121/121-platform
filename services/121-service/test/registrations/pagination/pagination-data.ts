@@ -413,6 +413,6 @@ export const registrationCooperativeBankOfOromia = {
   paymentAmountMultiplier: 1,
   programFspConfigurationName: Fsps.cooperativeBankOfOromia,
   maxPayments: 3,
-  fullName: 'example name for Cooperative Bank of Oromia mock mode',
+  fullName: 'jane doe',
   bankAccountNumber: '1022200081754',
 };
