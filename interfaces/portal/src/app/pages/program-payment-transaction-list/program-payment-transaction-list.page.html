@@ -12,12 +12,6 @@
     [contextMenuItems]="contextMenuItems()"
     (updateContextMenuItem)="contextMenuSelection.set($event)"
     [enableSelection]="true"
-    [globalFilterFields]="[
-      'registrationProgramId',
-      'status',
-      'errorMessage',
-      'programFspConfigurationName',
-    ]"
     [serverSideFiltering]="true"
     [serverSideTotalRecords]="totalTransactions()"
     (updatePaginateQuery)="paginateQuery.set($event)"
@@ -45,4 +39,5 @@
   #retryTransactionsDialog
   [programId]="programId()"
   [paymentId]="paymentId()"
+  [paginateQuery]="paginateQuery()"
 />
