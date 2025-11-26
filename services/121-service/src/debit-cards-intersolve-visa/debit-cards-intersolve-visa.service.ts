@@ -327,6 +327,7 @@ export class DebitCardsIntersolveVisaService {
     const registration =
       await this.registrationUtilsService.getRegistrationOrThrow({
         referenceId,
+        programId,
       });
 
     const registrationData = await this.getRegistrationData(registration);
