@@ -695,6 +695,28 @@ export async function getCbeValidationReport(
     .set('Cookie', [accessToken]);
 }
 
+export async function startCooperativeBankOfOromiaValidationProcess(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .put(
+      `/programs/${programId}/fsps/cooperative-bank-of-oromia/account-validations`,
+    )
+    .set('Cookie', [accessToken]);
+}
+
+export async function getCooperativeBankOfOromiaValidationReport(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .get(
+      `/programs/${programId}/fsps/cooperative-bank-of-oromia/account-validations`,
+    )
+    .set('Cookie', [accessToken]);
+}
+
 export async function postNote(
   referenceId: string,
   text: string,

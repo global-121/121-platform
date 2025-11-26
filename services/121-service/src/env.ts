@@ -133,6 +133,9 @@ export const env = createEnv({
     CRON_CBE_ACCOUNT_ENQUIRIES_VALIDATION: z.stringbool().default(false),
     CRON_NEDBANK_VOUCHERS: z.stringbool().default(false),
     CRON_ONAFRIQ_RECONCILIATION_REPORT: z.stringbool().default(false),
+    CRON_COOPERATIVE_BANK_OF_OROMIA_ACCOUNT_VALIDATIONS: z
+      .stringbool()
+      .default(false),
 
     // Interface(s) configuration
     REDIRECT_PORTAL_URL_HOST: z

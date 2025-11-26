@@ -10,8 +10,13 @@ graph LR
   AirtelModule-->QueuesRegistryModule
   AirtelModule-->RedisModule
   CommercialBankEthiopiaAccountManagementModule-->CommercialBankEthiopiaModule
+  CommercialBankEthiopiaAccountManagementModule-->ProgramModule
   CommercialBankEthiopiaAccountManagementModule-->RegistrationsModule
+  CooperativeBankOfOromiaAccountManagementModule-->CooperativeBankOfOromiaModule
+  CooperativeBankOfOromiaAccountManagementModule-->ProgramModule
+  CooperativeBankOfOromiaAccountManagementModule-->RegistrationsModule
   CronjobModule-->CommercialBankEthiopiaAccountManagementModule
+  CronjobModule-->CooperativeBankOfOromiaAccountManagementModule
   CronjobModule-->ExchangeRatesModule
   CronjobModule-->IntersolveVisaReconciliationModule
   CronjobModule-->IntersolveVoucherModule
