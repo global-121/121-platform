@@ -241,7 +241,7 @@ export class IntersolveVisaAccountManagementController {
     @Param('referenceId') referenceId: string,
     @Query('tokenCode') tokenCode: string,
   ): Promise<void> {
-    return await this.debitCardsIntersolveVisaService.replaceCard(
+    return await this.debitCardsIntersolveVisaService.getRegistrationAndReplaceCard(
       referenceId,
       programId,
       tokenCode,

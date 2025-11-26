@@ -114,7 +114,6 @@ export class IntersolveVisaAccountManagementService {
       await this.registrationUtilsService.getRegistrationOrThrow({
         referenceId,
         programId,
-        relations: ['programFspConfiguration'],
       });
     if (
       !registration.programFspConfigurationId ||
@@ -126,18 +125,52 @@ export class IntersolveVisaAccountManagementService {
       );
     }
 
-    const intersolveVisaConfig = await this.getIntersolveVisaConfig(
-      registration.programFspConfigurationId,
-    );
+    await this.replaceCard(registration);
+
+    if (userId) {
+      await this.queueMessageService.addMessageJob({
+        registration,
+        messageTemplateKey: ProgramNotificationEnum.reissueVisaCard,
+        messageContentType: MessageContentType.custom,
+        messageProcessType:
+          MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+        userId,
+      });
+    }
+  }
+
+  public async getRegistrationAndReplaceCard(
+    referenceId: string,
+    programId: number,
+    tokenCode: string,
+  ): Promise<void> {
+    const registration =
+      await this.registrationUtilsService.getRegistrationOrThrow({
+        referenceId,
+        programId,
+      });
+
+    await this.replaceCard(registration, tokenCode);
+  }
+
+  public async replaceCard(
+    registration: RegistrationEntity,
+    tokenCode?: string,
+  ): Promise<void> {
+    if (tokenCode) {
+      await this.checkIfCardIsAlreadyLinked(tokenCode);
+    }
 
     const mappedRegistrationData = await this.getRegistrationData(registration);
 
     await this.sendCustomerInformationToIntersolve(registration);
 
+    const intersolveVisaConfig = await this.getIntersolveVisaConfig(
+      mappedRegistrationData[registration.programFspConfigurationId],
+    );
     const brandCode = intersolveVisaConfig.get(
       FspConfigurationProperties.brandCode,
     ) as string;
-
     const coverLetterCode = intersolveVisaConfig.get(
       FspConfigurationProperties.coverLetterCode,
     ) as string;
@@ -160,6 +193,7 @@ export class IntersolveVisaAccountManagementService {
         },
         brandCode,
         coverLetterCode,
+        physicalCardToken: tokenCode,
       });
     } catch (error) {
       if (error instanceof IntersolveVisaApiError) {
@@ -171,125 +205,6 @@ export class IntersolveVisaAccountManagementService {
         throw error;
       }
     }
-
-    await this.queueMessageService.addMessageJob({
-      registration,
-      messageTemplateKey: ProgramNotificationEnum.reissueVisaCard,
-      messageContentType: MessageContentType.custom,
-      messageProcessType:
-        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
-      userId,
-    });
-  }
-
-  public async sendCustomerInformationToIntersolve(
-    registration: RegistrationEntity,
-  ): Promise<void> {
-    const registrationHasVisaCustomer =
-      await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
-    if (registrationHasVisaCustomer) {
-      type CustomerInformationKeys =
-        | keyof ContactInformation
-        | FspAttributes.fullName; // Full name is not part of ContactInformation, but still needs to be updated via the same process
-      const fieldNames: CustomerInformationKeys[] = [
-        FspAttributes.addressStreet,
-        FspAttributes.addressHouseNumber,
-        FspAttributes.addressHouseNumberAddition,
-        FspAttributes.addressPostalCode,
-        FspAttributes.addressCity,
-        FspAttributes.phoneNumber,
-        FspAttributes.fullName,
-      ];
-      const registrationData =
-        await this.registrationDataScopedRepository.getRegistrationDataArrayByName(
-          registration,
-          fieldNames,
-        );
-
-      if (!registrationData || registrationData.length === 0) {
-        throw new HttpException(
-          `No registration data found for referenceId: ${registration.referenceId}`,
-          HttpStatus.NOT_FOUND,
-        );
-      }
-
-      const mappedRegistrationData = registrationData.reduce(
-        (acc, { name, value }) => {
-          acc[name] = value;
-          return acc;
-        },
-        {},
-      );
-
-      await this.intersolveVisaService.sendUpdatedCustomerInformation({
-        registrationId: registration.id,
-        contactInformation: {
-          addressStreet: mappedRegistrationData[`addressStreet`],
-          addressHouseNumber: mappedRegistrationData[`addressHouseNumber`],
-          addressHouseNumberAddition:
-            mappedRegistrationData[`addressHouseNumberAddition`],
-          addressPostalCode: mappedRegistrationData[`addressPostalCode`],
-          addressCity: mappedRegistrationData[`addressCity`],
-          phoneNumber: mappedRegistrationData[`phoneNumber`],
-        },
-        name: mappedRegistrationData[`fullName`],
-      });
-    }
-  }
-
-  /**
-   * Pauses or unpauses a card associated with a given token code and sends a message to the registration.
-   * - It retrieves the registration, pauses or unpauses the card, sends a message to the registration, and returns the updated wallet.
-   *
-   * @param {string} referenceId - The reference ID of the registration.
-   * @param {number} programId - The ID of the program.
-   * @param {string} tokenCode - The token code of the card to pause or unpause.
-   * @param {boolean} pause - Whether to pause (true) or unpause (false) the card.
-   * @throws {HttpException} Throws an HttpException if no registration is found for the given reference ID.
-   * @returns {Promise<IntersolveVisaChildWalletEntity>} The updated wallet.
-   */
-  public async pauseCardAndSendMessage(
-    referenceId: string,
-    programId: number,
-    tokenCode: string,
-    pause: boolean,
-    userId: number,
-  ): Promise<IntersolveVisaChildWalletEntity> {
-    const registration =
-      await this.registrationUtilsService.getRegistrationOrThrow({
-        referenceId,
-        programId,
-      });
-    const updatedWallet = await this.intersolveVisaService.pauseCardOrThrow(
-      tokenCode,
-      pause,
-    );
-    await this.queueMessageService.addMessageJob({
-      registration,
-      messageTemplateKey: pause
-        ? ProgramNotificationEnum.pauseVisaCard
-        : ProgramNotificationEnum.unpauseVisaCard,
-      messageContentType: MessageContentType.custom,
-      messageProcessType:
-        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
-      userId,
-    });
-    return updatedWallet;
-  }
-
-  /**
-   * Retrieves a registration by reference ID and program ID, and sends its contact information to Intersolve. Used only for debugging purposes.
-   */
-  public async getRegistrationAndSendContactInformationToIntersolve(
-    referenceId: string,
-    programId: number,
-  ): Promise<void> {
-    const registration =
-      await this.registrationUtilsService.getRegistrationOrThrow({
-        referenceId,
-        programId,
-      });
-    await this.sendCustomerInformationToIntersolve(registration);
   }
 
   public async linkDebitCardToRegistration(
@@ -349,50 +264,114 @@ export class IntersolveVisaAccountManagementService {
     });
   }
 
-  public async replaceCard(
+  /**
+   * Pauses or unpauses a card associated with a given token code and sends a message to the registration.
+   * - It retrieves the registration, pauses or unpauses the card, sends a message to the registration, and returns the updated wallet.
+   *
+   * @param {string} referenceId - The reference ID of the registration.
+   * @param {number} programId - The ID of the program.
+   * @param {string} tokenCode - The token code of the card to pause or unpause.
+   * @param {boolean} pause - Whether to pause (true) or unpause (false) the card.
+   * @throws {HttpException} Throws an HttpException if no registration is found for the given reference ID.
+   * @returns {Promise<IntersolveVisaChildWalletEntity>} The updated wallet.
+   */
+  public async pauseCardAndSendMessage(
     referenceId: string,
     programId: number,
     tokenCode: string,
-  ): Promise<void> {
-    await this.checkIfCardIsAlreadyLinked(tokenCode);
-
+    pause: boolean,
+    userId: number,
+  ): Promise<IntersolveVisaChildWalletEntity> {
     const registration =
       await this.registrationUtilsService.getRegistrationOrThrow({
         referenceId,
         programId,
       });
-
-    const registrationData = await this.getRegistrationData(registration);
-
-    const intersolveVisaConfig = await this.getIntersolveVisaConfig(
-      registrationData[registration.programFspConfigurationId],
+    const updatedWallet = await this.intersolveVisaService.pauseCardOrThrow(
+      tokenCode,
+      pause,
     );
-
-    const brandCode = intersolveVisaConfig.get(
-      FspConfigurationProperties.brandCode,
-    ) as string;
-
-    const coverLetterCode = intersolveVisaConfig.get(
-      FspConfigurationProperties.coverLetterCode,
-    ) as string;
-
-    return await this.intersolveVisaService.reissueCard({
-      registrationId: registration.id,
-      reference: registration.referenceId,
-      name: registrationData[FspAttributes.fullName],
-      contactInformation: {
-        addressStreet: registrationData[FspAttributes.addressStreet],
-        addressHouseNumber: registrationData[FspAttributes.addressHouseNumber],
-        addressHouseNumberAddition:
-          registrationData[FspAttributes.addressHouseNumberAddition],
-        addressPostalCode: registrationData[FspAttributes.addressPostalCode],
-        addressCity: registrationData[FspAttributes.addressCity],
-        phoneNumber: registrationData[FspAttributes.phoneNumber],
-      },
-      brandCode,
-      coverLetterCode,
-      physicalCardToken: tokenCode,
+    await this.queueMessageService.addMessageJob({
+      registration,
+      messageTemplateKey: pause
+        ? ProgramNotificationEnum.pauseVisaCard
+        : ProgramNotificationEnum.unpauseVisaCard,
+      messageContentType: MessageContentType.custom,
+      messageProcessType:
+        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+      userId,
     });
+    return updatedWallet;
+  }
+
+  /**
+   * Retrieves a registration by reference ID and program ID, and sends its contact information to Intersolve. Used only for debugging purposes.
+   */
+  public async getRegistrationAndSendContactInformationToIntersolve(
+    referenceId: string,
+    programId: number,
+  ): Promise<void> {
+    const registration =
+      await this.registrationUtilsService.getRegistrationOrThrow({
+        referenceId,
+        programId,
+      });
+    await this.sendCustomerInformationToIntersolve(registration);
+  }
+
+  public async sendCustomerInformationToIntersolve(
+    registration: RegistrationEntity,
+  ): Promise<void> {
+    const registrationHasVisaCustomer =
+      await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
+    if (registrationHasVisaCustomer) {
+      type CustomerInformationKeys =
+        | keyof ContactInformation
+        | FspAttributes.fullName; // Full name is not part of ContactInformation, but still needs to be updated via the same process
+      const fieldNames: CustomerInformationKeys[] = [
+        FspAttributes.addressStreet,
+        FspAttributes.addressHouseNumber,
+        FspAttributes.addressHouseNumberAddition,
+        FspAttributes.addressPostalCode,
+        FspAttributes.addressCity,
+        FspAttributes.phoneNumber,
+        FspAttributes.fullName,
+      ];
+      const registrationData =
+        await this.registrationDataScopedRepository.getRegistrationDataArrayByName(
+          registration,
+          fieldNames,
+        );
+
+      if (!registrationData || registrationData.length === 0) {
+        throw new HttpException(
+          `No registration data found for referenceId: ${registration.referenceId}`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      const mappedRegistrationData = registrationData.reduce(
+        (acc, { name, value }) => {
+          acc[name] = value;
+          return acc;
+        },
+        {},
+      );
+
+      await this.intersolveVisaService.sendUpdatedCustomerInformation({
+        registrationId: registration.id,
+        contactInformation: {
+          addressStreet: mappedRegistrationData[`addressStreet`],
+          addressHouseNumber: mappedRegistrationData[`addressHouseNumber`],
+          addressHouseNumberAddition:
+            mappedRegistrationData[`addressHouseNumberAddition`],
+          addressPostalCode: mappedRegistrationData[`addressPostalCode`],
+          addressCity: mappedRegistrationData[`addressCity`],
+          phoneNumber: mappedRegistrationData[`phoneNumber`],
+        },
+        name: mappedRegistrationData[`fullName`],
+      });
+    }
   }
 
   private async getRegistrationData(
