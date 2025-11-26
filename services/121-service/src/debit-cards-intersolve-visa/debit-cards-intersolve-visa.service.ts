@@ -5,7 +5,6 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -20,7 +19,6 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
-import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 
 @Injectable()
 export class DebitCardsIntersolveVisaService {
@@ -30,7 +28,6 @@ export class DebitCardsIntersolveVisaService {
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationUtilsService: RegistrationUtilsService,
-    private readonly registrationsPaginationService: RegistrationsPaginationService,
   ) {}
 
   public async retrieveAndUpdateIntersolveVisaWalletAndCards(
@@ -129,9 +126,9 @@ export class DebitCardsIntersolveVisaService {
       await this.checkIfCardIsAlreadyLinked(tokenCode);
     }
 
-    const mappedRegistrationData = await this.getRegistrationData(registration);
+    const contactInfo = await this.getContactInformation(registration);
 
-    await this.sendCustomerInformationToIntersolve(registration);
+    await this.sendCustomerInformationToIntersolve(registration, contactInfo);
 
     const intersolveVisaConfig = await this.getIntersolveVisaConfig(
       mappedRegistrationData[registration.programFspConfigurationId],
@@ -147,18 +144,7 @@ export class DebitCardsIntersolveVisaService {
       await this.intersolveVisaService.reissueCard({
         registrationId: registration.id,
         reference: registration.referenceId,
-        name: mappedRegistrationData[FspAttributes.fullName],
-        contactInformation: {
-          addressStreet: mappedRegistrationData[FspAttributes.addressStreet],
-          addressHouseNumber:
-            mappedRegistrationData[FspAttributes.addressHouseNumber],
-          addressHouseNumberAddition:
-            mappedRegistrationData[FspAttributes.addressHouseNumberAddition],
-          addressPostalCode:
-            mappedRegistrationData[FspAttributes.addressPostalCode],
-          addressCity: mappedRegistrationData[FspAttributes.addressCity],
-          phoneNumber: mappedRegistrationData[FspAttributes.phoneNumber],
-        },
+        ...contactInfo,
         brandCode,
         coverLetterCode,
         physicalCardToken: tokenCode,
@@ -188,23 +174,13 @@ export class DebitCardsIntersolveVisaService {
         programId,
       });
 
-    const registrationData = await this.getRegistrationData(registration);
+    const contactInfo = await this.getContactInformation(registration);
 
     const intersolveVisaCustomer =
       await this.intersolveVisaService.getCustomerOrCreate({
         registrationId: registration.id,
         createCustomerReference: referenceId,
-        name: registrationData[FspAttributes.fullName],
-        contactInformation: {
-          addressStreet: registrationData[FspAttributes.addressStreet],
-          addressHouseNumber:
-            registrationData[FspAttributes.addressHouseNumber],
-          addressHouseNumberAddition:
-            registrationData[FspAttributes.addressHouseNumberAddition],
-          addressPostalCode: registrationData[FspAttributes.addressPostalCode],
-          addressCity: registrationData[FspAttributes.addressCity],
-          phoneNumber: registrationData[FspAttributes.phoneNumber],
-        },
+        ...contactInfo,
       });
 
     const intersolveVisaConfig = await this.getIntersolveVisaConfig(
@@ -284,84 +260,44 @@ export class DebitCardsIntersolveVisaService {
         referenceId,
         programId,
       });
-    await this.sendCustomerInformationToIntersolve(registration);
+    const contactInfo = await this.getContactInformation(registration);
+    await this.sendCustomerInformationToIntersolve(registration, contactInfo);
   }
 
   public async sendCustomerInformationToIntersolve(
     registration: RegistrationEntity,
+    contactInfo: ContactInformation,
   ): Promise<void> {
     const registrationHasVisaCustomer =
       await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
     if (registrationHasVisaCustomer) {
-      type CustomerInformationKeys =
-        | keyof ContactInformation
-        | FspAttributes.fullName; // Full name is not part of ContactInformation, but still needs to be updated via the same process
-      const fieldNames: CustomerInformationKeys[] = [
-        FspAttributes.addressStreet,
-        FspAttributes.addressHouseNumber,
-        FspAttributes.addressHouseNumberAddition,
-        FspAttributes.addressPostalCode,
-        FspAttributes.addressCity,
-        FspAttributes.phoneNumber,
-        FspAttributes.fullName,
-      ];
-      const registrationData =
-        await this.registrationDataScopedRepository.getRegistrationDataArrayByName(
-          registration,
-          fieldNames,
-        );
-
-      if (!registrationData || registrationData.length === 0) {
-        throw new HttpException(
-          `No registration data found for referenceId: ${registration.referenceId}`,
-          HttpStatus.NOT_FOUND,
-        );
-      }
-
-      const mappedRegistrationData = registrationData.reduce(
-        (acc, { name, value }) => {
-          acc[name] = value;
-          return acc;
-        },
-        {},
-      );
-
       await this.intersolveVisaService.sendUpdatedCustomerInformation({
         registrationId: registration.id,
-        contactInformation: {
-          addressStreet: mappedRegistrationData[`addressStreet`],
-          addressHouseNumber: mappedRegistrationData[`addressHouseNumber`],
-          addressHouseNumberAddition:
-            mappedRegistrationData[`addressHouseNumberAddition`],
-          addressPostalCode: mappedRegistrationData[`addressPostalCode`],
-          addressCity: mappedRegistrationData[`addressCity`],
-          phoneNumber: mappedRegistrationData[`phoneNumber`],
-        },
-        name: mappedRegistrationData[`fullName`],
+        ...contactInfo,
       });
     }
   }
 
-  private async getRegistrationData(
+  private async getContactInformation(
     registration: RegistrationEntity,
   ): Promise<any> {
-    //  TODO: REFACTOR: This 'ugly' code is now also in payments.service.createAndAddIntersolveVisaTransactionJobs. This should be refactored when there's a better way of getting registration data.
-    const intersolveVisaAttributes =
-      FSP_SETTINGS[Fsps.intersolveVisa].attributes;
-
-    const intersolveVisaAttributeNames = intersolveVisaAttributes.map(
-      (q) => q.name,
-    );
-    const dataFieldNames = [
-      FspAttributes.fullName,
+    type CustomerInformationKeys =
+      | keyof ContactInformation
+      | FspAttributes.fullName; // Full name is not part of ContactInformation, but still needs to be updated via the same process
+    const fieldNames: CustomerInformationKeys[] = [
+      FspAttributes.addressStreet,
+      FspAttributes.addressHouseNumber,
+      FspAttributes.addressHouseNumberAddition,
+      FspAttributes.addressPostalCode,
+      FspAttributes.addressCity,
       FspAttributes.phoneNumber,
-      ...intersolveVisaAttributeNames,
+      FspAttributes.fullName,
     ];
 
     const registrationData =
       await this.registrationDataScopedRepository.getRegistrationDataArrayByName(
         registration,
-        dataFieldNames,
+        fieldNames,
       );
 
     if (!registrationData || registrationData.length === 0) {
@@ -379,7 +315,7 @@ export class DebitCardsIntersolveVisaService {
       {},
     );
 
-    for (const name of dataFieldNames) {
+    for (const name of fieldNames) {
       if (name === FspAttributes.addressHouseNumberAddition) continue; // Skip non-required property
       if (
         mappedRegistrationData[name] === null ||
@@ -393,7 +329,20 @@ export class DebitCardsIntersolveVisaService {
       }
     }
 
-    return mappedRegistrationData;
+    return {
+      name: mappedRegistrationData[FspAttributes.fullName],
+      contactInformation: {
+        addressStreet: mappedRegistrationData[FspAttributes.addressStreet],
+        addressHouseNumber:
+          mappedRegistrationData[FspAttributes.addressHouseNumber],
+        addressHouseNumberAddition:
+          mappedRegistrationData[FspAttributes.addressHouseNumberAddition],
+        addressPostalCode:
+          mappedRegistrationData[FspAttributes.addressPostalCode],
+        addressCity: mappedRegistrationData[FspAttributes.addressCity],
+        phoneNumber: mappedRegistrationData[FspAttributes.phoneNumber],
+      },
+    };
   }
 
   private async checkIfCardIsAlreadyLinked(tokenCode: string): Promise<void> {
