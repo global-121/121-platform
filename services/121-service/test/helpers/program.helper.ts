@@ -678,9 +678,7 @@ export async function startCbeValidationProcess(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .put(
-      `/programs/${programId}/fsps/commercial-bank-ethiopia/account-enquiries`,
-    )
+    .put(`/programs/${programId}/fsps/commercial-bank-ethiopia/accounts`)
     .set('Cookie', [accessToken]);
 }
 
@@ -689,9 +687,25 @@ export async function getCbeValidationReport(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .get(
-      `/programs/${programId}/fsps/commercial-bank-ethiopia/account-enquiries`,
-    )
+    .get(`/programs/${programId}/fsps/commercial-bank-ethiopia/accounts`)
+    .set('Cookie', [accessToken]);
+}
+
+export async function startCooperativeBankOfOromiaValidationProcess(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .put(`/programs/${programId}/fsps/cooperative-bank-of-oromia/accounts`)
+    .set('Cookie', [accessToken]);
+}
+
+export async function getCooperativeBankOfOromiaValidationReport(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .get(`/programs/${programId}/fsps/cooperative-bank-of-oromia/accounts`)
     .set('Cookie', [accessToken]);
 }
 

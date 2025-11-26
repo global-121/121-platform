@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { CooperativeBankOfOromiaApiPaymentResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-payment-response-body.dto';
 import { CooperativeBankOfOromiaApiTransferRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-transfer-request-body.dto';
+import { CooperativeBankOfOromiaApiTransferResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-transfer-response-body.dto';
 import { CooperativeBankOfOromiaTransferResultEnum } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/enums/cooperative-bank-of-oromia-disbursement-result.enum';
 import { CooperativeBankOfOromiaApiHelperService } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.api.helper.service';
 import { CooperativeBankOfOromiaApiService } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.api.service';
@@ -77,7 +77,7 @@ describe('CooperativeBankOfOromiaApiService', () => {
         data: { access_token: 'mock-access-token', expires_in: 10000 },
       };
       const mockTransferResponse = { data: { success: true } } as {
-        data: CooperativeBankOfOromiaApiPaymentResponseBodyDto;
+        data: CooperativeBankOfOromiaApiTransferResponseBodyDto;
       };
       post.mockImplementationOnce(() => Promise.resolve(mockAuthResponse));
       post.mockImplementationOnce(() => Promise.resolve(mockTransferResponse));
@@ -128,7 +128,7 @@ describe('CooperativeBankOfOromiaApiService', () => {
         data: { access_token: 'mock-access-token', expires_in: 10000 },
       };
       const mockTransferResponse = { data: { success: true } } as {
-        data: CooperativeBankOfOromiaApiPaymentResponseBodyDto;
+        data: CooperativeBankOfOromiaApiTransferResponseBodyDto;
       };
 
       // First call: authentication, then transfer

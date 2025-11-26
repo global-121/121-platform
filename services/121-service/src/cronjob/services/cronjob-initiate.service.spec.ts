@@ -35,7 +35,7 @@ describe('Cronjob initiation', () => {
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
-    const calledUrl = `${expectedCronjobUrl}/fsps/commercial-bank-ethiopia/account-enquiries`;
+    const calledUrl = `${expectedCronjobUrl}/fsps/commercial-bank-ethiopia/accounts`;
     expect(mockFn).toHaveBeenCalledWith(calledUrl, {}, testHeader);
 
     // Cleanup

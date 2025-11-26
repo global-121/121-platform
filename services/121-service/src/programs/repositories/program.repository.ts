@@ -1,6 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 
 export class ProgramRepository extends Repository<ProgramEntity> {
@@ -23,5 +24,18 @@ export class ProgramRepository extends Repository<ProgramEntity> {
       throw new Error(`Program with id ${id} not found`);
     }
     return program;
+  }
+
+  public async getAllProgramIdsWithFsp(fspName: Fsps): Promise<number[]> {
+    const programs = await this.baseRepository
+      .createQueryBuilder('program')
+      .select('program.id')
+      .innerJoin('program.programFspConfigurations', 'programFspConfigurations')
+      .where('programFspConfigurations.fspName = :fsp', {
+        fsp: fspName,
+      })
+      .getMany();
+
+    return programs.map((program) => program.id);
   }
 }
