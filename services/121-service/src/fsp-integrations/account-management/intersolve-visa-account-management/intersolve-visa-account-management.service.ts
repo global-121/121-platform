@@ -112,6 +112,7 @@ export class IntersolveVisaAccountManagementService {
       await this.registrationUtilsService.getRegistrationOrThrow({
         referenceId,
         programId,
+        relations: ['programFspConfiguration'],
       });
     if (
       !registration.programFspConfigurationId ||
