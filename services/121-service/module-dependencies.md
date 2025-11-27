@@ -23,7 +23,6 @@ graph LR
   DebitCardsIntersolveVisaModule-->ProgramFspConfigurationsModule
   DebitCardsIntersolveVisaModule-->RegistrationDataModule
   DebitCardsIntersolveVisaModule-->RegistrationUtilsModule
-  DebitCardsIntersolveVisaModule-->RegistrationsModule
   DebitCardsIntersolveVisaModule-->UserModule
   ExcelModule-->RegistrationsModule
   ExcelModule-->TransactionsModule

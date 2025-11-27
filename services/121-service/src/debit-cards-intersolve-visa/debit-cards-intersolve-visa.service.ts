@@ -358,10 +358,7 @@ export class DebitCardsIntersolveVisaService {
     const intersolveVisaChildWallet =
       await this.intersolveVisaService.getWallet(tokenCode);
 
-    if (
-      intersolveVisaChildWallet.holderId !== null &&
-      intersolveVisaChildWallet.holderId !== undefined
-    ) {
+    if (intersolveVisaChildWallet.holderId) {
       throw new HttpException(
         `Card is already linked to another customer at Intersolve.`,
         HttpStatus.BAD_REQUEST,

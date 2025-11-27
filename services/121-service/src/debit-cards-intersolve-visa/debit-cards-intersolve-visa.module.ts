@@ -8,7 +8,6 @@ import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utils/registration-utils.module';
-import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { UserModule } from '@121-service/src/user/user.module';
 
@@ -19,7 +18,6 @@ import { UserModule } from '@121-service/src/user/user.module';
     ProgramFspConfigurationsModule,
     RegistrationDataModule,
     UserModule,
-    RegistrationsModule,
     RegistrationUtilsModule,
   ],
   controllers: [DebitCardsIntersolveVisaController],
