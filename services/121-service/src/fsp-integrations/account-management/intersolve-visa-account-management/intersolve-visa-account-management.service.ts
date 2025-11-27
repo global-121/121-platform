@@ -163,12 +163,17 @@ export class IntersolveVisaAccountManagementService {
     const contactInfo: DebitCardsContactInfo =
       await this.getContactInformation(registration);
 
-    this.validateContactInfo(contactInfo);
-
-    await this.sendCustomerInformationToIntersolve({
-      registration,
-      contactInfo,
-    });
+    if (this.validateContactInfo(contactInfo)) {
+      await this.sendCustomerInformationToIntersolve({
+        registration,
+        contactInfo,
+      });
+    } else {
+      throw new HttpException(
+        `Fields are missing in contact informatoion`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     const intersolveVisaConfig = await this.getIntersolveVisaConfig(
       registration.programFspConfigurationId,
@@ -390,21 +395,17 @@ export class IntersolveVisaAccountManagementService {
 
   private validateContactInfo(contactInfo: DebitCardsContactInfo) {
     if (!contactInfo.name) {
-      throw new HttpException(
-        `Property ${contactInfo.name} is undefined`,
-        HttpStatus.BAD_REQUEST,
-      );
+      return false;
     }
 
     for (const field in contactInfo.contactInformation) {
       if (field === FspAttributes.addressHouseNumberAddition) continue; // Optional field
       if (!contactInfo.contactInformation[field]) {
-        throw new HttpException(
-          `Property ${contactInfo.name} is undefined`,
-          HttpStatus.BAD_REQUEST,
-        );
+        return false;
       }
     }
+
+    return true;
   }
 
   private async getIntersolveVisaConfig(
