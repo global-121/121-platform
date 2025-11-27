@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { DebitCardsIntersolveVisaService } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.service';
+import { DebitCardsContactInfo } from '@121-service/src/debit-cards-intersolve-visa/types/debit-cards-contact-info.interface';
 import { env } from '@121-service/src/env';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
@@ -35,8 +36,13 @@ export class IntersolveVisaRegistrationAttributeChangeHandler
       return;
     }
 
+    const contactInfo: DebitCardsContactInfo =
+      await this.debitCardsIntersolveVisaService.getContactInformation(
+        registration,
+      );
+
     await this.debitCardsIntersolveVisaService.sendCustomerInformationToIntersolve(
-      registration,
+      { registration, contactInfo },
     );
   }
 }

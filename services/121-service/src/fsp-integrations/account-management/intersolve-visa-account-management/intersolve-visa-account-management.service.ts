@@ -480,14 +480,21 @@ export class IntersolveVisaAccountManagementService {
         referenceId,
         programId,
       });
-    const contactInfo = await this.getContactInformation(registration);
-    await this.sendCustomerInformationToIntersolve(registration, contactInfo);
+    const contactInfo: DebitCardsContactInfo =
+      await this.getContactInformation(registration);
+    await this.sendCustomerInformationToIntersolve({
+      registration,
+      contactInfo,
+    });
   }
 
-  public async sendCustomerInformationToIntersolve(
-    registration: RegistrationEntity,
-    contactInfo: ContactInformation,
-  ): Promise<void> {
+  public async sendCustomerInformationToIntersolve({
+    registration,
+    contactInfo,
+  }: {
+    registration: RegistrationEntity;
+    contactInfo: DebitCardsContactInfo;
+  }): Promise<void> {
     const registrationHasVisaCustomer =
       await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
     if (registrationHasVisaCustomer) {
@@ -498,13 +505,10 @@ export class IntersolveVisaAccountManagementService {
     }
   }
 
-  private async getContactInformation(
+  public async getContactInformation(
     registration: RegistrationEntity,
-  ): Promise<any> {
-    type CustomerInformationKeys =
-      | keyof ContactInformation
-      | FspAttributes.fullName; // Full name is not part of ContactInformation, but still needs to be updated via the same process
-    const fieldNames: CustomerInformationKeys[] = [
+  ): Promise<DebitCardsContactInfo> {
+    const fieldNames: DebitCardsContactInfoKeys[] = [
       FspAttributes.addressStreet,
       FspAttributes.addressHouseNumber,
       FspAttributes.addressHouseNumberAddition,
