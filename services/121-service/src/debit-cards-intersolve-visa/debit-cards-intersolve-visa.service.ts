@@ -80,6 +80,7 @@ export class DebitCardsIntersolveVisaService {
       await this.registrationUtilsService.getRegistrationOrThrow({
         referenceId,
         programId,
+        relations: ['programFspConfiguration'],
       });
     if (
       !registration.programFspConfigurationId ||
