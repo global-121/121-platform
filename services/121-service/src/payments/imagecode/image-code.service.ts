@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import bwipjs from 'bwip-js';
 import Jimp from 'jimp';
 import crypto from 'node:crypto';
 import { Equal, LessThan, Repository } from 'typeorm';
@@ -67,8 +68,6 @@ export class ImageCodeService {
   }
 
   private async generateBarCodeImage(code: string): Promise<Buffer> {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const bwipjs = require('bwip-js');
     return await bwipjs.toBuffer({
       bcid: 'code128',
       text: code,

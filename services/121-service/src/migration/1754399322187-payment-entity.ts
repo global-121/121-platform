@@ -182,6 +182,6 @@ export class PaymentEntity1754399322187 implements MigrationInterface {
   }
 
   public async down(_: QueryRunner): Promise<void> {
-    console.log('We only move forward, never look back');
+    // No down migration
   }
 }

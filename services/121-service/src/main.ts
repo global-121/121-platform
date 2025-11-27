@@ -21,7 +21,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
 import { ValidationPipeOptions } from '@121-service/src/validation-pipe-options.const';
 
 import 'multer'; // This is import is required to prevent typing error on the MulterModule
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+// eslint-disable-next-line @typescript-eslint/no-require-imports -- This version of AppInsighst still only works with require
 import appInsights = require('applicationinsights');
 
 /**

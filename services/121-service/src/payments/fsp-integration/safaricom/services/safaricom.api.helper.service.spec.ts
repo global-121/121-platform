@@ -45,8 +45,7 @@ describe('SafaricomApiHelperService', () => {
           originatorConversationId,
         );
       } catch (error) {
-        // testing this with expect(...).rejects.toThrow() did not work, so reverting to this
-        // eslint-disable-next-line jest/no-conditional-expect
+        // eslint-disable-next-line jest/no-conditional-expect -- `expect(...).rejects.toThrow()` did not work, so reverting to this
         expect(error).toBeInstanceOf(DuplicateOriginatorConversationIdError);
       }
     });

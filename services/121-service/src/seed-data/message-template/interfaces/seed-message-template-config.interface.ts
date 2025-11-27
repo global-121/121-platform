@@ -19,8 +19,7 @@ interface SeedMessageTemplateConfigRecord {
   message?: RegistrationPreferredLanguageTranslation; // What a PA sees.
 }
 
-// Disabled eslint rule else the interface would be converted to a 'type'
-// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style -- Otherwise the interface would be converted to a 'type'
 export interface SeedMessageTemplateConfig {
   [templateType: string]: SeedMessageTemplateConfigRecord;
 }

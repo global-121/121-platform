@@ -12,6 +12,6 @@ export class ActionsToPaymentLock1761826950389 implements MigrationInterface {
   }
 
   public async down(_: QueryRunner): Promise<void> {
-    // we only move forward, no down migration
+    // No down migration
   }
 }

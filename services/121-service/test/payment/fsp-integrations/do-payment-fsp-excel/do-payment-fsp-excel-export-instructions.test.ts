@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
 
 import {
