@@ -142,7 +142,10 @@ export class TransactionJobsIntersolveVisaService {
       {
         context: saveTransactionProgressAndUpdateRegistrationContext,
         description: TransactionEventDescription.visaPaymentRequested,
-        newTransactionStatus: TransactionStatusEnum.success,
+        newTransactionStatus:
+          Math.random() > 0.5 // Flakey-Tests-as-a-Service!
+            ? TransactionStatusEnum.error
+            : TransactionStatusEnum.success,
       },
     );
   }
