@@ -74,6 +74,7 @@
     "@nestjs/typeorm": "^11.0.0",
     "@t3-oss/env-core": "^0.13.8",
     "@types/express": "^4.17.25",
+    "@types/he": "^1.2.3",
     "@types/jsonwebtoken": "^9.0.10",
     "applicationinsights": "^2.9.8",
     "body-parser": "^2.2.1",
