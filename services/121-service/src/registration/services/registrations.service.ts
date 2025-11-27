@@ -547,6 +547,7 @@ export class RegistrationsService {
         await this.debitCardsIntersolveVisaService.getContactInformation(
           registration,
         );
+
       await this.debitCardsIntersolveVisaService.sendCustomerInformationToIntersolve(
         {
           contactInfo,
