@@ -30,7 +30,6 @@ graph LR
   DebitCardsIntersolveVisaModule-->ProgramFspConfigurationsModule
   DebitCardsIntersolveVisaModule-->RegistrationDataModule
   DebitCardsIntersolveVisaModule-->RegistrationUtilsModule
-  DebitCardsIntersolveVisaModule-->RegistrationsModule
   DebitCardsIntersolveVisaModule-->UserModule
 >>>>>>> 0de47d38c (shared get reg or throw func)
   ExcelModule-->RegistrationsModule
