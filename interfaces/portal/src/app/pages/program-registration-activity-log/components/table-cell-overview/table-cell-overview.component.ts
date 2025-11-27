@@ -187,6 +187,7 @@ export class TableCellOverviewComponent
     }
     const referenceIds = [referenceId];
     this.retryTransactionsDialog().retryFailedTransactions({
+      transactionCount: 1,
       referenceIds,
     });
   }

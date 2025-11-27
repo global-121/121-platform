@@ -49,7 +49,8 @@ export class RetryTransactionsDialogComponent {
     this.paymentApiService.getPaymentStatus(this.programId),
   );
 
-  readonly referenceIdsForRetryTransactions = signal<string[]>([]);
+  readonly referenceIdsForRetryTransactions = signal<string[] | undefined>([]);
+  readonly transactionCount = signal<number>(0);
 
   readonly retryTransactionsConfirmationDialog =
     viewChild.required<FormDialogComponent>(
@@ -79,29 +80,45 @@ export class RetryTransactionsDialogComponent {
     },
   }));
 
+  readonly registrationReferenceIdFilter = computed(() => {
+    const referenceIds = this.referenceIdsForRetryTransactions();
+
+    if (!referenceIds) {
+      return '';
+    }
+
+    return `${FilterOperator.IN}:${referenceIds.join(',')}`;
+  });
+
   readonly retryFailedTransactionsPaginateQuery = computed<PaginateQuery>(
     () => {
       const paginateQuery = {
         ...this.paginateQuery(),
         filter: {
           ...this.paginateQuery()?.filter,
-          registrationReferenceId: `${FilterOperator.IN}:${this.referenceIdsForRetryTransactions().join(',')}`,
+          registrationReferenceId: this.registrationReferenceIdFilter(),
         },
       };
       return paginateQuery;
     },
   );
 
-  public retryFailedTransactions({ referenceIds }: { referenceIds: string[] }) {
+  public retryFailedTransactions({
+    transactionCount,
+    referenceIds,
+  }: {
+    transactionCount: number;
+    referenceIds: string[] | undefined;
+  }) {
     const eventName =
-      referenceIds.length === 1
+      transactionCount === 1
         ? 'retry-transaction:single'
         : 'retry-transaction:multiple';
     this.trackingService.trackEvent({
       category: TrackingCategory.manageTransactions,
       action: TrackingAction.clickRetryTransactionButton,
       name: eventName,
-      value: referenceIds.length,
+      value: transactionCount,
     });
 
     if (this.paymentStatus.data()?.inProgress) {
@@ -113,12 +130,13 @@ export class RetryTransactionsDialogComponent {
     }
 
     this.referenceIdsForRetryTransactions.set(referenceIds);
+    this.transactionCount.set(transactionCount);
     this.retryTransactionsConfirmationDialog().show({
       trackingEvent: {
         category: TrackingCategory.manageTransactions,
         action: TrackingAction.clickProceedButton,
         name: eventName,
-        value: referenceIds.length,
+        value: transactionCount,
       },
     });
   }

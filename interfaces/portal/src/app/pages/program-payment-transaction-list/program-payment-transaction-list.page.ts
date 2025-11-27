@@ -281,10 +281,6 @@ export class ProgramPaymentTransactionListPageComponent {
       fieldForFilter: 'registrationReferenceId',
       noSelectionToastMessage: $localize`:@@no-registrations-selected:Select one or more registrations and try again.`,
     });
-    console.log(
-      '🚀 ~ ProgramPaymentTransactionListPageComponent ~ retryFailedTransactions ~ actionData:',
-      actionData,
-    );
 
     if (!actionData) {
       return;
@@ -292,16 +288,16 @@ export class ProgramPaymentTransactionListPageComponent {
 
     const selection = actionData.selection;
 
-    if (!Array.isArray(selection) || selection.length === 0) {
-      this.toastService.showGenericError(); // Should never happen
-      return;
+    let referenceIds: string[] | undefined = undefined;
+
+    if (Array.isArray(selection)) {
+      referenceIds = selection.map(
+        (transaction) => transaction.registrationReferenceId ?? '',
+      );
     }
 
-    const referenceIds = selection.map(
-      (transaction) => transaction.registrationReferenceId ?? '',
-    );
-
     this.retryTransactionsDialog().retryFailedTransactions({
+      transactionCount: actionData.count,
       referenceIds,
     });
   }
