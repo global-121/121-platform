@@ -20,12 +20,12 @@ const configuredFsps = [
 
 const visaConfiguration = [
   FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
-  // eslint-disable-next-line n/no-process-env
+  // eslint-disable-next-line n/no-process-env -- Used in seed-data, not in code, so not in '@121-service/src/env'
   process.env.INTERSOLVE_VISA_BRAND_CODE,
-  // eslint-disable-next-line n/no-process-env
-  process.env.INTERSOLVE_VISA_COVER_LETTER_CODE,
-  // eslint-disable-next-line n/no-process-env
-  process.env.INTERSOLVE_VISA_FUNDING_TOKEN_CODE,
+  // eslint-disable-next-line n/no-process-env -- Used in seed-data, not in code, so not in '@121-service/src/env'
+  process.env.INTERSOLVE_VISA_COVERLETTER_CODE,
+  // eslint-disable-next-line n/no-process-env -- Used in seed-data, not in code, so not in '@121-service/src/env'
+  process.env.INTERSOLVE_VISA_FUNDINGTOKEN_CODE,
 ].filter((item): item is string => item !== undefined);
 
 const newVisaConfiguration = [
