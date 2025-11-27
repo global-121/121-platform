@@ -1,13 +1,11 @@
-import {
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-  Optional,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, FindOneOptions, In, Repository } from 'typeorm';
 
+import { DebitCardsIntersolveVisaService } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.service';
+import { env } from '@121-service/src/env';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -30,7 +28,6 @@ import {
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationValidationInputType } from '@121-service/src/registration/enum/registration-validation-input-type.enum';
 import { ErrorEnum } from '@121-service/src/registration/errors/registration-data.error';
-import { RegistrationAttributeChangeHandler } from '@121-service/src/registration/interfaces/registration-attribute-change-handler.interface';
 import { ValidationRegistrationConfig } from '@121-service/src/registration/interfaces/validate-registration-config.interface';
 import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
@@ -73,9 +70,7 @@ export class RegistrationsService {
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationsInputValidator: RegistrationsInputValidator,
     private readonly uniqueRegistrationPairRepository: UniqueRegistrationPairRepository,
-    @Optional()
-    @Inject('REGISTRATION_ATTRIBUTE_CHANGE_HANDLERS')
-    private readonly attributeChangeHandlers: RegistrationAttributeChangeHandler[] = [],
+    private readonly debitCardsIntersolveVisaService: DebitCardsIntersolveVisaService,
   ) {}
 
   // This methods can be used to get the same formatted data as the pagination query using referenceId
@@ -541,15 +536,24 @@ export class RegistrationsService {
       });
     }
 
-    await Promise.all(
-      this.attributeChangeHandlers.map((handler) =>
-        handler.handleAttributeChange({
-          registration: savedRegistration,
-          attribute,
-          value,
-        }),
-      ),
-    );
+    const intersolveVisaAttributeNames = FSP_SETTINGS[
+      Fsps.intersolveVisa
+    ].attributes.map((attr) => attr.name) as string[];
+    if (
+      env.INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION &&
+      intersolveVisaAttributeNames.includes(attribute)
+    ) {
+      const contactInfo =
+        await this.debitCardsIntersolveVisaService.getContactInformation(
+          registration,
+        );
+      await this.debitCardsIntersolveVisaService.sendCustomerInformationToIntersolve(
+        {
+          contactInfo,
+          registration,
+        },
+      );
+    }
 
     return this.registrationUtilsService.getRegistrationOrThrow({
       referenceId: savedRegistration.referenceId,

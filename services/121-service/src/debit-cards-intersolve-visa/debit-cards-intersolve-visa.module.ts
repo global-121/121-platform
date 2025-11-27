@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 
 import { DebitCardsIntersolveVisaController } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.controller';
 import { DebitCardsIntersolveVisaService } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.service';
-import { IntersolveVisaRegistrationAttributeChangeHandler } from '@121-service/src/debit-cards-intersolve-visa/handlers/intersolve-visa-registration-attribute-change.handler';
 import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
@@ -21,18 +20,7 @@ import { UserModule } from '@121-service/src/user/user.module';
     RegistrationUtilsModule,
   ],
   controllers: [DebitCardsIntersolveVisaController],
-  providers: [
-    DebitCardsIntersolveVisaService,
-    RegistrationScopedRepository,
-    IntersolveVisaRegistrationAttributeChangeHandler,
-    {
-      provide: 'REGISTRATION_ATTRIBUTE_CHANGE_HANDLERS',
-      useFactory: (
-        handler: IntersolveVisaRegistrationAttributeChangeHandler,
-      ) => [handler],
-      inject: [IntersolveVisaRegistrationAttributeChangeHandler],
-    },
-  ],
+  providers: [DebitCardsIntersolveVisaService, RegistrationScopedRepository],
   exports: [DebitCardsIntersolveVisaService],
 })
 export class DebitCardsIntersolveVisaModule {}
