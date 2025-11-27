@@ -127,8 +127,6 @@ jobs:
 
       - name: Run E2E-Tests with Playwright
         working-directory: ${{ env.e2eTestsPath }}
-        env:
-          BASE_URL: http://localhost:8088
         run: |
           npm test -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
 

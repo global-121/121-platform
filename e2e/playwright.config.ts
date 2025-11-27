@@ -20,7 +20,7 @@ export default defineConfig({
   timeout: 60_000,
   use: {
     // eslint-disable-next-line n/no-process-env -- This environment variable `BASE_URL` is NOT used in the 121-service, thus not managed via the env.ts file.
-    baseURL: process.env.BASE_URL,
+    baseURL: process.env.BASE_URL ?? 'http://localhost:8088',
     video: 'on-first-retry',
     screenshot: 'only-on-failure',
     headless: true,
