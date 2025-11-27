@@ -125,6 +125,7 @@ graph LR
   ProgramModule-->UserModule
   RegistrationEventsModule-->UserModule
   RegistrationUtilsModule-->RegistrationDataModule
+  RegistrationsModule-->DebitCardsIntersolveVisaModule
   RegistrationsModule-->FspsModule
   RegistrationsModule-->IntersolveVisaDataSynchronizationModule
   RegistrationsModule-->LookupModule
