@@ -25,6 +25,7 @@ import { DebitCardsIntersolveVisaService } from '@121-service/src/debit-cards-in
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
 
@@ -240,7 +241,7 @@ export class DebitCardsIntersolveVisaController {
     @Param('programId', ParseIntPipe) programId: number,
     @Param('referenceId') referenceId: string,
     @Param('tokenCode') tokenCode: string,
-  ): Promise<void> {
+  ): Promise<RegistrationEntity> {
     return await this.debitCardsIntersolveVisaService.getRegistrationAndReplaceCard(
       referenceId,
       programId,

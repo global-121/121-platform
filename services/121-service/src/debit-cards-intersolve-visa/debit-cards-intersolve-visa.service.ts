@@ -76,23 +76,10 @@ export class DebitCardsIntersolveVisaService {
     programId: number,
     userId: number,
   ) {
-    const registration =
-      await this.registrationUtilsService.getRegistrationOrThrow({
-        referenceId,
-        programId,
-        relations: ['programFspConfiguration'],
-      });
-    if (
-      !registration.programFspConfigurationId ||
-      registration.programFspConfiguration?.fspName !== Fsps.intersolveVisa
-    ) {
-      throw new HttpException(
-        `This registration is not associated with the Intersolve Visa Fsp.`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    await this.replaceCard(registration);
+    const registration = await this.getRegistrationAndReplaceCard(
+      referenceId,
+      programId,
+    );
 
     if (userId) {
       await this.queueMessageService.addMessageJob({
@@ -109,15 +96,27 @@ export class DebitCardsIntersolveVisaService {
   public async getRegistrationAndReplaceCard(
     referenceId: string,
     programId: number,
-    tokenCode: string,
-  ): Promise<void> {
+    tokenCode?: string,
+  ): Promise<RegistrationEntity> {
     const registration =
       await this.registrationUtilsService.getRegistrationOrThrow({
         referenceId,
         programId,
+        relations: ['programFspConfiguration'],
       });
+    if (
+      !registration.programFspConfigurationId ||
+      registration.programFspConfiguration?.fspName !== Fsps.intersolveVisa
+    ) {
+      throw new HttpException(
+        `This registration is not associated with the Intersolve Visa Fsp.`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     await this.replaceCard(registration, tokenCode);
+
+    return registration;
   }
 
   public async replaceCard(
