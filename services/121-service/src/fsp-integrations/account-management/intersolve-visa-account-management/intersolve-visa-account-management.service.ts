@@ -546,21 +546,17 @@ export class IntersolveVisaAccountManagementService {
 
   private validateContactInfo(contactInfo: DebitCardsContactInfo) {
     if (!contactInfo.name) {
-      throw new HttpException(
-        `Property ${contactInfo.name} is undefined`,
-        HttpStatus.BAD_REQUEST,
-      );
+      return false;
     }
 
     for (const field in contactInfo.contactInformation) {
       if (field === FspAttributes.addressHouseNumberAddition) continue; // Optional field
       if (!contactInfo.contactInformation[field]) {
-        throw new HttpException(
-          `Property ${contactInfo.name} is undefined`,
-          HttpStatus.BAD_REQUEST,
-        );
+        return false;
       }
     }
+
+    return true;
   }
 
   private async getIntersolveVisaConfig(
