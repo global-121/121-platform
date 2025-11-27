@@ -48,7 +48,6 @@ jobs:
     needs: path-filter
     runs-on: ubuntu-latest
     if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
-    environment: test
     steps:
       - name: Check out repository code
         uses: actions/checkout@v5
@@ -75,8 +74,6 @@ jobs:
       - path-filter
       - lint-code
     if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
-    environment: test
-
     strategy:
       fail-fast: false
       matrix:
