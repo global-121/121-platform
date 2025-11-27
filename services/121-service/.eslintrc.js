@@ -5,6 +5,7 @@ module.exports = {
       files: ['*.js'],
       extends: [
         'eslint:recommended',
+        'plugin:eslint-comments/recommended',
         'plugin:n/recommended',
         'plugin:prettier/recommended',
       ],
@@ -15,7 +16,10 @@ module.exports = {
         sourceType: 'script',
         ecmaVersion: 2022,
       },
-      rules: {},
+      rules: {
+        'eslint-comments/no-unused-disable': 'error',
+        'eslint-comments/require-description': 'error',
+      },
     },
     {
       files: ['*.ts'],
@@ -26,6 +30,7 @@ module.exports = {
         // 'plugin:@typescript-eslint/recommended-type-checked', // Preferred, but currently to many issues
         'plugin:@typescript-eslint/stylistic',
         // 'plugin:@typescript-eslint/stylistic-type-checked',  // Preferred, but currently to many issues
+        'plugin:eslint-comments/recommended',
         'plugin:n/recommended',
         'plugin:promise/recommended',
         'plugin:prettier/recommended', // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
@@ -52,6 +57,8 @@ module.exports = {
             caughtErrors: 'none',
           },
         ],
+        'eslint-comments/no-unused-disable': 'error',
+        'eslint-comments/require-description': 'error',
         'no-restricted-imports': [
           'error',
           {
@@ -83,6 +90,7 @@ module.exports = {
             ignores: ['Headers'],
           },
         ],
+        'n/prefer-node-protocol': 'error',
         'no-relative-import-paths/no-relative-import-paths': [
           'warn',
           {

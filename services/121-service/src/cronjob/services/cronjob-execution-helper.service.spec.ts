@@ -9,8 +9,7 @@ describe('CronjobExecutionHelperService', () => {
   let consoleErrorSpy: jest.SpyInstance;
 
   beforeAll(() => {
-    // Suppress console.error globally for cleaner test output
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    // eslint-disable-next-line @typescript-eslint/no-empty-function -- Suppress console.error globally for cleaner test output
     consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 

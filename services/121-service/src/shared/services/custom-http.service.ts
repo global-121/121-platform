@@ -2,9 +2,9 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { AxiosRequestConfig } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { defaultClient, TelemetryClient } from 'applicationinsights';
-import fs from 'fs';
-import * as https from 'https';
 import { isPlainObject } from 'lodash';
+import fs from 'node:fs';
+import https from 'node:https';
 import { catchError, lastValueFrom, map, of } from 'rxjs';
 
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';

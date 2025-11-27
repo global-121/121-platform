@@ -21,8 +21,9 @@ export class MigrateStatusChangesToEvent1708330966062
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public async down(_queryRunner: QueryRunner): Promise<void> {}
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    // No down migration
+  }
 
   private async migrateStatusChanges(queryRunner: QueryRunner): Promise<void> {
     const manager = queryRunner.manager;

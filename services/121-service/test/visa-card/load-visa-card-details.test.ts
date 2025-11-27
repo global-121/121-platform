@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-conditional-expect */
 import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-card-status.enum';
 import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -101,8 +100,10 @@ describe('Load Visa debit cards and details', () => {
       );
       for (const [index, card] of sortedCards.entries()) {
         if (index === 1) {
+          // eslint-disable-next-line jest/no-conditional-expect -- Only the first card has no actions (TODO: Could be rewritten unconditionally probably)
           expect(card.actions.length).toBe(0);
         } else {
+          // eslint-disable-next-line jest/no-conditional-expect -- Only the first card has no actions (TODO: Could be rewritten unconditionally probably)
           expect(card.actions.length).toBeGreaterThan(0);
         }
         expect(card.tokenCode).toBeDefined();

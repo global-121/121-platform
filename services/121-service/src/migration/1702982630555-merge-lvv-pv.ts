@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import fs from 'node:fs';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class MergeLvvPv1702982630555 implements MigrationInterface {

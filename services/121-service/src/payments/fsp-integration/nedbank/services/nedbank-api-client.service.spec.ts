@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { Test, TestingModule } from '@nestjs/testing';
-import * as https from 'https';
+import https from 'node:https';
 
 import { CreateOrderResponseNedbankApiDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/create-order-response-nedbank-api.dto';
 import { ErrorReponseNedbankApiDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/error-response-nedbank-api.dto';

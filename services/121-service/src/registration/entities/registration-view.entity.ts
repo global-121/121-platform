@@ -1,4 +1,3 @@
-/* eslint-disable custom-rules/typeorm-cascade-ondelete*/ // as cascade delete is not applicable for views
 import {
   Column,
   DataSource,
@@ -121,6 +120,7 @@ export class RegistrationViewEntity {
   @ViewColumn()
   public status: RegistrationStatusEnum;
 
+  // eslint-disable-next-line custom-rules/typeorm-cascade-ondelete -- as cascade delete is not applicable for views
   @ManyToOne((_type) => ProgramEntity, (program) => program.registrations)
   @JoinColumn({ name: 'programId' })
   public program: ProgramEntity;

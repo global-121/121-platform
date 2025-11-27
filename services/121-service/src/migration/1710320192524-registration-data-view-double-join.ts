@@ -25,6 +25,7 @@ export class RegistrationDataViewDoubleJoin1710320192524
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public async down(_queryRunner: QueryRunner): Promise<void> {}
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    // No down migration
+  }
 }

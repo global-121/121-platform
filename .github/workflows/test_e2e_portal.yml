@@ -68,7 +68,7 @@ jobs:
         working-directory: ${{ env.e2eTestsPath }}
         run: 'npm run lint'
 
-  test-shard:
+  test-shard-e2e:
     runs-on: ubuntu-latest
     needs:
       - path-filter
@@ -127,8 +127,6 @@ jobs:
 
       - name: Run E2E-Tests with Playwright
         working-directory: ${{ env.e2eTestsPath }}
-        env:
-          BASE_URL: http://localhost:8088
         run: |
           npm test -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
 
@@ -153,7 +151,7 @@ jobs:
   # This is a workaround for this issue: https://github.com/orgs/community/discussions/44490
   test-shard-resolution-e2e:
     runs-on: ubuntu-latest
-    needs: [test-shard]
+    needs: [test-shard-e2e]
     if: always()
     steps:
       - name: Check required job results

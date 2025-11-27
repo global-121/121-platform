@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import assert from 'assert';
+import assert from 'node:assert';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';

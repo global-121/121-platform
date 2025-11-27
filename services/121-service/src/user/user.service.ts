@@ -2,9 +2,9 @@ import { HttpStatus, Inject, Injectable, Scope } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import crypto from 'crypto';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
+import crypto from 'node:crypto';
 import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';

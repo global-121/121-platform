@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 import { Equal, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';

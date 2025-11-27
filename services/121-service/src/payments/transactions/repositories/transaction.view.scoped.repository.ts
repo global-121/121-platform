@@ -310,11 +310,11 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
           programId: Equal(programId),
         },
         status: Equal(TransactionStatusEnum.pendingApproval),
-        /* eslint-disable no-restricted-syntax -- we pass in Equal(...) or Not(Equal(...)) here */
+        /* eslint-disable-next-line no-restricted-syntax -- we pass in Equal(...) or Not(Equal(...)) here */
         registration: {
+          /* eslint-disable-next-line no-restricted-syntax -- we pass in Equal(...) or Not(Equal(...)) here */
           registrationStatus: registrationStatusCondition,
         },
-        /* eslint-enable no-restricted-syntax */
       },
     });
   }
