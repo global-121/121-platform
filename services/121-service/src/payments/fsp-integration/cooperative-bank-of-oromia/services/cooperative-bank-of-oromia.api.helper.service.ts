@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common/decorators/core/injectable.decorator';
-import { env } from 'process';
 
+import { env } from '@121-service/src/env';
 import { CooperativeBankOfOromiaApiPaymentResponseBodyDto } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-payment-response-body.dto';
 import { CooperativeBankOfOromiaApiTransferRequestBodyDto } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-transfer-request-body.dto';
 import { CooperativeBankOfOromiaTransferResultEnum } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/enums/cooperative-bank-of-oromia-disbursement-result.enum';
@@ -23,7 +23,7 @@ export class CooperativeBankOfOromiaApiHelperService {
       debitAccount: debitAccountNumber,
       creditAccount: recipientCreditAccountNumber,
       creditAmount: amount,
-      narrative: env.COOPERATIVE_BANK_OF_OROMIA_NARRATIVE ?? 'redcross',
+      narrative: env.COOPERATIVE_BANK_OF_OROMIA_NARRATIVE,
       messageId: cooperativeBankOfOromiaMessageId, // Should be max 12 chars ALPHANUMERIC
     };
   }

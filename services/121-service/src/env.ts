@@ -271,7 +271,11 @@ export const env = createEnv({
       .pipe(z.transform((url) => withoutTrailingSlash(url)))
       .optional(),
     // Cooperative Bank of Oromia recommends a MAX of 10 ALPHANUMERIC CHARACTERS
-    COOPERATIVE_BANK_OF_OROMIA_NARRATIVE: z.string().max(10).optional(),
+    COOPERATIVE_BANK_OF_OROMIA_NARRATIVE: z
+      .string()
+      .max(10)
+      .regex(/^[a-z0-9]+$/i)
+      .default('redcross'),
   },
 
   createFinalSchema: (shape) =>
