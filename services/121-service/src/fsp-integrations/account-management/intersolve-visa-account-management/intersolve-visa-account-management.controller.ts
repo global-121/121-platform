@@ -224,7 +224,7 @@ export class IntersolveVisaAccountManagementController {
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
-    summary: 'Replace a physical debit card from a registration',
+    summary: 'Replace a physical debit card for a registration',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
