@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import crypto from 'crypto';
 import Jimp from 'jimp';
+import crypto from 'node:crypto';
 import { Equal, LessThan, Repository } from 'typeorm';
 
 import { EXTERNAL_API } from '@121-service/src/config';

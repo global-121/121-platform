@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import fs from 'fs';
 import chunk from 'lodash/chunk';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import { DataSource, DeepPartial, Equal, In, Repository } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';

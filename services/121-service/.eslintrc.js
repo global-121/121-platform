@@ -83,6 +83,7 @@ module.exports = {
             ignores: ['Headers'],
           },
         ],
+        'n/prefer-node-protocol': 'error',
         'no-relative-import-paths/no-relative-import-paths': [
           'warn',
           {
