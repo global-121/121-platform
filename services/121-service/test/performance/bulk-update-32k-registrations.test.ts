@@ -1,8 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
-import { env } from 'process';
 
+import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
@@ -18,7 +18,8 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^15 = 32768
+// eslint-disable-next-line n/no-process-env -- Only used in test-runs, not included in '@121-service/src/env'
+const duplicateNumber = parseInt(process.env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^15 = 32768
 const testTimeout = 120_000; // 120 seconds
 
 jest.setTimeout(testTimeout);
