@@ -160,7 +160,10 @@ export class IntersolveVisaAccountManagementService {
       await this.checkIfCardIsAlreadyLinked(tokenCode);
     }
 
-    const contactInfo = await this.getContactInformation(registration);
+    const contactInfo: DebitCardsContactInfo =
+      await this.getContactInformation(registration);
+
+    this.validateContactInfo(contactInfo);
 
     await this.sendCustomerInformationToIntersolve({
       registration,
@@ -314,6 +317,7 @@ export class IntersolveVisaAccountManagementService {
   }): Promise<void> {
     const registrationHasVisaCustomer =
       await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
+
     if (registrationHasVisaCustomer) {
       await this.intersolveVisaService.sendUpdatedCustomerInformation({
         registrationId: registration.id,
@@ -356,20 +360,6 @@ export class IntersolveVisaAccountManagementService {
       {},
     );
 
-    for (const name of fieldNames) {
-      if (name === FspAttributes.addressHouseNumberAddition) continue; // Skip non-required property
-      if (
-        mappedRegistrationData[name] === null ||
-        mappedRegistrationData[name] === undefined ||
-        mappedRegistrationData[name] === ''
-      ) {
-        throw new HttpException(
-          `Property ${name} is undefined`,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-    }
-
     return {
       name: mappedRegistrationData[FspAttributes.fullName],
       contactInformation: {
@@ -395,6 +385,25 @@ export class IntersolveVisaAccountManagementService {
         `Card is already linked to another customer at Intersolve.`,
         HttpStatus.BAD_REQUEST,
       );
+    }
+  }
+
+  private validateContactInfo(contactInfo: DebitCardsContactInfo) {
+    if (!contactInfo.name) {
+      throw new HttpException(
+        `Property ${contactInfo.name} is undefined`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    for (const field in contactInfo.contactInformation) {
+      if (field === FspAttributes.addressHouseNumberAddition) continue; // Optional field
+      if (!contactInfo.contactInformation[field]) {
+        throw new HttpException(
+          `Property ${contactInfo.name} is undefined`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
     }
   }
 
