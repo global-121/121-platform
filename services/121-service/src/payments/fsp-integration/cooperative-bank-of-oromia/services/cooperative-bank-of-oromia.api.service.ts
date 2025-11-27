@@ -31,52 +31,40 @@ export class CooperativeBankOfOromiaApiService {
     const accountValidationUrlPart = 'nrc/1.0.0/accountValidation';
 
     this.cooperativeBankOfOromiaTransferURL = this.buildApiUrl({
-      mockFlag: env.MOCK_COOPERATIVE_BANK_OF_OROMIA,
-      apiUrl: env.COOPERATIVE_BANK_OF_OROMIA_API_URL,
+      baseUrl: env.COOPERATIVE_BANK_OF_OROMIA_API_URL,
       mockServiceUrl: env.MOCK_SERVICE_URL,
       urlPart: transferUrlPart,
     });
 
     this.cooperativeBankOfOromiaAccountValidationURL = this.buildApiUrl({
-      mockFlag: env.MOCK_COOPERATIVE_BANK_OF_OROMIA,
-      apiUrl: env.COOPERATIVE_BANK_OF_OROMIA_API_URL,
+      baseUrl: env.COOPERATIVE_BANK_OF_OROMIA_API_URL,
       mockServiceUrl: env.MOCK_SERVICE_URL,
       urlPart: accountValidationUrlPart,
     });
 
-    // Set auth base url; this is a different api path
-    let authUrlBase: URL;
-    if (
-      env.MOCK_COOPERATIVE_BANK_OF_OROMIA ||
-      !env.COOPERATIVE_BANK_OF_OROMIA_AUTH_URL
-    ) {
-      authUrlBase = new URL(
-        'api/fsp/cooperative-bank-of-oromia/',
-        env.MOCK_SERVICE_URL,
-      );
-    } else {
-      authUrlBase = new URL(env.COOPERATIVE_BANK_OF_OROMIA_AUTH_URL);
-    }
-    const urlPart = 'oauth2/token';
-    this.cooperativeBankOfOromiaAuthenticateURL = new URL(urlPart, authUrlBase);
+    // Set auth base url; this is a different api url
+    this.cooperativeBankOfOromiaAuthenticateURL = this.buildApiUrl({
+      baseUrl: env.COOPERATIVE_BANK_OF_OROMIA_AUTH_URL,
+      mockServiceUrl: env.MOCK_SERVICE_URL,
+      urlPart: 'oauth2/token',
+    });
   }
 
   private buildApiUrl({
-    mockFlag,
-    apiUrl,
+    baseUrl,
     mockServiceUrl,
     urlPart,
   }: {
-    mockFlag: boolean;
-    apiUrl: string | undefined;
+    baseUrl: string | undefined;
     mockServiceUrl: string;
     urlPart: string;
   }): URL {
+    const mockFlag = env.MOCK_COOPERATIVE_BANK_OF_OROMIA;
     const mockPathPrefix = 'api/fsp/cooperative-bank-of-oromia/';
-    if (mockFlag || !apiUrl) {
+    if (mockFlag || !baseUrl) {
       return new URL(`${mockPathPrefix}${urlPart}`, mockServiceUrl);
     }
-    return new URL(urlPart, apiUrl);
+    return new URL(urlPart, baseUrl);
   }
 
   public async initiateTransfer({
@@ -107,11 +95,7 @@ export class CooperativeBankOfOromiaApiService {
       }
     }
 
-    const headers = new Headers({
-      Accept: '*/*',
-      'Content-Type': 'application/json',
-    });
-    headers.append('Authorization', `Bearer ${tokenSet.access_token}`);
+    const headers = this.createHeaderWithBearerToken(tokenSet.access_token);
 
     const payload: CooperativeBankOfOromiaApiTransferRequestBodyDto =
       this.cooperativeBankOfOromiaApiHelperService.buildTransferPayload({
@@ -159,11 +143,7 @@ export class CooperativeBankOfOromiaApiService {
         throw error;
       }
     }
-    const headers = new Headers({
-      Accept: '*/*',
-      'Content-Type': 'application/json',
-    });
-    headers.append('Authorization', `Bearer ${tokenSet.access_token}`);
+    const headers = this.createHeaderWithBearerToken(tokenSet.access_token);
 
     const payload = { accountNumber };
 
@@ -194,10 +174,7 @@ export class CooperativeBankOfOromiaApiService {
     }
 
     // Uses different headers from the other endpoints.
-    const headers = new Headers({
-      Accept: '*/*',
-      'Content-Type': 'application/json',
-    });
+    const headers = this.createDefaultHeaders();
     headers.append(
       'Authorization',
       `Basic ${env.COOPERATIVE_BANK_OF_OROMIA_BASE64_CREDENTIALS}`,
@@ -248,5 +225,20 @@ export class CooperativeBankOfOromiaApiService {
     });
 
     return this.tokenSet;
+  }
+
+  private createDefaultHeaders(): Headers {
+    return new Headers({
+      Accept: '*/*',
+      'Content-Type': 'application/json',
+    });
+  }
+
+  // Token is possibly undefined because TokenSet type has optional access_token
+  // but in our case it will always be defined after authenticate() butts can't infer that.
+  private createHeaderWithBearerToken(token?: string): Headers {
+    const headers = this.createDefaultHeaders();
+    headers.append('Authorization', `Bearer ${token}`);
+    return headers;
   }
 }

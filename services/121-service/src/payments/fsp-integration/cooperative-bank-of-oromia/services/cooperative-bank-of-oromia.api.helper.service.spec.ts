@@ -44,7 +44,7 @@ describe('CooperativeBankOfOromiaApiHelperService', () => {
     });
   });
 
-  it('should return fail and parse error message', () => {
+  it('should return fail and parse error message for failed transfer', () => {
     const response: CooperativeBankOfOromiaApiTransferResponseBodyDto = {
       success: false,
       error: {
@@ -60,13 +60,32 @@ describe('CooperativeBankOfOromiaApiHelperService', () => {
     });
   });
 
-  it('should return fail and unknown error message if error object is missing', () => {
+  it('should return fail and unknown error message if error object is missing for failed transfer', () => {
     const response: CooperativeBankOfOromiaApiTransferResponseBodyDto = {
       success: false,
     } as any;
     expect(service.handleTransferResponse(response)).toEqual({
       result: CooperativeBankOfOromiaTransferResultEnum.fail,
       message: 'Unknown error occurred',
+    });
+  });
+
+  it('should return error message for account validation error', () => {
+    const response = {
+      success: false,
+      error: { message: 'Account not found', code: 'T24Error' },
+    };
+    expect(service.handleAccountValidationResponse(response)).toEqual({
+      errorMessage: 'Message: Account not found',
+    });
+  });
+
+  it('should return unknown error for missing account validation error object', () => {
+    const response = {
+      success: false,
+    };
+    expect(service.handleAccountValidationResponse(response)).toEqual({
+      errorMessage: 'Unknown error occurred',
     });
   });
 });
