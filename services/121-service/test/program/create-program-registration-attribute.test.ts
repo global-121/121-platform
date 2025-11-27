@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
 
 import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';

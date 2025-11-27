@@ -29,8 +29,9 @@ export class MigrateStatusesToDeclined1713422095087
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public async down(_queryRunner: QueryRunner): Promise<void> {}
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    // No down migration
+  }
 
   // Function to save event for each registration status change
   private async migrateRegistrationsStatus(

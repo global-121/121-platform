@@ -33,6 +33,7 @@ export class RemoveStartedRegistrationState1713363871246
     await queryRunner.startTransaction();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public async down(_queryRunner: QueryRunner): Promise<void> {}
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    // No down migration
+  }
 }

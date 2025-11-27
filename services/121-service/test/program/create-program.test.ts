@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
 
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';

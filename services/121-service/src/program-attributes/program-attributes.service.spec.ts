@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -12,8 +11,10 @@ import { generateMockCreateQueryBuilder } from '@121-service/src/utils/test-help
 describe('ProgramAttributesService', () => {
   let programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
   let programAttributesService: ProgramAttributesService;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type -- TypeORM method requires this
   const programRepositoryToken: string | Function =
     getRepositoryToken(ProgramEntity);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type -- TypeORM method requires this
   const programRegistrationAttributeToken: string | Function =
     getRepositoryToken(ProgramRegistrationAttributeEntity);
 

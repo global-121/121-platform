@@ -1,5 +1,3 @@
-/* eslint-disable jest/no-conditional-expect */
-
 import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
@@ -107,10 +105,12 @@ describe('Do payment with Excel FSP', () => {
       // Check per import record if it is imported or not found
       for (const importResultRecord of importResultRecords) {
         if (phoneNumbersWesteros.includes(importResultRecord[matchColumn])) {
+          // eslint-disable-next-line jest/no-conditional-expect -- Not all records are expected to be found
           expect(importResultRecord.importStatus).not.toBe(
             ImportStatus.notFound,
           );
         } else {
+          // eslint-disable-next-line jest/no-conditional-expect -- Only some records are expected not to be found
           expect(importResultRecord.importStatus).toBe(ImportStatus.notFound);
         }
       }

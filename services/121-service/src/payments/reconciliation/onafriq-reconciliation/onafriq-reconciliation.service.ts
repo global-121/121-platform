@@ -219,9 +219,8 @@ export class OnafriqReconciliationService {
     csvContent: string,
     filename: string,
   ): Promise<void> {
-    // Initialize SFTP client lazily to prevent error when injecting this via constructors
     if (!this.sftp) {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      // eslint-disable-next-line @typescript-eslint/no-require-imports -- Initialize SFTP client lazily to prevent error when injecting this via constructors
       const Client = require('ssh2-sftp-client');
       this.sftp = new Client();
     }
