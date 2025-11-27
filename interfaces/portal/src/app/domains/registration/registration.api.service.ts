@@ -361,11 +361,11 @@ export class RegistrationApiService extends DomainApiService {
   public linkCardToRegistration({
     programId,
     referenceId,
-    cardNumber,
+    tokenCode,
   }: {
     programId: Signal<number | string>;
     referenceId: Signal<string | undefined>;
-    cardNumber: Signal<string>;
+    tokenCode: Signal<string>;
   }) {
     const endpoint = this.pathToQueryKey([
       ...BASE_ENDPOINT(programId),
@@ -373,23 +373,23 @@ export class RegistrationApiService extends DomainApiService {
       'fsps',
       'intersolve-visa',
       'link-card',
+      tokenCode,
     ]).join('/');
 
     return this.httpWrapperService.perform121ServiceRequest({
       method: 'POST',
       endpoint,
-      httpParams: { tokenCode: cardNumber() },
     });
   }
 
   public replaceCard({
     programId,
     referenceId,
-    cardNumber,
+    tokenCode,
   }: {
     programId: Signal<number | string>;
     referenceId: Signal<string | undefined>;
-    cardNumber: Signal<string>;
+    tokenCode: Signal<string>;
   }) {
     const endpoint = this.pathToQueryKey([
       ...BASE_ENDPOINT(programId),
@@ -397,12 +397,12 @@ export class RegistrationApiService extends DomainApiService {
       'fsps',
       'intersolve-visa',
       'replace-card',
+      tokenCode,
     ]).join('/');
 
     return this.httpWrapperService.perform121ServiceRequest({
       method: 'POST',
       endpoint,
-      httpParams: { tokenCode: cardNumber() },
     });
   }
 }

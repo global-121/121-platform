@@ -1125,7 +1125,7 @@
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/replace-card",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/replace-card/{tokenCode}",
     "params": [
       "programId",
       "referenceId",
