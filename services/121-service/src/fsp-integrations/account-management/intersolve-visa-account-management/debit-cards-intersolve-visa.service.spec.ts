@@ -11,7 +11,6 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
-// removed RegistrationsPaginationService dependency; service now uses RegistrationDataScopedRepository
 
 describe('DebitCardsIntersolveVisaService', () => {
   let service: DebitCardsIntersolveVisaService;
@@ -62,7 +61,6 @@ describe('DebitCardsIntersolveVisaService', () => {
             getRegistrationDataArrayByName: jest.fn(),
           },
         },
-        // RegistrationDataScopedRepository already provided above; ensure mocked
       ],
     }).compile();
 
