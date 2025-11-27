@@ -1,5 +1,5 @@
 import { Page, test } from '@playwright/test';
-import path from 'path';
+import path from 'node:path';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { uploadAttachment } from '@121-service/test/helpers/program-attachments.helper';

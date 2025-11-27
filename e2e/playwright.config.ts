@@ -1,6 +1,6 @@
 import { defineConfig } from '@playwright/test';
 import dotenv from 'dotenv';
-import path from 'path';
+import path from 'node:path';
 
 const envPath = path.resolve(__dirname, '../services/.env');
 dotenv.config({ path: envPath });
