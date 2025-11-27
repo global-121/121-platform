@@ -407,11 +407,13 @@ svg-icon svg {
     @apply txt-body-s;
   }
 
-   /*
+  /**
    * Prevents PrimeIcons (.pi) from overflowing their containers during layout changes.
    * See AB#38977 for details.
+   * Using only  `contain: paint;` will cause clipping-issues in Firefox, these 2 values below fix it cross-platform.
    */
   .pi {
-    contain: paint;
+    transform: translateZ(0);
+    will-change: transform;
   }
 }
