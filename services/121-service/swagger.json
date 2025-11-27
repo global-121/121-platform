@@ -1139,7 +1139,11 @@
   },
   {
     "method": "post",
+<<<<<<< HEAD
     "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/on-site/link",
+=======
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/replace-card/{tokenCode}",
+>>>>>>> 4c8b02e70 (update endpoints)
     "params": [
       "programId",
       "referenceId"
