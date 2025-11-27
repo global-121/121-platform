@@ -1,5 +1,5 @@
-import fs from 'fs';
-import { finished } from 'stream/promises';
+import fs from 'node:fs';
+import { finished } from 'node:stream/promises';
 
 export async function generateLargeTestFile(
   filePath: string,

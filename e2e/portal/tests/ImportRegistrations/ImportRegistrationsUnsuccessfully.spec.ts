@@ -1,5 +1,5 @@
 import { test } from '@playwright/test';
-import path from 'path';
+import path from 'node:path';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';

@@ -59,6 +59,7 @@ module.exports = {
           },
         ],
         'n/no-process-env': 'error',
+        'n/prefer-node-protocol': 'error',
         'object-shorthand': 'error',
         'promise/no-nesting': 'error',
         'promise/no-callback-in-promise': 'error',
