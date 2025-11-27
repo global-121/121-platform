@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import * as https from 'https';
+import https from 'node:https';
 
 import { EXTERNAL_API, IS_DEVELOPMENT, IS_TEST } from '@121-service/src/config';
 import { env } from '@121-service/src/env';

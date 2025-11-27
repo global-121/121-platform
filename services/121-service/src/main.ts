@@ -4,8 +4,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import { Request, Response } from 'express';
-import fs, { writeFileSync } from 'fs';
 import { SpelunkerModule } from 'nestjs-spelunker';
+import fs, { writeFileSync } from 'node:fs';
 
 import { ApplicationModule } from '@121-service/src/app.module';
 import {

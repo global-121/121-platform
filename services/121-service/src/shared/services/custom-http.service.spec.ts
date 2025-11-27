@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import * as https from 'https';
+import fs from 'node:fs';
+import https from 'node:https';
 
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 

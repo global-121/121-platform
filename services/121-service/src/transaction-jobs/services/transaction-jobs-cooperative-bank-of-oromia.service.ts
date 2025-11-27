@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import * as crypto from 'crypto';
+import crypto from 'node:crypto';
 
 import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { CooperativeBankOfOromiaTransferResultEnum } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/enums/cooperative-bank-of-oromia-disbursement-result.enum';

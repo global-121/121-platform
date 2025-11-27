@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import * as fs from 'fs';
 import { Redis } from 'ioredis';
+import fs from 'node:fs';
 import SftpClient from 'ssh2-sftp-client';
 import { Between, Equal, FindOperator } from 'typeorm';
 

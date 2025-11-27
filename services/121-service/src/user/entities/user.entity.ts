@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 import {
   BeforeInsert,
   Column,
