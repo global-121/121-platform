@@ -271,11 +271,7 @@ export const env = createEnv({
       .pipe(z.transform((url) => withoutTrailingSlash(url)))
       .optional(),
     // Cooperative Bank of Oromia recommends a MAX of 10 ALPHANUMERIC CHARACTERS
-    COOPERATIVE_BANK_OF_OROMIA_NARRATIVE: z
-      .string()
-      .max(10)
-      .regex(/^[a-z0-9]+$/i)
-      .default('redcross'),
+    COOPERATIVE_BANK_OF_OROMIA_NARRATIVE: z.string().max(10).optional(),
   },
 
   createFinalSchema: (shape) =>
@@ -296,6 +292,15 @@ export const env = createEnv({
             'AIRTEL_API_URL',
             'AIRTEL_DISBURSEMENT_PIN',
             'AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY',
+          ],
+        ],
+        [
+          'COOPERATIVE_BANK_OF_OROMIA_ENABLED',
+          [
+            'COOPERATIVE_BANK_OF_OROMIA_BASE64_CREDENTIALS',
+            'COOPERATIVE_BANK_OF_OROMIA_API_URL',
+            'COOPERATIVE_BANK_OF_OROMIA_AUTH_URL',
+            'COOPERATIVE_BANK_OF_OROMIA_NARRATIVE',
           ],
         ],
       ]);
