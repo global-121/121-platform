@@ -1,5 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
+import { DebitCardsContactInfo } from '@121-service/src/debit-cards-intersolve-visa/types/debit-cards-contact-info.interface';
+import { DebitCardsContactInfoKeys } from '@121-service/src/debit-cards-intersolve-visa/types/debit-cards-contact-info-keys.type';
 import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import {
   FspConfigurationProperties,
@@ -12,7 +14,6 @@ import { MessageQueuesService } from '@121-service/src/notifications/message-que
 import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
-import { ContactInformation } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
@@ -128,10 +129,13 @@ export class DebitCardsIntersolveVisaService {
 
     const contactInfo = await this.getContactInformation(registration);
 
-    await this.sendCustomerInformationToIntersolve(registration, contactInfo);
+    await this.sendCustomerInformationToIntersolve({
+      registration,
+      contactInfo,
+    });
 
     const intersolveVisaConfig = await this.getIntersolveVisaConfig(
-      mappedRegistrationData[registration.programFspConfigurationId],
+      registration.programFspConfigurationId,
     );
     const brandCode = intersolveVisaConfig.get(
       FspConfigurationProperties.brandCode,
@@ -260,14 +264,21 @@ export class DebitCardsIntersolveVisaService {
         referenceId,
         programId,
       });
-    const contactInfo = await this.getContactInformation(registration);
-    await this.sendCustomerInformationToIntersolve(registration, contactInfo);
+    const contactInfo: DebitCardsContactInfo =
+      await this.getContactInformation(registration);
+    await this.sendCustomerInformationToIntersolve({
+      registration,
+      contactInfo,
+    });
   }
 
-  public async sendCustomerInformationToIntersolve(
-    registration: RegistrationEntity,
-    contactInfo: ContactInformation,
-  ): Promise<void> {
+  public async sendCustomerInformationToIntersolve({
+    registration,
+    contactInfo,
+  }: {
+    registration: RegistrationEntity;
+    contactInfo: DebitCardsContactInfo;
+  }): Promise<void> {
     const registrationHasVisaCustomer =
       await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
     if (registrationHasVisaCustomer) {
@@ -278,13 +289,10 @@ export class DebitCardsIntersolveVisaService {
     }
   }
 
-  private async getContactInformation(
+  public async getContactInformation(
     registration: RegistrationEntity,
-  ): Promise<any> {
-    type CustomerInformationKeys =
-      | keyof ContactInformation
-      | FspAttributes.fullName; // Full name is not part of ContactInformation, but still needs to be updated via the same process
-    const fieldNames: CustomerInformationKeys[] = [
+  ): Promise<DebitCardsContactInfo> {
+    const fieldNames: DebitCardsContactInfoKeys[] = [
       FspAttributes.addressStreet,
       FspAttributes.addressHouseNumber,
       FspAttributes.addressHouseNumberAddition,
