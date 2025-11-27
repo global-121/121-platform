@@ -11,15 +11,15 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
-import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+// removed RegistrationsPaginationService dependency; service now uses RegistrationDataScopedRepository
 
 describe('DebitCardsIntersolveVisaService', () => {
   let service: DebitCardsIntersolveVisaService;
   let registrationUtilsService: jest.Mocked<RegistrationUtilsService>;
   let intersolveVisaService: jest.Mocked<IntersolveVisaService>;
   let queueMessageService: jest.Mocked<MessageQueuesService>;
-  let registrationsPaginationService: jest.Mocked<RegistrationsPaginationService>;
   let programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
+  let registrationDataScopedRepository: jest.Mocked<RegistrationDataScopedRepository>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -62,12 +62,7 @@ describe('DebitCardsIntersolveVisaService', () => {
             getRegistrationDataArrayByName: jest.fn(),
           },
         },
-        {
-          provide: RegistrationsPaginationService,
-          useValue: {
-            getRegistrationViewsByReferenceIds: jest.fn(),
-          },
-        },
+        // RegistrationDataScopedRepository already provided above; ensure mocked
       ],
     }).compile();
 
@@ -75,50 +70,49 @@ describe('DebitCardsIntersolveVisaService', () => {
     registrationUtilsService = module.get(RegistrationUtilsService);
     queueMessageService = module.get(MessageQueuesService);
     intersolveVisaService = module.get(IntersolveVisaService);
-    registrationsPaginationService = module.get(RegistrationsPaginationService);
     programFspConfigurationRepository = module.get(
       ProgramFspConfigurationRepository,
+    );
+    registrationDataScopedRepository = module.get(
+      RegistrationDataScopedRepository,
     );
   });
 
   describe('linkDebitCardToRegistration', () => {
-    type RegistrationViews = Awaited<
-      ReturnType<
-        RegistrationsPaginationService['getRegistrationViewsByReferenceIds']
-      >
-    >;
-
-    const registrationView = [
-      {
-        id: 7,
-        name: 'Jane Doe',
-        addressStreet: 'Main',
-        addressHouseNumber: '10',
-        addressHouseNumberAddition: 'A',
-        addressPostalCode: '1234AB',
-        addressCity: 'Amsterdam',
-        phoneNumber: '31612345678',
-      } as unknown as RegistrationViews[number],
-    ] as RegistrationViews;
+    const registration = {
+      id: 7,
+      referenceId: 'ref-1',
+      programFspConfigurationId: 123,
+    } as unknown as RegistrationEntity;
 
     it('throws when wallet is already linked', async () => {
       intersolveVisaService.getWallet.mockResolvedValue({ holderId: 1 } as any);
 
       await expect(
         service.linkDebitCardToRegistration('ref-1', 1, 'token-1'),
-      ).rejects.toThrow('Card is already linked to another customer');
+      ).rejects.toThrow(
+        'Card is already linked to another customer at Intersolve.',
+      );
     });
 
     it('links the card when wallet is unlinked', async () => {
       intersolveVisaService.getWallet.mockResolvedValue({
         holderId: null,
       } as any);
-      registrationsPaginationService.getRegistrationViewsByReferenceIds.mockResolvedValue(
+      registrationUtilsService.getRegistrationOrThrow.mockResolvedValue(
+        registration,
+      );
+
+      // Mock registration data used to build contact information
+      registrationDataScopedRepository.getRegistrationDataArrayByName.mockResolvedValue(
         [
-          {
-            ...registrationView[0],
-            programFspConfigurationId: 123, // any number is fine for the test
-          },
+          { name: 'addressStreet', value: 'Main' },
+          { name: 'addressHouseNumber', value: '10' },
+          { name: 'addressHouseNumberAddition', value: 'A' },
+          { name: 'addressPostalCode', value: '1234AB' },
+          { name: 'addressCity', value: 'Amsterdam' },
+          { name: 'phoneNumber', value: '31612345678' },
+          { name: 'fullName', value: 'Jane Doe' },
         ] as any,
       );
 
@@ -156,6 +150,22 @@ describe('DebitCardsIntersolveVisaService', () => {
         parentTokenCode: 'parent-token',
         childTokenCode: 'child-token',
       });
+      // Ensure customer was created with contact info
+      expect(intersolveVisaService.getCustomerOrCreate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          registrationId: registration.id,
+          createCustomerReference: 'ref-1',
+          name: 'Jane Doe',
+          contactInformation: expect.objectContaining({
+            addressStreet: 'Main',
+            addressHouseNumber: '10',
+            addressHouseNumberAddition: 'A',
+            addressPostalCode: '1234AB',
+            addressCity: 'Amsterdam',
+            phoneNumber: '31612345678',
+          }),
+        }),
+      );
     });
   });
 
