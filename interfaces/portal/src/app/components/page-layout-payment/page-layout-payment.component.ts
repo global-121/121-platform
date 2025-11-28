@@ -214,12 +214,14 @@ export class PageLayoutPaymentComponent {
       .data()
       .fsps.map(
         (fsp) =>
-          fsp?.programFspConfigurationLabel ??
-          fsp?.programFspConfigurationName ??
+          this.translatableStringService.translate(
+            fsp.programFspConfigurationLabel,
+          ) ??
+          fsp.programFspConfigurationName ??
           '',
       );
 
-    return this.translatableStringService.commaSeparatedList(fspLabels);
+    return fspLabels.join(', ');
   });
 
   readonly startPaymentTransactionCount = computed<string>(() => {
