@@ -67,7 +67,7 @@ describe('Reconciliate excel FSP data', () => {
     await seedPaidRegistrations({
       registrations: registrationsWesteros,
       programId: programIdWesteros,
-      amount: transferValue,
+      transferValue,
       completeStatuses: [TransactionStatusEnum.waiting],
     });
 

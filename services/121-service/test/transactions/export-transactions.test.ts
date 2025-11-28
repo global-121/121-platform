@@ -45,7 +45,7 @@ describe('Export transactions', () => {
     const paymentId = await seedPaidRegistrations({
       registrations: [registrationSafaricom],
       programId,
-      amount: transferValue,
+      transferValue,
       completeStatuses: [TransactionStatusEnum.success],
     });
     const toDate = new Date().toISOString();
@@ -104,7 +104,7 @@ describe('Export transactions', () => {
     await seedPaidRegistrations({
       registrations: [registrationSafaricom],
       programId,
-      amount: transferValue,
+      transferValue,
     });
 
     const fromDate = new Date().toISOString();
@@ -162,7 +162,7 @@ describe('Export transactions', () => {
     await seedPaidRegistrations({
       registrations: [registrationSafaricom],
       programId,
-      amount: transferValue,
+      transferValue,
     });
 
     // Payment 2

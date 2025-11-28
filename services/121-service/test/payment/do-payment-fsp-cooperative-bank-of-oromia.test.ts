@@ -5,7 +5,7 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   createAndStartPayment,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
@@ -70,7 +70,7 @@ describe('Do payment with FSP: CooperativeBankOfOromia', () => {
         TransactionStatusEnum.waiting,
       ],
     });
-    const getTransactionsResult = await getTransactions({
+    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationSuccesfulPayment.referenceId,
@@ -133,7 +133,7 @@ describe('Do payment with FSP: CooperativeBankOfOromia', () => {
         TransactionStatusEnum.waiting,
       ],
     });
-    const getTransactionsResult = await getTransactions({
+    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationFailedGenericPayment.referenceId,
@@ -186,7 +186,7 @@ describe('Do payment with FSP: CooperativeBankOfOromia', () => {
         TransactionStatusEnum.waiting,
       ],
     });
-    const getTransactionsResult = await getTransactions({
+    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationFailedUnexpectedPayment.referenceId,
@@ -236,7 +236,7 @@ describe('Do payment with FSP: CooperativeBankOfOromia', () => {
         TransactionStatusEnum.waiting,
       ],
     });
-    const getTransactionsResult = await getTransactions({
+    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationDuplicateTransaction.referenceId,
