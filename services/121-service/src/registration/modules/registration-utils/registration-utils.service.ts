@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
 
@@ -87,5 +87,33 @@ export class RegistrationUtilsService {
       fullName = fullnameConcat.join(' ');
     }
     return fullName;
+  }
+
+  public async getRegistrationOrThrow({
+    referenceId,
+    relations = [],
+    programId,
+  }: {
+    referenceId: string;
+    relations?: (keyof RegistrationEntity)[];
+    programId?: number;
+  }): Promise<RegistrationEntity> {
+    if (!referenceId) {
+      const errors = `ReferenceId is not set`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    const registration =
+      await this.registrationScopedRepository.getWithRelationsByReferenceIdAndProgramId(
+        {
+          referenceId,
+          relations,
+          programId,
+        },
+      );
+    if (!registration) {
+      const errors = `ReferenceId ${referenceId} is not known in this program (within your scope).`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    return registration;
   }
 }

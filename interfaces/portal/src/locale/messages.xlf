@@ -2006,6 +2006,9 @@
       <trans-unit id="8386352594791941612" datatype="html">
         <source>Debit account number</source>
       </trans-unit>
+      <trans-unit id="8591287882066642064" datatype="html">
+        <source>Postal card distribution</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

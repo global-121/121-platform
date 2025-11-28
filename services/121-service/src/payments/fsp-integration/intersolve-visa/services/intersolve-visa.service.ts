@@ -205,7 +205,7 @@ export class IntersolveVisaService {
     );
   }
 
-  private async getCustomerOrCreate({
+  public async getCustomerOrCreate({
     registrationId,
     createCustomerReference,
     name,
@@ -250,7 +250,7 @@ export class IntersolveVisaService {
     return intersolveVisaCustomer;
   }
 
-  private async getParentWalletOrCreate({
+  public async getParentWalletOrCreate({
     intersolveVisaCustomer,
     brandCode,
   }: {
@@ -287,7 +287,7 @@ export class IntersolveVisaService {
     return savedIntersolveVisaParentWallet;
   }
 
-  private async linkParentWalletToCustomerIfUnlinked({
+  public async linkParentWalletToCustomerIfUnlinked({
     intersolveVisaCustomer,
     intersolveVisaParentWallet,
   }: {
@@ -350,7 +350,7 @@ export class IntersolveVisaService {
     return [intersolveVisaChildWallet];
   }
 
-  private async linkChildWalletToParentWalletIfUnlinked(
+  public async linkChildWalletToParentWalletIfUnlinked(
     intersolveVisaParentWallet: IntersolveVisaParentWalletEntity,
     intersolveVisaChildWallet: IntersolveVisaChildWalletEntity,
   ): Promise<void> {
@@ -358,8 +358,8 @@ export class IntersolveVisaService {
     if (intersolveVisaChildWallet.isLinkedToParentWallet) {
       return;
     }
-    // if not, link child wallet to parent wallet (linkToken returns nothing if success and throw exception if failed)
-    await this.intersolveVisaApiService.linkToken({
+    // if not, link child wallet to parent wallet (linkWallet returns nothing if success and throw exception if failed)
+    await this.linkWallets({
       parentTokenCode: intersolveVisaParentWallet.tokenCode,
       childTokenCode: intersolveVisaChildWallet.tokenCode,
     });
@@ -566,14 +566,21 @@ export class IntersolveVisaService {
       );
     }
 
-    // Create new token at Intersolve
-    const issueTokenResult = await this.intersolveVisaApiService.issueToken({
-      brandCode: input.brandCode,
-      activate: false, // Child Wallets are always created deactivated
-      reference: env.MOCK_INTERSOLVE
-        ? intersolveVisaCustomer.holderId
-        : undefined,
-    });
+    let issueTokenResult;
+    if (!input.physicalCardToken) {
+      // Create new token at Intersolve
+      issueTokenResult = await this.intersolveVisaApiService.issueToken({
+        brandCode: input.brandCode,
+        activate: false, // Child Wallets are always created deactivated
+        reference: env.MOCK_INTERSOLVE
+          ? intersolveVisaCustomer.holderId
+          : undefined,
+      });
+    } else {
+      issueTokenResult = await this.intersolveVisaApiService.getToken(
+        input.physicalCardToken,
+      );
+    }
 
     // Substitute the old token with the new token at Intersolve
     await this.intersolveVisaApiService.substituteToken({
@@ -835,5 +842,18 @@ export class IntersolveVisaService {
 
   public async getWallet(tokenCode: string) {
     return await this.intersolveVisaApiService.getToken(tokenCode);
+  }
+
+  public async linkWallets({
+    parentTokenCode,
+    childTokenCode,
+  }: {
+    parentTokenCode: string;
+    childTokenCode: string;
+  }) {
+    return await this.intersolveVisaApiService.linkToken({
+      parentTokenCode,
+      childTokenCode,
+    });
   }
 }
