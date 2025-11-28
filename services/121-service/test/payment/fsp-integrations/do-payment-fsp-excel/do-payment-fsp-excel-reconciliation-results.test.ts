@@ -28,7 +28,7 @@ import {
 describe('Do payment with Excel FSP', () => {
   let accessToken: string;
   // Payment info
-  const amount = 10;
+  const transferValue = 10;
 
   let pamymentIdWesteros: number;
 
@@ -56,7 +56,7 @@ describe('Do payment with Excel FSP', () => {
       pamymentIdWesteros = await seedPaidRegistrations({
         registrations: registrationsWesteros,
         programId: programIdWesteros,
-        amount,
+        transferValue,
         completeStatuses: [TransactionStatusEnum.waiting],
       });
 
@@ -139,7 +139,7 @@ describe('Do payment with Excel FSP', () => {
       pamymentIdWesteros = await seedPaidRegistrations({
         registrations: [registrationWesteros1],
         programId: programIdWesteros,
-        amount,
+        transferValue,
         completeStatuses: [TransactionStatusEnum.waiting],
       });
 

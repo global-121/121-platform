@@ -29,7 +29,7 @@ jest.setTimeout(testTimeout);
 describe('Retry payment for 100k registrations with Safaricom within expected range and successful rate threshold', () => {
   let accessToken: string;
 
-  it('Setup and do payment', async () => {
+  it('get transactions with filter and for export and retry', async () => {
     const registration = { ...registrationSafaricom };
     registration.phoneNumber = '254000000000'; // Fail number to force retry
 
@@ -37,12 +37,12 @@ describe('Retry payment for 100k registrations with Safaricom within expected ra
     await resetDB(SeedScript.safaricomProgram, __filename);
     accessToken = await getAccessToken();
     // Upload registration
-    const paymentId = await seedPaidRegistrations(
-      [registration],
-      programIdSafaricom,
-      10,
-      [TransactionStatusEnum.error],
-    );
+    const paymentId = await seedPaidRegistrations({
+      registrations: [registration],
+      programId: programIdSafaricom,
+      transferValue: 10,
+      completeStatuses: [TransactionStatusEnum.error],
+    });
 
     // Change phone number
     await updateRegistration(
