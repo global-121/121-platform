@@ -206,7 +206,7 @@ export class PageLayoutPaymentComponent {
   );
 
   readonly startPaymentFspList = computed<string>(() => {
-    if (!this.transactionsResponse.isSuccess() || !this.payment.isSuccess()) {
+    if (!this.payment.isSuccess()) {
       return '';
     }
 

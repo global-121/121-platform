@@ -47,8 +47,6 @@ export class PaymentReturnDto {
   })
   fsps: Pick<
     TransactionViewEntity,
-    | 'programFspConfigurationName'
-    | 'programFspConfigurationId'
-    | 'programFspConfigurationLabel'
+    'programFspConfigurationName' | 'programFspConfigurationLabel'
   >[];
 }

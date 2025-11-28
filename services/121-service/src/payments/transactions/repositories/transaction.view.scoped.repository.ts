@@ -275,21 +275,15 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
   }): Promise<
     Pick<
       TransactionViewEntity,
-      | 'programFspConfigurationName'
-      | 'programFspConfigurationId'
-      | 'programFspConfigurationLabel'
+      'programFspConfigurationName' | 'programFspConfigurationLabel'
     >[]
   > {
     return this.createQueryBuilder('transaction')
       .select([
         'transaction.programFspConfigurationName AS "programFspConfigurationName"',
-        'transaction.programFspConfigurationId AS "programFspConfigurationId"',
         'transaction.programFspConfigurationLabel AS "programFspConfigurationLabel"',
       ])
-      .distinctOn([
-        'transaction.programFspConfigurationName',
-        'transaction.programFspConfigurationId',
-      ])
+      .distinctOn(['transaction.programFspConfigurationName'])
       .leftJoin('transaction.payment', 'payment')
       .andWhere('payment.programId = :programId', { programId })
       .andWhere('transaction.paymentId = :paymentId', { paymentId })
