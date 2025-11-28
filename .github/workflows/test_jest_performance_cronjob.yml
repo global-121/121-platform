@@ -89,9 +89,9 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: |
           if [ -n "${{ matrix.duplicate_number }}" ]; then
-            docker compose exec -e DUPLICATE_NUMBER=${{ matrix.duplicate_number }} 121-service npm run test:integration:all -t ${{ matrix.test_name }}
+            docker compose exec -e DUPLICATE_NUMBER=${{ matrix.duplicate_number }} 121-service npm run test:integration:base -t ${{ matrix.test_name }}
           else
-            docker compose exec 121-service npm run test:integration:all -t ${{ matrix.test_name }}
+            docker compose exec 121-service npm run test:integration:base -t ${{ matrix.test_name }}
           fi
 
       - name: Docker logs
