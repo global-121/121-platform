@@ -84,7 +84,7 @@ export class RetryTransactionsDialogComponent {
     const referenceIds = this.referenceIdsForRetryTransactions();
 
     if (!referenceIds) {
-      return '';
+      return undefined;
     }
 
     // ##TODO: consider switching to registrationIds to align with single-retry
@@ -97,9 +97,17 @@ export class RetryTransactionsDialogComponent {
         ...this.paginateQuery(),
         filter: {
           ...this.paginateQuery()?.filter,
-          registrationReferenceId: this.registrationReferenceIdFilter(),
         },
       };
+
+      const registrationReferenceIdFilter =
+        this.registrationReferenceIdFilter();
+
+      if (registrationReferenceIdFilter) {
+        paginateQuery.filter.registrationReferenceId =
+          registrationReferenceIdFilter;
+      }
+
       return paginateQuery;
     },
   );
