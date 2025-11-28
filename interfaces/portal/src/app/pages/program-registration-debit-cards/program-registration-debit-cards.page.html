@@ -3,40 +3,79 @@
   [registrationId]="registrationId()"
 >
   <div class="px-2">
-    <div class="flex flex-col gap-2">
-      <p-header i18n> No debit cards found </p-header>
+    <div class="flex flex-col gap-4">
+      <div class="flex items-center gap-2">
+        <i
+          class="pi pi-credit-card"
+          style="font-size: 1rem"
+        ></i>
+        <p-header
+          class="font-bold"
+          i18n
+          >No debit cards found</p-header
+        >
+      </div>
+      <p i18n>There are no debit cards linked to this registration</p>
       <p-button
-        i18n
         (click)="dialogVisible.set(true)"
+        rounded
+        outlined
       >
-        Create new card
+        <i
+          class="pi pi-link"
+          style="font-size: 1rem"
+        ></i>
+        <p i18n>Link visa card</p>
       </p-button>
       <p-dialog
         [(visible)]="dialogVisible"
-        header="Create new card"
-        i18n-header="@@debit-card-create-new-card-dialog-header"
-        [modal]="true"
-        [closable]="true"
-        [dismissableMask]="true"
-        [style]="{ width: '400px' }"
+        modal
+        closable
+        dismissableMask
+        [style]="{ width: '632px' }"
       >
+        <ng-template pTemplate="header">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-link"></i>
+            <h3 i18n>Create new card</h3>
+          </div>
+        </ng-template>
         <div class="flex flex-col gap-2">
-          <p-input-number
-            [(ngModel)]="tokenCode"
-            i18n-placeholder="
-              @@debit-card-create-new-card-dialog-card-number-placeholder"
-            placeholder="Enter card number"
-            [showButtons]="false"
-            [useGrouping]="false"
-            [style]="{ width: '100%' }"
-          ></p-input-number>
-          <p-button
-            i18n
-            (click)="createNewCard()"
-            label="Link card"
+          <p i18n>
+            Scan the barcode in the back of the card you are handing over to the
+            registration, or manually fill in the 19 digit serial number found
+            below the barcode.
+          </p>
+          <div class="py-1"></div>
+          <p-input-mask
+            label="Serial number"
             i18n-label
-            class="mt-4"
-          ></p-button>
+            [(ngModel)]="tokenCode"
+            placeholder="____-____-____-____-___"
+            mask="9999-9999-9999-9999-999"
+            [style]="{ width: '100%' }"
+          ></p-input-mask>
+          <div class="w-full">
+            <div class="flex justify-end gap-2">
+              <p-button
+                i18n
+                (click)="dialogVisible.set(false)"
+                rounded
+                outlined
+                label="Cancel"
+                i18n-label
+                class="mt-4"
+              ></p-button>
+              <p-button
+                i18n
+                (click)="createNewCard()"
+                rounded
+                label="Continue"
+                i18n-label
+                class="mt-4"
+              ></p-button>
+            </div>
+          </div>
         </div>
       </p-dialog>
     </div>
