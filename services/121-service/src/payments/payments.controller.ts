@@ -23,12 +23,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
-import {
-  Paginate,
-  Paginated,
-  PaginatedSwaggerDocs,
-  PaginateQuery,
-} from 'nestjs-paginate';
+import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
@@ -42,7 +37,6 @@ import { ExportTransactionResponseDto } from '@121-service/src/payments/dto/expo
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-payment-aggregation.dto';
 import { GetPaymentsDto } from '@121-service/src/payments/dto/get-payments.dto';
-import { PaginatedTransactionDto } from '@121-service/src/payments/dto/paginated-transaction.dto';
 import { PaymentReturnDto } from '@121-service/src/payments/dto/payment-return.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { PaymentEventDataDto } from '@121-service/src/payments/payment-events/dtos/payment-event-data.dto';
@@ -51,6 +45,7 @@ import { PaymentsCreationService } from '@121-service/src/payments/services/paym
 import { PaymentsExcelFspService } from '@121-service/src/payments/services/payments-excel-fsp.service';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
+import { FindAllTransactionsResultDto } from '@121-service/src/payments/transactions/dto/find-all-transactions-result.dto';
 import { GetTransactionsQueryDto } from '@121-service/src/payments/transactions/dto/get-transaction-query.dto';
 import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
 import { PaginateConfigRegistrationViewOnlyFilters } from '@121-service/src/registration/const/filter-operation.const';
@@ -389,7 +384,7 @@ export class PaymentsController {
     @Param('programId', ParseIntPipe)
     programId: number,
     @Param('paymentId', ParseIntPipe) paymentId: number,
-  ): Promise<Paginated<PaginatedTransactionDto>> {
+  ): Promise<FindAllTransactionsResultDto> {
     return await this.paymentsReportingService.getTransactionsByPaymentIdPaginated(
       {
         programId,

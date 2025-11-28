@@ -24,7 +24,7 @@ test.beforeEach(async ({ page }) => {
   await seedPaidRegistrations({
     registrations: registrationsOCW,
     programId: OcwProgramId,
-    amount: transferValue,
+    transferValue,
     completeStatuses: [TransactionStatusEnum.success],
   });
 

@@ -14,6 +14,7 @@ import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
+import { FindAllTransactionsResultDto } from '@121-service/src/payments/transactions/dto/find-all-transactions-result.dto';
 import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
@@ -299,7 +300,7 @@ export class PaymentsReportingService {
     programId: number;
     paymentId: number;
     paginateQuery: PaginateQuery;
-  }): Promise<Paginated<PaginatedTransactionDto>> {
+  }): Promise<FindAllTransactionsResultDto> {
     await this.findPaymentOrThrow(programId, paymentId);
 
     const queryBuilder =

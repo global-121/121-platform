@@ -1995,7 +1995,7 @@
         <source>Transactions data</source>
       </trans-unit>
       <trans-unit id="3961897641515491838" datatype="html">
-        <source>You are about to retry <x equiv-text="{{ referenceIdsForRetryTransactions().length }}" id="INTERPOLATION"/> payment(s). The transaction status will change to Processing until received by the registration.</source>
+        <source>You are about to retry <x equiv-text="{{ transactionCount() }}" id="INTERPOLATION"/> payment(s). The transaction status will change to Processing until received by the registration.</source>
       </trans-unit>
       <trans-unit id="5544945972793965092" datatype="html">
         <source>The number of times a registration will receive transactions in the program by default.</source>
