@@ -17,7 +17,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { Dialog } from 'primeng/dialog';
-import { InputNumber } from 'primeng/inputnumber';
+import { InputMask } from 'primeng/inputmask';
 
 import { VisaCardAction } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-card-action.enum';
 
@@ -46,7 +46,7 @@ import { ToastService } from '~/services/toast.service';
     FormDialogComponent,
     PageLayoutRegistrationComponent,
     Dialog,
-    InputNumber,
+    InputMask,
   ],
   providers: [ToastService],
   templateUrl: './program-registration-debit-cards.page.html',
