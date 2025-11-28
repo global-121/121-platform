@@ -152,7 +152,10 @@ export class PaymentApiService extends DomainApiService {
         paymentId,
         'retry',
       ]).join('/'),
-      body: paginateQuery(),
+      httpParams:
+        this.paginateQueryService.paginateQueryToHttpParamsObject(
+          paginateQuery(),
+        ),
     });
   }
 
