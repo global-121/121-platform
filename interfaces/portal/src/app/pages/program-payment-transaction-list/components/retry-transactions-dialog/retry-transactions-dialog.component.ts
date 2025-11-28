@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
   signal,
@@ -15,6 +16,10 @@ import {
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
+import {
+  FilterOperator,
+  PaginateQuery,
+} from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
 import {
   TrackingAction,
@@ -33,6 +38,7 @@ import {
 export class RetryTransactionsDialogComponent {
   readonly programId = input.required<string>();
   readonly paymentId = input.required<string>();
+  readonly paginateQuery = input.required<PaginateQuery | undefined>();
 
   readonly metricApiService = inject(MetricApiService);
   readonly paymentApiService = inject(PaymentApiService);
@@ -43,7 +49,8 @@ export class RetryTransactionsDialogComponent {
     this.paymentApiService.getPaymentStatus(this.programId),
   );
 
-  readonly referenceIdsForRetryTransactions = signal<string[]>([]);
+  readonly referenceIdsForRetryTransactions = signal<string[] | undefined>([]);
+  readonly transactionCount = signal<number>(0);
 
   readonly retryTransactionsConfirmationDialog =
     viewChild.required<FormDialogComponent>(
@@ -51,11 +58,11 @@ export class RetryTransactionsDialogComponent {
     );
 
   retryFailedTransactionsMutation = injectMutation(() => ({
-    mutationFn: (referenceIds: string[]) =>
+    mutationFn: () =>
       this.paymentApiService.retryFailedTransactions({
         programId: this.programId,
         paymentId: this.paymentId(),
-        referenceIds,
+        paginateQuery: this.retryFailedTransactionsPaginateQuery,
       }),
     onSuccess: () => {
       void this.metricApiService.invalidateCache(this.programId);
@@ -73,16 +80,53 @@ export class RetryTransactionsDialogComponent {
     },
   }));
 
-  public retryFailedTransactions({ referenceIds }: { referenceIds: string[] }) {
+  readonly registrationReferenceIdFilter = computed(() => {
+    const referenceIds = this.referenceIdsForRetryTransactions();
+
+    if (!referenceIds) {
+      return undefined;
+    }
+
+    return `${FilterOperator.IN}:${referenceIds.join(',')}`;
+  });
+
+  readonly retryFailedTransactionsPaginateQuery = computed<PaginateQuery>(
+    () => {
+      const paginateQuery = {
+        ...this.paginateQuery(),
+        filter: {
+          ...this.paginateQuery()?.filter,
+        },
+      };
+
+      const registrationReferenceIdFilter =
+        this.registrationReferenceIdFilter();
+
+      if (registrationReferenceIdFilter) {
+        paginateQuery.filter.registrationReferenceId =
+          registrationReferenceIdFilter;
+      }
+
+      return paginateQuery;
+    },
+  );
+
+  public retryFailedTransactions({
+    transactionCount,
+    referenceIds,
+  }: {
+    transactionCount: number;
+    referenceIds: string[] | undefined;
+  }) {
     const eventName =
-      referenceIds.length === 1
+      transactionCount === 1
         ? 'retry-transaction:single'
         : 'retry-transaction:multiple';
     this.trackingService.trackEvent({
       category: TrackingCategory.manageTransactions,
       action: TrackingAction.clickRetryTransactionButton,
       name: eventName,
-      value: referenceIds.length,
+      value: transactionCount,
     });
 
     if (this.paymentStatus.data()?.inProgress) {
@@ -94,12 +138,13 @@ export class RetryTransactionsDialogComponent {
     }
 
     this.referenceIdsForRetryTransactions.set(referenceIds);
+    this.transactionCount.set(transactionCount);
     this.retryTransactionsConfirmationDialog().show({
       trackingEvent: {
         category: TrackingCategory.manageTransactions,
         action: TrackingAction.clickProceedButton,
         name: eventName,
-        value: referenceIds.length,
+        value: transactionCount,
       },
     });
   }

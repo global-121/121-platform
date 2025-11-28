@@ -1964,9 +1964,6 @@
       <trans-unit id="9211474991659273932" datatype="html">
         <source>Create new program</source>
       </trans-unit>
-      <trans-unit id="1199603176168206482" datatype="html">
-        <source>Retry failed transactions</source>
-      </trans-unit>
       <trans-unit id="1297402576657440154" datatype="html">
         <source>Transactions per payment</source>
       </trans-unit>
@@ -1995,7 +1992,7 @@
         <source>Transactions data</source>
       </trans-unit>
       <trans-unit id="3961897641515491838" datatype="html">
-        <source>You are about to retry <x equiv-text="{{ referenceIdsForRetryTransactions().length }}" id="INTERPOLATION"/> payment(s). The transaction status will change to Processing until received by the registration.</source>
+        <source>You are about to retry <x equiv-text="{{ transactionCount() }}" id="INTERPOLATION"/> payment(s). The transaction status will change to Processing until received by the registration.</source>
       </trans-unit>
       <trans-unit id="5544945972793965092" datatype="html">
         <source>The number of times a registration will receive transactions in the program by default.</source>
@@ -2005,6 +2002,12 @@
       </trans-unit>
       <trans-unit id="8386352594791941612" datatype="html">
         <source>Debit account number</source>
+      </trans-unit>
+      <trans-unit id="279195665230166237" datatype="html">
+        <source>Reg. #<x equiv-text="registrationId" id="PH"/></source>
+      </trans-unit>
+      <trans-unit id="3460608979438095670" datatype="html">
+        <source>Retry failed transaction</source>
       </trans-unit>
     </body>
   </file>

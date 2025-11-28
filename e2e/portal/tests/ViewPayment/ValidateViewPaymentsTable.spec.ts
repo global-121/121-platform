@@ -25,17 +25,6 @@ const descedingRegistrationIds = [...registrationIds].sort((a, b) =>
   b.localeCompare(a),
 );
 
-const names = [
-  'Anna Hello',
-  'John Smith',
-  'Lars Larsson',
-  'Luiz Garcia',
-  'Sophia Johnson',
-];
-
-const ascedingNames = [...names].sort((a, b) => a.localeCompare(b));
-const descedingNames = [...names].sort((a, b) => b.localeCompare(a));
-
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
@@ -74,7 +63,6 @@ test('Table should be a filtered list of registrations included in the transacti
   await test.step('Validate payment table', async () => {
     // Validate sorting of columns
     await paymentPage.table.sortAndValidateColumnByName('Reg.');
-    await paymentPage.table.sortAndValidateColumnByName('Name');
     await paymentPage.table.sortAndValidateColumnByName('Registration status');
     await paymentPage.table.sortAndValidateColumnByName('Transaction status');
     await paymentPage.table.sortAndValidateColumnByName('Reason');
@@ -89,18 +77,10 @@ test('Table should be a filtered list of registrations included in the transacti
       descedingRegistrationIds,
     );
 
-    // Validate applied sorting filters for Name column
-    await paymentPage.table.validateSortingOfColumns(
-      'Name',
-      3,
-      ascedingNames,
-      descedingNames,
-    );
-
     // Apply filter for Transfer value
-    await paymentPage.table.filterColumnByText({
+    await paymentPage.table.filterColumnByNumber({
       columnName: 'Transfer value',
-      filterText: '75',
+      filterNumber: 75,
     });
     await paymentPage.table.validateWaitForTableRowCount({
       expectedRowCount: 2,

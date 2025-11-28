@@ -124,6 +124,12 @@ export class ScriptsController {
     description: `number of times to duplicate all PAs (2^x, e.g. 15=32,768 PAs)`,
     example: '1',
   })
+  @ApiQuery({
+    name: 'mockNumberPayments',
+    required: false,
+    description: `number of payments to add`,
+    example: '1',
+  })
   @ApiOperation({
     summary:
       'Duplicate registrations, used for load testing. It also changes all phonenumber to a random number. Only usable in test or development.',
