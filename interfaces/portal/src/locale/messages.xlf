@@ -2009,6 +2009,9 @@
       <trans-unit id="3460608979438095670" datatype="html">
         <source>Retry failed transaction</source>
       </trans-unit>
+      <trans-unit id="7095918853684842342" datatype="html">
+        <source>Select only failed transactions and try again</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
