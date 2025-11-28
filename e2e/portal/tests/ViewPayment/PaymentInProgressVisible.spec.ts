@@ -51,7 +51,7 @@ test('Show in progress banner and chip when payment is in progress', async ({
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
+      url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/3`),
     );
     await paymentPage.validateToastMessage('Payment created.');
     await paymentPage.startPayment();
