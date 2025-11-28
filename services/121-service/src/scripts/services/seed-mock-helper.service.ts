@@ -34,7 +34,10 @@ export class SeedMockHelperService {
     powerNrMessages: number;
   }> {
     const powerNrRegistrations = Number(powerNrRegistrationsString) || 2;
-    const nrPayments = Number(nrPaymentsString) || 2;
+    const nrPayments =
+      nrPaymentsString !== undefined && nrPaymentsString !== null
+        ? Number(nrPaymentsString)
+        : 2;
     const powerNrMessages = Number(powerNrMessagesString) || 1;
 
     const min = 1;
@@ -53,7 +56,7 @@ export class SeedMockHelperService {
       );
     }
 
-    if (isNaN(nrPayments) || nrPayments < min || nrPayments > maxNrPayments) {
+    if (isNaN(nrPayments) || nrPayments > maxNrPayments) {
       throw new HttpException(
         `nrPayments must be a number between ${min} and ${maxNrPayments}`,
         HttpStatus.BAD_REQUEST,

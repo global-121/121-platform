@@ -76,7 +76,7 @@ describe('Do payment with FSP: CooperativeBankOfOromia', () => {
       registrationReferenceId: registrationSuccesfulPayment.referenceId,
       accessToken,
     });
-    const transaction = getTransactionsResult.body[0];
+    const transaction = getTransactionsResult.body.data[0];
 
     // Assert
     expect(transaction.errorMessage).toBe(null);
@@ -84,7 +84,7 @@ describe('Do payment with FSP: CooperativeBankOfOromia', () => {
 
     const transactionEventDescriptions = await getTransactionEventDescriptions({
       programId,
-      transactionId: getTransactionsResult.body[0].id,
+      transactionId: transaction.id,
       accessToken,
     });
     expect(transactionEventDescriptions).toEqual([
@@ -139,7 +139,7 @@ describe('Do payment with FSP: CooperativeBankOfOromia', () => {
       registrationReferenceId: registrationFailedGenericPayment.referenceId,
       accessToken,
     });
-    const transaction = getTransactionsResult.body[0];
+    const transaction = getTransactionsResult.body.data[0];
 
     // Assert
     expect(transaction.status).toBe(TransactionStatusEnum.error);
@@ -192,7 +192,7 @@ describe('Do payment with FSP: CooperativeBankOfOromia', () => {
       registrationReferenceId: registrationFailedUnexpectedPayment.referenceId,
       accessToken,
     });
-    const transaction = getTransactionsResult.body[0];
+    const transaction = getTransactionsResult.body.data[0];
 
     // Assert
     expect(transaction.status).toBe(TransactionStatusEnum.error);
@@ -242,7 +242,7 @@ describe('Do payment with FSP: CooperativeBankOfOromia', () => {
       registrationReferenceId: registrationDuplicateTransaction.referenceId,
       accessToken,
     });
-    const transaction = getTransactionsResult.body[0];
+    const transaction = getTransactionsResult.body.data[0];
 
     // Assert
     expect(transaction.errorMessage).toBe(null);
