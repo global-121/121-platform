@@ -4,21 +4,17 @@
 >
   <app-query-table
     #table
-    [items]="transactions.data() ?? []"
-    [isPending]="transactions.isPending()"
+    [items]="transactions()"
+    [isPending]="transactionsResponse.isPending()"
     [columns]="columns()"
     [localStorageKey]="localStorageKey()"
     [enableColumnManagement]="true"
     [contextMenuItems]="contextMenuItems()"
     (updateContextMenuItem)="contextMenuSelection.set($event)"
     [enableSelection]="true"
-    [globalFilterFields]="[
-      'registrationProgramId',
-      'registrationName',
-      'status',
-      'errorMessage',
-      'programFspConfigurationName',
-    ]"
+    [serverSideFiltering]="true"
+    [serverSideTotalRecords]="totalTransactions()"
+    (updatePaginateQuery)="paginateQuery.set($event)"
   >
     <div
       table-actions
@@ -43,4 +39,5 @@
   #retryTransactionsDialog
   [programId]="programId()"
   [paymentId]="paymentId()"
+  [paginateQuery]="paginateQuery()"
 />

@@ -35,7 +35,7 @@ describe('Set registration to completed after payment', () => {
     await seedPaidRegistrations({
       registrations: [registration],
       programId,
-      amount: transferValue,
+      transferValue,
       completeStatuses: [TransactionStatusEnum.success],
     });
     const paymentReferenceIds = [registration.referenceId];

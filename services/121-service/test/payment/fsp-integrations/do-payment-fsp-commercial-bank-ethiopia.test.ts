@@ -5,7 +5,7 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   createAndStartPayment,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   retryPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -57,7 +57,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     });
 
     // Assert
-    const getTransactionsBody = await getTransactions({
+    const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationCbe.referenceId,
@@ -68,14 +68,14 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
-    expect(getTransactionsBody.body[0].status).toBe(
+    expect(getTransactionsBody.body.data[0].status).toBe(
       TransactionStatusEnum.success,
     );
-    expect(getTransactionsBody.body[0].errorMessage).toBe(null);
+    expect(getTransactionsBody.body.data[0].errorMessage).toBe(null);
 
     const transactionEventDescriptions = await getTransactionEventDescriptions({
       programId,
-      transactionId: getTransactionsBody.body[0].id,
+      transactionId: getTransactionsBody.body.data[0].id,
       accessToken,
     });
     expect(transactionEventDescriptions).toEqual([
@@ -122,7 +122,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     });
 
     // Assert
-    const getTransactionsBody = await getTransactions({
+    const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationCbeWithError.referenceId,
@@ -133,10 +133,10 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
-    expect(getTransactionsBody.body[0].status).toBe(
+    expect(getTransactionsBody.body.data[0].status).toBe(
       TransactionStatusEnum.error,
     );
-    expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
+    expect(getTransactionsBody.body.data[0].errorMessage).toMatchSnapshot();
   });
 
   it('when credit transfer API call times out should successfully do a payment with transactions that have status error', async () => {
@@ -175,7 +175,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     });
 
     // Assert
-    const getTransactionsBody = await getTransactions({
+    const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationCbeWithTimeout.referenceId,
@@ -186,10 +186,10 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
-    expect(getTransactionsBody.body[0].status).toBe(
+    expect(getTransactionsBody.body.data[0].status).toBe(
       TransactionStatusEnum.error,
     );
-    expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
+    expect(getTransactionsBody.body.data[0].errorMessage).toMatchSnapshot();
   });
 
   it('when credit transfer API call returns duplicated transaction error should successfully do a retry payment with transactions that have status success when transaction enquiry returns a success response', async () => {
@@ -226,7 +226,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
       ],
     });
 
-    const getTransactionsBody = await getTransactions({
+    const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationCbeWithTimeout.referenceId,
@@ -237,7 +237,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
-    expect(getTransactionsBody.body[0].status).toBe(
+    expect(getTransactionsBody.body.data[0].status).toBe(
       TransactionStatusEnum.error,
     );
 
@@ -269,20 +269,24 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
       completeStatuses: [TransactionStatusEnum.success],
     });
 
-    const getTransactionsAfterRetryBody = await getTransactions({
-      programId,
-      paymentId,
-      registrationReferenceId: registrationCbeWithTimeout.referenceId,
-      accessToken,
-    });
+    const getTransactionsAfterRetryBody =
+      await getTransactionsByPaymentIdPaginated({
+        programId,
+        paymentId,
+        registrationReferenceId: registrationCbeWithTimeout.referenceId,
+        accessToken,
+      });
 
     // Assert
     // Check if the transaction status is success.
     expect(doPaymentRetryResponse.status).toBe(HttpStatus.ACCEPTED);
-    expect(getTransactionsAfterRetryBody.body[0].status).toBe(
+    expect(doPaymentRetryResponse.body.applicableCount).toBe(
+      paymentReferenceIds.length,
+    );
+    expect(getTransactionsAfterRetryBody.body.data[0].status).toBe(
       TransactionStatusEnum.success,
     );
-    expect(getTransactionsAfterRetryBody.body[0].errorMessage).toBe(null);
+    expect(getTransactionsAfterRetryBody.body.data[0].errorMessage).toBe(null);
 
     // TODO Implement the following test cases if we refactor CBE integration:
     // - should successfully do a payment with transactions that have status error when transaction enquiry returns an error response

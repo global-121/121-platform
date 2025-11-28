@@ -9,7 +9,7 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   createAndStartPayment,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   patchProgram,
   retryPayment,
   waitForPaymentTransactionsToComplete,
@@ -88,7 +88,7 @@ describe('Do payment to 1 PA', () => {
       });
 
       // Assert
-      const getTransactionsBody = await getTransactions({
+      const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
         programId,
         paymentId,
         registrationReferenceId: registrationSafaricom.referenceId,
@@ -99,15 +99,15 @@ describe('Do payment to 1 PA', () => {
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
-      expect(getTransactionsBody.body[0].status).toBe(
+      expect(getTransactionsBody.body.data[0].status).toBe(
         TransactionStatusEnum.success,
       );
-      expect(getTransactionsBody.body[0].errorMessage).toBe(null);
+      expect(getTransactionsBody.body.data[0].errorMessage).toBe(null);
 
       const transactionEventDescriptions =
         await getTransactionEventDescriptions({
           programId,
-          transactionId: getTransactionsBody.body[0].id,
+          transactionId: getTransactionsBody.body.data[0].id,
           accessToken,
         });
       expect(transactionEventDescriptions).toEqual([
@@ -151,7 +151,7 @@ describe('Do payment to 1 PA', () => {
       });
 
       // Assert
-      const getTransactionsBody = await getTransactions({
+      const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
         programId,
         paymentId,
         registrationReferenceId: registrationSafaricom.referenceId,
@@ -162,10 +162,10 @@ describe('Do payment to 1 PA', () => {
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
-      expect(getTransactionsBody.body[0].status).toBe(
+      expect(getTransactionsBody.body.data[0].status).toBe(
         TransactionStatusEnum.error,
       );
-      expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
+      expect(getTransactionsBody.body.data[0].errorMessage).toMatchSnapshot();
     });
 
     it('should successfully retry pay-out after an initial failure', async () => {
@@ -219,7 +219,7 @@ describe('Do payment to 1 PA', () => {
       await waitFor(2_000);
 
       // Assert
-      const getTransactionsBody = await getTransactions({
+      const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
         programId,
         paymentId,
         registrationReferenceId: registrationSafaricom.referenceId,
@@ -230,14 +230,14 @@ describe('Do payment to 1 PA', () => {
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
-      expect(getTransactionsBody.body[0].status).toBe(
+      expect(getTransactionsBody.body.data[0].status).toBe(
         TransactionStatusEnum.success,
       );
 
       const transactionEventDescriptions =
         await getTransactionEventDescriptions({
           programId,
-          transactionId: getTransactionsBody.body[0].id,
+          transactionId: getTransactionsBody.body.data[0].id,
           accessToken,
         });
       expect(transactionEventDescriptions).toEqual([
@@ -283,7 +283,7 @@ describe('Do payment to 1 PA', () => {
       });
 
       // Assert
-      const getTransactionsBody = await getTransactions({
+      const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
         programId,
         paymentId,
         registrationReferenceId: registrationSafaricom.referenceId,
@@ -294,10 +294,10 @@ describe('Do payment to 1 PA', () => {
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
-      expect(getTransactionsBody.body[0].status).toBe(
+      expect(getTransactionsBody.body.data[0].status).toBe(
         TransactionStatusEnum.error,
       );
-      expect(getTransactionsBody.body[0].errorMessage).toBe(
+      expect(getTransactionsBody.body.data[0].errorMessage).toBe(
         'Transfer timed out',
       );
     });

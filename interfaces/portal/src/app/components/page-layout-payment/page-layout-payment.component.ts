@@ -33,6 +33,7 @@ import { PaymentAggregate } from '~/domains/payment/payment.model';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { programHasFspWithExportFileIntegration } from '~/domains/program/program.helper';
 import { AuthService } from '~/services/auth.service';
+import { PaginateQuery } from '~/services/paginate-query.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 @Component({
@@ -87,18 +88,38 @@ export class PageLayoutPaymentComponent {
           data.waiting.count +
           data.approved.count +
           data.pendingApproval.count ===
-        this.transactions.data()?.length
+        this.totalTransactions()
       ) {
         this.refetchPayment.set(false);
       }
     },
   }));
   payments = injectQuery(this.paymentApiService.getPayments(this.programId));
-  transactions = injectQuery(
+
+  protected readonly paginateQuery = signal<PaginateQuery | undefined>(
+    undefined,
+  );
+
+  private readonly transactionsPaginateQuery = computed<PaginateQuery>(() => {
+    const paginateQuery = this.paginateQuery() ?? {};
+    return {
+      ...paginateQuery,
+    };
+  });
+
+  transactionsResponse = injectQuery(
     this.paymentApiService.getPaymentTransactions({
       programId: this.programId,
       paymentId: this.paymentId,
+      paginateQuery: this.transactionsPaginateQuery,
     }),
+  );
+
+  readonly transactions = computed(
+    () => this.transactionsResponse.data()?.data ?? [],
+  );
+  protected readonly totalTransactions = computed(
+    () => this.transactionsResponse.data()?.meta.totalItems ?? 0,
   );
 
   readonly refetchPayment = signal(true);
@@ -185,39 +206,23 @@ export class PageLayoutPaymentComponent {
   );
 
   readonly startPaymentFspList = computed<string>(() => {
-    if (!this.transactions.isSuccess()) {
+    if (!this.payment.isSuccess()) {
       return '';
     }
 
-    return Array.from(
-      new Set(
-        this.transactions
-          .data()
-          .map((transaction) => transaction.programFspConfigurationName),
-      ),
-    )
-      .map((fspName) => this.fspLabel(fspName)())
-      .join(', ');
-  });
-
-  readonly fspLabel = (fspName: string) =>
-    computed<string>(() => {
-      if (!this.fspSettings()[fspName]) {
-        return fspName;
-      }
-
-      const setting = this.fspSettings()[fspName] as FspDto;
-
-      const translatedFspLabel = this.translatableStringService.translate(
-        setting.defaultLabel,
+    const fspLabels = this.payment
+      .data()
+      .fsps.map(
+        (fsp) =>
+          this.translatableStringService.translate(
+            fsp.programFspConfigurationLabel,
+          ) ??
+          fsp.programFspConfigurationName ??
+          '',
       );
 
-      if (!translatedFspLabel) {
-        return fspName;
-      }
-
-      return translatedFspLabel;
-    });
+    return fspLabels.join(', ');
+  });
 
   readonly startPaymentTransactionCount = computed<string>(() => {
     if (!this.payment.isSuccess()) {
@@ -310,7 +315,7 @@ export class PageLayoutPaymentComponent {
   readonly isPaymentInProgress = computed<boolean | undefined>(
     () =>
       this.paymentStatus.isPending() ||
-      this.transactions.isPending() ||
+      this.transactionsResponse.isPending() ||
       this.paymentStatus.data()?.inProgress,
   );
 

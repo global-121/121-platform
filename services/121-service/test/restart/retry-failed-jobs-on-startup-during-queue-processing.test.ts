@@ -8,7 +8,7 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
 import {
   changeRegistrationStatus,
-  duplicateRegistrations,
+  duplicateRegistrationsAndPaymentData,
   importRegistrations,
   waitForStatusChangeToComplete,
 } from '@121-service/test/helpers/registration.helper';
@@ -65,14 +65,14 @@ describe('Retry Failed Jobs On Startup During Queue Processing', () => {
       accessToken,
     });
     // Duplicate registration to be 32
-    const duplicateRegistrationsResponse = await duplicateRegistrations({
+    const mockResponse = await duplicateRegistrationsAndPaymentData({
       powerNumberRegistration: duplicateNumber,
       accessToken,
       body: {
         secret: env.RESET_SECRET,
       },
     });
-    expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
+    expect(mockResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Do payment
     const doPaymentResponse = await createAndStartPayment({
@@ -94,7 +94,7 @@ describe('Retry Failed Jobs On Startup During Queue Processing', () => {
     // Check payment results to have 100% success rate
     const paymentResults = await getPaymentResults({
       programId: programIdOCW,
-      paymentId: 1,
+      paymentId: doPaymentResponse.body.id,
       accessToken,
       totalAmountPowerOfTwo: duplicateNumber,
       passRate,

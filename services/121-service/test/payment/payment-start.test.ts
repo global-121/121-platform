@@ -9,7 +9,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   createPayment,
   getPaymentEvents,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   retryPayment,
   startPayment,
   waitForPaymentNotInProgress,
@@ -65,13 +65,15 @@ describe('Payment start', () => {
     });
 
     // Assert 1 - before starting payment
-    const getTransactionsBeforeStartResponse = await getTransactions({
-      programId,
-      paymentId,
-      registrationReferenceId: registrationAh.referenceId,
-      accessToken,
-    });
-    const transactionsBeforeStart = getTransactionsBeforeStartResponse.body;
+    const getTransactionsBeforeStartResponse =
+      await getTransactionsByPaymentIdPaginated({
+        programId,
+        paymentId,
+        registrationReferenceId: registrationAh.referenceId,
+        accessToken,
+      });
+    const transactionsBeforeStart =
+      getTransactionsBeforeStartResponse.body.data;
 
     const registrations = await getRegistrations({
       programId,
@@ -108,13 +110,14 @@ describe('Payment start', () => {
     });
 
     // Assert 2 - after payment
-    const getTransactionsAfterStartResponse = await getTransactions({
-      programId,
-      paymentId,
-      registrationReferenceId: registrationAh.referenceId,
-      accessToken,
-    });
-    const transactionsAfterStart = getTransactionsAfterStartResponse.body;
+    const getTransactionsAfterStartResponse =
+      await getTransactionsByPaymentIdPaginated({
+        programId,
+        paymentId,
+        registrationReferenceId: registrationAh.referenceId,
+        accessToken,
+      });
+    const transactionsAfterStart = getTransactionsAfterStartResponse.body.data;
     // Wait for registration to be updated
     const registrationAfterStart =
       await waitForRegistrationToHaveUpdatedPaymentCount({
@@ -182,12 +185,14 @@ describe('Payment start', () => {
       });
 
       // Assert
-      const getTransactionsResponse = await getTransactions({
-        programId,
-        paymentId,
-        accessToken,
-      });
-      const transactions = getTransactionsResponse.body;
+      const getTransactionsResponse = await getTransactionsByPaymentIdPaginated(
+        {
+          programId,
+          paymentId,
+          accessToken,
+        },
+      );
+      const transactions = getTransactionsResponse.body.data;
       const startedTransactions = transactions.filter(
         (t: any) => t.status !== TransactionStatusEnum.pendingApproval,
       );
@@ -241,12 +246,14 @@ describe('Payment start', () => {
       // Assert
       expect(retryPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
 
-      const getTransactionsResponse = await getTransactions({
-        programId,
-        paymentId,
-        accessToken,
-      });
-      const transactions = getTransactionsResponse.body;
+      const getTransactionsResponse = await getTransactionsByPaymentIdPaginated(
+        {
+          programId,
+          paymentId,
+          accessToken,
+        },
+      );
+      const transactions = getTransactionsResponse.body.data;
       const successTransactions = transactions.filter(
         (t: any) => t.status === TransactionStatusEnum.success,
       );
@@ -319,12 +326,13 @@ describe('Payment start', () => {
     expect(startPaymentResponseKisumu.status).toBe(HttpStatus.ACCEPTED);
 
     // get all transactions to assert only Kisumu one was started
-    const getAllTransactionsResponse = await getTransactions({
-      programId,
-      paymentId,
-      accessToken,
-    });
-    const allTransactions = getAllTransactionsResponse.body;
+    const getAllTransactionsResponse =
+      await getTransactionsByPaymentIdPaginated({
+        programId,
+        paymentId,
+        accessToken,
+      });
+    const allTransactions = getAllTransactionsResponse.body.data;
     const startedTransactions = allTransactions.filter(
       (t: any) => t.status !== TransactionStatusEnum.pendingApproval,
     );
@@ -354,12 +362,13 @@ describe('Payment start', () => {
     });
 
     // get all transactions to assert all were started now
-    const getAllTransactionsResponseEnd = await getTransactions({
-      programId,
-      paymentId,
-      accessToken,
-    });
-    const allTransactionsEnd = getAllTransactionsResponseEnd.body;
+    const getAllTransactionsResponseEnd =
+      await getTransactionsByPaymentIdPaginated({
+        programId,
+        paymentId,
+        accessToken,
+      });
+    const allTransactionsEnd = getAllTransactionsResponseEnd.body.data;
     const startedTransactionsEnd = allTransactionsEnd.filter(
       (t: any) => t.status !== TransactionStatusEnum.pendingApproval,
     );

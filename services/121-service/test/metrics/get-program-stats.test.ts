@@ -39,7 +39,7 @@ describe('Get program stats', () => {
     await seedPaidRegistrations({
       registrations: registrationsPV,
       programId: programIdPV,
-      amount: transferValue,
+      transferValue,
       completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,

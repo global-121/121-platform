@@ -6,11 +6,11 @@
   proceedLabel="Retry transactions"
   i18n-proceedLabel
   [mutation]="retryFailedTransactionsMutation"
-  [mutationData]="referenceIdsForRetryTransactions()"
+  [mutationData]="undefined"
 >
   <p i18n>
     You are about to retry
-    {{ referenceIdsForRetryTransactions().length }} payment(s). The transaction
-    status will change to Processing until received by the registration.
+    {{ transactionCount() }} payment(s). The transaction status will change to
+    Processing until received by the registration.
   </p>
 </app-form-dialog>

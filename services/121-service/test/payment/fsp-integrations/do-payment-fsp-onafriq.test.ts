@@ -8,7 +8,7 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   createAndStartPayment,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   retryPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -77,7 +77,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     });
 
     // Assert
-    const getTransactionsBody = await getTransactions({
+    const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,
@@ -88,14 +88,14 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
-    expect(getTransactionsBody.body[0].status).toBe(
+    expect(getTransactionsBody.body.data[0].status).toBe(
       TransactionStatusEnum.success,
     );
-    expect(getTransactionsBody.body[0].errorMessage).toBe(null);
+    expect(getTransactionsBody.body.data[0].errorMessage).toBe(null);
 
     const transactionEventDescriptions = await getTransactionEventDescriptions({
       programId,
-      transactionId: getTransactionsBody.body[0].id,
+      transactionId: getTransactionsBody.body.data[0].id,
       accessToken,
     });
     expect(transactionEventDescriptions).toEqual([
@@ -139,7 +139,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     });
 
     // Assert
-    const getTransactionsBody = await getTransactions({
+    const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,
@@ -150,10 +150,10 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
-    expect(getTransactionsBody.body[0].status).toBe(
+    expect(getTransactionsBody.body.data[0].status).toBe(
       TransactionStatusEnum.error,
     );
-    expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
+    expect(getTransactionsBody.body.data[0].errorMessage).toMatchSnapshot();
 
     // RETRY
     // Arrange
@@ -180,20 +180,22 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     });
 
     // Assert
-    const getTransactionsAfterRetryBody = await getTransactions({
-      programId,
-      paymentId,
-      registrationReferenceId: registrationOnafriq.referenceId,
-      accessToken,
-    });
+    const getTransactionsAfterRetryBody =
+      await getTransactionsByPaymentIdPaginated({
+        programId,
+        paymentId,
+        registrationReferenceId: registrationOnafriq.referenceId,
+        accessToken,
+      });
     expect(retryResponse.status).toBe(HttpStatus.ACCEPTED);
-    expect(getTransactionsAfterRetryBody.body[0].status).toBe(
+    expect(retryResponse.body.applicableCount).toBe(paymentReferenceIds.length);
+    expect(getTransactionsAfterRetryBody.body.data[0].status).toBe(
       TransactionStatusEnum.success,
     );
 
     const transactionEventDescriptions = await getTransactionEventDescriptions({
       programId,
-      transactionId: getTransactionsBody.body[0].id,
+      transactionId: getTransactionsBody.body.data[0].id,
       accessToken,
     });
     expect(transactionEventDescriptions).toEqual([
@@ -239,7 +241,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     });
 
     // Assert
-    const getTransactionsBody = await getTransactions({
+    const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,
@@ -250,14 +252,14 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
-    expect(getTransactionsBody.body[0].status).toBe(
+    expect(getTransactionsBody.body.data[0].status).toBe(
       TransactionStatusEnum.error,
     );
-    expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
+    expect(getTransactionsBody.body.data[0].errorMessage).toMatchSnapshot();
 
     const transactionEventDescriptions = await getTransactionEventDescriptions({
       programId,
-      transactionId: getTransactionsBody.body[0].id,
+      transactionId: getTransactionsBody.body.data[0].id,
       accessToken,
     });
     expect(transactionEventDescriptions).toEqual([
@@ -302,7 +304,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // NOTE 2: We also assert that no callback comes in, so we must give some time for the callback to potentially come in, as the assertion is not valuable otherwise.
     await waitFor(1_000);
 
-    const getTransactionsBody = await getTransactions({
+    const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,
@@ -315,13 +317,13 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     );
     // NOTE 3: this is the critical assertion, as in case of a duplicate thirdPartyTransId error, the transaction should not be updated to an error status.
     // This test is not following the real-life use case of making 2 calls, but does test the different handling in the code of this type of error.
-    expect(getTransactionsBody.body[0].status).toBe(
+    expect(getTransactionsBody.body.data[0].status).toBe(
       TransactionStatusEnum.approved,
     );
 
     const transactionEventDescriptions = await getTransactionEventDescriptions({
       programId,
-      transactionId: getTransactionsBody.body[0].id,
+      transactionId: getTransactionsBody.body.data[0].id,
       accessToken,
     });
     expect(transactionEventDescriptions).toEqual([

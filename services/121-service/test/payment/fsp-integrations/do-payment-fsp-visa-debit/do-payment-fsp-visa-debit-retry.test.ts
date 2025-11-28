@@ -12,7 +12,7 @@ import {
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   createAndStartPayment,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   retryPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -93,7 +93,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     await waitFor(2_000);
 
     // Assert
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId,
       registrationReferenceId: registrationVisa.referenceId,
@@ -105,10 +105,11 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
       paymentReferenceIds.length,
     );
     expect(transactionsResponse.text).toContain(TransactionStatusEnum.success);
+    const transactions = transactionsResponse.body.data;
 
     const transactionEventDescriptions = await getTransactionEventDescriptions({
       programId: programIdVisa,
-      transactionId: transactionsResponse.body[0].id,
+      transactionId: transactions[0].id,
       accessToken,
     });
     expect(transactionEventDescriptions).toEqual([
@@ -173,14 +174,15 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     await waitFor(2_000);
 
     // Assert
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
+    const transactions = transactionsResponse.body.data;
 
-    expect(transactionsResponse.body[0].amount).toBe(
+    expect(transactions[0].transferValue).toBe(
       transferValueVisa * registrationVisa.paymentAmountMultiplier,
     );
     expect(transactionsResponse.text).toContain(TransactionStatusEnum.success);

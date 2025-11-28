@@ -31,15 +31,16 @@ import {
   QueryTableComponent,
 } from '~/components/query-table/query-table.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
-import { PaymentTransaction } from '~/domains/payment/payment.model';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import {
   REGISTRATION_STATUS_LABELS,
   registrationLink,
 } from '~/domains/registration/registration.helper';
 import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
+import { Transaction } from '~/domains/transaction/transaction.model';
 import { RetryTransactionsDialogComponent } from '~/pages/program-payment-transaction-list/components/retry-transactions-dialog/retry-transactions-dialog.component';
 import { AuthService } from '~/services/auth.service';
+import { PaginateQuery } from '~/services/paginate-query.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
@@ -75,22 +76,41 @@ export class ProgramPaymentTransactionListPageComponent {
   readonly translatableStringService = inject(TranslatableStringService);
 
   readonly table =
-    viewChild.required<QueryTableComponent<PaymentTransaction, never>>('table');
+    viewChild.required<QueryTableComponent<Transaction, never>>('table');
   readonly retryTransactionsDialog =
     viewChild.required<RetryTransactionsDialogComponent>(
       'retryTransactionsDialog',
     );
 
-  readonly contextMenuSelection = signal<PaymentTransaction | undefined>(
+  readonly contextMenuSelection = signal<Transaction | undefined>(undefined);
+
+  protected readonly paginateQuery = signal<PaginateQuery | undefined>(
     undefined,
   );
 
+  private readonly transactionsPaginateQuery = computed<PaginateQuery>(() => {
+    const paginateQuery = this.paginateQuery() ?? {};
+    return {
+      ...paginateQuery,
+      ...(paginateQuery.filter ?? {}),
+    };
+  });
+
   program = injectQuery(this.programApiService.getProgram(this.programId));
-  transactions = injectQuery(
+
+  transactionsResponse = injectQuery(
     this.paymentApiService.getPaymentTransactions({
       programId: this.programId,
       paymentId: this.paymentId,
+      paginateQuery: this.transactionsPaginateQuery,
     }),
+  );
+
+  readonly transactions = computed(
+    () => this.transactionsResponse.data()?.data ?? [],
+  );
+  protected readonly totalTransactions = computed(
+    () => this.transactionsResponse.data()?.meta.totalItems ?? 0,
   );
 
   readonly refetchPayment = signal(true);
@@ -99,21 +119,15 @@ export class ProgramPaymentTransactionListPageComponent {
     if (!this.program.isSuccess()) {
       return [];
     }
-    const programPaymentColumns: QueryTableColumn<PaymentTransaction>[] = [
+    const programPaymentColumns: QueryTableColumn<Transaction>[] = [
       {
         field: 'registrationProgramId',
         header: $localize`Reg. #`,
-        getCellText: (transaction) =>
-          $localize`Reg. #` + transaction.registrationProgramId.toString(),
-        getCellRouterLink: (transaction) =>
-          registrationLink({
-            programId: this.programId(),
-            registrationId: transaction.registrationId,
-          }),
-      },
-      {
-        field: 'registrationName',
-        header: $localize`Name`,
+        type: QueryTableColumnType.NUMERIC,
+        getCellText: (transaction) => {
+          const registrationId = transaction.registrationProgramId ?? '';
+          return $localize`Reg. #${registrationId}`;
+        },
         getCellRouterLink: (transaction) =>
           registrationLink({
             programId: this.programId(),
@@ -149,11 +163,12 @@ export class ProgramPaymentTransactionListPageComponent {
         header: $localize`Reason`,
       },
       {
-        field: 'amount',
+        field: 'transferValue',
         header: $localize`Transfer value`,
+        type: QueryTableColumnType.NUMERIC,
         getCellText: (transaction) =>
           this.currencyPipe.transform(
-            transaction.amount,
+            transaction.transferValue,
             this.program.data()?.currency,
             'symbol-narrow',
             '1.2-2',
@@ -215,7 +230,7 @@ export class ProgramPaymentTransactionListPageComponent {
         },
       },
       {
-        label: $localize`Retry failed transactions`,
+        label: $localize`Retry failed transaction`,
         icon: 'pi pi-refresh',
         command: () => {
           this.retryFailedTransactions({ triggeredFromContextMenu: true });
@@ -245,13 +260,13 @@ export class ProgramPaymentTransactionListPageComponent {
       return false;
     }
 
-    if (!this.transactions.isSuccess()) {
+    if (!this.transactionsResponse.isSuccess()) {
       return false;
     }
 
-    return this.transactions
+    return this.transactionsResponse
       .data()
-      .some((payment) => payment.status === TransactionStatusEnum.error);
+      .data.some((payment) => payment.status === TransactionStatusEnum.error);
   });
 
   retryFailedTransactions({
@@ -272,16 +287,16 @@ export class ProgramPaymentTransactionListPageComponent {
 
     const selection = actionData.selection;
 
-    if (!Array.isArray(selection) || selection.length === 0) {
-      this.toastService.showGenericError(); // Should never happen
-      return;
+    let referenceIds: string[] | undefined = undefined;
+
+    if (Array.isArray(selection)) {
+      referenceIds = selection.map(
+        (transaction) => transaction.registrationReferenceId ?? '',
+      );
     }
 
-    const referenceIds = selection.map(
-      (transaction) => transaction.registrationReferenceId,
-    );
-
     this.retryTransactionsDialog().retryFailedTransactions({
+      transactionCount: actionData.count,
       referenceIds,
     });
   }

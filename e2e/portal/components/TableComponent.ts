@@ -14,6 +14,7 @@ class TableComponent {
   readonly clearAllFiltersButton: Locator;
   readonly applyFiltersButton: Locator;
   readonly textboxField: Locator;
+  readonly spinbuttonField: Locator;
   readonly searchBox: Locator;
   readonly checkbox: Locator;
   readonly approveButton: Locator;
@@ -45,6 +46,7 @@ class TableComponent {
     // Not in the HTML of the table component.
     this.applyFiltersButton = this.page.getByLabel('Apply');
     this.textboxField = this.page.getByRole('textbox');
+    this.spinbuttonField = this.page.getByRole('spinbutton');
     this.searchBox = this.page.getByRole('searchbox');
     this.checkbox = this.page.getByRole('checkbox');
     this.approveButton = this.page.getByRole('button', { name: 'Approve' });
@@ -270,7 +272,7 @@ class TableComponent {
       await this.filterModeDropdown.click();
       await this.page.getByRole('option', { name: filterMode }).click();
     }
-    await this.page.getByRole('spinbutton').fill(String(filterNumber));
+    await this.spinbuttonField.fill(String(filterNumber));
     await this.applyFiltersButton.click();
   }
 

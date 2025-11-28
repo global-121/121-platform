@@ -75,13 +75,27 @@ export class ScriptsService {
     return seedConfig;
   }
 
-  public async duplicateData(powerNrRegistrationsString: string) {
-    const { powerNrRegistrations } =
+  public async duplicateData({
+    powerNrRegistrationsString,
+    nrPaymentsString = '0',
+  }: {
+    powerNrRegistrationsString: string;
+    nrPaymentsString?: string;
+  }) {
+    const { powerNrRegistrations, nrPayments } =
       await this.seedMockHelper.validateParametersForDataDuplication({
         powerNrRegistrationsString,
+        nrPaymentsString,
       });
 
     await this.seedMockHelper.multiplyRegistrations(powerNrRegistrations);
+    await this.seedMockHelper.alignOtherDataWithRegistrations({
+      powerNr: powerNrRegistrations,
+    });
+    await this.seedMockHelper.addExtraPaymentsAndAlignRelatedData({
+      nrPayments,
+    }); // Ensure payment related data is extended
+    await this.seedMockHelper.updateDerivedData();
     await this.seedMockHelper.updateSequenceNumbers();
     await this.seedMockHelper.introduceDuplicates();
   }

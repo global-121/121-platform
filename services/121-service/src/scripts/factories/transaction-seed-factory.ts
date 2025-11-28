@@ -66,10 +66,16 @@ export class TransactionSeedFactory extends BaseSeedFactory<TransactionEntity> {
     const eventRepo = this.dataSource.getRepository(TransactionEventEntity);
 
     // Find the initial seeded transaction and its events
-    const initialTransaction = await transactionRepo.findOneOrFail({
+    const initialTransaction = await transactionRepo.findOne({
       where: { payment: { programId: Equal(programId) } },
       order: { id: 'ASC' },
     });
+    if (!initialTransaction) {
+      console.log(
+        `No initial transaction found for program ${programId}, skipping extending transaction events.`,
+      );
+      return;
+    }
     const initialEvents = await eventRepo.find({
       where: { transaction: Equal(initialTransaction.id) },
     });

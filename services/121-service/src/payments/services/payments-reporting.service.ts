@@ -1,9 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { Equal, Repository } from 'typeorm';
 
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
-import { GetTransactionResponseDto } from '@121-service/src/payments/dto/get-transaction-response.dto';
+import { PaginateConfigTransactionView } from '@121-service/src/payments/consts/paginate-config-transaction-view.const';
+import { ExportTransactionResponseDto } from '@121-service/src/payments/dto/export-transaction-response.dto';
+import { PaginatedTransactionDto } from '@121-service/src/payments/dto/paginated-transaction.dto';
 import { PaymentReturnDto } from '@121-service/src/payments/dto/payment-return.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
@@ -11,18 +14,16 @@ import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
+import { FindAllTransactionsResultDto } from '@121-service/src/payments/transactions/dto/find-all-transactions-result.dto';
+import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
-import {
-  DefaultRegistrationDataAttributeNames,
-  GenericRegistrationAttributes,
-} from '@121-service/src/registration/enum/registration-attribute.enum';
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-
 @Injectable()
 export class PaymentsReportingService {
   @InjectRepository(PaymentEntity)
@@ -79,6 +80,12 @@ export class PaymentsReportingService {
       { count: number; transferValue: number }
     > = {};
 
+    const fspsInPayment =
+      await this.transactionViewScopedRepository.getAllFspsInPayment({
+        programId,
+        paymentId,
+      });
+
     for (const row of statusAggregation) {
       const status = row.status;
 
@@ -125,6 +132,7 @@ export class PaymentsReportingService {
         count: 0,
         transferValue: 0,
       },
+      fsps: fspsInPayment || [],
     };
   }
 
@@ -197,7 +205,7 @@ export class PaymentsReportingService {
     fromDate?: Date;
     toDate?: Date;
   }): Promise<
-    (GetTransactionResponseDto & // This is the type returned by the transaction repository
+    (ExportTransactionResponseDto & // This is the type returned by the transaction repository
       Record<string, unknown>)[] // These are the dynamic fsp specific fields & the dynamic configured fields from the registration as set in 'export' of program registration attributes
   > {
     const fspSpecificJoinFields =
@@ -284,23 +292,56 @@ export class PaymentsReportingService {
     }
   }
 
-  public async getTransactionsByPaymentId({
+  public async getTransactionsByPaymentIdPaginated({
     programId,
     paymentId,
+    paginateQuery,
   }: {
     programId: number;
     paymentId: number;
-  }): Promise<GetTransactionResponseDto[]> {
+    paginateQuery: PaginateQuery;
+  }): Promise<FindAllTransactionsResultDto> {
     await this.findPaymentOrThrow(programId, paymentId);
-    // For in the portal we always want the name of the registration, so we need to select it
-    const select = [DefaultRegistrationDataAttributeNames.name];
 
-    const transactions = await this.getTransactions({
+    const queryBuilder =
+      this.transactionViewScopedRepository.createQueryBuilderFilterByProgramAndPaymentId(
+        {
+          programId,
+          paymentId,
+        },
+      );
+
+    const result = await paginate<TransactionViewEntity>(
+      paginateQuery,
+      queryBuilder,
+      {
+        ...PaginateConfigTransactionView,
+      },
+    );
+
+    return result as Paginated<PaginatedTransactionDto>; // This type-conversion is done to make our frontend happy as it cannot deal with typeorm entities
+  }
+
+  public async getReferenceIdsForPaginateQuery({
+    programId,
+    paymentId,
+    paginateQuery,
+  }: {
+    programId: number;
+    paymentId: number;
+    paginateQuery: PaginateQuery;
+  }): Promise<string[]> {
+    await this.findPaymentOrThrow(programId, paymentId);
+    paginateQuery.limit = -1; // No limit
+    const result = await this.getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
-      select,
+      paginateQuery,
     });
 
-    return transactions;
+    const referenceIds = result.data.map((t) => t.registrationReferenceId);
+    return referenceIds.filter(
+      (referenceId) => referenceId !== null && referenceId !== undefined,
+    );
   }
 }

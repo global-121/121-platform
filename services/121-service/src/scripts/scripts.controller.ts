@@ -124,6 +124,12 @@ export class ScriptsController {
     description: `number of times to duplicate all PAs (2^x, e.g. 15=32,768 PAs)`,
     example: '1',
   })
+  @ApiQuery({
+    name: 'mockNumberPayments',
+    required: false,
+    description: `number of payments to add`,
+    example: '1',
+  })
   @ApiOperation({
     summary:
       'Duplicate registrations, used for load testing. It also changes all phonenumber to a random number. Only usable in test or development.',
@@ -133,6 +139,7 @@ export class ScriptsController {
     @Body() body: SecretDto,
     @Query('mockPowerNumberRegistrations')
     mockPowerNumberRegistrations: string,
+    @Query('mockNumberPayments') mockNumberPayments: string,
     @Res() res,
   ): Promise<void> {
     if (body.secret !== env.RESET_SECRET) {
@@ -145,7 +152,10 @@ export class ScriptsController {
           'Duplicating registrations is NOT allowed in production environments',
         );
     }
-    await this.scriptsService.duplicateData(mockPowerNumberRegistrations);
+    await this.scriptsService.duplicateData({
+      powerNrRegistrationsString: mockPowerNumberRegistrations,
+      nrPaymentsString: mockNumberPayments,
+    });
 
     return res
       .status(HttpStatus.CREATED)

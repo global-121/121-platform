@@ -48,7 +48,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     await seedPaidRegistrations({
       registrations: [registrationOnafriq],
       programId,
-      amount: transferValue,
+      transferValue,
     });
 
     // Act

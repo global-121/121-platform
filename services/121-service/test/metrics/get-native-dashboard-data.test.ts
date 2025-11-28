@@ -36,7 +36,7 @@ const seedTwoPayments = async () => {
   await seedPaidRegistrations({
     registrations: registrationsPV,
     programId: programIdPV,
-    amount: transferValue,
+    transferValue,
     completeStatuses,
   });
 
