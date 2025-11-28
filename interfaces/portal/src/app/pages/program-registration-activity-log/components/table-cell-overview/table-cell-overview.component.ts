@@ -99,15 +99,17 @@ export class TableCellOverviewComponent
   });
 
   readonly transactionPaginateQuery = computed(() => {
-    if (!this.paymentId() || !this.context().registrationId()) {
+    const referenceId = this.context().referenceId;
+    if (!referenceId) {
+      return;
+    }
+    if (!this.paymentId()) {
       return undefined;
     }
 
-    const registrationId = this.context().registrationId();
-
     const paginateQuery: PaginateQuery = {
       filter: {
-        registrationId: `${FilterOperator.EQ}:${registrationId}`,
+        registrationReferenceId: `${FilterOperator.EQ}:${referenceId}`,
       },
     };
 

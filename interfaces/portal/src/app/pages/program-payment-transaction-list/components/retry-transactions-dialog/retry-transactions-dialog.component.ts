@@ -87,7 +87,6 @@ export class RetryTransactionsDialogComponent {
       return undefined;
     }
 
-    // ##TODO: consider switching to registrationIds to align with single-retry
     return `${FilterOperator.IN}:${referenceIds.join(',')}`;
   });
 

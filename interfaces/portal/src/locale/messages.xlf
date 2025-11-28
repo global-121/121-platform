@@ -1964,9 +1964,6 @@
       <trans-unit id="9211474991659273932" datatype="html">
         <source>Create new program</source>
       </trans-unit>
-      <trans-unit id="1199603176168206482" datatype="html">
-        <source>Retry failed transactions</source>
-      </trans-unit>
       <trans-unit id="1297402576657440154" datatype="html">
         <source>Transactions per payment</source>
       </trans-unit>
@@ -2008,6 +2005,9 @@
       </trans-unit>
       <trans-unit id="279195665230166237" datatype="html">
         <source>Reg. #<x equiv-text="registrationId" id="PH"/></source>
+      </trans-unit>
+      <trans-unit id="3460608979438095670" datatype="html">
+        <source>Retry failed transaction</source>
       </trans-unit>
     </body>
   </file>

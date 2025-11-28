@@ -126,7 +126,6 @@ export class ProgramPaymentTransactionListPageComponent {
         type: QueryTableColumnType.NUMERIC,
         getCellText: (transaction) => {
           const registrationId = transaction.registrationProgramId ?? '';
-
           return $localize`Reg. #${registrationId}`;
         },
         getCellRouterLink: (transaction) =>
@@ -231,7 +230,7 @@ export class ProgramPaymentTransactionListPageComponent {
         },
       },
       {
-        label: $localize`Retry failed transactions`,
+        label: $localize`Retry failed transaction`,
         icon: 'pi pi-refresh',
         command: () => {
           this.retryFailedTransactions({ triggeredFromContextMenu: true });
