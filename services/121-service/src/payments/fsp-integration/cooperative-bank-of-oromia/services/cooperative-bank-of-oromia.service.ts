@@ -37,4 +37,10 @@ export class CooperativeBankOfOromiaService {
       throw new CooperativeBankOfOromiaError(result, message);
     }
   }
+
+  public async getAccountInformation(accountNumber: string) {
+    return this.cooperativeBankOfOromiaApiService.validateAccount(
+      accountNumber,
+    );
+  }
 }

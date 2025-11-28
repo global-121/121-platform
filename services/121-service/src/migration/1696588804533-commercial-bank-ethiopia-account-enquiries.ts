@@ -7,7 +7,7 @@ export class commercialBankEthiopiaAccountEnquiries1696588804533
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "121-service"."commercial-bank-ethiopia-account-enquiries" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "registrationId" integer, "fullNameUsedForTheMatch" character varying, "bankAccountNumberUsedForCall" character varying, "cbeName" character varying, "namesMatch" boolean, "cbeStatus" character varying, "errorMessage" character varying, CONSTRAINT "REL_718c48c84b802de3cf219e2fc1" UNIQUE ("registrationId"), CONSTRAINT "PK_b4186313bb7e94ba1b687f1c3e6" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "121-service"."commercial-bank-ethiopia-account-enquiries" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "registrationId" integer, "fullNameUsedForTheMatch" character varying, "bankAccountNumberUsedForCall" character varying, "cbeName" character varying, "namesMatch" boolean NOT NULL, "cbeStatus" character varying, "errorMessage" character varying, CONSTRAINT "REL_718c48c84b802de3cf219e2fc1" UNIQUE ("registrationId"), CONSTRAINT "PK_b4186313bb7e94ba1b687f1c3e6" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_6634d98139a8fc61021f189dd7" ON "121-service"."commercial-bank-ethiopia-account-enquiries" ("created") `,

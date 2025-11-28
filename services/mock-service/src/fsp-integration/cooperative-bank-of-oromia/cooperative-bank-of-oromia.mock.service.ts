@@ -2,10 +2,15 @@ import { Injectable } from '@nestjs/common';
 
 import { CooperativeBankOfOromiaAuthenticateResponseSuccessDto } from '@mock-service/src/fsp-integration/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-request-body.mock.dto';
 
-enum CooperativeBankOfOromiaMockFailureEnum {
+enum CooperativeBankOfOromiaTransferMockFailureEnum {
   genericError = '1234567890',
   duplicateError = '1234567891',
   unexpectedError = '1234567892',
+}
+
+enum CooperativeBankOfOromiaAccountValidationMockFailureEnum {
+  nonExistentAccount = '1234567893',
+  unexpectedError = '1234567894',
 }
 
 interface CooperativeBankOfOromiaApiTransferRequestBodyDto {
@@ -24,7 +29,8 @@ export class CooperativeBankOfOromiaMockService {
     body: CooperativeBankOfOromiaApiTransferRequestBodyDto;
   }): Promise<any> {
     if (
-      body.creditAccount === CooperativeBankOfOromiaMockFailureEnum.genericError
+      body.creditAccount ===
+      CooperativeBankOfOromiaTransferMockFailureEnum.genericError
     ) {
       return {
         success: false,
@@ -38,7 +44,7 @@ export class CooperativeBankOfOromiaMockService {
     }
     if (
       body.creditAccount ===
-      CooperativeBankOfOromiaMockFailureEnum.duplicateError
+      CooperativeBankOfOromiaTransferMockFailureEnum.duplicateError
     ) {
       return {
         success: false,
@@ -53,7 +59,7 @@ export class CooperativeBankOfOromiaMockService {
 
     if (
       body.creditAccount ===
-      CooperativeBankOfOromiaMockFailureEnum.unexpectedError
+      CooperativeBankOfOromiaTransferMockFailureEnum.unexpectedError
     ) {
       throw new Error('Unexpected server error occurred');
     }
@@ -83,6 +89,49 @@ export class CooperativeBankOfOromiaMockService {
     return {
       access_token: 'mocked-access-token',
       expires_in: 3600,
+    };
+  }
+
+  public async accountValidation({
+    bankAccountNumber,
+  }: {
+    bankAccountNumber: string;
+  }): Promise<{
+    success: boolean;
+    data?: {
+      accountTitle: string;
+      accountNumber: string;
+    };
+    error?: {
+      code: string;
+      message: string;
+    };
+  }> {
+    const code = 'T24Error';
+    if (
+      bankAccountNumber ===
+      CooperativeBankOfOromiaAccountValidationMockFailureEnum.nonExistentAccount
+    ) {
+      return {
+        success: false,
+        error: {
+          code,
+          message: 'No records were found that matched the selection criteria',
+        },
+      };
+    }
+    if (
+      bankAccountNumber ===
+      CooperativeBankOfOromiaAccountValidationMockFailureEnum.unexpectedError
+    ) {
+      throw new Error('Unexpected server error occurred');
+    }
+    return {
+      success: true,
+      data: {
+        accountTitle: 'JANE DOE', // capitalized on purpose as the api also sometimes gives capitalized names
+        accountNumber: bankAccountNumber,
+      },
     };
   }
 }

@@ -22,6 +22,7 @@ import { NoteModule } from '@121-service/src/notes/notes.module';
 import { MessageModule } from '@121-service/src/notifications/message.module';
 import { MessageIncomingModule } from '@121-service/src/notifications/message-incoming/message-incoming.module';
 import { CommercialBankEthiopiaReconciliationModule } from '@121-service/src/payments/reconciliation/commercial-bank-ethiopia-reconciliation/commercial-bank-ethiopia-reconciliation.module';
+import { CooperativeBankOfOromiaReconciliationModule } from '@121-service/src/payments/reconciliation/cooperative-bank-of-oromia-reconciliation/cooperative-bank-of-oromia-reconciliation.module';
 import { ExcelReconcilicationModule } from '@121-service/src/payments/reconciliation/excel/excel-reconciliation.module';
 import { IntersolveVisaReconciliationModule } from '@121-service/src/payments/reconciliation/intersolve-visa-reconciliation/intersolve-visa-reconciliation.module';
 import { IntersolveVoucherReconciliationModule } from '@121-service/src/payments/reconciliation/intersolve-voucher-reconciliation/intersolve-voucher-reconciliation.module';
@@ -93,6 +94,7 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
     TransactionQueuesModule,
     TransactionJobsModule,
     CommercialBankEthiopiaReconciliationModule,
+    CooperativeBankOfOromiaReconciliationModule,
     ExcelReconcilicationModule,
     IntersolveVisaReconciliationModule,
     IntersolveVoucherReconciliationModule,

@@ -6,7 +6,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -46,14 +45,9 @@ export class CooperativeBankOfOromiaMockController {
     },
   })
   public async transfer(
-    @Headers() headers: Record<string, string>,
+    @Headers() _headers: Record<string, string>,
     @Body() body: any,
   ): Promise<any> {
-    const authHeader = headers['authorization'] || headers['Authorization'];
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedException('Missing or invalid Bearer token');
-    }
-
     const response = await this.mockService.transfer({
       body,
     });
@@ -67,9 +61,8 @@ export class CooperativeBankOfOromiaMockController {
 
   @ApiOperation({ summary: 'Get Oauth2 access token' })
   @Post('oauth2/token')
-  // CooperativeBankOfOromia API responds with 200
   @HttpCode(200)
-  public async getOauth2Token(
+  public async getAccessToken(
     @Headers() headers: Record<string, string>,
     @Body() body: any, // TODO: change to dto
   ): Promise<CooperativeBankOfOromiaAuthenticateResponseSuccessDto> {
@@ -81,5 +74,16 @@ export class CooperativeBankOfOromiaMockController {
       throw new BadRequestException(response);
     }
     return response;
+  }
+
+  @ApiOperation({ summary: 'Account validation' })
+  @Post('nrc/1.0.0/accountValidation')
+  @HttpCode(200)
+  public async accountValidation(
+    @Body() body: { accountNumber: string },
+  ): Promise<any> {
+    return await this.mockService.accountValidation({
+      bankAccountNumber: body.accountNumber,
+    });
   }
 }

@@ -368,4 +368,16 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
       })
       .getRawMany();
   }
+
+  public getQueryBuilderFilterByFsp({
+    programId,
+    fspName,
+  }: {
+    programId: number;
+    fspName: string;
+  }): ScopedQueryBuilder<RegistrationViewEntity> {
+    return this.queryBuilderFilterOutDeleted()
+      .andWhere('registration.programId = :programId', { programId })
+      .andWhere('registration."fspName" = :fspName', { fspName });
+  }
 }

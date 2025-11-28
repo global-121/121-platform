@@ -1000,6 +1000,21 @@
     ]
   },
   {
+    "method": "put",
+    "path": "/api/programs/{programId}/fsps/cooperative-bank-of-oromia/account-validations",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/fsps/cooperative-bank-of-oromia/account-validations",
+    "params": [
+      "programId"
+    ],
+    "returnType": "CooperativeBankOfOromiaAccountValidationReportRecordDto"
+  },
+  {
     "method": "get",
     "path": "/api/programs/{programId}/payments/excel-reconciliation/template",
     "params": [

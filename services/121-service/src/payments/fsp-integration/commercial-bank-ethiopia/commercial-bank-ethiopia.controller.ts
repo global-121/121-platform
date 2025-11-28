@@ -36,6 +36,7 @@ export class CommercialBankEthiopiaController {
     type: CommercialBankEthiopiaValidationReportDto,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  // TODO: Move this to the reconciliation controller
   @Get('programs/:programId/fsps/commercial-bank-ethiopia/account-enquiries')
   public async getValidated(
     @Param('programId', ParseIntPipe)

@@ -1,6 +1,7 @@
-export interface CooperativeBankOfOromiaApiPaymentResponseBodyDto {
+import { CooperativeBankOfOromiaApiTransferErrorResponseBodyDto } from '@121-service/src/payments/fsp-integration/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-transfer-error-response-body.dto';
+
+export interface CooperativeBankOfOromiaApiTransferResponseBodyDto {
   readonly success: boolean;
-  readonly message: string;
   // When success is true
   readonly data?: {
     readonly transactionId: string;
@@ -12,9 +13,5 @@ export interface CooperativeBankOfOromiaApiPaymentResponseBodyDto {
     readonly processingDate: string;
   };
   // When success is false
-  readonly error?: {
-    readonly code: string;
-    readonly messages: string;
-    readonly description: string;
-  };
+  readonly error?: CooperativeBankOfOromiaApiTransferErrorResponseBodyDto;
 }
