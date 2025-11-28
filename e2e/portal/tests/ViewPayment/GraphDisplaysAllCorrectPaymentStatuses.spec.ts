@@ -63,8 +63,8 @@ test('Graph should reflect transaction statuses', async ({ page }) => {
       pendingApproval: 0,
       approved: 0,
       processing: 0,
-      successful: 32,
-      failed: 0,
+      successful: 16,
+      failed: 16,
     });
   });
 });

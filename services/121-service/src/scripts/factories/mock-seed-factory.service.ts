@@ -261,6 +261,21 @@ export class MockSeedFactoryService {
   }
 
   private async createMockVisaCustomersAndWallets(): Promise<void> {
+    const transactionRepo = this.dataSource.getRepository('transaction');
+    const transactions = await transactionRepo.find({
+      where: {
+        registration: {
+          programFspConfiguration: { fspName: Equal(Fsps.intersolveVisa) },
+        },
+      },
+    });
+    if (transactions.length === 0) {
+      console.warn(
+        'No Visa transactions found, so skipping Visa customer and wallet creation',
+      );
+      return;
+    }
+
     const registrationRepo = this.dataSource.getRepository(RegistrationEntity);
     const customerRepo = this.dataSource.getRepository(
       IntersolveVisaCustomerEntity,

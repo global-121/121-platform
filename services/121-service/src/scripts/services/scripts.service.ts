@@ -77,7 +77,7 @@ export class ScriptsService {
 
   public async duplicateData({
     powerNrRegistrationsString,
-    nrPaymentsString = '1',
+    nrPaymentsString = '0',
   }: {
     powerNrRegistrationsString: string;
     nrPaymentsString?: string;
