@@ -64,6 +64,12 @@ export class ScriptsController {
     description:
       'Optional identifier for this reset action, will be logged by the server.',
   })
+  @ApiQuery({
+    name: 'includeEvents',
+    required: false,
+    description: `Set to 'true' to include events in the duplication.`,
+    example: 'false',
+  })
   @ApiOperation({
     summary: `Reset instance database.`,
     description: `When using the reset script: ${SeedScript.demoPrograms}. The reset can take a while, because of the large amount of data. This can result in a timeout on the client side, but the reset will still be done.`,
@@ -74,6 +80,7 @@ export class ScriptsController {
     @Query('script') script: WrapperType<SeedScript>,
     @Query('mockPowerNumberRegistrations')
     mockPowerNumberRegistrations: string,
+    @Query('includeEvents') includeEvents: boolean,
     @Query('resetIdentifier') resetIdentifier: string,
     @Query('mockNumberPayments') mockNumberPayments: string,
     @Query('mockPowerNumberMessages') mockPowerNumberMessages: string,
@@ -87,6 +94,8 @@ export class ScriptsController {
     }
 
     isApiTests = isApiTests !== undefined && isApiTests.toString() === 'true';
+    includeEvents =
+      includeEvents !== undefined && includeEvents.toString() === 'true';
 
     if (script == SeedScript.nlrcMultipleMock) {
       const booleanMockPv = mockPv
@@ -100,6 +109,7 @@ export class ScriptsController {
         resetIdentifier,
         isApiTests,
         powerNrRegistrationsString: mockPowerNumberRegistrations,
+        includeEvents,
         nrPaymentsString: mockNumberPayments,
         powerNrMessagesString: mockPowerNumberMessages,
         mockPv: booleanMockPv,
@@ -124,6 +134,12 @@ export class ScriptsController {
     description: `number of times to duplicate all PAs (2^x, e.g. 15=32,768 PAs)`,
     example: '1',
   })
+  @ApiQuery({
+    name: 'includeEvents',
+    required: false,
+    description: `Set to 'true' to include events in the duplication.`,
+    example: 'false',
+  })
   @ApiOperation({
     summary:
       'Duplicate registrations, used for load testing. It also changes all phonenumber to a random number. Only usable in test or development.',
@@ -133,6 +149,7 @@ export class ScriptsController {
     @Body() body: SecretDto,
     @Query('mockPowerNumberRegistrations')
     mockPowerNumberRegistrations: string,
+    @Query('includeEvents') includeEvents: boolean,
     @Res() res,
   ): Promise<void> {
     if (body.secret !== env.RESET_SECRET) {
@@ -145,7 +162,10 @@ export class ScriptsController {
           'Duplicating registrations is NOT allowed in production environments',
         );
     }
-    await this.scriptsService.duplicateData(mockPowerNumberRegistrations);
+    await this.scriptsService.duplicateData(
+      mockPowerNumberRegistrations,
+      includeEvents,
+    );
 
     return res
       .status(HttpStatus.CREATED)
