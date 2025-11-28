@@ -57,7 +57,7 @@ test('Badges and chart should display correct statuses during payment process', 
   await test.step('Create payment', async () => {
     await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/3`),
+      url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
     );
     await paymentPage.dismissToast();
   });
@@ -97,7 +97,7 @@ test('Badges and chart should display correct statuses during payment process', 
       failed: 0,
     });
     // Reload the page because Successful badges are not displayed without reload
-    await page.goto(`/en-GB/program/${programIdOCW}/payments/3`);
+    await page.goto(`/en-GB/program/${programIdOCW}/payments/1`);
     await paymentPage.waitForPageLoad();
     // Validate badges
     await paymentPage.validateBadgeIsPresentByLabel({

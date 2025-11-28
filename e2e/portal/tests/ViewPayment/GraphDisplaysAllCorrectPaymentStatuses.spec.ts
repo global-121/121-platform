@@ -50,14 +50,14 @@ test('Graph should reflect transaction statuses', async ({ page }) => {
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/3`),
+      url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
     );
     await paymentPage.startPayment();
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
   await test.step('Graph displays all correct payment statuses', async () => {
-    await page.goto(`/en-GB/program/${programIdOCW}/payments/3`);
+    await page.goto(`/en-GB/program/${programIdOCW}/payments/1`);
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.validateGraphStatus({
       pendingApproval: 0,

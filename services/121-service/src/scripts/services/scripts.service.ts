@@ -77,10 +77,10 @@ export class ScriptsService {
 
   public async duplicateData({
     powerNrRegistrationsString,
-    nrPaymentsString,
+    nrPaymentsString = '1',
   }: {
     powerNrRegistrationsString: string;
-    nrPaymentsString: string;
+    nrPaymentsString?: string;
   }) {
     const { powerNrRegistrations, nrPayments } =
       await this.seedMockHelper.validateParametersForDataDuplication({
