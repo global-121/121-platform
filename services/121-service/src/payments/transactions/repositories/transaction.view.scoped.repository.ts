@@ -266,6 +266,37 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       .getRawMany();
   }
 
+  public async getAllFspsInPayment({
+    programId,
+    paymentId,
+  }: {
+    programId: number;
+    paymentId: number;
+  }): Promise<
+    Pick<
+      TransactionViewEntity,
+      | 'programFspConfigurationName'
+      | 'programFspConfigurationId'
+      | 'programFspConfigurationLabel'
+    >[]
+  > {
+    return this.createQueryBuilder('transaction')
+      .select([
+        'transaction.programFspConfigurationName AS "programFspConfigurationName"',
+        'transaction.programFspConfigurationId AS "programFspConfigurationId"',
+        'transaction.programFspConfigurationLabel AS "programFspConfigurationLabel"',
+      ])
+      .distinctOn([
+        'transaction.programFspConfigurationName',
+        'transaction.programFspConfigurationId',
+      ])
+      .leftJoin('transaction.payment', 'payment')
+      .andWhere('payment.programId = :programId', { programId })
+      .andWhere('transaction.paymentId = :paymentId', { paymentId })
+      .orderBy('transaction.programFspConfigurationName', 'ASC')
+      .getRawMany<TransactionViewEntity>();
+  }
+
   public async getPendingApprovalOfIncludedRegistrations({
     programId,
     paymentId,
