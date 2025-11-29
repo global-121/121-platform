@@ -1,6 +1,7 @@
 import { HttpStatus, Inject, Injectable, Scope } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { REQUEST } from '@nestjs/core';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import { Request } from 'express';
@@ -42,11 +43,11 @@ import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity'
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
+import { AccountCreatedEvent } from '@121-service/src/user/events/account-created.event';
+import { PasswordResetEvent } from '@121-service/src/user/events/password-reset.event';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
-import { UserEmailType } from '@121-service/src/user/user-emails/enum/user-email-type.enum';
-import { UserEmailInput } from '@121-service/src/user/user-emails/interfaces/user-email-input.interface';
-import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
+
 const tokenExpirationDays = 14;
 
 @Injectable({ scope: Scope.REQUEST })
@@ -64,7 +65,7 @@ export class UserService {
 
   public constructor(
     @Inject(REQUEST) private readonly request: Request,
-    private readonly userEmailsService: UserEmailsService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   public async login(loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
@@ -277,20 +278,12 @@ export class UserService {
         throw new Error('username is missing');
       }
 
-      const userEmailInput: UserEmailInput = {
-        email: userEntity.username,
-        displayName: userEntity.displayName ?? DEFAULT_DISPLAY_NAME,
+      const event = new AccountCreatedEvent(
+        userEntity.username,
+        userEntity.displayName ?? DEFAULT_DISPLAY_NAME,
         password,
-      };
-
-      const userEmailType: UserEmailType = env.USE_SSO_AZURE_ENTRA
-        ? UserEmailType.accountCreatedForSSO
-        : UserEmailType.accountCreated;
-
-      await this.userEmailsService.send({
-        userEmailInput,
-        userEmailType,
-      });
+      );
+      this.eventEmitter.emit('user.accountCreated', event);
     }
   }
 
@@ -938,16 +931,12 @@ export class UserService {
     user.password = this.hashPassword(password, user.salt);
     await this.userRepository.save(user);
 
-    const userEmailInput: UserEmailInput = {
-      email: user.username,
-      displayName: user.displayName ?? DEFAULT_DISPLAY_NAME,
+    const event = new PasswordResetEvent(
+      user.username,
+      user.displayName ?? DEFAULT_DISPLAY_NAME,
       password,
-    };
-
-    await this.userEmailsService.send({
-      userEmailInput,
-      userEmailType: UserEmailType.passwordReset,
-    });
+    );
+    this.eventEmitter.emit('user.passwordReset', event);
   }
 
   private generateSalt(): string {

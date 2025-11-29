@@ -7,6 +7,6 @@ import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails
   imports: [EmailsModule],
   providers: [UserEmailsService],
   controllers: [],
-  exports: [UserEmailsService],
+  exports: [],
 })
 export class UserEmailsModule {}

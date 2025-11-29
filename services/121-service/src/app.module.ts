@@ -1,6 +1,7 @@
 import { BullModule } from '@nestjs/bull';
 import { Module, OnApplicationBootstrap } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MulterModule } from '@nestjs/platform-express';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
@@ -46,6 +47,7 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
 @Module({
   // Note: no need to import just any (new) Module in ApplicationModule, when another Module already imports it
   imports: [
+    EventEmitterModule.forRoot(),
     QueuesRegistryModule,
     TypeOrmModule,
     TypeORMNestJS.forFeature([
