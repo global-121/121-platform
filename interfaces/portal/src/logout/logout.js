@@ -18,7 +18,7 @@ window.setTimeout(async () => {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'X-121-Interface': 'portal', // See: services/121-service/src/shared/enum/interface-names.enum.ts
+        'x-121-interface': 'portal', // See: services/121-service/src/shared/enum/interface-names.enum.ts
       },
       method: 'POST',
       mode: 'cors',
