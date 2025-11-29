@@ -294,6 +294,15 @@ export const env = createEnv({
             'AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY',
           ],
         ],
+        [
+          'COOPERATIVE_BANK_OF_OROMIA_ENABLED',
+          [
+            'COOPERATIVE_BANK_OF_OROMIA_BASE64_CREDENTIALS',
+            'COOPERATIVE_BANK_OF_OROMIA_API_URL',
+            'COOPERATIVE_BANK_OF_OROMIA_AUTH_URL',
+            'COOPERATIVE_BANK_OF_OROMIA_NARRATIVE',
+          ],
+        ],
       ]);
 
       for (const [fspFlag, requiredVariables] of fspVariableRequirements) {

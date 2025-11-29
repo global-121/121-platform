@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
-import { env } from 'process';
 
+import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
@@ -15,7 +15,8 @@ import {
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 // For guaranteeing that test data generates duplicates we should use at least 10 as minimal duplication number for fast test and 17 for full load test
-const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '10'); // cronjob duplicate number should be 2^17 = 131072
+// eslint-disable-next-line n/no-process-env -- Only used in test-runs, not included in '@121-service/src/env'
+const duplicateNumber = parseInt(process.env.DUPLICATE_NUMBER || '10'); // cronjob duplicate number should be 2^17 = 131072
 const totalRegistrations = Math.pow(2, duplicateNumber);
 const queryParams = {
   'filter.duplicateStatus': 'duplicate',

@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
-import { env } from 'process';
 
+import { env } from '@121-service/src/env';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';

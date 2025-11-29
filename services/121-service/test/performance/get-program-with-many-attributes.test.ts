@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
 import { performance } from 'node:perf_hooks';
-import { env } from 'process';
 
+import { env } from '@121-service/src/env';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -20,7 +20,8 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^5 = 32
+// eslint-disable-next-line n/no-process-env -- Only used in test-runs, not included in '@121-service/src/env'
+const duplicateNumber = parseInt(process.env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^5 = 32
 
 // 30 seconds is jest global timeout and this test should be able to complete within that time
 describe('Get program with many attributes within time threshold of 30 seconds', () => {

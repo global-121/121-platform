@@ -63,11 +63,24 @@ module.exports = {
         ],
         'eslint-comments/no-unused-disable': 'error',
         'eslint-comments/require-description': 'error',
+        'no-restricted-imports': [
+          'error',
+          {
+            patterns: [
+              {
+                group: ['process', 'node:process'],
+                importNames: ['env'],
+                message: 'Import ENV-variables from env.ts only.',
+              },
+            ],
+          },
+        ],
         'object-shorthand': 'error',
         'prettier/prettier': ['error', { endOfLine: 'auto' }],
         'n/no-missing-import': [0, { ignoreTypeImport: true }], // Disabled to allow for path-aliases via tsconfig.json/below
         'n/no-extraneous-import': [0], // Managed by TS
         'n/no-process-env': 'error',
+        'n/prefer-node-protocol': 'error',
         'no-relative-import-paths/no-relative-import-paths': [
           'warn',
           {
