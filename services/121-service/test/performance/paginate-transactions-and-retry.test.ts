@@ -87,6 +87,7 @@ describe('Retry payment for 100k registrations with Safaricom within expected ra
     expect(paginatedTransactionsResponse.statusCode).toBe(HttpStatus.OK);
 
     // Get all transactions to simulate export
+    // TODO AB#39419: the exports are not using this paginated endpoint yet, this needs to be addressed
     const supportedNumberOrRegistrations = 100_000; // Adjust based on expected supported number
     const getAllTransactionsStartTime = Date.now();
     const allTransactionsResponse = await getTransactionsByPaymentIdPaginated({
