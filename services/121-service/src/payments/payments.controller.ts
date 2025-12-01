@@ -39,7 +39,6 @@ import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-paym
 import { GetPaymentsDto } from '@121-service/src/payments/dto/get-payments.dto';
 import { PaymentReturnDto } from '@121-service/src/payments/dto/payment-return.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
-import { PaymentEventDataDto } from '@121-service/src/payments/payment-events/dtos/payment-event-data.dto';
 import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
 import { PaymentsCreationService } from '@121-service/src/payments/services/payments-creation.service';
 import { PaymentsExcelFspService } from '@121-service/src/payments/services/payments-excel-fsp.service';
@@ -403,7 +402,7 @@ export class PaymentsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Return Payment Events by Payment Id.',
-    type: [PaymentEventDataDto],
+    type: [Object],
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,

@@ -1,11 +1,11 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { PaymentEventDataDto } from '@121-service/src/payments/payment-events/dtos/payment-event-data.dto';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
+import { PaymentEventInterface } from '@121-service/src/payments/payment-events/interfaces/payment-event.interface';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionEventInterface } from '@121-service/src/payments/transactions/transaction-events/dto/transaction-event-data.dto';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
+import { TransactionEventInterface } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event.interface';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   registrationNotScopedPv,
@@ -252,7 +252,7 @@ describe('Payment in progress', () => {
       });
 
       const startEvents = paymentEvents.body.data.filter(
-        (event: PaymentEventDataDto) => event.type === PaymentEvent.started,
+        (event: PaymentEventInterface) => event.type === PaymentEvent.started,
       );
 
       // Assert

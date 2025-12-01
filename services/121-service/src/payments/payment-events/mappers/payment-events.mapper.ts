@@ -1,6 +1,6 @@
-import { PaymentEventAttributesDto } from '@121-service/src/payments/payment-events/dtos/payment-event-data.dto';
 import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
 import { PaymentEventEntity } from '@121-service/src/payments/payment-events/entities/payment-event.entity';
+import { PaymentEventAttributes } from '@121-service/src/payments/payment-events/interfaces/payment-event.interface';
 import {
   mapEventsToDto,
   mapUserToDto,
@@ -25,8 +25,8 @@ export class PaymentEventsMapper {
 
   private static mapAttributes(
     event: PaymentEventEntity,
-  ): PaymentEventAttributesDto {
-    const attributes: PaymentEventAttributesDto = {};
+  ): PaymentEventAttributes {
+    const attributes: PaymentEventAttributes = {};
     if (event.attributes && event.attributes.length > 0) {
       for (const attr of event.attributes) {
         attributes[attr.key] = attr.value;

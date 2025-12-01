@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { PaymentEventDataDto } from '@121-service/src/payments/payment-events/dtos/payment-event-data.dto';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
+import { PaymentEventInterface } from '@121-service/src/payments/payment-events/interfaces/payment-event.interface';
 
 class PaymentEventsMetaObject {
   @ApiProperty({
@@ -26,8 +26,8 @@ export class PaymentEventsReturnDto {
   meta: PaymentEventsMetaObject;
 
   @ApiProperty({
-    type: [PaymentEventDataDto],
+    type: [Object],
     description: 'The payment events data.',
   })
-  data: PaymentEventDataDto[];
+  data: PaymentEventInterface[];
 }

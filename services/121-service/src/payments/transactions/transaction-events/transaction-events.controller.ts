@@ -10,7 +10,6 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import { PaymentEventDataDto } from '@121-service/src/payments/payment-events/dtos/payment-event-data.dto';
 import { TransactionEventsReturnDto } from '@121-service/src/payments/transactions/transaction-events/dto/transaction-events-return.dto';
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -32,7 +31,7 @@ export class TransactionEventsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Return Transaction Events by Transaction Id.',
-    type: [PaymentEventDataDto],
+    type: [Object],
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
