@@ -239,29 +239,6 @@ export class ProgramRegistrationDebitCardsPageComponent {
     },
   }));
 
-  linkCardMutation = injectMutation(() => ({
-    mutationFn: () => {
-      const referenceId = this.referenceId();
-
-      if (!referenceId) {
-        this.toastService.showGenericError();
-        throw new Error('ReferenceId is missing');
-      }
-
-      return this.registrationApiService.linkCardToRegistration({
-        programId: this.programId,
-        referenceId: this.referenceId,
-        tokenCode: this.tokenCode,
-      });
-    },
-    onSuccess: () => {
-      this.toastService.showToast({
-        detail: $localize`Card successfully linked`,
-      });
-      this.invalidateWalletQuery();
-    },
-  }));
-
   readonly currencyCode = computed(() => this.program.data()?.currency);
 
   private invalidateWalletQuery() {
