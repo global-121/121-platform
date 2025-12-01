@@ -2036,11 +2036,14 @@
       <trans-unit id="6602328059777528111" datatype="html">
         <source>Scan the barcode in the back of the card you are handing over to the registration, or manually fill in the 19 digit serial number found below the barcode.</source>
       </trans-unit>
-      <trans-unit id="7403271777586911780" datatype="html">
-        <source>Create new card</source>
-      </trans-unit>
       <trans-unit id="8920778008306462191" datatype="html">
         <source>There are no debit cards linked to this registration</source>
+      </trans-unit>
+      <trans-unit id="1803991316035947288" datatype="html">
+        <source>Link Visa card</source>
+      </trans-unit>
+      <trans-unit id="3176639329668271224" datatype="html">
+        <source>Link card</source>
       </trans-unit>
     </body>
   </file>
