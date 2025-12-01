@@ -21,7 +21,7 @@ export const buildTemplateAccountCreated = (
       Password: <code>${password}</code>
     </p>
     <p>
-      After logging in, please change your password on: <a href="${env.REDIRECT_PORTAL_URL_HOST}/change-password}">${env.REDIRECT_PORTAL_URL_HOST}/change-password}</a>
+      After logging in, please change your password on: <a href="${env.REDIRECT_PORTAL_URL_HOST}/change-password">${env.REDIRECT_PORTAL_URL_HOST}/change-password</a>
     </p>
     <p>
       For assistance, if you were not expecting this email or believe it was sent to you by mistake,
