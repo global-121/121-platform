@@ -160,10 +160,10 @@
 <app-form-dialog
   #linkCardDialog
   header="Link visa card"
-  headerIcon="pi pi-link"
   i18n-header="@@3176639329668271224"
-  acceptLabel="Link visa card"
-  i18n-acceptLabel="@@3176639329668271224"
+  headerIcon="pi pi-link"
+  proceedLabel="Link card"
+  i18n-proceedLabel="@@3176639329668271224"
   [mutation]="linkCardMutation"
   [mutationData]="undefined"
 >
@@ -180,7 +180,7 @@
       [(ngModel)]="tokenCode"
       placeholder="____-____-____-____-___"
       mask="9999-9999-9999-9999-999"
-      [style]="{ width: '100%' }"
+      [style]="{ width: '100%', height: '1em' }"
     ></p-input-mask>
   </div>
 </app-form-dialog>
