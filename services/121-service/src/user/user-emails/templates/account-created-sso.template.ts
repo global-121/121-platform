@@ -1,8 +1,7 @@
-import { env } from 'process';
-
 import { SUPPORT_EMAIL } from '@121-service/src/emails/email-constants';
 import { wrapWithEmailLayout } from '@121-service/src/emails/email-layout';
 import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
+import { env } from '@121-service/src/env';
 import { UserEmailInput } from '@121-service/src/user/user-emails/interfaces/user-email-input.interface';
 
 export const buildTemplateAccountCreatedSSO = (

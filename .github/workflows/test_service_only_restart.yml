@@ -1,6 +1,6 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Test Service: Migrations Check'
+name: 'Test Service: Restart Service (ONLY)'
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
     types: [checks_requested]
   pull_request:
     paths:
-      - .github/workflows/test_service_check_migrations.yml
+      - .github/workflows/test_service_only_restart.yml
       - .github/actions/build-service/action.yml
       - services/.env.example
       - services/121-service/**
@@ -17,7 +17,7 @@ on:
     branches:
       - main
     paths:
-      - .github/workflows/test_service_check_migrations.yml
+      - .github/workflows/test_service_only_restart.yml
       - .github/actions/build-service/action.yml
       - services/.env.example
       - services/121-service/**
@@ -34,19 +34,32 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v6
 
+      - name: Set up Node.js version
+        uses: actions/setup-node@v6
+        with:
+          # See supported Node.js versions: https://github.com/Azure/app-service-linux-docs/blob/master/Runtime_Support/node_support.md
+          node-version-file: '${{ env.workingDirectory }}/.node-version'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.workingDirectory }}/package-lock.json'
+
       - name: Set ENV-variables for test-environment
         run: |
           cp ./services/.env.example services/.env
           grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
 
+      - name: Install
+        working-directory: ${{ env.workingDirectory }}
+        run: |
+          npm ci
+
       - name: Run Services with Docker
         run: |
           npm run start:services:ci:production
 
-      - name: Check that no new migrations are necessary
+      - name: 'Run "Restart Service"-test only (outside of Docker-container)'
         working-directory: ${{ env.workingDirectory }}
         run: |
-          docker compose exec 121-service npm run test:migration
+          npm run test:integration:only-restart-service
 
       - name: Docker logs
         if: always()

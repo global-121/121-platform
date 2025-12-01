@@ -46,6 +46,18 @@ module.exports = {
             caughtErrors: 'none',
           },
         ],
+        'no-restricted-imports': [
+          'error',
+          {
+            patterns: [
+              {
+                group: ['process', 'node:process'],
+                importNames: ['env'],
+                message: 'Import ENV-variables from env.ts only.',
+              },
+            ],
+          },
+        ],
         'n/no-process-env': 'error',
         'object-shorthand': 'error',
         'promise/no-nesting': 'error',

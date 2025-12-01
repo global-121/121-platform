@@ -58,7 +58,7 @@ jobs:
             return pr.data;
 
       - name: Check out repository code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Check that no "XXX:" comments have been left on the PR
         run: |
