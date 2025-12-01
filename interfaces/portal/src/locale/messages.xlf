@@ -2051,11 +2051,11 @@
       <trans-unit id="registration-duplicate-status" datatype="html">
         <source>Duplicate status</source>
       </trans-unit>
-      <trans-unit id="1803991316035947288" datatype="html">
-        <source>Link Visa card</source>
-      </trans-unit>
       <trans-unit id="3176639329668271224" datatype="html">
-        <source>Link card</source>
+        <source>Link visa card</source>
+      </trans-unit>
+      <trans-unit id="1519316301966485638" datatype="html">
+        <source>Card successfully linked</source>
       </trans-unit>
     </body>
   </file>

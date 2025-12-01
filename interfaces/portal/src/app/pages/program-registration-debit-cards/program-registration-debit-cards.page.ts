@@ -15,7 +15,6 @@ import {
 import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { Dialog } from 'primeng/dialog';
 
 import { VisaCardAction } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-action.enum';
 
@@ -29,7 +28,6 @@ import { FormDialogComponent } from '~/components/form-dialog/form-dialog.compon
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
-import { IssueCardDialogComponent } from '~/pages/program-registration-debit-cards/components/issue-card/issue-card.dialog.component';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
@@ -44,8 +42,6 @@ import { ToastService } from '~/services/toast.service';
     ColoredChipComponent,
     FormDialogComponent,
     PageLayoutRegistrationComponent,
-    Dialog,
-    IssueCardDialogComponent,
   ],
   providers: [ToastService],
   templateUrl: './program-registration-debit-cards.page.html',
@@ -61,6 +57,8 @@ export class ProgramRegistrationDebitCardsPageComponent {
   private readonly registrationApiService = inject(RegistrationApiService);
   private readonly toastService = inject(ToastService);
   private readonly programApiService = inject(ProgramApiService);
+
+  readonly tokenCode = model('');
 
   registration = injectQuery(
     this.registrationApiService.getRegistrationById(
@@ -238,9 +236,30 @@ export class ProgramRegistrationDebitCardsPageComponent {
     },
   }));
 
-  readonly currencyCode = computed(() => this.program.data()?.currency);
+  linkCardMutation = injectMutation(() => ({
+    mutationFn: () => {
+      const referenceId = this.referenceId();
 
-  public readonly dialogVisible = model(false);
+      if (!referenceId) {
+        this.toastService.showGenericError();
+        throw new Error('ReferenceId is missing');
+      }
+
+      return this.registrationApiService.linkCardToRegistration({
+        programId: this.programId,
+        referenceId: this.referenceId,
+        tokenCode: this.tokenCode,
+      });
+    },
+    onSuccess: () => {
+      this.toastService.showToast({
+        detail: $localize`Card successfully linked`,
+      });
+      this.invalidateWalletQuery();
+    },
+  }));
+
+  readonly currencyCode = computed(() => this.program.data()?.currency);
 
   private invalidateWalletQuery() {
     void this.queryClient.invalidateQueries({

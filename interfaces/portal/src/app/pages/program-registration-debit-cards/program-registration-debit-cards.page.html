@@ -61,7 +61,7 @@
         </div>
         <p i18n>There are no debit cards linked to this registration</p>
         <p-button
-          (click)="dialogVisible.set(true)"
+          (click)="linkCardDialog.show()"
           rounded
           outlined
         >
@@ -71,25 +71,6 @@
           ></i>
           <p i18n>Link visa card</p>
         </p-button>
-        <p-dialog
-          [(visible)]="dialogVisible"
-          modal
-          closable
-          dismissableMask
-          [style]="{ width: '632px' }"
-        >
-          <ng-template pTemplate="header">
-            <div class="flex items-center gap-2">
-              <i class="pi pi-link"></i>
-              <h3 i18n>Link Visa card</h3>
-            </div>
-          </ng-template>
-          <app-issue-card-dialog
-            (closeDialog)="dialogVisible.set(false)"
-            [programId]="programId()"
-            [referenceId]="referenceId()"
-          ></app-issue-card-dialog>
-        </p-dialog>
       </div>
     </div>
   }
@@ -175,4 +156,31 @@
   <p i18n="@@generic-message-will-be-sent">
     A message will be sent to the registration about this update.
   </p>
+</app-form-dialog>
+<app-form-dialog
+  #linkCardDialog
+  header="Link visa card"
+  headerIcon="pi pi-link"
+  i18n-header="@@3176639329668271224"
+  acceptLabel="Link visa card"
+  i18n-acceptLabel="@@3176639329668271224"
+  [mutation]="linkCardMutation"
+  [mutationData]="undefined"
+>
+  <div class="flex flex-col gap-2">
+    <p i18n>
+      Scan the barcode in the back of the card you are handing over to the
+      registration, or manually fill in the 19 digit serial number found below
+      the barcode.
+    </p>
+    <div class="py-1"></div>
+    <p-input-mask
+      label="Serial number"
+      i18n-label
+      [(ngModel)]="tokenCode"
+      placeholder="____-____-____-____-___"
+      mask="9999-9999-9999-9999-999"
+      [style]="{ width: '100%' }"
+    ></p-input-mask>
+  </div>
 </app-form-dialog>
