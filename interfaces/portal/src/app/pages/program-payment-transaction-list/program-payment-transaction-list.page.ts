@@ -292,7 +292,7 @@ export class ProgramPaymentTransactionListPageComponent {
     if (Array.isArray(selection)) {
       if (
         selection.some(
-          (transaction) => transaction.status === TransactionStatusEnum.success,
+          (transaction) => transaction.status !== TransactionStatusEnum.error,
         )
       ) {
         this.toastService.showToast({
