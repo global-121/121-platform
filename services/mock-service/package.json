@@ -34,7 +34,7 @@
     "@nestjs/testing": "^11.1.8",
     "@t3-oss/env-core": "^0.13.8",
     "class-transformer": "^0.5.1",
-    "class-validator": "^0.14.2",
+    "class-validator": "^0.14.3",
     "tsconfig-paths": "^4.2.0",
     "ufo": "^1.6.1",
     "uuid": "^13.0.0",
