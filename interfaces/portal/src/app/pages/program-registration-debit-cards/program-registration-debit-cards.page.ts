@@ -28,6 +28,7 @@ import { FormDialogComponent } from '~/components/form-dialog/form-dialog.compon
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { LinkCardDialogComponent } from '~/pages/program-registration-debit-cards/components/link-card-dialog/link-card-dialog.component';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
@@ -42,6 +43,7 @@ import { ToastService } from '~/services/toast.service';
     ColoredChipComponent,
     FormDialogComponent,
     PageLayoutRegistrationComponent,
+    LinkCardDialogComponent,
   ],
   providers: [ToastService],
   templateUrl: './program-registration-debit-cards.page.html',
@@ -59,6 +61,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
   private readonly programApiService = inject(ProgramApiService);
 
   readonly tokenCode = model('');
+  readonly linkCardDialogVisible = model(false);
 
   registration = injectQuery(
     this.registrationApiService.getRegistrationById(

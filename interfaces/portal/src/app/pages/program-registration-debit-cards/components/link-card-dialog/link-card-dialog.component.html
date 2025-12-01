@@ -1,37 +1,51 @@
-<div class="flex flex-col gap-2">
-  <p i18n>
-    Scan the barcode in the back of the card you are handing over to the
-    registration, or manually fill in the 19 digit serial number found below the
-    barcode.
-  </p>
-  <div class="py-1"></div>
-  <p-input-mask
-    label="Serial number"
-    i18n-label
-    [(ngModel)]="tokenCode"
-    placeholder="____-____-____-____-___"
-    mask="9999-9999-9999-9999-999"
-    [style]="{ width: '100%' }"
-  ></p-input-mask>
-  <div class="w-full">
-    <div class="flex justify-end gap-2">
-      <p-button
-        i18n
-        (click)="closeDialog.emit()"
-        rounded
-        outlined
-        label="Cancel"
-        i18n-label
-        class="mt-4"
-      ></p-button>
-      <p-button
-        i18n
-        (click)="linkCard()"
-        rounded
-        label="Link card"
-        i18n-label
-        class="mt-4"
-      ></p-button>
+<p-dialog
+  [visible]="dialogVisible()"
+  modal
+  closable
+  dismissableMask
+  [style]="{ width: '632px' }"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-2">
+      <i class="pi pi-link"></i>
+      <h3 i18n>Link Visa card</h3>
+    </div>
+  </ng-template>
+  <div class="flex flex-col gap-2">
+    <p i18n>
+      Scan the barcode in the back of the card you are handing over to the
+      registration, or manually fill in the 19 digit serial number found below
+      the barcode.
+    </p>
+    <div class="py-1"></div>
+    <p-input-mask
+      label="Serial number"
+      i18n-label
+      [(ngModel)]="tokenCode"
+      placeholder="____-____-____-____-___"
+      mask="9999-9999-9999-9999-999"
+      [style]="{ width: '100%' }"
+    ></p-input-mask>
+    <div class="w-full">
+      <div class="flex justify-end gap-2">
+        <p-button
+          i18n
+          (click)="closeDialog.emit()"
+          rounded
+          outlined
+          label="Cancel"
+          i18n-label
+          class="mt-4"
+        ></p-button>
+        <p-button
+          i18n
+          (click)="linkCard()"
+          rounded
+          label="Link card"
+          i18n-label
+          class="mt-4"
+        ></p-button>
+      </div>
     </div>
   </div>
-</div>
+</p-dialog>
