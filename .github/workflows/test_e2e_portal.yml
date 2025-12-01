@@ -20,7 +20,7 @@ jobs:
     outputs:
       should_skip: ${{ steps.filter.outputs.should_skip }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         # Other events (from the merge-queue) can safely ignore the path-filter; Its output would default to 'NOT true'
         if: github.event_name == 'pull_request'
         with:
@@ -50,7 +50,7 @@ jobs:
     if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up Node.js version
         uses: actions/setup-node@v6
@@ -82,7 +82,7 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up Node.js version
         uses: actions/setup-node@v6
