@@ -290,6 +290,18 @@ export class ProgramPaymentTransactionListPageComponent {
     let referenceIds: string[] | undefined = undefined;
 
     if (Array.isArray(selection)) {
+      if (
+        selection.some(
+          (transaction) => transaction.status !== TransactionStatusEnum.error,
+        )
+      ) {
+        this.toastService.showToast({
+          severity: 'error',
+          detail: $localize`Select only failed transactions and try again`,
+        });
+        return;
+      }
+
       referenceIds = selection.map(
         (transaction) => transaction.registrationReferenceId ?? '',
       );
