@@ -21,7 +21,7 @@ const totalRegistrations = Math.pow(2, duplicateNumber);
 const queryParams = {
   'filter.duplicateStatus': 'duplicate',
 };
-const testTimeout = 120_000; // 120 seconds
+const testTimeout = 3 * 60 * 1000; // 3 minutes
 
 jest.setTimeout(testTimeout);
 describe('Find duplicates in 100k registrations within expected range', () => {
