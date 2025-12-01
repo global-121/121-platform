@@ -2,126 +2,127 @@
   [programId]="programId()"
   [registrationId]="registrationId()"
 >
-  <div class="px-2">
-    <div class="flex flex-col gap-4">
-      <div class="flex items-center gap-2">
-        <i
-          class="pi pi-credit-card"
-          style="font-size: 1rem"
-        ></i>
-        <p-header
-          class="font-bold"
-          i18n
-          >No debit cards found</p-header
-        >
-      </div>
-      <p i18n>There are no debit cards linked to this registration</p>
-      <p-button
-        (click)="dialogVisible.set(true)"
-        rounded
-        outlined
-      >
-        <i
-          class="pi pi-link"
-          style="font-size: 1rem"
-        ></i>
-        <p i18n>Link visa card</p>
-      </p-button>
-      <p-dialog
-        [(visible)]="dialogVisible"
-        modal
-        closable
-        dismissableMask
-        [style]="{ width: '632px' }"
-      >
-        <ng-template pTemplate="header">
-          <div class="flex items-center gap-2">
-            <i class="pi pi-link"></i>
-            <h3 i18n>Link Visa card</h3>
-          </div>
-        </ng-template>
-        <app-issue-card-dialog
-          (closeDialog)="dialogVisible.set(false)"
-          [programId]="programId()"
-          [referenceId]="referenceId()"
-        ></app-issue-card-dialog>
-      </p-dialog>
+  @if (currentCard()) {
+    <div class="my-auto ms-auto flex">
+      @if (currentCardHasAction()('pause')) {
+        <p-button
+          label="Pause card"
+          i18n-label="@@debit-card-actions-pause-card"
+          rounded
+          outlined
+          icon="pi pi-pause"
+          [iconPos]="rtlHelper.createPosition('start')()"
+          class="ms-auto"
+          (click)="pauseConfirmationDialog.show()"
+        />
+      }
+      @if (currentCardHasAction()('unpause')) {
+        <p-button
+          label="Unpause card"
+          i18n-label="@@debit-card-actions-unpause-card"
+          rounded
+          outlined
+          icon="pi pi-play"
+          [iconPos]="rtlHelper.createPosition('start')()"
+          class="ms-auto"
+          (click)="unpauseConfirmationDialog.show()"
+        />
+      }
+      @if (currentCardHasAction()('reissue')) {
+        <p-button
+          label="Replace card"
+          i18n-label="@@debit-card-actions-replace-card"
+          rounded
+          outlined
+          icon="pi pi-refresh"
+          [iconPos]="rtlHelper.createPosition('start')()"
+          class="ms-4"
+          (click)="reissueConfirmationDialog.show()"
+        />
+      }
     </div>
-    @if (currentCard()) {
-      <div class="my-auto ms-auto flex">
-        @if (currentCardHasAction()('pause')) {
-          <p-button
-            label="Pause card"
-            i18n-label="@@debit-card-actions-pause-card"
-            rounded
-            outlined
-            icon="pi pi-pause"
-            [iconPos]="rtlHelper.createPosition('start')()"
-            class="ms-auto"
-            (click)="pauseConfirmationDialog.show()"
-          />
-        }
-        @if (currentCardHasAction()('unpause')) {
-          <p-button
-            label="Unpause card"
-            i18n-label="@@debit-card-actions-unpause-card"
-            rounded
-            outlined
-            icon="pi pi-play"
-            [iconPos]="rtlHelper.createPosition('start')()"
-            class="ms-auto"
-            (click)="unpauseConfirmationDialog.show()"
-          />
-        }
-        @if (currentCardHasAction()('reissue')) {
-          <p-button
-            label="Replace card"
-            i18n-label="@@debit-card-actions-replace-card"
-            rounded
-            outlined
-            icon="pi pi-refresh"
-            [iconPos]="rtlHelper.createPosition('start')()"
-            class="ms-4"
-            (click)="reissueConfirmationDialog.show()"
-          />
-        }
-      </div>
-      <app-data-list
-        [data]="walletWithCurrentCardListData()"
-        data-testid="wallet-current-card-list"
-      />
-    }
-    @if (oldCards().length > 0) {
-      <div class="py-1"></div>
-      <p-accordion data-testid="old-card-list">
-        @for (oldCard of oldCards(); track $index) {
-          <p-accordion-panel
-            [value]="$index"
-            class="[&_.p-accordioncontent]:px-1 [&_.p-accordionheader]:px-0 [&_.p-accordionheader]:text-black"
+    <app-data-list
+      [data]="walletWithCurrentCardListData()"
+      data-testid="wallet-current-card-list"
+    />
+  } @else {
+    <div class="px-2">
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center gap-2">
+          <i
+            class="pi pi-credit-card"
+            style="font-size: 1rem"
+          ></i>
+          <p-header
+            class="font-bold"
+            i18n
+            >No debit cards found</p-header
           >
-            <p-accordion-header
-              ><span class="flex items-center gap-1">
-                <strong i18n>Old card:</strong>
-                <span class="font-normal">
-                  {{ oldCard.tokenCode }}
-                </span>
-                <app-colored-chip
-                  [variant]="oldCard.chipVariant"
-                  [label]="oldCard.chipLabel"
-                /> </span
-            ></p-accordion-header>
-            <p-accordion-content>
-              <app-data-list
-                class="text-black"
-                [data]="oldCard.dataList"
-                [hideBottomBorder]="true"
-              />
-            </p-accordion-content>
-          </p-accordion-panel>
-        }
-      </p-accordion>
-    }
-  </div>
+        </div>
+        <p i18n>There are no debit cards linked to this registration</p>
+        <p-button
+          (click)="dialogVisible.set(true)"
+          rounded
+          outlined
+        >
+          <i
+            class="pi pi-link"
+            style="font-size: 1rem"
+          ></i>
+          <p i18n>Link visa card</p>
+        </p-button>
+        <p-dialog
+          [(visible)]="dialogVisible"
+          modal
+          closable
+          dismissableMask
+          [style]="{ width: '632px' }"
+        >
+          <ng-template pTemplate="header">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-link"></i>
+              <h3 i18n>Link Visa card</h3>
+            </div>
+          </ng-template>
+          <app-issue-card-dialog
+            (closeDialog)="dialogVisible.set(false)"
+            [programId]="programId()"
+            [referenceId]="referenceId()"
+          ></app-issue-card-dialog>
+        </p-dialog>
+      </div>
+    </div>
+  }
+  @if (oldCards().length > 0) {
+    <div class="py-1"></div>
+    <p-accordion data-testid="old-card-list">
+      @for (oldCard of oldCards(); track $index) {
+        <p-accordion-panel
+          [value]="$index"
+          class="[&_.p-accordioncontent]:px-1 [&_.p-accordionheader]:px-0 [&_.p-accordionheader]:text-black"
+        >
+          <p-accordion-header
+            ><span class="flex items-center gap-1">
+              <strong i18n>Old card:</strong>
+              <span class="font-normal">
+                {{ oldCard.tokenCode }}
+              </span>
+              <app-colored-chip
+                [variant]="oldCard.chipVariant"
+                [label]="oldCard.chipLabel"
+              /> </span
+          ></p-accordion-header>
+          <p-accordion-content>
+            <app-data-list
+              class="text-black"
+              [data]="oldCard.dataList"
+              [hideBottomBorder]="true"
+            />
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+    </p-accordion>
+  }
 </app-page-layout-registration>
 <app-form-dialog
   #pauseConfirmationDialog
