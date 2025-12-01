@@ -16,7 +16,6 @@ import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { Dialog } from 'primeng/dialog';
-import { InputMask } from 'primeng/inputmask';
 
 import { VisaCardAction } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-action.enum';
 
@@ -30,6 +29,7 @@ import { FormDialogComponent } from '~/components/form-dialog/form-dialog.compon
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { IssueCardDialogComponent } from '~/pages/program-registration-debit-cards/components/issue-card/issue-card.dialog.component';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
@@ -45,7 +45,7 @@ import { ToastService } from '~/services/toast.service';
     FormDialogComponent,
     PageLayoutRegistrationComponent,
     Dialog,
-    InputMask,
+    IssueCardDialogComponent,
   ],
   providers: [ToastService],
   templateUrl: './program-registration-debit-cards.page.html',
@@ -239,4 +239,15 @@ export class ProgramRegistrationDebitCardsPageComponent {
   }));
 
   readonly currencyCode = computed(() => this.program.data()?.currency);
+
+  public readonly dialogVisible = model(false);
+
+  private invalidateWalletQuery() {
+    void this.queryClient.invalidateQueries({
+      queryKey: this.registrationApiService.getWalletWithCardsByReferenceId(
+        this.programId,
+        this.referenceId,
+      )().queryKey,
+    });
+  }
 }
