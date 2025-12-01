@@ -2006,9 +2006,6 @@
       <trans-unit id="8386352594791941612" datatype="html">
         <source>Debit account number</source>
       </trans-unit>
-      <trans-unit id="2159130950882492111" datatype="html">
-        <source>Cancel</source>
-      </trans-unit>
       <trans-unit id="2560790823235400386" datatype="html">
         <source>No debit cards found</source>
       </trans-unit>
@@ -2024,11 +2021,11 @@
       <trans-unit id="8920778008306462191" datatype="html">
         <source>There are no debit cards linked to this registration</source>
       </trans-unit>
-      <trans-unit id="1803991316035947288" datatype="html">
-        <source>Link Visa card</source>
-      </trans-unit>
       <trans-unit id="3176639329668271224" datatype="html">
-        <source>Link card</source>
+        <source>Link visa card</source>
+      </trans-unit>
+      <trans-unit id="1519316301966485638" datatype="html">
+        <source>Card successfully linked</source>
       </trans-unit>
     </body>
   </file>
