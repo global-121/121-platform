@@ -9,14 +9,14 @@ import {
 import { FormsModule } from '@angular/forms';
 
 import { Button } from 'primeng/button';
-import { Dialog } from 'primeng/dialog';
+import { DialogModule } from 'primeng/dialog';
 import { InputMask } from 'primeng/inputmask';
 
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 
 @Component({
   selector: 'app-link-card-dialog',
-  imports: [InputMask, Button, FormsModule, Dialog],
+  imports: [InputMask, Button, FormsModule, DialogModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './link-card-dialog.component.html',
 })
