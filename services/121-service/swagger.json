@@ -939,6 +939,7 @@
     "params": [
       "programId",
       "paymentId",
+      "dryRun",
       "page",
       "limit",
       "filter.id",

@@ -155,8 +155,8 @@ export class PaymentsController {
     type: 'boolean',
     description: `
       Only when set explicitly to "true", this will simulate (and NOT actually DO) the action.
-      Instead it will return how many PA this action can be applied to.
-      So no payments will be done.
+      Instead it will return how many PAs this action can be applied to.
+      So no transactions will be created yet.
       `,
   })
   @ApiQuery({
@@ -272,6 +272,16 @@ export class PaymentsController {
     description: 'Not used for this endpoint',
     deprecated: true,
   })
+  @ApiQuery({
+    name: 'dryRun',
+    required: false,
+    type: 'boolean',
+    description: `
+      Only when set explicitly to "true", this will simulate (and NOT actually DO) the action.
+      Instead it will return how many PAs this action can be applied to.
+      So no transactions will be retried yet.
+      `,
+  })
   @HttpCode(HttpStatus.ACCEPTED)
   @Post('programs/:programId/payments/:paymentId/retry')
   public async retryPayment(
@@ -279,6 +289,7 @@ export class PaymentsController {
     @Param('paymentId', ParseIntPipe) paymentId: number,
     @Paginate() paginateQuery: PaginateQuery,
     @Req() req: ScopedUserRequest,
+    @Query('dryRun') dryRun = 'false',
   ): Promise<BulkActionResultDto> {
     const userId = RequestHelper.getUserId(req);
 
@@ -287,6 +298,7 @@ export class PaymentsController {
       programId,
       paymentId,
       paginateQuery,
+      dryRun: dryRun === 'true',
     });
   }
 
