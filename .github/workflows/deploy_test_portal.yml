@@ -63,7 +63,7 @@ jobs:
     outputs:
       preview_url: ${{ steps.deploy_to_aswa.outputs.static_web_app_url }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
