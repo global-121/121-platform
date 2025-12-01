@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
-import { env } from 'process';
 
+import { env } from '@121-service/src/env';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
@@ -21,7 +21,8 @@ import {
   registrationSafaricom,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^17 = 131072
+// eslint-disable-next-line n/no-process-env -- Only used in test-runs, not included in '@121-service/src/env'
+const duplicateNumber = parseInt(process.env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^17 = 131072
 
 const testTimeout = 5_400_000; // 90 minutes
 
