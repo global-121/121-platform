@@ -16,10 +16,11 @@
 </app-form-dialog>
 <app-form-dialog
   #dryRunWarningDialog
-  header="Retry failed transaction(s)"
-  i18n-header="@@retry-failed-transactions"
+  header="Warning"
+  i18n-header="@@generic-warning"
+  headerClass="text-orange-700"
   headerIcon="pi pi-refresh"
-  proceedLabel="Retry transactions"
+  proceedLabel="Proceed"
   i18n-proceedLabel
   [mutation]="retryFailedTransactionsMutation"
   [mutationData]="{ dryRun: false }"
