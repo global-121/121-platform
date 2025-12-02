@@ -13,6 +13,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { getChipDataByRegistrationStatus } from '~/components/colored-chip/colored-chip.helper';
 import {
@@ -29,6 +30,7 @@ import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogTransactionHistoryDialogComponent } from '~/pages/program-registration-activity-log/components/activity-log-transaction-history-dialog/activity-log-transaction-history-dialog.component';
 import { ActivityLogVoucherDialogComponent } from '~/pages/program-registration-activity-log/components/activity-log-voucher-dialog/activity-log-voucher-dialog.component';
 import { ActivityLogTableCellContext } from '~/pages/program-registration-activity-log/program-registration-activity-log.page';
+import { AuthService } from '~/services/auth.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
 
 @Component({
@@ -46,6 +48,7 @@ export class ActivityLogExpandedRowComponent
   private readonly registrationAttributeService = inject(
     RegistrationAttributeService,
   );
+  readonly authService = inject(AuthService);
 
   readonly value = input.required<Activity>();
   readonly context = input.required<ActivityLogTableCellContext>();
@@ -79,6 +82,13 @@ export class ActivityLogExpandedRowComponent
       typeof fspName === 'string' && FSPS_WITH_VOUCHER_SUPPORT.includes(fspName)
     );
   });
+
+  readonly canViewVoucher = computed(() =>
+    this.authService.hasAllPermissions({
+      programId: this.context().programId(),
+      requiredPermissions: [PermissionEnum.PaymentVoucherREAD],
+    }),
+  );
 
   readonly paymentId = computed(() => {
     const activity = this.value();
@@ -213,15 +223,17 @@ export class ActivityLogExpandedRowComponent
             type: 'currency',
             currencyCode: this.context().currencyCode(),
             loading: this.intersolveVoucherBalance.isLoading(),
-            detailAction: {
-              component: ActivityLogVoucherDialogComponent,
-              inputs: {
-                programId: this.context().programId(),
-                paymentId: attributes.paymentId,
-                paymentDate,
-                referenceId: this.context().referenceId,
+            ...(this.canViewVoucher() && {
+              detailAction: {
+                component: ActivityLogVoucherDialogComponent,
+                inputs: {
+                  programId: this.context().programId(),
+                  paymentId: attributes.paymentId,
+                  paymentDate,
+                  referenceId: this.context().referenceId,
+                },
               },
-            },
+            }),
           });
         }
 
