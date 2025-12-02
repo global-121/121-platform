@@ -2069,6 +2069,24 @@
       <trans-unit id="debit-card-actions-link-visa-card" datatype="html">
         <source>Link visa card</source>
       </trans-unit>
+      <trans-unit id="2748779018689991301" datatype="html">
+        <source>If the number is correct but this error persists, try a different card and inform your supervisor.</source>
+      </trans-unit>
+      <trans-unit id="2851349808127082673" datatype="html">
+        <source>Please link this registration to a different card and inform your supervisor.</source>
+      </trans-unit>
+      <trans-unit id="3833930616659415387" datatype="html">
+        <source>Card number not found. Please go back and check that the number is correct.</source>
+      </trans-unit>
+      <trans-unit id="7178301959586985817" datatype="html">
+        <source>The card number you entered is already linked to another registration.</source>
+      </trans-unit>
+      <trans-unit id="734934965373819800" datatype="html">
+        <source>Go back</source>
+      </trans-unit>
+      <trans-unit id="7960663124844501943" datatype="html">
+        <source>Error - Link visa card</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

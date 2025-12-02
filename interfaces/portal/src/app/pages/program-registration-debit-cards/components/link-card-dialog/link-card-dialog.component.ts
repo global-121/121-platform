@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -13,6 +14,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputMask } from 'primeng/inputmask';
 
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { LinkCardDialogStates } from '~/pages/program-registration-debit-cards/components/link-card-dialog/enums/link-card-dialog-states.enum';
 
 @Component({
   selector: 'app-link-card-dialog',
@@ -28,14 +30,39 @@ export class LinkCardDialogComponent {
   readonly closeDialog = output();
 
   readonly tokenCode = model('');
+  readonly linkCardDialogState = model<LinkCardDialogStates>(
+    LinkCardDialogStates.linking,
+  );
+
+  public linkCardDialogStates = LinkCardDialogStates;
 
   private readonly registrationApiService = inject(RegistrationApiService);
 
   public async linkCard() {
-    await this.registrationApiService.linkCardToRegistration({
-      programId: this.programId,
-      referenceId: this.referenceId,
-      tokenCode: this.tokenCode,
-    });
+    try {
+      await this.registrationApiService.linkCardToRegistration({
+        programId: this.programId,
+        referenceId: this.referenceId,
+        tokenCode: this.tokenCode,
+      });
+    } catch (error) {
+      if (
+        error instanceof HttpErrorResponse &&
+        //TODO: determine right error code
+        error.status === 121
+      ) {
+        this.linkCardDialogState.set(LinkCardDialogStates.errorAlreadyLinked);
+        return;
+      }
+
+      if (
+        error instanceof HttpErrorResponse &&
+        //TODO: determine right error code
+        error.status === 121
+      ) {
+        this.linkCardDialogState.set(LinkCardDialogStates.errorAlreadyLinked);
+        return;
+      }
+    }
   }
 }
