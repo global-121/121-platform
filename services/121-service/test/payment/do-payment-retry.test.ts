@@ -152,7 +152,7 @@ describe('Do payment retry', () => {
     // Only the failed transaction should be retried
     expect(retryResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(retryResponse.body.applicableCount).toBe(1);
-    expect(retryResponse.body.totalFilterCount).toBe(1);
+    expect(retryResponse.body.totalFilterCount).toBe(3);
 
     // Verify that only the failed transaction is retried and now succeeded
     expect(paymentAggregatesBeforeRetry.body).toMatchObject({

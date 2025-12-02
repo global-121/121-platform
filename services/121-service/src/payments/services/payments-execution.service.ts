@@ -13,7 +13,7 @@ import { TransactionViewScopedRepository } from '@121-service/src/payments/trans
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { BulkActionResultRetryPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
+import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 
 @Injectable()
 export class PaymentsExecutionService {
@@ -192,20 +192,29 @@ export class PaymentsExecutionService {
     programId,
     paymentId,
     paginateQuery,
+    dryRun,
   }: {
     userId: number;
     programId: number;
     paymentId: number;
     paginateQuery: PaginateQuery;
-  }): Promise<BulkActionResultRetryPaymentDto> {
+    dryRun: boolean;
+  }): Promise<BulkActionResultDto> {
     await this.paymentsReportingService.findPaymentOrThrow(
       programId,
       paymentId,
     );
 
-    await this.paymentsProgressHelperService.checkAndLockPaymentProgressOrThrow(
-      { programId },
-    );
+    if (dryRun) {
+      await this.paymentsProgressHelperService.checkPaymentInProgressAndThrow(
+        programId,
+      );
+    } else {
+      // Only lock payments when not a dry run
+      await this.paymentsProgressHelperService.checkAndLockPaymentProgressOrThrow(
+        { programId },
+      );
+    }
 
     // do all operations UP TO starting the queue in a try, so that we can always end with a unblock-payments action, also in case of failure
     // from the moment of starting the queue the in-progress checking is taken over by the queue
@@ -223,6 +232,16 @@ export class PaymentsExecutionService {
         inputReferenceIds: referenceIds,
       });
 
+      const bulkActionResult: BulkActionResultDto = {
+        totalFilterCount: referenceIds.length,
+        applicableCount: transactionDetails.length,
+        nonApplicableCount: referenceIds.length - transactionDetails.length,
+      };
+
+      if (dryRun) {
+        return bulkActionResult;
+      }
+
       await this.paymentEventsService.createEvent({
         paymentId,
         userId,
@@ -235,29 +254,14 @@ export class PaymentsExecutionService {
         userId,
         isRetry: true,
       });
-      const programFspConfigurationNames: string[] = [];
-      // This loop is pretty fast: with 131k registrations it takes ~38ms
-      for (const transaction of transactionDetails) {
-        if (
-          !programFspConfigurationNames.includes(
-            transaction.programFspConfigurationName,
-          )
-        ) {
-          programFspConfigurationNames.push(
-            transaction.programFspConfigurationName,
-          );
-        }
-      }
-      return {
-        totalFilterCount: transactionDetails.length,
-        applicableCount: transactionDetails.length,
-        nonApplicableCount: 0,
-        programFspConfigurationNames,
-      };
+
+      return bulkActionResult;
     } finally {
-      await this.paymentsProgressHelperService.unlockPaymentsForProgram(
-        programId,
-      );
+      if (!dryRun) {
+        await this.paymentsProgressHelperService.unlockPaymentsForProgram(
+          programId,
+        );
+      }
     }
   }
 
@@ -314,11 +318,7 @@ export class PaymentsExecutionService {
       await this.transactionViewScopedRepository.getFailedTransactionDetailsForRetry(
         { programId, paymentId },
       );
-
-    const referenceIdsWithLatestTransactionFailedForPayment =
-      failedTransactionForPayment.map((t) => t.registrationReferenceId);
-
-    if (!referenceIdsWithLatestTransactionFailedForPayment.length) {
+    if (!failedTransactionForPayment.length) {
       const errors = 'No failed transactions found for this payment.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
