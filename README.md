@@ -391,7 +391,7 @@ This is how we create and publish a new release of the 121-platform.
   - ⚠️ **Note:**  
     Start with deployment of the "**_Demo_**"-instance.  
     This will **_also_** deploy the Mock-Service to its production-environment.
-- Send the "Inform stakeholders"-message to Teams in the necessary locations.
+- Send the "Inform stakeholders"-message to the "121 Releases" Teams channel.
 
 #### Temporary Query Errors During Deployment
 
