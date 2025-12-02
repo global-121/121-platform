@@ -75,7 +75,7 @@ export class IntersolveVoucherController {
     bufferStream.pipe(response);
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentVoucherREAD] })
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentREAD] })
   @ApiOperation({
     summary: '[SCOPED] Get balance of Intersolve voucher',
   })
