@@ -40,7 +40,10 @@ import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.hel
 import { Transaction } from '~/domains/transaction/transaction.model';
 import { RetryTransactionsDialogComponent } from '~/pages/program-payment-transaction-list/components/retry-transactions-dialog/retry-transactions-dialog.component';
 import { AuthService } from '~/services/auth.service';
-import { PaginateQuery } from '~/services/paginate-query.service';
+import {
+  FilterOperator,
+  PaginateQuery,
+} from '~/services/paginate-query.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
@@ -246,6 +249,34 @@ export class ProgramPaymentTransactionListPageComponent {
     () => `program-payment-table-${this.programId()}-${this.paymentId()}`,
   );
 
+  private readonly failedTransactionsPaginateQuery = signal<PaginateQuery>({
+    filter: {
+      status: `${FilterOperator.EQ}:${TransactionStatusEnum.error}`,
+    },
+  });
+
+  private failedTransactionsResponse = injectQuery(
+    this.paymentApiService.getPaymentTransactions({
+      programId: this.programId,
+      paymentId: this.paymentId,
+      paginateQuery: this.failedTransactionsPaginateQuery,
+    }),
+  );
+
+  readonly areThereFailedTransactions = computed(() => {
+    if (!this.failedTransactionsResponse.isSuccess()) {
+      return false;
+    }
+
+    const metaData = this.failedTransactionsResponse.data().meta;
+
+    if (!metaData.totalItems) {
+      return false;
+    }
+
+    return metaData.totalItems > 0;
+  });
+
   readonly canRetryTransactions = computed(() => {
     if (
       !this.authService.hasAllPermissions({
@@ -264,9 +295,7 @@ export class ProgramPaymentTransactionListPageComponent {
       return false;
     }
 
-    return this.transactionsResponse
-      .data()
-      .data.some((payment) => payment.status === TransactionStatusEnum.error);
+    return this.areThereFailedTransactions();
   });
 
   retryFailedTransactions({

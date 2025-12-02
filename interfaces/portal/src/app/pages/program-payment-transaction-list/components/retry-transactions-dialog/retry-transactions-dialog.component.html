@@ -6,14 +6,30 @@
   proceedLabel="Retry transactions"
   i18n-proceedLabel
   [mutation]="retryFailedTransactionsMutation"
+  [mutationData]="{ dryRun: true }"
+>
+  <p i18n>
+    You are about to <strong>retry</strong> {{ transactionCount() }} payment(s).
+    The transaction status will change to Processing until received by the
+    registration.
+  </p>
+</app-form-dialog>
+<app-form-dialog
+  #dryRunWarningDialog
+  header="Retry failed transaction(s)"
+  i18n-header="@@retry-failed-transactions"
+  headerIcon="pi pi-refresh"
+  proceedLabel="Retry transactions"
+  i18n-proceedLabel
+  [mutation]="retryFailedTransactionsMutation"
   [mutationData]="{ dryRun: false }"
 >
   @let data = dryRunResult();
   @if (data) {
     @if (data.nonApplicableCount > 0) {
-      <b i18n
+      <strong i18n
         >There are {{ data.nonApplicableCount }} selected transaction(s) that
-        are not on status 'Failed' and will not be retried.</b
+        are not on status 'Failed' and will not be retried.</strong
       >
     }
     <p

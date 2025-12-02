@@ -57,6 +57,10 @@ export class RetryTransactionsDialogComponent {
       'retryTransactionsConfirmationDialog',
     );
 
+  readonly dryRunWarningDialog = viewChild.required<FormDialogComponent>(
+    'dryRunWarningDialog',
+  );
+
   readonly dryRunResult = signal<
     | {
         totalFilterCount: number;
@@ -75,30 +79,27 @@ export class RetryTransactionsDialogComponent {
         dryRun,
       }),
     onSuccess: (data, variables) => {
-      if (variables.dryRun) {
-        this.dryRunResult.set(data);
-        this.retryTransactionsConfirmationDialog().show({
-          trackingEvent: {
-            category: TrackingCategory.manageTransactions,
-            action: TrackingAction.clickProceedButton,
-            name: this.trackingEventName(),
-            value: this.trackingValue(),
-          },
+      if (data.nonApplicableCount === 0) {
+        if (variables.dryRun) {
+          this.retryFailedTransactionsMutation.mutate({ dryRun: false });
+          return;
+        }
+        this.retryTransactionsConfirmationDialog().hide();
+        this.toastService.showToast({
+          summary: $localize`Retrying transactions`,
+          detail: $localize`${data.applicableCount} transactions(s) are being retried. The status change can take up to a minute to process.`,
+          severity: 'info',
+          showSpinner: true,
         });
+
+        this.invalidateCache();
         return;
+      } else {
+        this.invalidateCache();
       }
-      void this.metricApiService.invalidateCache(this.programId);
-      void this.paymentApiService.invalidateCache(
-        this.programId,
-        this.paymentId,
-      );
-      setTimeout(() => {
-        void this.metricApiService.invalidateCache(this.programId);
-        void this.paymentApiService.invalidateCache(
-          this.programId,
-          this.paymentId,
-        );
-      }, 500);
+      this.dryRunResult.set(data);
+
+      this.dryRunWarningDialog().show({ resetMutation: false });
     },
     onError: (error) => {
       this.toastService.showToast({
@@ -139,9 +140,6 @@ export class RetryTransactionsDialogComponent {
     },
   );
 
-  private readonly trackingEventName = signal<string>('');
-  private readonly trackingValue = signal<number>(0);
-
   public retryFailedTransactions({
     transactionCount,
     referenceIds,
@@ -149,18 +147,16 @@ export class RetryTransactionsDialogComponent {
     transactionCount: number;
     referenceIds: string[] | undefined;
   }) {
-    this.trackingEventName.set(
+    const eventName =
       transactionCount === 1
         ? 'retry-transaction:single'
-        : 'retry-transaction:multiple',
-    );
-    this.trackingValue.set(transactionCount);
+        : 'retry-transaction:multiple';
 
     this.trackingService.trackEvent({
       category: TrackingCategory.manageTransactions,
       action: TrackingAction.clickRetryTransactionButton,
-      name: this.trackingEventName(),
-      value: this.trackingValue(),
+      name: eventName,
+      value: transactionCount,
     });
 
     if (this.paymentStatus.data()?.inProgress) {
@@ -173,6 +169,25 @@ export class RetryTransactionsDialogComponent {
 
     this.referenceIdsForRetryTransactions.set(referenceIds);
     this.transactionCount.set(transactionCount);
-    this.retryFailedTransactionsMutation.mutate({ dryRun: true });
+    this.retryTransactionsConfirmationDialog().show({
+      trackingEvent: {
+        category: TrackingCategory.manageTransactions,
+        action: TrackingAction.clickProceedButton,
+        name: eventName,
+        value: transactionCount,
+      },
+    });
+  }
+
+  private invalidateCache() {
+    void this.metricApiService.invalidateCache(this.programId);
+    void this.paymentApiService.invalidateCache(this.programId, this.paymentId);
+    setTimeout(() => {
+      void this.metricApiService.invalidateCache(this.programId);
+      void this.paymentApiService.invalidateCache(
+        this.programId,
+        this.paymentId,
+      );
+    }, 500);
   }
 }
