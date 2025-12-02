@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -2015,11 +2015,11 @@
       <trans-unit id="4548982880429289150" datatype="html">
         <source><x equiv-text="data.applicableCount" id="PH"/> transactions(s) are being retried. The status change can take up to a minute to process.</source>
       </trans-unit>
-      <trans-unit id="8979482284616743885" datatype="html">
-        <source>You are about to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>retry<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> <x equiv-text="{{ transactionCount() }}" id="INTERPOLATION"/> payment(s). The transaction status will change to Processing until received by the registration.</source>
-      </trans-unit>
       <trans-unit id="8690375476150336105" datatype="html">
         <source>You are about to retry <x equiv-text="{{ data.applicableCount }}" id="INTERPOLATION"/> transaction(s). The transaction status will change to &apos;Processing&apos; until received by the registration.</source>
+      </trans-unit>
+      <trans-unit id="59022129157268403" datatype="html">
+        <source>You are about to retry <x equiv-text="{{ transactionCount() }}" id="INTERPOLATION"/> transaction(s). The transaction status will change to Processing until received by the registration.</source>
       </trans-unit>
     </body>
   </file>

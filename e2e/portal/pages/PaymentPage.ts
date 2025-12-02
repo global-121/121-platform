@@ -14,7 +14,8 @@ class PaymentPage extends BasePage {
   readonly viewPaymentTitle: Locator;
   readonly paymentAmount: Locator;
   readonly retryFailedTransactionsButton: Locator;
-  readonly popupRetryTransactionButton: Locator;
+  readonly firstDialogRetryTransactionButton: Locator;
+  readonly secondDialogProceedButton: Locator;
   readonly exportButton: Locator;
   readonly paymentLogTab: Locator;
   readonly paymentLogTable: Locator;
@@ -43,8 +44,11 @@ class PaymentPage extends BasePage {
     this.retryFailedTransactionsButton = this.page.getByRole('button', {
       name: 'Retry failed transaction(s)',
     });
-    this.popupRetryTransactionButton = this.page.getByRole('button', {
+    this.firstDialogRetryTransactionButton = this.page.getByRole('button', {
       name: 'Retry transactions',
+    });
+    this.secondDialogProceedButton = this.page.getByRole('button', {
+      name: 'Proceed',
     });
     this.exportButton = this.page.getByRole('button', {
       name: 'Export',
@@ -193,20 +197,31 @@ class PaymentPage extends BasePage {
     const expectedNonApplicableCount = filterFirst
       ? 0
       : totalTransactions - failedTransactions;
+    const expectedSelectedTransactions =
+      failedTransactions + expectedNonApplicableCount;
 
     await this.table.selectAll();
 
     await this.retryFailedTransactionsButton.click();
 
-    // Check for the first sentence if you expect it to be present
-    const expectedDialogText = this.page.getByText(
-      /There are \d+ selected transaction\(s\) that are not on status 'Failed' and will not be retried\./,
+    // Check for the sentence in the first popup
+    const expectedFirstDialogText = this.page.getByText(
+      `You are about to retry ${expectedSelectedTransactions} transaction(s). The transaction status will change to Processing until received by the registration.`,
     );
-    if (expectedNonApplicableCount > 0) {
-      await expect(expectedDialogText).toBeVisible();
-    } else {
-      await expect(expectedDialogText).toBeHidden();
+    await expect(expectedFirstDialogText).toBeVisible();
+
+    await this.firstDialogRetryTransactionButton.click();
+
+    if (expectedNonApplicableCount === 0) {
+      return;
     }
+
+    // Check for the first sentence if you expect it to be present
+    const expectedSecondDialogFirstSentence = this.page.getByText(
+      `There are ${expectedNonApplicableCount} selected transaction(s) that are not on status 'Failed' and will not be retried.`,
+    );
+
+    await expect(expectedSecondDialogFirstSentence).toBeVisible();
 
     // Check the applicableCount in the second sentence
     await expect(
@@ -217,7 +232,7 @@ class PaymentPage extends BasePage {
       ),
     ).toBeVisible();
 
-    await this.popupRetryTransactionButton.click();
+    await this.secondDialogProceedButton.click();
   }
 
   async importReconciliationData(filePath: string) {
