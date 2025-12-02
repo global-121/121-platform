@@ -62,7 +62,25 @@ export class ProgramPaymentChartComponent {
     return data satisfies ChartData;
   });
 
-  chartOptions = {
+  private readonly total = computed(() => {
+    const paymentDetails = this.paymentDetails();
+
+    const { pendingApproval, approved, waiting, success, failed } =
+      paymentDetails;
+
+    return (
+      pendingApproval.count +
+      approved.count +
+      waiting.count +
+      success.count +
+      failed.count
+    );
+  });
+
+  readonly chartOptions = computed(() => ({
+    animation: {
+      duration: 0,
+    },
     indexAxis: 'y',
     responsive: true,
     borderRadius: 4,
@@ -99,9 +117,10 @@ export class ProgramPaymentChartComponent {
           display: false,
         },
         border: { display: false },
+        suggestedMax: this.total(),
       },
     },
-  };
+  }));
 
   readonly chartTextAlternative = computed(() => {
     const chartData = this.chartData();
