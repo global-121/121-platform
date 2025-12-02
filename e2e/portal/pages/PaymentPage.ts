@@ -173,15 +173,49 @@ class PaymentPage extends BasePage {
     await expect(this.retryFailedTransactionsButton).toBeHidden();
   }
 
-  async retryFailedTransactions() {
-    await this.table.filterColumnByDropDownSelection({
-      columnName: 'Transaction status',
-      selection: 'Failed',
-    });
+  async retryFailedTransactions({
+    totalTransactions,
+    failedTransactions,
+    filterFirst,
+  }: {
+    totalTransactions: number;
+    failedTransactions: number;
+    filterFirst: boolean;
+  }) {
+    if (filterFirst) {
+      await this.table.filterColumnByDropDownSelection({
+        columnName: 'Transaction status',
+        selection: 'Failed',
+      });
+    }
+
+    const expectedApplicableCount = failedTransactions;
+    const expectedNonApplicableCount = filterFirst
+      ? 0
+      : totalTransactions - failedTransactions;
 
     await this.table.selectAll();
 
     await this.retryFailedTransactionsButton.click();
+
+    // Check for the first sentence if you expect it to be present
+    const expectedDialogText = this.page.getByText(
+      /There are \d+ selected transaction\(s\) that are not on status 'Failed' and will not be retried\./,
+    );
+    if (expectedNonApplicableCount > 0) {
+      await expect(expectedDialogText).toBeVisible();
+    } else {
+      await expect(expectedDialogText).toBeHidden();
+    }
+
+    // Check the applicableCount in the second sentence
+    await expect(
+      this.page.getByText(
+        new RegExp(
+          `You are about to retry ${expectedApplicableCount} transaction\\(s\\)`,
+        ),
+      ),
+    ).toBeVisible();
 
     await this.popupRetryTransactionButton.click();
   }
