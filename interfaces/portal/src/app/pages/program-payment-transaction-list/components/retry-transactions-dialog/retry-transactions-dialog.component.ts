@@ -57,14 +57,36 @@ export class RetryTransactionsDialogComponent {
       'retryTransactionsConfirmationDialog',
     );
 
+  readonly dryRunResult = signal<
+    | {
+        totalFilterCount: number;
+        applicableCount: number;
+        nonApplicableCount: number;
+      }
+    | undefined
+  >(undefined);
+
   retryFailedTransactionsMutation = injectMutation(() => ({
-    mutationFn: () =>
+    mutationFn: ({ dryRun }: { dryRun: boolean }) =>
       this.paymentApiService.retryFailedTransactions({
         programId: this.programId,
         paymentId: this.paymentId(),
         paginateQuery: this.retryFailedTransactionsPaginateQuery,
+        dryRun,
       }),
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
+      if (variables.dryRun) {
+        this.dryRunResult.set(data);
+        this.retryTransactionsConfirmationDialog().show({
+          trackingEvent: {
+            category: TrackingCategory.manageTransactions,
+            action: TrackingAction.clickProceedButton,
+            name: this.trackingEventName(),
+            value: this.trackingValue(),
+          },
+        });
+        return;
+      }
       void this.metricApiService.invalidateCache(this.programId);
       void this.paymentApiService.invalidateCache(
         this.programId,
@@ -77,6 +99,12 @@ export class RetryTransactionsDialogComponent {
           this.paymentId,
         );
       }, 500);
+    },
+    onError: (error) => {
+      this.toastService.showToast({
+        severity: 'error',
+        detail: error.message,
+      });
     },
   }));
 
@@ -111,6 +139,9 @@ export class RetryTransactionsDialogComponent {
     },
   );
 
+  private readonly trackingEventName = signal<string>('');
+  private readonly trackingValue = signal<number>(0);
+
   public retryFailedTransactions({
     transactionCount,
     referenceIds,
@@ -118,15 +149,18 @@ export class RetryTransactionsDialogComponent {
     transactionCount: number;
     referenceIds: string[] | undefined;
   }) {
-    const eventName =
+    this.trackingEventName.set(
       transactionCount === 1
         ? 'retry-transaction:single'
-        : 'retry-transaction:multiple';
+        : 'retry-transaction:multiple',
+    );
+    this.trackingValue.set(transactionCount);
+
     this.trackingService.trackEvent({
       category: TrackingCategory.manageTransactions,
       action: TrackingAction.clickRetryTransactionButton,
-      name: eventName,
-      value: transactionCount,
+      name: this.trackingEventName(),
+      value: this.trackingValue(),
     });
 
     if (this.paymentStatus.data()?.inProgress) {
@@ -139,13 +173,6 @@ export class RetryTransactionsDialogComponent {
 
     this.referenceIdsForRetryTransactions.set(referenceIds);
     this.transactionCount.set(transactionCount);
-    this.retryTransactionsConfirmationDialog().show({
-      trackingEvent: {
-        category: TrackingCategory.manageTransactions,
-        action: TrackingAction.clickProceedButton,
-        name: eventName,
-        value: transactionCount,
-      },
-    });
+    this.retryFailedTransactionsMutation.mutate({ dryRun: true });
   }
 }

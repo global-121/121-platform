@@ -141,10 +141,12 @@ export class PaymentApiService extends DomainApiService {
     programId,
     paymentId,
     paginateQuery,
+    dryRun,
   }: {
     programId: Signal<number | string>;
     paymentId: number | string;
     paginateQuery: Signal<PaginateQuery | undefined>;
+    dryRun: boolean;
   }) {
     return this.httpWrapperService.perform121ServiceRequest<
       Dto<BulkActionResultDto>
@@ -155,10 +157,12 @@ export class PaymentApiService extends DomainApiService {
         paymentId,
         'retry',
       ]).join('/'),
-      httpParams:
-        this.paginateQueryService.paginateQueryToHttpParamsObject(
+      httpParams: {
+        ...this.paginateQueryService.paginateQueryToHttpParamsObject(
           paginateQuery(),
         ),
+        dryRun,
+      },
     });
   }
 
