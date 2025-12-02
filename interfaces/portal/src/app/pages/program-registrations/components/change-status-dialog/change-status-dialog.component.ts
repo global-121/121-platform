@@ -232,15 +232,11 @@ export class ChangeStatusDialogComponent
           programId: this.programId,
         });
 
-        void this.metricApiService.invalidateCache(this.programId);
+        this.invalidateCache();
 
-        setTimeout(() => {
-          // invalidate the cache again after a delay to try and make the status change reflected in the UI
-          void this.registrationApiService.invalidateCache({
-            programId: this.programId,
-          });
-        }, 500);
         return;
+      } else {
+        this.invalidateCache();
       }
 
       if (data.applicableCount === 0) {
@@ -300,5 +296,16 @@ export class ChangeStatusDialogComponent
     this.reasonValidationErrorMessage.set(undefined);
     this.enableSendMessage.set(false);
     this.customMessage.set(undefined);
+  }
+
+  private invalidateCache() {
+    void this.metricApiService.invalidateCache(this.programId);
+
+    setTimeout(() => {
+      // invalidate the cache again after a delay to try and make the status change reflected in the UI
+      void this.registrationApiService.invalidateCache({
+        programId: this.programId,
+      });
+    }, 500);
   }
 }
