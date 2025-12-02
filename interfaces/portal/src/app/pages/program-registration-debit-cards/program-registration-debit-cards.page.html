@@ -61,16 +61,14 @@
         </div>
         <p i18n>There are no debit cards linked to this registration</p>
         <p-button
-          (click)="linkCardDialogVisible.set(true)"
+          label="Link visa card"
+          i18n-label="@@debit-card-actions-link-visa-card"
           rounded
           outlined
-        >
-          <i
-            class="pi pi-link"
-            style="font-size: 1rem"
-          ></i>
-          <p i18n>Link visa card</p>
-        </p-button>
+          icon="pi pi-link"
+          [iconPos]="rtlHelper.createPosition('start')()"
+          (click)="linkCardDialogVisible.set(true)"
+        />
       </div>
     }
     @if (oldCards().length > 0) {
