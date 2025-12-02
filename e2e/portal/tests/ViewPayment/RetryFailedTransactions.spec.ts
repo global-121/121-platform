@@ -21,27 +21,25 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
+let paymentPage: PaymentPage;
+let paymentsPage: PaymentsPage;
+const programTitle = NLRCProgram.titlePortal.en;
+const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
+const paymentPageUrl = `/en-GB/program/${programIdOCW}/payments/1`;
+const registrations = [...registrationsOCW, registrationOCW6Fail];
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(
-    [...registrationsOCW, registrationOCW6Fail],
-    programIdOCW,
-    accessToken,
-  );
+  await seedIncludedRegistrations(registrations, programIdOCW, accessToken);
 
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/');
   await loginPage.login();
-});
 
-test('Retry failed transactions', async ({ page }) => {
-  const paymentPage = new PaymentPage(page);
-  const paymentsPage = new PaymentsPage(page);
-  const programTitle = NLRCProgram.titlePortal.en;
-  const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
-  const paymentPageUrl = `/en-GB/program/${programIdOCW}/payments/1`;
+  paymentPage = new PaymentPage(page);
+  paymentsPage = new PaymentsPage(page);
 
   await test.step('Navigate to Program payments', async () => {
     await paymentsPage.selectProgram(programTitle);
@@ -57,7 +55,9 @@ test('Retry failed transactions', async ({ page }) => {
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
+});
 
+test('Retry failed transactions without filtering', async ({ page }) => {
   await test.step('Check presence of retry button', async () => {
     await paymentPage.waitForPaymentToComplete();
     await page.goto(paymentPageUrl, {
@@ -76,7 +76,47 @@ test('Retry failed transactions', async ({ page }) => {
       'automated test',
       accessToken,
     );
-    await paymentPage.retryFailedTransactions();
+
+    await paymentPage.retryFailedTransactions({
+      totalTransactions: registrations.length,
+      failedTransactions: 1,
+      filterFirst: false,
+    });
+  });
+
+  await test.step('Check presence of retry button', async () => {
+    await paymentPage.validateRetryFailedTransactionsButtonToBeHidden();
+  });
+});
+
+test('Retry failed transactions with filtering on failed transactions', async ({
+  page,
+}) => {
+  await test.step('Check presence of retry button', async () => {
+    await paymentPage.waitForPaymentToComplete();
+    await page.goto(paymentPageUrl, {
+      waitUntil: 'networkidle',
+    });
+    await paymentPage.validateRetryFailedTransactionsButtonToBeVisible();
+  });
+
+  await test.step('Retry payment with correct PA values', async () => {
+    const accessToken = await getAccessToken();
+
+    await updateRegistration(
+      programIdOCW,
+      registrationOCW6Fail.referenceId,
+      { fullName: 'John Doe' },
+      'automated test',
+      accessToken,
+    );
+
+    // retry with filtering on 'failed' transactions first
+    await paymentPage.retryFailedTransactions({
+      totalTransactions: registrations.length,
+      failedTransactions: 1,
+      filterFirst: true,
+    });
   });
 
   await test.step('Check presence of retry button', async () => {
