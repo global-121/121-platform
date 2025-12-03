@@ -17,6 +17,7 @@ import { InputMask } from 'primeng/inputmask';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { LinkCardDialogStates } from '~/pages/program-registration-debit-cards/components/link-card-dialog/enums/link-card-dialog-states.enum';
+import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-link-card-dialog',
@@ -25,13 +26,17 @@ import { LinkCardDialogStates } from '~/pages/program-registration-debit-cards/c
   templateUrl: './link-card-dialog.component.html',
 })
 export class LinkCardDialogComponent {
+  readonly TOKEN_CODE_MASK = '';
+
+  readonly toastService = inject(ToastService);
+
   readonly programId = input.required<string>();
   readonly referenceId = input.required<string | undefined>();
   readonly dialogVisible = input.required<boolean>();
 
   readonly closeDialog = output();
 
-  readonly tokenCode = model('');
+  readonly tokenCode = model(this.TOKEN_CODE_MASK);
   readonly linkCardDialogState = model<LinkCardDialogStates>(
     LinkCardDialogStates.linking,
   );
@@ -68,5 +73,10 @@ export class LinkCardDialogComponent {
         return;
       }
     }
+    this.closeDialog.emit();
+    this.toastService.showToast({
+      severity: 'success',
+      detail: $localize`Visa card linked successfully.`,
+    });
   }
 }
