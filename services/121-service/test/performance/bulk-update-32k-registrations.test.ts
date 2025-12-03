@@ -26,7 +26,7 @@ const isPerformanceCronjob =
   // eslint-disable-next-line n/no-process-env
   process.env.CI === 'true' &&
   // eslint-disable-next-line n/no-process-env
-  process.env.GITHUB_WORKFLOW?.includes('Performance');
+  process.env.GITHUB_WORKFLOW?.includes('Test: Jest Performance Tests Cronjob');
 
 console.log('isPerformanceCronjob: ', isPerformanceCronjob);
 const duplicateNumber = isPerformanceCronjob
