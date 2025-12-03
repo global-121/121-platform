@@ -235,8 +235,6 @@ export class ChangeStatusDialogComponent
         this.invalidateCache();
 
         return;
-      } else {
-        this.invalidateCache();
       }
 
       if (data.applicableCount === 0) {
@@ -251,6 +249,9 @@ export class ChangeStatusDialogComponent
       this.dryRunWarningDialog().show({
         resetMutation: false,
       });
+      if (!variables.dryRun) {
+        this.invalidateCache();
+      }
     },
   }));
 
