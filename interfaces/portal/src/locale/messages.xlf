@@ -2105,6 +2105,9 @@
       <trans-unit id="7561977067156405830" datatype="html">
         <source>Link Visa card to registration</source>
       </trans-unit>
+      <trans-unit id="8591287882066642064" datatype="html">
+        <source>Postal card distribution</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
