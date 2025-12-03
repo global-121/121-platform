@@ -2087,8 +2087,23 @@
       <trans-unit id="7960663124844501943" datatype="html">
         <source>Error - Link visa card</source>
       </trans-unit>
-      <trans-unit id="6633756087010559608" datatype="html">
-        <source>Visa card linked successfully.</source>
+      <trans-unit id="1737753151350322492" datatype="html">
+        <source><x equiv-text="this.toastText()" id="PH"/></source>
+      </trans-unit>
+      <trans-unit id="4070276813598730491" datatype="html">
+        <source>Replace Visa card on registration</source>
+      </trans-unit>
+      <trans-unit id="4124032792874290912" datatype="html">
+        <source>A message will be sent to the registration about this update</source>
+      </trans-unit>
+      <trans-unit id="4211451002224293741" datatype="html">
+        <source>You’re about to replace debit card number 1234 1234 1234 1234. This will block the current card and a new card will be issued.</source>
+      </trans-unit>
+      <trans-unit id="4594193636857575801" datatype="html">
+        <source>Link new card</source>
+      </trans-unit>
+      <trans-unit id="7561977067156405830" datatype="html">
+        <source>Link Visa card to registration</source>
       </trans-unit>
     </body>
   </file>

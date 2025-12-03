@@ -50,7 +50,7 @@
             label="Link card"
             i18n-label
             class="mt-4"
-            [disabled]="tokenCodeInvalid() || tokenCode() === TOKEN_CODE_MASK"
+            [disabled]="tokenCodeInvalid() || !tokenCode()"
           ></p-button>
         </div>
       </div>
@@ -107,6 +107,40 @@
             (click)="closeDialog.emit()"
             rounded
             label="Go back"
+            i18n-label
+          ></p-button>
+        </div>
+      </div>
+    </div>
+  }
+  @if (linkCardDialogState() === linkCardDialogStates.replacing) {
+    <ng-template pTemplate="header">
+      <div class="flex items-center gap-2">
+        <i class="pi pi-exclamation-triangle"></i>
+        <h3 i18n>Error - Link visa card</h3>
+      </div>
+    </ng-template>
+    <div class="flex flex-col gap-4">
+      <p i18n>
+        You’re about to replace debit card number 1234 1234 1234 1234. This will
+        block the current card and a new card will be issued.
+      </p>
+      <p i18n>A message will be sent to the registration about this update</p>
+      <div class="w-full">
+        <div class="mt-4 flex justify-end">
+          <p-button
+            i18n
+            (click)="closeDialog.emit()"
+            rounded
+            outlined
+            label="Cancel"
+            i18n-label
+          ></p-button>
+          <p-button
+            i18n
+            (click)="linkCardDialogState.set(linkCardDialogStates.linking)"
+            rounded
+            label="Link new card"
             i18n-label
           ></p-button>
         </div>
