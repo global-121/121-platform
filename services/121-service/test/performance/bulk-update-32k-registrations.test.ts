@@ -28,10 +28,22 @@ const isPerformanceCronjob =
   // eslint-disable-next-line n/no-process-env -- Required to detect GitHub Actions workflow name
   process.env.GITHUB_WORKFLOW?.includes('Test: Jest Performance Tests Cronjob');
 
+const isPullRequest =
+  // eslint-disable-next-line n/no-process-env -- Required to detect CI environment for performance testing
+  process.env.CI === 'true' &&
+  // eslint-disable-next-line n/no-process-env -- Required to detect GitHub Actions event name
+  process.env.GITHUB_WORKFLOW?.includes(
+    'Test Service: Unit & Integration Tests',
+  );
+
 console.log('isPerformanceCronjob: ', isPerformanceCronjob);
+console.log('isPullRequest: ', isPullRequest);
+
 const duplicateNumber = isPerformanceCronjob
   ? duplicateHighNumber
-  : duplicateLowNumber;
+  : isPullRequest
+    ? duplicateLowNumber
+    : duplicateLowNumber; // default to low number for local development
 
 jest.setTimeout(testTimeout);
 describe('Bulk update 32k registrations', () => {

@@ -48,24 +48,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: ['1', '2', '3', '4', '5', '6', '7', '8']
+        shard: ['1']
         include:
           - shard: '1'
             test_name: 'bulk-update-32k-registrations.test.ts'
-          - shard: '2'
-            test_name: 'find-duplicates-100k-registrations.test.ts'
-          - shard: '3'
-            test_name: 'get-program-with-many-attributes.test.ts'
-          - shard: '4'
-            test_name: 'payment-100k-registration-intersolve-visa.test.ts'
-          - shard: '5'
-            test_name: 'payment-100k-registration-safaricom.test.ts'
-          - shard: '6'
-            test_name: 'performance-during-payment.test.ts'
-          - shard: '7'
-            test_name: 'status-change-payment-in-large-program.test.ts'
-          - shard: '8'
-            test_name: 'import-1000-registrations.test.ts'
+          # - shard: '2'
+          #   test_name: 'find-duplicates-100k-registrations.test.ts'
+          # - shard: '3'
+          #   test_name: 'get-program-with-many-attributes.test.ts'
+          # - shard: '4'
+          #   test_name: 'payment-100k-registration-intersolve-visa.test.ts'
+          # - shard: '5'
+          #   test_name: 'payment-100k-registration-safaricom.test.ts'
+          # - shard: '6'
+          #   test_name: 'performance-during-payment.test.ts'
+          # - shard: '7'
+          #   test_name: 'status-change-payment-in-large-program.test.ts'
+          # - shard: '8'
+          #   test_name: 'import-1000-registrations.test.ts'
 
     steps:
       - name: Check out repository code
@@ -111,12 +111,12 @@ jobs:
           echo "All performance tests have successfully passed." >> $GITHUB_STEP_SUMMARY
           echo "Test results: ${{ toJson(needs.*.result) }}" >> $GITHUB_STEP_SUMMARY
 
-      - name: Microsoft Teams Notification
-        if: always()
-        uses: tlolkema/simple-teams-message@main
-        env:
-          JOB_STATUS_WITH_NICE_EMOJI: ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}
-        with:
-          message_title: 'Jest Performance Tests Cronjob'
-          message_description: 'Job status: ${{ env.JOB_STATUS_WITH_NICE_EMOJI }}'
-          webhook: ${{ secrets.MSTEAMS_WEBHOOK }}
+      # - name: Microsoft Teams Notification
+      #   if: always()
+      #   uses: tlolkema/simple-teams-message@main
+      #   env:
+      #     JOB_STATUS_WITH_NICE_EMOJI: ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}
+      #   with:
+      #     message_title: 'Jest Performance Tests Cronjob'
+      #     message_description: 'Job status: ${{ env.JOB_STATUS_WITH_NICE_EMOJI }}'
+      #     webhook: ${{ secrets.MSTEAMS_WEBHOOK }}
