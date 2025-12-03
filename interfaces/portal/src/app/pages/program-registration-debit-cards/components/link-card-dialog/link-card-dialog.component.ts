@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
   model,
@@ -13,12 +14,13 @@ import { Button } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputMask } from 'primeng/inputmask';
 
+import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { LinkCardDialogStates } from '~/pages/program-registration-debit-cards/components/link-card-dialog/enums/link-card-dialog-states.enum';
 
 @Component({
   selector: 'app-link-card-dialog',
-  imports: [InputMask, Button, FormsModule, DialogModule],
+  imports: [InputMask, Button, FormsModule, DialogModule, FormErrorComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './link-card-dialog.component.html',
 })
@@ -37,6 +39,8 @@ export class LinkCardDialogComponent {
   public linkCardDialogStates = LinkCardDialogStates;
 
   private readonly registrationApiService = inject(RegistrationApiService);
+
+  readonly tokenCodeInvalid = computed(() => this.tokenCode().includes('_'));
 
   public async linkCard() {
     try {
