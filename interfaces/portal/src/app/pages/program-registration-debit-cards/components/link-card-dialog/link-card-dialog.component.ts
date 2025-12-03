@@ -7,6 +7,7 @@ import {
   input,
   model,
   output,
+  Signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -26,8 +27,6 @@ import { ToastService } from '~/services/toast.service';
   templateUrl: './link-card-dialog.component.html',
 })
 export class LinkCardDialogComponent {
-  readonly TOKEN_CODE_MASK = '';
-
   readonly toastService = inject(ToastService);
 
   readonly programId = input.required<string>();
@@ -36,7 +35,7 @@ export class LinkCardDialogComponent {
 
   readonly closeDialog = output();
 
-  readonly tokenCode = model(this.TOKEN_CODE_MASK);
+  readonly tokenCode = model('');
   readonly linkCardDialogState = model<LinkCardDialogStates>(
     LinkCardDialogStates.linking,
   );
@@ -45,15 +44,34 @@ export class LinkCardDialogComponent {
 
   private readonly registrationApiService = inject(RegistrationApiService);
 
-  readonly tokenCodeInvalid = computed(() => this.tokenCode().includes('_'));
+  readonly tokenCodeInvalid: Signal<boolean> = computed(() =>
+    this.tokenCode().includes('_'),
+  );
+  readonly toastText: Signal<string> = computed(() => {
+    if (this.linkCardDialogState() === LinkCardDialogStates.linking) {
+      return $localize`Link Visa card to registration`;
+    }
+    if (this.linkCardDialogState() === LinkCardDialogStates.replacing) {
+      return $localize`Replace Visa card on registration`;
+    }
+    return '';
+  });
 
   public async linkCard() {
     try {
-      await this.registrationApiService.linkCardToRegistration({
-        programId: this.programId,
-        referenceId: this.referenceId,
-        tokenCode: this.tokenCode,
-      });
+      if ((Math.random() > 0.5 ? 1 : 0) === 1 /* postalCardDistribution */) {
+        await this.registrationApiService.linkCardToRegistration({
+          programId: this.programId,
+          referenceId: this.referenceId,
+          tokenCode: this.tokenCode,
+        });
+      } else {
+        await this.registrationApiService.replaceCard({
+          programId: this.programId,
+          referenceId: this.referenceId,
+          tokenCode: this.tokenCode,
+        });
+      }
     } catch (error) {
       if (
         error instanceof HttpErrorResponse &&
@@ -76,7 +94,7 @@ export class LinkCardDialogComponent {
     this.closeDialog.emit();
     this.toastService.showToast({
       severity: 'success',
-      detail: $localize`Visa card linked successfully.`,
+      detail: $localize`${this.toastText()}`,
     });
   }
 }
