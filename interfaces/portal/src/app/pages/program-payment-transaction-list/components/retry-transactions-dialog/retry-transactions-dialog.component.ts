@@ -1,3 +1,4 @@
+import { DecimalPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -29,7 +30,7 @@ import {
 
 @Component({
   selector: 'app-retry-transactions-dialog',
-  imports: [FormDialogComponent],
+  imports: [FormDialogComponent, DecimalPipe],
   templateUrl: './retry-transactions-dialog.component.html',
   styles: ``,
   providers: [ToastService],
