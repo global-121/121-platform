@@ -19,11 +19,23 @@ import { getPaymentResults } from '@121-service/test/performance/helpers/perform
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 // eslint-disable-next-line n/no-process-env -- Only used in test-runs, not included in '@121-service/src/env'
-const duplicateNumber = parseInt(process.env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^15 = 32768
+const duplicateLowNumber = 5;
+const duplicateHighNumber = 15; // cronjob duplicate number should be 2^15 = 32768
 const passRate = 50; // 50%
 const maxRetryDurationMs = 4_800_000; // 80 minutes
 const amount = 25;
 const testTimeout = 5_400_000; // 90 minutes
+
+const isPerformanceCronjob =
+  // eslint-disable-next-line n/no-process-env
+  process.env.CI === 'true' &&
+  // eslint-disable-next-line n/no-process-env
+  process.env.GITHUB_WORKFLOW?.includes('Test: Jest Performance Tests Cronjob');
+
+console.log('isPerformanceCronjob: ', isPerformanceCronjob);
+const duplicateNumber = isPerformanceCronjob
+  ? duplicateHighNumber
+  : duplicateLowNumber;
 
 jest.setTimeout(testTimeout);
 describe('Measure performance during payment', () => {
@@ -42,7 +54,8 @@ describe('Measure performance during payment', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.ACCEPTED);
     // Duplicate registration
-    const mockResponse = await duplicateRegistrationsAndPaymentData({
+    console.log(duplicateNumber);
+    const duplicateRegistrationsResponse = await duplicateRegistrations({
       powerNumberRegistration: duplicateNumber,
       accessToken,
       body: {

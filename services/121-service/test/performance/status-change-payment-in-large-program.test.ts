@@ -26,12 +26,24 @@ import {
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 // eslint-disable-next-line n/no-process-env -- Only used in test-runs, not included in '@121-service/src/env'
-const duplicateNumber = parseInt(process.env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^15 = 32768
+const duplicateLowNumber = 5;
+const duplicateHighNumber = 15; // cronjob duplicate number should be 2^15 = 32768
 const passRate = 10; // 10%
 const maxRetryDurationMs = 1_200_000; // 20 minutes
 const delayBetweenAttemptsMs = 5000; // 5 seconds
 const amount = 25;
 const testTimeout = 18_000_000; // 30 minutes
+
+const isPerformanceCronjob =
+  // eslint-disable-next-line n/no-process-env
+  process.env.CI === 'true' &&
+  // eslint-disable-next-line n/no-process-env
+  process.env.GITHUB_WORKFLOW?.includes('Test: Jest Performance Tests Cronjob');
+
+console.log('isPerformanceCronjob: ', isPerformanceCronjob);
+const duplicateNumber = isPerformanceCronjob
+  ? duplicateHighNumber
+  : duplicateLowNumber;
 
 jest.setTimeout(testTimeout);
 describe('Status Change Payment In Large Program', () => {
@@ -80,7 +92,8 @@ describe('Status Change Payment In Large Program', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registration between 20k - 50k
-    const mockResponse = await duplicateRegistrationsAndPaymentData({
+    console.log(duplicateNumber);
+    const duplicateRegistrationsResponse = await duplicateRegistrations({
       powerNumberRegistration: duplicateNumber,
       accessToken,
       body: {

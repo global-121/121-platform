@@ -21,7 +21,7 @@ import {
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 // eslint-disable-next-line n/no-process-env -- Only used in test-runs, not included in '@121-service/src/env'
-const duplicateNumber = parseInt(process.env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^5 = 32
+const duplicateNumber = 5; // cronjob duplicate number should be 2^5 = 32
 
 // 30 seconds is jest global timeout and this test should be able to complete within that time
 describe('Get program with many attributes within time threshold of 30 seconds', () => {
@@ -70,7 +70,8 @@ describe('Get program with many attributes within time threshold of 30 seconds',
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registrations
-    const mockResponse = await duplicateRegistrationsAndPaymentData({
+    console.log(duplicateNumber);
+    const duplicateRegistrationsResponse = await duplicateRegistrations({
       powerNumberRegistration: duplicateNumber,
       accessToken,
       body: {

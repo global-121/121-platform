@@ -26,13 +26,25 @@ import {
 // The other FSPs are simpler or similar to Safaricom so we decided to not test them
 
 // eslint-disable-next-line n/no-process-env -- Only used in test-runs, not included in '@121-service/src/env'
-const duplicateNumber = parseInt(process.env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^17 = 131072
+const duplicateLowNumber = 5;
+const duplicateHighNumber = 17; // cronjob duplicate number should be 2^17 = 131072
 const maxWaitTimeMs = 240_000; // 4 minutes
 const passRate = 10; // 10%
 const maxRetryDurationMs = 4_800_000; // 80 minutes
 const delayBetweenAttemptsMs = 5_000; // 5 seconds
 const transferValue = 25;
 const testTimeout = 5_400_000; // 90 minutes
+
+const isPerformanceCronjob =
+  // eslint-disable-next-line n/no-process-env
+  process.env.CI === 'true' &&
+  // eslint-disable-next-line n/no-process-env
+  process.env.GITHUB_WORKFLOW?.includes('Test: Jest Performance Tests Cronjob');
+
+console.log('isPerformanceCronjob: ', isPerformanceCronjob);
+const duplicateNumber = isPerformanceCronjob
+  ? duplicateHighNumber
+  : duplicateLowNumber;
 
 jest.setTimeout(testTimeout);
 describe('Do payment for 100k registrations with Safaricom within expected range and successful rate threshold', () => {
@@ -66,7 +78,8 @@ describe('Do payment for 100k registrations with Safaricom within expected range
       accessToken,
     });
     // Duplicate registration to be more than 100k
-    const mockResponse = await duplicateRegistrationsAndPaymentData({
+    console.log(duplicateNumber);
+    const duplicateRegistrationsResponse = await duplicateRegistrations({
       powerNumberRegistration: duplicateNumber,
       accessToken,
       body: {
