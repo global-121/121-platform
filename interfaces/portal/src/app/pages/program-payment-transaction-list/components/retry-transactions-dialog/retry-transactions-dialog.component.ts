@@ -102,12 +102,6 @@ export class RetryTransactionsDialogComponent {
         this.invalidateCache();
       }
     },
-    onError: (error) => {
-      this.toastService.showToast({
-        severity: 'error',
-        detail: error.message,
-      });
-    },
   }));
 
   readonly registrationReferenceIdFilter = computed(() => {
