@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
@@ -12,7 +13,6 @@ import {
   transferValueVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
-import { waitFor } from '@121-service/src/utils/waitFor.helper';
 
 @Injectable()
 export class SeedMultipleNLRCMockData implements InterfaceScript {
@@ -62,8 +62,6 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
         registrationAHWhatsapp,
       );
     }
-
-    await waitFor(4_000);
 
     // 2. Multiply registrations
     await this.seedMockHelper.multiplyRegistrations(powerNrRegistrations);
@@ -116,7 +114,20 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       accessToken,
     );
     const paymentId = createPaymentResponse.data.id;
-    await waitFor(2_000);
+    await this.seedMockHelper.waitForPaymentTransactionsToComplete({
+      programId,
+      paymentId,
+      referenceIds: [registration.referenceId],
+      accessToken,
+      completeStatuses: [TransactionStatusEnum.pendingApproval],
+    });
     await this.seedMockHelper.startPayment(programId, paymentId, accessToken);
+    await this.seedMockHelper.waitForPaymentTransactionsToComplete({
+      programId,
+      paymentId,
+      referenceIds: [registration.referenceId],
+      accessToken,
+      completeStatuses: [TransactionStatusEnum.success],
+    });
   }
 }
