@@ -1,4 +1,4 @@
-import { inject, Injectable, Signal, signal } from '@angular/core';
+import { inject, Injectable, LOCALE_ID, Signal, signal } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -10,7 +10,6 @@ import {
   QueryClient,
   queryOptions,
 } from '@tanstack/angular-query-experimental';
-import { sortBy } from 'lodash';
 
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import {
@@ -81,6 +80,7 @@ export interface NormalizedRegistrationAttribute {
   providedIn: 'root',
 })
 export class RegistrationAttributeService {
+  private readonly locale = inject(LOCALE_ID);
   private readonly queryClient = inject(QueryClient);
 
   private readonly authService = inject(AuthService);
@@ -157,7 +157,9 @@ export class RegistrationAttributeService {
               language,
             ),
         }));
-        return sortBy(preferredLanguages, 'label');
+        return preferredLanguages.sort((a, b) =>
+          a.label.localeCompare(b.label, this.locale),
+        );
       }
       case GenericRegistrationAttributes.programFspConfigurationName:
         return program.programFspConfigurations.map((fspConfig) => ({

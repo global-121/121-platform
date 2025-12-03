@@ -63,7 +63,6 @@
     "date-fns": "^4.1.0",
     "filesize": "^9.0.11",
     "konami-code-js": "^0.8.3",
-    "lodash": "^4.17.21",
     "lokalise-file-exchange": "^4.0.0",
     "ngx-filesize": "^3.0.6",
     "ngx-matomo-client": "^8.0.0",
