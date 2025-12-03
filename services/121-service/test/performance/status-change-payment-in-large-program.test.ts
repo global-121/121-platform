@@ -32,14 +32,11 @@ const maxRetryDurationMs = 1_200_000; // 20 minutes
 const delayBetweenAttemptsMs = 5000; // 5 seconds
 const amount = 25;
 const testTimeout = 18_000_000; // 30 minutes
-
 const isPerformanceCronjob =
   // eslint-disable-next-line n/no-process-env -- Required to detect CI environment for performance testing
   process.env.CI === 'true' &&
   // eslint-disable-next-line n/no-process-env -- Required to detect GitHub Actions workflow name
   process.env.GITHUB_WORKFLOW?.includes('Test: Jest Performance Tests Cronjob');
-
-console.log('isPerformanceCronjob: ', isPerformanceCronjob);
 const duplicateNumber = isPerformanceCronjob
   ? duplicateHighNumber
   : duplicateLowNumber;
@@ -91,7 +88,6 @@ describe('Status Change Payment In Large Program', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registration between 20k - 50k
-    console.log(duplicateNumber);
     const duplicateRegistrationsResponse =
       await duplicateRegistrationsAndPaymentData({
         powerNumberRegistration: duplicateNumber,

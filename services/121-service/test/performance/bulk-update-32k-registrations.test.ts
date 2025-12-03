@@ -21,14 +21,11 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 const duplicateLowNumber = 5;
 const duplicateHighNumber = 15; // cronjob duplicate number should be 2^15 = 32768
 const testTimeout = 120_000; // 120 seconds
-
 const isPerformanceCronjob =
   // eslint-disable-next-line n/no-process-env -- Required to detect CI environment for performance testing
   process.env.CI === 'true' &&
   // eslint-disable-next-line n/no-process-env -- Required to detect GitHub Actions workflow name
   process.env.GITHUB_WORKFLOW?.includes('Test: Jest Performance Tests Cronjob');
-
-console.log('isPerformanceCronjob: ', isPerformanceCronjob);
 const duplicateNumber = isPerformanceCronjob
   ? duplicateHighNumber
   : duplicateLowNumber;
@@ -49,7 +46,6 @@ describe('Bulk update 32k registrations', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registration to be 32k
-    console.log(duplicateNumber);
     const duplicateRegistrationsResponse =
       await duplicateRegistrationsAndPaymentData({
         powerNumberRegistration: duplicateNumber,

@@ -22,14 +22,11 @@ const queryParams = {
   'filter.duplicateStatus': 'duplicate',
 };
 const testTimeout = 3 * 60 * 1000; // 3 minutes
-
 const isPerformanceCronjob =
   // eslint-disable-next-line n/no-process-env -- Required to detect CI environment for performance testing
   process.env.CI === 'true' &&
   // eslint-disable-next-line n/no-process-env -- Required to detect GitHub Actions workflow name
   process.env.GITHUB_WORKFLOW?.includes('Test: Jest Performance Tests Cronjob');
-
-console.log('isPerformanceCronjob: ', isPerformanceCronjob);
 const duplicateNumber = isPerformanceCronjob
   ? duplicateHighNumber
   : duplicateLowNumber;
@@ -52,7 +49,6 @@ describe('Find duplicates in 100k registrations within expected range', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registration to be more than 100k
-    console.log(duplicateNumber);
     const duplicateRegistrationsResponse =
       await duplicateRegistrationsAndPaymentData({
         powerNumberRegistration: duplicateNumber,

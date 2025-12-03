@@ -62,10 +62,10 @@ jobs:
             test_name: 'status-change-payment-in-large-program.test.ts'
           - shard: '1'
             test_name: 'paginate-transactions-and-retry.test.ts'
+          - shard: '1'
+            test_name: 'payment-100k-registration-safaricom.test.ts'
           - shard: '2'
             test_name: 'payment-100k-registration-intersolve-visa.test.ts'
-          - shard: '3'
-            test_name: 'payment-100k-registration-safaricom.test.ts'
           - shard: '4'
             test_name: 'performance-during-payment.test.ts'
 
