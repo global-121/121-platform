@@ -21,10 +21,20 @@ import {
   registrationSafaricom,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-// eslint-disable-next-line n/no-process-env -- Only used in test-runs, not included in '@121-service/src/env'
-const duplicateNumber = parseInt(process.env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^17 = 131072
-
+const duplicateLowNumber = 5;
+const duplicateHighNumber = 17; // cronjob duplicate number should be 2^17 = 131072
 const testTimeout = 5_400_000; // 90 minutes
+
+const isPerformanceCronjob =
+  // eslint-disable-next-line n/no-process-env -- Required to detect CI environment for performance testing
+  process.env.CI === 'true' &&
+  // eslint-disable-next-line n/no-process-env -- Required to detect GitHub Actions workflow name
+  process.env.GITHUB_WORKFLOW?.includes('Test: Jest Performance Tests Cronjob');
+
+console.log('isPerformanceCronjob: ', isPerformanceCronjob);
+const duplicateNumber = isPerformanceCronjob
+  ? duplicateHighNumber
+  : duplicateLowNumber;
 
 jest.setTimeout(testTimeout);
 describe('Retry payment for 100k registrations with Safaricom within expected range and successful rate threshold', () => {

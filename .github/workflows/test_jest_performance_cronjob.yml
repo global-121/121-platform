@@ -48,24 +48,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: ['1']
+        shard: ['1', '2', '3', '4']
         include:
           - shard: '1'
             test_name: 'bulk-update-32k-registrations.test.ts'
-          # - shard: '2'
-          #   test_name: 'find-duplicates-100k-registrations.test.ts'
-          # - shard: '3'
-          #   test_name: 'get-program-with-many-attributes.test.ts'
-          # - shard: '4'
-          #   test_name: 'payment-100k-registration-intersolve-visa.test.ts'
-          # - shard: '5'
-          #   test_name: 'payment-100k-registration-safaricom.test.ts'
-          # - shard: '6'
-          #   test_name: 'performance-during-payment.test.ts'
-          # - shard: '7'
-          #   test_name: 'status-change-payment-in-large-program.test.ts'
-          # - shard: '8'
-          #   test_name: 'import-1000-registrations.test.ts'
+          - shard: '1'
+            test_name: 'find-duplicates-100k-registrations.test.ts'
+          - shard: '1'
+            test_name: 'get-program-with-many-attributes.test.ts'
+          - shard: '1'
+            test_name: 'import-1000-registrations.test.ts'
+          - shard: '1'
+            test_name: 'status-change-payment-in-large-program.test.ts'
+          - shard: '1'
+            test_name: 'paginate-transactions-and-retry.test.ts'
+          - shard: '2'
+            test_name: 'payment-100k-registration-intersolve-visa.test.ts'
+          - shard: '3'
+            test_name: 'payment-100k-registration-safaricom.test.ts'
+          - shard: '4'
+            test_name: 'performance-during-payment.test.ts'
 
     steps:
       - name: Check out repository code
