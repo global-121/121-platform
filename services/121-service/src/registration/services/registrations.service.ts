@@ -409,12 +409,11 @@ export class RegistrationsService {
     const { data: registrationDataInput, ...partialRegistrationInput } =
       validatedRegistrationInput;
 
-    let registrationToUpdate =
-      await this.registrationUtilsService.getRegistrationOrThrow({
-        referenceId,
-        relations: ['program'],
-        programId,
-      });
+    let registrationToUpdate = await this.getRegistrationOrThrow({
+      referenceId,
+      relations: ['program'],
+      programId,
+    });
     const program = registrationToUpdate.program;
 
     const oldViewRegistration =
@@ -558,7 +557,7 @@ export class RegistrationsService {
         registration.referenceId,
       );
     if (calculatedRegistration) {
-      return this.registrationUtilsService.getRegistrationOrThrow({
+      return this.getRegistrationOrThrow({
         referenceId: calculatedRegistration.referenceId,
       });
     }
@@ -711,11 +710,10 @@ export class RegistrationsService {
     referenceId: string,
     programId: number,
   ): Promise<DuplicateReponseDto[]> {
-    const registration =
-      await this.registrationUtilsService.getRegistrationOrThrow({
-        referenceId,
-        programId,
-      });
+    const registration = await this.getRegistrationOrThrow({
+      referenceId,
+      programId,
+    });
     const duplicates = await this.registrationScopedRepository.getDuplicates({
       registrationId: registration.id,
       programId,
