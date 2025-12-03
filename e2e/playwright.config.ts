@@ -1,7 +1,8 @@
 import { defineConfig } from '@playwright/test';
 import dotenv from 'dotenv';
+import path from 'node:path';
 
-dotenv.config({ path: '../services/.env' });
+dotenv.config({ path: path.resolve(__dirname, '../services/.env') });
 
 export default defineConfig({
   tsconfig: './tsconfig.json',
