@@ -2018,9 +2018,6 @@
       <trans-unit id="5803191628367780292" datatype="html">
         <source>You are about to retry <x equiv-text="formattedTransactionCount" id="PH"/> transaction(s). The transaction status will change to &apos;Processing&apos; until received by the registration.</source>
       </trans-unit>
-      <trans-unit id="7708270344948043036" datatype="html">
-        <source><x equiv-text="{{ transactionsToRetryText(transactionCount() | number)() }}" id="INTERPOLATION"/></source>
-      </trans-unit>
     </body>
   </file>
 </xliff>
