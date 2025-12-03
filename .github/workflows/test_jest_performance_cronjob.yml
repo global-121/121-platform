@@ -95,9 +95,9 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: |
           if [ -n "${{ matrix.duplicate_number }}" ]; then
-            docker compose exec -e DUPLICATE_NUMBER=${{ matrix.duplicate_number }} 121-service npm run test:integration:base -t ${{ matrix.test_name }}
+            docker compose exec -e DUPLICATE_NUMBER=${{ matrix.duplicate_number }} -e CI=true -e GITHUB_WORKFLOW="${{ github.workflow }}" 121-service npm run test:integration:base -t ${{ matrix.test_name }}
           else
-            docker compose exec 121-service npm run test:integration:base -t ${{ matrix.test_name }}
+            docker compose exec -e CI=true -e GITHUB_WORKFLOW="${{ github.workflow }}" 121-service npm run test:integration:base -t ${{ matrix.test_name }}
           fi
 
       - name: Docker logs
@@ -122,12 +122,12 @@ jobs:
           echo "All performance tests have successfully passed." >> $GITHUB_STEP_SUMMARY
           echo "Test results: ${{ toJson(needs.*.result) }}" >> $GITHUB_STEP_SUMMARY
 
-      - name: Microsoft Teams Notification
-        if: always()
-        uses: tlolkema/simple-teams-message@main
-        env:
-          JOB_STATUS_WITH_NICE_EMOJI: ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}
-        with:
-          message_title: 'Jest Performance Tests Cronjob'
-          message_description: 'Job status: ${{ env.JOB_STATUS_WITH_NICE_EMOJI }}'
-          webhook: ${{ secrets.MSTEAMS_WEBHOOK }}
+      # - name: Microsoft Teams Notification
+      #   if: always()
+      #   uses: tlolkema/simple-teams-message@main
+      #   env:
+      #     JOB_STATUS_WITH_NICE_EMOJI: ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}
+      #   with:
+      #     message_title: 'Jest Performance Tests Cronjob'
+      #     message_description: 'Job status: ${{ env.JOB_STATUS_WITH_NICE_EMOJI }}'
+      #     webhook: ${{ secrets.MSTEAMS_WEBHOOK }}
