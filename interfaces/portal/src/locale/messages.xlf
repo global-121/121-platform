@@ -2007,10 +2007,16 @@
         <source>Retry failed transaction</source>
       </trans-unit>
       <trans-unit id="434482942350930906" datatype="html">
-        <source>There are <x equiv-text="{{ data.nonApplicableCount }}" id="INTERPOLATION"/> selected transaction(s) that are not on status &apos;Failed&apos; and will not be retried.</source>
+        <source>There are <x equiv-text="{{ data.nonApplicableCount | number }}" id="INTERPOLATION"/> selected transaction(s) that are not on status &apos;Failed&apos; and will not be retried.</source>
       </trans-unit>
-      <trans-unit id="8690375476150336105" datatype="html">
-        <source>You are about to retry <x equiv-text="{{ data.applicableCount }}" id="INTERPOLATION"/> transaction(s). The transaction status will change to &apos;Processing&apos; until received by the registration.</source>
+      <trans-unit id="1293282503530019861" datatype="html">
+        <source>Retrying transactions</source>
+      </trans-unit>
+      <trans-unit id="4548982880429289150" datatype="html">
+        <source><x equiv-text="data.applicableCount" id="PH"/> transactions(s) are being retried. The status change can take up to a minute to process.</source>
+      </trans-unit>
+      <trans-unit id="5803191628367780292" datatype="html">
+        <source>You are about to retry <x equiv-text="formattedTransactionCount" id="PH"/> transaction(s). The transaction status will change to &apos;Processing&apos; until received by the registration.</source>
       </trans-unit>
     </body>
   </file>
