@@ -16,7 +16,7 @@ import {
 
 describe('Reconciliate excel FSP data', () => {
   // Payment info
-  const amount = 10;
+  const transferValue = 10;
 
   // Registrations
   const registrationsWesteros = [
@@ -32,7 +32,7 @@ describe('Reconciliate excel FSP data', () => {
     await seedPaidRegistrations({
       registrations: registrationsWesteros,
       programId: programIdWesteros,
-      amount,
+      transferValue,
       completeStatuses: [TransactionStatusEnum.waiting],
     });
   });

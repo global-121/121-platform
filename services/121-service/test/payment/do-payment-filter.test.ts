@@ -8,7 +8,7 @@ import {
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
   createAndStartPayment,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
@@ -71,7 +71,7 @@ describe('Do payment with filter', () => {
       accessToken,
       maxWaitTimeMs: 10_000,
     });
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,
@@ -84,7 +84,8 @@ describe('Do payment with filter', () => {
     );
 
     // Also check if the right amount of transactions are created
-    expect(transactionsResponse.body.length).toBe(includedRefrenceIds.length);
+    const transactions = transactionsResponse.body.data;
+    expect(transactions.length).toBe(includedRefrenceIds.length);
   });
 
   // This test is the same as the one above, but with a query filter parameter
@@ -106,7 +107,7 @@ describe('Do payment with filter', () => {
       accessToken,
       maxWaitTimeMs: 10_000,
     });
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,
@@ -121,7 +122,8 @@ describe('Do payment with filter', () => {
       includedRefrenceIds.length,
     );
     // Also check if the right amount of transactions are created
-    expect(transactionsResponse.body.length).toBe(includedRefrenceIds.length);
+    const transactions2 = transactionsResponse.body.data;
+    expect(transactions2.length).toBe(includedRefrenceIds.length);
   });
 
   it('should only pay included people with query filter referenceId', async () => {
@@ -143,7 +145,7 @@ describe('Do payment with filter', () => {
       accessToken,
       maxWaitTimeMs: 10_000,
     });
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,
@@ -154,7 +156,8 @@ describe('Do payment with filter', () => {
     expect(doPaymentResponse.body.applicableCount).toBe(1);
     expect(doPaymentResponse.body.totalFilterCount).toBe(1);
     // Also check if the right amount of transactions are created
-    expect(transactionsResponse.body.length).toBe(1);
+    const transactions3 = transactionsResponse.body.data;
+    expect(transactions3.length).toBe(1);
   });
 
   it('should only pay included people with a combination of filters', async () => {
@@ -178,7 +181,7 @@ describe('Do payment with filter', () => {
       accessToken,
       maxWaitTimeMs: 10_000,
     });
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,
@@ -190,7 +193,8 @@ describe('Do payment with filter', () => {
     // REFACTOR: this test no longer involves the scenario where applicableCount<totalFilterCount, which might have originally been part of the intention. Change/add this test again in the future.
     expect(doPaymentResponse.body.totalFilterCount).toBe(1);
     // Also check if the right amount of transactions are created
-    expect(transactionsResponse.body.length).toBe(1);
+    const transactions4 = transactionsResponse.body.data;
+    expect(transactions4.length).toBe(1);
   });
 
   it('should only pay included people with a combination of filter and search', async () => {
@@ -214,7 +218,7 @@ describe('Do payment with filter', () => {
       accessToken,
       maxWaitTimeMs: 10_000,
     });
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,
@@ -225,6 +229,7 @@ describe('Do payment with filter', () => {
     expect(doPaymentResponse.body.applicableCount).toBe(1);
     expect(doPaymentResponse.body.totalFilterCount).toBe(2);
     // Also check if the right amount of transactions are created
-    expect(transactionsResponse.body.length).toBe(1);
+    const transactions5 = transactionsResponse.body.data;
+    expect(transactions5.length).toBe(1);
   });
 });

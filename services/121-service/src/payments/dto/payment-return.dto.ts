@@ -1,4 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
+
+import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
 
 class CountAndTransferValueDto {
   @ApiProperty({ example: 0 })
@@ -38,4 +40,13 @@ export class PaymentReturnDto {
     type: CountAndTransferValueDto,
   })
   approved: CountAndTransferValueDto;
+
+  @ApiProperty({
+    type: () => PartialType(TransactionViewEntity),
+    isArray: true,
+  })
+  fsps: Pick<
+    TransactionViewEntity,
+    'programFspConfigurationName' | 'programFspConfigurationLabel'
+  >[];
 }

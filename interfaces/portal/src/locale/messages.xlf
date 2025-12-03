@@ -1964,9 +1964,6 @@
       <trans-unit id="9211474991659273932" datatype="html">
         <source>Create new program</source>
       </trans-unit>
-      <trans-unit id="1199603176168206482" datatype="html">
-        <source>Retry failed transactions</source>
-      </trans-unit>
       <trans-unit id="1297402576657440154" datatype="html">
         <source>Transactions per payment</source>
       </trans-unit>
@@ -1994,9 +1991,6 @@
       <trans-unit id="7021486754795195923" datatype="html">
         <source>Transactions data</source>
       </trans-unit>
-      <trans-unit id="3961897641515491838" datatype="html">
-        <source>You are about to retry <x equiv-text="{{ referenceIdsForRetryTransactions().length }}" id="INTERPOLATION"/> payment(s). The transaction status will change to Processing until received by the registration.</source>
-      </trans-unit>
       <trans-unit id="5544945972793965092" datatype="html">
         <source>The number of times a registration will receive transactions in the program by default.</source>
       </trans-unit>
@@ -2005,6 +1999,24 @@
       </trans-unit>
       <trans-unit id="8386352594791941612" datatype="html">
         <source>Debit account number</source>
+      </trans-unit>
+      <trans-unit id="279195665230166237" datatype="html">
+        <source>Reg. #<x equiv-text="registrationId" id="PH"/></source>
+      </trans-unit>
+      <trans-unit id="3460608979438095670" datatype="html">
+        <source>Retry failed transaction</source>
+      </trans-unit>
+      <trans-unit id="434482942350930906" datatype="html">
+        <source>There are <x equiv-text="{{ data.nonApplicableCount | number }}" id="INTERPOLATION"/> selected transaction(s) that are not on status &apos;Failed&apos; and will not be retried.</source>
+      </trans-unit>
+      <trans-unit id="1293282503530019861" datatype="html">
+        <source>Retrying transactions</source>
+      </trans-unit>
+      <trans-unit id="4548982880429289150" datatype="html">
+        <source><x equiv-text="data.applicableCount" id="PH"/> transactions(s) are being retried. The status change can take up to a minute to process.</source>
+      </trans-unit>
+      <trans-unit id="5803191628367780292" datatype="html">
+        <source>You are about to retry <x equiv-text="formattedTransactionCount" id="PH"/> transaction(s). The transaction status will change to &apos;Processing&apos; until received by the registration.</source>
       </trans-unit>
     </body>
   </file>

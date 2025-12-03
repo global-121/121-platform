@@ -11,7 +11,7 @@ import {
   postProgramRegistrationAttribute,
 } from '@121-service/test/helpers/program.helper';
 import {
-  duplicateRegistrations,
+  duplicateRegistrationsAndPaymentData,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -70,14 +70,14 @@ describe('Get program with many attributes within time threshold of 30 seconds',
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registrations
-    const duplicateRegistrationsResponse = await duplicateRegistrations({
+    const mockResponse = await duplicateRegistrationsAndPaymentData({
       powerNumberRegistration: duplicateNumber,
       accessToken,
       body: {
         secret: env.RESET_SECRET,
       },
     });
-    expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
+    expect(mockResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Assert
     // Get program with registrations and validate load time is less than 200ms

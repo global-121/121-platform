@@ -5,7 +5,7 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   createAndStartPayment,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
@@ -116,13 +116,13 @@ describe('Do payment with FSP: Airtel', () => {
         TransactionStatusEnum.waiting,
       ],
     });
-    const getTransactionsResult = await getTransactions({
+    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationAirtelSuccessTransaction.referenceId,
       accessToken,
     });
-    const transaction = getTransactionsResult.body[0];
+    const transaction = getTransactionsResult.body.data[0];
 
     // Assert
     expect(transaction.errorMessage).toBe(null);
@@ -130,7 +130,7 @@ describe('Do payment with FSP: Airtel', () => {
 
     const transactionEventDescriptions = await getTransactionEventDescriptions({
       programId,
-      transactionId: getTransactionsResult.body[0].id,
+      transactionId: getTransactionsResult.body.data[0].id,
       accessToken,
     });
     expect(transactionEventDescriptions).toEqual([
@@ -178,14 +178,14 @@ describe('Do payment with FSP: Airtel', () => {
         TransactionStatusEnum.waiting,
       ],
     });
-    const getTransactionsResult = await getTransactions({
+    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId:
         registrationAirtelDuplicateTransactionId.referenceId,
       accessToken,
     });
-    const transaction = getTransactionsResult.body[0];
+    const transaction = getTransactionsResult.body.data[0];
 
     // Assert
 
@@ -230,14 +230,14 @@ describe('Do payment with FSP: Airtel', () => {
         TransactionStatusEnum.waiting,
       ],
     });
-    const getTransactionsResult = await getTransactions({
+    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId:
         registrationAirtelDuplicateTransactionId.referenceId,
       accessToken,
     });
-    const transaction = getTransactionsResult.body[0];
+    const transaction = getTransactionsResult.body.data[0];
 
     // Assert
     expect(transaction.errorMessage).toMatchSnapshot();
@@ -279,13 +279,13 @@ describe('Do payment with FSP: Airtel', () => {
         TransactionStatusEnum.waiting,
       ],
     });
-    const getTransactionsResult = await getTransactions({
+    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
       registrationReferenceId: registrationAirtelAmbiguousError.referenceId,
       accessToken,
     });
-    const transaction = getTransactionsResult.body[0];
+    const transaction = getTransactionsResult.body.data[0];
 
     // Assert
     expect(transaction.status).toBe(TransactionStatusEnum.waiting);

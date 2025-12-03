@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { TransactionEventInterface } from '@121-service/src/payments/transactions/transaction-events/dto/transaction-event-data.dto';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
+import { TransactionEventInterface } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event.interface';
 
 class TransactionEventsMetaObject {
   @ApiProperty({

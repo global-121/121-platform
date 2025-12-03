@@ -776,7 +776,8 @@
     "method": "post",
     "path": "/api/scripts/duplicate-registrations",
     "params": [
-      "mockPowerNumberRegistrations"
+      "mockPowerNumberRegistrations",
+      "mockNumberPayments"
     ]
   },
   {
@@ -925,12 +926,41 @@
     "returnType": "PaymentReturnDto"
   },
   {
-    "method": "patch",
-    "path": "/api/programs/{programId}/payments/{paymentId}",
+    "method": "post",
+    "path": "/api/programs/{programId}/payments/{paymentId}/start",
+    "params": [
+      "programId",
+      "paymentId"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/payments/{paymentId}/retry",
     "params": [
       "programId",
       "paymentId",
-      "retry"
+      "dryRun",
+      "page",
+      "limit",
+      "filter.id",
+      "filter.transferValue",
+      "filter.userId",
+      "filter.created",
+      "filter.updated",
+      "filter.status",
+      "filter.paymentId",
+      "filter.registrationId",
+      "filter.programFspConfigurationId",
+      "filter.programFspConfigurationLabel",
+      "filter.programFspConfigurationName",
+      "filter.fspName",
+      "filter.errorMessage",
+      "filter.registrationStatus",
+      "filter.registrationReferenceId",
+      "filter.registrationProgramId",
+      "filter.registrationScope",
+      "search",
+      "searchBy"
     ]
   },
   {
@@ -957,7 +987,29 @@
     "path": "/api/programs/{programId}/payments/{paymentId}/transactions",
     "params": [
       "programId",
-      "paymentId"
+      "paymentId",
+      "page",
+      "limit",
+      "filter.id",
+      "filter.transferValue",
+      "filter.userId",
+      "filter.created",
+      "filter.updated",
+      "filter.status",
+      "filter.paymentId",
+      "filter.registrationId",
+      "filter.programFspConfigurationId",
+      "filter.programFspConfigurationLabel",
+      "filter.programFspConfigurationName",
+      "filter.fspName",
+      "filter.errorMessage",
+      "filter.registrationStatus",
+      "filter.registrationReferenceId",
+      "filter.registrationProgramId",
+      "filter.registrationScope",
+      "sortBy",
+      "search",
+      "searchBy"
     ]
   },
   {

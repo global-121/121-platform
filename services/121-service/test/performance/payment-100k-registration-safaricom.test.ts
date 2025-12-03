@@ -6,7 +6,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
 import {
   changeRegistrationStatus,
-  duplicateRegistrations,
+  duplicateRegistrationsAndPaymentData,
   importRegistrations,
   waitForStatusChangeToComplete,
 } from '@121-service/test/helpers/registration.helper';
@@ -66,14 +66,14 @@ describe('Do payment for 100k registrations with Safaricom within expected range
       accessToken,
     });
     // Duplicate registration to be more than 100k
-    const duplicateRegistrationsResponse = await duplicateRegistrations({
+    const mockResponse = await duplicateRegistrationsAndPaymentData({
       powerNumberRegistration: duplicateNumber,
       accessToken,
       body: {
         secret: env.RESET_SECRET,
       },
     });
-    expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
+    expect(mockResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Do payment
     const doPaymentResponse = await createAndStartPayment({
@@ -87,7 +87,7 @@ describe('Do payment for 100k registrations with Safaricom within expected range
     // Check payment results have at least 10% success rate within 80 minutes
     const paymentResults = await getPaymentResults({
       programId: programIdSafaricom,
-      paymentId: 1,
+      paymentId: doPaymentResponse.body.id,
       accessToken,
       totalAmountPowerOfTwo: duplicateNumber,
       passRate,

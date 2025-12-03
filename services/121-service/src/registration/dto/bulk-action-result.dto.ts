@@ -15,14 +15,12 @@ export class BulkActionResultDto {
   public readonly nonApplicableCount: number;
 }
 
-export class BulkActionResultRetryPaymentDto extends BulkActionResultDto {
+export class BulkActionResultPaymentDto extends BulkActionResultDto {
   @ApiProperty({
     example: [Fsps.intersolveVoucherWhatsapp, Fsps.intersolveVoucherPaper],
   })
   public readonly programFspConfigurationNames: string[];
-}
 
-export class BulkActionResultPaymentDto extends BulkActionResultRetryPaymentDto {
   @ApiProperty({ example: 9 })
   public sumPaymentAmountMultiplier: number;
 

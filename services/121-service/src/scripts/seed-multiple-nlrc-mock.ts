@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
@@ -12,7 +13,6 @@ import {
   transferValueVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
-import { waitFor } from '@121-service/src/utils/waitFor.helper';
 
 @Injectable()
 export class SeedMultipleNLRCMockData implements InterfaceScript {
@@ -63,19 +63,19 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       );
     }
 
-    await waitFor(4_000);
-
     // 2. Multiply registrations
     await this.seedMockHelper.multiplyRegistrations(powerNrRegistrations);
 
     // 3. Extend all data to all registrations (transactions and related data for payment 1, messages, etc.)
-    await this.seedMockHelper.extendRelatedDataToAllRegistrations(
-      powerNrRegistrations,
+    await this.seedMockHelper.alignOtherDataWithRegistrations({
+      powerNr: powerNrRegistrations,
       programIds,
-    );
+    });
 
     // 4. Extend all payment-related data to multiple payments
-    await this.seedMockHelper.multiplyTransactions(nrPayments, programIds);
+    await this.seedMockHelper.addExtraPaymentsAndAlignRelatedData({
+      nrPayments,
+    });
 
     // 5. Extend all message-related data to multiple messages
     await this.seedMockHelper.multiplyMessages(powerNrMessages);
@@ -114,7 +114,20 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       accessToken,
     );
     const paymentId = createPaymentResponse.data.id;
-    await waitFor(2_000);
+    await this.seedMockHelper.waitForPaymentTransactionsToComplete({
+      programId,
+      paymentId,
+      referenceIds: [registration.referenceId],
+      accessToken,
+      completeStatuses: [TransactionStatusEnum.pendingApproval],
+    });
     await this.seedMockHelper.startPayment(programId, paymentId, accessToken);
+    await this.seedMockHelper.waitForPaymentTransactionsToComplete({
+      programId,
+      paymentId,
+      referenceIds: [registration.referenceId],
+      accessToken,
+      completeStatuses: [TransactionStatusEnum.success],
+    });
   }
 }

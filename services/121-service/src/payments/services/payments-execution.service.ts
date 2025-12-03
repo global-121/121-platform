@@ -1,17 +1,19 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { PaginateQuery } from 'nestjs-paginate';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
+import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { BulkActionResultRetryPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
+import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 
 @Injectable()
 export class PaymentsExecutionService {
@@ -22,6 +24,7 @@ export class PaymentsExecutionService {
     private readonly paymentsHelperService: PaymentsHelperService,
     private readonly paymentEventsService: PaymentEventsService,
     private readonly transactionsService: TransactionsService,
+    private readonly paymentsReportingService: PaymentsReportingService,
   ) {}
 
   public async startPayment({
@@ -188,25 +191,56 @@ export class PaymentsExecutionService {
     userId,
     programId,
     paymentId,
-    referenceIds,
+    paginateQuery,
+    dryRun,
   }: {
     userId: number;
     programId: number;
     paymentId: number;
-    referenceIds?: string[];
-  }): Promise<BulkActionResultRetryPaymentDto> {
-    await this.paymentsProgressHelperService.checkAndLockPaymentProgressOrThrow(
-      { programId },
+    paginateQuery: PaginateQuery;
+    dryRun: boolean;
+  }): Promise<BulkActionResultDto> {
+    await this.paymentsReportingService.findPaymentOrThrow(
+      programId,
+      paymentId,
     );
+
+    if (dryRun) {
+      await this.paymentsProgressHelperService.checkPaymentInProgressAndThrow(
+        programId,
+      );
+    } else {
+      // Only lock payments when not a dry run
+      await this.paymentsProgressHelperService.checkAndLockPaymentProgressOrThrow(
+        { programId },
+      );
+    }
 
     // do all operations UP TO starting the queue in a try, so that we can always end with a unblock-payments action, also in case of failure
     // from the moment of starting the queue the in-progress checking is taken over by the queue
     try {
+      const referenceIds =
+        await this.paymentsReportingService.getReferenceIdsForPaginateQuery({
+          programId,
+          paymentId,
+          paginateQuery,
+        });
+
       const transactionDetails = await this.getRetryTransactionDetailsOrThrow({
         programId,
         paymentId,
         inputReferenceIds: referenceIds,
       });
+
+      const bulkActionResult: BulkActionResultDto = {
+        totalFilterCount: referenceIds.length,
+        applicableCount: transactionDetails.length,
+        nonApplicableCount: referenceIds.length - transactionDetails.length,
+      };
+
+      if (dryRun) {
+        return bulkActionResult;
+      }
 
       await this.paymentEventsService.createEvent({
         paymentId,
@@ -220,29 +254,14 @@ export class PaymentsExecutionService {
         userId,
         isRetry: true,
       });
-      const programFspConfigurationNames: string[] = [];
-      // This loop is pretty fast: with 131k registrations it takes ~38ms
-      for (const transaction of transactionDetails) {
-        if (
-          !programFspConfigurationNames.includes(
-            transaction.programFspConfigurationName,
-          )
-        ) {
-          programFspConfigurationNames.push(
-            transaction.programFspConfigurationName,
-          );
-        }
-      }
-      return {
-        totalFilterCount: transactionDetails.length,
-        applicableCount: transactionDetails.length,
-        nonApplicableCount: 0,
-        programFspConfigurationNames,
-      };
+
+      return bulkActionResult;
     } finally {
-      await this.paymentsProgressHelperService.unlockPaymentsForProgram(
-        programId,
-      );
+      if (!dryRun) {
+        await this.paymentsProgressHelperService.unlockPaymentsForProgram(
+          programId,
+        );
+      }
     }
   }
 
@@ -291,7 +310,7 @@ export class PaymentsExecutionService {
   }: {
     programId: number;
     paymentId: number;
-    inputReferenceIds?: string[];
+    inputReferenceIds: string[];
   }): Promise<
     { transactionId: number; programFspConfigurationName: string }[]
   > {
@@ -299,27 +318,9 @@ export class PaymentsExecutionService {
       await this.transactionViewScopedRepository.getFailedTransactionDetailsForRetry(
         { programId, paymentId },
       );
-
-    const referenceIdsWithLatestTransactionFailedForPayment =
-      failedTransactionForPayment.map((t) => t.registrationReferenceId);
-
-    if (!referenceIdsWithLatestTransactionFailedForPayment.length) {
+    if (!failedTransactionForPayment.length) {
       const errors = 'No failed transactions found for this payment.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
-    // Throw an error if incoming referenceIds are not part of the failed transactions for this payment
-    if (inputReferenceIds) {
-      for (const referenceId of inputReferenceIds) {
-        if (
-          !referenceIdsWithLatestTransactionFailedForPayment.includes(
-            referenceId,
-          )
-        ) {
-          const errors = `The registration with referenceId ${referenceId} does not have a failed transaction for this payment.`;
-          throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-        }
-      }
     }
 
     const transactionsToRetry = inputReferenceIds
@@ -327,6 +328,11 @@ export class PaymentsExecutionService {
           inputReferenceIds?.includes(t.registrationReferenceId),
         )
       : failedTransactionForPayment;
+
+    if (transactionsToRetry.length === 0) {
+      const errors = `No failed transactions found for this filter.`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
 
     return transactionsToRetry.map((t) => {
       return {

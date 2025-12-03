@@ -66,7 +66,7 @@
 
     <app-metric-tile
       class="[grid-area:metric1]"
-      [pending]="paymentStatus.isPending() || transactions.isPending()"
+      [pending]="paymentStatus.isPending() || transactionsResponse.isPending()"
       [metricValue]="totalRegistrations()"
       metricLabel="Total registrations"
       i18n-metricLabel

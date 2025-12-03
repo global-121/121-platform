@@ -93,7 +93,7 @@ describe('Do payment retry', () => {
     expect(retryResponse.body).toMatchSnapshot();
   });
 
-  it('should retry all failed transactions if no referenceId filter is used', async () => {
+  it('should retry all failed transactions if no filter is used', async () => {
     // Arrange
     const transferValue = 230;
     const paymentId = await seedPaidRegistrations({
@@ -103,7 +103,7 @@ describe('Do payment retry', () => {
         registrationWaiting,
       ],
       programId,
-      amount: transferValue,
+      transferValue,
       completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
@@ -151,6 +151,8 @@ describe('Do payment retry', () => {
     // Assert
     // Only the failed transaction should be retried
     expect(retryResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(retryResponse.body.applicableCount).toBe(1);
+    expect(retryResponse.body.totalFilterCount).toBe(3);
 
     // Verify that only the failed transaction is retried and now succeeded
     expect(paymentAggregatesBeforeRetry.body).toMatchObject({
@@ -175,7 +177,7 @@ describe('Do payment retry', () => {
         registrationError2,
       ],
       programId,
-      amount: transferValue,
+      transferValue,
       completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
@@ -227,9 +229,11 @@ describe('Do payment retry', () => {
       accessToken,
     });
 
-    // // Assert
-    // // Only the failed transaction should be retried
+    // Assert
+    // Only the failed transaction should be retried
     expect(retryResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(retryResponse.body.applicableCount).toBe(1);
+    expect(retryResponse.body.totalFilterCount).toBe(1);
 
     // Verify that only the failed transaction for registrationError1 is retried and now succeeded, while registrationError2 is still failed
     expect(paymentAggregatesBeforeRetry.body).toMatchObject({
@@ -248,7 +252,7 @@ describe('Do payment retry', () => {
     const paymentId = await seedPaidRegistrations({
       registrations: [registrationSuccess, registrationError1],
       programId,
-      amount,
+      transferValue: amount,
       completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
@@ -265,7 +269,79 @@ describe('Do payment retry', () => {
     });
 
     // Assert
-    expect(retryResponse.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(retryResponse.status).toBe(HttpStatus.NOT_FOUND);
     expect(retryResponse.body).toMatchSnapshot();
+  });
+
+  it('should retry based on a search query', async () => {
+    // Arrange
+    const transferValue = 230;
+    const paymentId = await seedPaidRegistrations({
+      registrations: [
+        registrationSuccess,
+        registrationError1,
+        registrationError2,
+      ],
+      programId,
+      transferValue,
+      completeStatuses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
+    });
+
+    const paymentAggregatesBeforeRetry = await getPaymentSummary({
+      programId,
+      paymentId,
+      accessToken,
+    });
+
+    // Act
+    await updateRegistration(
+      programId,
+      registrationError2.referenceId,
+      { whatsappPhoneNumber: '14155238889' }, // change to a number that will succeed
+      'test',
+      accessToken,
+    );
+
+    // Do retry with search query
+    const retryResponse = await retryPayment({
+      programId,
+      paymentId,
+      accessToken,
+      search: registrationError2.referenceId,
+    });
+
+    await waitForPaymentTransactionsToComplete({
+      programId,
+      paymentReferenceIds: [registrationError2.referenceId],
+      paymentId,
+      accessToken,
+      maxWaitTimeMs: 5000,
+      completeStatuses: [TransactionStatusEnum.success],
+    });
+
+    const paymentAggregatesAfterRetry = await getPaymentSummary({
+      programId,
+      paymentId,
+      accessToken,
+    });
+
+    // Assert
+    // Only the failed transaction should be retried
+    expect(retryResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(retryResponse.body.applicableCount).toBe(1);
+    expect(retryResponse.body.totalFilterCount).toBe(1);
+
+    // Verify that only the failed transaction for registrationError2 is retried and now succeeded, while registrationError1 is still failed
+    expect(paymentAggregatesBeforeRetry.body).toMatchObject({
+      success: { count: 1, transferValue },
+      failed: { count: 2, transferValue: transferValue * 2 },
+    });
+    expect(paymentAggregatesAfterRetry.body).toMatchObject({
+      success: { count: 2, transferValue: transferValue * 2 },
+      failed: { count: 1, transferValue },
+    });
   });
 });

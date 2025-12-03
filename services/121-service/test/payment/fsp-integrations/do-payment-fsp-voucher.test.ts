@@ -9,7 +9,7 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 import { getTransactionsIntersolveVoucher } from '@121-service/test/helpers/fsp-specific.helper';
 import {
   createAndStartPayment,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   waitForMessagesToComplete,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -217,7 +217,7 @@ describe('Do payment to 1 PA', () => {
         minimumNumberOfMessagesPerReferenceId: 1,
       });
 
-      const getTransactionsBody = await getTransactions({
+      const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
         programId,
         paymentId,
         registrationReferenceId: registrationAhCopy.referenceId,
@@ -225,11 +225,11 @@ describe('Do payment to 1 PA', () => {
       });
 
       // Assert
-      expect(getTransactionsBody.body[0].status).toBe(
+      expect(getTransactionsBody.body.data[0].status).toBe(
         TransactionStatusEnum.error,
       );
 
-      expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
+      expect(getTransactionsBody.body.data[0].errorMessage).toMatchSnapshot();
     });
 
     it('payout should stay on waiting if no incoming message comes in', async () => {
@@ -263,7 +263,7 @@ describe('Do payment to 1 PA', () => {
         minimumNumberOfMessagesPerReferenceId: 1,
       });
 
-      const getTransactionsBody = await getTransactions({
+      const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
         programId,
         paymentId,
         registrationReferenceId: registrationAhCopy.referenceId,
@@ -271,10 +271,10 @@ describe('Do payment to 1 PA', () => {
       });
 
       // Assert
-      expect(getTransactionsBody.body[0].status).toBe(
+      expect(getTransactionsBody.body.data[0].status).toBe(
         TransactionStatusEnum.waiting,
       );
-      expect(getTransactionsBody.body[0].errorMessage).toBeNull();
+      expect(getTransactionsBody.body.data[0].errorMessage).toBeNull();
     });
 
     it('should successfully pay-out for Intersolve Voucher paper', async () => {

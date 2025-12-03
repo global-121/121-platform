@@ -7,7 +7,6 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
-  Patch,
   Post,
   Query,
   Req,
@@ -29,21 +28,25 @@ import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
+import {
+  PaginateConfigTransactionView,
+  PaginateConfigTransactionViewRetry,
+} from '@121-service/src/payments/consts/paginate-config-transaction-view.const';
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
+import { ExportTransactionResponseDto } from '@121-service/src/payments/dto/export-transaction-response.dto';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-payment-aggregation.dto';
 import { GetPaymentsDto } from '@121-service/src/payments/dto/get-payments.dto';
-import { GetTransactionResponseDto } from '@121-service/src/payments/dto/get-transaction-response.dto';
 import { PaymentReturnDto } from '@121-service/src/payments/dto/payment-return.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
-import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
-import { PaymentEventDataDto } from '@121-service/src/payments/payment-events/dtos/payment-event-data.dto';
 import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
 import { PaymentsCreationService } from '@121-service/src/payments/services/payments-creation.service';
 import { PaymentsExcelFspService } from '@121-service/src/payments/services/payments-excel-fsp.service';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
+import { FindAllTransactionsResultDto } from '@121-service/src/payments/transactions/dto/find-all-transactions-result.dto';
 import { GetTransactionsQueryDto } from '@121-service/src/payments/transactions/dto/get-transaction-query.dto';
+import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
 import { PaginateConfigRegistrationViewOnlyFilters } from '@121-service/src/registration/const/filter-operation.const';
 import {
   BulkActionResultDto,
@@ -152,8 +155,8 @@ export class PaymentsController {
     type: 'boolean',
     description: `
       Only when set explicitly to "true", this will simulate (and NOT actually DO) the action.
-      Instead it will return how many PA this action can be applied to.
-      So no payments will be done.
+      Instead it will return how many PAs this action can be applied to.
+      So no transactions will be created yet.
       `,
   })
   @ApiQuery({
@@ -217,52 +220,86 @@ export class PaymentsController {
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentUPDATE] })
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
-    description: 'Successfully executed the payment start or retry',
+    description: 'Successfully started the payment',
   })
   @ApiOperation({
-    summary: 'Start or Retry payment to send payment instructions to FSP',
+    summary: 'Start payment to send payment instructions to FSP',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
-  @ApiQuery({
-    name: 'retry',
-    required: false,
-    type: 'boolean',
-    description:
-      'Default is false. If set to true, then (1) all failed transactions of payment are retried or (2) with a filter on referenceIds passed via body. Only failed transactions will be sent again with the original amount. If retry=false, then no body is needed',
-  })
   @HttpCode(HttpStatus.ACCEPTED)
-  @Patch('programs/:programId/payments/:paymentId')
-  public async startOrRetryPayment(
+  @Post('programs/:programId/payments/:paymentId/start')
+  public async startPayment(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('paymentId', ParseIntPipe) paymentId: number,
-    @Query('retry') retry = 'false',
-    @Body() retryReferenceIds: RetryPaymentDto,
     @Req() req: ScopedUserRequest,
   ): Promise<void> {
     const userId = RequestHelper.getUserId(req);
-    const retryBoolean = retry === 'true';
 
-    if (retryBoolean) {
-      await this.paymentsExecutionService.retryPayment({
-        userId,
-        programId,
-        paymentId,
-        referenceIds: retryReferenceIds.referenceIds,
-      });
-    } else {
-      if (retryReferenceIds?.referenceIds?.length) {
-        throw new HttpException(
-          'When retry=false no body must be provided',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      await this.paymentsExecutionService.startPayment({
-        userId,
-        programId,
-        paymentId,
-      });
-    }
+    return await this.paymentsExecutionService.startPayment({
+      userId,
+      programId,
+      paymentId,
+    });
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentUPDATE] })
+  @ApiResponse({
+    status: HttpStatus.ACCEPTED,
+    description: 'Successfully retried the payment',
+  })
+  @ApiOperation({
+    summary:
+      'Retry payment to send payment instructions to FSP for failed transactions',
+  })
+  @PaginatedSwaggerDocs(
+    TransactionViewEntity,
+    PaginateConfigTransactionViewRetry,
+  )
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: 'boolean',
+    description: 'Not used for this endpoint',
+    deprecated: true,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: 'boolean',
+    description: 'Not used for this endpoint',
+    deprecated: true,
+  })
+  @ApiQuery({
+    name: 'dryRun',
+    required: false,
+    type: 'boolean',
+    description: `
+      Only when set explicitly to "true", this will simulate (and NOT actually DO) the action.
+      Instead it will return how many PAs this action can be applied to.
+      So no transactions will be retried yet.
+      `,
+  })
+  @HttpCode(HttpStatus.ACCEPTED)
+  @Post('programs/:programId/payments/:paymentId/retry')
+  public async retryPayment(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('paymentId', ParseIntPipe) paymentId: number,
+    @Paginate() paginateQuery: PaginateQuery,
+    @Req() req: ScopedUserRequest,
+    @Query('dryRun') dryRun = 'false',
+  ): Promise<BulkActionResultDto> {
+    const userId = RequestHelper.getUserId(req);
+
+    return await this.paymentsExecutionService.retryPayment({
+      userId,
+      programId,
+      paymentId,
+      paginateQuery,
+      dryRun: dryRun === 'true',
+    });
   }
 
   @AuthenticatedUser({
@@ -342,23 +379,30 @@ export class PaymentsController {
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
-  @ApiOperation({ summary: '[SCOPED] Get all transactions for this paymentId' })
+  @ApiOperation({
+    summary: '[SCOPED] Get paginated transactions for this paymentId',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Retrieved transactions',
-    type: [GetTransactionResponseDto],
+    type: [ExportTransactionResponseDto],
   })
+  @PaginatedSwaggerDocs(TransactionViewEntity, PaginateConfigTransactionView)
   @Get('programs/:programId/payments/:paymentId/transactions')
-  public async getTransactions(
+  public async getTransactionsByPaymentIdPaginated(
+    @Paginate() paginateQuery: PaginateQuery,
     @Param('programId', ParseIntPipe)
     programId: number,
     @Param('paymentId', ParseIntPipe) paymentId: number,
-  ): Promise<GetTransactionResponseDto[]> {
-    return await this.paymentsReportingService.getTransactionsByPaymentId({
-      programId,
-      paymentId,
-    });
+  ): Promise<FindAllTransactionsResultDto> {
+    return await this.paymentsReportingService.getTransactionsByPaymentIdPaginated(
+      {
+        programId,
+        paymentId,
+        paginateQuery,
+      },
+    );
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentREAD] })
@@ -370,7 +414,7 @@ export class PaymentsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Return Payment Events by Payment Id.',
-    type: [PaymentEventDataDto],
+    type: [Object],
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,

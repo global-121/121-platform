@@ -41,6 +41,27 @@ const mockTransactions = [
   createMockTransaction('102', 200, TransactionStatusEnum.success),
 ];
 
+const mockPaginate = jest.fn();
+jest.mock('nestjs-paginate', () => ({
+  paginate: (...args) => mockPaginate(...args),
+  FilterOperator: {
+    // The filter operators need to be defined for the tests to run
+    EQ: '$eq',
+    IN: '$in',
+    ILIKE: '$ilike',
+    NULL: '$null',
+    NOT: '$not',
+    GTE: '$gte',
+    GT: '$gt',
+    LTE: '$lte',
+    LT: '$lt',
+    BTW: '$btw',
+  },
+  FilterSuffix: {
+    NOT: '$not',
+  },
+}));
+
 describe('PaymentsReportingService - getTransactions', () => {
   let service: PaymentsReportingService;
   let transactionScopedRepository: TransactionViewScopedRepository;
@@ -88,14 +109,14 @@ describe('PaymentsReportingService - getTransactions', () => {
   });
 
   describe('getTransactionsByPaymentId', () => {
-    it('should return transactions with names', async () => {
+    it('should return transactions', async () => {
       // Arrange
       const programId = 1;
       const paymentId = 2;
 
       const mockRegistrationViews = [
-        { referenceId: '101', name: 'John Doe' },
-        { referenceId: '102', name: 'Jane Smith' },
+        { referenceId: '101' },
+        { referenceId: '102' },
       ] as MappedPaginatedRegistrationDto[];
 
       jest
@@ -109,17 +130,27 @@ describe('PaymentsReportingService - getTransactions', () => {
         )
         .mockResolvedValue(mockRegistrationViews);
 
-      // Act
-      const result = await service.getTransactionsByPaymentId({
-        programId,
-        paymentId,
+      mockPaginate.mockResolvedValueOnce({
+        data: mockTransactions,
+        meta: {},
+        links: {},
       });
 
+      // Act
+      const result = await service.getTransactionsByPaymentIdPaginated({
+        programId,
+        paymentId,
+        paginateQuery: { path: '' },
+      });
+      const data = result.data;
+      const meta = result.meta;
+
       // Assert
-      expect(result).toEqual([
-        { ...mockTransactions[0], registrationName: 'John Doe' },
-        { ...mockTransactions[1], registrationName: 'Jane Smith' },
+      expect(data).toEqual([
+        { ...mockTransactions[0] },
+        { ...mockTransactions[1] },
       ]);
+      expect(meta).toBeDefined();
     });
 
     it('should throw 404 if payment does not exist', async () => {
@@ -131,7 +162,11 @@ describe('PaymentsReportingService - getTransactions', () => {
 
       // Act & Assert
       await expect(
-        service.getTransactionsByPaymentId({ programId, paymentId }),
+        service.getTransactionsByPaymentIdPaginated({
+          programId,
+          paymentId,
+          paginateQuery: { path: '' },
+        }),
       ).rejects.toMatchSnapshot();
     });
 
@@ -140,23 +175,18 @@ describe('PaymentsReportingService - getTransactions', () => {
       const programId = 1;
       const paymentId = 2;
 
-      jest
-        .spyOn(transactionScopedRepository, 'getTransactions')
-        .mockResolvedValue([]);
+      mockPaginate.mockResolvedValueOnce({ data: [], meta: {}, links: {} });
 
       // Act
-      const result = await service.getTransactionsByPaymentId({
+      const result = await service.getTransactionsByPaymentIdPaginated({
         programId,
         paymentId,
+        paginateQuery: { path: '' },
       });
 
       // Assert
-      expect(transactionScopedRepository.getTransactions).toHaveBeenCalledWith({
-        programId,
-        paymentId,
-        enableScope: true,
-      });
-      expect(result).toEqual([]);
+      const data = result.data;
+      expect(data).toEqual([]);
     });
   });
 

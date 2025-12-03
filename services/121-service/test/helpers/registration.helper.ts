@@ -91,19 +91,24 @@ export function importRegistrationsCSV(
     .attach('file', filePath);
 }
 
-export function duplicateRegistrations({
+export function duplicateRegistrationsAndPaymentData({
   powerNumberRegistration,
   accessToken,
   body = {},
+  numberOfPayments = 0,
 }: {
   powerNumberRegistration: number;
   accessToken: string;
   body: object;
+  numberOfPayments?: number;
 }): Promise<request.Response> {
   return getServer()
     .post('/scripts/duplicate-registrations')
     .set('Cookie', [accessToken])
-    .query({ mockPowerNumberRegistrations: powerNumberRegistration })
+    .query({
+      mockPowerNumberRegistrations: powerNumberRegistration,
+      mockNumberPayments: numberOfPayments,
+    })
     .send(body);
 }
 
@@ -682,7 +687,7 @@ export async function getMessageHistoryUntilX(
 export async function seedPaidRegistrations({
   registrations,
   programId,
-  amount = 20,
+  transferValue = 20,
   completeStatuses = [
     TransactionStatusEnum.success,
     TransactionStatusEnum.waiting,
@@ -690,7 +695,7 @@ export async function seedPaidRegistrations({
 }: {
   registrations: any[];
   programId: number;
-  amount?: number;
+  transferValue?: number;
   completeStatuses?: TransactionStatusEnum[];
 }): Promise<number> {
   const accessToken = await getAccessToken();
@@ -700,7 +705,7 @@ export async function seedPaidRegistrations({
   return await doPaymentAndWaitForCompletion({
     programId,
     referenceIds: registrationReferenceIds,
-    transferValue: amount,
+    transferValue,
     accessToken,
     completeStatuses,
   });

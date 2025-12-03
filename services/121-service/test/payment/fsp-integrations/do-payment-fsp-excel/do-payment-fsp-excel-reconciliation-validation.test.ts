@@ -8,7 +8,7 @@ import {
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   importFspReconciliationData,
 } from '@121-service/test/helpers/program.helper';
 import { postProgramFspConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
@@ -50,12 +50,13 @@ describe('Reconciliate excel FSP data', () => {
 
   const getTransactionStatuses = async () => {
     // Validate that transactions are still waiting
-    const transactionsResponse = await getTransactions({
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
       programId: programIdWesteros,
       paymentId,
       accessToken,
     });
-    return transactionsResponse.body.map((transaction) => transaction.status);
+    const transactions = transactionsResponse.body.data;
+    return transactions.map((transaction) => transaction.status);
   };
 
   // No need to reset DB before each test, as we will only import reconciliation files unsuccessfully
@@ -66,7 +67,7 @@ describe('Reconciliate excel FSP data', () => {
     await seedPaidRegistrations({
       registrations: registrationsWesteros,
       programId: programIdWesteros,
-      amount: transferValue,
+      transferValue,
       completeStatuses: [TransactionStatusEnum.waiting],
     });
 

@@ -4,7 +4,7 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
   importFspReconciliationData,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -26,7 +26,7 @@ import {
 describe('Do payment with Excel FSP', () => {
   let accessToken: string;
   // Payment info
-  const amount = 10;
+  const transferValue = 10;
 
   let pamymentIdWesteros: number;
 
@@ -54,7 +54,7 @@ describe('Do payment with Excel FSP', () => {
       pamymentIdWesteros = await seedPaidRegistrations({
         registrations: registrationsWesteros,
         programId: programIdWesteros,
-        amount,
+        transferValue,
         completeStatuses: [TransactionStatusEnum.waiting],
       });
 
@@ -94,7 +94,7 @@ describe('Do payment with Excel FSP', () => {
           TransactionStatusEnum.error,
         ],
       });
-      const transactionsResponse = await getTransactions({
+      const transactionsResponse = await getTransactionsByPaymentIdPaginated({
         programId: programIdWesteros,
         paymentId: pamymentIdWesteros,
         registrationReferenceId: null,
@@ -115,19 +115,20 @@ describe('Do payment with Excel FSP', () => {
         }
       }
       // Check for updated transaction if the status matches the imported status
-      const transactionSuccess = transactionsResponse.body.find(
+      const transactions = transactionsResponse.body.data;
+      const transactionSuccess = transactions.find(
         (t) => t.registrationReferenceId === registrationWesteros1.referenceId,
       );
       expect(transactionSuccess.status).toBe(TransactionStatusEnum.success);
       expect(transactionSuccess.errorMessage).toBeNull();
 
-      const transactionError = transactionsResponse.body.find(
+      const transactionError = transactions.find(
         (t) => t.registrationReferenceId === registrationWesteros2.referenceId,
       );
       expect(transactionError.status).toBe(TransactionStatusEnum.error);
       expect(transactionError.errorMessage).toBe(errorMessage);
 
-      const transactionWaiting = transactionsResponse.body.find(
+      const transactionWaiting = transactions.find(
         (t) => t.registrationReferenceId === registrationWesteros3.referenceId,
       );
       expect(transactionWaiting.status).toBe(TransactionStatusEnum.waiting);
@@ -138,7 +139,7 @@ describe('Do payment with Excel FSP', () => {
       pamymentIdWesteros = await seedPaidRegistrations({
         registrations: [registrationWesteros1],
         programId: programIdWesteros,
-        amount,
+        transferValue,
         completeStatuses: [TransactionStatusEnum.waiting],
       });
 
@@ -173,13 +174,14 @@ describe('Do payment with Excel FSP', () => {
         reconciliationData: reconciliationDataIronbankOverwrite,
       });
 
-      const transactionsResponse = await getTransactions({
+      const transactionsResponse = await getTransactionsByPaymentIdPaginated({
         programId: programIdWesteros,
         paymentId: pamymentIdWesteros,
         registrationReferenceId: null,
         accessToken,
       });
-      const transaction = transactionsResponse.body.find(
+      const transactions = transactionsResponse.body.data;
+      const transaction = transactions.find(
         (t) => t.registrationReferenceId === registrationWesteros1.referenceId,
       );
 

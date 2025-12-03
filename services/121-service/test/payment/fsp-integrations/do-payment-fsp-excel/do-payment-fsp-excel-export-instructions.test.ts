@@ -10,7 +10,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import programTest from '@121-service/src/seed-data/program/program-test.json';
 import {
   getFspInstructions,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
 } from '@121-service/test/helpers/program.helper';
 import {
   deleteProgramFspConfigurationProperty,
@@ -32,7 +32,7 @@ import {
 describe('Do payment with Excel FSP', () => {
   let accessToken: string;
   // Payment info
-  const amount = 10;
+  const transferValue = 10;
   // Registrations
   const registrationsWesteros = [
     registrationWesteros1,
@@ -76,7 +76,7 @@ describe('Do payment with Excel FSP', () => {
     excelPaymentIdWesteros = await seedPaidRegistrations({
       registrations: registrationsWesteros,
       programId: programIdWesteros,
-      amount,
+      transferValue,
       completeStatuses: [TransactionStatusEnum.waiting],
     });
 
@@ -92,7 +92,7 @@ describe('Do payment with Excel FSP', () => {
     voucherPaymentIdWesteros = await seedPaidRegistrations({
       registrations: [voucherRegistrationWesteros],
       programId: programIdWesteros,
-      amount,
+      transferValue,
       completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
@@ -109,7 +109,7 @@ describe('Do payment with Excel FSP', () => {
     paymentIdCbe = await seedPaidRegistrations({
       registrations: registrationsProgramWithValidation,
       programId: programIdCbe,
-      amount,
+      transferValue,
       completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
@@ -121,11 +121,12 @@ describe('Do payment with Excel FSP', () => {
     beforeEach(async () => {
       await seedPrograms();
     });
+
     it('Should return specified columns on Get FSP instruction with Excel-FSP when "columnsToExport" is set', async () => {
       // Arrange
 
       // Act
-      const transactionsResponse = await getTransactions({
+      const transactionsResponse = await getTransactionsByPaymentIdPaginated({
         programId: programIdWesteros,
         paymentId: excelPaymentIdWesteros,
         registrationReferenceId: null,
@@ -140,7 +141,7 @@ describe('Do payment with Excel FSP', () => {
       const fspInstructions = fspInstructionsResponse.body;
 
       // Assert
-      for (const transaction of transactionsResponse.body) {
+      for (const transaction of transactionsResponse.body.data) {
         expect(transaction.status).toBe(TransactionStatusEnum.waiting);
       }
       // Sort fspInstructions by phoneNumber

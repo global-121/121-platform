@@ -73,7 +73,11 @@ test('Retry payments should put failed transactions back in processing and downl
     await paymentPage.validateRetryFailedTransactionsButtonToBeVisible();
     // Timeout has to be used in this case because choose option is not visible immediately after the dropdown button is clicked
     await page.waitForTimeout(200);
-    await paymentPage.retryFailedTransactions();
+    await paymentPage.retryFailedTransactions({
+      totalTransactions: 4,
+      failedTransactions: 2,
+      filterFirst: true,
+    });
     // Start download of the payment instructions file
     await paymentPage.selectPaymentExportOption({
       option: 'Export FSP payment list',

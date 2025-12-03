@@ -6,7 +6,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { getVoucherBalance } from '@121-service/test/helpers/fsp-specific.helper';
 import {
   getPayments,
-  getTransactions,
+  getTransactionsByPaymentIdPaginated,
 } from '@121-service/test/helpers/program.helper';
 import {
   getMessageHistory,
@@ -54,15 +54,16 @@ describe('Mock registrations', () => {
     const paymentsResponse = await getPayments(programId, accessToken);
     for (const paymentData of paymentsResponse.body) {
       const paymentId = paymentData.paymentId;
-      const transactionsResponse = await getTransactions({
+      const transactionsResponse = await getTransactionsByPaymentIdPaginated({
         programId,
         paymentId,
         registrationReferenceId: null,
         accessToken,
       });
+      const transactions = transactionsResponse.body.data;
 
       // Assert 4 transactions per payment (one for each registration)
-      expect(transactionsResponse.body.length).toBe(4);
+      expect(transactions.length).toBe(4);
       expect(transactionsResponse.text).toContain(
         TransactionStatusEnum.success,
       );
