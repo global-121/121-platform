@@ -1,3 +1,4 @@
+import { TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -21,15 +22,21 @@ import {
 @Component({
   selector: 'app-locale-switcher',
   imports: [FormsModule, SelectModule],
+  providers: [TitleCasePipe],
   templateUrl: './locale-switcher.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LocaleSwitcherComponent {
   private locale = inject<Locale>(LOCALE_ID);
-  public locales = getAvailableLocales();
+  private titleCasePipe = inject(TitleCasePipe);
+
+  public locales = getAvailableLocales().map((locale) => ({
+    label: this.titleCasePipe.transform(locale.label),
+    value: locale.value,
+  }));
   public readonly selectedLocale = model(this.locale);
   public readonly selectedLocaleLabel = computed(() =>
-    getLocaleLabel(this.selectedLocale()),
+    this.titleCasePipe.transform(getLocaleLabel(this.selectedLocale())),
   );
 
   constructor() {
