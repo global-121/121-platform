@@ -24,7 +24,11 @@ const testTimeout = 120_000; // 120 seconds
 
 const isPerformanceCronjob =
   // eslint-disable-next-line n/no-process-env
-  process.env.GITHUB_WORKFLOW === 'test_jest_performance_cronjob';
+  process.env.CI === 'true' &&
+  // eslint-disable-next-line n/no-process-env
+  process.env.GITHUB_WORKFLOW?.includes('Performance');
+
+console.log('isPerformanceCronjob: ', isPerformanceCronjob);
 const duplicateNumber = isPerformanceCronjob
   ? duplicateHighNumber
   : duplicateLowNumber;
