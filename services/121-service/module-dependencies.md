@@ -23,15 +23,6 @@ graph LR
   CronjobModule-->IntersolveVoucherReconciliationModule
   CronjobModule-->NedbankReconciliationModule
   CronjobModule-->OnafriqReconciliationModule
-<<<<<<< HEAD
-=======
-  DebitCardsIntersolveVisaModule-->IntersolveVisaModule
-  DebitCardsIntersolveVisaModule-->MessageQueuesModule
-  DebitCardsIntersolveVisaModule-->ProgramFspConfigurationsModule
-  DebitCardsIntersolveVisaModule-->RegistrationDataModule
-  DebitCardsIntersolveVisaModule-->RegistrationUtilsModule
-  DebitCardsIntersolveVisaModule-->UserModule
->>>>>>> 0de47d38c (shared get reg or throw func)
   ExcelModule-->RegistrationsModule
   ExcelModule-->TransactionsModule
   ExcelReconcilicationModule-->ExcelModule
@@ -95,7 +86,7 @@ graph LR
   NedbankReconciliationModule-->NedbankModule
   NedbankReconciliationModule-->TransactionEventsModule
   NedbankReconciliationModule-->TransactionsModule
-  NoteModule-->RegistrationUtilsModule
+  NoteModule-->RegistrationsModule
   NoteModule-->UserModule
   OnafriqModule-->ProgramFspConfigurationsModule
   OnafriqModule-->QueuesRegistryModule
@@ -130,7 +121,6 @@ graph LR
   ProgramModule-->UserModule
   RegistrationEventsModule-->UserModule
   RegistrationUtilsModule-->RegistrationDataModule
-  RegistrationsModule-->DebitCardsIntersolveVisaModule
   RegistrationsModule-->FspsModule
   RegistrationsModule-->IntersolveVisaDataSynchronizationModule
   RegistrationsModule-->LookupModule
