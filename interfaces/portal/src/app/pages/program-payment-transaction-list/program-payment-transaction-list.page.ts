@@ -263,7 +263,7 @@ export class ProgramPaymentTransactionListPageComponent {
     }),
   );
 
-  readonly areThereFailedTransactions = computed(() => {
+  readonly hasFailedTransactions = computed(() => {
     if (!this.failedTransactionsResponse.isSuccess()) {
       return false;
     }
@@ -295,7 +295,7 @@ export class ProgramPaymentTransactionListPageComponent {
       return false;
     }
 
-    return this.areThereFailedTransactions();
+    return this.hasFailedTransactions();
   });
 
   retryFailedTransactions({
