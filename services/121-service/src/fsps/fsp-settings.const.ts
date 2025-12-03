@@ -77,6 +77,10 @@ export const FSP_SETTINGS: Record<Fsps, FspDto> = {
         name: FspConfigurationProperties.fundingTokenCode,
         isRequired: true,
       },
+      {
+        name: FspConfigurationProperties.postalCardDistribution,
+        isRequired: true,
+      },
     ],
   },
   [Fsps.intersolveVoucherWhatsapp]: {

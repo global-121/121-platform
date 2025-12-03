@@ -11,11 +11,13 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { injectQuery } from '@tanstack/angular-query-experimental';
 import { Button } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputMask } from 'primeng/inputmask';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
+import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { LinkCardDialogStates } from '~/pages/program-registration-debit-cards/components/link-card-dialog/enums/link-card-dialog-states.enum';
 import { ToastService } from '~/services/toast.service';
@@ -27,7 +29,11 @@ import { ToastService } from '~/services/toast.service';
   templateUrl: './link-card-dialog.component.html',
 })
 export class LinkCardDialogComponent {
-  readonly toastService = inject(ToastService);
+  private readonly toastService = inject(ToastService);
+  private readonly registrationApiService = inject(RegistrationApiService);
+  private readonly fspConfigurationApiService = inject(
+    FspConfigurationApiService,
+  );
 
   readonly programId = input.required<string>();
   readonly referenceId = input.required<string | undefined>();
@@ -42,7 +48,9 @@ export class LinkCardDialogComponent {
 
   public linkCardDialogStates = LinkCardDialogStates;
 
-  private readonly registrationApiService = inject(RegistrationApiService);
+  fspConfigurations = injectQuery(
+    this.fspConfigurationApiService.getFspConfigurations(this.programId),
+  );
 
   readonly tokenCodeInvalid: Signal<boolean> = computed(() =>
     this.tokenCode().includes('_'),
@@ -58,7 +66,9 @@ export class LinkCardDialogComponent {
   });
 
   public async linkCard() {
+    console.log('FSP CONFIGURATIONS', this.fspConfigurations.data());
     try {
+      //TODO: determine based on program config whether to link or replace
       if ((Math.random() > 0.5 ? 1 : 0) === 1 /* postalCardDistribution */) {
         await this.registrationApiService.linkCardToRegistration({
           programId: this.programId,
