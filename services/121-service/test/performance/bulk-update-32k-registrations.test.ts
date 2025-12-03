@@ -45,7 +45,8 @@ describe('Bulk update 32k registrations', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registration to be 32k
-    const mockResponse = await duplicateRegistrationsAndPaymentData({
+    console.log(duplicateNumber);
+    const duplicateRegistrationsResponse = await duplicateRegistrations({
       powerNumberRegistration: duplicateNumber,
       accessToken,
       body: {
