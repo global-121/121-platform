@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import * as crypto from 'crypto';
+import crypto from 'node:crypto';
 import { v4 as uuid } from 'uuid';
 
 import { env } from '@121-service/src/env';

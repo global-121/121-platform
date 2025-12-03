@@ -1,5 +1,5 @@
 import { expect, Locator } from '@playwright/test';
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { Page } from 'playwright';
 
 import TableComponent from '@121-e2e/portal/components/TableComponent';

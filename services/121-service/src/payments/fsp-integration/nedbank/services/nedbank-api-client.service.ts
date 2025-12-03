@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
-import * as https from 'https';
+import https from 'node:https';
 import { v4 as uuid } from 'uuid';
 
 import { env } from '@121-service/src/env';

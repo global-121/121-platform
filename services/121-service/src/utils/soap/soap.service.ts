@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import soapRequest from 'easy-soap-request';
-import fs from 'fs';
-import https from 'https';
+import fs from 'node:fs';
+import https from 'node:https';
 import * as convert from 'xml-js';
 
 import { env } from '@121-service/src/env';

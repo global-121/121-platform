@@ -54,6 +54,6 @@ export class PaymentEvent1755778755614 implements MigrationInterface {
   }
 
   public async down(_: QueryRunner): Promise<void> {
-    console.log('Always up, never down');
+    // No down migration
   }
 }

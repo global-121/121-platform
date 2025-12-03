@@ -26,6 +26,7 @@ export class DeleteSpecificPermissions1713509783878
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public async down(_queryRunner: QueryRunner): Promise<void> {}
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    // No down migration
+  }
 }

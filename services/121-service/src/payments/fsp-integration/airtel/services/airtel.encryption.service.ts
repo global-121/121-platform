@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { constants } from 'crypto';
-import { publicEncrypt } from 'crypto';
+import { constants, publicEncrypt } from 'node:crypto';
 
 @Injectable()
 export class AirtelEncryptionService {

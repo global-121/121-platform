@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 import { DataSource, Equal } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';

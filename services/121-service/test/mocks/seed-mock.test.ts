@@ -1,4 +1,5 @@
-/* eslint-disable jest/no-conditional-expect */
+import { HttpStatus } from '@nestjs/common';
+
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -75,7 +76,8 @@ describe('Mock registrations', () => {
             registration.referenceId,
             accessToken,
           );
-          expect(voucherBalanceResponse.status).toBe(200);
+          // eslint-disable-next-line jest/no-conditional-expect -- We only want to know for the PV program
+          expect(voucherBalanceResponse.status).toBe(HttpStatus.OK);
         }
       }
     }

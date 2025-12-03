@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import { UserOwnerDto } from '@121-service/src/user/dto/user-owner.dto';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
@@ -23,6 +22,7 @@ describe('User mapper', () => {
       salt: 'salt',
       active: true,
       lastLogin: new Date(),
+      // eslint-disable-next-line @typescript-eslint/no-empty-function -- Only a test stub
       hashPassword: async () => {},
       created: new Date(),
       updated: new Date(),

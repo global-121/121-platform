@@ -2,7 +2,7 @@ import { Controller, Get, HttpStatus, Param, Res } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 import { Response } from 'express';
-import stream from 'stream';
+import stream from 'node:stream';
 
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 

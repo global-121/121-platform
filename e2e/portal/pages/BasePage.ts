@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import { Locator, Page } from 'playwright';
 import * as XLSX from 'xlsx';
 

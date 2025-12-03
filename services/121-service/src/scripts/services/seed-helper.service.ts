@@ -1,11 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import crypto from 'crypto';
 import FormData from 'form-data';
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
-import { join } from 'path';
-import * as readline from 'readline';
+import crypto from 'node:crypto';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import readline from 'node:readline';
 import { DataSource, DeepPartial, Equal, In } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
@@ -148,7 +147,7 @@ export class SeedHelperService {
   }
 
   private getSeedDataPath(subPath: string): string {
-    return join(__dirname, '../../seed-data', subPath);
+    return path.join(__dirname, '../../seed-data', subPath);
   }
 
   public async addDefaultUsers(

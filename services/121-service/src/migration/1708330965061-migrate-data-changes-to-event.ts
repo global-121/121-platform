@@ -18,8 +18,9 @@ export class MigrateDataChangesToEvent1708330965061
     await queryRunner.startTransaction();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public async down(_queryRunner: QueryRunner): Promise<void> {}
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    // No down migration
+  }
 
   private async migrateData(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
