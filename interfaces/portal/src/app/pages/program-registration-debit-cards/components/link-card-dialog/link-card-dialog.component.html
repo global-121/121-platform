@@ -25,8 +25,13 @@
         [(ngModel)]="tokenCode"
         placeholder="____-____-____-____-___"
         mask="9999-9999-9999-9999-999"
+        [invalid]="tokenCodeInvalid()"
         [style]="{ width: '100%' }"
+        [autoClear]="false"
       ></p-input-mask>
+      <app-form-error
+        [error]="tokenCodeInvalid() && 'Fill up all 19 digits to link card'"
+      />
       <div class="w-full">
         <div class="flex justify-end gap-2">
           <p-button
