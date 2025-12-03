@@ -10,11 +10,15 @@ import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
-import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
+import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 
 describe('DebitCardsIntersolveVisaService', () => {
+  function mockGetRegistrationOrThrow(returnValue: any) {
+    jest
+      .spyOn(service, 'getRegistrationOrThrow')
+      .mockResolvedValue(returnValue);
+  }
   let service: DebitCardsIntersolveVisaService;
-  let registrationUtilsService: jest.Mocked<RegistrationUtilsService>;
   let intersolveVisaService: jest.Mocked<IntersolveVisaService>;
   let queueMessageService: jest.Mocked<MessageQueuesService>;
   let programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
@@ -24,12 +28,6 @@ describe('DebitCardsIntersolveVisaService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         DebitCardsIntersolveVisaService,
-        {
-          provide: RegistrationUtilsService,
-          useValue: {
-            getRegistrationOrThrow: jest.fn(),
-          },
-        },
         {
           provide: MessageQueuesService,
           useValue: {
@@ -61,11 +59,16 @@ describe('DebitCardsIntersolveVisaService', () => {
             getRegistrationDataArrayByName: jest.fn(),
           },
         },
+        {
+          provide: RegistrationScopedRepository,
+          useValue: {
+            getWithRelationsByReferenceIdAndProgramId: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     service = module.get(DebitCardsIntersolveVisaService);
-    registrationUtilsService = module.get(RegistrationUtilsService);
     queueMessageService = module.get(MessageQueuesService);
     intersolveVisaService = module.get(IntersolveVisaService);
     programFspConfigurationRepository = module.get(
@@ -97,9 +100,7 @@ describe('DebitCardsIntersolveVisaService', () => {
       intersolveVisaService.getWallet.mockResolvedValue({
         holderId: null,
       } as any);
-      registrationUtilsService.getRegistrationOrThrow.mockResolvedValue(
-        registration,
-      );
+      mockGetRegistrationOrThrow(registration);
 
       // Mock registration data used to build contact information
       registrationDataScopedRepository.getRegistrationDataArrayByName.mockResolvedValue(
@@ -172,9 +173,7 @@ describe('DebitCardsIntersolveVisaService', () => {
 
     it('pauses a card and queues a notification', async () => {
       const wallet = { tokenCode: 'token' } as any;
-      registrationUtilsService.getRegistrationOrThrow.mockResolvedValue(
-        registration,
-      );
+      mockGetRegistrationOrThrow(registration);
       intersolveVisaService.pauseCardOrThrow.mockResolvedValue(wallet);
 
       const result = await service.pauseCardAndSendMessage(
@@ -202,9 +201,7 @@ describe('DebitCardsIntersolveVisaService', () => {
 
     it('sends unpause notification when pause is false', async () => {
       const wallet = { tokenCode: 'token' } as any;
-      registrationUtilsService.getRegistrationOrThrow.mockResolvedValue(
-        registration,
-      );
+      mockGetRegistrationOrThrow(registration);
       intersolveVisaService.pauseCardOrThrow.mockResolvedValue(wallet);
 
       await service.pauseCardAndSendMessage('ref-1', 1, 'token-1', false, 9);
