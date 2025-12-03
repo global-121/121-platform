@@ -50,6 +50,7 @@
             label="Link card"
             i18n-label
             class="mt-4"
+            [disabled]="tokenCodeInvalid() || tokenCode() === TOKEN_CODE_MASK"
           ></p-button>
         </div>
       </div>

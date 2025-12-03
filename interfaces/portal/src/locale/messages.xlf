@@ -2087,6 +2087,9 @@
       <trans-unit id="7960663124844501943" datatype="html">
         <source>Error - Link visa card</source>
       </trans-unit>
+      <trans-unit id="6633756087010559608" datatype="html">
+        <source>Visa card linked successfully.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
