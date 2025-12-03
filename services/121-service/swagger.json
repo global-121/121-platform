@@ -1093,7 +1093,6 @@
     "params": [
       "programId",
       "referenceId",
-<<<<<<< HEAD
       "tokenCode",
       "pause"
     ]
@@ -1122,21 +1121,13 @@
     "params": [
       "programId",
       "referenceId"
-=======
-      "tokenCode"
->>>>>>> 8c0d51ea5 (some minor copilot suggestions)
     ]
   },
   {
     "method": "post",
-<<<<<<< HEAD
     "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/on-site/link",
-=======
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/replace-card/{tokenCode}",
->>>>>>> 4c8b02e70 (update endpoints)
     "params": [
       "programId",
-<<<<<<< HEAD
       "referenceId"
     ]
   },
@@ -1146,10 +1137,6 @@
     "params": [
       "programId",
       "referenceId"
-=======
-      "referenceId",
-      "tokenCode"
->>>>>>> 8c0d51ea5 (some minor copilot suggestions)
     ]
   }
 ]

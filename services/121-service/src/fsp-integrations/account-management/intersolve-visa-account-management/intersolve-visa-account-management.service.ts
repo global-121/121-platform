@@ -364,11 +364,10 @@ export class IntersolveVisaAccountManagementService {
   ): Promise<void> {
     await this.checkIfCardIsAlreadyLinked(tokenCode);
 
-    const registration: RegistrationEntity =
-      await this.registrationUtilsService.getRegistrationOrThrow({
-        referenceId,
-        programId,
-      });
+    const registration: RegistrationEntity = await this.getRegistrationOrThrow({
+      referenceId,
+      programId,
+    });
 
     const contactInfo = await this.getContactInformation(registration);
 
@@ -422,11 +421,10 @@ export class IntersolveVisaAccountManagementService {
     pause: boolean,
     userId: number,
   ): Promise<IntersolveVisaChildWalletEntity> {
-    const registration =
-      await this.registrationUtilsService.getRegistrationOrThrow({
-        referenceId,
-        programId,
-      });
+    const registration = await this.getRegistrationOrThrow({
+      referenceId,
+      programId,
+    });
     const updatedWallet = await this.intersolveVisaService.pauseCardOrThrow(
       tokenCode,
       pause,
@@ -451,11 +449,10 @@ export class IntersolveVisaAccountManagementService {
     referenceId: string,
     programId: number,
   ): Promise<void> {
-    const registration =
-      await this.registrationUtilsService.getRegistrationOrThrow({
-        referenceId,
-        programId,
-      });
+    const registration = await this.getRegistrationOrThrow({
+      referenceId,
+      programId,
+    });
     const contactInfo: DebitCardsContactInfo =
       await this.getContactInformation(registration);
     await this.sendCustomerInformationToIntersolve({
