@@ -1,5 +1,5 @@
 <app-form-dialog
-  #retryTransactionsConfirmationDialog
+  #confirmationDialog
   header="Retry failed transaction(s)"
   i18n-header="@@retry-failed-transactions"
   headerIcon="pi pi-refresh"
@@ -9,13 +9,11 @@
   [mutationData]="{ dryRun: true }"
 >
   <p i18n>
-    You are about to retry {{ transactionCount() | number }} transaction(s). The
-    transaction status will change to Processing until received by the
-    registration.
+    {{ transactionsToRetryText(transactionCount() | number)() }}
   </p>
 </app-form-dialog>
 <app-form-dialog
-  #dryRunWarningDialog
+  #nonApplicableWarningDialog
   header="Warning"
   i18n-header="@@generic-warning"
   headerClass="text-orange-700"
@@ -38,9 +36,7 @@
       i18n
       class="pt-2"
     >
-      You are about to retry {{ data.applicableCount | number }} transaction(s).
-      The transaction status will change to 'Processing' until received by the
-      registration.
+      {{ transactionsToRetryText(data.applicableCount | number)() }}
     </p>
   }
 </app-form-dialog>

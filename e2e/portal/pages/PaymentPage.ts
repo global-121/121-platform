@@ -206,7 +206,7 @@ class PaymentPage extends BasePage {
 
     // Check for the sentence in the first popup
     const expectedFirstDialogText = this.page.getByText(
-      `You are about to retry ${expectedSelectedTransactions} transaction(s). The transaction status will change to Processing until received by the registration.`,
+      `You are about to retry ${expectedSelectedTransactions} transaction(s). The transaction status will change to 'Processing' until received by the registration.`,
     );
     await expect(expectedFirstDialogText).toBeVisible();
 

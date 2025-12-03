@@ -53,13 +53,11 @@ export class RetryTransactionsDialogComponent {
   readonly referenceIdsForRetryTransactions = signal<string[] | undefined>([]);
   readonly transactionCount = signal<number>(0);
 
-  readonly retryTransactionsConfirmationDialog =
-    viewChild.required<FormDialogComponent>(
-      'retryTransactionsConfirmationDialog',
-    );
+  readonly confirmationDialog =
+    viewChild.required<FormDialogComponent>('confirmationDialog');
 
-  readonly dryRunWarningDialog = viewChild.required<FormDialogComponent>(
-    'dryRunWarningDialog',
+  readonly nonApplicableWarningDialog = viewChild.required<FormDialogComponent>(
+    'nonApplicableWarningDialog',
   );
 
   readonly dryRunResult = signal<
@@ -85,7 +83,7 @@ export class RetryTransactionsDialogComponent {
           this.retryFailedTransactionsMutation.mutate({ dryRun: false });
           return;
         }
-        this.retryTransactionsConfirmationDialog().hide();
+        this.confirmationDialog().hide();
         this.toastService.showToast({
           summary: $localize`Retrying transactions`,
           detail: $localize`${data.applicableCount} transactions(s) are being retried. The status change can take up to a minute to process.`,
@@ -99,7 +97,7 @@ export class RetryTransactionsDialogComponent {
 
       this.dryRunResult.set(data);
 
-      this.dryRunWarningDialog().show({ resetMutation: false });
+      this.nonApplicableWarningDialog().show({ resetMutation: false });
       if (!variables.dryRun) {
         this.invalidateCache();
       }
@@ -143,6 +141,15 @@ export class RetryTransactionsDialogComponent {
     },
   );
 
+  transactionsToRetryText = (formattedTransactionCount: null | string) =>
+    computed(() => {
+      if (!formattedTransactionCount) {
+        return '';
+      }
+      return $localize`You are about to retry ${formattedTransactionCount} transaction(s).
+      The transaction status will change to 'Processing' until received by the
+      registration.`;
+    });
   public retryFailedTransactions({
     transactionCount,
     referenceIds,
@@ -172,7 +179,7 @@ export class RetryTransactionsDialogComponent {
 
     this.referenceIdsForRetryTransactions.set(referenceIds);
     this.transactionCount.set(transactionCount);
-    this.retryTransactionsConfirmationDialog().show({
+    this.confirmationDialog().show({
       trackingEvent: {
         category: TrackingCategory.manageTransactions,
         action: TrackingAction.clickProceedButton,
