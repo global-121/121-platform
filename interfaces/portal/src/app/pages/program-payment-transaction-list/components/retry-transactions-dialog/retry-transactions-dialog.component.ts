@@ -94,12 +94,14 @@ export class RetryTransactionsDialogComponent {
 
         this.invalidateCache();
         return;
-      } else {
-        this.invalidateCache();
       }
+
       this.dryRunResult.set(data);
 
       this.dryRunWarningDialog().show({ resetMutation: false });
+      if (!variables.dryRun) {
+        this.invalidateCache();
+      }
     },
     onError: (error) => {
       this.toastService.showToast({
