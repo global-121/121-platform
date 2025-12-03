@@ -748,11 +748,20 @@
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/link-card",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/link-card/{tokenCode}",
     "params": [
       "programId",
       "referenceId",
-      "cardNumber"
+      "tokenCode"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/replace-card/{tokenCode}",
+    "params": [
+      "programId",
+      "referenceId",
+      "tokenCode"
     ]
   },
   {
@@ -1113,23 +1122,5 @@
     "method": "post",
     "path": "/api/fsps/safaricom/timeout-callback",
     "params": []
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/link-card",
-    "params": [
-      "programId",
-      "referenceId",
-      "tokenCode"
-    ]
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/replace-card/{tokenCode}",
-    "params": [
-      "programId",
-      "referenceId",
-      "tokenCode"
-    ]
   }
 ]
