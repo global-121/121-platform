@@ -18,9 +18,16 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-// eslint-disable-next-line n/no-process-env -- Only used in test-runs, not included in '@121-service/src/env'
-const duplicateNumber = parseInt(process.env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^15 = 32768
+const duplicateLowNumber = 5;
+const duplicateHighNumber = 15; // cronjob duplicate number should be 2^15 = 32768
 const testTimeout = 120_000; // 120 seconds
+
+const isPerformanceCronjob =
+  // eslint-disable-next-line n/no-process-env
+  process.env.GITHUB_WORKFLOW === 'test_jest_performance_cronjob';
+const duplicateNumber = isPerformanceCronjob
+  ? duplicateHighNumber
+  : duplicateLowNumber;
 
 jest.setTimeout(testTimeout);
 describe('Bulk update 32k registrations', () => {

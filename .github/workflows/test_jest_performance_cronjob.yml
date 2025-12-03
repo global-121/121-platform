@@ -1,6 +1,9 @@
 name: 'Test: Jest Performance Tests Cronjob'
 
 on:
+  push:
+    branches:
+      - Piotrk39/feat.add-performance-tests-automatically
   schedule:
     - cron: '42 1 * * 1-5'
   workflow_dispatch:
