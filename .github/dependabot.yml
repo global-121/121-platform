@@ -91,7 +91,7 @@ updates:
       dependencies:
         patterns:
           - '*'
-        exclude-patterns: # Make sure to exclude all of groups defined above
+        exclude-patterns: # Make sure to exclude all of the groups defined above
           - '@angular*'
           - 'primeng'
           - 'typescript'
