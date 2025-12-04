@@ -5,6 +5,7 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   createAndStartPayment,
   waitForMessagesToComplete,
@@ -16,6 +17,7 @@ import {
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
 import {
+  createUserWithPermissions,
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
@@ -25,6 +27,7 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import TableComponent from '@121-e2e/portal/components/TableComponent';
+import HomePage from '@121-e2e/portal/pages/HomePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActivityLogPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
@@ -152,5 +155,39 @@ test('Expand rows of activity overview and view transaction history', async ({
         name: 'View voucher',
       }),
     ).toBeVisible();
+  });
+
+  await test.step('User with only "payment.read" permission should be able to see balance, but not "view voucher" button', async () => {
+    const username = await createUserWithPermissions({
+      permissions: [PermissionEnum.PaymentREAD],
+      programId: programIdPV,
+      adminAccessToken: await getAccessToken(),
+    });
+
+    const homePage = new HomePage(page);
+    await homePage.selectAccountOption('Logout');
+
+    const loginPage = new LoginPage(page);
+    await loginPage.login(username, 'password');
+
+    await test.step('Navigate to registration activity log', async () => {
+      await activityLogPage.selectProgram(NLRCProgram.titlePortal.en);
+      await registrationsPage.goToRegistrationByName({
+        registrationName: registrationPV5.fullName,
+      });
+    });
+
+    // We still only see transaction activities, no need to refilter.
+    const balanceAndViewVoucherCell = tableComponent.table.getByTestId(
+      'current-balance-and-view-voucher',
+    );
+
+    await expect(balanceAndViewVoucherCell).toBeVisible();
+
+    await expect(
+      balanceAndViewVoucherCell.getByRole('button', {
+        name: 'View voucher',
+      }),
+    ).not.toBeVisible();
   });
 });
