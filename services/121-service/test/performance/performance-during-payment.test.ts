@@ -50,7 +50,6 @@ describe('Measure performance during payment', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.ACCEPTED);
     // Duplicate registration
-    console.log(duplicateNumber);
     const duplicateRegistrationsResponse =
       await duplicateRegistrationsAndPaymentData({
         powerNumberRegistration: duplicateNumber,
