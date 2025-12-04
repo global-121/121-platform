@@ -3,12 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
 import { ExcelService } from '@121-service/src/fsp-integrations/integrations/excel/excel.service';
+import { ReconciliationFeedbackDto } from '@121-service/src/fsp-integrations/reconciliation/excel/dtos/reconciliation-feedback.dto';
 import { ExcelReconciliationDefaultColumns } from '@121-service/src/fsp-integrations/reconciliation/excel/enum/excel-reconciliation-default-columns.enum';
 import { ExcelReconciliationFeedbackService } from '@121-service/src/fsp-integrations/reconciliation/excel/services/excel-reconciliation-feedback.service';
 import { ExcelReconciliationValidationService } from '@121-service/src/fsp-integrations/reconciliation/excel/services/excel-reconciliation-validation.service';
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
-import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconciliation-feedback.dto';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';

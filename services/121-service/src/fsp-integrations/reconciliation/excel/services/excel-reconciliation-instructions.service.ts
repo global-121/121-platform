@@ -2,8 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Equal, In } from 'typeorm';
 
 import { ExcelService } from '@121-service/src/fsp-integrations/integrations/excel/excel.service';
+import { ExcelReconciliationInstructions } from '@121-service/src/fsp-integrations/reconciliation/excel/dtos/excel-reconciliation-instructions.dto';
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
@@ -16,7 +16,7 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 // TODO: REFACTOR: This should be refactored to be only for the excel FSP and it should be evaluated if code can be moved to the ExcelModule
 
 @Injectable()
-export class PaymentsExcelFspService {
+export class ExcelReconciliationInstructionsService {
   public constructor(
     private readonly excelService: ExcelService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
@@ -28,7 +28,7 @@ export class PaymentsExcelFspService {
   public async getFspInstructions(
     programId: number,
     paymentId: number,
-  ): Promise<FspInstructions[]> {
+  ): Promise<ExcelReconciliationInstructions[]> {
     /////////////////////////////////////
     // Validation & preparation
     /////////////////////////////////////
@@ -90,7 +90,7 @@ export class PaymentsExcelFspService {
     /////////////////////////////////////
 
     /// Separate transactionsWithFspInstruction based on their programFspConfigurationName
-    const allFspInstructions: FspInstructions[] = [];
+    const allFspInstructions: ExcelReconciliationInstructions[] = [];
     for (const fspConfigEntity of programFspConfigEntitiesWithFspInstruction) {
       const fspInstructions =
         await this.getFspInstructionsPerProgramFspConfiguration({
@@ -118,7 +118,7 @@ export class PaymentsExcelFspService {
     programId: number;
     programFspConfigurationName: string;
     programFspConfigurationId: number;
-  }): Promise<FspInstructions> {
+  }): Promise<ExcelReconciliationInstructions> {
     return {
       data: await this.excelService.getFspInstructions({
         transactions,

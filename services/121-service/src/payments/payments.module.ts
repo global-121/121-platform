@@ -2,7 +2,6 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ExcelModule } from '@121-service/src/fsp-integrations/integrations/excel/excel.module';
 import { TransactionQueuesModule } from '@121-service/src/fsp-integrations/transaction-queues/transaction-queues.module';
 import { FspsModule } from '@121-service/src/fsp-management/fsp.module';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
@@ -12,7 +11,6 @@ import { PaymentEventsModule } from '@121-service/src/payments/payment-events/pa
 import { PaymentsController } from '@121-service/src/payments/payments.controller';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { PaymentsCreationService } from '@121-service/src/payments/services/payments-creation.service';
-import { PaymentsExcelFspService } from '@121-service/src/payments/services/payments-excel-fsp.service';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
@@ -40,7 +38,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     UserModule,
     HttpModule,
     TransactionsModule,
-    ExcelModule,
     RegistrationsModule,
     ProgramModule,
     RegistrationUtilsModule,
@@ -62,7 +59,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     PaymentsProgressHelperService,
     PaymentsHelperService,
     TransactionJobsCreationService,
-    PaymentsExcelFspService,
     LookupService,
     InclusionScoreService,
     AzureLogService,

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { ImportReconciliationResponseDto } from '@121-service/src/fsp-integrations/reconciliation/excel/dtos/import-reconciliation-response.dto';
-import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconciliation-feedback.dto';
+import { ReconciliationFeedbackDto } from '@121-service/src/fsp-integrations/reconciliation/excel/dtos/reconciliation-feedback.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';

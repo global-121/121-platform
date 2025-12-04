@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { ExcelAggregateImportResultDto } from '@121-service/src/fsp-integrations/reconciliation/excel/dtos/excel-aggregate-import-result.dto';
-import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconciliation-feedback.dto';
+import { ReconciliationFeedbackDto } from '@121-service/src/fsp-integrations/reconciliation/excel/dtos/reconciliation-feedback.dto';
 
 export class ImportReconciliationResponseDto {
   @ApiProperty({

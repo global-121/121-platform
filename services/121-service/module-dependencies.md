@@ -92,7 +92,6 @@ graph LR
   OnafriqReconciliationModule-->QueuesRegistryModule
   OnafriqReconciliationModule-->RedisModule
   OnafriqReconciliationModule-->TransactionsModule
-  PaymentsModule-->ExcelModule
   PaymentsModule-->FspsModule
   PaymentsModule-->MessageTemplateModule
   PaymentsModule-->PaymentEventsModule
