@@ -91,7 +91,7 @@ updates:
       dependencies:
         patterns:
           - '*'
-        exclude-patterns: # Use all of the above groups:
+        exclude-patterns: # Make sure to exclude all of groups defined above
           - '@angular*'
           - 'primeng'
           - 'typescript'
@@ -107,9 +107,9 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: 'filesize'
         update-types: ['version-update:semver-major'] # See: https://www.npmjs.com/package/ngx-filesize
-      - dependency-name: 'primeng'
-        update-types: ['version-update:semver-major']
       - dependency-name: 'ngx-matomo-client' # Requires Angular v21+ See AB#39490
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'primeng'
         update-types: ['version-update:semver-major']
 
   - directory: '/e2e'
