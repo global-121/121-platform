@@ -6,7 +6,7 @@
   }"
 >
   @for (item of data(); track $index) {
-    <p
+    <div
       [attr.data-testid]="dataTestId() + '-personal-information'"
       class="border-grey-300 flex items-center border-b px-2 py-4"
       [ngClass]="{
@@ -96,6 +96,6 @@
           —
         }
       }
-    </p>
+    </div>
   }
 </div>
