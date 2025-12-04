@@ -21,6 +21,8 @@ import {
   registrationSafaricom,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
+const PERFORMANCE_TEST_SHARD = 1;
+void PERFORMANCE_TEST_SHARD; // Used by CI workflow for test discovery
 const duplicateLowNumber = 5;
 const duplicateHighNumber = 17; // cronjob duplicate number should be 2^17 = 131072
 const testTimeout = 5_400_000; // 90 minutes

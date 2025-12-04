@@ -18,6 +18,8 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
+const PERFORMANCE_TEST_SHARD = 1;
+void PERFORMANCE_TEST_SHARD; // Used by CI workflow for test discovery
 const duplicateLowNumber = 5;
 const duplicateHighNumber = 15; // cronjob duplicate number should be 2^15 = 32768
 const testTimeout = 120_000; // 120 seconds

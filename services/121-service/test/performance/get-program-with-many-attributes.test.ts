@@ -20,6 +20,8 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
+const PERFORMANCE_TEST_SHARD = 1;
+void PERFORMANCE_TEST_SHARD; // Used by CI workflow for test discovery
 const duplicateNumber = 5; // cronjob duplicate number should be 2^5 = 32
 
 // 30 seconds is jest global timeout and this test should be able to complete within that time

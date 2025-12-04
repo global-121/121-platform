@@ -18,6 +18,8 @@ import {
 import { getPaymentResults } from '@121-service/test/performance/helpers/performance.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
+const PERFORMANCE_TEST_SHARD = 3;
+void PERFORMANCE_TEST_SHARD; // Used by CI workflow for test discovery
 const duplicateLowNumber = 5;
 const duplicateHighNumber = 15; // cronjob duplicate number should be 2^15 = 32768
 const passRate = 50; // 50%

@@ -1,6 +1,9 @@
 name: 'Test: Jest Performance Tests Cronjob'
 
 on:
+  push:
+    branches:
+      - Piotrk39/feat.add-performance-tests-automatically
   schedule:
     - cron: '42 1 * * 1-5'
   workflow_dispatch:
@@ -37,37 +40,54 @@ jobs:
             - services/mock-service/**
             - '!**.md'
 
-  performance-test-shard:
+  generate-test-matrix:
     runs-on: ubuntu-latest
     needs: path-filter
+    if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
+    outputs:
+      matrix: ${{ steps.generate-matrix.outputs.matrix }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v6
+
+      - name: Generate test matrix
+        id: generate-matrix
+        working-directory: ${{ env.workingDirectory }}
+        run: |
+          # Extract performance tests and their shard numbers from PERFORMANCE_TEST_SHARD constants
+          matrix='{"include":['
+          first=true
+
+          for file in test/performance/*.test.ts; do
+            if [ -f "$file" ]; then
+              filename=$(basename "$file")
+              shard=$(grep -o "const PERFORMANCE_TEST_SHARD = [0-9]\+" "$file" | grep -o "[0-9]\+")
+
+              if [ ! -z "$shard" ]; then
+                if [ "$first" = true ]; then
+                  first=false
+                else
+                  matrix="${matrix},"
+                fi
+                matrix="${matrix}{\"shard\":\"${shard}\",\"test_name\":\"${filename}\"}"
+              fi
+            fi
+          done
+
+          matrix="${matrix}]}"
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
+
+  performance-test-shard:
+    runs-on: ubuntu-latest
+    needs: [path-filter, generate-test-matrix]
     if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
 
     strategy:
       fail-fast: false
       matrix:
-        # Shards are split into 3 groups
-        # Group 1: All the tests that are not resource intensive and run objectively fast
-        # Group 2: Test that is more resource intensive and runs longer: payment-100k-registration-intersolve-visa.test.ts
-        # Group 3: Test that runs for a long time: performance-during-payment.test.ts
-        include:
-          - shard: '1'
-            test_name: 'bulk-update-32k-registrations.test.ts'
-          - shard: '1'
-            test_name: 'find-duplicates-100k-registrations.test.ts'
-          - shard: '1'
-            test_name: 'get-program-with-many-attributes.test.ts'
-          - shard: '1'
-            test_name: 'import-1000-registrations.test.ts'
-          - shard: '1'
-            test_name: 'status-change-payment-in-large-program.test.ts'
-          - shard: '1'
-            test_name: 'paginate-transactions-and-retry.test.ts'
-          - shard: '1'
-            test_name: 'payment-100k-registration-safaricom.test.ts'
-          - shard: '2'
-            test_name: 'payment-100k-registration-intersolve-visa.test.ts'
-          - shard: '3'
-            test_name: 'performance-during-payment.test.ts'
+        # Tests are automatically discovered from the /performance folder
+        # based on PERFORMANCE_TEST_SHARD constants in each test file
+        include: ${{ fromJson(needs.generate-test-matrix.outputs.matrix) }}
 
     steps:
       - name: Check out repository code
@@ -85,7 +105,7 @@ jobs:
       - name: Run performance test - ${{ matrix.test_name }}
         working-directory: ${{ env.workingDirectory }}
         run: |
-          docker compose exec -e CI=true -e GITHUB_WORKFLOW="${{ github.workflow }}" 121-service npm run test:integration:base -t ${{ matrix.test_name }}
+          docker compose exec -e CI=true -e GITHUB_WORKFLOW="${{ github.workflow }}" 121-service npm run test:integration:base -t /performance ${{ matrix.test_name }}
 
       - name: Docker logs
         if: always()
@@ -109,12 +129,12 @@ jobs:
           echo "All performance tests have successfully passed." >> $GITHUB_STEP_SUMMARY
           echo "Test results: ${{ toJson(needs.*.result) }}" >> $GITHUB_STEP_SUMMARY
 
-      - name: Microsoft Teams Notification
-        if: always()
-        uses: tlolkema/simple-teams-message@main
-        env:
-          JOB_STATUS_WITH_NICE_EMOJI: ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}
-        with:
-          message_title: 'Jest Performance Tests Cronjob'
-          message_description: 'Job status: ${{ env.JOB_STATUS_WITH_NICE_EMOJI }}'
-          webhook: ${{ secrets.MSTEAMS_WEBHOOK }}
+      # - name: Microsoft Teams Notification
+      #   if: always()
+      #   uses: tlolkema/simple-teams-message@main
+      #   env:
+      #     JOB_STATUS_WITH_NICE_EMOJI: ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}
+      #   with:
+      #     message_title: 'Jest Performance Tests Cronjob'
+      #     message_description: 'Job status: ${{ env.JOB_STATUS_WITH_NICE_EMOJI }}'
+      #     webhook: ${{ secrets.MSTEAMS_WEBHOOK }}

@@ -14,6 +14,8 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
+const PERFORMANCE_TEST_SHARD = 1;
+void PERFORMANCE_TEST_SHARD; // Used by CI workflow for test discovery
 // For guaranteeing that test data generates duplicates we should use at least 10 as minimal duplication number for fast test and 17 for full load test
 
 const duplicateLowNumber = 10; // cronjob duplicate number should be 2^17 = 131072

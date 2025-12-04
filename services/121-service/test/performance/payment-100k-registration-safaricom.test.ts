@@ -25,6 +25,8 @@ import {
 // Safaricom is one of the payment providers which uses callbacks and therefore also has heavier/more complex
 // The other FSPs are simpler or similar to Safaricom so we decided to not test them
 
+const PERFORMANCE_TEST_SHARD = 1;
+void PERFORMANCE_TEST_SHARD; // Used by CI workflow for test discovery
 const duplicateLowNumber = 5;
 const duplicateHighNumber = 17; // cronjob duplicate number should be 2^17 = 131072
 const maxWaitTimeMs = 240_000; // 4 minutes
