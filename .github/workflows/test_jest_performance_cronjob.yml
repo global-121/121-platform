@@ -55,7 +55,7 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: |
           # Extract performance tests and their shard numbers from PERFORMANCE_TEST_SHARD constants
-          matrix='{"include":['
+          matrix='['
           first=true
 
           for file in test/performance/*.test.ts; do
@@ -74,9 +74,14 @@ jobs:
             fi
           done
 
-          matrix="${matrix}]}"
+          matrix="${matrix}]"
           echo "Generated test matrix:"
-          echo "$matrix" | jq . || echo "$matrix"
+          echo "$matrix" | jq . 2>/dev/null || echo "Matrix (raw): $matrix"
+          # Validate matrix is not empty
+          if [ "$matrix" = '[]' ]; then
+            echo "ERROR: No performance tests found with PERFORMANCE_TEST_SHARD constants"
+            exit 1
+          fi
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
   performance-test-shard:
@@ -87,8 +92,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Tests are automatically discovered from the /performance folder
-        # based on PERFORMANCE_TEST_SHARD constants in each test file
         include: ${{ fromJson(needs.generate-test-matrix.outputs.matrix) }}
 
     steps:
