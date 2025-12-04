@@ -1,9 +1,6 @@
 name: 'Test: Jest Performance Tests Cronjob'
 
 on:
-  push:
-    branches:
-      - Piotrk39/feat.add-performance-tests-automatically
   schedule:
     - cron: '42 1 * * 1-5'
   workflow_dispatch:
@@ -48,6 +45,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # Shards are split into 3 groups
+        # Group 1: All the tests that are not resource intensive and run objectively fast
+        # Group 2: Test that is more resource intensive and runs longer: payment-100k-registration-intersolve-visa.test.ts
+        # Group 3: Test that runs for a long time: performance-during-payment.test.ts
         shard: ['1', '2', '3']
         include:
           - shard: '1'
@@ -85,11 +86,7 @@ jobs:
       - name: Run performance test - ${{ matrix.test_name }}
         working-directory: ${{ env.workingDirectory }}
         run: |
-          if [ -n "${{ matrix.duplicate_number }}" ]; then
-            docker compose exec -e DUPLICATE_NUMBER=${{ matrix.duplicate_number }} -e CI=true -e GITHUB_WORKFLOW="${{ github.workflow }}" 121-service npm run test:integration:base -t ${{ matrix.test_name }}
-          else
-            docker compose exec -e CI=true -e GITHUB_WORKFLOW="${{ github.workflow }}" 121-service npm run test:integration:base -t ${{ matrix.test_name }}
-          fi
+          docker compose exec -e CI=true -e GITHUB_WORKFLOW="${{ github.workflow }}" 121-service npm run test:integration:base -t ${{ matrix.test_name }}
 
       - name: Docker logs
         if: always()
@@ -113,12 +110,12 @@ jobs:
           echo "All performance tests have successfully passed." >> $GITHUB_STEP_SUMMARY
           echo "Test results: ${{ toJson(needs.*.result) }}" >> $GITHUB_STEP_SUMMARY
 
-      # - name: Microsoft Teams Notification
-      #   if: always()
-      #   uses: tlolkema/simple-teams-message@main
-      #   env:
-      #     JOB_STATUS_WITH_NICE_EMOJI: ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}
-      #   with:
-      #     message_title: 'Jest Performance Tests Cronjob'
-      #     message_description: 'Job status: ${{ env.JOB_STATUS_WITH_NICE_EMOJI }}'
-      #     webhook: ${{ secrets.MSTEAMS_WEBHOOK }}
+      - name: Microsoft Teams Notification
+        if: always()
+        uses: tlolkema/simple-teams-message@main
+        env:
+          JOB_STATUS_WITH_NICE_EMOJI: ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}
+        with:
+          message_title: 'Jest Performance Tests Cronjob'
+          message_description: 'Job status: ${{ env.JOB_STATUS_WITH_NICE_EMOJI }}'
+          webhook: ${{ secrets.MSTEAMS_WEBHOOK }}
