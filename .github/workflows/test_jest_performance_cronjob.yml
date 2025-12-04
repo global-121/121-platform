@@ -54,41 +54,50 @@ jobs:
         id: generate-matrix
         working-directory: ${{ env.workingDirectory }}
         run: |
-          # Extract performance tests with their shard numbers and duplicate numbers
+          # Group tests by shard number (process each shard individually)
           matrix='['
           first=true
 
-          for file in test/performance/*.test.ts; do
-            if [ -f "$file" ]; then
-              filename=$(basename "$file")
-              shard=$(grep -o "const PERFORMANCE_TEST_SHARD = [0-9]\+" "$file" | grep -o "[0-9]\+")
+          # Process each shard individually (1, 2, 3)
+          for shard in 1 2 3; do
+            # Find all test files for this shard
+            test_files=""
+            file_first=true
 
-              # Extract duplicate number (prioritize duplicateHighNumber, fallback to duplicateNumber)
-              duplicate_high=$(grep -o "const duplicateHighNumber = [0-9]\+" "$file" | grep -o "[0-9]\+" || echo "")
-              duplicate_fixed=$(grep -o "const duplicateNumber = [0-9]\+" "$file" | grep -o "[0-9]\+" || echo "")
-
-              if [ -n "$duplicate_high" ]; then
-                duplicate="$duplicate_high"
-              elif [ -n "$duplicate_fixed" ]; then
-                duplicate="$duplicate_fixed"
-              else
-                duplicate=""
-              fi
-
-              if [ ! -z "$shard" ]; then
-                if [ "$first" = true ]; then
-                  first=false
+            for file in test/performance/*.test.ts; do
+              if [ -f "$file" ] && grep -q "const PERFORMANCE_TEST_SHARD = $shard" "$file"; then
+                filename=$(basename "$file")
+                if [ "$file_first" = true ]; then
+                  test_files="$filename"
+                  file_first=false
                 else
-                  matrix="${matrix},"
+                  test_files="$test_files,$filename"
                 fi
-                matrix="${matrix}{\"shard\":\"${shard}\",\"test_name\":\"${filename}\",\"duplicate_number\":\"${duplicate}\"}"
               fi
+            done
+
+            if [ ! -z "$test_files" ]; then
+              if [ "$first" = true ]; then
+                first=false
+              else
+                matrix="${matrix},"
+              fi
+              matrix="${matrix}{\"shard\":\"${shard}\",\"test_files\":\"${test_files}\"}"
             fi
           done
 
           matrix="${matrix}]"
-          echo "Generated test matrix:"
+          echo "Generated test matrix (grouped by shard):"
           echo "$matrix" | jq . 2>/dev/null || echo "Matrix (raw): $matrix"
+
+          # Show shard breakdown
+          echo "Shard breakdown:"
+          for shard in 1 2 3; do
+            count=$(grep -l "const PERFORMANCE_TEST_SHARD = $shard" test/performance/*.test.ts 2>/dev/null | wc -l)
+            if [ $count -gt 0 ]; then
+              echo "  Shard $shard: $count tests"
+            fi
+          done
 
           # Validate matrix is not empty
           if [ "$matrix" = '[]' ]; then
@@ -120,22 +129,29 @@ jobs:
         run: |
           npm run start:services:ci
 
-      - name: Run performance test - ${{ matrix.test_name }}
+      - name: Run performance tests - Shard ${{ matrix.shard }}
         working-directory: ${{ env.workingDirectory }}
         run: |
-          echo "🚀 Running performance test: ${{ matrix.test_name }} (shard: ${{ matrix.shard }})"
+          echo "🚀 Running performance tests for shard ${{ matrix.shard }}"
+          echo "Tests to run: ${{ matrix.test_files }}"
 
-          # The test files now contain the duplicate number logic internally
-          # We just need to run them with the proper CI environment variables
-          echo "Test command: docker compose exec -e CI=true -e GITHUB_WORKFLOW=\"${{ github.workflow }}\" 121-service npm run test:integration:base -t ${{ matrix.test_name }}"
+          # Split the test files and run each one
+          IFS=',' read -ra TESTS <<< "${{ matrix.test_files }}"
 
-          if ! docker compose exec -e CI=true -e GITHUB_WORKFLOW="${{ github.workflow }}" 121-service npm run test:integration:base -t ${{ matrix.test_name }}; then
-            echo "❌ Test failed: ${{ matrix.test_name }}"
-            echo "Check the logs above for detailed error information"
-            exit 1
-          fi
+          for test_file in "${TESTS[@]}"; do
+            echo "📋 Running test: $test_file"
 
-          echo "✅ Test passed: ${{ matrix.test_name }}"
+            if ! docker compose exec -e CI=true -e GITHUB_WORKFLOW="${{ github.workflow }}" 121-service npm run test:integration:base -t "$test_file"; then
+              echo "❌ Test failed: $test_file"
+              echo "Check the logs above for detailed error information"
+              exit 1
+            fi
+
+            echo "✅ Test passed: $test_file"
+            echo "---"
+          done
+
+          echo "🎉 All tests in shard ${{ matrix.shard }} completed successfully!"
 
       - name: Docker logs
         if: always()
