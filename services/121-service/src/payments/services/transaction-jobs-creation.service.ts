@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
-import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 import { TransactionJobDetails } from '@121-service/src/payments/interfaces/transaction-job-details.interface';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';

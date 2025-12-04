@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';

@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { DataSource, DeepPartial, Equal, In, Repository } from 'typeorm';
 
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';

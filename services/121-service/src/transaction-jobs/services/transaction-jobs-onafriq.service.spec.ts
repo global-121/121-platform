@@ -1,4 +1,4 @@
-import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FspConfigurationProperties } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integration/onafriq/entities/onafriq-transaction.entity';
 import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.service';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';

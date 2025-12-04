@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
 import { CreditTransferApiParams } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';

@@ -3,7 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import {
   FspConfigurationProperties,
   Fsps,
-} from '@121-service/src/fsps/enums/fsp-name.enum';
+} from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';

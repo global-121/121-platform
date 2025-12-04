@@ -1,4 +1,4 @@
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';

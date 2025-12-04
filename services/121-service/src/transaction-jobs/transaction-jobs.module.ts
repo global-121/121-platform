@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { FspsModule } from '@121-service/src/fsps/fsp.module';
+import { FspsModule } from '@121-service/src/fsp-management/fsp.module';
 import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { AirtelModule } from '@121-service/src/payments/fsp-integration/airtel/airtel.module';

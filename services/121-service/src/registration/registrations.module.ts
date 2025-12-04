@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { DebitCardsIntersolveVisaModule } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.module';
-import { FspsModule } from '@121-service/src/fsps/fsp.module';
+import { FspsModule } from '@121-service/src/fsp-management/fsp.module';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { LatestMessageEntity } from '@121-service/src/notifications/entities/latest-message.entity';
 import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';

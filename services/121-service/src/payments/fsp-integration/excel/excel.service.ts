@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
-import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FspConfigurationProperties } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { ExcelFspInstructions } from '@121-service/src/payments/fsp-integration/excel/dto/excel-fsp-instructions.dto';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';

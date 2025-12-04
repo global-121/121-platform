@@ -1,8 +1,8 @@
 import {
   FspConfigurationProperties,
   Fsps,
-} from '@121-service/src/fsps/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+} from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';

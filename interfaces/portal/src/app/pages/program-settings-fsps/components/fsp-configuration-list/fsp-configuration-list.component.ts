@@ -12,8 +12,8 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';

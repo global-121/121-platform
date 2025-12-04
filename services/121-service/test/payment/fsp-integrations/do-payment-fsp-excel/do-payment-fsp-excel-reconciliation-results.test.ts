@@ -1,4 +1,4 @@
-import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
+import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';

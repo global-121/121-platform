@@ -2,7 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { FspsModule } from '@121-service/src/fsps/fsp.module';
+import { FspsModule } from '@121-service/src/fsp-management/fsp.module';
 import { KoboConnectModule } from '@121-service/src/kobo-connect/kobo-connect.module';
 import { LookupModule } from '@121-service/src/notifications/lookup/lookup.module';
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';

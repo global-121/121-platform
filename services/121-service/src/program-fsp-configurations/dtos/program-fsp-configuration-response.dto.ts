@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { FspDto } from '@121-service/src/fsps/fsp.dto';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { FspDto } from '@121-service/src/fsp-management/fsp.dto';
 import { ProgramFspConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-property-response.dto';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 

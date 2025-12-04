@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Equal, In } from 'typeorm';
 
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';

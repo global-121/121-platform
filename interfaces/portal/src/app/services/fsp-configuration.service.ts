@@ -6,8 +6,8 @@ import { castArray, unique } from 'radashi';
 import {
   FspConfigurationProperties,
   Fsps,
-} from '@121-service/src/fsps/enums/fsp-name.enum';
-import { FspDto } from '@121-service/src/fsps/fsp.dto';
+} from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { FspDto } from '@121-service/src/fsp-management/fsp.dto';
 import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 
 import {

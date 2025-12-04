@@ -9,7 +9,7 @@ import { env } from '@121-service/src/env';
 import {
   FspConfigurationProperties,
   Fsps,
-} from '@121-service/src/fsps/enums/fsp-name.enum';
+} from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integration/onafriq/entities/onafriq-transaction.entity';
 import { OnafriqTransactionCallbackDto } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback.dto';
 import { OnafriqTransactionCallbackJobDto } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback-job.dto';

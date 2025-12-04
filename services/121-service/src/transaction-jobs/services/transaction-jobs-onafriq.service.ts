@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
-import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FspConfigurationProperties } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integration/onafriq/entities/onafriq-transaction.entity';
 import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-response-status-type.enum';
 import { OnafriqError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq.error';

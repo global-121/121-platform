@@ -7,7 +7,7 @@ import {
   EXTERNAL_API,
   IS_DEVELOPMENT,
 } from '@121-service/src/config';
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { MessageProcessType } from '@121-service/src/notifications/dto/message-job.dto';
 import {
   TwilioIncomingCallbackDto,

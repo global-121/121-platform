@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
+import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
 import {
   FspConfigurationProperties,
   Fsps,
-} from '@121-service/src/fsps/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+} from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';

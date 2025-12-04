@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { NedbankVoucherStatus } from '@121-service//src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { env } from '@121-service/src/env';
-import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FspConfigurationProperties } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
 import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-integration/nedbank/repositories/nedbank-voucher.scoped.repository';
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/services/nedbank.service';

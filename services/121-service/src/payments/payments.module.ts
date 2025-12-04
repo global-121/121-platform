@@ -2,7 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { FspsModule } from '@121-service/src/fsps/fsp.module';
+import { FspsModule } from '@121-service/src/fsp-management/fsp.module';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';

@@ -6,7 +6,7 @@ import { DataSource, Equal, QueryFailedError, Repository } from 'typeorm';
 import {
   FspConfigurationProperties,
   Fsps,
-} from '@121-service/src/fsps/enums/fsp-name.enum';
+} from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { GetTokenResult } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-token-result.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa.service';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';

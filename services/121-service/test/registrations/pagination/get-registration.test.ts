@@ -1,4 +1,4 @@
-import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
+import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getRegistrations,

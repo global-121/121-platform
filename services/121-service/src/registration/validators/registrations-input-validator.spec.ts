@@ -3,8 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';

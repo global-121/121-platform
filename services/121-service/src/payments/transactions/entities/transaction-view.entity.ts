@@ -11,7 +11,7 @@ import {
   ViewEntity,
 } from 'typeorm';
 
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';

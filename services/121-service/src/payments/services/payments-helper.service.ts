@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
-import { getFspConfigurationRequiredProperties } from '@121-service/src/fsps/fsp-settings.helpers';
+import { getFspConfigurationRequiredProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 
 @Injectable()

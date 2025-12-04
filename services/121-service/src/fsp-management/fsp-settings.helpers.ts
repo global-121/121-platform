@@ -1,5 +1,5 @@
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 
 export function getFspConfigurationProperties(fspName: Fsps): string[] {
   const foundFsp = FSP_SETTINGS[fspName];

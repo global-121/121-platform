@@ -1,5 +1,5 @@
-import { FspIntegrationType } from '@121-service/src/fsps/enums/fsp-integration-type.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+import { FspIntegrationType } from '@121-service/src/fsp-management/enums/fsp-integration-type.enum';
+import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import {
