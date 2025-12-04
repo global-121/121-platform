@@ -12,7 +12,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: QueueNames.transactionJobsIntersolveVisa,
       processors: [
         {
-          path: 'src/transaction-jobs/processors/transaction-jobs-intersolve-visa.processor.ts',
+          path: 'src/fsp-integrations/transaction-jobs/processors/transaction-jobs-intersolve-visa.processor.ts',
         },
       ],
       limiter: {
@@ -24,7 +24,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: QueueNames.transactionJobsNedbank,
       processors: [
         {
-          path: 'src/transaction-jobs/processors/transaction-jobs-nedbank.processor.ts',
+          path: 'src/fsp-integrations/transaction-jobs/processors/transaction-jobs-nedbank.processor.ts',
         },
       ],
       limiter: {
@@ -36,7 +36,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: QueueNames.transactionJobsSafaricom,
       processors: [
         {
-          path: 'src/transaction-jobs/processors/transaction-jobs-safaricom.processor.ts',
+          path: 'src/fsp-integrations/transaction-jobs/processors/transaction-jobs-safaricom.processor.ts',
         },
       ],
       limiter: {
@@ -48,7 +48,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: QueueNames.transactionJobsOnafriq,
       processors: [
         {
-          path: 'src/transaction-jobs/processors/transaction-jobs-onafriq.processor.ts',
+          path: 'src/fsp-integrations/transaction-jobs/processors/transaction-jobs-onafriq.processor.ts',
         },
       ],
       limiter: {
@@ -60,7 +60,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: QueueNames.transactionJobsAirtel,
       processors: [
         {
-          path: 'src/transaction-jobs/processors/transaction-jobs-airtel.processor.ts',
+          path: 'src/fsp-integrations/transaction-jobs/processors/transaction-jobs-airtel.processor.ts',
         },
       ],
       limiter: {
@@ -72,7 +72,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: QueueNames.transactionJobsCooperativeBankOfOromia,
       processors: [
         {
-          path: 'src/transaction-jobs/processors/transaction-jobs-cooperative-bank-of-oromia.processor.ts',
+          path: 'src/fsp-integrations/transaction-jobs/processors/transaction-jobs-cooperative-bank-of-oromia.processor.ts',
         },
       ],
       limiter: {
@@ -84,7 +84,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: QueueNames.transactionJobsCommercialBankEthiopia,
       processors: [
         {
-          path: 'src/transaction-jobs/processors/transaction-jobs-commercial-bank-ethiopia.processor.ts',
+          path: 'src/fsp-integrations/transaction-jobs/processors/transaction-jobs-commercial-bank-ethiopia.processor.ts',
         },
       ],
       limiter: {
@@ -96,7 +96,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: QueueNames.transactionJobsIntersolveVoucher,
       processors: [
         {
-          path: 'src/transaction-jobs/processors/transaction-jobs-intersolve-voucher.processor.ts',
+          path: 'src/fsp-integrations/transaction-jobs/processors/transaction-jobs-intersolve-voucher.processor.ts',
         },
       ],
       limiter: {
@@ -108,7 +108,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: QueueNames.transactionJobsExcel,
       processors: [
         {
-          path: 'src/transaction-jobs/processors/transaction-jobs-excel.processor.ts',
+          path: 'src/fsp-integrations/transaction-jobs/processors/transaction-jobs-excel.processor.ts',
         },
       ],
       limiter: {
@@ -122,7 +122,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: QueueNames.paymentCallbackSafaricomTransfer,
       processors: [
         {
-          path: 'src/payments/reconciliation/safaricom-reconciliation/processors/safaricom-timeout-callback-job.processor.ts',
+          path: 'src/fsp-integrations/reconciliation/safaricom-reconciliation/processors/safaricom-timeout-callback-job.processor.ts',
         },
       ],
       limiter: {
@@ -134,7 +134,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: QueueNames.paymentCallbackSafaricomTimeout,
       processors: [
         {
-          path: 'src/payments/reconciliation/safaricom-reconciliation/processors/safaricom-timeout-callback-job.processor.ts',
+          path: 'src/fsp-integrations/reconciliation/safaricom-reconciliation/processors/safaricom-timeout-callback-job.processor.ts',
         },
       ],
       limiter: {
@@ -147,7 +147,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: QueueNames.paymentCallbackOnafriq,
       processors: [
         {
-          path: 'src/payments/reconciliation/onafriq-reconciliation/processors/onafriq-transaction-callback-job.processor.ts',
+          path: 'src/fsp-integrations/reconciliation/onafriq-reconciliation/processors/onafriq-transaction-callback-job.processor.ts',
         },
       ],
       limiter: {

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { IntersolveVoucherModule } from '@121-service/src/fsp-integrations/api-integrations/intersolve-voucher/intersolve-voucher.module';
 import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
@@ -18,7 +19,6 @@ import { TwilioMessageScopedRepository } from '@121-service/src/notifications/tw
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappModule } from '@121-service/src/notifications/whatsapp/whatsapp.module';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
-import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';

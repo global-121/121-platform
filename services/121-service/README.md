@@ -66,7 +66,7 @@ To update TypeORM:
 
 ### FSP-specific instructions
 
-For FSP-specific instructions, see the README.md in each individual FSP-folder, e.g. for [Intersolve](./src/payments/fsp-integration/intersolve/README.md)
+For FSP-specific instructions, see the README.md in each individual FSP-folder, e.g. for [Intersolve](./src/fsp-integrations/api-integrations/intersolve/README.md)
 
 ## Development
 

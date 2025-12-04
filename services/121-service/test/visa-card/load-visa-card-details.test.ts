@@ -1,5 +1,5 @@
-import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-card-status.enum';
-import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
+import { IntersolveVisaCardStatus } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/enums/intersolve-visa-card-status.enum';
+import { VisaCard121Status } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/enums/wallet-status-121.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {

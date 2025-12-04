@@ -2,8 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, FindOneOptions, In, Repository } from 'typeorm';
 
-import { DebitCardsIntersolveVisaService } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.service';
 import { env } from '@121-service/src/env';
+import { DebitCardsIntersolveVisaService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.service';
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';

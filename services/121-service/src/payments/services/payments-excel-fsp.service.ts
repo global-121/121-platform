@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Equal, In } from 'typeorm';
 
+import { ExcelService } from '@121-service/src/fsp-integrations/api-integrations/excel/excel.service';
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
-import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
