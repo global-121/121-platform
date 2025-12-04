@@ -15,7 +15,7 @@ import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
-export class CommercialBankEthiopiaReconciliationService {
+export class CommercialBankEthiopiaAccountManagementService {
   @InjectRepository(ProgramEntity)
   public programRepository: Repository<ProgramEntity>;
   @Inject(

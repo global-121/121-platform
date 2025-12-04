@@ -8,18 +8,16 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { CommercialBankEthiopiaReconciliationService } from '@121-service/src/fsp-integrations/account-management/commercial-bank-ethiopia-account-management/commercial-bank-ethiopia-account-management.service';
+import { CommercialBankEthiopiaAccountManagementService as CommercialBankEthiopiaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/commercial-bank-ethiopia-account-management/commercial-bank-ethiopia-account-management.service';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('fsps/commercial-bank-ethiopia')
 @Controller()
-export class CommercialBankEthiopiaReconciliationController {
+export class CommercialBankEthiopiaAccountManagementController {
   public constructor(
-    private commercialBankEthiopiaReconciliationService: CommercialBankEthiopiaReconciliationService,
-    private azureLogService: AzureLogService,
+    private commercialBankEthiopiaAccountManagementService: CommercialBankEthiopiaAccountManagementService,
   ) {}
 
   @AuthenticatedUser({ isAdmin: true })
@@ -38,7 +36,7 @@ export class CommercialBankEthiopiaReconciliationController {
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<number> {
-    return this.commercialBankEthiopiaReconciliationService.retrieveAndUpsertAccountEnquiriesForProgram(
+    return this.commercialBankEthiopiaAccountManagementService.retrieveAndUpsertAccountEnquiriesForProgram(
       programId,
     );
   }

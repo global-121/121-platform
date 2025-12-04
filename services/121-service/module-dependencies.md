@@ -9,9 +9,9 @@ graph LR
   ActivitiesModule-->UserModule
   AirtelModule-->QueuesRegistryModule
   AirtelModule-->RedisModule
-  CommercialBankEthiopiaReconciliationModule-->CommercialBankEthiopiaModule
-  CommercialBankEthiopiaReconciliationModule-->RegistrationsModule
-  CronjobModule-->CommercialBankEthiopiaReconciliationModule
+  CommercialBankEthiopiaAccountManagementModule-->CommercialBankEthiopiaModule
+  CommercialBankEthiopiaAccountManagementModule-->RegistrationsModule
+  CronjobModule-->CommercialBankEthiopiaAccountManagementModule
   CronjobModule-->ExchangeRatesModule
   CronjobModule-->IntersolveVisaReconciliationModule
   CronjobModule-->IntersolveVoucherModule

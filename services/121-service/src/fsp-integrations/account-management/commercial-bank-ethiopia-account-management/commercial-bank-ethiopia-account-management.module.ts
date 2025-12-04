@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { CommercialBankEthiopiaReconciliationController } from '@121-service/src/fsp-integrations/account-management/commercial-bank-ethiopia-account-management/commercial-bank-ethiopia-account-management.controller';
-import { CommercialBankEthiopiaReconciliationService } from '@121-service/src/fsp-integrations/account-management/commercial-bank-ethiopia-account-management/commercial-bank-ethiopia-account-management.service';
+import { CommercialBankEthiopiaAccountManagementController } from '@121-service/src/fsp-integrations/account-management/commercial-bank-ethiopia-account-management/commercial-bank-ethiopia-account-management.controller';
+import { CommercialBankEthiopiaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/commercial-bank-ethiopia-account-management/commercial-bank-ethiopia-account-management.service';
 import { CommercialBankEthiopiaModule } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia.module';
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -20,13 +20,13 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     RegistrationsModule,
   ],
   providers: [
-    CommercialBankEthiopiaReconciliationService,
+    CommercialBankEthiopiaAccountManagementService,
     createScopedRepositoryProvider(
       CommercialBankEthiopiaAccountEnquiriesEntity,
     ),
     AzureLogService,
   ],
-  controllers: [CommercialBankEthiopiaReconciliationController],
-  exports: [CommercialBankEthiopiaReconciliationService],
+  controllers: [CommercialBankEthiopiaAccountManagementController],
+  exports: [CommercialBankEthiopiaAccountManagementService],
 })
-export class CommercialBankEthiopiaReconciliationModule {}
+export class CommercialBankEthiopiaAccountManagementModule {}
