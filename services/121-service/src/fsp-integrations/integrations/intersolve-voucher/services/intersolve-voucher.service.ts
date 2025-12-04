@@ -5,6 +5,8 @@ import { Equal, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { IntersolveIssueCardResponse } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/dto/intersolve-issue-card-response.dto';
+import { UnusedVoucherDto } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/dto/unused-voucher.dto';
+import { VoucherWithBalanceDto } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/dto/voucher-with-balance.dto';
 import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/entities/intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/entities/intersolve-voucher.entity';
 import { IntersolveVoucherInstructionsEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/entities/intersolve-voucher-instructions.entity';
@@ -21,8 +23,6 @@ import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/pro
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
-import { UnusedVoucherDto } from '@121-service/src/payments/dto/unused-voucher.dto';
-import { VoucherWithBalanceDto } from '@121-service/src/payments/dto/voucher-with-balance.dto';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
