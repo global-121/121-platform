@@ -1,4 +1,5 @@
 import { test } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -130,5 +131,26 @@ test('Expand rows of activity overview and view transaction history', async ({
     await tableComponent.validateTransactionHistoryTableRowCount({
       expectedRowCount: 7, // created / approved / initiated / voucher created / initial message sent / voucher message sent / message delivered
     });
+
+    await tableComponent.closeViewTransactionHistory();
+  });
+
+  await test.step('View current balance and view voucher button', async () => {
+    await tableComponent.filterColumnByDropDownSelection({
+      columnName: 'Activity',
+      selection: 'Transaction',
+    });
+
+    const balanceAndViewVoucherCell = tableComponent.table.getByTestId(
+      'current-balance-and-view-voucher',
+    );
+
+    await expect(balanceAndViewVoucherCell).toBeVisible();
+
+    await expect(
+      balanceAndViewVoucherCell.getByRole('button', {
+        name: 'View voucher',
+      }),
+    ).toBeVisible();
   });
 });
