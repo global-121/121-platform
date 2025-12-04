@@ -41,7 +41,7 @@ Check `.vscode/extensions.json` for the complete list of recommended extensions 
 
 ### Frontend (Angular)
 
-- **Framework**: Angular 17+ with TypeScript
+- **Framework**: Angular 20+ with TypeScript
 - **UI Library**: PrimeNG components
 - **Styling**: Tailwind CSS utility classes
 - **State Management**: angular services and tanstack-query
