@@ -11,6 +11,7 @@ import {
 import { injectQuery } from '@tanstack/angular-query-experimental';
 
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -21,10 +22,7 @@ import {
   DataListItem,
 } from '~/components/data-list/data-list.component';
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
-import {
-  FSPS_WITH_VOUCHER_SUPPORT,
-  paymentLink,
-} from '~/domains/payment/payment.helpers';
+import { paymentLink } from '~/domains/payment/payment.helpers';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogTransactionHistoryDialogComponent } from '~/pages/program-registration-activity-log/components/activity-log-transaction-history-dialog/activity-log-transaction-history-dialog.component';
@@ -58,6 +56,54 @@ export class ActivityLogExpandedRowComponent
     this.registrationAttributeService.getRegistrationAttributes(this.context),
   );
 
+  readonly isIntersolveVoucherPaper = computed(() => {
+    const activity = this.value();
+    if (activity.type !== ActivityTypeEnum.Transaction) {
+      return false;
+    }
+    const fspName = activity.attributes.fspName;
+    // Only call includes if fspName is a string and a valid Fsps value
+    return (
+      typeof fspName === 'string' && fspName === Fsps.intersolveVoucherPaper
+    );
+  });
+
+  readonly isIntersolveVoucherWhatsapp = computed(() => {
+    const activity = this.value();
+    if (activity.type !== ActivityTypeEnum.Transaction) {
+      return false;
+    }
+    const fspName = activity.attributes.fspName;
+    // Only call includes if fspName is a string and a valid Fsps value
+    return (
+      typeof fspName === 'string' && fspName === Fsps.intersolveVoucherWhatsapp
+    );
+  });
+
+  readonly canViewVoucher = computed(() => {
+    if (
+      this.isIntersolveVoucherPaper() &&
+      this.authService.hasAllPermissions({
+        programId: this.context().programId(),
+        requiredPermissions: [PermissionEnum.PaymentVoucherPaperREAD],
+      })
+    ) {
+      return true;
+    }
+
+    if (
+      this.isIntersolveVoucherWhatsapp() &&
+      this.authService.hasAllPermissions({
+        programId: this.context().programId(),
+        requiredPermissions: [PermissionEnum.PaymentVoucherWhatsappREAD],
+      })
+    ) {
+      return true;
+    }
+
+    return false;
+  });
+
   intersolveVoucherBalance = injectQuery(() => ({
     ...this.programApiService.getIntersolveVoucherBalance({
       programId: this.context().programId,
@@ -67,29 +113,10 @@ export class ActivityLogExpandedRowComponent
       paymentId: this.paymentId()!,
     })(),
     enabled: () =>
-      this.isIntersolveVoucher() &&
+      (this.isIntersolveVoucherPaper() || this.isIntersolveVoucherWhatsapp()) &&
       !!this.context().referenceId &&
       !!this.paymentId(),
   }));
-
-  readonly isIntersolveVoucher = computed(() => {
-    const activity = this.value();
-    if (activity.type !== ActivityTypeEnum.Transaction) {
-      return false;
-    }
-    const fspName = activity.attributes.fspName;
-    // Only call includes if fspName is a string and a valid Fsps value
-    return (
-      typeof fspName === 'string' && FSPS_WITH_VOUCHER_SUPPORT.includes(fspName)
-    );
-  });
-
-  readonly canViewVoucher = computed(() =>
-    this.authService.hasAllPermissions({
-      programId: this.context().programId(),
-      requiredPermissions: [PermissionEnum.PaymentVoucherREAD],
-    }),
-  );
 
   readonly paymentId = computed(() => {
     const activity = this.value();
@@ -217,7 +244,10 @@ export class ActivityLogExpandedRowComponent
           },
         ];
 
-        if (this.isIntersolveVoucher()) {
+        if (
+          this.isIntersolveVoucherPaper() ||
+          this.isIntersolveVoucherWhatsapp()
+        ) {
           list.push({
             label: $localize`Current balance`,
             value: this.intersolveVoucherBalance.data(),
