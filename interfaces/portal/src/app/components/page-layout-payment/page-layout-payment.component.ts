@@ -36,6 +36,7 @@ import { AuthService } from '~/services/auth.service';
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+import { Locale } from '~/utils/locale';
 @Component({
   selector: 'app-page-layout-payment',
   imports: [
@@ -62,7 +63,7 @@ export class PageLayoutPaymentComponent {
 
   readonly rtlHelper = inject(RtlHelperService);
   readonly currencyPipe = inject(CurrencyPipe);
-  readonly locale = inject(LOCALE_ID);
+  readonly locale = inject<Locale>(LOCALE_ID);
   readonly paymentApiService = inject(PaymentApiService);
   readonly programApiService = inject(ProgramApiService);
   readonly translatableStringService = inject(TranslatableStringService);
@@ -221,7 +222,9 @@ export class PageLayoutPaymentComponent {
           '',
       );
 
-    return fspLabels.join(', ');
+    return this.translatableStringService.commaSeparatedList({
+      values: fspLabels,
+    });
   });
 
   readonly startPaymentTransactionCount = computed<string>(() => {

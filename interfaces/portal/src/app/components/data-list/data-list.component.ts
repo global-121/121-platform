@@ -111,6 +111,8 @@ export class DataListComponent {
       return this.translatableStringService.translate(option?.label) ?? v;
     });
 
-    return this.translatableStringService.commaSeparatedList(valueList);
+    return this.translatableStringService.commaSeparatedList({
+      values: valueList,
+    });
   }
 }

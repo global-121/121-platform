@@ -18,6 +18,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
 import { ChartTextAlternativeOptions } from '~/pages/program-monitoring-dashboard/program-monitoring-dashboard.page';
+import { Locale } from '~/utils/locale';
 
 @Component({
   selector: 'app-payments-aggregate-chart',
@@ -30,7 +31,7 @@ import { ChartTextAlternativeOptions } from '~/pages/program-monitoring-dashboar
 export class PaymentsAggregateChartComponent {
   // This component can show a chart for either the amount or count of payments.
   private metricApiService = inject(MetricApiService);
-  readonly locale = inject(LOCALE_ID);
+  readonly locale = inject<Locale>(LOCALE_ID);
   readonly programId = input.required<string>();
   readonly aggregateType = input.required<'count' | 'transferValue'>();
 

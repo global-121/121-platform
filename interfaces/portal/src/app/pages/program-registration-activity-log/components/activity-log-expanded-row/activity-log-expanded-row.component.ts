@@ -32,6 +32,7 @@ import { ActivityLogVoucherDialogComponent } from '~/pages/program-registration-
 import { ActivityLogTableCellContext } from '~/pages/program-registration-activity-log/program-registration-activity-log.page';
 import { AuthService } from '~/services/auth.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
+import { Locale } from '~/utils/locale';
 
 @Component({
   selector: 'app-activity-log-expanded-row',
@@ -43,7 +44,7 @@ import { RegistrationAttributeService } from '~/services/registration-attribute.
 export class ActivityLogExpandedRowComponent
   implements TableCellComponent<Activity, ActivityLogTableCellContext>
 {
-  private locale = inject(LOCALE_ID);
+  private locale = inject<Locale>(LOCALE_ID);
   private readonly programApiService = inject(ProgramApiService);
   private readonly registrationAttributeService = inject(
     RegistrationAttributeService,

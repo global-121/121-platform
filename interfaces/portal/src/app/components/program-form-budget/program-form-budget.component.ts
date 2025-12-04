@@ -2,7 +2,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   effect,
+  inject,
   input,
+  LOCALE_ID,
 } from '@angular/core';
 import {
   FormControl,
@@ -20,6 +22,7 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { PROGRAM_FORM_TOOLTIPS } from '~/domains/program/program.helper';
 import { Program } from '~/domains/program/program.model';
 import { generateFieldErrors } from '~/utils/form-validation';
+import { Locale } from '~/utils/locale';
 
 export type ProgramBudgetFormGroup =
   (typeof ProgramFormBudgetComponent)['prototype']['formGroup'];
@@ -37,6 +40,7 @@ export type ProgramBudgetFormGroup =
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProgramFormBudgetComponent {
+  private readonly locale = inject<Locale>(LOCALE_ID);
   readonly program = input<Program>();
 
   readonly currencies = Object.values(CurrencyCode)
@@ -44,7 +48,7 @@ export class ProgramFormBudgetComponent {
       label: code,
       value: code,
     }))
-    .sort((a, b) => a.label.localeCompare(b.label));
+    .sort((a, b) => a.label.localeCompare(b.label, this.locale));
 
   formGroup = new FormGroup({
     budget: new FormControl<number | undefined>(

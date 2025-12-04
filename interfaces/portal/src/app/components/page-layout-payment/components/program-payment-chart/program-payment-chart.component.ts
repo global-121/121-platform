@@ -128,11 +128,12 @@ export class ProgramPaymentChartComponent {
 
     return (
       $localize`Payment status chart. ` +
-      this.translatableStringService.commaSeparatedList(
-        chartData.labels.map(
+      this.translatableStringService.commaSeparatedList({
+        values: chartData.labels.map(
           (label, index) => `${label}: ${String(metrics[index])}`,
         ),
-      )
+        sortedAlphabetically: false,
+      })
     );
   });
 }

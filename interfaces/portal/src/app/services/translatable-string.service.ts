@@ -49,28 +49,36 @@ export class TranslatableStringService {
     if (fallbackLocaleValue) {
       return fallbackLocaleValue;
     }
+
     // Even the fallback-language is not available.
     // I think TypeScript prevents us from ever reaching this point.
-
-    if (typeof translationMapping !== 'object') {
+    if (
+      typeof translationMapping !== 'object' ||
+      Object.keys(translationMapping).length === 0
+    ) {
       return undefined;
     }
 
-    if (Object.keys(translationMapping).length === 0) {
-      return undefined;
-    }
-
-    // Just the first available language.
+    // Just the first available language as a last resort.
     return translationMapping[Object.keys(translationMapping)[0] as UILanguage];
   }
 
-  commaSeparatedList(
-    values: string[] | UILanguageTranslation[],
-    style: Intl.ListFormatStyle = 'narrow',
-  ): string {
+  commaSeparatedList({
+    values,
+    style = 'narrow',
+    sortedAlphabetically = true,
+  }: {
+    values: string[] | UILanguageTranslation[];
+    style?: Intl.ListFormatStyle;
+    sortedAlphabetically?: boolean;
+  }): string {
     const list = values
       .map(this.translate.bind(this))
       .filter((value): value is string => !!value);
+
+    if (sortedAlphabetically) {
+      list.sort((a, b) => a.localeCompare(b, this.currentLocale));
+    }
 
     const formatter = new Intl.ListFormat(this.currentLocale, {
       style,
