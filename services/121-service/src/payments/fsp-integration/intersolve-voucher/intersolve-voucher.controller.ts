@@ -43,7 +43,12 @@ export class IntersolveVoucherController {
     private azureLogService: AzureLogService,
   ) {}
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentVoucherREAD] })
+  @AuthenticatedUser({
+    permissions: [
+      PermissionEnum.PaymentVoucherPaperREAD,
+      PermissionEnum.PaymentVoucherWhatsappREAD,
+    ],
+  })
   @ApiOperation({
     summary: '[SCOPED] Export Intersolve voucher image',
   })
