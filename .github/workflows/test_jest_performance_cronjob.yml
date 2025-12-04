@@ -105,9 +105,9 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: |
           echo "🚀 Running performance test: ${{ matrix.test_name }} (shard: ${{ matrix.shard }})"
-          echo "Test command: docker compose exec -e CI=true -e GITHUB_WORKFLOW=\"${{ github.workflow }}\" 121-service npm run test:integration:base -t /performance ${{ matrix.test_name }}"
+          echo "Test command: docker compose exec -e CI=true -e GITHUB_WORKFLOW=\"${{ github.workflow }}\" 121-service npm run test:integration:base -t performance/ ${{ matrix.test_name }}"
 
-          if ! docker compose exec -e CI=true -e GITHUB_WORKFLOW="${{ github.workflow }}" 121-service npm run test:integration:base -t /performance ${{ matrix.test_name }}; then
+          if ! docker compose exec -e CI=true -e GITHUB_WORKFLOW="${{ github.workflow }}" 121-service npm run test:integration:base -t performance/ ${{ matrix.test_name }}; then
             echo "❌ Test failed: ${{ matrix.test_name }}"
             echo "Check the logs above for detailed error information"
             exit 1
