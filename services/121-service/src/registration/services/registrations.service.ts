@@ -2,10 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, FindOneOptions, In, Repository } from 'typeorm';
 
-import { env } from '@121-service/src/env';
-import { DebitCardsIntersolveVisaService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.service';
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa-data-synchronization/intersolve-visa-data-synchronization.service';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -70,7 +67,7 @@ export class RegistrationsService {
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationsInputValidator: RegistrationsInputValidator,
     private readonly uniqueRegistrationPairRepository: UniqueRegistrationPairRepository,
-    private readonly debitCardsIntersolveVisaService: DebitCardsIntersolveVisaService,
+    private readonly intersolveVisaDataSynchronizationService: IntersolveVisaDataSynchronizationService,
   ) {}
 
   // This methods can be used to get the same formatted data as the pagination query using referenceId
@@ -563,17 +560,10 @@ export class RegistrationsService {
       });
     }
 
-    const intersolveVisaAttributeNames = FSP_SETTINGS[
-      Fsps.intersolveVisa
-    ].attributes.map((attr) => attr.name) as string[];
-    if (
-      env.INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION &&
-      intersolveVisaAttributeNames.includes(attribute)
-    ) {
-      await this.debitCardsIntersolveVisaService.sendCustomerInformationToIntersolve(
-        registration,
-      );
-    }
+    await this.intersolveVisaDataSynchronizationService.syncData({
+      registration: savedRegistration,
+      attribute,
+    });
 
     return this.getRegistrationOrThrow({
       referenceId: savedRegistration.referenceId,

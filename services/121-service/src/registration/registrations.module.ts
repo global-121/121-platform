@@ -2,8 +2,8 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { DebitCardsIntersolveVisaModule } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.module';
 import { IntersolveVoucherEntity } from '@121-service/src/fsp-integrations/api-integrations/intersolve-voucher/entities/intersolve-voucher.entity';
+import { IntersolveVisaDataSynchronizationModule } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa-data-synchronization/intersolve-visa-data-synchronization.module';
 import { FspsModule } from '@121-service/src/fsp-management/fsp.module';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { LatestMessageEntity } from '@121-service/src/notifications/entities/latest-message.entity';
@@ -70,7 +70,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     ProgramFspConfigurationsModule,
     QueuesRegistryModule,
     MessageTemplateModule,
-    DebitCardsIntersolveVisaModule,
+    IntersolveVisaDataSynchronizationModule,
   ],
   providers: [
     RegistrationsService,

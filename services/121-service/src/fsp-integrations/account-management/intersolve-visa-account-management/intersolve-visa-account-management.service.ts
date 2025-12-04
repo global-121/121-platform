@@ -22,7 +22,7 @@ import { RegistrationDataScopedRepository } from '@121-service/src/registration/
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 
 @Injectable()
-export class DebitCardsIntersolveVisaService {
+export class IntersolveVisaAccountManagementService {
   public constructor(
     private readonly queueMessageService: MessageQueuesService,
     private readonly intersolveVisaService: IntersolveVisaService,
@@ -33,7 +33,7 @@ export class DebitCardsIntersolveVisaService {
 
   // TODO: duplicate of RegistrationsService getRegistrationOrThrow
   // Injecting RegistrationsService instead of duplicating method is not possible due to circular dependency
-  // Refactor RegistrationsService to not be dependent on DebitCardsIntersolveVisaService, then inject RegistrationsService here.
+  // Refactor RegistrationsService to not be dependent on IntersolveVisaAccountManagementService, then inject RegistrationsService here.
   public async getRegistrationOrThrow({
     referenceId,
     relations = [],

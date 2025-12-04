@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 
-import { DebitCardsIntersolveVisaService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.service';
+import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.service';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
@@ -38,7 +38,7 @@ describe('RegistrationsService', () => {
       providers: [
         RegistrationsService,
         {
-          provide: DebitCardsIntersolveVisaService,
+          provide: IntersolveVisaAccountManagementService,
           useValue: {
             sendCustomerInformationToIntersolve: jest.fn(),
           },

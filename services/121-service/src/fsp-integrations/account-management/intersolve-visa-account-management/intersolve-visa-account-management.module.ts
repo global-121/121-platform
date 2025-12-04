@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 
-import { DebitCardsIntersolveVisaController } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.controller';
-import { DebitCardsIntersolveVisaService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.service';
+import { IntersolveVisaAccountManagementController } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.controller';
+import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.service';
 import { IntersolveVisaModule } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/intersolve-visa.module';
 import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
@@ -17,8 +17,11 @@ import { UserModule } from '@121-service/src/user/user.module';
     RegistrationDataModule,
     UserModule,
   ],
-  controllers: [DebitCardsIntersolveVisaController],
-  providers: [DebitCardsIntersolveVisaService, RegistrationScopedRepository],
-  exports: [DebitCardsIntersolveVisaService],
+  controllers: [IntersolveVisaAccountManagementController],
+  providers: [
+    IntersolveVisaAccountManagementService,
+    RegistrationScopedRepository,
+  ],
+  exports: [IntersolveVisaAccountManagementService],
 })
-export class DebitCardsIntersolveVisaModule {}
+export class IntersolveVisaAccountManagementModule {}

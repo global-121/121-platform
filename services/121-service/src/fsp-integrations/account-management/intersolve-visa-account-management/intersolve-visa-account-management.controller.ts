@@ -21,7 +21,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { DebitCardsIntersolveVisaService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.service';
+import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.service';
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
@@ -31,10 +31,10 @@ import { UserService } from '@121-service/src/user/user.service';
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('fsps/debit-cards-intersolve-visa')
 @Controller()
-export class DebitCardsIntersolveVisaController {
+export class IntersolveVisaAccountManagementController {
   public constructor(
     private readonly userService: UserService,
-    private readonly debitCardsIntersolveVisaService: DebitCardsIntersolveVisaService,
+    private readonly intersolveVisaAccountManagementService: IntersolveVisaAccountManagementService,
   ) {}
 
   @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
@@ -58,7 +58,7 @@ export class DebitCardsIntersolveVisaController {
     @Req() req,
   ): Promise<void> {
     const userId = req.user.id;
-    await this.debitCardsIntersolveVisaService.reissueCardAndSendMessage(
+    await this.intersolveVisaAccountManagementService.reissueCardAndSendMessage(
       referenceId,
       programId,
       userId,
@@ -110,7 +110,7 @@ export class DebitCardsIntersolveVisaController {
       );
     }
 
-    return await this.debitCardsIntersolveVisaService.pauseCardAndSendMessage(
+    return await this.intersolveVisaAccountManagementService.pauseCardAndSendMessage(
       referenceId,
       programId,
       tokenCode,
@@ -140,7 +140,7 @@ export class DebitCardsIntersolveVisaController {
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<IntersolveVisaWalletDto> {
-    return await this.debitCardsIntersolveVisaService.retrieveAndUpdateIntersolveVisaWalletAndCards(
+    return await this.intersolveVisaAccountManagementService.retrieveAndUpdateIntersolveVisaWalletAndCards(
       referenceId,
       programId,
     );
@@ -167,7 +167,7 @@ export class DebitCardsIntersolveVisaController {
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<IntersolveVisaWalletDto> {
-    return await this.debitCardsIntersolveVisaService.getIntersolveVisaWalletAndCards(
+    return await this.intersolveVisaAccountManagementService.getIntersolveVisaWalletAndCards(
       referenceId,
       programId,
     );
@@ -190,7 +190,7 @@ export class DebitCardsIntersolveVisaController {
     @Param('programId', ParseIntPipe) programId: number,
     @Param('referenceId') referenceId: string,
   ): Promise<void> {
-    return await this.debitCardsIntersolveVisaService.getRegistrationAndSendContactInformationToIntersolve(
+    return await this.intersolveVisaAccountManagementService.getRegistrationAndSendContactInformationToIntersolve(
       referenceId,
       programId,
     );
