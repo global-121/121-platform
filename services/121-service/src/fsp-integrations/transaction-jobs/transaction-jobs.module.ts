@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { AirtelModule } from '@121-service/src/fsp-integrations/api-integrations/airtel/airtel.module';
-import { CommercialBankEthiopiaModule } from '@121-service/src/fsp-integrations/api-integrations/commercial-bank-ethiopia/commercial-bank-ethiopia.module';
-import { CooperativeBankOfOromiaModule } from '@121-service/src/fsp-integrations/api-integrations/cooperative-bank-of-oromia/cooperative-bank-of-oromia.module';
-import { ExcelModule } from '@121-service/src/fsp-integrations/api-integrations/excel/excel.module';
-import { IntersolveVisaModule } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/intersolve-visa.module';
-import { IntersolveVoucherModule } from '@121-service/src/fsp-integrations/api-integrations/intersolve-voucher/intersolve-voucher.module';
-import { NedbankModule } from '@121-service/src/fsp-integrations/api-integrations/nedbank/nedbank.module';
-import { OnafriqTransactionEntity } from '@121-service/src/fsp-integrations/api-integrations/onafriq/entities/onafriq-transaction.entity';
-import { OnafriqModule } from '@121-service/src/fsp-integrations/api-integrations/onafriq/onafriq.module';
-import { SafaricomModule } from '@121-service/src/fsp-integrations/api-integrations/safaricom/safaricom.module';
+import { AirtelModule } from '@121-service/src/fsp-integrations/integrations/airtel/airtel.module';
+import { CommercialBankEthiopiaModule } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia.module';
+import { CooperativeBankOfOromiaModule } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/cooperative-bank-of-oromia.module';
+import { ExcelModule } from '@121-service/src/fsp-integrations/integrations/excel/excel.module';
+import { IntersolveVisaModule } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa.module';
+import { IntersolveVoucherModule } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/intersolve-voucher.module';
+import { NedbankModule } from '@121-service/src/fsp-integrations/integrations/nedbank/nedbank.module';
+import { OnafriqTransactionEntity } from '@121-service/src/fsp-integrations/integrations/onafriq/entities/onafriq-transaction.entity';
+import { OnafriqModule } from '@121-service/src/fsp-integrations/integrations/onafriq/onafriq.module';
+import { SafaricomModule } from '@121-service/src/fsp-integrations/integrations/safaricom/safaricom.module';
 import { TransactionJobsProcessorAirtel } from '@121-service/src/fsp-integrations/transaction-jobs/processors/transaction-jobs-airtel.processor';
 import { TransactionJobsProcessorCommercialBankEthiopia } from '@121-service/src/fsp-integrations/transaction-jobs/processors/transaction-jobs-commercial-bank-ethiopia.processor';
 import { TransactionJobsProcessorCooperativeBankOfOromia } from '@121-service/src/fsp-integrations/transaction-jobs/processors/transaction-jobs-cooperative-bank-of-oromia.processor';

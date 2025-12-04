@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { IntersolveVoucherJobDetails } from '@121-service/src/fsp-integrations/api-integrations/intersolve-voucher/dto/job-details.dto';
+import { IntersolveVoucherJobDetails } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/dto/job-details.dto';
 import { IntersolveVoucherReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/intersolve-voucher-reconciliation/intersolve-voucher-reconciliation.service';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';

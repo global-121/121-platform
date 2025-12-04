@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
-import { CbeTransferScopedRepository } from '@121-service/src/fsp-integrations/api-integrations/commercial-bank-ethiopia/commercial-bank-ethiopia.scoped.repository';
-import { CbeTransferEntity } from '@121-service/src/fsp-integrations/api-integrations/commercial-bank-ethiopia/commercial-bank-ethiopia-transfer.entity';
-import { CommercialBankEthiopiaService } from '@121-service/src/fsp-integrations/api-integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
+import { CbeTransferScopedRepository } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia.scoped.repository';
+import { CbeTransferEntity } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia-transfer.entity';
+import { CommercialBankEthiopiaService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
 import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { CommercialBankEthiopiaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/commercial-bank-ethiopia-transaction-job.dto';

@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
+import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import {
   FspConfigurationProperties,
   Fsps,

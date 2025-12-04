@@ -7,7 +7,7 @@ import {
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { API_PATHS } from '@121-service/src/config';
-import { IntersolveVoucherModule } from '@121-service/src/fsp-integrations/api-integrations/intersolve-voucher/intersolve-voucher.module';
+import { IntersolveVoucherModule } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/intersolve-voucher.module';
 import { AuthMiddlewareTwilio } from '@121-service/src/notifications/auth.middlewareTwilio';
 import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { MessageIncomingController } from '@121-service/src/notifications/message-incoming/message-incoming.controller';

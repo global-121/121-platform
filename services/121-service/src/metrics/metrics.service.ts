@@ -2,10 +2,10 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, In, Not } from 'typeorm';
 
-import { ExportVisaCardDetails } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/interfaces/export-visa-card-details.interface';
-import { ExportVisaCardDetailsRawData } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
-import { IntersolveVisaStatusMapper } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/mappers/intersolve-visa-status.mapper';
-import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/api-integrations/intersolve-voucher/services/intersolve-voucher.service';
+import { ExportVisaCardDetails } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/export-visa-card-details.interface';
+import { ExportVisaCardDetailsRawData } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
+import { IntersolveVisaStatusMapper } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/mappers/intersolve-visa-status.mapper';
+import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import {
   AggregatePerMonth,

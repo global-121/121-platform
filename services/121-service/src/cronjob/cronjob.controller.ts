@@ -19,7 +19,7 @@ import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { RunCronjobsResponseDto } from '@121-service/src/cronjob/dtos/run-cronjobs-response.dto';
 import { CronjobExecutionService } from '@121-service/src/cronjob/services/cronjob-execution.service';
 import { CronjobInitiateService } from '@121-service/src/cronjob/services/cronjob-initiate.service';
-import { RemoveDeprecatedImageCodesDto } from '@121-service/src/fsp-integrations/api-integrations/intersolve-voucher/dto/remove-deprecated-image-codes-dto';
+import { RemoveDeprecatedImageCodesDto } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/dto/remove-deprecated-image-codes-dto';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 
 @ApiTags('cronjobs')

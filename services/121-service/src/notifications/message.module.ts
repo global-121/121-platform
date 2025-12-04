@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { IntersolveVoucherModule } from '@121-service/src/fsp-integrations/api-integrations/intersolve-voucher/intersolve-voucher.module';
+import { IntersolveVoucherModule } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/intersolve-voucher.module';
 import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';

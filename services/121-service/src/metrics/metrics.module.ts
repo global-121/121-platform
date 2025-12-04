@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { IntersolveVisaModule } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/intersolve-visa.module';
-import { IntersolveVoucherModule } from '@121-service/src/fsp-integrations/api-integrations/intersolve-voucher/intersolve-voucher.module';
-import { SafaricomTransferEntity } from '@121-service/src/fsp-integrations/api-integrations/safaricom/entities/safaricom-transfer.entity';
+import { IntersolveVisaModule } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa.module';
+import { IntersolveVoucherModule } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/intersolve-voucher.module';
+import { SafaricomTransferEntity } from '@121-service/src/fsp-integrations/integrations/safaricom/entities/safaricom-transfer.entity';
 import { MetricsController } from '@121-service/src/metrics/metrics.controller';
 import { MetricsService } from '@121-service/src/metrics/metrics.service';
 import { PaymentsModule } from '@121-service/src/payments/payments.module';

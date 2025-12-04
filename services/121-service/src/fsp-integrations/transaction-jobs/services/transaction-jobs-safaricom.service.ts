@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
-import { SafaricomTransferEntity } from '@121-service/src/fsp-integrations/api-integrations/safaricom/entities/safaricom-transfer.entity';
-import { DuplicateOriginatorConversationIdError } from '@121-service/src/fsp-integrations/api-integrations/safaricom/errors/duplicate-originator-conversation-id.error';
-import { SafaricomApiError } from '@121-service/src/fsp-integrations/api-integrations/safaricom/errors/safaricom-api.error';
-import { SafaricomTransferScopedRepository } from '@121-service/src/fsp-integrations/api-integrations/safaricom/repositories/safaricom-transfer.scoped.repository';
-import { SafaricomService } from '@121-service/src/fsp-integrations/api-integrations/safaricom/safaricom.service';
+import { SafaricomTransferEntity } from '@121-service/src/fsp-integrations/integrations/safaricom/entities/safaricom-transfer.entity';
+import { DuplicateOriginatorConversationIdError } from '@121-service/src/fsp-integrations/integrations/safaricom/errors/duplicate-originator-conversation-id.error';
+import { SafaricomApiError } from '@121-service/src/fsp-integrations/integrations/safaricom/errors/safaricom-api.error';
+import { SafaricomTransferScopedRepository } from '@121-service/src/fsp-integrations/integrations/safaricom/repositories/safaricom-transfer.scoped.repository';
+import { SafaricomService } from '@121-service/src/fsp-integrations/integrations/safaricom/safaricom.service';
 import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { SafaricomTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/safaricom-transaction-job.dto';

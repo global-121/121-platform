@@ -6,7 +6,7 @@ import crypto from 'node:crypto';
 import { Equal, LessThan, Repository } from 'typeorm';
 
 import { EXTERNAL_API } from '@121-service/src/config';
-import { IntersolveVoucherEntity } from '@121-service/src/fsp-integrations/api-integrations/intersolve-voucher/entities/intersolve-voucher.entity';
+import { IntersolveVoucherEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/entities/intersolve-voucher.entity';
 import { ImageCodeEntity } from '@121-service/src/payments/imagecode/entities/image-code.entity';
 import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/entities/image-code-export-vouchers.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';

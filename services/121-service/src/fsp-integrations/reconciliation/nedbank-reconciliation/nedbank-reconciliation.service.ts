@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { In, IsNull, Not } from 'typeorm';
 
-import { NedbankErrorCode } from '@121-service/src/fsp-integrations/api-integrations/nedbank/enums/nedbank-error-code.enum';
-import { NedbankVoucherStatus } from '@121-service/src/fsp-integrations/api-integrations/nedbank/enums/nedbank-voucher-status.enum';
-import { NedbankVoucherScopedRepository } from '@121-service/src/fsp-integrations/api-integrations/nedbank/repositories/nedbank-voucher.scoped.repository';
-import { NedbankService } from '@121-service/src/fsp-integrations/api-integrations/nedbank/services/nedbank.service';
+import { NedbankErrorCode } from '@121-service/src/fsp-integrations/integrations/nedbank/enums/nedbank-error-code.enum';
+import { NedbankVoucherStatus } from '@121-service/src/fsp-integrations/integrations/nedbank/enums/nedbank-voucher-status.enum';
+import { NedbankVoucherScopedRepository } from '@121-service/src/fsp-integrations/integrations/nedbank/repositories/nedbank-voucher.scoped.repository';
+import { NedbankService } from '@121-service/src/fsp-integrations/integrations/nedbank/services/nedbank.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';

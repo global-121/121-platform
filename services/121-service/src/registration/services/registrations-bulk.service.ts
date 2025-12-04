@@ -4,7 +4,7 @@ import chunk from 'lodash/chunk';
 import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, In, Repository } from 'typeorm';
 
-import { IntersolveVoucherEntity } from '@121-service/src/fsp-integrations/api-integrations/intersolve-voucher/entities/intersolve-voucher.entity';
+import { IntersolveVoucherEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/entities/intersolve-voucher.entity';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { LatestMessageEntity } from '@121-service/src/notifications/entities/latest-message.entity';

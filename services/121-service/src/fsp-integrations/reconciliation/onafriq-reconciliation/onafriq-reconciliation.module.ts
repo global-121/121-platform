@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
-import { OnafriqTransactionEntity } from '@121-service/src/fsp-integrations/api-integrations/onafriq/entities/onafriq-transaction.entity';
-import { OnafriqModule } from '@121-service/src/fsp-integrations/api-integrations/onafriq/onafriq.module';
+import { OnafriqTransactionEntity } from '@121-service/src/fsp-integrations/integrations/onafriq/entities/onafriq-transaction.entity';
+import { OnafriqModule } from '@121-service/src/fsp-integrations/integrations/onafriq/onafriq.module';
 import { OnafriqReconciliationController } from '@121-service/src/fsp-integrations/reconciliation/onafriq-reconciliation/onafriq-reconciliation.controller';
 import { OnafriqReconciliationService as OnafriqReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/onafriq-reconciliation/onafriq-reconciliation.service';
 import { TransactionCallbackJobProcessorOnafriq } from '@121-service/src/fsp-integrations/reconciliation/onafriq-reconciliation/processors/onafriq-transaction-callback-job.processor';

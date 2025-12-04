@@ -1,6 +1,6 @@
 import { TestBed } from '@automock/jest';
 
-import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/api-integrations/intersolve-voucher/services/intersolve-voucher.service';
+import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
 import {
   MessageJobDto,
   MessageProcessType,

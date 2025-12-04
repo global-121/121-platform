@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
-import { IntersolveVisaChildWalletEntity } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
-import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
-import { ContactInformation } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/interfaces/partials/contact-information.interface';
-import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/intersolve-visa-api.error';
-import { IntersolveVisaService } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/services/intersolve-visa.service';
+import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
+import { IntersolveVisaChildWalletEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
+import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
+import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
+import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
+import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
 import {
   FspConfigurationProperties,

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
-import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/api-integrations/intersolve-voucher/services/intersolve-voucher.service';
+import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
 import {
   MessageJobCustomDataDto,
   MessageJobDto,

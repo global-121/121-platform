@@ -6,7 +6,7 @@ import { Between, Equal, FindOperator } from 'typeorm';
 
 import { IS_PRODUCTION } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
-import { OnafriqTransactionEntity } from '@121-service/src/fsp-integrations/api-integrations/onafriq/entities/onafriq-transaction.entity';
+import { OnafriqTransactionEntity } from '@121-service/src/fsp-integrations/integrations/onafriq/entities/onafriq-transaction.entity';
 import { OnafriqTransactionCallbackDto } from '@121-service/src/fsp-integrations/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback.dto';
 import { OnafriqTransactionCallbackJobDto } from '@121-service/src/fsp-integrations/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback-job.dto';
 import { OnafriqApiCallbackStatusCode } from '@121-service/src/fsp-integrations/reconciliation/onafriq-reconciliation/enum/onafriq-api-callback-status-code.enum';

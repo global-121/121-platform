@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import crypto from 'node:crypto';
 
-import { CooperativeBankOfOromiaTransferResultEnum } from '@121-service/src/fsp-integrations/api-integrations/cooperative-bank-of-oromia/enums/cooperative-bank-of-oromia-disbursement-result.enum';
-import { CooperativeBankOfOromiaError } from '@121-service/src/fsp-integrations/api-integrations/cooperative-bank-of-oromia/errors/cooperative-bank-of-oromia.error';
-import { CooperativeBankOfOromiaService } from '@121-service/src/fsp-integrations/api-integrations/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.service';
+import { CooperativeBankOfOromiaTransferResultEnum } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/enums/cooperative-bank-of-oromia-disbursement-result.enum';
+import { CooperativeBankOfOromiaError } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/errors/cooperative-bank-of-oromia.error';
+import { CooperativeBankOfOromiaService } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.service';
 import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { CooperativeBankOfOromiaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/cooperative-bank-of-oromia-transaction-job.dto';

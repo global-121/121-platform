@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { NedbankVoucherStatus } from '@121-service/src/fsp-integrations/api-integrations/nedbank/enums/nedbank-voucher-status.enum';
+import { NedbankVoucherStatus } from '@121-service/src/fsp-integrations/integrations/nedbank/enums/nedbank-voucher-status.enum';
 import {
   FspConfigurationProperties,
   Fsps,

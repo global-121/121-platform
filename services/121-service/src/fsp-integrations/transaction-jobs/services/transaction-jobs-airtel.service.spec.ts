@@ -1,6 +1,6 @@
-import { AirtelDisbursementResultEnum } from '@121-service/src/fsp-integrations/api-integrations/airtel/enums/airtel-disbursement-result.enum';
-import { AirtelError } from '@121-service/src/fsp-integrations/api-integrations/airtel/errors/airtel.error';
-import { AirtelService } from '@121-service/src/fsp-integrations/api-integrations/airtel/services/airtel.service';
+import { AirtelDisbursementResultEnum } from '@121-service/src/fsp-integrations/integrations/airtel/enums/airtel-disbursement-result.enum';
+import { AirtelError } from '@121-service/src/fsp-integrations/integrations/airtel/errors/airtel.error';
+import { AirtelService } from '@121-service/src/fsp-integrations/integrations/airtel/services/airtel.service';
 import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsAirtelService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-airtel.service';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';

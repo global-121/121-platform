@@ -1,7 +1,7 @@
 import { TestBed } from '@automock/jest';
 
-import { CbeTransferScopedRepository } from '@121-service/src/fsp-integrations/api-integrations/commercial-bank-ethiopia/commercial-bank-ethiopia.scoped.repository';
-import { CommercialBankEthiopiaService } from '@121-service/src/fsp-integrations/api-integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
+import { CbeTransferScopedRepository } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia.scoped.repository';
+import { CommercialBankEthiopiaService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
 import { TransactionJobsCommercialBankEthiopiaService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-commercial-bank-ethiopia.service';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { CommercialBankEthiopiaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/commercial-bank-ethiopia-transaction-job.dto';

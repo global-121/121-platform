@@ -1,5 +1,5 @@
 import { env } from '@121-service/src/env';
-import { OnafriqTransactionEntity } from '@121-service/src/fsp-integrations/api-integrations/onafriq/entities/onafriq-transaction.entity';
+import { OnafriqTransactionEntity } from '@121-service/src/fsp-integrations/integrations/onafriq/entities/onafriq-transaction.entity';
 import { OnafriqReconciliationReport } from '@121-service/src/fsp-integrations/reconciliation/onafriq-reconciliation/interfaces/onafriq-reconciliation-report.interface';
 
 export class OnafriqReconciliationMapper {

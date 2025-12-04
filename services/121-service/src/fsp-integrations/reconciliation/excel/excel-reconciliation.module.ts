@@ -2,7 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ExcelModule } from '@121-service/src/fsp-integrations/api-integrations/excel/excel.module';
+import { ExcelModule } from '@121-service/src/fsp-integrations/integrations/excel/excel.module';
 import { ExcelReconciliationController } from '@121-service/src/fsp-integrations/reconciliation/excel/excel-reconciliation.controller';
 import { ExcelReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/excel/services/excel-reconciliation.service';
 import { ExcelReconciliationFeedbackService } from '@121-service/src/fsp-integrations/reconciliation/excel/services/excel-reconciliation-feedback.service';

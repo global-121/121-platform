@@ -3,10 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
-import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/fsp-integrations/api-integrations/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
-import { CommercialBankEthiopiaValidationData } from '@121-service/src/fsp-integrations/api-integrations/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
-import { CommercialBankEthiopiaApiService } from '@121-service/src/fsp-integrations/api-integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.api.service';
-import { CommercialBankEthiopiaService } from '@121-service/src/fsp-integrations/api-integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
+import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
+import { CommercialBankEthiopiaValidationData } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
+import { CommercialBankEthiopiaApiService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.api.service';
+import { CommercialBankEthiopiaService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
 import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';

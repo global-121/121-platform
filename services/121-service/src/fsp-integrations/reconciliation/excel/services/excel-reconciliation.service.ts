@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
-import { ExcelService } from '@121-service/src/fsp-integrations/api-integrations/excel/excel.service';
+import { ExcelService } from '@121-service/src/fsp-integrations/integrations/excel/excel.service';
 import { ExcelReconciliationDefaultColumns } from '@121-service/src/fsp-integrations/reconciliation/excel/enum/excel-reconciliation-default-columns.enum';
 import { ExcelReconciliationFeedbackService } from '@121-service/src/fsp-integrations/reconciliation/excel/services/excel-reconciliation-feedback.service';
 import { ExcelReconciliationValidationService } from '@121-service/src/fsp-integrations/reconciliation/excel/services/excel-reconciliation-validation.service';

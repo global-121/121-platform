@@ -22,7 +22,7 @@ import {
 } from '@nestjs/swagger';
 
 import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.service';
-import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
+import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';

@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { merge } from 'lodash';
 import { DataSource, Equal, QueryFailedError, Repository } from 'typeorm';
 
-import { GetTokenResult } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/interfaces/get-token-result.interface';
-import { IntersolveVisaService } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/services/intersolve-visa.service';
+import { GetTokenResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/get-token-result.interface';
+import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import {
   FspConfigurationProperties,
   Fsps,

@@ -3,8 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CommercialBankEthiopiaReconciliationController } from '@121-service/src/fsp-integrations/account-management/commercial-bank-ethiopia-account-management/commercial-bank-ethiopia-account-management.controller';
 import { CommercialBankEthiopiaReconciliationService } from '@121-service/src/fsp-integrations/account-management/commercial-bank-ethiopia-account-management/commercial-bank-ethiopia-account-management.service';
-import { CommercialBankEthiopiaModule } from '@121-service/src/fsp-integrations/api-integrations/commercial-bank-ethiopia/commercial-bank-ethiopia.module';
-import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/fsp-integrations/api-integrations/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
+import { CommercialBankEthiopiaModule } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia.module';
+import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';

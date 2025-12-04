@@ -7,7 +7,7 @@ import {
   EXTERNAL_API,
   IS_DEVELOPMENT,
 } from '@121-service/src/config';
-import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/api-integrations/intersolve-voucher/services/intersolve-voucher.service';
+import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { MessageProcessType } from '@121-service/src/notifications/dto/message-job.dto';
 import {

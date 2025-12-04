@@ -1,9 +1,9 @@
 import { TestBed } from '@automock/jest';
 
-import { NedbankVoucherStatus } from '@121-service/src/fsp-integrations/api-integrations/nedbank/enums/nedbank-voucher-status.enum';
-import { NedbankError } from '@121-service/src/fsp-integrations/api-integrations/nedbank/errors/nedbank.error';
-import { NedbankVoucherScopedRepository } from '@121-service/src/fsp-integrations/api-integrations/nedbank/repositories/nedbank-voucher.scoped.repository';
-import { NedbankService } from '@121-service/src/fsp-integrations/api-integrations/nedbank/services/nedbank.service';
+import { NedbankVoucherStatus } from '@121-service/src/fsp-integrations/integrations/nedbank/enums/nedbank-voucher-status.enum';
+import { NedbankError } from '@121-service/src/fsp-integrations/integrations/nedbank/errors/nedbank.error';
+import { NedbankVoucherScopedRepository } from '@121-service/src/fsp-integrations/integrations/nedbank/repositories/nedbank-voucher.scoped.repository';
+import { NedbankService } from '@121-service/src/fsp-integrations/integrations/nedbank/services/nedbank.service';
 import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { TransactionJobsNedbankService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-nedbank.service';

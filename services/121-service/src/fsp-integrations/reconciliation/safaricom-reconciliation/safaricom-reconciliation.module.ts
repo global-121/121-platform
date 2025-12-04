@@ -1,6 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
-import { SafaricomModule } from '@121-service/src/fsp-integrations/api-integrations/safaricom/safaricom.module';
+import { SafaricomModule } from '@121-service/src/fsp-integrations/integrations/safaricom/safaricom.module';
 import { TimeoutCallbackJobProcessorSafaricom } from '@121-service/src/fsp-integrations/reconciliation/safaricom-reconciliation/processors/safaricom-timeout-callback-job.processor';
 import { TransferCallbackJobProcessorSafaricom } from '@121-service/src/fsp-integrations/reconciliation/safaricom-reconciliation/processors/safaricom-transfer-callback-job.processor';
 import { SafaricomReconciliationController } from '@121-service/src/fsp-integrations/reconciliation/safaricom-reconciliation/safaricom-reconciliation.controller';

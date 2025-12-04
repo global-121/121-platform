@@ -20,7 +20,7 @@ import {
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
-import { IntersolveVisaCustomerEntity } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/entities/intersolve-visa-customer.entity';
+import { IntersolveVisaCustomerEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { LatestMessageEntity } from '@121-service/src/notifications/entities/latest-message.entity';
 import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';

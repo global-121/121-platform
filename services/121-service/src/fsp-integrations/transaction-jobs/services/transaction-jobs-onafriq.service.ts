@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
-import { OnafriqTransactionEntity } from '@121-service/src/fsp-integrations/api-integrations/onafriq/entities/onafriq-transaction.entity';
-import { OnafriqApiResponseStatusType } from '@121-service/src/fsp-integrations/api-integrations/onafriq/enum/onafriq-api-response-status-type.enum';
-import { OnafriqError } from '@121-service/src/fsp-integrations/api-integrations/onafriq/errors/onafriq.error';
-import { OnafriqService } from '@121-service/src/fsp-integrations/api-integrations/onafriq/services/onafriq.service';
+import { OnafriqTransactionEntity } from '@121-service/src/fsp-integrations/integrations/onafriq/entities/onafriq-transaction.entity';
+import { OnafriqApiResponseStatusType } from '@121-service/src/fsp-integrations/integrations/onafriq/enum/onafriq-api-response-status-type.enum';
+import { OnafriqError } from '@121-service/src/fsp-integrations/integrations/onafriq/errors/onafriq.error';
+import { OnafriqService } from '@121-service/src/fsp-integrations/integrations/onafriq/services/onafriq.service';
 import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { OnafriqTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/onafriq-transaction-job.dto';

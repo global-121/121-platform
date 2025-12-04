@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import crypto from 'node:crypto';
 
 import { env } from '@121-service/src/env';
-import { AirtelDisbursementResultEnum } from '@121-service/src/fsp-integrations/api-integrations/airtel/enums/airtel-disbursement-result.enum';
-import { AirtelError } from '@121-service/src/fsp-integrations/api-integrations/airtel/errors/airtel.error';
-import { AirtelService } from '@121-service/src/fsp-integrations/api-integrations/airtel/services/airtel.service';
+import { AirtelDisbursementResultEnum } from '@121-service/src/fsp-integrations/integrations/airtel/enums/airtel-disbursement-result.enum';
+import { AirtelError } from '@121-service/src/fsp-integrations/integrations/airtel/errors/airtel.error';
+import { AirtelService } from '@121-service/src/fsp-integrations/integrations/airtel/services/airtel.service';
 import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { AirtelTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/airtel-transaction-job.dto';

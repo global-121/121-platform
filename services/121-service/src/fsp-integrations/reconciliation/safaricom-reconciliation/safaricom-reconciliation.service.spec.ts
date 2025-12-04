@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Redis } from 'ioredis';
 
-import { SafaricomTransferScopedRepository } from '@121-service/src/fsp-integrations/api-integrations/safaricom/repositories/safaricom-transfer.scoped.repository';
+import { SafaricomTransferScopedRepository } from '@121-service/src/fsp-integrations/integrations/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomTimeoutCallbackDto } from '@121-service/src/fsp-integrations/reconciliation/safaricom-reconciliation/dtos/safaricom-timeout-callback.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/fsp-integrations/reconciliation/safaricom-reconciliation/dtos/safaricom-transfer-callback.dto';
 import { SafaricomReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/safaricom-reconciliation/safaricom-reconciliation.service';

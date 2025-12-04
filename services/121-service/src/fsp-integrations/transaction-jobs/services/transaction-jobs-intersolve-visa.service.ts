@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
-import { DoTransferOrIssueCardResult } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/interfaces/do-transfer-or-issue-card-result.interface';
-import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/intersolve-visa-api.error';
-import { IntersolveVisaService } from '@121-service/src/fsp-integrations/api-integrations/intersolve-visa/services/intersolve-visa.service';
+import { DoTransferOrIssueCardResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/do-transfer-or-issue-card-result.interface';
+import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
+import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/intersolve-visa-transaction-job.dto';
