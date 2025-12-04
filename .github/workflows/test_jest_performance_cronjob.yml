@@ -1,9 +1,6 @@
 name: 'Test: Jest Performance Tests Cronjob'
 
 on:
-  push:
-    branches:
-      - Piotrk39/feat.add-performance-tests-automatically
   schedule:
     - cron: '42 1 * * 1-5'
   workflow_dispatch:
@@ -75,6 +72,8 @@ jobs:
           done
 
           matrix="${matrix}]}"
+          echo "Generated test matrix:"
+          echo "$matrix" | jq . || echo "$matrix"
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
   performance-test-shard:
@@ -105,7 +104,16 @@ jobs:
       - name: Run performance test - ${{ matrix.test_name }}
         working-directory: ${{ env.workingDirectory }}
         run: |
-          docker compose exec -e CI=true -e GITHUB_WORKFLOW="${{ github.workflow }}" 121-service npm run test:integration:base -t /performance ${{ matrix.test_name }}
+          echo "🚀 Running performance test: ${{ matrix.test_name }} (shard: ${{ matrix.shard }})"
+          echo "Test command: docker compose exec -e CI=true -e GITHUB_WORKFLOW=\"${{ github.workflow }}\" 121-service npm run test:integration:base -t /performance ${{ matrix.test_name }}"
+
+          if ! docker compose exec -e CI=true -e GITHUB_WORKFLOW="${{ github.workflow }}" 121-service npm run test:integration:base -t /performance ${{ matrix.test_name }}; then
+            echo "❌ Test failed: ${{ matrix.test_name }}"
+            echo "Check the logs above for detailed error information"
+            exit 1
+          fi
+
+          echo "✅ Test passed: ${{ matrix.test_name }}"
 
       - name: Docker logs
         if: always()
@@ -119,15 +127,32 @@ jobs:
       - name: Check test results - FAILURE
         if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
         run: |
-          echo "Performance tests have failed." >> $GITHUB_STEP_SUMMARY
-          echo "Test results: ${{ toJson(needs.*.result) }}" >> $GITHUB_STEP_SUMMARY
+          echo "## ❌ Performance Tests Failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "One or more performance tests have failed. Check the individual test logs above for details." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Test Results Summary:" >> $GITHUB_STEP_SUMMARY
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          echo '${{ toJson(needs.performance-test-shard.outputs) }}' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### All Results:" >> $GITHUB_STEP_SUMMARY
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          echo '${{ toJson(needs.*.result) }}' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
           exit 1
 
       - name: Check test results - SUCCESS
         if: ${{ !(contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')) }}
         run: |
-          echo "All performance tests have successfully passed." >> $GITHUB_STEP_SUMMARY
-          echo "Test results: ${{ toJson(needs.*.result) }}" >> $GITHUB_STEP_SUMMARY
+          echo "## ✅ All Performance Tests Passed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All performance tests have successfully completed!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Test Results:" >> $GITHUB_STEP_SUMMARY
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          echo '${{ toJson(needs.*.result) }}' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
 
       # - name: Microsoft Teams Notification
       #   if: always()
