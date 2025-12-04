@@ -49,7 +49,6 @@ jobs:
         # Group 1: All the tests that are not resource intensive and run objectively fast
         # Group 2: Test that is more resource intensive and runs longer: payment-100k-registration-intersolve-visa.test.ts
         # Group 3: Test that runs for a long time: performance-during-payment.test.ts
-        shard: ['1', '2', '3']
         include:
           - shard: '1'
             test_name: 'bulk-update-32k-registrations.test.ts'
