@@ -26,14 +26,13 @@ export class CooperativeBankOfOromiaApiService {
     private readonly cooperativeBankOfOromiaApiHelperService: CooperativeBankOfOromiaApiHelperService,
   ) {
     const transferUrlPart = 'nrc/1.0.0/transfer'; // This path is the same on UAT and Production
-    if (
-      env.MOCK_COOPERATIVE_BANK_OF_OROMIA ||
-      !env.COOPERATIVE_BANK_OF_OROMIA_API_URL
-    ) {
+    if (env.MOCK_COOPERATIVE_BANK_OF_OROMIA) {
       this.cooperativeBankOfOromiaTransferURL = new URL(
         `api/fsp/cooperative-bank-of-oromia/${transferUrlPart}`,
         env.MOCK_SERVICE_URL,
       );
+    } else if (!env.COOPERATIVE_BANK_OF_OROMIA_API_URL) {
+      throw new Error('COOPERATIVE_BANK_OF_OROMIA_API_URL is not set');
     } else {
       this.cooperativeBankOfOromiaTransferURL = new URL(
         transferUrlPart,
