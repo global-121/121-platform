@@ -48,7 +48,7 @@ describe('TransactionJobsCooperativeBankOfOromiaService', () => {
       .mockResolvedValue(undefined);
   });
 
-  it('should generate different messageIds for different failedTransactionAttempts', async () => {
+  it('should generate different messageIds for different transactions', async () => {
     const params = {
       referenceId: 'ref-1',
       transactionId: 123,
@@ -64,7 +64,7 @@ describe('TransactionJobsCooperativeBankOfOromiaService', () => {
       programId: 1,
       bulkSize: 1,
     };
-    const job2 = { ...job1, isRetry: true };
+    const job2 = { ...job1, transactionId: 456 };
 
     // Mock countFailedTransactionAttempts to return different values;
     transactionEventsScopedRepository.countFailedTransactionAttempts = jest
