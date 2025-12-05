@@ -30,17 +30,13 @@ export class KoboConnectApiService {
     koboToken: string,
     koboAssetId: string,
   ): Promise<CreateProgramDto | Partial<KoboApiResponse>> {
+    const headers = new Headers();
+    headers.append('kobotoken', koboToken);
+    headers.append('koboasset', koboAssetId);
     return await this.httpService
-      .get<KoboApiResponse<CreateProgramDto>>(`${this.apiUrl}/121-program`, [
-        {
-          name: 'kobotoken',
-          value: koboToken,
-        },
-        {
-          name: 'koboasset',
-          value: koboAssetId,
-        },
-      ])
+      .get<
+        KoboApiResponse<CreateProgramDto>
+      >(`${this.apiUrl}/121-program`, headers)
       .then((response) => {
         if (
           response &&

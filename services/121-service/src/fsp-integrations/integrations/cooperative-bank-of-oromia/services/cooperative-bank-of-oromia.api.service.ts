@@ -11,7 +11,6 @@ import { CooperativeBankOfOromiaTransferResultEnum } from '@121-service/src/fsp-
 import { CooperativeBankOfOromiaApiError } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/errors/cooperative-bank-of-oromia.api.error';
 import { CooperativeBankOfOromiaApiHelperService } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.api.helper.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { headersToPojo } from '@121-service/src/utils/headers-to-pojo/headers-to-pojo';
 import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
 @Injectable()
@@ -105,11 +104,7 @@ export class CooperativeBankOfOromiaApiService {
     try {
       response = await this.httpService.post<
         AxiosResponse<CooperativeBankOfOromiaApiPaymentResponseBodyDto>
-      >(
-        this.cooperativeBankOfOromiaTransferURL.href,
-        payload,
-        headersToPojo(headers),
-      );
+      >(this.cooperativeBankOfOromiaTransferURL.href, payload, headers);
     } catch (error) {
       return {
         result: CooperativeBankOfOromiaTransferResultEnum.fail,
@@ -146,11 +141,7 @@ export class CooperativeBankOfOromiaApiService {
     try {
       response = await this.httpService.post<
         AxiosResponse<CooperativeBankOfOromiaApiAuthenticationResponseBodyDto>
-      >(
-        this.cooperativeBankOfOromiaAuthenticateURL.href,
-        payload,
-        headersToPojo(headers),
-      );
+      >(this.cooperativeBankOfOromiaAuthenticateURL.href, payload, headers);
     } catch (error) {
       // This error is not something we expect to happen (e.g. network error)
       throw new CooperativeBankOfOromiaApiError(
