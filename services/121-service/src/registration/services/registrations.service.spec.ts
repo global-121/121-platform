@@ -45,7 +45,7 @@ describe('RegistrationsService', () => {
         },
         RegistrationsService,
         {
-          provide: DebitCardsIntersolveVisaService,
+          provide: IntersolveVisaAccountManagementService,
           useValue: {},
         },
         {

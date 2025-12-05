@@ -216,7 +216,7 @@ export class IntersolveVisaAccountManagementController {
     @Param('referenceId') referenceId: string,
     @Param('tokenCode') tokenCode: string,
   ): Promise<void> {
-    return await this.debitCardsIntersolveVisaService.linkDebitCardToRegistration(
+    return await this.intersolveVisaAccountManagementService.linkDebitCardToRegistration(
       referenceId,
       programId,
       tokenCode,
@@ -242,7 +242,7 @@ export class IntersolveVisaAccountManagementController {
     @Param('referenceId') referenceId: string,
     @Param('tokenCode') tokenCode: string,
   ): Promise<RegistrationEntity> {
-    return await this.debitCardsIntersolveVisaService.getRegistrationAndReplaceCard(
+    return await this.intersolveVisaAccountManagementService.getRegistrationAndReplaceCard(
       referenceId,
       programId,
       tokenCode,

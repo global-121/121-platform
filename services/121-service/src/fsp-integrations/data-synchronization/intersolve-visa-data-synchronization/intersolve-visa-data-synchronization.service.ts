@@ -25,12 +25,19 @@ export class IntersolveVisaDataSynchronizationService {
     registration: RegistrationEntity;
     attribute: string;
   }): Promise<void> {
+    const contactInfo =
+      await this.intersolveVisaAccountManagementService.getContactInformation(
+        registration,
+      );
     if (
       env.INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION &&
       this.intersolveVisaAttributeNames.includes(attribute)
     ) {
       await this.intersolveVisaAccountManagementService.sendCustomerInformationToIntersolve(
-        registration,
+        {
+          registration,
+          contactInfo,
+        },
       );
     }
   }
