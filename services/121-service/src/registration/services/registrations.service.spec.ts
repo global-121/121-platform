@@ -46,9 +46,7 @@ describe('RegistrationsService', () => {
         RegistrationsService,
         {
           provide: IntersolveVisaAccountManagementService,
-          useValue: {
-            sendCustomerInformationToIntersolve: jest.fn(),
-          },
+          useValue: {},
         },
         {
           provide: RegistrationScopedRepository,

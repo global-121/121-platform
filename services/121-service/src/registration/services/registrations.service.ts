@@ -70,6 +70,34 @@ export class RegistrationsService {
     private readonly intersolveVisaDataSynchronizationService: IntersolveVisaDataSynchronizationService,
   ) {}
 
+  public async getRegistrationOrThrow({
+    referenceId,
+    relations = [],
+    programId,
+  }: {
+    referenceId: string;
+    relations?: (keyof RegistrationEntity)[];
+    programId?: number;
+  }): Promise<RegistrationEntity> {
+    if (!referenceId) {
+      const errors = `ReferenceId is not set`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    const registration =
+      await this.registrationScopedRepository.getWithRelationsByReferenceIdAndProgramId(
+        {
+          referenceId,
+          relations,
+          programId,
+        },
+      );
+    if (!registration) {
+      const errors = `ReferenceId ${referenceId} is not known in this program (within your scope).`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    return registration;
+  }
+
   // This methods can be used to get the same formatted data as the pagination query using referenceId
   public async getPaginateRegistrationForReferenceId(
     referenceId: string,
@@ -167,34 +195,6 @@ export class RegistrationsService {
       { explicitRegistrationPropertyNames: ['status'] },
     );
     return registrationAfterUpdate;
-  }
-
-  public async getRegistrationOrThrow({
-    referenceId,
-    relations = [],
-    programId,
-  }: {
-    referenceId: string;
-    relations?: (keyof RegistrationEntity)[];
-    programId?: number;
-  }): Promise<RegistrationEntity> {
-    if (!referenceId) {
-      const errors = `ReferenceId is not set`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    const registration =
-      await this.registrationScopedRepository.getWithRelationsByReferenceIdAndProgramId(
-        {
-          referenceId,
-          relations,
-          programId,
-        },
-      );
-    if (!registration) {
-      const errors = `ReferenceId ${referenceId} is not known in this program (within your scope).`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    return registration;
   }
 
   public async cleanCustomDataIfPhoneNr(
@@ -547,7 +547,7 @@ export class RegistrationsService {
           newFspConfigurationName: String(value),
         });
     }
-    const savedRegistration =
+    const savedRegistration: RegistrationEntity =
       await this.registrationUtilsService.save(registration);
     const calculatedRegistration =
       await this.inclusionScoreService.calculatePaymentAmountMultiplier(
