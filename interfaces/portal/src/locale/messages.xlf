@@ -1228,9 +1228,6 @@
       <trans-unit id="2648503122381983554" datatype="html">
         <source>Duplicated with:</source>
       </trans-unit>
-      <trans-unit id="3358875394209155806" datatype="html">
-        <source>(matching fields: <x equiv-text="{{ translatableStringService.commaSeparatedList( duplicate.attributeNames ) }}" id="INTERPOLATION"/>)</source>
-      </trans-unit>
       <trans-unit id="593137515549076612" datatype="html">
         <source>(Scope - <x equiv-text="{{ duplicate.scope }}" id="INTERPOLATION"/>)</source>
       </trans-unit>
@@ -2017,6 +2014,9 @@
       </trans-unit>
       <trans-unit id="5803191628367780292" datatype="html">
         <source>You are about to retry <x equiv-text="formattedTransactionCount" id="PH"/> transaction(s). The transaction status will change to &apos;Processing&apos; until received by the registration.</source>
+      </trans-unit>
+      <trans-unit id="5484768522828011721" datatype="html">
+        <source>(matching fields: <x equiv-text="{{ matchingFieldNames }}" id="INTERPOLATION"/>)</source>
       </trans-unit>
     </body>
   </file>

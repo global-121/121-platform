@@ -39,17 +39,16 @@
               }
               <span class="pi pi-external-link ms-1"></span>
             </a>
+            @let matchingFieldNames =
+              translatableStringService.commaSeparatedList({
+                values: duplicate.attributeNames,
+              });
             <span
               i18n
               class="ms-1"
             >
-              (matching fields:
-              {{
-                translatableStringService.commaSeparatedList(
-                  duplicate.attributeNames
-                )
-              }})</span
-            >
+              (matching fields: {{ matchingFieldNames }})
+            </span>
           </li>
         }
       </ul>

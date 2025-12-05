@@ -45,7 +45,7 @@ export class NotificationApiService extends DomainApiService {
               this.translatableStringService.translate(template.label) ??
               $localize`<UNNAMED TEMPLATE>`,
           }))
-          .sort((a, b) => a.label.localeCompare(b.label)),
+          .sort((a, b) => a.label.localeCompare(b.label, this.locale)),
       enabled: () => !!programId(),
     });
   }

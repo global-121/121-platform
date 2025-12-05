@@ -33,6 +33,7 @@ import { Registration } from '~/domains/registration/registration.model';
 import { AuthService } from '~/services/auth.service';
 import { GetRegistrationPreferredLanguageNameService } from '~/services/get-registration-preferrred-language-name.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+import { Locale } from '~/utils/locale';
 
 const getGenericAttributeType = (
   attributeName: GenericRegistrationAttributes,
@@ -80,7 +81,7 @@ export interface NormalizedRegistrationAttribute {
   providedIn: 'root',
 })
 export class RegistrationAttributeService {
-  private readonly locale = inject(LOCALE_ID);
+  private readonly locale = inject<Locale>(LOCALE_ID);
   private readonly queryClient = inject(QueryClient);
 
   private readonly authService = inject(AuthService);
@@ -162,10 +163,14 @@ export class RegistrationAttributeService {
         );
       }
       case GenericRegistrationAttributes.programFspConfigurationName:
-        return program.programFspConfigurations.map((fspConfig) => ({
-          value: fspConfig.name,
-          label: this.translatableStringService.translate(fspConfig.label),
-        }));
+        return program.programFspConfigurations
+          .map((fspConfig) => ({
+            value: fspConfig.name,
+            label:
+              this.translatableStringService.translate(fspConfig.label) ??
+              fspConfig.name,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label, this.locale));
       default:
         return undefined;
     }
@@ -299,15 +304,17 @@ export class RegistrationAttributeService {
             await this.getProgramSpecificAttributes(program, registration);
 
           const allNameFields = program.fullnameNamingConvention
-            ? this.translatableStringService.commaSeparatedList(
-                program.fullnameNamingConvention.map((namingConvention) =>
-                  this.localizeAttribute({
-                    attributes: programSpecificAttributes,
-                    attributeName: namingConvention,
-                  }),
+            ? this.translatableStringService.commaSeparatedList({
+                values: program.fullnameNamingConvention.map(
+                  (namingConvention) =>
+                    this.localizeAttribute({
+                      attributes: programSpecificAttributes,
+                      attributeName: namingConvention,
+                    }),
                 ),
-                'long',
-              )
+                style: 'long',
+                sortedAlphabetically: false,
+              })
             : '';
 
           return [

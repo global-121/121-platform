@@ -62,12 +62,13 @@ export class ProgramMonitoringDashboardPageComponent {
       .map(
         (axisUnit, labelIndex) =>
           `${axisUnit}: ` +
-          this.translatableStringService.commaSeparatedList(
-            datasets.map(
+          this.translatableStringService.commaSeparatedList({
+            values: datasets.map(
               (set: ChartDataSet) =>
                 `${set.label ? `${set.label}: ` : ''}${String(set.data[labelIndex])}`,
             ),
-          ),
+            sortedAlphabetically: false,
+          }),
       )
       .join('\n')}`;
 
