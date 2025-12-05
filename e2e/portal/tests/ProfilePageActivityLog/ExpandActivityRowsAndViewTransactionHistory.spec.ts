@@ -169,11 +169,9 @@ test('Expand rows of activity overview and view transaction history', async ({
     const loginPage = new LoginPage(page);
     await loginPage.login(username, 'password');
 
-    await test.step('Navigate to registration activity log', async () => {
-      await activityLogPage.selectProgram(NLRCProgram.titlePortal.en);
-      await registrationsPage.goToRegistrationByName({
-        registrationName: registrationPV5.fullName,
-      });
+    await activityLogPage.selectProgram(NLRCProgram.titlePortal.en);
+    await registrationsPage.goToRegistrationByName({
+      registrationName: registrationPV5.fullName,
     });
 
     // We still only see transaction activities, no need to refilter.
