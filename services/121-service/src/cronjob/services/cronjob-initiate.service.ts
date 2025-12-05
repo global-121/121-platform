@@ -4,10 +4,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 
 import { env } from '@121-service/src/env';
-import {
-  CustomHttpService,
-  Header,
-} from '@121-service/src/shared/services/custom-http.service';
+import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
 type cronReturn = Promise<
@@ -169,9 +166,9 @@ export class CronjobInitiateService {
   // If not initialized correctly no use running the cronjobs.
   private async prepareCronJobRun(
     cronjobName: string,
-  ): Promise<{ baseCronUrl: string; headers: Header[] }> {
+  ): Promise<{ baseCronUrl: string; headers: Headers }> {
     this.currentlyRunningCronjobName = cronjobName;
-    let headers: Header[];
+    let headers: Headers;
     try {
       headers = await this.getHeaders();
     } catch (error) {
@@ -182,12 +179,12 @@ export class CronjobInitiateService {
     }
     // Not a network operation so no try/catch.
     const cronPath = 'cronjobs';
-    const baseCronUrl = `${await this.axiosCallsService.getBaseUrl()}/${cronPath}`;
+    const baseCronUrl = `${this.axiosCallsService.getBaseUrl()}/${cronPath}`;
     return { baseCronUrl, headers };
   }
 
   // Separate function: easier to test.
-  private async getHeaders(): Promise<Header[]> {
+  private async getHeaders(): Promise<Headers> {
     const accessToken = await this.axiosCallsService.getAccessToken();
     return this.axiosCallsService.accessTokenToHeaders(accessToken);
   }
@@ -196,7 +193,7 @@ export class CronjobInitiateService {
   private async callEndpoint(
     url: string,
     method: 'put' | 'patch' | 'post' | 'delete',
-    headers: Header[],
+    headers: Headers,
   ): Promise<cronReturn> {
     // Some cronjobs can take 6+ hours. We get "499" errors when the HTTP
     // requests to start those jobs takes too long and times out.

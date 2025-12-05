@@ -652,10 +652,9 @@ export class IntersolveVisaApiService {
     payload?: unknown;
   }) {
     const authToken = await this.getAuthenticationToken();
-    const headers = [
-      { name: 'Authorization', value: `Bearer ${authToken}` },
-      { name: 'Tenant-ID', value: env.INTERSOLVE_VISA_TENANT_ID },
-    ];
+    const headers = new Headers();
+    headers.append('Authorization', `Bearer ${authToken}`);
+    headers.append('Tenant-ID', env.INTERSOLVE_VISA_TENANT_ID ?? '');
 
     let intersolveVisaApiPath: string = apiPath;
 

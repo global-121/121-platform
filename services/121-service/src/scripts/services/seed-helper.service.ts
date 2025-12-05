@@ -109,10 +109,7 @@ export class SeedHelperService {
     const formHeaders = form.getHeaders();
     for (const key in formHeaders) {
       if (Object.prototype.hasOwnProperty.call(formHeaders, key)) {
-        headers.push({
-          name: key,
-          value: formHeaders[key],
-        });
+        headers.append(key, formHeaders[key]);
       }
     }
 
