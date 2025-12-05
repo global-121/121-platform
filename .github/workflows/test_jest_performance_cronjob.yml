@@ -54,7 +54,10 @@ jobs:
         run: |
           LONG_TEST_1="payment-100k-registration-intersolve-visa.test.ts"
           LONG_TEST_2="performance-during-payment.test.ts"
-          SHARD1_FILES=$(find test/performance -name '*.test.ts' ! -name "$LONG_TEST_1" ! -name "$LONG_TEST_2" -print0 | xargs -0 -n1 basename | sort | xargs | tr ' ' ',')
+          SHARD1_FILES=$(find services/121-service/test/performance -name '*.test.ts' ! -name "$LONG_TEST_1" ! -name "$LONG_TEST_2" -print0 | xargs -0 -n1 basename | sort | xargs | tr ' ' ',')
+          echo "🔍 Discovered shard 1 files: $SHARD1_FILES"
+          echo "🔍 Long test 1: $LONG_TEST_1"
+          echo "🔍 Long test 2: $LONG_TEST_2"
           {
             echo "shard1_files=$SHARD1_FILES"
             echo "long_test_1=$LONG_TEST_1"
@@ -93,10 +96,22 @@ jobs:
       - name: Run performance tests - Shard ${{ matrix.shard }}
         working-directory: ${{ env.workingDirectory }}
         run: |
+          echo "🚀 Running tests for shard ${{ matrix.shard }}"
+          echo "📋 Test files: ${{ matrix.test_files }}"
+
           IFS=',' read -ra TESTS <<< "${{ matrix.test_files }}"
 
+          if [[ ${#TESTS[@]} -eq 0 || ( ${#TESTS[@]} -eq 1 && -z "${TESTS[0]}" ) ]]; then
+            echo "⚠️ No test files found for shard ${{ matrix.shard }}"
+            exit 0
+          fi
+
           for test_file in "${TESTS[@]}"; do
-            docker compose exec -e CI=true -e GITHUB_WORKFLOW="${{ github.workflow }}" 121-service npm run test:integration:base -t "$test_file"
+            if [[ -n "$test_file" ]]; then
+              echo "🧪 Running test: $test_file"
+              docker compose exec -e CI=true -e GITHUB_WORKFLOW="${{ github.workflow }}" 121-service npm run test:integration:base -t "$test_file"
+              echo "✅ Completed test: $test_file"
+            fi
           done
 
   performance-test-shard-resolution:
