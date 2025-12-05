@@ -3,10 +3,11 @@ import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios
 import { TokenSet } from 'openid-client';
 
 import { env } from '@121-service/src/env';
+import { CooperativeBankOfOromiaApiAccountValidationResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-account-validation-response-body.dto';
 import { CooperativeBankOfOromiaApiAuthenticationRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-authentication-request-body.dto';
 import { CooperativeBankOfOromiaApiAuthenticationResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-authentication-response-body.dto';
-import { CooperativeBankOfOromiaApiPaymentResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-payment-response-body.dto';
 import { CooperativeBankOfOromiaApiTransferRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-transfer-request-body.dto';
+import { CooperativeBankOfOromiaApiTransferResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-transfer-response-body.dto';
 import { CooperativeBankOfOromiaTransferResultEnum } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/enums/cooperative-bank-of-oromia-disbursement-result.enum';
 import { CooperativeBankOfOromiaApiError } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/errors/cooperative-bank-of-oromia.api.error';
 import { CooperativeBankOfOromiaApiHelperService } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.api.helper.service';
@@ -19,6 +20,7 @@ export class CooperativeBankOfOromiaApiService {
   private tokenSet: TokenSet;
   private readonly cooperativeBankOfOromiaTransferURL: URL;
   private readonly cooperativeBankOfOromiaAuthenticateURL: URL;
+  private readonly cooperativeBankOfOromiaAccountValidationURL: URL;
 
   public constructor(
     private readonly httpService: CustomHttpService,
@@ -26,36 +28,43 @@ export class CooperativeBankOfOromiaApiService {
     private readonly cooperativeBankOfOromiaApiHelperService: CooperativeBankOfOromiaApiHelperService,
   ) {
     const transferUrlPart = 'nrc/1.0.0/transfer'; // This path is the same on UAT and Production
-    if (
-      env.MOCK_COOPERATIVE_BANK_OF_OROMIA ||
-      !env.COOPERATIVE_BANK_OF_OROMIA_API_URL
-    ) {
-      this.cooperativeBankOfOromiaTransferURL = new URL(
-        `api/fsp/cooperative-bank-of-oromia/${transferUrlPart}`,
-        env.MOCK_SERVICE_URL,
-      );
-    } else {
-      this.cooperativeBankOfOromiaTransferURL = new URL(
-        transferUrlPart,
-        env.COOPERATIVE_BANK_OF_OROMIA_API_URL,
-      );
-    }
+    const accountValidationUrlPart = 'nrc/1.0.0/accountValidation';
 
-    // Set auth base url; this is a different api path
-    let authUrlBase: URL;
-    if (
-      env.MOCK_COOPERATIVE_BANK_OF_OROMIA ||
-      !env.COOPERATIVE_BANK_OF_OROMIA_AUTH_URL
-    ) {
-      authUrlBase = new URL(
-        'api/fsp/cooperative-bank-of-oromia/',
-        env.MOCK_SERVICE_URL,
-      );
-    } else {
-      authUrlBase = new URL(env.COOPERATIVE_BANK_OF_OROMIA_AUTH_URL);
+    this.cooperativeBankOfOromiaTransferURL = this.buildApiUrl({
+      baseUrl: env.COOPERATIVE_BANK_OF_OROMIA_API_URL,
+      mockServiceUrl: env.MOCK_SERVICE_URL,
+      urlPart: transferUrlPart,
+    });
+
+    this.cooperativeBankOfOromiaAccountValidationURL = this.buildApiUrl({
+      baseUrl: env.COOPERATIVE_BANK_OF_OROMIA_API_URL,
+      mockServiceUrl: env.MOCK_SERVICE_URL,
+      urlPart: accountValidationUrlPart,
+    });
+
+    // Set auth base url; this is a different api url
+    this.cooperativeBankOfOromiaAuthenticateURL = this.buildApiUrl({
+      baseUrl: env.COOPERATIVE_BANK_OF_OROMIA_AUTH_URL,
+      mockServiceUrl: env.MOCK_SERVICE_URL,
+      urlPart: 'oauth2/token',
+    });
+  }
+
+  private buildApiUrl({
+    baseUrl,
+    mockServiceUrl,
+    urlPart,
+  }: {
+    baseUrl: string | undefined;
+    mockServiceUrl: string;
+    urlPart: string;
+  }): URL {
+    const mockFlag = env.MOCK_COOPERATIVE_BANK_OF_OROMIA;
+    const mockPathPrefix = 'api/fsp/cooperative-bank-of-oromia/';
+    if (mockFlag || !baseUrl) {
+      return new URL(`${mockPathPrefix}${urlPart}`, mockServiceUrl);
     }
-    const urlPart = 'oauth2/token';
-    this.cooperativeBankOfOromiaAuthenticateURL = new URL(urlPart, authUrlBase);
+    return new URL(urlPart, baseUrl);
   }
 
   public async initiateTransfer({
@@ -86,11 +95,7 @@ export class CooperativeBankOfOromiaApiService {
       }
     }
 
-    const headers = new Headers({
-      Accept: '*/*',
-      'Content-Type': 'application/json',
-    });
-    headers.append('Authorization', `Bearer ${tokenSet.access_token}`);
+    const headers = this.createHeaderWithBearerToken(tokenSet.access_token);
 
     const payload: CooperativeBankOfOromiaApiTransferRequestBodyDto =
       this.cooperativeBankOfOromiaApiHelperService.buildTransferPayload({
@@ -100,11 +105,11 @@ export class CooperativeBankOfOromiaApiService {
         amount,
       });
 
-    let response: AxiosResponse<CooperativeBankOfOromiaApiPaymentResponseBodyDto>;
+    let response: AxiosResponse<CooperativeBankOfOromiaApiTransferResponseBodyDto>;
 
     try {
       response = await this.httpService.post<
-        AxiosResponse<CooperativeBankOfOromiaApiPaymentResponseBodyDto>
+        AxiosResponse<CooperativeBankOfOromiaApiTransferResponseBodyDto>
       >(
         this.cooperativeBankOfOromiaTransferURL.href,
         payload,
@@ -122,6 +127,46 @@ export class CooperativeBankOfOromiaApiService {
     );
   }
 
+  public async validateAccount(accountNumber: string): Promise<{
+    cooperativeBankOfOromiaName?: string;
+    errorMessage?: string;
+  }> {
+    let tokenSet: TokenSet;
+    try {
+      tokenSet = await this.authenticate();
+    } catch (error) {
+      if (error instanceof CooperativeBankOfOromiaApiError) {
+        return {
+          errorMessage: error.message,
+        };
+      } else {
+        throw error;
+      }
+    }
+    const headers = this.createHeaderWithBearerToken(tokenSet.access_token);
+
+    const payload = { accountNumber };
+
+    let response: AxiosResponse<CooperativeBankOfOromiaApiAccountValidationResponseBodyDto>;
+
+    try {
+      response = await this.httpService.post<
+        AxiosResponse<CooperativeBankOfOromiaApiAccountValidationResponseBodyDto>
+      >(
+        this.cooperativeBankOfOromiaAccountValidationURL.href,
+        payload,
+        headersToPojo(headers),
+      );
+    } catch (error) {
+      return {
+        errorMessage: `Account validation error: ${error.message}, HTTP Status: ${error.status}`,
+      };
+    }
+    return this.cooperativeBankOfOromiaApiHelperService.handleAccountValidationResponse(
+      response.data,
+    );
+  }
+
   private async authenticate(): Promise<TokenSet> {
     // Return cached token if still valid
     if (this.tokenValidationService.isTokenValid(this.tokenSet)) {
@@ -129,10 +174,7 @@ export class CooperativeBankOfOromiaApiService {
     }
 
     // Uses different headers from the other endpoints.
-    const headers = new Headers({
-      Accept: '*/*',
-      'Content-Type': 'application/json',
-    });
+    const headers = this.createDefaultHeaders();
     headers.append(
       'Authorization',
       `Basic ${env.COOPERATIVE_BANK_OF_OROMIA_BASE64_CREDENTIALS}`,
@@ -159,7 +201,6 @@ export class CooperativeBankOfOromiaApiService {
     }
 
     const responseData = response.data;
-
     // If secrets are invalid we get this specific response.
     if ('error' in responseData || 'error_description' in responseData) {
       throw new CooperativeBankOfOromiaApiError(
@@ -184,5 +225,20 @@ export class CooperativeBankOfOromiaApiService {
     });
 
     return this.tokenSet;
+  }
+
+  private createDefaultHeaders(): Headers {
+    return new Headers({
+      Accept: '*/*',
+      'Content-Type': 'application/json',
+    });
+  }
+
+  // Token is possibly undefined because TokenSet type has optional access_token
+  // but in our case it will always be defined after authenticate() but TypeScript can't infer that.
+  private createHeaderWithBearerToken(token?: string): Headers {
+    const headers = this.createDefaultHeaders();
+    headers.append('Authorization', `Bearer ${token}`);
+    return headers;
   }
 }

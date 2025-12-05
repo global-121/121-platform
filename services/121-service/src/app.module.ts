@@ -16,6 +16,7 @@ import { EmailsModule } from '@121-service/src/emails/emails.module';
 import { env } from '@121-service/src/env';
 import { ExchangeRatesModule } from '@121-service/src/exchange-rates/exchange-rates.module';
 import { CommercialBankEthiopiaAccountManagementModule } from '@121-service/src/fsp-integrations/account-management/commercial-bank-ethiopia-account-management/commercial-bank-ethiopia-account-management.module';
+import { CooperativeBankOfOromiaAccountManagementModule } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia-account-management/cooperative-bank-of-oromia-account-management.module';
 import { IntersolveVisaAccountManagementModule } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.module';
 import { ExcelReconcilicationModule } from '@121-service/src/fsp-integrations/reconciliation/excel/excel-reconciliation.module';
 import { IntersolveVisaReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/intersolve-visa-reconciliation/intersolve-visa-reconciliation.module';
@@ -93,6 +94,7 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
     TransactionQueuesModule,
     TransactionJobsModule,
     CommercialBankEthiopiaAccountManagementModule,
+    CooperativeBankOfOromiaAccountManagementModule,
     ExcelReconcilicationModule,
     IntersolveVisaReconciliationModule,
     IntersolveVoucherReconciliationModule,

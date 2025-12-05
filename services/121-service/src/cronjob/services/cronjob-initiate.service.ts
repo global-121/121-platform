@@ -55,6 +55,19 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'put', headers);
   }
 
+  @Cron(CronExpression.EVERY_DAY_AT_2AM, {
+    disabled: !env.CRON_COOPERATIVE_BANK_OF_OROMIA_ACCOUNT_VALIDATIONS,
+  })
+  public async cronDoCooperativeBankOfOromiaAccountValidation(
+    cronJobMethodName,
+  ): cronReturn {
+    const { baseCronUrl, headers } =
+      await this.prepareCronJobRun(cronJobMethodName);
+    // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
+    const url = `${baseCronUrl}/fsps/cooperative-bank-of-oromia/account-validations`;
+    return await this.callEndpoint(url, 'put', headers);
+  }
+
   @Cron(CronExpression.EVERY_DAY_AT_3AM, {
     disabled: !env.CRON_INTERSOLVE_VOUCHER_CACHE_UNUSED_VOUCHERS,
   })

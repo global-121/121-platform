@@ -54,8 +54,23 @@ export class CronjobController {
       'Done retrieving and updating/inserting enquiry data for all registrations in all programs.',
   })
   @Put('fsps/commercial-bank-ethiopia/account-enquiries')
-  public async retrieveAndUpsertAccountEnquiries(): Promise<void> {
+  public async cronValidateCommercialBankEthiopiaAccountEnquiries(): Promise<void> {
     await this.cronjobExecutionService.cronValidateCommercialBankEthiopiaAccountEnquiries();
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary:
+      '[CRON] Get and store account validation data from Cooperative Bank of Oromia for all registrations in all programs.',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'Done retrieving and updating/inserting validation data for all registrations in all programs.',
+  })
+  @Put('fsps/cooperative-bank-of-oromia/account-validations')
+  public async cronDoCooperativeBankOfOromiaAccountValidation(): Promise<void> {
+    await this.cronjobExecutionService.cronDoCooperativeBankOfOromiaAccountValidation();
   }
 
   @AuthenticatedUser({ isAdmin: true })

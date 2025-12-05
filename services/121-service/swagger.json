@@ -30,6 +30,11 @@
     "params": []
   },
   {
+    "method": "put",
+    "path": "/api/cronjobs/fsps/cooperative-bank-of-oromia/account-validations",
+    "params": []
+  },
+  {
     "method": "patch",
     "path": "/api/cronjobs/fsps/intersolve-voucher/unused-vouchers",
     "params": []
@@ -731,6 +736,21 @@
       "programId",
       "referenceId"
     ]
+  },
+  {
+    "method": "put",
+    "path": "/api/programs/{programId}/fsps/cooperative-bank-of-oromia/account-validations",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/fsps/cooperative-bank-of-oromia/account-validations",
+    "params": [
+      "programId"
+    ],
+    "returnType": "CooperativeBankOfOromiaAccountValidationReportDto"
   },
   {
     "method": "post",

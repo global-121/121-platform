@@ -6,12 +6,15 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CooperativeBankOfOromiaMockService } from '@mock-service/src/fsp-integration/cooperative-bank-of-oromia/cooperative-bank-of-oromia.mock.service';
+import { CooperativeBankOfOromiaApiAccountValidationRequestBodyDto } from '@mock-service/src/fsp-integration/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-account-validation-request-body.dto';
+import { CooperativeBankOfOromiaApiAccountValidationResponseDto } from '@mock-service/src/fsp-integration/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-account-validation-response.dto';
 import { CooperativeBankOfOromiaAuthenticateResponseSuccessDto } from '@mock-service/src/fsp-integration/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-request-body.mock.dto';
+import { CooperativeBankOfOromiaApiTransferRequestBodyDto } from '@mock-service/src/fsp-integration/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-transfer-request-body.dto';
+import { CooperativeBankOfOromiaApiTransferResponseDto } from '@mock-service/src/fsp-integration/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-transfer-response.dto';
 
 @ApiTags('fsp/cooperative-bank-of-oromia')
 @Controller('fsp/cooperative-bank-of-oromia')
@@ -46,32 +49,24 @@ export class CooperativeBankOfOromiaMockController {
     },
   })
   public async transfer(
-    @Headers() headers: Record<string, string>,
-    @Body() body: any,
-  ): Promise<any> {
-    const authHeader = headers['authorization'] || headers['Authorization'];
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedException('Missing or invalid Bearer token');
-    }
-
+    @Headers() _headers: Record<string, string>,
+    @Body() body: CooperativeBankOfOromiaApiTransferRequestBodyDto,
+  ): Promise<CooperativeBankOfOromiaApiTransferResponseDto> {
     const response = await this.mockService.transfer({
       body,
     });
-
     if ('error' in response) {
       throw new BadRequestException(response);
     }
-
     return response;
   }
 
   @ApiOperation({ summary: 'Get Oauth2 access token' })
   @Post('oauth2/token')
-  // CooperativeBankOfOromia API responds with 200
   @HttpCode(200)
-  public async getOauth2Token(
+  public async getAccessToken(
     @Headers() headers: Record<string, string>,
-    @Body() body: any, // TODO: change to dto
+    @Body() body: unknown, // We are not using the body in the mock service
   ): Promise<CooperativeBankOfOromiaAuthenticateResponseSuccessDto> {
     const response = await this.mockService.getOauth2Token({
       headers,
@@ -81,5 +76,16 @@ export class CooperativeBankOfOromiaMockController {
       throw new BadRequestException(response);
     }
     return response;
+  }
+
+  @ApiOperation({ summary: 'Account validation' })
+  @Post('nrc/1.0.0/accountValidation')
+  @HttpCode(200)
+  public async accountValidation(
+    @Body() body: CooperativeBankOfOromiaApiAccountValidationRequestBodyDto,
+  ): Promise<CooperativeBankOfOromiaApiAccountValidationResponseDto> {
+    return await this.mockService.accountValidation({
+      bankAccountNumber: body.accountNumber,
+    });
   }
 }
