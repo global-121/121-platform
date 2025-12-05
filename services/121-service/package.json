@@ -70,7 +70,7 @@
     "@nestjs/swagger": "^11.2.3",
     "@nestjs/terminus": "^11.0.0",
     "@nestjs/testing": "^11.1.9",
-    "@nestjs/throttler": "^6.4.0",
+    "@nestjs/throttler": "^6.5.0",
     "@nestjs/typeorm": "^11.0.0",
     "@t3-oss/env-core": "^0.13.8",
     "@types/express": "^4.17.25",
