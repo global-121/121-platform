@@ -24,6 +24,14 @@ const disburseInput = {
   amount: 200,
 };
 
+function headersToObject(headers: Headers): Record<string, string> {
+  const result: Record<string, string> = {};
+  headers.forEach((value, key) => {
+    result[key] = value;
+  });
+  return result;
+}
+
 // A full example of a response we can parse successfully.
 const disburseSuccessResponse = responseWrapper({
   data: {
@@ -131,7 +139,11 @@ describe('AirtelApiService', () => {
         expect(typeof body.client_id).toBe('string');
         expect(typeof body.client_secret).toBe('string');
         expect(body.grant_type).toBe('client_credentials');
-        expect(headers).toMatchSnapshot();
+        expect(headersToObject(headers)).toMatchInlineSnapshot(`
+         {
+           "content-type": "application/json",
+         }
+        `);
       });
 
       // We test authenticate failures here, not again in enquire() because it's the same code path.
@@ -153,7 +165,9 @@ describe('AirtelApiService', () => {
 
         // Assert
         expect(error).toBeInstanceOf(AirtelApiError);
-        expect(error.message).toMatchSnapshot();
+        expect(error.message).toMatchInlineSnapshot(
+          `"Airtel API Error: authentication failed: invalid_client - Invalid client authentication"`,
+        );
         // Should not have called the disburse endpoint, because authentication failed.
         expect(post).toHaveBeenCalledTimes(1);
       });
@@ -173,7 +187,9 @@ describe('AirtelApiService', () => {
 
         // Assert
         expect(error).toBeInstanceOf(AirtelApiError);
-        expect(error.message).toMatchSnapshot();
+        expect(error.message).toMatchInlineSnapshot(
+          `"Airtel API Error: authentication failed: Network error"`,
+        );
         // Should not have called the disburse endpoint, because authentication failed.
         expect(post).toHaveBeenCalledTimes(1);
       });
@@ -193,7 +209,9 @@ describe('AirtelApiService', () => {
 
         // Assert
         expect(error).toBeInstanceOf(AirtelApiError);
-        expect(error.message).toMatchSnapshot();
+        expect(error.message).toMatchInlineSnapshot(
+          `"Airtel API Error: authentication failed: unclear response from Airtel API"`,
+        );
         // Should not have called the disburse endpoint, because authentication failed.
         expect(post).toHaveBeenCalledTimes(1);
       });
@@ -237,28 +255,13 @@ describe('AirtelApiService', () => {
             type: 'B2C',
           },
         });
-        expect(headers).toEqual([
-          {
-            name: 'Accept',
-            value: '*/*',
-          },
-          {
-            name: 'Authorization',
-            value: 'Bearer mock-access-token',
-          },
-          {
-            name: 'Content-type',
-            value: 'application/json',
-          },
-          {
-            name: 'X-country',
-            value: 'ZM',
-          },
-          {
-            name: 'X-currency',
-            value: 'ZMW',
-          },
-        ]);
+        expect(headersToObject(headers)).toEqual({
+          accept: '*/*',
+          authorization: 'Bearer mock-access-token',
+          'content-type': 'application/json',
+          'x-country': 'ZM',
+          'x-currency': 'ZMW',
+        });
       });
 
       it("correctly handles response code 'DP00900001000' (ambiguous)", async () => {
@@ -394,7 +397,9 @@ describe('AirtelApiService', () => {
         // Both authenticate and disburse calls were made.
         expect(post).toHaveBeenCalledTimes(2);
         expect(error).toBeInstanceOf(AirtelApiError);
-        expect(error.message).toMatchSnapshot();
+        expect(error.message).toMatchInlineSnapshot(
+          `"Airtel API Error: disburse failed, could not complete request: Network error"`,
+        );
       });
     });
   });
@@ -424,7 +429,11 @@ describe('AirtelApiService', () => {
       expect(typeof body.client_id).toBe('string');
       expect(typeof body.client_secret).toBe('string');
       expect(body.grant_type).toBe('client_credentials');
-      expect(headers).toMatchSnapshot();
+      expect(headersToObject(headers)).toMatchInlineSnapshot(`
+       {
+         "content-type": "application/json",
+       }
+      `);
     });
 
     it('correctly calls enquire endpoint', async () => {
@@ -437,8 +446,26 @@ describe('AirtelApiService', () => {
       // Assert
       // Second call is enquire()
       expect(get).toHaveBeenCalledTimes(1);
-      expect(result).toMatchSnapshot();
-      expect(get.mock.calls[0]).toMatchSnapshot();
+      expect(result).toMatchInlineSnapshot(`
+       {
+         "message": "SUCCESS (DP00900001001)",
+         "result": "success",
+       }
+      `);
+      const [urlCalled, headers] = get.mock.calls[0];
+      const headersObject = headersToObject(headers);
+      expect([urlCalled, headersObject]).toMatchInlineSnapshot(`
+       [
+         "http://mock-service:3001/api/fsp/airtel/standard/v2/disbursements/mock-transaction-id?transactionType=B2C",
+         {
+           "accept": "*/*",
+           "authorization": "Bearer mock-access-token",
+           "content-type": "application/json",
+           "x-country": "ZM",
+           "x-currency": "ZMW",
+         },
+       ]
+      `);
     });
 
     // We don't test all the variations here because we've indirectly tested
@@ -469,7 +496,9 @@ describe('AirtelApiService', () => {
       // Assert
       expect(get).toHaveBeenCalledTimes(1);
       expect(error).toBeInstanceOf(AirtelApiError);
-      expect(error.message).toMatchSnapshot();
+      expect(error.message).toMatchInlineSnapshot(
+        `"Airtel API Error: enquire failed, could not complete request: Network error"`,
+      );
     });
   });
 });

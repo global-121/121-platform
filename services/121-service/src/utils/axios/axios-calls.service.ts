@@ -4,10 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { EXTERNAL_API, IS_DEVELOPMENT } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
-import {
-  CustomHttpService,
-  Header,
-} from '@121-service/src/shared/services/custom-http.service';
+import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
 export class AxiosCallsService {
@@ -28,13 +25,10 @@ export class AxiosCallsService {
     });
   }
 
-  public accessTokenToHeaders(accessToken: string): Header[] {
-    return [
-      {
-        name: 'Cookie',
-        value: accessToken,
-      },
-    ];
+  public accessTokenToHeaders(accessToken: string): Headers {
+    const headers = new Headers();
+    headers.append('Cookie', accessToken);
+    return headers;
   }
 
   public async getAccessToken(): Promise<string> {

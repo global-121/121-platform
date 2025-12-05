@@ -37,7 +37,6 @@ describe('CooperativeBankOfOromiaApiService', () => {
           useValue: {
             get: jest.fn(),
             post: jest.fn(),
-            headersToPojo: jest.fn((h) => h),
           },
         },
         {
