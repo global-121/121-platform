@@ -94,21 +94,11 @@ jobs:
       - name: Run performance tests - Shard ${{ matrix.shard }}
         working-directory: ${{ env.workingDirectory }}
         run: |
-          echo "🚀 Running tests for shard ${{ matrix.shard }}"
-          echo "📋 Test files: ${{ matrix.test_files }}"
-
           IFS=',' read -ra TESTS <<< "${{ matrix.test_files }}"
-
-          if [[ ${#TESTS[@]} -eq 0 || ( ${#TESTS[@]} -eq 1 && -z "${TESTS[0]}" ) ]]; then
-            echo "⚠️ No test files found for shard ${{ matrix.shard }}"
-            exit 0
-          fi
 
           for test_file in "${TESTS[@]}"; do
             if [[ -n "$test_file" ]]; then
-              echo "🧪 Running test: $test_file"
               docker compose exec -e CI=true -e HIGH_DATA_VOLUME=true -e GITHUB_WORKFLOW="${{ github.workflow }}" 121-service npm run test:integration:base -t "$test_file"
-              echo "✅ Completed test: $test_file"
             fi
           done
 
