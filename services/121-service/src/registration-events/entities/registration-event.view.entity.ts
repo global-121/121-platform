@@ -1,4 +1,11 @@
-import { DataSource, ViewColumn, ViewEntity } from 'typeorm';
+import {
+  DataSource,
+  JoinColumn,
+  ManyToOne,
+  Relation,
+  ViewColumn,
+  ViewEntity,
+} from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
@@ -33,7 +40,7 @@ export const STATUS_CHANGE_STRING = 'Status';
         END
       `,
         'fieldChanged',
-      )
+      ) // ##TODO split in 2 columns: type and fieldChange (only for data-changes). Check with PO.
       .addSelect(
         `CASE WHEN event.type = '${RegistrationEventEnum.ignoredDuplicate}' THEN 'duplicate' ELSE oldValueAttr.value END`,
         'oldValue',
@@ -77,6 +84,13 @@ export class RegistrationEventViewEntity extends Base121Entity {
   @ViewColumn()
   public programId: number; // used for filtering only
 
+  @ManyToOne(
+    (_type) => RegistrationEntity,
+    (registration) => registration.events,
+    { onDelete: 'CASCADE' },
+  )
+  @JoinColumn({ name: 'registrationId' })
+  public registration: Relation<RegistrationEntity>;
   @ViewColumn()
   public registrationId: number; // used for linking to registration
 
