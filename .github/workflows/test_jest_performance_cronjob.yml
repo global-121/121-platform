@@ -54,10 +54,12 @@ jobs:
         run: |
           LONG_TEST_1="payment-100k-registration-intersolve-visa.test.ts"
           LONG_TEST_2="performance-during-payment.test.ts"
-          SHARD1_FILES=$(find test/performance -name '*.test.ts' ! -name "$LONG_TEST_1" ! -name "$LONG_TEST_2" | xargs -n1 basename | sort | xargs | tr ' ' ',')
-          echo "shard1_files=$SHARD1_FILES" >> $GITHUB_OUTPUT
-          echo "long_test_1=$LONG_TEST_1" >> $GITHUB_OUTPUT
-          echo "long_test_2=$LONG_TEST_2" >> $GITHUB_OUTPUT
+          SHARD1_FILES=$(find test/performance -name '*.test.ts' ! -name "$LONG_TEST_1" ! -name "$LONG_TEST_2" -print0 | xargs -0 -n1 basename | sort | xargs | tr ' ' ',')
+          {
+            echo "shard1_files=$SHARD1_FILES"
+            echo "long_test_1=$LONG_TEST_1"
+            echo "long_test_2=$LONG_TEST_2"
+          } >> $GITHUB_OUTPUT
 
   performance-test-shard:
     runs-on: ubuntu-latest
