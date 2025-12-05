@@ -16,7 +16,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 
-import { VisaCardAction } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-card-action.enum';
+import { VisaCardAction } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-action.enum';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { getChipDataByVisaCardStatus } from '~/components/colored-chip/colored-chip.helper';

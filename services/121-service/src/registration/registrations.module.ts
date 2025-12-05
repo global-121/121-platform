@@ -2,8 +2,9 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { DebitCardsIntersolveVisaModule } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.module';
-import { FspsModule } from '@121-service/src/fsps/fsp.module';
+import { IntersolveVisaDataSynchronizationModule } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa-data-synchronization/intersolve-visa-data-synchronization.module';
+import { IntersolveVoucherEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/entities/intersolve-voucher.entity';
+import { FspsModule } from '@121-service/src/fsp-management/fsp.module';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { LatestMessageEntity } from '@121-service/src/notifications/entities/latest-message.entity';
 import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
@@ -14,7 +15,6 @@ import { MessageTemplateModule } from '@121-service/src/notifications/message-te
 import { LastMessageStatusService } from '@121-service/src/notifications/services/last-message-status.service';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
-import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/entities/intersolve-voucher.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -70,7 +70,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     ProgramFspConfigurationsModule,
     QueuesRegistryModule,
     MessageTemplateModule,
-    DebitCardsIntersolveVisaModule,
+    IntersolveVisaDataSynchronizationModule,
   ],
   providers: [
     RegistrationsService,

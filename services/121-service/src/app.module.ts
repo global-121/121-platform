@@ -12,22 +12,24 @@ import { AppController } from '@121-service/src/app.controller';
 import { AuthModule } from '@121-service/src/auth/auth.module';
 import { THROTTLING_LIMIT_GENERIC } from '@121-service/src/config';
 import { CronjobModule } from '@121-service/src/cronjob/cronjob.module';
-import { DebitCardsIntersolveVisaModule } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.module';
 import { EmailsModule } from '@121-service/src/emails/emails.module';
 import { env } from '@121-service/src/env';
 import { ExchangeRatesModule } from '@121-service/src/exchange-rates/exchange-rates.module';
+import { CommercialBankEthiopiaAccountManagementModule } from '@121-service/src/fsp-integrations/account-management/commercial-bank-ethiopia-account-management/commercial-bank-ethiopia-account-management.module';
+import { IntersolveVisaAccountManagementModule } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.module';
+import { ExcelReconcilicationModule } from '@121-service/src/fsp-integrations/reconciliation/excel/excel-reconciliation.module';
+import { IntersolveVisaReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/intersolve-visa-reconciliation/intersolve-visa-reconciliation.module';
+import { IntersolveVoucherReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/intersolve-voucher-reconciliation/intersolve-voucher-reconciliation.module';
+import { NedbankReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/nedbank-reconciliation/nedbank-reconciliation.module';
+import { OnafriqReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/onafriq-reconciliation/onafriq-reconciliation.module';
+import { SafaricomReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/safaricom-reconciliation/safaricom-reconciliation.module';
+import { TransactionJobsModule } from '@121-service/src/fsp-integrations/transaction-jobs/transaction-jobs.module';
+import { TransactionQueuesModule } from '@121-service/src/fsp-integrations/transaction-queues/transaction-queues.module';
 import { HealthModule } from '@121-service/src/health/health.module';
 import { MetricsModule } from '@121-service/src/metrics/metrics.module';
 import { NoteModule } from '@121-service/src/notes/notes.module';
 import { MessageModule } from '@121-service/src/notifications/message.module';
 import { MessageIncomingModule } from '@121-service/src/notifications/message-incoming/message-incoming.module';
-import { CommercialBankEthiopiaReconciliationModule } from '@121-service/src/payments/reconciliation/commercial-bank-ethiopia-reconciliation/commercial-bank-ethiopia-reconciliation.module';
-import { ExcelReconcilicationModule } from '@121-service/src/payments/reconciliation/excel/excel-reconciliation.module';
-import { IntersolveVisaReconciliationModule } from '@121-service/src/payments/reconciliation/intersolve-visa-reconciliation/intersolve-visa-reconciliation.module';
-import { IntersolveVoucherReconciliationModule } from '@121-service/src/payments/reconciliation/intersolve-voucher-reconciliation/intersolve-voucher-reconciliation.module';
-import { NedbankReconciliationModule } from '@121-service/src/payments/reconciliation/nedbank-reconciliation/nedbank-reconciliation.module';
-import { OnafriqReconciliationModule } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/onafriq-reconciliation.module';
-import { SafaricomReconciliationModule } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/safaricom-reconciliation.module';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { ProgramAttachmentsModule } from '@121-service/src/programs/program-attachments/program-attachments.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
@@ -36,8 +38,6 @@ import { RegistrationsUpdateJobsModule } from '@121-service/src/registrations-up
 import { ScriptsModule } from '@121-service/src/scripts/scripts.module';
 import { ProgramExistenceInterceptor } from '@121-service/src/shared/interceptors/program-existence.interceptor';
 import { PermissionMaintenanceService } from '@121-service/src/shared/services/permission-maintenance.service';
-import { TransactionJobsModule } from '@121-service/src/transaction-jobs/transaction-jobs.module';
-import { TransactionQueuesModule } from '@121-service/src/transaction-queues/transaction-queues.module';
 import { TypeOrmModule } from '@121-service/src/typeorm.module';
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
@@ -92,14 +92,14 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
     ActivitiesModule,
     TransactionQueuesModule,
     TransactionJobsModule,
-    CommercialBankEthiopiaReconciliationModule,
+    CommercialBankEthiopiaAccountManagementModule,
     ExcelReconcilicationModule,
     IntersolveVisaReconciliationModule,
     IntersolveVoucherReconciliationModule,
     SafaricomReconciliationModule,
     OnafriqReconciliationModule,
     RegistrationsUpdateJobsModule,
-    DebitCardsIntersolveVisaModule,
+    IntersolveVisaAccountManagementModule,
   ],
   controllers: [AppController, TestController],
   providers: [

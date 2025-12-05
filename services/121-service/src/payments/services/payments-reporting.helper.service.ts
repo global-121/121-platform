@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common/decorators/core/injectable.decorator'
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { NedbankVoucherEntity } from '@121-service/src/payments/fsp-integration/nedbank/entities/nedbank-voucher.entity';
-import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
+import { NedbankVoucherEntity } from '@121-service/src/fsp-integrations/integrations/nedbank/entities/nedbank-voucher.entity';
+import { SafaricomTransferEntity } from '@121-service/src/fsp-integrations/integrations/safaricom/entities/safaricom-transfer.entity';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import {

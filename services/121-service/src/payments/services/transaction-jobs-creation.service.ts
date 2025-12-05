@@ -1,23 +1,23 @@
 import { Injectable } from '@nestjs/common';
 
-import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+import { AirtelTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/airtel-transaction-job.dto';
+import { CommercialBankEthiopiaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/commercial-bank-ethiopia-transaction-job.dto';
+import { CooperativeBankOfOromiaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/cooperative-bank-of-oromia-transaction-job.dto';
+import { ExcelTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/excel-transaction-job.dto';
+import { IntersolveVisaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/intersolve-visa-transaction-job.dto';
+import { IntersolveVoucherTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/intersolve-voucher-transaction-job.dto';
+import { NedbankTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/nedbank-transaction-job.dto';
+import { OnafriqTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/onafriq-transaction-job.dto';
+import { SafaricomTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/safaricom-transaction-job.dto';
+import { SharedTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/shared-transaction-job.dto';
+import { TransactionQueuesService } from '@121-service/src/fsp-integrations/transaction-queues/transaction-queues.service';
+import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 import { TransactionJobDetails } from '@121-service/src/payments/interfaces/transaction-job-details.interface';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
-import { CommercialBankEthiopiaTransactionJobDto } from '@121-service/src/transaction-queues/dto/commercial-bank-ethiopia-transaction-job.dto';
-import { CooperativeBankOfOromiaTransactionJobDto } from '@121-service/src/transaction-queues/dto/cooperative-bank-of-oromia-transaction-job.dto';
-import { ExcelTransactionJobDto } from '@121-service/src/transaction-queues/dto/excel-transaction-job.dto';
-import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
-import { IntersolveVoucherTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-voucher-transaction-job.dto';
-import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
-import { OnafriqTransactionJobDto } from '@121-service/src/transaction-queues/dto/onafriq-transaction-job.dto';
-import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
-import { SharedTransactionJobDto } from '@121-service/src/transaction-queues/dto/shared-transaction-job.dto';
-import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 import { formatDateYYMMDD } from '@121-service/src/utils/formatDate';
 import { generateRandomNumerics } from '@121-service/src/utils/random-value.helper';
 

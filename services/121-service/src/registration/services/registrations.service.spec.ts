@@ -3,7 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 
-import { DebitCardsIntersolveVisaService } from '@121-service/src/debit-cards-intersolve-visa/debit-cards-intersolve-visa.service';
+import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.service';
+import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa-data-synchronization/intersolve-visa-data-synchronization.service';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
@@ -36,9 +37,15 @@ describe('RegistrationsService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        {
+          provide: IntersolveVisaDataSynchronizationService,
+          useValue: {
+            syncData: jest.fn(),
+          },
+        },
         RegistrationsService,
         {
-          provide: DebitCardsIntersolveVisaService,
+          provide: IntersolveVisaAccountManagementService,
           useValue: {
             sendCustomerInformationToIntersolve: jest.fn(),
           },

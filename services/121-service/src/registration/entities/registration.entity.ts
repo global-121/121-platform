@@ -20,11 +20,11 @@ import {
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
+import { IntersolveVisaCustomerEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { LatestMessageEntity } from '@121-service/src/notifications/entities/latest-message.entity';
 import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
-import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/entities/image-code-export-vouchers.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';

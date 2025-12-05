@@ -4,7 +4,7 @@ import { inject, Injectable, Signal, signal } from '@angular/core';
 import { queryOptions } from '@tanstack/angular-query-experimental';
 import { unique } from 'radashi';
 
-import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
+import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 

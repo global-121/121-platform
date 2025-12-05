@@ -1,5 +1,6 @@
 import { TestBed } from '@automock/jest';
 
+import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
 import {
   MessageJobDto,
   MessageProcessType,
@@ -8,7 +9,6 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { MessageService } from '@121-service/src/notifications/services/message.service';
 import { SmsService } from '@121-service/src/notifications/sms/sms.service';
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
-import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';

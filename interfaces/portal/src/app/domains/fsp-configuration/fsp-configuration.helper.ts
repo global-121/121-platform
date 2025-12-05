@@ -1,7 +1,7 @@
 import {
   FspConfigurationProperties,
   Fsps,
-} from '@121-service/src/fsps/enums/fsp-name.enum';
+} from '@121-service/src/fsp-management/enums/fsp-name.enum';
 
 export const FSP_CONFIGURATION_PROPERTY_LABELS: Record<
   FspConfigurationProperties,

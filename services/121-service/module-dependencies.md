@@ -9,20 +9,15 @@ graph LR
   ActivitiesModule-->UserModule
   AirtelModule-->QueuesRegistryModule
   AirtelModule-->RedisModule
-  CommercialBankEthiopiaReconciliationModule-->CommercialBankEthiopiaModule
-  CommercialBankEthiopiaReconciliationModule-->RegistrationsModule
-  CronjobModule-->CommercialBankEthiopiaReconciliationModule
+  CommercialBankEthiopiaAccountManagementModule-->CommercialBankEthiopiaModule
+  CommercialBankEthiopiaAccountManagementModule-->RegistrationsModule
+  CronjobModule-->CommercialBankEthiopiaAccountManagementModule
   CronjobModule-->ExchangeRatesModule
   CronjobModule-->IntersolveVisaReconciliationModule
   CronjobModule-->IntersolveVoucherModule
   CronjobModule-->IntersolveVoucherReconciliationModule
   CronjobModule-->NedbankReconciliationModule
   CronjobModule-->OnafriqReconciliationModule
-  DebitCardsIntersolveVisaModule-->IntersolveVisaModule
-  DebitCardsIntersolveVisaModule-->MessageQueuesModule
-  DebitCardsIntersolveVisaModule-->ProgramFspConfigurationsModule
-  DebitCardsIntersolveVisaModule-->RegistrationDataModule
-  DebitCardsIntersolveVisaModule-->UserModule
   ExcelModule-->RegistrationsModule
   ExcelModule-->TransactionsModule
   ExcelReconcilicationModule-->ExcelModule
@@ -34,6 +29,12 @@ graph LR
   ExcelReconcilicationModule-->TransactionsModule
   ExchangeRatesModule-->UserModule
   FspsModule-->UserModule
+  IntersolveVisaAccountManagementModule-->IntersolveVisaModule
+  IntersolveVisaAccountManagementModule-->MessageQueuesModule
+  IntersolveVisaAccountManagementModule-->ProgramFspConfigurationsModule
+  IntersolveVisaAccountManagementModule-->RegistrationDataModule
+  IntersolveVisaAccountManagementModule-->UserModule
+  IntersolveVisaDataSynchronizationModule-->IntersolveVisaAccountManagementModule
   IntersolveVisaModule-->UserModule
   IntersolveVisaReconciliationModule-->IntersolveVisaModule
   IntersolveVoucherModule-->ImageCodeModule
@@ -91,7 +92,6 @@ graph LR
   OnafriqReconciliationModule-->QueuesRegistryModule
   OnafriqReconciliationModule-->RedisModule
   OnafriqReconciliationModule-->TransactionsModule
-  PaymentsModule-->ExcelModule
   PaymentsModule-->FspsModule
   PaymentsModule-->MessageTemplateModule
   PaymentsModule-->PaymentEventsModule
@@ -116,8 +116,8 @@ graph LR
   ProgramModule-->UserModule
   RegistrationEventsModule-->UserModule
   RegistrationUtilsModule-->RegistrationDataModule
-  RegistrationsModule-->DebitCardsIntersolveVisaModule
   RegistrationsModule-->FspsModule
+  RegistrationsModule-->IntersolveVisaDataSynchronizationModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->MessageQueuesModule
   RegistrationsModule-->MessageTemplateModule

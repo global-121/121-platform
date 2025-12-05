@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { TwilioStatus } from '@121-service/src/notifications/dto/twilio.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';

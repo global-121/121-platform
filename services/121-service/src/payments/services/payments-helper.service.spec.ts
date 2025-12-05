@@ -1,6 +1,6 @@
 import { HttpException } from '@nestjs/common';
 
-import * as fspSettingsHelpers from '@121-service/src/fsps/fsp-settings.helpers';
+import * as fspSettingsHelpers from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 

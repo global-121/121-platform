@@ -14,9 +14,9 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
 
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { FspDto } from '@121-service/src/fsps/fsp.dto';
-import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { FspDto } from '@121-service/src/fsp-management/fsp.dto';
+import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';

@@ -1,6 +1,6 @@
 import { Injectable, Signal } from '@angular/core';
 
-import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 

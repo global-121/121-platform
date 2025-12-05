@@ -1,6 +1,6 @@
 import { FilterOperator } from 'nestjs-paginate';
 
-import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';

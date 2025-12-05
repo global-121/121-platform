@@ -11,8 +11,8 @@ import {
   QueryClient,
 } from '@tanstack/angular-query-experimental';
 
+import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
-import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
 
 import { EventApiService } from '~/domains/event/event.api.service';
 import { MetricApiService } from '~/domains/metric/metric.api.service';

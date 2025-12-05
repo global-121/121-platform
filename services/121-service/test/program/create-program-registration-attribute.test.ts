@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
+import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';

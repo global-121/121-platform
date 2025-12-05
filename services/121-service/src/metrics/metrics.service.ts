@@ -2,6 +2,10 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, In, Not } from 'typeorm';
 
+import { ExportVisaCardDetails } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/export-visa-card-details.interface';
+import { ExportVisaCardDetailsRawData } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
+import { IntersolveVisaStatusMapper } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/mappers/intersolve-visa-status.mapper';
+import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import {
   AggregatePerMonth,
@@ -11,10 +15,6 @@ import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
 import { RegistrationCountByDate } from '@121-service/src/metrics/dto/registration-count-by-date.dto';
 import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
-import { ExportVisaCardDetails } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details.interface';
-import { ExportVisaCardDetailsRawData } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
-import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-status.mapper';
-import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';

@@ -7,8 +7,8 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 
 import { PageLayoutProgramSettingsComponent } from '~/components/page-layout-program-settings/page-layout-program-settings.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';

@@ -16,9 +16,9 @@ import {
 } from '@tanstack/angular-query-experimental';
 import { dash } from 'radashi';
 
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { FspDto } from '@121-service/src/fsps/fsp.dto';
-import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { FspDto } from '@121-service/src/fsp-management/fsp.dto';
+import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';

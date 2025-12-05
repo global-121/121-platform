@@ -7,6 +7,7 @@ import {
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { API_PATHS } from '@121-service/src/config';
+import { IntersolveVoucherModule } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/intersolve-voucher.module';
 import { AuthMiddlewareTwilio } from '@121-service/src/notifications/auth.middlewareTwilio';
 import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { MessageIncomingController } from '@121-service/src/notifications/message-incoming/message-incoming.controller';
@@ -18,7 +19,6 @@ import { MessageStatusCallbackProcessor } from '@121-service/src/notifications/p
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappModule } from '@121-service/src/notifications/whatsapp/whatsapp.module';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
-import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { ImageCodeModule } from '@121-service/src/payments/imagecode/image-code.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';

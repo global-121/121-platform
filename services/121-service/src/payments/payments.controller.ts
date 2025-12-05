@@ -34,14 +34,12 @@ import {
 } from '@121-service/src/payments/consts/paginate-config-transaction-view.const';
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
 import { ExportTransactionResponseDto } from '@121-service/src/payments/dto/export-transaction-response.dto';
-import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-payment-aggregation.dto';
 import { GetPaymentsDto } from '@121-service/src/payments/dto/get-payments.dto';
 import { PaymentReturnDto } from '@121-service/src/payments/dto/payment-return.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
 import { PaymentsCreationService } from '@121-service/src/payments/services/payments-creation.service';
-import { PaymentsExcelFspService } from '@121-service/src/payments/services/payments-excel-fsp.service';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { FindAllTransactionsResultDto } from '@121-service/src/payments/transactions/dto/find-all-transactions-result.dto';
@@ -67,7 +65,6 @@ export class PaymentsController {
     private readonly paymentsCreationService: PaymentsCreationService,
     private readonly paymentsExecutionService: PaymentsExecutionService,
     private readonly paymentsReportingService: PaymentsReportingService,
-    private readonly paymentsExcelFspService: PaymentsExcelFspService,
     private readonly registrationsPaginateService: RegistrationsPaginationService,
   ) {}
 
@@ -300,37 +297,6 @@ export class PaymentsController {
       paginateQuery,
       dryRun: dryRun === 'true',
     });
-  }
-
-  @AuthenticatedUser({
-    permissions: [PermissionEnum.PaymentFspInstructionREAD],
-  })
-  @ApiOperation({
-    summary:
-      '[SCOPED] Get payments instructions for past payment to post in Fsp Portal',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Get payments instructions for past payment to post in Fsp Portal - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'This endpoint cannot be used when a payment is in progress',
-  })
-  @Get('programs/:programId/payments/:paymentId/fsp-instructions')
-  public async getFspInstructions(
-    @Param('programId', ParseIntPipe)
-    programId: number,
-    @Param('paymentId', ParseIntPipe)
-    paymentId: number,
-  ): Promise<FspInstructions[]> {
-    return await this.paymentsExcelFspService.getFspInstructions(
-      programId,
-      paymentId,
-    );
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })

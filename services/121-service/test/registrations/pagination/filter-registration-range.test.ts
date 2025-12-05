@@ -1,6 +1,6 @@
 import { FilterOperator } from 'nestjs-paginate';
 
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   createOcwRegistrationForImport,

@@ -1,7 +1,7 @@
 import { Injectable, Signal } from '@angular/core';
 
+import { ExcelReconciliationInstructions } from '@121-service/src/fsp-integrations/reconciliation/excel/dtos/excel-reconciliation-instructions.dto';
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
-import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
 import {
   BulkActionResultDto,
@@ -173,7 +173,7 @@ export class PaymentApiService extends DomainApiService {
     programId: Signal<number | string>;
     paymentId: number | string;
   }) {
-    return this.generateQueryOptions<Dto<FspInstructions[]>>({
+    return this.generateQueryOptions<Dto<ExcelReconciliationInstructions[]>>({
       path: [...BASE_ENDPOINT(programId), paymentId, 'fsp-instructions'],
       staleTime: 0,
     });

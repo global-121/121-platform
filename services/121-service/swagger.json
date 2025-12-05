@@ -965,14 +965,6 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/payments/{paymentId}/fsp-instructions",
-    "params": [
-      "programId",
-      "paymentId"
-    ]
-  },
-  {
-    "method": "get",
     "path": "/api/programs/{programId}/transactions",
     "params": [
       "programId",
@@ -1061,6 +1053,14 @@
   {
     "method": "post",
     "path": "/api/programs/{programId}/payments/{paymentId}/excel-reconciliation",
+    "params": [
+      "programId",
+      "paymentId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/payments/{paymentId}/fsp-instructions",
     "params": [
       "programId",
       "paymentId"

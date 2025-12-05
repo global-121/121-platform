@@ -7,7 +7,8 @@ import {
   EXTERNAL_API,
   IS_DEVELOPMENT,
 } from '@121-service/src/config';
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { MessageProcessType } from '@121-service/src/notifications/dto/message-job.dto';
 import {
   TwilioIncomingCallbackDto,
@@ -27,7 +28,6 @@ import { MessageTemplateService } from '@121-service/src/notifications/message-t
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
-import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
