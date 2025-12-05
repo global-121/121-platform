@@ -18,12 +18,17 @@ import {
 import { getPaymentResults } from '@121-service/test/performance/helpers/performance.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-// eslint-disable-next-line n/no-process-env -- Only used in test-runs, not included in '@121-service/src/env'
-const duplicateNumber = parseInt(process.env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^15 = 32768
+const duplicateLowNumber = 5;
+const duplicateHighNumber = 15; // cronjob duplicate number should be 2^15 = 32768
 const passRate = 50; // 50%
 const maxRetryDurationMs = 4_800_000; // 80 minutes
 const amount = 25;
 const testTimeout = 5_400_000; // 90 minutes
+const duplicateNumber =
+  // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
+  process.env.HIGH_DATA_VOLUME === 'true'
+    ? duplicateHighNumber
+    : duplicateLowNumber;
 
 jest.setTimeout(testTimeout);
 describe('Measure performance during payment', () => {
@@ -42,14 +47,15 @@ describe('Measure performance during payment', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.ACCEPTED);
     // Duplicate registration
-    const mockResponse = await duplicateRegistrationsAndPaymentData({
-      powerNumberRegistration: duplicateNumber,
-      accessToken,
-      body: {
-        secret: env.RESET_SECRET,
-      },
-    });
-    expect(mockResponse.statusCode).toBe(HttpStatus.CREATED);
+    const duplicateRegistrationsResponse =
+      await duplicateRegistrationsAndPaymentData({
+        powerNumberRegistration: duplicateNumber,
+        accessToken,
+        body: {
+          secret: env.RESET_SECRET,
+        },
+      });
+    expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
     // Do payment
     const doPaymentResponse = await createAndStartPayment({
       programId: programIdOCW,

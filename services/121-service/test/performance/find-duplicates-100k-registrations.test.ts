@@ -15,13 +15,18 @@ import {
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 // For guaranteeing that test data generates duplicates we should use at least 10 as minimal duplication number for fast test and 17 for full load test
-// eslint-disable-next-line n/no-process-env -- Only used in test-runs, not included in '@121-service/src/env'
-const duplicateNumber = parseInt(process.env.DUPLICATE_NUMBER || '10'); // cronjob duplicate number should be 2^17 = 131072
-const totalRegistrations = Math.pow(2, duplicateNumber);
+const duplicateLowNumber = 10; // cronjob duplicate number should be 2^17 = 131072
+const duplicateHighNumber = 17;
 const queryParams = {
   'filter.duplicateStatus': 'duplicate',
 };
 const testTimeout = 3 * 60 * 1000; // 3 minutes
+const duplicateNumber =
+  // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
+  process.env.HIGH_DATA_VOLUME === 'true'
+    ? duplicateHighNumber
+    : duplicateLowNumber;
+const totalRegistrations = Math.pow(2, duplicateNumber);
 
 jest.setTimeout(testTimeout);
 describe('Find duplicates in 100k registrations within expected range', () => {
@@ -40,15 +45,16 @@ describe('Find duplicates in 100k registrations within expected range', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registration to be more than 100k
-    const mockResponse = await duplicateRegistrationsAndPaymentData({
-      powerNumberRegistration: duplicateNumber,
-      numberOfPayments: 0,
-      accessToken,
-      body: {
-        secret: env.RESET_SECRET,
-      },
-    });
-    expect(mockResponse.statusCode).toBe(HttpStatus.CREATED);
+    const duplicateRegistrationsResponse =
+      await duplicateRegistrationsAndPaymentData({
+        powerNumberRegistration: duplicateNumber,
+        numberOfPayments: 0,
+        accessToken,
+        body: {
+          secret: env.RESET_SECRET,
+        },
+      });
+    expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
     // Query for duplicate registrations
     const findDuplicatesResponse = await getRegistrations({
       programId: programIdOCW,

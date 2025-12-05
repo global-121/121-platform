@@ -18,9 +18,14 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-// eslint-disable-next-line n/no-process-env -- Only used in test-runs, not included in '@121-service/src/env'
-const duplicateNumber = parseInt(process.env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^15 = 32768
+const duplicateLowNumber = 5;
+const duplicateHighNumber = 15; // cronjob duplicate number should be 2^15 = 32768
 const testTimeout = 120_000; // 120 seconds
+const duplicateNumber =
+  // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
+  process.env.HIGH_DATA_VOLUME === 'true'
+    ? duplicateHighNumber
+    : duplicateLowNumber;
 
 jest.setTimeout(testTimeout);
 describe('Bulk update 32k registrations', () => {
@@ -38,14 +43,15 @@ describe('Bulk update 32k registrations', () => {
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registration to be 32k
-    const mockResponse = await duplicateRegistrationsAndPaymentData({
-      powerNumberRegistration: duplicateNumber,
-      accessToken,
-      body: {
-        secret: env.RESET_SECRET,
-      },
-    });
-    expect(mockResponse.statusCode).toBe(HttpStatus.CREATED);
+    const duplicateRegistrationsResponse =
+      await duplicateRegistrationsAndPaymentData({
+        powerNumberRegistration: duplicateNumber,
+        accessToken,
+        body: {
+          secret: env.RESET_SECRET,
+        },
+      });
+    expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
     // export registrations
     const exportRegistrationsResponse = await exportRegistrations(
       programIdOCW,

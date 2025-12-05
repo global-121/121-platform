@@ -20,8 +20,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-// eslint-disable-next-line n/no-process-env -- Only used in test-runs, not included in '@121-service/src/env'
-const duplicateNumber = parseInt(process.env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^5 = 32
+const duplicateNumber = 5; // cronjob duplicate number should be 2^5 = 32
 
 // 30 seconds is jest global timeout and this test should be able to complete within that time
 describe('Get program with many attributes within time threshold of 30 seconds', () => {
@@ -70,14 +69,15 @@ describe('Get program with many attributes within time threshold of 30 seconds',
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
     // Duplicate registrations
-    const mockResponse = await duplicateRegistrationsAndPaymentData({
-      powerNumberRegistration: duplicateNumber,
-      accessToken,
-      body: {
-        secret: env.RESET_SECRET,
-      },
-    });
-    expect(mockResponse.statusCode).toBe(HttpStatus.CREATED);
+    const duplicateRegistrationsResponse =
+      await duplicateRegistrationsAndPaymentData({
+        powerNumberRegistration: duplicateNumber,
+        accessToken,
+        body: {
+          secret: env.RESET_SECRET,
+        },
+      });
+    expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Assert
     // Get program with registrations and validate load time is less than 200ms

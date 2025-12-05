@@ -23,14 +23,19 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 // Safaricom is one of the payment providers which uses callbacks and therefore also has heavier/more complex
 // The other FSPs are simpler or similar to Safaricom so we decided to not test them
 
-// eslint-disable-next-line n/no-process-env -- Only used in test-runs, not included in '@121-service/src/env'
-const duplicateNumber = parseInt(process.env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^17 = 131072
+const duplicateLowNumber = 5;
+const duplicateHighNumber = 17; // cronjob duplicate number should be 2^17 = 131072
 const maxWaitTimeMs = 240_000; // 4 minutes
 const passRate = 10; // 10%
 const maxRetryDurationMs = 4_800_000; // 80 minutes
 const delayBetweenAttemptsMs = 5_000; // 5 seconds
 const transferValue = 25;
 const testTimeout = 5_400_000; // 90 minutes
+const duplicateNumber =
+  // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
+  process.env.HIGH_DATA_VOLUME === 'true'
+    ? duplicateHighNumber
+    : duplicateLowNumber;
 
 jest.setTimeout(testTimeout);
 describe('Do payment for 100k registrations with Intersolve within expected range and successful rate threshold', () => {
@@ -64,15 +69,16 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
       accessToken,
     });
     // Duplicate registration to be more than 100k
-    const mockResponse = await duplicateRegistrationsAndPaymentData({
-      powerNumberRegistration: duplicateNumber,
-      numberOfPayments: 0,
-      accessToken,
-      body: {
-        secret: env.RESET_SECRET,
-      },
-    });
-    expect(mockResponse.statusCode).toBe(HttpStatus.CREATED);
+    const duplicateRegistrationsResponse =
+      await duplicateRegistrationsAndPaymentData({
+        powerNumberRegistration: duplicateNumber,
+        numberOfPayments: 0,
+        accessToken,
+        body: {
+          secret: env.RESET_SECRET,
+        },
+      });
+    expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Do payment
     const doPaymentResponse = await createAndStartPayment({
