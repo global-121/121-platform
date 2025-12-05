@@ -80,7 +80,7 @@ export class CooperativeBankOfOromiaApiHelperService {
       return this.unknownError();
     }
 
-    return `Error description: ${errorObject.description}, Error Code: ${errorObject.code}, Message: ${errorObject.messages ?? errorObject.message}`;
+    return `Error description: ${errorObject.description}, Error Code: ${errorObject.code}, Message: ${errorObject.messages || errorObject.message}`;
   }
 
   private parseAccountValidationErrorMessage(

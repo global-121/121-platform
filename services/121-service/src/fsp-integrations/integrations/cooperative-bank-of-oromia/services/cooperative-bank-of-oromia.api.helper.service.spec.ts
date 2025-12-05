@@ -44,19 +44,35 @@ describe('CooperativeBankOfOromiaApiHelperService', () => {
     });
   });
 
-  it('should return fail and parse error message for failed transfer', () => {
+  it('should return fail and parse error message for failed transfer with messages property', () => {
     const response: CooperativeBankOfOromiaApiTransferResponseBodyDto = {
       success: false,
       error: {
         description: 'Some error',
         code: 'ERR123',
-        messages: 'Something went wrong',
+        messages: 'Something went wrong messages',
       },
     } as any;
     expect(service.handleTransferResponse(response)).toEqual({
       result: CooperativeBankOfOromiaTransferResultEnum.fail,
       message:
-        'Error description: Some error, Error Code: ERR123, Message: Something went wrong',
+        'Error description: Some error, Error Code: ERR123, Message: Something went wrong messages',
+    });
+  });
+
+  it('should return fail and parse error message for failed transfer with message property', () => {
+    const response: CooperativeBankOfOromiaApiTransferResponseBodyDto = {
+      success: false,
+      error: {
+        description: 'Some error',
+        code: 'ERR123',
+        message: 'Something went wrong message',
+      },
+    } as any;
+    expect(service.handleTransferResponse(response)).toEqual({
+      result: CooperativeBankOfOromiaTransferResultEnum.fail,
+      message:
+        'Error description: Some error, Error Code: ERR123, Message: Something went wrong message',
     });
   });
 
