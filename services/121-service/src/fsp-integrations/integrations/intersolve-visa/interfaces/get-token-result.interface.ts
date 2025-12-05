@@ -4,4 +4,5 @@ export interface GetTokenResult {
   readonly blocked: boolean;
   readonly status: IntersolveVisaTokenStatus;
   readonly balance: number;
+  readonly holderId?: string;
 }
