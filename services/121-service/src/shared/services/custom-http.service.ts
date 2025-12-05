@@ -196,7 +196,7 @@ export class CustomHttpService {
       'Content-Type': 'application/json',
     };
     if (headers) {
-      headers.forEach((key, value) => {
+      headers.forEach((value, key) => {
         returnHeaders[key] = value;
       });
     }
