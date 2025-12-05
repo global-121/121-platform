@@ -1,18 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
+import { IntersolveVisaContactInfo } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/interfaces/intersolve-visa-contact-info.interface';
+import { IntersolveVisaContactInfoKeys } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/types/intersolve-visa-contact-info-keys.type';
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
-import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
-import { IntersolveVisaApiService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa-api.service';
 import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
 import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -156,7 +155,7 @@ export class IntersolveVisaAccountManagementService {
       await this.checkIfCardIsAlreadyLinked(tokenCode);
     }
 
-    const contactInfo: DebitCardsContactInfo =
+    const contactInfo: IntersolveVisaContactInfo =
       await this.getContactInformation(registration);
 
     if (this.validateContactInfo(contactInfo)) {
@@ -298,7 +297,7 @@ export class IntersolveVisaAccountManagementService {
       referenceId,
       programId,
     });
-    const contactInfo: DebitCardsContactInfo =
+    const contactInfo: IntersolveVisaContactInfo =
       await this.getContactInformation(registration);
     await this.sendCustomerInformationToIntersolve({
       registration,
@@ -311,7 +310,7 @@ export class IntersolveVisaAccountManagementService {
     contactInfo,
   }: {
     registration: RegistrationEntity;
-    contactInfo: DebitCardsContactInfo;
+    contactInfo: IntersolveVisaContactInfo;
   }): Promise<void> {
     const registrationHasVisaCustomer =
       await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
@@ -326,8 +325,8 @@ export class IntersolveVisaAccountManagementService {
 
   public async getContactInformation(
     registration: RegistrationEntity,
-  ): Promise<DebitCardsContactInfo> {
-    const fieldNames: DebitCardsContactInfoKeys[] = [
+  ): Promise<IntersolveVisaContactInfo> {
+    const fieldNames: IntersolveVisaContactInfoKeys[] = [
       FspAttributes.addressStreet,
       FspAttributes.addressHouseNumber,
       FspAttributes.addressHouseNumberAddition,
@@ -386,7 +385,7 @@ export class IntersolveVisaAccountManagementService {
     }
   }
 
-  private validateContactInfo(contactInfo: DebitCardsContactInfo) {
+  private validateContactInfo(contactInfo: IntersolveVisaContactInfo) {
     if (!contactInfo.name) {
       return false;
     }

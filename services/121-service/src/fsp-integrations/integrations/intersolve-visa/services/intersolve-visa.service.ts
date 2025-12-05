@@ -840,7 +840,7 @@ export class IntersolveVisaService {
     });
   }
 
-  public async getWallet(tokenCode: string) {
+  public async getWallet(tokenCode: string): Promise<GetTokenResult> {
     return await this.intersolveVisaApiService.getToken(tokenCode);
   }
 
