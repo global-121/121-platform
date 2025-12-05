@@ -99,14 +99,18 @@ jobs:
     needs: [performance-test-shard]
     if: always()
     steps:
-      - name: Check test results
+      - name: Check test results - FAILURE
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
         run: |
-          if [[ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
-            echo "❌ Performance Tests Failed" >> $GITHUB_STEP_SUMMARY
-            exit 1
-          else
-            echo "✅ All Performance Tests Passed" >> $GITHUB_STEP_SUMMARY
-          fi
+          echo "Performance tests have failed." >> $GITHUB_STEP_SUMMARY
+          echo "Test results: ${{ toJson(needs.*.result) }}" >> $GITHUB_STEP_SUMMARY
+          exit 1
+
+      - name: Check test results - SUCCESS
+        if: ${{ !(contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')) }}
+        run: |
+          echo "All performance tests have successfully passed." >> $GITHUB_STEP_SUMMARY
+          echo "Test results: ${{ toJson(needs.*.result) }}" >> $GITHUB_STEP_SUMMARY
 
       - name: Microsoft Teams Notification
         if: always()
