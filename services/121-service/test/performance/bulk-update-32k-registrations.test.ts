@@ -21,14 +21,11 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 const duplicateLowNumber = 5;
 const duplicateHighNumber = 15; // cronjob duplicate number should be 2^15 = 32768
 const testTimeout = 120_000; // 120 seconds
-const isPerformanceCronjob =
-  // eslint-disable-next-line n/no-process-env -- Required to detect CI environment for performance testing
-  process.env.CI === 'true' &&
-  // eslint-disable-next-line n/no-process-env -- Required to detect GitHub Actions workflow name
-  process.env.GITHUB_WORKFLOW?.includes('Test: Jest Performance Tests Cronjob');
-const duplicateNumber = isPerformanceCronjob
-  ? duplicateHighNumber
-  : duplicateLowNumber;
+const duplicateNumber =
+  // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
+  process.env.HIGH_DATA_VOLUME === 'true'
+    ? duplicateHighNumber
+    : duplicateLowNumber;
 
 jest.setTimeout(testTimeout);
 describe('Bulk update 32k registrations', () => {

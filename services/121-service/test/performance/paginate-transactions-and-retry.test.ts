@@ -24,14 +24,11 @@ import {
 const duplicateLowNumber = 5;
 const duplicateHighNumber = 17; // cronjob duplicate number should be 2^17 = 131072
 const testTimeout = 5_400_000; // 90 minutes
-const isPerformanceCronjob =
-  // eslint-disable-next-line n/no-process-env -- Required to detect CI environment for performance testing
-  process.env.CI === 'true' &&
-  // eslint-disable-next-line n/no-process-env -- Required to detect GitHub Actions workflow name
-  process.env.GITHUB_WORKFLOW?.includes('Test: Jest Performance Tests Cronjob');
-const duplicateNumber = isPerformanceCronjob
-  ? duplicateHighNumber
-  : duplicateLowNumber;
+const duplicateNumber =
+  // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
+  process.env.HIGH_DATA_VOLUME === 'true'
+    ? duplicateHighNumber
+    : duplicateLowNumber;
 
 jest.setTimeout(testTimeout);
 describe('Retry payment for 100k registrations with Safaricom within expected range and successful rate threshold', () => {

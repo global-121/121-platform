@@ -1,6 +1,9 @@
 name: 'Test: Jest Performance Tests Cronjob'
 
 on:
+  push:
+    branches:
+      - Piotrk39/feat.add-performance-tests-automatically
   schedule:
     - cron: '42 1 * * 1-5'
   workflow_dispatch:
@@ -86,7 +89,7 @@ jobs:
 
           for test_file in "${TESTS[@]}"; do
             if [[ -n "$test_file" ]]; then
-              docker compose exec -e CI=true -e GITHUB_WORKFLOW="${{ github.workflow }}" 121-service npm run test:integration:base -t "$test_file"
+              docker compose exec -e CI=true -e HIGH_DATA_VOLUME=true -e GITHUB_WORKFLOW="${{ github.workflow }}" 121-service npm run test:integration:base -t "$test_file"
             fi
           done
 
