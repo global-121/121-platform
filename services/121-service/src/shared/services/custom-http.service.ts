@@ -197,6 +197,7 @@ export class CustomHttpService {
     };
     if (headers) {
       headers.forEach((value, key) => {
+        key = key[0].toUpperCase() + key.slice(1); // Capitalize first letter
         returnHeaders[key] = value;
       });
     }
