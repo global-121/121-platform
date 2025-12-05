@@ -38,6 +38,7 @@ export type DataListItem = {
     component: Type<unknown>;
     inputs: Record<string, unknown>;
   };
+  dataTestId?: string;
 } & (
   | {
       type: 'boolean';
