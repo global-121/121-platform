@@ -17,44 +17,41 @@ import { TokenValidationService } from '@121-service/src/utils/token/token-valid
 @Injectable()
 export class CooperativeBankOfOromiaApiService {
   private tokenSet: TokenSet;
-  private readonly cooperativeBankOfOromiaTransferURL: URL;
-  private readonly cooperativeBankOfOromiaAuthenticateURL: URL;
 
   public constructor(
     private readonly httpService: CustomHttpService,
     private readonly tokenValidationService: TokenValidationService,
     private readonly cooperativeBankOfOromiaApiHelperService: CooperativeBankOfOromiaApiHelperService,
-  ) {
+  ) {}
+
+  private getTransferUrl(): URL {
     const transferUrlPart = 'nrc/1.0.0/transfer'; // This path is the same on UAT and Production
     if (env.MOCK_COOPERATIVE_BANK_OF_OROMIA) {
-      this.cooperativeBankOfOromiaTransferURL = new URL(
+      return new URL(
         `api/fsp/cooperative-bank-of-oromia/${transferUrlPart}`,
         env.MOCK_SERVICE_URL,
       );
     } else if (!env.COOPERATIVE_BANK_OF_OROMIA_API_URL) {
       throw new Error('COOPERATIVE_BANK_OF_OROMIA_API_URL is not set');
     } else {
-      this.cooperativeBankOfOromiaTransferURL = new URL(
-        transferUrlPart,
-        env.COOPERATIVE_BANK_OF_OROMIA_API_URL,
-      );
+      return new URL(transferUrlPart, env.COOPERATIVE_BANK_OF_OROMIA_API_URL);
     }
+  }
 
-    // Set auth base url; this is a different api path
+  private getAuthenticateUrl(): URL {
     let authUrlBase: URL;
-    if (
-      env.MOCK_COOPERATIVE_BANK_OF_OROMIA ||
-      !env.COOPERATIVE_BANK_OF_OROMIA_AUTH_URL
-    ) {
+    if (env.MOCK_COOPERATIVE_BANK_OF_OROMIA) {
       authUrlBase = new URL(
         'api/fsp/cooperative-bank-of-oromia/',
         env.MOCK_SERVICE_URL,
       );
+    } else if (!env.COOPERATIVE_BANK_OF_OROMIA_AUTH_URL) {
+      throw new Error('COOPERATIVE_BANK_OF_OROMIA_AUTH_URL is not set');
     } else {
       authUrlBase = new URL(env.COOPERATIVE_BANK_OF_OROMIA_AUTH_URL);
     }
     const urlPart = 'oauth2/token';
-    this.cooperativeBankOfOromiaAuthenticateURL = new URL(urlPart, authUrlBase);
+    return new URL(urlPart, authUrlBase);
   }
 
   public async initiateTransfer({
@@ -104,11 +101,7 @@ export class CooperativeBankOfOromiaApiService {
     try {
       response = await this.httpService.post<
         AxiosResponse<CooperativeBankOfOromiaApiPaymentResponseBodyDto>
-      >(
-        this.cooperativeBankOfOromiaTransferURL.href,
-        payload,
-        headersToPojo(headers),
-      );
+      >(this.getTransferUrl().href, payload, headersToPojo(headers));
     } catch (error) {
       return {
         result: CooperativeBankOfOromiaTransferResultEnum.fail,
@@ -145,11 +138,7 @@ export class CooperativeBankOfOromiaApiService {
     try {
       response = await this.httpService.post<
         AxiosResponse<CooperativeBankOfOromiaApiAuthenticationResponseBodyDto>
-      >(
-        this.cooperativeBankOfOromiaAuthenticateURL.href,
-        payload,
-        headersToPojo(headers),
-      );
+      >(this.getAuthenticateUrl().href, payload, headersToPojo(headers));
     } catch (error) {
       // This error is not something we expect to happen (e.g. network error)
       throw new CooperativeBankOfOromiaApiError(
