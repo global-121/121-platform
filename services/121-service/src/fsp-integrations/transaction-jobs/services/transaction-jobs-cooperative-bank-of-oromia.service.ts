@@ -66,16 +66,10 @@ export class TransactionJobsCooperativeBankOfOromiaService {
         name: FspConfigurationProperties.debitAccountNumber,
       })) as string; // This must be a string. If it is undefined the validation in payment service should have caught it. If a user set it as an array string you should get an internal server error here, this seems like an edge case;
 
-    const failedTransactionAttempts =
-      await this.transactionEventScopedRepository.countFailedTransactionAttempts(
-        transactionJob.transactionId,
-      );
-
-    // This is the idempotency key
+    // messageId is the idempotency key
     const cooperativeBankOfOromiaMessageId = this.generateMessageId({
       referenceId: transactionJob.referenceId,
       transactionId: transactionJob.transactionId,
-      failedTransactionAttempts,
     });
 
     try {
@@ -107,18 +101,16 @@ export class TransactionJobsCooperativeBankOfOromiaService {
   private generateMessageId({
     referenceId,
     transactionId,
-    failedTransactionAttempts,
   }: {
     referenceId: string;
     transactionId: number;
-    failedTransactionAttempts: number;
   }): string {
-    // We need a messageId that's unique for the combination of:
+    // Coopbank only stores the messageId upon a successful transaction. Therefore we only need a unique idempotency key per:
     // - referenceId
     // - 121 transactionId
-    // - failedTransactionAttempts (to ensure that each retry gets a different messageId)
+    // - AND NOT per attempt (for retries)
 
-    const toHash = `ReferenceId=${referenceId},TransactionId=${transactionId},Attempt=${failedTransactionAttempts}`;
+    const toHash = `ReferenceId=${referenceId},TransactionId=${transactionId}`;
 
     // This is deterministic.
     const messageId = crypto
