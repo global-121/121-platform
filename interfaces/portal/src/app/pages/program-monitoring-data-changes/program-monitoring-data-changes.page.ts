@@ -72,7 +72,7 @@ export class ProgramMonitoringDataChangesPageComponent {
 
   readonly columns = computed<QueryTableColumn<RegistrationEvent>[]>(() => [
     {
-      field: 'fieldChanged',
+      field: 'fieldChanged', // ##TODO make this a dropdown.
       header: $localize`Field changed`,
       getCellText: (event) =>
         this.registrationAttributeService.localizeAttribute({
