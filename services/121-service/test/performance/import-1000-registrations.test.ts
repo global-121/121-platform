@@ -8,8 +8,6 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
-const PERFORMANCE_TEST_SHARD = 1;
-void PERFORMANCE_TEST_SHARD; // Used by CI workflow for test discovery
 const csvFilePath =
   './test-registration-data/test-registrations-westeros-1000.csv';
 const testTimeout = 600_000; // 10 minutes
