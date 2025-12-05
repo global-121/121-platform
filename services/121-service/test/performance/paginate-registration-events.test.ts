@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
-import { env } from 'process';
 
+import { env } from '@121-service/src/env';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -9,7 +9,7 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 import { getRegistrationEventsPaginated } from '@121-service/test/helpers/program.helper';
 import {
   changeRegistrationStatus,
-  duplicateRegistrations,
+  duplicateRegistrationsAndPaymentData,
   importRegistrations,
   updateRegistration,
   waitForStatusChangeToComplete,
@@ -20,7 +20,8 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-const duplicateNumber = parseInt(env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^17 = 131072
+// eslint-disable-next-line n/no-process-env -- Only used in test-runs, not included in '@121-service/src/env'
+const duplicateNumber = parseInt(process.env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^17 = 131072
 
 const supportedNumberOfRecords = 400_000; // Adjust based on expected supported number. This is enough for 3 * 2^17 events
 const maxWaitTimeMs = 240_000; // 4 minutes
@@ -70,14 +71,15 @@ describe('Get paginated registrations events', () => {
       accessToken,
     );
     // Duplicate registrations > including registration-events
-    const duplicateRegistrationsResponse = await duplicateRegistrations({
-      powerNumberRegistration: duplicateNumber,
-      includeEvents: true,
-      accessToken,
-      body: {
-        secret: env.RESET_SECRET,
-      },
-    });
+    const duplicateRegistrationsResponse =
+      await duplicateRegistrationsAndPaymentData({
+        powerNumberRegistration: duplicateNumber,
+        includeEvents: true,
+        accessToken,
+        body: {
+          secret: env.RESET_SECRET,
+        },
+      });
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Get one page of events to test the duration of the api response
