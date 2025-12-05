@@ -22,8 +22,6 @@ export class AirtelApiService {
   private readonly airtelClientSecret: string | undefined;
   private readonly countryCode: string;
   private readonly currencyCode: string;
-  private readonly airtelAuthenticateURL: URL;
-  private readonly airtelDisbursementAndEnquiryV2URL: URL;
 
   public constructor(
     private readonly httpService: CustomHttpService,
@@ -47,18 +45,24 @@ export class AirtelApiService {
 
     this.countryCode = 'ZM';
     this.currencyCode = 'ZMW';
+  }
 
-    let airtelApiBaseUrl: URL;
-    if (env.MOCK_AIRTEL || !env.AIRTEL_API_URL) {
-      airtelApiBaseUrl = new URL('api/fsp/airtel/', env.MOCK_SERVICE_URL);
+  private getAirtelApiBaseUrl(): URL {
+    if (env.MOCK_AIRTEL) {
+      return new URL('api/fsp/airtel/', env.MOCK_SERVICE_URL);
+    } else if (!env.AIRTEL_API_URL) {
+      throw new Error('AIRTEL_API_URL is not set');
     } else {
-      airtelApiBaseUrl = new URL(env.AIRTEL_API_URL);
+      return new URL(env.AIRTEL_API_URL);
     }
-    this.airtelAuthenticateURL = new URL('auth/oauth2/token', airtelApiBaseUrl);
-    this.airtelDisbursementAndEnquiryV2URL = new URL(
-      'standard/v2/disbursements/',
-      airtelApiBaseUrl,
-    );
+  }
+
+  private getAirtelDisbursementAndEnquiryV2URL(): URL {
+    return new URL('standard/v2/disbursements/', this.getAirtelApiBaseUrl());
+  }
+
+  private getAirtelAuthenticateURL(): URL {
+    return new URL('auth/oauth2/token', this.getAirtelApiBaseUrl());
   }
 
   public async disburse({
@@ -74,7 +78,7 @@ export class AirtelApiService {
     message: string;
   }> {
     await this.authenticate();
-    const url = this.airtelDisbursementAndEnquiryV2URL;
+    const url = this.getAirtelDisbursementAndEnquiryV2URL();
     const headers = this.addAuthHeaders(
       new Headers({
         Accept: '*/*',
@@ -121,7 +125,7 @@ export class AirtelApiService {
     await this.authenticate();
     const url = new URL(
       airtelTransactionId,
-      this.airtelDisbursementAndEnquiryV2URL,
+      this.getAirtelDisbursementAndEnquiryV2URL(),
     );
     url.searchParams.append('transactionType', 'B2C');
     const headers = this.addAuthHeaders(
@@ -175,7 +179,7 @@ export class AirtelApiService {
       // Refactor: add validation.
       response = await this.httpService.post<
         AxiosResponse<AirtelApiAuthenticationResponseBodyDto>
-      >(this.airtelAuthenticateURL.href, payload, headersToPojo(headers));
+      >(this.getAirtelAuthenticateURL().href, payload, headersToPojo(headers));
     } catch (error) {
       throw new AirtelApiError(`authentication failed: ${error.message}`);
     }

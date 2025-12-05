@@ -94,7 +94,7 @@ describe('CooperativeBankOfOromiaApiService', () => {
 
       expect(post).toHaveBeenCalledTimes(2);
       // Check that the second call is the transfer initiation with expected arguments
-      const transferUrl = service['cooperativeBankOfOromiaTransferURL'].href;
+      const transferUrl = service['getTransferUrl']().href;
       expect(post).toHaveBeenNthCalledWith(
         2,
         transferUrl,
