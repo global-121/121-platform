@@ -19,8 +19,6 @@ export class RegistrationEventViewScopedRepository extends ScopedRepository<Regi
     super(request, repository);
   }
 
-  // ##TODO: can this take over some or all of normal repository methods as well?
-
   public createQueryBuilderFilterByProgramId({
     programId,
   }: {
