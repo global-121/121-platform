@@ -811,7 +811,7 @@
     "path": "/api/scripts/reset",
     "params": [
       "mockPowerNumberRegistrations",
-      "includeEvents",
+      "includeRegistrationEvents",
       "resetIdentifier",
       "mockNumberPayments",
       "mockPowerNumberMessages",
@@ -827,7 +827,7 @@
     "params": [
       "mockPowerNumberRegistrations",
       "mockNumberPayments",
-      "includeEvents"
+      "includeRegistrationEvents"
     ]
   },
   {

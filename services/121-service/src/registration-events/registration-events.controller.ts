@@ -116,9 +116,9 @@ export class RegistrationEventsController {
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<FindAllRegistrationEventsResultDto> {
-    return await this.registrationEventsService.getEventsPaginated(
+    return await this.registrationEventsService.getEventsPaginated({
       programId,
       paginateQuery,
-    );
+    });
   }
 }

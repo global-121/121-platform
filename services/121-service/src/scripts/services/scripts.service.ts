@@ -21,7 +21,7 @@ export class ScriptsService {
     seedScript,
     isApiTests,
     powerNrRegistrationsString,
-    includeEvents = false,
+    includeRegistrationEvents = false,
     nrPaymentsString,
     powerNrMessagesString,
     mockPv = true,
@@ -31,7 +31,7 @@ export class ScriptsService {
     seedScript: string;
     isApiTests: boolean;
     powerNrRegistrationsString?: string;
-    includeEvents?: boolean;
+    includeRegistrationEvents?: boolean;
     nrPaymentsString?: string;
     powerNrMessagesString?: string;
     mockPv?: boolean;
@@ -54,7 +54,7 @@ export class ScriptsService {
         powerNrRegistrationsString,
         nrPaymentsString,
         powerNrMessagesString,
-        includeEvents,
+        includeRegistrationEvents,
         mockPv,
         mockOcw,
         seedConfig,
@@ -81,11 +81,11 @@ export class ScriptsService {
   public async duplicateData({
     powerNrRegistrationsString,
     nrPaymentsString = '0',
-    includeEvents = false,
+    includeRegistrationEvents = false,
   }: {
     powerNrRegistrationsString: string;
     nrPaymentsString?: string;
-    includeEvents?: boolean;
+    includeRegistrationEvents?: boolean;
   }) {
     const { powerNrRegistrations, nrPayments } =
       await this.seedMockHelper.validateParametersForDataDuplication({
@@ -93,10 +93,10 @@ export class ScriptsService {
         nrPaymentsString,
       });
 
-    await this.seedMockHelper.multiplyRegistrations(
-      powerNrRegistrations,
-      includeEvents,
-    );
+    await this.seedMockHelper.multiplyRegistrations({
+      powerNr: powerNrRegistrations,
+      includeRegistrationEvents,
+    });
     await this.seedMockHelper.alignOtherDataWithRegistrations({
       powerNr: powerNrRegistrations,
     });
