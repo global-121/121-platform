@@ -75,10 +75,13 @@ export class RegistrationEventsService {
     );
   }
 
-  public async getEventsPaginated(
-    programId: number,
-    paginateQuery: PaginateQuery,
-  ): Promise<FindAllRegistrationEventsResultDto> {
+  public async getEventsPaginated({
+    programId,
+    paginateQuery,
+  }: {
+    programId: number;
+    paginateQuery: PaginateQuery;
+  }): Promise<FindAllRegistrationEventsResultDto> {
     const queryBuilder =
       this.registrationEventViewScopedRepository.createQueryBuilderFilterByProgramId(
         {

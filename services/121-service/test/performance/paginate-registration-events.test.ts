@@ -74,7 +74,7 @@ describe('Get paginated registrations events', () => {
     const duplicateRegistrationsResponse =
       await duplicateRegistrationsAndPaymentData({
         powerNumberRegistration: duplicateNumber,
-        includeEvents: true,
+        includeRegistrationEvents: true,
         accessToken,
         body: {
           secret: env.RESET_SECRET,

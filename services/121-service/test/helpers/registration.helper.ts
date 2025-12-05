@@ -93,13 +93,13 @@ export function importRegistrationsCSV(
 
 export function duplicateRegistrationsAndPaymentData({
   powerNumberRegistration,
-  includeEvents = false,
+  includeRegistrationEvents = false,
   accessToken,
   body = {},
   numberOfPayments = 0,
 }: {
   powerNumberRegistration: number;
-  includeEvents?: boolean;
+  includeRegistrationEvents?: boolean;
   accessToken: string;
   body: object;
   numberOfPayments?: number;
@@ -110,7 +110,7 @@ export function duplicateRegistrationsAndPaymentData({
     .query({
       mockPowerNumberRegistrations: powerNumberRegistration,
       mockNumberPayments: numberOfPayments,
-      includeEvents,
+      includeRegistrationEvents,
     })
     .send(body);
 }

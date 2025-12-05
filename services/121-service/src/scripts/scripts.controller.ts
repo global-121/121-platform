@@ -65,9 +65,9 @@ export class ScriptsController {
       'Optional identifier for this reset action, will be logged by the server.',
   })
   @ApiQuery({
-    name: 'includeEvents',
+    name: 'includeRegistrationEvents',
     required: false,
-    description: `Set to 'true' to include events in the duplication.`,
+    description: `Set to 'true' to include registration events in the duplication.`,
     example: 'false',
   })
   @ApiOperation({
@@ -80,7 +80,7 @@ export class ScriptsController {
     @Query('script') script: WrapperType<SeedScript>,
     @Query('mockPowerNumberRegistrations')
     mockPowerNumberRegistrations: string,
-    @Query('includeEvents') includeEvents: boolean,
+    @Query('includeRegistrationEvents') includeRegistrationEvents: boolean,
     @Query('resetIdentifier') resetIdentifier: string,
     @Query('mockNumberPayments') mockNumberPayments: string,
     @Query('mockPowerNumberMessages') mockPowerNumberMessages: string,
@@ -94,8 +94,9 @@ export class ScriptsController {
     }
 
     isApiTests = isApiTests !== undefined && isApiTests.toString() === 'true';
-    includeEvents =
-      includeEvents !== undefined && includeEvents.toString() === 'true';
+    includeRegistrationEvents =
+      includeRegistrationEvents !== undefined &&
+      includeRegistrationEvents.toString() === 'true';
 
     if (script == SeedScript.nlrcMultipleMock) {
       const booleanMockPv = mockPv
@@ -109,7 +110,7 @@ export class ScriptsController {
         resetIdentifier,
         isApiTests,
         powerNrRegistrationsString: mockPowerNumberRegistrations,
-        includeEvents,
+        includeRegistrationEvents,
         nrPaymentsString: mockNumberPayments,
         powerNrMessagesString: mockPowerNumberMessages,
         mockPv: booleanMockPv,
@@ -141,9 +142,9 @@ export class ScriptsController {
     example: '1',
   })
   @ApiQuery({
-    name: 'includeEvents',
+    name: 'includeRegistrationEvents',
     required: false,
-    description: `Set to 'true' to include events in the duplication.`,
+    description: `Set to 'true' to include registration events in the duplication.`,
     example: 'false',
   })
   @ApiOperation({
@@ -156,7 +157,7 @@ export class ScriptsController {
     @Query('mockPowerNumberRegistrations')
     mockPowerNumberRegistrations: string,
     @Query('mockNumberPayments') mockNumberPayments: string,
-    @Query('includeEvents') includeEvents: boolean,
+    @Query('includeRegistrationEvents') includeRegistrationEvents: boolean,
     @Res() res,
   ): Promise<void> {
     if (body.secret !== env.RESET_SECRET) {
@@ -172,7 +173,7 @@ export class ScriptsController {
     await this.scriptsService.duplicateData({
       powerNrRegistrationsString: mockPowerNumberRegistrations,
       nrPaymentsString: mockNumberPayments,
-      includeEvents,
+      includeRegistrationEvents,
     });
 
     return res
