@@ -118,15 +118,11 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
     fieldName: string;
     fieldValue: string;
   }) {
-    const field = this.page
-      .locator('p')
-      .filter({ hasText: new RegExp(`^${fieldName}:`) })
-      .locator('span');
-
-    await expect(field).toHaveText(fieldValue, { useInnerText: true });
+    const personalInformation = await this.personalInformationDataList();
+    await expect(personalInformation[fieldName]).toBe(fieldValue);
   }
 
-  async validateMultiplePersonalInformationFields({
+  async validateMultipleFieldsAtOnce({
     fieldName,
     fieldValue,
     expectedCount,
@@ -135,8 +131,11 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
     fieldValue: string;
     expectedCount: number;
   }) {
+    // This test helper will also assert against another data list component in
+    // the page. So we can't use personalInformationDataList() here.
+    // Probably better to make this explicit outside of this helper.
     const fields = this.page
-      .locator('p')
+      .locator('[data-testid-category="data-list-item"]')
       .filter({ hasText: fieldName })
       .locator('span');
 
