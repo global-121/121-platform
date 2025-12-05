@@ -826,7 +826,8 @@
     "path": "/api/scripts/duplicate-registrations",
     "params": [
       "mockPowerNumberRegistrations",
-      "mockNumberPayments"
+      "mockNumberPayments",
+      "includeEvents"
     ]
   },
   {
