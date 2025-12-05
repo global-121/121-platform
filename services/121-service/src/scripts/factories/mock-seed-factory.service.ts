@@ -47,10 +47,13 @@ export class MockSeedFactoryService {
     );
   }
 
-  public async multiplyRegistrations(
-    powerNr: number,
-    includeEvents = false,
-  ): Promise<void> {
+  public async multiplyRegistrations({
+    powerNr,
+    includeRegistrationEvents = false,
+  }: {
+    powerNr: number;
+    includeRegistrationEvents?: boolean;
+  }): Promise<void> {
     console.log(`**MULTIPLYING REGISTRATIONS: ${powerNr} times**`);
 
     const programs = await this.programRepository.find();
@@ -59,8 +62,10 @@ export class MockSeedFactoryService {
         console.log(`Creating registration duplication ${i} of ${powerNr}`);
 
         await this.registrationFactory.duplicateExistingRegistrationsForProgram(
-          program.id,
-          includeEvents,
+          {
+            programId: program.id,
+            includeRegistrationEvents,
+          },
         );
       }
     }

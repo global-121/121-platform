@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { isMatch } from 'lodash';
 import { DataSource } from 'typeorm';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -79,11 +78,17 @@ export class SeedMockHelperService {
     return { powerNrRegistrations, nrPayments, powerNrMessages };
   }
 
-  public async multiplyRegistrations(
-    powerNr: number,
-    includeEvents = false,
-  ): Promise<void> {
-    await this.mockDataFactory.multiplyRegistrations(powerNr, includeEvents);
+  public async multiplyRegistrations({
+    powerNr,
+    includeRegistrationEvents = false,
+  }: {
+    powerNr: number;
+    includeRegistrationEvents?: boolean;
+  }): Promise<void> {
+    await this.mockDataFactory.multiplyRegistrations({
+      powerNr,
+      includeRegistrationEvents,
+    });
   }
 
   public async alignOtherDataWithRegistrations({
@@ -230,49 +235,7 @@ export class SeedMockHelperService {
       data,
       reason,
     };
-    const result = await this.httpService.patch(url, body, headers);
-
-    await this.waitForDataChangeToComplete({
-      programId,
-      expectedPatch: data,
-      maxWaitTimeMs: 8000,
-      accessToken,
-    });
-
-    return result;
-  }
-
-  public async waitForDataChangeToComplete({
-    programId,
-    expectedPatch,
-    maxWaitTimeMs,
-    accessToken,
-  }: {
-    programId: number;
-    expectedPatch: Record<string, any>;
-    maxWaitTimeMs: number;
-    accessToken: string;
-  }): Promise<void> {
-    const startTime = Date.now();
-    while (Date.now() - startTime < maxWaitTimeMs) {
-      const result = await this.getRegistrations({
-        programId,
-        attributes: Object.keys(expectedPatch),
-        accessToken,
-      });
-      const registrations = result.data.data || [];
-      const filteredPatch = Object.entries(expectedPatch)
-        .filter(([_, value]) => value !== null)
-        .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
-      const allMatch = registrations.every((registration: any) =>
-        isMatch(registration, filteredPatch),
-      );
-      if (registrations.length > 0 && allMatch) {
-        return;
-      }
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
-    throw new Error('Timed out waiting for registration changes');
+    return await this.httpService.patch(url, body, headers);
   }
 
   public async getRegistrations({

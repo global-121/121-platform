@@ -22,10 +22,13 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
     this.eventDataFactory = new RegistrationEventSeedFactory(dataSource);
   }
 
-  public async duplicateExistingRegistrationsForProgram(
-    programId: number,
-    includeEvents = false,
-  ): Promise<void> {
+  public async duplicateExistingRegistrationsForProgram({
+    programId,
+    includeRegistrationEvents = false,
+  }: {
+    programId: number;
+    includeRegistrationEvents?: boolean;
+  }): Promise<void> {
     // Get all existing registrations for the given program
     const existingRegistrations = await this.repository.find({
       where: { programId: Equal(programId) },
@@ -77,7 +80,7 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
       newRegistrationIds,
       programId,
     );
-    if (includeEvents) {
+    if (includeRegistrationEvents) {
       await this.eventDataFactory.duplicateRegistrationEvents(
         newRegistrationIds,
         programId,

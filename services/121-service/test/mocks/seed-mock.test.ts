@@ -28,8 +28,12 @@ describe('Mock registrations', () => {
 
   beforeAll(async () => {
     // NOTE: without input parameters this endpoint applies 2 registration-duplications (so 4 registrations), 2 payments, and 1 message duplication
-    const includeEvents = true;
-    await resetDB(SeedScript.nlrcMultipleMock, __filename, includeEvents);
+    const includeRegistrationEvents = true;
+    await resetDB(
+      SeedScript.nlrcMultipleMock,
+      __filename,
+      includeRegistrationEvents,
+    );
     accessToken = await getAccessToken();
   });
 
