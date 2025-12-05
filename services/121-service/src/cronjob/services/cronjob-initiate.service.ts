@@ -179,7 +179,7 @@ export class CronjobInitiateService {
     }
     // Not a network operation so no try/catch.
     const cronPath = 'cronjobs';
-    const baseCronUrl = `${this.axiosCallsService.getBaseUrl()}/${cronPath}`;
+    const baseCronUrl = `${await this.axiosCallsService.getBaseUrl()}/${cronPath}`;
     return { baseCronUrl, headers };
   }
 
