@@ -820,7 +820,22 @@ export async function getPaymentSummary({
     .set('Cookie', [accessToken]);
 }
 
-export async function getRegistrationEventsPaginated({
+export async function getRegistrationEventsExport({
+  programId,
+  accessToken,
+  queryParams = {},
+}: {
+  programId: number;
+  accessToken: string;
+  queryParams?: Record<string, string>;
+}): Promise<request.Response> {
+  return await getServer()
+    .get(`/programs/${programId}/registration-events/export`)
+    .set('Cookie', [accessToken])
+    .query(queryParams);
+}
+
+export async function getRegistrationEventsMonitoring({
   programId,
   accessToken,
   page,
@@ -859,7 +874,7 @@ export async function getRegistrationEventsPaginated({
   }
 
   return await getServer()
-    .get(`/programs/${programId}/registration-events/paginated`)
+    .get(`/programs/${programId}/registration-events/monitoring`)
     .set('Cookie', [accessToken])
     .query(queryParams);
 }

@@ -32,6 +32,14 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
       .addSelect('oldValueAttr.value', 'oldValue')
       .addSelect('newValueAttr.value', 'newValue')
       .addSelect('reasonAttr.value', 'reason')
+      .addSelect(
+        'duplicateWithRegistrationIdAttr.value',
+        'duplicateWithRegistrationId',
+      )
+      .addSelect(
+        'duplicateWithRegistrationProgramIdAttr.value',
+        'duplicateWithRegistrationProgramId',
+      )
       .addSelect('user.username', 'username')
       .from(RegistrationEventEntity, 'event')
       .leftJoin(
@@ -58,6 +66,16 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
         RegistrationEventAttributeEntity,
         'reasonAttr',
         `reasonAttr.eventId = event.id AND reasonAttr.key = '${RegistrationEventAttributeKeyEnum.reason}'`,
+      )
+      .leftJoin(
+        RegistrationEventAttributeEntity,
+        'duplicateWithRegistrationIdAttr',
+        `duplicateWithRegistrationIdAttr.eventId = event.id AND duplicateWithRegistrationIdAttr.key = '${RegistrationEventAttributeKeyEnum.duplicateWithRegistrationId}'`,
+      )
+      .leftJoin(
+        RegistrationEventAttributeEntity,
+        'duplicateWithRegistrationProgramIdAttr',
+        `duplicateWithRegistrationProgramIdAttr.eventId = event.id AND duplicateWithRegistrationProgramIdAttr.key = '${RegistrationEventAttributeKeyEnum.duplicateWithRegistrationProgramId}'`,
       )
       .leftJoin(UserEntity, 'user', 'user.id = event.userId');
   },
@@ -95,5 +113,14 @@ export class RegistrationEventViewEntity extends Base121Entity {
   public reason: string | null;
 
   @ViewColumn()
+  public duplicateWithRegistrationId: number | null;
+
+  @ViewColumn()
+  public duplicateWithRegistrationProgramId: number | null;
+
+  @ViewColumn()
   public username: string;
+
+  @ViewColumn()
+  public userId: number;
 }

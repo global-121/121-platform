@@ -679,7 +679,7 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/registration-events",
+    "path": "/api/programs/{programId}/registration-events/export",
     "params": [
       "programId",
       "format",
@@ -690,7 +690,7 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/registration-events/paginated",
+    "path": "/api/programs/{programId}/registration-events/monitoring",
     "params": [
       "programId",
       "page",

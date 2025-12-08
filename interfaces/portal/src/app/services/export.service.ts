@@ -14,10 +14,10 @@ import {
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 
-import { EventApiService } from '~/domains/event/event.api.service';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
+import { RegistrationEventApiService } from '~/domains/registration-event/registration-event.api.service';
 import { DownloadService } from '~/services/download.service';
 import {
   PaginateQuery,
@@ -40,7 +40,7 @@ export class ExportService {
 
   private paginateQueryService = inject(PaginateQueryService);
   private downloadService = inject(DownloadService);
-  private eventApiService = inject(EventApiService);
+  private eventApiService = inject(RegistrationEventApiService);
   private metricApiService = inject(MetricApiService);
   private paymentApiService = inject(PaymentApiService);
   private programApiService = inject(ProgramApiService);
@@ -163,7 +163,7 @@ export class ExportService {
             })();
             break;
           case 'registration-data-changes':
-            query = this.eventApiService.getEvents({
+            query = this.eventApiService.getRegistrationEventsExport({
               programId,
               params,
             })();

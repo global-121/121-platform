@@ -4,12 +4,11 @@ import { REQUEST } from '@nestjs/core';
 import { Job } from 'bull';
 import { isEqual, isMatch, isObject } from 'lodash';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
+import { SelectQueryBuilder } from 'typeorm';
 
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { PaginateConfigRegistrationEventView } from '@121-service/src/registration-events/const/paginate-config-registration-event-view.const';
 import { FindAllRegistrationEventsResultDto } from '@121-service/src/registration-events/dto/find-all-registration-events-result.dto';
-import { GetRegistrationEventDto } from '@121-service/src/registration-events/dto/get-registration-event.dto';
-import { GetRegistrationEventXlsxDto } from '@121-service/src/registration-events/dto/get-registration-event-xlsx.dto';
 import { PaginatedRegistrationEventDto } from '@121-service/src/registration-events/dto/paginated-registration-events.dto';
 import { RegistrationEventSearchOptionsDto } from '@121-service/src/registration-events/dto/registration-event-search-options.dto';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
@@ -20,13 +19,13 @@ import { RegistrationEventAttributeKeyEnum } from '@121-service/src/registration
 import { CreateForIgnoredDuplicatePair } from '@121-service/src/registration-events/interfaces/create-for-ignored-duplicate-pair.interface';
 import { createFromRegistrationViewsOptions } from '@121-service/src/registration-events/interfaces/create-from-registration-views-options.interface';
 import { RegistrationIdentifiers } from '@121-service/src/registration-events/interfaces/registration-identifiers.interface';
-import { RegistrationEventScopedRepository } from '@121-service/src/registration-events/repositories/registration-event.repository';
 import { RegistrationEventViewScopedRepository } from '@121-service/src/registration-events/repositories/registration-event.view.repository';
 import { ValueExtractor } from '@121-service/src/registration-events/utils/registration-events.helpers';
-import { RegistrationEventsMapper } from '@121-service/src/registration-events/utils/registration-events.mapper';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserService } from '@121-service/src/user/user.service';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 // Define an interface that can contain any attribute of RegistrationViewEntity, but make sure at least id is in.
 interface RegistrationViewWithId extends Partial<RegistrationViewEntity> {
@@ -35,60 +34,60 @@ interface RegistrationViewWithId extends Partial<RegistrationViewEntity> {
 
 @Injectable()
 export class RegistrationEventsService {
+  @Inject(getScopedRepositoryProviderName(RegistrationEventEntity))
+  private registrationEventRepository: ScopedRepository<RegistrationEventEntity>;
   constructor(
-    private registrationEventRepository: RegistrationEventScopedRepository,
     @Inject(REQUEST) private request: ScopedUserRequest,
     @Inject(JOB_REF) private readonly jobRef: Job,
     private readonly userService: UserService,
     private readonly registrationEventViewScopedRepository: RegistrationEventViewScopedRepository,
   ) {}
 
-  public async getEventsAsJson({
+  public getRegistrationEventsExport({
     programId,
     searchOptions,
   }: {
     programId: number;
     searchOptions: RegistrationEventSearchOptionsDto;
-  }): Promise<GetRegistrationEventDto[]> {
-    const events = await this.fetchEvents(programId, searchOptions);
-    return RegistrationEventsMapper.mapEventsToJsonDtos(events);
+  }): Promise<FindAllRegistrationEventsResultDto> {
+    const queryBuilderExport =
+      this.registrationEventViewScopedRepository.createQueryBuilderExport({
+        programId,
+        searchOptions,
+      });
+
+    const exportLimit = 500_000;
+    return this.getPaginatedRegistrationEvents({
+      paginateQuery: { limit: exportLimit } as PaginateQuery,
+      queryBuilder: queryBuilderExport,
+    });
   }
 
-  public async getEventsAsXlsx({
-    programId,
-    searchOptions,
-  }: {
-    programId: number;
-    searchOptions: RegistrationEventSearchOptionsDto;
-  }): Promise<GetRegistrationEventXlsxDto[]> {
-    const events = await this.fetchEvents(programId, searchOptions);
-    return RegistrationEventsMapper.mapEventsToXlsxDtos(events);
-  }
-
-  private async fetchEvents(
-    programId: number,
-    searchOptions: RegistrationEventSearchOptionsDto,
-  ): Promise<RegistrationEventEntity[]> {
-    return await this.registrationEventRepository.getManyByProgramIdAndSearchOptions(
-      programId,
-      searchOptions,
-    );
-  }
-
-  public async getEventsPaginated({
+  public async getRegistrationEventsMonitoring({
     programId,
     paginateQuery,
   }: {
     programId: number;
     paginateQuery: PaginateQuery;
   }): Promise<FindAllRegistrationEventsResultDto> {
-    const queryBuilder =
-      this.registrationEventViewScopedRepository.createQueryBuilderFilterByProgramId(
-        {
-          programId,
-        },
+    const queryBuilderMonitoring =
+      this.registrationEventViewScopedRepository.createQueryBuilderMonitoring(
+        programId,
       );
 
+    return this.getPaginatedRegistrationEvents({
+      paginateQuery,
+      queryBuilder: queryBuilderMonitoring,
+    });
+  }
+
+  private async getPaginatedRegistrationEvents({
+    paginateQuery,
+    queryBuilder,
+  }: {
+    paginateQuery: PaginateQuery;
+    queryBuilder: SelectQueryBuilder<RegistrationEventViewEntity>;
+  }): Promise<FindAllRegistrationEventsResultDto> {
     const result = await paginate<RegistrationEventViewEntity>(
       paginateQuery,
       queryBuilder,
@@ -97,7 +96,7 @@ export class RegistrationEventsService {
       },
     );
 
-    return result as Paginated<PaginatedRegistrationEventDto>; // This typeconversion is done to make our frontend happy as it cannot deal with typeorm entities
+    return result as Paginated<PaginatedRegistrationEventDto>;
   }
 
   /**
