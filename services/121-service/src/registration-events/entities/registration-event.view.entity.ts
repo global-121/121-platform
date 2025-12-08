@@ -29,26 +29,10 @@ export const STATUS_CHANGE_STRING = 'Status';
       .addSelect('registration.id', 'registrationId')
       .addSelect('registration.registrationProgramId', 'registrationProgramId')
       .addSelect('registration.programId', 'programId')
-      .addSelect(
-        `
-        CASE
-          WHEN event.type = '${RegistrationEventEnum.registrationStatusChange}' THEN '${STATUS_CHANGE_STRING}'
-          WHEN event.type = '${RegistrationEventEnum.registrationDataChange}' THEN "fieldNameAttr"."value"
-          WHEN event.type = '${RegistrationEventEnum.fspChange}' THEN 'FSP'
-          WHEN event.type = '${RegistrationEventEnum.ignoredDuplicate}' THEN 'duplicateStatus'
-          ELSE NULL
-        END
-      `,
-        'fieldChanged',
-      ) // ##TODO split in 2 columns: type and fieldChange (only for data-changes). Check with PO.
-      .addSelect(
-        `CASE WHEN event.type = '${RegistrationEventEnum.ignoredDuplicate}' THEN 'duplicate' ELSE oldValueAttr.value END`,
-        'oldValue',
-      )
-      .addSelect(
-        `CASE WHEN event.type = '${RegistrationEventEnum.ignoredDuplicate}' THEN 'unique' ELSE newValueAttr.value END`,
-        'newValue',
-      )
+      .addSelect('event.type', 'type')
+      .addSelect('fieldNameAttr.value', 'fieldChanged')
+      .addSelect('oldValueAttr.value', 'oldValue')
+      .addSelect('newValueAttr.value', 'newValue')
       .addSelect('reasonAttr.value', 'reason')
       .addSelect('user.username', 'username')
       .from(RegistrationEventEntity, 'event')
@@ -82,7 +66,7 @@ export const STATUS_CHANGE_STRING = 'Status';
 })
 export class RegistrationEventViewEntity extends Base121Entity {
   @ViewColumn()
-  public programId: number; // used for filtering only
+  public programId: number;
 
   @ManyToOne(
     (_type) => RegistrationEntity,
@@ -92,10 +76,13 @@ export class RegistrationEventViewEntity extends Base121Entity {
   @JoinColumn({ name: 'registrationId' })
   public registration: Relation<RegistrationEntity>;
   @ViewColumn()
-  public registrationId: number; // used for linking to registration
+  public registrationId: number;
 
   @ViewColumn()
   public registrationProgramId: number;
+
+  @ViewColumn()
+  public type: RegistrationEventEnum;
 
   @ViewColumn()
   public fieldChanged: string;
@@ -110,5 +97,5 @@ export class RegistrationEventViewEntity extends Base121Entity {
   public reason: string | null;
 
   @ViewColumn()
-  public username: string; // This is easier than extending Base121OptionalAuditedEntity and then having to join username somewhere else
+  public username: string;
 }

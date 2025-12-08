@@ -9,6 +9,8 @@ import {
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
 
+import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
+
 import { PageLayoutMonitoringComponent } from '~/components/page-layout-monitoring/page-layout-monitoring.component';
 import {
   QueryTableColumn,
@@ -72,6 +74,25 @@ export class ProgramMonitoringDataChangesPageComponent {
 
   readonly columns = computed<QueryTableColumn<RegistrationEvent>[]>(() => [
     {
+      field: 'type',
+      header: $localize`Type`,
+      type: QueryTableColumnType.MULTISELECT,
+      options: [
+        {
+          label: $localize`Data change`,
+          value: RegistrationEventEnum.registrationDataChange,
+        },
+        {
+          label: $localize`FSP change`,
+          value: RegistrationEventEnum.fspChange,
+        },
+        {
+          label: $localize`Ignored duplicate`,
+          value: RegistrationEventEnum.ignoredDuplicate,
+        },
+      ],
+    },
+    {
       field: 'fieldChanged', // ##TODO make this a dropdown.
       header: $localize`Field changed`,
       getCellText: (event) =>
@@ -93,16 +114,6 @@ export class ProgramMonitoringDataChangesPageComponent {
       type: QueryTableColumnType.NUMERIC,
     },
     {
-      field: 'newValue',
-      header: $localize`New value`,
-      getCellText: (event) =>
-        this.registrationAttributeService.localizeAttribute({
-          attributes: this.registrationAttributes.data(),
-          attributeName: event.fieldChanged,
-          attributeOptionValue: event.newValue,
-        }),
-    },
-    {
       field: 'oldValue',
       header: $localize`Old value`,
       getCellText: (event) =>
@@ -110,6 +121,16 @@ export class ProgramMonitoringDataChangesPageComponent {
           attributes: this.registrationAttributes.data(),
           attributeName: event.fieldChanged,
           attributeOptionValue: event.oldValue,
+        }),
+    },
+    {
+      field: 'newValue',
+      header: $localize`New value`,
+      getCellText: (event) =>
+        this.registrationAttributeService.localizeAttribute({
+          attributes: this.registrationAttributes.data(),
+          attributeName: event.fieldChanged,
+          attributeOptionValue: event.newValue,
         }),
     },
     {

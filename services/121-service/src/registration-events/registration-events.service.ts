@@ -344,9 +344,7 @@ export class RegistrationEventsService {
       [RegistrationEventAttributeKeyEnum.oldValue]: oldValue,
       [RegistrationEventAttributeKeyEnum.newValue]: newValue,
     };
-    if (event.type === RegistrationEventEnum.registrationDataChange) {
-      attributesData[RegistrationEventAttributeKeyEnum.fieldName] = fieldName;
-    }
+    attributesData[RegistrationEventAttributeKeyEnum.fieldName] = fieldName;
     event.attributes = this.getAttributesForChange(attributesData);
     return event;
   }
@@ -467,6 +465,18 @@ export class RegistrationEventsService {
     reason: string;
   }): RegistrationEventAttributeEntity[] {
     return [
+      this.createEventAttributeEntity(
+        RegistrationEventAttributeKeyEnum.fieldName,
+        'duplicateStatus',
+      ),
+      this.createEventAttributeEntity(
+        RegistrationEventAttributeKeyEnum.oldValue,
+        'duplicate',
+      ),
+      this.createEventAttributeEntity(
+        RegistrationEventAttributeKeyEnum.newValue,
+        'unique',
+      ),
       this.createEventAttributeEntity(
         RegistrationEventAttributeKeyEnum.duplicateWithRegistrationId,
         String(duplicateRegistration.id),
