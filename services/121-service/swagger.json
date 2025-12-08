@@ -200,7 +200,16 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/fsps/intersolve-voucher/vouchers",
+    "path": "/api/programs/{programId}/fsps/intersolve-voucher/vouchers-paper",
+    "params": [
+      "programId",
+      "referenceId",
+      "paymentId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/fsps/intersolve-voucher/vouchers-whatsapp",
     "params": [
       "programId",
       "referenceId",

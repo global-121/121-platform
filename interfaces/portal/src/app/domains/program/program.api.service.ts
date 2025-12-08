@@ -335,13 +335,19 @@ export class ProgramApiService extends DomainApiService {
     programId,
     referenceId,
     paymentId,
+    voucherType,
   }: {
     programId: Signal<number | string>;
     referenceId: string;
     paymentId: number | string;
+    voucherType: 'paper' | 'whatsapp';
   }) {
     return this.generateQueryOptions<Blob>({
-      path: [BASE_ENDPOINT, programId, 'fsps/intersolve-voucher/vouchers'],
+      path: [
+        BASE_ENDPOINT,
+        programId,
+        `fsps/intersolve-voucher/vouchers-${voucherType}`,
+      ],
       params: {
         referenceId,
         paymentId: paymentId.toString(),

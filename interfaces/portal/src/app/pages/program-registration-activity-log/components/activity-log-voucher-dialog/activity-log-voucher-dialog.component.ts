@@ -20,6 +20,8 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 
+import { Fsps } from '../../../../../../../../services/121-service/src/fsps/enums/fsp-name.enum';
+
 @Component({
   selector: 'app-activity-log-voucher-dialog',
   imports: [ButtonModule, DialogModule, ScrollPanelModule, SkeletonModule],
@@ -33,6 +35,7 @@ export class ActivityLogVoucherDialogComponent {
   readonly paymentId = input.required<number>();
   readonly paymentDate = input.required<string>();
   readonly referenceId = input.required<string>();
+  readonly fsp = input.required<Fsps>();
 
   private readonly programApiService = inject(ProgramApiService);
   private readonly domSanitizer = inject(DomSanitizer);
@@ -46,11 +49,20 @@ export class ActivityLogVoucherDialogComponent {
     () => $localize`Voucher ${this.paymentId()} on ${this.paymentDate()}`,
   );
 
+  private readonly voucherType = computed(() => {
+    if (this.fsp() === Fsps.intersolveVoucherPaper) {
+      return 'paper';
+    }
+
+    return 'whatsapp';
+  });
+
   voucher = injectQuery(() => ({
     ...this.programApiService.getIntersolveVoucher({
       programId: this.programId,
       referenceId: this.referenceId(),
       paymentId: this.paymentId(),
+      voucherType: this.voucherType(),
     })(),
     enabled: this.dialogVisible(),
   }));

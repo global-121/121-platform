@@ -262,6 +262,7 @@ export class ActivityLogExpandedRowComponent
                   paymentId: attributes.paymentId,
                   paymentDate,
                   referenceId: this.context().referenceId,
+                  fsp: attributes.fspName,
                 },
               },
             }),
