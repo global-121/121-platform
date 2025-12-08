@@ -69,6 +69,15 @@ describe('IntersolveVisaAccountManagementService', () => {
           provide: ProgramFspConfigurationRepository,
           useValue: {
             getPropertiesByNamesOrThrow: jest.fn(),
+            getPropertyValueByName: jest
+              .fn()
+              .mockImplementation(async ({ name }) => {
+                if (name === FspConfigurationProperties.brandCode)
+                  return 'BRAND';
+                if (name === FspConfigurationProperties.coverLetterCode)
+                  return 'COVER';
+                return undefined;
+              }),
           },
         },
         {
@@ -150,19 +159,14 @@ describe('IntersolveVisaAccountManagementService', () => {
         parentWallet,
       );
 
-      // Mock FSP configuration repository to return brand/cover letter codes
+      // Mock FSP configuration repository to return brand/cover letter codes via new method
       (
-        programFspConfigurationRepository.getPropertiesByNamesOrThrow as jest.Mock
-      ).mockResolvedValue([
-        {
-          name: FspConfigurationProperties.brandCode,
-          value: 'BRAND',
-        },
-        {
-          name: FspConfigurationProperties.coverLetterCode,
-          value: 'COVER',
-        },
-      ]);
+        programFspConfigurationRepository.getPropertyValueByName as jest.Mock
+      ).mockImplementation(async ({ name }) => {
+        if (name === FspConfigurationProperties.brandCode) return 'BRAND';
+        if (name === FspConfigurationProperties.coverLetterCode) return 'COVER';
+        return undefined;
+      });
 
       await service.linkCardOnSiteToRegistration({
         referenceId: 'ref-1',
