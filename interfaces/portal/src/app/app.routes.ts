@@ -158,7 +158,7 @@ export const routes: Routes = [
           {
             path: ``,
             pathMatch: 'full',
-            redirectTo: AppRoutes.programMonitoringPowerBI,
+            redirectTo: AppRoutes.programMonitoringDashboard,
           },
         ],
       },
