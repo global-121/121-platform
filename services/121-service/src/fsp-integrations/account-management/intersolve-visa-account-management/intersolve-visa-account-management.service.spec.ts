@@ -111,7 +111,11 @@ describe('IntersolveVisaAccountManagementService', () => {
       intersolveVisaService.getWallet.mockResolvedValue({ holderId: 1 } as any);
 
       await expect(
-        service.linkDebitCardToRegistration('ref-1', 1, 'token-1'),
+        service.linkDebitCardToRegistration({
+          referenceId: 'ref-1',
+          programId: 1,
+          tokenCode: 'token-1',
+        }),
       ).rejects.toThrow(
         'Card is already linked to another customer at Intersolve.',
       );
@@ -160,7 +164,11 @@ describe('IntersolveVisaAccountManagementService', () => {
         },
       ]);
 
-      await service.linkDebitCardToRegistration('ref-1', 1, 'child-token');
+      await service.linkDebitCardToRegistration({
+        referenceId: 'ref-1',
+        programId: 1,
+        tokenCode: 'child-token',
+      });
 
       expect(
         intersolveVisaService.linkParentWalletToCustomerIfUnlinked,
