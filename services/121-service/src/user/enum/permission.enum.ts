@@ -35,7 +35,7 @@ export enum PermissionEnum {
 
   // Payment(s) - Voucher(s)
   PaymentVoucherWhatsappREAD = 'payment:voucher-whatsapp.read',
-  PaymentVoucherPaperREAD = 'payment:paper-voucher.read',
+  PaymentVoucherPaperREAD = 'payment:voucher-paper.read',
   PaymentVoucherExport = 'payment:voucher.export',
 
   // Fsp integration - Debit card(s)
