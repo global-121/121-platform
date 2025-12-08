@@ -166,7 +166,7 @@ export class ExportRegistrationsComponent {
         this.isCBEProgram() &&
         this.authService.hasPermission({
           programId: this.programId(),
-          requiredPermission: PermissionEnum.PaymentFspInstructionREAD,
+          requiredPermission: PermissionEnum.RegistrationPersonalREAD,
         }),
       command: () => {
         this.trackingService.trackEvent({

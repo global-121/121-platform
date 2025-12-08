@@ -44,7 +44,7 @@ export class CooperativeBankOfOromiaAccountManagementController {
   }
 
   @AuthenticatedUser({
-    permissions: [PermissionEnum.PaymentFspInstructionREAD],
+    permissions: [PermissionEnum.RegistrationPersonalREAD],
   })
   @ApiOperation({
     summary:

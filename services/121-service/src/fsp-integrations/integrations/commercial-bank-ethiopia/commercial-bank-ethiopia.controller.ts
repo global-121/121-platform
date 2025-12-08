@@ -23,7 +23,7 @@ export class CommercialBankEthiopiaController {
   ) {}
 
   @AuthenticatedUser({
-    permissions: [PermissionEnum.PaymentFspInstructionREAD],
+    permissions: [PermissionEnum.RegistrationPersonalREAD],
   })
   @ApiOperation({
     summary:
