@@ -3,6 +3,7 @@ import { TestBed } from '@automock/jest';
 import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
 import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
@@ -383,34 +384,53 @@ describe('RegistrationEventsService', () => {
 
     // Assert
     expect(registrationEventRepository.save).toHaveBeenCalledTimes(1);
-    const expectedEvents = [
-      {
-        registrationId: oldViewRegistration.id,
-        type: RegistrationEventEnum.registrationStatusChange,
-        attributes: [
-          { key: 'oldValue', value: RegistrationStatusEnum.new },
-          { key: 'newValue', value: RegistrationStatusEnum.included },
-          { key: 'reason', value: options.reason },
-        ],
-        userId: 2,
-      },
-      {
-        registrationId: oldViewRegistration.id,
-        type: RegistrationEventEnum.registrationDataChange,
-        attributes: [
-          { key: 'oldValue', value: oldViewRegistration.phoneNumber },
-          { key: 'newValue', value: newViewRegistration.phoneNumber },
-          { key: 'fieldName', value: 'phoneNumber' },
-          { key: 'reason', value: options.reason },
-        ],
-        userId: 2,
-      },
-    ];
     expect(registrationEventRepository.save).toHaveBeenCalledWith(
-      expectedEvents,
-      {
-        chunk: 2000,
-      },
+      expect.arrayContaining([
+        expect.objectContaining({
+          registrationId: oldViewRegistration.id,
+          type: RegistrationEventEnum.registrationStatusChange,
+          userId: 2,
+          attributes: expect.arrayContaining([
+            expect.objectContaining({
+              key: 'fieldName',
+              value: GenericRegistrationAttributes.status,
+            }),
+            expect.objectContaining({
+              key: 'oldValue',
+              value: RegistrationStatusEnum.new,
+            }),
+            expect.objectContaining({
+              key: 'newValue',
+              value: RegistrationStatusEnum.included,
+            }),
+            expect.objectContaining({ key: 'reason', value: options.reason }),
+          ]),
+        }),
+        expect.objectContaining({
+          registrationId: oldViewRegistration.id,
+          type: RegistrationEventEnum.registrationDataChange,
+          userId: 2,
+          attributes: expect.arrayContaining([
+            expect.objectContaining({
+              key: 'fieldName',
+              value: 'phoneNumber',
+            }),
+            expect.objectContaining({
+              key: 'oldValue',
+              value: oldViewRegistration.phoneNumber,
+            }),
+            expect.objectContaining({
+              key: 'newValue',
+              value: newViewRegistration.phoneNumber,
+            }),
+            expect.objectContaining({
+              key: 'reason',
+              value: options.reason,
+            }),
+          ]),
+        }),
+      ]),
+      { chunk: 2000 },
     );
   });
 
@@ -430,29 +450,29 @@ describe('RegistrationEventsService', () => {
 
     // Assert
     expect(registrationEventRepository.save).toHaveBeenCalledTimes(1);
-    const expectedEvents = [
-      {
-        registrationId: oldViewRegistration.id,
-        type: RegistrationEventEnum.registrationStatusChange,
-        attributes: [
-          {
-            key: 'oldValue',
-            value: RegistrationStatusEnum.new,
-          },
-          {
-            key: 'newValue',
-            value: RegistrationStatusEnum.included,
-          },
-          {
-            key: 'reason',
-            value: options.reason,
-          },
-        ],
-        userId: 2,
-      },
-    ];
     expect(registrationEventRepository.save).toHaveBeenCalledWith(
-      expectedEvents,
+      expect.arrayContaining([
+        expect.objectContaining({
+          registrationId: oldViewRegistration.id,
+          type: RegistrationEventEnum.registrationStatusChange,
+          userId: 2,
+          attributes: expect.arrayContaining([
+            expect.objectContaining({
+              key: 'fieldName',
+              value: GenericRegistrationAttributes.status,
+            }),
+            expect.objectContaining({
+              key: 'oldValue',
+              value: RegistrationStatusEnum.new,
+            }),
+            expect.objectContaining({
+              key: 'newValue',
+              value: RegistrationStatusEnum.included,
+            }),
+            expect.objectContaining({ key: 'reason', value: options.reason }),
+          ]),
+        }),
+      ]),
       {
         chunk: 2000,
       },
