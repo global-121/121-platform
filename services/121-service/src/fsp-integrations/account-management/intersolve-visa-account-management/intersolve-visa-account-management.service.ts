@@ -415,17 +415,6 @@ export class IntersolveVisaAccountManagementService {
     });
   }
 
-  /**
-   * Pauses or unpauses a card associated with a given token code and sends a message to the registration.
-   * - It retrieves the registration, pauses or unpauses the card, sends a message to the registration, and returns the updated wallet.
-   *
-   * @param {string} referenceId - The reference ID of the registration.
-   * @param {number} programId - The ID of the program.
-   * @param {string} tokenCode - The token code of the card to pause or unpause.
-   * @param {boolean} pause - Whether to pause (true) or unpause (false) the card.
-   * @throws {HttpException} Throws an HttpException if no registration is found for the given reference ID.
-   * @returns {Promise<IntersolveVisaChildWalletEntity>} The updated wallet.
-   */
   public async pauseCardAndSendMessage(
     referenceId: string,
     programId: number,
@@ -456,9 +445,6 @@ export class IntersolveVisaAccountManagementService {
     return updatedWallet;
   }
 
-  /**
-   * Retrieves a registration by reference ID and program ID, and sends its contact information to Intersolve. Used only for debugging purposes.
-   */
   public async getRegistrationAndSendContactInformationToIntersolve(
     referenceId: string,
     programId: number,
@@ -515,26 +501,5 @@ export class IntersolveVisaAccountManagementService {
         HttpStatus.BAD_REQUEST,
       );
     }
-  }
-
-  private async getIntersolveVisaConfig(
-    programFspConfigurationId: number,
-  ): Promise<Map<FspConfigurationProperties, string | string[]>> {
-    const properties =
-      await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
-        programFspConfigurationId,
-        names: [
-          FspConfigurationProperties.brandCode,
-          FspConfigurationProperties.coverLetterCode,
-        ],
-      });
-
-    const configMap = new Map<FspConfigurationProperties, string | string[]>();
-
-    properties.forEach(({ name, value }) => {
-      configMap.set(name, value);
-    });
-
-    return configMap;
   }
 }
