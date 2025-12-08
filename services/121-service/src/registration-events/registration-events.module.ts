@@ -9,6 +9,7 @@ import { RegistrationEventsController } from '@121-service/src/registration-even
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { RegistrationEventViewScopedRepository } from '@121-service/src/registration-events/repositories/registration-event.view.repository';
 import { UserModule } from '@121-service/src/user/user.module';
+import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Module({
   imports: [
@@ -20,7 +21,11 @@ import { UserModule } from '@121-service/src/user/user.module';
       RegistrationEventViewEntity,
     ]),
   ],
-  providers: [RegistrationEventsService, RegistrationEventViewScopedRepository],
+  providers: [
+    RegistrationEventsService,
+    RegistrationEventViewScopedRepository,
+    createScopedRepositoryProvider(RegistrationEventEntity),
+  ],
   controllers: [RegistrationEventsController],
   exports: [RegistrationEventsService],
 })
