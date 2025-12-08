@@ -31,7 +31,7 @@ describe('Cronjob initiation', () => {
       .mockResolvedValue(true);
 
     // Act
-    await cronjobInitiateService.cronValidateCommercialBankEthiopiaAccountEnquiries();
+    await cronjobInitiateService.cronValidateCommercialBankEthiopiaAccounts();
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
