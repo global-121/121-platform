@@ -703,68 +703,6 @@
     ]
   },
   {
-    "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards",
-    "params": [
-      "programId",
-      "referenceId"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/{tokenCode}",
-    "params": [
-      "programId",
-      "referenceId",
-      "tokenCode",
-      "pause"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
-    "params": [
-      "referenceId",
-      "programId"
-    ],
-    "returnType": "IntersolveVisaWalletDto"
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
-    "params": [
-      "referenceId",
-      "programId"
-    ],
-    "returnType": "IntersolveVisaWalletDto"
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/contact-information",
-    "params": [
-      "programId",
-      "referenceId"
-    ]
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/link-card/{tokenCode}",
-    "params": [
-      "programId",
-      "referenceId",
-      "tokenCode"
-    ]
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/replace-card/{tokenCode}",
-    "params": [
-      "programId",
-      "referenceId",
-      "tokenCode"
-    ]
-  },
-  {
     "method": "put",
     "path": "/api/programs/{programId}/fsps/cooperative-bank-of-oromia/accounts",
     "params": [
@@ -1122,5 +1060,67 @@
     "method": "post",
     "path": "/api/fsps/safaricom/timeout-callback",
     "params": []
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards",
+    "params": [
+      "programId",
+      "referenceId"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/{tokenCode}",
+    "params": [
+      "programId",
+      "referenceId",
+      "tokenCode",
+      "pause"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
+    "params": [
+      "referenceId",
+      "programId"
+    ],
+    "returnType": "IntersolveVisaWalletDto"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
+    "params": [
+      "referenceId",
+      "programId"
+    ],
+    "returnType": "IntersolveVisaWalletDto"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/contact-information",
+    "params": [
+      "programId",
+      "referenceId"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/link-card/{tokenCode}",
+    "params": [
+      "programId",
+      "referenceId",
+      "tokenCode"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/replace-card/{tokenCode}",
+    "params": [
+      "programId",
+      "referenceId",
+      "tokenCode"
+    ]
   }
 ]

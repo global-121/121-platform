@@ -243,9 +243,7 @@ export class IntersolveVisaAccountManagementController {
     @Param('tokenCode') tokenCode: string,
   ): Promise<RegistrationEntity> {
     return await this.intersolveVisaAccountManagementService.getRegistrationAndReplaceCard(
-      referenceId,
-      programId,
-      tokenCode,
+      { referenceId, programId, tokenCode },
     );
   }
 }

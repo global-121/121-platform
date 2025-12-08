@@ -92,8 +92,8 @@ export class TransactionJobsIntersolveVisaService {
           registrationId: registration.id,
           createCustomerReference: transactionJob.referenceId,
           transferReference: `ReferenceId=${transactionJob.referenceId},TransactionId=${transactionJob.transactionId}`, // Will be used to generate idempotency key for the transfer
-          name: transactionJob.name!,
           contactInformation: {
+            name: transactionJob.name!,
             addressStreet: transactionJob.addressStreet!,
             addressHouseNumber: transactionJob.addressHouseNumber!,
             addressHouseNumberAddition:

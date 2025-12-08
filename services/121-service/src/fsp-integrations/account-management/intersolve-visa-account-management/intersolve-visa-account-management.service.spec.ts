@@ -11,11 +11,12 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 
 describe('IntersolveVisaAccountManagementService', () => {
   function mockGetRegistrationOrThrow(returnValue: any) {
     jest
-      .spyOn(service, 'getRegistrationOrThrow')
+      .spyOn(registrationsService, 'getRegistrationOrThrow')
       .mockResolvedValue(returnValue);
   }
   let service: IntersolveVisaAccountManagementService;
@@ -23,11 +24,18 @@ describe('IntersolveVisaAccountManagementService', () => {
   let queueMessageService: jest.Mocked<MessageQueuesService>;
   let programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
   let registrationDataScopedRepository: jest.Mocked<RegistrationDataScopedRepository>;
+  let registrationsService: jest.Mocked<RegistrationsService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         IntersolveVisaAccountManagementService,
+        {
+          provide: RegistrationsService,
+          useValue: {
+            getRegistrationOrThrow: jest.fn(),
+          },
+        },
         {
           provide: MessageQueuesService,
           useValue: {
@@ -77,6 +85,9 @@ describe('IntersolveVisaAccountManagementService', () => {
     registrationDataScopedRepository = module.get(
       RegistrationDataScopedRepository,
     );
+    registrationsService = module.get(
+      RegistrationsService,
+    ) as jest.Mocked<RegistrationsService>;
   });
 
   describe('linkDebitCardToRegistration', () => {

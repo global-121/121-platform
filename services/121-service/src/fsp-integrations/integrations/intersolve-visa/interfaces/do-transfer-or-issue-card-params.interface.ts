@@ -5,7 +5,6 @@ export interface DoTransferOrIssueCardParams {
   readonly registrationId: number;
   readonly createCustomerReference: string;
   readonly transferReference: string;
-  readonly name: string;
   readonly contactInformation: ContactInformation;
   readonly transferValueInMajorUnit: number;
   readonly brandCode: string;
