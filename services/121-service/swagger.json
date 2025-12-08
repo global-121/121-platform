@@ -1063,7 +1063,7 @@
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/by-mail/replace",
     "params": [
       "programId",
       "referenceId"
@@ -1107,20 +1107,18 @@
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/link-card/{tokenCode}",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/on-site/link",
     "params": [
       "programId",
-      "referenceId",
-      "tokenCode"
+      "referenceId"
     ]
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/replace-card/{tokenCode}",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/on-site/replace",
     "params": [
       "programId",
-      "referenceId",
-      "tokenCode"
+      "referenceId"
     ]
   }
 ]

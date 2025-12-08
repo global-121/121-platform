@@ -542,7 +542,11 @@ export class IntersolveVisaService {
     }
 
     let issueTokenResult;
-    if (!input.physicalCardToken) {
+    if (input.physicalCardToken) {
+      issueTokenResult = await this.intersolveVisaApiService.getToken(
+        input.physicalCardToken,
+      );
+    } else {
       // Create new token at Intersolve
       issueTokenResult = await this.intersolveVisaApiService.issueToken({
         brandCode: input.brandCode,
@@ -551,10 +555,6 @@ export class IntersolveVisaService {
           ? intersolveVisaCustomer.holderId
           : undefined,
       });
-    } else {
-      issueTokenResult = await this.intersolveVisaApiService.getToken(
-        input.physicalCardToken,
-      );
     }
 
     // Substitute the old token with the new token at Intersolve

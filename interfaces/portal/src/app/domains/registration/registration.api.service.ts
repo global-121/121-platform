@@ -372,13 +372,18 @@ export class RegistrationApiService extends DomainApiService {
       referenceId,
       'fsps',
       'intersolve-visa',
-      'link-card',
-      tokenCode,
+      'wallet',
+      'cards',
+      'on-site',
+      'link',
     ]).join('/');
+
+    const body = { tokenCode: tokenCode() };
 
     return this.httpWrapperService.perform121ServiceRequest({
       method: 'POST',
       endpoint,
+      body,
     });
   }
 
@@ -396,13 +401,18 @@ export class RegistrationApiService extends DomainApiService {
       referenceId,
       'fsps',
       'intersolve-visa',
-      'replace-card',
-      tokenCode,
+      'wallet',
+      'cards',
+      'on-site',
+      'replace',
     ]).join('/');
+
+    const body = { tokenCode: tokenCode() };
 
     return this.httpWrapperService.perform121ServiceRequest({
       method: 'POST',
       endpoint,
+      body,
     });
   }
 }

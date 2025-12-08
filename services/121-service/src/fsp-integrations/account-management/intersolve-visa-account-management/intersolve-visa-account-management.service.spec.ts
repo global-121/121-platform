@@ -111,7 +111,7 @@ describe('IntersolveVisaAccountManagementService', () => {
       intersolveVisaService.getWallet.mockResolvedValue({ holderId: 1 } as any);
 
       await expect(
-        service.linkDebitCardToRegistration({
+        service.linkCardOnSiteToRegistration({
           referenceId: 'ref-1',
           programId: 1,
           tokenCode: 'token-1',
@@ -164,7 +164,7 @@ describe('IntersolveVisaAccountManagementService', () => {
         },
       ]);
 
-      await service.linkDebitCardToRegistration({
+      await service.linkCardOnSiteToRegistration({
         referenceId: 'ref-1',
         programId: 1,
         tokenCode: 'child-token',
