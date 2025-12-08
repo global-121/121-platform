@@ -6,7 +6,6 @@ import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/in
 import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
-import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
 import {
   FspConfigurationProperties,
   Fsps,
@@ -141,7 +140,7 @@ export class IntersolveVisaAccountManagementService {
     tokenCode?: string;
   }): Promise<void> {
     if (tokenCode) {
-      await this.checkIfCardIsAlreadyLinked(tokenCode);
+      await this.throwIfCardDoesNotExistOrIsAlreadyLinked(tokenCode);
     }
 
     const dataFieldNames = getFspAttributeNames(Fsps.intersolveVisa);
@@ -152,27 +151,28 @@ export class IntersolveVisaAccountManagementService {
         dataFieldNames,
       });
 
-    if (this.validateContactInfo(contactInformation)) {
-      await this.sendCustomerInformationToIntersolve({
-        registration,
-        contactInformation,
+    await this.sendCustomerInformationToIntersolve({
+      registration,
+      contactInformation,
+    });
+
+    const brandCode =
+      await this.programFspConfigurationRepository.getPropertyValueByName({
+        programFspConfigurationId: registration.programFspConfigurationId,
+        name: FspConfigurationProperties.brandCode,
       });
-    } else {
+    const coverLetterCode =
+      await this.programFspConfigurationRepository.getPropertyValueByName({
+        programFspConfigurationId: registration.programFspConfigurationId,
+        name: FspConfigurationProperties.coverLetterCode,
+      });
+
+    if (typeof brandCode !== 'string' || typeof coverLetterCode !== 'string') {
       throw new HttpException(
-        `Fields are missing in contact informatoion`,
+        'Missing or invalid brandCode or coverLetterCode for Intersolve Visa reissueCard',
         HttpStatus.BAD_REQUEST,
       );
     }
-
-    const intersolveVisaConfig = await this.getIntersolveVisaConfig(
-      registration.programFspConfigurationId,
-    );
-    const brandCode = intersolveVisaConfig.get(
-      FspConfigurationProperties.brandCode,
-    ) as string;
-    const coverLetterCode = intersolveVisaConfig.get(
-      FspConfigurationProperties.coverLetterCode,
-    ) as string;
 
     try {
       await this.intersolveVisaService.reissueCard({
@@ -195,12 +195,16 @@ export class IntersolveVisaAccountManagementService {
     }
   }
 
-  public async linkDebitCardToRegistration(
-    referenceId: string,
-    programId: number,
-    tokenCode: string,
-  ): Promise<void> {
-    await this.checkIfCardIsAlreadyLinked(tokenCode);
+  public async linkDebitCardToRegistration({
+    referenceId,
+    programId,
+    tokenCode,
+  }: {
+    referenceId: string;
+    programId: number;
+    tokenCode: string;
+  }): Promise<void> {
+    await this.throwIfCardDoesNotExistOrIsAlreadyLinked(tokenCode);
 
     const registration: RegistrationEntity =
       await this.registrationsService.getRegistrationOrThrow({
@@ -223,13 +227,18 @@ export class IntersolveVisaAccountManagementService {
         contactInformation,
       });
 
-    const intersolveVisaConfig = await this.getIntersolveVisaConfig(
-      registration.programFspConfigurationId,
-    );
+    const brandCode =
+      await this.programFspConfigurationRepository.getPropertyValueByName({
+        programFspConfigurationId: registration.programFspConfigurationId,
+        name: FspConfigurationProperties.brandCode,
+      });
 
-    const brandCode = intersolveVisaConfig.get(
-      FspConfigurationProperties.brandCode,
-    ) as string;
+    if (typeof brandCode !== 'string') {
+      throw new HttpException(
+        'Missing or invalid brandCode or coverLetterCode for Intersolve Visa reissueCard',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     const intersolveVisaParentWallet =
       await this.intersolveVisaService.getParentWalletOrCreate({
@@ -335,7 +344,10 @@ export class IntersolveVisaAccountManagementService {
     }
   }
 
-  private async checkIfCardIsAlreadyLinked(tokenCode: string): Promise<void> {
+  private async throwIfCardDoesNotExistOrIsAlreadyLinked(
+    tokenCode: string,
+  ): Promise<void> {
+    // throws if tokenCode (card) does not exist
     const intersolveVisaChildWallet =
       await this.intersolveVisaService.getWallet(tokenCode);
 
@@ -345,21 +357,6 @@ export class IntersolveVisaAccountManagementService {
         HttpStatus.BAD_REQUEST,
       );
     }
-  }
-
-  private validateContactInfo(contactInformation: ContactInformation) {
-    if (!contactInformation.name) {
-      return false;
-    }
-
-    for (const field in contactInformation) {
-      if (field === FspAttributes.addressHouseNumberAddition) continue; // Optional field
-      if (!contactInformation[field]) {
-        return false;
-      }
-    }
-
-    return true;
   }
 
   private async getIntersolveVisaConfig(

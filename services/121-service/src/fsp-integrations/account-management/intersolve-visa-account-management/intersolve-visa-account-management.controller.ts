@@ -25,6 +25,7 @@ import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-int
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
@@ -36,6 +37,7 @@ export class IntersolveVisaAccountManagementController {
   public constructor(
     private readonly userService: UserService,
     private readonly intersolveVisaAccountManagementService: IntersolveVisaAccountManagementService,
+    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
 
   @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
@@ -197,7 +199,7 @@ export class IntersolveVisaAccountManagementController {
     );
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
   @ApiOperation({
     summary: 'Link a physical debit card to a registration',
   })
@@ -205,7 +207,7 @@ export class IntersolveVisaAccountManagementController {
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
   @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: 'Card linked',
   })
   @Post(
@@ -217,13 +219,11 @@ export class IntersolveVisaAccountManagementController {
     @Param('tokenCode') tokenCode: string,
   ): Promise<void> {
     return await this.intersolveVisaAccountManagementService.linkDebitCardToRegistration(
-      referenceId,
-      programId,
-      tokenCode,
+      { referenceId, programId, tokenCode },
     );
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
   @ApiOperation({
     summary: 'Replace a physical debit card for a registration',
   })
