@@ -21,7 +21,7 @@ export class RegistrationEventView1765196346573 implements MigrationInterface {
     await queryRunner.query(
       `INSERT INTO "121-service"."registration_event_attribute" ("eventId", "key", "value")
       SELECT
-        "event"."id",
+        id,
         'fieldName',
         'programFspConfigurationName'
       FROM "121-service"."registration_event"
@@ -32,7 +32,7 @@ export class RegistrationEventView1765196346573 implements MigrationInterface {
     await queryRunner.query(
       `INSERT INTO "121-service"."registration_event_attribute" ("eventId", "key", "value")
       SELECT
-        "event"."id",
+        id,
         'fieldName',
         'duplicateStatus'
       FROM "121-service"."registration_event"
@@ -41,7 +41,7 @@ export class RegistrationEventView1765196346573 implements MigrationInterface {
     await queryRunner.query(
       `INSERT INTO "121-service"."registration_event_attribute" ("eventId", "key", "value")
       SELECT
-        "event"."id",
+        id,
         'oldValue',
         'duplicate'
       FROM "121-service"."registration_event"
@@ -50,7 +50,7 @@ export class RegistrationEventView1765196346573 implements MigrationInterface {
     await queryRunner.query(
       `INSERT INTO "121-service"."registration_event_attribute" ("eventId", "key", "value")
       SELECT
-        "event"."id",
+        id,
         'newValue',
         'unique'
       FROM "121-service"."registration_event"
