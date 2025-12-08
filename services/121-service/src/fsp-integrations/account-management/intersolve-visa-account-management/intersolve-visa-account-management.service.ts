@@ -385,13 +385,18 @@ export class IntersolveVisaAccountManagementService {
         contactInformation,
       });
 
-    const intersolveVisaConfig = await this.getIntersolveVisaConfig(
-      registration.programFspConfigurationId,
-    );
+    const brandCode =
+      await this.programFspConfigurationRepository.getPropertyValueByName({
+        programFspConfigurationId: registration.programFspConfigurationId,
+        name: FspConfigurationProperties.brandCode,
+      });
 
-    const brandCode = intersolveVisaConfig.get(
-      FspConfigurationProperties.brandCode,
-    ) as string;
+    if (typeof brandCode !== 'string') {
+      throw new HttpException(
+        'Missing or invalid brandCode or coverLetterCode for Intersolve Visa reissueCard',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     const intersolveVisaParentWallet =
       await this.intersolveVisaService.getParentWalletOrCreate({
@@ -497,7 +502,10 @@ export class IntersolveVisaAccountManagementService {
     }
   }
 
-  private async checkIfCardIsAlreadyLinked(tokenCode: string): Promise<void> {
+  private async throwIfCardDoesNotExistOrIsAlreadyLinked(
+    tokenCode: string,
+  ): Promise<void> {
+    // throws if tokenCode (card) does not exist
     const intersolveVisaChildWallet =
       await this.intersolveVisaService.getWallet(tokenCode);
 
@@ -507,21 +515,6 @@ export class IntersolveVisaAccountManagementService {
         HttpStatus.BAD_REQUEST,
       );
     }
-  }
-
-  private validateContactInfo(contactInformation: ContactInformation) {
-    if (!contactInformation.name) {
-      return false;
-    }
-
-    for (const field in contactInformation) {
-      if (field === FspAttributes.addressHouseNumberAddition) continue; // Optional field
-      if (!contactInformation[field]) {
-        return false;
-      }
-    }
-
-    return true;
   }
 
   private async getIntersolveVisaConfig(
