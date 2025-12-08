@@ -58,26 +58,25 @@ export class IntersolveVisaAccountManagementService {
     return await this.intersolveVisaService.getWalletWithCards(registration.id);
   }
 
-  /**
-   * This function reissues a visa card and sends a message.
-   * - It first retrieves the registration associated with the given reference ID and program ID and he Intersolve Visa configuration for the program.
-   * - It then checks that all required data fields are present in the registration data.
-   * - It then calls the Intersolve Visa service to reissue the card with the registration data and Intersolve Visa configuration.
-   * - Finally, it adds a message to the queue to be sent to the registration.
-   *
-   * @param {string} referenceId - The reference ID of the registration.
-   * @param {number} programId - The ID of the program.
-   * @throws {HttpException} Throws an HttpException if no registration is found for the given reference ID, if no registration data is found for the reference ID, or if a required data field is missing from the registration data.
-   * @returns {Promise<void>}
-   */
-  public async reissueCardAndSendMessage(
+  public async replaceCardByMail(
     referenceId: string,
     programId: number,
     userId: number,
   ) {
-    const registration = await this.getRegistrationAndReplaceCard({
+    const registration = await this.registrationsService.getRegistrationOrThrow(
+      {
+        referenceId,
+        programId,
+      },
+    );
+
+    await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
+
+    await this.replaceCard({
       referenceId,
       programId,
+      registrationId: registration.id,
+      programFspConfigurationId: registration.programFspConfigurationId,
     });
 
     if (userId) {
@@ -92,57 +91,50 @@ export class IntersolveVisaAccountManagementService {
     }
   }
 
-  public async getRegistrationAndReplaceCard({
+  public async replaceCardOnSite({
     referenceId,
     programId,
     tokenCode,
   }: {
     referenceId: string;
     programId: number;
-    tokenCode?: string;
-  }): Promise<RegistrationEntity> {
+    tokenCode: string;
+  }): Promise<void> {
     const registration = await this.registrationsService.getRegistrationOrThrow(
       {
         referenceId,
         programId,
-        relations: ['programFspConfiguration'],
       },
     );
-    if (
-      !registration.programFspConfigurationId ||
-      registration.programFspConfiguration?.fspName !== Fsps.intersolveVisa
-    ) {
-      throw new HttpException(
-        `This registration is not associated with the Intersolve Visa Fsp.`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
 
-    await this.replaceCard({
-      registration,
-      referenceId,
-      programId,
-      tokenCode,
-    });
+    await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
 
-    return registration;
-  }
-
-  public async replaceCard({
-    registration,
-    referenceId,
-    programId,
-    tokenCode,
-  }: {
-    registration: RegistrationEntity;
-    referenceId: string;
-    programId: number;
-    tokenCode?: string;
-  }): Promise<void> {
     if (tokenCode) {
       await this.throwIfCardDoesNotExistOrIsAlreadyLinked(tokenCode);
     }
 
+    await this.replaceCard({
+      referenceId,
+      registrationId: registration.id,
+      programFspConfigurationId: registration.programFspConfigurationId,
+      programId,
+      tokenCode,
+    });
+  }
+
+  public async replaceCard({
+    referenceId,
+    programId,
+    tokenCode,
+    registrationId,
+    programFspConfigurationId,
+  }: {
+    referenceId: string;
+    programId: number;
+    tokenCode?: string;
+    registrationId: number;
+    programFspConfigurationId: number;
+  }): Promise<void> {
     const dataFieldNames = getFspAttributeNames(Fsps.intersolveVisa);
     const contactInformation: ContactInformation =
       await this.registrationsService.getContactInformation({
@@ -151,19 +143,19 @@ export class IntersolveVisaAccountManagementService {
         dataFieldNames,
       });
 
-    await this.sendCustomerInformationToIntersolve({
-      registration,
+    await this.intersolveVisaService.sendUpdatedCustomerInformation({
+      registrationId,
       contactInformation,
     });
 
     const brandCode =
       await this.programFspConfigurationRepository.getPropertyValueByName({
-        programFspConfigurationId: registration.programFspConfigurationId,
+        programFspConfigurationId,
         name: FspConfigurationProperties.brandCode,
       });
     const coverLetterCode =
       await this.programFspConfigurationRepository.getPropertyValueByName({
-        programFspConfigurationId: registration.programFspConfigurationId,
+        programFspConfigurationId,
         name: FspConfigurationProperties.coverLetterCode,
       });
 
@@ -176,8 +168,7 @@ export class IntersolveVisaAccountManagementService {
 
     try {
       await this.intersolveVisaService.reissueCard({
-        registrationId: registration.id,
-        reference: registration.referenceId,
+        registrationId,
         contactInformation,
         brandCode,
         coverLetterCode,
@@ -195,7 +186,7 @@ export class IntersolveVisaAccountManagementService {
     }
   }
 
-  public async linkDebitCardToRegistration({
+  public async linkCardOnSiteToRegistration({
     referenceId,
     programId,
     tokenCode,
@@ -257,17 +248,6 @@ export class IntersolveVisaAccountManagementService {
     });
   }
 
-  /**
-   * Pauses or unpauses a card associated with a given token code and sends a message to the registration.
-   * - It retrieves the registration, pauses or unpauses the card, sends a message to the registration, and returns the updated wallet.
-   *
-   * @param {string} referenceId - The reference ID of the registration.
-   * @param {number} programId - The ID of the program.
-   * @param {string} tokenCode - The token code of the card to pause or unpause.
-   * @param {boolean} pause - Whether to pause (true) or unpause (false) the card.
-   * @throws {HttpException} Throws an HttpException if no registration is found for the given reference ID.
-   * @returns {Promise<IntersolveVisaChildWalletEntity>} The updated wallet.
-   */
   public async pauseCardAndSendMessage(
     referenceId: string,
     programId: number,
@@ -298,9 +278,6 @@ export class IntersolveVisaAccountManagementService {
     return updatedWallet;
   }
 
-  /**
-   * Retrieves a registration by reference ID and program ID, and sends its contact information to Intersolve. Used only for debugging purposes.
-   */
   public async getRegistrationAndSendContactInformationToIntersolve(
     referenceId: string,
     programId: number,
@@ -357,26 +334,5 @@ export class IntersolveVisaAccountManagementService {
         HttpStatus.BAD_REQUEST,
       );
     }
-  }
-
-  private async getIntersolveVisaConfig(
-    programFspConfigurationId: number,
-  ): Promise<Map<FspConfigurationProperties, string | string[]>> {
-    const properties =
-      await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
-        programFspConfigurationId,
-        names: [
-          FspConfigurationProperties.brandCode,
-          FspConfigurationProperties.coverLetterCode,
-        ],
-      });
-
-    const configMap = new Map<FspConfigurationProperties, string | string[]>();
-
-    properties.forEach(({ name, value }) => {
-      configMap.set(name, value);
-    });
-
-    return configMap;
   }
 }

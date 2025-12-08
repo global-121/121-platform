@@ -572,7 +572,7 @@ export class RegistrationsService {
         dataFieldNames,
       });
     await this.intersolveVisaDataSynchronizationService.syncData({
-      registration: savedRegistration,
+      registrationId: savedRegistration.id,
       attribute,
       contactInformation,
     });

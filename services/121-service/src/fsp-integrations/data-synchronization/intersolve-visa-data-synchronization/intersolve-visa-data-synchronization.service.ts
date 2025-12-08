@@ -5,7 +5,6 @@ import { ContactInformation } from '@121-service/src/fsp-integrations/integratio
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { getFspAttributeNames } from '@121-service/src/fsp-management/fsp-settings.helpers';
-import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 
 @Injectable()
 export class IntersolveVisaDataSynchronizationService {
@@ -20,11 +19,11 @@ export class IntersolveVisaDataSynchronizationService {
   }
 
   public async syncData({
-    registration,
+    registrationId,
     attribute,
     contactInformation,
   }: {
-    registration: RegistrationEntity;
+    registrationId: number;
     attribute: string;
     contactInformation: ContactInformation;
   }): Promise<void> {
@@ -33,11 +32,11 @@ export class IntersolveVisaDataSynchronizationService {
       this.intersolveVisaAttributeNames.includes(attribute)
     ) {
       const registrationHasVisaCustomer =
-        await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
+        await this.intersolveVisaService.hasIntersolveCustomer(registrationId);
 
       if (registrationHasVisaCustomer) {
         await this.intersolveVisaService.sendUpdatedCustomerInformation({
-          registrationId: registration.id,
+          registrationId,
           contactInformation,
         });
       }
