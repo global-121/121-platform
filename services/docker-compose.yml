@@ -71,7 +71,7 @@ services:
 
   azurite:
     container_name: azurite
-    image: mcr.microsoft.com/azure-storage/azurite
+    image: mcr.microsoft.com/azure-storage/azurite:3.35.0
     ports:
       - '10000:10000' # Blob service
     volumes:
