@@ -51,7 +51,6 @@ export class IntersolveVisaService {
   public async doTransferOrIssueCard({
     registrationId,
     createCustomerReference,
-    name,
     contactInformation,
     brandCode,
     coverLetterCode,
@@ -62,7 +61,6 @@ export class IntersolveVisaService {
     const intersolveVisaCustomer = await this.getCustomerOrCreate({
       registrationId,
       createCustomerReference,
-      name,
       contactInformation,
     });
 
@@ -93,7 +91,6 @@ export class IntersolveVisaService {
     // Check if debit card is created
     const createDebitCardReturn = await this.createDebitCardIfNotExists({
       childWallet: newestChildWallet,
-      name,
       contactInformation,
       coverLetterCode,
     });
@@ -208,12 +205,10 @@ export class IntersolveVisaService {
   public async getCustomerOrCreate({
     registrationId,
     createCustomerReference,
-    name,
     contactInformation,
   }: {
     registrationId: number;
     createCustomerReference: string;
-    name: string;
     contactInformation: ContactInformation;
   }): Promise<IntersolveVisaCustomerEntity> {
     let intersolveVisaCustomer =
@@ -227,16 +222,7 @@ export class IntersolveVisaService {
     const createCustomerResult =
       await this.intersolveVisaApiService.createCustomer({
         externalReference: createCustomerReference,
-        name,
-        contactInformation: {
-          addressStreet: contactInformation.addressStreet,
-          addressHouseNumber: contactInformation.addressHouseNumber,
-          addressHouseNumberAddition:
-            contactInformation.addressHouseNumberAddition,
-          addressPostalCode: contactInformation.addressPostalCode,
-          addressCity: contactInformation.addressCity,
-          phoneNumber: contactInformation.phoneNumber,
-        },
+        contactInformation,
       });
 
     // if success, store customer
@@ -374,12 +360,10 @@ export class IntersolveVisaService {
 
   private async createDebitCardIfNotExists({
     childWallet,
-    name,
     contactInformation,
     coverLetterCode,
   }: {
     childWallet: IntersolveVisaChildWalletEntity;
-    name: string;
     contactInformation: ContactInformation;
     coverLetterCode: string;
   }): Promise<{ isNewCardCreated: boolean }> {
@@ -393,16 +377,7 @@ export class IntersolveVisaService {
     // If not, create debit card
     const createPhysicalCardDto: CreatePhysicalCardParams = {
       tokenCode: childWallet.tokenCode,
-      name,
-      contactInformation: {
-        addressStreet: contactInformation.addressStreet,
-        addressHouseNumber: contactInformation.addressHouseNumber,
-        addressHouseNumberAddition:
-          contactInformation.addressHouseNumberAddition,
-        addressPostalCode: contactInformation.addressPostalCode,
-        addressCity: contactInformation.addressCity,
-        phoneNumber: contactInformation.phoneNumber,
-      },
+      contactInformation,
       coverLetterCode,
     };
 
@@ -616,16 +591,7 @@ export class IntersolveVisaService {
     // Create new card
     await this.intersolveVisaApiService.createPhysicalCard({
       tokenCode: newChildWallet.tokenCode,
-      name: input.name,
-      contactInformation: {
-        addressStreet: input.contactInformation.addressStreet,
-        addressHouseNumber: input.contactInformation.addressHouseNumber,
-        addressHouseNumberAddition:
-          input.contactInformation.addressHouseNumberAddition,
-        addressPostalCode: input.contactInformation.addressPostalCode,
-        addressCity: input.contactInformation.addressCity,
-        phoneNumber: input.contactInformation.phoneNumber,
-      },
+      contactInformation: input.contactInformation,
       coverLetterCode: input.coverLetterCode,
     });
 
@@ -802,7 +768,6 @@ export class IntersolveVisaService {
   public async sendUpdatedCustomerInformation({
     registrationId,
     contactInformation,
-    name,
   }: SendUpdatedContactInformationParams): Promise<void> {
     const customer =
       await this.intersolveVisaCustomerScopedRepository.findOneByRegistrationIdOrFail(
@@ -815,10 +780,10 @@ export class IntersolveVisaService {
       });
     }
 
-    if (name) {
+    if (contactInformation.name) {
       await this.intersolveVisaApiService.updateCustomerIndividualName({
         holderId: customer.holderId,
-        name,
+        name: contactInformation.name,
       });
     }
 

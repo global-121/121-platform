@@ -1,10 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import { IntersolveVisaContactInfo } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/interfaces/intersolve-visa-contact-info.interface';
-import { IntersolveVisaContactInfoKeys } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/types/intersolve-visa-contact-info-keys.type';
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
+import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
@@ -12,14 +11,14 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { getFspAttributeNames } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
-import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
-import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 
 @Injectable()
 export class IntersolveVisaAccountManagementService {
@@ -27,50 +26,20 @@ export class IntersolveVisaAccountManagementService {
     private readonly queueMessageService: MessageQueuesService,
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
-    private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
-    private readonly registrationScopedRepository: RegistrationScopedRepository,
+    private readonly registrationsService: RegistrationsService,
   ) {}
-
-  // TODO: duplicate of RegistrationsService getRegistrationOrThrow
-  // Injecting RegistrationsService instead of duplicating method is not possible due to circular dependency
-  // Refactor RegistrationsService to not be dependent on IntersolveVisaAccountManagementService, then inject RegistrationsService here.
-  public async getRegistrationOrThrow({
-    referenceId,
-    relations = [],
-    programId,
-  }: {
-    referenceId: string;
-    relations?: (keyof RegistrationEntity)[];
-    programId?: number;
-  }): Promise<RegistrationEntity> {
-    if (!referenceId) {
-      const errors = `ReferenceId is not set`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    const registration =
-      await this.registrationScopedRepository.getWithRelationsByReferenceIdAndProgramId(
-        {
-          referenceId,
-          relations,
-          programId,
-        },
-      );
-    if (!registration) {
-      const errors = `ReferenceId ${referenceId} is not known in this program (within your scope).`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    return registration;
-  }
 
   public async retrieveAndUpdateIntersolveVisaWalletAndCards(
     referenceId: string,
     programId: number,
   ): Promise<IntersolveVisaWalletDto> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      relations: [],
-      programId,
-    });
+    const registration = await this.registrationsService.getRegistrationOrThrow(
+      {
+        referenceId,
+        relations: [],
+        programId,
+      },
+    );
     return await this.intersolveVisaService.retrieveAndUpdateWallet(
       registration.id,
     );
@@ -80,11 +49,13 @@ export class IntersolveVisaAccountManagementService {
     referenceId: string,
     programId: number,
   ): Promise<IntersolveVisaWalletDto> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      relations: [],
-      programId,
-    });
+    const registration = await this.registrationsService.getRegistrationOrThrow(
+      {
+        referenceId,
+        relations: [],
+        programId,
+      },
+    );
     return await this.intersolveVisaService.getWalletWithCards(registration.id);
   }
 
@@ -105,10 +76,10 @@ export class IntersolveVisaAccountManagementService {
     programId: number,
     userId: number,
   ) {
-    const registration = await this.getRegistrationAndReplaceCard(
+    const registration = await this.getRegistrationAndReplaceCard({
       referenceId,
       programId,
-    );
+    });
 
     if (userId) {
       await this.queueMessageService.addMessageJob({
@@ -122,16 +93,22 @@ export class IntersolveVisaAccountManagementService {
     }
   }
 
-  public async getRegistrationAndReplaceCard(
-    referenceId: string,
-    programId: number,
-    tokenCode?: string,
-  ): Promise<RegistrationEntity> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      programId,
-      relations: ['programFspConfiguration'],
-    });
+  public async getRegistrationAndReplaceCard({
+    referenceId,
+    programId,
+    tokenCode,
+  }: {
+    referenceId: string;
+    programId: number;
+    tokenCode?: string;
+  }): Promise<RegistrationEntity> {
+    const registration = await this.registrationsService.getRegistrationOrThrow(
+      {
+        referenceId,
+        programId,
+        relations: ['programFspConfiguration'],
+      },
+    );
     if (
       !registration.programFspConfigurationId ||
       registration.programFspConfiguration?.fspName !== Fsps.intersolveVisa
@@ -142,26 +119,43 @@ export class IntersolveVisaAccountManagementService {
       );
     }
 
-    await this.replaceCard(registration, tokenCode);
+    await this.replaceCard({
+      registration,
+      referenceId,
+      programId,
+      tokenCode,
+    });
 
     return registration;
   }
 
-  public async replaceCard(
-    registration: RegistrationEntity,
-    tokenCode?: string,
-  ): Promise<void> {
+  public async replaceCard({
+    registration,
+    referenceId,
+    programId,
+    tokenCode,
+  }: {
+    registration: RegistrationEntity;
+    referenceId: string;
+    programId: number;
+    tokenCode?: string;
+  }): Promise<void> {
     if (tokenCode) {
       await this.checkIfCardIsAlreadyLinked(tokenCode);
     }
 
-    const contactInfo: IntersolveVisaContactInfo =
-      await this.getContactInformation(registration);
+    const dataFieldNames = getFspAttributeNames(Fsps.intersolveVisa);
+    const contactInformation: ContactInformation =
+      await this.registrationsService.getContactInformation({
+        referenceId,
+        programId,
+        dataFieldNames,
+      });
 
-    if (this.validateContactInfo(contactInfo)) {
+    if (this.validateContactInfo(contactInformation)) {
       await this.sendCustomerInformationToIntersolve({
         registration,
-        contactInfo,
+        contactInformation,
       });
     } else {
       throw new HttpException(
@@ -184,7 +178,7 @@ export class IntersolveVisaAccountManagementService {
       await this.intersolveVisaService.reissueCard({
         registrationId: registration.id,
         reference: registration.referenceId,
-        ...contactInfo,
+        contactInformation,
         brandCode,
         coverLetterCode,
         physicalCardToken: tokenCode,
@@ -208,18 +202,25 @@ export class IntersolveVisaAccountManagementService {
   ): Promise<void> {
     await this.checkIfCardIsAlreadyLinked(tokenCode);
 
-    const registration: RegistrationEntity = await this.getRegistrationOrThrow({
-      referenceId,
-      programId,
-    });
+    const registration: RegistrationEntity =
+      await this.registrationsService.getRegistrationOrThrow({
+        referenceId,
+        programId,
+      });
 
-    const contactInfo = await this.getContactInformation(registration);
+    const dataFieldNames = getFspAttributeNames(Fsps.intersolveVisa);
+    const contactInformation =
+      await this.registrationsService.getContactInformation({
+        referenceId,
+        programId,
+        dataFieldNames,
+      });
 
     const intersolveVisaCustomer =
       await this.intersolveVisaService.getCustomerOrCreate({
         registrationId: registration.id,
         createCustomerReference: referenceId,
-        ...contactInfo,
+        contactInformation,
       });
 
     const intersolveVisaConfig = await this.getIntersolveVisaConfig(
@@ -265,10 +266,12 @@ export class IntersolveVisaAccountManagementService {
     pause: boolean,
     userId: number,
   ): Promise<IntersolveVisaChildWalletEntity> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      programId,
-    });
+    const registration = await this.registrationsService.getRegistrationOrThrow(
+      {
+        referenceId,
+        programId,
+      },
+    );
     const updatedWallet = await this.intersolveVisaService.pauseCardOrThrow(
       tokenCode,
       pause,
@@ -293,24 +296,33 @@ export class IntersolveVisaAccountManagementService {
     referenceId: string,
     programId: number,
   ): Promise<void> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      programId,
-    });
-    const contactInfo: IntersolveVisaContactInfo =
-      await this.getContactInformation(registration);
+    const registration = await this.registrationsService.getRegistrationOrThrow(
+      {
+        referenceId,
+        programId,
+      },
+    );
+
+    const dataFieldNames = getFspAttributeNames(Fsps.intersolveVisa);
+    const contactInformation: ContactInformation =
+      await this.registrationsService.getContactInformation({
+        referenceId,
+        programId,
+        dataFieldNames,
+      });
+
     await this.sendCustomerInformationToIntersolve({
       registration,
-      contactInfo,
+      contactInformation,
     });
   }
 
   public async sendCustomerInformationToIntersolve({
     registration,
-    contactInfo,
+    contactInformation,
   }: {
     registration: RegistrationEntity;
-    contactInfo: IntersolveVisaContactInfo;
+    contactInformation: ContactInformation;
   }): Promise<void> {
     const registrationHasVisaCustomer =
       await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
@@ -318,59 +330,9 @@ export class IntersolveVisaAccountManagementService {
     if (registrationHasVisaCustomer) {
       await this.intersolveVisaService.sendUpdatedCustomerInformation({
         registrationId: registration.id,
-        ...contactInfo,
+        contactInformation,
       });
     }
-  }
-
-  public async getContactInformation(
-    registration: RegistrationEntity,
-  ): Promise<IntersolveVisaContactInfo> {
-    const fieldNames: IntersolveVisaContactInfoKeys[] = [
-      FspAttributes.addressStreet,
-      FspAttributes.addressHouseNumber,
-      FspAttributes.addressHouseNumberAddition,
-      FspAttributes.addressPostalCode,
-      FspAttributes.addressCity,
-      FspAttributes.phoneNumber,
-      FspAttributes.fullName,
-    ];
-
-    const registrationData =
-      await this.registrationDataScopedRepository.getRegistrationDataArrayByName(
-        registration,
-        fieldNames,
-      );
-
-    if (!registrationData || registrationData.length === 0) {
-      throw new HttpException(
-        `No registration data found for referenceId: ${registration.referenceId}`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    const mappedRegistrationData = registrationData.reduce(
-      (acc, { name, value }) => {
-        acc[name] = value;
-        return acc;
-      },
-      {},
-    );
-
-    return {
-      name: mappedRegistrationData[FspAttributes.fullName],
-      contactInformation: {
-        addressStreet: mappedRegistrationData[FspAttributes.addressStreet],
-        addressHouseNumber:
-          mappedRegistrationData[FspAttributes.addressHouseNumber],
-        addressHouseNumberAddition:
-          mappedRegistrationData[FspAttributes.addressHouseNumberAddition],
-        addressPostalCode:
-          mappedRegistrationData[FspAttributes.addressPostalCode],
-        addressCity: mappedRegistrationData[FspAttributes.addressCity],
-        phoneNumber: mappedRegistrationData[FspAttributes.phoneNumber],
-      },
-    };
   }
 
   private async checkIfCardIsAlreadyLinked(tokenCode: string): Promise<void> {
@@ -385,14 +347,14 @@ export class IntersolveVisaAccountManagementService {
     }
   }
 
-  private validateContactInfo(contactInfo: IntersolveVisaContactInfo) {
-    if (!contactInfo.name) {
+  private validateContactInfo(contactInformation: ContactInformation) {
+    if (!contactInformation.name) {
       return false;
     }
 
-    for (const field in contactInfo.contactInformation) {
+    for (const field in contactInformation) {
       if (field === FspAttributes.addressHouseNumberAddition) continue; // Optional field
-      if (!contactInfo.contactInformation[field]) {
+      if (!contactInformation[field]) {
         return false;
       }
     }

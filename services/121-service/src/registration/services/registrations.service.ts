@@ -3,6 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, FindOneOptions, In, Repository } from 'typeorm';
 
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa-data-synchronization/intersolve-visa-data-synchronization.service';
+import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
+import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { getFspAttributeNames } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -560,9 +564,17 @@ export class RegistrationsService {
       });
     }
 
+    const dataFieldNames = getFspAttributeNames(Fsps.intersolveVisa);
+    const contactInformation: ContactInformation =
+      await this.getContactInformation({
+        referenceId: savedRegistration.referenceId,
+        programId: savedRegistration.programId,
+        dataFieldNames,
+      });
     await this.intersolveVisaDataSynchronizationService.syncData({
       registration: savedRegistration,
       attribute,
+      contactInformation,
     });
 
     return this.getRegistrationOrThrow({
@@ -844,5 +856,43 @@ export class RegistrationsService {
       },
       reason,
     });
+  }
+
+  public async getContactInformation({
+    referenceId,
+    programId,
+    dataFieldNames = [],
+  }: {
+    referenceId: string;
+    programId: number;
+    dataFieldNames: string[];
+  }): Promise<ContactInformation> {
+    const registrationData = (
+      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
+        {
+          referenceIds: [referenceId],
+          programId,
+          select: dataFieldNames,
+        },
+      )
+    )[0];
+
+    if (!registrationData) {
+      throw new HttpException(
+        `No registration data found for referenceId: ${referenceId}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return {
+      name: registrationData[FspAttributes.fullName],
+      addressStreet: registrationData[FspAttributes.addressStreet],
+      addressHouseNumber: registrationData[FspAttributes.addressHouseNumber],
+      addressHouseNumberAddition:
+        registrationData[FspAttributes.addressHouseNumberAddition],
+      addressPostalCode: registrationData[FspAttributes.addressPostalCode],
+      addressCity: registrationData[FspAttributes.addressCity],
+      phoneNumber: registrationData[FspAttributes.phoneNumber]!,
+    };
   }
 }

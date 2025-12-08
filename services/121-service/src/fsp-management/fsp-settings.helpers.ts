@@ -16,3 +16,8 @@ export function getFspConfigurationRequiredProperties(fspName: Fsps): string[] {
 export function stringIsFsp(value: string): value is Fsps {
   return Object.values(Fsps).includes(value as Fsps);
 }
+
+export function getFspAttributeNames(fspName: Fsps): string[] {
+  const fspSettings = FSP_SETTINGS[fspName];
+  return fspSettings.attributes.map((attribute) => attribute.name);
+}

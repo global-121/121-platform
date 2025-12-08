@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
-import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.service';
+import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
+import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { getFspAttributeNames } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 
 @Injectable()
@@ -11,34 +12,35 @@ export class IntersolveVisaDataSynchronizationService {
   private readonly intersolveVisaAttributeNames: string[];
 
   public constructor(
-    private readonly intersolveVisaAccountManagementService: IntersolveVisaAccountManagementService,
+    private readonly intersolveVisaService: IntersolveVisaService,
   ) {
-    this.intersolveVisaAttributeNames = FSP_SETTINGS[
-      Fsps.intersolveVisa
-    ].attributes.map((attr) => attr.name) as string[];
+    this.intersolveVisaAttributeNames = getFspAttributeNames(
+      Fsps.intersolveVisa,
+    );
   }
 
   public async syncData({
     registration,
     attribute,
+    contactInformation,
   }: {
     registration: RegistrationEntity;
     attribute: string;
+    contactInformation: ContactInformation;
   }): Promise<void> {
-    const contactInfo =
-      await this.intersolveVisaAccountManagementService.getContactInformation(
-        registration,
-      );
     if (
       env.INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION &&
       this.intersolveVisaAttributeNames.includes(attribute)
     ) {
-      await this.intersolveVisaAccountManagementService.sendCustomerInformationToIntersolve(
-        {
-          registration,
-          contactInfo,
-        },
-      );
+      const registrationHasVisaCustomer =
+        await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
+
+      if (registrationHasVisaCustomer) {
+        await this.intersolveVisaService.sendUpdatedCustomerInformation({
+          registrationId: registration.id,
+          contactInformation,
+        });
+      }
     }
   }
 }

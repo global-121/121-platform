@@ -1,4 +1,5 @@
 export interface ContactInformation {
+  readonly name: string;
   readonly addressStreet: string;
   readonly addressHouseNumber: string;
   readonly addressHouseNumberAddition?: string;
