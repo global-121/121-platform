@@ -15,8 +15,6 @@ import { RegistrationEventEnum } from '@121-service/src/registration-events/enum
 import { RegistrationEventAttributeKeyEnum } from '@121-service/src/registration-events/enum/registration-event-attribute-key.enum';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
-export const STATUS_CHANGE_STRING = 'Status';
-
 @ViewEntity({
   name: 'registration_event_view',
   expression: (dataSource: DataSource) => {

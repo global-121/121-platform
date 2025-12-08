@@ -1,2 +1,2 @@
-paId,referenceId,changedBy,type,newValue,oldValue,reason
-1,44e62864557597e0d,admin@example.org,registrationStatusChange,included,new,default reason
+paId,referenceId,changedBy,type,fieldName,newValue,oldValue,reason
+1,44e62864557597e0d,admin@example.org,registrationStatusChange,status,included,new,default reason
