@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.service';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
+import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
 import { FspConfigurationProperties } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
@@ -9,9 +10,9 @@ import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/pro
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
-import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 
 describe('IntersolveVisaAccountManagementService', () => {
   function mockGetRegistrationOrThrow(returnValue: any) {
@@ -23,7 +24,7 @@ describe('IntersolveVisaAccountManagementService', () => {
   let intersolveVisaService: jest.Mocked<IntersolveVisaService>;
   let queueMessageService: jest.Mocked<MessageQueuesService>;
   let programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
-  let registrationDataScopedRepository: jest.Mocked<RegistrationDataScopedRepository>;
+  let registrationsPaginationService: jest.Mocked<RegistrationsPaginationService>;
   let registrationsService: jest.Mocked<RegistrationsService>;
 
   beforeEach(async () => {
@@ -34,6 +35,15 @@ describe('IntersolveVisaAccountManagementService', () => {
           provide: RegistrationsService,
           useValue: {
             getRegistrationOrThrow: jest.fn(),
+            getContactInformation: jest.fn().mockResolvedValue({
+              name: 'Jane Doe',
+              addressStreet: 'Main',
+              addressHouseNumber: '10',
+              addressHouseNumberAddition: 'A',
+              addressPostalCode: '1234AB',
+              addressCity: 'Amsterdam',
+              phoneNumber: '31612345678',
+            }),
           },
         },
         {
@@ -62,9 +72,9 @@ describe('IntersolveVisaAccountManagementService', () => {
           },
         },
         {
-          provide: RegistrationDataScopedRepository,
+          provide: RegistrationsPaginationService,
           useValue: {
-            getRegistrationDataArrayByName: jest.fn(),
+            getRegistrationViewsByReferenceIds: jest.fn(),
           },
         },
         {
@@ -82,9 +92,9 @@ describe('IntersolveVisaAccountManagementService', () => {
     programFspConfigurationRepository = module.get(
       ProgramFspConfigurationRepository,
     );
-    registrationDataScopedRepository = module.get(
-      RegistrationDataScopedRepository,
-    );
+    registrationsPaginationService = module.get(
+      RegistrationsPaginationService,
+    ) as jest.Mocked<RegistrationsPaginationService>;
     registrationsService = module.get(
       RegistrationsService,
     ) as jest.Mocked<RegistrationsService>;
@@ -113,17 +123,19 @@ describe('IntersolveVisaAccountManagementService', () => {
       } as any);
       mockGetRegistrationOrThrow(registration);
 
-      // Mock registration data used to build contact information
-      registrationDataScopedRepository.getRegistrationDataArrayByName.mockResolvedValue(
+      // Mock registration view data used to build contact information
+      registrationsPaginationService.getRegistrationViewsByReferenceIds.mockResolvedValue(
         [
-          { name: 'addressStreet', value: 'Main' },
-          { name: 'addressHouseNumber', value: '10' },
-          { name: 'addressHouseNumberAddition', value: 'A' },
-          { name: 'addressPostalCode', value: '1234AB' },
-          { name: 'addressCity', value: 'Amsterdam' },
-          { name: 'phoneNumber', value: '31612345678' },
-          { name: 'fullName', value: 'Jane Doe' },
-        ] as any,
+          {
+            [FspAttributes.addressStreet]: 'Main',
+            [FspAttributes.addressHouseNumber]: '10',
+            [FspAttributes.addressHouseNumberAddition]: 'A',
+            [FspAttributes.addressPostalCode]: '1234AB',
+            [FspAttributes.addressCity]: 'Amsterdam',
+            [FspAttributes.phoneNumber]: '31612345678',
+            [FspAttributes.fullName]: 'Jane Doe',
+          } as any,
+        ],
       );
 
       const customer = { id: 1 } as any;
@@ -165,8 +177,8 @@ describe('IntersolveVisaAccountManagementService', () => {
         expect.objectContaining({
           registrationId: registration.id,
           createCustomerReference: 'ref-1',
-          name: 'Jane Doe',
           contactInformation: expect.objectContaining({
+            name: 'Jane Doe',
             addressStreet: 'Main',
             addressHouseNumber: '10',
             addressHouseNumberAddition: 'A',
