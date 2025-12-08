@@ -28,13 +28,13 @@ export class MonitoringMenuComponent {
 
   readonly navMenuItems = computed<MenuItem[]>(() => [
     {
-      label: $localize`:@@page-title-program-monitoring-powerbi:PowerBI`,
-      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${AppRoutes.programMonitoringPowerBI}`,
+      label: $localize`:@@page-title-program-monitoring-dashboard:Dashboard`,
+      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${AppRoutes.programMonitoringDashboard}`,
       icon: 'pi pi-chart-line',
     },
     {
-      label: $localize`:@@page-title-program-monitoring-dashboard:Dashboard`,
-      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${AppRoutes.programMonitoringDashboard}`,
+      label: $localize`:@@page-title-program-monitoring-powerbi:PowerBI`,
+      routerLink: `/${AppRoutes.program}/${this.programId()}/${AppRoutes.programMonitoring}/${AppRoutes.programMonitoringPowerBI}`,
       icon: 'pi pi-chart-line',
     },
     {
