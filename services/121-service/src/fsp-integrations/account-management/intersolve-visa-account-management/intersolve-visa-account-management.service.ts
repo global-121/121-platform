@@ -4,6 +4,7 @@ import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-i
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
+import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-management/enums/fsp-name.enum';
@@ -363,18 +364,25 @@ export class IntersolveVisaAccountManagementService {
   ): Promise<void> {
     await this.checkIfCardIsAlreadyLinked(tokenCode);
 
-    const registration: RegistrationEntity = await this.getRegistrationOrThrow({
-      referenceId,
-      programId,
-    });
+    const registration: RegistrationEntity =
+      await this.registrationsService.getRegistrationOrThrow({
+        referenceId,
+        programId,
+      });
 
-    const contactInfo = await this.getContactInformation(registration);
+    const dataFieldNames = getFspAttributeNames(Fsps.intersolveVisa);
+    const contactInformation =
+      await this.registrationsService.getContactInformation({
+        referenceId,
+        programId,
+        dataFieldNames,
+      });
 
     const intersolveVisaCustomer =
       await this.intersolveVisaService.getCustomerOrCreate({
         registrationId: registration.id,
         createCustomerReference: referenceId,
-        ...contactInfo,
+        contactInformation,
       });
 
     const intersolveVisaConfig = await this.getIntersolveVisaConfig(
@@ -420,10 +428,12 @@ export class IntersolveVisaAccountManagementService {
     pause: boolean,
     userId: number,
   ): Promise<IntersolveVisaChildWalletEntity> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      programId,
-    });
+    const registration = await this.registrationsService.getRegistrationOrThrow(
+      {
+        referenceId,
+        programId,
+      },
+    );
     const updatedWallet = await this.intersolveVisaService.pauseCardOrThrow(
       tokenCode,
       pause,
@@ -448,24 +458,33 @@ export class IntersolveVisaAccountManagementService {
     referenceId: string,
     programId: number,
   ): Promise<void> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
-      programId,
-    });
-    const contactInfo: IntersolveVisaContactInfo =
-      await this.getContactInformation(registration);
+    const registration = await this.registrationsService.getRegistrationOrThrow(
+      {
+        referenceId,
+        programId,
+      },
+    );
+
+    const dataFieldNames = getFspAttributeNames(Fsps.intersolveVisa);
+    const contactInformation: ContactInformation =
+      await this.registrationsService.getContactInformation({
+        referenceId,
+        programId,
+        dataFieldNames,
+      });
+
     await this.sendCustomerInformationToIntersolve({
       registration,
-      contactInfo,
+      contactInformation,
     });
   }
 
   public async sendCustomerInformationToIntersolve({
     registration,
-    contactInfo,
+    contactInformation,
   }: {
     registration: RegistrationEntity;
-    contactInfo: IntersolveVisaContactInfo;
+    contactInformation: ContactInformation;
   }): Promise<void> {
     const registrationHasVisaCustomer =
       await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
@@ -473,59 +492,9 @@ export class IntersolveVisaAccountManagementService {
     if (registrationHasVisaCustomer) {
       await this.intersolveVisaService.sendUpdatedCustomerInformation({
         registrationId: registration.id,
-        ...contactInfo,
+        contactInformation,
       });
     }
-  }
-
-  public async getContactInformation(
-    registration: RegistrationEntity,
-  ): Promise<IntersolveVisaContactInfo> {
-    const fieldNames: IntersolveVisaContactInfoKeys[] = [
-      FspAttributes.addressStreet,
-      FspAttributes.addressHouseNumber,
-      FspAttributes.addressHouseNumberAddition,
-      FspAttributes.addressPostalCode,
-      FspAttributes.addressCity,
-      FspAttributes.phoneNumber,
-      FspAttributes.fullName,
-    ];
-
-    const registrationData =
-      await this.registrationDataScopedRepository.getRegistrationDataArrayByName(
-        registration,
-        fieldNames,
-      );
-
-    if (!registrationData || registrationData.length === 0) {
-      throw new HttpException(
-        `No registration data found for referenceId: ${registration.referenceId}`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    const mappedRegistrationData = registrationData.reduce(
-      (acc, { name, value }) => {
-        acc[name] = value;
-        return acc;
-      },
-      {},
-    );
-
-    return {
-      name: mappedRegistrationData[FspAttributes.fullName],
-      contactInformation: {
-        addressStreet: mappedRegistrationData[FspAttributes.addressStreet],
-        addressHouseNumber:
-          mappedRegistrationData[FspAttributes.addressHouseNumber],
-        addressHouseNumberAddition:
-          mappedRegistrationData[FspAttributes.addressHouseNumberAddition],
-        addressPostalCode:
-          mappedRegistrationData[FspAttributes.addressPostalCode],
-        addressCity: mappedRegistrationData[FspAttributes.addressCity],
-        phoneNumber: mappedRegistrationData[FspAttributes.phoneNumber],
-      },
-    };
   }
 
   private async checkIfCardIsAlreadyLinked(tokenCode: string): Promise<void> {
@@ -540,14 +509,14 @@ export class IntersolveVisaAccountManagementService {
     }
   }
 
-  private validateContactInfo(contactInfo: IntersolveVisaContactInfo) {
-    if (!contactInfo.name) {
+  private validateContactInfo(contactInformation: ContactInformation) {
+    if (!contactInformation.name) {
       return false;
     }
 
-    for (const field in contactInfo.contactInformation) {
+    for (const field in contactInformation) {
       if (field === FspAttributes.addressHouseNumberAddition) continue; // Optional field
-      if (!contactInfo.contactInformation[field]) {
+      if (!contactInformation[field]) {
         return false;
       }
     }
