@@ -49,20 +49,12 @@ export class ActivityLogVoucherDialogComponent {
     () => $localize`Voucher ${this.paymentId()} on ${this.paymentDate()}`,
   );
 
-  private readonly voucherType = computed(() => {
-    if (this.fsp() === Fsps.intersolveVoucherPaper) {
-      return 'paper';
-    }
-
-    return 'whatsapp';
-  });
-
   voucher = injectQuery(() => ({
     ...this.programApiService.getIntersolveVoucher({
       programId: this.programId,
       referenceId: this.referenceId(),
       paymentId: this.paymentId(),
-      voucherType: this.voucherType(),
+      fsp: this.fsp(),
     })(),
     enabled: this.dialogVisible(),
   }));

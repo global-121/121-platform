@@ -5,6 +5,7 @@ import { queryOptions } from '@tanstack/angular-query-experimental';
 import { unique } from 'radashi';
 
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 
@@ -335,18 +336,20 @@ export class ProgramApiService extends DomainApiService {
     programId,
     referenceId,
     paymentId,
-    voucherType,
+    fsp,
   }: {
     programId: Signal<number | string>;
     referenceId: string;
     paymentId: number | string;
-    voucherType: 'paper' | 'whatsapp';
+    fsp: Fsps;
   }) {
+    const voucherType = fsp.replace('Intersolve-voucher-', '');
+
     return this.generateQueryOptions<Blob>({
       path: [
         BASE_ENDPOINT,
         programId,
-        `fsps/intersolve-voucher/vouchers-${voucherType}`,
+        `fsps/intersolve-voucher/voucher-${voucherType}`,
       ],
       params: {
         referenceId,
