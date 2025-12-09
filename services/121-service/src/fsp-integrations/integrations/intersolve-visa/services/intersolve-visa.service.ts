@@ -877,7 +877,6 @@ export class IntersolveVisaService {
       childTokenCode,
     });
   }
-<<<<<<< HEAD
 
   private async createChildWalletEntityForTokenCode({
     intersolveVisaParentWallet,
@@ -902,6 +901,4 @@ export class IntersolveVisaService {
 
     await this.updateChildWallet(savedChildWallet);
   }
-=======
->>>>>>> ece275222 (replace card)
 }

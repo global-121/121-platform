@@ -2008,9 +2008,6 @@
       </trans-unit>
       <trans-unit id="5803191628367780292" datatype="html">
         <source>You are about to retry <x equiv-text="formattedTransactionCount" id="PH"/> transaction(s). The transaction status will change to &apos;Processing&apos; until received by the registration.</source>
-      </trans-unit>`
-      <trans-unit id="1183614487113957266" datatype="html">
-        <source>Create new card</source>
       </trans-unit>
       <trans-unit id="5484768522828011721" datatype="html">
         <source>(matching fields: <x equiv-text="{{ matchingFieldNames }}" id="INTERPOLATION"/>)</source>
