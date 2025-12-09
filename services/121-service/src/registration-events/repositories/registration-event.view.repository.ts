@@ -30,18 +30,24 @@ export class RegistrationEventViewScopedRepository extends ScopedRepository<Regi
       });
   }
 
-  public createQueryBuilderWithSearchOptions({
+  public createQueryBuilderWithSearchOptionsAndSelect({
     searchOptions,
     programId,
+    select,
   }: {
     searchOptions: RegistrationEventSearchOptionsDto;
     programId: number;
+    select?: (keyof RegistrationEventViewEntity)[];
   }): ReturnType<
     Repository<RegistrationEventViewEntity>['createQueryBuilder']
   > {
-    return this.createQueryBuilder('event').andWhere(
+    const queryBuilder = this.createQueryBuilder('event').andWhere(
       this.createWhereClause(programId, searchOptions),
     );
+    if (select) {
+      queryBuilder.select(select.map((field) => `event.${field}`));
+    }
+    return queryBuilder;
   }
 
   private createWhereClause(

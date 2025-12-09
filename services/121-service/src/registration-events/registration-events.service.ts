@@ -54,7 +54,7 @@ export class RegistrationEventsService {
       registrationId,
     };
     const queryBuilder =
-      this.registrationEventViewScopedRepository.createQueryBuilderWithSearchOptions(
+      this.registrationEventViewScopedRepository.createQueryBuilderWithSearchOptionsAndSelect(
         {
           programId,
           searchOptions,
@@ -68,23 +68,37 @@ export class RegistrationEventsService {
     });
   }
 
-  public getRegistrationEvents({
+  public getRegistrationEventsExport({
     programId,
     searchOptions,
   }: {
     programId: number;
     searchOptions: RegistrationEventSearchOptionsDto;
   }): Promise<FindAllRegistrationEventsResultDto> {
+    const select: (keyof RegistrationEventViewEntity)[] = [
+      'id',
+      'registrationProgramId',
+      'type',
+      'fieldChanged',
+      'oldValue',
+      'newValue',
+      'reason',
+      'username',
+      'created',
+    ];
     const queryBuilder =
-      this.registrationEventViewScopedRepository.createQueryBuilderWithSearchOptions(
+      this.registrationEventViewScopedRepository.createQueryBuilderWithSearchOptionsAndSelect(
         {
           programId,
           searchOptions,
+          select,
         },
       );
 
     const exportLimit = 500_000;
-    const paginateQuery = { limit: exportLimit } as PaginateQuery;
+    const paginateQuery = {
+      limit: exportLimit,
+    } as PaginateQuery;
     return this.getPaginatedRegistrationEvents({
       paginateQuery,
       queryBuilder,
