@@ -809,6 +809,31 @@ export class IntersolveVisaService {
     return await this.intersolveVisaApiService.getToken(tokenCode);
   }
 
+  public async linkPhysicalCardToCustomer({
+    intersolveVisaCustomer,
+    tokenCode,
+    brandCode,
+  }: {
+    intersolveVisaCustomer: IntersolveVisaCustomerEntity;
+    tokenCode: string;
+    brandCode: string;
+  }) {
+    const intersolveVisaParentWallet = await this.getParentWalletOrCreate({
+      intersolveVisaCustomer,
+      brandCode,
+    });
+
+    await this.linkParentWalletToCustomerIfUnlinked({
+      intersolveVisaCustomer,
+      intersolveVisaParentWallet,
+    });
+
+    await this.linkWallets({
+      parentTokenCode: intersolveVisaParentWallet.tokenCode,
+      childTokenCode: tokenCode,
+    });
+  }
+
   public async linkWallets({
     parentTokenCode,
     childTokenCode,

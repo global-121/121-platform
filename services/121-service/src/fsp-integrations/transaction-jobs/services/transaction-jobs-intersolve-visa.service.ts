@@ -83,10 +83,23 @@ export class TransactionJobsIntersolveVisaService {
 
     let intersolveVisaDoTransferOrIssueCardReturnDto: DoTransferOrIssueCardResult;
     try {
-      const { brandCode, coverLetterCode, fundingTokenCode } =
-        await this.getIntersolveVisaFspConfig(
-          transactionJob.programFspConfigurationId,
+      const {
+        brandCode,
+        coverLetterCode,
+        fundingTokenCode,
+        cardDistributionByMail,
+      } = await this.getIntersolveVisaFspConfig(
+        transactionJob.programFspConfigurationId,
+      );
+
+      const hasIntersolveCustomer =
+        await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
+      if (cardDistributionByMail === 'false' && !hasIntersolveCustomer) {
+        throw new IntersolveVisaApiError(
+          'Cannot do a transaction when card distribution by mail is disabled and customer does not exist.',
         );
+      }
+
       intersolveVisaDoTransferOrIssueCardReturnDto =
         await this.intersolveVisaService.doTransferOrIssueCard({
           registrationId: registration.id,
@@ -153,6 +166,7 @@ export class TransactionJobsIntersolveVisaService {
     brandCode: string;
     coverLetterCode: string;
     fundingTokenCode: string;
+    cardDistributionByMail: string;
   }> {
     const intersolveVisaConfig =
       await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
@@ -161,6 +175,7 @@ export class TransactionJobsIntersolveVisaService {
           FspConfigurationProperties.brandCode,
           FspConfigurationProperties.coverLetterCode,
           FspConfigurationProperties.fundingTokenCode,
+          FspConfigurationProperties.cardDistributionByMail,
         ],
       });
     return {
@@ -172,6 +187,9 @@ export class TransactionJobsIntersolveVisaService {
       )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
       fundingTokenCode: intersolveVisaConfig.find(
         (c) => c.name === FspConfigurationProperties.fundingTokenCode,
+      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+      cardDistributionByMail: intersolveVisaConfig.find(
+        (c) => c.name === FspConfigurationProperties.cardDistributionByMail,
       )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
     };
   }
