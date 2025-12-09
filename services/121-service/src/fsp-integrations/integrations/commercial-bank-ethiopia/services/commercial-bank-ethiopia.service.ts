@@ -122,7 +122,7 @@ export class CommercialBankEthiopiaService {
 
     if (credentials.password == null || credentials.username == null) {
       throw new HttpException(
-        'Missing username or password for program Fsp configuration of the registration',
+        `Missing username or password for program ${programId} Fsp configuration.`,
         HttpStatus.NOT_FOUND,
       );
     }
