@@ -203,7 +203,7 @@ export async function waitForDeleteRegistrations({
       const deleteEvent = getEventsResponse.body.data.find(
         (event) =>
           event.type === RegistrationEventEnum.registrationStatusChange &&
-          event.attributes?.newValue === RegistrationStatusEnum.deleted,
+          event.newValue === RegistrationStatusEnum.deleted,
       );
       if (deleteEvent) {
         totalRegistrationSuccessfullyDeleted++;

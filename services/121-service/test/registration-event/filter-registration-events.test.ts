@@ -87,9 +87,11 @@ describe('Get events', () => {
     expect(eventsResult.body.data[0].type).toBe(
       RegistrationEventEnum.registrationDataChange,
     );
-    expect(eventsResult.body.data[0].attributes).toEqual(
-      expectedAttributesObject,
-    );
+    for (const key of Object.keys(expectedAttributesObject)) {
+      expect(eventsResult.body.data[0][key]).toEqual(
+        expectedAttributesObject[key],
+      );
+    }
   });
 
   it('should return a 404 when no program events are found', async () => {

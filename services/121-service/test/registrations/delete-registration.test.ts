@@ -65,7 +65,7 @@ describe('Delete PA', () => {
       programId,
       accessToken,
     });
-    const deleteEvent = eventsResponse.body.data[0];
+    const deleteEvent = eventsResponse.body.data[1]; // The second event is the delete event
 
     // Assert
     expect(response.statusCode).toBe(HttpStatus.ACCEPTED);
@@ -76,11 +76,9 @@ describe('Delete PA', () => {
     // An event should be created
     const expectedDeleteEvent = {
       type: RegistrationEventEnum.registrationStatusChange,
-      attributes: {
-        oldValue: RegistrationStatusEnum.new,
-        newValue: RegistrationStatusEnum.deleted,
-        reason,
-      },
+      oldValue: RegistrationStatusEnum.new,
+      newValue: RegistrationStatusEnum.deleted,
+      reason,
     };
     expect(deleteEvent).toMatchObject(expectedDeleteEvent);
   });

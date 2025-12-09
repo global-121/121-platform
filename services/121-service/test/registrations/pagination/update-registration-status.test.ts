@@ -92,11 +92,9 @@ describe('change the status of a set of registrations', () => {
 
       const expectedEvent = {
         type: RegistrationEventEnum.registrationStatusChange,
-        attributes: {
-          oldValue: RegistrationStatusEnum.new,
-          newValue: newStatus,
-          reason,
-        },
+        oldValue: RegistrationStatusEnum.new,
+        newValue: newStatus,
+        reason,
       };
       expect(event).toMatchObject(expectedEvent);
     }
