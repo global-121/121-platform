@@ -82,12 +82,14 @@ describe('Get events', () => {
     // Assert
     expect(eventsResult.statusCode).toBe(HttpStatus.OK);
     // Check if there's 2 events (1 for each registration)
-    expect(eventsResult.body.length).toBe(2);
+    expect(eventsResult.body.data.length).toBe(2);
     // Check if the event is of the right type
-    expect(eventsResult.body[0].type).toBe(
+    expect(eventsResult.body.data[0].type).toBe(
       RegistrationEventEnum.registrationDataChange,
     );
-    expect(eventsResult.body[0].attributes).toEqual(expectedAttributesObject);
+    expect(eventsResult.body.data[0].attributes).toEqual(
+      expectedAttributesObject,
+    );
   });
 
   it('should return a 404 when no program events are found', async () => {

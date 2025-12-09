@@ -200,7 +200,7 @@ export async function waitForDeleteRegistrations({
         referenceId,
         accessToken,
       });
-      const deleteEvent = getEventsResponse.body.find(
+      const deleteEvent = getEventsResponse.body.data.find(
         (event) =>
           event.type === RegistrationEventEnum.registrationStatusChange &&
           event.attributes?.newValue === RegistrationStatusEnum.deleted,
@@ -845,7 +845,7 @@ export async function getRegistrationEvents({
   }
 
   return getServer()
-    .get(`/programs/${programId}/registration-events`)
+    .get(`/programs/${programId}/registration-events/export`)
     .set('Cookie', [accessToken])
     .query(queryParams)
     .send();

@@ -65,7 +65,7 @@ describe('Delete PA', () => {
       programId,
       accessToken,
     });
-    const deleteEvent = eventsResponse.body[0];
+    const deleteEvent = eventsResponse.body.data[0];
 
     // Assert
     expect(response.statusCode).toBe(HttpStatus.ACCEPTED);
