@@ -16,9 +16,9 @@ import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails
 describe('UserService', () => {
   let service: UserService;
   let userRepository: Repository<UserEntity>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- used in tests
+
   let permissionRepository: Repository<PermissionEntity>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- used in tests
+
   let userRoleRepository: Repository<UserRoleEntity>;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars -- used in tests
   let programRepository: Repository<ProgramEntity>;
@@ -215,6 +215,225 @@ describe('UserService', () => {
           HttpStatus.NOT_FOUND,
         ),
       );
+    });
+  });
+
+  describe('updateUserRole', () => {
+    const userRoleId = 1;
+    const mockExistingRole: Partial<UserRoleEntity> = {
+      id: userRoleId,
+      role: 'test-role',
+      label: 'Test Role',
+      description: 'Test Description',
+      permissions: [],
+    };
+
+    beforeEach(() => {
+      // Mock the private findRoleOrThrow method by spying on userRoleRepository.findOneBy
+      jest
+        .spyOn(userRoleRepository, 'findOneBy')
+        .mockResolvedValue(mockExistingRole as UserRoleEntity);
+      jest
+        .spyOn(userRoleRepository, 'save')
+        .mockResolvedValue(mockExistingRole as UserRoleEntity);
+      jest.spyOn(permissionRepository, 'findOneByOrFail').mockClear();
+    });
+
+    it('should throw HttpException when role is not found', async () => {
+      // Arrange
+      jest.spyOn(userRoleRepository, 'findOneBy').mockResolvedValue(null);
+      const updateData = { label: 'New Label' };
+
+      // Act & Assert
+      await expect(
+        service.updateUserRole(userRoleId, updateData),
+      ).rejects.toThrow(
+        new HttpException('Role not found', HttpStatus.NOT_FOUND),
+      );
+
+      expect(userRoleRepository.findOneBy).toHaveBeenCalledWith({
+        id: userRoleId,
+      });
+    });
+
+    it('should update only the label when provided', async () => {
+      // Arrange
+      const updateData = { label: 'Updated Label' };
+      const expectedRole = { ...mockExistingRole, label: 'Updated Label' };
+      jest
+        .spyOn(userRoleRepository, 'save')
+        .mockResolvedValue(expectedRole as UserRoleEntity);
+      jest.spyOn(service as any, 'getUserRoleResponse').mockReturnValue({
+        id: userRoleId,
+        role: 'test-role',
+        label: 'Updated Label',
+        description: 'Test Description',
+        permissions: [],
+      });
+
+      // Act
+      const result = await service.updateUserRole(userRoleId, updateData);
+
+      // Assert
+      expect(userRoleRepository.findOneBy).toHaveBeenCalledWith({
+        id: userRoleId,
+      });
+      expect(userRoleRepository.save).toHaveBeenCalledWith(expectedRole);
+      expect(result.label).toBe('Updated Label');
+    });
+
+    it('should update only the description when provided', async () => {
+      // Arrange
+      const updateData = { description: 'Updated Description' };
+      const expectedRole = {
+        ...mockExistingRole,
+        description: 'Updated Description',
+      };
+      jest
+        .spyOn(userRoleRepository, 'save')
+        .mockResolvedValue(expectedRole as UserRoleEntity);
+      jest.spyOn(service as any, 'getUserRoleResponse').mockReturnValue({
+        id: userRoleId,
+        role: 'test-role',
+        label: 'Test Role',
+        description: 'Updated Description',
+        permissions: [],
+      });
+
+      // Act
+      const result = await service.updateUserRole(userRoleId, updateData);
+
+      // Assert
+      expect(userRoleRepository.save).toHaveBeenCalledWith(expectedRole);
+      expect(result.description).toBe('Updated Description');
+    });
+
+    it('should update permissions when provided', async () => {
+      // Arrange
+      const mockPermissions = [
+        { id: 1, name: 'program:write' } as unknown as PermissionEntity,
+        { id: 2, name: 'program:read' } as unknown as PermissionEntity,
+      ];
+      const updateData = {
+        permissions: ['program:write', 'program:read'] as any,
+      };
+
+      jest
+        .spyOn(permissionRepository, 'findOneByOrFail')
+        .mockResolvedValueOnce(mockPermissions[0])
+        .mockResolvedValueOnce(mockPermissions[1]);
+
+      const expectedRole = {
+        ...mockExistingRole,
+        permissions: mockPermissions,
+      };
+      jest
+        .spyOn(userRoleRepository, 'save')
+        .mockResolvedValue(expectedRole as UserRoleEntity);
+      jest.spyOn(service as any, 'getUserRoleResponse').mockReturnValue({
+        id: userRoleId,
+        role: 'test-role',
+        label: 'Test Role',
+        description: 'Test Description',
+        permissions: ['program:write', 'program:read'],
+      });
+
+      // Act
+      const result = await service.updateUserRole(userRoleId, updateData);
+
+      // Assert
+      expect(permissionRepository.findOneByOrFail).toHaveBeenCalledTimes(2);
+      expect(permissionRepository.findOneByOrFail).toHaveBeenNthCalledWith(1, {
+        name: 'program:write',
+      });
+      expect(permissionRepository.findOneByOrFail).toHaveBeenNthCalledWith(2, {
+        name: 'program:read',
+      });
+      expect(userRoleRepository.save).toHaveBeenCalledWith(expectedRole);
+      expect(result.permissions).toEqual(['program:write', 'program:read']);
+    });
+
+    it('should update all fields when all are provided', async () => {
+      // Arrange
+      const mockPermissions = [
+        { id: 1, name: 'program:write' } as unknown as PermissionEntity,
+      ];
+      const updateData = {
+        label: 'New Label',
+        description: 'New Description',
+        permissions: ['program:write'] as any,
+      };
+
+      jest
+        .spyOn(permissionRepository, 'findOneByOrFail')
+        .mockResolvedValueOnce(mockPermissions[0]);
+
+      const expectedRole = {
+        ...mockExistingRole,
+        label: 'New Label',
+        description: 'New Description',
+        permissions: mockPermissions,
+      };
+      jest
+        .spyOn(userRoleRepository, 'save')
+        .mockResolvedValue(expectedRole as UserRoleEntity);
+      jest.spyOn(service as any, 'getUserRoleResponse').mockReturnValue({
+        id: userRoleId,
+        role: 'test-role',
+        label: 'New Label',
+        description: 'New Description',
+        permissions: ['program:write'],
+      });
+
+      // Act
+      const result = await service.updateUserRole(userRoleId, updateData);
+
+      // Assert
+      expect(userRoleRepository.save).toHaveBeenCalledWith(expectedRole);
+      expect(result.label).toBe('New Label');
+      expect(result.description).toBe('New Description');
+      expect(result.permissions).toEqual(['program:write']);
+    });
+
+    it('should not update fields when they are not provided', async () => {
+      // Arrange
+      const updateData = {}; // Empty update
+      jest
+        .spyOn(userRoleRepository, 'save')
+        .mockResolvedValue(mockExistingRole as UserRoleEntity);
+      jest.spyOn(service as any, 'getUserRoleResponse').mockReturnValue({
+        id: userRoleId,
+        role: 'test-role',
+        label: 'Test Role',
+        description: 'Test Description',
+        permissions: [],
+      });
+
+      // Act
+      const result = await service.updateUserRole(userRoleId, updateData);
+
+      // Assert
+      expect(userRoleRepository.save).toHaveBeenCalledWith(mockExistingRole);
+      expect(permissionRepository.findOneByOrFail).not.toHaveBeenCalled();
+      expect(result.label).toBe('Test Role');
+      expect(result.description).toBe('Test Description');
+    });
+
+    it('should handle permission repository errors', async () => {
+      // Arrange
+      const updateData = { permissions: ['invalid-permission'] as any };
+      jest
+        .spyOn(permissionRepository, 'findOneByOrFail')
+        .mockRejectedValue(new Error('Permission not found'));
+
+      // Act & Assert
+      await expect(
+        service.updateUserRole(userRoleId, updateData),
+      ).rejects.toThrow('Permission not found');
+
+      expect(permissionRepository.findOneByOrFail).toHaveBeenCalledWith({
+        name: 'invalid-permission',
+      });
     });
   });
 });
