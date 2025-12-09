@@ -66,13 +66,14 @@ class ProgramMonitoring extends BasePage {
     );
 
     await this.selectTab({ tabName: 'PowerBI' });
-    await this.monitoringIframe
-      .locator('iframe')
-      .waitFor({ state: 'attached', timeout: 500 });
-    const iframe = await this.monitoringIframe.locator('iframe').all();
     if (shouldHaveIframe) {
+      await this.monitoringIframe
+        .locator('iframe')
+        .waitFor({ state: 'attached', timeout: 1000 });
+      const iframe = await this.monitoringIframe.locator('iframe').all();
       expect(iframe.length).toBe(1);
     } else {
+      const iframe = await this.monitoringIframe.locator('iframe').all();
       expect(iframe.length).toBe(0);
       await expect(this.monitoringIframe).toContainText(
         'No PowerBI dashboard has been configured for this program, please contact support@121.global to set this up',
