@@ -67,17 +67,18 @@ export class CommercialBankEthiopiaAccountManagementService {
     const getAllPersonsAffectedData =
       await this.getAllPersonsAffectedData(programId);
 
-    console.time('getValidationStatus loop total');
+    const logMessageProgram = `CBE Reconciliation - Program: ${programId} - getValidationStatus total`;
+    console.time(logMessageProgram);
 
     for (const pa of getAllPersonsAffectedData) {
-      const logString = `getValidationStatus for PA: ${pa.id}`;
-      console.time(logString);
+      const logMessageRegistration = `CBE Reconciliation - Program: ${programId} - getValidationStatus for Registration: ${pa.id}`;
+      console.time(logMessageRegistration);
       const paResult =
         await this.commercialBankEthiopiaApiService.getValidationStatus(
           pa.bankAccountNumber,
           credentials,
         );
-      console.timeEnd(logString);
+      console.timeEnd(logMessageRegistration);
 
       const result = new CommercialBankEthiopiaAccountEnquiriesEntity();
       result.registrationId = pa?.id;
@@ -137,7 +138,7 @@ export class CommercialBankEthiopiaAccountManagementService {
         );
       }
     }
-    console.timeEnd('getValidationStatus loop total');
+    console.timeEnd(logMessageProgram);
     return getAllPersonsAffectedData.length;
   }
 
