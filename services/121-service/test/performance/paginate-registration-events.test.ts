@@ -20,9 +20,14 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-// eslint-disable-next-line n/no-process-env -- Only used in test-runs, not included in '@121-service/src/env'
-const duplicateNumber = parseInt(process.env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^16 = 64k registrations * 2 = 131k
+const duplicateLowNumber = 5;
+const duplicateHighNumber = 16; // cronjob duplicate number should be 2^16 = 64k registrations * 2 = 131k
 const testTimeout = 5_400_000; // 90 minutes
+const duplicateNumber =
+  // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
+  process.env.HIGH_DATA_VOLUME === 'true'
+    ? duplicateHighNumber
+    : duplicateLowNumber;
 
 jest.setTimeout(testTimeout);
 describe('Get paginated registrations events', () => {
