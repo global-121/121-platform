@@ -115,7 +115,7 @@ describe('Mock registrations', () => {
       accessToken,
     });
     // There should be at least one event per registration, and the total should be a multiple of the number of registrations
-    const events = registrationEventsResponse.body;
+    const events = registrationEventsResponse.body.data;
     const eventsByRegistration = registrationIds.map((id) =>
       events.filter((e) => e.registrationId === id),
     );
