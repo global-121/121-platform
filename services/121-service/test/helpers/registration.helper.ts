@@ -569,7 +569,7 @@ export function issueNewVisaCard(
 ): Promise<request.Response> {
   return getServer()
     .post(
-      `/programs/${programId}/registrations/${referenceId}/fsps/intersolve-visa/wallet/cards`,
+      `/programs/${programId}/registrations/${referenceId}/fsps/intersolve-visa/wallet/cards/by-mail/replace`,
     )
     .set('Cookie', [accessToken])
     .send();
