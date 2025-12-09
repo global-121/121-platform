@@ -224,7 +224,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
         throw new Error('ReferenceId is missing');
       }
 
-      return this.registrationApiService.reissueCard({
+      return this.registrationApiService.replaceCardByMail({
         programId: this.programId,
         referenceId,
       });
