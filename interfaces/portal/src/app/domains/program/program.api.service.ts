@@ -343,7 +343,8 @@ export class ProgramApiService extends DomainApiService {
     paymentId: number | string;
     fsp: Fsps;
   }) {
-    const voucherType = fsp.replace('Intersolve-voucher-', '');
+    const voucherType =
+      fsp === Fsps.intersolveVoucherPaper ? 'paper' : 'whatsapp';
 
     return this.generateQueryOptions<Blob>({
       path: [
