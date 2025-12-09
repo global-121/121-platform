@@ -115,9 +115,7 @@ export class IntersolveVisaAccountManagementService {
 
     await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
 
-    if (tokenCode) {
-      await this.throwIfCardDoesNotExistOrIsAlreadyLinked(tokenCode);
-    }
+    await this.throwIfCardDoesNotExistOrIsAlreadyLinked(tokenCode);
 
     await this.replaceCard({
       referenceId,
@@ -167,7 +165,7 @@ export class IntersolveVisaAccountManagementService {
 
     if (typeof brandCode !== 'string' || typeof coverLetterCode !== 'string') {
       throw new HttpException(
-        'Missing or invalid brandCode or coverLetterCode for Intersolve Visa reissueCard',
+        'Missing or invalid brandCode or coverLetterCode for Intersolve Visa replace card',
         HttpStatus.BAD_REQUEST,
       );
     }

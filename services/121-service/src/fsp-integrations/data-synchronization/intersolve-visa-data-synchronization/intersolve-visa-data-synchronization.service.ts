@@ -29,7 +29,7 @@ export class IntersolveVisaDataSynchronizationService {
   }): Promise<void> {
     if (attribute) {
       if (
-        !env.INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION &&
+        !env.INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION ||
         !this.intersolveVisaAttributeNames.includes(attribute)
       ) {
         return;
