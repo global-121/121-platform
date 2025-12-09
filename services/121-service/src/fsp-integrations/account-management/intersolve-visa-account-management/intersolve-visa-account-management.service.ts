@@ -464,28 +464,10 @@ export class IntersolveVisaAccountManagementService {
         dataFieldNames,
       });
 
-    await this.sendCustomerInformationToIntersolve({
-      registration,
+    await this.intersolveVisaDataSynchronizationService.syncData({
+      registrationId: registration.id,
       contactInformation,
     });
-  }
-
-  public async sendCustomerInformationToIntersolve({
-    registration,
-    contactInformation,
-  }: {
-    registration: RegistrationEntity;
-    contactInformation: ContactInformation;
-  }): Promise<void> {
-    const registrationHasVisaCustomer =
-      await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
-
-    if (registrationHasVisaCustomer) {
-      await this.intersolveVisaService.sendUpdatedCustomerInformation({
-        registrationId: registration.id,
-        contactInformation,
-      });
-    }
   }
 
   private async throwIfCardDoesNotExistOrIsAlreadyLinked(
