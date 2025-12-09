@@ -19,7 +19,7 @@ export class SplitVoucherPermissions1764944177810
       newPermissionName: 'payment:voucher-paper.read',
     });
 
-    // Add the new paper permission
+    // Add the new whatsapp permission
     await this.addNewPermission({
       manager: queryRunner.manager,
       newPermissionName: 'payment:voucher-whatsapp.read',
@@ -28,10 +28,10 @@ export class SplitVoucherPermissions1764944177810
     await queryRunner.commitTransaction();
 
     // Get old permission ID and delete it from roles and permissions
-    const closestPermissionIdQuery: { id: number }[] = await queryRunner.query(`
-      SELECT "id" FROM "121-service".permission
-      WHERE "name" = '${this.closestPermissionName}'
-      `);
+    const closestPermissionIdQuery: { id: number }[] = await queryRunner.query(
+      `SELECT "id" FROM "121-service".permission WHERE "name" = $1`,
+      [this.closestPermissionName],
+    );
 
     if (closestPermissionIdQuery.length === 0) {
       return;
@@ -39,15 +39,15 @@ export class SplitVoucherPermissions1764944177810
 
     const closestPermissionId = closestPermissionIdQuery[0].id;
 
-    await queryRunner.query(`
-      DELETE FROM "121-service".user_role_permissions_permission
-      WHERE "permissionId" = ${closestPermissionId}
-      `);
+    await queryRunner.query(
+      `DELETE FROM "121-service".user_role_permissions_permission WHERE "permissionId" = $1`,
+      [closestPermissionId],
+    );
 
-    await queryRunner.query(`
-      DELETE FROM "121-service".permission
-      WHERE "id" = ${closestPermissionId}
-      `);
+    await queryRunner.query(
+      `DELETE FROM "121-service".permission WHERE "id" = $1`,
+      [closestPermissionId],
+    );
   }
 
   public async down(_queryRunner: QueryRunner): Promise<void> {
@@ -75,7 +75,7 @@ export class SplitVoucherPermissions1764944177810
     // Define closest permission to the new permission
     const closestPermission = this.closestPermissionName as PermissionEnum;
 
-    // Loop over all existing roles, if it has the closes permission, also add the new permission
+    // Loop over all existing roles, if it has the closest permission, also add the new permission
     const userRoleRepository = manager.getRepository(UserRoleEntity);
     const userRoles = await userRoleRepository.find({
       relations: ['permissions'],
