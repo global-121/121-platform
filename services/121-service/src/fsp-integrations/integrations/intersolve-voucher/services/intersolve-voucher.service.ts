@@ -476,7 +476,7 @@ export class IntersolveVoucherService {
     }
   }
 
-  public async exportVouchers(
+  public async getVoucherImage(
     referenceId: string,
     paymentId: number,
     programId: number,

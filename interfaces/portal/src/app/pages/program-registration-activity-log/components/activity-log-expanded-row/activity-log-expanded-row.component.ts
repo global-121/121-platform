@@ -83,9 +83,9 @@ export class ActivityLogExpandedRowComponent
   readonly canViewVoucher = computed(() => {
     if (
       this.isIntersolveVoucherPaper() &&
-      this.authService.hasAllPermissions({
+      this.authService.hasPermission({
         programId: this.context().programId(),
-        requiredPermissions: [PermissionEnum.PaymentVoucherPaperREAD],
+        requiredPermission: PermissionEnum.PaymentVoucherPaperREAD,
       })
     ) {
       return true;
@@ -93,9 +93,9 @@ export class ActivityLogExpandedRowComponent
 
     if (
       this.isIntersolveVoucherWhatsapp() &&
-      this.authService.hasAllPermissions({
+      this.authService.hasPermission({
         programId: this.context().programId(),
-        requiredPermissions: [PermissionEnum.PaymentVoucherWhatsappREAD],
+        requiredPermission: PermissionEnum.PaymentVoucherWhatsappREAD,
       })
     ) {
       return true;
