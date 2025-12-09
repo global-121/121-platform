@@ -82,12 +82,13 @@ export class ActivitiesService {
       availableTypes.push(ActivityTypeEnum.FspChange);
       availableTypes.push(ActivityTypeEnum.IgnoredDuplicate);
 
-      // ##TODO: it is a bit iffy that this now also uses the old method named 'Export'. We could use here instead the other endpoint, but it keeps coming back to make more sense if it's all one endpoint..
       events = (
-        await this.registrationEventsService.getRegistrationEventsExport({
-          programId,
-          searchOptions: { registrationId },
-        })
+        await this.registrationEventsService.getRegistrationEventsByRegistrationId(
+          {
+            programId,
+            registrationId,
+          },
+        )
       ).data;
 
       availableTypes.push(ActivityTypeEnum.Note);

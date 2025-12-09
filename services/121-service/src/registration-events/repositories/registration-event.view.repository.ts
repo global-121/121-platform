@@ -18,7 +18,7 @@ export class RegistrationEventViewScopedRepository extends ScopedRepository<Regi
     super(request, repository);
   }
 
-  public createQueryBuilderMonitoring(
+  public createQueryBuilderExcludingStatusChanges(
     programId: number,
   ): ReturnType<Repository<RegistrationEventViewEntity>['createQueryBuilder']> {
     return this.createQueryBuilder('event')
@@ -30,7 +30,7 @@ export class RegistrationEventViewScopedRepository extends ScopedRepository<Regi
       });
   }
 
-  public createQueryBuilderExport({
+  public createQueryBuilderWithSearchOptions({
     searchOptions,
     programId,
   }: {
@@ -39,11 +39,9 @@ export class RegistrationEventViewScopedRepository extends ScopedRepository<Regi
   }): ReturnType<
     Repository<RegistrationEventViewEntity>['createQueryBuilder']
   > {
-    return this.createQueryBuilder('event')
-      .andWhere('event.programId = :programId', {
-        programId,
-      })
-      .andWhere(this.createWhereClause(programId, searchOptions));
+    return this.createQueryBuilder('event').andWhere(
+      this.createWhereClause(programId, searchOptions),
+    );
   }
 
   private createWhereClause(

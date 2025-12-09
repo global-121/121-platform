@@ -43,23 +43,51 @@ export class RegistrationEventsService {
     private readonly registrationEventViewScopedRepository: RegistrationEventViewScopedRepository,
   ) {}
 
-  public getRegistrationEventsExport({
+  public getRegistrationEventsByRegistrationId({
+    programId,
+    registrationId,
+  }: {
+    programId: number;
+    registrationId: number;
+  }): Promise<FindAllRegistrationEventsResultDto> {
+    const searchOptions: RegistrationEventSearchOptionsDto = {
+      registrationId,
+    };
+    const queryBuilder =
+      this.registrationEventViewScopedRepository.createQueryBuilderWithSearchOptions(
+        {
+          programId,
+          searchOptions,
+        },
+      );
+
+    const paginateQuery = {} as PaginateQuery;
+    return this.getPaginatedRegistrationEvents({
+      paginateQuery,
+      queryBuilder,
+    });
+  }
+
+  public getRegistrationEvents({
     programId,
     searchOptions,
   }: {
     programId: number;
     searchOptions: RegistrationEventSearchOptionsDto;
   }): Promise<FindAllRegistrationEventsResultDto> {
-    const queryBuilderExport =
-      this.registrationEventViewScopedRepository.createQueryBuilderExport({
-        programId,
-        searchOptions,
-      });
+    const queryBuilder =
+      this.registrationEventViewScopedRepository.createQueryBuilderWithSearchOptions(
+        {
+          programId,
+          searchOptions,
+        },
+      );
 
     const exportLimit = 500_000;
+    const paginateQuery = { limit: exportLimit } as PaginateQuery;
     return this.getPaginatedRegistrationEvents({
-      paginateQuery: { limit: exportLimit } as PaginateQuery,
-      queryBuilder: queryBuilderExport,
+      paginateQuery,
+      queryBuilder,
     });
   }
 
@@ -70,14 +98,14 @@ export class RegistrationEventsService {
     programId: number;
     paginateQuery: PaginateQuery;
   }): Promise<FindAllRegistrationEventsResultDto> {
-    const queryBuilderMonitoring =
-      this.registrationEventViewScopedRepository.createQueryBuilderMonitoring(
+    const queryBuilder =
+      this.registrationEventViewScopedRepository.createQueryBuilderExcludingStatusChanges(
         programId,
       );
 
     return this.getPaginatedRegistrationEvents({
       paginateQuery,
-      queryBuilder: queryBuilderMonitoring,
+      queryBuilder,
     });
   }
 
@@ -96,7 +124,7 @@ export class RegistrationEventsService {
       },
     );
 
-    return result as Paginated<PaginatedRegistrationEventDto>;
+    return result as Paginated<PaginatedRegistrationEventDto>; // This type-conversion is done to make our frontend happy as it cannot deal with typeorm entities
   }
 
   /**

@@ -38,7 +38,6 @@ export class RegistrationEventsController {
     private readonly registrationEventsService: RegistrationEventsService,
   ) {}
 
-  // We can later extend these permissions to different types when we get more types of events
   @AuthenticatedUser({
     permissions: [PermissionEnum.RegistrationPersonalEXPORT],
   })
@@ -64,8 +63,8 @@ export class RegistrationEventsController {
     description:
       'Format to return the data in. Options are "json" and "xlsx". Defaults to "json" if not specified. If "xlsx" is selected, the response will be a file download in which the data is slightly differently formatted for portal users.',
   })
-  @Get('programs/:programId/registration-events/export')
-  public async getEvents(
+  @Get('programs/:programId/registration-events')
+  public async getRegistrationEvents(
     @Param('programId', ParseIntPipe) programId: number,
     @Query() queryParams: GetRegistrationEventsQueryDto,
     @Query('format') format = 'json',
@@ -74,11 +73,10 @@ export class RegistrationEventsController {
     const searchOptions = {
       queryParams,
     };
-    const result =
-      await this.registrationEventsService.getRegistrationEventsExport({
-        programId,
-        searchOptions,
-      });
+    const result = await this.registrationEventsService.getRegistrationEvents({
+      programId,
+      searchOptions,
+    });
     if (result.data.length === 0) {
       const errorNoData = 'There is currently no data to export';
       throw new HttpException({ errors: errorNoData }, HttpStatus.NOT_FOUND);
