@@ -118,17 +118,6 @@ export const routes: Routes = [
         path: AppRoutes.programMonitoring,
         children: [
           {
-            path: AppRoutes.programMonitoringPowerBI,
-            title:
-              $localize`:@@page-title-program-monitoring-powerbi:PowerBI` +
-              ' | ' +
-              $localize`:@@page-title-program-monitoring:Monitoring`,
-            loadComponent: () =>
-              import(
-                '~/pages/program-monitoring-powerbi/program-monitoring-powerbi.page'
-              ).then((x) => x.ProgramMonitoringPowerbiPageComponent),
-          },
-          {
             path: AppRoutes.programMonitoringDashboard,
             title:
               $localize`:@@page-title-program-monitoring-dashboard:Dashboard` +
@@ -138,6 +127,17 @@ export const routes: Routes = [
               import(
                 '~/pages/program-monitoring-dashboard/program-monitoring-dashboard.page'
               ).then((x) => x.ProgramMonitoringDashboardPageComponent),
+          },
+          {
+            path: AppRoutes.programMonitoringPowerBI,
+            title:
+              $localize`:@@page-title-program-monitoring-powerbi:PowerBI` +
+              ' | ' +
+              $localize`:@@page-title-program-monitoring:Monitoring`,
+            loadComponent: () =>
+              import(
+                '~/pages/program-monitoring-powerbi/program-monitoring-powerbi.page'
+              ).then((x) => x.ProgramMonitoringPowerbiPageComponent),
           },
           {
             path: AppRoutes.programMonitoringFiles,
@@ -158,7 +158,7 @@ export const routes: Routes = [
           {
             path: ``,
             pathMatch: 'full',
-            redirectTo: AppRoutes.programMonitoringPowerBI,
+            redirectTo: AppRoutes.programMonitoringDashboard,
           },
         ],
       },
