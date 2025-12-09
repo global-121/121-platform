@@ -2,18 +2,15 @@ import { HttpStatus } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
-import {
-  getRegistrationEventsExport,
-  getRegistrationEventsMonitoring,
-} from '@121-service/test/helpers/program.helper';
+import { getRegistrationEventsMonitoring } from '@121-service/test/helpers/program.helper';
 import {
   createRegistrationUniques,
   duplicateRegistrationsAndPaymentData,
+  getRegistrationEvents,
   importRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
@@ -102,12 +99,9 @@ describe('Get paginated registrations events', () => {
 
     // Get all events for export
     const getAllEventsStartTime = Date.now();
-    const allEventsResponse = await getRegistrationEventsExport({
+    const allEventsResponse = await getRegistrationEvents({
       programId: programIdOCW,
       accessToken,
-      queryParams: {
-        format: ExportFileFormat.json,
-      },
     });
     const allEvents = allEventsResponse.body.data;
     const nrOfRegistrations = 2 * Math.pow(2, duplicateNumber);
