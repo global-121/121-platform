@@ -9,8 +9,6 @@ import {
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
 
-import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
-
 import { PageLayoutMonitoringComponent } from '~/components/page-layout-monitoring/page-layout-monitoring.component';
 import {
   QueryTableColumn,
@@ -74,32 +72,17 @@ export class ProgramMonitoringDataChangesPageComponent {
 
   readonly columns = computed<QueryTableColumn<RegistrationEvent>[]>(() => [
     {
-      field: 'type',
-      header: $localize`Type`,
-      type: QueryTableColumnType.MULTISELECT,
-      options: [
-        {
-          label: $localize`Data change`,
-          value: RegistrationEventEnum.registrationDataChange,
-        },
-        {
-          label: $localize`FSP change`,
-          value: RegistrationEventEnum.fspChange,
-        },
-        {
-          label: $localize`Ignored duplicate`,
-          value: RegistrationEventEnum.ignoredDuplicate,
-        },
-      ],
-    },
-    {
-      field: 'fieldChanged', // ##TODO make this a dropdown.
+      field: 'fieldChanged',
       header: $localize`Field changed`,
-      getCellText: (event) =>
-        this.registrationAttributeService.localizeAttribute({
-          attributes: this.registrationAttributes.data(),
-          attributeName: event.fieldChanged,
-        }),
+      type: QueryTableColumnType.MULTISELECT,
+      options:
+        this.registrationAttributes.data()?.map((attr) => ({
+          label: this.registrationAttributeService.localizeAttribute({
+            attributes: this.registrationAttributes.data(),
+            attributeName: attr.name,
+          }),
+          value: attr.name,
+        })) ?? [],
     },
     {
       field: 'registrationProgramId',

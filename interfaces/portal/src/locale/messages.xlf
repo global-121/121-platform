@@ -2039,18 +2039,6 @@
       <trans-unit id="registration-duplicate-status" datatype="html">
         <source>Duplicate status</source>
       </trans-unit>
-      <trans-unit id="2622503842938252830" datatype="html">
-        <source>FSP change</source>
-      </trans-unit>
-      <trans-unit id="340559381732842647" datatype="html">
-        <source>Data change</source>
-      </trans-unit>
-      <trans-unit id="3874771314046578698" datatype="html">
-        <source>Ignored duplicate</source>
-      </trans-unit>
-      <trans-unit id="8650499415827640724" datatype="html">
-        <source>Type</source>
-      </trans-unit>
     </body>
   </file>
 </xliff>
