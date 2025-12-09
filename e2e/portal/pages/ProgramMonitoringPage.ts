@@ -65,6 +65,7 @@ class ProgramMonitoring extends BasePage {
       'Program description',
     );
 
+    await this.selectTab({ tabName: 'PowerBI' });
     const iframe = await this.monitoringIframe.locator('iframe').all();
     if (shouldHaveIframe) {
       expect(iframe.length).toBe(1);
