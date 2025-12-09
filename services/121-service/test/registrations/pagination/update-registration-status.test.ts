@@ -85,7 +85,7 @@ describe('change the status of a set of registrations', () => {
       const event = eventsResponse.body.data.find(
         (event) =>
           event.registrationId === registration.id &&
-          event.attributes.newValue === newStatus,
+          event.newValue === newStatus,
       );
 
       expect(event).toBeDefined();

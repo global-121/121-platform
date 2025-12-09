@@ -48,7 +48,7 @@ describe('Set registration to completed after payment', () => {
         referenceId: registration.referenceId,
       })
     ).body.data.filter(
-      (event) => event.attributes.newValue === RegistrationStatusEnum.completed,
+      (event) => event.newValue === RegistrationStatusEnum.completed,
     );
     expect(statusChangeToCompleted.length).toBe(1);
 

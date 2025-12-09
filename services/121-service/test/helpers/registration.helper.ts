@@ -427,7 +427,7 @@ export async function waitForStatusChangeToComplete({
     const filteredEvents = eventsResult.body.data.filter(
       (event) =>
         event.type === RegistrationEventEnum.registrationStatusChange &&
-        event.attributes.newValue === status,
+        event.newValue === status,
     );
     // If not all status change are done check again
     if (filteredEvents.length >= amountOfRegistrations) {
