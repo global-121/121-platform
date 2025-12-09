@@ -36,7 +36,7 @@ describe('Get events', () => {
     );
   });
 
-  it('should get program events with date parameters', async () => {
+  it('should get registration events with date parameters', async () => {
     // Arrange
     const reason = 'automated test';
     const dataToUpdate = {
@@ -46,7 +46,7 @@ describe('Get events', () => {
       oldValue:
         registrationVisa[DefaultRegistrationDataAttributeNames.phoneNumber],
       newValue: updatePhoneNumber,
-      fieldName: DefaultRegistrationDataAttributeNames.phoneNumber,
+      fieldChanged: DefaultRegistrationDataAttributeNames.phoneNumber,
       reason,
     };
     const date = new Date();
