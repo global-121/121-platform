@@ -845,7 +845,7 @@ export async function getRegistrationEvents({
   }
 
   return getServer()
-    .get(`/programs/${programId}/registration-events/export`)
+    .get(`/programs/${programId}/registration-events`)
     .set('Cookie', [accessToken])
     .query(queryParams)
     .send();

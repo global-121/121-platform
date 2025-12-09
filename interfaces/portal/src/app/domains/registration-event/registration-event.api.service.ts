@@ -23,7 +23,7 @@ export class RegistrationEventApiService extends DomainApiService {
     params: HttpParamsOptions['fromObject'];
   }) {
     return this.generateQueryOptions<Blob>({
-      path: [...BASE_ENDPOINT(programId), 'export'],
+      path: BASE_ENDPOINT(programId),
       params,
       responseAsBlob: true,
     });
