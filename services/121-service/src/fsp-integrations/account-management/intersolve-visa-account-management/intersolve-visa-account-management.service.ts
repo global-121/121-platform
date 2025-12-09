@@ -109,6 +109,10 @@ export class IntersolveVisaAccountManagementService {
       },
     );
 
+    await this.throwIfCardDistributionByMailEnabled(
+      registration.programFspConfigurationId,
+    );
+
     await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
 
     if (tokenCode) {
@@ -205,6 +209,10 @@ export class IntersolveVisaAccountManagementService {
         programId,
       });
 
+    await this.throwIfCardDistributionByMailEnabled(
+      registration.programFspConfigurationId,
+    );
+
     const dataFieldNames = getFspAttributeNames(Fsps.intersolveVisa);
     const contactInformation =
       await this.registrationsService.getContactInformation({
@@ -228,26 +236,33 @@ export class IntersolveVisaAccountManagementService {
 
     if (typeof brandCode !== 'string') {
       throw new HttpException(
-        'Missing or invalid brandCode or coverLetterCode for Intersolve Visa reissueCard',
+        'Missing or invalid brandCode for Intersolve Visa link card on-site',
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const intersolveVisaParentWallet =
-      await this.intersolveVisaService.getParentWalletOrCreate({
-        intersolveVisaCustomer,
-        brandCode,
+    await this.intersolveVisaService.linkPhysicalCardToCustomer({
+      intersolveVisaCustomer,
+      tokenCode,
+      brandCode,
+    });
+  }
+
+  private async throwIfCardDistributionByMailEnabled(
+    programFspConfigurationId: number,
+  ) {
+    const cardDistributionByMail =
+      await this.programFspConfigurationRepository.getPropertyValueByName({
+        programFspConfigurationId,
+        name: FspConfigurationProperties.cardDistributionByMail,
       });
 
-    await this.intersolveVisaService.linkParentWalletToCustomerIfUnlinked({
-      intersolveVisaCustomer,
-      intersolveVisaParentWallet,
-    });
-
-    await this.intersolveVisaService.linkWallets({
-      parentTokenCode: intersolveVisaParentWallet.tokenCode,
-      childTokenCode: tokenCode,
-    });
+    if (cardDistributionByMail === 'true') {
+      throw new HttpException(
+        `Cannot replace card on-site when card distribution by mail is enabled.`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   public async pauseCardAndSendMessage(

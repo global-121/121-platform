@@ -2008,9 +2008,6 @@
       </trans-unit>
       <trans-unit id="5803191628367780292" datatype="html">
         <source>You are about to retry <x equiv-text="formattedTransactionCount" id="PH"/> transaction(s). The transaction status will change to &apos;Processing&apos; until received by the registration.</source>
-      </trans-unit>`
-      <trans-unit id="1183614487113957266" datatype="html">
-        <source>Create new card</source>
       </trans-unit>
       <trans-unit id="5484768522828011721" datatype="html">
         <source>(matching fields: <x equiv-text="{{ matchingFieldNames }}" id="INTERPOLATION"/>)</source>
@@ -2039,8 +2036,8 @@
       <trans-unit id="debit-card-create-new-card-dialog-card-number-placeholder" datatype="html">
         <source>Enter card number</source>
       </trans-unit>
-      <trans-unit id="8591287882066642064" datatype="html">
-        <source>Postal card distribution</source>
+      <trans-unit id="2208706328996995680" datatype="html">
+        <source>Card distribution by mail</source>
       </trans-unit>
     </body>
   </file>
