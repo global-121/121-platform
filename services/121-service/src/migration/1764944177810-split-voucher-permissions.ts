@@ -28,7 +28,7 @@ export class SplitVoucherPermissions1764944177810
     await queryRunner.commitTransaction();
 
     // Get old permission ID and delete it from roles and permissions
-    const closestPermissionIdQuery: { id; number }[] = await queryRunner.query(`
+    const closestPermissionIdQuery: { id: number }[] = await queryRunner.query(`
       SELECT "id" FROM "121-service".permission
       WHERE "name" = '${this.closestPermissionName}'
       `);
