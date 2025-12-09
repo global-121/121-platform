@@ -562,7 +562,7 @@ export function retrieveAndUpdateVisaWalletsAndDetails(
     .send();
 }
 
-export function issueNewVisaCard(
+export function replaceVisaCardByMail(
   programId: number,
   referenceId: string,
   accessToken: string,
