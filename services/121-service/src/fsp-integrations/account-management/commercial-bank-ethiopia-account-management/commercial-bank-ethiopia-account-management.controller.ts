@@ -31,7 +31,7 @@ export class CommercialBankEthiopiaAccountManagementController {
       'Done retrieving and updating/inserting account enquiry data for all registrations in this program.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Put('programs/:programId/fsps/commercial-bank-ethiopia/account-enquiries')
+  @Put('programs/:programId/fsps/commercial-bank-ethiopia/accounts')
   public async retrieveAndUpsertAccountEnquiriesForProgram(
     @Param('programId', ParseIntPipe)
     programId: number,

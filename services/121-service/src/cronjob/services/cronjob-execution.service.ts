@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { CronjobExecutionHelperService } from '@121-service/src/cronjob/services/cronjob-execution-helper.service';
 import { ExchangeRatesService } from '@121-service/src/exchange-rates/services/exchange-rates.service';
 import { CommercialBankEthiopiaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/commercial-bank-ethiopia-account-management/commercial-bank-ethiopia-account-management.service';
+import { CooperativeBankOfOromiaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia-account-management/cooperative-bank-of-oromia-account-management.service';
 import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
 import { IntersolveVoucherCronService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher-cron.service';
 import { IntersolveVisaReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/intersolve-visa-reconciliation/intersolve-visa-reconciliation.service';
@@ -17,7 +18,8 @@ export class CronjobExecutionService {
     private readonly intersolveVoucherCronService: IntersolveVoucherCronService,
     private readonly intersolveVoucherReconciliationService: IntersolveVoucherReconciliationService,
     private readonly intersolveVisaReconciliationService: IntersolveVisaReconciliationService,
-    private readonly commercialBankEthiopiaReconciliationService: CommercialBankEthiopiaAccountManagementService,
+    private readonly commercialBankEthiopiaAccountManagementService: CommercialBankEthiopiaAccountManagementService,
+    private readonly cooperativeBankOfOromiaAccountManagementService: CooperativeBankOfOromiaAccountManagementService,
     private readonly nedbankReconciliationService: NedbankReconciliationService,
     private readonly onafriqReconciliationService: OnafriqReconciliationService,
     private readonly exchangeRatesService: ExchangeRatesService,
@@ -31,14 +33,21 @@ export class CronjobExecutionService {
     );
   }
 
-  public async cronValidateCommercialBankEthiopiaAccountEnquiries(): Promise<void> {
+  public async cronValidateCommercialBankEthiopiaAccounts(): Promise<void> {
     await this.cronjobExecutionHelperService.executeWithLogging(
-      'cronValidateCommercialBankEthiopiaAccountEnquiries',
+      'cronValidateCommercialBankEthiopiaAccounts',
       () =>
-        this.commercialBankEthiopiaReconciliationService.retrieveAndUpsertAccountEnquiries(),
+        this.commercialBankEthiopiaAccountManagementService.retrieveAndUpsertAccountEnquiries(),
     );
   }
 
+  public async cronValidateCooperativeBankOfOromiaAccounts(): Promise<void> {
+    await this.cronjobExecutionHelperService.executeWithLogging(
+      'cronValidateCooperativeBankOfOromiaAccounts',
+      () =>
+        this.cooperativeBankOfOromiaAccountManagementService.retrieveAndUpsertAccountInformation(),
+    );
+  }
   public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<void> {
     await this.cronjobExecutionHelperService.executeWithLogging(
       'cronRetrieveAndUpdatedUnusedIntersolveVouchers',

@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, Repository } from 'typeorm';
+import { Equal } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
@@ -10,14 +9,13 @@ import { CommercialBankEthiopiaService } from '@121-service/src/fsp-integrations
 import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class CommercialBankEthiopiaAccountManagementService {
-  @InjectRepository(ProgramEntity)
-  public programRepository: Repository<ProgramEntity>;
   @Inject(
     getScopedRepositoryProviderName(
       CommercialBankEthiopiaAccountEnquiriesEntity,
@@ -26,17 +24,20 @@ export class CommercialBankEthiopiaAccountManagementService {
   private readonly commercialBankEthiopiaAccountEnquiriesScopedRepo: ScopedRepository<CommercialBankEthiopiaAccountEnquiriesEntity>;
 
   public constructor(
+    private readonly programRepository: ProgramRepository,
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
     private readonly commercialBankEthiopiaApiService: CommercialBankEthiopiaApiService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
   ) {}
 
   public async retrieveAndUpsertAccountEnquiries(): Promise<number> {
-    const programs = await this.getAllProgramsWithCBE();
+    const programIds = await this.programRepository.getAllProgramIdsWithFsp(
+      Fsps.commercialBankEthiopia,
+    );
     let totalAccountEnquiries = 0;
-    for (const program of programs) {
+    for (const programId of programIds) {
       const accountEnquiriesPerProgram =
-        await this.retrieveAndUpsertAccountEnquiriesForProgram(program.id);
+        await this.retrieveAndUpsertAccountEnquiriesForProgram(programId);
       totalAccountEnquiries += accountEnquiriesPerProgram;
     }
     return totalAccountEnquiries;

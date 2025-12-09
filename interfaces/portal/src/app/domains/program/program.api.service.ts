@@ -379,7 +379,7 @@ export class ProgramApiService extends DomainApiService {
       path: [
         BASE_ENDPOINT,
         programId,
-        'fsps/commercial-bank-ethiopia/account-enquiries',
+        'fsps/commercial-bank-ethiopia/accounts',
       ],
     });
   }

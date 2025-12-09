@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common/decorators/core/injectable.decorator';
 
 import { env } from '@121-service/src/env';
-import { CooperativeBankOfOromiaApiPaymentResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-payment-response-body.dto';
+import { CooperativeBankOfOromiaApiAccountValidationErrorResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-account-validation-error-response-body.dto';
+import { CooperativeBankOfOromiaApiAccountValidationResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-account-validation-response-body.dto';
+import { CooperativeBankOfOromiaApiTransferErrorResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-transfer-error-response-body.dto';
 import { CooperativeBankOfOromiaApiTransferRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-transfer-request-body.dto';
+import { CooperativeBankOfOromiaApiTransferResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-api-transfer-response-body.dto';
 import { CooperativeBankOfOromiaTransferResultEnum } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/enums/cooperative-bank-of-oromia-disbursement-result.enum';
 import { CooperativeBankOfOromiaTransferMessageEnum } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/enums/cooperative-bank-of-oromia-transfer-messages.enum';
 
@@ -28,8 +31,25 @@ export class CooperativeBankOfOromiaApiHelperService {
     };
   }
 
+  public handleAccountValidationResponse(
+    responseData: CooperativeBankOfOromiaApiAccountValidationResponseBodyDto,
+  ): {
+    cooperativeBankOfOromiaName?: string;
+    errorMessage?: string;
+  } {
+    if (responseData && responseData.success === true) {
+      return {
+        cooperativeBankOfOromiaName: responseData.data?.accountTitle,
+      };
+    }
+
+    return {
+      errorMessage: this.parseAccountValidationErrorMessage(responseData.error),
+    };
+  }
+
   public handleTransferResponse(
-    responseData: CooperativeBankOfOromiaApiPaymentResponseBodyDto,
+    responseData: CooperativeBankOfOromiaApiTransferResponseBodyDto,
   ): { result: CooperativeBankOfOromiaTransferResultEnum; message?: string } {
     if (responseData && responseData.success === true) {
       return {
@@ -49,18 +69,30 @@ export class CooperativeBankOfOromiaApiHelperService {
 
     return {
       result: CooperativeBankOfOromiaTransferResultEnum.fail,
-      message: this.parseErrorMessage(responseData),
+      message: this.parseTransferErrorMessage(responseData.error),
     };
   }
 
-  private parseErrorMessage(
-    responseData: CooperativeBankOfOromiaApiPaymentResponseBodyDto,
+  private parseTransferErrorMessage(
+    errorObject?: CooperativeBankOfOromiaApiTransferErrorResponseBodyDto,
   ): string {
-    const errorObject = responseData.error;
     if (!errorObject) {
-      return 'Unknown error occurred';
+      return this.unknownError();
     }
 
-    return `Error description: ${errorObject.description}, Error Code: ${errorObject.code}, Message: ${errorObject.messages}`;
+    return `Error description: ${errorObject.description}, Error Code: ${errorObject.code}, Message: ${errorObject.messages || errorObject.message}`;
+  }
+
+  private parseAccountValidationErrorMessage(
+    errorObject?: CooperativeBankOfOromiaApiAccountValidationErrorResponseBodyDto,
+  ): string {
+    if (!errorObject || !errorObject.message) {
+      return this.unknownError();
+    }
+    return `Message: ${errorObject.message}`;
+  }
+
+  private unknownError(): string {
+    return 'Unknown error occurred';
   }
 }

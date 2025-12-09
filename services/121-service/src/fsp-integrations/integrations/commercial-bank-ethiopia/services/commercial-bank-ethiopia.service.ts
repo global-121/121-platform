@@ -136,7 +136,7 @@ export class CommercialBankEthiopiaService {
     return requiredCredentials;
   }
 
-  public async getAllPaValidations(
+  public async getAccountVerificationReport(
     programId: number,
   ): Promise<CommercialBankEthiopiaValidationReportDto> {
     const programPAs =

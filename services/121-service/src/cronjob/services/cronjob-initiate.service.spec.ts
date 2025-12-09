@@ -31,11 +31,11 @@ describe('Cronjob initiation', () => {
       .mockResolvedValue(true);
 
     // Act
-    await cronjobInitiateService.cronValidateCommercialBankEthiopiaAccountEnquiries();
+    await cronjobInitiateService.cronValidateCommercialBankEthiopiaAccounts();
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
-    const calledUrl = `${expectedCronjobUrl}/fsps/commercial-bank-ethiopia/account-enquiries`;
+    const calledUrl = `${expectedCronjobUrl}/fsps/commercial-bank-ethiopia/accounts`;
     expect(mockFn).toHaveBeenCalledWith(calledUrl, {}, testHeader);
 
     // Cleanup

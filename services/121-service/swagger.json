@@ -26,7 +26,12 @@
   },
   {
     "method": "put",
-    "path": "/api/cronjobs/fsps/commercial-bank-ethiopia/account-enquiries",
+    "path": "/api/cronjobs/fsps/commercial-bank-ethiopia/accounts",
+    "params": []
+  },
+  {
+    "method": "put",
+    "path": "/api/cronjobs/fsps/cooperative-bank-of-oromia/accounts",
     "params": []
   },
   {
@@ -475,14 +480,14 @@
   },
   {
     "method": "put",
-    "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/account-enquiries",
+    "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/accounts",
     "params": [
       "programId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/account-enquiries",
+    "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/accounts",
     "params": [
       "programId"
     ],
@@ -731,6 +736,21 @@
       "programId",
       "referenceId"
     ]
+  },
+  {
+    "method": "put",
+    "path": "/api/programs/{programId}/fsps/cooperative-bank-of-oromia/accounts",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/fsps/cooperative-bank-of-oromia/accounts",
+    "params": [
+      "programId"
+    ],
+    "returnType": "CooperativeBankOfOromiaAccountValidationReportDto"
   },
   {
     "method": "post",
