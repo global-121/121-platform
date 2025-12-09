@@ -1,18 +1,21 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
-import { getRegistrationEventsPaginated } from '@121-service/test/helpers/program.helper';
 import {
-  changeRegistrationStatus,
+  getRegistrationEventsExport,
+  getRegistrationEventsMonitoring,
+} from '@121-service/test/helpers/program.helper';
+import {
+  createRegistrationUniques,
   duplicateRegistrationsAndPaymentData,
   importRegistrations,
   updateRegistration,
-  waitForStatusChangeToComplete,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -21,10 +24,7 @@ import {
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 // eslint-disable-next-line n/no-process-env -- Only used in test-runs, not included in '@121-service/src/env'
-const duplicateNumber = parseInt(process.env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^17 = 131072
-
-const supportedNumberOfRecords = 400_000; // Adjust based on expected supported number. This is enough for 3 * 2^17 events
-const maxWaitTimeMs = 240_000; // 4 minutes
+const duplicateNumber = parseInt(process.env.DUPLICATE_NUMBER || '5'); // cronjob duplicate number should be 2^16 = 64k registrations * 2 = 131k
 const testTimeout = 5_400_000; // 90 minutes
 
 jest.setTimeout(testTimeout);
@@ -38,40 +38,39 @@ describe('Get paginated registrations events', () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
-    // Upload registration
+    // Import 2 duplicate registrations
+    const registrationVisa2 = {
+      ...registrationVisa,
+      referenceId: 'perf-test-002',
+    };
     const importRegistrationResponse = await importRegistrations(
       programIdOCW,
-      [registrationVisa],
+      [registrationVisa, registrationVisa2],
       accessToken,
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
-    // Change status of registration to 'included'
-    const changeStatusResponse = await changeRegistrationStatus({
-      programId: programIdOCW,
-      status: RegistrationStatusEnum.included,
-      accessToken,
-    });
-    expect(changeStatusResponse.statusCode).toBe(HttpStatus.ACCEPTED);
-    await waitForStatusChangeToComplete({
-      programId: programIdOCW,
-      amountOfRegistrations: 1,
-      status: RegistrationStatusEnum.included,
-      maxWaitTimeMs,
-      accessToken,
-    });
-    // Make data change for registration
+    // Make data change & FSP change for 1 registration
     await updateRegistration(
       programIdOCW,
       registrationVisa.referenceId,
       {
         [GenericRegistrationAttributes.preferredLanguage]:
           RegistrationPreferredLanguage.ar,
+        [GenericRegistrationAttributes.programFspConfigurationName]:
+          Fsps.intersolveVoucherWhatsapp,
       },
       'test',
       accessToken,
     );
-    // Duplicate registrations > including registration-events
-    const duplicateRegistrationsResponse =
+    // Mark pair as unique
+    await createRegistrationUniques({
+      programId: programIdOCW,
+      registrationIds: [2, 4], // These are the ids of the 2 imported registrations
+      accessToken,
+      reason: 'test',
+    });
+    // Multiply registrations > including registration-events
+    const multiplyRegistrationsResponse =
       await duplicateRegistrationsAndPaymentData({
         powerNumberRegistration: duplicateNumber,
         includeRegistrationEvents: true,
@@ -80,11 +79,11 @@ describe('Get paginated registrations events', () => {
           secret: env.RESET_SECRET,
         },
       });
-    expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
+    expect(multiplyRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Get one page of events to test the duration of the api response
     const getEventsStartTime = Date.now();
-    const paginatedEventsResponse = await getRegistrationEventsPaginated({
+    const paginatedEventsResponse = await getRegistrationEventsMonitoring({
       programId: programIdOCW,
       accessToken,
       page: 1,
@@ -101,16 +100,18 @@ describe('Get paginated registrations events', () => {
 
     expect(paginatedEventsResponse.statusCode).toBe(HttpStatus.OK);
 
-    // Get all events to simulate export
+    // Get all events for export
     const getAllEventsStartTime = Date.now();
-    const allEventsResponse = await getRegistrationEventsPaginated({
+    const allEventsResponse = await getRegistrationEventsExport({
       programId: programIdOCW,
       accessToken,
-      page: 1,
-      limit: supportedNumberOfRecords,
+      queryParams: {
+        format: ExportFileFormat.json,
+      },
     });
     const allEvents = allEventsResponse.body.data;
-    const expectedEvents = Math.pow(2, duplicateNumber); // each registration has 1 data change. Status changes are excluded here for now.
+    const nrOfRegistrations = 2 * Math.pow(2, duplicateNumber);
+    const expectedEvents = nrOfRegistrations * 3; // Half of the registrations has 4 events (status/data/FSP/unique), and half has 2 events (status/unique), so on average 3.
     expect(allEvents.length).toBe(expectedEvents);
     const getAllEventsElapsedTime = Date.now() - getAllEventsStartTime;
 

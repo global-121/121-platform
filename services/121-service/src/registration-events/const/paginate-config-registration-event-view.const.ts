@@ -14,6 +14,7 @@ const filterableColumns: Partial<{
   id: AllowedFiltersNumber,
   registrationProgramId: AllowedFiltersNumber,
   programId: AllowedFiltersNumber,
+  type: AllowedFiltersString,
   fieldChanged: AllowedFiltersString,
   oldValue: AllowedFiltersString,
   newValue: AllowedFiltersString,

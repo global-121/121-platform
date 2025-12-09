@@ -15,9 +15,9 @@ import {
   QueryTableColumnType,
   QueryTableComponent,
 } from '~/components/query-table/query-table.component';
-import { EventApiService } from '~/domains/event/event.api.service';
-import { RegistrationEvent } from '~/domains/event/event.model';
 import { registrationLink } from '~/domains/registration/registration.helper';
+import { RegistrationEventApiService } from '~/domains/registration-event/registration-event.api.service';
+import { RegistrationEvent } from '~/domains/registration-event/registration-event.model';
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
 import { getUniqueUserOptions } from '~/utils/unique-users';
@@ -36,7 +36,7 @@ export class ProgramMonitoringDataChangesPageComponent {
     RegistrationEvent | undefined
   >(undefined);
 
-  private readonly eventApiService = inject(EventApiService);
+  private readonly eventApiService = inject(RegistrationEventApiService);
   private readonly registrationAttributeService = inject(
     RegistrationAttributeService,
   );
@@ -60,7 +60,7 @@ export class ProgramMonitoringDataChangesPageComponent {
   );
 
   eventsResponse = injectQuery(
-    this.eventApiService.getEventsPaginated({
+    this.eventApiService.getRegistrationEventsMonitoring({
       programId: this.programId,
       paginateQuery: this.eventsPaginateQuery,
     }),
@@ -72,13 +72,17 @@ export class ProgramMonitoringDataChangesPageComponent {
 
   readonly columns = computed<QueryTableColumn<RegistrationEvent>[]>(() => [
     {
-      field: 'fieldChanged', // ##TODO make this a dropdown.
+      field: 'fieldChanged',
       header: $localize`Field changed`,
-      getCellText: (event) =>
-        this.registrationAttributeService.localizeAttribute({
-          attributes: this.registrationAttributes.data(),
-          attributeName: event.fieldChanged,
-        }),
+      type: QueryTableColumnType.MULTISELECT,
+      options:
+        this.registrationAttributes.data()?.map((attr) => ({
+          label: this.registrationAttributeService.localizeAttribute({
+            attributes: this.registrationAttributes.data(),
+            attributeName: attr.name,
+          }),
+          value: attr.name,
+        })) ?? [],
     },
     {
       field: 'registrationProgramId',
@@ -93,16 +97,6 @@ export class ProgramMonitoringDataChangesPageComponent {
       type: QueryTableColumnType.NUMERIC,
     },
     {
-      field: 'newValue',
-      header: $localize`New value`,
-      getCellText: (event) =>
-        this.registrationAttributeService.localizeAttribute({
-          attributes: this.registrationAttributes.data(),
-          attributeName: event.fieldChanged,
-          attributeOptionValue: event.newValue,
-        }),
-    },
-    {
       field: 'oldValue',
       header: $localize`Old value`,
       getCellText: (event) =>
@@ -110,6 +104,16 @@ export class ProgramMonitoringDataChangesPageComponent {
           attributes: this.registrationAttributes.data(),
           attributeName: event.fieldChanged,
           attributeOptionValue: event.oldValue,
+        }),
+    },
+    {
+      field: 'newValue',
+      header: $localize`New value`,
+      getCellText: (event) =>
+        this.registrationAttributeService.localizeAttribute({
+          attributes: this.registrationAttributes.data(),
+          attributeName: event.fieldChanged,
+          attributeOptionValue: event.newValue,
         }),
     },
     {

@@ -693,7 +693,7 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/registration-events",
+    "path": "/api/programs/{programId}/registration-events/export",
     "params": [
       "programId",
       "format",
@@ -704,7 +704,7 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/registration-events/paginated",
+    "path": "/api/programs/{programId}/registration-events/monitoring",
     "params": [
       "programId",
       "page",
@@ -712,6 +712,7 @@
       "filter.id",
       "filter.registrationProgramId",
       "filter.programId",
+      "filter.type",
       "filter.fieldChanged",
       "filter.oldValue",
       "filter.newValue",
