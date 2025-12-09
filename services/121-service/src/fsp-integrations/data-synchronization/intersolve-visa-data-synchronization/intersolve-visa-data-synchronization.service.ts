@@ -24,22 +24,26 @@ export class IntersolveVisaDataSynchronizationService {
     contactInformation,
   }: {
     registrationId: number;
-    attribute: string;
+    attribute?: string;
     contactInformation: ContactInformation;
   }): Promise<void> {
-    if (
-      env.INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION &&
-      this.intersolveVisaAttributeNames.includes(attribute)
-    ) {
-      const registrationHasVisaCustomer =
-        await this.intersolveVisaService.hasIntersolveCustomer(registrationId);
-
-      if (registrationHasVisaCustomer) {
-        await this.intersolveVisaService.sendUpdatedCustomerInformation({
-          registrationId,
-          contactInformation,
-        });
+    if (attribute) {
+      if (
+        !env.INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION &&
+        !this.intersolveVisaAttributeNames.includes(attribute)
+      ) {
+        return;
       }
+    }
+
+    const registrationHasVisaCustomer =
+      await this.intersolveVisaService.hasIntersolveCustomer(registrationId);
+
+    if (registrationHasVisaCustomer) {
+      await this.intersolveVisaService.sendUpdatedCustomerInformation({
+        registrationId,
+        contactInformation,
+      });
     }
   }
 }

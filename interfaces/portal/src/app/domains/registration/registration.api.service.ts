@@ -311,7 +311,7 @@ export class RegistrationApiService extends DomainApiService {
     });
   }
 
-  reissueCard({
+  replaceCardByMail({
     programId,
     referenceId,
   }: {
@@ -325,6 +325,8 @@ export class RegistrationApiService extends DomainApiService {
       'intersolve-visa',
       'wallet',
       'cards',
+      'by-mail',
+      'replace',
     ]).join('/');
 
     return this.httpWrapperService.perform121ServiceRequest({
@@ -387,7 +389,7 @@ export class RegistrationApiService extends DomainApiService {
     });
   }
 
-  public replaceCard({
+  public replaceCardOnSite({
     programId,
     referenceId,
     tokenCode,

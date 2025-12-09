@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
+import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa-data-synchronization/intersolve-visa-data-synchronization.service';
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
@@ -26,6 +27,7 @@ export class IntersolveVisaAccountManagementService {
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly registrationsService: RegistrationsService,
+    private readonly intersolveVisaDataSynchronizationService: IntersolveVisaDataSynchronizationService,
   ) {}
 
   public async retrieveAndUpdateIntersolveVisaWalletAndCards(
@@ -297,28 +299,10 @@ export class IntersolveVisaAccountManagementService {
         dataFieldNames,
       });
 
-    await this.sendCustomerInformationToIntersolve({
-      registration,
+    await this.intersolveVisaDataSynchronizationService.syncData({
+      registrationId: registration.id,
       contactInformation,
     });
-  }
-
-  public async sendCustomerInformationToIntersolve({
-    registration,
-    contactInformation,
-  }: {
-    registration: RegistrationEntity;
-    contactInformation: ContactInformation;
-  }): Promise<void> {
-    const registrationHasVisaCustomer =
-      await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
-
-    if (registrationHasVisaCustomer) {
-      await this.intersolveVisaService.sendUpdatedCustomerInformation({
-        registrationId: registration.id,
-        contactInformation,
-      });
-    }
   }
 
   private async throwIfCardDoesNotExistOrIsAlreadyLinked(
