@@ -16,7 +16,7 @@ import {
   awaitChangeRegistrationStatus,
   getVisaWalletsAndDetails,
   importRegistrations,
-  issueNewVisaCard,
+  replaceVisaCardByMail,
   retrieveAndUpdateVisaWalletsAndDetails,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -72,7 +72,7 @@ describe('Load Visa debit cards and details', () => {
       maxWaitTimeMs: 30_000,
     });
     for (const registration of registrations) {
-      await issueNewVisaCard(
+      await replaceVisaCardByMail(
         programIdVisa,
         registration.referenceId,
         accessToken,

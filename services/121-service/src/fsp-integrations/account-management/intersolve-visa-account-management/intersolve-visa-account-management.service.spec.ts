@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.service';
+import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa-data-synchronization/intersolve-visa-data-synchronization.service';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
 import { FspConfigurationProperties } from '@121-service/src/fsp-management/enums/fsp-name.enum';
@@ -47,6 +48,12 @@ describe('IntersolveVisaAccountManagementService', () => {
           },
         },
         {
+          provide: IntersolveVisaDataSynchronizationService,
+          useValue: {
+            syncData: jest.fn(),
+          },
+        },
+        {
           provide: MessageQueuesService,
           useValue: {
             addMessageJob: jest.fn(),
@@ -57,12 +64,13 @@ describe('IntersolveVisaAccountManagementService', () => {
           useValue: {
             getWallet: jest.fn(),
             getCustomerOrCreate: jest.fn(),
-            getParentWalletOrCreate: jest.fn(),
-            linkParentWalletToCustomerIfUnlinked: jest.fn(),
-            linkWallets: jest.fn(),
+            linkPhysicalCardToCustomer: jest.fn(),
             pauseCardOrThrow: jest.fn(),
             retrieveAndUpdateWallet: jest.fn(),
             getWalletWithCards: jest.fn(),
+            hasIntersolveCustomer: jest.fn(),
+            reissueCard: jest.fn(),
+            sendUpdatedCustomerInformation: jest.fn(),
           },
         },
         {
@@ -136,7 +144,6 @@ describe('IntersolveVisaAccountManagementService', () => {
       } as any);
       mockGetRegistrationOrThrow(registration);
 
-      // Mock registration view data used to build contact information
       registrationsPaginationService.getRegistrationViewsByReferenceIds.mockResolvedValue(
         [
           {
@@ -154,17 +161,10 @@ describe('IntersolveVisaAccountManagementService', () => {
       const customer = { id: 1 } as any;
       intersolveVisaService.getCustomerOrCreate.mockResolvedValue(customer);
 
-      const parentWallet = { tokenCode: 'parent-token' } as any;
-      intersolveVisaService.getParentWalletOrCreate.mockResolvedValue(
-        parentWallet,
-      );
-
-      // Mock FSP configuration repository to return brand/cover letter codes via new method
       (
         programFspConfigurationRepository.getPropertyValueByName as jest.Mock
       ).mockImplementation(async ({ name }) => {
         if (name === FspConfigurationProperties.brandCode) return 'BRAND';
-        if (name === FspConfigurationProperties.coverLetterCode) return 'COVER';
         return undefined;
       });
 
@@ -175,16 +175,12 @@ describe('IntersolveVisaAccountManagementService', () => {
       });
 
       expect(
-        intersolveVisaService.linkParentWalletToCustomerIfUnlinked,
+        intersolveVisaService.linkPhysicalCardToCustomer,
       ).toHaveBeenCalledWith({
         intersolveVisaCustomer: customer,
-        intersolveVisaParentWallet: parentWallet,
+        tokenCode: 'child-token',
+        brandCode: 'BRAND',
       });
-      expect(intersolveVisaService.linkWallets).toHaveBeenCalledWith({
-        parentTokenCode: 'parent-token',
-        childTokenCode: 'child-token',
-      });
-      // Ensure customer was created with contact info
       expect(intersolveVisaService.getCustomerOrCreate).toHaveBeenCalledWith(
         expect.objectContaining({
           registrationId: registration.id,
