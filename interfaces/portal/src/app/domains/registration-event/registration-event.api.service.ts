@@ -2,7 +2,7 @@ import { HttpParamsOptions } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 
 import { DomainApiService } from '~/domains/domain-api.service';
-import { FindAllRegistrationEventsResult } from '~/domains/event/event.model';
+import { FindAllRegistrationEventsResult } from '~/domains/registration-event/registration-event.model';
 import { PaginateQuery } from '~/services/paginate-query.service';
 
 const BASE_ENDPOINT = (programId: Signal<number | string>) => [
@@ -14,8 +14,8 @@ const BASE_ENDPOINT = (programId: Signal<number | string>) => [
 @Injectable({
   providedIn: 'root',
 })
-export class EventApiService extends DomainApiService {
-  getEvents({
+export class RegistrationEventApiService extends DomainApiService {
+  getRegistrationEventsExport({
     programId,
     params,
   }: {
@@ -23,14 +23,13 @@ export class EventApiService extends DomainApiService {
     params: HttpParamsOptions['fromObject'];
   }) {
     return this.generateQueryOptions<Blob>({
-      path: BASE_ENDPOINT(programId),
+      path: [...BASE_ENDPOINT(programId), 'export'],
       params,
       responseAsBlob: true,
     });
   }
 
-  // ##TODO this will be combined with above endpoint into one
-  getEventsPaginated({
+  getRegistrationEventsMonitoring({
     programId,
     paginateQuery,
   }: {
@@ -38,7 +37,7 @@ export class EventApiService extends DomainApiService {
     paginateQuery: Signal<PaginateQuery | undefined>;
   }) {
     return this.generateQueryOptions<FindAllRegistrationEventsResult>({
-      path: [...BASE_ENDPOINT(programId), 'paginated'],
+      path: [...BASE_ENDPOINT(programId), 'monitoring'],
       paginateQuery: paginateQuery as Signal<PaginateQuery>,
       enabled: () => !!paginateQuery(),
     });
