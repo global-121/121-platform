@@ -1,2 +1,2 @@
-id,programId,registrationId,registrationProgramId,type,fieldChanged,oldValue,newValue,reason,duplicateWithRegistrationId,duplicateWithRegistrationProgramId,username,userId
-1,2,2,1,registrationStatusChange,status,,new,,,,admin@example.org,1
+id,registrationProgramId,type,fieldChanged,oldValue,newValue,reason,username
+1,1,registrationStatusChange,status,,new,,admin@example.org
