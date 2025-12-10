@@ -17,6 +17,8 @@ import { DialogModule } from 'primeng/dialog';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { SkeletonModule } from 'primeng/skeleton';
 
+import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 
@@ -33,6 +35,7 @@ export class ActivityLogVoucherDialogComponent {
   readonly paymentId = input.required<number>();
   readonly paymentDate = input.required<string>();
   readonly referenceId = input.required<string>();
+  readonly fsp = input.required<Fsps>();
 
   private readonly programApiService = inject(ProgramApiService);
   private readonly domSanitizer = inject(DomSanitizer);
@@ -51,6 +54,7 @@ export class ActivityLogVoucherDialogComponent {
       programId: this.programId,
       referenceId: this.referenceId(),
       paymentId: this.paymentId(),
+      fsp: this.fsp(),
     })(),
     enabled: this.dialogVisible(),
   }));

@@ -43,9 +43,11 @@ export class IntersolveVoucherController {
     private azureLogService: AzureLogService,
   ) {}
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentVoucherREAD] })
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.PaymentVoucherPaperREAD],
+  })
   @ApiOperation({
-    summary: '[SCOPED] Export Intersolve voucher image',
+    summary: '[SCOPED] Get Intersolve paper voucher image',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
@@ -55,14 +57,48 @@ export class IntersolveVoucherController {
     description:
       'Voucher exported - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
-  @Get('programs/:programId/fsps/intersolve-voucher/vouchers')
-  public async exportVouchers(
+  @Get('programs/:programId/fsps/intersolve-voucher/voucher-paper')
+  public async getPaperVoucherImage(
     @Param('programId', ParseIntPipe)
     programId: number,
     @Query() queryParams: IdentifyVoucherDto,
     @Res() response: Response,
   ): Promise<void> {
-    const blob = await this.intersolveVoucherService.exportVouchers(
+    const blob = await this.intersolveVoucherService.getVoucherImage(
+      queryParams.referenceId,
+      Number(queryParams.paymentId),
+      programId,
+    );
+    const bufferStream = new stream.PassThrough();
+    bufferStream.end(Buffer.from(blob, 'binary'));
+    response.writeHead(HttpStatus.OK, {
+      'Content-Type': 'image/png',
+    });
+    bufferStream.pipe(response);
+  }
+
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.PaymentVoucherWhatsappREAD],
+  })
+  @ApiOperation({
+    summary: '[SCOPED] Get Intersolve WhatsApp voucher image',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
+  @ApiQuery({ name: 'paymentId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'Voucher exported - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
+  @Get('programs/:programId/fsps/intersolve-voucher/voucher-whatsapp')
+  public async getWhatsappVoucherImage(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Query() queryParams: IdentifyVoucherDto,
+    @Res() response: Response,
+  ): Promise<void> {
+    const blob = await this.intersolveVoucherService.getVoucherImage(
       queryParams.referenceId,
       Number(queryParams.paymentId),
       programId,
