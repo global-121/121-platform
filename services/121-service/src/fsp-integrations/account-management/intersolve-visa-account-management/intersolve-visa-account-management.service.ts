@@ -477,7 +477,7 @@ export class IntersolveVisaAccountManagementService {
 
     if (intersolveVisaChildWallet.holderId) {
       throw new HttpException(
-        `Card is already linked to to someone else.`,
+        `Card is already linked to someone else.`,
         HttpStatus.BAD_REQUEST,
       );
     }
