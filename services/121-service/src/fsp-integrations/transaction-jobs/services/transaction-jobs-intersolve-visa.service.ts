@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { DoTransferOrIssueCardResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/do-transfer-or-issue-card-result.interface';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
+import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
@@ -21,6 +22,7 @@ export class TransactionJobsIntersolveVisaService {
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
     private readonly transactionRepository: TransactionRepository,
+    private readonly intersolveVisaChildWalletScopedRepository: IntersolveVisaChildWalletScopedRepository,
   ) {}
 
   public async processIntersolveVisaTransactionJob(
@@ -92,9 +94,14 @@ export class TransactionJobsIntersolveVisaService {
         transactionJob.programFspConfigurationId,
       );
 
-      const hasIntersolveCustomer =
-        await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
-      if (cardDistributionByMail === 'false' && !hasIntersolveCustomer) {
+      const isChildWalletLinkedToRegistration =
+        await this.intersolveVisaChildWalletScopedRepository.hasLinkedChildWalletForRegistrationId(
+          registration.id,
+        );
+      if (
+        cardDistributionByMail === 'false' &&
+        !isChildWalletLinkedToRegistration
+      ) {
         throw new IntersolveVisaApiError(
           'Cannot do a transaction when card distribution by mail is disabled and customer does not exist.',
         );

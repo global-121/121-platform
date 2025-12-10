@@ -7,11 +7,7 @@ import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/in
 import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
-import {
-  FspConfigurationProperties,
-  Fsps,
-} from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { getFspAttributeNames } from '@121-service/src/fsp-management/fsp-settings.helpers';
+import { FspConfigurationProperties } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -161,12 +157,10 @@ export class IntersolveVisaAccountManagementService {
     registrationId: number;
     programFspConfigurationId: number;
   }): Promise<void> {
-    const dataFieldNames = getFspAttributeNames(Fsps.intersolveVisa);
     const contactInformation: ContactInformation =
       await this.registrationsService.getContactInformation({
         referenceId,
         programId,
-        dataFieldNames,
       });
 
     await this.intersolveVisaService.sendUpdatedCustomerInformation({
@@ -245,12 +239,10 @@ export class IntersolveVisaAccountManagementService {
       registration.programFspConfigurationId,
     );
 
-    const dataFieldNames = getFspAttributeNames(Fsps.intersolveVisa);
     const contactInformation =
       await this.registrationsService.getContactInformation({
         referenceId,
         programId,
-        dataFieldNames,
       });
 
     const intersolveVisaCustomer =
@@ -333,12 +325,10 @@ export class IntersolveVisaAccountManagementService {
       },
     );
 
-    const dataFieldNames = getFspAttributeNames(Fsps.intersolveVisa);
     const contactInformation: ContactInformation =
       await this.registrationsService.getContactInformation({
         referenceId,
         programId,
-        dataFieldNames,
       });
 
     await this.intersolveVisaDataSynchronizationService.syncData({
