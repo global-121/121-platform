@@ -42,7 +42,8 @@ export class IntersolveVisaAccountManagementController {
 
   @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
   @ApiOperation({
-    summary: '[SCOPED] Re-issue card: replace existing card with a new card.',
+    summary:
+      '[SCOPED] Replace card: replace existing card with a new card and send it to the registration by mail',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
@@ -61,11 +62,11 @@ export class IntersolveVisaAccountManagementController {
     @Req() req,
   ): Promise<void> {
     const userId = req.user.id;
-    await this.intersolveVisaAccountManagementService.replaceCardByMail(
+    await this.intersolveVisaAccountManagementService.replaceCardByMail({
       referenceId,
       programId,
       userId,
-    );
+    });
   }
 
   @AuthenticatedUser()

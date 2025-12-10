@@ -20,6 +20,6 @@ import { UserModule } from '@121-service/src/user/user.module';
   ],
   controllers: [IntersolveVisaAccountManagementController],
   providers: [IntersolveVisaAccountManagementService],
-  exports: [IntersolveVisaAccountManagementService],
+  exports: [],
 })
 export class IntersolveVisaAccountManagementModule {}
