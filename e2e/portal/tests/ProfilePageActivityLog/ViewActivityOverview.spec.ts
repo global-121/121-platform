@@ -100,14 +100,12 @@ test.describe('as admin user', () => {
     });
   });
 
-  test('Expand rows of activity overview and view transaction history', async ({
-    page,
-  }) => {
+  test('View activity overview', async ({ page }) => {
     const activityLogPage = new RegistrationActivityLogPage(page);
     const tableComponent = new TableComponent(page);
     const registrationsPage = new RegistrationsPage(page);
     // Act
-    await test.step('Navigate to registration activity log', async () => {
+    await test.step('Navigate to activity overview', async () => {
       await activityLogPage.selectProgram(NLRCProgram.titlePortal.en);
       await registrationsPage.goToRegistrationByName({
         registrationName: registrationPV5.fullName,
@@ -115,7 +113,7 @@ test.describe('as admin user', () => {
     });
 
     // Assert
-    await test.step('Expand all activity rows and assert that they are expanded', async () => {
+    await test.step('Expand all rows and assert', async () => {
       // Mitigate the timeout issue when the table is not fully loaded
       await tableComponent.filterColumnByDropDownSelection({
         columnName: 'Activity',
@@ -146,7 +144,7 @@ test.describe('as admin user', () => {
       await tableComponent.closeViewTransactionHistory();
     });
 
-    await test.step('View current balance and view voucher button', async () => {
+    await test.step('View current balance and "view voucher" button', async () => {
       await tableComponent.filterColumnByDropDownSelection({
         columnName: 'Activity',
         selection: 'Transaction',
