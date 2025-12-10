@@ -4,6 +4,13 @@
 name: 'Build: Service'
 description: 'Builds a service for deployment.'
 
+#
+# NOTE! - This composite action is used externally!
+#
+# Make sure to verify changes to it will not break unexpectedly in other deployment-workflows.
+# See the "infrastructure"-repository.
+#
+
 inputs:
   servicePath:
     description: Location of the service code.
