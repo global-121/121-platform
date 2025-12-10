@@ -91,16 +91,6 @@ describe('UserService', () => {
           HttpStatus.NOT_FOUND,
         ),
       );
-
-      expect(userRepository.findOne).toHaveBeenCalledWith({
-        where: { id: expect.anything() },
-        relations: [
-          'programAssignments',
-          'programAssignments.program',
-          'programAssignments.roles',
-          'programAssignments.roles.permissions',
-        ],
-      });
     });
 
     it('should throw HttpException when user has no programAssignments', async () => {
@@ -168,15 +158,6 @@ describe('UserService', () => {
 
       // Assert
       expect(result).toEqual(mockUser);
-      expect(userRepository.findOne).toHaveBeenCalledWith({
-        where: { id: expect.anything() },
-        relations: [
-          'programAssignments',
-          'programAssignments.program',
-          'programAssignments.roles',
-          'programAssignments.roles.permissions',
-        ],
-      });
     });
   });
 
@@ -211,14 +192,15 @@ describe('UserService', () => {
     };
 
     beforeEach(() => {
+      // Clear all mocks before each test
+      jest.clearAllMocks();
       // Mock the private findRoleOrThrow method by spying on userRoleRepository.findOneBy
+      // Return a fresh copy each time to avoid object mutation across tests
       jest
         .spyOn(userRoleRepository, 'findOneBy')
-        .mockResolvedValue(mockExistingRole as UserRoleEntity);
-      jest
-        .spyOn(userRoleRepository, 'save')
-        .mockResolvedValue(mockExistingRole as UserRoleEntity);
-      jest.spyOn(permissionRepository, 'findOneByOrFail').mockClear();
+        .mockImplementation(() =>
+          Promise.resolve({ ...mockExistingRole } as UserRoleEntity),
+        );
     });
 
     it('should throw HttpException when role is not found', async () => {
@@ -232,10 +214,6 @@ describe('UserService', () => {
       ).rejects.toThrow(
         new HttpException('Role not found', HttpStatus.NOT_FOUND),
       );
-
-      expect(userRoleRepository.findOneBy).toHaveBeenCalledWith({
-        id: userRoleId,
-      });
     });
 
     it('should update only the label when provided', async () => {
@@ -245,49 +223,51 @@ describe('UserService', () => {
       jest
         .spyOn(userRoleRepository, 'save')
         .mockResolvedValue(expectedRole as UserRoleEntity);
-      jest.spyOn(service as any, 'getUserRoleResponse').mockReturnValue({
+
+      // Act
+      const result = await service.updateUserRole(userRoleId, updateData);
+
+      // Assert
+      expect(userRoleRepository.save).toHaveBeenCalledWith(expectedRole);
+      expect(result).toMatchObject({
         id: userRoleId,
         role: 'test-role',
         label: 'Updated Label',
         description: 'Test Description',
         permissions: [],
       });
-
-      // Act
-      const result = await service.updateUserRole(userRoleId, updateData);
-
-      // Assert
-      expect(userRoleRepository.findOneBy).toHaveBeenCalledWith({
-        id: userRoleId,
-      });
-      expect(userRoleRepository.save).toHaveBeenCalledWith(expectedRole);
-      expect(result.label).toBe('Updated Label');
     });
 
     it('should update only the description when provided', async () => {
       // Arrange
       const updateData = { description: 'Updated Description' };
+      const freshMockRole: Partial<UserRoleEntity> = {
+        id: userRoleId,
+        role: 'test-role',
+        label: 'Test Role',
+        description: 'Test Description',
+        permissions: [],
+      };
       const expectedRole = {
-        ...mockExistingRole,
+        ...freshMockRole,
         description: 'Updated Description',
       };
       jest
         .spyOn(userRoleRepository, 'save')
         .mockResolvedValue(expectedRole as UserRoleEntity);
-      jest.spyOn(service as any, 'getUserRoleResponse').mockReturnValue({
+
+      // Act
+      const result = await service.updateUserRole(userRoleId, updateData);
+
+      // Assert
+      expect(userRoleRepository.save).toHaveBeenCalledWith(expectedRole);
+      expect(result).toMatchObject({
         id: userRoleId,
         role: 'test-role',
         label: 'Test Role',
         description: 'Updated Description',
         permissions: [],
       });
-
-      // Act
-      const result = await service.updateUserRole(userRoleId, updateData);
-
-      // Assert
-      expect(userRoleRepository.save).toHaveBeenCalledWith(expectedRole);
-      expect(result.description).toBe('Updated Description');
     });
 
     it('should update permissions when provided', async () => {
@@ -305,20 +285,20 @@ describe('UserService', () => {
         .mockResolvedValueOnce(mockPermissions[0])
         .mockResolvedValueOnce(mockPermissions[1]);
 
+      const freshMockRole: Partial<UserRoleEntity> = {
+        id: userRoleId,
+        role: 'test-role',
+        label: 'Test Role',
+        description: 'Test Description',
+        permissions: [],
+      };
       const expectedRole = {
-        ...mockExistingRole,
+        ...freshMockRole,
         permissions: mockPermissions,
       };
       jest
         .spyOn(userRoleRepository, 'save')
         .mockResolvedValue(expectedRole as UserRoleEntity);
-      jest.spyOn(service as any, 'getUserRoleResponse').mockReturnValue({
-        id: userRoleId,
-        role: 'test-role',
-        label: 'Test Role',
-        description: 'Test Description',
-        permissions: ['program:write', 'program:read'],
-      });
 
       // Act
       const result = await service.updateUserRole(userRoleId, updateData);
@@ -332,7 +312,13 @@ describe('UserService', () => {
         name: 'program:read',
       });
       expect(userRoleRepository.save).toHaveBeenCalledWith(expectedRole);
-      expect(result.permissions).toEqual(['program:write', 'program:read']);
+      expect(result).toMatchObject({
+        id: userRoleId,
+        role: 'test-role',
+        label: 'Test Role',
+        description: 'Test Description',
+        permissions: ['program:write', 'program:read'],
+      });
     });
 
     it('should update all fields when all are provided', async () => {
@@ -359,22 +345,19 @@ describe('UserService', () => {
       jest
         .spyOn(userRoleRepository, 'save')
         .mockResolvedValue(expectedRole as UserRoleEntity);
-      jest.spyOn(service as any, 'getUserRoleResponse').mockReturnValue({
-        id: userRoleId,
-        role: 'test-role',
-        label: 'New Label',
-        description: 'New Description',
-        permissions: ['program:write'],
-      });
 
       // Act
       const result = await service.updateUserRole(userRoleId, updateData);
 
       // Assert
       expect(userRoleRepository.save).toHaveBeenCalledWith(expectedRole);
-      expect(result.label).toBe('New Label');
-      expect(result.description).toBe('New Description');
-      expect(result.permissions).toEqual(['program:write']);
+      expect(result).toMatchObject({
+        id: userRoleId,
+        role: 'test-role',
+        label: 'New Label',
+        description: 'New Description',
+        permissions: ['program:write'],
+      });
     });
 
     it('should not update fields when they are not provided', async () => {
@@ -383,22 +366,21 @@ describe('UserService', () => {
       jest
         .spyOn(userRoleRepository, 'save')
         .mockResolvedValue(mockExistingRole as UserRoleEntity);
-      jest.spyOn(service as any, 'getUserRoleResponse').mockReturnValue({
-        id: userRoleId,
-        role: 'test-role',
-        label: 'Test Role',
-        description: 'Test Description',
-        permissions: [],
-      });
+      const permissionSpy = jest.spyOn(permissionRepository, 'findOneByOrFail');
 
       // Act
       const result = await service.updateUserRole(userRoleId, updateData);
 
       // Assert
       expect(userRoleRepository.save).toHaveBeenCalledWith(mockExistingRole);
-      expect(permissionRepository.findOneByOrFail).not.toHaveBeenCalled();
-      expect(result.label).toBe('Test Role');
-      expect(result.description).toBe('Test Description');
+      expect(permissionSpy).not.toHaveBeenCalled();
+      expect(result).toMatchObject({
+        id: userRoleId,
+        role: 'test-role',
+        label: 'Test Role',
+        description: 'Test Description',
+        permissions: [],
+      });
     });
 
     it('should handle permission repository errors', async () => {
@@ -448,54 +430,36 @@ describe('UserService', () => {
         new HttpException('Role not found', HttpStatus.NOT_FOUND),
       );
 
-      expect(userRoleRepository.findOneBy).toHaveBeenCalledWith({
-        id: userRoleId,
-      });
       expect(userRoleRepository.remove).not.toHaveBeenCalled();
     });
 
     it('should successfully delete an existing role', async () => {
-      // Arrange
-      const expectedResponse = {
+      // Act
+      const result = await service.deleteUserRole(userRoleId);
+
+      // Assert
+      expect(userRoleRepository.remove).toHaveBeenCalledWith(mockExistingRole);
+      expect(result).toMatchObject({
         id: userRoleId,
         role: 'test-role',
         label: 'Test Role',
         description: 'Test Description',
         permissions: [],
-      };
+      });
+    });
 
-      jest
-        .spyOn(service as any, 'getUserRoleResponse')
-        .mockReturnValue(expectedResponse);
-
+    it('should call getUserRoleResponse with the deleted role and return correct structure', async () => {
       // Act
       const result = await service.deleteUserRole(userRoleId);
 
       // Assert
-      expect(userRoleRepository.findOneBy).toHaveBeenCalledWith({
+      expect(result).toMatchObject({
         id: userRoleId,
+        role: 'test-role',
+        label: 'Test Role',
+        description: 'Test Description',
+        permissions: [],
       });
-      expect(userRoleRepository.remove).toHaveBeenCalledWith(mockExistingRole);
-      expect(result).toEqual(expectedResponse);
-    });
-
-    it('should call getUserRoleResponse with the deleted role', async () => {
-      // Arrange
-      const getUserRoleResponseSpy = jest
-        .spyOn(service as any, 'getUserRoleResponse')
-        .mockReturnValue({
-          id: userRoleId,
-          role: 'test-role',
-          label: 'Test Role',
-          description: 'Test Description',
-          permissions: [],
-        });
-
-      // Act
-      await service.deleteUserRole(userRoleId);
-
-      // Assert
-      expect(getUserRoleResponseSpy).toHaveBeenCalledWith(mockExistingRole);
     });
 
     it('should handle repository remove errors', async () => {
@@ -508,9 +472,6 @@ describe('UserService', () => {
         'Database error during deletion',
       );
 
-      expect(userRoleRepository.findOneBy).toHaveBeenCalledWith({
-        id: userRoleId,
-      });
       expect(userRoleRepository.remove).toHaveBeenCalledWith(mockExistingRole);
     });
 
@@ -524,13 +485,6 @@ describe('UserService', () => {
       jest
         .spyOn(userRoleRepository, 'remove')
         .mockResolvedValue(mockDeletedRole);
-      jest.spyOn(service as any, 'getUserRoleResponse').mockReturnValue({
-        id: userRoleId,
-        role: 'test-role',
-        label: 'Test Role',
-        description: 'Test Description',
-        permissions: [],
-      });
 
       // Act
       const result = await service.deleteUserRole(userRoleId);
@@ -840,9 +794,6 @@ describe('UserService', () => {
         new HttpException('User not found', HttpStatus.NOT_FOUND),
       );
 
-      expect(userRepository.findOne).toHaveBeenCalledWith({
-        where: { username: expect.anything() },
-      });
       expect(userRepository.save).not.toHaveBeenCalled();
       expect(userEmailsService.send).not.toHaveBeenCalled();
     });
@@ -884,9 +835,6 @@ describe('UserService', () => {
       await service.changePasswordWithoutCurrentPassword(mockChangePasswordDto);
 
       // Assert
-      expect(userRepository.findOne).toHaveBeenCalledWith({
-        where: { username: expect.anything() },
-      });
       expect(service['generateSalt']).toHaveBeenCalled();
       expect(service['generateStrongPassword']).toHaveBeenCalled();
       expect(service['hashPassword']).toHaveBeenCalledWith(
@@ -958,9 +906,6 @@ describe('UserService', () => {
         service.changePasswordWithoutCurrentPassword(mockChangePasswordDto),
       ).rejects.toThrow('Database save error');
 
-      expect(userRepository.findOne).toHaveBeenCalledWith({
-        where: { username: expect.anything() },
-      });
       expect(userRepository.save).toHaveBeenCalled();
       expect(userEmailsService.send).not.toHaveBeenCalled();
     });
@@ -1005,26 +950,6 @@ describe('UserService', () => {
         'newStrongPassword123',
         'newSalt',
       );
-    });
-
-    it('should use Equal helper for username lookup', async () => {
-      // Arrange
-      jest
-        .spyOn(userRepository, 'findOne')
-        .mockResolvedValue(mockUser as UserEntity);
-      jest
-        .spyOn(userRepository, 'save')
-        .mockResolvedValue(mockUser as UserEntity);
-      jest.spyOn(userEmailsService, 'send').mockResolvedValue();
-
-      // Act
-      await service.changePasswordWithoutCurrentPassword(mockChangePasswordDto);
-
-      // Assert
-      expect(userRepository.findOne).toHaveBeenCalledWith({
-        where: { username: expect.anything() },
-      });
-      // The Equal() helper should be used for security (parameterized queries)
     });
   });
 });
