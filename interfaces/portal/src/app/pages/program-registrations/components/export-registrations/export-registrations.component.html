@@ -103,7 +103,7 @@
 </app-form-dialog>
 <app-form-dialog
   #exportAccountVerificationDialog
-  header="Export account number verification"
+  header="CBE verification report"
   i18n-header
   headerIcon="pi pi-upload"
   [mutation]="exportCBEVerificationReportMutation"
@@ -112,5 +112,20 @@
   <p i18n>
     The data in this report is based on data that is imported every night from
     CBE. If you changed data today this will not be reflected in the report.
+  </p>
+</app-form-dialog>
+
+<app-form-dialog
+  #exportOromiaAccountVerificationDialog
+  header="Coopbank verification report"
+  i18n-header
+  headerIcon="pi pi-upload"
+  [mutation]="exportCooperativeBankOfOromiaVerificationReportMutation"
+  [mutationData]="undefined"
+>
+  <p i18n>
+    The data in this report is based on data that is imported every night from
+    Cooperative Bank of Oromia. If you changed data today this will not be
+    reflected in the report.
   </p>
 </app-form-dialog>

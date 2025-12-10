@@ -76,6 +76,10 @@ export class ExportRegistrationsComponent {
   );
   readonly exportAccountVerificationDialog =
     viewChild.required<FormDialogComponent>('exportAccountVerificationDialog');
+  readonly exportOromiaAccountVerificationDialog =
+    viewChild.required<FormDialogComponent>(
+      'exportOromiaAccountVerificationDialog',
+    );
 
   readonly exportSelectedActionData = signal<
     ActionDataWithPaginateQuery<Registration> | undefined
@@ -111,6 +115,13 @@ export class ExportRegistrationsComponent {
 
   exportCBEVerificationReportMutation = injectMutation(() =>
     this.exportService.getExportCBEVerificationReportMutation(
+      this.programId,
+      this.toastService,
+    ),
+  );
+
+  exportCooperativeBankOfOromiaVerificationReportMutation = injectMutation(() =>
+    this.exportService.getExportCooperativeBankOfOromiaVerificationReportMutation(
       this.programId,
       this.toastService,
     ),
@@ -161,7 +172,7 @@ export class ExportRegistrationsComponent {
       },
     },
     {
-      label: $localize`:@@export-verification:Account number verification`,
+      label: $localize`:@@export-verification-commercial-bank-of-ethiopia:Bank account number verification Commercial Bank of Ethiopia`,
       visible:
         this.isCBEProgram() &&
         this.authService.hasPermission({
@@ -178,7 +189,28 @@ export class ExportRegistrationsComponent {
           trackingEvent: {
             category: TrackingCategory.export,
             action: TrackingAction.clickProceedButton,
-            name: 'account-number-verification',
+            name: 'cbe-accouns-verification',
+          },
+        });
+      },
+    },
+    {
+      label: $localize`:@@export-verification-cooperative-bank-of-oromia:Bank account verification Cooperative Bank of Oromia`,
+      visible: this.authService.hasPermission({
+        programId: this.programId(),
+        requiredPermission: PermissionEnum.RegistrationPersonalREAD,
+      }),
+      command: () => {
+        this.trackingService.trackEvent({
+          category: TrackingCategory.export,
+          action: TrackingAction.selectDropdownOption,
+          name: 'cooperative-bank-of-oromia-accounts-verification',
+        });
+        this.exportOromiaAccountVerificationDialog().show({
+          trackingEvent: {
+            category: TrackingCategory.export,
+            action: TrackingAction.clickProceedButton,
+            name: 'cooperative-bank-of-oromia-accounts-verification',
           },
         });
       },
@@ -190,6 +222,14 @@ export class ExportRegistrationsComponent {
       .data()
       ?.programFspConfigurations.some(
         (fsp) => fsp.fspName === Fsps.commercialBankEthiopia,
+      ),
+  );
+
+  readonly isCooperativeBankOfOromiaProgram = computed(() =>
+    this.program
+      .data()
+      ?.programFspConfigurations.some(
+        (fsp) => fsp.fspName === Fsps.cooperativeBankOfOromia,
       ),
   );
 }
