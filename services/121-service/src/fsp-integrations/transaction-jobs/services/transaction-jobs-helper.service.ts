@@ -147,7 +147,7 @@ export class TransactionJobsHelperService {
     errorMessage,
   }: {
     context: SaveTransactionProgressAndUpdateRegistrationContext;
-    newTransactionStatus: TransactionStatusEnum;
+    newTransactionStatus?: TransactionStatusEnum;
     description: TransactionEventDescription;
     errorMessage?: string;
   }): Promise<void> {

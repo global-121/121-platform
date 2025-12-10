@@ -13,6 +13,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 @Injectable()
@@ -22,6 +23,7 @@ export class TransactionJobsSafaricomService {
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
     private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
+    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async processSafaricomTransactionJob(
@@ -56,6 +58,10 @@ export class TransactionJobsSafaricomService {
       originatorConversationId,
       transactionJob,
     );
+    await this.transactionsService.updateTransactionStatus({
+      transactionId: transactionJob.transactionId,
+      status: TransactionStatusEnum.waiting,
+    });
 
     // 4. Start the transfer, if failure update to error transaction and return early
     const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
@@ -97,7 +103,6 @@ export class TransactionJobsSafaricomService {
       {
         context: saveTransactionProgressAndUpdateRegistrationContext,
         description: TransactionEventDescription.safaricomRequestSent,
-        newTransactionStatus: TransactionStatusEnum.waiting,
       },
     );
   }

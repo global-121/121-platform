@@ -18,6 +18,7 @@ enum MockScenario {
   errorOnRequest = 'error-on-request',
   errorOnCallback = 'error-on-callback',
   errorOnCallbackForTimeOut = 'error-on-callback-for-timeout',
+  callbackTooEarly = 'callback-too-early',
 }
 @Injectable()
 export class SafaricomMockService {
@@ -40,6 +41,8 @@ export class SafaricomMockService {
       mockScenario = MockScenario.errorOnCallback;
     } else if (transferDto.PartyB === '254000000002') {
       mockScenario = MockScenario.errorOnCallbackForTimeOut;
+    } else if (transferDto.PartyB === '254000000003') {
+      mockScenario = MockScenario.callbackTooEarly;
     }
 
     if (mockScenario === MockScenario.errorOnRequest) {
@@ -60,6 +63,10 @@ export class SafaricomMockService {
     this.sendStatusCallback(transferDto, transferResponse, mockScenario).catch(
       (error) => console.log(error),
     );
+
+    if (mockScenario === MockScenario.callbackTooEarly) {
+      await setTimeout(1000);
+    }
 
     return transferResponse;
   }
@@ -151,7 +158,10 @@ export class SafaricomMockService {
     let url = IS_DEVELOPMENT
       ? `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomTransferCallback}`
       : transferDto.ResultURL;
-    if (mockScenario === MockScenario.success) {
+    if (
+      mockScenario === MockScenario.success ||
+      mockScenario === MockScenario.callbackTooEarly
+    ) {
       response = {
         Result: successStatus.Result,
       };
