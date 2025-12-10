@@ -53,14 +53,15 @@ export class TransactionJobsSafaricomService {
       `ReferenceId=${transactionJob.referenceId},TransactionId=${transactionJob.transactionId},Attempt=${failedTransactionAttempts}`,
     );
 
-    // 3. Create or update Safaricom Transfer with originatorConversationId
+    // 3a. Create or update Safaricom Transfer with originatorConversationId
     await this.upsertSafaricomTransfer(
       originatorConversationId,
       transactionJob,
     );
+    // 3b. And set transaction to 'waiting' here instead of after request, to avoid situation where that would overwrite an early 'success/error' callback again
     await this.transactionsService.updateTransactionStatus({
       transactionId: transactionJob.transactionId,
-      status: TransactionStatusEnum.waiting,
+      status: TransactionStatusEnum.waiting, // This will only go to 'success' via reconciliation process
     });
 
     // 4. Start the transfer, if failure update to error transaction and return early

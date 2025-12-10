@@ -13,6 +13,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
@@ -27,6 +28,7 @@ export class TransactionJobsOnafriqService {
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
+    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async processOnafriqTransactionJob(
@@ -59,8 +61,13 @@ export class TransactionJobsOnafriqService {
       `ReferenceId=${transactionJob.referenceId},TransactionId=${transactionJob.transactionId},Attempt=${failedTransactionAttempts}`,
     );
 
-    // 3. Create or update Onafriq Transaction with thirdPartyTransId
+    // 3a. Create or update Onafriq Transaction with thirdPartyTransId ..
     await this.upsertOnafriqTransaction(thirdPartyTransId, transactionJob);
+    // 3b. And set transaction to 'waiting' here instead of after request, to avoid situation where that would overwrite an early 'success/error' callback again
+    await this.transactionsService.updateTransactionStatus({
+      transactionId: transactionJob.transactionId,
+      status: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
+    });
 
     // 4. Start the transaction, if failure: update to error transaction and return early
     const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
@@ -111,7 +118,6 @@ export class TransactionJobsOnafriqService {
       {
         context: saveTransactionProgressAndUpdateRegistrationContext,
         description: TransactionEventDescription.onafriqRequestSent,
-        newTransactionStatus: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
       },
     );
   }
