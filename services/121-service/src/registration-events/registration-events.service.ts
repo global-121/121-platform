@@ -77,7 +77,7 @@ export class RegistrationEventsService {
   }): Promise<FindAllRegistrationEventsResultDto> {
     const select: (keyof RegistrationEventViewEntity)[] = [
       'id',
-      'registrationId', // ##TODO this is needed in some api-tests.. Find other solutiion to distinguish between json and xlsx. Wait for Sanne's response first.
+      'registrationId', // This is used in JSON-export and in API-tests. For xlsx-export this is slightly confusing (vs registrationProgramId), but acceptable for PO.
       'registrationProgramId',
       'type',
       'fieldChanged',
