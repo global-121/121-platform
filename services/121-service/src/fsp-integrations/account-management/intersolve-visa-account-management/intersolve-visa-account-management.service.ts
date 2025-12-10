@@ -370,12 +370,10 @@ export class IntersolveVisaAccountManagementService {
         programId,
       });
 
-    const dataFieldNames = getFspAttributeNames(Fsps.intersolveVisa);
     const contactInformation =
       await this.registrationsService.getContactInformation({
         referenceId,
         programId,
-        dataFieldNames,
       });
 
     const intersolveVisaCustomer =
@@ -458,12 +456,10 @@ export class IntersolveVisaAccountManagementService {
       },
     );
 
-    const dataFieldNames = getFspAttributeNames(Fsps.intersolveVisa);
     const contactInformation: ContactInformation =
       await this.registrationsService.getContactInformation({
         referenceId,
         programId,
-        dataFieldNames,
       });
 
     await this.intersolveVisaDataSynchronizationService.syncData({
