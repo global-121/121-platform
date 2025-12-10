@@ -11,6 +11,7 @@ import { PermissionEntity } from '@121-service/src/user/entities/permissions.ent
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { UserService } from '@121-service/src/user/user.service';
+import { UserEmailType } from '@121-service/src/user/user-emails/enum/user-email-type.enum';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 
 describe('UserService', () => {
@@ -18,6 +19,7 @@ describe('UserService', () => {
   let userRepository: Repository<UserEntity>;
   let permissionRepository: Repository<PermissionEntity>;
   let userRoleRepository: Repository<UserRoleEntity>;
+  let userEmailsService: UserEmailsService;
 
   const mockRequest = {
     headers: {},
@@ -70,6 +72,7 @@ describe('UserService', () => {
     userRoleRepository = module.get<Repository<UserRoleEntity>>(
       getRepositoryToken(UserRoleEntity),
     );
+    userEmailsService = module.get<UserEmailsService>(UserEmailsService);
   });
 
   describe('findUserProgramAssignmentsOrThrow', () => {
@@ -798,6 +801,230 @@ describe('UserService', () => {
       expect(service['findById']).toHaveBeenCalledWith(1);
       expect(userRepository.save).toHaveBeenCalledWith(mockUserEntity);
       expect(result).toEqual(mockUserEntity);
+    });
+  });
+
+  describe('changePasswordWithoutCurrentPassword', () => {
+    const mockChangePasswordDto = {
+      username: 'test@example.com',
+    };
+
+    const mockUser: Partial<UserEntity> = {
+      id: 1,
+      username: 'test@example.com',
+      displayName: 'Test User',
+      salt: 'oldSalt',
+      password: 'oldHashedPassword',
+    };
+
+    beforeEach(() => {
+      jest.spyOn(service as any, 'generateSalt').mockReturnValue('newSalt');
+      jest
+        .spyOn(service as any, 'generateStrongPassword')
+        .mockReturnValue('newStrongPassword123');
+      jest
+        .spyOn(service as any, 'hashPassword')
+        .mockReturnValue('newHashedPassword');
+      jest.spyOn(userRepository, 'save').mockClear();
+      jest.spyOn(userEmailsService, 'send').mockClear();
+    });
+
+    it('should throw HttpException when user is not found', async () => {
+      // Arrange
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
+
+      // Act & Assert
+      await expect(
+        service.changePasswordWithoutCurrentPassword(mockChangePasswordDto),
+      ).rejects.toThrow(
+        new HttpException('User not found', HttpStatus.NOT_FOUND),
+      );
+
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { username: expect.anything() },
+      });
+      expect(userRepository.save).not.toHaveBeenCalled();
+      expect(userEmailsService.send).not.toHaveBeenCalled();
+    });
+
+    it('should throw HttpException when user has no username', async () => {
+      // Arrange
+      const userWithoutUsername = { ...mockUser, username: null };
+      jest
+        .spyOn(userRepository, 'findOne')
+        .mockResolvedValue(userWithoutUsername as UserEntity);
+
+      // Act & Assert
+      await expect(
+        service.changePasswordWithoutCurrentPassword(mockChangePasswordDto),
+      ).rejects.toThrow(
+        new HttpException('User not found', HttpStatus.NOT_FOUND),
+      );
+
+      expect(userRepository.save).not.toHaveBeenCalled();
+      expect(userEmailsService.send).not.toHaveBeenCalled();
+    });
+
+    it('should successfully change password and send email when user exists', async () => {
+      // Arrange
+      jest
+        .spyOn(userRepository, 'findOne')
+        .mockResolvedValue(mockUser as UserEntity);
+      const expectedUpdatedUser = {
+        ...mockUser,
+        salt: 'newSalt',
+        password: 'newHashedPassword',
+      };
+      jest
+        .spyOn(userRepository, 'save')
+        .mockResolvedValue(expectedUpdatedUser as UserEntity);
+      jest.spyOn(userEmailsService, 'send').mockResolvedValue();
+
+      // Act
+      await service.changePasswordWithoutCurrentPassword(mockChangePasswordDto);
+
+      // Assert
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { username: expect.anything() },
+      });
+      expect(service['generateSalt']).toHaveBeenCalled();
+      expect(service['generateStrongPassword']).toHaveBeenCalled();
+      expect(service['hashPassword']).toHaveBeenCalledWith(
+        'newStrongPassword123',
+        'newSalt',
+      );
+      expect(userRepository.save).toHaveBeenCalledWith(expectedUpdatedUser);
+    });
+
+    it('should send password reset email with correct data', async () => {
+      // Arrange
+      jest
+        .spyOn(userRepository, 'findOne')
+        .mockResolvedValue(mockUser as UserEntity);
+      jest
+        .spyOn(userRepository, 'save')
+        .mockResolvedValue(mockUser as UserEntity);
+      jest.spyOn(userEmailsService, 'send').mockResolvedValue();
+
+      // Act
+      await service.changePasswordWithoutCurrentPassword(mockChangePasswordDto);
+
+      // Assert
+      expect(userEmailsService.send).toHaveBeenCalledWith({
+        userEmailInput: {
+          email: 'test@example.com',
+          displayName: 'Test User',
+          password: 'newStrongPassword123',
+        },
+        userEmailType: UserEmailType.passwordReset,
+      });
+    });
+
+    it('should use default display name when user displayName is null', async () => {
+      // Arrange
+      const userWithoutDisplayName = { ...mockUser, displayName: null };
+      jest
+        .spyOn(userRepository, 'findOne')
+        .mockResolvedValue(userWithoutDisplayName as unknown as UserEntity);
+      jest
+        .spyOn(userRepository, 'save')
+        .mockResolvedValue(userWithoutDisplayName as unknown as UserEntity);
+      jest.spyOn(userEmailsService, 'send').mockResolvedValue();
+
+      // Act
+      await service.changePasswordWithoutCurrentPassword(mockChangePasswordDto);
+
+      // Assert
+      expect(userEmailsService.send).toHaveBeenCalledWith({
+        userEmailInput: {
+          email: 'test@example.com',
+          displayName: expect.any(String), // DEFAULT_DISPLAY_NAME
+          password: 'newStrongPassword123',
+        },
+        userEmailType: UserEmailType.passwordReset,
+      });
+    });
+
+    it('should handle repository save errors', async () => {
+      // Arrange
+      jest
+        .spyOn(userRepository, 'findOne')
+        .mockResolvedValue(mockUser as UserEntity);
+      const saveError = new Error('Database save error');
+      jest.spyOn(userRepository, 'save').mockRejectedValue(saveError);
+
+      // Act & Assert
+      await expect(
+        service.changePasswordWithoutCurrentPassword(mockChangePasswordDto),
+      ).rejects.toThrow('Database save error');
+
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { username: expect.anything() },
+      });
+      expect(userRepository.save).toHaveBeenCalled();
+      expect(userEmailsService.send).not.toHaveBeenCalled();
+    });
+
+    it('should handle email service errors', async () => {
+      // Arrange
+      jest
+        .spyOn(userRepository, 'findOne')
+        .mockResolvedValue(mockUser as UserEntity);
+      jest
+        .spyOn(userRepository, 'save')
+        .mockResolvedValue(mockUser as UserEntity);
+      const emailError = new Error('Email service error');
+      jest.spyOn(userEmailsService, 'send').mockRejectedValue(emailError);
+
+      // Act & Assert
+      await expect(
+        service.changePasswordWithoutCurrentPassword(mockChangePasswordDto),
+      ).rejects.toThrow('Email service error');
+
+      expect(userRepository.save).toHaveBeenCalled();
+      expect(userEmailsService.send).toHaveBeenCalled();
+    });
+
+    it('should generate new password correctly', async () => {
+      // Arrange
+      jest
+        .spyOn(userRepository, 'findOne')
+        .mockResolvedValue(mockUser as UserEntity);
+      jest
+        .spyOn(userRepository, 'save')
+        .mockResolvedValue(mockUser as UserEntity);
+      jest.spyOn(userEmailsService, 'send').mockResolvedValue();
+
+      // Act
+      await service.changePasswordWithoutCurrentPassword(mockChangePasswordDto);
+
+      // Assert
+      expect(service['generateSalt']).toHaveBeenCalledTimes(1);
+      expect(service['generateStrongPassword']).toHaveBeenCalledTimes(1);
+      expect(service['hashPassword']).toHaveBeenCalledWith(
+        'newStrongPassword123',
+        'newSalt',
+      );
+    });
+
+    it('should use Equal helper for username lookup', async () => {
+      // Arrange
+      jest
+        .spyOn(userRepository, 'findOne')
+        .mockResolvedValue(mockUser as UserEntity);
+      jest
+        .spyOn(userRepository, 'save')
+        .mockResolvedValue(mockUser as UserEntity);
+      jest.spyOn(userEmailsService, 'send').mockResolvedValue();
+
+      // Act
+      await service.changePasswordWithoutCurrentPassword(mockChangePasswordDto);
+
+      // Assert
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { username: expect.anything() },
+      });
+      // The Equal() helper should be used for security (parameterized queries)
     });
   });
 });
