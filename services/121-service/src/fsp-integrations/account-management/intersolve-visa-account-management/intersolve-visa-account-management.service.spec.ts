@@ -133,9 +133,7 @@ describe('IntersolveVisaAccountManagementService', () => {
           programId: 1,
           tokenCode: 'token-1',
         }),
-      ).rejects.toThrow(
-        'Card is already linked to another customer at Intersolve.',
-      );
+      ).rejects.toThrow('Card is already linked to someone else.');
     });
 
     it('links the card when wallet is unlinked', async () => {
