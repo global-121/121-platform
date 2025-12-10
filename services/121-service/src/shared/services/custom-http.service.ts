@@ -10,13 +10,8 @@ import { catchError, lastValueFrom, map, of } from 'rxjs';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { maskValueKeepStart } from '@121-service/src/utils/mask-value.helper';
 
-export class Header {
-  public name: string;
-  public value?: string;
-}
-
 class Request {
-  public headers?: Header[];
+  public headers?: Headers;
   public url: string;
   public payload: any;
 }
@@ -35,7 +30,7 @@ export class CustomHttpService {
     this.defaultClient = defaultClient;
   }
 
-  public async get<T>(url: string, headers?: Header[]): Promise<T> {
+  public async get<T>(url: string, headers?: Headers): Promise<T> {
     return await lastValueFrom(
       this.httpService
         .get(url, {
@@ -61,7 +56,7 @@ export class CustomHttpService {
   public async post<T>(
     url: string,
     payload: any,
-    headers?: Header[],
+    headers?: Headers,
     httpsAgent?: https.Agent,
   ): Promise<T> {
     return await lastValueFrom(
@@ -87,7 +82,7 @@ export class CustomHttpService {
   public async put<T>(
     url: string,
     payload: any,
-    headers?: Header[],
+    headers?: Headers,
   ): Promise<T> {
     return await lastValueFrom(
       this.httpService
@@ -111,7 +106,7 @@ export class CustomHttpService {
   public async patch<T>(
     url: string,
     payload: any,
-    headers?: Header[],
+    headers?: Headers,
   ): Promise<T> {
     return await lastValueFrom(
       this.httpService
@@ -132,7 +127,7 @@ export class CustomHttpService {
     );
   }
 
-  public async delete<T>(url: string, headers?: Header[]): Promise<T> {
+  public async delete<T>(url: string, headers?: Headers): Promise<T> {
     return await lastValueFrom(
       this.httpService
         .delete(url, {
@@ -165,7 +160,7 @@ export class CustomHttpService {
     method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
     url: string;
     payload?: unknown;
-    headers?: Header[];
+    headers?: Headers;
     httpsAgent?: https.Agent;
   }): Promise<T> {
     const params: AxiosRequestConfig = {
@@ -196,14 +191,14 @@ export class CustomHttpService {
     );
   }
 
-  private createHeaders(headers?: Header[]): Record<string, string> {
+  private createHeaders(headers?: Headers): Record<string, string> {
     const returnHeaders: Record<string, string> = {
       'Content-Type': 'application/json',
     };
     if (headers) {
-      for (const header of headers) {
-        returnHeaders[header.name] = header.value || '';
-      }
+      headers.forEach((value, key) => {
+        returnHeaders[key] = value;
+      });
     }
     return returnHeaders;
   }

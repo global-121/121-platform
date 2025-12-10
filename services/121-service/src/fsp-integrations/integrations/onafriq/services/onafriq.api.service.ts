@@ -48,12 +48,8 @@ export class OnafriqApiService {
       corporateCode,
       callbackUrl: `${EXTERNAL_API.rootApi}/fsps/onafriq/callback`,
     };
-    const headers = [
-      {
-        name: 'password',
-        value: password,
-      },
-    ];
+    const headers = new Headers();
+    headers.append('password', password);
 
     let { status, statusText, data } =
       await this.httpService.post<OnafriqApiWebhookSubscribeResponseBody>(

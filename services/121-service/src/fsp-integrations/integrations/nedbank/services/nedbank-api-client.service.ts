@@ -6,10 +6,7 @@ import { v4 as uuid } from 'uuid';
 import { env } from '@121-service/src/env';
 import { NedbankApiError } from '@121-service/src/fsp-integrations/integrations/nedbank/errors/nedbank-api.error';
 import { NedbankApiHelperService } from '@121-service/src/fsp-integrations/integrations/nedbank/services/nedbank-api.helper.service';
-import {
-  CustomHttpService,
-  Header,
-} from '@121-service/src/shared/services/custom-http.service';
+import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 const nedbankApiUrl = env.MOCK_NEDBANK
   ? `${env.MOCK_SERVICE_URL}/api/fsp/nedbank`
@@ -83,25 +80,22 @@ export class NedbankApiClientService {
     );
   }
 
-  private createHeaders(): Header[] {
-    return [
-      { name: 'x-ibm-client-id', value: env.NEDBANK_CLIENT_ID },
-      {
-        name: 'x-ibm-client-secret',
-        value: env.NEDBANK_CLIENT_SECRET,
-      },
-      {
-        name: 'x-idempotency-key', // We use OrderCreateReference as 'idempotency' key and therefore set this thing with a random value
-        value: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString(),
-      },
-      {
-        name: 'x-jws-signature',
-        value: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString(), // Should be a random integer https://apim.nedbank.co.za/static/docs/cashout-create-order
-      },
-      { name: 'x-fapi-financial-id', value: 'OB/2017/001' }, // Should always be this value https://apim.nedbank.co.za/static/docs/cashout-create-order
-      { name: 'x-fapi-customer-ip-address', value: '0.0.0.0' }, // Should be a valid ip address, it does not seem to matter which one. For now we use a 0.0.0.0 to save us the trouble of setting an env for every server
-      { name: 'x-fapi-interaction-id', value: uuid() }, // Should be a UUID https://apim.nedbank.co.za/static/docs/cashout-create-order
-      { name: 'Content-Type', value: 'application/json' },
-    ];
+  private createHeaders(): Headers {
+    const headers = new Headers();
+    headers.append('x-ibm-client-id', env.NEDBANK_CLIENT_ID ?? '');
+    headers.append('x-ibm-client-secret', env.NEDBANK_CLIENT_SECRET ?? '');
+    headers.append(
+      'x-idempotency-key',
+      Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString(),
+    ); // We use OrderCreateReference as 'idempotency' key and therefore set this thing with a random value
+    headers.append(
+      'x-jws-signature',
+      Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString(),
+    ); // Should be a random integer https://apim.nedbank.co.za/static/docs/cashout-create-order
+    headers.append('x-fapi-financial-id', 'OB/2017/001'); // Should always be this value https://apim.nedbank.co.za/static/docs/cashout-create-order
+    headers.append('x-fapi-customer-ip-address', '0.0.0.0'); // Should be a valid ip address, it does not seem to matter which one. For now we use a 0.0.0.0 to save us the trouble of setting an env for every server
+    headers.append('x-fapi-interaction-id', uuid()); // Should be a UUID https://apim.nedbank.co.za/static/docs/cashout-create-order
+    headers.append('Content-Type', 'application/json');
+    return headers;
   }
 }
