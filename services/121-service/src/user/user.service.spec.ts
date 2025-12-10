@@ -436,4 +436,129 @@ describe('UserService', () => {
       });
     });
   });
+
+  describe('deleteUserRole', () => {
+    const userRoleId = 1;
+    const mockExistingRole: Partial<UserRoleEntity> = {
+      id: userRoleId,
+      role: 'test-role',
+      label: 'Test Role',
+      description: 'Test Description',
+      permissions: [],
+    };
+
+    beforeEach(() => {
+      // Mock the private findRoleOrThrow method by spying on userRoleRepository.findOneBy
+      jest
+        .spyOn(userRoleRepository, 'findOneBy')
+        .mockResolvedValue(mockExistingRole as UserRoleEntity);
+      jest
+        .spyOn(userRoleRepository, 'remove')
+        .mockResolvedValue(mockExistingRole as UserRoleEntity);
+    });
+
+    it('should throw HttpException when role is not found', async () => {
+      // Arrange
+      jest.spyOn(userRoleRepository, 'findOneBy').mockResolvedValue(null);
+
+      // Act & Assert
+      await expect(service.deleteUserRole(userRoleId)).rejects.toThrow(
+        new HttpException('Role not found', HttpStatus.NOT_FOUND),
+      );
+
+      expect(userRoleRepository.findOneBy).toHaveBeenCalledWith({
+        id: userRoleId,
+      });
+      expect(userRoleRepository.remove).not.toHaveBeenCalled();
+    });
+
+    it('should successfully delete an existing role', async () => {
+      // Arrange
+      const expectedResponse = {
+        id: userRoleId,
+        role: 'test-role',
+        label: 'Test Role',
+        description: 'Test Description',
+        permissions: [],
+      };
+
+      jest
+        .spyOn(service as any, 'getUserRoleResponse')
+        .mockReturnValue(expectedResponse);
+
+      // Act
+      const result = await service.deleteUserRole(userRoleId);
+
+      // Assert
+      expect(userRoleRepository.findOneBy).toHaveBeenCalledWith({
+        id: userRoleId,
+      });
+      expect(userRoleRepository.remove).toHaveBeenCalledWith(mockExistingRole);
+      expect(result).toEqual(expectedResponse);
+    });
+
+    it('should call getUserRoleResponse with the deleted role', async () => {
+      // Arrange
+      const getUserRoleResponseSpy = jest
+        .spyOn(service as any, 'getUserRoleResponse')
+        .mockReturnValue({
+          id: userRoleId,
+          role: 'test-role',
+          label: 'Test Role',
+          description: 'Test Description',
+          permissions: [],
+        });
+
+      // Act
+      await service.deleteUserRole(userRoleId);
+
+      // Assert
+      expect(getUserRoleResponseSpy).toHaveBeenCalledWith(mockExistingRole);
+    });
+
+    it('should handle repository remove errors', async () => {
+      // Arrange
+      const removeError = new Error('Database error during deletion');
+      jest.spyOn(userRoleRepository, 'remove').mockRejectedValue(removeError);
+
+      // Act & Assert
+      await expect(service.deleteUserRole(userRoleId)).rejects.toThrow(
+        'Database error during deletion',
+      );
+
+      expect(userRoleRepository.findOneBy).toHaveBeenCalledWith({
+        id: userRoleId,
+      });
+      expect(userRoleRepository.remove).toHaveBeenCalledWith(mockExistingRole);
+    });
+
+    it('should return the role data in the response format', async () => {
+      // Arrange
+      const mockDeletedRole = {
+        ...mockExistingRole,
+        id: userRoleId,
+      } as UserRoleEntity;
+
+      jest
+        .spyOn(userRoleRepository, 'remove')
+        .mockResolvedValue(mockDeletedRole);
+      jest.spyOn(service as any, 'getUserRoleResponse').mockReturnValue({
+        id: userRoleId,
+        role: 'test-role',
+        label: 'Test Role',
+        description: 'Test Description',
+        permissions: [],
+      });
+
+      // Act
+      const result = await service.deleteUserRole(userRoleId);
+
+      // Assert
+      expect(result).toHaveProperty('id', userRoleId);
+      expect(result).toHaveProperty('role', 'test-role');
+      expect(result).toHaveProperty('label', 'Test Role');
+      expect(result).toHaveProperty('description', 'Test Description');
+      expect(result).toHaveProperty('permissions', []);
+    });
+  });
 });
