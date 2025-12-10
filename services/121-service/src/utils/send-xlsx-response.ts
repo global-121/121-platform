@@ -1,3 +1,4 @@
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
 import * as XLSX from 'xlsx';
 
@@ -19,6 +20,12 @@ export function sendXlsxReponse(
 }
 
 export function arrayToXlsx(array: any[]): Buffer {
+  if (array.length > 1_000_000) {
+    throw new HttpException(
+      'Cannot export more than 1,000,000 rows to XLSX, please use a different filter',
+      HttpStatus.BAD_REQUEST,
+    );
+  }
   const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(array, {
     dense: true,
   });
