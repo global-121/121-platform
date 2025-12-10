@@ -227,7 +227,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
       },
     });
 
-    // Reissue card so both cards have a spend of 6000
+    // Replace card so both cards have a spend of 6000
     await replaceVisaCardByMail(
       programIdVisa,
       registrationOCW4.referenceId,

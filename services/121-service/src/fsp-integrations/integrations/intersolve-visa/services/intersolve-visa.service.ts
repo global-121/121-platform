@@ -832,6 +832,11 @@ export class IntersolveVisaService {
       parentTokenCode: intersolveVisaParentWallet.tokenCode,
       childTokenCode: tokenCode,
     });
+
+    await this.createChildWalletEntityForTokenCode({
+      intersolveVisaParentWallet,
+      tokenCode,
+    });
   }
 
   public async linkWallets({
@@ -845,5 +850,24 @@ export class IntersolveVisaService {
       parentTokenCode,
       childTokenCode,
     });
+  }
+
+  private async createChildWalletEntityForTokenCode({
+    intersolveVisaParentWallet,
+    tokenCode,
+  }: {
+    intersolveVisaParentWallet: IntersolveVisaParentWalletEntity;
+    tokenCode: string;
+  }): Promise<void> {
+    const newIntersolveVisaChildWallet = new IntersolveVisaChildWalletEntity();
+    newIntersolveVisaChildWallet.intersolveVisaParentWallet =
+      intersolveVisaParentWallet;
+    newIntersolveVisaChildWallet.tokenCode = tokenCode;
+    newIntersolveVisaChildWallet.walletStatus =
+      IntersolveVisaTokenStatus.Active;
+    newIntersolveVisaChildWallet.cardStatus = IntersolveVisaCardStatus.CardOk;
+    newIntersolveVisaChildWallet.isLinkedToParentWallet = true;
+    newIntersolveVisaChildWallet.lastExternalUpdate = new Date();
+    await this.updateChildWallet(newIntersolveVisaChildWallet);
   }
 }

@@ -5,8 +5,6 @@ import { Equal, FindOneOptions, In, Repository } from 'typeorm';
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa-data-synchronization/intersolve-visa-data-synchronization.service';
 import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
 import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { getFspAttributeNames } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -564,12 +562,10 @@ export class RegistrationsService {
       });
     }
 
-    const dataFieldNames = getFspAttributeNames(Fsps.intersolveVisa);
     const contactInformation: ContactInformation =
       await this.getContactInformation({
         referenceId: savedRegistration.referenceId,
         programId: savedRegistration.programId,
-        dataFieldNames,
       });
     await this.intersolveVisaDataSynchronizationService.syncData({
       registrationId: savedRegistration.id,
@@ -861,12 +857,20 @@ export class RegistrationsService {
   public async getContactInformation({
     referenceId,
     programId,
-    dataFieldNames = [],
   }: {
     referenceId: string;
     programId: number;
-    dataFieldNames: string[];
   }): Promise<ContactInformation> {
+    const dataFieldNames = [
+      FspAttributes.addressStreet,
+      FspAttributes.addressHouseNumber,
+      FspAttributes.addressHouseNumberAddition,
+      FspAttributes.addressPostalCode,
+      FspAttributes.addressCity,
+      FspAttributes.phoneNumber,
+      FspAttributes.fullName,
+    ];
+
     const registrationData = (
       await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
         {
