@@ -11,7 +11,10 @@ import { Strategy } from 'passport-jwt';
 import { env } from '@121-service/src/env';
 import { AuthenticatedUserParameters } from '@121-service/src/guards/authenticated-user.decorator';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
-import { InterfaceNames } from '@121-service/src/shared/enum/interface-names.enum';
+import {
+  INTERFACE_NAME_HEADER,
+  InterfaceNames,
+} from '@121-service/src/shared/enum/interface-names.enum';
 import { UserRequestData } from '@121-service/src/user/user.interface';
 import { UserService } from '@121-service/src/user/user.service';
 
@@ -26,8 +29,8 @@ export class CookieJwtStrategy
     super({
       jwtFromRequest: (req: any) => {
         let token = null;
-        const headerKey = 'x-121-interface';
-        const originInterface: InterfaceNames = req.headers[headerKey];
+        const originInterface: InterfaceNames =
+          req.headers[INTERFACE_NAME_HEADER];
 
         if (req && req.cookies) {
           switch (originInterface) {
