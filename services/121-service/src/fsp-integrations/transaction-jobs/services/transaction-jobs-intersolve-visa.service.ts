@@ -190,7 +190,7 @@ export class TransactionJobsIntersolveVisaService {
       )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
       cardDistributionByMail: intersolveVisaConfig.find(
         (c) => c.name === FspConfigurationProperties.cardDistributionByMail,
-      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+      )?.value as string,
     };
   }
 

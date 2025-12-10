@@ -60,17 +60,33 @@ export class IntersolveVisaAccountManagementService {
     return await this.intersolveVisaService.getWalletWithCards(registration.id);
   }
 
-  public async replaceCardByMail(
-    referenceId: string,
-    programId: number,
-    userId: number,
-  ) {
+  public async replaceCardByMail({
+    referenceId,
+    programId,
+    userId,
+  }: {
+    referenceId: string;
+    programId: number;
+    userId: number;
+  }) {
     const registration = await this.registrationsService.getRegistrationOrThrow(
       {
         referenceId,
         programId,
       },
     );
+
+    const cardDistributionByMailEnabled =
+      await this.cardDistributionByMailEnabled(
+        registration.programFspConfigurationId,
+      );
+
+    if (!cardDistributionByMailEnabled) {
+      throw new HttpException(
+        'Replacing a by mail is not allowed when card distribution by mail is disabled.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
 
@@ -81,16 +97,14 @@ export class IntersolveVisaAccountManagementService {
       programFspConfigurationId: registration.programFspConfigurationId,
     });
 
-    if (userId) {
-      await this.queueMessageService.addMessageJob({
-        registration,
-        messageTemplateKey: ProgramNotificationEnum.reissueVisaCard,
-        messageContentType: MessageContentType.custom,
-        messageProcessType:
-          MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
-        userId,
-      });
-    }
+    await this.queueMessageService.addMessageJob({
+      registration,
+      messageTemplateKey: ProgramNotificationEnum.reissueVisaCard,
+      messageContentType: MessageContentType.custom,
+      messageProcessType:
+        MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+      userId,
+    });
   }
 
   public async replaceCardOnSite({
@@ -109,9 +123,17 @@ export class IntersolveVisaAccountManagementService {
       },
     );
 
-    await this.throwIfCardDistributionByMailEnabled(
-      registration.programFspConfigurationId,
-    );
+    const cardDistributionByMailEnabled =
+      await this.cardDistributionByMailEnabled(
+        registration.programFspConfigurationId,
+      );
+
+    if (cardDistributionByMailEnabled) {
+      throw new HttpException(
+        'Replacing a card on-site is not allowed when card distribution by mail is enabled.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
 
@@ -207,7 +229,19 @@ export class IntersolveVisaAccountManagementService {
         programId,
       });
 
-    await this.throwIfCardDistributionByMailEnabled(
+    const cardDistributionByMailEnabled =
+      await this.cardDistributionByMailEnabled(
+        registration.programFspConfigurationId,
+      );
+
+    if (cardDistributionByMailEnabled) {
+      throw new HttpException(
+        'Linking a card on-site is not allowed when card distribution by mail is enabled.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    await this.cardDistributionByMailEnabled(
       registration.programFspConfigurationId,
     );
 
@@ -246,21 +280,16 @@ export class IntersolveVisaAccountManagementService {
     });
   }
 
-  private async throwIfCardDistributionByMailEnabled(
+  private async cardDistributionByMailEnabled(
     programFspConfigurationId: number,
-  ) {
+  ): Promise<boolean> {
     const cardDistributionByMail =
       await this.programFspConfigurationRepository.getPropertyValueByName({
         programFspConfigurationId,
         name: FspConfigurationProperties.cardDistributionByMail,
       });
 
-    if (cardDistributionByMail === 'true') {
-      throw new HttpException(
-        `Cannot replace card on-site when card distribution by mail is enabled.`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    return cardDistributionByMail === 'true';
   }
 
   public async pauseCardAndSendMessage(
@@ -327,7 +356,7 @@ export class IntersolveVisaAccountManagementService {
 
     if (intersolveVisaChildWallet.holderId) {
       throw new HttpException(
-        `Card is already linked to another customer at Intersolve.`,
+        `Card is already linked to to someone else.`,
         HttpStatus.BAD_REQUEST,
       );
     }
