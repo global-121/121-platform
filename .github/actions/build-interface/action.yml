@@ -4,6 +4,13 @@
 name: 'Build: Interface'
 description: 'Builds an Angular interface.'
 
+#
+# NOTE! - This composite action is used externally!
+#
+# Make sure to verify changes to it will not break unexpectedly in other deployment-workflows
+# See the "infrastructure"-repository.
+#
+
 inputs:
   interfacePath:
     description: Location of the interface's code. (relative to the repository-root)
