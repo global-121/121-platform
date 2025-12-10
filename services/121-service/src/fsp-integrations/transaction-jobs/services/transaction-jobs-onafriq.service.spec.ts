@@ -5,6 +5,7 @@ import { TransactionJobsOnafriqService } from '@121-service/src/fsp-integrations
 import { OnafriqTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/onafriq-transaction-job.dto';
 import { FspConfigurationProperties } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 
@@ -17,6 +18,7 @@ describe('TransactionJobsOnafriqService', () => {
   let transactionEventsScopedRepository: jest.Mocked<TransactionEventsScopedRepository>;
   let transactionJobsHelperService: jest.Mocked<TransactionJobsHelperService>;
   let programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
+  let transactionsService: jest.Mocked<TransactionsService>;
 
   beforeEach(async () => {
     onafriqService = { createTransaction: jest.fn() } as any;
@@ -35,6 +37,7 @@ describe('TransactionJobsOnafriqService', () => {
     programFspConfigurationRepository = {
       getPropertiesByNamesOrThrow: jest.fn(),
     } as any;
+    transactionsService = { updateTransactionStatus: jest.fn() } as any;
 
     service = new TransactionJobsOnafriqService(
       onafriqService,
@@ -42,6 +45,7 @@ describe('TransactionJobsOnafriqService', () => {
       transactionJobsHelperService,
       programFspConfigurationRepository,
       transactionEventsScopedRepository,
+      transactionsService,
     );
   });
 

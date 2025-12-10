@@ -68,7 +68,7 @@ export class TransactionJobsNedbankService {
       // If this job fails after this point due to a timout from nedbank the reconciliation process will pick it up and set it to success or error, so it can be retried if needed
       await this.transactionsService.updateTransactionStatus({
         transactionId: transactionJob.transactionId,
-        status: TransactionStatusEnum.waiting,
+        status: TransactionStatusEnum.waiting, // This will only go to 'success' via reconciliation process
       });
 
       // Get count of failed transactions to create orderCreateReference
@@ -157,7 +157,6 @@ export class TransactionJobsNedbankService {
         context: saveTransactionProgressAndUpdateRegistrationContext,
         description:
           TransactionEventDescription.nedbankVoucherCreationRequested,
-        newTransactionStatus: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
       },
     );
   }

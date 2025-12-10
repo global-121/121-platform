@@ -301,5 +301,53 @@ describe('Do payment to 1 PA', () => {
         'Transfer timed out',
       );
     });
+
+    it('should correctly label transaction as "success" even if callback is earlier than request', async () => {
+      // Arrange
+      const magigPhoneNrTooEarly = '254000000003';
+      registrationSafaricom.phoneNumber = magigPhoneNrTooEarly;
+      await seedIncludedRegistrations(
+        [registrationSafaricom],
+        programId,
+        accessToken,
+      );
+      const paymentReferenceIds = [registrationSafaricom.referenceId];
+
+      // Act
+      const doPaymentResponse = await createAndStartPayment({
+        programId,
+        transferValue,
+        referenceIds: paymentReferenceIds,
+        accessToken,
+      });
+      const paymentId = doPaymentResponse.body.id;
+
+      await waitForPaymentTransactionsToComplete({
+        programId,
+        paymentReferenceIds,
+        accessToken,
+        maxWaitTimeMs: 4_000,
+        completeStatuses: [
+          TransactionStatusEnum.success,
+          TransactionStatusEnum.error,
+        ],
+      });
+
+      // Assert
+      const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
+        programId,
+        paymentId,
+        registrationReferenceId: registrationSafaricom.referenceId,
+        accessToken,
+      });
+
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
+      expect(getTransactionsBody.body.data[0].status).toBe(
+        TransactionStatusEnum.success,
+      );
+    });
   });
 });
