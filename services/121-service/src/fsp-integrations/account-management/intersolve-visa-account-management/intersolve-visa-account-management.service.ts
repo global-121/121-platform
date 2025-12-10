@@ -429,21 +429,16 @@ export class IntersolveVisaAccountManagementService {
     });
   }
 
-  private async throwIfCardDistributionByMailEnabled(
+  private async cardDistributionByMailEnabled(
     programFspConfigurationId: number,
-  ) {
+  ): Promise<boolean> {
     const cardDistributionByMail =
       await this.programFspConfigurationRepository.getPropertyValueByName({
         programFspConfigurationId,
         name: FspConfigurationProperties.cardDistributionByMail,
       });
 
-    if (cardDistributionByMail === 'true') {
-      throw new HttpException(
-        `Cannot replace card on-site when card distribution by mail is enabled.`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    return cardDistributionByMail === 'true';
   }
 
   public async pauseCardAndSendMessage(
@@ -510,7 +505,7 @@ export class IntersolveVisaAccountManagementService {
 
     if (intersolveVisaChildWallet.holderId) {
       throw new HttpException(
-        `Card is already linked to another customer at Intersolve.`,
+        `Card is already linked to to someone else.`,
         HttpStatus.BAD_REQUEST,
       );
     }
