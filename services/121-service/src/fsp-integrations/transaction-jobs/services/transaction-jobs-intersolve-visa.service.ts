@@ -85,9 +85,14 @@ export class TransactionJobsIntersolveVisaService {
         transactionJob.programFspConfigurationId,
       );
 
-      const hasIntersolveCustomer =
-        await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
-      if (cardDistributionByMail === 'false' && !hasIntersolveCustomer) {
+      const isChildWalletLinkedToRegistration =
+        await this.intersolveVisaChildWalletScopedRepository.hasLinkedChildWalletForRegistrationId(
+          registration.id,
+        );
+      if (
+        cardDistributionByMail === 'false' &&
+        !isChildWalletLinkedToRegistration
+      ) {
         throw new IntersolveVisaApiError(
           'Cannot do a transaction when card distribution by mail is disabled and customer does not exist.',
         );
