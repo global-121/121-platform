@@ -196,10 +196,12 @@ export class ExportRegistrationsComponent {
     },
     {
       label: $localize`:@@export-verification-cooperative-bank-of-oromia:Bank account verification Cooperative Bank of Oromia`,
-      visible: this.authService.hasPermission({
-        programId: this.programId(),
-        requiredPermission: PermissionEnum.RegistrationPersonalREAD,
-      }),
+      visible:
+        this.isCooperativeBankOfOromiaProgram() &&
+        this.authService.hasPermission({
+          programId: this.programId(),
+          requiredPermission: PermissionEnum.RegistrationPersonalREAD,
+        }),
       command: () => {
         this.trackingService.trackEvent({
           category: TrackingCategory.export,
