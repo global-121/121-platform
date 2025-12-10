@@ -16,16 +16,8 @@ import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails
 describe('UserService', () => {
   let service: UserService;
   let userRepository: Repository<UserEntity>;
-
   let permissionRepository: Repository<PermissionEntity>;
-
   let userRoleRepository: Repository<UserRoleEntity>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- used in tests
-  let programRepository: Repository<ProgramEntity>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- used in tests
-  let assignmentRepository: Repository<ProgramAidworkerAssignmentEntity>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- used in tests
-  let userEmailsService: UserEmailsService;
 
   const mockRequest = {
     headers: {},
@@ -78,13 +70,6 @@ describe('UserService', () => {
     userRoleRepository = module.get<Repository<UserRoleEntity>>(
       getRepositoryToken(UserRoleEntity),
     );
-    programRepository = module.get<Repository<ProgramEntity>>(
-      getRepositoryToken(ProgramEntity),
-    );
-    assignmentRepository = module.get<
-      Repository<ProgramAidworkerAssignmentEntity>
-    >(getRepositoryToken(ProgramAidworkerAssignmentEntity));
-    userEmailsService = module.get<UserEmailsService>(UserEmailsService);
   });
 
   describe('findUserProgramAssignmentsOrThrow', () => {
@@ -123,9 +108,7 @@ describe('UserService', () => {
         programAssignments: undefined,
       };
 
-      jest
-        .spyOn(userRepository, 'findOne')
-        .mockResolvedValue(mockUser as UserEntity);
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
 
       // Act & Assert
       await expect(
@@ -146,9 +129,7 @@ describe('UserService', () => {
         programAssignments: [],
       };
 
-      jest
-        .spyOn(userRepository, 'findOne')
-        .mockResolvedValue(mockUser as UserEntity);
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
 
       // Act & Assert
       await expect(
@@ -177,9 +158,7 @@ describe('UserService', () => {
         ],
       };
 
-      jest
-        .spyOn(userRepository, 'findOne')
-        .mockResolvedValue(mockUser as UserEntity);
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
 
       // Act
       const result = await service.findUserProgramAssignmentsOrThrow(userId);
@@ -559,6 +538,266 @@ describe('UserService', () => {
       expect(result).toHaveProperty('label', 'Test Role');
       expect(result).toHaveProperty('description', 'Test Description');
       expect(result).toHaveProperty('permissions', []);
+    });
+  });
+
+  describe('updatePassword', () => {
+    const mockUpdatePasswordDto = {
+      username: 'test@example.com',
+      password: 'currentPassword',
+      newPassword: 'newPassword123',
+    };
+
+    const mockUserEntity: Partial<UserEntity> = {
+      id: 1,
+      username: 'test@example.com',
+      password: 'hashedOldPassword',
+      salt: 'oldSalt',
+    };
+
+    beforeEach(() => {
+      jest.spyOn(service as any, 'generateSalt').mockReturnValue('newSalt');
+      jest
+        .spyOn(service as any, 'hashPassword')
+        .mockReturnValue('hashedNewPassword');
+      jest.spyOn(userRepository, 'save').mockClear();
+      jest.spyOn(service as any, 'matchPassword').mockClear();
+      jest.spyOn(service as any, 'buildUserRO').mockClear();
+    });
+
+    it('should throw HttpException when current password is incorrect', async () => {
+      // Arrange
+      jest.spyOn(service as any, 'matchPassword').mockResolvedValue(null);
+
+      // Act & Assert
+      await expect(
+        service.updatePassword(mockUpdatePasswordDto),
+      ).rejects.toThrow(
+        new HttpException(
+          'Your password was incorrect.',
+          HttpStatus.UNAUTHORIZED,
+        ),
+      );
+
+      expect(service['matchPassword']).toHaveBeenCalledWith(
+        mockUpdatePasswordDto,
+      );
+      expect(userRepository.save).not.toHaveBeenCalled();
+    });
+
+    it('should successfully update password when current password is correct', async () => {
+      // Arrange
+      jest
+        .spyOn(service as any, 'matchPassword')
+        .mockResolvedValue(mockUserEntity);
+      const expectedUpdatedUser = {
+        ...mockUserEntity,
+        salt: 'newSalt',
+        password: 'hashedNewPassword',
+      };
+      jest
+        .spyOn(userRepository, 'save')
+        .mockResolvedValue(expectedUpdatedUser as UserEntity);
+
+      const mockUserRO = {
+        user: {
+          id: 1,
+          username: 'test@example.com',
+          permissions: {},
+        },
+      };
+      jest.spyOn(service as any, 'buildUserRO').mockResolvedValue(mockUserRO);
+
+      // Act
+      const result = await service.updatePassword(mockUpdatePasswordDto);
+
+      // Assert
+      expect(service['matchPassword']).toHaveBeenCalledWith(
+        mockUpdatePasswordDto,
+      );
+      expect(service['generateSalt']).toHaveBeenCalled();
+      expect(service['hashPassword']).toHaveBeenCalledWith(
+        'newPassword123',
+        'newSalt',
+      );
+      expect(userRepository.save).toHaveBeenCalledWith(expectedUpdatedUser);
+      expect(service['buildUserRO']).toHaveBeenCalledWith(expectedUpdatedUser);
+      expect(result).toEqual(mockUserRO);
+    });
+
+    it('should generate new salt and hash new password correctly', async () => {
+      // Arrange
+      jest
+        .spyOn(service as any, 'matchPassword')
+        .mockResolvedValue(mockUserEntity);
+      jest.spyOn(userRepository, 'save').mockResolvedValue({} as UserEntity);
+      jest.spyOn(service as any, 'buildUserRO').mockResolvedValue({} as any);
+
+      // Act
+      await service.updatePassword(mockUpdatePasswordDto);
+
+      // Assert
+      expect(service['generateSalt']).toHaveBeenCalledTimes(1);
+      expect(service['hashPassword']).toHaveBeenCalledWith(
+        'newPassword123',
+        'newSalt',
+      );
+    });
+
+    it('should handle repository save errors', async () => {
+      // Arrange
+      jest
+        .spyOn(service as any, 'matchPassword')
+        .mockResolvedValue(mockUserEntity);
+      const saveError = new Error('Database save error');
+      jest.spyOn(userRepository, 'save').mockRejectedValue(saveError);
+
+      // Act & Assert
+      await expect(
+        service.updatePassword(mockUpdatePasswordDto),
+      ).rejects.toThrow('Database save error');
+
+      expect(service['matchPassword']).toHaveBeenCalledWith(
+        mockUpdatePasswordDto,
+      );
+      expect(userRepository.save).toHaveBeenCalled();
+    });
+  });
+
+  describe('updateUser', () => {
+    const mockUpdateUserDto = {
+      id: 1,
+      isOrganizationAdmin: true,
+      displayName: 'Updated Name',
+      isEntraUser: false,
+      lastLogin: new Date('2023-01-01'),
+    };
+
+    const mockUserEntity: Partial<UserEntity> = {
+      id: 1,
+      username: 'test@example.com',
+      isOrganizationAdmin: false,
+      displayName: 'Old Name',
+      isEntraUser: true,
+    };
+
+    beforeEach(() => {
+      jest.spyOn(userRepository, 'save').mockClear();
+      jest.spyOn(service as any, 'findById').mockClear();
+    });
+
+    it('should throw HttpException when user is not found', async () => {
+      // Arrange
+      jest.spyOn(service as any, 'findById').mockResolvedValue(null);
+
+      // Act & Assert
+      await expect(service.updateUser(mockUpdateUserDto)).rejects.toThrow(
+        new HttpException('User not found.', HttpStatus.NOT_FOUND),
+      );
+
+      expect(service['findById']).toHaveBeenCalledWith(mockUpdateUserDto.id);
+      expect(userRepository.save).not.toHaveBeenCalled();
+    });
+
+    it('should successfully update user when user exists', async () => {
+      // Arrange
+      jest.spyOn(service as any, 'findById').mockResolvedValue(mockUserEntity);
+      const expectedUpdatedUser = {
+        ...mockUserEntity,
+        ...mockUpdateUserDto,
+      };
+      jest
+        .spyOn(userRepository, 'save')
+        .mockResolvedValue(expectedUpdatedUser as UserEntity);
+
+      // Act
+      const result = await service.updateUser(mockUpdateUserDto);
+
+      // Assert
+      expect(service['findById']).toHaveBeenCalledWith(mockUpdateUserDto.id);
+      expect(userRepository.save).toHaveBeenCalledWith(expectedUpdatedUser);
+      expect(result).toEqual(expectedUpdatedUser);
+    });
+
+    it('should update only provided fields and keep existing ones', async () => {
+      // Arrange
+      const partialUpdateDto = {
+        id: 1,
+        displayName: 'New Display Name',
+      };
+      jest.spyOn(service as any, 'findById').mockResolvedValue(mockUserEntity);
+
+      const expectedUpdatedUser = {
+        ...mockUserEntity,
+        displayName: 'New Display Name',
+      };
+      jest
+        .spyOn(userRepository, 'save')
+        .mockResolvedValue(expectedUpdatedUser as UserEntity);
+
+      // Act
+      const result = await service.updateUser(partialUpdateDto);
+
+      // Assert
+      expect(result.displayName).toBe('New Display Name');
+      // Note: The function copies all fields from DTO, so only id and displayName are set
+      expect(result.id).toBe(1);
+    });
+
+    it('should handle repository save errors', async () => {
+      // Arrange
+      jest.spyOn(service as any, 'findById').mockResolvedValue(mockUserEntity);
+      const saveError = new Error('Database save error');
+      jest.spyOn(userRepository, 'save').mockRejectedValue(saveError);
+
+      // Act & Assert
+      await expect(service.updateUser(mockUpdateUserDto)).rejects.toThrow(
+        'Database save error',
+      );
+
+      expect(service['findById']).toHaveBeenCalledWith(mockUpdateUserDto.id);
+      expect(userRepository.save).toHaveBeenCalled();
+    });
+
+    it('should update all fields when all are provided', async () => {
+      // Arrange
+      jest.spyOn(service as any, 'findById').mockResolvedValue(mockUserEntity);
+      const expectedUpdatedUser = {
+        ...mockUserEntity,
+        isOrganizationAdmin: true,
+        displayName: 'Updated Name',
+        isEntraUser: false,
+        lastLogin: mockUpdateUserDto.lastLogin,
+      };
+      jest
+        .spyOn(userRepository, 'save')
+        .mockResolvedValue(expectedUpdatedUser as UserEntity);
+
+      // Act
+      const result = await service.updateUser(mockUpdateUserDto);
+
+      // Assert
+      expect(result.isOrganizationAdmin).toBe(true);
+      expect(result.displayName).toBe('Updated Name');
+      expect(result.isEntraUser).toBe(false);
+      expect(result.lastLogin).toEqual(mockUpdateUserDto.lastLogin);
+    });
+
+    it('should handle empty update data correctly', async () => {
+      // Arrange
+      const emptyUpdateDto = { id: 1 };
+      jest.spyOn(service as any, 'findById').mockResolvedValue(mockUserEntity);
+      jest
+        .spyOn(userRepository, 'save')
+        .mockResolvedValue(mockUserEntity as UserEntity);
+
+      // Act
+      const result = await service.updateUser(emptyUpdateDto);
+
+      // Assert
+      expect(service['findById']).toHaveBeenCalledWith(1);
+      expect(userRepository.save).toHaveBeenCalledWith(mockUserEntity);
+      expect(result).toEqual(mockUserEntity);
     });
   });
 });
