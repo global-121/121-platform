@@ -1,6 +1,6 @@
 import { FilterOperator } from 'nestjs-paginate';
 
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { FSP_USER_CONFIGURABLE_SETTINGS } from '@121-service/src/fsp-management/fsp-user-configurable-settings.const';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -44,7 +44,9 @@ describe('Registrations - [Scoped]', () => {
     // Arrange
     const accessToken = await getAccessToken();
     const fspConfig =
-      FSP_SETTINGS[registrationScopedKisumuWestPv.programFspConfigurationName];
+      FSP_USER_CONFIGURABLE_SETTINGS[
+        registrationScopedKisumuWestPv.programFspConfigurationName
+      ];
 
     // Act
     const transactionsResponse = await getTransactionsByPaymentIdPaginated({

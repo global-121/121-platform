@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { env } from '@121-service/src/env';
 import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.service';
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { FSP_USER_CONFIGURABLE_SETTINGS } from '@121-service/src/fsp-management/fsp-user-configurable-settings.const';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class IntersolveVisaDataSynchronizationService {
   public constructor(
     private readonly intersolveVisaAccountManagementService: IntersolveVisaAccountManagementService,
   ) {
-    this.intersolveVisaAttributeNames = FSP_SETTINGS[
+    this.intersolveVisaAttributeNames = FSP_USER_CONFIGURABLE_SETTINGS[
       Fsps.intersolveVisa
     ].attributes.map((attr) => attr.name) as string[];
   }

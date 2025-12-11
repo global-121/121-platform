@@ -17,8 +17,8 @@ import {
 import { dash } from 'radashi';
 
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 import { FspUserConfigurableDto } from '@121-service/src/fsp-management/fsp-user-configurable.dto';
+import { FSP_USER_CONFIGURABLE_SETTINGS } from '@121-service/src/fsp-management/fsp-user-configurable-settings.const';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
@@ -72,7 +72,7 @@ export class FspConfigurationFormDialogComponent {
   // This is defaulted to Excel to avoid undefined errors before show() is called
   // It could default to anything really, as show() will always be called first
   readonly fspSetting = signal<FspUserConfigurableDto>(
-    FSP_SETTINGS[Fsps.excel],
+    FSP_USER_CONFIGURABLE_SETTINGS[Fsps.excel],
   );
   // If this is undefined, it is because we are adding a new FSP configuration
   // (not reconfiguring one)

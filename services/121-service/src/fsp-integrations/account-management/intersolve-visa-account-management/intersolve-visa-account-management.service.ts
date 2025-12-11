@@ -11,7 +11,7 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { FSP_USER_CONFIGURABLE_SETTINGS } from '@121-service/src/fsp-management/fsp-user-configurable-settings.const';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -131,7 +131,7 @@ export class IntersolveVisaAccountManagementService {
 
     //  TODO: REFACTOR: This 'ugly' code is now also in payments.service.createAndAddIntersolveVisaTransactionJobs. This should be refactored when there's a better way of getting registration data.
     const intersolveVisaAttributes =
-      FSP_SETTINGS[Fsps.intersolveVisa].attributes;
+      FSP_USER_CONFIGURABLE_SETTINGS[Fsps.intersolveVisa].attributes;
 
     const intersolveVisaAttributeNames = intersolveVisaAttributes.map(
       (q) => q.name,

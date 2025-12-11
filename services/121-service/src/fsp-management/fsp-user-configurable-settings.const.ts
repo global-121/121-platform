@@ -9,7 +9,10 @@ import { FspUserConfigurableDto } from '@121-service/src/fsp-management/fsp-user
 // Attributes are the programRegistrationAttributes that are required for a registration to have a program fsp configuration with the fsp
 // Configuration properties are the program financial service configuration properties that are required for the fsp to be able to send a payment
 // The order of the configuration properties define the order in which they are displayed in the UI to add/edit a program fsp configuration
-export const FSP_SETTINGS: Record<Fsps, FspUserConfigurableDto> = {
+export const FSP_USER_CONFIGURABLE_SETTINGS: Record<
+  Fsps,
+  FspUserConfigurableDto
+> = {
   [Fsps.excel]: {
     name: Fsps.excel,
     integrationType: FspIntegrationType.csv,

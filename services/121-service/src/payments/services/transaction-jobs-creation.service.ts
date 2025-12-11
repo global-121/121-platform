@@ -13,7 +13,7 @@ import { SharedTransactionJobDto } from '@121-service/src/fsp-integrations/trans
 import { TransactionQueuesService } from '@121-service/src/fsp-integrations/transaction-queues/transaction-queues.service';
 import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { FSP_USER_CONFIGURABLE_SETTINGS } from '@121-service/src/fsp-management/fsp-user-configurable-settings.const';
 import { TransactionJobDetails } from '@121-service/src/payments/interfaces/transaction-job-details.interface';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
@@ -677,7 +677,7 @@ export class TransactionJobsCreationService {
     registrationViews: MappedPaginatedRegistrationDto[];
     sharedJobsByReferenceId: Map<string, SharedTransactionJobDto>;
   }> {
-    const fspAttributes = FSP_SETTINGS[fspName].attributes;
+    const fspAttributes = FSP_USER_CONFIGURABLE_SETTINGS[fspName].attributes;
     const fspAttributeNames = fspAttributes.map((q) => q.name);
     const registrationViews = await this.getRegistrationViews({
       transactionJobDetails,

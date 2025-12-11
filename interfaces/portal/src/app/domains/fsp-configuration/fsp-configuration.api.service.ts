@@ -1,6 +1,6 @@
 import { Injectable, Signal } from '@angular/core';
 
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { FSP_USER_CONFIGURABLE_SETTINGS } from '@121-service/src/fsp-management/fsp-user-configurable-settings.const';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 
@@ -25,7 +25,7 @@ export class FspConfigurationApiService extends DomainApiService {
         // This guarantees some consistency in the order of FSP configurations shown in the UI
         // Without this, the order would depend on the order in which the configurations were
         // last edited, which makes configurations jump around in the list after editing them.
-        const fspSettingsOrder = Object.keys(FSP_SETTINGS);
+        const fspSettingsOrder = Object.keys(FSP_USER_CONFIGURABLE_SETTINGS);
         return response.sort(
           (a, b) =>
             fspSettingsOrder.indexOf(a.fspName) -

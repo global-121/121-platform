@@ -2,7 +2,7 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { FSP_USER_CONFIGURABLE_SETTINGS } from '@121-service/src/fsp-management/fsp-user-configurable-settings.const';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
@@ -38,7 +38,7 @@ describe('ProgramFspConfigurationMapper', () => {
       expect(result.name).toBe(testEntity.name);
       expect(result.label).toEqual(testEntity.label);
 
-      const expectedFsp = FSP_SETTINGS[testEntity.fspName];
+      const expectedFsp = FSP_USER_CONFIGURABLE_SETTINGS[testEntity.fspName];
       // Remove unnecessary properties from the fsp object
       const {
         configurationProperties: _configurationProperties,
@@ -73,7 +73,7 @@ describe('ProgramFspConfigurationMapper', () => {
       expect(result.fspName).toBe(testEntity.fspName);
       expect(result.name).toBe(testEntity.name);
       expect(result.label).toEqual(testEntity.label);
-      const expectedFsp = FSP_SETTINGS[testEntity.fspName];
+      const expectedFsp = FSP_USER_CONFIGURABLE_SETTINGS[testEntity.fspName];
       // Remove unnecessary properties from the fsp object
       const {
         configurationProperties: _configurationProperties,

@@ -1,13 +1,13 @@
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { FSP_USER_CONFIGURABLE_SETTINGS } from '@121-service/src/fsp-management/fsp-user-configurable-settings.const';
 
 export function getFspConfigurationProperties(fspName: Fsps): string[] {
-  const foundFsp = FSP_SETTINGS[fspName];
+  const foundFsp = FSP_USER_CONFIGURABLE_SETTINGS[fspName];
   return foundFsp.configurationProperties.map((property) => property.name);
 }
 
 export function getFspConfigurationRequiredProperties(fspName: Fsps): string[] {
-  const foundFsp = FSP_SETTINGS[fspName];
+  const foundFsp = FSP_USER_CONFIGURABLE_SETTINGS[fspName];
   return foundFsp.configurationProperties
     .filter((property) => property.isRequired)
     .map((property) => property.name);

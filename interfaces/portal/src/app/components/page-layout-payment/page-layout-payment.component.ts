@@ -15,8 +15,8 @@ import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
 
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 import { FspUserConfigurableDto } from '@121-service/src/fsp-management/fsp-user-configurable.dto';
+import { FSP_USER_CONFIGURABLE_SETTINGS } from '@121-service/src/fsp-management/fsp-user-configurable-settings.const';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
@@ -68,8 +68,9 @@ export class PageLayoutPaymentComponent {
   readonly programApiService = inject(ProgramApiService);
   readonly translatableStringService = inject(TranslatableStringService);
 
-  readonly fspSettings =
-    signal<Record<Fsps, FspUserConfigurableDto>>(FSP_SETTINGS);
+  readonly fspSettings = signal<Record<Fsps, FspUserConfigurableDto>>(
+    FSP_USER_CONFIGURABLE_SETTINGS,
+  );
   private authService = inject(AuthService);
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
