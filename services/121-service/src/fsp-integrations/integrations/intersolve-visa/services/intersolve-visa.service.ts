@@ -202,7 +202,7 @@ export class IntersolveVisaService {
     );
   }
 
-  public async getCustomerOrCreate({
+  private async getCustomerOrCreate({
     registrationId,
     createCustomerReference,
     contactInformation,
@@ -236,7 +236,7 @@ export class IntersolveVisaService {
     return intersolveVisaCustomer;
   }
 
-  public async getParentWalletOrCreate({
+  private async getParentWalletOrCreate({
     intersolveVisaCustomer,
     brandCode,
   }: {
@@ -809,15 +809,25 @@ export class IntersolveVisaService {
     return await this.intersolveVisaApiService.getToken(tokenCode);
   }
 
-  public async linkPhysicalCardToCustomer({
-    intersolveVisaCustomer,
+  public async linkPhysicalCardToRegistration({
+    contactInformation,
+    registrationId,
+    referenceId,
     tokenCode,
     brandCode,
   }: {
-    intersolveVisaCustomer: IntersolveVisaCustomerEntity;
+    contactInformation: ContactInformation;
+    registrationId: number;
+    referenceId: string;
     tokenCode: string;
     brandCode: string;
   }) {
+    const intersolveVisaCustomer = await this.getCustomerOrCreate({
+      registrationId,
+      createCustomerReference: referenceId,
+      contactInformation,
+    });
+
     const intersolveVisaParentWallet = await this.getParentWalletOrCreate({
       intersolveVisaCustomer,
       brandCode,
@@ -839,7 +849,7 @@ export class IntersolveVisaService {
     });
   }
 
-  public async linkWallets({
+  private async linkWallets({
     parentTokenCode,
     childTokenCode,
   }: {
