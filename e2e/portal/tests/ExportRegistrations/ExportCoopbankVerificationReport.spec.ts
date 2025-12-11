@@ -3,9 +3,7 @@ import { test } from '@playwright/test';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import CoopBank from '@121-service/src/seed-data/program/program-cooperative-bank-of-oromia.json';
 import { startCooperativeBankOfOromiaValidationProcess } from '@121-service/test/helpers/program.helper';
-import {
-  seedIncludedRegistrations,
-} from '@121-service/test/helpers/registration.helper';
+import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
