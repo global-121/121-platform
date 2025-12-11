@@ -76,7 +76,6 @@ export class IntersolveVisaAccountManagementService {
       await this.cardDistributionByMailEnabled(
         registration.programFspConfigurationId,
       );
-
     if (!cardDistributionByMailEnabled) {
       throw new HttpException(
         'Replacing a card by mail is not allowed when card distribution by mail is disabled.',
@@ -119,6 +118,7 @@ export class IntersolveVisaAccountManagementService {
     programId: number;
     tokenCode: string;
   }): Promise<void> {
+    //mock
     const registration = await this.registrationsService.getRegistrationOrThrow(
       {
         referenceId,
@@ -126,11 +126,12 @@ export class IntersolveVisaAccountManagementService {
       },
     );
 
+    //geen call
     const cardDistributionByMailEnabled =
       await this.cardDistributionByMailEnabled(
         registration.programFspConfigurationId,
       );
-
+    // expect to throw when enabled
     if (cardDistributionByMailEnabled) {
       throw new HttpException(
         'Replacing a card on-site is not allowed when card distribution by mail is enabled.',
@@ -148,6 +149,17 @@ export class IntersolveVisaAccountManagementService {
     }
 
     await this.throwIfCardDoesNotExistOrIsAlreadyLinked(tokenCode);
+
+    //check db
+    const hasIntersolveVisaCustomer =
+      await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
+    // expect to throw when no customer exists
+    if (!hasIntersolveVisaCustomer) {
+      throw new HttpException(
+        'No Intersolve Visa customer found for this registration.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     await this.replaceCard({
       referenceId,
@@ -171,6 +183,7 @@ export class IntersolveVisaAccountManagementService {
     registrationId: number;
     programFspConfigurationId: number;
   }): Promise<void> {
+    //mock
     const contactInformation: ContactInformation =
       await this.registrationsService.getContactInformation({
         referenceId,

@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid';
 import { env } from '@mock-service/src/env';
 import { IntersolveVisaMockResponseDto } from '@mock-service/src/fsp-integration/intersolve-visa/intersolve-visa-mock-response.dto';
 
-export enum IntersolveVisaWalletStatus {
+enum IntersolveVisaWalletStatus {
   Active = 'ACTIVE',
   Inactive = 'INACTIVE',
   Redeemed = 'REDEEMED',
@@ -13,7 +13,7 @@ export enum IntersolveVisaWalletStatus {
   Disabled = 'DISABLED',
 }
 
-export enum IntersolveVisaCardStatus {
+enum IntersolveVisaCardStatus {
   CardOk = 'CARD_OK',
   CardBlocked = 'CARD_BLOCKED',
   SuspectedFraud = 'SUSPECTED_FRAUD',
@@ -23,6 +23,11 @@ export enum IntersolveVisaCardStatus {
   CardLost = 'CARD_LOST',
   CardClosed = 'CARD_CLOSED',
   CardExpired = 'CARD_EXPIRED',
+}
+
+enum IntersolveVisaTokenCodeEnum {
+  unlinkedTokenCode = '1111222233334444555',
+  linkedTokenCode = '2222333344445555666',
 }
 
 // This is a magic number that will cause the transaction to fail due to a duplicate operation reference (idempotency key)
@@ -369,6 +374,10 @@ export class IntersolveVisaMockService {
             ).toISOString(),
           },
         ],
+        holderId:
+          tokenCode === IntersolveVisaTokenCodeEnum.linkedTokenCode
+            ? '13'
+            : null,
       },
     };
 
