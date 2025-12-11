@@ -22,9 +22,6 @@ export class CommercialBankEthiopiaAccountEnquiriesEntity extends Base121Entity 
   @Column({ type: 'character varying', nullable: true })
   public cbeName: string | null;
 
-  @Column({ type: 'boolean', nullable: true })
-  public namesMatch: boolean | null;
-
   @Column({ type: 'character varying', nullable: true })
   public cbeStatus: string | null;
 

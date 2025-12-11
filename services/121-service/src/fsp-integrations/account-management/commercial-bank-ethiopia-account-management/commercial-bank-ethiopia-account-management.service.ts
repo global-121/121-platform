@@ -85,7 +85,6 @@ export class CommercialBankEthiopiaAccountManagementService {
       result.fullNameUsedForTheMatch = pa?.fullName || null;
       result.bankAccountNumberUsedForCall = pa?.bankAccountNumber || null;
       result.cbeName = null;
-      result.namesMatch = false;
       result.cbeStatus = null;
       result.errorMessage = null;
 
@@ -101,8 +100,6 @@ export class CommercialBankEthiopiaAccountManagementService {
         result.cbeStatus = cbeStatus || null;
 
         if (pa.fullName && cbeName) {
-          result.namesMatch =
-            pa.fullName.toUpperCase() === cbeName.toUpperCase();
         } else if (pa.fullName && !cbeName) {
           result.errorMessage =
             'Could not be matched: did not get a name from CBE for account number';

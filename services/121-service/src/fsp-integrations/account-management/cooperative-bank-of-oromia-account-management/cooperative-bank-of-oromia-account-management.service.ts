@@ -76,12 +76,6 @@ export class CooperativeBankOfOromiaAccountManagementService {
       errorMessage?: string;
     },
   ): Promise<void> {
-    const namesMatch = this.doTheNamesMatch({
-      registrationName: registration[FspAttributes.fullName]!, // full name is always present for registrations with coop bank as it required in FSP settings
-      cooperativeBankOfOromiaName:
-        accountInformation.cooperativeBankOfOromiaName,
-    });
-
     const existingEntity =
       await this.cooperativeBankOfOromiaAccountValidationScopedRepository.findOne(
         {
@@ -101,27 +95,10 @@ export class CooperativeBankOfOromiaAccountManagementService {
     entityToSave.nameUsedForTheMatch = registration[FspAttributes.fullName]!;
     entityToSave.cooperativeBankOfOromiaName =
       accountInformation.cooperativeBankOfOromiaName || null;
-    entityToSave.namesMatch = namesMatch;
     entityToSave.errorMessage = accountInformation.errorMessage || null;
 
     await this.cooperativeBankOfOromiaAccountValidationScopedRepository.save(
       entityToSave,
-    );
-  }
-
-  private doTheNamesMatch({
-    registrationName,
-    cooperativeBankOfOromiaName,
-  }: {
-    registrationName: string;
-    cooperativeBankOfOromiaName?: string;
-  }): boolean {
-    if (!cooperativeBankOfOromiaName) {
-      return false;
-    }
-    return (
-      registrationName.toUpperCase() ===
-      cooperativeBankOfOromiaName.toUpperCase()
     );
   }
 
