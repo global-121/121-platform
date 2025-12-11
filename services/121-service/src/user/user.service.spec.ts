@@ -465,7 +465,6 @@ describe('UserService', () => {
       // Arrange
       const mockDeletedRole = {
         ...mockExistingRole,
-        id: userRoleId,
       } as UserRoleEntity;
 
       jest
@@ -895,7 +894,7 @@ describe('UserService', () => {
       expect(userEmailsService.send).toHaveBeenCalledWith({
         userEmailInput: {
           email: 'test@example.com',
-          displayName: expect.any(String), // Should use some default value
+          displayName: 'Madam/Sir',
           password: expect.any(String),
         },
         userEmailType: UserEmailType.passwordReset,
