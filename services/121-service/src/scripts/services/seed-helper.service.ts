@@ -13,8 +13,8 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FspDto } from '@121-service/src/fsp-management/fsp.dto';
 import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { FspSettingsDto } from '@121-service/src/fsp-management/fsp-settings.dto';
 import { stringIsFsp } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
@@ -332,7 +332,7 @@ export class SeedHelperService {
       name?: string;
       label: UILanguageTranslation;
     },
-    fspObject: FspDto,
+    fspObject: FspSettingsDto,
     programId: number,
   ): ProgramFspConfigurationEntity {
     const fspConfigEntity = new ProgramFspConfigurationEntity();

@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FspDto } from '@121-service/src/fsp-management/fsp.dto';
+import { FspSettingsDto } from '@121-service/src/fsp-management/fsp-settings.dto';
 import { ProgramFspConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-property-response.dto';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
 type FspWithoutConfigProps = Omit<
-  FspDto,
+  FspSettingsDto,
   'configurationProperties' | 'defaultLabel'
 >;
 

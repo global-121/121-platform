@@ -45,7 +45,9 @@ export class ProgramSettingsFspsPageComponent {
     );
 
   addFspConfiguration(fsp: Fsps) {
-    this.fspConfigurationFormDialog().show({ fspSetting: FSP_SETTINGS[fsp] });
+    this.fspConfigurationFormDialog().show({
+      fspSetting: FSP_SETTINGS[fsp],
+    });
   }
 
   reconfigureFspConfiguration(configuration: FspConfiguration) {

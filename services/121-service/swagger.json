@@ -383,7 +383,7 @@
     "method": "get",
     "path": "/api/fsps",
     "params": [],
-    "returnType": "FspDto"
+    "returnType": "FspSettingsDto"
   },
   {
     "method": "get",
@@ -391,7 +391,7 @@
     "params": [
       "fspName"
     ],
-    "returnType": "FspDto"
+    "returnType": "FspSettingsDto"
   },
   {
     "method": "post",

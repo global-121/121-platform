@@ -9,7 +9,7 @@ import {
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
-export class FspDto {
+export class FspSettingsDto {
   @ApiProperty({ example: 'fspName' })
   readonly name: WrapperType<Fsps>;
 
