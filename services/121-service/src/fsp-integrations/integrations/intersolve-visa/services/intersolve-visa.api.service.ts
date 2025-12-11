@@ -182,7 +182,6 @@ export class IntersolveVisaApiService {
         apiPath: 'pointofsale',
         endpoint: `tokens/${tokenCode}?includeBalances=true`,
       });
-
     let blocked;
     let status;
     let balance;

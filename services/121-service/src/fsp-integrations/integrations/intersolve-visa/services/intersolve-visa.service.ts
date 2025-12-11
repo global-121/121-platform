@@ -873,11 +873,16 @@ export class IntersolveVisaService {
     newIntersolveVisaChildWallet.intersolveVisaParentWallet =
       intersolveVisaParentWallet;
     newIntersolveVisaChildWallet.tokenCode = tokenCode;
-    newIntersolveVisaChildWallet.walletStatus =
-      IntersolveVisaTokenStatus.Active;
     newIntersolveVisaChildWallet.cardStatus = IntersolveVisaCardStatus.CardOk;
+    newIntersolveVisaChildWallet.walletStatus =
+      IntersolveVisaTokenStatus.Inactive;
     newIntersolveVisaChildWallet.isLinkedToParentWallet = true;
     newIntersolveVisaChildWallet.lastExternalUpdate = new Date();
-    await this.updateChildWallet(newIntersolveVisaChildWallet);
+    const savedChildWallet =
+      await this.intersolveVisaChildWalletScopedRepository.save(
+        newIntersolveVisaChildWallet,
+      );
+
+    await this.updateChildWallet(savedChildWallet);
   }
 }
