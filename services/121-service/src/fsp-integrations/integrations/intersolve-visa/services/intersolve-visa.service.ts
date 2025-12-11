@@ -203,7 +203,7 @@ export class IntersolveVisaService {
     );
   }
 
-  public async getCustomerOrCreate({
+  private async getCustomerOrCreate({
     registrationId,
     createCustomerReference,
     contactInformation,
@@ -237,7 +237,7 @@ export class IntersolveVisaService {
     return intersolveVisaCustomer;
   }
 
-  public async getParentWalletOrCreate({
+  private async getParentWalletOrCreate({
     intersolveVisaCustomer,
     brandCode,
   }: {
