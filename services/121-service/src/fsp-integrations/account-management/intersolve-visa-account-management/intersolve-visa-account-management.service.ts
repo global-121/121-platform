@@ -79,7 +79,7 @@ export class IntersolveVisaAccountManagementService {
 
     if (!cardDistributionByMailEnabled) {
       throw new HttpException(
-        'Replacing a by mail is not allowed when card distribution by mail is disabled.',
+        'Replacing a card by mail is not allowed when card distribution by mail is disabled.',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -178,7 +178,6 @@ export class IntersolveVisaAccountManagementService {
         programFspConfigurationId,
         name: FspConfigurationProperties.coverLetterCode,
       });
-
     if (typeof brandCode !== 'string' || typeof coverLetterCode !== 'string') {
       throw new HttpException(
         'Missing or invalid brandCode or coverLetterCode for Intersolve Visa replace card',
@@ -227,7 +226,6 @@ export class IntersolveVisaAccountManagementService {
       await this.cardDistributionByMailEnabled(
         registration.programFspConfigurationId,
       );
-
     if (cardDistributionByMailEnabled) {
       throw new HttpException(
         'Linking a card on-site is not allowed when card distribution by mail is enabled.',
@@ -241,19 +239,11 @@ export class IntersolveVisaAccountManagementService {
         programId,
       });
 
-    const intersolveVisaCustomer =
-      await this.intersolveVisaService.getCustomerOrCreate({
-        registrationId: registration.id,
-        createCustomerReference: referenceId,
-        contactInformation,
-      });
-
     const brandCode =
       await this.programFspConfigurationRepository.getPropertyValueByName({
         programFspConfigurationId: registration.programFspConfigurationId,
         name: FspConfigurationProperties.brandCode,
       });
-
     if (typeof brandCode !== 'string') {
       throw new HttpException(
         'Missing or invalid brandCode for Intersolve Visa link card on-site',
@@ -261,8 +251,10 @@ export class IntersolveVisaAccountManagementService {
       );
     }
 
-    await this.intersolveVisaService.linkPhysicalCardToCustomer({
-      intersolveVisaCustomer,
+    await this.intersolveVisaService.linkPhysicalCardToRegistration({
+      contactInformation,
+      referenceId,
+      registrationId: registration.id,
       tokenCode,
       brandCode,
     });
@@ -336,7 +328,10 @@ export class IntersolveVisaAccountManagementService {
   private async throwIfCardDoesNotExistOrIsAlreadyLinked(
     tokenCode: string,
   ): Promise<void> {
-    // throws if tokenCode (card) does not exist
+    //TODO:
+    // Throws if tokenCode (card) does not exist
+    // We opened a ticket at Intersoleve to improve their error codes/messages
+    // For now the response code is unreliable; it sometimes returns 404, sometimes 500
     const intersolveVisaChildWallet =
       await this.intersolveVisaService.getWallet(tokenCode);
 

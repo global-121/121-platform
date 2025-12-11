@@ -63,8 +63,7 @@ describe('IntersolveVisaAccountManagementService', () => {
           provide: IntersolveVisaService,
           useValue: {
             getWallet: jest.fn(),
-            getCustomerOrCreate: jest.fn(),
-            linkPhysicalCardToCustomer: jest.fn(),
+            linkPhysicalCardToRegistration: jest.fn(),
             pauseCardOrThrow: jest.fn(),
             retrieveAndUpdateWallet: jest.fn(),
             getWalletWithCards: jest.fn(),
@@ -156,9 +155,6 @@ describe('IntersolveVisaAccountManagementService', () => {
         ],
       );
 
-      const customer = { id: 1 } as any;
-      intersolveVisaService.getCustomerOrCreate.mockResolvedValue(customer);
-
       (
         programFspConfigurationRepository.getPropertyValueByName as jest.Mock
       ).mockImplementation(async ({ name }) => {
@@ -173,27 +169,22 @@ describe('IntersolveVisaAccountManagementService', () => {
       });
 
       expect(
-        intersolveVisaService.linkPhysicalCardToCustomer,
+        intersolveVisaService.linkPhysicalCardToRegistration,
       ).toHaveBeenCalledWith({
-        intersolveVisaCustomer: customer,
+        contactInformation: expect.objectContaining({
+          name: 'Jane Doe',
+          addressStreet: 'Main',
+          addressHouseNumber: '10',
+          addressHouseNumberAddition: 'A',
+          addressPostalCode: '1234AB',
+          addressCity: 'Amsterdam',
+          phoneNumber: '31612345678',
+        }),
+        referenceId: 'ref-1',
+        registrationId: registration.id,
         tokenCode: 'child-token',
         brandCode: 'BRAND',
       });
-      expect(intersolveVisaService.getCustomerOrCreate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          registrationId: registration.id,
-          createCustomerReference: 'ref-1',
-          contactInformation: expect.objectContaining({
-            name: 'Jane Doe',
-            addressStreet: 'Main',
-            addressHouseNumber: '10',
-            addressHouseNumberAddition: 'A',
-            addressPostalCode: '1234AB',
-            addressCity: 'Amsterdam',
-            phoneNumber: '31612345678',
-          }),
-        }),
-      );
     });
   });
 
