@@ -2063,9 +2063,6 @@
       <trans-unit id="1803991316035947288" datatype="html">
         <source>Link Visa card</source>
       </trans-unit>
-      <trans-unit id="2159130950882492111" datatype="html">
-        <source>Cancel</source>
-      </trans-unit>
       <trans-unit id="debit-card-actions-link-visa-card" datatype="html">
         <source>Link visa card</source>
       </trans-unit>
