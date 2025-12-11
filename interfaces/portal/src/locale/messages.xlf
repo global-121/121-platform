@@ -2022,10 +2022,10 @@
         <source>CBE verification report</source>
       </trans-unit>
       <trans-unit id="export-verification-commercial-bank-of-ethiopia" datatype="html">
-        <source>Bank account number verification Commercial Bank of Ethiopia</source>
+        <source>CBE verification report</source>
       </trans-unit>
       <trans-unit id="export-verification-cooperative-bank-of-oromia" datatype="html">
-        <source>Bank account verification Cooperative Bank of Oromia</source>
+        <source>Coopbank verification report</source>
       </trans-unit>
     </body>
   </file>

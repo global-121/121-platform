@@ -172,7 +172,7 @@ export class ExportRegistrationsComponent {
       },
     },
     {
-      label: $localize`:@@export-verification-commercial-bank-of-ethiopia:Bank account number verification Commercial Bank of Ethiopia`,
+      label: $localize`:@@export-verification-commercial-bank-of-ethiopia:CBE verification report`,
       visible:
         this.isCBEProgram() &&
         this.authService.hasPermission({
@@ -195,7 +195,7 @@ export class ExportRegistrationsComponent {
       },
     },
     {
-      label: $localize`:@@export-verification-cooperative-bank-of-oromia:Bank account verification Cooperative Bank of Oromia`,
+      label: $localize`:@@export-verification-cooperative-bank-of-oromia:Coopbank verification report`,
       visible:
         this.isCooperativeBankOfOromiaProgram() &&
         this.authService.hasPermission({
