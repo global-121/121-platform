@@ -13,9 +13,9 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FspDto } from '@121-service/src/fsp-management/fsp.dto';
 import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 import { stringIsFsp } from '@121-service/src/fsp-management/fsp-settings.helpers';
+import { FspUserConfigurableDto } from '@121-service/src/fsp-management/fsp-user-configurable.dto';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
@@ -332,7 +332,7 @@ export class SeedHelperService {
       name?: string;
       label: UILanguageTranslation;
     },
-    fspObject: FspDto,
+    fspObject: FspUserConfigurableDto,
     programId: number,
   ): ProgramFspConfigurationEntity {
     const fspConfigEntity = new ProgramFspConfigurationEntity();
