@@ -189,7 +189,7 @@ export class ExportRegistrationsComponent {
           trackingEvent: {
             category: TrackingCategory.export,
             action: TrackingAction.clickProceedButton,
-            name: 'cbe-accounts-verification',
+            name: 'account-number-verification for:cbe',
           },
         });
       },
@@ -212,7 +212,7 @@ export class ExportRegistrationsComponent {
           trackingEvent: {
             category: TrackingCategory.export,
             action: TrackingAction.clickProceedButton,
-            name: 'cooperative-bank-of-oromia-accounts-verification',
+            name: 'account-number-verification for:coopbank',
           },
         });
       },
