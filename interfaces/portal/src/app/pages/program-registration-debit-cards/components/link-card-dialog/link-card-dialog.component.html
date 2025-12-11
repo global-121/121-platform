@@ -15,10 +15,18 @@
     <div class="flex flex-col gap-2">
       <p i18n>
         Scan the barcode in the back of the card you are handing over to the
-        registration, or manually fill in the 19 digit serial number found below
-        the barcode.
+        registration with a scanner, or manually fill in the 19 digit serial
+        number found below the barcode.
       </p>
       <div class="py-1"></div>
+      <img
+        ngSrc="assets/intersolve-visa-card.svg"
+        height="200"
+        width="400"
+        alt=""
+        aria-hidden="false"
+        class="mx-auto"
+      />
       <p-input-mask
         label="Serial number"
         i18n-label
@@ -50,7 +58,6 @@
             label="Link card"
             i18n-label
             class="mt-4"
-            [disabled]="tokenCodeInvalid() || !tokenCode()"
           ></p-button>
         </div>
       </div>
