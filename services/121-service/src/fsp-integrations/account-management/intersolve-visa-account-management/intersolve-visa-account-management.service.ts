@@ -235,10 +235,6 @@ export class IntersolveVisaAccountManagementService {
       );
     }
 
-    await this.cardDistributionByMailEnabled(
-      registration.programFspConfigurationId,
-    );
-
     const contactInformation =
       await this.registrationsService.getContactInformation({
         referenceId,
