@@ -183,7 +183,7 @@ export class ExportRegistrationsComponent {
         this.trackingService.trackEvent({
           category: TrackingCategory.export,
           action: TrackingAction.selectDropdownOption,
-          name: 'account-number-verification',
+          name: 'account-number-verification for:cbe',
         });
         this.exportAccountVerificationDialog().show({
           trackingEvent: {
@@ -206,7 +206,7 @@ export class ExportRegistrationsComponent {
         this.trackingService.trackEvent({
           category: TrackingCategory.export,
           action: TrackingAction.selectDropdownOption,
-          name: 'cooperative-bank-of-oromia-accounts-verification',
+          name: 'account-number-verification for:coopbank',
         });
         this.exportOromiaAccountVerificationDialog().show({
           trackingEvent: {
