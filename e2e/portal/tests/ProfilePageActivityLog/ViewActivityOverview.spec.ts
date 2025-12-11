@@ -167,13 +167,14 @@ test.describe('as admin user', () => {
   });
 });
 
-test.describe('as user with fewer permissions', () => {
+test.describe('as user with only view paper voucher permissions', () => {
   test.beforeEach(async ({ page }) => {
     const username = await createUserWithPermissions({
       permissions: [
         PermissionEnum.PaymentREAD,
         PermissionEnum.RegistrationREAD,
         PermissionEnum.RegistrationPersonalREAD,
+        PermissionEnum.PaymentVoucherPaperREAD,
       ],
       programId: programIdPV,
       adminAccessToken: await getAccessToken(),
