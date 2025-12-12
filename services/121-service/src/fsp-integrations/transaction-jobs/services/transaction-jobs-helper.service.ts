@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
-import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -140,26 +139,44 @@ export class TransactionJobsHelperService {
     });
   }
 
-  public async saveTransactionProgressAndUpdateRegistration({
+  /**
+   * Saves the progress of a transaction and updates the registration accordingly.
+   *
+   * This method performs two main actions:
+   * 1. If the transaction is not a retry, it updates the payment count for the registration
+   *    identified by the given referenceId and sets its status to completed if applicable.
+   * 2. It saves the transaction progress using the provided context, description, error message,
+   *    and optionally a new transaction status.
+   *
+   * @param context - The context containing information about the transaction and registration.
+   * @param newTransactionStatus - (Optional) The new status to set for the transaction. Only set when the status changes.
+   * @param description - The description of the transaction event.
+   * @param errorMessage - (Optional) An error message to associate with the transaction progress.
+   * @param updateRegistration - (Optional) A flag indicating whether to update the registration. Defaults to false.
+   * @returns A promise that resolves when the operation is complete.
+   */
+  public async saveTransactionProgress({
     context,
-    newTransactionStatus,
     description,
+    newTransactionStatus,
     errorMessage,
+    updateRegistration = false,
   }: {
-    context: SaveTransactionProgressAndUpdateRegistrationContext;
-    newTransactionStatus?: TransactionStatusEnum;
+    context: TransactionEventCreationContext;
     description: TransactionEventDescription;
+    newTransactionStatus?: TransactionStatusEnum;
     errorMessage?: string;
+    updateRegistration?: boolean;
   }): Promise<void> {
-    if (!context.isRetry) {
+    if (updateRegistration) {
       await this.updatePaymentCountAndSetToCompleted({
-        referenceId: context.referenceId,
-        userId: context.transactionEventContext.userId!,
+        transactionId: context.transactionId,
+        userId: context.userId!,
       });
     }
 
     await this.transactionsService.saveProgress({
-      context: context.transactionEventContext,
+      context,
       description,
       errorMessage,
       newTransactionStatus,
@@ -170,12 +187,16 @@ export class TransactionJobsHelperService {
    * Updates payment count and sets status to completed if applicable
    */
   public async updatePaymentCountAndSetToCompleted({
-    referenceId,
+    transactionId,
     userId,
   }: {
-    referenceId: string;
+    transactionId: number;
     userId: number;
   }): Promise<void> {
+    const referenceId =
+      await this.transactionRepository.getReferenceIdByTransactionIdOrThrow(
+        transactionId,
+      );
     const paymentCount =
       await this.transactionRepository.getPaymentCountByReferenceId(
         referenceId,

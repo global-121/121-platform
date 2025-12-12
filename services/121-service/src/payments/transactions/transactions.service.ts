@@ -87,7 +87,12 @@ export class TransactionsService {
     errorMessage?: string;
     newTransactionStatus?: TransactionStatusEnum;
   }) {
-    const transactionEventType = TransactionEventType.processingStep;
+    const transactionEventType =
+      description === TransactionEventDescription.initiated
+        ? TransactionEventType.initiated
+        : description === TransactionEventDescription.retry
+          ? TransactionEventType.retry
+          : TransactionEventType.processingStep; // ##TODO for now quick-fix. I have a hunch we can still drop 'type' altogether instead.
     await this.transactionEventsService.createEvent({
       context,
       type: transactionEventType,
