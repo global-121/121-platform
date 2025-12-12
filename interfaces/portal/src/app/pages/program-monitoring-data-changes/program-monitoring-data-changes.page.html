@@ -12,6 +12,8 @@
     [serverSideFiltering]="true"
     [serverSideTotalRecords]="totalEvents()"
     (updatePaginateQuery)="paginateQuery.set($event)"
+    [contextMenuItems]="contextMenuItems()"
+    (updateContextMenuItem)="contextMenuSelection.set($event)"
   >
   </app-query-table>
 </app-page-layout-monitoring>
