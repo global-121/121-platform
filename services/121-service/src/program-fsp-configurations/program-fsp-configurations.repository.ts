@@ -36,9 +36,11 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
     });
   }
 
-  public async getUsernamePasswordProperties(
-    programFspConfigurationId: number,
-  ): Promise<UsernamePasswordInterface> {
+  public async getUsernamePasswordProperties({
+    programFspConfigurationId,
+  }: {
+    programFspConfigurationId: number;
+  }): Promise<UsernamePasswordInterface> {
     const properties = await this.getProperties(programFspConfigurationId);
     const propertyUsername = properties.find(
       (c) => c.name === FspConfigurationProperties.username,

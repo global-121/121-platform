@@ -34,7 +34,7 @@ export class TransactionJobsIntersolveVoucherService {
 
     const credentials =
       await this.programFspConfigurationRepository.getUsernamePasswordProperties(
-        transactionJob.programFspConfigurationId,
+        { programFspConfigurationId: transactionJob.programFspConfigurationId },
       );
 
     // TODO: switch to putting this in a try/catch block, and update to error or waiting based on result, like in other FSPs
