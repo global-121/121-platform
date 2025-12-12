@@ -99,11 +99,15 @@ export class CommercialBankEthiopiaAccountManagementService {
         result.cbeName = cbeName || null;
         result.cbeStatus = cbeStatus || null;
 
-        if (pa.fullName && cbeName) {
-        } else if (pa.fullName && !cbeName) {
+        const hasFullName = Boolean(pa.fullName);
+        const hasCbeName = Boolean(cbeName);
+
+        if (hasFullName && hasCbeName) {
+          result.errorMessage = null; // All infrormation is present so no error
+        } else if (hasFullName && !hasCbeName) {
           result.errorMessage =
             'Did not get a name from CBE for account number';
-        } else if (cbeName && !pa.fullName) {
+        } else if (!hasFullName && hasCbeName) {
           result.errorMessage = 'FullName in 121 is missing';
         } else {
           result.errorMessage =
