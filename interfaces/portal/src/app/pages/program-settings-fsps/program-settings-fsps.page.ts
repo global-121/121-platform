@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { FSP_USER_CONFIGURABLE_SETTINGS } from '@121-service/src/fsp-management/fsp-user-configurable-settings.const';
 
 import { PageLayoutProgramSettingsComponent } from '~/components/page-layout-program-settings/page-layout-program-settings.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
@@ -47,12 +47,14 @@ export class ProgramSettingsFspsPageComponent {
     );
 
   addFspConfiguration(fsp: Fsps) {
-    this.fspConfigurationFormDialog().show({ fspSetting: FSP_SETTINGS[fsp] });
+    this.fspConfigurationFormDialog().show({
+      fspSetting: FSP_USER_CONFIGURABLE_SETTINGS[fsp],
+    });
   }
 
   reconfigureFspConfiguration(configuration: FspConfiguration) {
     this.fspConfigurationFormDialog().show({
-      fspSetting: FSP_SETTINGS[configuration.fspName],
+      fspSetting: FSP_USER_CONFIGURABLE_SETTINGS[configuration.fspName],
       fspConfiguration: configuration,
     });
   }

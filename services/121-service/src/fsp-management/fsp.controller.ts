@@ -1,8 +1,8 @@
 import { Controller, Get, HttpStatus, Param, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { FspDto } from '@121-service/src/fsp-management/fsp.dto';
 import { FspsService } from '@121-service/src/fsp-management/fsp.service';
+import { FspUserConfigurableDto } from '@121-service/src/fsp-management/fsp-user-configurable.dto';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 
@@ -17,10 +17,10 @@ export class FspsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'All Fsps with attributes',
-    type: FspDto,
+    type: FspUserConfigurableDto,
   })
   @Get()
-  public async getAllFsps(): Promise<FspDto[]> {
+  public async getAllFsps(): Promise<FspUserConfigurableDto[]> {
     return await this.fspService.getAllFsps();
   }
 
@@ -33,13 +33,13 @@ export class FspsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Fsp with attributes',
-    type: FspDto,
+    type: FspUserConfigurableDto,
   })
   @Get(':fspName')
   public async getFspByName(
     @Param('fspName')
     fspName: string,
-  ): Promise<FspDto> {
+  ): Promise<FspUserConfigurableDto> {
     return await this.fspService.getFspByName(fspName);
   }
 }

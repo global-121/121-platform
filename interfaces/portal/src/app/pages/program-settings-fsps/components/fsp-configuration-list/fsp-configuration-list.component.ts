@@ -13,7 +13,7 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { FSP_USER_CONFIGURABLE_SETTINGS } from '@121-service/src/fsp-management/fsp-user-configurable-settings.const';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
@@ -52,7 +52,9 @@ export class FspConfigurationListComponent {
   FSP_IMAGE_URLS = FSP_IMAGE_URLS;
 
   readonly configurableFsps = computed(() =>
-    Object.values(FSP_SETTINGS).filter(this.canConfigureFsp.bind(this)),
+    Object.values(FSP_USER_CONFIGURABLE_SETTINGS).filter(
+      this.canConfigureFsp.bind(this),
+    ),
   );
 
   private canConfigureFsp({ name }: { name: Fsps }) {

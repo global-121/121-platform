@@ -1,13 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FspDto } from '@121-service/src/fsp-management/fsp.dto';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 import { stringIsFsp } from '@121-service/src/fsp-management/fsp-settings.helpers';
+import { FspUserConfigurableDto } from '@121-service/src/fsp-management/fsp-user-configurable.dto';
+import { FSP_USER_CONFIGURABLE_SETTINGS } from '@121-service/src/fsp-management/fsp-user-configurable-settings.const';
 
 @Injectable()
 export class FspsService {
-  public async getFspByName(name: string): Promise<FspDto> {
+  public async getFspByName(name: string): Promise<FspUserConfigurableDto> {
     // Check if name is an Fsps enum value
     if (!stringIsFsp(name)) {
       throw new HttpException(
@@ -15,10 +15,10 @@ export class FspsService {
         HttpStatus.NOT_FOUND,
       );
     }
-    return FSP_SETTINGS[name];
+    return FSP_USER_CONFIGURABLE_SETTINGS[name];
   }
 
-  public async getAllFsps(): Promise<FspDto[]> {
-    return Object.values(FSP_SETTINGS);
+  public async getAllFsps(): Promise<FspUserConfigurableDto[]> {
+    return Object.values(FSP_USER_CONFIGURABLE_SETTINGS);
   }
 }

@@ -13,9 +13,9 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FspDto } from '@121-service/src/fsp-management/fsp.dto';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 import { stringIsFsp } from '@121-service/src/fsp-management/fsp-settings.helpers';
+import { FspUserConfigurableDto } from '@121-service/src/fsp-management/fsp-user-configurable.dto';
+import { FSP_USER_CONFIGURABLE_SETTINGS } from '@121-service/src/fsp-management/fsp-user-configurable-settings.const';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
@@ -309,11 +309,11 @@ export class SeedHelperService {
       const fspName = fspConfigFromJson.fsp;
       if (!stringIsFsp(fspName)) {
         throw new HttpException(
-          `FSP with name ${fspName} not found in FSP_SETTINGS`,
+          `FSP with name ${fspName} not found in FSP_USER_CONFIGURABLE_SETTINGS`,
           HttpStatus.NOT_FOUND,
         );
       }
-      const fspObject = FSP_SETTINGS[fspName];
+      const fspObject = FSP_USER_CONFIGURABLE_SETTINGS[fspName];
       const programFspConfig = this.createProgramFspConfiguration(
         fspConfigFromJson,
         fspObject,
@@ -332,7 +332,7 @@ export class SeedHelperService {
       name?: string;
       label: UILanguageTranslation;
     },
-    fspObject: FspDto,
+    fspObject: FspUserConfigurableDto,
     programId: number,
   ): ProgramFspConfigurationEntity {
     const fspConfigEntity = new ProgramFspConfigurationEntity();

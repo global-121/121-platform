@@ -16,7 +16,7 @@ import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { FSP_USER_CONFIGURABLE_SETTINGS } from '@121-service/src/fsp-management/fsp-user-configurable-settings.const';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { EllipsisMenuComponent } from '~/components/ellipsis-menu/ellipsis-menu.component';
@@ -76,7 +76,7 @@ export class FspConfigurationCardComponent {
   );
 
   readonly fspSetting = computed(
-    () => FSP_SETTINGS[this.configuration().fspName],
+    () => FSP_USER_CONFIGURABLE_SETTINGS[this.configuration().fspName],
   );
 
   readonly fspImage = computed(

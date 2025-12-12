@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { Equal, Repository } from 'typeorm';
 
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { FSP_USER_CONFIGURABLE_SETTINGS } from '@121-service/src/fsp-management/fsp-user-configurable-settings.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -839,7 +839,7 @@ export class RegistrationsInputValidator {
     if (!fspName) {
       return [];
     }
-    const foundFsp = FSP_SETTINGS[fspName];
+    const foundFsp = FSP_USER_CONFIGURABLE_SETTINGS[fspName];
     const requiredAttributes = foundFsp.attributes.filter(
       (attribute) => attribute.isRequired,
     );

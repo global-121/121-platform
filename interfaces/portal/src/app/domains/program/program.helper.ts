@@ -1,5 +1,5 @@
 import { FspIntegrationType } from '@121-service/src/fsp-management/enums/fsp-integration-type.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { FSP_USER_CONFIGURABLE_SETTINGS } from '@121-service/src/fsp-management/fsp-user-configurable-settings.const';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import {
@@ -27,7 +27,8 @@ export const programHasFspWithExportFileIntegration = (
 ): boolean =>
   program?.programFspConfigurations.some(
     (fsp) =>
-      FSP_SETTINGS[fsp.fspName].integrationType === FspIntegrationType.csv,
+      FSP_USER_CONFIGURABLE_SETTINGS[fsp.fspName].integrationType ===
+      FspIntegrationType.csv,
   ) ?? false;
 
 export const programHasInclusionScore = (program?: Program): boolean =>
@@ -55,7 +56,7 @@ export const fspConfigurationNamesHaveIntegrationType = ({
       );
     }
 
-    return FSP_SETTINGS[config.fspName];
+    return FSP_USER_CONFIGURABLE_SETTINGS[config.fspName];
   });
 
   return fspSettings.some(

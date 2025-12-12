@@ -6,7 +6,7 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { FSP_USER_CONFIGURABLE_SETTINGS } from '@121-service/src/fsp-management/fsp-user-configurable-settings.const';
 import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 
@@ -58,7 +58,7 @@ describe('FspConfigurationService', () => {
 
   describe('getMissingRequiredAttributes', () => {
     it('should return missing required attributes when program lacks them', () => {
-      const fspSetting = FSP_SETTINGS[Fsps.intersolveVisa];
+      const fspSetting = FSP_USER_CONFIGURABLE_SETTINGS[Fsps.intersolveVisa];
       const programAttributes = [
         createProgramAttribute(FspAttributes.fullName),
       ];
@@ -78,7 +78,7 @@ describe('FspConfigurationService', () => {
     });
 
     it('should return empty array when program has all required attributes', () => {
-      const fspSetting = FSP_SETTINGS[Fsps.intersolveVisa];
+      const fspSetting = FSP_USER_CONFIGURABLE_SETTINGS[Fsps.intersolveVisa];
       const programAttributes = [
         createProgramAttribute(FspAttributes.fullName),
         createProgramAttribute(FspAttributes.addressCity),
@@ -98,7 +98,7 @@ describe('FspConfigurationService', () => {
 
   describe('fspSettingToFormGroup', () => {
     it('should create a form group with default displayName and configuration controls (Visa)', () => {
-      const fspSetting = FSP_SETTINGS[Fsps.intersolveVisa];
+      const fspSetting = FSP_USER_CONFIGURABLE_SETTINGS[Fsps.intersolveVisa];
       const formGroup = service.fspSettingToFormGroup({ fspSetting });
 
       expect(formGroup instanceof FormGroup).toBeTrue();
@@ -111,14 +111,14 @@ describe('FspConfigurationService', () => {
       ).toBeTruthy();
       expect(
         formGroup.get(FspConfigurationProperties.coverLetterCode)?.validator,
-      ).toBeTruthy(); // coverLetterCode is required per FSP_SETTINGS for Visa
+      ).toBeTruthy(); // coverLetterCode is required per FSP_USER_CONFIGURABLE_SETTINGS for Visa
       expect(
         formGroup.get(FspConfigurationProperties.fundingTokenCode)?.validator,
       ).toBeTruthy(); // fundingTokenCode required
     });
 
     it('should use existing configuration label and property values when provided (Visa)', () => {
-      const fspSetting = FSP_SETTINGS[Fsps.intersolveVisa];
+      const fspSetting = FSP_USER_CONFIGURABLE_SETTINGS[Fsps.intersolveVisa];
       const existing = createStubExistingConfiguration({
         label: { en: 'Existing Visa Label' },
         properties: [
@@ -148,7 +148,8 @@ describe('FspConfigurationService', () => {
     });
 
     it('should replace sensitive password property value with empty string forcing re-entry (Commercial Bank of Ethiopia)', () => {
-      const fspSetting = FSP_SETTINGS[Fsps.commercialBankEthiopia];
+      const fspSetting =
+        FSP_USER_CONFIGURABLE_SETTINGS[Fsps.commercialBankEthiopia];
       const existing = createStubExistingConfiguration({
         fspName: Fsps.commercialBankEthiopia,
         properties: [
@@ -169,7 +170,7 @@ describe('FspConfigurationService', () => {
     });
 
     it('should default multi-select property to empty array when no existing value', () => {
-      const fspSetting = FSP_SETTINGS[Fsps.excel];
+      const fspSetting = FSP_USER_CONFIGURABLE_SETTINGS[Fsps.excel];
       const formGroup = service.fspSettingToFormGroup({ fspSetting });
       expect(
         formGroup.get(FspConfigurationProperties.columnsToExport)?.value,
@@ -177,7 +178,7 @@ describe('FspConfigurationService', () => {
     });
 
     it('should default multi-select property to array when existing value', () => {
-      const fspSetting = FSP_SETTINGS[Fsps.excel];
+      const fspSetting = FSP_USER_CONFIGURABLE_SETTINGS[Fsps.excel];
       const existing = createStubExistingConfiguration({
         fspName: Fsps.excel,
         properties: [
@@ -200,7 +201,8 @@ describe('FspConfigurationService', () => {
 
   describe('fspSettingToFspFormFields', () => {
     it('should build field metadata including sensitivity flag (Commercial Bank of Ethiopia)', () => {
-      const fspSetting = FSP_SETTINGS[Fsps.commercialBankEthiopia];
+      const fspSetting =
+        FSP_USER_CONFIGURABLE_SETTINGS[Fsps.commercialBankEthiopia];
       const existing = createStubExistingConfiguration({
         fspName: Fsps.commercialBankEthiopia,
         properties: [
@@ -261,7 +263,7 @@ describe('FspConfigurationService', () => {
 
   describe('getRequiredFspAttributes (non-Excel)', () => {
     it('should return required attribute names for a non-Excel FSP', () => {
-      const fspSetting = FSP_SETTINGS[Fsps.intersolveVisa];
+      const fspSetting = FSP_USER_CONFIGURABLE_SETTINGS[Fsps.intersolveVisa];
       const existing = createStubExistingConfiguration();
       const result = service.getRequiredFspAttributes({
         fspSetting,
@@ -281,7 +283,7 @@ describe('FspConfigurationService', () => {
   describe('getRequiredFspAttributes (Excel)', () => {
     // For Excel FSP the required attributes are dynamic based on two configuration properties:
     // columnsToExport (array|string) and columnToMatch (string). They are merged and deduplicated.
-    const fspSetting = FSP_SETTINGS[Fsps.excel];
+    const fspSetting = FSP_USER_CONFIGURABLE_SETTINGS[Fsps.excel];
 
     it('should merge and deduplicate attributes from both properties (array + string)', () => {
       const existing = createStubExistingConfiguration({

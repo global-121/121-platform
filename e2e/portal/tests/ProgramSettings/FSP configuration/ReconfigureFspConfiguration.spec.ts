@@ -1,7 +1,7 @@
 import test from '@playwright/test';
 
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { FSP_USER_CONFIGURABLE_SETTINGS } from '@121-service/src/fsp-management/fsp-user-configurable-settings.const';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getAccessToken,
@@ -14,12 +14,13 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 const configuredFsps = [
-  FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
-  FSP_SETTINGS[Fsps.intersolveVoucherWhatsapp].defaultLabel.en,
+  FSP_USER_CONFIGURABLE_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
+  FSP_USER_CONFIGURABLE_SETTINGS[Fsps.intersolveVoucherWhatsapp].defaultLabel
+    .en,
 ].filter((label): label is string => label !== undefined);
 
 const visaConfiguration = [
-  FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
+  FSP_USER_CONFIGURABLE_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
   // eslint-disable-next-line n/no-process-env -- Used in seed-data, not in code, so not in '@121-service/src/env'
   process.env.INTERSOLVE_VISA_BRAND_CODE,
   // eslint-disable-next-line n/no-process-env -- Used in seed-data, not in code, so not in '@121-service/src/env'
