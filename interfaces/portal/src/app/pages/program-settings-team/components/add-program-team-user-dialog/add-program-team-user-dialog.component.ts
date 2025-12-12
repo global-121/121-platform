@@ -188,8 +188,6 @@ export class AddProgramTeamUserDialogComponent {
           ? $localize`User updated`
           : $localize`User added`,
       });
-
-      void this.programApiService.invalidateCache(this.programId);
     },
   }));
 

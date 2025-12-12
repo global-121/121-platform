@@ -107,12 +107,6 @@ export class RegistrationsTableColumnService {
       });
   }
 
-  invalidateCache(programId: Signal<number | string>) {
-    return this.queryClient.invalidateQueries({
-      queryKey: this.getColumns(programId)().queryKey,
-    });
-  }
-
   private createBasicColumns(
     program: Program,
   ): QueryTableColumn<Registration>[] {

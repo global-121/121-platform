@@ -151,10 +151,10 @@ export class UpdateRegistrationsComponent {
         reason,
       });
     },
+    meta: {
+      invalidateCacheAgainAfterDelay: 500,
+    },
     onSuccess: () => {
-      void this.registrationApiService.invalidateCache({
-        programId: this.programId,
-      });
       this.exportCSVFormGroup.reset();
       this.updateRegistrationsFormGroup.reset();
       this.dialogVisible.set(false);
@@ -164,14 +164,6 @@ export class UpdateRegistrationsComponent {
         severity: 'info',
         showSpinner: true,
       });
-      void this.metricApiService.invalidateCache(this.programId);
-
-      setTimeout(() => {
-        // invalidate the cache again after a delay to try and make the changes reflected in the UI
-        void this.registrationApiService.invalidateCache({
-          programId: this.programId,
-        });
-      }, 500);
       this.updateSuccess.emit();
     },
   }));

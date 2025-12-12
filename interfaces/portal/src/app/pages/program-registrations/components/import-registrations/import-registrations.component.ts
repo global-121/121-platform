@@ -20,7 +20,6 @@ import {
   ImportFileDialogComponent,
   ImportFileDialogFormGroup,
 } from '~/components/import-file-dialog/import-file-dialog.component';
-import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { DownloadService } from '~/services/download.service';
 import { ToastService } from '~/services/toast.service';
@@ -41,7 +40,6 @@ export class ImportRegistrationsComponent {
   private downloadService = inject(DownloadService);
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
-  private metricApiService = inject(MetricApiService);
 
   readonly registeredChipData = getChipDataByRegistrationStatus(
     RegistrationStatusEnum.new,
@@ -77,11 +75,6 @@ export class ImportRegistrationsComponent {
       });
     },
     onSuccess: () => {
-      void this.registrationApiService.invalidateCache({
-        programId: this.programId,
-      });
-      void this.metricApiService.invalidateCache(this.programId);
-
       this.dialogVisible.set(false);
       this.toastService.showToast({
         detail: $localize`:@@import-registrations-success:Registration(s) imported successfully.`,

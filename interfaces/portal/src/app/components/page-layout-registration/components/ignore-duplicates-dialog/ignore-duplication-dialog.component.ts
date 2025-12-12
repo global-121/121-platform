@@ -22,7 +22,6 @@ import { InputTextModule } from 'primeng/inputtext';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
-import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
@@ -46,7 +45,6 @@ type IgnoreDuplicationFormGroup =
 })
 export class IgnoreDuplicationDialogComponent {
   private registrationApiService = inject(RegistrationApiService);
-  private metricApiService = inject(MetricApiService);
   readonly programId = input.required<string>();
   readonly referenceId = input.required<string>();
   readonly registrationId = input.required<string>();
@@ -94,10 +92,6 @@ export class IgnoreDuplicationDialogComponent {
       }),
     onSuccess: () => {
       this.formGroup.reset();
-      void this.metricApiService.invalidateCache(this.programId);
-      return this.registrationApiService.invalidateCache({
-        programId: this.programId,
-      });
     },
   }));
   readonly confirmationDialog = viewChild.required<FormDialogComponent>(

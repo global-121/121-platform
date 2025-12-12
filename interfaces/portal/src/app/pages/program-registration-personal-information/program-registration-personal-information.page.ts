@@ -125,12 +125,8 @@ export class ProgramRegistrationPersonalInformationPageComponent
     ),
   );
 
-  async onRegistrationUpdated() {
+  onRegistrationUpdated() {
     this.isEditing.set(false);
-    void this.metricApiService.invalidateCache(this.programId);
-    await this.registrationApiService.invalidateCache({
-      programId: this.programId,
-    });
     void this.registrationAttributes.refetch();
   }
 

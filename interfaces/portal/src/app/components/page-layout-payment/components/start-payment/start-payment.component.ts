@@ -15,7 +15,6 @@ import {
   DataListItem,
 } from '~/components/data-list/data-list.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
-import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
@@ -35,7 +34,6 @@ export class StartPaymentComponent {
   readonly transactionCount = input.required<string>();
   readonly totalPaymentAmount = input.required<string>();
 
-  private metricApiService = inject(MetricApiService);
   private paymentApiService = inject(PaymentApiService);
   private toastService = inject(ToastService);
 
@@ -48,12 +46,10 @@ export class StartPaymentComponent {
         programId: this.programId,
         paymentId: this.paymentId,
       }),
+    meta: {
+      invalidateCacheAgainAfterDelay: 500,
+    },
     onSuccess: () => {
-      void this.metricApiService.invalidateCache(this.programId);
-      void this.paymentApiService.invalidateCache(
-        this.programId,
-        this.paymentId,
-      );
       this.startPaymentDialog().hide();
       this.toastService.showToast({
         detail: $localize`Payment started successfully.`,
