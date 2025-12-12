@@ -1,8 +1,11 @@
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  doPaymentAndWaitForCompletion,
-  seedPaidRegistrations,
+  createAndStartPayment,
+  waitForPaymentTransactionsToComplete,
+} from '@121-service/test/helpers/program.helper';
+import {
+  seedIncludedRegistrations,
   seedRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -27,26 +30,33 @@ registrationPV6.whatsappPhoneNumber = noIncomingMessagePhoneNumber;
 const registrationsPV = [registrationPV6, registrationPV7, registrationPV8];
 
 const seedTwoPayments = async () => {
-  const completeStatuses = [
-    TransactionStatusEnum.success,
-    TransactionStatusEnum.error,
-    TransactionStatusEnum.waiting,
-  ];
   // Arrange
-  await seedPaidRegistrations({
-    registrations: registrationsPV,
-    programId: programIdPV,
-    transferValue,
-    completeStatuses,
-  });
-
-  // Add a second payment to return two aggregates in the response
-  await doPaymentAndWaitForCompletion({
+  await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);
+  await seedPayment();
+  await seedPayment();
+};
+const completeStatuses = [
+  TransactionStatusEnum.success,
+  TransactionStatusEnum.error,
+]; // Do not include 'waiting' as all transactions initially go to 'waiting' so this will resolve too quickly
+const seedPayment = async () => {
+  const doPaymentResponse = await createAndStartPayment({
     programId: programIdPV,
     transferValue,
     referenceIds: registrationsPV.map((r) => r.referenceId),
     accessToken,
+  });
+  const paymentId = doPaymentResponse.body.id;
+  await waitForPaymentTransactionsToComplete({
+    programId: programIdPV,
+    paymentReferenceIds: [
+      registrationPV7.referenceId,
+      registrationPV8.referenceId,
+    ], // CRITICAL: do not wait for registrationPV6 to resolve, as it is supposed to stay on 'waiting' status
+    accessToken,
+    maxWaitTimeMs: 5000,
     completeStatuses,
+    paymentId,
   });
 };
 
@@ -69,10 +79,14 @@ describe('Get all payments aggregates', () => {
       // Assert
       expect(getAllPaymentsAggregatesResponse.statusCode).toBe(200);
       expect(getAllPaymentsAggregatesResponse.body.length).toBe(2); // one for each payment
-      const aggregate = getAllPaymentsAggregatesResponse.body[1];
+      const aggregate = getAllPaymentsAggregatesResponse.body[1]; // look at the 2nd payment only
       const today = new Date().toISOString().split('T')[0];
       expect(aggregate.id).toEqual(2);
       expect(aggregate.date).toContain(today);
+      console.log(
+        'aggregate.aggregatedStatuses: ',
+        aggregate.aggregatedStatuses,
+      );
       expect(aggregate.aggregatedStatuses).toEqual(
         expect.objectContaining({
           success: expect.objectContaining({

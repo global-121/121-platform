@@ -5,6 +5,7 @@ import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/
 import { TransactionJobsIntersolveVoucherService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-intersolve-voucher.service';
 import { IntersolveVoucherTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/intersolve-voucher-transaction-job.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 
 const mockedIntersolveVoucherTransactionJob: IntersolveVoucherTransactionJobDto =
@@ -26,6 +27,7 @@ describe('TransactionJobsIntersolveVoucherService', () => {
   let intersolveVoucherService: jest.Mocked<IntersolveVoucherService>;
   let programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
   let transactionJobsHelperService: jest.Mocked<TransactionJobsHelperService>;
+  let transactionsService: jest.Mocked<TransactionsService>;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -43,6 +45,7 @@ describe('TransactionJobsIntersolveVoucherService', () => {
     transactionJobsHelperService = unitRef.get<TransactionJobsHelperService>(
       TransactionJobsHelperService,
     );
+    transactionsService = unitRef.get<TransactionsService>(TransactionsService);
   });
 
   it('should be defined', () => {
@@ -51,9 +54,6 @@ describe('TransactionJobsIntersolveVoucherService', () => {
 
   describe('processIntersolveVoucherTransactionJob', () => {
     it('should process intersolveVoucherTransactionJob successfully', async () => {
-      (
-        transactionJobsHelperService.createInitiatedOrRetryTransactionEvent as jest.Mock
-      ).mockImplementation();
       (
         programFspConfigurationRepository.getUsernamePasswordProperties as jest.Mock
       ).mockResolvedValue({ username: 'user', password: 'pass' });
@@ -66,12 +66,10 @@ describe('TransactionJobsIntersolveVoucherService', () => {
       );
 
       expect(
-        transactionJobsHelperService.createInitiatedOrRetryTransactionEvent,
+        transactionJobsHelperService.logTransactionJobStart,
       ).toHaveBeenCalled();
+      expect(transactionsService.saveProgress).toHaveBeenCalled();
       expect(intersolveVoucherService.sendIndividualPayment).toHaveBeenCalled();
-      expect(
-        transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration,
-      ).toHaveBeenCalled();
     });
   });
 });

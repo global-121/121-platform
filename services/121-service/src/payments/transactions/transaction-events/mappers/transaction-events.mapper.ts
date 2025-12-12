@@ -18,7 +18,6 @@ export class TransactionEventsMapper {
       transactionEventEntities,
       (event) => ({
         id: event.id,
-        type: event.type,
         created: event.created,
         user: mapUserToDto(event.user) ?? SYSTEM_USER,
         description: event.description,
@@ -26,7 +25,7 @@ export class TransactionEventsMapper {
         errorMessage: event.errorMessage,
         programFspConfigurationId: event.programFspConfigurationId,
       }),
-      (event) => event.type,
+      (event) => event.description,
     );
   }
 }

@@ -7,6 +7,7 @@ import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/
 import { TransactionJobsSafaricomService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-safaricom.service';
 import { SafaricomTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/safaricom-transaction-job.dto';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 
 describe('TransactionJobsSafaricomService', () => {
   let service: TransactionJobsSafaricomService;
@@ -14,6 +15,7 @@ describe('TransactionJobsSafaricomService', () => {
   let safaricomTransferScopedRepository: SafaricomTransferScopedRepository;
   let transactionEventsScopedRepository: TransactionEventsScopedRepository;
   let transactionJobsHelperService: TransactionJobsHelperService;
+  let transactionsService: TransactionsService;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -34,13 +36,12 @@ describe('TransactionJobsSafaricomService', () => {
     transactionJobsHelperService = unitRef.get<TransactionJobsHelperService>(
       TransactionJobsHelperService,
     );
+    transactionsService = unitRef.get<TransactionsService>(TransactionsService);
 
     jest
-      .spyOn(
-        transactionJobsHelperService,
-        'createInitiatedOrRetryTransactionEvent',
-      )
+      .spyOn(transactionJobsHelperService, 'logTransactionJobStart')
       .mockImplementation();
+    jest.spyOn(transactionsService, 'saveProgress').mockImplementation();
     jest
       .spyOn(safaricomTransferScopedRepository, 'findOne')
       .mockResolvedValue(undefined);
@@ -76,9 +77,7 @@ describe('TransactionJobsSafaricomService', () => {
       idNumber: 'nat-123',
     };
     const existingSafaricomTransfer = { transactionId: 99 };
-    (
-      transactionJobsHelperService.createInitiatedOrRetryTransactionEvent as jest.Mock
-    ).mockImplementation();
+    (transactionsService.saveProgress as jest.Mock).mockImplementation();
     (
       transactionEventsScopedRepository.countFailedTransactionAttempts as jest.Mock
     ).mockResolvedValue(0);
@@ -86,15 +85,11 @@ describe('TransactionJobsSafaricomService', () => {
       existingSafaricomTransfer,
     );
     (safaricomService.doTransfer as jest.Mock).mockResolvedValue(undefined);
-    (
-      transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration as jest.Mock
-    ).mockImplementation();
+    (transactionsService.saveProgress as jest.Mock).mockImplementation();
 
     await service.processSafaricomTransactionJob(transactionJob);
 
-    expect(
-      transactionJobsHelperService.createInitiatedOrRetryTransactionEvent,
-    ).toHaveBeenCalled();
+    expect(transactionsService.saveProgress).toHaveBeenCalled();
     expect(safaricomTransferScopedRepository.save).not.toHaveBeenCalled();
     expect(safaricomTransferScopedRepository.update).toHaveBeenCalled();
     expect(safaricomService.doTransfer).toHaveBeenCalledWith({

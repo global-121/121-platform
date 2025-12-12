@@ -4,7 +4,6 @@ import { NedbankVoucherStatus } from '@121-service/src/fsp-integrations/integrat
 import { NedbankError } from '@121-service/src/fsp-integrations/integrations/nedbank/errors/nedbank.error';
 import { NedbankVoucherScopedRepository } from '@121-service/src/fsp-integrations/integrations/nedbank/repositories/nedbank-voucher.scoped.repository';
 import { NedbankService } from '@121-service/src/fsp-integrations/integrations/nedbank/services/nedbank.service';
-import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { TransactionJobsNedbankService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-nedbank.service';
 import { NedbankTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/nedbank-transaction-job.dto';
@@ -33,12 +32,6 @@ const transactionEventContext: TransactionEventCreationContext = {
   programFspConfigurationId:
     mockedNedbankTransactionJob.programFspConfigurationId,
 };
-const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
-  {
-    transactionEventContext,
-    referenceId: mockedNedbankTransactionJob.referenceId,
-    isRetry: mockedNedbankTransactionJob.isRetry,
-  };
 
 describe('TransactionJobsNedbankService', () => {
   let service: TransactionJobsNedbankService;
@@ -74,17 +67,12 @@ describe('TransactionJobsNedbankService', () => {
     transactionsService = unitRef.get<TransactionsService>(TransactionsService);
 
     jest
-      .spyOn(
-        transactionJobsHelperService,
-        'createInitiatedOrRetryTransactionEvent',
-      )
+      .spyOn(transactionJobsHelperService, 'logTransactionJobStart')
       .mockImplementation();
+    jest.spyOn(transactionsService, 'saveProgress').mockImplementation();
     jest
       .spyOn(nedbankVoucherScopedRepository, 'getVoucherWhereStatusNull')
       .mockResolvedValue(null);
-    jest
-      .spyOn(transactionsService, 'updateTransactionStatus')
-      .mockImplementation();
     jest
       .spyOn(nedbankVoucherScopedRepository, 'upsertVoucherByTransactionId')
       .mockResolvedValue(undefined);
@@ -111,14 +99,16 @@ describe('TransactionJobsNedbankService', () => {
     await service.processNedbankTransactionJob(mockedNedbankTransactionJob);
 
     expect(
-      transactionJobsHelperService.createInitiatedOrRetryTransactionEvent,
-    ).toHaveBeenCalledWith(
+      transactionJobsHelperService.logTransactionJobStart,
+    ).toHaveBeenCalledWith({
+      context: transactionEventContext,
+      isRetry: mockedNedbankTransactionJob.isRetry,
+    });
+    expect(transactionsService.saveProgress).toHaveBeenCalledWith(
       expect.objectContaining({
         context: transactionEventContext,
-        isRetry: mockedNedbankTransactionJob.isRetry,
       }),
     );
-    expect(transactionsService.updateTransactionStatus).toHaveBeenCalled();
     expect(
       nedbankVoucherScopedRepository.upsertVoucherByTransactionId,
     ).toHaveBeenCalledWith(
@@ -141,9 +131,7 @@ describe('TransactionJobsNedbankService', () => {
       { orderCreateReference: expect.any(String) },
       { status: NedbankVoucherStatus.PENDING },
     );
-    expect(
-      transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration,
-    ).toHaveBeenCalled();
+    expect(transactionsService.saveProgress).toHaveBeenCalled();
   });
 
   it('should update transaction and voucher to error/failed if NedbankError is thrown', async () => {
@@ -158,10 +146,8 @@ describe('TransactionJobsNedbankService', () => {
     await service.processNedbankTransactionJob(mockedNedbankTransactionJob);
 
     // Assert
-    expect(
-      transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration,
-    ).toHaveBeenCalledWith({
-      context: saveTransactionProgressAndUpdateRegistrationContext,
+    expect(transactionsService.saveProgress).toHaveBeenCalledWith({
+      context: transactionEventContext,
       description: TransactionEventDescription.nedbankVoucherCreationRequested,
       errorMessage,
       newTransactionStatus: TransactionStatusEnum.error,

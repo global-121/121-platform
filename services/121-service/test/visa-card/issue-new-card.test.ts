@@ -1,5 +1,6 @@
 import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { VisaCard121Status } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/wallet-status-121.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { messageTemplateNlrcOcw } from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.const';
 import { messageTemplateNlrcPv } from '@121-service/src/seed-data/message-template/message-template-nlrc-pv.const';
@@ -35,6 +36,7 @@ describe('Issue new Visa debit card', () => {
     await seedPaidRegistrations({
       registrations: [registrationVisa],
       programId: programIdVisa,
+      completeStatuses: [TransactionStatusEnum.success],
     });
 
     // Block the card first. This is because this usually happens before issuing a new card in practice
@@ -92,6 +94,7 @@ describe('Issue new Visa debit card', () => {
     await seedPaidRegistrations({
       registrations: [registrationVisa],
       programId: programIdPv,
+      completeStatuses: [TransactionStatusEnum.success],
     });
     const wrongPhoneNumber = '4534565434565434';
 

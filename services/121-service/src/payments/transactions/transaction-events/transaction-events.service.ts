@@ -3,7 +3,6 @@ import { Equal } from 'typeorm';
 
 import { TransactionEventsReturnDto } from '@121-service/src/payments/transactions/transaction-events/dto/transaction-events-return.dto';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
-import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsMapper } from '@121-service/src/payments/transactions/transaction-events/mappers/transaction-events.mapper';
 import { LastTransactionEventRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/last-transaction-event.repository';
@@ -18,17 +17,14 @@ export class TransactionEventsService {
 
   public async createEvent({
     context,
-    type,
     description,
     errorMessage,
   }: {
     context: TransactionEventCreationContext;
-    type: TransactionEventType;
     description: TransactionEventDescription;
     errorMessage?: string;
   }): Promise<void> {
     const transactionEvent = this.transactionEventScopedRepository.create({
-      type,
       description,
       isSuccessfullyCompleted: !errorMessage,
       errorMessage,
@@ -68,7 +64,6 @@ export class TransactionEventsService {
     transactionIds,
     programFspConfigurationId,
     userId,
-    type,
     description,
     isSuccessfullyCompleted,
     errorMessages,
@@ -76,7 +71,6 @@ export class TransactionEventsService {
     transactionIds: number[];
     programFspConfigurationId: number;
     userId: number;
-    type: TransactionEventType;
     description: TransactionEventDescription;
     isSuccessfullyCompleted: boolean;
     errorMessages?: Map<number, string>;
@@ -86,7 +80,6 @@ export class TransactionEventsService {
         transactionId,
         programFspConfigurationId,
         userId,
-        type,
         description,
         isSuccessfullyCompleted,
         errorMessage: errorMessages

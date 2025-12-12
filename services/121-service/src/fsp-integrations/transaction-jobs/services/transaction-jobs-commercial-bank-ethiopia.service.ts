@@ -4,11 +4,11 @@ import { Equal } from 'typeorm';
 import { CbeTransferScopedRepository } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia.scoped.repository';
 import { CbeTransferEntity } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia-transfer.entity';
 import { CommercialBankEthiopiaService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
-import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { CommercialBankEthiopiaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/commercial-bank-ethiopia-transaction-job.dto';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 
@@ -18,6 +18,7 @@ export class TransactionJobsCommercialBankEthiopiaService {
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
+    private readonly transactionsService: TransactionsService,
     private readonly programRepository: ProgramRepository,
     private readonly cbeTransferScopedRepository: CbeTransferScopedRepository,
   ) {}
@@ -25,20 +26,16 @@ export class TransactionJobsCommercialBankEthiopiaService {
   public async processCommercialBankEthiopiaTransactionJob(
     transactionJob: CommercialBankEthiopiaTransactionJobDto,
   ): Promise<void> {
-    const transactionId = transactionJob.transactionId;
+    // Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
     const transactionEventContext: TransactionEventCreationContext = {
       transactionId: transactionJob.transactionId,
       userId: transactionJob.userId,
       programFspConfigurationId: transactionJob.programFspConfigurationId,
     };
-
-    // Create transaction event 'initiated' or 'retry'
-    await this.transactionJobsHelperService.createInitiatedOrRetryTransactionEvent(
-      {
-        context: transactionEventContext,
-        isRetry: transactionJob.isRetry,
-      },
-    );
+    await this.transactionJobsHelperService.logTransactionJobStart({
+      context: transactionEventContext,
+      isRetry: transactionJob.isRetry,
+    });
 
     const credentials =
       await this.programFspConfigurationRepository.getUsernamePasswordProperties(
@@ -56,7 +53,7 @@ export class TransactionJobsCommercialBankEthiopiaService {
     if (transactionJob.isRetry) {
       const existingCbeTransfer =
         await this.cbeTransferScopedRepository.getExistingCbeTransferOrFail({
-          transactionId,
+          transactionId: transactionJob.transactionId,
         });
       debitTheirRef = existingCbeTransfer.debitTheirRef;
     } else {
@@ -79,25 +76,17 @@ export class TransactionJobsCommercialBankEthiopiaService {
         },
       );
 
-    const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
-      {
-        transactionEventContext,
-        referenceId: transactionJob.referenceId,
-        isRetry: transactionJob.isRetry,
-      };
-    await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration(
-      {
-        context: saveTransactionProgressAndUpdateRegistrationContext,
-        description:
-          TransactionEventDescription.commercialBankEthiopiaRequestSent,
-        errorMessage,
-        newTransactionStatus: status,
-      },
-    );
+    await this.transactionsService.saveProgress({
+      context: transactionEventContext,
+      description:
+        TransactionEventDescription.commercialBankEthiopiaRequestSent,
+      errorMessage,
+      newTransactionStatus: status,
+    });
 
     const newCbeTransfer = new CbeTransferEntity();
     newCbeTransfer.debitTheirRef = debitTheirRef;
-    newCbeTransfer.transactionId = transactionId;
+    newCbeTransfer.transactionId = transactionJob.transactionId;
     await this.cbeTransferScopedRepository.save(newCbeTransfer);
   }
 }

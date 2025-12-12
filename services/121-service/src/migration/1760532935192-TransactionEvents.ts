@@ -2,7 +2,6 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 import { env } from '@121-service/src/env';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
-import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 
 // Show console logs only for NLRC, as they have a lot of transactions and we want to monitor the progress there during release
 // Not for other environments to prevent unnecessary log noise when creating a new instance or resetting locally
@@ -352,7 +351,7 @@ export class TransactionEvents1760532935192 implements MigrationInterface {
         lt.created,
         lt.created,
         t."userId",
-        '${TransactionEventType.created}' AS type,
+        'created' AS type,
         '${TransactionEventDescription.created}' AS description,
         true AS "isSuccessfullyCompleted",
         t.id AS "transactionId",
@@ -379,7 +378,7 @@ export class TransactionEvents1760532935192 implements MigrationInterface {
         t.created + INTERVAL '1 second',
         t.updated + INTERVAL '1 second',
         t."userId",
-        '${TransactionEventType.initiated}' AS type,
+        'initiated' AS type,
         '${TransactionEventDescription.initiated}' AS description,
         CASE WHEN t."errorMessage" IS NOT NULL THEN false ELSE true END AS "isSuccessfullyCompleted",
         t.id AS "transactionId",
@@ -396,7 +395,7 @@ export class TransactionEvents1760532935192 implements MigrationInterface {
     const q = `
       INSERT INTO "121-service"."last_transaction_event" ("transactionId", "transactionEventId")
       SELECT et."transactionId" as "transactionId", et.id AS "transactionEventId"
-      FROM "121-service".transaction_event et where type = '${TransactionEventType.initiated}'
+      FROM "121-service".transaction_event et where type = 'initiated'
       `;
     // The latest event should be the initiated event as we do not have any other events yet
     await queryRunner.query(q);

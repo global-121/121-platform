@@ -5,13 +5,13 @@ import { env } from '@121-service/src/env';
 import { AirtelDisbursementResultEnum } from '@121-service/src/fsp-integrations/integrations/airtel/enums/airtel-disbursement-result.enum';
 import { AirtelError } from '@121-service/src/fsp-integrations/integrations/airtel/errors/airtel.error';
 import { AirtelService } from '@121-service/src/fsp-integrations/integrations/airtel/services/airtel.service';
-import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { AirtelTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/airtel-transaction-job.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 
 @Injectable()
 export class TransactionJobsAirtelService {
@@ -19,6 +19,7 @@ export class TransactionJobsAirtelService {
     private readonly airtelService: AirtelService,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
     private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
+    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async processAirtelTransactionJob(
@@ -30,37 +31,28 @@ export class TransactionJobsAirtelService {
       );
     }
 
+    // Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
     const transactionEventContext: TransactionEventCreationContext = {
       transactionId: transactionJob.transactionId,
       userId: transactionJob.userId,
       programFspConfigurationId: transactionJob.programFspConfigurationId,
     };
-    await this.transactionJobsHelperService.createInitiatedOrRetryTransactionEvent(
-      {
-        context: transactionEventContext,
-        isRetry: transactionJob.isRetry,
-      },
-    );
+    await this.transactionJobsHelperService.logTransactionJobStart({
+      context: transactionEventContext,
+      isRetry: transactionJob.isRetry,
+    });
 
     // Inner function.
     const handleDisbursementResult = async (
       status: TransactionStatusEnum,
       errorText?: string,
     ) => {
-      const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
-        {
-          transactionEventContext,
-          referenceId: transactionJob.referenceId,
-          isRetry: transactionJob.isRetry,
-        };
-      await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration(
-        {
-          context: saveTransactionProgressAndUpdateRegistrationContext,
-          newTransactionStatus: status,
-          errorMessage: errorText,
-          description: TransactionEventDescription.airtelRequestSent,
-        },
-      );
+      await this.transactionsService.saveProgress({
+        context: transactionEventContext,
+        newTransactionStatus: status,
+        errorMessage: errorText,
+        description: TransactionEventDescription.airtelRequestSent,
+      });
     };
 
     /*
