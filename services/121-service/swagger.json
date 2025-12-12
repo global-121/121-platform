@@ -205,7 +205,7 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/fsps/intersolve-voucher/voucher-paper",
+    "path": "/api/programs/{programId}/fsps/intersolve-voucher/voucher/image-paper",
     "params": [
       "programId",
       "referenceId",
@@ -214,7 +214,7 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/fsps/intersolve-voucher/voucher-whatsapp",
+    "path": "/api/programs/{programId}/fsps/intersolve-voucher/voucher/image-whatsapp",
     "params": [
       "programId",
       "referenceId",
@@ -223,7 +223,7 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/fsps/intersolve-voucher/vouchers/balance",
+    "path": "/api/programs/{programId}/fsps/intersolve-voucher/voucher/balance",
     "params": [
       "programId",
       "referenceId",

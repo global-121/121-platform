@@ -351,7 +351,7 @@ export class ProgramApiService extends DomainApiService {
       path: [
         BASE_ENDPOINT,
         programId,
-        `fsps/intersolve-voucher/voucher-${voucherType}`,
+        `fsps/intersolve-voucher/voucher/image-${voucherType}`,
       ],
       params: {
         referenceId,
@@ -374,7 +374,7 @@ export class ProgramApiService extends DomainApiService {
       path: [
         BASE_ENDPOINT,
         programId,
-        'fsps/intersolve-voucher/vouchers/balance',
+        'fsps/intersolve-voucher/voucher/balance',
       ],
       params: {
         referenceId: registrationReferenceId,

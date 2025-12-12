@@ -57,7 +57,7 @@ export class IntersolveVoucherController {
     description:
       'Voucher exported - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
-  @Get('programs/:programId/fsps/intersolve-voucher/voucher-paper')
+  @Get('programs/:programId/fsps/intersolve-voucher/voucher/image-paper')
   public async getPaperVoucherImage(
     @Param('programId', ParseIntPipe)
     programId: number,
@@ -91,7 +91,7 @@ export class IntersolveVoucherController {
     description:
       'Voucher exported - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
-  @Get('programs/:programId/fsps/intersolve-voucher/voucher-whatsapp')
+  @Get('programs/:programId/fsps/intersolve-voucher/voucher/image-whatsapp')
   public async getWhatsappVoucherImage(
     @Param('programId', ParseIntPipe)
     programId: number,
@@ -123,7 +123,7 @@ export class IntersolveVoucherController {
     description:
       'Voucher balance retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
-  @Get('programs/:programId/fsps/intersolve-voucher/vouchers/balance')
+  @Get('programs/:programId/fsps/intersolve-voucher/voucher/balance')
   public async getBalance(
     @Param('programId', ParseIntPipe)
     programId: number,
