@@ -26,6 +26,8 @@ const visaConfiguration = [
   process.env.INTERSOLVE_VISA_COVERLETTER_CODE,
   // eslint-disable-next-line n/no-process-env -- Used in seed-data, not in code, so not in '@121-service/src/env'
   process.env.INTERSOLVE_VISA_FUNDINGTOKEN_CODE,
+  // eslint-disable-next-line n/no-process-env -- Used in seed-data, not in code, so not in '@121-service/src/env'
+  process.env.INTERSOLVE_VISA_CARD_DISTRIBUTION_BY_MAIL,
 ].filter((item): item is string => item !== undefined);
 
 const newVisaConfiguration = [

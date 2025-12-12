@@ -84,7 +84,14 @@ export class IntersolveVisaAccountManagementService {
       );
     }
 
-    await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
+    const hasIntersolveVisaCustomer =
+      await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
+    if (!hasIntersolveVisaCustomer) {
+      throw new HttpException(
+        'No Intersolve Visa customer found for this registration.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     await this.replaceCard({
       referenceId,
@@ -131,7 +138,14 @@ export class IntersolveVisaAccountManagementService {
       );
     }
 
-    await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
+    const hasIntersolveVisaCustomer =
+      await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
+    if (!hasIntersolveVisaCustomer) {
+      throw new HttpException(
+        'No Intersolve Visa customer found for this registration.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     await this.throwIfCardDoesNotExistOrIsAlreadyLinked(tokenCode);
 
