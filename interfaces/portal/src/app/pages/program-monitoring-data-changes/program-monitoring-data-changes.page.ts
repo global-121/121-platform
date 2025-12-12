@@ -6,8 +6,10 @@ import {
   input,
   signal,
 } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { MenuItem } from 'primeng/api';
 
 import { PageLayoutMonitoringComponent } from '~/components/page-layout-monitoring/page-layout-monitoring.component';
 import {
@@ -21,6 +23,7 @@ import { RegistrationEvent } from '~/domains/registration-event/registration-eve
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
 import { getUniqueUserOptions } from '~/utils/unique-users';
+import { getOriginUrl } from '~/utils/url-helper';
 
 @Component({
   selector: 'app-program-monitoring-data-changes',
@@ -36,10 +39,14 @@ export class ProgramMonitoringDataChangesPageComponent {
     RegistrationEvent | undefined
   >(undefined);
 
+  readonly contextMenuSelection = signal<RegistrationEvent | undefined>(
+    undefined,
+  );
   private readonly eventApiService = inject(RegistrationEventApiService);
   private readonly registrationAttributeService = inject(
     RegistrationAttributeService,
   );
+  private readonly router = inject(Router);
 
   private readonly eventsPaginateQuery = computed<PaginateQuery>(() => {
     const paginateQuery = this.paginateQuery() ?? {};
@@ -105,6 +112,8 @@ export class ProgramMonitoringDataChangesPageComponent {
           attributeName: event.fieldChanged,
           attributeOptionValue: event.oldValue,
         }),
+      disableFiltering: true,
+      disableSorting: true,
     },
     {
       field: 'newValue',
@@ -115,6 +124,8 @@ export class ProgramMonitoringDataChangesPageComponent {
           attributeName: event.fieldChanged,
           attributeOptionValue: event.newValue,
         }),
+      disableFiltering: true,
+      disableSorting: true,
     },
     {
       field: 'username',
@@ -131,6 +142,7 @@ export class ProgramMonitoringDataChangesPageComponent {
       field: 'created',
       header: $localize`Date and time`,
       type: QueryTableColumnType.DATE,
+      disableFiltering: true,
     },
     {
       field: 'reason',
@@ -138,5 +150,29 @@ export class ProgramMonitoringDataChangesPageComponent {
     },
   ]);
 
-  // ##TODO create context menu item for 'go to profile'
+  readonly contextMenuItems = computed<MenuItem[]>(() => {
+    const registrationEvent = this.contextMenuSelection();
+
+    if (!registrationEvent) {
+      return [];
+    }
+
+    return [
+      {
+        label: $localize`Open in new tab`,
+        icon: 'pi pi-user',
+        command: () => {
+          const url = this.router.serializeUrl(
+            this.router.createUrlTree(
+              registrationLink({
+                programId: this.programId(),
+                registrationId: registrationEvent.registrationId,
+              }),
+            ),
+          );
+          window.open(getOriginUrl() + url, '_blank');
+        },
+      },
+    ];
+  });
 }
