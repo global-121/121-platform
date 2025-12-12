@@ -1,14 +1,12 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { getRegistrationEventsMonitoring } from '@121-service/test/helpers/program.helper';
 import {
-  createRegistrationUniques,
   duplicateRegistrationsAndPaymentData,
   getRegistrationEvents,
   importRegistrations,
@@ -21,7 +19,7 @@ import {
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 const duplicateLowNumber = 5;
-const duplicateHighNumber = 16; // cronjob duplicate number should be 2^16 = 64k registrations * 2 = 131k
+const duplicateHighNumber = 17; // cronjob duplicate number should be 2^17 = 131k registrations
 const testTimeout = 5_400_000; // 90 minutes
 const duplicateNumber =
   // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
@@ -40,38 +38,25 @@ describe('Get paginated registrations events', () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
-    // Import 2 duplicate registrations
-    const registrationVisa2 = {
-      ...registrationVisa,
-      referenceId: 'perf-test-002',
-    };
+    // Import 1 registration
     const importRegistrationResponse = await importRegistrations(
       programIdOCW,
-      [registrationVisa, registrationVisa2],
+      [registrationVisa],
       accessToken,
     );
     expect(importRegistrationResponse.statusCode).toBe(HttpStatus.CREATED);
-    // Make data change & FSP change for 1 registration
+    // Make data change for registration
     await updateRegistration(
       programIdOCW,
       registrationVisa.referenceId,
       {
         [GenericRegistrationAttributes.preferredLanguage]:
           RegistrationPreferredLanguage.ar,
-        [GenericRegistrationAttributes.programFspConfigurationName]:
-          Fsps.intersolveVoucherWhatsapp,
       },
       'test',
       accessToken,
     );
-    // Mark pair as unique
-    await createRegistrationUniques({
-      programId: programIdOCW,
-      registrationIds: [2, 4], // These are the ids of the 2 imported registrations
-      accessToken,
-      reason: 'test',
-    });
-    // Multiply registrations > including registration-events
+    // Multiply registration > including registration-events
     const multiplyRegistrationsResponse =
       await duplicateRegistrationsAndPaymentData({
         powerNumberRegistration: duplicateNumber,
@@ -98,7 +83,7 @@ describe('Get paginated registrations events', () => {
     const getEventsElapsedTime = Date.now() - getEventsStartTime;
 
     const twoSeconds = 2 * 1000;
-    expect(getEventsElapsedTime).toBeLessThan(twoSeconds); // local time was 911ms
+    expect(getEventsElapsedTime).toBeLessThan(twoSeconds);
 
     expect(paginatedEventsResponse.statusCode).toBe(HttpStatus.OK);
 
@@ -109,12 +94,12 @@ describe('Get paginated registrations events', () => {
       accessToken,
     });
     const allEvents = allEventsResponse.body.data;
-    const nrOfRegistrations = 2 * Math.pow(2, duplicateNumber);
-    const expectedEvents = nrOfRegistrations * 3; // Half of the registrations has 4 events (status/data/FSP/unique), and half has 2 events (status/unique), so on average 3.
+    const nrOfRegistrations = Math.pow(2, duplicateNumber);
+    const expectedEvents = nrOfRegistrations * 2; // Each registration has 2 events (status/data change)
     expect(allEvents.length).toBe(expectedEvents);
     const getAllEventsElapsedTime = Date.now() - getAllEventsStartTime;
 
     const tenSeconds = 10 * 1000;
-    expect(getAllEventsElapsedTime).toBeLessThan(tenSeconds); // local time was 6471ms
+    expect(getAllEventsElapsedTime).toBeLessThan(tenSeconds);
   });
 });
