@@ -35,6 +35,7 @@ const newVisaConfiguration = [
   'UI_CPO1', // Brand code
   'RC02', // Cover letter code
   '510121323', // Funding token code
+  'true', // Card distribution by mail
 ];
 
 // Arrange
