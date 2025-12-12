@@ -136,15 +136,6 @@ export class IntersolveVisaAccountManagementService {
       );
     }
 
-    const hasIntersolveVisaCustomer =
-      await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
-    if (!hasIntersolveVisaCustomer) {
-      throw new HttpException(
-        'No Intersolve Visa customer found for this registration.',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
     await this.throwIfCardDoesNotExistOrIsAlreadyLinked(tokenCode);
 
     const hasIntersolveVisaCustomer =
