@@ -416,3 +416,19 @@ export const registrationCooperativeBankOfOromia = {
   fullName: 'jane doe',
   bankAccountNumber: '1022200081754',
 };
+
+export const registrationCooperativeBankOfOromia1 = {
+  referenceId: 'registration-cooperative-bank-of-oromia-2',
+  phoneNumber: '14155238887',
+  preferredLanguage: RegistrationPreferredLanguage.en,
+  paymentAmountMultiplier: 1,
+  programFspConfigurationName: Fsps.cooperativeBankOfOromia,
+  maxPayments: 3,
+  fullName: 'john smith',
+  bankAccountNumber: '1022200081755',
+};
+
+export const registrationsCooperativeBankOfOromia = [
+  registrationCooperativeBankOfOromia,
+  registrationCooperativeBankOfOromia1,
+];
