@@ -146,7 +146,7 @@ export class ProgramMonitoringDataChangesPageComponent {
     },
     {
       field: 'reason',
-      header: $localize`Change reason`, // ##TODO: reason should only pop into view upon horizontal scroll??
+      header: $localize`Change reason`,
     },
   ]);
 
