@@ -4,6 +4,7 @@ import { inject, Injectable, Signal, signal } from '@angular/core';
 import { queryOptions } from '@tanstack/angular-query-experimental';
 import { unique } from 'radashi';
 
+import { CooperativeBankOfOromiaAccountValidationReportDto } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia-account-management/dtos/cooperative-bank-of-oromia-account-validation-report.dto';
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
@@ -382,7 +383,7 @@ export class ProgramApiService extends DomainApiService {
     });
   }
 
-  getCbeVerificationReport(programId: Signal<number | string>) {
+  getCbeAccountsReport(programId: Signal<number | string>) {
     return this.generateQueryOptions<
       Dto<CommercialBankEthiopiaValidationReportDto>
     >({
@@ -390,6 +391,18 @@ export class ProgramApiService extends DomainApiService {
         BASE_ENDPOINT,
         programId,
         'fsps/commercial-bank-ethiopia/accounts',
+      ],
+    });
+  }
+
+  getCooperativeBankOfOromiaAccountsReport(programId: Signal<number | string>) {
+    return this.generateQueryOptions<
+      Dto<CooperativeBankOfOromiaAccountValidationReportDto>
+    >({
+      path: [
+        BASE_ENDPOINT,
+        programId,
+        'fsps/cooperative-bank-of-oromia/accounts',
       ],
     });
   }

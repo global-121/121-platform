@@ -697,9 +697,6 @@
       <trans-unit id="export-selected" datatype="html">
         <source>Selected registrations</source>
       </trans-unit>
-      <trans-unit id="export-verification" datatype="html">
-        <source>Account number verification</source>
-      </trans-unit>
       <trans-unit id="3604386807230411192" datatype="html">
         <source>Start Date</source>
       </trans-unit>
@@ -1182,9 +1179,6 @@
       </trans-unit>
       <trans-unit id="4667279955724574149" datatype="html">
         <source>Export status &amp; data changes</source>
-      </trans-unit>
-      <trans-unit id="8735075176632769564" datatype="html">
-        <source>Export account number verification</source>
       </trans-unit>
       <trans-unit id="2932497983463949366" datatype="html">
         <source>Export unused vouchers</source>
@@ -2017,6 +2011,21 @@
       </trans-unit>
       <trans-unit id="5484768522828011721" datatype="html">
         <source>(matching fields: <x equiv-text="{{ matchingFieldNames }}" id="INTERPOLATION"/>)</source>
+      </trans-unit>
+      <trans-unit id="4594242528552515311" datatype="html">
+        <source>The data in this report is based on data that is imported every night from Cooperative Bank of Oromia. If you changed data today this will not be reflected in the report.</source>
+      </trans-unit>
+      <trans-unit id="6704198793956298786" datatype="html">
+        <source>Coopbank verification report</source>
+      </trans-unit>
+      <trans-unit id="7240173307479396619" datatype="html">
+        <source>CBE verification report</source>
+      </trans-unit>
+      <trans-unit id="export-verification-commercial-bank-of-ethiopia" datatype="html">
+        <source>CBE verification report</source>
+      </trans-unit>
+      <trans-unit id="export-verification-cooperative-bank-of-oromia" datatype="html">
+        <source>Coopbank verification report</source>
       </trans-unit>
     </body>
   </file>
