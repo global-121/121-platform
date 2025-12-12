@@ -4,7 +4,6 @@ import crypto from 'node:crypto';
 import { CooperativeBankOfOromiaTransferResultEnum } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/enums/cooperative-bank-of-oromia-disbursement-result.enum';
 import { CooperativeBankOfOromiaError } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/errors/cooperative-bank-of-oromia.error';
 import { CooperativeBankOfOromiaService } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.service';
-import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { CooperativeBankOfOromiaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/cooperative-bank-of-oromia-transaction-job.dto';
 import { FspConfigurationProperties } from '@121-service/src/fsp-management/enums/fsp-name.enum';
@@ -26,38 +25,32 @@ export class TransactionJobsCooperativeBankOfOromiaService {
   public async processCooperativeBankOfOromiaTransactionJob(
     transactionJob: CooperativeBankOfOromiaTransactionJobDto,
   ): Promise<void> {
+    // Create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
     const transactionEventContext: TransactionEventCreationContext = {
       transactionId: transactionJob.transactionId,
       userId: transactionJob.userId,
       programFspConfigurationId: transactionJob.programFspConfigurationId,
     };
-    await this.transactionJobsHelperService.createInitiatedOrRetryTransactionEvent(
-      {
-        context: transactionEventContext,
-        isRetry: transactionJob.isRetry,
-      },
-    );
+    await this.transactionJobsHelperService.saveTransactionProgress({
+      context: transactionEventContext,
+      description: transactionJob.isRetry
+        ? TransactionEventDescription.retry
+        : TransactionEventDescription.initiated,
+      newTransactionStatus: TransactionStatusEnum.waiting,
+    });
 
     // Inner function.
     const handleTransferResult = async (
       status: TransactionStatusEnum,
       errorText?: string,
     ) => {
-      const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
-        {
-          transactionEventContext,
-          referenceId: transactionJob.referenceId,
-          isRetry: transactionJob.isRetry,
-        };
-      await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration(
-        {
-          context: saveTransactionProgressAndUpdateRegistrationContext,
-          newTransactionStatus: status,
-          errorMessage: errorText,
-          description:
-            TransactionEventDescription.cooperativeBankOfOromiaRequestSent,
-        },
-      );
+      await this.transactionJobsHelperService.saveTransactionProgress({
+        context: transactionEventContext,
+        newTransactionStatus: status,
+        errorMessage: errorText,
+        description:
+          TransactionEventDescription.cooperativeBankOfOromiaRequestSent,
+      });
     };
 
     const debitAccountNumber =

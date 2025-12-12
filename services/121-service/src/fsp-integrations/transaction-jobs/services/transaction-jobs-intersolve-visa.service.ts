@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { DoTransferOrIssueCardResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/do-transfer-or-issue-card-result.interface';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
-import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { FspConfigurationProperties } from '@121-service/src/fsp-management/enums/fsp-name.enum';
@@ -26,30 +25,25 @@ export class TransactionJobsIntersolveVisaService {
   public async processIntersolveVisaTransactionJob(
     transactionJob: IntersolveVisaTransactionJobDto,
   ): Promise<void> {
+    // Create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
     const transactionEventContext: TransactionEventCreationContext = {
       transactionId: transactionJob.transactionId,
       userId: transactionJob.userId,
       programFspConfigurationId: transactionJob.programFspConfigurationId,
     };
-
-    await this.transactionJobsHelperService.createInitiatedOrRetryTransactionEvent(
-      {
-        context: transactionEventContext,
-        isRetry: transactionJob.isRetry,
-      },
-    );
+    await this.transactionJobsHelperService.saveTransactionProgress({
+      context: transactionEventContext,
+      description: transactionJob.isRetry
+        ? TransactionEventDescription.retry
+        : TransactionEventDescription.initiated,
+      newTransactionStatus: TransactionStatusEnum.waiting,
+    });
 
     const registration =
       await this.transactionJobsHelperService.getRegistrationOrThrow(
         transactionJob.referenceId,
       );
 
-    const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
-      {
-        transactionEventContext,
-        referenceId: transactionJob.referenceId,
-        isRetry: transactionJob.isRetry,
-      };
     let transferValueInMajorUnit: number;
     try {
       transferValueInMajorUnit =
@@ -62,14 +56,12 @@ export class TransactionJobsIntersolveVisaService {
     } catch (error) {
       if (error instanceof IntersolveVisaApiError) {
         // Do not update the transfer value since we were unable to calculate the transfer value. The error message is also clear enough so users should not be confused about the potentially high amount.
-        await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration(
-          {
-            context: saveTransactionProgressAndUpdateRegistrationContext,
-            description: TransactionEventDescription.visaPaymentRequested,
-            errorMessage: `Error calculating transfer value: ${error?.message}`,
-            newTransactionStatus: TransactionStatusEnum.error,
-          },
-        );
+        await this.transactionJobsHelperService.saveTransactionProgress({
+          context: transactionEventContext,
+          description: TransactionEventDescription.visaPaymentRequested,
+          errorMessage: `Error calculating transfer value: ${error?.message}`,
+          newTransactionStatus: TransactionStatusEnum.error,
+        });
         return;
       }
       throw error;
@@ -109,14 +101,12 @@ export class TransactionJobsIntersolveVisaService {
         });
     } catch (error) {
       if (error instanceof IntersolveVisaApiError) {
-        await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration(
-          {
-            context: saveTransactionProgressAndUpdateRegistrationContext,
-            description: TransactionEventDescription.visaPaymentRequested,
-            errorMessage: error?.message,
-            newTransactionStatus: TransactionStatusEnum.error,
-          },
-        );
+        await this.transactionJobsHelperService.saveTransactionProgress({
+          context: transactionEventContext,
+          description: TransactionEventDescription.visaPaymentRequested,
+          errorMessage: error?.message,
+          newTransactionStatus: TransactionStatusEnum.error,
+        });
         return;
       } else {
         throw error;
@@ -138,13 +128,11 @@ export class TransactionJobsIntersolveVisaService {
       userId: transactionJob.userId,
     });
 
-    await this.transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration(
-      {
-        context: saveTransactionProgressAndUpdateRegistrationContext,
-        description: TransactionEventDescription.visaPaymentRequested,
-        newTransactionStatus: TransactionStatusEnum.success,
-      },
-    );
+    await this.transactionJobsHelperService.saveTransactionProgress({
+      context: transactionEventContext,
+      description: TransactionEventDescription.visaPaymentRequested,
+      newTransactionStatus: TransactionStatusEnum.success,
+    });
   }
 
   private async getIntersolveVisaFspConfig(

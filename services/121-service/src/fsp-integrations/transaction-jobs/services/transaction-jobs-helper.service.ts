@@ -10,9 +10,7 @@ import { MessageTemplateService } from '@121-service/src/notifications/message-t
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
-import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
-import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
@@ -27,7 +25,6 @@ export class TransactionJobsHelperService {
     private readonly messageTemplateService: MessageTemplateService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly queueMessageService: MessageQueuesService,
-    private readonly transactionEventsService: TransactionEventsService,
     private readonly transactionsService: TransactionsService,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly transactionRepository: TransactionRepository,
@@ -46,24 +43,6 @@ export class TransactionJobsHelperService {
       );
     }
     return registration;
-  }
-
-  public async createInitiatedOrRetryTransactionEvent({
-    context,
-    isRetry,
-  }: {
-    context: TransactionEventCreationContext;
-    isRetry: boolean;
-  }) {
-    await this.transactionEventsService.createEvent({
-      context,
-      type: isRetry
-        ? TransactionEventType.retry
-        : TransactionEventType.initiated,
-      description: isRetry
-        ? TransactionEventDescription.retry
-        : TransactionEventDescription.initiated,
-    });
   }
 
   private async addMessageJobToQueue({
@@ -143,32 +122,23 @@ export class TransactionJobsHelperService {
    * Saves the progress of a transaction and updates the registration accordingly.
    *
    * This method performs two main actions:
-   * 1. If the transaction is not a retry, it updates the payment count for the registration
-   *    identified by the given referenceId and sets its status to completed if applicable.
+   * 1. If transaction of type 'initiated': it updates the payment count for the registration
+   *    and sets its status to completed if applicable.
    * 2. It saves the transaction progress using the provided context, description, error message,
    *    and optionally a new transaction status.
-   *
-   * @param context - The context containing information about the transaction and registration.
-   * @param newTransactionStatus - (Optional) The new status to set for the transaction. Only set when the status changes.
-   * @param description - The description of the transaction event.
-   * @param errorMessage - (Optional) An error message to associate with the transaction progress.
-   * @param updateRegistration - (Optional) A flag indicating whether to update the registration. Defaults to false.
-   * @returns A promise that resolves when the operation is complete.
    */
   public async saveTransactionProgress({
     context,
     description,
     newTransactionStatus,
     errorMessage,
-    updateRegistration = false,
   }: {
     context: TransactionEventCreationContext;
     description: TransactionEventDescription;
     newTransactionStatus?: TransactionStatusEnum;
     errorMessage?: string;
-    updateRegistration?: boolean;
   }): Promise<void> {
-    if (updateRegistration) {
+    if (description === TransactionEventDescription.initiated) {
       await this.updatePaymentCountAndSetToCompleted({
         transactionId: context.transactionId,
         userId: context.userId!,
@@ -186,7 +156,7 @@ export class TransactionJobsHelperService {
   /**
    * Updates payment count and sets status to completed if applicable
    */
-  public async updatePaymentCountAndSetToCompleted({
+  private async updatePaymentCountAndSetToCompleted({
     transactionId,
     userId,
   }: {
@@ -197,17 +167,17 @@ export class TransactionJobsHelperService {
       await this.transactionRepository.getReferenceIdByTransactionIdOrThrow(
         transactionId,
       );
-    const paymentCount =
-      await this.transactionRepository.getPaymentCountByReferenceId(
+    const newPaymentCount =
+      await this.transactionRepository.countTransactionsByReferenceId(
         referenceId,
       );
     await this.registrationScopedRepository.updatePaymentCount({
-      referenceId,
-      paymentCount,
+      referenceId: referenceId!,
+      paymentCount: newPaymentCount,
     });
 
     await this.setStatusToCompletedIfApplicable({
-      referenceId,
+      referenceId: referenceId!,
       userId,
     });
   }

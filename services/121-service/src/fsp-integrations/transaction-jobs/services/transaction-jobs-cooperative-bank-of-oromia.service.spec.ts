@@ -39,13 +39,7 @@ describe('TransactionJobsCooperativeBankOfOromiaService', () => {
       .fn()
       .mockResolvedValue('debit-acc');
 
-    // Mock createInitiatedOrRetryTransactionEvent and saveTransactionProgress
-    helper.createInitiatedOrRetryTransactionEvent = jest
-      .fn()
-      .mockResolvedValue(undefined);
-    helper.saveTransactionProgressAndUpdateRegistration = jest
-      .fn()
-      .mockResolvedValue(undefined);
+    helper.saveTransactionProgress = jest.fn().mockResolvedValue(undefined);
   });
 
   it('should generate different messageIds for different transactions', async () => {

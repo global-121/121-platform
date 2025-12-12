@@ -31,8 +31,7 @@ describe('TransactionJobsOnafriqService', () => {
       countFailedTransactionAttempts: jest.fn(),
     } as any;
     transactionJobsHelperService = {
-      createInitiatedOrRetryTransactionEvent: jest.fn(),
-      saveTransactionProgressAndUpdateRegistration: jest.fn(),
+      saveTransactionProgress: jest.fn(),
     } as any;
     programFspConfigurationRepository = {
       getPropertiesByNamesOrThrow: jest.fn(),
@@ -74,7 +73,7 @@ describe('TransactionJobsOnafriqService', () => {
 
       const existingOnafriqTransaction = { transactionId: 99 };
       (
-        transactionJobsHelperService.createInitiatedOrRetryTransactionEvent as jest.Mock
+        transactionJobsHelperService.saveTransactionProgress as jest.Mock
       ).mockImplementation();
       (
         transactionEventsScopedRepository.countFailedTransactionAttempts as jest.Mock
@@ -105,7 +104,7 @@ describe('TransactionJobsOnafriqService', () => {
       await service.processOnafriqTransactionJob(transactionJob);
 
       expect(
-        transactionJobsHelperService.createInitiatedOrRetryTransactionEvent,
+        transactionJobsHelperService.saveTransactionProgress,
       ).toHaveBeenCalled();
       expect(onafriqTransactionScopedRepository.save).not.toHaveBeenCalled();
       expect(onafriqTransactionScopedRepository.update).toHaveBeenCalled();

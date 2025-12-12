@@ -5,8 +5,7 @@ import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
-import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
-import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
@@ -24,7 +23,7 @@ const mockedRegistration: RegistrationEntity = {
 describe('TransactionJobsHelperService', () => {
   let service: TransactionJobsHelperService;
   let registrationScopedRepository: RegistrationScopedRepository;
-  let transactionEventsService: TransactionEventsService;
+  let transactionsService: TransactionsService;
   let messageTemplateService: MessageTemplateService;
   let registrationsBulkService: RegistrationsBulkService;
 
@@ -37,9 +36,7 @@ describe('TransactionJobsHelperService', () => {
     registrationScopedRepository = unitRef.get<RegistrationScopedRepository>(
       RegistrationScopedRepository,
     );
-    transactionEventsService = unitRef.get<TransactionEventsService>(
-      TransactionEventsService,
-    );
+    transactionsService = unitRef.get<TransactionsService>(TransactionsService);
     messageTemplateService = unitRef.get<MessageTemplateService>(
       MessageTemplateService,
     );
@@ -54,7 +51,7 @@ describe('TransactionJobsHelperService', () => {
       .spyOn(registrationScopedRepository, 'updateUnscoped')
       .mockResolvedValue({} as UpdateResult);
 
-    jest.spyOn(transactionEventsService, 'createEvent').mockImplementation();
+    jest.spyOn(transactionsService, 'saveProgress').mockImplementation();
   });
 
   it('should be defined', () => {
@@ -80,35 +77,39 @@ describe('TransactionJobsHelperService', () => {
     });
   });
 
-  describe('createInitiatedOrRetryTransactionEvent', () => {
+  describe('saveTransactionProgress', () => {
     const context = {
       transactionId: 1,
       userId: 2,
       programFspConfigurationId: 3,
     };
 
-    it('should create an initiated transaction event when isRetry is false', async () => {
-      await service.createInitiatedOrRetryTransactionEvent({
+    beforeEach(() => {
+      service.setStatusToCompletedIfApplicable = jest.fn();
+    });
+
+    it('should create an initiated transaction event and update registration for description=initiated', async () => {
+      await service.saveTransactionProgress({
         context,
-        isRetry: false,
+        description: TransactionEventDescription.initiated,
       });
 
-      expect(transactionEventsService.createEvent).toHaveBeenCalledWith({
+      expect(service.setStatusToCompletedIfApplicable).toHaveBeenCalled();
+      expect(transactionsService.saveProgress).toHaveBeenCalledWith({
         context,
-        type: TransactionEventType.initiated,
         description: TransactionEventDescription.initiated,
       });
     });
 
-    it('should create a retry transaction event when isRetry is true', async () => {
-      await service.createInitiatedOrRetryTransactionEvent({
+    it('should create a retry transaction and not update registration for description=retry', async () => {
+      await service.saveTransactionProgress({
         context,
-        isRetry: true,
+        description: TransactionEventDescription.retry,
       });
 
-      expect(transactionEventsService.createEvent).toHaveBeenCalledWith({
+      expect(service.setStatusToCompletedIfApplicable).not.toHaveBeenCalled();
+      expect(transactionsService.saveProgress).toHaveBeenCalledWith({
         context,
-        type: TransactionEventType.retry,
         description: TransactionEventDescription.retry,
       });
     });

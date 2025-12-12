@@ -59,7 +59,7 @@ export class TransactionRepository extends Repository<TransactionEntity> {
     return transaction.registration.referenceId;
   }
 
-  public async getPaymentCountByReferenceId(
+  public async countTransactionsByReferenceId(
     referenceId: string,
   ): Promise<number> {
     return await this.createQueryBuilder('transaction')

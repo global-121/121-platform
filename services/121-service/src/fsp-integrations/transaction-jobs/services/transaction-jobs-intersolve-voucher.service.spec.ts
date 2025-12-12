@@ -52,9 +52,6 @@ describe('TransactionJobsIntersolveVoucherService', () => {
   describe('processIntersolveVoucherTransactionJob', () => {
     it('should process intersolveVoucherTransactionJob successfully', async () => {
       (
-        transactionJobsHelperService.createInitiatedOrRetryTransactionEvent as jest.Mock
-      ).mockImplementation();
-      (
         programFspConfigurationRepository.getUsernamePasswordProperties as jest.Mock
       ).mockResolvedValue({ username: 'user', password: 'pass' });
       (
@@ -66,12 +63,9 @@ describe('TransactionJobsIntersolveVoucherService', () => {
       );
 
       expect(
-        transactionJobsHelperService.createInitiatedOrRetryTransactionEvent,
-      ).toHaveBeenCalled();
+        transactionJobsHelperService.saveTransactionProgress,
+      ).toHaveBeenCalledTimes(2);
       expect(intersolveVoucherService.sendIndividualPayment).toHaveBeenCalled();
-      expect(
-        transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration,
-      ).toHaveBeenCalled();
     });
   });
 });

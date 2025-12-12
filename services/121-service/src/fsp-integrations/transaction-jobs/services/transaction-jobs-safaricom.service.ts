@@ -26,7 +26,7 @@ export class TransactionJobsSafaricomService {
   public async processSafaricomTransactionJob(
     transactionJob: SafaricomTransactionJobDto,
   ): Promise<void> {
-    // 1. Create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration
+    // 1. Create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
     const transactionEventContext: TransactionEventCreationContext = {
       transactionId: transactionJob.transactionId,
       userId: transactionJob.userId,
@@ -38,7 +38,6 @@ export class TransactionJobsSafaricomService {
         ? TransactionEventDescription.retry
         : TransactionEventDescription.initiated,
       newTransactionStatus: TransactionStatusEnum.waiting,
-      updateRegistration: !transactionJob.isRetry,
     });
 
     // 2. Create idempotency key

@@ -1,7 +1,6 @@
 import { AirtelDisbursementResultEnum } from '@121-service/src/fsp-integrations/integrations/airtel/enums/airtel-disbursement-result.enum';
 import { AirtelError } from '@121-service/src/fsp-integrations/integrations/airtel/errors/airtel.error';
 import { AirtelService } from '@121-service/src/fsp-integrations/integrations/airtel/services/airtel.service';
-import { SaveTransactionProgressAndUpdateRegistrationContext } from '@121-service/src/fsp-integrations/transaction-jobs/interfaces/save-transaction-progress-and-update-registration-context.interface';
 import { TransactionJobsAirtelService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-airtel.service';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { AirtelTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/airtel-transaction-job.dto';
@@ -33,18 +32,11 @@ describe('TransactionJobsAirtelService', () => {
     userId: transactionJob.userId,
     programFspConfigurationId: transactionJob.programFspConfigurationId,
   };
-  const saveTransactionProgressAndUpdateRegistrationContext: SaveTransactionProgressAndUpdateRegistrationContext =
-    {
-      transactionEventContext,
-      referenceId: transactionJob.referenceId,
-      isRetry: transactionJob.isRetry,
-    };
 
   beforeEach(async () => {
     airtelService = { attemptOrCheckDisbursement: jest.fn() } as any;
     transactionJobsHelperService = {
-      createInitiatedOrRetryTransactionEvent: jest.fn(),
-      saveTransactionProgressAndUpdateRegistration: jest.fn(),
+      saveTransactionProgress: jest.fn(),
     } as any;
     transactionEventScopedRepository = {
       countFailedTransactionAttempts: jest.fn().mockResolvedValue(6),
@@ -66,16 +58,17 @@ describe('TransactionJobsAirtelService', () => {
       jest.restoreAllMocks();
     });
 
-    it('should call createInitiatedOrRetryTransactionEvent with the right arguments', async () => {
+    it('should call saveTransactionProgress with the right arguments', async () => {
       // Act
       await service.processAirtelTransactionJob(transactionJob);
 
       // Assert
       expect(
-        transactionJobsHelperService.createInitiatedOrRetryTransactionEvent,
+        transactionJobsHelperService.saveTransactionProgress,
       ).toHaveBeenCalledWith({
         context: transactionEventContext,
-        isRetry: transactionJob.isRetry,
+        description: TransactionEventDescription.initiated,
+        newTransactionStatus: TransactionStatusEnum.waiting,
       });
     });
 
@@ -120,9 +113,9 @@ describe('TransactionJobsAirtelService', () => {
 
       // Assert
       expect(
-        transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration,
+        transactionJobsHelperService.saveTransactionProgress,
       ).toHaveBeenCalledWith({
-        context: saveTransactionProgressAndUpdateRegistrationContext,
+        context: transactionEventContext,
         description: TransactionEventDescription.airtelRequestSent,
         newTransactionStatus: TransactionStatusEnum.success,
         errorMessage: undefined,
@@ -144,9 +137,9 @@ describe('TransactionJobsAirtelService', () => {
       await service.processAirtelTransactionJob(transactionJob);
 
       expect(
-        transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration,
+        transactionJobsHelperService.saveTransactionProgress,
       ).toHaveBeenCalledWith({
-        context: saveTransactionProgressAndUpdateRegistrationContext,
+        context: transactionEventContext,
         description: TransactionEventDescription.airtelRequestSent,
         newTransactionStatus: TransactionStatusEnum.waiting,
         errorMessage: 'Airtel Error: mock-ambiguous-message',
@@ -163,9 +156,9 @@ describe('TransactionJobsAirtelService', () => {
       await service.processAirtelTransactionJob(transactionJob);
 
       expect(
-        transactionJobsHelperService.saveTransactionProgressAndUpdateRegistration,
+        transactionJobsHelperService.saveTransactionProgress,
       ).toHaveBeenCalledWith({
-        context: saveTransactionProgressAndUpdateRegistrationContext,
+        context: transactionEventContext,
         description: TransactionEventDescription.airtelRequestSent,
         newTransactionStatus: TransactionStatusEnum.error,
         errorMessage: 'Airtel Error: mock-fail-message',
