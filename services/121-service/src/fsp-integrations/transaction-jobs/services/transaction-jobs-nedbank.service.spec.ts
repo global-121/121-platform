@@ -11,6 +11,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 
 const mockedNedbankTransactionJob: NedbankTransactionJobDto = {
@@ -39,6 +40,7 @@ describe('TransactionJobsNedbankService', () => {
   let programFspConfigurationRepository: ProgramFspConfigurationRepository;
   let transactionEventsScopedRepository: TransactionEventsScopedRepository;
   let transactionJobsHelperService: TransactionJobsHelperService;
+  let transactionsService: TransactionsService;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -62,10 +64,12 @@ describe('TransactionJobsNedbankService', () => {
     transactionJobsHelperService = unitRef.get<TransactionJobsHelperService>(
       TransactionJobsHelperService,
     );
+    transactionsService = unitRef.get<TransactionsService>(TransactionsService);
 
     jest
-      .spyOn(transactionJobsHelperService, 'saveTransactionProgress')
+      .spyOn(transactionJobsHelperService, 'logTransactionJobStart')
       .mockImplementation();
+    jest.spyOn(transactionsService, 'saveProgress').mockImplementation();
     jest
       .spyOn(nedbankVoucherScopedRepository, 'getVoucherWhereStatusNull')
       .mockResolvedValue(null);
@@ -95,8 +99,12 @@ describe('TransactionJobsNedbankService', () => {
     await service.processNedbankTransactionJob(mockedNedbankTransactionJob);
 
     expect(
-      transactionJobsHelperService.saveTransactionProgress,
-    ).toHaveBeenCalledWith(
+      transactionJobsHelperService.logTransactionJobStart,
+    ).toHaveBeenCalledWith({
+      context: transactionEventContext,
+      isRetry: mockedNedbankTransactionJob.isRetry,
+    });
+    expect(transactionsService.saveProgress).toHaveBeenCalledWith(
       expect.objectContaining({
         context: transactionEventContext,
       }),
@@ -123,9 +131,7 @@ describe('TransactionJobsNedbankService', () => {
       { orderCreateReference: expect.any(String) },
       { status: NedbankVoucherStatus.PENDING },
     );
-    expect(
-      transactionJobsHelperService.saveTransactionProgress,
-    ).toHaveBeenCalled();
+    expect(transactionsService.saveProgress).toHaveBeenCalled();
   });
 
   it('should update transaction and voucher to error/failed if NedbankError is thrown', async () => {
@@ -140,9 +146,7 @@ describe('TransactionJobsNedbankService', () => {
     await service.processNedbankTransactionJob(mockedNedbankTransactionJob);
 
     // Assert
-    expect(
-      transactionJobsHelperService.saveTransactionProgress,
-    ).toHaveBeenCalledWith({
+    expect(transactionsService.saveProgress).toHaveBeenCalledWith({
       context: transactionEventContext,
       description: TransactionEventDescription.nedbankVoucherCreationRequested,
       errorMessage,

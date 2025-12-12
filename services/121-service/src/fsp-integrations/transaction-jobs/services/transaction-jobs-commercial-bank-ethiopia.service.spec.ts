@@ -81,7 +81,7 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
       .spyOn(programFspConfigurationRepository, 'getUsernamePasswordProperties')
       .mockResolvedValue(credentials);
     jest
-      .spyOn(transactionJobsHelperService, 'saveTransactionProgress')
+      .spyOn(transactionJobsHelperService, 'logTransactionJobStart')
       .mockImplementation();
     jest
       .spyOn(programRepository, 'findOneOrFail')
@@ -117,7 +117,7 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
       .spyOn(programFspConfigurationRepository, 'getUsernamePasswordProperties')
       .mockResolvedValue(credentials);
     jest
-      .spyOn(transactionJobsHelperService, 'saveTransactionProgress')
+      .spyOn(transactionJobsHelperService, 'logTransactionJobStart')
       .mockImplementation();
     jest
       .spyOn(programRepository, 'findOneOrFail')

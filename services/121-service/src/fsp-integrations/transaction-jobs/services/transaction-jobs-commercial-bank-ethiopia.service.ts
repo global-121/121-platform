@@ -6,9 +6,9 @@ import { CbeTransferEntity } from '@121-service/src/fsp-integrations/integration
 import { CommercialBankEthiopiaService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { CommercialBankEthiopiaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/commercial-bank-ethiopia-transaction-job.dto';
-import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 
@@ -18,6 +18,7 @@ export class TransactionJobsCommercialBankEthiopiaService {
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
+    private readonly transactionsService: TransactionsService,
     private readonly programRepository: ProgramRepository,
     private readonly cbeTransferScopedRepository: CbeTransferScopedRepository,
   ) {}
@@ -25,18 +26,15 @@ export class TransactionJobsCommercialBankEthiopiaService {
   public async processCommercialBankEthiopiaTransactionJob(
     transactionJob: CommercialBankEthiopiaTransactionJobDto,
   ): Promise<void> {
-    // Create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
+    // Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
     const transactionEventContext: TransactionEventCreationContext = {
       transactionId: transactionJob.transactionId,
       userId: transactionJob.userId,
       programFspConfigurationId: transactionJob.programFspConfigurationId,
     };
-    await this.transactionJobsHelperService.saveTransactionProgress({
+    await this.transactionJobsHelperService.logTransactionJobStart({
       context: transactionEventContext,
-      description: transactionJob.isRetry
-        ? TransactionEventDescription.retry
-        : TransactionEventDescription.initiated,
-      newTransactionStatus: TransactionStatusEnum.waiting,
+      isRetry: transactionJob.isRetry,
     });
 
     const credentials =
@@ -78,7 +76,7 @@ export class TransactionJobsCommercialBankEthiopiaService {
         },
       );
 
-    await this.transactionJobsHelperService.saveTransactionProgress({
+    await this.transactionsService.saveProgress({
       context: transactionEventContext,
       description:
         TransactionEventDescription.commercialBankEthiopiaRequestSent,

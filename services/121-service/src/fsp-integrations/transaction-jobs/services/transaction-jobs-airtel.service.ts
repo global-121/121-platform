@@ -11,6 +11,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 
 @Injectable()
 export class TransactionJobsAirtelService {
@@ -18,6 +19,7 @@ export class TransactionJobsAirtelService {
     private readonly airtelService: AirtelService,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
     private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
+    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async processAirtelTransactionJob(
@@ -29,18 +31,15 @@ export class TransactionJobsAirtelService {
       );
     }
 
-    // Create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
+    // Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
     const transactionEventContext: TransactionEventCreationContext = {
       transactionId: transactionJob.transactionId,
       userId: transactionJob.userId,
       programFspConfigurationId: transactionJob.programFspConfigurationId,
     };
-    await this.transactionJobsHelperService.saveTransactionProgress({
+    await this.transactionJobsHelperService.logTransactionJobStart({
       context: transactionEventContext,
-      description: transactionJob.isRetry
-        ? TransactionEventDescription.retry
-        : TransactionEventDescription.initiated,
-      newTransactionStatus: TransactionStatusEnum.waiting,
+      isRetry: transactionJob.isRetry,
     });
 
     // Inner function.
@@ -48,7 +47,7 @@ export class TransactionJobsAirtelService {
       status: TransactionStatusEnum,
       errorText?: string,
     ) => {
-      await this.transactionJobsHelperService.saveTransactionProgress({
+      await this.transactionsService.saveProgress({
         context: transactionEventContext,
         newTransactionStatus: status,
         errorMessage: errorText,

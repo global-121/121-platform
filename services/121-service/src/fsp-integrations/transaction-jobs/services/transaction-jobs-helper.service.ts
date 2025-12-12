@@ -119,26 +119,20 @@ export class TransactionJobsHelperService {
   }
 
   /**
-   * Saves the progress of a transaction and updates the registration accordingly.
+   * Logs the start of a transaction job.
    *
-   * This method performs two main actions:
-   * 1. If transaction of type 'initiated': it updates the payment count for the registration
-   *    and sets its status to completed if applicable.
-   * 2. It saves the transaction progress using the provided context, description, error message,
-   *    and optionally a new transaction status.
+   * 1. Creates a transaction event with description 'initiated' or 'retry' based on the isRetry flag.
+   * 2. Sets the transaction status to 'waiting'.
+   * 3. If the transaction is of type 'initiated', updates the payment count for the associated registration.
    */
-  public async saveTransactionProgress({
+  public async logTransactionJobStart({
     context,
-    description,
-    newTransactionStatus,
-    errorMessage,
+    isRetry,
   }: {
     context: TransactionEventCreationContext;
-    description: TransactionEventDescription;
-    newTransactionStatus?: TransactionStatusEnum;
-    errorMessage?: string;
-  }): Promise<void> {
-    if (description === TransactionEventDescription.initiated) {
+    isRetry: boolean;
+  }) {
+    if (!isRetry) {
       await this.updatePaymentCountAndSetToCompleted({
         transactionId: context.transactionId,
         userId: context.userId!,
@@ -147,9 +141,10 @@ export class TransactionJobsHelperService {
 
     await this.transactionsService.saveProgress({
       context,
-      description,
-      errorMessage,
-      newTransactionStatus,
+      description: isRetry
+        ? TransactionEventDescription.retry
+        : TransactionEventDescription.initiated,
+      newTransactionStatus: TransactionStatusEnum.waiting,
     });
   }
 
@@ -172,12 +167,12 @@ export class TransactionJobsHelperService {
         referenceId,
       );
     await this.registrationScopedRepository.updatePaymentCount({
-      referenceId: referenceId!,
+      referenceId,
       paymentCount: newPaymentCount,
     });
 
     await this.setStatusToCompletedIfApplicable({
-      referenceId: referenceId!,
+      referenceId,
       userId,
     });
   }

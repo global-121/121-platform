@@ -4,6 +4,7 @@ import { UpdateResult } from 'typeorm';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
@@ -77,7 +78,7 @@ describe('TransactionJobsHelperService', () => {
     });
   });
 
-  describe('saveTransactionProgress', () => {
+  describe('logTransactionJobStart', () => {
     const context = {
       transactionId: 1,
       userId: 2,
@@ -88,29 +89,31 @@ describe('TransactionJobsHelperService', () => {
       service.setStatusToCompletedIfApplicable = jest.fn();
     });
 
-    it('should create an initiated transaction event and update registration for description=initiated', async () => {
-      await service.saveTransactionProgress({
+    it('should create an initiated transaction event and update registration, if not retry', async () => {
+      await service.logTransactionJobStart({
         context,
-        description: TransactionEventDescription.initiated,
+        isRetry: false,
       });
 
       expect(service.setStatusToCompletedIfApplicable).toHaveBeenCalled();
       expect(transactionsService.saveProgress).toHaveBeenCalledWith({
         context,
         description: TransactionEventDescription.initiated,
+        newTransactionStatus: TransactionStatusEnum.waiting,
       });
     });
 
-    it('should create a retry transaction and not update registration for description=retry', async () => {
-      await service.saveTransactionProgress({
+    it('should create a retry transaction and not update registration, if retry', async () => {
+      await service.logTransactionJobStart({
         context,
-        description: TransactionEventDescription.retry,
+        isRetry: true,
       });
 
       expect(service.setStatusToCompletedIfApplicable).not.toHaveBeenCalled();
       expect(transactionsService.saveProgress).toHaveBeenCalledWith({
         context,
         description: TransactionEventDescription.retry,
+        newTransactionStatus: TransactionStatusEnum.waiting,
       });
     });
   });

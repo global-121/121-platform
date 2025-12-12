@@ -12,6 +12,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
@@ -22,13 +23,14 @@ export class TransactionJobsNedbankService {
     private readonly nedbankVoucherScopedRepository: NedbankVoucherScopedRepository,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
+    private readonly transactionsService: TransactionsService,
     private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
   ) {}
 
   public async processNedbankTransactionJob(
     transactionJob: NedbankTransactionJobDto,
   ): Promise<void> {
-    // 1. Create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
+    // Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
     const transactionEventContext: TransactionEventCreationContext = {
       transactionId: transactionJob.transactionId,
       userId: transactionJob.userId,
@@ -36,12 +38,9 @@ export class TransactionJobsNedbankService {
     };
     // We update to 'waiting' as for all FSPs. For Nedbank this is specifically important, as this is to ensure that this transactions is not retried as we are about to create the voucher
     // If this job fails after this point due to a timout from nedbank the reconciliation process will pick it up and set it to success or error, so it can be retried if needed
-    await this.transactionJobsHelperService.saveTransactionProgress({
+    await this.transactionJobsHelperService.logTransactionJobStart({
       context: transactionEventContext,
-      description: transactionJob.isRetry
-        ? TransactionEventDescription.retry
-        : TransactionEventDescription.initiated,
-      newTransactionStatus: TransactionStatusEnum.waiting,
+      isRetry: transactionJob.isRetry,
     });
 
     // Set the payment reference
@@ -117,7 +116,7 @@ export class TransactionJobsNedbankService {
         );
 
         // Update the transaction to error, so it won't be picked up by the reconciliation process
-        await this.transactionJobsHelperService.saveTransactionProgress({
+        await this.transactionsService.saveProgress({
           context: transactionEventContext,
           description:
             TransactionEventDescription.nedbankVoucherCreationRequested,
@@ -137,7 +136,7 @@ export class TransactionJobsNedbankService {
     );
 
     // Store success transaction event and leave transaction on 'waiting' (will be updated to 'success' or 'error' via reconciliation process)
-    await this.transactionJobsHelperService.saveTransactionProgress({
+    await this.transactionsService.saveProgress({
       context: transactionEventContext,
       description: TransactionEventDescription.nedbankVoucherCreationRequested,
     });

@@ -12,6 +12,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 @Injectable()
@@ -20,24 +21,22 @@ export class TransactionJobsSafaricomService {
     private readonly safaricomService: SafaricomService,
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
+    private readonly transactionsService: TransactionsService,
     private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
   ) {}
 
   public async processSafaricomTransactionJob(
     transactionJob: SafaricomTransactionJobDto,
   ): Promise<void> {
-    // 1. Create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
+    // 1. Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
     const transactionEventContext: TransactionEventCreationContext = {
       transactionId: transactionJob.transactionId,
       userId: transactionJob.userId,
       programFspConfigurationId: transactionJob.programFspConfigurationId,
     };
-    await this.transactionJobsHelperService.saveTransactionProgress({
+    await this.transactionJobsHelperService.logTransactionJobStart({
       context: transactionEventContext,
-      description: transactionJob.isRetry
-        ? TransactionEventDescription.retry
-        : TransactionEventDescription.initiated,
-      newTransactionStatus: TransactionStatusEnum.waiting,
+      isRetry: transactionJob.isRetry,
     });
 
     // 2. Create idempotency key
@@ -74,7 +73,7 @@ export class TransactionJobsSafaricomService {
         return;
       } else if (error instanceof SafaricomApiError) {
         // store error transactionEvent and update transaction to 'error'
-        await this.transactionJobsHelperService.saveTransactionProgress({
+        await this.transactionsService.saveProgress({
           context: transactionEventContext,
           description: TransactionEventDescription.safaricomRequestSent,
           errorMessage: error.message,
@@ -87,7 +86,7 @@ export class TransactionJobsSafaricomService {
     }
 
     // 5. store success transactionEvent and leave transaction on 'waiting' (will only go to 'success' on callback)
-    await this.transactionJobsHelperService.saveTransactionProgress({
+    await this.transactionsService.saveProgress({
       context: transactionEventContext,
       description: TransactionEventDescription.safaricomRequestSent,
     });

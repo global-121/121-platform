@@ -33,18 +33,15 @@ export class TransactionJobsOnafriqService {
   public async processOnafriqTransactionJob(
     transactionJob: OnafriqTransactionJobDto,
   ): Promise<void> {
-    // 1. Create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
+    // 1. Log transaction-job start: create 'initiated'/'retry' transaction event, set transaction to 'waiting' and update registration (if 'initiated')
     const transactionEventContext: TransactionEventCreationContext = {
       transactionId: transactionJob.transactionId,
       userId: transactionJob.userId,
       programFspConfigurationId: transactionJob.programFspConfigurationId,
     };
-    await this.transactionJobsHelperService.saveTransactionProgress({
+    await this.transactionJobsHelperService.logTransactionJobStart({
       context: transactionEventContext,
-      description: transactionJob.isRetry
-        ? TransactionEventDescription.retry
-        : TransactionEventDescription.initiated,
-      newTransactionStatus: TransactionStatusEnum.waiting,
+      isRetry: transactionJob.isRetry,
     });
 
     // 2. Create idempotency key
@@ -87,7 +84,7 @@ export class TransactionJobsOnafriqService {
         return;
       } else if (error instanceof OnafriqError) {
         // store error transactionEvent and update transaction to 'error'
-        await this.transactionJobsHelperService.saveTransactionProgress({
+        await this.transactionsService.saveProgress({
           context: transactionEventContext,
           description: TransactionEventDescription.onafriqRequestSent,
           errorMessage: error.message,
@@ -100,7 +97,7 @@ export class TransactionJobsOnafriqService {
     }
 
     // 5. store success transactionEvent and update transaction to 'waiting'
-    await this.transactionJobsHelperService.saveTransactionProgress({
+    await this.transactionsService.saveProgress({
       context: transactionEventContext,
       description: TransactionEventDescription.onafriqRequestSent,
     });

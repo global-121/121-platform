@@ -8,12 +8,14 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 
 describe('TransactionJobsAirtelService', () => {
   let service: TransactionJobsAirtelService;
   let airtelService: jest.Mocked<AirtelService>;
   let transactionEventScopedRepository: jest.Mocked<TransactionEventsScopedRepository>;
   let transactionJobsHelperService: jest.Mocked<TransactionJobsHelperService>;
+  let transactionsService: jest.Mocked<TransactionsService>;
 
   const transactionJob: AirtelTransactionJobDto = {
     programId: 3,
@@ -36,16 +38,20 @@ describe('TransactionJobsAirtelService', () => {
   beforeEach(async () => {
     airtelService = { attemptOrCheckDisbursement: jest.fn() } as any;
     transactionJobsHelperService = {
-      saveTransactionProgress: jest.fn(),
+      logTransactionJobStart: jest.fn(),
     } as any;
     transactionEventScopedRepository = {
       countFailedTransactionAttempts: jest.fn().mockResolvedValue(6),
+    } as any;
+    transactionsService = {
+      saveProgress: jest.fn(),
     } as any;
 
     service = new TransactionJobsAirtelService(
       airtelService,
       transactionJobsHelperService,
       transactionEventScopedRepository,
+      transactionsService,
     );
   });
 
@@ -64,11 +70,15 @@ describe('TransactionJobsAirtelService', () => {
 
       // Assert
       expect(
-        transactionJobsHelperService.saveTransactionProgress,
+        transactionJobsHelperService.logTransactionJobStart,
       ).toHaveBeenCalledWith({
         context: transactionEventContext,
-        description: TransactionEventDescription.initiated,
-        newTransactionStatus: TransactionStatusEnum.waiting,
+        isRetry: transactionJob.isRetry,
+      });
+      expect(transactionsService.saveProgress).toHaveBeenCalledWith({
+        context: transactionEventContext,
+        description: TransactionEventDescription.airtelRequestSent,
+        newTransactionStatus: TransactionStatusEnum.success,
       });
     });
 
@@ -112,9 +122,7 @@ describe('TransactionJobsAirtelService', () => {
       await service.processAirtelTransactionJob(transactionJob);
 
       // Assert
-      expect(
-        transactionJobsHelperService.saveTransactionProgress,
-      ).toHaveBeenCalledWith({
+      expect(transactionsService.saveProgress).toHaveBeenCalledWith({
         context: transactionEventContext,
         description: TransactionEventDescription.airtelRequestSent,
         newTransactionStatus: TransactionStatusEnum.success,
@@ -136,9 +144,7 @@ describe('TransactionJobsAirtelService', () => {
       // Act
       await service.processAirtelTransactionJob(transactionJob);
 
-      expect(
-        transactionJobsHelperService.saveTransactionProgress,
-      ).toHaveBeenCalledWith({
+      expect(transactionsService.saveProgress).toHaveBeenCalledWith({
         context: transactionEventContext,
         description: TransactionEventDescription.airtelRequestSent,
         newTransactionStatus: TransactionStatusEnum.waiting,
@@ -155,9 +161,7 @@ describe('TransactionJobsAirtelService', () => {
       // Act
       await service.processAirtelTransactionJob(transactionJob);
 
-      expect(
-        transactionJobsHelperService.saveTransactionProgress,
-      ).toHaveBeenCalledWith({
+      expect(transactionsService.saveProgress).toHaveBeenCalledWith({
         context: transactionEventContext,
         description: TransactionEventDescription.airtelRequestSent,
         newTransactionStatus: TransactionStatusEnum.error,
