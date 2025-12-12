@@ -34,12 +34,13 @@ graph LR
   ExcelReconcilicationModule-->TransactionsModule
   ExchangeRatesModule-->UserModule
   FspsModule-->UserModule
+  IntersolveVisaAccountManagementModule-->IntersolveVisaDataSynchronizationModule
   IntersolveVisaAccountManagementModule-->IntersolveVisaModule
   IntersolveVisaAccountManagementModule-->MessageQueuesModule
   IntersolveVisaAccountManagementModule-->ProgramFspConfigurationsModule
-  IntersolveVisaAccountManagementModule-->RegistrationDataModule
+  IntersolveVisaAccountManagementModule-->RegistrationsModule
   IntersolveVisaAccountManagementModule-->UserModule
-  IntersolveVisaDataSynchronizationModule-->IntersolveVisaAccountManagementModule
+  IntersolveVisaDataSynchronizationModule-->IntersolveVisaModule
   IntersolveVisaModule-->UserModule
   IntersolveVisaReconciliationModule-->IntersolveVisaModule
   IntersolveVoucherModule-->ImageCodeModule

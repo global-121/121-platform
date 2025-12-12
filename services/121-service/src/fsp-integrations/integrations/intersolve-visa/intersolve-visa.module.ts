@@ -37,6 +37,10 @@ import { TokenValidationService } from '@121-service/src/utils/token/token-valid
     IntersolveVisaParentWalletScopedRepository,
     IntersolveVisaChildWalletScopedRepository,
   ],
-  exports: [IntersolveVisaService, IntersolveVisaCustomerScopedRepository],
+  exports: [
+    IntersolveVisaService,
+    IntersolveVisaCustomerScopedRepository,
+    IntersolveVisaChildWalletScopedRepository,
+  ],
 })
 export class IntersolveVisaModule {}

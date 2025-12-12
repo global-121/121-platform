@@ -2018,6 +2018,9 @@
       <trans-unit id="5484768522828011721" datatype="html">
         <source>(matching fields: <x equiv-text="{{ matchingFieldNames }}" id="INTERPOLATION"/>)</source>
       </trans-unit>
+      <trans-unit id="2208706328996995680" datatype="html">
+        <source>Card distribution by mail</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

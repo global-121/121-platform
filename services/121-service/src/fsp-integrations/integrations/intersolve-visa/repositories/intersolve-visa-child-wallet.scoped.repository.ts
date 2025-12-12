@@ -15,4 +15,20 @@ export class IntersolveVisaChildWalletScopedRepository extends ScopedRepository<
   ) {
     super(request, repository);
   }
+
+  async hasLinkedChildWalletForRegistrationId(
+    registrationId: number,
+  ): Promise<boolean> {
+    const child = await this.createQueryBuilder('child')
+      .leftJoin('child.intersolveVisaParentWallet', 'parent')
+      .leftJoin('parent.intersolveVisaCustomer', 'customer')
+      .leftJoin('customer.registration', 'registration')
+      .andWhere('registration.id = :registrationId', { registrationId })
+      .andWhere('child.isLinkedToParentWallet = :linked', { linked: true })
+      .select('child.id')
+      .limit(1)
+      .getRawOne();
+
+    return !!child;
+  }
 }

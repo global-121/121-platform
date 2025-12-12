@@ -12,7 +12,7 @@ import {
   blockVisaCard,
   getMessageHistory,
   getVisaWalletsAndDetails,
-  issueNewVisaCard,
+  replaceVisaCardByMail,
   seedPaidRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
@@ -53,7 +53,7 @@ describe('Issue new Visa debit card', () => {
     );
 
     // Act
-    await issueNewVisaCard(
+    await replaceVisaCardByMail(
       programIdVisa,
       registrationVisa.referenceId,
       accessToken,
@@ -104,7 +104,7 @@ describe('Issue new Visa debit card', () => {
     );
 
     // Act
-    const issueVisaCardResponseAttempt1 = await issueNewVisaCard(
+    const issueVisaCardResponseAttempt1 = await replaceVisaCardByMail(
       programIdPv,
       registrationVisa.referenceId,
       accessToken,
@@ -129,7 +129,7 @@ describe('Issue new Visa debit card', () => {
       accessToken,
     );
 
-    const issueVisaCardResponseAttempt2 = await issueNewVisaCard(
+    const issueVisaCardResponseAttempt2 = await replaceVisaCardByMail(
       programIdPv,
       registrationVisa.referenceId,
       accessToken,

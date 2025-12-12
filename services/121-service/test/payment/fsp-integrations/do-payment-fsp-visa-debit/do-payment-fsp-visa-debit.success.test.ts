@@ -22,7 +22,7 @@ import {
   getMessageHistory,
   getTransactionEventDescriptions,
   importRegistrations,
-  issueNewVisaCard,
+  replaceVisaCardByMail,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -227,8 +227,8 @@ describe('Do successful payment with FSP Visa Debit', () => {
       },
     });
 
-    // Reissue card so both cards have a spend of 6000
-    await issueNewVisaCard(
+    // Replace card so both cards have a spend of 6000
+    await replaceVisaCardByMail(
       programIdVisa,
       registrationOCW4.referenceId,
       accessToken,

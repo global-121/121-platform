@@ -311,7 +311,7 @@ export class RegistrationApiService extends DomainApiService {
     });
   }
 
-  reissueCard({
+  replaceCardByMail({
     programId,
     referenceId,
   }: {
@@ -325,6 +325,8 @@ export class RegistrationApiService extends DomainApiService {
       'intersolve-visa',
       'wallet',
       'cards',
+      'by-mail',
+      'replace',
     ]).join('/');
 
     return this.httpWrapperService.perform121ServiceRequest({
@@ -355,6 +357,64 @@ export class RegistrationApiService extends DomainApiService {
 
     return this.queryClient.invalidateQueries({
       queryKey: this.pathToQueryKey(path),
+    });
+  }
+
+  public linkCardToRegistration({
+    programId,
+    referenceId,
+    tokenCode,
+  }: {
+    programId: Signal<number | string>;
+    referenceId: Signal<string | undefined>;
+    tokenCode: Signal<string>;
+  }) {
+    const endpoint = this.pathToQueryKey([
+      ...BASE_ENDPOINT(programId),
+      referenceId,
+      'fsps',
+      'intersolve-visa',
+      'wallet',
+      'cards',
+      'on-site',
+      'link',
+    ]).join('/');
+
+    const body = { tokenCode: tokenCode() };
+
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'POST',
+      endpoint,
+      body,
+    });
+  }
+
+  public replaceCardOnSite({
+    programId,
+    referenceId,
+    tokenCode,
+  }: {
+    programId: Signal<number | string>;
+    referenceId: Signal<string | undefined>;
+    tokenCode: Signal<string>;
+  }) {
+    const endpoint = this.pathToQueryKey([
+      ...BASE_ENDPOINT(programId),
+      referenceId,
+      'fsps',
+      'intersolve-visa',
+      'wallet',
+      'cards',
+      'on-site',
+      'replace',
+    ]).join('/');
+
+    const body = { tokenCode: tokenCode() };
+
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'POST',
+      endpoint,
+      body,
     });
   }
 }
