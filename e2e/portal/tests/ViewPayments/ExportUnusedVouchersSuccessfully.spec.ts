@@ -39,11 +39,8 @@ test.beforeEach(async ({ page }) => {
     programId: programIdPV,
     paymentReferenceIds: [registrationPV5.referenceId],
     accessToken,
-    maxWaitTimeMs: 2_000,
-    completeStatuses: [
-      TransactionStatusEnum.success,
-      TransactionStatusEnum.waiting,
-    ],
+    maxWaitTimeMs: 5_000,
+    completeStatuses: [TransactionStatusEnum.success],
   });
   // Run cronJob to process unused vouchers
   await triggerUnusedVouchersCache(accessToken);
