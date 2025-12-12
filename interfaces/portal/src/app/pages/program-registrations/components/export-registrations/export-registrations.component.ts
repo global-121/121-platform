@@ -189,7 +189,7 @@ export class ExportRegistrationsComponent {
           trackingEvent: {
             category: TrackingCategory.export,
             action: TrackingAction.clickProceedButton,
-            name: 'cbe-accounts-verification',
+            name: 'account-number-verification for:cbe',
           },
         });
       },
