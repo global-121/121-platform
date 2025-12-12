@@ -22,9 +22,6 @@ export class CooperativeBankOfOromiaAccountValidationEntity extends Base121Entit
   @Column({ type: 'character varying', nullable: true })
   public cooperativeBankOfOromiaName: string | null;
 
-  @Column({ type: 'boolean' })
-  public namesMatch: boolean;
-
   @Column({ type: 'character varying', nullable: true })
   public errorMessage: string | null;
 }

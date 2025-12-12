@@ -10,9 +10,6 @@ export class CooperativeBankOfOromiaAccountValidationReportRecordDto {
   @ApiProperty({ type: String, nullable: true })
   public cooperativeBankOfOromiaName: string | null;
 
-  @ApiProperty({ type: Boolean })
-  public namesMatch: boolean;
-
   @ApiProperty({ type: String, nullable: true })
   public errorMessage: string | null;
 

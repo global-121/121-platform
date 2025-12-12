@@ -61,7 +61,7 @@ describe('Validate cooperative bank of oromia accounts', () => {
     );
   });
 
-  it('should report names as matching when registration and bank account names are identical', async () => {
+  it('should report both names when registration and bank account names are available', async () => {
     const record = await getValidationReportRecord({
       programId,
       registration: matchingRegistration,
@@ -73,28 +73,6 @@ describe('Validate cooperative bank of oromia accounts', () => {
       updated: expect.any(String),
       errorMessage: null,
       bankAccountNumberUsedForCall: matchingRegistration.bankAccountNumber,
-      namesMatch: true,
-    });
-  });
-
-  it('should report names as not matching when registration and bank account names differ', async () => {
-    const nonMatchingRegistration = {
-      ...registrationCooperativeBankOfOromia,
-      referenceId: uuid(),
-      fullName: 'john smith',
-    };
-    const record = await getValidationReportRecord({
-      programId,
-      registration: nonMatchingRegistration,
-      accessToken,
-    });
-    expect(record).toMatchObject({
-      nameUsedForTheMatch: nonMatchingRegistration.fullName,
-      cooperativeBankOfOromiaName: 'JANE DOE', // name that the mock API returns
-      updated: expect.any(String),
-      errorMessage: null,
-      bankAccountNumberUsedForCall: nonMatchingRegistration.bankAccountNumber,
-      namesMatch: false,
     });
   });
 
@@ -115,7 +93,6 @@ describe('Validate cooperative bank of oromia accounts', () => {
       updated: expect.any(String),
       bankAccountNumberUsedForCall:
         nonExistentAccountRegistration.bankAccountNumber,
-      namesMatch: false,
     });
     expect(record.errorMessage).toMatchInlineSnapshot(
       `"Message: No records were found that matched the selection criteria"`,
@@ -139,7 +116,6 @@ describe('Validate cooperative bank of oromia accounts', () => {
       updated: expect.any(String),
       bankAccountNumberUsedForCall:
         unexpectedErrorRegistration.bankAccountNumber,
-      namesMatch: false,
     });
     expect(record.errorMessage).toMatchInlineSnapshot(
       `"Unknown error occurred"`,
