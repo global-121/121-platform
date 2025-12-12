@@ -65,21 +65,20 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     expect(meta).toBeDefined();
     expect(meta.total).toBe(data.length);
 
-    // Count types in data
-    const typeCounts = data.reduce(
+    // Count descriptions in data
+    const descriptionCounts = data.reduce(
       (acc, event) => {
-        acc[event.type] = (acc[event.type] || 0) + 1;
+        acc[event.description] = (acc[event.description] || 0) + 1;
         return acc;
       },
       {} as Record<string, number>,
     );
-    expect(meta.count).toEqual(typeCounts);
+    expect(meta.count).toEqual(descriptionCounts);
 
     // Assert each event
     data.forEach((event) => {
       expect(event).toMatchObject({
         id: expect.any(Number),
-        type: expect.any(String),
         created: expect.any(String),
         description: expect.any(String),
         isSuccessfullyCompleted: expect.any(Boolean),
