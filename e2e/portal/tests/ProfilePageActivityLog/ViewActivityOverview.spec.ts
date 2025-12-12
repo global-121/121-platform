@@ -31,6 +31,9 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActivityLogPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
+import { dropdownInputs } from '../../helpers/PersonalInformationFields';
+import RegistrationPersonalInformationPage from '../../pages/RegistrationPersonalInformationPage';
+
 const referenceIdPV5 = registrationPV5.referenceId;
 let activitiesCount: number;
 
@@ -168,7 +171,68 @@ test.describe('as admin user', () => {
 });
 
 test.describe('as user with only view paper voucher permissions', () => {
-  test.beforeEach(async ({ page }) => {
+  test('transaction row contains current balance, but not "view voucher" button', async ({
+    page,
+  }) => {
+    // Login as admin
+    await loginAs({
+      page,
+      username: env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+    });
+    const personalInformationPage = new RegistrationPersonalInformationPage(
+      page,
+    );
+
+    // Navigate to the personal info page and change FSP to Albert Heijn voucher paper
+    const activityLogPage = new RegistrationActivityLogPage(page);
+
+    const tableComponent = new TableComponent(page);
+    const registrationsPage = new RegistrationsPage(page);
+
+    await activityLogPage.selectProgram(NLRCProgram.titlePortal.en);
+    await registrationsPage.goToRegistrationByName({
+      registrationName: registrationPV5.fullName,
+    });
+
+    await activityLogPage.navigateToPersonalInformation();
+
+    await personalInformationPage.clickEditInformationButton();
+
+    // Change FSP from dropdown selection and fill in all the required fields
+    await personalInformationPage.selectDropdownOption({
+      dropdownIdName: 'programFspConfigurationName',
+      dropdownLabel: dropdownInputs.programFspConfigurationName.fieldName,
+      option: 'Albert Heijn voucher paper',
+    });
+
+    await personalInformationPage.saveChanges();
+
+    const accessToken = await getAccessToken();
+
+    // Make a second payment with the new FSP
+    const paymentResponse = await createAndStartPayment({
+      programId: 2,
+      transferValue: 100,
+      referenceIds: [referenceIdPV5],
+      accessToken,
+    });
+    const paymentId = paymentResponse.body.id;
+
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdPV,
+      paymentId,
+      paymentReferenceIds: [referenceIdPV5],
+      accessToken,
+      maxWaitTimeMs: 2_000,
+      completeStatuses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.waiting,
+      ],
+    });
+
+    await page.goto('/logout');
+
+    // Create a user with only view paper voucher permission and login
     const username = await createUserWithPermissions({
       permissions: [
         PermissionEnum.PaymentREAD,
@@ -183,31 +247,37 @@ test.describe('as user with only view paper voucher permissions', () => {
       page,
       username,
     });
-  });
 
-  test('transaction row contains current balance, but not "view voucher" button', async ({
-    page,
-  }) => {
-    const activityLogPage = new RegistrationActivityLogPage(page);
-    const tableComponent = new TableComponent(page);
-    const registrationsPage = new RegistrationsPage(page);
-
+    // Navigate to the activity log
     await activityLogPage.selectProgram(NLRCProgram.titlePortal.en);
     await registrationsPage.goToRegistrationByName({
       registrationName: registrationPV5.fullName,
     });
+
     await tableComponent.waitForLoaded();
     await tableComponent.expandAllRows();
-    const balanceAndViewVoucherCell = tableComponent.table.getByTestId(
+    const balanceAndViewVoucherCells = tableComponent.table.getByTestId(
       'current-balance-and-view-voucher',
     );
 
-    await expect(balanceAndViewVoucherCell).toContainText(
+    await expect(balanceAndViewVoucherCells).toHaveCount(2);
+
+    // Assert both balances are visible
+    await expect(balanceAndViewVoucherCells.nth(0)).toContainText(
+      'Current balance: €12.50',
+    );
+    await expect(balanceAndViewVoucherCells.nth(1)).toContainText(
       'Current balance: €12.50',
     );
 
+    // Assert only one View voucher button (for the paper voucher) is visible
     await expect(
-      balanceAndViewVoucherCell.getByRole('button', {
+      balanceAndViewVoucherCells.nth(0).getByRole('button', {
+        name: 'View voucher',
+      }),
+    ).toBeVisible();
+    await expect(
+      balanceAndViewVoucherCells.nth(1).getByRole('button', {
         name: 'View voucher',
       }),
     ).not.toBeVisible();
