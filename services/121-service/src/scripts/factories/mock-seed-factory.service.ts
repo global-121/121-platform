@@ -16,6 +16,7 @@ import { ProgramEntity } from '@121-service/src/programs/entities/program.entity
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { MessageSeedFactory } from '@121-service/src/scripts/factories/message-seed-factory';
+import { RegistrationEventSeedFactory } from '@121-service/src/scripts/factories/registration-event-seed-factory';
 import { RegistrationSeedFactory } from '@121-service/src/scripts/factories/registration-seed-factory';
 import { TransactionSeedFactory } from '@121-service/src/scripts/factories/transaction-seed-factory';
 
@@ -33,6 +34,7 @@ export class MockSeedFactoryService {
   private readonly transactionFactory: TransactionSeedFactory;
   private readonly programRepository: Repository<ProgramEntity>;
   private readonly registrationRepository: Repository<RegistrationEntity>;
+  private readonly registrationEventFactory: RegistrationEventSeedFactory;
 
   constructor(private readonly dataSource: DataSource) {
     this.registrationFactory = new RegistrationSeedFactory(dataSource);
@@ -40,9 +42,18 @@ export class MockSeedFactoryService {
     this.transactionFactory = new TransactionSeedFactory(dataSource);
     this.programRepository = dataSource.getRepository(ProgramEntity);
     this.registrationRepository = dataSource.getRepository(RegistrationEntity);
+    this.registrationEventFactory = new RegistrationEventSeedFactory(
+      dataSource,
+    );
   }
 
-  public async multiplyRegistrations(powerNr: number): Promise<void> {
+  public async multiplyRegistrations({
+    powerNr,
+    includeRegistrationEvents = false,
+  }: {
+    powerNr: number;
+    includeRegistrationEvents?: boolean;
+  }): Promise<void> {
     console.log(`**MULTIPLYING REGISTRATIONS: ${powerNr} times**`);
 
     const programs = await this.programRepository.find();
@@ -51,7 +62,10 @@ export class MockSeedFactoryService {
         console.log(`Creating registration duplication ${i} of ${powerNr}`);
 
         await this.registrationFactory.duplicateExistingRegistrationsForProgram(
-          program.id,
+          {
+            programId: program.id,
+            includeRegistrationEvents,
+          },
         );
       }
     }

@@ -78,8 +78,17 @@ export class SeedMockHelperService {
     return { powerNrRegistrations, nrPayments, powerNrMessages };
   }
 
-  public async multiplyRegistrations(powerNr: number): Promise<void> {
-    await this.mockDataFactory.multiplyRegistrations(powerNr);
+  public async multiplyRegistrations({
+    powerNr,
+    includeRegistrationEvents = false,
+  }: {
+    powerNr: number;
+    includeRegistrationEvents?: boolean;
+  }): Promise<void> {
+    await this.mockDataFactory.multiplyRegistrations({
+      powerNr,
+      includeRegistrationEvents,
+    });
   }
 
   public async alignOtherDataWithRegistrations({
@@ -185,16 +194,16 @@ export class SeedMockHelperService {
   ): Promise<void> {
     const startTime = Date.now();
     while (Date.now() - startTime < maxWaitTimeMs) {
-      const paginatedRegistrations = await this.getRegistrations(
+      const paginatedRegistrations = await this.getRegistrations({
         programId,
-        ['status'],
+        attributes: ['status'],
         accessToken,
-        1,
-        undefined,
-        {
+        page: 1,
+        limit: undefined,
+        filter: {
           'filter.status': `$in:${status}`,
         },
-      );
+      });
 
       if (
         paginatedRegistrations &&
@@ -207,14 +216,43 @@ export class SeedMockHelperService {
     }
   }
 
-  public async getRegistrations(
-    programId: number,
-    attributes: string[],
-    accessToken: string,
-    page?: number,
-    limit?: number,
-    filter: Record<string, string> = {},
-  ): Promise<any> {
+  public async awaitChangePaData({
+    programId,
+    referenceId,
+    data,
+    reason,
+    accessToken,
+  }: {
+    programId: number;
+    referenceId: string;
+    data: Record<string, any>;
+    reason: string;
+    accessToken: string;
+  }): Promise<any> {
+    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/registrations/${referenceId}`;
+    const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
+    const body = {
+      data,
+      reason,
+    };
+    return await this.httpService.patch(url, body, headers);
+  }
+
+  public async getRegistrations({
+    programId,
+    attributes,
+    accessToken,
+    page,
+    limit,
+    filter = {},
+  }: {
+    programId: number;
+    attributes: string[];
+    accessToken: string;
+    page?: number;
+    limit?: number;
+    filter?: Record<string, string>;
+  }): Promise<any> {
     const queryParams = new URLSearchParams();
     attributes.forEach((attr) => queryParams.append('select', attr));
     if (page) queryParams.append('page', page.toString());

@@ -8,20 +8,27 @@ import { RegistrationAttributeDataEntity } from '@121-service/src/registration/e
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { BaseSeedFactory } from '@121-service/src/scripts/factories/base-seed-factory';
 import { RegistrationAttributeSeedFactory } from '@121-service/src/scripts/factories/registration-attribute-data-seed-factory';
+import { RegistrationEventSeedFactory } from '@121-service/src/scripts/factories/registration-event-seed-factory';
 
 @Injectable()
 export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity> {
   private readonly attributeDataFactory: RegistrationAttributeSeedFactory;
+  private readonly eventDataFactory: RegistrationEventSeedFactory;
   constructor(dataSource: DataSource) {
     super(dataSource, dataSource.getRepository(RegistrationEntity));
     this.attributeDataFactory = new RegistrationAttributeSeedFactory(
       dataSource,
     );
+    this.eventDataFactory = new RegistrationEventSeedFactory(dataSource);
   }
 
-  public async duplicateExistingRegistrationsForProgram(
-    programId: number,
-  ): Promise<void> {
+  public async duplicateExistingRegistrationsForProgram({
+    programId,
+    includeRegistrationEvents = false,
+  }: {
+    programId: number;
+    includeRegistrationEvents?: boolean;
+  }): Promise<void> {
     // Get all existing registrations for the given program
     const existingRegistrations = await this.repository.find({
       where: { programId: Equal(programId) },
@@ -73,6 +80,13 @@ export class RegistrationSeedFactory extends BaseSeedFactory<RegistrationEntity>
       newRegistrationIds,
       programId,
     );
+    if (includeRegistrationEvents) {
+      await this.eventDataFactory.duplicateRegistrationEvents(
+        newRegistrationIds,
+        programId,
+        this.repository,
+      );
+    }
   }
 
   public async makePhoneNumbersUnique(): Promise<void> {

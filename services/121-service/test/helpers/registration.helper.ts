@@ -93,11 +93,13 @@ export function importRegistrationsCSV(
 
 export function duplicateRegistrationsAndPaymentData({
   powerNumberRegistration,
+  includeRegistrationEvents = false,
   accessToken,
   body = {},
   numberOfPayments = 0,
 }: {
   powerNumberRegistration: number;
+  includeRegistrationEvents?: boolean;
   accessToken: string;
   body: object;
   numberOfPayments?: number;
@@ -108,6 +110,7 @@ export function duplicateRegistrationsAndPaymentData({
     .query({
       mockPowerNumberRegistrations: powerNumberRegistration,
       mockNumberPayments: numberOfPayments,
+      includeRegistrationEvents,
     })
     .send(body);
 }
@@ -197,10 +200,10 @@ export async function waitForDeleteRegistrations({
         referenceId,
         accessToken,
       });
-      const deleteEvent = getEventsResponse.body.find(
+      const deleteEvent = getEventsResponse.body.data.find(
         (event) =>
           event.type === RegistrationEventEnum.registrationStatusChange &&
-          event.attributes?.newValue === RegistrationStatusEnum.deleted,
+          event.newValue === RegistrationStatusEnum.deleted,
       );
       if (deleteEvent) {
         totalRegistrationSuccessfullyDeleted++;
@@ -417,14 +420,14 @@ export async function waitForStatusChangeToComplete({
       programId,
       accessToken,
     });
-    if (!eventsResult?.body || !Array.isArray(eventsResult.body)) {
+    if (!eventsResult?.body?.data || !Array.isArray(eventsResult.body.data)) {
       await waitFor(200);
       continue;
     }
-    const filteredEvents = eventsResult.body.filter(
+    const filteredEvents = eventsResult.body.data.filter(
       (event) =>
         event.type === RegistrationEventEnum.registrationStatusChange &&
-        event.attributes.newValue === status,
+        event.newValue === status,
     );
     // If not all status change are done check again
     if (filteredEvents.length >= amountOfRegistrations) {

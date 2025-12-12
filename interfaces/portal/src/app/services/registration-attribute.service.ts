@@ -12,6 +12,7 @@ import {
 } from '@tanstack/angular-query-experimental';
 
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
+import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import {
   GenericRegistrationAttributes,
   RegistrationAttributeTypes,
@@ -326,6 +327,24 @@ export class RegistrationAttributeService {
               type: RegistrationAttributeTypes.text,
               isEditable: false,
               isRequired: false,
+            },
+            {
+              name: 'duplicateStatus',
+              label: $localize`:@@registration-duplicate-status:Duplicate status`,
+              value: undefined,
+              type: RegistrationAttributeTypes.text,
+              isEditable: false,
+              isRequired: false,
+              options: [
+                {
+                  value: DuplicateStatus.unique,
+                  label: $localize`:@@duplicate-status-unique:Unique`,
+                },
+                {
+                  value: DuplicateStatus.duplicate,
+                  label: $localize`:@@duplicate-status-duplicate:Duplicate`,
+                },
+              ],
             },
             ...genericAttributes,
             ...programSpecificAttributes.filter(

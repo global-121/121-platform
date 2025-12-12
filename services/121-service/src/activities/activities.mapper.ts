@@ -12,10 +12,8 @@ import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { MessageByRegistrationId } from '@121-service/src/notifications/types/twilio-message-by-registration-id.interface';
 import { GetAuditedTransactionViews } from '@121-service/src/payments/transactions/types/get-audited-tranaction-views.type';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { GetRegistrationEventDto } from '@121-service/src/registration-events/dto/get-registration-event.dto';
-import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
+import { PaginatedRegistrationEventDto } from '@121-service/src/registration-events/dto/paginated-registration-events.dto';
 import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
-import { RegistrationEventsMapper } from '@121-service/src/registration-events/utils/registration-events.mapper';
 
 export class ActivitiesMapper {
   static mergeAndMapToActivitiesDto({
@@ -28,7 +26,7 @@ export class ActivitiesMapper {
     transactions: GetAuditedTransactionViews[];
     messages: MessageByRegistrationId[];
     notes: NoteEntity[];
-    events: RegistrationEventEntity[];
+    events: PaginatedRegistrationEventDto[];
     availableTypes: ActivityTypeEnum[];
   }): ActivitiesDto {
     const count: Partial<Record<ActivityTypeEnum, number>> = {};
@@ -61,7 +59,7 @@ export class ActivitiesMapper {
           break;
         case ActivityTypeEnum.FspChange:
           activities =
-            this.mapFinanacialServiceProviderChangesToActivity(fspChanges);
+            this.mapFinancialServiceProviderChangesToActivity(fspChanges);
           break;
       }
       count[type] = activities.length;
@@ -75,29 +73,26 @@ export class ActivitiesMapper {
   }
 
   private static categoriseEvents(
-    registrationEvents: RegistrationEventEntity[],
+    registrationEvents: PaginatedRegistrationEventDto[],
   ) {
-    const dataChanges: GetRegistrationEventDto[] = [];
-    const statusUpdates: GetRegistrationEventDto[] = [];
-    const fspChanges: GetRegistrationEventDto[] = [];
-    const ignoredDuplicates: GetRegistrationEventDto[] = [];
+    const dataChanges: PaginatedRegistrationEventDto[] = [];
+    const statusUpdates: PaginatedRegistrationEventDto[] = [];
+    const fspChanges: PaginatedRegistrationEventDto[] = [];
+    const ignoredDuplicates: PaginatedRegistrationEventDto[] = [];
 
     registrationEvents.forEach((registrationEvent) => {
-      const mappedEvent =
-        RegistrationEventsMapper.mapEventToJsonDto(registrationEvent);
-
       switch (registrationEvent.type) {
         case RegistrationEventEnum.registrationDataChange:
-          dataChanges.push(mappedEvent);
+          dataChanges.push(registrationEvent);
           break;
         case RegistrationEventEnum.registrationStatusChange:
-          statusUpdates.push(mappedEvent);
+          statusUpdates.push(registrationEvent);
           break;
         case RegistrationEventEnum.fspChange:
-          fspChanges.push(mappedEvent);
+          fspChanges.push(registrationEvent);
           break;
         case RegistrationEventEnum.ignoredDuplicate:
-          ignoredDuplicates.push(mappedEvent);
+          ignoredDuplicates.push(registrationEvent);
           break;
       }
     });
@@ -172,79 +167,77 @@ export class ActivitiesMapper {
     }));
   }
   private static mapDataChangesToActivity(
-    registrationEvents: GetRegistrationEventDto[],
+    registrationEvents: PaginatedRegistrationEventDto[],
   ): DataChangeActivity[] {
     return registrationEvents.map((event, index) => ({
       id: `${ActivityTypeEnum.DataChange}${index}`,
       user: {
-        id: event.user?.id,
-        username: event.user?.username,
+        id: event.userId,
+        username: event.username,
       },
       created: event.created,
       type: ActivityTypeEnum.DataChange,
       attributes: {
-        fieldName: event.attributes.fieldName,
-        oldValue: event.attributes.oldValue,
-        newValue: event.attributes.newValue,
-        reason: event.attributes.reason,
+        fieldName: event.fieldChanged,
+        oldValue: event.oldValue,
+        newValue: event.newValue,
+        reason: event.reason,
       },
     }));
   }
   private static mapStatusUpdatesToActivity(
-    registrationEvents: GetRegistrationEventDto[],
+    registrationEvents: PaginatedRegistrationEventDto[],
   ): StatusChangeActivity[] {
     return registrationEvents.map((event, index) => ({
       id: `${ActivityTypeEnum.StatusChange}${index}`,
       user: {
-        id: event.user?.id,
-        username: event.user?.username,
+        id: event.userId,
+        username: event.username,
       },
       created: event.created,
       type: ActivityTypeEnum.StatusChange,
       attributes: {
-        oldValue: event.attributes.oldValue as RegistrationStatusEnum,
-        newValue: event.attributes.newValue as RegistrationStatusEnum,
-        reason: event.attributes.reason,
+        oldValue: event.oldValue as RegistrationStatusEnum,
+        newValue: event.newValue as RegistrationStatusEnum,
+        reason: event.reason,
       },
     }));
   }
-  private static mapFinanacialServiceProviderChangesToActivity(
-    registrationEvents: GetRegistrationEventDto[],
+  private static mapFinancialServiceProviderChangesToActivity(
+    registrationEvents: PaginatedRegistrationEventDto[],
   ): FspChangeActivity[] {
     return registrationEvents.map((event, index) => ({
       id: `${ActivityTypeEnum.FspChange}${index}`,
       user: {
-        id: event.user?.id,
-        username: event.user?.username,
+        id: event.userId,
+        username: event.username,
       },
       created: event.created,
       type: ActivityTypeEnum.FspChange,
       attributes: {
-        oldValue: event.attributes.oldValue,
-        newValue: event.attributes.newValue,
-        reason: event.attributes.reason,
+        oldValue: event.oldValue,
+        newValue: event.newValue,
+        reason: event.reason,
       },
     }));
   }
   private static mapIgnoredDuplicatesToActivity(
-    registrationEvents: GetRegistrationEventDto[],
+    registrationEvents: PaginatedRegistrationEventDto[],
   ): IgnoredDuplicateActivity[] {
     return registrationEvents.map((event, index) => ({
       id: `${ActivityTypeEnum.IgnoredDuplicate}${index}`,
       user: {
-        id: event.user?.id,
-        username: event.user?.username,
+        id: event.userId,
+        username: event.username,
       },
       created: event.created,
       type: ActivityTypeEnum.IgnoredDuplicate,
       attributes: {
-        duplicateWithRegistrationId: Number(
-          event.attributes.duplicateWithRegistrationId,
-        ),
+        duplicateWithRegistrationId: Number(event.duplicateWithRegistrationId),
         duplicateWithRegistrationProgramId: Number(
-          event.attributes.duplicateWithRegistrationProgramId,
+          event.duplicateWithRegistrationProgramId,
         ),
-        reason: event.attributes.reason,
+        reason: event.reason,
       },
     }));
   }

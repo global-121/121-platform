@@ -833,3 +833,47 @@ export async function getPaymentSummary({
     .get(`/programs/${programId}/payments/${paymentId}`)
     .set('Cookie', [accessToken]);
 }
+
+export async function getRegistrationEventsMonitoring({
+  programId,
+  accessToken,
+  page,
+  limit,
+  sort,
+  filter,
+  search,
+}: {
+  programId: number;
+  accessToken: string;
+  page?: number;
+  limit?: number;
+  filter?: Record<string, string>;
+  search?: string;
+  sort?: { field: string; direction: 'ASC' | 'DESC' };
+}): Promise<request.Response> {
+  const queryParams: Record<string, string> = {};
+
+  if (page) {
+    queryParams['page'] = String(page);
+  }
+  if (limit) {
+    queryParams['limit'] = String(limit);
+  }
+  if (filter) {
+    for (const [key, value] of Object.entries(filter)) {
+      queryParams[key] = value;
+    }
+  }
+  if (search) {
+    queryParams['search'] = search;
+  }
+
+  if (sort) {
+    queryParams['sortBy'] = `${sort.field}:${sort.direction}`;
+  }
+
+  return await getServer()
+    .get(`/programs/${programId}/registration-events/monitoring`)
+    .set('Cookie', [accessToken])
+    .query(queryParams);
+}

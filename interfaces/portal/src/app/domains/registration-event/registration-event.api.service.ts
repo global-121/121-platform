@@ -2,6 +2,8 @@ import { HttpParamsOptions } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 
 import { DomainApiService } from '~/domains/domain-api.service';
+import { FindAllRegistrationEventsResult } from '~/domains/registration-event/registration-event.model';
+import { PaginateQuery } from '~/services/paginate-query.service';
 
 const BASE_ENDPOINT = (programId: Signal<number | string>) => [
   'programs',
@@ -12,8 +14,8 @@ const BASE_ENDPOINT = (programId: Signal<number | string>) => [
 @Injectable({
   providedIn: 'root',
 })
-export class EventApiService extends DomainApiService {
-  getEvents({
+export class RegistrationEventApiService extends DomainApiService {
+  getRegistrationEventsExport({
     programId,
     params,
   }: {
@@ -24,6 +26,20 @@ export class EventApiService extends DomainApiService {
       path: BASE_ENDPOINT(programId),
       params,
       responseAsBlob: true,
+    });
+  }
+
+  getRegistrationEventsMonitoring({
+    programId,
+    paginateQuery,
+  }: {
+    programId: Signal<number | string>;
+    paginateQuery: Signal<PaginateQuery | undefined>;
+  }) {
+    return this.generateQueryOptions<FindAllRegistrationEventsResult>({
+      path: [...BASE_ENDPOINT(programId), 'monitoring'],
+      paginateQuery: paginateQuery as Signal<PaginateQuery>,
+      enabled: () => !!paginateQuery(),
     });
   }
 
