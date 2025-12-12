@@ -6,8 +6,9 @@
   }"
 >
   @for (item of data(); track $index) {
-    <p
-      [attr.data-testid]="dataTestId() + '-personal-information'"
+    <div
+      [attr.data-testid]="item?.dataTestId"
+      [attr.data-testid-category]="'data-list-item'"
       class="border-grey-300 flex items-center border-b px-2 py-4"
       [ngClass]="{
         'col-span-2': item.fullWidth,
@@ -96,6 +97,6 @@
           —
         }
       }
-    </p>
+    </div>
   }
 </div>
