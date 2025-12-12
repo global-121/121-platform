@@ -1,6 +1,5 @@
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
-import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionEventsMapper } from '@121-service/src/payments/transactions/transaction-events/mappers/transaction-events.mapper';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
@@ -14,13 +13,11 @@ describe('TransactionEventsMapper', () => {
     errorMessage: null,
     isSuccessfullyCompleted: true,
     description: TransactionEventDescription.created,
-    type: TransactionEventType.created,
   };
   const testEventData2 = {
     errorMessage: 'Test error message',
     isSuccessfullyCompleted: false,
     description: TransactionEventDescription.onafriqRequestSent,
-    type: TransactionEventType.processingStep,
   };
 
   const mockUser = new UserEntity();
@@ -29,7 +26,6 @@ describe('TransactionEventsMapper', () => {
 
   const createMockTransactionEventEntity = ({
     id,
-    type,
     description,
     isSuccessfullyCompleted,
     programFspConfigurationId,
@@ -37,7 +33,6 @@ describe('TransactionEventsMapper', () => {
     user,
   }: {
     id: number;
-    type: TransactionEventType;
     description: TransactionEventDescription;
     isSuccessfullyCompleted: boolean;
     programFspConfigurationId: number;
@@ -46,7 +41,6 @@ describe('TransactionEventsMapper', () => {
   }): TransactionEventEntity => {
     const entity = new TransactionEventEntity();
     entity.id = id;
-    entity.type = type;
     entity.created = testDate;
     entity.updated = testDate;
     entity.transactionId = testTransactionId;
@@ -64,7 +58,6 @@ describe('TransactionEventsMapper', () => {
       const transactionEvents = [
         createMockTransactionEventEntity({
           id: 1,
-          type: testEventData1.type,
           description: testEventData1.description,
           isSuccessfullyCompleted: testEventData1.isSuccessfullyCompleted,
           programFspConfigurationId: testFspConfigId,
@@ -73,7 +66,6 @@ describe('TransactionEventsMapper', () => {
         }),
         createMockTransactionEventEntity({
           id: 2,
-          type: testEventData2.type,
           description: testEventData2.description,
           isSuccessfullyCompleted: testEventData2.isSuccessfullyCompleted,
           programFspConfigurationId: testFspConfigId,
@@ -89,8 +81,8 @@ describe('TransactionEventsMapper', () => {
       // Assert
       expect(meta).toEqual({
         count: {
-          [TransactionEventType.created]: 1,
-          [TransactionEventType.processingStep]: 1,
+          [TransactionEventDescription.created]: 1,
+          [TransactionEventDescription.onafriqRequestSent]: 1,
         },
         total: 2,
       });
@@ -99,7 +91,6 @@ describe('TransactionEventsMapper', () => {
 
       expect(data[0]).toEqual({
         id: 1,
-        type: testEventData1.type,
         created: testDate,
         user: {
           id: testUserId,
@@ -113,7 +104,6 @@ describe('TransactionEventsMapper', () => {
 
       expect(data[1]).toEqual({
         id: 2,
-        type: testEventData2.type,
         created: testDate,
         user: {
           id: testUserId,

@@ -7,7 +7,6 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
-import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { LastTransactionEventRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/last-transaction-event.repository';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
@@ -44,7 +43,6 @@ export class TransactionsService {
       transactionToSave.userId = userId;
 
       const transactionEvent = new TransactionEventEntity();
-      transactionEvent.type = TransactionEventType.created;
       transactionEvent.description = TransactionEventDescription.created;
       transactionEvent.isSuccessfullyCompleted = true;
       transactionEvent.userId = userId;
@@ -87,15 +85,8 @@ export class TransactionsService {
     errorMessage?: string;
     newTransactionStatus?: TransactionStatusEnum;
   }) {
-    const transactionEventType =
-      description === TransactionEventDescription.initiated
-        ? TransactionEventType.initiated
-        : description === TransactionEventDescription.retry
-          ? TransactionEventType.retry
-          : TransactionEventType.processingStep; // ##TODO for now quick-fix. I have a hunch we can still drop 'type' altogether instead.
     await this.transactionEventsService.createEvent({
       context,
-      type: transactionEventType,
       description,
       errorMessage,
     });
@@ -112,7 +103,6 @@ export class TransactionsService {
     newTransactionStatus,
     transactionIds,
     description,
-    type,
     userId,
     programFspConfigurationId,
     errorMessages,
@@ -120,7 +110,6 @@ export class TransactionsService {
     newTransactionStatus: TransactionStatusEnum;
     transactionIds: number[];
     description: TransactionEventDescription;
-    type: TransactionEventType;
     userId: number;
     programFspConfigurationId: number;
     errorMessages?: Map<number, string>;
@@ -137,7 +126,6 @@ export class TransactionsService {
       transactionIds,
       programFspConfigurationId,
       userId,
-      type,
       description,
       isSuccessfullyCompleted: eventsAreSuccessful,
       errorMessages: errorMessages ?? undefined,
