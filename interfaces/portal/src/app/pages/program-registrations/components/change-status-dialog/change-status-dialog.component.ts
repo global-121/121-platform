@@ -242,9 +242,6 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
       this.dryRunWarningDialog().show({
         resetMutation: false,
       });
-      if (!variables.dryRun) {
-        this.invalidateCache();
-      }
     },
   }));
 
@@ -290,16 +287,5 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
     this.reasonValidationErrorMessage.set(undefined);
     this.enableSendMessage.set(false);
     this.customMessage.set(undefined);
-  }
-
-  private invalidateCache() {
-    void this.metricApiService.invalidateCache(this.programId);
-
-    setTimeout(() => {
-      // invalidate the cache again after a delay to try and make the status change reflected in the UI
-      void this.registrationApiService.invalidateCache({
-        programId: this.programId,
-      });
-    }, 500);
   }
 }
