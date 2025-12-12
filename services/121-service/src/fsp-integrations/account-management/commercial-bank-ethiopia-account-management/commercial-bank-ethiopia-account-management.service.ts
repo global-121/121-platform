@@ -102,13 +102,12 @@ export class CommercialBankEthiopiaAccountManagementService {
         if (pa.fullName && cbeName) {
         } else if (pa.fullName && !cbeName) {
           result.errorMessage =
-            'Could not be matched: did not get a name from CBE for account number';
+            'Did not get a name from CBE for account number';
         } else if (cbeName && !pa.fullName) {
-          result.errorMessage =
-            'Could not be matched: fullName in 121 is missing';
+          result.errorMessage = 'FullName in 121 is missing';
         } else {
           result.errorMessage =
-            'Could not be matched: fullName in 121 is missing and did not get a name from CBE for account number';
+            'FullName in 121 is missing and did not get a name from CBE for account number';
         }
       } else {
         result.errorMessage =
