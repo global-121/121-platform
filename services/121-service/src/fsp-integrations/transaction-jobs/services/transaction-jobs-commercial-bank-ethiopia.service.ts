@@ -42,7 +42,7 @@ export class TransactionJobsCommercialBankEthiopiaService {
 
     const credentials =
       await this.programFspConfigurationRepository.getUsernamePasswordProperties(
-        transactionJob.programId,
+        { programFspConfigurationId: transactionJob.programFspConfigurationId },
       );
 
     // TODO: Performance would be better if we do this before the queue, but not sure if that is better from separation of concerns perspective

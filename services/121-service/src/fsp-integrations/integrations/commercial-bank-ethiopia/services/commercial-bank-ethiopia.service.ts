@@ -117,7 +117,7 @@ export class CommercialBankEthiopiaService {
 
     const credentials =
       await this.programFspConfigurationRepository.getUsernamePasswordProperties(
-        configs[0].id,
+        { programFspConfigurationId: configs[0].id },
       );
 
     if (credentials.password == null || credentials.username == null) {
