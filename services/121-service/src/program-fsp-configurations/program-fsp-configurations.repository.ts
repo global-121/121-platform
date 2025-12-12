@@ -86,7 +86,9 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
       );
     }
 
-    return this.getUsernamePasswordProperties(programFspConfig.id);
+    return this.getUsernamePasswordProperties({
+      programFspConfigurationId: programFspConfig.id,
+    });
   }
 
   // This methods specifically does not throw as it also used to check if the property exists
