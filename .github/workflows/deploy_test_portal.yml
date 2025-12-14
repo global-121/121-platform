@@ -2,6 +2,10 @@
 
 name: 'Deploy [test] Interface: Portal'
 
+# ⚠️
+# Keep in sync with: https://github.com/global-121/infrastructure/blob/main/.github/workflows/deploy_test_portal.yml
+#
+
 env:
   workingDirectory: interfaces/portal
 
