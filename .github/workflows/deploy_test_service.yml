@@ -3,6 +3,10 @@
 
 name: 'Deploy [test] 121-service'
 
+# ⚠️
+# Keep in sync with: https://github.com/global-121/infrastructure/blob/main/.github/workflows/deploy_test_service.yml
+#
+
 env:
   AZURE_WEBAPP_NAME: '121-test'
   AZURE_WEBAPP_PACKAGE_PATH: services/121-service
