@@ -2,7 +2,7 @@
 # More specific about composite actions: https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
 
 name: 'Build: Service'
-description: 'Builds a service for deployment.'
+description: Builds a service for deployment.
 
 #
 # NOTE! - This composite action is used externally!
@@ -28,14 +28,15 @@ runs:
       uses: actions/setup-node@v4
       with:
         # See supported Node.js versions: https://github.com/Azure/app-service-linux-docs/blob/master/Runtime_Support/node_support.md
-        node-version-file: '${{ inputs.servicePath }}/.node-version'
-        cache: 'npm'
-        cache-dependency-path: '${{ inputs.servicePath }}/package-lock.json'
+        node-version-file: ${{ inputs.servicePath }}/.node-version
+        cache: npm
+        cache-dependency-path: ${{ inputs.servicePath }}/package-lock.json
 
     - name: Install
       shell: bash
       working-directory: ${{ inputs.servicePath }}
-      run: 'npm ci'
+      run: |
+        npm ci
 
     - name: Test
       shell: bash
@@ -47,7 +48,8 @@ runs:
     - name: Build
       shell: bash
       working-directory: ${{ inputs.servicePath }}
-      run: 'npm run build'
+      run: |
+        npm run build
 
     - name: Set VERSION of build/deployment
       shell: bash
