@@ -714,8 +714,6 @@
       "filter.programId",
       "filter.type",
       "filter.fieldChanged",
-      "filter.oldValue",
-      "filter.newValue",
       "filter.reason",
       "sortBy"
     ]
