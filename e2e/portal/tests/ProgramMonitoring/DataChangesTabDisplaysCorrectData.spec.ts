@@ -1,7 +1,6 @@
 import { expect, test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
   seedIncludedRegistrations,
   updateRegistration,
@@ -12,25 +11,50 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
-  programIdPV,
-  registrationsVoucher,
+  registrationOCW4,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
+import TableComponent from '@121-e2e/portal/components/TableComponent';
+import {
+  dropdownInputs,
+  numberInputs,
+  textInputs,
+} from '@121-e2e/portal/helpers/PersonalInformationFields';
 import BasePage from '@121-e2e/portal/pages/BasePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import ProgramMonitoring from '@121-e2e/portal/pages/ProgramMonitoringPage';
 
 const reason = 'automated test';
-const dataUpdateSucces = {
+
+// Mapping between backend language codes and frontend display names
+const languageCodeToDisplayName = {
+  nl: 'Dutch',
+  ar: 'Arabic',
+};
+// Define the fields to be tested along with their corresponding input field names
+const dataFields = {
+  phoneNumber: textInputs.phoneNumber.fieldName,
+  whatsappPhoneNumber: textInputs.whatsappPhoneNumber.fieldName,
+  fullName: textInputs.fullName.fieldName,
+  paymentAmountMultiplier: numberInputs.paymentAmountMultiplier.fieldName,
+  addressCity: textInputs.addressCity.fieldName,
+  addressStreet: textInputs.addressStreet.fieldName,
+  addressHouseNumber: numberInputs.addressHouseNumber.fieldName,
+  addressHouseNumberAddition: textInputs.addressHouseNumberAddition.fieldName,
+  preferredLanguage: dropdownInputs.preferredLanguage.fieldName,
+  addressPostalCode: textInputs.addressPostalCode.fieldName,
+};
+// Data to update the registration with
+const dataUpdate = {
   phoneNumber: '15005550099',
   whatsappPhoneNumber: '15005550099',
-  fullName: 'Updated NameJane',
+  fullName: 'Updated NameLuiz',
   maxPayments: 2,
-  paymentAmountMultiplier: 3,
+  paymentAmountMultiplier: 4,
   addressCity: 'NewCity',
   addressStreet: 'newStreet1',
   addressHouseNumber: '2',
-  addressHouseNumberAddition: 'C',
+  addressHouseNumberAddition: 'A',
   preferredLanguage: 'ar',
   addressPostalCode: '5678ZY',
 };
@@ -39,27 +63,20 @@ test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
-    [registrationVisa],
+    [registrationOCW4],
     programIdOCW,
-    accessToken,
-  );
-  await seedIncludedRegistrations(
-    registrationsVoucher,
-    programIdPV,
     accessToken,
   );
   // Make data changes
   const response = await updateRegistration(
     programIdOCW,
-    registrationVisa.referenceId,
-    dataUpdateSucces,
+    registrationOCW4.referenceId,
+    dataUpdate,
     reason,
     accessToken,
   );
-
   // Assert
   expect(response.statusCode).toBe(200);
-
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/');
@@ -71,6 +88,7 @@ test('All elements of Monitoring`s `Data Changes` sub-page display correct data 
 }) => {
   const basePage = new BasePage(page);
   const programMonitoring = new ProgramMonitoring(page);
+  const tableComponent = new TableComponent(page);
 
   const programTitle = 'NLRC OCW program';
 
@@ -81,6 +99,37 @@ test('All elements of Monitoring`s `Data Changes` sub-page display correct data 
   });
 
   await test.step('Verify data changes are displayed correctly', async () => {
-    console.log('Validate changes...');
+    // Loop through all the updated fields
+    for (const [fieldKey, fieldName] of Object.entries(dataFields)) {
+      await tableComponent.filterColumnByDropDownSelection({
+        columnName: 'Field changed',
+        selection: fieldName,
+      });
+      // Wait for table to load after filtering
+      await page.waitForTimeout(200); // Small wait to ensure table is ready since DOM is already loaded and we are not receiving any loading events
+      // Get expected values with language conversion if needed
+      let expectedOldValue = registrationOCW4[fieldKey]?.toString() ?? '';
+      let expectedNewValue = dataUpdate[fieldKey]?.toString() ?? '';
+      // Convert language codes to display names for preferredLanguage field
+      if (fieldKey === 'preferredLanguage') {
+        expectedOldValue =
+          languageCodeToDisplayName[registrationOCW4[fieldKey]] ??
+          expectedOldValue;
+        expectedNewValue =
+          languageCodeToDisplayName[dataUpdate[fieldKey]] ?? expectedNewValue;
+      }
+      // Validate old value (from registrationOCW4)
+      await tableComponent.validateDataChangeValue({
+        columnType: 'old',
+        expectedValue: expectedOldValue,
+      });
+      // Validate new value (from dataUpdate)
+      await tableComponent.validateDataChangeValue({
+        columnType: 'new',
+        expectedValue: expectedNewValue,
+      });
+      // Clear filter before next iteration
+      await tableComponent.clearAllFilters();
+    }
   });
 });

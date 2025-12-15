@@ -293,7 +293,7 @@ class TableComponent {
     await this.page.getByText('Choose option(s)').click();
     await this.searchBox.click();
     await this.searchBox.fill(selection);
-    await this.page.getByRole('option', { name: selection }).click();
+    await this.page.getByRole('option', { name: selection }).first().click();
   }
 
   async filterColumnByDate({
@@ -527,6 +527,23 @@ class TableComponent {
 
     await expect(messageNotification).toBeVisible();
     await expect(messageNotification).toHaveCount(count);
+  }
+
+  async validateDataChangeValue({
+    expectedValue,
+    columnType = 'new',
+    rowIndex = 0,
+  }: {
+    expectedValue: string;
+    columnType?: 'old' | 'new';
+    rowIndex?: number;
+  }) {
+    const columnIndex = columnType === 'old' ? 2 : 3; // Column 2 = old value, Column 3 = new value
+
+    const cell = this.tableRows.nth(rowIndex).locator('td').nth(columnIndex);
+    const actualValue = await cell.textContent();
+
+    expect(actualValue?.trim()).toBe(expectedValue);
   }
 }
 
