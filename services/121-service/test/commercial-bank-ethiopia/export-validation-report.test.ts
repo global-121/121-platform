@@ -1,10 +1,13 @@
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   getCbeValidationReport,
   startCbeValidationProcess,
 } from '@121-service/test/helpers/program.helper';
-import { importRegistrations } from '@121-service/test/helpers/registration.helper';
+import {
+  awaitChangeRegistrationStatus,
+  seedIncludedRegistrations,
+} from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
@@ -18,15 +21,15 @@ describe('Export CBE validation report', () => {
   beforeEach(async () => {
     await resetDB(SeedScript.cbeProgram, __filename);
     accessToken = await getAccessToken();
-    await waitFor(1_000);
+
+    await seedIncludedRegistrations([registrationCbe], programId, accessToken);
   });
 
   it('should successfully generate a report of CBE validation data', async () => {
-    // // Arrange
-    await importRegistrations(programId, [registrationCbe], accessToken);
-    await startCbeValidationProcess(programId, accessToken);
+    // Arrange
 
     // Act
+    await startCbeValidationProcess(programId, accessToken);
     const exportResult = await getCbeValidationReport(programId, accessToken);
 
     // Assert
@@ -38,5 +41,22 @@ describe('Export CBE validation report', () => {
     // We remove updated, because always changes
     const { updated: _updated, ...result } = exportResult.body.data[0];
     expect(result).toMatchSnapshot();
+  });
+
+  it('should not include paused registrations in the report', async () => {
+    // Arrange
+    await awaitChangeRegistrationStatus({
+      programId,
+      referenceIds: [registrationCbe.referenceId],
+      status: RegistrationStatusEnum.paused,
+      accessToken,
+    });
+
+    // Act
+    await startCbeValidationProcess(programId, accessToken);
+    const exportResult = await getCbeValidationReport(programId, accessToken);
+
+    // Assert
+    expect(exportResult.body.data.length).toBe(0);
   });
 });

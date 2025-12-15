@@ -10,6 +10,7 @@ import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attribu
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
@@ -147,11 +148,18 @@ export class CommercialBankEthiopiaAccountManagementService {
   public async getAllPersonsAffectedData(
     programId: number,
   ): Promise<CommercialBankEthiopiaValidationData[]> {
-    const queryBuilder =
+    const queryBuilderCbeRegistrations =
       this.registrationViewScopedRepository.getQueryBuilderFilterByFsp({
         programId,
         fspNames: [Fsps.commercialBankEthiopia],
       });
+    const queryBuilderReportRegistrations =
+      queryBuilderCbeRegistrations.andWhere(
+        'registration.status IS DISTINCT FROM :pausedStatus',
+        {
+          pausedStatus: RegistrationStatusEnum.paused, // The NOT-operator does not work with null values so we use IS DISTINCT FROM
+        },
+      );
     const registrationsWithCBE =
       await this.registrationsPaginationService.getRegistrationViewsNoLimit({
         programId,
@@ -163,7 +171,7 @@ export class CommercialBankEthiopiaAccountManagementService {
             FspAttributes.bankAccountNumber,
           ],
         },
-        queryBuilder,
+        queryBuilder: queryBuilderReportRegistrations,
       });
 
     return registrationsWithCBE.map((registration) => ({
