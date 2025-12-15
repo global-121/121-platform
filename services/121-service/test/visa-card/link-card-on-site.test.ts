@@ -102,4 +102,38 @@ describe('Link Visa debit card on site', () => {
     );
     expect(getVisaWalletResponse.status).toBe(404);
   });
+
+  it('should throw when linking a Visa Debit card that does not exist', async () => {
+    const tokenCode = 'mock-fail-get-wallet';
+    const uniqueRegistration = {
+      ...registrationVisa,
+      referenceId: 'unique-ref-id-2345',
+    };
+    // Arrange
+    await seedIncludedRegistrations(
+      [uniqueRegistration],
+      programIdVisa,
+      accessToken,
+    );
+    await waitFor(3_000);
+
+    // Act
+    await linkVisaCardOnSite({
+      programId: programIdVisa,
+      referenceId: uniqueRegistration.referenceId,
+      accessToken,
+      tokenCode,
+    });
+    await waitFor(3_000);
+
+    // Assert
+    const response = await linkVisaCardOnSite({
+      programId: programIdVisa,
+      referenceId: uniqueRegistration.referenceId,
+      accessToken,
+      tokenCode,
+    });
+
+    expect(response.status).toBe(400);
+  });
 });
