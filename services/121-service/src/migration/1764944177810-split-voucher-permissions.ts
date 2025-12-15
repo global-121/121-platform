@@ -4,9 +4,7 @@ import { PermissionEntity } from '@121-service/src/user/entities/permissions.ent
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
-export class SplitVoucherPermissions1764944177810
-  implements MigrationInterface
-{
+export class SplitVoucherPermissions1764944177810 implements MigrationInterface {
   name = 'SplitVoucherPermissions1764944177810';
   closestPermissionName = 'payment:voucher.read';
 

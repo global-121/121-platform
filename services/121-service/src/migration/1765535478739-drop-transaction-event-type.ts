@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class DropTransactionEventType1765535478739
-  implements MigrationInterface
-{
+export class DropTransactionEventType1765535478739 implements MigrationInterface {
   name = 'DropTransactionEventType1765535478739';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
