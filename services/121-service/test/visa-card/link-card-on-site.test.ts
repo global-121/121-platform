@@ -71,6 +71,13 @@ describe('Link Visa debit card on site', () => {
       programIdVisa,
       accessToken,
     );
+    await waitFor(3_000);
+
+    const getVisaWalletResponse = await getVisaWalletsAndDetails(
+      programIdVisa,
+      registrationVisa.referenceId,
+      accessToken,
+    );
 
     // Act
     await linkVisaCardOnSite({
@@ -90,5 +97,9 @@ describe('Link Visa debit card on site', () => {
     });
 
     expect(response.status).toBe(400);
+    expect(response.body.message).toBe(
+      'Card is already linked to someone else.',
+    );
+    expect(getVisaWalletResponse.status).toBe(404);
   });
 });
