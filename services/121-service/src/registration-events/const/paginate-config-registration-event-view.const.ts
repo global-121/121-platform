@@ -16,8 +16,6 @@ const filterableColumns: Partial<{
   programId: AllowedFiltersNumber,
   type: AllowedFiltersString,
   fieldChanged: AllowedFiltersString,
-  oldValue: AllowedFiltersString,
-  newValue: AllowedFiltersString,
   reason: AllowedFiltersString,
 };
 
