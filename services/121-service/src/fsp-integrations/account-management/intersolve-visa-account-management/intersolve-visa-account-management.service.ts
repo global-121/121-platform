@@ -344,8 +344,28 @@ export class IntersolveVisaAccountManagementService {
     // Throws if tokenCode (card) does not exist
     // We opened a ticket at Intersoleve to improve their error codes/messages
     // For now the response code is unreliable; it sometimes returns 404, sometimes 500
-    const intersolveVisaChildWallet =
-      await this.intersolveVisaService.getWallet(tokenCode);
+    let intersolveVisaChildWallet;
+    try {
+      intersolveVisaChildWallet =
+        await this.intersolveVisaService.getWallet(tokenCode);
+
+      console.log("INTERSOLVE VISA CHILD WALLET:", intersolveVisaChildWallet);
+    } catch (error) {
+      console.log("ERROR FETCHING INTERSOLVE VISA CHILD WALLET:", error);
+      if (error instanceof IntersolveVisaApiError) {
+        if (
+          error.statusCode === HttpStatus.FORBIDDEN ||
+          error.statusCode === HttpStatus.NOT_FOUND
+        ) {
+          throw new HttpException(
+            `Card with code ${tokenCode} is not found.`,
+            HttpStatus.BAD_REQUEST,
+          );
+        } else {
+          throw error;
+        }
+      }
+    }
 
     if (intersolveVisaChildWallet.holderId) {
       throw new HttpException(

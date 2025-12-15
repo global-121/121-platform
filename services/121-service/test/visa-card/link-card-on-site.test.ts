@@ -1,11 +1,15 @@
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { VisaCard121Status } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/wallet-status-121.enum';
+import {
+  FspConfigurationProperties,
+  Fsps,
+} from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdVisa,
   registrationVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
-import { waitFor } from '@121-service/src/utils/waitFor.helper';
+import { patchProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   getVisaWalletsAndDetails,
   linkVisaCardOnSite,
@@ -19,10 +23,9 @@ import {
 describe('Link Visa debit card on site', () => {
   let accessToken: string;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
-    await waitFor(2_000);
   });
 
   it('should successfully link a Visa Debit card on site', async () => {
@@ -34,6 +37,14 @@ describe('Link Visa debit card on site', () => {
       accessToken,
     );
 
+    await patchProgramFspConfigurationProperty({
+      programId: programIdVisa,
+      configName: Fsps.intersolveVisa,
+      propertyName: FspConfigurationProperties.cardDistributionByMail,
+      body: { value: 'false' },
+      accessToken,
+    });
+
     // Act
     const response = await linkVisaCardOnSite({
       programId: programIdVisa,
@@ -41,7 +52,8 @@ describe('Link Visa debit card on site', () => {
       accessToken,
       tokenCode,
     });
-    await waitFor(3_000);
+
+    // TODO: do payment
 
     const getVisaWalletResponse = await getVisaWalletsAndDetails(
       programIdVisa,
@@ -71,7 +83,14 @@ describe('Link Visa debit card on site', () => {
       programIdVisa,
       accessToken,
     );
-    await waitFor(3_000);
+
+    await patchProgramFspConfigurationProperty({
+      programId: programIdVisa,
+      configName: Fsps.intersolveVisa,
+      propertyName: FspConfigurationProperties.cardDistributionByMail,
+      body: { value: 'false' },
+      accessToken,
+    });
 
     const getVisaWalletResponse = await getVisaWalletsAndDetails(
       programIdVisa,
@@ -86,7 +105,6 @@ describe('Link Visa debit card on site', () => {
       accessToken,
       tokenCode,
     });
-    await waitFor(3_000);
 
     // Assert
     const response = await linkVisaCardOnSite({
@@ -103,8 +121,8 @@ describe('Link Visa debit card on site', () => {
     expect(getVisaWalletResponse.status).toBe(404);
   });
 
-  it('should throw when linking a Visa Debit card that does not exist', async () => {
-    const tokenCode = 'mock-fail-get-wallet';
+  fit('should throw when linking a Visa Debit card that does not exist', async () => {
+    const tokenCode = '3333444455556666777';
     const uniqueRegistration = {
       ...registrationVisa,
       referenceId: 'unique-ref-id-2345',
@@ -115,7 +133,14 @@ describe('Link Visa debit card on site', () => {
       programIdVisa,
       accessToken,
     );
-    await waitFor(3_000);
+
+    await patchProgramFspConfigurationProperty({
+      programId: programIdVisa,
+      configName: Fsps.intersolveVisa,
+      propertyName: FspConfigurationProperties.cardDistributionByMail,
+      body: { value: 'false' },
+      accessToken,
+    });
 
     // Act
     await linkVisaCardOnSite({
@@ -124,7 +149,6 @@ describe('Link Visa debit card on site', () => {
       accessToken,
       tokenCode,
     });
-    await waitFor(3_000);
 
     // Assert
     const response = await linkVisaCardOnSite({
@@ -135,5 +159,44 @@ describe('Link Visa debit card on site', () => {
     });
 
     expect(response.status).toBe(400);
+    expect(response.body.message).toBe(
+      `Card with code ${tokenCode} is not found.`,
+    );
+  });
+
+  it('should throw when card distribution by mail is disabled', async () => {
+    const tokenCode = '5555666677778888999';
+    const uniqueRegistration = {
+      ...registrationVisa,
+      referenceId: 'unique-ref-id-3456',
+    };
+    // Arrange
+    await seedIncludedRegistrations(
+      [uniqueRegistration],
+      programIdVisa,
+      accessToken,
+    );
+
+    await patchProgramFspConfigurationProperty({
+      programId: programIdVisa,
+      configName: Fsps.intersolveVisa,
+      propertyName: FspConfigurationProperties.cardDistributionByMail,
+      body: { value: 'true' },
+      accessToken,
+    });
+
+    //act
+    const response = await linkVisaCardOnSite({
+      programId: programIdVisa,
+      referenceId: uniqueRegistration.referenceId,
+      accessToken,
+      tokenCode,
+    });
+
+    // Assert
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe(
+      'Linking a card on-site is not allowed when card distribution by mail is enabled.',
+    );
   });
 });

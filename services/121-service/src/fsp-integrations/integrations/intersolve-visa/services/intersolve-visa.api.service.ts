@@ -678,7 +678,7 @@ export class IntersolveVisaApiService {
       payload,
       headers,
     };
-    const { success, error } = await repeatAttempt<
+    const { success, error, statusCode } = await repeatAttempt<
       typeof withArgs,
       ResponseDtoType,
       string | undefined,
@@ -693,7 +693,7 @@ export class IntersolveVisaApiService {
     });
 
     if (error) {
-      throw new IntersolveVisaApiError(`${errorPrefix}: ${error}`);
+      throw new IntersolveVisaApiError(`${errorPrefix}: ${error}`, statusCode);
     } else {
       return success as ResponseDtoType;
     }
