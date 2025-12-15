@@ -27,15 +27,13 @@ export class IntersolveVisaDataSynchronizationService {
     attribute?: string;
     contactInformation: ContactInformation;
   }): Promise<void> {
-    if (!attribute) {
-      return;
-    }
-
-    if (
-      !env.INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION ||
-      !this.intersolveVisaAttributeNames.includes(attribute)
-    ) {
-      return;
+    if (attribute) {
+      if (
+        !env.INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION ||
+        !this.intersolveVisaAttributeNames.includes(attribute)
+      ) {
+        return;
+      }
     }
 
     const registrationHasVisaCustomer =
