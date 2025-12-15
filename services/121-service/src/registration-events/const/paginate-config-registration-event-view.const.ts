@@ -16,8 +16,6 @@ const filterableColumns: Partial<{
   programId: AllowedFiltersNumber,
   type: AllowedFiltersString,
   fieldChanged: AllowedFiltersString,
-  oldValue: AllowedFiltersString,
-  newValue: AllowedFiltersString,
   reason: AllowedFiltersString,
 };
 
@@ -28,9 +26,6 @@ const columns = Object.keys(
 ) as (keyof RegistrationEventViewEntity)[];
 export const PaginateConfigRegistrationEventView: PaginateConfig<RegistrationEventViewEntity> =
   {
-    searchableColumns: columns.filter((col) =>
-      filterableColumns[col]?.includes(FilterOperator.ILIKE),
-    ),
     ignoreSearchByInQueryParam: true,
     maxLimit,
     sortableColumns: columns,

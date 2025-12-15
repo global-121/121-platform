@@ -51,7 +51,7 @@
           class="me-2"
         />
       }
-      @if (globalFilterFields() || serverSideFiltering()) {
+      @if (showGlobalSearch()) {
         <app-query-table-global-search
           [globalFilterValue]="globalFilterValue()"
           [(globalFilterVisible)]="globalFilterVisible"

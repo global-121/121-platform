@@ -113,13 +113,11 @@ test.describe('Edit all the fields in registration Personal Information', () => 
           fieldValue: data.textInputValue,
         });
       } else {
-        await personalInformationPage.validateMultiplePersonalInformationFields(
-          {
-            fieldName: data.fieldName,
-            fieldValue: data.textInputValue,
-            expectedCount: data.count,
-          },
-        );
+        await personalInformationPage.validateMultipleFieldsAtOnce({
+          fieldName: data.fieldName,
+          fieldValue: data.textInputValue,
+          expectedCount: data.count,
+        });
       }
     }
     await personalInformationPage.validateRegistrationTitle(

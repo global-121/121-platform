@@ -70,7 +70,8 @@ export class SafaricomApiService {
     );
 
     try {
-      const headers = [{ name: 'Authorization', value: `Basic ${auth}` }];
+      const headers = new Headers();
+      headers.append('Authorization', `Basic ${auth}`);
 
       const { data } = await this.httpService.get<AuthResponseSafaricomApiDto>(
         `${accessTokenUrl}`,
@@ -102,12 +103,8 @@ export class SafaricomApiService {
         ? `${env.MOCK_SERVICE_URL}/api/fsp/safaricom/transfer`
         : `${env.SAFARICOM_API_URL}/${env.SAFARICOM_B2C_PAYMENTREQUEST_ENDPOINT}`;
 
-      const headers = [
-        {
-          name: 'Authorization',
-          value: `Bearer ${this.tokenSet.access_token}`,
-        },
-      ];
+      const headers = new Headers();
+      headers.append('Authorization', `Bearer ${this.tokenSet.access_token}`);
 
       const res = await this.httpService.post<TransferResponseSafaricomApiDto>(
         `${paymentUrl}`,

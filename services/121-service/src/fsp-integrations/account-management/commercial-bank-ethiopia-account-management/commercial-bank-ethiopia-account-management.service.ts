@@ -85,7 +85,6 @@ export class CommercialBankEthiopiaAccountManagementService {
       result.fullNameUsedForTheMatch = pa?.fullName || null;
       result.bankAccountNumberUsedForCall = pa?.bankAccountNumber || null;
       result.cbeName = null;
-      result.namesMatch = false;
       result.cbeStatus = null;
       result.errorMessage = null;
 
@@ -100,18 +99,19 @@ export class CommercialBankEthiopiaAccountManagementService {
         result.cbeName = cbeName || null;
         result.cbeStatus = cbeStatus || null;
 
-        if (pa.fullName && cbeName) {
-          result.namesMatch =
-            pa.fullName.toUpperCase() === cbeName.toUpperCase();
-        } else if (pa.fullName && !cbeName) {
+        const hasFullName = Boolean(pa.fullName);
+        const hasCbeName = Boolean(cbeName);
+
+        if (hasFullName && hasCbeName) {
+          result.errorMessage = null; // All infrormation is present so no error
+        } else if (hasFullName && !hasCbeName) {
           result.errorMessage =
-            'Could not be matched: did not get a name from CBE for account number';
-        } else if (cbeName && !pa.fullName) {
-          result.errorMessage =
-            'Could not be matched: fullName in 121 is missing';
+            'Did not get a name from CBE for account number';
+        } else if (!hasFullName && hasCbeName) {
+          result.errorMessage = 'FullName in 121 is missing';
         } else {
           result.errorMessage =
-            'Could not be matched: fullName in 121 is missing and did not get a name from CBE for account number';
+            'FullName in 121 is missing and did not get a name from CBE for account number';
         }
       } else {
         result.errorMessage =

@@ -228,6 +228,16 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   readonly globalFilterValue = this.filterService.globalFilterValue;
   readonly isFiltered = this.filterService.isFiltered;
 
+  showGlobalSearch = () => {
+    if (this.globalFilterFields()?.length === 0) {
+      return false;
+    }
+    if (this.globalFilterFields() || this.serverSideFiltering()) {
+      return true;
+    }
+    return false;
+  };
+
   clearAllFilters = () => {
     this.filterService.clearAllFilters({
       clearTable: () => {

@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -44,7 +44,22 @@ export class TransactionRepository extends Repository<TransactionEntity> {
       .execute();
   }
 
-  public async getPaymentCountByReferenceId(
+  public async getReferenceIdByTransactionIdOrThrow(
+    transactionId: number,
+  ): Promise<string> {
+    const transaction = await this.findOne({
+      where: { id: Equal(transactionId) },
+      relations: { registration: true },
+    });
+    if (!transaction?.registration) {
+      throw new Error(
+        `Registration of transaction with id ${transactionId} not found`,
+      );
+    }
+    return transaction.registration.referenceId;
+  }
+
+  public async countTransactionsByReferenceId(
     referenceId: string,
   ): Promise<number> {
     return await this.createQueryBuilder('transaction')

@@ -79,7 +79,7 @@ export class IntersolveVoucherCronService {
 
     const usernamePassword =
       await this.programFspConfigurationRepository.getUsernamePasswordProperties(
-        configId.id,
+        { programFspConfigurationId: configId.id },
       );
     if (!usernamePassword.username || !usernamePassword.password) {
       throw new Error(

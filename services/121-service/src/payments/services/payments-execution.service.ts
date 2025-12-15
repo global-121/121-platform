@@ -11,7 +11,6 @@ import { TransactionJobsCreationService } from '@121-service/src/payments/servic
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
-import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 
@@ -131,7 +130,6 @@ export class PaymentsExecutionService {
         newTransactionStatus: TransactionStatusEnum.approved,
         transactionIds: fspConfigTransactions.map((t) => t.id),
         description: TransactionEventDescription.approval,
-        type: TransactionEventType.approval,
         userId,
         programFspConfigurationId,
       });
@@ -174,7 +172,6 @@ export class PaymentsExecutionService {
         newTransactionStatus: TransactionStatusEnum.error,
         transactionIds: transactionsToFail.map((t) => t.id),
         description: TransactionEventDescription.approval,
-        type: TransactionEventType.approval,
         userId,
         programFspConfigurationId,
         errorMessages: new Map<number, string>(

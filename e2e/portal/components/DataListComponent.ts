@@ -10,7 +10,9 @@ class DataListComponent {
 
   async getData() {
     await this.datalist.waitFor({ state: 'visible' });
-    const unParsed = await this.datalist.locator('p').allTextContents();
+    const unParsed = await this.datalist
+      .locator('div[data-testid-category=data-list-item]')
+      .allTextContents();
     const parsed: Record<string, string> = {};
     unParsed.forEach((element) => {
       if ((element.match(/:/g) ?? []).length > 1) {

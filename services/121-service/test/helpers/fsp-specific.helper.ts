@@ -50,7 +50,7 @@ export async function getVoucherBalance(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .get(`/programs/${programId}/fsps/intersolve-voucher/vouchers/balance`)
+    .get(`/programs/${programId}/fsps/intersolve-voucher/voucher/balance`)
     .set('Cookie', [accessToken])
     .query({ paymentId, referenceId });
 }

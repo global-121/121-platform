@@ -253,8 +253,8 @@ describe('Do payment to 1 PA', () => {
 
     it('should fail to pay-out to PA due to time out in communication from Safaricom to PA', async () => {
       // Arrange
-      const magigPhoneNrTimeout = '254000000002';
-      registrationSafaricom.phoneNumber = magigPhoneNrTimeout;
+      const magicPhoneNrTimeout = '254000000002';
+      registrationSafaricom.phoneNumber = magicPhoneNrTimeout;
       await seedIncludedRegistrations(
         [registrationSafaricom],
         programId,
@@ -299,6 +299,54 @@ describe('Do payment to 1 PA', () => {
       );
       expect(getTransactionsBody.body.data[0].errorMessage).toBe(
         'Transfer timed out',
+      );
+    });
+
+    it('should correctly label transaction as "success" even if callback is earlier than request', async () => {
+      // Arrange
+      const magicPhoneNrTooEarly = '254000000003';
+      registrationSafaricom.phoneNumber = magicPhoneNrTooEarly;
+      await seedIncludedRegistrations(
+        [registrationSafaricom],
+        programId,
+        accessToken,
+      );
+      const paymentReferenceIds = [registrationSafaricom.referenceId];
+
+      // Act
+      const doPaymentResponse = await createAndStartPayment({
+        programId,
+        transferValue,
+        referenceIds: paymentReferenceIds,
+        accessToken,
+      });
+      const paymentId = doPaymentResponse.body.id;
+
+      await waitForPaymentTransactionsToComplete({
+        programId,
+        paymentReferenceIds,
+        accessToken,
+        maxWaitTimeMs: 4_000,
+        completeStatuses: [
+          TransactionStatusEnum.success,
+          TransactionStatusEnum.error,
+        ],
+      });
+
+      // Assert
+      const getTransactionsBody = await getTransactionsByPaymentIdPaginated({
+        programId,
+        paymentId,
+        registrationReferenceId: registrationSafaricom.referenceId,
+        accessToken,
+      });
+
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
+      expect(getTransactionsBody.body.data[0].status).toBe(
+        TransactionStatusEnum.success,
       );
     });
   });

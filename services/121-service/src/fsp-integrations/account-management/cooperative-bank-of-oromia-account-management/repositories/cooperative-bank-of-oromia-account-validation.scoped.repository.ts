@@ -26,7 +26,6 @@ export class CooperativeBankOfOromiaAccountValidationScopedRepository extends Sc
         'validation.nameUsedForTheMatch as "nameUsedForTheMatch"',
         'validation.bankAccountNumberUsedForCall as "bankAccountNumberUsedForCall"',
         'validation.cooperativeBankOfOromiaName as "cooperativeBankOfOromiaName"',
-        'validation.namesMatch as "namesMatch"',
         'validation.errorMessage as "errorMessage"',
         'registration.registrationProgramId as "registrationProgramId"',
         'registration.referenceId as "referenceId"',

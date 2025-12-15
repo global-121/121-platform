@@ -81,10 +81,7 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
       .spyOn(programFspConfigurationRepository, 'getUsernamePasswordProperties')
       .mockResolvedValue(credentials);
     jest
-      .spyOn(
-        transactionJobsHelperService,
-        'createInitiatedOrRetryTransactionEvent',
-      )
+      .spyOn(transactionJobsHelperService, 'logTransactionJobStart')
       .mockImplementation();
     jest
       .spyOn(programRepository, 'findOneOrFail')
@@ -98,13 +95,6 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
         status: 'success',
         errorMessage: null,
       });
-
-    jest
-      .spyOn(
-        transactionJobsHelperService,
-        'saveTransactionProgressAndUpdateRegistration',
-      )
-      .mockImplementation();
 
     await service.processCommercialBankEthiopiaTransactionJob(transactionJob);
 
@@ -127,10 +117,7 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
       .spyOn(programFspConfigurationRepository, 'getUsernamePasswordProperties')
       .mockResolvedValue(credentials);
     jest
-      .spyOn(
-        transactionJobsHelperService,
-        'createInitiatedOrRetryTransactionEvent',
-      )
+      .spyOn(transactionJobsHelperService, 'logTransactionJobStart')
       .mockImplementation();
     jest
       .spyOn(programRepository, 'findOneOrFail')
@@ -147,12 +134,6 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
         status: 'success',
         errorMessage: null,
       });
-    jest
-      .spyOn(
-        transactionJobsHelperService,
-        'saveTransactionProgressAndUpdateRegistration',
-      )
-      .mockImplementation();
 
     await service.processCommercialBankEthiopiaTransactionJob(
       transactionJobRetry,

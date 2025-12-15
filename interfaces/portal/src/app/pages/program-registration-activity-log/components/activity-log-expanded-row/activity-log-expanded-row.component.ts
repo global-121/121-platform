@@ -249,6 +249,7 @@ export class ActivityLogExpandedRowComponent
           this.isIntersolveVoucherWhatsapp()
         ) {
           list.push({
+            dataTestId: 'current-balance-and-view-voucher',
             label: $localize`Current balance`,
             value: this.intersolveVoucherBalance.data(),
             type: 'currency',

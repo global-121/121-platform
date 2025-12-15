@@ -97,6 +97,14 @@ class TableComponent {
     expect(rowCount).toBe(expectedRowCount);
   }
 
+  async closeViewTransactionHistory() {
+    await this.page
+      .locator('.p-dialog-mask')
+      .getByRole('dialog')
+      .locator('.p-dialog-close-button')
+      .click();
+  }
+
   async waitForLoaded(rowsCount?: number) {
     await expect(this.tableLoading).toHaveCount(0);
     await expect(this.tableEmpty).not.toBeVisible();
