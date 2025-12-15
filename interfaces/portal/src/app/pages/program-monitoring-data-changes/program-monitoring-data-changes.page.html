@@ -9,6 +9,7 @@
     "
     [initialSortField]="'created'"
     [initialSortOrder]="-1"
+    [globalFilterFields]="[]"
     [serverSideFiltering]="true"
     [serverSideTotalRecords]="totalEvents()"
     (updatePaginateQuery)="paginateQuery.set($event)"

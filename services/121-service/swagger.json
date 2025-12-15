@@ -717,9 +717,7 @@
       "filter.oldValue",
       "filter.newValue",
       "filter.reason",
-      "sortBy",
-      "search",
-      "searchBy"
+      "sortBy"
     ]
   },
   {
