@@ -177,7 +177,7 @@ export class IntersolveVisaAccountManagementService {
         programId,
       });
 
-    await this.intersolveVisaService.sendUpdatedCustomerInformation({
+    await this.intersolveVisaDataSynchronizationService.syncData({
       registrationId,
       contactInformation,
     });
