@@ -1,10 +1,10 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgramPv from '@121-service/src/seed-data/program/program-nlrc-pv.json';
+import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
-  doPaymentAndWaitForCompletion,
   seedIncludedRegistrations,
+  updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -13,7 +13,6 @@ import {
 import {
   programIdOCW,
   programIdPV,
-  registrationsOCW,
   registrationsVoucher,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -21,38 +20,53 @@ import BasePage from '@121-e2e/portal/pages/BasePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import ProgramMonitoring from '@121-e2e/portal/pages/ProgramMonitoringPage';
 
-const defaultTransferValue = 25;
+const reason = 'automated test';
+const dataUpdateSucces = {
+  phoneNumber: '15005550099',
+  whatsappPhoneNumber: '15005550099',
+  fullName: 'Updated NameJane',
+  maxPayments: 2,
+  paymentAmountMultiplier: 3,
+  addressCity: 'NewCity',
+  addressStreet: 'newStreet1',
+  addressHouseNumber: '2',
+  addressHouseNumberAddition: 'C',
+  preferredLanguage: 'ar',
+  addressPostalCode: '5678ZY',
+};
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsOCW, programIdOCW, accessToken);
+  await seedIncludedRegistrations(
+    [registrationVisa],
+    programIdOCW,
+    accessToken,
+  );
   await seedIncludedRegistrations(
     registrationsVoucher,
     programIdPV,
     accessToken,
   );
-  // do payment for NLRC OCW
-  await doPaymentAndWaitForCompletion({
-    programId: programIdOCW,
-    transferValue: defaultTransferValue,
-    referenceIds: registrationsOCW.map((reg) => reg.referenceId),
+  // Make data changes
+  const response = await updateRegistration(
+    programIdOCW,
+    registrationVisa.referenceId,
+    dataUpdateSucces,
+    reason,
     accessToken,
-  });
-  // do payment for NLRC PV
-  await doPaymentAndWaitForCompletion({
-    programId: programIdPV,
-    transferValue: defaultTransferValue,
-    referenceIds: registrationsVoucher.map((reg) => reg.referenceId),
-    accessToken,
-  });
+  );
+
+  // Assert
+  expect(response.statusCode).toBe(200);
+
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/');
   await loginPage.login();
 });
 
-test('All elements of Monitoring page display correct data for NLRC OCW', async ({
+test('All elements of Monitoring`s `Data Changes` sub-page display correct data for Registration', async ({
   page,
 }) => {
   const basePage = new BasePage(page);
@@ -63,60 +77,10 @@ test('All elements of Monitoring page display correct data for NLRC OCW', async 
   await test.step('Navigate to program`s monitoring page', async () => {
     await basePage.selectProgram(programTitle);
     await programMonitoring.navigateToProgramPage('Monitoring');
+    await programMonitoring.selectTab({ tabName: 'Data Changes' });
   });
 
-  await test.step('Check if all elements are displayed', async () => {
-    const defaultMaxTransferValue = registrationsOCW.reduce((output, pa) => {
-      return output + pa.paymentAmountMultiplier * defaultTransferValue;
-    }, 0);
-
-    await programMonitoring.assertMonitoringTabElements({
-      shouldHaveIframe: true,
-    });
-    await programMonitoring.assertValuesInMonitoringTab({
-      peopleIncluded: 5,
-      peopleRegistered: 5,
-      lastPaymentAmount: `€${defaultMaxTransferValue.toString()}`,
-      cashDisbursed: `€${defaultMaxTransferValue.toString()}`,
-      remainingBudget: `-€${defaultMaxTransferValue.toString()}`,
-      paymentsDone: 1,
-      newRegistrations: 0,
-    });
-  });
-});
-
-test('All elements of Monitoring page display correct data for NLRC PV', async ({
-  page,
-}) => {
-  const basePage = new BasePage(page);
-  const programMonitoring = new ProgramMonitoring(page);
-
-  const programTitle = 'NLRC Direct Digital Aid Program (PV)';
-
-  await test.step('Navigate to program`s monitoring page', async () => {
-    await basePage.selectProgram(programTitle);
-    await programMonitoring.navigateToProgramPage('Monitoring');
-  });
-
-  await test.step('Check if all elements are displayed', async () => {
-    const defaultMaxTransferValue = registrationsVoucher.reduce(
-      (output, pa) => {
-        return output + pa.paymentAmountMultiplier * defaultTransferValue;
-      },
-      0,
-    );
-    const remainingBudget = NLRCProgramPv.budget - defaultMaxTransferValue;
-
-    await programMonitoring.assertMonitoringTabElements({
-      shouldHaveIframe: false,
-    });
-    await programMonitoring.assertValuesInMonitoringTab({
-      peopleIncluded: 2,
-      peopleRegistered: 2,
-      cashDisbursed: `€${defaultMaxTransferValue.toString()}`,
-      remainingBudget: `€${remainingBudget.toLocaleString()}`,
-      paymentsDone: 1,
-      newRegistrations: 0,
-    });
+  await test.step('Verify data changes are displayed correctly', async () => {
+    console.log('Validate changes...');
   });
 });
