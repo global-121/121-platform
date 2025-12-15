@@ -10,7 +10,9 @@ import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attribu
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
-import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
@@ -27,7 +29,8 @@ export class CommercialBankEthiopiaAccountManagementService {
     private readonly programRepository: ProgramRepository,
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
     private readonly commercialBankEthiopiaApiService: CommercialBankEthiopiaApiService,
-    private readonly registrationScopedRepository: RegistrationScopedRepository,
+    private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
+    private readonly registrationsPaginationService: RegistrationsPaginationService,
   ) {}
 
   public async retrieveAndUpsertAccountEnquiries(): Promise<number> {
@@ -145,37 +148,36 @@ export class CommercialBankEthiopiaAccountManagementService {
   public async getAllPersonsAffectedData(
     programId: number,
   ): Promise<CommercialBankEthiopiaValidationData[]> {
-    const registrationData = await this.registrationScopedRepository
-      .createQueryBuilder('registration')
-      .select([
-        'registration.id AS "id"',
-        'ARRAY_AGG(data.value) AS "values"',
-        'ARRAY_AGG("programRegistrationAttribute".name) AS "fieldNames"',
-      ])
-      .andWhere('registration.programId = :programId', { programId })
-      .andWhere('(programRegistrationAttribute.name IN (:...names))', {
-        names: [FspAttributes.fullName, FspAttributes.bankAccountNumber],
-      })
-      .andWhere('registration.registrationStatus NOT IN (:...statusValues)', {
-        statusValues: ['deleted', 'paused'],
-      })
-      .leftJoin('registration.data', 'data')
-      .leftJoin(
-        'data.programRegistrationAttribute',
-        'programRegistrationAttribute',
-      )
-      .groupBy('registration.id')
-      .getRawMany();
-
-    // Create a new array by mapping the original objects
-    const formattedData: any = registrationData.map((pa) => {
-      const paData = { id: pa.id };
-      pa.fieldNames.forEach((fieldName: string, index: number) => {
-        paData[fieldName] = pa.values[index];
+    const queryBuilderCbeRegistrations =
+      this.registrationViewScopedRepository.getQueryBuilderFilterByFsp({
+        programId,
+        fspNames: [Fsps.commercialBankEthiopia],
       });
-      return paData;
-    });
+    const queryBuilderReportRegistrations =
+      queryBuilderCbeRegistrations.andWhere(
+        'registration.status IS DISTINCT FROM :pausedStatus',
+        {
+          pausedStatus: RegistrationStatusEnum.paused, // The NOT-operator does not work with null values so we use IS DISTINCT FROM
+        },
+      );
+    const registrationsWithCBE =
+      await this.registrationsPaginationService.getRegistrationViewsNoLimit({
+        programId,
+        paginateQuery: {
+          path: '',
+          select: [
+            'id',
+            FspAttributes.fullName,
+            FspAttributes.bankAccountNumber,
+          ],
+        },
+        queryBuilder: queryBuilderReportRegistrations,
+      });
 
-    return formattedData;
+    return registrationsWithCBE.map((registration) => ({
+      id: registration.id,
+      fullName: registration[FspAttributes.fullName],
+      bankAccountNumber: registration[FspAttributes.bankAccountNumber],
+    }));
   }
 }

@@ -106,7 +106,7 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
     return this.createQueryBuilder('registration').andWhere(
       'registration.status IS DISTINCT FROM :deletedStatus',
       {
-        deletedStatus: RegistrationStatusEnum.deleted, // The not opereator does not work with null values so we use IS DISTINCT FROM
+        deletedStatus: RegistrationStatusEnum.deleted, // The NOT-operator does not work with null values so we use IS DISTINCT FROM
       },
     );
   }
