@@ -34,7 +34,6 @@ export const repeatAttempt = async <WithArgsT, ResponseT, MaybeErrorT, ErrorT>({
     return {
       success: originalResponse as unknown as ResponseT,
       error: null,
-      //statusCode: originalResponse?.status,
     };
   }
   const definitelyError = maybeError as unknown as ErrorT;
@@ -44,7 +43,6 @@ export const repeatAttempt = async <WithArgsT, ResponseT, MaybeErrorT, ErrorT>({
     return {
       success: null,
       error: definitelyError,
-      //statusCode: originalResponse?.status,
     };
   }
   // Recursion!
