@@ -6,14 +6,11 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
 import {
-  createAndStartPayment,
-  waitForMessagesToComplete,
-  waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
-import {
+  doPaymentAndWaitForCompletion,
   getAllActivitiesCount,
-  seedIncludedRegistrations,
+  seedPaidRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -39,28 +36,17 @@ const loginAs = async ({ page, username }) => {
   await page.goto(`/`);
   await loginPage.login(username);
 };
+let accessTokenAdmin: string;
 
 // Arrange
 test.beforeEach(async () => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
 
-  const accessToken = await getAccessToken();
-  await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
-
-  const paymentResponse = await createAndStartPayment({
-    programId: 2,
-    transferValue: 100,
-    referenceIds: [referenceIdPV5],
-    accessToken,
-  });
-  const paymentId = paymentResponse.body.id;
-
-  await waitForPaymentTransactionsToComplete({
+  accessTokenAdmin = await getAccessToken();
+  await seedPaidRegistrations({
+    registrations: [registrationPV5],
     programId: programIdPV,
-    paymentId,
-    paymentReferenceIds: [referenceIdPV5],
-    accessToken,
-    maxWaitTimeMs: 2_000,
+    transferValue: 100,
     completeStatuses: [
       TransactionStatusEnum.success,
       TransactionStatusEnum.waiting,
@@ -74,13 +60,13 @@ test.beforeEach(async () => {
       maxPayments: '2',
     },
     'automated test',
-    accessToken,
+    accessTokenAdmin,
   );
 
   await waitForMessagesToComplete({
     programId: programIdPV,
     referenceIds: [referenceIdPV5],
-    accessToken,
+    accessToken: accessTokenAdmin,
     expectedMessageAttribute: {
       key: 'contentType',
       values: [MessageContentType.paymentInstructions], // Payment instruction is the last message sent when doing a payment with voucher
@@ -88,7 +74,7 @@ test.beforeEach(async () => {
   });
 
   activitiesCount = (
-    await getAllActivitiesCount(programIdPV, referenceIdPV5, accessToken)
+    await getAllActivitiesCount(programIdPV, referenceIdPV5, accessTokenAdmin)
   ).totalCount;
 });
 
@@ -167,48 +153,88 @@ test.describe('as admin user', () => {
   });
 });
 
-test.describe('as user with fewer permissions', () => {
-  test.beforeEach(async ({ page }) => {
-    const username = await createUserWithPermissions({
-      permissions: [
-        PermissionEnum.PaymentREAD,
-        PermissionEnum.RegistrationREAD,
-        PermissionEnum.RegistrationPersonalREAD,
-      ],
-      programId: programIdPV,
-      adminAccessToken: await getAccessToken(),
+test.describe('as user with only view paper voucher permissions', () => {
+  test.describe('with 1 paper and 1 WhatsApp PA', () => {
+    test.beforeEach(async ({ page }) => {
+      // Update FSP to paper
+      await updateRegistration(
+        2,
+        referenceIdPV5,
+        {
+          programFspConfigurationName: 'Intersolve-voucher-paper',
+        },
+        'automated test',
+        accessTokenAdmin,
+      );
+
+      // Make a second payment with the new FSP
+      await doPaymentAndWaitForCompletion({
+        programId: programIdPV,
+        transferValue: 100,
+        referenceIds: [referenceIdPV5],
+        accessToken: accessTokenAdmin,
+        completeStatuses: [
+          TransactionStatusEnum.success,
+          TransactionStatusEnum.waiting,
+        ],
+      });
+
+      // Create a user with only view paper voucher permission and login
+      const username = await createUserWithPermissions({
+        permissions: [
+          PermissionEnum.PaymentREAD,
+          PermissionEnum.RegistrationREAD,
+          PermissionEnum.RegistrationPersonalREAD,
+          PermissionEnum.PaymentVoucherPaperREAD,
+        ],
+        programId: programIdPV,
+        adminAccessToken: await getAccessToken(),
+      });
+      await loginAs({
+        page,
+        username,
+      });
     });
-    await loginAs({
+
+    test('transaction rows both show current balance, but only "view voucher" button for paper PA', async ({
       page,
-      username,
+    }) => {
+      // Navigate to the personal info page and change FSP to Albert Heijn voucher paper
+      const activityLogPage = new RegistrationActivityLogPage(page);
+
+      const tableComponent = new TableComponent(page);
+      const registrationsPage = new RegistrationsPage(page);
+
+      await activityLogPage.selectProgram(NLRCProgram.titlePortal.en);
+      await registrationsPage.goToRegistrationByName({
+        registrationName: registrationPV5.fullName,
+      });
+      await tableComponent.waitForLoaded();
+      await tableComponent.expandAllRows();
+      const balanceAndViewVoucherCells = tableComponent.table.getByTestId(
+        'current-balance-and-view-voucher',
+      );
+      await expect(balanceAndViewVoucherCells).toHaveCount(2);
+
+      // Assert both balances are visible
+      await expect(balanceAndViewVoucherCells.nth(0)).toContainText(
+        'Current balance: €12.50',
+      );
+      await expect(balanceAndViewVoucherCells.nth(1)).toContainText(
+        'Current balance: €12.50',
+      );
+
+      // Assert only one View voucher button (for the paper voucher) is visible
+      await expect(
+        balanceAndViewVoucherCells.nth(0).getByRole('button', {
+          name: 'View voucher',
+        }),
+      ).toBeVisible();
+      await expect(
+        balanceAndViewVoucherCells.nth(1).getByRole('button', {
+          name: 'View voucher',
+        }),
+      ).not.toBeVisible();
     });
-  });
-
-  test('transaction row contains current balance, but not "view voucher" button', async ({
-    page,
-  }) => {
-    const activityLogPage = new RegistrationActivityLogPage(page);
-    const tableComponent = new TableComponent(page);
-    const registrationsPage = new RegistrationsPage(page);
-
-    await activityLogPage.selectProgram(NLRCProgram.titlePortal.en);
-    await registrationsPage.goToRegistrationByName({
-      registrationName: registrationPV5.fullName,
-    });
-    await tableComponent.waitForLoaded();
-    await tableComponent.expandAllRows();
-    const balanceAndViewVoucherCell = tableComponent.table.getByTestId(
-      'current-balance-and-view-voucher',
-    );
-
-    await expect(balanceAndViewVoucherCell).toContainText(
-      'Current balance: €12.50',
-    );
-
-    await expect(
-      balanceAndViewVoucherCell.getByRole('button', {
-        name: 'View voucher',
-      }),
-    ).not.toBeVisible();
   });
 });
