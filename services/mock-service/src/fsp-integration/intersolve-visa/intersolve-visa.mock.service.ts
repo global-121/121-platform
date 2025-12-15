@@ -26,8 +26,8 @@ enum IntersolveVisaCardStatus {
 }
 
 enum IntersolveVisaTokenCodeEnum {
-  unlinkedTokenCode = '1111222233334444555',
-  linkedTokenCode = '2222333344445555666',
+  alreadyLinkedTokenCode = '2222333344445555666',
+  nonExistentTokenCode = '3333444455556666777',
 }
 
 // This is a magic number that will cause the transaction to fail due to a duplicate operation reference (idempotency key)
@@ -375,13 +375,16 @@ export class IntersolveVisaMockService {
           },
         ],
         holderId:
-          tokenCode === IntersolveVisaTokenCodeEnum.linkedTokenCode
+          tokenCode === IntersolveVisaTokenCodeEnum.alreadyLinkedTokenCode
             ? '13'
             : null,
       },
     };
 
-    if (tokenCode?.toLowerCase().includes('mock-fail-get-wallet')) {
+    if (
+      tokenCode?.toLowerCase().includes('mock-fail-get-wallet') ||
+      tokenCode === IntersolveVisaTokenCodeEnum.nonExistentTokenCode
+    ) {
       response.data.success = false;
       if (!response.data.errors) {
         response.data.errors = [];

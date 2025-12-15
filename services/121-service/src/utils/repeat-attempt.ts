@@ -12,12 +12,7 @@ type RepeatAttemptResult<SuccessT, ErrorT> =
       statusCode?: HttpStatus;
     };
 
-export const repeatAttempt = async <
-  WithArgsT,
-  ResponseT extends { status?: HttpStatus } | void,
-  MaybeErrorT,
-  ErrorT,
->({
+export const repeatAttempt = async <WithArgsT, ResponseT, MaybeErrorT, ErrorT>({
   attemptTo,
   withArgs,
   processResponse,
@@ -39,7 +34,7 @@ export const repeatAttempt = async <
     return {
       success: originalResponse as unknown as ResponseT,
       error: null,
-      statusCode: originalResponse?.status,
+      //statusCode: originalResponse?.status,
     };
   }
   const definitelyError = maybeError as unknown as ErrorT;
@@ -49,7 +44,7 @@ export const repeatAttempt = async <
     return {
       success: null,
       error: definitelyError,
-      statusCode: originalResponse?.status,
+      //statusCode: originalResponse?.status,
     };
   }
   // Recursion!

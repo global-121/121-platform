@@ -53,8 +53,6 @@ describe('Link Visa debit card on site', () => {
       tokenCode,
     });
 
-    // TODO: do payment
-
     const getVisaWalletResponse = await getVisaWalletsAndDetails(
       programIdVisa,
       registrationVisa.referenceId,
@@ -72,7 +70,7 @@ describe('Link Visa debit card on site', () => {
   });
 
   it('should throw when linking a Visa Debit card that is already linked', async () => {
-    const tokenCode = '2222333344445555666';
+    const tokenCode = '2222333344445555666'; // mock already linked token code
     const uniqueRegistration = {
       ...registrationVisa,
       referenceId: 'unique-ref-id-1234',
@@ -121,8 +119,8 @@ describe('Link Visa debit card on site', () => {
     expect(getVisaWalletResponse.status).toBe(404);
   });
 
-  fit('should throw when linking a Visa Debit card that does not exist', async () => {
-    const tokenCode = '3333444455556666777';
+  it('should throw when linking a Visa Debit card that does not exist', async () => {
+    const tokenCode = '3333444455556666777'; //mock non-existent token code
     const uniqueRegistration = {
       ...registrationVisa,
       referenceId: 'unique-ref-id-2345',
@@ -164,7 +162,7 @@ describe('Link Visa debit card on site', () => {
     );
   });
 
-  it('should throw when card distribution by mail is disabled', async () => {
+  it('should throw when card distribution by mail is enabled', async () => {
     const tokenCode = '5555666677778888999';
     const uniqueRegistration = {
       ...registrationVisa,
