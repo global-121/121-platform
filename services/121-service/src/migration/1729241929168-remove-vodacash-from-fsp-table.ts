@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RemoveVodacashFromFspTable1729241929168
-  implements MigrationInterface
-{
+export class RemoveVodacashFromFspTable1729241929168 implements MigrationInterface {
   name = 'RemoveVodacashFromFspTable1729241929168';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

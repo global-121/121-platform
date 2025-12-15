@@ -6,9 +6,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 //   'registration:payment.export',
 // ];
 
-export class AddNewPermissionRelatedToExport1719931805175
-  implements MigrationInterface
-{
+export class AddNewPermissionRelatedToExport1719931805175 implements MigrationInterface {
   name = 'AddNewPermissionRelatedToExport1719931805175';
 
   public async up(_queryRunner: QueryRunner): Promise<void> {

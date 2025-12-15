@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RenameTableFspToFinancialServiceProvider1709186575073
-  implements MigrationInterface
-{
+export class RenameTableFspToFinancialServiceProvider1709186575073 implements MigrationInterface {
   name = 'RenameTableFspToFinancialServiceProvider1709186575073';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

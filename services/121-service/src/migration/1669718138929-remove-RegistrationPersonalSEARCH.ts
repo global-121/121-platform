@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class removeRegistrationPersonalSEARCH1669718138929
-  implements MigrationInterface
-{
+export class removeRegistrationPersonalSEARCH1669718138929 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.commitTransaction();
     // Commenting out because this was causing issues with new entities and legacy migrations

@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class addDeprecatedCustomDataKeys1650985550134
-  implements MigrationInterface
-{
+export class addDeprecatedCustomDataKeys1650985550134 implements MigrationInterface {
   name = 'addDeprecatedCustomDataKeys1650985550134';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

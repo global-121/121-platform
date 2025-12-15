@@ -1,8 +1,6 @@
 import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
 
-export class PaymentAmountMultiplierFormula1654608274278
-  implements MigrationInterface
-{
+export class PaymentAmountMultiplierFormula1654608274278 implements MigrationInterface {
   name = 'PaymentAmountMultiplierFormula1654608274278';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

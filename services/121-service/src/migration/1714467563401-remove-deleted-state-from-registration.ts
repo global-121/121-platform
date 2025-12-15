@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RemoveDeletedStateFromRegistration1714467563401
-  implements MigrationInterface
-{
+export class RemoveDeletedStateFromRegistration1714467563401 implements MigrationInterface {
   name = 'RemoveDeletedStateFromRegistration1714467563401';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

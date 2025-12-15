@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class ExportDebitCardPermission1690977451412
-  implements MigrationInterface
-{
+export class ExportDebitCardPermission1690977451412 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Commit transaction because the tables are needed before the insert
     await queryRunner.commitTransaction();

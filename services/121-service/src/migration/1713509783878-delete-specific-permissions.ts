@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class DeleteSpecificPermissions1713509783878
-  implements MigrationInterface
-{
+export class DeleteSpecificPermissions1713509783878 implements MigrationInterface {
   name = 'DeleteSpecificPermissions1713509783878';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

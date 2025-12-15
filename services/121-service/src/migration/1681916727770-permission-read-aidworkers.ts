@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class permissionReadAidworkers1681916727770
-  implements MigrationInterface
-{
+export class permissionReadAidworkers1681916727770 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Commit transaction because the tables are needed before the insert
     await queryRunner.commitTransaction();

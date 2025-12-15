@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class MissingProgramFspConfgPropertiesSeq1729848646578
-  implements MigrationInterface
-{
+export class MissingProgramFspConfgPropertiesSeq1729848646578 implements MigrationInterface {
   name = 'MissingProgramFspConfgPropertiesSeq1729848646578';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

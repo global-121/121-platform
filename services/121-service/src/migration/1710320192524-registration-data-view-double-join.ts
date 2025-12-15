@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RegistrationDataViewDoubleJoin1710320192524
-  implements MigrationInterface
-{
+export class RegistrationDataViewDoubleJoin1710320192524 implements MigrationInterface {
   name = 'RegistrationDataViewDoubleJoin1710320192524';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

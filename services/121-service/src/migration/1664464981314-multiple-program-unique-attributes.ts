@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class multipleProgramUniqueAttributes1664464981314
-  implements MigrationInterface
-{
+export class multipleProgramUniqueAttributes1664464981314 implements MigrationInterface {
   name = 'multipleProgramUniqueAttributes1664464981314';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

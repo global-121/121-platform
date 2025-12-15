@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class UpdateDefaultProgramRegistrationAttributeExport1752231828620
-  implements MigrationInterface
-{
+export class UpdateDefaultProgramRegistrationAttributeExport1752231828620 implements MigrationInterface {
   name = 'UpdateDefaultProgramRegistrationAttributeExport1752231828620';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

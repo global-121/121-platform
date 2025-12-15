@@ -2,9 +2,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 import { env } from '@121-service/src/env';
 
-export class MessageTemplateContentSid1742574202000
-  implements MigrationInterface
-{
+export class MessageTemplateContentSid1742574202000 implements MigrationInterface {
   name = 'MessageTemplateContentSid1742574202000';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

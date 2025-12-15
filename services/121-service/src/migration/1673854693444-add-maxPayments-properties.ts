@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class addMaxPaymentsProperties1673854693444
-  implements MigrationInterface
-{
+export class addMaxPaymentsProperties1673854693444 implements MigrationInterface {
   name = 'addMaxPaymentsProperties1673854693444';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

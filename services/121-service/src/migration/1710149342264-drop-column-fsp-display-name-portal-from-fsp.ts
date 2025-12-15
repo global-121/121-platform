@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class DropColumnFspDisplayNamePortalFromFsp1710149342264
-  implements MigrationInterface
-{
+export class DropColumnFspDisplayNamePortalFromFsp1710149342264 implements MigrationInterface {
   name = 'DropColumnFspDisplayNamePortalFromFsp1710149342264';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

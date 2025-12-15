@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class ProgramFspConfigMissingSequence1750777175366
-  implements MigrationInterface
-{
+export class ProgramFspConfigMissingSequence1750777175366 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
       `select

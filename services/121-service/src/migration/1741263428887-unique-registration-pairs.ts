@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class UniqueRegistrationPairs1741263428887
-  implements MigrationInterface
-{
+export class UniqueRegistrationPairs1741263428887 implements MigrationInterface {
   name = 'UniqueRegistrationPairs1741263428887';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

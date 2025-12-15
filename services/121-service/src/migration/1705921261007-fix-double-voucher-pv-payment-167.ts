@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class FixDoubleVoucherPvPayment1671705921261007
-  implements MigrationInterface
-{
+export class FixDoubleVoucherPvPayment1671705921261007 implements MigrationInterface {
   public async up(_queryRunner: QueryRunner): Promise<void> {
     // The code in this migration should be removed after it has run
     // console.time('FixDoubleVoucherPvPayment1671705921261007');

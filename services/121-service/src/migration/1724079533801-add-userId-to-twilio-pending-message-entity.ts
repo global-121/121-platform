@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddUserIdToTwilioPendingMessageEntity1724079533801
-  implements MigrationInterface
-{
+export class AddUserIdToTwilioPendingMessageEntity1724079533801 implements MigrationInterface {
   name = 'AddUserIdToTwilioPendingMessageEntity1724079533801';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class defaultQuestionPersistance1637071748044
-  implements MigrationInterface
-{
+export class defaultQuestionPersistance1637071748044 implements MigrationInterface {
   name = 'defaultQuestionPersistance1637071748044';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

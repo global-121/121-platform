@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class MoveAboutProgramToProgramEntity1664963669018
-  implements MigrationInterface
-{
+export class MoveAboutProgramToProgramEntity1664963669018 implements MigrationInterface {
   name = 'MoveAboutProgramToProgramEntity1664963669018';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

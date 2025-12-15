@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class IncludeInTransactionExportBoolean1753719988082
-  implements MigrationInterface
-{
+export class IncludeInTransactionExportBoolean1753719988082 implements MigrationInterface {
   name = 'IncludeInTransactionExportBoolean1753719988082';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

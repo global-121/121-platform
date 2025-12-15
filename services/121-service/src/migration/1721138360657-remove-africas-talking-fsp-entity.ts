@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class DeleteAfricasTalkingNotificationEntity17211383860657
-  implements MigrationInterface
-{
+export class DeleteAfricasTalkingNotificationEntity17211383860657 implements MigrationInterface {
   name = 'DeleteAfricasTalkingNotificationEntity17211383860657';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RegistrationEventsRename1754324726374
-  implements MigrationInterface
-{
+export class RegistrationEventsRename1754324726374 implements MigrationInterface {
   name = 'RegistrationEventsRename1754324726374';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

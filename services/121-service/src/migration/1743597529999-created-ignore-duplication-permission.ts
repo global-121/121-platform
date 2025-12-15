@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreatedIgnoreDuplicationPermission1743597529999
-  implements MigrationInterface
-{
+export class CreatedIgnoreDuplicationPermission1743597529999 implements MigrationInterface {
   name = 'CreatedIgnoreDuplicationPermission1743597529999';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

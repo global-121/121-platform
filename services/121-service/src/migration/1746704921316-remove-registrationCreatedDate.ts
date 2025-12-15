@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RemoveRegistrationCreatedDate1746704921316
-  implements MigrationInterface
-{
+export class RemoveRegistrationCreatedDate1746704921316 implements MigrationInterface {
   name = 'RemoveRegistrationCreatedDate1746704921316';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

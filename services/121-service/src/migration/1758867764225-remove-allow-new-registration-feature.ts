@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddAllowNewRegistrationFeature1758867764225
-  implements MigrationInterface
-{
+export class AddAllowNewRegistrationFeature1758867764225 implements MigrationInterface {
   name = 'AddAllowNewRegistrationFeature1758867764225';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

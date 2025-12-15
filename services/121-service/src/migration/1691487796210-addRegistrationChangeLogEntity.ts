@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class addRegistrationChangeLogEntity1691487796210
-  implements MigrationInterface
-{
+export class addRegistrationChangeLogEntity1691487796210 implements MigrationInterface {
   name = 'addRegistrationChangeLogEntity1691487796210';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

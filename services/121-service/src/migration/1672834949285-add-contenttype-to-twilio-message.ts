@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class addContenttypeToTwilioMessage1672834949285
-  implements MigrationInterface
-{
+export class addContenttypeToTwilioMessage1672834949285 implements MigrationInterface {
   name = 'addContenttypeToTwilioMessage1672834949285';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

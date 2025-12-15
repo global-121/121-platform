@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class ProgramRegistrationAttributeRefactor1729605362361
-  implements MigrationInterface
-{
+export class ProgramRegistrationAttributeRefactor1729605362361 implements MigrationInterface {
   name = 'ProgramRegistrationAttributeRefactor1729605362361';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

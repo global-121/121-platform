@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddIsOrganizationAdminAndDisplayNameColumns1724250798233
-  implements MigrationInterface
-{
+export class AddIsOrganizationAdminAndDisplayNameColumns1724250798233 implements MigrationInterface {
   name = 'AddIsOrganizationAdminAndDisplayNameColumns1724250798233';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

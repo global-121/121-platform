@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RelateRegistrationToTwilioMessage1632823293789
-  implements MigrationInterface
-{
+export class RelateRegistrationToTwilioMessage1632823293789 implements MigrationInterface {
   name = 'RelateRegistrationToTwilioMessage1632823293789';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

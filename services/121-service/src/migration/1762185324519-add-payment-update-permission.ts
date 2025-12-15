@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddPaymentUpdatePermission1762185324519
-  implements MigrationInterface
-{
+export class AddPaymentUpdatePermission1762185324519 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Add the new permission if it doesn't exist
     await queryRunner.query(`
