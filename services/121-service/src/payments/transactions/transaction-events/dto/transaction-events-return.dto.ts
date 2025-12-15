@@ -1,18 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventInterface } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event.interface';
 
 class TransactionEventsMetaObject {
   @ApiProperty({
     type: Object,
     example: {
-      [TransactionEventType.created]: 1,
-      [TransactionEventType.initiated]: 2,
+      [TransactionEventDescription.created]: 1,
+      [TransactionEventDescription.initiated]: 2,
     },
-    description: 'The count of the available transaction event types.',
+    description: 'The count of the available transaction event descriptions.',
   })
-  count: Partial<Record<TransactionEventType, number>>;
+  count: Partial<Record<TransactionEventDescription, number>>;
 
   @ApiProperty({
     example: 3,

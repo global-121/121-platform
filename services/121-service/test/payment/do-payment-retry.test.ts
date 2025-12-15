@@ -79,6 +79,7 @@ describe('Do payment retry', () => {
     const successfulPaymentId = await seedPaidRegistrations({
       registrations: [registrationSuccess],
       programId,
+      completeStatuses: [TransactionStatusEnum.success],
     });
 
     // Act

@@ -4,7 +4,7 @@ import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventInterface } from '@121-service/src/payments/payment-events/interfaces/payment-event.interface';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventInterface } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event.interface';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
@@ -341,15 +341,15 @@ describe('Payment in progress', () => {
         transactionId,
         accessToken,
       });
-      const retryEventsOfOneTransction = transactionEvents.body.data.filter(
+      const retryEventsOfOneTransaction = transactionEvents.body.data.filter(
         (event: TransactionEventInterface) =>
-          event.type === TransactionEventType.retry,
+          event.description === TransactionEventDescription.retry,
       );
 
       // Assert
       expect(retriedPayments.length).toBe(1);
       expect(blockedPayments.length).toBe(4);
-      expect(retryEventsOfOneTransction.length).toBe(1);
+      expect(retryEventsOfOneTransaction.length).toBe(1);
     });
   });
 

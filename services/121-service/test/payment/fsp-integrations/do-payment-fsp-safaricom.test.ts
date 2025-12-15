@@ -253,8 +253,8 @@ describe('Do payment to 1 PA', () => {
 
     it('should fail to pay-out to PA due to time out in communication from Safaricom to PA', async () => {
       // Arrange
-      const magigPhoneNrTimeout = '254000000002';
-      registrationSafaricom.phoneNumber = magigPhoneNrTimeout;
+      const magicPhoneNrTimeout = '254000000002';
+      registrationSafaricom.phoneNumber = magicPhoneNrTimeout;
       await seedIncludedRegistrations(
         [registrationSafaricom],
         programId,
@@ -304,8 +304,8 @@ describe('Do payment to 1 PA', () => {
 
     it('should correctly label transaction as "success" even if callback is earlier than request', async () => {
       // Arrange
-      const magigPhoneNrTooEarly = '254000000003';
-      registrationSafaricom.phoneNumber = magigPhoneNrTooEarly;
+      const magicPhoneNrTooEarly = '254000000003';
+      registrationSafaricom.phoneNumber = magicPhoneNrTooEarly;
       await seedIncludedRegistrations(
         [registrationSafaricom],
         programId,

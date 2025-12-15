@@ -13,6 +13,7 @@ describe('TransactionJobsCooperativeBankOfOromiaService', () => {
   let cooperativeBankOfOromiaService: CooperativeBankOfOromiaService;
   let transactionEventsScopedRepository: TransactionEventsScopedRepository;
   let programConfigurationRepository: ProgramFspConfigurationRepository;
+  let transactionsService: TransactionsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -34,18 +35,14 @@ describe('TransactionJobsCooperativeBankOfOromiaService', () => {
     programConfigurationRepository = module.get(
       ProgramFspConfigurationRepository,
     );
+    transactionsService = module.get(TransactionsService);
 
     programConfigurationRepository.getPropertyValueByName = jest
       .fn()
       .mockResolvedValue('debit-acc');
 
-    // Mock createInitiatedOrRetryTransactionEvent and saveTransactionProgress
-    helper.createInitiatedOrRetryTransactionEvent = jest
-      .fn()
-      .mockResolvedValue(undefined);
-    helper.saveTransactionProgressAndUpdateRegistration = jest
-      .fn()
-      .mockResolvedValue(undefined);
+    helper.logTransactionJobStart = jest.fn().mockResolvedValue(undefined);
+    transactionsService.saveProgress = jest.fn().mockResolvedValue(undefined);
   });
 
   it('should generate different messageIds for different transactions', async () => {
