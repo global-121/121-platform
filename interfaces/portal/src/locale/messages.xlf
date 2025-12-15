@@ -2102,8 +2102,17 @@
       <trans-unit id="7561977067156405830" datatype="html">
         <source>Link Visa card to registration</source>
       </trans-unit>
-      <trans-unit id="8591287882066642064" datatype="html">
-        <source>Postal card distribution</source>
+      <trans-unit id="2159130950882492111" datatype="html">
+        <source>Cancel</source>
+      </trans-unit>
+      <trans-unit id="2560790823235400386" datatype="html">
+        <source>No debit cards found</source>
+      </trans-unit>
+      <trans-unit id="4606793880716021431" datatype="html">
+        <source>Serial number</source>
+      </trans-unit>
+      <trans-unit id="8751327662526303646" datatype="html">
+        <source>Scan the barcode in the back of the card you are handing over to the registration with a scanner, or manually fill in the 19 digit serial number found below the barcode.</source>
       </trans-unit>
     </body>
   </file>

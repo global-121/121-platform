@@ -76,7 +76,7 @@ export class LinkCardDialogComponent {
           tokenCode: this.tokenCode,
         });
       } else {
-        await this.registrationApiService.replaceCard({
+        await this.registrationApiService.replaceCardOnSite({
           programId: this.programId,
           referenceId: this.referenceId,
           tokenCode: this.tokenCode,
