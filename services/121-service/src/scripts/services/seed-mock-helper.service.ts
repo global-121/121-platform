@@ -39,38 +39,37 @@ export class SeedMockHelperService {
       nrPaymentsString !== undefined && nrPaymentsString !== null
         ? Number(nrPaymentsString)
         : 2;
-    const powerNrMessages = Number(powerNrMessagesString) || 1;
+    const powerNrMessages =
+      powerNrMessagesString !== undefined && powerNrMessagesString !== null
+        ? Number(powerNrMessagesString)
+        : 1;
 
-    const min = 1;
+    const minMaxPowerRegistrations = 1;
     const maxPowerNrRegistrations = 17;
     const maxPowerNrMessages = 6; // NOTE: There is a trade-off with maxPowerNrRegistrations here. If that is on 17, then this can be max. 1.
     const maxNrPayments = 30;
 
     if (
       isNaN(powerNrRegistrations) ||
-      powerNrRegistrations < min ||
+      powerNrRegistrations < minMaxPowerRegistrations ||
       powerNrRegistrations > maxPowerNrRegistrations
     ) {
       throw new HttpException(
-        `mockPowerNumberRegistrations must be a number between ${min} and ${maxPowerNrRegistrations}`,
+        `mockPowerNumberRegistrations must be a number between ${minMaxPowerRegistrations} and ${maxPowerNrRegistrations}`,
         HttpStatus.BAD_REQUEST,
       );
     }
 
     if (isNaN(nrPayments) || nrPayments > maxNrPayments) {
       throw new HttpException(
-        `nrPayments must be a number between ${min} and ${maxNrPayments}`,
+        `nrPayments must be a number between 0 and ${maxNrPayments}`,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    if (
-      isNaN(powerNrMessages) ||
-      powerNrMessages < min ||
-      powerNrMessages > maxPowerNrMessages
-    ) {
+    if (isNaN(powerNrMessages) || powerNrMessages > maxPowerNrMessages) {
       throw new HttpException(
-        `mockPowerNumberMessages must be a number between ${min} and ${maxPowerNrMessages}`,
+        `mockPowerNumberMessages must be a number 0 and ${maxPowerNrMessages}`,
         HttpStatus.BAD_REQUEST,
       );
     }
