@@ -2026,17 +2026,6 @@
       </trans-unit>
       <trans-unit id="export-verification-cooperative-bank-of-oromia" datatype="html">
         <source>Coopbank verification report</source>
-      <trans-unit id="3176639329668271224" datatype="html">
-        <source>Link card</source>
-      </trans-unit>
-      <trans-unit id="3176639329668271224" datatype="html">
-        <source>Link card</source>
-      </trans-unit>
-      <trans-unit id="3955978879688646668" datatype="html">
-        <source>No debit cards found</source>
-      </trans-unit>
-      <trans-unit id="debit-card-create-new-card-dialog-card-number-placeholder" datatype="html">
-        <source>Enter card number</source>
       </trans-unit>
       <trans-unit id="2208706328996995680" datatype="html">
         <source>Card distribution by mail</source>
