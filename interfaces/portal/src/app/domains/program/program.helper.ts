@@ -1,6 +1,8 @@
 import { FspIntegrationType } from '@121-service/src/fsp-management/enums/fsp-integration-type.enum';
 import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
+import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
 import {
   FSPS_WITH_PHYSICAL_CARD_SUPPORT,
@@ -61,6 +63,56 @@ export const fspConfigurationNamesHaveIntegrationType = ({
   return fspSettings.some(
     (fspSetting) => fspSetting.integrationType === integrationType,
   );
+};
+
+export const mergeUILanguageForProgramLanguageAttributes = ({
+  partialUpdatedProgram,
+  originalProgram,
+}: {
+  partialUpdatedProgram: Partial<Program>;
+  originalProgram?: Program;
+}): Partial<Program> => {
+  for (const [key, updatedValue] of Object.entries(partialUpdatedProgram)) {
+    if (isUILanguageTranslationObject(updatedValue)) {
+      (partialUpdatedProgram as Record<string, UILanguageTranslation>)[key] =
+        mergeExtendUILanguageTranslation({
+          original: (originalProgram?.[key as keyof Program] ??
+            {}) as UILanguageTranslation,
+          updated: updatedValue as UILanguageTranslation,
+        });
+    }
+  }
+  return partialUpdatedProgram;
+};
+
+const mergeExtendUILanguageTranslation = ({
+  original,
+  updated,
+}: {
+  original: UILanguageTranslation;
+  updated: UILanguageTranslation;
+}): UILanguageTranslation => ({
+  ...original,
+  ...updated,
+});
+
+const isUILanguageTranslationObject = (
+  objToValidate: unknown,
+): objToValidate is UILanguageTranslation => {
+  if (!objToValidate) {
+    return false;
+  }
+  if (typeof objToValidate !== 'object' || Array.isArray(objToValidate)) {
+    return false;
+  }
+  const keys = Object.keys(objToValidate);
+  const uiLanguages = Object.values(UILanguage);
+  for (const key of keys) {
+    if (!uiLanguages.includes(key as UILanguage)) {
+      return false;
+    }
+  }
+  return true;
 };
 
 export const PROGRAM_ATTACHMENT_FILE_TYPE_LABELS: Record<

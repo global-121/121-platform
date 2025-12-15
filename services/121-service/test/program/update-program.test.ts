@@ -42,14 +42,12 @@ describe('Update program', () => {
     // Assert
     // Check the response to see if the attributes were actually updated
     expect(updateProgramResponse.statusCode).toBe(HttpStatus.OK);
-    expect(updateProgramResponse.body.titlePortal).toStrictEqual({
-      en: program.titlePortal!.en!,
-      nl: 'NLRC Programma Voedsel',
-    });
-    expect(updateProgramResponse.body.description).toStrictEqual({
-      en: program.description!.en!,
-      nl: 'Een beschrijving.',
-    });
+    expect(updateProgramResponse.body.titlePortal).toStrictEqual(
+      program.titlePortal,
+    );
+    expect(updateProgramResponse.body.description).toStrictEqual(
+      program.description,
+    );
     expect(updateProgramResponse.body.distributionDuration).toBe(
       program.distributionDuration,
     );
@@ -65,6 +63,9 @@ describe('Update program', () => {
     );
     expect(updateProgramResponse.body.tryWhatsAppFirst).toBe(
       program.tryWhatsAppFirst,
+    );
+    expect(updateProgramResponse.body.languages).toStrictEqual(
+      program.languages,
     );
   });
 });
