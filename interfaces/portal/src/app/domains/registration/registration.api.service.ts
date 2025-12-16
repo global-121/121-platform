@@ -204,7 +204,7 @@ export class RegistrationApiService extends DomainApiService {
     status,
     reason,
     messageData,
-    dryRun = true,
+    dryRun,
   }: {
     programId: Signal<number | string>;
     paginateQuery: PaginateQuery | undefined;
