@@ -72,9 +72,10 @@ export const mergeUILanguageForProgramLanguageAttributes = ({
   partialUpdatedProgram: Partial<Program>;
   originalProgram?: Program;
 }): Partial<Program> => {
-  for (const [key, updatedValue] of Object.entries(partialUpdatedProgram)) {
+  const result = { ...partialUpdatedProgram };
+  for (const [key, updatedValue] of Object.entries(result)) {
     if (isUILanguageTranslationObject(updatedValue)) {
-      (partialUpdatedProgram as Record<string, UILanguageTranslation>)[key] =
+      (result as Record<string, UILanguageTranslation>)[key] =
         mergeExtendUILanguageTranslation({
           original: (originalProgram?.[key as keyof Program] ??
             {}) as UILanguageTranslation,
@@ -82,7 +83,7 @@ export const mergeUILanguageForProgramLanguageAttributes = ({
         });
     }
   }
-  return partialUpdatedProgram;
+  return result;
 };
 
 const mergeExtendUILanguageTranslation = ({
