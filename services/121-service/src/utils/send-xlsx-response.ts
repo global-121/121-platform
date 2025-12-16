@@ -33,7 +33,20 @@ export function arrayToXlsx(array: any[]): Buffer {
     Sheets: { data: worksheet },
     SheetNames: ['data'],
   };
-  return XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+  try {
+    return XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+  } catch (error) {
+    if (
+      error instanceof RangeError &&
+      error.message.includes('Invalid string length')
+    ) {
+      throw new HttpException(
+        'Export too large to generate, please use a different filter',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    throw error;
+  }
 }
 
 function toExportFileName(excelFileName: string): string {
