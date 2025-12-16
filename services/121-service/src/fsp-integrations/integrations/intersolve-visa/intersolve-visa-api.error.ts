@@ -1,4 +1,4 @@
-import { HttpStatus } from "@nestjs/common";
+import { HttpStatus } from '@nestjs/common';
 
 // Usage: throw new IntersolveVisaApiError('Error message');
 export class IntersolveVisaApiError extends Error {
