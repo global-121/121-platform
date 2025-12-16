@@ -36,20 +36,19 @@ const dataFields = {
   phoneNumber: textInputs.phoneNumber.fieldName,
   whatsappPhoneNumber: textInputs.whatsappPhoneNumber.fieldName,
   fullName: textInputs.fullName.fieldName,
-  paymentAmountMultiplier: numberInputs.paymentAmountMultiplier.fieldName,
   addressCity: textInputs.addressCity.fieldName,
   addressStreet: textInputs.addressStreet.fieldName,
-  addressHouseNumber: numberInputs.addressHouseNumber.fieldName,
   addressHouseNumberAddition: textInputs.addressHouseNumberAddition.fieldName,
-  preferredLanguage: dropdownInputs.preferredLanguage.fieldName,
   addressPostalCode: textInputs.addressPostalCode.fieldName,
+  paymentAmountMultiplier: numberInputs.paymentAmountMultiplier.fieldName,
+  addressHouseNumber: numberInputs.addressHouseNumber.fieldName,
+  preferredLanguage: dropdownInputs.preferredLanguage.fieldName,
 };
 // Data to update the registration with
 const dataUpdate = {
   phoneNumber: '15005550099',
   whatsappPhoneNumber: '15005550099',
   fullName: 'Updated NameLuiz',
-  maxPayments: 2,
   paymentAmountMultiplier: 4,
   addressCity: 'NewCity',
   addressStreet: 'newStreet1',
@@ -83,7 +82,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('All elements of Monitoring`s `Data Changes` sub-page display correct data for Registration', async ({
+test("All elements of Monitoring's `Data Changes` sub-page display correct data for Registration", async ({
   page,
 }) => {
   const basePage = new BasePage(page);
@@ -92,7 +91,7 @@ test('All elements of Monitoring`s `Data Changes` sub-page display correct data 
 
   const programTitle = 'NLRC OCW program';
 
-  await test.step('Navigate to program`s monitoring page', async () => {
+  await test.step("Navigate to program's monitoring page", async () => {
     await basePage.selectProgram(programTitle);
     await programMonitoring.navigateToProgramPage('Monitoring');
     await programMonitoring.selectTab({ tabName: 'Data Changes' });
@@ -105,8 +104,10 @@ test('All elements of Monitoring`s `Data Changes` sub-page display correct data 
         columnName: 'Field changed',
         selection: fieldName,
       });
-      // Wait for table to load after filtering
-      await page.waitForTimeout(200); // Small wait to ensure table is ready since DOM is already loaded and we are not receiving any loading events
+      // Validate that only one row is displayed after filtering
+      await tableComponent.validateWaitForTableRowCount({
+        expectedRowCount: 1,
+      });
       // Get expected values with language conversion if needed
       let expectedOldValue = registrationOCW4[fieldKey]?.toString() ?? '';
       let expectedNewValue = dataUpdate[fieldKey]?.toString() ?? '';
