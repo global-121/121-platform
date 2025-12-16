@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -14,6 +15,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  ApiBody,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -21,6 +23,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+import { TokenCodeDto } from '@121-service/src/fsp-integrations/account-management/dto/token-code.dto';
 import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.service';
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
@@ -39,7 +42,8 @@ export class IntersolveVisaAccountManagementController {
 
   @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
   @ApiOperation({
-    summary: '[SCOPED] Re-issue card: replace existing card with a new card.',
+    summary:
+      '[SCOPED] Replace card: replace existing card with a new card and send it to the registration by mail',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
@@ -49,20 +53,20 @@ export class IntersolveVisaAccountManagementController {
       'Card replaced - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Post(
-    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/wallet/cards',
+    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/wallet/cards/by-mail/replace',
   )
   @HttpCode(HttpStatus.NO_CONTENT)
-  public async reissueCardAndSendMessage(
+  public async replaceCardByMail(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('referenceId') referenceId: string,
     @Req() req,
   ): Promise<void> {
     const userId = req.user.id;
-    await this.intersolveVisaAccountManagementService.reissueCardAndSendMessage(
+    await this.intersolveVisaAccountManagementService.replaceCardByMail({
       referenceId,
       programId,
       userId,
-    );
+    });
   }
 
   @AuthenticatedUser()
@@ -194,5 +198,57 @@ export class IntersolveVisaAccountManagementController {
       referenceId,
       programId,
     );
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
+  @ApiOperation({
+    summary: 'Link a physical debit card to a registration',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiBody({ type: TokenCodeDto })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Card linked',
+  })
+  @Post(
+    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/wallet/cards/on-site/link',
+  )
+  public async linkCardOnSiteToRegistration(
+    @Body() body: TokenCodeDto,
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('referenceId') referenceId: string,
+  ): Promise<void> {
+    const tokenCode = body.tokenCode;
+    return await this.intersolveVisaAccountManagementService.linkCardOnSiteToRegistration(
+      { referenceId, programId, tokenCode },
+    );
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
+  @ApiOperation({
+    summary: 'Replace a physical debit card for a registration',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiBody({ type: TokenCodeDto })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Card replaced',
+  })
+  @Post(
+    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/wallet/cards/on-site/replace',
+  )
+  public async replaceCardOnSite(
+    @Body() body: TokenCodeDto,
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('referenceId') referenceId: string,
+  ): Promise<void> {
+    const tokenCode = body.tokenCode;
+    await this.intersolveVisaAccountManagementService.replaceCardOnSite({
+      referenceId,
+      programId,
+      tokenCode,
+    });
   }
 }

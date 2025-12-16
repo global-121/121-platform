@@ -26,6 +26,8 @@ const visaConfiguration = [
   process.env.INTERSOLVE_VISA_COVERLETTER_CODE,
   // eslint-disable-next-line n/no-process-env -- Used in seed-data, not in code, so not in '@121-service/src/env'
   process.env.INTERSOLVE_VISA_FUNDINGTOKEN_CODE,
+  // eslint-disable-next-line n/no-process-env -- Used in seed-data, not in code, so not in '@121-service/src/env'
+  process.env.INTERSOLVE_VISA_CARD_DISTRIBUTION_BY_MAIL,
 ].filter((item): item is string => item !== undefined);
 
 const newVisaConfiguration = [
@@ -33,6 +35,7 @@ const newVisaConfiguration = [
   'UI_CPO1', // Brand code
   'RC02', // Cover letter code
   '510121323', // Funding token code
+  'true', // Card distribution by mail
 ];
 
 // Arrange

@@ -7,7 +7,7 @@ import {
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { exportList } from '@121-service/test/helpers/program.helper';
 import {
-  issueNewVisaCard,
+  replaceVisaCardByMail,
   retrieveAndUpdateVisaWalletsAndDetails,
   seedPaidRegistrations,
 } from '@121-service/test/helpers/registration.helper';
@@ -35,7 +35,7 @@ describe('Export Visa debit card report', () => {
     });
 
     // To ensure that the export also works if there are multiple cards for one person
-    await issueNewVisaCard(
+    await replaceVisaCardByMail(
       programId,
       registrationVisa.referenceId,
       accessToken,

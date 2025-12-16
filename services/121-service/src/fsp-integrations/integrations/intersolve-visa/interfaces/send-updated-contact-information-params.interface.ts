@@ -3,5 +3,4 @@ import { ContactInformation } from '@121-service/src/fsp-integrations/integratio
 export interface SendUpdatedContactInformationParams {
   readonly registrationId: number;
   readonly contactInformation: ContactInformation;
-  readonly name: string;
 }

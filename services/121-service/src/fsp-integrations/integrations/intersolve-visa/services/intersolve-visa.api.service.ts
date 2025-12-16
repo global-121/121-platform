@@ -88,11 +88,9 @@ export class IntersolveVisaApiService {
 
   public async createCustomer({
     externalReference,
-    name,
     contactInformation,
   }: {
     externalReference: string;
-    name: string;
     contactInformation: ContactInformation;
   }): Promise<CreateCustomerResult> {
     // Create the request body to send
@@ -100,7 +98,7 @@ export class IntersolveVisaApiService {
       externalReference, // The IntersolveVisa does not "know about this", but we pass in the registration.referenceId here.
       individual: {
         firstName: '', // in 121 first name and last name are always combined into 1 "name" field, but Intersolve requires first name, so just give an empty string
-        lastName: name,
+        lastName: contactInformation.name,
         estimatedAnnualPaymentVolumeMajorUnit,
       },
       contactInfo: {
@@ -188,6 +186,7 @@ export class IntersolveVisaApiService {
     let blocked;
     let status;
     let balance;
+    let holderId;
     const tokenData = getTokenResponseDto.data.data;
     if (tokenData?.balances) {
       const balanceObject = tokenData.balances.find(
@@ -203,10 +202,14 @@ export class IntersolveVisaApiService {
     if (tokenData?.blocked === true || tokenData?.blocked === false) {
       blocked = tokenData.blocked;
     }
+    if (tokenData?.holderId) {
+      holderId = tokenData.holderId;
+    }
     const getTokenResult: GetTokenResult = {
       blocked,
       status,
       balance,
+      holderId,
     };
 
     return getTokenResult;
@@ -388,12 +391,10 @@ export class IntersolveVisaApiService {
 
   public async createPhysicalCard({
     tokenCode,
-    name,
     contactInformation,
     coverLetterCode,
   }: {
     tokenCode: string;
-    name: string;
     contactInformation: ContactInformation;
     coverLetterCode: string;
   }): Promise<void> {
@@ -401,7 +402,7 @@ export class IntersolveVisaApiService {
     const request: CreatePhysicalCardRequestIntersolveApiDto = {
       brand: 'VISA_CARD',
       firstName: '',
-      lastName: name,
+      lastName: contactInformation.name,
       mobileNumber: formatPhoneNumber(contactInformation.phoneNumber), // must match \"([+]){1}([1-9]){1}([0-9]){5,14}\"
       cardAddress: {
         address1: this.createAddressString(contactInformation),

@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, FindOneOptions, In, Repository } from 'typeorm';
 
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa-data-synchronization/intersolve-visa-data-synchronization.service';
+import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
+import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -69,6 +71,34 @@ export class RegistrationsService {
     private readonly uniqueRegistrationPairRepository: UniqueRegistrationPairRepository,
     private readonly intersolveVisaDataSynchronizationService: IntersolveVisaDataSynchronizationService,
   ) {}
+
+  public async getRegistrationOrThrow({
+    referenceId,
+    relations = [],
+    programId,
+  }: {
+    referenceId: string;
+    relations?: (keyof RegistrationEntity)[];
+    programId?: number;
+  }): Promise<RegistrationEntity> {
+    if (!referenceId) {
+      const errors = `ReferenceId is not set`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    const registration =
+      await this.registrationScopedRepository.getWithRelationsByReferenceIdAndProgramId(
+        {
+          referenceId,
+          relations,
+          programId,
+        },
+      );
+    if (!registration) {
+      const errors = `ReferenceId ${referenceId} is not known in this program (within your scope).`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    return registration;
+  }
 
   // This methods can be used to get the same formatted data as the pagination query using referenceId
   public async getPaginateRegistrationForReferenceId(
@@ -167,34 +197,6 @@ export class RegistrationsService {
       { explicitRegistrationPropertyNames: ['status'] },
     );
     return registrationAfterUpdate;
-  }
-
-  public async getRegistrationOrThrow({
-    referenceId,
-    relations = [],
-    programId,
-  }: {
-    referenceId: string;
-    relations?: (keyof RegistrationEntity)[];
-    programId?: number;
-  }): Promise<RegistrationEntity> {
-    if (!referenceId) {
-      const errors = `ReferenceId is not set`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    const registration =
-      await this.registrationScopedRepository.getWithRelationsByReferenceIdAndProgramId(
-        {
-          referenceId,
-          relations,
-          programId,
-        },
-      );
-    if (!registration) {
-      const errors = `ReferenceId ${referenceId} is not known in this program (within your scope).`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    return registration;
   }
 
   public async cleanCustomDataIfPhoneNr(
@@ -547,7 +549,7 @@ export class RegistrationsService {
           newFspConfigurationName: String(value),
         });
     }
-    const savedRegistration =
+    const savedRegistration: RegistrationEntity =
       await this.registrationUtilsService.save(registration);
     const calculatedRegistration =
       await this.inclusionScoreService.calculatePaymentAmountMultiplier(
@@ -560,9 +562,15 @@ export class RegistrationsService {
       });
     }
 
+    const contactInformation: ContactInformation =
+      await this.getContactInformation({
+        referenceId: savedRegistration.referenceId,
+        programId: savedRegistration.programId,
+      });
     await this.intersolveVisaDataSynchronizationService.syncData({
-      registration: savedRegistration,
+      registrationId: savedRegistration.id,
       attribute,
+      contactInformation,
     });
 
     return this.getRegistrationOrThrow({
@@ -844,5 +852,51 @@ export class RegistrationsService {
       },
       reason,
     });
+  }
+
+  public async getContactInformation({
+    referenceId,
+    programId,
+  }: {
+    referenceId: string;
+    programId: number;
+  }): Promise<ContactInformation> {
+    const dataFieldNames = [
+      FspAttributes.addressStreet,
+      FspAttributes.addressHouseNumber,
+      FspAttributes.addressHouseNumberAddition,
+      FspAttributes.addressPostalCode,
+      FspAttributes.addressCity,
+      FspAttributes.phoneNumber,
+      FspAttributes.fullName,
+    ];
+
+    const registrationData = (
+      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
+        {
+          referenceIds: [referenceId],
+          programId,
+          select: dataFieldNames,
+        },
+      )
+    )[0];
+
+    if (!registrationData) {
+      throw new HttpException(
+        `No registration data found for referenceId: ${referenceId}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return {
+      name: registrationData[FspAttributes.fullName],
+      addressStreet: registrationData[FspAttributes.addressStreet],
+      addressHouseNumber: registrationData[FspAttributes.addressHouseNumber],
+      addressHouseNumberAddition:
+        registrationData[FspAttributes.addressHouseNumberAddition],
+      addressPostalCode: registrationData[FspAttributes.addressPostalCode],
+      addressCity: registrationData[FspAttributes.addressCity],
+      phoneNumber: registrationData[FspAttributes.phoneNumber]!,
+    };
   }
 }

@@ -12,8 +12,8 @@ import { UserModule } from '@121-service/src/user/user.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([NoteEntity]),
-    RegistrationsModule,
     UserModule,
+    RegistrationsModule,
   ],
   providers: [NotesService, NoteScopedRepository, RegistrationScopedRepository],
   controllers: [NoteController],

@@ -2027,6 +2027,9 @@
       <trans-unit id="export-verification-cooperative-bank-of-oromia" datatype="html">
         <source>Coopbank verification report</source>
       </trans-unit>
+      <trans-unit id="2208706328996995680" datatype="html">
+        <source>Card distribution by mail</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -7,8 +7,8 @@ import { RegistrationsService } from '@121-service/src/registration/services/reg
 @Injectable()
 export class NotesService {
   public constructor(
-    private readonly registrationsService: RegistrationsService,
     private readonly noteScopedRepository: NoteScopedRepository,
+    private readonly registrationsService: RegistrationsService,
   ) {}
 
   public async createNote(
