@@ -36,9 +36,8 @@ export class DownloadService {
     data: Record<string, unknown>[];
     fileName: string;
   }) {
-    const { utils: XLSXUtils, writeFile: writeXLSX } = await import(
-      '~/utils/xlsx-wrapper'
-    );
+    const { utils: XLSXUtils, writeFile: writeXLSX } =
+      await import('~/utils/xlsx-wrapper');
     const worksheet = XLSXUtils.json_to_sheet(data, {
       header: Object.keys(data[0] ?? {}).sort((keyA, keyB) => {
         // these are keys we want to appear in xlsx exports first, in this order

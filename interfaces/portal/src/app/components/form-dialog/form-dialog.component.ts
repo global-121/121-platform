@@ -53,7 +53,7 @@ export class FormDialogComponent<TMutationData = unknown> {
   show({
     resetMutation = true,
     resetFormGroup = true,
-    trackingEvent = undefined,
+    trackingEvent,
   }: {
     resetMutation?: boolean;
     resetFormGroup?: boolean;

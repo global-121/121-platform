@@ -43,14 +43,14 @@
     "knip": "knip"
   },
   "dependencies": {
-    "@angular/animations": "^20.3.11",
-    "@angular/common": "^20.3.11",
-    "@angular/compiler": "^20.3.11",
-    "@angular/core": "^20.3.11",
-    "@angular/forms": "^20.3.11",
-    "@angular/platform-browser": "^20.3.11",
-    "@angular/platform-browser-dynamic": "^20.3.11",
-    "@angular/router": "^20.3.11",
+    "@angular/animations": "^20.3.14",
+    "@angular/common": "^20.3.14",
+    "@angular/compiler": "^20.3.14",
+    "@angular/core": "^20.3.14",
+    "@angular/forms": "^20.3.14",
+    "@angular/platform-browser": "^20.3.14",
+    "@angular/platform-browser-dynamic": "^20.3.14",
+    "@angular/router": "^20.3.14",
     "@azure/msal-angular": "3.1.0",
     "@azure/msal-browser": "3.28.0",
     "@microsoft/applicationinsights-web": "^3.3.10",
@@ -76,10 +76,10 @@
     "zone.js": "~0.15.1"
   },
   "devDependencies": {
-    "@angular/build": "^20.3.9",
-    "@angular/cli": "^20.3.9",
-    "@angular/compiler-cli": "^20.3.11",
-    "@angular/localize": "^20.3.11",
+    "@angular/build": "^20.3.13",
+    "@angular/cli": "^20.3.13",
+    "@angular/compiler-cli": "^20.3.14",
+    "@angular/localize": "^20.3.14",
     "@azure/static-web-apps-cli": "^2.0.7",
     "@eslint/js": "^9.39.1",
     "@prettier/plugin-xml": "^3.4.2",
@@ -123,6 +123,7 @@
       "@angular/animations": "$@angular/animations",
       "@angular/core": "$@angular/core",
       "@angular/common": "$@angular/common"
-    }
+    },
+    "glob": "^10.5.0"
   }
 }
