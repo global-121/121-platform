@@ -62,6 +62,20 @@ class TableComponent {
       .first();
   }
 
+  async getColumnIndexByHeaderText(headerText: string): Promise<number> {
+    const headerCells = this.tableHeader.locator('th');
+    const headerCount = await headerCells.count();
+
+    for (let i = 0; i < headerCount; i++) {
+      const cellText = await headerCells.nth(i).textContent();
+      if (cellText?.trim() === headerText) {
+        return i;
+      }
+    }
+
+    throw new Error(`Column with header text "${headerText}" not found`);
+  }
+
   async getCell(row: number, column: number) {
     return this.tableRows.nth(row).locator('td').nth(column);
   }
@@ -546,7 +560,9 @@ class TableComponent {
     columnType?: 'old' | 'new';
     rowIndex?: number;
   }) {
-    const columnIndex = columnType === 'old' ? 2 : 3; // Column 2 = old value, Column 3 = new value
+    // Find column index by header text to make it resilient to table structure changes
+    const headerText = columnType === 'old' ? 'Old value' : 'New value';
+    const columnIndex = await this.getColumnIndexByHeaderText(headerText);
 
     const cell = this.tableRows.nth(rowIndex).locator('td').nth(columnIndex);
     const actualValue = await cell.textContent();
