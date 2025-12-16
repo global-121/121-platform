@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa-account-management/intersolve-visa-account-management.service';
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa-data-synchronization/intersolve-visa-data-synchronization.service';
+import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
 import { FspConfigurationProperties } from '@121-service/src/fsp-management/enums/fsp-name.enum';
@@ -97,6 +98,12 @@ describe('IntersolveVisaAccountManagementService', () => {
           provide: RegistrationScopedRepository,
           useValue: {
             getWithRelationsByReferenceIdAndProgramId: jest.fn(),
+          },
+        },
+        {
+          provide: IntersolveVisaChildWalletScopedRepository,
+          useValue: {
+            isChildWalletLinkedToRegistration: jest.fn(),
           },
         },
       ],
