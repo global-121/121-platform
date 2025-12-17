@@ -32,11 +32,9 @@ class TableComponent {
     this.tableLoading = this.table.getByTestId('query-table-loading');
     this.tableRows = this.table.locator('tbody tr');
     this.tableHeader = this.table.locator('thead tr');
-    this.selectAllRowsCheckbox = this.table
-      .getByRole('cell', {
-        name: 'All items unselected',
-      })
-      .getByRole('checkbox');
+    this.selectAllRowsCheckbox = this.table.getByRole('checkbox', {
+      name: 'All items unselected',
+    });
     this.globalSearchOpenerButton = this.table.getByTitle('Filter by keyword');
     this.globalSearchInput = this.table.getByPlaceholder('Filter by keyword');
     this.clearAllFiltersButton = this.table.getByRole('button', {
