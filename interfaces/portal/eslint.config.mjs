@@ -14,11 +14,13 @@ import tsEslint from 'typescript-eslint';
 
 // Import custom rule
 import noFormControlUndefinedValue from './eslint-rules/no-form-control-undefined-value.js';
+import tanstackNoManualCacheInvalidation from './eslint-rules/tanstack-no-manual-cache-invalidation.js';
 
 // Custom rules plugin
 const customRulesPlugin = {
   rules: {
     'no-form-control-undefined-value': noFormControlUndefinedValue,
+    'tanstack-no-manual-cache-invalidation': tanstackNoManualCacheInvalidation,
   },
 };
 
@@ -92,6 +94,7 @@ export default tsEslint.config(
       ],
       'arrow-body-style': 'error',
       'custom-rules/no-form-control-undefined-value': 'error',
+      'custom-rules/tanstack-no-manual-cache-invalidation': 'error',
       'eslint-comments/require-description': 'error',
       'func-style': 'error',
       'max-params': ['error', 2],
@@ -127,6 +130,12 @@ export default tsEslint.config(
           ],
         },
       ],
+    },
+  },
+  {
+    files: ['**/app.config.ts'],
+    rules: {
+      'custom-rules/tanstack-no-manual-cache-invalidation': 'off',
     },
   },
   {
