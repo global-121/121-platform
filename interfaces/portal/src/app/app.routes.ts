@@ -147,9 +147,9 @@ export const routes: Routes = [
               ' | ' +
               $localize`:@@page-title-program-monitoring:Monitoring`,
             loadComponent: () =>
-              import(
-                '~/pages/program-monitoring-data-changes/program-monitoring-data-changes.page'
-              ).then((x) => x.ProgramMonitoringDataChangesPageComponent),
+              import('~/pages/program-monitoring-data-changes/program-monitoring-data-changes.page').then(
+                (x) => x.ProgramMonitoringDataChangesPageComponent,
+              ),
           },
           {
             path: AppRoutes.programMonitoringFiles,
