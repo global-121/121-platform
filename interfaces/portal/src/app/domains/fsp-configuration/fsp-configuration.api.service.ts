@@ -5,7 +5,10 @@ import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-c
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
-import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
+import {
+  FspConfiguration,
+  FspConfigurationProperty,
+} from '~/domains/fsp-configuration/fsp-configuration.model';
 import { Dto } from '~/utils/dto-type';
 
 const BASE_ENDPOINT = (programId: Signal<number | string>) => [
@@ -91,13 +94,9 @@ export class FspConfigurationApiService extends DomainApiService {
     programId: Signal<number | string>;
     configurationName: string;
   }) {
-    return this.httpWrapperService.perform121ServiceRequest<unknown>({
-      method: 'GET',
-      endpoint: this.pathToQueryKey([
-        ...BASE_ENDPOINT(programId),
-        configurationName,
-        'properties',
-      ]).join('/'),
+    return this.generateQueryOptions<FspConfigurationProperty[]>({
+      path: [...BASE_ENDPOINT(programId), configurationName, 'properties'],
+      processResponse: (response) => response,
     });
   }
 

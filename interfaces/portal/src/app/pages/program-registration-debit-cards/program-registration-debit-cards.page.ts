@@ -26,6 +26,11 @@ import {
 } from '~/components/data-list/data-list.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
+import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
+import {
+  FspConfigurationProperty,
+  IntersolveVisaFspConfigurationProperties,
+} from '~/domains/fsp-configuration/fsp-configuration.model';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { LinkCardDialogComponent } from '~/pages/program-registration-debit-cards/components/link-card-dialog/link-card-dialog.component';
@@ -59,6 +64,9 @@ export class ProgramRegistrationDebitCardsPageComponent {
   private readonly registrationApiService = inject(RegistrationApiService);
   private readonly toastService = inject(ToastService);
   private readonly programApiService = inject(ProgramApiService);
+  private readonly fspConfigurationApiService = inject(
+    FspConfigurationApiService,
+  );
 
   readonly tokenCode = model('');
   readonly linkCardDialogVisible = model(false);
@@ -87,6 +95,29 @@ export class ProgramRegistrationDebitCardsPageComponent {
   );
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
+
+  fspConfigurationProperties = injectQuery(
+    this.fspConfigurationApiService.getFspConfigurationProperties({
+      programId: this.programId,
+      configurationName: 'Intersolve-visa',
+    }),
+  );
+  readonly showLinkCardOnSite = computed(() => {
+    const props = this.fspConfigurationProperties.data() ?? [];
+
+    const cardDistributionByMailProperty = props.find(
+      (property: FspConfigurationProperty) =>
+        property.name ===
+        (IntersolveVisaFspConfigurationProperties.cardDistributionByMail as string),
+    );
+
+    const cardDistributionByMailEnabled =
+      cardDistributionByMailProperty?.value === 'true';
+
+    const hasAnyCard = !!this.currentCard() || this.oldCards().length > 0;
+
+    return !cardDistributionByMailEnabled && !hasAnyCard;
+  });
 
   readonly convertCentsToMainUnits = (
     value: null | number | undefined,

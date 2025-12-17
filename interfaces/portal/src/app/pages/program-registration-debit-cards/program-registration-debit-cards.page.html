@@ -48,7 +48,8 @@
         [data]="walletWithCurrentCardListData()"
         data-testid="wallet-current-card-list"
       />
-    } @else {
+    }
+    @if (showLinkCardOnSite()) {
       <div class="flex flex-col gap-4">
         <div class="flex items-center gap-2">
           <i
