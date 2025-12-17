@@ -17,7 +17,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputMask } from 'primeng/inputmask';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
-//import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
+import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { LinkCardDialogStates } from '~/pages/program-registration-debit-cards/components/link-card-dialog/enums/link-card-dialog-states.enum';
@@ -32,9 +32,9 @@ import { ToastService } from '~/services/toast.service';
 export class LinkCardDialogComponent {
   private readonly toastService = inject(ToastService);
   private readonly registrationApiService = inject(RegistrationApiService);
-  // private readonly fspConfigurationApiService = inject(
-  //   FspConfigurationApiService,
-  // );
+  private readonly fspConfigurationApiService = inject(
+    FspConfigurationApiService,
+  );
   private readonly programApiService = inject(ProgramApiService);
 
   readonly programId = input.required<string>();
@@ -50,12 +50,11 @@ export class LinkCardDialogComponent {
 
   public linkCardDialogStates = LinkCardDialogStates;
 
-  // fspConfigurations = injectQuery(
-  //   this.fspConfigurationApiService.getFspConfigurationProperties({
-  //     programId: this.programId,
-  //     configurationName: 'Intersolve-visa',
-  //   }),
-  // );
+  fspConfigurations = () =>
+    this.fspConfigurationApiService.getFspConfigurationProperties({
+      programId: this.programId,
+      configurationName: 'Intersolve-visa',
+    });
 
   programAttributes = injectQuery(
     this.programApiService.getProgramAttributes({
@@ -77,7 +76,8 @@ export class LinkCardDialogComponent {
   });
 
   public async linkCard() {
-    console.log(this.programAttributes.data());
+    const fspProps = await this.fspConfigurations();
+    console.log('FSP Props:', fspProps);
     try {
       await this.registrationApiService.linkCardToRegistration({
         programId: this.programId,
