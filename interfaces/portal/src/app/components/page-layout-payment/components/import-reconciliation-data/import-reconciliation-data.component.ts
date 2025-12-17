@@ -19,7 +19,6 @@ import {
   ImportFileDialogComponent,
   ImportFileDialogFormGroup,
 } from '~/components/import-file-dialog/import-file-dialog.component';
-import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { AuthService } from '~/services/auth.service';
 import { DownloadService } from '~/services/download.service';
@@ -42,7 +41,6 @@ export class ImportReconciliationDataComponent {
   private queryClient = inject(QueryClient);
   private authService = inject(AuthService);
   private downloadService = inject(DownloadService);
-  private metricApiService = inject(MetricApiService);
   private paymentApiService = inject(PaymentApiService);
   private toastService = inject(ToastService);
 
@@ -91,11 +89,6 @@ export class ImportReconciliationDataComponent {
       });
     },
     onSuccess: (response) => {
-      void this.metricApiService.invalidateCache(this.programId);
-      void this.paymentApiService.invalidateCache(
-        this.programId,
-        this.paymentId,
-      );
       this.dialogVisible.set(false);
       this.toastService.showToast({
         detail: $localize`Reconciliation data imported successfully.`,

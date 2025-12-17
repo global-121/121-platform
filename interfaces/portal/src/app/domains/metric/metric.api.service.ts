@@ -134,10 +134,4 @@ export class MetricApiService extends DomainApiService {
       params,
     });
   }
-
-  public invalidateCache(programId: Signal<number | string>): Promise<void> {
-    return this.queryClient.invalidateQueries({
-      queryKey: this.pathToQueryKey(BASE_ENDPOINT(programId)),
-    });
-  }
 }

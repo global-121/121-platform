@@ -83,7 +83,6 @@ export class MonitoringUploadFileDialogComponent {
       this.toastService.showToast({
         detail: $localize`File uploaded successfully`,
       });
-      void this.programApiService.invalidateCache(this.programId);
       this.uploadFileFormGroup.reset();
     },
   }));
