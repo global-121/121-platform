@@ -125,7 +125,6 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
 
   onRegistrationUpdated() {
     this.isEditing.set(false);
-    void this.registrationAttributes.refetch();
   }
 
   canDeactivate() {
