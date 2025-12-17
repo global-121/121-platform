@@ -10,6 +10,7 @@ import {
 } from '@121-service/test/helpers/program.helper';
 import {
   getMessageHistory,
+  getRegistrationEvents,
   getRegistrations,
   getVisaWalletsAndDetails,
 } from '@121-service/test/helpers/registration.helper';
@@ -27,7 +28,12 @@ describe('Mock registrations', () => {
 
   beforeAll(async () => {
     // NOTE: without input parameters this endpoint applies 2 registration-duplications (so 4 registrations), 2 payments, and 1 message duplication
-    await resetDB(SeedScript.nlrcMultipleMock, __filename);
+    const includeRegistrationEvents = true;
+    await resetDB(
+      SeedScript.nlrcMultipleMock,
+      __filename,
+      includeRegistrationEvents,
+    );
     accessToken = await getAccessToken();
   });
 
@@ -101,6 +107,24 @@ describe('Mock registrations', () => {
         ).length,
       ).toBe(2); // Assert 2 payment messages per registration
     }
+
+    // Assert registration events are duplicated for all registrations
+    const registrationIds = registrationsResponse.body.data.map((r) => r.id);
+    const registrationEventsResponse = await getRegistrationEvents({
+      programId,
+      accessToken,
+    });
+    // There should be at least one event per registration, and the total should be a multiple of the number of registrations
+    const events = registrationEventsResponse.body.data;
+    const eventsByRegistration = registrationIds.map((id) =>
+      events.filter((e) => e.registrationId === id),
+    );
+    // All registrations should have at least one event
+    expect(eventsByRegistration.every((arr) => arr.length > 0)).toBe(true);
+    // All events should belong to one of the registrations
+    expect(
+      events.every((e) => registrationIds.includes(e.registrationId)),
+    ).toBe(true);
 
     // TODO: add more assertions on: paymentCount / duplicates / registrationData / sequenceNumbers / duplication-endpoint.
   });

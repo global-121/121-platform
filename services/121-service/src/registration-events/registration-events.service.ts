@@ -3,24 +3,29 @@ import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Job } from 'bull';
 import { isEqual, isMatch, isObject } from 'lodash';
+import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
+import { SelectQueryBuilder } from 'typeorm';
 
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
-import { GetRegistrationEventDto } from '@121-service/src/registration-events/dto/get-registration-event.dto';
-import { GetRegistrationEventXlsxDto } from '@121-service/src/registration-events/dto/get-registration-event-xlsx.dto';
+import { PaginateConfigRegistrationEventView } from '@121-service/src/registration-events/const/paginate-config-registration-event-view.const';
+import { FindAllRegistrationEventsResultDto } from '@121-service/src/registration-events/dto/find-all-registration-events-result.dto';
+import { PaginatedRegistrationEventDto } from '@121-service/src/registration-events/dto/paginated-registration-events.dto';
 import { RegistrationEventSearchOptionsDto } from '@121-service/src/registration-events/dto/registration-event-search-options.dto';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
+import { RegistrationEventViewEntity } from '@121-service/src/registration-events/entities/registration-event.view.entity';
 import { RegistrationEventAttributeEntity } from '@121-service/src/registration-events/entities/registration-event-attribute.entity';
 import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
 import { RegistrationEventAttributeKeyEnum } from '@121-service/src/registration-events/enum/registration-event-attribute-key.enum';
 import { CreateForIgnoredDuplicatePair } from '@121-service/src/registration-events/interfaces/create-for-ignored-duplicate-pair.interface';
 import { createFromRegistrationViewsOptions } from '@121-service/src/registration-events/interfaces/create-from-registration-views-options.interface';
 import { RegistrationIdentifiers } from '@121-service/src/registration-events/interfaces/registration-identifiers.interface';
-import { RegistrationEventScopedRepository } from '@121-service/src/registration-events/registration-event.repository';
+import { RegistrationEventViewScopedRepository } from '@121-service/src/registration-events/repositories/registration-event.view.repository';
 import { ValueExtractor } from '@121-service/src/registration-events/utils/registration-events.helpers';
-import { RegistrationEventsMapper } from '@121-service/src/registration-events/utils/registration-events.mapper';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserService } from '@121-service/src/user/user.service';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 // Define an interface that can contain any attribute of RegistrationViewEntity, but make sure at least id is in.
 interface RegistrationViewWithId extends Partial<RegistrationViewEntity> {
@@ -29,43 +34,112 @@ interface RegistrationViewWithId extends Partial<RegistrationViewEntity> {
 
 @Injectable()
 export class RegistrationEventsService {
+  @Inject(getScopedRepositoryProviderName(RegistrationEventEntity))
+  private registrationEventRepository: ScopedRepository<RegistrationEventEntity>;
   constructor(
-    private registrationEventRepository: RegistrationEventScopedRepository,
     @Inject(REQUEST) private request: ScopedUserRequest,
     @Inject(JOB_REF) private readonly jobRef: Job,
     private readonly userService: UserService,
+    private readonly registrationEventViewScopedRepository: RegistrationEventViewScopedRepository,
   ) {}
 
-  public async getEventsAsJson({
+  public getRegistrationEventsByRegistrationId({
+    programId,
+    registrationId,
+  }: {
+    programId: number;
+    registrationId: number;
+  }): Promise<FindAllRegistrationEventsResultDto> {
+    const searchOptions: RegistrationEventSearchOptionsDto = {
+      registrationId,
+    };
+    const queryBuilder =
+      this.registrationEventViewScopedRepository.createQueryBuilderWithSearchOptionsAndSelect(
+        {
+          programId,
+          searchOptions,
+        },
+      );
+
+    const paginateQuery = {} as PaginateQuery;
+    return this.getPaginatedRegistrationEvents({
+      paginateQuery,
+      queryBuilder,
+    });
+  }
+
+  public getRegistrationEventsExport({
     programId,
     searchOptions,
   }: {
     programId: number;
     searchOptions: RegistrationEventSearchOptionsDto;
-  }): Promise<GetRegistrationEventDto[]> {
-    const events = await this.fetchEvents(programId, searchOptions);
-    return RegistrationEventsMapper.mapEventsToJsonDtos(events);
+  }): Promise<FindAllRegistrationEventsResultDto> {
+    const select: (keyof RegistrationEventViewEntity)[] = [
+      'id',
+      'registrationId', // This is used in JSON-export and in API-tests. For xlsx-export this is slightly confusing (vs registrationProgramId), but acceptable for PO.
+      'registrationProgramId',
+      'type',
+      'fieldChanged',
+      'oldValue',
+      'newValue',
+      'reason',
+      'username',
+      'created',
+    ];
+    const queryBuilder =
+      this.registrationEventViewScopedRepository.createQueryBuilderWithSearchOptionsAndSelect(
+        {
+          programId,
+          searchOptions,
+          select,
+        },
+      );
+
+    const exportLimit = 500_000;
+    const paginateQuery = {
+      limit: exportLimit,
+    } as PaginateQuery;
+    return this.getPaginatedRegistrationEvents({
+      paginateQuery,
+      queryBuilder,
+    });
   }
 
-  public async getEventsAsXlsx({
+  public async getRegistrationEventsMonitoring({
     programId,
-    searchOptions,
+    paginateQuery,
   }: {
     programId: number;
-    searchOptions: RegistrationEventSearchOptionsDto;
-  }): Promise<GetRegistrationEventXlsxDto[]> {
-    const events = await this.fetchEvents(programId, searchOptions);
-    return RegistrationEventsMapper.mapEventsToXlsxDtos(events);
+    paginateQuery: PaginateQuery;
+  }): Promise<FindAllRegistrationEventsResultDto> {
+    const queryBuilder =
+      this.registrationEventViewScopedRepository.createQueryBuilderExcludingStatusChanges(
+        programId,
+      );
+
+    return this.getPaginatedRegistrationEvents({
+      paginateQuery,
+      queryBuilder,
+    });
   }
 
-  private async fetchEvents(
-    programId: number,
-    searchOptions: RegistrationEventSearchOptionsDto,
-  ): Promise<RegistrationEventEntity[]> {
-    return await this.registrationEventRepository.getManyByProgramIdAndSearchOptions(
-      programId,
-      searchOptions,
+  private async getPaginatedRegistrationEvents({
+    paginateQuery,
+    queryBuilder,
+  }: {
+    paginateQuery: PaginateQuery;
+    queryBuilder: SelectQueryBuilder<RegistrationEventViewEntity>;
+  }): Promise<FindAllRegistrationEventsResultDto> {
+    const result = await paginate<RegistrationEventViewEntity>(
+      paginateQuery,
+      queryBuilder,
+      {
+        ...PaginateConfigRegistrationEventView,
+      },
     );
+
+    return result as Paginated<PaginatedRegistrationEventDto>; // This type-conversion is done to make our frontend happy as it cannot deal with typeorm entities
   }
 
   /**
@@ -312,9 +386,7 @@ export class RegistrationEventsService {
       [RegistrationEventAttributeKeyEnum.oldValue]: oldValue,
       [RegistrationEventAttributeKeyEnum.newValue]: newValue,
     };
-    if (event.type === RegistrationEventEnum.registrationDataChange) {
-      attributesData[RegistrationEventAttributeKeyEnum.fieldName] = fieldName;
-    }
+    attributesData[RegistrationEventAttributeKeyEnum.fieldName] = fieldName;
     event.attributes = this.getAttributesForChange(attributesData);
     return event;
   }
@@ -435,6 +507,18 @@ export class RegistrationEventsService {
     reason: string;
   }): RegistrationEventAttributeEntity[] {
     return [
+      this.createEventAttributeEntity(
+        RegistrationEventAttributeKeyEnum.fieldName,
+        'duplicateStatus',
+      ),
+      this.createEventAttributeEntity(
+        RegistrationEventAttributeKeyEnum.oldValue,
+        'duplicate',
+      ),
+      this.createEventAttributeEntity(
+        RegistrationEventAttributeKeyEnum.newValue,
+        'unique',
+      ),
       this.createEventAttributeEntity(
         RegistrationEventAttributeKeyEnum.duplicateWithRegistrationId,
         String(duplicateRegistration.id),

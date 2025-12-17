@@ -12,6 +12,7 @@ import {
   registrationVisa,
   transferValueVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
 @Injectable()
@@ -27,6 +28,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     powerNrRegistrationsString?: string,
     nrPaymentsString?: string,
     powerNrMessagesString?: string,
+    includeRegistrationEvents = false,
     mockPv = true,
     mockOcw = true,
     seedConfig?: SeedConfigurationDto,
@@ -64,7 +66,10 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     }
 
     // 2. Multiply registrations
-    await this.seedMockHelper.multiplyRegistrations(powerNrRegistrations);
+    await this.seedMockHelper.multiplyRegistrations({
+      powerNr: powerNrRegistrations,
+      includeRegistrationEvents,
+    });
 
     // 3. Extend all data to all registrations (transactions and related data for payment 1, messages, etc.)
     await this.seedMockHelper.alignOtherDataWithRegistrations({
@@ -106,6 +111,14 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       RegistrationStatusEnum.included,
       accessToken,
     );
+
+    await this.seedMockHelper.awaitChangePaData({
+      programId,
+      referenceId: registration.referenceId,
+      data: { preferredLanguage: RegistrationPreferredLanguage.ar },
+      reason: 'Seed',
+      accessToken,
+    });
 
     const createPaymentResponse = await this.seedMockHelper.createPayment(
       programId,

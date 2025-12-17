@@ -2030,6 +2030,27 @@
       <trans-unit id="2208706328996995680" datatype="html">
         <source>Card distribution by mail</source>
       </trans-unit>
+      <trans-unit id="2908948907515933437" datatype="html">
+        <source>Changed by</source>
+      </trans-unit>
+      <trans-unit id="5313814086308604647" datatype="html">
+        <source>Old value</source>
+      </trans-unit>
+      <trans-unit id="6678171760523373674" datatype="html">
+        <source>New value</source>
+      </trans-unit>
+      <trans-unit id="6768832079771465748" datatype="html">
+        <source>Field changed</source>
+      </trans-unit>
+      <trans-unit id="page-title-program-monitoring-data-changes" datatype="html">
+        <source>Data changes</source>
+      </trans-unit>
+      <trans-unit id="1467442682545650796" datatype="html">
+        <source>Reg. # <x equiv-text="event.registrationProgramId.toString()" id="PH"/></source>
+      </trans-unit>
+      <trans-unit id="registration-duplicate-status" datatype="html">
+        <source>Duplicate status</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

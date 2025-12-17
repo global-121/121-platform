@@ -64,6 +64,12 @@ export class ScriptsController {
     description:
       'Optional identifier for this reset action, will be logged by the server.',
   })
+  @ApiQuery({
+    name: 'includeRegistrationEvents',
+    required: false,
+    description: `Set to 'true' to include registration events in the duplication.`,
+    example: 'false',
+  })
   @ApiOperation({
     summary: `Reset instance database.`,
     description: `When using the reset script: ${SeedScript.demoPrograms}. The reset can take a while, because of the large amount of data. This can result in a timeout on the client side, but the reset will still be done.`,
@@ -74,6 +80,7 @@ export class ScriptsController {
     @Query('script') script: WrapperType<SeedScript>,
     @Query('mockPowerNumberRegistrations')
     mockPowerNumberRegistrations: string,
+    @Query('includeRegistrationEvents') includeRegistrationEvents: boolean,
     @Query('resetIdentifier') resetIdentifier: string,
     @Query('mockNumberPayments') mockNumberPayments: string,
     @Query('mockPowerNumberMessages') mockPowerNumberMessages: string,
@@ -87,6 +94,9 @@ export class ScriptsController {
     }
 
     isApiTests = isApiTests !== undefined && isApiTests.toString() === 'true';
+    includeRegistrationEvents =
+      includeRegistrationEvents !== undefined &&
+      includeRegistrationEvents.toString() === 'true';
 
     if (script == SeedScript.nlrcMultipleMock) {
       const booleanMockPv = mockPv
@@ -100,6 +110,7 @@ export class ScriptsController {
         resetIdentifier,
         isApiTests,
         powerNrRegistrationsString: mockPowerNumberRegistrations,
+        includeRegistrationEvents,
         nrPaymentsString: mockNumberPayments,
         powerNrMessagesString: mockPowerNumberMessages,
         mockPv: booleanMockPv,
@@ -130,6 +141,12 @@ export class ScriptsController {
     description: `number of payments to add`,
     example: '1',
   })
+  @ApiQuery({
+    name: 'includeRegistrationEvents',
+    required: false,
+    description: `Set to 'true' to include registration events in the duplication.`,
+    example: 'false',
+  })
   @ApiOperation({
     summary:
       'Duplicate registrations, used for load testing. It also changes all phonenumber to a random number. Only usable in test or development.',
@@ -140,6 +157,7 @@ export class ScriptsController {
     @Query('mockPowerNumberRegistrations')
     mockPowerNumberRegistrations: string,
     @Query('mockNumberPayments') mockNumberPayments: string,
+    @Query('includeRegistrationEvents') includeRegistrationEvents: boolean,
     @Res() res,
   ): Promise<void> {
     if (body.secret !== env.RESET_SECRET) {
@@ -155,6 +173,7 @@ export class ScriptsController {
     await this.scriptsService.duplicateData({
       powerNrRegistrationsString: mockPowerNumberRegistrations,
       nrPaymentsString: mockNumberPayments,
+      includeRegistrationEvents,
     });
 
     return res

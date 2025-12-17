@@ -41,7 +41,7 @@ test('Export all People Affected data changes', async ({ page }) => {
     await registrationsPage.selectAllRegistrations();
     await registrationsPage.clickAndSelectExportOption('Status & data changes');
     await exportDataComponent.exportAndAssertData({
-      excludedColumns: ['changedAt'],
+      excludedColumns: ['created'],
     });
   });
 });

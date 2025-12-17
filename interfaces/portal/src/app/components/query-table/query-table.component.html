@@ -35,7 +35,7 @@
   data-testid="query-table"
 >
   <ng-template pTemplate="caption">
-    <div class="flex min-h-11 items-center overflow-x-auto">
+    <div class="flex min-h-12 items-center overflow-x-auto p-1">
       <ng-content select="[table-actions]"></ng-content>
       <span class="ms-auto"></span>
       @if (isFiltered()) {
@@ -51,7 +51,7 @@
           class="me-2"
         />
       }
-      @if (globalFilterFields() || serverSideFiltering()) {
+      @if (showGlobalSearch()) {
         <app-query-table-global-search
           [globalFilterValue]="globalFilterValue()"
           [(globalFilterVisible)]="globalFilterVisible"

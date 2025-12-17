@@ -703,6 +703,22 @@
     ]
   },
   {
+    "method": "get",
+    "path": "/api/programs/{programId}/registration-events/monitoring",
+    "params": [
+      "programId",
+      "page",
+      "limit",
+      "filter.id",
+      "filter.registrationProgramId",
+      "filter.programId",
+      "filter.type",
+      "filter.fieldChanged",
+      "filter.reason",
+      "sortBy"
+    ]
+  },
+  {
     "method": "put",
     "path": "/api/programs/{programId}/fsps/cooperative-bank-of-oromia/accounts",
     "params": [
@@ -748,6 +764,7 @@
     "path": "/api/scripts/reset",
     "params": [
       "mockPowerNumberRegistrations",
+      "includeRegistrationEvents",
       "resetIdentifier",
       "mockNumberPayments",
       "mockPowerNumberMessages",
@@ -762,7 +779,8 @@
     "path": "/api/scripts/duplicate-registrations",
     "params": [
       "mockPowerNumberRegistrations",
-      "mockNumberPayments"
+      "mockNumberPayments",
+      "includeRegistrationEvents"
     ]
   },
   {

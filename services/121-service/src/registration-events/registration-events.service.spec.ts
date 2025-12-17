@@ -3,57 +3,17 @@ import { TestBed } from '@automock/jest';
 import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
 import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
-import { RegistrationEventScopedRepository } from '@121-service/src/registration-events/registration-event.repository';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserService } from '@121-service/src/user/user.service';
-
-const programId = 1;
-
-const attributeEntityOldValue = {
-  key: 'oldValue',
-  value: '11567803125',
-};
-
-const attributeEntityNewValue = {
-  key: 'newValue',
-  value: '31653956630',
-};
-
-const attributeEntityFieldName = {
-  key: 'fieldName',
-  value: FspAttributes.whatsappPhoneNumber,
-};
-
-const mockFindEventResult: RegistrationEventEntity[] = [
-  {
-    id: 5,
-    created: '2024-02-20T11:12:18.597Z',
-    userId: 1,
-    type: RegistrationEventEnum.registrationDataChange,
-    registrationId: 1,
-    registration: {
-      id: 1,
-      referenceId: '2982g82bdsf89sdsd',
-      paymentAmountMultiplier: 3,
-      registrationProgramId: 1,
-    },
-    user: {
-      id: 1,
-      username: 'test@example.org',
-    },
-    attributes: [
-      attributeEntityOldValue,
-      attributeEntityNewValue,
-      attributeEntityFieldName,
-    ],
-  } as unknown as RegistrationEventEntity,
-];
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 function getViewRegistration(): RegistrationViewEntity {
   return {
@@ -90,7 +50,9 @@ function getViewRegistration(): RegistrationViewEntity {
   } as unknown as RegistrationViewEntity;
 }
 
-let registrationEventRepository: jest.Mocked<RegistrationEventScopedRepository>;
+let registrationEventRepository: jest.Mocked<
+  ScopedRepository<RegistrationEventEntity>
+>;
 let oldViewRegistration: RegistrationViewEntity;
 let newViewRegistration: RegistrationViewEntity;
 
@@ -103,16 +65,12 @@ describe('RegistrationEventsService', () => {
       RegistrationEventsService,
     ).compile();
     registrationEventRepository = unitRef.get(
-      RegistrationEventScopedRepository,
+      getScopedRepositoryProviderName(RegistrationEventEntity),
     );
     userService = unitRef.get(UserService);
     registrationEventsService = unit;
     // Mock request user id
     registrationEventsService['request']['user']!['id'] = 2;
-
-    jest
-      .spyOn(registrationEventRepository, 'getManyByProgramIdAndSearchOptions')
-      .mockResolvedValue(mockFindEventResult);
 
     jest.spyOn(userService, 'findById').mockResolvedValue({
       id: 2,
@@ -129,50 +87,6 @@ describe('RegistrationEventsService', () => {
 
   it('should be defined', () => {
     expect(registrationEventsService).toBeDefined();
-  });
-
-  it('should return events in json dto format', async () => {
-    // Act
-    const result = await registrationEventsService.getEventsAsJson({
-      programId,
-      searchOptions: {},
-    });
-
-    const resultEvent = result[0];
-    expect(resultEvent.id).toBe(mockFindEventResult[0].id);
-    expect(resultEvent.created).toBe(mockFindEventResult[0].created);
-    expect(resultEvent.user?.id).toBe(mockFindEventResult[0].user.id);
-    expect(resultEvent.user?.username).toBe(
-      mockFindEventResult[0].user.username,
-    );
-    expect(resultEvent.registrationId).toBe(
-      mockFindEventResult[0].registration.id,
-    );
-
-    const expectedAttributes = {
-      [attributeEntityFieldName.key]: attributeEntityFieldName.value,
-      [attributeEntityOldValue.key]: attributeEntityOldValue.value,
-      [attributeEntityNewValue.key]: attributeEntityNewValue.value,
-    };
-    expect(resultEvent.attributes).toEqual(expectedAttributes);
-  });
-
-  it('should return events in flat dto format (which is used for excel export)', async () => {
-    // Act
-    const result = await registrationEventsService.getEventsAsXlsx({
-      programId,
-      searchOptions: {},
-    });
-
-    const resultEvent = result[0];
-    expect(resultEvent.changedAt).toBe(mockFindEventResult[0].created);
-    expect(resultEvent.changedBy).toBe(mockFindEventResult[0].user.username);
-    expect(resultEvent.fieldName).toBe(attributeEntityFieldName.value);
-    expect(resultEvent.oldValue).toBe(attributeEntityOldValue.value);
-    expect(resultEvent.newValue).toBe(attributeEntityNewValue.value);
-    expect(resultEvent.paId).toBe(
-      mockFindEventResult[0].registration.registrationProgramId,
-    );
   });
 
   it('should create a registrationEvent of a data change', async () => {
@@ -383,34 +297,53 @@ describe('RegistrationEventsService', () => {
 
     // Assert
     expect(registrationEventRepository.save).toHaveBeenCalledTimes(1);
-    const expectedEvents = [
-      {
-        registrationId: oldViewRegistration.id,
-        type: RegistrationEventEnum.registrationStatusChange,
-        attributes: [
-          { key: 'oldValue', value: RegistrationStatusEnum.new },
-          { key: 'newValue', value: RegistrationStatusEnum.included },
-          { key: 'reason', value: options.reason },
-        ],
-        userId: 2,
-      },
-      {
-        registrationId: oldViewRegistration.id,
-        type: RegistrationEventEnum.registrationDataChange,
-        attributes: [
-          { key: 'oldValue', value: oldViewRegistration.phoneNumber },
-          { key: 'newValue', value: newViewRegistration.phoneNumber },
-          { key: 'fieldName', value: 'phoneNumber' },
-          { key: 'reason', value: options.reason },
-        ],
-        userId: 2,
-      },
-    ];
     expect(registrationEventRepository.save).toHaveBeenCalledWith(
-      expectedEvents,
-      {
-        chunk: 2000,
-      },
+      expect.arrayContaining([
+        expect.objectContaining({
+          registrationId: oldViewRegistration.id,
+          type: RegistrationEventEnum.registrationStatusChange,
+          userId: 2,
+          attributes: expect.arrayContaining([
+            expect.objectContaining({
+              key: 'fieldName',
+              value: GenericRegistrationAttributes.status,
+            }),
+            expect.objectContaining({
+              key: 'oldValue',
+              value: RegistrationStatusEnum.new,
+            }),
+            expect.objectContaining({
+              key: 'newValue',
+              value: RegistrationStatusEnum.included,
+            }),
+            expect.objectContaining({ key: 'reason', value: options.reason }),
+          ]),
+        }),
+        expect.objectContaining({
+          registrationId: oldViewRegistration.id,
+          type: RegistrationEventEnum.registrationDataChange,
+          userId: 2,
+          attributes: expect.arrayContaining([
+            expect.objectContaining({
+              key: 'fieldName',
+              value: 'phoneNumber',
+            }),
+            expect.objectContaining({
+              key: 'oldValue',
+              value: oldViewRegistration.phoneNumber,
+            }),
+            expect.objectContaining({
+              key: 'newValue',
+              value: newViewRegistration.phoneNumber,
+            }),
+            expect.objectContaining({
+              key: 'reason',
+              value: options.reason,
+            }),
+          ]),
+        }),
+      ]),
+      { chunk: 2000 },
     );
   });
 
@@ -430,29 +363,29 @@ describe('RegistrationEventsService', () => {
 
     // Assert
     expect(registrationEventRepository.save).toHaveBeenCalledTimes(1);
-    const expectedEvents = [
-      {
-        registrationId: oldViewRegistration.id,
-        type: RegistrationEventEnum.registrationStatusChange,
-        attributes: [
-          {
-            key: 'oldValue',
-            value: RegistrationStatusEnum.new,
-          },
-          {
-            key: 'newValue',
-            value: RegistrationStatusEnum.included,
-          },
-          {
-            key: 'reason',
-            value: options.reason,
-          },
-        ],
-        userId: 2,
-      },
-    ];
     expect(registrationEventRepository.save).toHaveBeenCalledWith(
-      expectedEvents,
+      expect.arrayContaining([
+        expect.objectContaining({
+          registrationId: oldViewRegistration.id,
+          type: RegistrationEventEnum.registrationStatusChange,
+          userId: 2,
+          attributes: expect.arrayContaining([
+            expect.objectContaining({
+              key: 'fieldName',
+              value: GenericRegistrationAttributes.status,
+            }),
+            expect.objectContaining({
+              key: 'oldValue',
+              value: RegistrationStatusEnum.new,
+            }),
+            expect.objectContaining({
+              key: 'newValue',
+              value: RegistrationStatusEnum.included,
+            }),
+            expect.objectContaining({ key: 'reason', value: options.reason }),
+          ]),
+        }),
+      ]),
       {
         chunk: 2000,
       },

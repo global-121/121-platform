@@ -39,38 +39,37 @@ export class SeedMockHelperService {
       nrPaymentsString !== undefined && nrPaymentsString !== null
         ? Number(nrPaymentsString)
         : 2;
-    const powerNrMessages = Number(powerNrMessagesString) || 1;
+    const powerNrMessages =
+      powerNrMessagesString !== undefined && powerNrMessagesString !== null
+        ? Number(powerNrMessagesString)
+        : 1;
 
-    const min = 1;
+    const minMaxPowerRegistrations = 1;
     const maxPowerNrRegistrations = 17;
     const maxPowerNrMessages = 6; // NOTE: There is a trade-off with maxPowerNrRegistrations here. If that is on 17, then this can be max. 1.
     const maxNrPayments = 30;
 
     if (
       isNaN(powerNrRegistrations) ||
-      powerNrRegistrations < min ||
+      powerNrRegistrations < minMaxPowerRegistrations ||
       powerNrRegistrations > maxPowerNrRegistrations
     ) {
       throw new HttpException(
-        `mockPowerNumberRegistrations must be a number between ${min} and ${maxPowerNrRegistrations}`,
+        `mockPowerNumberRegistrations must be a number between ${minMaxPowerRegistrations} and ${maxPowerNrRegistrations}`,
         HttpStatus.BAD_REQUEST,
       );
     }
 
     if (isNaN(nrPayments) || nrPayments > maxNrPayments) {
       throw new HttpException(
-        `nrPayments must be a number between ${min} and ${maxNrPayments}`,
+        `nrPayments must be a number between 0 and ${maxNrPayments}`,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    if (
-      isNaN(powerNrMessages) ||
-      powerNrMessages < min ||
-      powerNrMessages > maxPowerNrMessages
-    ) {
+    if (isNaN(powerNrMessages) || powerNrMessages > maxPowerNrMessages) {
       throw new HttpException(
-        `mockPowerNumberMessages must be a number between ${min} and ${maxPowerNrMessages}`,
+        `mockPowerNumberMessages must be a number 0 and ${maxPowerNrMessages}`,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -78,8 +77,17 @@ export class SeedMockHelperService {
     return { powerNrRegistrations, nrPayments, powerNrMessages };
   }
 
-  public async multiplyRegistrations(powerNr: number): Promise<void> {
-    await this.mockDataFactory.multiplyRegistrations(powerNr);
+  public async multiplyRegistrations({
+    powerNr,
+    includeRegistrationEvents = false,
+  }: {
+    powerNr: number;
+    includeRegistrationEvents?: boolean;
+  }): Promise<void> {
+    await this.mockDataFactory.multiplyRegistrations({
+      powerNr,
+      includeRegistrationEvents,
+    });
   }
 
   public async alignOtherDataWithRegistrations({
@@ -185,16 +193,16 @@ export class SeedMockHelperService {
   ): Promise<void> {
     const startTime = Date.now();
     while (Date.now() - startTime < maxWaitTimeMs) {
-      const paginatedRegistrations = await this.getRegistrations(
+      const paginatedRegistrations = await this.getRegistrations({
         programId,
-        ['status'],
+        attributes: ['status'],
         accessToken,
-        1,
-        undefined,
-        {
+        page: 1,
+        limit: undefined,
+        filter: {
           'filter.status': `$in:${status}`,
         },
-      );
+      });
 
       if (
         paginatedRegistrations &&
@@ -207,14 +215,43 @@ export class SeedMockHelperService {
     }
   }
 
-  public async getRegistrations(
-    programId: number,
-    attributes: string[],
-    accessToken: string,
-    page?: number,
-    limit?: number,
-    filter: Record<string, string> = {},
-  ): Promise<any> {
+  public async awaitChangePaData({
+    programId,
+    referenceId,
+    data,
+    reason,
+    accessToken,
+  }: {
+    programId: number;
+    referenceId: string;
+    data: Record<string, any>;
+    reason: string;
+    accessToken: string;
+  }): Promise<any> {
+    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/registrations/${referenceId}`;
+    const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
+    const body = {
+      data,
+      reason,
+    };
+    return await this.httpService.patch(url, body, headers);
+  }
+
+  public async getRegistrations({
+    programId,
+    attributes,
+    accessToken,
+    page,
+    limit,
+    filter = {},
+  }: {
+    programId: number;
+    attributes: string[];
+    accessToken: string;
+    page?: number;
+    limit?: number;
+    filter?: Record<string, string>;
+  }): Promise<any> {
     const queryParams = new URLSearchParams();
     attributes.forEach((attr) => queryParams.append('select', attr));
     if (page) queryParams.append('page', page.toString());

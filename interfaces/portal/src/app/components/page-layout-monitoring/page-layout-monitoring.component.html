@@ -91,6 +91,7 @@
       </div>
       <app-data-list [data]="programDescriptionData()" />
     </p-card>
+
     @if (program.isPending()) {
       <p-skeleton
         class="[grid-area:content]"
@@ -98,9 +99,8 @@
       ></p-skeleton>
     } @else {
       <p-card
-        class="[grid-area:content]"
+        class="[grid-area:content] [&_.p-card-body]:pt-3"
         data-testid="monitoring-iframe"
-        styleClass="[&_.p-card-body]:pt-3"
       >
         <app-monitoring-menu
           data-testid="monitoring-menu"
