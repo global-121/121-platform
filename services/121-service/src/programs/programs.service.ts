@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { merge } from 'lodash';
 import { DataSource, Equal, QueryFailedError, Repository } from 'typeorm';
 
 import { GetTokenResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/get-token-result.interface';
@@ -254,7 +253,9 @@ export class ProgramService {
       );
     }
 
-    merge(program, updateProgramDto);
+    for (const key in updateProgramDto) {
+      program[key] = updateProgramDto[key];
+    }
 
     let savedProgram: ProgramEntity;
     try {

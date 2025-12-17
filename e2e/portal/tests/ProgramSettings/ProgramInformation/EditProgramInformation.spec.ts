@@ -4,9 +4,14 @@ import { format } from 'date-fns';
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
+  getProgram,
+  patchProgram,
+} from '@121-service/test/helpers/program.helper';
+import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
+import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import ProgramSettingsPage from '@121-e2e/portal/pages/ProgramSettingsPage';
@@ -15,11 +20,23 @@ import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 const todaysDate = new Date();
 const futureDate = new Date();
 futureDate.setDate(futureDate.getDate() + 1);
+let accessToken: string;
 
 // Arrange
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
-  await getAccessToken();
+  accessToken = await getAccessToken();
+
+  await patchProgram(
+    programIdOCW,
+    {
+      titlePortal: {
+        nl: 'something dutch to check if it does not disappear',
+        en: 'NLRC OCW program',
+      },
+    },
+    accessToken,
+  );
 
   // Login
   const loginPage = new LoginPage(page);
@@ -99,6 +116,11 @@ test('Edit Program Information', async ({ page }) => {
         'Enable scope': 'No',
       });
     }).toPass({ timeout: 2000 });
+
+    // Also validate the API still returns other language translactions for a translatable field
+    // It is suboptimal to do this check via the API, but this to cover a bug that occurred before by using a combination of the UI and API
+    const program = await getProgram(programIdOCW, accessToken);
+    expect(program.body.titlePortal?.nl).toBeDefined();
   });
 
   await test.step('Edit Budget information', async () => {

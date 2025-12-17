@@ -31,7 +31,10 @@ import {
   ProgramNameFormGroup,
 } from '~/components/program-form-name/program-form-name.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
-import { PROGRAM_FORM_TOOLTIPS } from '~/domains/program/program.helper';
+import {
+  mergeUILanguageForProgramLanguageAttributes,
+  PROGRAM_FORM_TOOLTIPS,
+} from '~/domains/program/program.helper';
 import { AuthService } from '~/services/auth.service';
 import { RegistrationsTableColumnService } from '~/services/registrations-table-column.service';
 import { ToastService } from '~/services/toast.service';
@@ -117,24 +120,34 @@ export class ProgramSettingsBasicInformationComponent {
         nameGroup: ProgramNameFormGroup;
         informationGroup: ProgramInformationFormGroup;
       }>['getRawValue']
-    >) =>
-      this.programApiService.updateProgram({
-        programId: this.programId,
-        programPatch: {
-          titlePortal: {
-            [this.currentLocale]: name,
-          },
-          description: {
-            [this.currentLocale]: description,
-          },
-          startDate: startDate?.toISOString(),
-          endDate: endDate?.toISOString(),
-          location,
-          targetNrRegistrations,
-          validation,
-          enableScope,
+    >) => {
+      const currentProgram = this.program.data();
+
+      const partialProgramUpdate = {
+        titlePortal: {
+          [this.currentLocale]: name,
         },
-      }),
+        description: {
+          [this.currentLocale]: description,
+        },
+        startDate: startDate?.toISOString(),
+        endDate: endDate?.toISOString(),
+        location,
+        targetNrRegistrations,
+        validation,
+        enableScope,
+      };
+
+      const programPatch = mergeUILanguageForProgramLanguageAttributes({
+        originalProgram: currentProgram,
+        partialUpdatedProgram: partialProgramUpdate,
+      });
+
+      return this.programApiService.updateProgram({
+        programId: this.programId,
+        programPatch,
+      });
+    },
     onSuccess: () => {
       this.toastService.showToast({
         detail: $localize`Basic information details saved successfully.`,
