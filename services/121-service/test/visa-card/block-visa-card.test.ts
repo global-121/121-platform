@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { VisaCard121Status } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/wallet-status-121.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { messageTemplateNlrcOcw } from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.const';
 import {
@@ -40,6 +41,7 @@ describe('(Un)Block visa debit card', () => {
     await seedPaidRegistrations({
       registrations: [testRegistration],
       programId: programIdVisa,
+      completeStatuses: [TransactionStatusEnum.success],
     });
     const visaWalletResponseBefore = await getVisaWalletsAndDetails(
       programIdVisa,
@@ -99,6 +101,7 @@ describe('(Un)Block visa debit card', () => {
     await seedPaidRegistrations({
       registrations: [testRegistration],
       programId: programIdVisa,
+      completeStatuses: [TransactionStatusEnum.success],
     });
 
     const visaWalletResponseBefore = await getVisaWalletsAndDetails(
@@ -106,6 +109,7 @@ describe('(Un)Block visa debit card', () => {
       testRegistration.referenceId,
       accessToken,
     );
+
     const tokencode = visaWalletResponseBefore.body.cards[0].tokenCode;
 
     await blockVisaCard(
