@@ -30,6 +30,8 @@
           />
         }
         @if (currentCardHasAction()('reissue')) {
+          <!-- TODO: Hier moet een verschil in komen of "card distribution by mail" enabled is. -->
+          <!-- Kunnen we een  -->
           <p-button
             label="Replace card"
             i18n-label="@@debit-card-actions-replace-card"
@@ -38,7 +40,7 @@
             icon="pi pi-refresh"
             [iconPos]="rtlHelper.createPosition('start')()"
             class="ms-4"
-            (click)="reissueConfirmationDialog.show()"
+            (click)="replaceCardByMailDialog.show()"
           />
         }
       </div>
@@ -139,15 +141,15 @@
     A message will be sent to the registration about this update.
   </p>
 </app-form-dialog>
-<!-- REISSUE CONFIRMATION -->
+<!-- REPLACE CARD BY MAIL CONFIRMATION -->
 <app-form-dialog
-  #reissueConfirmationDialog
+  #replaceCardByMailDialog
   header="Replace card"
   headerIcon="pi pi-refresh"
   i18n-header="@@debit-card-actions-replace-card"
   acceptLabel="Replace card"
   i18n-acceptLabel="@@debit-card-actions-replace-card"
-  [mutation]="reissueCardMutation"
+  [mutation]="replaceCardByMailMutation"
   [mutationData]="undefined"
 >
   <p i18n>

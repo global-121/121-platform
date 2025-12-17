@@ -17,7 +17,8 @@ import { DialogModule } from 'primeng/dialog';
 import { InputMask } from 'primeng/inputmask';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
-import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
+//import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
+import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { LinkCardDialogStates } from '~/pages/program-registration-debit-cards/components/link-card-dialog/enums/link-card-dialog-states.enum';
 import { ToastService } from '~/services/toast.service';
@@ -31,9 +32,10 @@ import { ToastService } from '~/services/toast.service';
 export class LinkCardDialogComponent {
   private readonly toastService = inject(ToastService);
   private readonly registrationApiService = inject(RegistrationApiService);
-  private readonly fspConfigurationApiService = inject(
-    FspConfigurationApiService,
-  );
+  // private readonly fspConfigurationApiService = inject(
+  //   FspConfigurationApiService,
+  // );
+  private readonly programApiService = inject(ProgramApiService);
 
   readonly programId = input.required<string>();
   readonly referenceId = input.required<string | undefined>();
@@ -48,8 +50,17 @@ export class LinkCardDialogComponent {
 
   public linkCardDialogStates = LinkCardDialogStates;
 
-  fspConfigurations = injectQuery(
-    this.fspConfigurationApiService.getFspConfigurations(this.programId),
+  // fspConfigurations = injectQuery(
+  //   this.fspConfigurationApiService.getFspConfigurationProperties({
+  //     programId: this.programId,
+  //     configurationName: 'Intersolve-visa',
+  //   }),
+  // );
+
+  programAttributes = injectQuery(
+    this.programApiService.getProgramAttributes({
+      programId: this.programId,
+    }),
   );
 
   readonly tokenCodeInvalid: Signal<boolean> = computed(() =>
@@ -66,38 +77,21 @@ export class LinkCardDialogComponent {
   });
 
   public async linkCard() {
-    console.log('FSP CONFIGURATIONS', this.fspConfigurations.data());
+    console.log(this.programAttributes.data());
     try {
-      //TODO: determine based on program config whether to link or replace
-      if ((Math.random() > 0.5 ? 1 : 0) === 1 /* postalCardDistribution */) {
-        await this.registrationApiService.linkCardToRegistration({
-          programId: this.programId,
-          referenceId: this.referenceId,
-          tokenCode: this.tokenCode,
-        });
-      } else {
-        await this.registrationApiService.replaceCardOnSite({
-          programId: this.programId,
-          referenceId: this.referenceId,
-          tokenCode: this.tokenCode,
-        });
-      }
+      await this.registrationApiService.linkCardToRegistration({
+        programId: this.programId,
+        referenceId: this.referenceId,
+        tokenCode: this.tokenCode,
+      });
     } catch (error) {
-      if (
-        error instanceof HttpErrorResponse &&
-        //TODO: determine right error code
-        error.status === 121
-      ) {
+      if (error instanceof HttpErrorResponse && error.status === 400) {
         this.linkCardDialogState.set(LinkCardDialogStates.errorAlreadyLinked);
         return;
       }
 
-      if (
-        error instanceof HttpErrorResponse &&
-        //TODO: determine right error code
-        error.status === 121
-      ) {
-        this.linkCardDialogState.set(LinkCardDialogStates.errorAlreadyLinked);
+      if (error instanceof HttpErrorResponse && error.status === 404) {
+        this.linkCardDialogState.set(LinkCardDialogStates.errorNotFound);
         return;
       }
     }

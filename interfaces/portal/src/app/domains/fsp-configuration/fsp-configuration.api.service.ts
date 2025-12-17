@@ -83,4 +83,27 @@ export class FspConfigurationApiService extends DomainApiService {
       ]).join('/'),
     });
   }
+
+  getFspConfigurationProperties({
+    programId,
+    configurationName,
+  }: {
+    programId: Signal<number | string>;
+    configurationName: string;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<unknown>({
+      method: 'GET',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(programId),
+        configurationName,
+        'properties',
+      ]).join('/'),
+    });
+  }
+
+  public invalidateCache(programId: Signal<number | string>): Promise<void> {
+    return this.queryClient.invalidateQueries({
+      queryKey: this.pathToQueryKey(BASE_ENDPOINT(programId)),
+    });
+  }
 }

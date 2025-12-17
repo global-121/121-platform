@@ -218,7 +218,8 @@ export class ProgramRegistrationDebitCardsPageComponent {
     },
   }));
 
-  reissueCardMutation = injectMutation(() => ({
+  // TODO: this is now a mutation specific to replacing by mail, rename accordingly
+  replaceCardByMailMutation = injectMutation(() => ({
     mutationFn: () => {
       const referenceId = this.referenceId();
 
@@ -238,8 +239,9 @@ export class ProgramRegistrationDebitCardsPageComponent {
       });
     },
   }));
-
   readonly currencyCode = computed(() => this.program.data()?.currency);
+
+  readonly cardDistributionByMailEnabled = computed(() => this.program.data());
 
   private invalidateWalletQuery() {
     void this.queryClient.invalidateQueries({

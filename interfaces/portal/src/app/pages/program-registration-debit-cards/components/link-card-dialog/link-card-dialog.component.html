@@ -20,23 +20,32 @@
       </p>
       <div class="py-1"></div>
       <img
-        ngSrc="assets/intersolve-visa-card.svg"
+        src="assets/intersolve-visa-card.svg"
         height="200"
         width="400"
         alt=""
         aria-hidden="false"
         class="mx-auto"
       />
-      <p-input-mask
-        label="Serial number"
-        i18n-label
-        [(ngModel)]="tokenCode"
-        placeholder="____-____-____-____-___"
-        mask="9999-9999-9999-9999-999"
-        [invalid]="tokenCodeInvalid()"
-        [style]="{ width: '100%' }"
-        [autoClear]="false"
-      ></p-input-mask>
+      <label
+        class="block w-full"
+        for="serial-number-input"
+      >
+        <span
+          class="mb-1 block font-medium"
+          i18n
+          >Serial number</span
+        >
+        <p-input-mask
+          inputId="serial-number-input"
+          [(ngModel)]="tokenCode"
+          placeholder="____-____-____-____-___"
+          mask="9999-9999-9999-9999-999"
+          [invalid]="tokenCodeInvalid()"
+          [style]="{ width: '100%' }"
+          [autoClear]="false"
+        ></p-input-mask>
+      </label>
       <app-form-error
         [error]="tokenCodeInvalid() && 'Fill up all 19 digits to link card'"
       />
