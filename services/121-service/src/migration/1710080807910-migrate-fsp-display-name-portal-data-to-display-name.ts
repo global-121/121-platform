@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class MigrateFspDisplayNamePortalDataToDisplayName1710080807910
-  implements MigrationInterface
-{
+export class MigrateFspDisplayNamePortalDataToDisplayName1710080807910 implements MigrationInterface {
   name = 'MigrateFspDisplayNamePortalDataToDisplayName1710080807910';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

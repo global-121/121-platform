@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RemoveAppPropsFromProgram1714661918070
-  implements MigrationInterface
-{
+export class RemoveAppPropsFromProgram1714661918070 implements MigrationInterface {
   name = 'RemoveAppPropsFromProgram1714661918070';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

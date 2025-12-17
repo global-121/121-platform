@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class TransactionViewPaginate1763138063129
-  implements MigrationInterface
-{
+export class TransactionViewPaginate1763138063129 implements MigrationInterface {
   name = 'TransactionViewPaginate1763138063129';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

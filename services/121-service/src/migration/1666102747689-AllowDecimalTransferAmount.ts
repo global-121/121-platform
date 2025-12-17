@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AllowDecimalTransferAmount1666102747689
-  implements MigrationInterface
-{
+export class AllowDecimalTransferAmount1666102747689 implements MigrationInterface {
   name = 'AllowDecimalTransferAmount1666102747689';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

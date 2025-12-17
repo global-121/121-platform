@@ -3,9 +3,7 @@ import { Equal, MigrationInterface, QueryRunner } from 'typeorm';
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
-export class RemoveSelectForValidation1707311790028
-  implements MigrationInterface
-{
+export class RemoveSelectForValidation1707311790028 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Set PV validation to true
     const instances = await queryRunner.query(`

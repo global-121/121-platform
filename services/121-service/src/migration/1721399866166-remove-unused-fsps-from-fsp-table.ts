@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RemoveUnusedFspsFromFspTable1721399866166
-  implements MigrationInterface
-{
+export class RemoveUnusedFspsFromFspTable1721399866166 implements MigrationInterface {
   name = 'RemoveUnusedFspsFromFspTable1721399866166';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

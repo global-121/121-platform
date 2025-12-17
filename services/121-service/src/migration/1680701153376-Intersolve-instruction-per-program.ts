@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class IntersolveInstructionPerProgram1680701153376
-  implements MigrationInterface
-{
+export class IntersolveInstructionPerProgram1680701153376 implements MigrationInterface {
   name = 'IntersolveInstructionPerProgram1680701153376';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

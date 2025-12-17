@@ -3,10 +3,8 @@ import { FilterAttributeDto } from '@121-service/src/registration/dto/filter-att
 
 // TODO: refactor this to be a proper DTO
 export interface FoundProgramDto
-  extends Omit<
-      ProgramEntity,
-      'monitoringDashboardUrl' | 'programFspConfiguration'
-    >,
+  extends
+    Omit<ProgramEntity, 'monitoringDashboardUrl' | 'programFspConfiguration'>,
     Partial<Pick<ProgramEntity, 'monitoringDashboardUrl'>> {
   filterableAttributes?: {
     group: string;

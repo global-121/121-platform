@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class ModifySafaricomRequestsTable1724754547895
-  implements MigrationInterface
-{
+export class ModifySafaricomRequestsTable1724754547895 implements MigrationInterface {
   name = 'ModifySafaricomRequestsTable1724754547895';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

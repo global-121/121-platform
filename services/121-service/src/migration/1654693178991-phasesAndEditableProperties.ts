@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class PhasesAndEditableProperties1654693178991
-  implements MigrationInterface
-{
+export class PhasesAndEditableProperties1654693178991 implements MigrationInterface {
   name = 'PhasesAndEditableProperties1654693178991';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

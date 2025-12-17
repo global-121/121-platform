@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddDefaultPrivilegesForReadonlyUser1762340084238
-  implements MigrationInterface
-{
+export class AddDefaultPrivilegesForReadonlyUser1762340084238 implements MigrationInterface {
   name = 'AddDefaultPrivilegesForReadonlyUser1762340084238';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

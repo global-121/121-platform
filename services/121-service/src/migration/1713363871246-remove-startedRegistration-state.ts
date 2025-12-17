@@ -2,9 +2,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 const registrationStatus = 'startedRegistration';
 
-export class RemoveStartedRegistrationState1713363871246
-  implements MigrationInterface
-{
+export class RemoveStartedRegistrationState1713363871246 implements MigrationInterface {
   name = 'RemoveStartedRegistrationState1713363871246';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

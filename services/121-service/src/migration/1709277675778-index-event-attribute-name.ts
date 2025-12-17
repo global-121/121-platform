@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class IndexEventAttributeName1709277675778
-  implements MigrationInterface
-{
+export class IndexEventAttributeName1709277675778 implements MigrationInterface {
   name = 'IndexEventAttributeName1709277675778';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

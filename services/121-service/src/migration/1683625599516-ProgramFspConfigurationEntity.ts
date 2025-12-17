@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class ProgramFspConfigurationEntity1683625599516
-  implements MigrationInterface
-{
+export class ProgramFspConfigurationEntity1683625599516 implements MigrationInterface {
   name = 'ProgramFspConfigurationEntity1683625599516';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

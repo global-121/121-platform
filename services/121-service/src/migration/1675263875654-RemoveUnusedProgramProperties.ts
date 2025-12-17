@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RemoveUnusedProgramProperties1675263875654
-  implements MigrationInterface
-{
+export class RemoveUnusedProgramProperties1675263875654 implements MigrationInterface {
   name = 'RemoveUnusedProgramProperties1675263875654';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

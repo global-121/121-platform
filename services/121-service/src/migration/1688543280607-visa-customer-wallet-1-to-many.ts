@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class visaCustomerWallet1ToMany1688543280607
-  implements MigrationInterface
-{
+export class visaCustomerWallet1ToMany1688543280607 implements MigrationInterface {
   name = 'visaCustomerWallet1ToMany1688543280607';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

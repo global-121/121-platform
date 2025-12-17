@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RenameTableFspAttributeToFinancialServiceProviderQuestion1709612326501
-  implements MigrationInterface
-{
+export class RenameTableFspAttributeToFinancialServiceProviderQuestion1709612326501 implements MigrationInterface {
   name =
     'RenameTableFspAttributeToFinancialServiceProviderQuestion1709612326501';
 

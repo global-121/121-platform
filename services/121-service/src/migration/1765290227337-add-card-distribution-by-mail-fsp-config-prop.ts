@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddCardDistributionByMailFspConfigProp1765290227337
-  implements MigrationInterface
-{
+export class AddCardDistributionByMailFspConfigProp1765290227337 implements MigrationInterface {
   name = 'AddCardDistributionByMailFspConfigProp1765290227337';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

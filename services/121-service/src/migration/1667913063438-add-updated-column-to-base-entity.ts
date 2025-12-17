@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class addUpdatedColumnToBaseEntity1667913063438
-  implements MigrationInterface
-{
+export class addUpdatedColumnToBaseEntity1667913063438 implements MigrationInterface {
   name = 'addUpdatedColumnToBaseEntity1667913063438';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

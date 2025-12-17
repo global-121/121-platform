@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RemoveOldVisaWalletEntity1733316713976
-  implements MigrationInterface
-{
+export class RemoveOldVisaWalletEntity1733316713976 implements MigrationInterface {
   name = 'RemoveOldVisaWalletEntity1733316713976';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

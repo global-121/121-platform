@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateOnafriqTransaction1750061876121
-  implements MigrationInterface
-{
+export class CreateOnafriqTransaction1750061876121 implements MigrationInterface {
   name = 'CreateOnafriqTransaction1750061876121';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

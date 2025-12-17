@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class createEspocrmWebhookEntity1677228270872
-  implements MigrationInterface
-{
+export class createEspocrmWebhookEntity1677228270872 implements MigrationInterface {
   name = 'createEspocrmWebhookEntity1677228270872';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

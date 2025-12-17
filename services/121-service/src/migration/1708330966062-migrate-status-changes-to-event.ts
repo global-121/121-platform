@@ -5,9 +5,7 @@ import { RegistrationEventAttributeEntity } from '@121-service/src/registration-
 import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
 import { RegistrationEventAttributeKeyEnum } from '@121-service/src/registration-events/enum/registration-event-attribute-key.enum';
 
-export class MigrateStatusChangesToEvent1708330966062
-  implements MigrationInterface
-{
+export class MigrateStatusChangesToEvent1708330966062 implements MigrationInterface {
   name = 'MigrateStatusChangesToEvent1708330966062';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

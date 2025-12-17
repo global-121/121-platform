@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class MakeFspIdNotNullAtRegistration1714467998004
-  implements MigrationInterface
-{
+export class MakeFspIdNotNullAtRegistration1714467998004 implements MigrationInterface {
   name = 'MakeFspIdNotNullAtRegistration1714467998004';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

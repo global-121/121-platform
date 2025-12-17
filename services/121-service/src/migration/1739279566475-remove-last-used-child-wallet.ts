@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RemoveLastUsedChildWallet1739279566475
-  implements MigrationInterface
-{
+export class RemoveLastUsedChildWallet1739279566475 implements MigrationInterface {
   name = 'RemoveLastUsedChildWallet1739279566475';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class MakeProgramFspConfigNullableForeignKey1734524945346
-  implements MigrationInterface
-{
+export class MakeProgramFspConfigNullableForeignKey1734524945346 implements MigrationInterface {
   name = 'MakeProgramFspConfigNullableForeignKey1734524945346';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class intersolveVoucherRename1676469698577
-  implements MigrationInterface
-{
+export class intersolveVoucherRename1676469698577 implements MigrationInterface {
   name = 'intersolveVoucherRename1676469698577';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

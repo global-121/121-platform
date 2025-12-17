@@ -11,9 +11,7 @@ interface Registration {
   registrationStatus: string;
 }
 
-export class MigrateStatusesToDeclined1713422095087
-  implements MigrationInterface
-{
+export class MigrateStatusesToDeclined1713422095087 implements MigrationInterface {
   name = 'MigrateStatusesToDeclined1713422095087';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class OnafriqReconciliationReport1751976748859
-  implements MigrationInterface
-{
+export class OnafriqReconciliationReport1751976748859 implements MigrationInterface {
   name = 'OnafriqReconciliationReport1751976748859';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

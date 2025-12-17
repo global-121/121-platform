@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CooperativeBankAccountValidation1764069631256
-  implements MigrationInterface
-{
+export class CooperativeBankAccountValidation1764069631256 implements MigrationInterface {
   name = 'CooperativeBankAccountValidation1764069631256';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
