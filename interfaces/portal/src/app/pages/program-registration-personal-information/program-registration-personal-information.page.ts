@@ -42,9 +42,7 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProgramRegistrationPersonalInformationPageComponent
-  implements ComponentCanDeactivate
-{
+export class ProgramRegistrationPersonalInformationPageComponent implements ComponentCanDeactivate {
   readonly rtlHelper = inject(RtlHelperService);
   // this is injected by the router
   readonly programId = input.required<string>();
@@ -127,7 +125,6 @@ export class ProgramRegistrationPersonalInformationPageComponent
 
   onRegistrationUpdated() {
     this.isEditing.set(false);
-    void this.registrationAttributes.refetch();
   }
 
   canDeactivate() {
