@@ -1,5 +1,20 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`/ Users / Roles Should return all user roles 1`] = `
+[
+  "admin",
+  "program-admin",
+  "view",
+  "kobo-registration-user",
+  "kobo-validation-user",
+  "cva-manager",
+  "cva-officer",
+  "finance-manager",
+  "finance-officer",
+  "view-without-PII",
+]
+`;
+
 exports[`/ Users / Roles should not create a role when the role already exists 1`] = `"{"statusCode":409,"message":"Role already exists: test-manager"}"`;
 
 exports[`/ Users / Roles should not create a role when using a permission that does not exist 1`] = `"{"statusCode":400,"message":"Permission not valid: program.make-up-my-own-permission"}"`;

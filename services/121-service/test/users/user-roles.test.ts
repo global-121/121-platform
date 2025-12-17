@@ -91,5 +91,25 @@ describe('/ Users', () => {
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
       expect(response.text).toMatchSnapshot();
     });
+
+    it('Should return all user roles', async () => {
+      // Act
+      const response = await getServer()
+        .get('/roles')
+        .set('Cookie', [accessToken])
+        .send();
+
+      const rolesLength = response.body.length;
+      const roles: string[] = [];
+
+      for (let i = 0; i < rolesLength; i++) {
+        // Sort permissions for snapshot consistency
+        const role = response.body[i].role;
+        roles.push(role); // Add role to the array
+      }
+      // Assert
+      expect(response.status).toBe(HttpStatus.OK);
+      expect(roles).toMatchSnapshot();
+    });
   });
 });
