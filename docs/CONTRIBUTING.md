@@ -58,7 +58,7 @@ Please submit changes through [pull requests](http://help.github.com/pull-reques
 - **Ownership**: Each branch has one owner/maintainer who is also the PR author.
 - **Review readiness**:
   - The PR author decides when it's ready for review.
-  - Make sure Co-pilot comments are addressed before asking for review.
+  - Make sure Copilot comments are addressed before asking for review.
   - "Ready for review" means it's likely to be merged after approval unless stated otherwise.
   - The same reviewer should perform subsequent reviews on a PR they've already reviewed.
 - **Reviewers**: Limit to one reviewer unless additional expertise is needed.
