@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   seedIncludedRegistrations,
@@ -91,7 +92,7 @@ test("All elements of Monitoring's `Data Changes` sub-page display correct data 
 
   const programTitle = 'NLRC OCW program';
 
-  await test.step("Navigate to program's monitoring page", async () => {
+  await test.step("Navigate to monitoring's 'data changes' tab", async () => {
     await basePage.selectProgram(programTitle);
     await programMonitoring.navigateToProgramPage('Monitoring');
     await programMonitoring.selectTab({ tabName: 'Data Changes' });
@@ -112,7 +113,7 @@ test("All elements of Monitoring's `Data Changes` sub-page display correct data 
       let expectedOldValue = registrationOCW4[fieldKey]?.toString() ?? '';
       let expectedNewValue = dataUpdate[fieldKey]?.toString() ?? '';
       // Convert language codes to display names for preferredLanguage field
-      if (fieldKey === 'preferredLanguage') {
+      if (fieldKey === GenericRegistrationAttributes.preferredLanguage) {
         expectedOldValue =
           languageCodeToDisplayName[registrationOCW4[fieldKey]] ??
           expectedOldValue;
