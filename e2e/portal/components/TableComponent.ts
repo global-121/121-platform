@@ -60,6 +60,20 @@ class TableComponent {
       .first();
   }
 
+  async getColumnIndexByHeaderText(headerText: string): Promise<number> {
+    const headerCells = this.tableHeader.locator('th');
+    const headerCount = await headerCells.count();
+
+    for (let i = 0; i < headerCount; i++) {
+      const cellText = await headerCells.nth(i).textContent();
+      if (cellText?.trim() === headerText) {
+        return i;
+      }
+    }
+
+    throw new Error(`Column with header text "${headerText}" not found`);
+  }
+
   async getCell(row: number, column: number) {
     return this.tableRows.nth(row).locator('td').nth(column);
   }
@@ -299,7 +313,7 @@ class TableComponent {
     await this.page.getByText('Choose option(s)').click();
     await this.searchBox.click();
     await this.searchBox.fill(selection);
-    await this.page.getByRole('option', { name: selection }).click();
+    await this.page.getByRole('option', { name: selection }).first().click();
   }
 
   async filterColumnByDate({
@@ -533,6 +547,25 @@ class TableComponent {
 
     await expect(messageNotification).toBeVisible();
     await expect(messageNotification).toHaveCount(count);
+  }
+
+  async validateDataChangeValue({
+    expectedValue,
+    columnType = 'new',
+    rowIndex = 0,
+  }: {
+    expectedValue: string;
+    columnType?: 'old' | 'new';
+    rowIndex?: number;
+  }) {
+    // Find column index by header text to make it resilient to table structure changes
+    const headerText = columnType === 'old' ? 'Old value' : 'New value';
+    const columnIndex = await this.getColumnIndexByHeaderText(headerText);
+
+    const cell = this.tableRows.nth(rowIndex).locator('td').nth(columnIndex);
+    const actualValue = await cell.textContent();
+
+    expect(actualValue?.trim()).toBe(expectedValue);
   }
 }
 
