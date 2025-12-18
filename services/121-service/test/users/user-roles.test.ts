@@ -94,6 +94,8 @@ describe('/ Users', () => {
     });
 
     it('Should return all user roles', async () => {
+      // Arrange
+
       // Act
       const response = await getUserRoles(accessToken);
 
@@ -110,6 +112,7 @@ describe('/ Users', () => {
     });
 
     it('Should update a role by userRoleId', async () => {
+      // Arrange
       const updateData = {
         label: 'Updated user role label',
         description: 'Updated user role description',
@@ -123,10 +126,33 @@ describe('/ Users', () => {
       expect(updateUserRole.status).toBe(HttpStatus.OK);
       // Assert
       const getUserRole = await getUserRoles(accessToken);
+
+      expect(getUserRole.status).toBe(HttpStatus.OK);
       const role = getUserRole.body.find((r: { id: number }) => r.id === 1);
-      // Assert
+
       expect(role.label).toBe(updateData.label);
       expect(role.description).toBe(updateData.description);
+    });
+
+    it('Should delete a role by userRoleId', async () => {
+      // Arrange
+      // Get user roles before delete
+      const getUserRoleBeforeDelete = await getUserRoles(accessToken);
+      expect(getUserRoleBeforeDelete.status).toBe(HttpStatus.OK);
+      const rolesLengthBeforeDelete = getUserRoleBeforeDelete.body.length;
+      // Act
+      // Delete user role
+      const deleteUserRole = await getServer()
+        .delete('/roles/2')
+        .set('Cookie', [accessToken])
+        .send();
+      expect(deleteUserRole.status).toBe(HttpStatus.OK);
+      // Assert
+      // Get user roles after delete
+      const getUserRoleAfterDelete = await getUserRoles(accessToken);
+      expect(getUserRoleAfterDelete.status).toBe(HttpStatus.OK);
+      const rolesLengthAfterDelete = getUserRoleAfterDelete.body.length;
+      expect(rolesLengthAfterDelete).toBe(rolesLengthBeforeDelete - 1);
     });
   });
 });
