@@ -8,6 +8,7 @@ import {
   model,
   output,
   Signal,
+  signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -30,24 +31,37 @@ export class LinkCardDialogComponent {
   private readonly toastService = inject(ToastService);
   private readonly registrationApiService = inject(RegistrationApiService);
 
+  readonly TOKEN_CODE_PLACEHOLDER = '____-____-____-____-___';
+
   readonly programId = input.required<string>();
   readonly referenceId = input.required<string | undefined>();
   readonly dialogVisible = input.required<boolean>();
 
   readonly closeDialog = output();
 
-  readonly tokenCode = model('');
-  readonly linkCardDialogState = model<LinkCardDialogStates>(
+  readonly tokenCode = model(this.TOKEN_CODE_PLACEHOLDER);
+
+  readonly linkCardDialogState = signal<LinkCardDialogStates>(
     LinkCardDialogStates.linking,
   );
 
   public linkCardDialogStates = LinkCardDialogStates;
 
-  readonly tokenCodeInvalid: Signal<boolean> = computed(() =>
-    this.tokenCode().includes('_'),
+  readonly tokenCodeFullyFilled: Signal<boolean> = computed(
+    () => !this.tokenCode().includes('_') && this.tokenCode() !== '',
   );
 
+  readonly tokenCodeInvalid: Signal<boolean> = computed(() => {
+    const notEmpty = /[^_-]/.test(this.tokenCode());
+
+    return !this.tokenCodeFullyFilled() && notEmpty;
+  });
+
   public async linkCard() {
+    if (!this.tokenCodeFullyFilled()) {
+      return;
+    }
+
     try {
       await this.registrationApiService.linkCardToRegistration({
         programId: this.programId,
@@ -55,6 +69,7 @@ export class LinkCardDialogComponent {
         tokenCode: this.tokenCode,
       });
     } catch (error) {
+      // TODO: update/test this after tokenCode prefix check is implemented in the backend
       if (error instanceof HttpErrorResponse && error.status === 400) {
         this.linkCardDialogState.set(LinkCardDialogStates.errorAlreadyLinked);
         return;

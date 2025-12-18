@@ -9,7 +9,7 @@
     <ng-template pTemplate="header">
       <div class="flex items-center gap-2">
         <i class="pi pi-link"></i>
-        <h3 i18n>Link Visa card</h3>
+        <h3 i18n>Link visa card</h3>
       </div>
     </ng-template>
     <div class="flex flex-col gap-2">
@@ -32,14 +32,14 @@
         for="serial-number-input"
       >
         <span
-          class="mb-1 block font-medium"
+          class="mb-1 block font-bold"
           i18n
           >Serial number</span
         >
         <p-input-mask
           inputId="serial-number-input"
           [(ngModel)]="tokenCode"
-          placeholder="____-____-____-____-___"
+          [placeholder]="this.TOKEN_CODE_PLACEHOLDER"
           mask="9999-9999-9999-9999-999"
           [invalid]="tokenCodeInvalid()"
           [style]="{ width: '100%' }"

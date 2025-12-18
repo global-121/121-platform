@@ -2051,14 +2051,8 @@
       <trans-unit id="registration-duplicate-status" datatype="html">
         <source>Duplicate status</source>
       </trans-unit>
-      <trans-unit id="8920778008306462191" datatype="html">
-        <source>There are no debit cards linked to this registration</source>
-      </trans-unit>
       <trans-unit id="3176639329668271224" datatype="html">
         <source>Link card</source>
-      </trans-unit>
-      <trans-unit id="1803991316035947288" datatype="html">
-        <source>Link Visa card</source>
       </trans-unit>
       <trans-unit id="debit-card-actions-link-visa-card" datatype="html">
         <source>Link visa card</source>
@@ -2101,6 +2095,12 @@
       </trans-unit>
       <trans-unit id="5849913562562560018" datatype="html">
         <source>Request new card</source>
+      </trans-unit>
+      <trans-unit id="5257307362705018476" datatype="html">
+        <source>Link visa card</source>
+      </trans-unit>
+      <trans-unit id="5506262241768766964" datatype="html">
+        <source>There are debit cards linked to this registration. Link a visa card from your available cards to this registration by clicking the button below.</source>
       </trans-unit>
     </body>
   </file>
