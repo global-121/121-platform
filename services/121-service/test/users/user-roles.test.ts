@@ -100,7 +100,7 @@ describe('/ Users', () => {
       expect(response.text).toMatchSnapshot();
     });
 
-    it('Should return all user roles', async () => {
+    it('should return all user roles', async () => {
       // Arrange
       const roles: string[] = [];
       // Act
@@ -116,7 +116,7 @@ describe('/ Users', () => {
       expect(roles).toMatchSnapshot();
     });
 
-    it('Should update a role by userRoleId', async () => {
+    it('should update a role by userRoleId', async () => {
       // Arrange
       const updateData = {
         label: 'Updated user role label',
@@ -139,7 +139,7 @@ describe('/ Users', () => {
       expect(role.description).toBe(updateData.description);
     });
 
-    it('Should delete a role by userRoleId', async () => {
+    it('should delete a role by userRoleId', async () => {
       // Arrange
       // Get user roles before delete
       const getUserRoleBeforeDelete = await getUserRoles(accessToken);
@@ -160,7 +160,7 @@ describe('/ Users', () => {
       expect(rolesLengthAfterDelete).toBe(rolesLengthBeforeDelete - 1);
     });
 
-    it('Should get all users', async () => {
+    it('should get all users', async () => {
       // Arrange
       const users: string[] = [];
       // Act
@@ -179,7 +179,7 @@ describe('/ Users', () => {
       expect(users).toMatchSnapshot();
     });
 
-    it('Should logout user', async () => {
+    it('should logout user', async () => {
       // Arrange
 
       // Act
@@ -188,7 +188,7 @@ describe('/ Users', () => {
       expect(logoutResponse.status).toBe(HttpStatus.CREATED);
     });
 
-    it('Should change user password', async () => {
+    it('should change user password', async () => {
       // Arrange
       const changePasswordPayload = {
         username: 'admin@example.org',
@@ -212,7 +212,7 @@ describe('/ Users', () => {
       expect(loginResponseAfterPasswordChange.status).toBe(HttpStatus.CREATED);
     });
 
-    it('Should delete user', async () => {
+    it('should delete user', async () => {
       // Arrange
       const userListBeforeDelete: string[] = [];
       const userListAfterDelete: string[] = [];
@@ -229,8 +229,8 @@ describe('/ Users', () => {
         .delete('/users/2')
         .set('Cookie', [accessToken])
         .send();
-      expect(deleteUserResponse.status).toBe(HttpStatus.OK);
       // Assert
+      expect(deleteUserResponse.status).toBe(HttpStatus.OK);
       const getAllUsersAfterDelete = await getAllUsers(accessToken);
       const usersLengthAfterDelete = getAllUsersAfterDelete.body.length;
 
@@ -242,7 +242,7 @@ describe('/ Users', () => {
       expect(userListAfterDelete).not.toEqual(userListBeforeDelete);
     });
 
-    it('Should get current user)', async () => {
+    it('should get current user)', async () => {
       // Arrange
       // Act
       const getCurrentUserResponse = await getServer()
@@ -256,7 +256,7 @@ describe('/ Users', () => {
       expect(currentUser.username).toBe('admin@example.org');
     });
 
-    it('Should return all users assigned to a program', async () => {
+    it('should return all users assigned to a program', async () => {
       // Arrange
 
       // Act
@@ -270,7 +270,7 @@ describe('/ Users', () => {
     });
 
     // NOTE: for this reset of password it seems like only the correct response status can be validated
-    it('Should reset user password', async () => {
+    it('should reset user password', async () => {
       // Arrange
       const resetPasswordPayload = { username: 'admin@example.org' };
       // Act
@@ -282,7 +282,7 @@ describe('/ Users', () => {
       expect(resetPasswordResponse.status).toBe(HttpStatus.NO_CONTENT);
     });
 
-    it('Should update user properties (isOrganizationAdmin, displayName)', async () => {
+    it('should update user properties (isOrganizationAdmin, displayName)', async () => {
       // Arrange
       const updateData = {
         isOrganizationAdmin: true,
