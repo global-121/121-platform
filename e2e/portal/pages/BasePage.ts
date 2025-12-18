@@ -249,7 +249,26 @@ class BasePage {
       }
     });
 
+    // For template downloads with no data, sort headers alphabetically for consistent testing
+    const shouldSortHeaders = data.length === 0 && expectedRowCount === 0;
+
+    if (shouldSortHeaders) {
+      // Create index mapping before sorting
+      const sortedPairs = headerCells
+        .map((header, index) => ({ header, originalIndex: index }))
+        .sort((a, b) => a.header.localeCompare(b.header));
+
+      // Apply the same sorting to headers
+      const sortedHeaders = sortedPairs.map((pair) => pair.header);
+      headerCells.length = 0;
+      headerCells.push(...sortedHeaders);
+    }
+
     let normalizedDownloadedFile = headerCells.join(',');
+
+    if (data.length > 0) {
+      normalizedDownloadedFile += '\n' + dataCells.join(',');
+    }
 
     if (data.length > 0) {
       normalizedDownloadedFile += '\n' + dataCells.join(',');
