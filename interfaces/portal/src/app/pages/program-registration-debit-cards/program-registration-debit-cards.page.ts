@@ -273,13 +273,4 @@ export class ProgramRegistrationDebitCardsPageComponent {
   readonly currencyCode = computed(() => this.program.data()?.currency);
 
   readonly cardDistributionByMailEnabled = computed(() => this.program.data());
-
-  private invalidateWalletQuery() {
-    void this.queryClient.invalidateQueries({
-      queryKey: this.registrationApiService.getWalletWithCardsByReferenceId(
-        this.programId,
-        this.referenceId,
-      )().queryKey,
-    });
-  }
 }
