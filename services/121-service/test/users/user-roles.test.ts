@@ -128,8 +128,8 @@ describe('/ Users', () => {
         .set('Cookie', [accessToken])
         .send(updateData);
 
-      expect(updateUserRole.status).toBe(HttpStatus.OK);
       // Assert
+      expect(updateUserRole.status).toBe(HttpStatus.OK);
       const getUserRole = await getUserRoles(accessToken);
 
       expect(getUserRole.status).toBe(HttpStatus.OK);
