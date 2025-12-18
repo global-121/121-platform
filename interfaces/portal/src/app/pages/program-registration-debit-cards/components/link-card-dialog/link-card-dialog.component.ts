@@ -64,6 +64,7 @@ export class LinkCardDialogComponent {
         tokenCode: this.tokenCode,
       });
     } catch (error) {
+      //TODO: get statuses from backend?
       if (error instanceof HttpErrorResponse && error.status === 400) {
         this.linkCardDialogState.set(LinkCardDialogStates.errorAlreadyLinked);
         return;

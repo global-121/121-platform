@@ -30,8 +30,7 @@
           />
         }
         @if (currentCardHasAction()('reissue')) {
-          <!-- TODO: Hier moet een verschil in komen of "card distribution by mail" enabled is. -->
-          <!-- Kunnen we een  -->
+          <!-- TODO: set dialog state to replace -->
           <p-button
             label="Replace card"
             i18n-label="@@debit-card-actions-replace-card"
@@ -40,7 +39,11 @@
             icon="pi pi-refresh"
             [iconPos]="rtlHelper.createPosition('start')()"
             class="ms-4"
-            (click)="replaceCardByMailDialog.show()"
+            (click)="
+              cardDistributionByMailEnabled()
+                ? replaceCardByMailDialog.show()
+                : linkCardDialogVisible.set(true)
+            "
           />
         }
       </div>

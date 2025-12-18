@@ -102,7 +102,8 @@ export class ProgramRegistrationDebitCardsPageComponent {
       configurationName: 'Intersolve-visa',
     }),
   );
-  readonly showLinkCardOnSite = computed(() => {
+
+  readonly cardDistributionByMailEnabled = computed(() => {
     const props = this.fspConfigurationProperties.data() ?? [];
 
     const cardDistributionByMailProperty = props.find(
@@ -111,12 +112,13 @@ export class ProgramRegistrationDebitCardsPageComponent {
         (IntersolveVisaFspConfigurationProperties.cardDistributionByMail as string),
     );
 
-    const cardDistributionByMailEnabled =
-      cardDistributionByMailProperty?.value === 'true';
+    return cardDistributionByMailProperty?.value === 'true';
+  });
 
+  readonly showLinkCardOnSite = computed(() => {
     const hasAnyCard = !!this.currentCard() || this.oldCards().length > 0;
 
-    return !cardDistributionByMailEnabled && !hasAnyCard;
+    return !this.cardDistributionByMailEnabled() && !hasAnyCard;
   });
 
   readonly convertCentsToMainUnits = (
@@ -270,6 +272,4 @@ export class ProgramRegistrationDebitCardsPageComponent {
     },
   }));
   readonly currencyCode = computed(() => this.program.data()?.currency);
-
-  readonly cardDistributionByMailEnabled = computed(() => this.program.data());
 }
