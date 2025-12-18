@@ -3,6 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getAllUsers,
+  getAllUsersByProgramId,
   getUserRoles,
 } from '@121-service/test/helpers/user.helper';
 import {
@@ -12,6 +13,7 @@ import {
   logoutUser,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
+import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('/ Users', () => {
   describe('/ Roles', () => {
@@ -252,6 +254,19 @@ describe('/ Users', () => {
 
       expect(getCurrentUserResponse.status).toBe(HttpStatus.OK);
       expect(currentUser.username).toBe('admin@example.org');
+    });
+
+    it('Should return all users assigned to a program', async () => {
+      // Arrange
+
+      // Act
+      const fetchUsersFromPvProgram = await getAllUsersByProgramId(
+        accessToken,
+        programIdPV.toString(),
+      );
+      // Assert
+      expect(fetchUsersFromPvProgram.status).toBe(HttpStatus.OK);
+      expect(fetchUsersFromPvProgram.body.length).toBe(10);
     });
   });
 });
