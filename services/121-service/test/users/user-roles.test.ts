@@ -268,5 +268,18 @@ describe('/ Users', () => {
       expect(fetchUsersFromPvProgram.status).toBe(HttpStatus.OK);
       expect(fetchUsersFromPvProgram.body.length).toBe(10);
     });
+
+    // NOTE: for this reset of password it seems like only the correct response status can be validated
+    it('Should reset user password', async () => {
+      // Arrange
+      const resetPasswordPayload = { username: 'admin@example.org' };
+      // Act
+      const resetPasswordResponse = await getServer()
+        .patch('/users/password')
+        .set('Cookie', [accessToken])
+        .send(resetPasswordPayload);
+      // Assert
+      expect(resetPasswordResponse.status).toBe(HttpStatus.NO_CONTENT);
+    });
   });
 });
