@@ -7,3 +7,9 @@ export async function getUserRoles(
 ): Promise<request.Response> {
   return getServer().get('/roles').set('Cookie', [accessToken]).send();
 }
+
+export async function getAllUsers(
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer().get('/users').set('Cookie', [accessToken]).send();
+}
