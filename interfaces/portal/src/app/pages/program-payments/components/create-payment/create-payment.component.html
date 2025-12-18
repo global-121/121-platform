@@ -39,12 +39,7 @@
       <app-registrations-table
         #registrationsTable
         [programId]="programId()"
-        [localStorageKey]="
-          'program-payment-registrations-table-' +
-          programId() +
-          '-' +
-          today.toISOString()
-        "
+        [localStorageKey]="'program-payment-registrations-table-' + programId()"
         [overrideFilters]="overrideFilters"
         [showSelectionInHeader]="true"
       />
