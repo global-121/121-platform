@@ -249,7 +249,6 @@ export class ProgramRegistrationDebitCardsPageComponent {
     },
   }));
 
-  // TODO: this is now a mutation specific to replacing by mail, rename accordingly
   replaceCardByMailMutation = injectMutation(() => ({
     mutationFn: () => {
       const referenceId = this.referenceId();
