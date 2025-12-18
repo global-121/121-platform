@@ -1,5 +1,20 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
+exports[`/ Users / Roles Should get all users 1`] = `
+[
+  "program-admin@example.org",
+  "view-user@example.org",
+  "kobo+registration_country@example.org",
+  "kobo+validation_country@example.org",
+  "cva-manager@example.org",
+  "cva-officer@example.org",
+  "finance-manager@example.org",
+  "finance-officer@example.org",
+  "view-no-pii@example.org",
+  "admin@example.org",
+]
+`;
+
 exports[`/ Users / Roles Should return all user roles 1`] = `
 [
   "admin",

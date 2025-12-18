@@ -95,12 +95,10 @@ describe('/ Users', () => {
 
     it('Should return all user roles', async () => {
       // Arrange
-
+      const roles: string[] = [];
       // Act
       const response = await getUserRoles(accessToken);
-
       const rolesLength = response.body.length;
-      const roles: string[] = [];
 
       for (let i = 0; i < rolesLength; i++) {
         const role = response.body[i].role;
@@ -153,6 +151,25 @@ describe('/ Users', () => {
       expect(getUserRoleAfterDelete.status).toBe(HttpStatus.OK);
       const rolesLengthAfterDelete = getUserRoleAfterDelete.body.length;
       expect(rolesLengthAfterDelete).toBe(rolesLengthBeforeDelete - 1);
+    });
+
+    it('Should get all users', async () => {
+      // Arrange
+      const users: string[] = [];
+      // Act
+      const getAllUsers = await getServer()
+        .get('/users')
+        .set('Cookie', [accessToken])
+        .send();
+      const usersLength = getAllUsers.body.length;
+
+      for (let i = 0; i < usersLength; i++) {
+        const user = getAllUsers.body[i].username;
+        users.push(user);
+      }
+      // Assert
+      expect(getAllUsers.status).toBe(HttpStatus.OK);
+      expect(users).toMatchSnapshot();
     });
   });
 });
