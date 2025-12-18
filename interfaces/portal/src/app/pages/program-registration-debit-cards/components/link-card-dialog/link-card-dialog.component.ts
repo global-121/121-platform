@@ -47,18 +47,15 @@ export class LinkCardDialogComponent {
 
   public linkCardDialogStates = LinkCardDialogStates;
 
+  readonly showError = model(false);
+
   readonly tokenCodeFullyFilled: Signal<boolean> = computed(
     () => !this.tokenCode().includes('_') && this.tokenCode() !== '',
   );
 
-  readonly tokenCodeInvalid: Signal<boolean> = computed(() => {
-    const notEmpty = /[^_-]/.test(this.tokenCode());
-
-    return !this.tokenCodeFullyFilled() && notEmpty;
-  });
-
   public async linkCard() {
     if (!this.tokenCodeFullyFilled()) {
+      this.showError.set(true);
       return;
     }
 

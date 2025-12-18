@@ -41,13 +41,14 @@
           [(ngModel)]="tokenCode"
           [placeholder]="this.TOKEN_CODE_PLACEHOLDER"
           mask="9999-9999-9999-9999-999"
-          [invalid]="tokenCodeInvalid()"
+          [invalid]="showError()"
           [style]="{ width: '100%' }"
           [autoClear]="false"
+          (onInput)="showError.set(false)"
         ></p-input-mask>
       </label>
       <app-form-error
-        [error]="tokenCodeInvalid() && 'Fill up all 19 digits to link card'"
+        [error]="showError() && 'Fill up all 19 digits to link card'"
       />
       <div class="w-full">
         <div class="flex justify-end gap-2">
