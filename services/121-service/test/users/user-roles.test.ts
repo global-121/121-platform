@@ -171,5 +171,17 @@ describe('/ Users', () => {
       expect(getAllUsers.status).toBe(HttpStatus.OK);
       expect(users).toMatchSnapshot();
     });
+
+    it('Should logout user', async () => {
+      // Arrange
+
+      // Act
+      const logoutUser = await getServer()
+        .post('/users/logout')
+        .set('Cookie', [accessToken])
+        .send();
+      // Assert
+      expect(logoutUser.status).toBe(HttpStatus.CREATED);
+    });
   });
 });
