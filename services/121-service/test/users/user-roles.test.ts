@@ -5,6 +5,8 @@ import { getUserRoles } from '@121-service/test/helpers/user.helper';
 import {
   getAccessToken,
   getServer,
+  loginApi,
+  logoutUser,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
@@ -176,12 +178,33 @@ describe('/ Users', () => {
       // Arrange
 
       // Act
-      const logoutUser = await getServer()
-        .post('/users/logout')
-        .set('Cookie', [accessToken])
-        .send();
+      const logoutResponse = await logoutUser(accessToken);
       // Assert
-      expect(logoutUser.status).toBe(HttpStatus.CREATED);
+      expect(logoutResponse.status).toBe(HttpStatus.CREATED);
+    });
+
+    it('Should change user password', async () => {
+      // Arrange
+      const changePasswordPayload = {
+        username: 'admin@example.org',
+        password: 'password',
+        newPassword: 'newPassword',
+      };
+      // Act
+      const changePasswordResponse = await getServer()
+        .post('/users/password')
+        .set('Cookie', [accessToken])
+        .send(changePasswordPayload);
+      expect(changePasswordResponse.status).toBe(HttpStatus.CREATED);
+
+      const logoutResponse = await logoutUser(accessToken);
+      expect(logoutResponse.status).toBe(HttpStatus.CREATED);
+      // Assert
+      const loginResponseAfterPasswordChange = await loginApi(
+        changePasswordPayload.username,
+        changePasswordPayload.newPassword,
+      );
+      expect(loginResponseAfterPasswordChange.status).toBe(HttpStatus.CREATED);
     });
   });
 });
