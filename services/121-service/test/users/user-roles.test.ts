@@ -239,5 +239,19 @@ describe('/ Users', () => {
       expect(usersLengthAfterDelete).toBe(usersLengthBeforeDelete - 1);
       expect(userListAfterDelete).not.toEqual(userListBeforeDelete);
     });
+
+    it('Should get current user)', async () => {
+      // Arrange
+      // Act
+      const getCurrentUserResponse = await getServer()
+        .get('/users/current')
+        .set('Cookie', [accessToken])
+        .send();
+      // Assert
+      const currentUser = getCurrentUserResponse.body.user;
+
+      expect(getCurrentUserResponse.status).toBe(HttpStatus.OK);
+      expect(currentUser.username).toBe('admin@example.org');
+    });
   });
 });
