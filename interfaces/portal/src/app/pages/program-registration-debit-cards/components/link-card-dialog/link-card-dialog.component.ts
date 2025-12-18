@@ -46,15 +46,6 @@ export class LinkCardDialogComponent {
   readonly tokenCodeInvalid: Signal<boolean> = computed(() =>
     this.tokenCode().includes('_'),
   );
-  readonly toastText: Signal<string> = computed(() => {
-    if (this.linkCardDialogState() === LinkCardDialogStates.linking) {
-      return $localize`Link Visa card to registration`;
-    }
-    if (this.linkCardDialogState() === LinkCardDialogStates.replacing) {
-      return $localize`Replace Visa card on registration`;
-    }
-    return '';
-  });
 
   public async linkCard() {
     try {
@@ -64,7 +55,6 @@ export class LinkCardDialogComponent {
         tokenCode: this.tokenCode,
       });
     } catch (error) {
-      //TODO: get statuses from backend?
       if (error instanceof HttpErrorResponse && error.status === 400) {
         this.linkCardDialogState.set(LinkCardDialogStates.errorAlreadyLinked);
         return;
@@ -78,7 +68,7 @@ export class LinkCardDialogComponent {
     this.closeDialog.emit();
     this.toastService.showToast({
       severity: 'success',
-      detail: $localize`${this.toastText()}`,
+      detail: $localize`Link Visa card to registration`,
     });
   }
 }
