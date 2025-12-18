@@ -13,3 +13,13 @@ export async function getAllUsers(
 ): Promise<request.Response> {
   return getServer().get('/users').set('Cookie', [accessToken]).send();
 }
+
+export async function getAllUsersByProgramId(
+  accessToken: string,
+  programId: string,
+): Promise<request.Response> {
+  return getServer()
+    .get(`/programs/${programId}/users`)
+    .set('Cookie', [accessToken])
+    .send();
+}
