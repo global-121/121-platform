@@ -61,7 +61,7 @@
           >
         </div>
         <p i18n>
-          There are debit cards linked to this registration. Link a visa card
+          There are no debit cards linked to this registration. Link a visa card
           from your available cards to this registration by clicking the button
           below.
         </p>
@@ -165,8 +165,9 @@
 </app-form-dialog>
 <!-- LINK CARD ON SITE -->
 <app-link-card-dialog
-  [programId]="programId()"
-  [referenceId]="referenceId()"
+  [method]="cardOnSiteMethod()"
+  [programId]="programId"
+  [referenceId]="referenceId"
   [dialogVisible]="linkCardDialogVisible()"
   (closeDialog)="linkCardDialogVisible.set(false)"
 ></app-link-card-dialog>

@@ -2099,8 +2099,11 @@
       <trans-unit id="5257307362705018476" datatype="html">
         <source>Link visa card</source>
       </trans-unit>
-      <trans-unit id="5506262241768766964" datatype="html">
-        <source>There are debit cards linked to this registration. Link a visa card from your available cards to this registration by clicking the button below.</source>
+      <trans-unit id="3908185208619176727" datatype="html">
+        <source>An unexpected error occurred while linking the Visa card to the registration</source>
+      </trans-unit>
+      <trans-unit id="4142926878648956866" datatype="html">
+        <source>There are no debit cards linked to this registration. Link a visa card from your available cards to this registration by clicking the button below.</source>
       </trans-unit>
     </body>
   </file>

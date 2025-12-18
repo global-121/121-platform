@@ -19,6 +19,7 @@ import { InputMask } from 'primeng/inputmask';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { LinkCardDialogStates } from '~/pages/program-registration-debit-cards/components/link-card-dialog/enums/link-card-dialog-states.enum';
+import { CardOnSiteMethods } from '~/pages/program-registration-debit-cards/enums/card-on-site-methods.enum';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
@@ -31,21 +32,20 @@ export class LinkCardDialogComponent {
   private readonly toastService = inject(ToastService);
   private readonly registrationApiService = inject(RegistrationApiService);
 
-  readonly TOKEN_CODE_PLACEHOLDER = '____-____-____-____-___';
-
-  readonly programId = input.required<string>();
-  readonly referenceId = input.required<string | undefined>();
+  readonly programId = input.required<Signal<number | string>>();
+  readonly referenceId = input.required<Signal<string | undefined>>();
   readonly dialogVisible = input.required<boolean>();
+  readonly method = input.required<CardOnSiteMethods>();
 
   readonly closeDialog = output();
 
-  readonly tokenCode = model(this.TOKEN_CODE_PLACEHOLDER);
+  readonly tokenCode = model('');
 
   readonly linkCardDialogState = signal<LinkCardDialogStates>(
     LinkCardDialogStates.linking,
   );
 
-  public linkCardDialogStates = LinkCardDialogStates;
+  readonly linkCardDialogStates = LinkCardDialogStates;
 
   readonly showError = model(false);
 
@@ -53,29 +53,43 @@ export class LinkCardDialogComponent {
     () => !this.tokenCode().includes('_') && this.tokenCode() !== '',
   );
 
-  public async linkCard() {
+  async linkCard() {
     if (!this.tokenCodeFullyFilled()) {
       this.showError.set(true);
       return;
     }
 
     try {
-      await this.registrationApiService.linkCardToRegistration({
-        programId: this.programId,
-        referenceId: this.referenceId,
-        tokenCode: this.tokenCode,
-      });
+      if (this.method() === CardOnSiteMethods.replaceCardOnSite) {
+        await this.registrationApiService.linkCardToRegistration({
+          programId: this.programId(),
+          referenceId: this.referenceId(),
+          tokenCode: this.tokenCode,
+        });
+      }
+      if (this.method() === CardOnSiteMethods.replaceCardOnSite) {
+        await this.registrationApiService.replaceCardOnSite({
+          programId: this.programId(),
+          referenceId: this.referenceId(),
+          tokenCode: this.tokenCode,
+        });
+      }
     } catch (error) {
       // TODO: update/test this after tokenCode prefix check is implemented in the backend
       if (error instanceof HttpErrorResponse && error.status === 400) {
         this.linkCardDialogState.set(LinkCardDialogStates.errorAlreadyLinked);
         return;
       }
-
       if (error instanceof HttpErrorResponse && error.status === 404) {
         this.linkCardDialogState.set(LinkCardDialogStates.errorNotFound);
         return;
       }
+      this.toastService.showToast({
+        severity: 'error',
+        detail: $localize`An unexpected error occurred while linking the Visa card to the registration`,
+      });
+
+      return;
     }
     this.closeDialog.emit();
     this.toastService.showToast({

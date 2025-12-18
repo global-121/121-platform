@@ -34,6 +34,7 @@ import {
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { LinkCardDialogComponent } from '~/pages/program-registration-debit-cards/components/link-card-dialog/link-card-dialog.component';
+import { CardOnSiteMethods } from '~/pages/program-registration-debit-cards/enums/card-on-site-methods.enum';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
@@ -68,8 +69,10 @@ export class ProgramRegistrationDebitCardsPageComponent {
     FspConfigurationApiService,
   );
 
-  readonly tokenCode = model('');
   readonly linkCardDialogVisible = model(false);
+  readonly cardOnSiteMethod = model<CardOnSiteMethods>(
+    CardOnSiteMethods.linkCardOnSite,
+  );
 
   readonly replaceCardProceedLabel = computed(() =>
     this.cardDistributionByMailEnabled()
