@@ -281,5 +281,29 @@ describe('/ Users', () => {
       // Assert
       expect(resetPasswordResponse.status).toBe(HttpStatus.NO_CONTENT);
     });
+
+    it('Should update user properties (isOrganizationAdmin, displayName)', async () => {
+      // Arrange
+      const updateData = {
+        isOrganizationAdmin: true,
+        displayName: 'Updated Display Name',
+      };
+      // Act
+      const updateUserResponse = await getServer()
+        .patch('/users/2')
+        .set('Cookie', [accessToken])
+        .send(updateData);
+      // Assert
+      expect(updateUserResponse.status).toBe(HttpStatus.OK);
+      const getUsersResponse = await getAllUsers(accessToken);
+      expect(getUsersResponse.status).toBe(HttpStatus.OK);
+      const updatedUser = getUsersResponse.body.find(
+        (r: { id: number }) => r.id === 2,
+      );
+      expect(updatedUser.isOrganizationAdmin).toBe(
+        updateData.isOrganizationAdmin,
+      );
+      expect(updatedUser.displayName).toBe(updateData.displayName);
+    });
   });
 });
