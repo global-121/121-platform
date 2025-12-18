@@ -103,9 +103,8 @@ describe('/ Users', () => {
       const roles: string[] = [];
 
       for (let i = 0; i < rolesLength; i++) {
-        // Sort permissions for snapshot consistency
         const role = response.body[i].role;
-        roles.push(role); // Add role to the array
+        roles.push(role);
       }
       // Assert
       expect(response.status).toBe(HttpStatus.OK);
