@@ -39,11 +39,7 @@
             icon="pi pi-refresh"
             [iconPos]="rtlHelper.createPosition('start')()"
             class="ms-4"
-            (click)="
-              cardDistributionByMailEnabled()
-                ? replaceCardByMailDialog.show()
-                : linkCardDialogVisible.set(true)
-            "
+            (click)="replaceCardByMailDialog.show()"
           />
         }
       </div>
@@ -115,8 +111,8 @@
   header="Pause card"
   headerIcon="pi pi-pause"
   i18n-header="@@debit-card-actions-pause-card"
-  acceptLabel="Pause card"
-  i18n-acceptLabel="@@debit-card-actions-pause-card"
+  proceedLabel="Pause card"
+  i18n-proceedLabel="@@debit-card-actions-pause-card"
   [mutation]="changeCardPauseStatusMutation"
   [mutationData]="{ pauseStatus: true }"
 >
@@ -133,8 +129,8 @@
   header="Unpause card"
   headerIcon="pi pi-play"
   i18n-header="@@debit-card-actions-unpause-card"
-  acceptLabel="Unpause card"
-  i18n-acceptLabel="@@debit-card-actions-unpause-card"
+  proceedLabel="Unpause card"
+  i18n-proceedLabel="@@debit-card-actions-unpause-card"
   [mutation]="changeCardPauseStatusMutation"
   [mutationData]="{ pauseStatus: false }"
 >
@@ -145,15 +141,15 @@
     A message will be sent to the registration about this update.
   </p>
 </app-form-dialog>
-<!-- REPLACE CARD BY MAIL CONFIRMATION -->
+<!-- REPLACE CARD -->
 <app-form-dialog
   #replaceCardByMailDialog
   header="Replace card"
   headerIcon="pi pi-refresh"
   i18n-header="@@debit-card-actions-replace-card"
-  acceptLabel="Replace card"
-  i18n-acceptLabel="@@debit-card-actions-replace-card"
-  [mutation]="replaceCardByMailMutation"
+  [proceedLabel]="replaceCardProceedLabel()"
+  i18n-proceedLabel="@@debit-card-actions-replace-card"
+  [mutation]="replaceCardMutation"
   [mutationData]="undefined"
 >
   <p i18n>
@@ -164,7 +160,7 @@
     A message will be sent to the registration about this update.
   </p>
 </app-form-dialog>
-<!-- LINK CARD -->
+<!-- LINK CARD ON SITE -->
 <app-link-card-dialog
   [programId]="programId()"
   [referenceId]="referenceId()"

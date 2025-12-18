@@ -71,6 +71,12 @@ export class ProgramRegistrationDebitCardsPageComponent {
   readonly tokenCode = model('');
   readonly linkCardDialogVisible = model(false);
 
+  readonly replaceCardProceedLabel = computed(() =>
+    this.cardDistributionByMailEnabled()
+      ? $localize`Request new card`
+      : $localize`Link new card`,
+  );
+
   registration = injectQuery(
     this.registrationApiService.getRegistrationById(
       this.programId,
@@ -251,8 +257,13 @@ export class ProgramRegistrationDebitCardsPageComponent {
     },
   }));
 
-  replaceCardByMailMutation = injectMutation(() => ({
+  replaceCardMutation = injectMutation(() => ({
     mutationFn: () => {
+      if (!this.cardDistributionByMailEnabled()) {
+        this.linkCardDialogVisible.set(true);
+        return Promise.resolve();
+      }
+
       const referenceId = this.referenceId();
 
       if (!referenceId) {
@@ -266,10 +277,13 @@ export class ProgramRegistrationDebitCardsPageComponent {
       });
     },
     onSuccess: () => {
-      this.toastService.showToast({
-        detail: $localize`Card successfully replaced`,
-      });
+      if (this.cardDistributionByMailEnabled()) {
+        this.toastService.showToast({
+          detail: $localize`Card successfully replaced`,
+        });
+      }
     },
   }));
+
   readonly currencyCode = computed(() => this.program.data()?.currency);
 }
