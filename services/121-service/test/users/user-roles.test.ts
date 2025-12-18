@@ -1,7 +1,10 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { getUserRoles } from '@121-service/test/helpers/user.helper';
+import {
+  getAllUsers,
+  getUserRoles,
+} from '@121-service/test/helpers/user.helper';
 import {
   getAccessToken,
   getServer,
@@ -205,6 +208,36 @@ describe('/ Users', () => {
         changePasswordPayload.newPassword,
       );
       expect(loginResponseAfterPasswordChange.status).toBe(HttpStatus.CREATED);
+    });
+
+    it('Should delete user', async () => {
+      // Arrange
+      const userListBeforeDelete: string[] = [];
+      const userListAfterDelete: string[] = [];
+      // Act
+      const getAllUsersBeforeDelete = await getAllUsers(accessToken);
+      const usersLengthBeforeDelete = getAllUsersBeforeDelete.body.length;
+
+      for (let i = 0; i < usersLengthBeforeDelete; i++) {
+        const user = getAllUsersBeforeDelete.body[i].username;
+        userListBeforeDelete.push(user);
+      }
+
+      const deleteUserResponse = await getServer()
+        .delete('/users/2')
+        .set('Cookie', [accessToken])
+        .send();
+      expect(deleteUserResponse.status).toBe(HttpStatus.OK);
+      // Assert
+      const getAllUsersAfterDelete = await getAllUsers(accessToken);
+      const usersLengthAfterDelete = getAllUsersAfterDelete.body.length;
+
+      for (let i = 0; i < usersLengthAfterDelete; i++) {
+        const user = getAllUsersAfterDelete.body[i].username;
+        userListAfterDelete.push(user);
+      }
+      expect(usersLengthAfterDelete).toBe(usersLengthBeforeDelete - 1);
+      expect(userListAfterDelete).not.toEqual(userListBeforeDelete);
     });
   });
 });
