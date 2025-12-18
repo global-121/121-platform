@@ -6,7 +6,7 @@ AB#XXXX <!--- Replace this with a reference to a DevOps/backlog-issue -->
 
 ## Checklist before requesting a code review
 
-- [ ] I have performed a self-review of my code
+- [ ] I have performed a self-review of my code (and addressed any Copilot comments)
 - [ ] I have added tests for my changes, or: Adding tests is unnecessary/irrelevant
 - [ ] I have asked the design team to review these changes, or: The changes do not touch the UI/UX
 - [ ] I have made sure that all automated checks pass before requesting a review
