@@ -214,8 +214,7 @@ export class PaymentsController {
     return result;
   }
 
-  // ##TODO: set right permission
-  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentUPDATE] })
+  @AuthenticatedUser() // No permission-check, as this is handled by checking if the request userId is an approver for this payment's program
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
     description: 'Successfully approved the payment',
