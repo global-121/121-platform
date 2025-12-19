@@ -1,12 +1,16 @@
 import * as request from 'supertest';
 
-import { FspConfigurationProperties } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import {
+  FspConfigurationProperties,
+  Fsps,
+} from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 import { ProgramFspConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-property-response.dto';
 import { ProgramFspConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-response.dto';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
+import { programIdVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { getServer } from '@121-service/test/helpers/utility.helper';
 
 export async function postProgramFspConfiguration({
@@ -119,6 +123,22 @@ export async function patchProgramFspConfigurationProperty({
     )
     .set('Cookie', [accessToken])
     .send(body);
+}
+
+export async function updateProgramCardDistributionByMail({
+  isCardDistributionByMail,
+  accessToken,
+}: {
+  isCardDistributionByMail: boolean;
+  accessToken: string;
+}): Promise<void> {
+  await patchProgramFspConfigurationProperty({
+    programId: programIdVisa,
+    configName: Fsps.intersolveVisa,
+    propertyName: FspConfigurationProperties.cardDistributionByMail,
+    body: { value: isCardDistributionByMail.toString() },
+    accessToken,
+  });
 }
 
 export async function deleteProgramFspConfigurationProperty({

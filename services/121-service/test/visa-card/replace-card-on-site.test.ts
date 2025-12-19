@@ -1,15 +1,13 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { VisaCard121Status } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/wallet-status-121.enum';
-import {
-  FspConfigurationProperties,
-  Fsps,
-} from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdVisa,
   registrationVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
-import { patchProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
+import { updateProgramCardDistributionByMail } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   getVisaWalletsAndDetails,
   linkVisaCardOnSite,
@@ -39,11 +37,8 @@ describe('Replace Visa debit card on site', () => {
       accessToken,
     );
 
-    await patchProgramFspConfigurationProperty({
-      programId: programIdVisa,
-      configName: Fsps.intersolveVisa,
-      propertyName: FspConfigurationProperties.cardDistributionByMail,
-      body: { value: 'false' },
+    await updateProgramCardDistributionByMail({
+      isCardDistributionByMail: false,
       accessToken,
     });
 
@@ -72,8 +67,8 @@ describe('Replace Visa debit card on site', () => {
     const card = parentWallet.cards[0];
 
     // Assert
-    expect(replaceCardResponse.status).toBe(201);
-    expect(walletResponse.status).toBe(200);
+    expect(replaceCardResponse.status).toBe(HttpStatus.CREATED);
+    expect(walletResponse.status).toBe(HttpStatus.OK);
 
     expect(card.tokenCode).toBe(replaceTokenCode);
     expect(card.status).toBe(VisaCard121Status.Active);
@@ -89,11 +84,8 @@ describe('Replace Visa debit card on site', () => {
 
     await seedIncludedRegistrations([registration], programIdVisa, accessToken);
 
-    await patchProgramFspConfigurationProperty({
-      programId: programIdVisa,
-      configName: Fsps.intersolveVisa,
-      propertyName: FspConfigurationProperties.cardDistributionByMail,
-      body: { value: 'true' },
+    await updateProgramCardDistributionByMail({
+      isCardDistributionByMail: true,
       accessToken,
     });
 
@@ -106,9 +98,9 @@ describe('Replace Visa debit card on site', () => {
     });
 
     // Assert
-    expect(response.status).toBe(400);
-    expect(response.body.message).toBe(
-      'Replacing a card on-site is not allowed when card distribution by mail is enabled.',
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body.message).toMatchInlineSnapshot(
+      `"Replacing a card on-site is not allowed when card distribution by mail is enabled."`,
     );
   });
 
@@ -123,11 +115,8 @@ describe('Replace Visa debit card on site', () => {
 
     await seedIncludedRegistrations([registration], programIdVisa, accessToken);
 
-    await patchProgramFspConfigurationProperty({
-      programId: programIdVisa,
-      configName: Fsps.intersolveVisa,
-      propertyName: FspConfigurationProperties.cardDistributionByMail,
-      body: { value: 'false' },
+    await updateProgramCardDistributionByMail({
+      isCardDistributionByMail: false,
       accessToken,
     });
 
@@ -147,9 +136,9 @@ describe('Replace Visa debit card on site', () => {
     });
 
     // Assert
-    expect(response.status).toBe(400);
-    expect(response.body.message).toBe(
-      `Card with code ${replaceTokenCode} is not found.`,
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body.message).toMatchInlineSnapshot(
+      `"Card with code 3333444455556666777 is not found."`,
     );
   });
 
@@ -163,11 +152,8 @@ describe('Replace Visa debit card on site', () => {
 
     await seedIncludedRegistrations([registration], programIdVisa, accessToken);
 
-    await patchProgramFspConfigurationProperty({
-      programId: programIdVisa,
-      configName: Fsps.intersolveVisa,
-      propertyName: FspConfigurationProperties.cardDistributionByMail,
-      body: { value: 'false' },
+    await updateProgramCardDistributionByMail({
+      isCardDistributionByMail: false,
       accessToken,
     });
 
@@ -178,9 +164,9 @@ describe('Replace Visa debit card on site', () => {
       tokenCode: replaceTokenCode,
     });
 
-    expect(response.status).toBe(400);
-    expect(response.body.message).toBe(
-      'Cannot replace a card for a registration which has no cards linked.',
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body.message).toMatchInlineSnapshot(
+      `"Cannot replace a card for a registration which has no cards linked."`,
     );
   });
 });

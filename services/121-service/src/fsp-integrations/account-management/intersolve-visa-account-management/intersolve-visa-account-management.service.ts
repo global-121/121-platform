@@ -365,7 +365,10 @@ export class IntersolveVisaAccountManagementService {
             HttpStatus.BAD_REQUEST,
           );
         } else {
-          throw error;
+          throw new HttpException(
+            `${IntersolveVisa121ErrorText.getTokenError} - ${error.message}`,
+            HttpStatus.BAD_REQUEST,
+          );
         }
       }
     }

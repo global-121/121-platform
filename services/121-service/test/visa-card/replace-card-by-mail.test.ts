@@ -1,5 +1,11 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { VisaCard121Status } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/wallet-status-121.enum';
+import {
+  FspConfigurationProperties,
+  Fsps,
+} from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { messageTemplateNlrcOcw } from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.const';
@@ -9,6 +15,10 @@ import {
   registrationVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
+import {
+  patchProgramFspConfigurationProperty,
+  updateProgramCardDistributionByMail,
+} from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   blockVisaCard,
   getMessageHistory,
@@ -37,6 +47,11 @@ describe('Replace Visa debit card by mail', () => {
       registrations: [registrationVisa],
       programId: programIdVisa,
       completeStatuses: [TransactionStatusEnum.success],
+    });
+
+    await updateProgramCardDistributionByMail({
+      isCardDistributionByMail: true,
+      accessToken,
     });
 
     // Block the card first. This is because this usually happens before replacing a card in practice
@@ -97,6 +112,14 @@ describe('Replace Visa debit card by mail', () => {
       completeStatuses: [TransactionStatusEnum.success],
     });
     const wrongPhoneNumber = '4534565434565434';
+
+    await patchProgramFspConfigurationProperty({
+      programId: programIdPv,
+      configName: Fsps.intersolveVisa,
+      propertyName: FspConfigurationProperties.cardDistributionByMail,
+      body: { value: 'true' },
+      accessToken,
+    });
 
     await updateRegistration(
       programIdPv,
@@ -181,6 +204,39 @@ describe('Replace Visa debit card by mail', () => {
     const lastMessageAttempt2 = messageReponseAttempt2.body[0];
     expect(lastMessageAttempt2.attributes.body).toBe(
       messageTemplateNlrcPv?.reissueVisaCard?.message?.en,
+    );
+  });
+
+  it('should throw when replacing by mail is disabled', async () => {
+    // Arrange
+    const programId = programIdVisa;
+    const registration = {
+      ...registrationVisa,
+      referenceId: 'replace-by-mail-disabled',
+    };
+
+    await seedPaidRegistrations({
+      registrations: [registration],
+      programId,
+      completeStatuses: [TransactionStatusEnum.success],
+    });
+
+    await updateProgramCardDistributionByMail({
+      isCardDistributionByMail: false,
+      accessToken,
+    });
+
+    // Act
+    const replaceCardResponse = await replaceVisaCardByMail(
+      programId,
+      registration.referenceId,
+      accessToken,
+    );
+
+    // Assert
+    expect(replaceCardResponse.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(replaceCardResponse.body.message).toMatchInlineSnapshot(
+      `"Replacing a card by mail is not allowed when card distribution by mail is disabled."`,
     );
   });
 });

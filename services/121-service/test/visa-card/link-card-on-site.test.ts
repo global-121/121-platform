@@ -1,15 +1,13 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { VisaCard121Status } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/wallet-status-121.enum';
-import {
-  FspConfigurationProperties,
-  Fsps,
-} from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdVisa,
   registrationVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
-import { patchProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
+import { updateProgramCardDistributionByMail } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   getVisaWalletsAndDetails,
   linkVisaCardOnSite,
@@ -37,11 +35,8 @@ describe('Link Visa debit card on site', () => {
       accessToken,
     );
 
-    await patchProgramFspConfigurationProperty({
-      programId: programIdVisa,
-      configName: Fsps.intersolveVisa,
-      propertyName: FspConfigurationProperties.cardDistributionByMail,
-      body: { value: 'false' },
+    await updateProgramCardDistributionByMail({
+      isCardDistributionByMail: false,
       accessToken,
     });
 
@@ -63,7 +58,7 @@ describe('Link Visa debit card on site', () => {
     const card = parentWallet.cards[0];
 
     // Assert
-    expect(response.status).toBe(201);
+    expect(response.status).toBe(HttpStatus.CREATED);
 
     expect(card.tokenCode).toBe(tokenCode);
     expect(card.status).toBe(VisaCard121Status.Active);
@@ -82,11 +77,8 @@ describe('Link Visa debit card on site', () => {
       accessToken,
     );
 
-    await patchProgramFspConfigurationProperty({
-      programId: programIdVisa,
-      configName: Fsps.intersolveVisa,
-      propertyName: FspConfigurationProperties.cardDistributionByMail,
-      body: { value: 'false' },
+    await updateProgramCardDistributionByMail({
+      isCardDistributionByMail: false,
       accessToken,
     });
 
@@ -112,11 +104,11 @@ describe('Link Visa debit card on site', () => {
       tokenCode,
     });
 
-    expect(response.status).toBe(400);
-    expect(response.body.message).toBe(
-      'Card is already linked to someone else.',
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body.message).toMatchInlineSnapshot(
+      `"Card is already linked to someone else."`,
     );
-    expect(getVisaWalletResponse.status).toBe(404);
+    expect(getVisaWalletResponse.status).toBe(HttpStatus.NOT_FOUND);
   });
 
   it('should throw when linking a Visa Debit card that does not exist', async () => {
@@ -132,11 +124,8 @@ describe('Link Visa debit card on site', () => {
       accessToken,
     );
 
-    await patchProgramFspConfigurationProperty({
-      programId: programIdVisa,
-      configName: Fsps.intersolveVisa,
-      propertyName: FspConfigurationProperties.cardDistributionByMail,
-      body: { value: 'false' },
+    await updateProgramCardDistributionByMail({
+      isCardDistributionByMail: false,
       accessToken,
     });
 
@@ -156,9 +145,9 @@ describe('Link Visa debit card on site', () => {
       tokenCode,
     });
 
-    expect(response.status).toBe(400);
-    expect(response.body.message).toBe(
-      `Card with code ${tokenCode} is not found.`,
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body.message).toMatchInlineSnapshot(
+      `"Card with code 3333444455556666777 is not found."`,
     );
   });
 
@@ -175,11 +164,8 @@ describe('Link Visa debit card on site', () => {
       accessToken,
     );
 
-    await patchProgramFspConfigurationProperty({
-      programId: programIdVisa,
-      configName: Fsps.intersolveVisa,
-      propertyName: FspConfigurationProperties.cardDistributionByMail,
-      body: { value: 'true' },
+    await updateProgramCardDistributionByMail({
+      isCardDistributionByMail: true,
       accessToken,
     });
 
@@ -192,9 +178,9 @@ describe('Link Visa debit card on site', () => {
     });
 
     // Assert
-    expect(response.status).toBe(400);
-    expect(response.body.message).toBe(
-      'Linking a card on-site is not allowed when card distribution by mail is enabled.',
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body.message).toMatchInlineSnapshot(
+      `"Linking a card on-site is not allowed when card distribution by mail is enabled."`,
     );
   });
 });
