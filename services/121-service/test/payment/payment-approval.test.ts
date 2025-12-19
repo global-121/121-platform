@@ -36,8 +36,6 @@ describe('Payment approval flow', () => {
   });
 
   it('user who can create a payment is different from user starting payment', async () => {
-    // TODO: extend this with approval once the approval flow is implemented
-
     // Arrange
     const registrationAh = { ...registrationPV5, maxPayments: 1 };
 
@@ -60,6 +58,12 @@ describe('Payment approval flow', () => {
     });
 
     const paymentId = createPaymentResponseCvaManager.body.id;
+
+    await approvePayment({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken, // ##TODO: for now approve with admin. Extend this test properly.
+    });
 
     // Start payment with CVA manager
     const startPaymentResponseCvaManager = await startPayment({

@@ -22,7 +22,7 @@ describe('manage approvers', () => {
   it('should Create, Read, Update and Delete approver successfully', async () => {
     // Arrange
     const programId = 1;
-    const userId = 1;
+    const userId = 2; // Not the admin-user, as that is approver by default already
     const order = 5;
 
     // Act
@@ -40,7 +40,7 @@ describe('manage approvers', () => {
       accessToken,
     });
     expect(getResponse.status).toBe(HttpStatus.OK);
-    expect(getResponse.body).toHaveLength(1);
+    expect(getResponse.body).toHaveLength(2); // admin + new
     expect(getResponse.body[0]).toMatchObject({
       userId,
       order,
@@ -72,6 +72,6 @@ describe('manage approvers', () => {
       accessToken,
     });
     expect(getAfterDeleteResponse.status).toBe(HttpStatus.OK);
-    expect(getAfterDeleteResponse.body).toHaveLength(0);
+    expect(getAfterDeleteResponse.body).toHaveLength(1); // only admin left
   });
 });

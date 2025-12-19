@@ -74,7 +74,9 @@ describe('PaymentsCreationService', () => {
         },
       ]),
     } as unknown as RegistrationsPaginationService;
-    approverService = {} as unknown as ApproverService;
+    approverService = {
+      getApprovers: jest.fn().mockResolvedValue([{ id: 1 }]),
+    } as unknown as ApproverService;
     transactionViewScopedRepository =
       {} as unknown as TransactionViewScopedRepository;
 
@@ -220,4 +222,6 @@ describe('PaymentsCreationService', () => {
       paymentsProgressHelperService.unlockPaymentsForProgram,
     ).toHaveBeenCalledWith(basePaymentParams.programId);
   });
+
+  // ##TODO: unit-test approvePayment()?
 });
