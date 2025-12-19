@@ -96,7 +96,6 @@ export class FspConfigurationApiService extends DomainApiService {
   }) {
     return this.generateQueryOptions<FspConfigurationProperty[]>({
       path: [...BASE_ENDPOINT(programId), configurationName, 'properties'],
-      processResponse: (response) => response,
     });
   }
 }

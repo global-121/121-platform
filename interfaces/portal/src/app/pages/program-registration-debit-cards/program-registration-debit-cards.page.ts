@@ -113,10 +113,11 @@ export class ProgramRegistrationDebitCardsPageComponent {
   );
 
   readonly cardDistributionByMailEnabled = computed(() => {
-    const props = this.fspConfigurationProperties.data() ?? [];
+    const props: FspConfigurationProperty[] =
+      this.fspConfigurationProperties.data() ?? [];
 
     const cardDistributionByMailProperty = props.find(
-      (property: FspConfigurationProperty) =>
+      (property) =>
         property.name ===
         (IntersolveVisaFspConfigurationProperties.cardDistributionByMail as string),
     );
