@@ -164,7 +164,7 @@ describe('/ Users', () => {
 
       // Assert
       expect(getAllUsersResponse.status).toBe(HttpStatus.OK);
-      expect(usersLength).toBe(10);
+      expect(usersLength).toBe(10); // 1 user per default role 
     });
 
     it('should get current user', async () => {
