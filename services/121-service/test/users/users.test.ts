@@ -84,7 +84,6 @@ describe('/ Users', () => {
     expect(userListAfterDelete).not.toEqual(userListBeforeDelete);
   });
 
-  // NOTE: for this reset of password it seems like only the correct response status can be validated
   it('should reset user password', async () => {
     // Arrange
     const resetPasswordPayload = { username: 'admin@example.org' };
