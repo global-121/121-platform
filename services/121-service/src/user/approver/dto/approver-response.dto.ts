@@ -1,22 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-// ##TODO: what is actually needed here?
+// ##TODO: not everything here might actually be needed (programId/assignmentId)?
 export class ApproverResponseDto {
   @ApiProperty({ example: 1 })
-  public id: number;
+  public readonly id: number;
 
   @ApiProperty({ example: 2 })
-  public assignmentId: number;
+  public readonly assignmentId: number;
 
   @ApiProperty({ example: 3 })
-  public programId: number;
+  public readonly programId: number;
 
   @ApiProperty({ example: 4 })
-  public userId: number;
+  public readonly userId: number;
 
   @ApiProperty({ example: 'johndoe' })
-  public username: string | null;
+  public readonly username: string | null;
 
   @ApiProperty({ example: 5 })
-  public order: number;
+  public readonly order: number;
 }

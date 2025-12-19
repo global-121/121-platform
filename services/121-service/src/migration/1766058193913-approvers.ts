@@ -11,7 +11,7 @@ export class Approvers1766058193913 implements MigrationInterface {
       `CREATE INDEX "IDX_845370013478fda958aaecdec5" ON "121-service"."approver" ("created") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "121-service"."payment_approval" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "approverId" integer NOT NULL, "approved" boolean NOT NULL DEFAULT false, "paymentId" integer, CONSTRAINT "PK_be16f8bd8909467e8b9fcdbfc68" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "121-service"."payment_approval" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "approverId" integer NOT NULL, "approved" boolean NOT NULL, "paymentId" integer, CONSTRAINT "PK_be16f8bd8909467e8b9fcdbfc68" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_fb65e9abf4abdce1c3b35858da" ON "121-service"."payment_approval" ("created") `,

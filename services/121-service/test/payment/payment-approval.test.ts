@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   approvePayment,
   createPayment,
@@ -10,6 +11,11 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
+import {
+  createApprover,
+  deleteApprover,
+  getCurrentUser,
+} from '@121-service/test/helpers/user.helper';
 import {
   getAccessToken,
   getAccessTokenCvaManager,
@@ -98,36 +104,65 @@ describe('Payment approval flow', () => {
     expect(startPaymentResponseFinanceManager.status).toBe(HttpStatus.ACCEPTED);
   });
 
-  // ##TODO: to start off, one simple happy flow test, with 1 approver, all with admin-user
-  it('should create, approve and start a payment successfully', async () => {
+  // ##TODO: split up? Overlap with above test?
+  it('should successfully do payment that needs 2 approvals', async () => {
     // Arrange
-    const registrationAh = { ...registrationPV5 };
+    // configure 2nd approver
+    const accessTokenFinanceManager = await getAccessTokenFinanceManager();
+    const financeManagerUserId = (
+      await getCurrentUser({
+        accessToken: accessTokenFinanceManager,
+      })
+    ).body.user.id;
+    await createApprover({
+      programId,
+      userId: financeManagerUserId,
+      order: 2,
+      accessToken: adminAccessToken,
+    });
 
     // Create payment
     const createPaymentResponse = await createPayment({
       programId,
       transferValue,
-      referenceIds: [registrationAh.referenceId],
+      referenceIds: [registrationPV5.referenceId],
       accessToken: adminAccessToken,
     });
     await waitForPaymentTransactionsToComplete({
       programId,
-      paymentReferenceIds: [registrationAh.referenceId],
+      paymentReferenceIds: [registrationPV5.referenceId],
       accessToken: adminAccessToken,
       maxWaitTimeMs: 5000,
       completeStatuses: [TransactionStatusEnum.pendingApproval],
     });
 
-    // Approve payment
+    // 1st approve
     const paymentId = createPaymentResponse.body.id;
     const approvePaymentResponse = await approvePayment({
       programId,
       paymentId,
       accessToken: adminAccessToken,
     });
+    await waitFor(1_000); // there is no transaction-status-change we can await here. We need to give some time, as otherwise the transaction-status assertion below is true for the wrong reasons.
+    const getTransactionsResultAfter1stApprove =
+      await getTransactionsByPaymentIdPaginated({
+        programId,
+        paymentId,
+        accessToken: adminAccessToken,
+      });
+    expect(getTransactionsResultAfter1stApprove.body.data[0].status).toBe(
+      TransactionStatusEnum.pendingApproval,
+    );
+
+    // 2nd approve
+    await approvePayment({
+      programId,
+      paymentId,
+      accessToken: accessTokenFinanceManager,
+    });
     await waitForPaymentTransactionsToComplete({
       programId,
-      paymentReferenceIds: [registrationAh.referenceId],
+      paymentReferenceIds: [registrationPV5.referenceId],
       accessToken: adminAccessToken,
       maxWaitTimeMs: 5000,
       completeStatuses: [TransactionStatusEnum.approved],
@@ -142,7 +177,7 @@ describe('Payment approval flow', () => {
     await waitForPaymentTransactionsToComplete({
       programId,
       paymentId,
-      paymentReferenceIds: [registrationAh.referenceId],
+      paymentReferenceIds: [registrationPV5.referenceId],
       accessToken: adminAccessToken,
       maxWaitTimeMs: 5000,
       completeStatuses: [TransactionStatusEnum.success],
@@ -153,14 +188,38 @@ describe('Payment approval flow', () => {
     expect(approvePaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(startPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
 
-    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
+    const getTransactionsResultFinal =
+      await getTransactionsByPaymentIdPaginated({
+        programId,
+        paymentId,
+        accessToken: adminAccessToken,
+      });
+    expect(getTransactionsResultFinal.status).toBe(HttpStatus.OK);
+    expect(getTransactionsResultFinal.body.data[0].status).toBe(
+      TransactionStatusEnum.success,
+    );
+  });
+
+  it('should throw on create payment when no approvers configured for program', async () => {
+    // Arrange
+    await deleteApprover({
       programId,
-      paymentId,
+      approverId: 1, // admin-user approver
       accessToken: adminAccessToken,
     });
-    expect(getTransactionsResult.status).toBe(HttpStatus.OK);
-    expect(getTransactionsResult.body.data[0].status).toBe(
-      TransactionStatusEnum.success,
+
+    // Act
+    const createPaymentResponse = await createPayment({
+      programId,
+      transferValue,
+      referenceIds: [registrationPV5.referenceId],
+      accessToken: adminAccessToken,
+    });
+
+    // Assert
+    expect(createPaymentResponse.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(createPaymentResponse.body.message).toMatchInlineSnapshot(
+      `"No approvers found for program, cannot create payment"`,
     );
   });
 });
