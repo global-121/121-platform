@@ -4,7 +4,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  createAndStartPayment,
+  doPayment,
   getTransactionsByPaymentIdPaginated,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -43,7 +43,7 @@ describe('Do payment with FSP: Airtel', () => {
     );
 
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
@@ -96,7 +96,7 @@ describe('Do payment with FSP: Airtel', () => {
     );
 
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
@@ -158,7 +158,7 @@ describe('Do payment with FSP: Airtel', () => {
     );
 
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
@@ -210,7 +210,7 @@ describe('Do payment with FSP: Airtel', () => {
     );
 
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
@@ -259,7 +259,7 @@ describe('Do payment with FSP: Airtel', () => {
     );
 
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,

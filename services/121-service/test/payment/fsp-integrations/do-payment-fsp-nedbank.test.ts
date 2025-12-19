@@ -10,7 +10,7 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { ImportRegistrationsDto } from '@121-service/src/registration/dto/bulk-import.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  createAndStartPayment,
+  doPayment,
   exportTransactionsByDateRangeJson,
   getTransactionsByPaymentIdPaginated,
   retryPayment,
@@ -65,7 +65,7 @@ describe('Do payment', () => {
         );
 
         // Act
-        const doPaymentResponse = await createAndStartPayment({
+        const doPaymentResponse = await doPayment({
           programId,
           transferValue,
           referenceIds: paymentReferenceIds,
@@ -182,7 +182,7 @@ describe('Do payment', () => {
         );
 
         // Act
-        const doPaymentResponse = await createAndStartPayment({
+        const doPaymentResponse = await doPayment({
           programId,
           transferValue,
           referenceIds: paymentReferenceIds,
@@ -238,7 +238,7 @@ describe('Do payment', () => {
         );
 
         // Act
-        const doPaymentResponse = await createAndStartPayment({
+        const doPaymentResponse = await doPayment({
           programId,
           transferValue: amountOver6000,
           referenceIds: paymentReferenceIds,
@@ -299,7 +299,7 @@ describe('Do payment', () => {
         );
 
         // Act
-        const doPaymentResponse = await createAndStartPayment({
+        const doPaymentResponse = await doPayment({
           programId,
           transferValue,
           referenceIds: paymentReferenceIds,
@@ -364,7 +364,7 @@ describe('Do payment', () => {
         );
 
         // Act
-        await createAndStartPayment({
+        await doPayment({
           programId,
           transferValue,
           referenceIds: paymentReferenceIds,
@@ -420,7 +420,7 @@ describe('Do payment', () => {
           programId,
           accessToken,
         );
-        const doPaymentResponse = await createAndStartPayment({
+        const doPaymentResponse = await doPayment({
           programId,
           transferValue,
           referenceIds: [registrationFailDebitorAccount.referenceId],
@@ -632,7 +632,7 @@ describe('Do payment', () => {
         });
 
         // Act
-        const doPaymentResponse = await createAndStartPayment({
+        const doPaymentResponse = await doPayment({
           programId,
           transferValue,
           referenceIds: paymentReferenceIds,

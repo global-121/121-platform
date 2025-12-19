@@ -291,41 +291,49 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       .getRawMany<TransactionViewEntity>();
   }
 
-  public async getPendingApprovalOfIncludedRegistrations({
+  public async getByStatusOfIncludedRegistrations({
     programId,
     paymentId,
+    status,
   }: {
     programId: number;
     paymentId: number;
+    status: TransactionStatusEnum;
   }): Promise<TransactionViewEntity[]> {
-    return this.getPendingApprovalTransactions({
+    return this.getTransactionsByStatusAndRegistrationStatus({
       programId,
       paymentId,
+      status,
       registrationStatusCondition: Equal(RegistrationStatusEnum.included),
     });
   }
 
-  public async getPendingApprovalOfNonIncludedRegistrations({
+  public async getByStatusOfNonIncludedRegistrations({
     programId,
     paymentId,
+    status,
   }: {
     programId: number;
     paymentId: number;
+    status: TransactionStatusEnum;
   }): Promise<TransactionViewEntity[]> {
-    return this.getPendingApprovalTransactions({
+    return this.getTransactionsByStatusAndRegistrationStatus({
       programId,
       paymentId,
+      status,
       registrationStatusCondition: Not(Equal(RegistrationStatusEnum.included)),
     });
   }
 
-  private async getPendingApprovalTransactions({
+  private async getTransactionsByStatusAndRegistrationStatus({
     programId,
     paymentId,
+    status,
     registrationStatusCondition,
   }: {
     programId: number;
     paymentId: number;
+    status: TransactionStatusEnum;
     registrationStatusCondition: FindOperator<RegistrationStatusEnum>;
   }): Promise<TransactionViewEntity[]> {
     return this.find({
@@ -334,7 +342,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
           id: Equal(paymentId),
           programId: Equal(programId),
         },
-        status: Equal(TransactionStatusEnum.pendingApproval),
+        status: Equal(status),
         /* eslint-disable-next-line no-restricted-syntax -- we pass in Equal(...) or Not(Equal(...)) here */
         registration: {
           /* eslint-disable-next-line no-restricted-syntax -- we pass in Equal(...) or Not(Equal(...)) here */
@@ -344,12 +352,14 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
     });
   }
 
-  public async getUniqueProgramFspConfigForPendingApproval({
+  public async getUniqueProgramFspConfigByTransactionStatus({
     programId,
     paymentId,
+    status,
   }: {
     programId: number;
     paymentId: number;
+    status: TransactionStatusEnum;
   }): Promise<
     {
       programFspConfigurationName: string;
@@ -365,9 +375,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       .leftJoin('transaction.payment', 'payment')
       .andWhere('payment.programId = :programId', { programId })
       .andWhere('transaction.paymentId = :paymentId', { paymentId })
-      .andWhere('transaction.status = :status', {
-        status: TransactionStatusEnum.pendingApproval,
-      })
+      .andWhere('transaction.status = :status', { status })
       .getRawMany<{
         programFspConfigurationName: string;
         programFspConfigurationId: number;

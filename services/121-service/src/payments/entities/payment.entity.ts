@@ -10,6 +10,7 @@ import {
 import { Base121Entity } from '@121-service/src/base.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { PaymentApprovalEntity } from '@121-service/src/user/approver/entities/payment-approval.entity';
 
 @Entity('payment')
 export class PaymentEntity extends Base121Entity {
@@ -23,4 +24,9 @@ export class PaymentEntity extends Base121Entity {
   public program: Relation<ProgramEntity>;
   @Column()
   public programId: number;
+
+  @OneToMany(() => PaymentApprovalEntity, (approval) => approval.payment, {
+    cascade: true,
+  })
+  public approvals: PaymentApprovalEntity[];
 }

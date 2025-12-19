@@ -4,7 +4,7 @@ import { env } from '@121-service/src/env';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
-import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
+import { doPayment } from '@121-service/test/helpers/program.helper';
 import {
   duplicateRegistrationsAndPaymentData,
   exportRegistrations,
@@ -57,7 +57,7 @@ describe('Measure performance during payment', () => {
       });
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
     // Do payment
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: programIdOCW,
       transferValue: amount,
       referenceIds: [],
