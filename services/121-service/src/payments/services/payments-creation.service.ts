@@ -215,7 +215,7 @@ export class PaymentsCreationService {
     const approvers = await this.approverService.getApprovers({
       programId,
     });
-    // ##TODO: should this check happen earlier already (e.g. in dry run?)
+    // ##TODO: should this check happen earlier already (e.g. also in dry run, as Figma wants to block this immediately on 'create new payment' btn)
     if (approvers.length < 1) {
       throw new HttpException(
         'No approvers found for program, cannot create payment',
