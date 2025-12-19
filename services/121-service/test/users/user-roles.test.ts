@@ -104,7 +104,6 @@ describe('/ Users', () => {
       // Act
       const response = await getUserRoles(accessToken);
       const rolesLength = response.body.length;
-      console.log('rolesLength: ', rolesLength);
 
       // Assert
       expect(response.status).toBe(HttpStatus.OK);
@@ -113,13 +112,14 @@ describe('/ Users', () => {
 
     it('should update a role by userRoleId', async () => {
       // Arrange
+      const userId = 1;
       const updateData = {
         label: 'Updated user role label',
         description: 'Updated user role description',
       };
       // Act
       const updateUserRole = await getServer()
-        .put('/roles/1')
+        .put(`/roles/${userId}`)
         .set('Cookie', [accessToken])
         .send(updateData);
 
@@ -128,7 +128,9 @@ describe('/ Users', () => {
       const getUserRole = await getUserRoles(accessToken);
 
       expect(getUserRole.status).toBe(HttpStatus.OK);
-      const role = getUserRole.body.find((r: { id: number }) => r.id === 1);
+      const role = getUserRole.body.find(
+        (r: { id: number }) => r.id === userId,
+      );
 
       expect(role.label).toBe(updateData.label);
       expect(role.description).toBe(updateData.description);
@@ -136,6 +138,7 @@ describe('/ Users', () => {
 
     it('should delete a role by userRoleId', async () => {
       // Arrange
+      const userId = 2;
       // Get user roles before delete
       const getUserRoleBeforeDelete = await getUserRoles(accessToken);
       expect(getUserRoleBeforeDelete.status).toBe(HttpStatus.OK);
@@ -143,7 +146,7 @@ describe('/ Users', () => {
       // Act
       // Delete user role
       const deleteUserRole = await getServer()
-        .delete('/roles/2')
+        .delete(`/roles/${userId}`)
         .set('Cookie', [accessToken])
         .send();
       expect(deleteUserRole.status).toBe(HttpStatus.OK);
@@ -164,7 +167,7 @@ describe('/ Users', () => {
 
       // Assert
       expect(getAllUsersResponse.status).toBe(HttpStatus.OK);
-      expect(usersLength).toBe(10); // 1 user per default role 
+      expect(usersLength).toBe(10); // 1 user per default role
     });
 
     it('should get current user', async () => {

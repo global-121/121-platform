@@ -54,6 +54,7 @@ describe('/ Users', () => {
 
     it('should delete user', async () => {
       // Arrange
+      const userId = 2;
       const userListBeforeDelete: string[] = [];
       const userListAfterDelete: string[] = [];
       // Act
@@ -66,7 +67,7 @@ describe('/ Users', () => {
       }
 
       const deleteUserResponse = await getServer()
-        .delete('/users/2')
+        .delete(`/users/${userId}`)
         .set('Cookie', [accessToken])
         .send();
       // Assert
@@ -97,13 +98,14 @@ describe('/ Users', () => {
 
     it('should update user properties (isOrganizationAdmin, displayName)', async () => {
       // Arrange
+      const userId = 2;
       const updateData = {
         isOrganizationAdmin: true,
         displayName: 'Updated Display Name',
       };
       // Act
       const updateUserResponse = await getServer()
-        .patch('/users/2')
+        .patch(`/users/${userId}`)
         .set('Cookie', [accessToken])
         .send(updateData);
       // Assert
@@ -111,7 +113,7 @@ describe('/ Users', () => {
       const getUsersResponse = await getAllUsers(accessToken);
       expect(getUsersResponse.status).toBe(HttpStatus.OK);
       const updatedUser = getUsersResponse.body.find(
-        (r: { id: number }) => r.id === 2,
+        (r: { id: number }) => r.id === userId,
       );
       expect(updatedUser.isOrganizationAdmin).toBe(
         updateData.isOrganizationAdmin,
