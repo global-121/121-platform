@@ -40,17 +40,29 @@ export class LinkCardDialogComponent {
 
   readonly tokenCode = model('');
 
-  readonly linkCardDialogStates = LinkCardDialogStates;
-
+  readonly showTokenCodeInvalidWarning = signal<boolean>(false);
   readonly linkCardDialogState = signal<LinkCardDialogStates>(
     LinkCardDialogStates.linking,
   );
 
-  readonly showTokenCodeInvalidWarning = model(false);
+  readonly linkCardDialogStates = LinkCardDialogStates;
 
   readonly tokenCodeFullyFilled: Signal<boolean> = computed(
     () => !this.tokenCode().includes('_') && this.tokenCode() !== '',
   );
+
+  readonly dialogLabels = computed(() => {
+    if (this.currentTokenCode()) {
+      return {
+        header: $localize`Replace visa card`,
+        confirmationButton: $localize`Replace card`,
+      };
+    }
+    return {
+      header: $localize`Link visa card`,
+      confirmationButton: $localize`Link card`,
+    };
+  });
 
   async linkCard() {
     if (!this.tokenCodeFullyFilled()) {

@@ -70,12 +70,6 @@ export class ProgramRegistrationDebitCardsPageComponent {
 
   readonly linkCardDialogVisible = model(false);
 
-  readonly replaceCardProceedLabel = computed(() =>
-    this.cardDistributionByMailEnabled()
-      ? $localize`Request new card`
-      : $localize`Link new card`,
-  );
-
   registration = injectQuery(
     this.registrationApiService.getRegistrationById(
       this.programId,

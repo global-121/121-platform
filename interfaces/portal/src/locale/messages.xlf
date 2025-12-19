@@ -2075,9 +2075,6 @@
       <trans-unit id="7960663124844501943" datatype="html">
         <source>Error - Link visa card</source>
       </trans-unit>
-      <trans-unit id="4594193636857575801" datatype="html">
-        <source>Link new card</source>
-      </trans-unit>
       <trans-unit id="7561977067156405830" datatype="html">
         <source>Link Visa card to registration</source>
       </trans-unit>
@@ -2093,9 +2090,6 @@
       <trans-unit id="8751327662526303646" datatype="html">
         <source>Scan the barcode in the back of the card you are handing over to the registration with a scanner, or manually fill in the 19 digit serial number found below the barcode.</source>
       </trans-unit>
-      <trans-unit id="5849913562562560018" datatype="html">
-        <source>Request new card</source>
-      </trans-unit>
       <trans-unit id="5257307362705018476" datatype="html">
         <source>Link visa card</source>
       </trans-unit>
@@ -2107,6 +2101,15 @@
       </trans-unit>
       <trans-unit id="333843503035430789" datatype="html">
         <source>You&apos;re about to replace debit card number <x equiv-text="{{ currentTokenCode() }}" id="INTERPOLATION"/>.</source>
+      </trans-unit>
+      <trans-unit id="159499234601402136" datatype="html">
+        <source>Replace card</source>
+      </trans-unit>
+      <trans-unit id="187187500641108332" datatype="html">
+        <source><x equiv-text="{{ dialogLabels().header }}" id="INTERPOLATION"/></source>
+      </trans-unit>
+      <trans-unit id="1941641831210864467" datatype="html">
+        <source>Replace visa card</source>
       </trans-unit>
     </body>
   </file>

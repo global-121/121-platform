@@ -9,7 +9,7 @@
     <ng-template pTemplate="header">
       <div class="flex items-center gap-2">
         <i class="pi pi-link"></i>
-        <h3 i18n>Link visa card</h3>
+        <h3 i18n>{{ dialogLabels().header }}</h3>
       </div>
     </ng-template>
     <div class="flex flex-col gap-2">
@@ -73,7 +73,7 @@
             i18n
             (click)="linkCard()"
             rounded
-            label="Link card"
+            [label]="dialogLabels().confirmationButton"
             i18n-label
             class="mt-4"
           ></p-button>
