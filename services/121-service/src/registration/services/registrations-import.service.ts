@@ -379,6 +379,7 @@ export class RegistrationsImportService {
     const programRegistrationAttributes = (
       await this.programRegistrationAttributeRepository.find({
         where: { program: { id: Equal(programId) } },
+        order: { name: 'ASC' },
       })
     ).map((attribute) => {
       return {
