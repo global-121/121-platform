@@ -108,7 +108,7 @@ describe('/ Users', () => {
 
       // Assert
       expect(response.status).toBe(HttpStatus.OK);
-      expect(rolesLength).toBe(10);
+      expect(rolesLength).toBe(10); // all default roles
     });
 
     it('should update a role by userRoleId', async () => {
