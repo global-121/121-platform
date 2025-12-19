@@ -23,6 +23,14 @@ export async function getAllUsersByProgramId(
     .set('Cookie', [accessToken])
     .send();
 
+export async function getCurrentUser({
+  accessToken,
+}: {
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer().get('/users/current').set('Cookie', [accessToken]);
+}
+
 export async function getApprovers({
   programId,
   accessToken,
@@ -53,4 +61,18 @@ export async function createApprover({
       userId,
       order,
     });
+}
+
+export async function deleteApprover({
+  programId,
+  approverId,
+  accessToken,
+}: {
+  programId: number;
+  approverId: number;
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .delete(`/programs/${programId}/approvers/${approverId}`)
+    .set('Cookie', [accessToken]);
 }

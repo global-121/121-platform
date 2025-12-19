@@ -41,7 +41,7 @@ export class ApproverController {
     return await this.approverService.getApprovers({ programId });
   }
 
-  // ##TODO: set permission
+  // ##TODO: set new permission for creating approvers? or existing AidWorkerProgramUPDATE? Use same permission for all endpoints here, also GET, as this will be used by API-user as part of configuring approvers.
   @AuthenticatedUser()
   @ApiOperation({ summary: 'Create a new approver' })
   @ApiResponse({
