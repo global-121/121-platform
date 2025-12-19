@@ -135,6 +135,14 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       accessToken,
       completeStatuses: [TransactionStatusEnum.pendingApproval],
     });
+    await this.seedMockHelper.approvePayment(programId, paymentId, accessToken);
+    await this.seedMockHelper.waitForPaymentTransactionsToComplete({
+      programId,
+      paymentId,
+      referenceIds: [registration.referenceId],
+      accessToken,
+      completeStatuses: [TransactionStatusEnum.approved],
+    });
     await this.seedMockHelper.startPayment(programId, paymentId, accessToken);
     await this.seedMockHelper.waitForTransactionsToComplete({
       programId,

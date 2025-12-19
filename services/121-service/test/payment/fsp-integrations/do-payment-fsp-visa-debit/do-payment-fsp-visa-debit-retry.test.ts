@@ -11,7 +11,7 @@ import {
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  createAndStartPayment,
+  doPayment,
   getTransactionsByPaymentIdPaginated,
   retryPayment,
   waitForPaymentAndTransactionsToComplete,
@@ -55,7 +55,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
@@ -136,7 +136,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,

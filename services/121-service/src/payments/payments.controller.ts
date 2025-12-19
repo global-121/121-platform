@@ -214,6 +214,33 @@ export class PaymentsController {
     return result;
   }
 
+  // ##TODO: set right permission
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentUPDATE] })
+  @ApiResponse({
+    status: HttpStatus.ACCEPTED,
+    description: 'Successfully approved the payment',
+  })
+  @ApiOperation({
+    summary: 'Approve payment',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
+  @HttpCode(HttpStatus.ACCEPTED)
+  @Post('programs/:programId/payments/:paymentId/approve')
+  public async approvePayment(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('paymentId', ParseIntPipe) paymentId: number,
+    @Req() req: ScopedUserRequest,
+  ): Promise<void> {
+    const userId = RequestHelper.getUserId(req);
+
+    return await this.paymentsCreationService.approvePayment({
+      userId,
+      programId,
+      paymentId,
+    });
+  }
+
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentSTART] })
   @ApiResponse({
     status: HttpStatus.ACCEPTED,

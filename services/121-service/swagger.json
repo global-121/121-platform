@@ -930,6 +930,14 @@
   },
   {
     "method": "post",
+    "path": "/api/programs/{programId}/payments/{paymentId}/approve",
+    "params": [
+      "programId",
+      "paymentId"
+    ]
+  },
+  {
+    "method": "post",
     "path": "/api/programs/{programId}/payments/{paymentId}/start",
     "params": [
       "programId",
@@ -1013,6 +1021,38 @@
     "params": [
       "programId",
       "paymentId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/approvers",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/approvers",
+    "params": [
+      "programId"
+    ],
+    "returnType": "ApproverResponseDto"
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/approvers/{approverId}",
+    "params": [
+      "programId",
+      "approverId"
+    ],
+    "returnType": "ApproverResponseDto"
+  },
+  {
+    "method": "delete",
+    "path": "/api/programs/{programId}/approvers/{approverId}",
+    "params": [
+      "programId",
+      "approverId"
     ]
   },
   {

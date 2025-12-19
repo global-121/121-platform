@@ -6,7 +6,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { registrationsPV } from '@121-service/test/fixtures/scoped-registrations';
 import {
-  createAndStartPayment,
+  doPayment,
   getTransactionsByPaymentIdPaginated,
   waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -76,7 +76,7 @@ describe('Registrations - [Scoped]', () => {
     // 7 registrations in total are included
     // 3 registrations are in include in program PV
     // 2 registrations are in include in program PV and are in the scope of the requesting user
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: PvProgramId,
       transferValue: 25,
       referenceIds: [],

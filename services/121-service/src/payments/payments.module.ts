@@ -31,6 +31,7 @@ import { RegistrationsModule } from '@121-service/src/registration/registrations
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { RegistrationEventsModule } from '@121-service/src/registration-events/registration-events.module';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
+import { ApproverModule } from '@121-service/src/user/approver/approver.module';
 import { UserModule } from '@121-service/src/user/user.module';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
@@ -52,6 +53,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     RegistrationEventsModule,
     TransactionEventsModule,
     MessageTemplateModule,
+    ApproverModule,
   ],
   providers: [
     PaymentsCreationService,
