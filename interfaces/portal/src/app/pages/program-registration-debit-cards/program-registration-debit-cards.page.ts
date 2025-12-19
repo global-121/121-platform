@@ -33,8 +33,7 @@ import {
 } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
-import { LinkCardDialogComponent } from '~/pages/program-registration-debit-cards/components/link-card-dialog/link-card-dialog.component';
-import { CardOnSiteMethods } from '~/pages/program-registration-debit-cards/enums/card-on-site-methods.enum';
+import { LinkCardDialogComponent } from '~/pages/program-registration-debit-cards/components/link-card-on-site-dialog/link-card-dialog.component';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
@@ -70,9 +69,6 @@ export class ProgramRegistrationDebitCardsPageComponent {
   );
 
   readonly linkCardDialogVisible = model(false);
-  readonly cardOnSiteMethod = model<CardOnSiteMethods>(
-    CardOnSiteMethods.linkCardOnSite,
-  );
 
   readonly replaceCardProceedLabel = computed(() =>
     this.cardDistributionByMailEnabled()
@@ -125,7 +121,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
     return cardDistributionByMailProperty?.value === 'true';
   });
 
-  readonly showLinkCardOnSite = computed(() => {
+  readonly cardByMailDisabledAndNoCurrentCards = computed(() => {
     const hasAnyCard = !!this.currentCard() || this.oldCards().length > 0;
 
     return !this.cardDistributionByMailEnabled() && !hasAnyCard;
@@ -261,13 +257,8 @@ export class ProgramRegistrationDebitCardsPageComponent {
     },
   }));
 
-  replaceCardMutation = injectMutation(() => ({
+  replaceCardByMailMutation = injectMutation(() => ({
     mutationFn: () => {
-      if (!this.cardDistributionByMailEnabled()) {
-        this.linkCardDialogVisible.set(true);
-        return Promise.resolve();
-      }
-
       const referenceId = this.referenceId();
 
       if (!referenceId) {
@@ -281,11 +272,9 @@ export class ProgramRegistrationDebitCardsPageComponent {
       });
     },
     onSuccess: () => {
-      if (this.cardDistributionByMailEnabled()) {
-        this.toastService.showToast({
-          detail: $localize`Card successfully replaced`,
-        });
-      }
+      this.toastService.showToast({
+        detail: $localize`Card successfully replaced`,
+      });
     },
   }));
 

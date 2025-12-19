@@ -38,7 +38,11 @@
             icon="pi pi-refresh"
             [iconPos]="rtlHelper.createPosition('start')()"
             class="ms-4"
-            (click)="replaceCardDialog.show()"
+            (click)="
+              cardDistributionByMailEnabled()
+                ? replaceCardByMailDialog.show()
+                : this.linkCardDialogVisible.set(true)
+            "
           />
         }
       </div>
@@ -47,7 +51,7 @@
         data-testid="wallet-current-card-list"
       />
     }
-    @if (showLinkCardOnSite()) {
+    @if (cardByMailDisabledAndNoCurrentCards()) {
       <div class="flex flex-col gap-4">
         <div class="flex items-center gap-2">
           <i
@@ -72,7 +76,7 @@
           outlined
           icon="pi pi-link"
           [iconPos]="rtlHelper.createPosition('start')()"
-          (click)="linkCardDialogVisible.set(true)"
+          (click)="this.linkCardDialogVisible.set(true)"
         />
       </div>
     }
@@ -146,13 +150,13 @@
 </app-form-dialog>
 <!-- REPLACE CARD -->
 <app-form-dialog
-  #replaceCardDialog
+  #replaceCardByMailDialog
   header="Replace card"
   headerIcon="pi pi-refresh"
   i18n-header="@@debit-card-actions-replace-card"
   [proceedLabel]="replaceCardProceedLabel()"
   i18n-proceedLabel="@@debit-card-actions-replace-card"
-  [mutation]="replaceCardMutation"
+  [mutation]="replaceCardByMailMutation"
   [mutationData]="undefined"
 >
   <p i18n>
@@ -165,7 +169,7 @@
 </app-form-dialog>
 <!-- LINK CARD ON SITE -->
 <app-link-card-dialog
-  [method]="cardOnSiteMethod()"
+  [currentTokenCode]="currentCard()?.tokenCode"
   [programId]="programId"
   [referenceId]="referenceId"
   [dialogVisible]="linkCardDialogVisible()"

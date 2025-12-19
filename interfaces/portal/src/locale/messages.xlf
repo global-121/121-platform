@@ -2105,6 +2105,9 @@
       <trans-unit id="4142926878648956866" datatype="html">
         <source>There are no debit cards linked to this registration. Link a visa card from your available cards to this registration by clicking the button below.</source>
       </trans-unit>
+      <trans-unit id="333843503035430789" datatype="html">
+        <source>You&apos;re about to replace debit card number <x equiv-text="{{ currentTokenCode() }}" id="INTERPOLATION"/>.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

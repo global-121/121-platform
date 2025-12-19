@@ -13,6 +13,12 @@
       </div>
     </ng-template>
     <div class="flex flex-col gap-2">
+      @if (currentTokenCode()) {
+        <p i18n>
+          You're about to replace debit card number
+          {{ currentTokenCode() }}.
+        </p>
+      }
       <p i18n>
         Scan the barcode in the back of the card you are handing over to the
         registration with a scanner, or manually fill in the 19 digit serial
@@ -41,14 +47,16 @@
           [(ngModel)]="tokenCode"
           placeholder="____-____-____-____-___"
           mask="9999-9999-9999-9999-999"
-          [invalid]="showError()"
+          [invalid]="showTokenCodeInvalidWarning()"
           [style]="{ width: '100%' }"
           [autoClear]="false"
-          (onInput)="showError.set(false)"
+          (onInput)="showTokenCodeInvalidWarning.set(false)"
         ></p-input-mask>
       </label>
       <app-form-error
-        [error]="showError() && 'Fill up all 19 digits to link card'"
+        [error]="
+          showTokenCodeInvalidWarning() && 'Fill up all 19 digits to link card'
+        "
       />
       <div class="w-full">
         <div class="flex justify-end gap-2">

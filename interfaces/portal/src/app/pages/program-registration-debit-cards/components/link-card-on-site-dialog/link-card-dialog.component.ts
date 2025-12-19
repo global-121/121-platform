@@ -18,8 +18,7 @@ import { InputMask } from 'primeng/inputmask';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
-import { LinkCardDialogStates } from '~/pages/program-registration-debit-cards/components/link-card-dialog/enums/link-card-dialog-states.enum';
-import { CardOnSiteMethods } from '~/pages/program-registration-debit-cards/enums/card-on-site-methods.enum';
+import { LinkCardDialogStates } from '~/pages/program-registration-debit-cards/components/link-card-on-site-dialog/enums/link-card-dialog-states.enum';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
@@ -32,22 +31,22 @@ export class LinkCardDialogComponent {
   private readonly toastService = inject(ToastService);
   private readonly registrationApiService = inject(RegistrationApiService);
 
+  readonly currentTokenCode = input<string>();
   readonly programId = input.required<Signal<number | string>>();
   readonly referenceId = input.required<Signal<string | undefined>>();
   readonly dialogVisible = input.required<boolean>();
-  readonly method = input.required<CardOnSiteMethods>();
 
   readonly closeDialog = output();
 
   readonly tokenCode = model('');
 
+  readonly linkCardDialogStates = LinkCardDialogStates;
+
   readonly linkCardDialogState = signal<LinkCardDialogStates>(
     LinkCardDialogStates.linking,
   );
 
-  readonly linkCardDialogStates = LinkCardDialogStates;
-
-  readonly showError = model(false);
+  readonly showTokenCodeInvalidWarning = model(false);
 
   readonly tokenCodeFullyFilled: Signal<boolean> = computed(
     () => !this.tokenCode().includes('_') && this.tokenCode() !== '',
@@ -55,20 +54,19 @@ export class LinkCardDialogComponent {
 
   async linkCard() {
     if (!this.tokenCodeFullyFilled()) {
-      this.showError.set(true);
+      this.showTokenCodeInvalidWarning.set(true);
       return;
     }
 
     try {
-      if (this.method() === CardOnSiteMethods.replaceCardOnSite) {
-        await this.registrationApiService.linkCardToRegistration({
+      if (this.currentTokenCode()) {
+        await this.registrationApiService.replaceCardOnSite({
           programId: this.programId(),
           referenceId: this.referenceId(),
           tokenCode: this.tokenCode,
         });
-      }
-      if (this.method() === CardOnSiteMethods.replaceCardOnSite) {
-        await this.registrationApiService.replaceCardOnSite({
+      } else {
+        await this.registrationApiService.linkCardToRegistration({
           programId: this.programId(),
           referenceId: this.referenceId(),
           tokenCode: this.tokenCode,
