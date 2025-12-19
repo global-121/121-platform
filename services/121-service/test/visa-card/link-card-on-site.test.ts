@@ -145,7 +145,7 @@ describe('Link Visa debit card on site', () => {
       tokenCode,
     });
 
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.status).toBe(HttpStatus.NOT_FOUND);
     expect(response.body.message).toMatchInlineSnapshot(
       `"Card with code 3333444455556666777 is not found."`,
     );

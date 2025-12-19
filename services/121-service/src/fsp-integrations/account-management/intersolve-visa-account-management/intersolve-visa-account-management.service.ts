@@ -362,7 +362,7 @@ export class IntersolveVisaAccountManagementService {
         ) {
           throw new HttpException(
             `Card with code ${tokenCode} is not found.`,
-            HttpStatus.BAD_REQUEST,
+            HttpStatus.NOT_FOUND,
           );
         } else {
           throw new HttpException(
