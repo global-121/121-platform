@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
@@ -9,6 +9,9 @@ import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/pay
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
@@ -18,6 +21,8 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
+import { ApproverService } from '@121-service/src/user/approver/approver.service';
+import { PaymentApprovalEntity } from '@121-service/src/user/approver/entities/payment-approval.entity';
 
 @Injectable()
 export class PaymentsCreationService {
@@ -31,6 +36,8 @@ export class PaymentsCreationService {
     private readonly paymentEventsService: PaymentEventsService,
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
     private readonly transactionsService: TransactionsService,
+    private readonly approverService: ApproverService,
+    private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
   ) {}
 
   public async createPayment({
@@ -205,8 +212,27 @@ export class PaymentsCreationService {
     programId: number;
     note?: string;
   }): Promise<number> {
+    const approvers = await this.approverService.getApprovers({
+      programId,
+    });
+    // ##TODO: should this check happen earlier already (e.g. in dry run?)
+    if (approvers.length < 1) {
+      throw new HttpException(
+        'No approvers found for program, cannot create payment',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const paymentApprovals = approvers.map((approver) => {
+      const paymentApproval = new PaymentApprovalEntity();
+      paymentApproval.approverId = approver.id;
+      paymentApproval.approved = false; // ##TODO: use default value, or set explicitly here?
+      return paymentApproval;
+    });
+
     const paymentEntity = new PaymentEntity();
     paymentEntity.programId = programId;
+    paymentEntity.approvals = paymentApprovals;
     const savedPaymentEntity = await this.paymentRepository.save(paymentEntity);
 
     await this.paymentEventsService.createEvent({
@@ -273,5 +299,122 @@ export class PaymentsCreationService {
       transferValue: transferValue * row.paymentAmountMultiplier,
       programFspConfigurationId: row.programFspConfigurationId,
     }));
+  }
+
+  public async approvePayment({
+    userId,
+    programId,
+    paymentId,
+  }: {
+    userId: number;
+    programId: number;
+    paymentId: number;
+  }): Promise<void> {
+    const approver = await this.approverService.getApproverByUserIdOrThrow({
+      userId,
+      programId,
+    });
+
+    const paymentEntity = await this.paymentRepository.findOneOrFail({
+      where: { id: Equal(paymentId) },
+      relations: { approvals: true },
+    });
+    const paymentApproval = paymentEntity.approvals.find(
+      (approval) => approval.approverId === approver.id,
+    );
+    if (!paymentApproval) {
+      // This should never happen
+      throw new HttpException(
+        'Approver not assigned to this payment',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    paymentApproval.approved = true;
+    await this.paymentRepository.save(paymentEntity);
+
+    // store payment event
+    // ##TODO: should the description become more specific, or is the userId enough?
+    await this.paymentEventsService.createEvent({
+      paymentId,
+      userId,
+      type: PaymentEvent.approved,
+    });
+
+    // check if all approvals are done now
+    const allApproved = paymentEntity.approvals.every(
+      (approval) => approval.approved,
+    );
+    if (allApproved) {
+      await this.processFinalApproval({
+        userId,
+        paymentId,
+        programId,
+      });
+    }
+  }
+
+  private async processFinalApproval({
+    userId,
+    paymentId,
+    programId,
+  }: {
+    userId: number;
+    paymentId: number;
+    programId: number;
+  }): Promise<void> {
+    // ##TODO: do this check also here? If so, separate to helper method?
+    // check that all FSP configurations are still valid
+    const uniqueFspConfigsForPendingApprovalTransactions =
+      await this.transactionViewScopedRepository.getUniqueProgramFspConfigByTransactionStatus(
+        {
+          programId,
+          paymentId,
+          status: TransactionStatusEnum.pendingApproval,
+        },
+      );
+    if (uniqueFspConfigsForPendingApprovalTransactions.length === 0) {
+      throw new HttpException(
+        {
+          errors: 'No "pending approval" transactions found for this payment.',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const fspConfigNames = uniqueFspConfigsForPendingApprovalTransactions.map(
+      (p) => p.programFspConfigurationName,
+    );
+    await this.paymentsHelperService.checkFspConfigurationsOrThrow(
+      programId,
+      fspConfigNames,
+    );
+
+    // get transactinos to approve
+    const transactionsToApprove =
+      await this.transactionViewScopedRepository.getByStatusOfIncludedRegistrations(
+        {
+          programId,
+          paymentId,
+          status: TransactionStatusEnum.pendingApproval,
+        },
+      );
+    // loop over FSPs and approve transactions in bulk per FSP
+    const fspConfigIds = uniqueFspConfigsForPendingApprovalTransactions.map(
+      (p) => p.programFspConfigurationId,
+    );
+    for (const programFspConfigurationId of fspConfigIds) {
+      const fspConfigTransactions = transactionsToApprove.filter(
+        (t) => t.programFspConfigurationId === programFspConfigurationId,
+      );
+      if (fspConfigTransactions.length === 0) {
+        continue;
+      }
+      await this.transactionsService.saveProgressBulk({
+        newTransactionStatus: TransactionStatusEnum.approved,
+        transactionIds: fspConfigTransactions.map((t) => t.id),
+        description: TransactionEventDescription.approval,
+        userId,
+        programFspConfigurationId,
+      });
+    }
   }
 }

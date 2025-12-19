@@ -16,7 +16,7 @@ import {
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  createAndStartPayment,
+  doPayment,
   getTransactionsByPaymentIdPaginated,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -60,7 +60,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
@@ -122,7 +122,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
@@ -171,7 +171,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
@@ -220,7 +220,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
@@ -270,7 +270,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
 
     // Act
     // do (successful) payment 1
-    const doPaymentResponse1 = await createAndStartPayment({
+    const doPaymentResponse1 = await doPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
@@ -290,7 +290,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     });
 
     // do payment 2
-    const doPaymentResponse2 = await createAndStartPayment({
+    const doPaymentResponse2 = await doPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
@@ -351,7 +351,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     });
 
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: paymentReferenceIds,
@@ -383,7 +383,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: programIdVisa,
       transferValue: magicFailOperationReferenceAmount,
       referenceIds: paymentReferenceIds,

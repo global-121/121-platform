@@ -12,8 +12,8 @@ import {
   registrationScopedTurkanaNorthPv,
 } from '@121-service/test/fixtures/scoped-registrations';
 import {
-  createAndStartPayment,
   createPayment,
+  doPayment,
   getPaymentEvents,
   getPayments,
   getProgramPaymentsStatus,
@@ -116,7 +116,7 @@ describe('Payment in progress', () => {
     );
 
     // We do a payment here and wait for it to complete
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: programIdPV,
       transferValue,
       referenceIds: registrationReferenceIdsPV,
@@ -139,7 +139,7 @@ describe('Payment in progress', () => {
       await getProgramPaymentsStatus(programIdOCW, accessToken)
     ).body;
 
-    const doPaymentPvResultPaymentNext = await createAndStartPayment({
+    const doPaymentPvResultPaymentNext = await doPayment({
       programId: programIdPV,
       transferValue,
       referenceIds: [],
@@ -147,7 +147,7 @@ describe('Payment in progress', () => {
     });
     const paymentIdPvNext = doPaymentPvResultPaymentNext.body.id;
 
-    const doPaymentOcwResultPaymentNext = await createAndStartPayment({
+    const doPaymentOcwResultPaymentNext = await doPayment({
       programId: programIdOCW,
       transferValue,
       referenceIds: [],
@@ -363,7 +363,7 @@ describe('Payment in progress', () => {
 
     // Act
     // We do a payment and we do not wait for all transactions to complete
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: programIdPV,
       transferValue,
       referenceIds: [],
@@ -378,7 +378,7 @@ describe('Payment in progress', () => {
       await getProgramPaymentsStatus(programIdOCW, accessToken)
     ).body;
 
-    const doPaymentOcwResultPaymentNext = await createAndStartPayment({
+    const doPaymentOcwResultPaymentNext = await doPayment({
       programId: programIdOCW,
       transferValue,
       referenceIds: [],

@@ -133,6 +133,21 @@ export async function createPayment({
     });
 }
 
+export async function approvePayment({
+  programId,
+  paymentId,
+  accessToken,
+}: {
+  programId: number;
+  paymentId: number;
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .post(`/programs/${programId}/payments/${paymentId}/approve`)
+    .set('Cookie', [accessToken])
+    .send();
+}
+
 export async function startPayment({
   programId,
   paymentId,
@@ -148,7 +163,7 @@ export async function startPayment({
     .send();
 }
 
-export async function createAndStartPayment({
+export async function doPayment({
   programId,
   transferValue,
   referenceIds,
@@ -163,7 +178,7 @@ export async function createAndStartPayment({
   filter?: Record<string, string>;
   note?: string;
 }): Promise<request.Response> {
-  const createPaymentResult = await createPayment({
+  const createResult = await createPayment({
     programId,
     transferValue,
     referenceIds,
@@ -171,11 +186,11 @@ export async function createAndStartPayment({
     filter,
     note,
   });
-  if (createPaymentResult.status !== HttpStatus.ACCEPTED) {
-    return createPaymentResult;
+  if (createResult.status !== HttpStatus.ACCEPTED) {
+    return createResult;
   }
 
-  const paymentId = createPaymentResult.body.id;
+  const paymentId = createResult.body.id;
   await waitForPaymentTransactionsToComplete({
     programId,
     paymentReferenceIds: referenceIds,
@@ -185,18 +200,33 @@ export async function createAndStartPayment({
     completeStatuses: [TransactionStatusEnum.pendingApproval],
   });
 
-  const startPaymentResult = await startPayment({
+  const approveResult = await approvePayment({
     programId,
     paymentId,
     accessToken,
   });
-
-  // In error cases, return the error from starting the payment
-  if (startPaymentResult.status !== HttpStatus.ACCEPTED) {
-    return startPaymentResult;
+  if (approveResult.status !== HttpStatus.ACCEPTED) {
+    return approveResult;
   }
-  // In success cases, we need the doPaymentResult to get the paymentId from
-  return createPaymentResult;
+  await waitForPaymentTransactionsToComplete({
+    programId,
+    paymentReferenceIds: referenceIds,
+    accessToken,
+    maxWaitTimeMs: 20_000,
+    paymentId,
+    completeStatuses: [TransactionStatusEnum.approved],
+  });
+
+  const startResult = await startPayment({
+    programId,
+    paymentId,
+    accessToken,
+  });
+  if (startResult.status !== HttpStatus.ACCEPTED) {
+    return startResult;
+  }
+  // In success cases, we return the createResult to get the paymentId from
+  return createResult;
 }
 
 export async function retryPayment({

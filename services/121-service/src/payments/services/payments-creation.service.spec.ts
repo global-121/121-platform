@@ -3,9 +3,11 @@ import { PaymentEventsService } from '@121-service/src/payments/payment-events/p
 import { PaymentsCreationService } from '@121-service/src/payments/services/payments-creation.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
+import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { ApproverService } from '@121-service/src/user/approver/approver.service';
 
 describe('PaymentsCreationService', () => {
   let service: PaymentsCreationService;
@@ -15,6 +17,8 @@ describe('PaymentsCreationService', () => {
   let transactionsService: TransactionsService;
   let registrationsBulkService: RegistrationsBulkService;
   let registrationsPaginationService: RegistrationsPaginationService;
+  let approverService: ApproverService;
+  let transactionViewScopedRepository: TransactionViewScopedRepository;
 
   const basePaymentParams = {
     userId: 1,
@@ -70,6 +74,9 @@ describe('PaymentsCreationService', () => {
         },
       ]),
     } as unknown as RegistrationsPaginationService;
+    approverService = {} as unknown as ApproverService;
+    transactionViewScopedRepository =
+      {} as unknown as TransactionViewScopedRepository;
 
     service = new PaymentsCreationService(
       registrationsBulkService,
@@ -78,6 +85,8 @@ describe('PaymentsCreationService', () => {
       paymentEventsService,
       paymentsProgressHelperService,
       transactionsService,
+      approverService,
+      transactionViewScopedRepository,
     );
     (service as any).paymentRepository = {
       save: jest.fn().mockResolvedValue({ id: 123 }),

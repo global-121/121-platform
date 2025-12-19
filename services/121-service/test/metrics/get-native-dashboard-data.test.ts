@@ -1,7 +1,7 @@
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  createAndStartPayment,
+  doPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
@@ -40,7 +40,7 @@ const completeStatuses = [
   TransactionStatusEnum.error,
 ]; // Do not include 'waiting' as all transactions initially go to 'waiting' so this will resolve too quickly
 const seedPayment = async () => {
-  const doPaymentResponse = await createAndStartPayment({
+  const doPaymentResponse = await doPayment({
     programId: programIdPV,
     transferValue,
     referenceIds: registrationsPV.map((r) => r.referenceId),
