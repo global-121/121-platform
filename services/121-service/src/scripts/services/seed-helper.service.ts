@@ -28,6 +28,7 @@ import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuratio
 import { SeedMessageTemplateConfig } from '@121-service/src/seed-data/message-template/interfaces/seed-message-template-config.interface';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
+import { ApproverEntity } from '@121-service/src/user/approver/entities/approver.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
@@ -376,7 +377,7 @@ export class SeedHelperService {
     programId: number,
     roles: DefaultUserRole[] | string[],
     scope?: string,
-  ): Promise<void> {
+  ): Promise<number> {
     const userRepository = this.dataSource.getRepository(UserEntity);
     const programRepository = this.dataSource.getRepository(ProgramEntity);
     const userRoleRepository = this.dataSource.getRepository(UserRoleEntity);
@@ -386,7 +387,7 @@ export class SeedHelperService {
     const user = await userRepository.findOneBy({
       id: userId,
     });
-    await assignmentRepository.save({
+    const assignment = await assignmentRepository.save({
       scope,
       user,
       program: await programRepository.findOne({
@@ -400,6 +401,7 @@ export class SeedHelperService {
         },
       }),
     } as DeepPartial<ProgramAidworkerAssignmentEntity>);
+    return assignment.id;
   }
 
   public async assignAdminUserToProgram(programId: number): Promise<void> {
@@ -409,9 +411,16 @@ export class SeedHelperService {
         username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_ADMIN),
       },
     });
-    await this.assignAidworker(adminUser.id, programId, [
+    const assignmentId = await this.assignAidworker(adminUser.id, programId, [
       DefaultUserRole.Admin,
     ]);
+    // ##TODO: is this a good setup for this?
+    // label admin-user as approver for the program for all testing purposes
+    const approverRepository = this.dataSource.getRepository(ApproverEntity);
+    const approver = new ApproverEntity();
+    approver.programAidworkerAssignmentId = assignmentId;
+    approver.order = 1;
+    await approverRepository.save(approver);
   }
 
   public async addMessageTemplate(
