@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`/ Users / Roles Should get all users 1`] = `
+exports[`/ Users / Roles should get all users 1`] = `
 [
   "program-admin@example.org",
   "view-user@example.org",
@@ -15,7 +15,7 @@ exports[`/ Users / Roles Should get all users 1`] = `
 ]
 `;
 
-exports[`/ Users / Roles Should return all user roles 1`] = `
+exports[`/ Users / Roles should return all user roles 1`] = `
 [
   "admin",
   "program-admin",
