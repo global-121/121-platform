@@ -1,7 +1,10 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { getAllUsers } from '@121-service/test/helpers/user.helper';
+import {
+  getAllUsers,
+  getAllUsersByProgramId,
+} from '@121-service/test/helpers/user.helper';
 import {
   getAccessToken,
   getServer,
@@ -9,6 +12,7 @@ import {
   logoutUser,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
+import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('/ Users', () => {
   describe('/ Roles', () => {
@@ -119,6 +123,45 @@ describe('/ Users', () => {
         updateData.isOrganizationAdmin,
       );
       expect(updatedUser.displayName).toBe(updateData.displayName);
+    });
+
+    it('should get all users', async () => {
+      // Arrange
+
+      // Act
+      const getAllUsersResponse = await getAllUsers(accessToken);
+      const usersLength = getAllUsersResponse.body.length;
+
+      // Assert
+      expect(getAllUsersResponse.status).toBe(HttpStatus.OK);
+      expect(usersLength).toBe(10); // 1 user per default role
+    });
+
+    it('should get current user', async () => {
+      // Arrange
+      // Act
+      const getCurrentUserResponse = await getServer()
+        .get('/users/current')
+        .set('Cookie', [accessToken])
+        .send();
+      // Assert
+      const currentUser = getCurrentUserResponse.body.user;
+
+      expect(getCurrentUserResponse.status).toBe(HttpStatus.OK);
+      expect(currentUser.username).toBe('admin@example.org');
+    });
+
+    it('should return all users assigned to a program', async () => {
+      // Arrange
+
+      // Act
+      const fetchUsersFromPvProgram = await getAllUsersByProgramId(
+        accessToken,
+        programIdPV.toString(),
+      );
+      // Assert
+      expect(fetchUsersFromPvProgram.status).toBe(HttpStatus.OK);
+      expect(fetchUsersFromPvProgram.body.length).toBe(10);
     });
   });
 });
