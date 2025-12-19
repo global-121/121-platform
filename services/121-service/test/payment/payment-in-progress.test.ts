@@ -12,6 +12,7 @@ import {
   registrationScopedTurkanaNorthPv,
 } from '@121-service/test/fixtures/scoped-registrations';
 import {
+  approvePayment,
   createPayment,
   doPayment,
   getPaymentEvents,
@@ -221,6 +222,19 @@ describe('Payment in progress', () => {
           accessToken,
         })
       ).body.id;
+      await waitForPaymentTransactionsToComplete({
+        programId: programIdPV,
+        paymentReferenceIds: registrationReferenceIdsPV,
+        accessToken,
+        maxWaitTimeMs: 5_000,
+        paymentId,
+        completeStatuses: [TransactionStatusEnum.pendingApproval],
+      });
+      await approvePayment({
+        programId: programIdPV,
+        paymentId,
+        accessToken,
+      });
 
       // Act
       const startPaymentPromises: ReturnType<typeof startPayment>[] = [];

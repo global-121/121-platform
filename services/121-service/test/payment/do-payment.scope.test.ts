@@ -80,7 +80,7 @@ describe('Registrations - [Scoped]', () => {
       programId: PvProgramId,
       transferValue: 25,
       referenceIds: [],
-      accessToken: accessTokenScoped,
+      accessToken: accessTokenScoped, //##TODO this cannot approve
       filter: { 'filter.status': '$in:included' },
     });
     const paymentId = doPaymentResponse.body.id;

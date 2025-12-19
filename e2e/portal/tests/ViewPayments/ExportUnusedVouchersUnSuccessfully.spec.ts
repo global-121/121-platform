@@ -2,7 +2,7 @@ import { test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json';
-import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
+import { doPayment } from '@121-service/test/helpers/program.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -29,7 +29,7 @@ test.beforeEach(async ({ page }) => {
     accessToken,
   );
 
-  await createAndStartPayment({
+  await doPayment({
     programId: programIdPV,
     transferValue: 100,
     referenceIds: [registrationPV5.referenceId, registrationPV6.referenceId],
