@@ -414,13 +414,15 @@ export class SeedHelperService {
     const assignmentId = await this.assignAidworker(adminUser.id, programId, [
       DefaultUserRole.Admin,
     ]);
-    // ##TODO: is this a good setup for this?
-    // label admin-user as approver for the program for all testing purposes
-    const approverRepository = this.dataSource.getRepository(ApproverEntity);
-    const approver = new ApproverEntity();
-    approver.programAidworkerAssignmentId = assignmentId;
-    approver.order = 1;
-    await approverRepository.save(approver);
+    // ##TODO: we want this for testing, but not actually for any seeding, also not local?
+    // label admin-user as approver for the program
+    if (IS_DEVELOPMENT) {
+      const approverRepository = this.dataSource.getRepository(ApproverEntity);
+      const approver = new ApproverEntity();
+      approver.programAidworkerAssignmentId = assignmentId;
+      approver.order = 1;
+      await approverRepository.save(approver);
+    }
   }
 
   public async addMessageTemplate(
