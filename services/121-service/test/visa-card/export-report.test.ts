@@ -6,6 +6,7 @@ import {
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { exportList } from '@121-service/test/helpers/program.helper';
+import { updateProgramCardDistributionByMail } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   replaceVisaCardByMail,
   retrieveAndUpdateVisaWalletsAndDetails,
@@ -32,6 +33,11 @@ describe('Export Visa debit card report', () => {
     await seedPaidRegistrations({
       registrations: [registrationVisa],
       programId: programIdVisa,
+    });
+
+    await updateProgramCardDistributionByMail({
+      isCardDistributionByMail: true,
+      accessToken,
     });
 
     // To ensure that the export also works if there are multiple cards for one person

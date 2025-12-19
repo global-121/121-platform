@@ -1,5 +1,11 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { VisaCard121Status } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/wallet-status-121.enum';
+import {
+  FspConfigurationProperties,
+  Fsps,
+} from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { messageTemplateNlrcOcw } from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.const';
@@ -9,6 +15,10 @@ import {
   registrationVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
+import {
+  patchProgramFspConfigurationProperty,
+  updateProgramCardDistributionByMail,
+} from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   blockVisaCard,
   getMessageHistory,
@@ -22,7 +32,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
-describe('Issue new Visa debit card', () => {
+describe('Replace Visa debit card by mail', () => {
   let accessToken: string;
 
   beforeEach(async () => {
@@ -31,7 +41,7 @@ describe('Issue new Visa debit card', () => {
     await waitFor(2_000);
   });
 
-  it('should successfully issue a new Visa Debit card', async () => {
+  it('should successfully replace a Visa Debit card by mail', async () => {
     // Arrange
     await seedPaidRegistrations({
       registrations: [registrationVisa],
@@ -39,7 +49,12 @@ describe('Issue new Visa debit card', () => {
       completeStatuses: [TransactionStatusEnum.success],
     });
 
-    // Block the card first. This is because this usually happens before issuing a new card in practice
+    await updateProgramCardDistributionByMail({
+      isCardDistributionByMail: true,
+      accessToken,
+    });
+
+    // Block the card first. This is because this usually happens before replacing a card in practice
     const visaWalletResponseBeforeBlock = await getVisaWalletsAndDetails(
       programIdVisa,
       registrationVisa.referenceId,
@@ -88,7 +103,7 @@ describe('Issue new Visa debit card', () => {
     );
   });
 
-  it('should fail to issue a new Visa Debit card if phonenumber is missing & successfully reissue after phonenumber is updated again', async () => {
+  it('should fail to replace a Visa debit card by mail if phonenumber is missing & successfully replace after phonenumber is updated again', async () => {
     // Arrange
     const programIdPv = 2;
     await seedPaidRegistrations({
@@ -97,6 +112,14 @@ describe('Issue new Visa debit card', () => {
       completeStatuses: [TransactionStatusEnum.success],
     });
     const wrongPhoneNumber = '4534565434565434';
+
+    await patchProgramFspConfigurationProperty({
+      programId: programIdPv,
+      configName: Fsps.intersolveVisa,
+      propertyName: FspConfigurationProperties.cardDistributionByMail,
+      body: { value: 'true' },
+      accessToken,
+    });
 
     await updateRegistration(
       programIdPv,
@@ -107,7 +130,7 @@ describe('Issue new Visa debit card', () => {
     );
 
     // Act
-    const issueVisaCardResponseAttempt1 = await replaceVisaCardByMail(
+    const replaceVisaCardResponseAttempt1 = await replaceVisaCardByMail(
       programIdPv,
       registrationVisa.referenceId,
       accessToken,
@@ -132,7 +155,7 @@ describe('Issue new Visa debit card', () => {
       accessToken,
     );
 
-    const issueVisaCardResponseAttempt2 = await replaceVisaCardByMail(
+    const replaceVisaCardResponseAttempt2 = await replaceVisaCardByMail(
       programIdPv,
       registrationVisa.referenceId,
       accessToken,
@@ -150,11 +173,11 @@ describe('Issue new Visa debit card', () => {
     );
 
     // Assert
-    expect(issueVisaCardResponseAttempt1.status).toBe(400);
-    expect(issueVisaCardResponseAttempt1.text).toContain(
+    expect(replaceVisaCardResponseAttempt1.status).toBe(400);
+    expect(replaceVisaCardResponseAttempt1.text).toContain(
       IntersolveVisa121ErrorText.reissueCard,
     );
-    expect(issueVisaCardResponseAttempt1.text).toContain(
+    expect(replaceVisaCardResponseAttempt1.text).toContain(
       IntersolveVisa121ErrorText.createPhysicalCardError,
     );
     expect(visaWalletResponseAttempt1.body.cards.length).toBe(2);
@@ -167,7 +190,7 @@ describe('Issue new Visa debit card', () => {
       messageTemplateNlrcPv?.reissueVisaCard?.message?.en,
     );
 
-    expect(issueVisaCardResponseAttempt2.status).toBe(204);
+    expect(replaceVisaCardResponseAttempt2.status).toBe(204);
     expect(visaWalletResponseAttempt2.body.cards.length).toBe(3);
     expect(visaWalletResponseAttempt2.body.cards[0].status).toBe(
       VisaCard121Status.Issued,
@@ -181,6 +204,39 @@ describe('Issue new Visa debit card', () => {
     const lastMessageAttempt2 = messageReponseAttempt2.body[0];
     expect(lastMessageAttempt2.attributes.body).toBe(
       messageTemplateNlrcPv?.reissueVisaCard?.message?.en,
+    );
+  });
+
+  it('should throw when replacing by mail is disabled', async () => {
+    // Arrange
+    const programId = programIdVisa;
+    const registration = {
+      ...registrationVisa,
+      referenceId: 'replace-by-mail-disabled',
+    };
+
+    await seedPaidRegistrations({
+      registrations: [registration],
+      programId,
+      completeStatuses: [TransactionStatusEnum.success],
+    });
+
+    await updateProgramCardDistributionByMail({
+      isCardDistributionByMail: false,
+      accessToken,
+    });
+
+    // Act
+    const replaceCardResponse = await replaceVisaCardByMail(
+      programId,
+      registration.referenceId,
+      accessToken,
+    );
+
+    // Assert
+    expect(replaceCardResponse.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(replaceCardResponse.body.message).toMatchInlineSnapshot(
+      `"Replacing a card by mail is not allowed when card distribution by mail is disabled."`,
     );
   });
 });

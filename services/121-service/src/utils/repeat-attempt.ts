@@ -1,11 +1,15 @@
+import { HttpStatus } from '@nestjs/common';
+
 type RepeatAttemptResult<SuccessT, ErrorT> =
   | {
       success: SuccessT;
       error: null;
+      statusCode?: HttpStatus;
     }
   | {
       success: null;
       error: ErrorT;
+      statusCode?: HttpStatus;
     };
 
 export const repeatAttempt = async <WithArgsT, ResponseT, MaybeErrorT, ErrorT>({
@@ -27,13 +31,21 @@ export const repeatAttempt = async <WithArgsT, ResponseT, MaybeErrorT, ErrorT>({
   const maybeError = await processResponse(originalResponse);
 
   if (!isError(maybeError)) {
-    return { success: originalResponse as unknown as ResponseT, error: null };
+    return {
+      success: originalResponse as unknown as ResponseT,
+      error: null,
+      statusCode: originalResponse['status'] as HttpStatus,
+    };
   }
   const definitelyError = maybeError as unknown as ErrorT;
 
   // We either don't want to retry or have no attempts left
   if (!retryIf || attemptsRemaining <= 0) {
-    return { success: null, error: definitelyError };
+    return {
+      success: null,
+      error: definitelyError,
+      statusCode: originalResponse['status'] as HttpStatus,
+    };
   }
   // Recursion!
   return repeatAttempt({

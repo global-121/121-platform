@@ -6,6 +6,7 @@ import { IntersolveVisaChildWalletEntity } from '@121-service/src/fsp-integratio
 import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
+import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
@@ -24,6 +25,7 @@ export class IntersolveVisaAccountManagementService {
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly registrationsService: RegistrationsService,
     private readonly intersolveVisaDataSynchronizationService: IntersolveVisaDataSynchronizationService,
+    private readonly intersolveVisaChildWalletScopedRepository: IntersolveVisaChildWalletScopedRepository,
   ) {}
 
   public async retrieveAndUpdateIntersolveVisaWalletAndCards(
@@ -76,7 +78,6 @@ export class IntersolveVisaAccountManagementService {
       await this.cardDistributionByMailEnabled(
         registration.programFspConfigurationId,
       );
-
     if (!cardDistributionByMailEnabled) {
       throw new HttpException(
         'Replacing a card by mail is not allowed when card distribution by mail is disabled.',
@@ -84,11 +85,13 @@ export class IntersolveVisaAccountManagementService {
       );
     }
 
-    const hasIntersolveVisaCustomer =
-      await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
-    if (!hasIntersolveVisaCustomer) {
+    const isChildWalletLinkedToRegistration =
+      await this.intersolveVisaChildWalletScopedRepository.hasLinkedChildWalletForRegistrationId(
+        registration.id,
+      );
+    if (!isChildWalletLinkedToRegistration) {
       throw new HttpException(
-        'No Intersolve Visa customer found for this registration.',
+        'Cannot replace a card for a registration which has no cards linked.',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -130,7 +133,6 @@ export class IntersolveVisaAccountManagementService {
       await this.cardDistributionByMailEnabled(
         registration.programFspConfigurationId,
       );
-
     if (cardDistributionByMailEnabled) {
       throw new HttpException(
         'Replacing a card on-site is not allowed when card distribution by mail is enabled.',
@@ -138,16 +140,18 @@ export class IntersolveVisaAccountManagementService {
       );
     }
 
-    const hasIntersolveVisaCustomer =
-      await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
-    if (!hasIntersolveVisaCustomer) {
+    await this.throwIfCardDoesNotExistOrIsAlreadyLinked(tokenCode);
+
+    const isChildWalletLinkedToRegistration =
+      await this.intersolveVisaChildWalletScopedRepository.hasLinkedChildWalletForRegistrationId(
+        registration.id,
+      );
+    if (!isChildWalletLinkedToRegistration) {
       throw new HttpException(
-        'No Intersolve Visa customer found for this registration.',
+        'Cannot replace a card for a registration which has no cards linked.',
         HttpStatus.BAD_REQUEST,
       );
     }
-
-    await this.throwIfCardDoesNotExistOrIsAlreadyLinked(tokenCode);
 
     await this.replaceCard({
       referenceId,
@@ -342,12 +346,32 @@ export class IntersolveVisaAccountManagementService {
   private async throwIfCardDoesNotExistOrIsAlreadyLinked(
     tokenCode: string,
   ): Promise<void> {
-    //TODO:
+    // TODO:
     // Throws if tokenCode (card) does not exist
     // We opened a ticket at Intersoleve to improve their error codes/messages
     // For now the response code is unreliable; it sometimes returns 404, sometimes 500
-    const intersolveVisaChildWallet =
-      await this.intersolveVisaService.getWallet(tokenCode);
+    let intersolveVisaChildWallet;
+    try {
+      intersolveVisaChildWallet =
+        await this.intersolveVisaService.getWallet(tokenCode);
+    } catch (error) {
+      if (error instanceof IntersolveVisaApiError) {
+        if (
+          error.statusCode === HttpStatus.FORBIDDEN ||
+          error.statusCode === HttpStatus.NOT_FOUND
+        ) {
+          throw new HttpException(
+            `Card with code ${tokenCode} is not found.`,
+            HttpStatus.NOT_FOUND,
+          );
+        } else {
+          throw new HttpException(
+            `${IntersolveVisa121ErrorText.getTokenError} - ${error.message}`,
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+      }
+    }
 
     if (intersolveVisaChildWallet.holderId) {
       throw new HttpException(

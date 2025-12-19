@@ -15,6 +15,7 @@ import { DoTransferOrIssueCardResult } from '@121-service/src/fsp-integrations/i
 import { GetPhysicalCardResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/get-physical-card-result.interface';
 import { GetTokenResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/get-token-result.interface';
 import { GetTransactionInformationResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/get-transaction-information-result.interface';
+import { IssueTokenResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/issue-token-result.interface';
 import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
 import { ReissueCardParams } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/reissue-card-params.interface';
 import { SendUpdatedContactInformationParams } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/send-updated-contact-information-params.interface';
@@ -541,26 +542,16 @@ export class IntersolveVisaService {
       );
     }
 
-    let issueTokenResult;
-    if (input.physicalCardToken) {
-      issueTokenResult = await this.intersolveVisaApiService.getToken(
-        input.physicalCardToken,
-      );
-    } else {
-      // Create new token at Intersolve
-      issueTokenResult = await this.intersolveVisaApiService.issueToken({
-        brandCode: input.brandCode,
-        activate: false, // Child Wallets are always created deactivated
-        reference: env.MOCK_INTERSOLVE
-          ? intersolveVisaCustomer.holderId
-          : undefined,
-      });
-    }
+    const tokenResult = await this.getOrIssueToken({
+      tokenCode: input.physicalCardToken,
+      brandCode: input.brandCode,
+      holderId: intersolveVisaCustomer.holderId,
+    });
 
     // Substitute the old token with the new token at Intersolve
     await this.intersolveVisaApiService.substituteToken({
       oldTokenCode: childWalletToReplace.tokenCode,
-      newTokenCode: issueTokenResult.code,
+      newTokenCode: tokenResult.code,
     });
 
     // Create child wallet entity
@@ -568,10 +559,10 @@ export class IntersolveVisaService {
     const newIntersolveVisaChildWallet = new IntersolveVisaChildWalletEntity();
     newIntersolveVisaChildWallet.intersolveVisaParentWallet =
       intersolveVisaCustomer.intersolveVisaParentWallet;
-    newIntersolveVisaChildWallet.tokenCode = issueTokenResult.code;
-    newIntersolveVisaChildWallet.isTokenBlocked = issueTokenResult.blocked;
+    newIntersolveVisaChildWallet.tokenCode = tokenResult.code;
+    newIntersolveVisaChildWallet.isTokenBlocked = tokenResult.blocked;
     newIntersolveVisaChildWallet.walletStatus =
-      issueTokenResult.status as IntersolveVisaTokenStatus;
+      tokenResult.status as IntersolveVisaTokenStatus;
     newIntersolveVisaChildWallet.lastExternalUpdate = new Date();
     newIntersolveVisaChildWallet.isLinkedToParentWallet = true;
     const newChildWallet =
@@ -608,6 +599,31 @@ export class IntersolveVisaService {
       },
     });
     return count > 0;
+  }
+
+  private async getOrIssueToken({
+    brandCode,
+    holderId,
+    tokenCode,
+  }: {
+    brandCode: string;
+    holderId: string;
+    tokenCode?: string;
+  }): Promise<IssueTokenResult> {
+    if (tokenCode) {
+      const getTokenResult =
+        await this.intersolveVisaApiService.getToken(tokenCode);
+      return {
+        ...getTokenResult,
+        code: tokenCode,
+      };
+    } else {
+      return await this.intersolveVisaApiService.issueToken({
+        brandCode,
+        activate: false,
+        reference: env.MOCK_INTERSOLVE ? holderId : undefined,
+      });
+    }
   }
 
   /**
@@ -873,11 +889,16 @@ export class IntersolveVisaService {
     newIntersolveVisaChildWallet.intersolveVisaParentWallet =
       intersolveVisaParentWallet;
     newIntersolveVisaChildWallet.tokenCode = tokenCode;
-    newIntersolveVisaChildWallet.walletStatus =
-      IntersolveVisaTokenStatus.Active;
     newIntersolveVisaChildWallet.cardStatus = IntersolveVisaCardStatus.CardOk;
+    newIntersolveVisaChildWallet.walletStatus =
+      IntersolveVisaTokenStatus.Inactive;
     newIntersolveVisaChildWallet.isLinkedToParentWallet = true;
     newIntersolveVisaChildWallet.lastExternalUpdate = new Date();
-    await this.updateChildWallet(newIntersolveVisaChildWallet);
+    const savedChildWallet =
+      await this.intersolveVisaChildWalletScopedRepository.save(
+        newIntersolveVisaChildWallet,
+      );
+
+    await this.updateChildWallet(savedChildWallet);
   }
 }
