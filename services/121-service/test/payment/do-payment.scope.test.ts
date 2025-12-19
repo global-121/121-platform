@@ -15,6 +15,11 @@ import {
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
+  createApprover,
+  deleteApprover,
+  getCurrentUser,
+} from '@121-service/test/helpers/user.helper';
+import {
   createAccessTokenWithPermissions,
   getAccessToken,
   resetDB,
@@ -71,6 +76,22 @@ describe('Registrations - [Scoped]', () => {
       scope: testScope,
       adminAccessToken: accessToken,
     });
+    // add scoped user as approver ..
+    const userIdScoped = (
+      await getCurrentUser({ accessToken: accessTokenScoped })
+    ).body.user.id;
+    await createApprover({
+      programId: PvProgramId,
+      userId: userIdScoped,
+      order: 1,
+      accessToken,
+    });
+    // .. and remove default admin-user approver
+    await deleteApprover({
+      programId: PvProgramId,
+      approverId: 1,
+      accessToken,
+    });
 
     // Act
     // 7 registrations in total are included
@@ -80,7 +101,7 @@ describe('Registrations - [Scoped]', () => {
       programId: PvProgramId,
       transferValue: 25,
       referenceIds: [],
-      accessToken: accessTokenScoped, //##TODO this cannot approve
+      accessToken: accessTokenScoped, //##TODO this test fails, as this cannot approve atm
       filter: { 'filter.status': '$in:included' },
     });
     const paymentId = doPaymentResponse.body.id;

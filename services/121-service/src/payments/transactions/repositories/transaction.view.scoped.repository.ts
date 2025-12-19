@@ -352,14 +352,12 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
     });
   }
 
-  public async getUniqueProgramFspConfigByTransactionStatus({
+  public async getUniqueProgramFspConfigForApprovedTransactions({
     programId,
     paymentId,
-    status,
   }: {
     programId: number;
     paymentId: number;
-    status: TransactionStatusEnum;
   }): Promise<
     {
       programFspConfigurationName: string;
@@ -375,7 +373,9 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       .leftJoin('transaction.payment', 'payment')
       .andWhere('payment.programId = :programId', { programId })
       .andWhere('transaction.paymentId = :paymentId', { paymentId })
-      .andWhere('transaction.status = :status', { status })
+      .andWhere('transaction.status = :status', {
+        status: TransactionStatusEnum.approved,
+      })
       .getRawMany<{
         programFspConfigurationName: string;
         programFspConfigurationId: number;

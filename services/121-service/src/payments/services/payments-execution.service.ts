@@ -42,11 +42,10 @@ export class PaymentsExecutionService {
     try {
       // check that all FSP configurations are still valid
       const uniqueFspConfigsForApprovedTransactions =
-        await this.transactionViewScopedRepository.getUniqueProgramFspConfigByTransactionStatus(
+        await this.transactionViewScopedRepository.getUniqueProgramFspConfigForApprovedTransactions(
           {
             programId,
             paymentId,
-            status: TransactionStatusEnum.approved,
           },
         );
       if (uniqueFspConfigsForApprovedTransactions.length === 0) {
@@ -72,17 +71,18 @@ export class PaymentsExecutionService {
         type: PaymentEvent.started,
       });
 
-      // process transactions to-fail and to-start
+      // process transactions to-fail ..
       const fspConfigIds = uniqueFspConfigsForApprovedTransactions.map(
         (p) => p.programFspConfigurationId,
       );
-      // ##TODO: keep this here (not (also) at approval)
       await this.markTransactionsAsFailed({
         fspConfigIds,
         userId,
         programId,
         paymentId,
       });
+
+      // .. and to start
       await this.startQueue({
         userId,
         programId,

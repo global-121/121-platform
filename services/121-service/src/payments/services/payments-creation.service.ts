@@ -22,6 +22,7 @@ import { RegistrationsBulkService } from '@121-service/src/registration/services
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 import { ApproverService } from '@121-service/src/user/approver/approver.service';
+import { ApproverResponseDto } from '@121-service/src/user/approver/dto/approver-response.dto';
 import { PaymentApprovalEntity } from '@121-service/src/user/approver/entities/payment-approval.entity';
 
 @Injectable()
@@ -69,7 +70,7 @@ export class PaymentsCreationService {
     // put all operations in try, to be able to always end with an unlock-payments action, also in case of failure
     try {
       // First run the logic that is needed in both dryRun and real payment scenario
-      const { bulkActionResultPaymentDto, registrationsForPayment } =
+      const { bulkActionResultPaymentDto, registrationsForPayment, approvers } =
         await this.getPaymentDryRunDetailsOrThrow({
           programId,
           transferValue,
@@ -90,6 +91,7 @@ export class PaymentsCreationService {
         userId,
         programId,
         note,
+        approvers,
       });
       bulkActionResultPaymentDto.id = paymentId;
 
@@ -131,7 +133,18 @@ export class PaymentsCreationService {
   }): Promise<{
     bulkActionResultPaymentDto: BulkActionResultPaymentDto;
     registrationsForPayment: MappedPaginatedRegistrationDto[];
+    approvers: ApproverResponseDto[];
   }> {
+    const approvers = await this.approverService.getApprovers({
+      programId,
+    });
+    // ##TODO: Figma actually wants this check on 'create payment btn' click. This way, it happens one step later (moving from step1 to step2 of create-payment)
+    if (approvers.length < 1) {
+      throw new HttpException(
+        'No approvers found for program, cannot create payment',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     // TODO: REFACTOR: Move what happens in setQueryPropertiesBulkAction into this function, and call a refactored version of getBulkActionResult/getPaymentBaseQuery (create solution design first)
     const paginateQuery =
       this.registrationsBulkService.setQueryPropertiesBulkAction({
@@ -158,6 +171,7 @@ export class PaymentsCreationService {
           programFspConfigurationNames: [],
         },
         registrationsForPayment: [],
+        approvers,
       };
     }
 
@@ -200,6 +214,7 @@ export class PaymentsCreationService {
     return {
       bulkActionResultPaymentDto,
       registrationsForPayment,
+      approvers,
     };
   }
 
@@ -207,26 +222,17 @@ export class PaymentsCreationService {
     userId,
     programId,
     note,
+    approvers,
   }: {
     userId: number;
     programId: number;
     note?: string;
+    approvers: ApproverResponseDto[];
   }): Promise<number> {
-    const approvers = await this.approverService.getApprovers({
-      programId,
-    });
-    // ##TODO: should this check happen earlier already (e.g. also in dry run, as Figma wants to block this immediately on 'create new payment' btn)
-    if (approvers.length < 1) {
-      throw new HttpException(
-        'No approvers found for program, cannot create payment',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
     const paymentApprovals = approvers.map((approver) => {
       const paymentApproval = new PaymentApprovalEntity();
       paymentApproval.approverId = approver.id;
-      paymentApproval.approved = false; // ##TODO: use default value, or set explicitly here?
+      paymentApproval.approved = false;
       return paymentApproval;
     });
 
@@ -333,7 +339,7 @@ export class PaymentsCreationService {
     await this.paymentRepository.save(paymentEntity);
 
     // store payment event
-    // ##TODO: should the description become more specific, or is the userId enough?
+    // ##TODO: make the description become more specific (see Figma)
     await this.paymentEventsService.createEvent({
       paymentId,
       userId,
@@ -362,33 +368,7 @@ export class PaymentsCreationService {
     paymentId: number;
     programId: number;
   }): Promise<void> {
-    // ##TODO: do this check also here? If so, separate to helper method?
-    // check that all FSP configurations are still valid
-    const uniqueFspConfigsForPendingApprovalTransactions =
-      await this.transactionViewScopedRepository.getUniqueProgramFspConfigByTransactionStatus(
-        {
-          programId,
-          paymentId,
-          status: TransactionStatusEnum.pendingApproval,
-        },
-      );
-    if (uniqueFspConfigsForPendingApprovalTransactions.length === 0) {
-      throw new HttpException(
-        {
-          errors: 'No "pending approval" transactions found for this payment.',
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    const fspConfigNames = uniqueFspConfigsForPendingApprovalTransactions.map(
-      (p) => p.programFspConfigurationName,
-    );
-    await this.paymentsHelperService.checkFspConfigurationsOrThrow(
-      programId,
-      fspConfigNames,
-    );
-
-    // get transactinos to approve
+    // get transactions to approve
     const transactionsToApprove =
       await this.transactionViewScopedRepository.getByStatusOfIncludedRegistrations(
         {
@@ -397,9 +377,20 @@ export class PaymentsCreationService {
           status: TransactionStatusEnum.pendingApproval,
         },
       );
+    if (transactionsToApprove.length === 0) {
+      throw new HttpException(
+        {
+          errors: 'No "pending approval" transactions found for this payment.',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     // loop over FSPs and approve transactions in bulk per FSP
-    const fspConfigIds = uniqueFspConfigsForPendingApprovalTransactions.map(
-      (p) => p.programFspConfigurationId,
+    const fspConfigIds = new Set(
+      transactionsToApprove
+        .map((t) => t.programFspConfigurationId)
+        .filter((id) => id !== null),
     );
     for (const programFspConfigurationId of fspConfigIds) {
       const fspConfigTransactions = transactionsToApprove.filter(

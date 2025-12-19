@@ -3,6 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   createApprover,
+  deleteApprover,
   getApprovers,
 } from '@121-service/test/helpers/user.helper';
 import {
@@ -41,7 +42,7 @@ describe('manage approvers', () => {
     });
     expect(getResponse.status).toBe(HttpStatus.OK);
     expect(getResponse.body).toHaveLength(2); // admin + new
-    expect(getResponse.body[0]).toMatchObject({
+    expect(getResponse.body.sort((a, b) => a.id - b.id)[1]).toMatchObject({
       userId,
       order,
     });
@@ -63,9 +64,11 @@ describe('manage approvers', () => {
     });
 
     // Delete
-    const deleteResponse = await getServer()
-      .delete(`/programs/${programId}/approvers/${approverId}`)
-      .set('Cookie', [accessToken]);
+    const deleteResponse = await deleteApprover({
+      programId,
+      approverId,
+      accessToken,
+    });
     expect(deleteResponse.status).toBe(HttpStatus.NO_CONTENT);
     const getAfterDeleteResponse = await getApprovers({
       programId,

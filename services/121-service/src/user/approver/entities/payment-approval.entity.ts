@@ -17,6 +17,6 @@ export class PaymentApprovalEntity extends Base121Entity {
   })
   public payment: Relation<PaymentEntity>;
 
-  @Column({ default: false })
+  @Column()
   public approved: boolean;
 }
