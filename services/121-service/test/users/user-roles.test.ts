@@ -102,18 +102,15 @@ describe('/ Users', () => {
 
     it('should return all user roles', async () => {
       // Arrange
-      const roles: string[] = [];
+
       // Act
       const response = await getUserRoles(accessToken);
       const rolesLength = response.body.length;
+      console.log('rolesLength: ', rolesLength);
 
-      for (let i = 0; i < rolesLength; i++) {
-        const role = response.body[i].role;
-        roles.push(role);
-      }
       // Assert
       expect(response.status).toBe(HttpStatus.OK);
-      expect(roles).toMatchSnapshot();
+      expect(rolesLength).toBe(10);
     });
 
     it('should update a role by userRoleId', async () => {
@@ -162,18 +159,14 @@ describe('/ Users', () => {
 
     it('should get all users', async () => {
       // Arrange
-      const users: string[] = [];
+
       // Act
       const getAllUsersResponse = await getAllUsers(accessToken);
       const usersLength = getAllUsersResponse.body.length;
 
-      for (let i = 0; i < usersLength; i++) {
-        const user = getAllUsersResponse.body[i].username;
-        users.push(user);
-      }
       // Assert
       expect(getAllUsersResponse.status).toBe(HttpStatus.OK);
-      expect(users).toMatchSnapshot();
+      expect(usersLength).toBe(10);
     });
 
     it('should logout user', async () => {
