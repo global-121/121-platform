@@ -10,9 +10,9 @@ import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity
 import { PaymentEventsModule } from '@121-service/src/payments/payment-events/payment-events.module';
 import { PaymentsController } from '@121-service/src/payments/payments.controller';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
-import { PaymentsCreationService } from '@121-service/src/payments/services/payments-creation.service';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
+import { PaymentsManagementService } from '@121-service/src/payments/services/payments-management.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
@@ -54,7 +54,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     ApproverModule,
   ],
   providers: [
-    PaymentsCreationService,
+    PaymentsManagementService,
     PaymentsExecutionService,
     PaymentsReportingService,
     PaymentsReportingHelperService,

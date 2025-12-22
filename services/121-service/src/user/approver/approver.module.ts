@@ -6,6 +6,7 @@ import { ApproverController } from '@121-service/src/user/approver/approver.cont
 import { ApproverService } from '@121-service/src/user/approver/approver.service';
 import { ApproverEntity } from '@121-service/src/user/approver/entities/approver.entity';
 import { PaymentApprovalEntity } from '@121-service/src/user/approver/entities/payment-approval.entity';
+import { PaymentApprovalRepository } from '@121-service/src/user/approver/repositories/payment-approval.repository';
 
 @Module({
   imports: [
@@ -15,8 +16,8 @@ import { PaymentApprovalEntity } from '@121-service/src/user/approver/entities/p
       PaymentApprovalEntity,
     ]),
   ],
-  providers: [ApproverService],
+  providers: [ApproverService, PaymentApprovalRepository],
   controllers: [ApproverController],
-  exports: [ApproverService],
+  exports: [ApproverService, PaymentApprovalRepository],
 })
 export class ApproverModule {}

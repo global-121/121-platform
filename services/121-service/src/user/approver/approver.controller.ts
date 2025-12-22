@@ -19,6 +19,7 @@ import { ApproverService } from '@121-service/src/user/approver/approver.service
 import { ApproverResponseDto } from '@121-service/src/user/approver/dto/approver-response.dto';
 import { CreateApproverDto } from '@121-service/src/user/approver/dto/create-approver.dto';
 import { UpdateApproverDto } from '@121-service/src/user/approver/dto/update-approver.dto';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs/approvers')
@@ -26,7 +27,7 @@ import { UpdateApproverDto } from '@121-service/src/user/approver/dto/update-app
 export class ApproverController {
   public constructor(private readonly approverService: ApproverService) {}
 
-  @AuthenticatedUser()
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramREAD] })
   @ApiOperation({ summary: 'Get all approvers for program' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -41,8 +42,7 @@ export class ApproverController {
     return await this.approverService.getApprovers({ programId });
   }
 
-  // ##TODO: set new permission for creating approvers? or existing AidWorkerProgramUPDATE? Use same permission for all endpoints here, also GET, as this will be used by API-user as part of configuring approvers.
-  @AuthenticatedUser()
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
   @ApiOperation({ summary: 'Create a new approver' })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -62,7 +62,7 @@ export class ApproverController {
     });
   }
 
-  @AuthenticatedUser()
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
   @ApiOperation({ summary: 'Update an existing approver' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -84,7 +84,7 @@ export class ApproverController {
     });
   }
 
-  @AuthenticatedUser()
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
   @ApiOperation({ summary: 'Delete an existing approver' })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,

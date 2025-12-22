@@ -26,17 +26,22 @@ export class ApproverService {
     userId: number;
     programId: number;
   }): Promise<ApproverResponseDto> {
-    const approvers = await this.getApprovers({
-      programId,
+    const approver = await this.approverRepository.findOne({
+      where: {
+        programAidworkerAssignment: {
+          program: { id: Equal(programId) },
+          user: { id: Equal(userId) },
+        },
+      },
+      relations: { programAidworkerAssignment: { user: true } },
     });
-    const approver = approvers.find((approver) => approver.userId === userId);
     if (!approver) {
       throw new HttpException(
         'User is not an approver for this program',
         HttpStatus.FORBIDDEN,
       );
     }
-    return approver;
+    return this.entityToDto(approver);
   }
 
   public async getApprovers({
@@ -134,9 +139,6 @@ export class ApproverService {
     const { user } = programAidworkerAssignment;
     return {
       id,
-      assignmentId: programAidworkerAssignment.id,
-      programId: programAidworkerAssignment.programId,
-      userId: user.id,
       username: user.username,
       order,
     };
