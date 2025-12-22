@@ -122,7 +122,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: QueueNames.paymentCallbackSafaricomTransfer,
       processors: [
         {
-          path: 'src/fsp-integrations/reconciliation/safaricom-reconciliation/processors/safaricom-timeout-callback-job.processor.ts',
+          path: 'src/fsp-integrations/reconciliation/safaricom/processors/safaricom-timeout-callback-job.processor.ts',
         },
       ],
       limiter: {
@@ -134,7 +134,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: QueueNames.paymentCallbackSafaricomTimeout,
       processors: [
         {
-          path: 'src/fsp-integrations/reconciliation/safaricom-reconciliation/processors/safaricom-timeout-callback-job.processor.ts',
+          path: 'src/fsp-integrations/reconciliation/safaricom/processors/safaricom-timeout-callback-job.processor.ts',
         },
       ],
       limiter: {
@@ -147,7 +147,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: QueueNames.paymentCallbackOnafriq,
       processors: [
         {
-          path: 'src/fsp-integrations/reconciliation/onafriq-reconciliation/processors/onafriq-transaction-callback-job.processor.ts',
+          path: 'src/fsp-integrations/reconciliation/onafriq/processors/onafriq-transaction-callback-job.processor.ts',
         },
       ],
       limiter: {
