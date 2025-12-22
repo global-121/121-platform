@@ -50,7 +50,7 @@ test.beforeEach(async ({ page }) => {
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});
     await page.waitForURL((url) => url.pathname.startsWith(paymentPageUrl));
-    await paymentPage.startPayment();
+    await paymentPage.approveAndStartPayment({ validateToast: false });
 
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);

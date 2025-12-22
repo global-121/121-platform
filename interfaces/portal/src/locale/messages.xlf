@@ -1838,9 +1838,6 @@
       <trans-unit id="1307602065632249368" datatype="html">
         <source>Export the FSP instructions and save the exported XLSX-file in the format required by the Financial Service Provider.</source>
       </trans-unit>
-      <trans-unit id="2656123100839645861" datatype="html">
-        <source>Pending approval</source>
-      </trans-unit>
       <trans-unit id="2877620758967462039" datatype="html">
         <source>When you want the payment to start, click approve and start payment or instruct the designated user to do so.</source>
       </trans-unit>
@@ -1849,12 +1846,6 @@
       </trans-unit>
       <trans-unit id="page-title-program-program-settings|trim" datatype="html">
         <source>Program settings</source>
-      </trans-unit>
-      <trans-unit id="6191781315346853958" datatype="html">
-        <source>Click approve and start payment to initiate the payment through your FSP(s).</source>
-      </trans-unit>
-      <trans-unit id="7179709347265925601" datatype="html">
-        <source>Approve and start payment</source>
       </trans-unit>
       <trans-unit id="payment-event-log-item-type-approved" datatype="html">
         <source>Approved</source>
@@ -2110,6 +2101,30 @@
       </trans-unit>
       <trans-unit id="2800411489772677471" datatype="html">
         <source>Fill up all 19 digits to link card</source>
+      </trans-unit>
+      <trans-unit id="1714518910559654498" datatype="html">
+        <source>Approve payment</source>
+      </trans-unit>
+      <trans-unit id="4207014437413577720" datatype="html">
+        <source>Start payment</source>
+      </trans-unit>
+      <trans-unit id="4605701201545136761" datatype="html">
+        <source>Click start payment to initiate the payment through your FSP(s).</source>
+      </trans-unit>
+      <trans-unit id="5558547280081275233" datatype="html">
+        <source>Approvals</source>
+      </trans-unit>
+      <trans-unit id="6722480348579256749" datatype="html">
+        <source>Payment approved successfully.</source>
+      </trans-unit>
+      <trans-unit id="7006682445961797483" datatype="html">
+        <source><x equiv-text="approvedCount.length" id="PH"/> of <x equiv-text="totalCount" id="PH_1"/> approved</source>
+      </trans-unit>
+      <trans-unit id="8409002705238592127" datatype="html">
+        <source>Review summary and approve payment. The payment can only be started once all needed users approve the payment.</source>
+      </trans-unit>
+      <trans-unit id="8708938501870841219" datatype="html">
+        <source>Approval flow</source>
       </trans-unit>
     </body>
   </file>

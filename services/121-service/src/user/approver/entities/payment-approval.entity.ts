@@ -15,7 +15,10 @@ export class PaymentApprovalEntity extends Base121Entity {
   @ManyToOne(() => PaymentEntity, (payment) => payment.approvals, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn({ name: 'paymentId' })
   public payment: Relation<PaymentEntity>;
+  @Column()
+  public paymentId: number;
 
   @Column()
   public approved: boolean;
