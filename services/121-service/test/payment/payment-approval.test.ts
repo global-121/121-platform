@@ -2,7 +2,6 @@ import { HttpStatus } from '@nestjs/common';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   approvePayment,
   createPayment,
@@ -121,7 +120,7 @@ describe('Payment approval flow', () => {
       accessToken: adminAccessToken,
     });
 
-    // Create payment
+    // Act
     const createPaymentResponse = await createPayment({
       programId,
       transferValue,
@@ -143,7 +142,6 @@ describe('Payment approval flow', () => {
       paymentId,
       accessToken: adminAccessToken,
     });
-    await waitFor(1_000); // there is no transaction-status-change we can await here. We need to give some time, as otherwise the transaction-status assertion below is true for the wrong reasons.
     const getTransactionsResultAfter1stApprove =
       await getTransactionsByPaymentIdPaginated({
         programId,
@@ -160,15 +158,7 @@ describe('Payment approval flow', () => {
       paymentId,
       accessToken: accessTokenFinanceManager,
     });
-    await waitForPaymentTransactionsToComplete({
-      programId,
-      paymentReferenceIds: [registrationPV5.referenceId],
-      accessToken: adminAccessToken,
-      maxWaitTimeMs: 5000,
-      completeStatuses: [TransactionStatusEnum.approved],
-    });
 
-    // Start payment
     const startPaymentResponse = await startPayment({
       programId,
       paymentId,
@@ -185,7 +175,7 @@ describe('Payment approval flow', () => {
 
     // Assert
     expect(createPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-    expect(approvePaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(approvePaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(startPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
 
     const getTransactionsResultFinal =

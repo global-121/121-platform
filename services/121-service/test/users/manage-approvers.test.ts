@@ -42,7 +42,11 @@ describe('manage approvers', () => {
     });
     expect(getResponse.status).toBe(HttpStatus.OK);
     expect(getResponse.body).toHaveLength(2); // admin + new
-    expect(getResponse.body.sort((a, b) => a.id - b.id)[1]).toMatchObject({
+    const sortedApprovers = getResponse.body.sort((obj1, obj2) =>
+      obj1.id > obj2.id ? 1 : -1,
+    );
+    const newApprover = sortedApprovers[1];
+    expect(newApprover).toMatchObject({
       userId,
       order,
     });
