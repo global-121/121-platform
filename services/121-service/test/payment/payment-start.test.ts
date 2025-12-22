@@ -69,13 +69,6 @@ describe('Payment start', () => {
       paymentId,
       accessToken,
     });
-    await waitForPaymentTransactionsToComplete({
-      programId,
-      paymentReferenceIds,
-      accessToken,
-      maxWaitTimeMs: 20_000,
-      completeStatuses: [TransactionStatusEnum.approved],
-    });
 
     // Assert 1 - before starting payment
     const getTransactionsBeforeStartResponse =
@@ -176,13 +169,6 @@ describe('Payment start', () => {
         programId,
         paymentId,
         accessToken,
-      });
-      await waitForPaymentTransactionsToComplete({
-        programId,
-        paymentReferenceIds: registrations.map((r) => r.referenceId),
-        accessToken,
-        maxWaitTimeMs: 20_000,
-        completeStatuses: [TransactionStatusEnum.approved],
       });
 
       // Make one registration non-included
@@ -334,13 +320,6 @@ describe('Payment start', () => {
       programId,
       paymentId: createPaymentResponse.body.id,
       accessToken,
-    });
-    await waitForPaymentTransactionsToComplete({
-      programId,
-      paymentReferenceIds: registrations.map((r) => r.referenceId),
-      accessToken,
-      maxWaitTimeMs: 20_000,
-      completeStatuses: [TransactionStatusEnum.approved],
     });
 
     //////////////////

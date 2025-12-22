@@ -208,14 +208,6 @@ export async function doPayment({
   if (approveResult.status !== HttpStatus.ACCEPTED) {
     return approveResult;
   }
-  await waitForPaymentTransactionsToComplete({
-    programId,
-    paymentReferenceIds: referenceIds,
-    accessToken,
-    maxWaitTimeMs: 20_000,
-    paymentId,
-    completeStatuses: [TransactionStatusEnum.approved],
-  });
 
   const startResult = await startPayment({
     programId,
