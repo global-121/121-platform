@@ -14,7 +14,7 @@ import { z } from 'zod/v4';
 //   - {empty line}
 //   - {FSP}_...other variables, alphabetically
 
-const airtelEnvVariables = {
+export const airtelEnvVariables = {
   AIRTEL_ENABLED: z.stringbool().default(false),
 
   MOCK_AIRTEL: z.stringbool().default(false),
@@ -29,7 +29,9 @@ const airtelEnvVariables = {
   AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY: z.string().optional(),
 };
 
-const commercialBankEthiopiaEnvVariables = {
+export const commercialBankEthiopiaEnvVariables = {
+  COMMERCIAL_BANK_ETHIOPIA_ENABLED: z.stringbool().default(false),
+
   MOCK_COMMERCIAL_BANK_ETHIOPIA: z.stringbool().default(false),
 
   COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH: z.string().default(''),
@@ -40,7 +42,7 @@ const commercialBankEthiopiaEnvVariables = {
   CRON_CBE_ACCOUNT_ENQUIRIES_VALIDATION: z.stringbool().default(false),
 };
 
-const cooperativeBankOfOromiaEnvVariables = {
+export const cooperativeBankOfOromiaEnvVariables = {
   COOPERATIVE_BANK_OF_OROMIA_ENABLED: z.stringbool().default(false),
 
   MOCK_COOPERATIVE_BANK_OF_OROMIA: z.stringbool().default(false),
@@ -62,7 +64,9 @@ const cooperativeBankOfOromiaEnvVariables = {
   COOPERATIVE_BANK_OF_OROMIA_NARRATIVE: z.string().max(10).optional(),
 };
 
-const intersolveVisaEnvVariables = {
+export const intersolveVisaEnvVariables = {
+  INTERSOLVE_VISA_ENABLED: z.stringbool().default(false),
+
   // Used for Intersolve Visa and Intersolve Voucher Paper+Whatsapp.
   MOCK_INTERSOLVE: z.stringbool().default(false),
 
@@ -88,7 +92,9 @@ const intersolveVisaEnvVariables = {
 
 // FSPs "Intersolve Voucher Paper" and "Intersolve Voucher Whatsapp" are very
 // similar.
-const intersolveVoucherPaperEnvVariables = {
+export const intersolveVoucherPaperEnvVariables = {
+  INTERSOLVE_VOUCHER_PAPER_ENABLED: z.stringbool().default(false),
+
   // Used for Intersolve Visa and Intersolve Voucher Paper+Whatsapp.
   MOCK_INTERSOLVE: z.stringbool().default(false),
 
@@ -102,14 +108,18 @@ const intersolveVoucherPaperEnvVariables = {
   INTERSOLVE_URL: z.url().default(''),
 };
 
-const intersolveVoucherWhatsappEnvVariables = {
+export const intersolveVoucherWhatsappEnvVariables = {
+  INTERSOLVE_VOUCHER_WHATSAPP_ENABLED: z.stringbool().default(false),
+
   ...intersolveVoucherPaperEnvVariables,
   CRON_INTERSOLVE_VOUCHER_SEND_WHATSAPP_REMINDERS: z
     .stringbool()
     .default(false),
 };
 
-const nedbankEnvVariables = {
+export const nedbankEnvVariables = {
+  NEDBANK_ENABLED: z.stringbool().default(false),
+
   MOCK_NEDBANK: z.stringbool().default(false),
 
   CRON_NEDBANK_VOUCHERS: z.stringbool().default(false),
@@ -125,7 +135,9 @@ const nedbankEnvVariables = {
   NEDBANK_CLIENT_SECRET: z.string().optional(),
 };
 
-const onafriqEnvVariables = {
+export const onafriqEnvVariables = {
+  ONAFRIQ_ENABLED: z.stringbool().default(false),
+
   MOCK_ONAFRIQ: z.stringbool().default(false),
 
   CRON_ONAFRIQ_RECONCILIATION_REPORT: z.stringbool().default(false),
@@ -150,7 +162,9 @@ const onafriqEnvVariables = {
   ONAFRIQ_SFTP_USERNAME: z.string().optional(),
 };
 
-const safaricomEnvVariables = {
+export const safaricomEnvVariables = {
+  SAFARICOM_ENABLED: z.stringbool().default(false),
+
   MOCK_SAFARICOM: z.stringbool().default(false),
 
   SAFARICOM_API_URL: z
@@ -333,51 +347,6 @@ export const env = createEnv({
 
   createFinalSchema: (shape) =>
     z.object(shape).transform((env, ctx) => {
-      /**
-       * List of FSP-dependent ENV-variables.
-       * To validate that _all required variables_ are set, ONLY when a specific FSP is enabled.
-       *
-       * - Key: the FSP flag, format: `<FSP-NAME-PREFIX>_ENABLED`
-       * - Value: array of required variable names.
-       */
-      const fspVariableRequirements = new Map<string, string[]>([
-        [
-          'AIRTEL_ENABLED',
-          [
-            'AIRTEL_CLIENT_ID',
-            'AIRTEL_CLIENT_SECRET',
-            'AIRTEL_API_URL',
-            'AIRTEL_DISBURSEMENT_PIN',
-            'AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY',
-          ],
-        ],
-        [
-          'COOPERATIVE_BANK_OF_OROMIA_ENABLED',
-          [
-            'COOPERATIVE_BANK_OF_OROMIA_BASE64_CREDENTIALS',
-            'COOPERATIVE_BANK_OF_OROMIA_API_URL',
-            'COOPERATIVE_BANK_OF_OROMIA_AUTH_URL',
-            'COOPERATIVE_BANK_OF_OROMIA_NARRATIVE',
-          ],
-        ],
-      ]);
-
-      for (const [fspFlag, requiredVariables] of fspVariableRequirements) {
-        if (env[fspFlag] !== true) {
-          continue;
-        }
-        for (const variable of requiredVariables) {
-          if (env[variable]) {
-            continue;
-          }
-          ctx.addIssue({
-            code: 'custom',
-            path: [variable],
-            message: `The variable is required when ${fspFlag} is true.`,
-          });
-        }
-      }
-
       // Make sure we do not set the NEDBANK_CERTIFICATE_PASSWORD in production
       if (env.NODE_ENV === 'production' && env.NEDBANK_CERTIFICATE_PASSWORD) {
         ctx.addIssue({
