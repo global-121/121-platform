@@ -59,7 +59,9 @@ describe('/ Roles', () => {
       });
     // Assert
     expect(response2.status).toBe(HttpStatus.CONFLICT);
-    expect(response2.text).toMatchSnapshot();
+    expect(response2.text).toMatchInlineSnapshot(
+      `"{"statusCode":409,"message":"Role already exists: test-manager"}"`,
+    );
   });
 
   it('should not create a role when using a permission that does not exist', async () => {
@@ -77,7 +79,9 @@ describe('/ Roles', () => {
       });
     // Assert
     expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-    expect(response.text).toMatchSnapshot();
+    expect(response.text).toMatchInlineSnapshot(
+      `"{"statusCode":400,"message":"Permission not valid: program.make-up-my-own-permission"}"`,
+    );
   });
 
   it('should return all user roles', async () => {
