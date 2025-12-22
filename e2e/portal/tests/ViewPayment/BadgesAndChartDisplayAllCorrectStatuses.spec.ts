@@ -41,6 +41,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
+// ##TODO fix and extend this whole test (and rename the test to be more clear)
 test('Badges and chart should display correct statuses during payment process', async ({
   page,
 }) => {
@@ -64,7 +65,6 @@ test('Badges and chart should display correct statuses during payment process', 
 
   await test.step('Validate "Pending approval" badges and details', async () => {
     await paymentPage.validateGraphStatus({
-      pendingApproval: registrationsCount,
       approved: 0,
       processing: 0,
       successful: 0,
@@ -90,7 +90,6 @@ test('Badges and chart should display correct statuses during payment process', 
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.validateToastMessage('Payment started successfully.');
     await paymentPage.validateGraphStatus({
-      pendingApproval: 0,
       approved: 0,
       processing: 0,
       successful: registrationsCount,

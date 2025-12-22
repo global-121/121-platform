@@ -59,7 +59,7 @@ test('Retry payments should put failed transactions back in processing and downl
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdPV}/payments/1`),
     );
-    await paymentPage.startPayment();
+    await paymentPage.approveAndStartPayment({ validateToast: false });
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
