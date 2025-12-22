@@ -24,12 +24,12 @@ import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 import { ApproverService } from '@121-service/src/user/approver/approver.service';
 import { ApproverResponseDto } from '@121-service/src/user/approver/dto/approver-response.dto';
 import { PaymentApprovalEntity } from '@121-service/src/user/approver/entities/payment-approval.entity';
+import { PaymentApprovalRepository } from '@121-service/src/user/approver/repositories/payment-approval.repository';
 
 @Injectable()
-export class PaymentsCreationService {
+export class PaymentsManagementService {
   @InjectRepository(PaymentEntity)
   private readonly paymentRepository: Repository<PaymentEntity>;
-
   public constructor(
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
@@ -39,6 +39,7 @@ export class PaymentsCreationService {
     private readonly transactionsService: TransactionsService,
     private readonly approverService: ApproverService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
+    private readonly paymentApprovalRepository: PaymentApprovalRepository,
   ) {}
 
   public async createPayment({
@@ -76,12 +77,6 @@ export class PaymentsCreationService {
           transferValue,
           query,
         });
-      if (registrationsForPayment.length < 1) {
-        throw new HttpException(
-          'No registrations found to create payment for',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
 
       if (dryRun || !transferValue) {
         return bulkActionResultPaymentDto;
@@ -138,7 +133,6 @@ export class PaymentsCreationService {
     const approvers = await this.approverService.getApprovers({
       programId,
     });
-    // ##TODO: Figma actually wants this check on 'create payment btn' click. This way, it happens one step later (moving from step1 to step2 of create-payment)
     if (approvers.length < 1) {
       throw new HttpException(
         'No approvers found for program, cannot create payment',
@@ -178,12 +172,17 @@ export class PaymentsCreationService {
     // Get array of RegistrationViewEntity objects to be paid
     const registrationsForPayment =
       await this.getRegistrationsForPaymentChunked(programId, paginateQuery);
+    if (registrationsForPayment.length < 1) {
+      throw new HttpException(
+        'No registrations found to create payment for',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     // Calculate the totalMultiplierSum and create an array with all FSPs for this payment
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
     let totalMultiplierSum = 0;
     // This loop is pretty fast: with 131k registrations it takes ~38ms
-
     for (const registration of registrationsForPayment) {
       totalMultiplierSum =
         totalMultiplierSum + registration.paymentAmountMultiplier;
@@ -321,21 +320,22 @@ export class PaymentsCreationService {
       programId,
     });
 
-    const paymentEntity = await this.paymentRepository.findOneOrFail({
-      where: { id: Equal(paymentId) },
-      relations: { approvals: true },
+    const allPaymentApprovals = await this.paymentApprovalRepository.find({
+      where: {
+        paymentId: Equal(paymentId),
+      },
     });
-    const paymentApproval = paymentEntity.approvals.find(
+    const currentPaymentApproval = allPaymentApprovals.find(
       (approval) => approval.approverId === approver.id,
     );
-    if (!paymentApproval) {
+    if (!currentPaymentApproval) {
       throw new HttpException(
         'Approver not assigned to this payment',
         HttpStatus.BAD_REQUEST,
       );
     }
-    paymentApproval.approved = true;
-    await this.paymentRepository.save(paymentEntity);
+    currentPaymentApproval.approved = true;
+    await this.paymentApprovalRepository.save(currentPaymentApproval);
 
     // store payment event
     // ##TODO: make the description become more specific (see Figma)
@@ -346,7 +346,8 @@ export class PaymentsCreationService {
     });
 
     // check if all approvals are done now
-    const allApproved = paymentEntity.approvals.every(
+
+    const allApproved = allPaymentApprovals.every(
       (approval) => approval.approved,
     );
     if (allApproved) {
