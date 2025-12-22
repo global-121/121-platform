@@ -5,12 +5,14 @@ import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/enti
 import { ApproverController } from '@121-service/src/user/approver/approver.controller';
 import { ApproverService } from '@121-service/src/user/approver/approver.service';
 import { ApproverEntity } from '@121-service/src/user/approver/entities/approver.entity';
+import { PaymentApprovalEntity } from '@121-service/src/user/approver/entities/payment-approval.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       ApproverEntity,
       ProgramAidworkerAssignmentEntity,
+      PaymentApprovalEntity,
     ]),
   ],
   providers: [ApproverService],

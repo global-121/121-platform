@@ -52,7 +52,7 @@ test('Graph should reflect transaction statuses', async ({ page }) => {
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
     );
-    await paymentPage.startPayment();
+    await paymentPage.approveAndStartPayment({ validateToast: false });
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
@@ -60,7 +60,6 @@ test('Graph should reflect transaction statuses', async ({ page }) => {
     await page.goto(`/en-GB/program/${programIdOCW}/payments/1`);
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.validateGraphStatus({
-      pendingApproval: 0,
       approved: 0,
       processing: 0,
       successful: 16,
