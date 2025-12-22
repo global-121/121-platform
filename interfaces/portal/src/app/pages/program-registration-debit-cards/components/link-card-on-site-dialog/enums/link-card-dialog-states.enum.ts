@@ -1,5 +1,6 @@
 export enum LinkCardDialogStates {
-  errorAlreadyLinked = 'error-already-linked',
+  errorAlreadyLinkedToCurrent = 'error-already-linked-to-current',
+  errorAlreadyLinkedToOther = 'error-already-linked-to-other',
   errorNotFound = 'error-not-found',
   linking = 'linking',
 }

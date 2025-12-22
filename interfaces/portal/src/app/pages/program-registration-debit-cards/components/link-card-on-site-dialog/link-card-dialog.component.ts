@@ -6,7 +6,6 @@ import {
   inject,
   input,
   model,
-  output,
   Signal,
   signal,
 } from '@angular/core';
@@ -30,16 +29,12 @@ import { ToastService } from '~/services/toast.service';
 export class LinkCardDialogComponent {
   private readonly toastService = inject(ToastService);
   private readonly registrationApiService = inject(RegistrationApiService);
-
   readonly currentTokenCode = input<string>();
   readonly programId = input.required<Signal<number | string>>();
   readonly referenceId = input.required<Signal<string | undefined>>();
-  readonly dialogVisible = input.required<boolean>();
-
-  readonly closeDialog = output();
+  readonly dialogVisible = model.required<boolean>();
 
   readonly tokenCode = model('');
-
   readonly showTokenCodeInvalidWarning = signal<boolean>(false);
   readonly linkCardDialogState = signal<LinkCardDialogStates>(
     LinkCardDialogStates.linking,
@@ -51,22 +46,91 @@ export class LinkCardDialogComponent {
     () => !this.tokenCode().includes('_') && this.tokenCode() !== '',
   );
 
-  readonly dialogLabels = computed(() => {
+  readonly dialogTitle = computed(() => {
     if (this.currentTokenCode()) {
-      return {
-        header: $localize`Replace visa card`,
-        confirmationButton: $localize`Replace card`,
-      };
+      return $localize`Replace visa card`;
     }
-    return {
-      header: $localize`Link visa card`,
-      confirmationButton: $localize`Link card`,
-    };
+
+    return $localize`Link visa card`;
   });
+
+  readonly confirmationButtonLabel = computed(() => {
+    if (this.currentTokenCode()) {
+      return $localize`Replace card`;
+    }
+
+    return $localize`Link card`;
+  });
+
+  readonly tokenCodeWithoutDashes = ({
+    tokenCodeToClean,
+  }: {
+    tokenCodeToClean: string;
+  }) => computed(() => tokenCodeToClean.replaceAll('-', ''));
+
+  readonly isError = computed(
+    () => this.linkCardDialogState() !== LinkCardDialogStates.linking,
+  );
+
+  readonly errorMessage = computed(() => {
+    if (!this.isError()) {
+      return '';
+    }
+
+    if (
+      this.linkCardDialogState() === this.linkCardDialogStates.errorNotFound
+    ) {
+      return $localize`Card number not found. Please go back and check that the number is correct.`;
+    }
+
+    if (
+      this.linkCardDialogState() ===
+      this.linkCardDialogStates.errorAlreadyLinkedToOther
+    ) {
+      return $localize`The card number you entered is already linked to another registration.`;
+    }
+
+    return $localize`The card number you entered is already linked to the current registration.`;
+  });
+
+  readonly errorInstructions = computed(() => {
+    if (!this.isError()) {
+      return '';
+    }
+
+    if (
+      this.linkCardDialogState() === this.linkCardDialogStates.errorNotFound
+    ) {
+      return $localize`If the number is correct but this error persists, try a different card and inform your supervisor.`;
+    }
+
+    return $localize`Please link this registration to a different card and inform your supervisor.`;
+  });
+
+  resetData() {
+    this.linkCardDialogState.set(LinkCardDialogStates.linking);
+    this.tokenCode.set('');
+  }
 
   async linkCard() {
     if (!this.tokenCodeFullyFilled()) {
       this.showTokenCodeInvalidWarning.set(true);
+      return;
+    }
+
+    const currentTokenCodeWithoutDashes = this.tokenCodeWithoutDashes({
+      tokenCodeToClean: this.currentTokenCode() ?? '',
+    });
+
+    const tokenCodeWithoutDashes = this.tokenCodeWithoutDashes({
+      tokenCodeToClean: this.tokenCode() || '',
+    });
+
+    if (tokenCodeWithoutDashes() === currentTokenCodeWithoutDashes()) {
+      this.linkCardDialogState.set(
+        LinkCardDialogStates.errorAlreadyLinkedToCurrent,
+      );
+
       return;
     }
 
@@ -75,19 +139,21 @@ export class LinkCardDialogComponent {
         await this.registrationApiService.replaceCardOnSite({
           programId: this.programId(),
           referenceId: this.referenceId(),
-          tokenCode: this.tokenCode,
+          tokenCode: tokenCodeWithoutDashes,
         });
       } else {
         await this.registrationApiService.linkCardToRegistration({
           programId: this.programId(),
           referenceId: this.referenceId(),
-          tokenCode: this.tokenCode,
+          tokenCode: tokenCodeWithoutDashes,
         });
       }
     } catch (error) {
       // TODO: update/test this after tokenCode prefix check is implemented in the backend
       if (error instanceof HttpErrorResponse && error.status === 400) {
-        this.linkCardDialogState.set(LinkCardDialogStates.errorAlreadyLinked);
+        this.linkCardDialogState.set(
+          LinkCardDialogStates.errorAlreadyLinkedToOther,
+        );
         return;
       }
       if (error instanceof HttpErrorResponse && error.status === 404) {
@@ -101,10 +167,13 @@ export class LinkCardDialogComponent {
 
       return;
     }
-    this.closeDialog.emit();
     this.toastService.showToast({
       severity: 'success',
       detail: $localize`Link Visa card to registration`,
     });
+  }
+
+  goBackToLinkingState() {
+    this.linkCardDialogState.set(this.linkCardDialogStates.linking);
   }
 }

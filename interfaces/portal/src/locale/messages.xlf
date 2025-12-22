@@ -2057,18 +2057,6 @@
       <trans-unit id="debit-card-actions-link-visa-card" datatype="html">
         <source>Link visa card</source>
       </trans-unit>
-      <trans-unit id="2748779018689991301" datatype="html">
-        <source>If the number is correct but this error persists, try a different card and inform your supervisor.</source>
-      </trans-unit>
-      <trans-unit id="2851349808127082673" datatype="html">
-        <source>Please link this registration to a different card and inform your supervisor.</source>
-      </trans-unit>
-      <trans-unit id="3833930616659415387" datatype="html">
-        <source>Card number not found. Please go back and check that the number is correct.</source>
-      </trans-unit>
-      <trans-unit id="7178301959586985817" datatype="html">
-        <source>The card number you entered is already linked to another registration.</source>
-      </trans-unit>
       <trans-unit id="734934965373819800" datatype="html">
         <source>Go back</source>
       </trans-unit>
@@ -2106,10 +2094,25 @@
         <source>Replace card</source>
       </trans-unit>
       <trans-unit id="187187500641108332" datatype="html">
-        <source><x equiv-text="{{ dialogLabels().header }}" id="INTERPOLATION"/></source>
+        <source><x equiv-text="{{ dialogTitle() }}" id="INTERPOLATION"/></source>
       </trans-unit>
       <trans-unit id="1941641831210864467" datatype="html">
         <source>Replace visa card</source>
+      </trans-unit>
+      <trans-unit id="1327684604667303594" datatype="html">
+        <source>Card number not found. Please go back and check that the number is correct.</source>
+      </trans-unit>
+      <trans-unit id="2569677772635471712" datatype="html">
+        <source>The card number you entered is already linked to another registration.</source>
+      </trans-unit>
+      <trans-unit id="3063821478801011657" datatype="html">
+        <source>Please link this registration to a different card and inform your supervisor.</source>
+      </trans-unit>
+      <trans-unit id="8800018640518842840" datatype="html">
+        <source>The card number you entered is already linked to the current registration.</source>
+      </trans-unit>
+      <trans-unit id="891683010392787907" datatype="html">
+        <source>If the number is correct but this error persists, try a different card and inform your supervisor.</source>
       </trans-unit>
     </body>
   </file>
