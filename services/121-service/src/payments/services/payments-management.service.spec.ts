@@ -88,6 +88,7 @@ describe('PaymentsManagementService', () => {
     } as unknown as TransactionViewScopedRepository;
     paymentApprovalRepository = {
       find: jest.fn(),
+      save: jest.fn(),
     } as unknown as PaymentApprovalRepository;
 
     service = new PaymentsManagementService(
@@ -236,51 +237,45 @@ describe('PaymentsManagementService', () => {
   });
 
   describe('approvePayment', () => {
-    let paymentRepository: any;
+    let paymentApprovalRepository: any;
 
     const mockApproverResponseDto = { id: 1 };
 
     beforeEach(() => {
-      paymentRepository = {
-        findOneOrFail: jest.fn(),
+      paymentApprovalRepository = {
+        find: jest.fn(),
         save: jest.fn(),
       };
-      (service as any).paymentRepository = paymentRepository;
+      (service as any).paymentApprovalRepository = paymentApprovalRepository;
       (approverService as any).getApproverByUserIdOrThrow = jest
         .fn()
         .mockResolvedValue(mockApproverResponseDto);
     });
 
     it('should throw if approver is not assigned to payment', async () => {
-      paymentRepository.findOneOrFail.mockResolvedValue({
-        approvals: [],
-      });
+      paymentApprovalRepository.find.mockResolvedValue([]);
       await expect(
         service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
       ).rejects.toThrow('Approver not assigned to this payment');
     });
 
     it('should approve the payment for the approver and save', async () => {
-      const approval = { approverId: 1, approved: false };
-      const paymentEntity = { approvals: [approval] };
-      paymentRepository.findOneOrFail.mockResolvedValue(paymentEntity);
-      paymentRepository.save.mockResolvedValue(paymentEntity);
+      const approvals = [{ approverId: 1, approved: false }];
+      paymentApprovalRepository.find.mockResolvedValue(approvals);
       jest
         .spyOn(paymentEventsService, 'createEvent')
         .mockResolvedValue(undefined);
 
       await service.approvePayment({ userId: 1, programId: 2, paymentId: 3 });
 
-      expect(approval.approved).toBe(true);
-      expect(paymentRepository.save).toHaveBeenCalledWith(paymentEntity);
+      expect(approvals[0].approved).toBe(true);
+      expect(paymentApprovalRepository.save).toHaveBeenCalledWith(approvals[0]);
       expect(paymentEventsService.createEvent).toHaveBeenCalled();
     });
 
     it('should call processFinalApproval if all approvals are approved', async () => {
-      const approval = { approverId: 1, approved: false };
-      const paymentEntity = { approvals: [approval] };
-      paymentRepository.findOneOrFail.mockResolvedValue(paymentEntity);
-      paymentRepository.save.mockResolvedValue(paymentEntity);
+      const approvals = [{ approverId: 1, approved: false }];
+      paymentApprovalRepository.find.mockResolvedValue(approvals);
       jest
         .spyOn(paymentEventsService, 'createEvent')
         .mockResolvedValue(undefined);
