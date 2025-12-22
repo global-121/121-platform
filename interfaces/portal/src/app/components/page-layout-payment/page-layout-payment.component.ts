@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -23,6 +23,7 @@ import { AppRoutes } from '~/app.routes';
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { MetricTileComponent } from '~/components/metric-tile/metric-tile.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
+import { ApprovePaymentComponent } from '~/components/page-layout-payment/components/approve-payment/approve-payment.component';
 import { ImportReconciliationDataComponent } from '~/components/page-layout-payment/components/import-reconciliation-data/import-reconciliation-data.component';
 import { PaymentMenuComponent } from '~/components/page-layout-payment/components/payment-menu/payment-menu.component';
 import { ProgramPaymentChartComponent } from '~/components/page-layout-payment/components/program-payment-chart/program-payment-chart.component';
@@ -50,7 +51,9 @@ import { Locale } from '~/utils/locale';
     ImportReconciliationDataComponent,
     PaymentMenuComponent,
     StartPaymentComponent,
+    ApprovePaymentComponent,
     ColoredChipComponent,
+    CommonModule,
   ],
   templateUrl: './page-layout-payment.component.html',
   styles: ``,
@@ -206,7 +209,7 @@ export class PageLayoutPaymentComponent {
     programHasFspWithExportFileIntegration(this.program.data()),
   );
 
-  readonly startPaymentFspList = computed<string>(() => {
+  readonly paymentFspList = computed<string>(() => {
     if (!this.payment.isSuccess()) {
       return '';
     }
@@ -227,30 +230,60 @@ export class PageLayoutPaymentComponent {
     });
   });
 
-  readonly startPaymentTransactionCount = computed<string>(() => {
+  readonly paymentTransactionCount = (status: 'approve' | 'start') =>
+    computed<string>(() => {
+      if (!this.payment.isSuccess()) {
+        return '';
+      }
+      const count =
+        status === 'approve'
+          ? this.payment.data().pendingApproval.count
+          : this.payment.data().approved.count;
+      return count.toString() + ' ' + $localize`registrations`;
+    });
+
+  readonly paymentTotalPaymentAmount = (status: 'approve' | 'start') =>
+    computed<string>(() => {
+      if (!this.payment.isSuccess()) {
+        return '';
+      }
+      const totalPaymentAmount =
+        status === 'approve'
+          ? this.payment.data().pendingApproval.transferValue
+          : this.payment.data().approved.transferValue;
+
+      return (
+        this.currencyPipe.transform(
+          totalPaymentAmount,
+          this.program.data()?.currency,
+          'symbol-narrow',
+          '1.2-2',
+        ) ?? '0'
+      );
+    });
+
+  readonly showApprovePaymentButton = computed<boolean | undefined>(() => {
     if (!this.payment.isSuccess()) {
-      return '';
+      return false;
     }
+
     return (
-      this.payment.data().pendingApproval.count.toString() +
-      ' ' +
-      $localize`registrations`
+      this.payment.data().pendingApproval.count > 0 &&
+      !this.hasAlreadyApproved() &&
+      !this.isPaymentInProgress()
     );
   });
 
-  readonly startPaymentTotalPaymentAmount = computed<string>(() => {
+  readonly hasAlreadyApproved = computed<boolean | undefined>(() => {
     if (!this.payment.isSuccess()) {
-      return '';
+      return false;
     }
 
-    return (
-      this.currencyPipe.transform(
-        this.payment.data().pendingApproval.transferValue,
-        this.program.data()?.currency,
-        'symbol-narrow',
-        '1.2-2',
-      ) ?? '0'
-    );
+    return this.payment
+      .data()
+      .approvalStatus.filter((s) => s.approved)
+      .map((s) => s.username)
+      .includes(this.authService.user?.username);
   });
 
   readonly showStartPaymentButton = computed<boolean | undefined>(() => {
@@ -259,10 +292,12 @@ export class PageLayoutPaymentComponent {
     }
 
     return (
-      this.payment.data().pendingApproval.count > 0 &&
-      !this.isPaymentInProgress()
+      this.payment.data().approved.count > 0 && !this.isPaymentInProgress()
     );
   });
+
+  // ##TODO: implement real check
+  readonly canApprovePayment = computed(() => true);
 
   readonly canStartPayment = computed(() =>
     this.authService.hasAllPermissions({
@@ -295,12 +330,15 @@ export class PageLayoutPaymentComponent {
       return '';
     }
 
-    // TODO: see if a payment status enum is needed
     if (this.isPaymentApproved()) {
       return $localize`Approved`;
     }
 
-    return $localize`Pending approval`;
+    const approvalData = this.payment.data().approvalStatus;
+    const approvedCount = approvalData.filter((status) => status.approved);
+    const totalCount = approvalData.length;
+
+    return $localize`${approvedCount.length} of ${totalCount} approved`;
   });
 
   readonly statusBadgeColor = computed(() => {

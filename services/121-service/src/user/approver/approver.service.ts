@@ -3,8 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
+import { ApprovalStatusResponseDto } from '@121-service/src/user/approver/dto/approval-status-response.dto';
 import { ApproverResponseDto } from '@121-service/src/user/approver/dto/approver-response.dto';
 import { ApproverEntity } from '@121-service/src/user/approver/entities/approver.entity';
+import { PaymentApprovalEntity } from '@121-service/src/user/approver/entities/payment-approval.entity';
 
 @Injectable()
 export class ApproverService {
@@ -12,6 +14,8 @@ export class ApproverService {
   private readonly approverRepository: Repository<ApproverEntity>;
   @InjectRepository(ProgramAidworkerAssignmentEntity)
   private readonly assignmentRepository: Repository<ProgramAidworkerAssignmentEntity>;
+  @InjectRepository(PaymentApprovalEntity)
+  private readonly paymentApprovalRepository: Repository<PaymentApprovalEntity>;
 
   // ##TODO: move a lot of this stuff to repository?
 
@@ -136,5 +140,29 @@ export class ApproverService {
       username: user.username,
       order,
     };
+  }
+
+  public async getPaymentApprovalStatus({
+    paymentId,
+  }: {
+    paymentId: number;
+  }): Promise<ApprovalStatusResponseDto[]> {
+    const paymentApprovals = await this.paymentApprovalRepository.find({
+      where: {
+        paymentId: Equal(paymentId),
+      },
+      relations: { approver: { programAidworkerAssignment: { user: true } } },
+      order: { approver: { order: 'ASC' } },
+    });
+    return paymentApprovals.map((approval) => {
+      const { approver } = approval;
+      const { user } = approver.programAidworkerAssignment;
+      return {
+        id: approval.id,
+        approved: approval.approved,
+        username: user.username,
+        order: approver.order,
+      };
+    });
   }
 }

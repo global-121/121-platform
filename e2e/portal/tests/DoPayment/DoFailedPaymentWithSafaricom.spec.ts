@@ -67,11 +67,8 @@ test('Do failed payment for Safaricom fsp', async ({ page }) => {
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
     await paymentPage.validateToastMessageAndClose('Payment created.');
 
-    // start payment
-    await paymentPage.startPayment();
-    await paymentPage.validateToastMessageAndClose(
-      'Payment started successfully.',
-    );
+    // approve + start payment
+    await paymentPage.approveAndStartPayment({});
   });
 
   await test.step('Validate payment card with failed payment data', async () => {

@@ -10,7 +10,7 @@ class PaymentPage extends BasePage {
   readonly importReconciliationDataButton: Locator;
   readonly chooseFileButton: Locator;
   readonly importFileButton: Locator;
-  readonly approveAndStartPaymentButton: Locator;
+  readonly formDialogProceedButton: Locator;
   readonly viewPaymentTitle: Locator;
   readonly paymentAmount: Locator;
   readonly retryFailedTransactionsButton: Locator;
@@ -20,6 +20,7 @@ class PaymentPage extends BasePage {
   readonly paymentLogTab: Locator;
   readonly paymentLogTable: Locator;
   readonly startPaymentButton: Locator;
+  readonly approvePaymentButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -34,7 +35,7 @@ class PaymentPage extends BasePage {
     this.importFileButton = this.page.getByRole('button', {
       name: 'Import file',
     });
-    this.approveAndStartPaymentButton = this.page.getByTestId(
+    this.formDialogProceedButton = this.page.getByTestId(
       'form-dialog-proceed-button',
     );
     this.viewPaymentTitle = this.page.getByRole('heading', {
@@ -56,13 +57,36 @@ class PaymentPage extends BasePage {
     this.paymentLogTab = this.page.getByRole('tab', { name: 'Payment log' });
     this.paymentLogTable = this.page.getByTestId('payment-log-table');
     this.startPaymentButton = this.page.getByRole('button', {
-      name: 'Approve and start payment',
+      name: 'Start payment',
     });
+    this.approvePaymentButton = this.page.getByRole('button', {
+      name: 'Approve payment',
+    });
+  }
+
+  async approveAndStartPayment({
+    validateToast = true,
+  }: {
+    validateToast?: boolean;
+  }) {
+    await this.approvePayment();
+    if (validateToast) {
+      await this.validateToastMessageAndClose('Payment approved successfully.');
+    }
+    await this.startPayment();
+    if (validateToast) {
+      await this.validateToastMessageAndClose('Payment started successfully.');
+    }
+  }
+
+  async approvePayment() {
+    await this.approvePaymentButton.click();
+    await this.formDialogProceedButton.click();
   }
 
   async startPayment() {
     await this.startPaymentButton.click();
-    await this.approveAndStartPaymentButton.click();
+    await this.formDialogProceedButton.click();
   }
 
   async validateStartPaymentButtonVisibility({
@@ -126,7 +150,6 @@ class PaymentPage extends BasePage {
   }
 
   async validateGraphStatus({
-    pendingApproval,
     approved,
     processing,
     successful,
@@ -136,7 +159,6 @@ class PaymentPage extends BasePage {
     processing: number;
     successful: number;
     failed: number;
-    pendingApproval?: number;
   }) {
     await this.page.waitForTimeout(1000); // Wait for the graph to be updated after the loader is hidden
     const graph = await this.page.locator('canvas').getAttribute('aria-label');
@@ -147,13 +169,10 @@ class PaymentPage extends BasePage {
         .trim();
 
       expect(graphText).toContain(
-        `Pending approval: ${pendingApproval}, Approved: ${approved}, Processing: ${processing}, Successful: ${successful}, Failed: ${failed}`,
+        `Approved: ${approved}, Processing: ${processing}, Successful: ${successful}, Failed: ${failed}`,
       );
     } else {
       throw new Error('Graph attribute is null');
-    }
-    if (pendingApproval) {
-      expect(graph).toContain(`Pending approval: ${pendingApproval}`);
     }
   }
 
