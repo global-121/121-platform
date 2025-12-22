@@ -15,13 +15,23 @@
           [variant]="statusBadgeColor()"
         />
       </h1>
+      @if (showApprovePaymentButton() && canApprovePayment()) {
+        <app-approve-payment
+          [programId]="programId()"
+          [paymentId]="paymentId()"
+          [fspList]="paymentFspList()"
+          [transactionCount]="paymentTransactionCount('approve')()"
+          [totalPaymentAmount]="paymentTotalPaymentAmount('approve')()"
+          [approvedBadgeLabel]="statusBadgeLabel()"
+        ></app-approve-payment>
+      }
       @if (showStartPaymentButton() && canStartPayment()) {
         <app-start-payment
           [programId]="programId()"
           [paymentId]="paymentId()"
-          [fspList]="startPaymentFspList()"
-          [transactionCount]="startPaymentTransactionCount()"
-          [totalPaymentAmount]="startPaymentTotalPaymentAmount()"
+          [fspList]="paymentFspList()"
+          [transactionCount]="paymentTransactionCount('start')()"
+          [totalPaymentAmount]="paymentTotalPaymentAmount('start')()"
         ></app-start-payment>
       }
 
@@ -48,7 +58,7 @@
         class="[grid-area:chart]"
         height="100%"
       ></p-skeleton>
-    } @else {
+    } @else if (paymentDetails.approved.count > 0) {
       <p-card
         class="[grid-area:chart] [&_.p-card]:h-full [&_.p-card-body]:h-full"
       >
@@ -61,6 +71,41 @@
         <app-program-payment-chart
           [paymentDetails]="paymentDetails"
         ></app-program-payment-chart>
+      </p-card>
+    } @else {
+      <p-card
+        class="[grid-area:chart] [&_.p-card]:h-full [&_.p-card-body]:h-full"
+      >
+        <p
+          i18n
+          class="txt-h-2 mb-6 font-medium"
+        >
+          Approval flow
+        </p>
+        @for (approver of paymentDetails.approvalStatus; track $index) {
+          <!-- ##TODO style better according to Figma -->
+          <p
+            class="mb-3 flex items-center gap-3"
+            [ngClass]="{
+              'text-grey-500': !approver.approved,
+              'text-green-500': approver.approved,
+            }"
+          >
+            <i
+              class="pi"
+              [ngClass]="{
+                'pi-check-circle': approver.approved,
+                'pi-clock': !approver.approved,
+              }"
+            ></i>
+            <span>
+              <app-colored-chip
+                [label]="approver.username!"
+                [variant]="approver.approved ? 'green' : 'grey'"
+              />
+            </span>
+          </p>
+        }
       </p-card>
     }
 

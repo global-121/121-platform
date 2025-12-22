@@ -329,7 +329,6 @@ export class PaymentsCreationService {
       (approval) => approval.approverId === approver.id,
     );
     if (!paymentApproval) {
-      // This should never happen
       throw new HttpException(
         'Approver not assigned to this payment',
         HttpStatus.BAD_REQUEST,
