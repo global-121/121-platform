@@ -122,8 +122,6 @@ describe('/ Users', () => {
   });
 
   it('should get all users', async () => {
-    // Arrange
-
     // Act
     const getAllUsersResponse = await getAllUsers(accessToken);
     const usersLength = getAllUsersResponse.body.length;
@@ -154,6 +152,6 @@ describe('/ Users', () => {
     );
     // Assert
     expect(fetchUsersFromPvProgram.status).toBe(HttpStatus.OK);
-    expect(fetchUsersFromPvProgram.body.length).toBe(10);
+    expect(fetchUsersFromPvProgram.body.length).toBe(10); // There should be 10 users assigned to the PV program
   });
 });

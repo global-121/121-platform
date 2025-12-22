@@ -91,14 +91,14 @@ describe('/ Roles', () => {
 
   it('should update a role by userRoleId', async () => {
     // Arrange
-    const userId = 1;
+    const userRoleId = 1;
     const updateData = {
       label: 'Updated user role label',
       description: 'Updated user role description',
     };
     // Act
     const updateUserRole = await getServer()
-      .put(`/roles/${userId}`)
+      .put(`/roles/${userRoleId}`)
       .set('Cookie', [accessToken])
       .send(updateData);
     // Assert
@@ -106,7 +106,9 @@ describe('/ Roles', () => {
     const getUserRole = await getUserRoles(accessToken);
 
     expect(getUserRole.status).toBe(HttpStatus.OK);
-    const role = getUserRole.body.find((r: { id: number }) => r.id === userId);
+    const role = getUserRole.body.find(
+      (r: { id: number }) => r.id === userRoleId,
+    );
 
     expect(role.label).toBe(updateData.label);
     expect(role.description).toBe(updateData.description);
@@ -114,7 +116,7 @@ describe('/ Roles', () => {
 
   it('should delete a role by userRoleId', async () => {
     // Arrange
-    const userId = 2;
+    const userRoleId = 2;
     // Get user roles before delete
     const getUserRoleBeforeDelete = await getUserRoles(accessToken);
     expect(getUserRoleBeforeDelete.status).toBe(HttpStatus.OK);
@@ -122,7 +124,7 @@ describe('/ Roles', () => {
     // Act
     // Delete user role
     const deleteUserRole = await getServer()
-      .delete(`/roles/${userId}`)
+      .delete(`/roles/${userRoleId}`)
       .set('Cookie', [accessToken])
       .send();
     expect(deleteUserRole.status).toBe(HttpStatus.OK);
