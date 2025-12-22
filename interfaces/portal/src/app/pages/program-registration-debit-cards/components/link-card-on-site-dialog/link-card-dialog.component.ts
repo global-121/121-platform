@@ -123,7 +123,7 @@ export class LinkCardDialogComponent {
     });
 
     const tokenCodeWithoutDashes = this.tokenCodeWithoutDashes({
-      tokenCodeToClean: this.tokenCode() || '',
+      tokenCodeToClean: this.tokenCode(),
     });
 
     if (tokenCodeWithoutDashes() === currentTokenCodeWithoutDashes()) {
