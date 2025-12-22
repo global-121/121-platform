@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 
 import { CronjobExecutionHelperService } from '@121-service/src/cronjob/services/cronjob-execution-helper.service';
 import { ExchangeRatesService } from '@121-service/src/exchange-rates/services/exchange-rates.service';
-import { CommercialBankEthiopiaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/commercial-bank-ethiopia-account-management/commercial-bank-ethiopia-account-management.service';
-import { CooperativeBankOfOromiaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia-account-management/cooperative-bank-of-oromia-account-management.service';
+import { CommercialBankEthiopiaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/commercial-bank-ethiopia/commercial-bank-ethiopia-account-management.service';
+import { CooperativeBankOfOromiaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia/cooperative-bank-of-oromia-account-management.service';
 import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
 import { IntersolveVoucherCronService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher-cron.service';
-import { IntersolveVisaReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/intersolve-visa-reconciliation/intersolve-visa-reconciliation.service';
-import { IntersolveVoucherReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/intersolve-voucher-reconciliation/intersolve-voucher-reconciliation.service';
-import { NedbankReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/nedbank-reconciliation/nedbank-reconciliation.service';
-import { OnafriqReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/onafriq-reconciliation/onafriq-reconciliation.service';
+import { IntersolveVisaReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/intersolve-visa/intersolve-visa-reconciliation.service';
+import { IntersolveVoucherReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/intersolve-voucher/intersolve-voucher-reconciliation.service';
+import { NedbankReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/nedbank/nedbank-reconciliation.service';
+import { OnafriqReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/onafriq/onafriq-reconciliation.service';
 
 @Injectable()
 export class CronjobExecutionService {

@@ -5,13 +5,13 @@ import { CronjobExecutionService } from '@121-service/src/cronjob/services/cronj
 import { CronjobExecutionHelperService } from '@121-service/src/cronjob/services/cronjob-execution-helper.service';
 import { CronjobInitiateService } from '@121-service/src/cronjob/services/cronjob-initiate.service';
 import { ExchangeRatesModule } from '@121-service/src/exchange-rates/exchange-rates.module';
-import { CommercialBankEthiopiaAccountManagementModule } from '@121-service/src/fsp-integrations/account-management/commercial-bank-ethiopia-account-management/commercial-bank-ethiopia-account-management.module';
-import { CooperativeBankOfOromiaAccountManagementModule } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia-account-management/cooperative-bank-of-oromia-account-management.module';
+import { CommercialBankEthiopiaAccountManagementModule } from '@121-service/src/fsp-integrations/account-management/commercial-bank-ethiopia/commercial-bank-ethiopia-account-management.module';
+import { CooperativeBankOfOromiaAccountManagementModule } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia/cooperative-bank-of-oromia-account-management.module';
 import { IntersolveVoucherModule } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/intersolve-voucher.module';
-import { IntersolveVisaReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/intersolve-visa-reconciliation/intersolve-visa-reconciliation.module';
-import { IntersolveVoucherReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/intersolve-voucher-reconciliation/intersolve-voucher-reconciliation.module';
-import { NedbankReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/nedbank-reconciliation/nedbank-reconciliation.module';
-import { OnafriqReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/onafriq-reconciliation/onafriq-reconciliation.module';
+import { IntersolveVisaReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/intersolve-visa/intersolve-visa-reconciliation.module';
+import { IntersolveVoucherReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/intersolve-voucher/intersolve-voucher-reconciliation.module';
+import { NedbankReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/nedbank/nedbank-reconciliation.module';
+import { OnafriqReconciliationModule } from '@121-service/src/fsp-integrations/reconciliation/onafriq/onafriq-reconciliation.module';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Module({
