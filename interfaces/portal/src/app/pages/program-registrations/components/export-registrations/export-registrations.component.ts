@@ -18,7 +18,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { RadioButtonModule } from 'primeng/radiobutton';
 
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 

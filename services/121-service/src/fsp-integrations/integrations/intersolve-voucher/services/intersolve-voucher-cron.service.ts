@@ -6,7 +6,7 @@ import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/fsp-integr
 import { IntersolveVoucherEntity } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/entities/intersolve-voucher.entity';
 import { IntersolveVoucherApiService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.api.service';
 import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { MessageProcessType } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';

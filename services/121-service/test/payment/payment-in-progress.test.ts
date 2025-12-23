@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventInterface } from '@121-service/src/payments/payment-events/interfaces/payment-event.interface';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';

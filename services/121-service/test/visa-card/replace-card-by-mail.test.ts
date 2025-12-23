@@ -5,7 +5,7 @@ import { VisaCard121Status } from '@121-service/src/fsp-integrations/integration
 import {
   FspConfigurationProperties,
   Fsps,
-} from '@121-service/src/fsp-management/enums/fsp-name.enum';
+} from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { messageTemplateNlrcOcw } from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.const';

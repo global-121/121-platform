@@ -6,7 +6,7 @@ import { CreditTransferApiParams } from '@121-service/src/fsp-integrations/integ
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
 import { CreateCreditTransferOrGetTransactionStatusParams } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/interfaces/create-credit-transfer-or-get-transaction-status-params.interface';
 import { CommercialBankEthiopiaApiService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.api.service';
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RequiredUsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/required-username-password.interface';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';

@@ -4,7 +4,7 @@ import { NedbankVoucherStatus } from '@121-service/src/fsp-integrations/integrat
 import {
   FspConfigurationProperties,
   Fsps,
-} from '@121-service/src/fsp-management/enums/fsp-name.enum';
+} from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { ImportRegistrationsDto } from '@121-service/src/registration/dto/bulk-import.dto';

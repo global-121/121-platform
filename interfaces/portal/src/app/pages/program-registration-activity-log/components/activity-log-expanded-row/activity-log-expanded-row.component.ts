@@ -11,7 +11,7 @@ import {
 import { injectQuery } from '@tanstack/angular-query-experimental';
 
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';

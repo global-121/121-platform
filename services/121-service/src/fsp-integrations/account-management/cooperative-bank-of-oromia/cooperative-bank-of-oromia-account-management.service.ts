@@ -5,8 +5,8 @@ import { CooperativeBankOfOromiaAccountValidationReportDto } from '@121-service/
 import { CooperativeBankOfOromiaAccountValidationEntity } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia/entities/cooperative-bank-of-oromia-account-validation.entity';
 import { CooperativeBankOfOromiaAccountValidationScopedRepository } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia/repositories/cooperative-bank-of-oromia-account-validation.scoped.repository';
 import { CooperativeBankOfOromiaService } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.service';
-import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';

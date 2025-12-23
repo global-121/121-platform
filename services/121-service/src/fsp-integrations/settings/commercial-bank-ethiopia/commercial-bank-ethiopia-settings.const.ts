@@ -1,9 +1,9 @@
-import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
-import { FspIntegrationType } from '@121-service/src/fsp-management/enums/fsp-integration-type.enum';
+import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
+import { FspIntegrationType } from '@121-service/src/fsp-integrations/shared/enum/fsp-integration-type.enum';
 import {
   FspConfigurationProperties,
   Fsps,
-} from '@121-service/src/fsp-management/enums/fsp-name.enum';
+} from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspSettingsDto } from '@121-service/src/fsp-management/fsp-settings.dto';
 
 export const COMMERCIAL_BANK_ETHIOPIA_SETTINGS: FspSettingsDto = {

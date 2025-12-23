@@ -3,7 +3,7 @@ import { Equal, In } from 'typeorm';
 
 import { ExcelService } from '@121-service/src/fsp-integrations/integrations/excel/excel.service';
 import { ExcelReconciliationInstructions } from '@121-service/src/fsp-integrations/reconciliation/excel/dtos/excel-reconciliation-instructions.dto';
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';

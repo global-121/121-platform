@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { env } from '@121-service/src/env';
 import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { getFspAttributeNames } from '@121-service/src/fsp-management/fsp-settings.helpers';
 
 @Injectable()

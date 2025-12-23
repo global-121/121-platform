@@ -3,7 +3,7 @@ import { REQUEST } from '@nestjs/core';
 import { FilterComparator } from 'nestjs-paginate/lib/filter';
 import { Brackets, DataSource, FindOperator, FindOperatorType } from 'typeorm';
 
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';

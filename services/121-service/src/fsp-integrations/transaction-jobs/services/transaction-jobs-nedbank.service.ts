@@ -5,9 +5,9 @@ import { NedbankVoucherStatus } from '@121-service/src/fsp-integrations/integrat
 import { NedbankError } from '@121-service/src/fsp-integrations/integrations/nedbank/errors/nedbank.error';
 import { NedbankVoucherScopedRepository } from '@121-service/src/fsp-integrations/integrations/nedbank/repositories/nedbank-voucher.scoped.repository';
 import { NedbankService } from '@121-service/src/fsp-integrations/integrations/nedbank/services/nedbank.service';
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { NedbankTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/nedbank-transaction-job.dto';
-import { FspConfigurationProperties } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';

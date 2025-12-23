@@ -16,7 +16,7 @@ import { OnafriqReconciliationMapper } from '@121-service/src/fsp-integrations/r
 import {
   FspConfigurationProperties,
   Fsps,
-} from '@121-service/src/fsp-management/enums/fsp-name.enum';
+} from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import {
   getRedisSetName,
   REDIS_CLIENT,

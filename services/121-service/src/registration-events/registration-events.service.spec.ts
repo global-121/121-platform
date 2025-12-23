@@ -1,7 +1,7 @@
 import { TestBed } from '@automock/jest';
 
-import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
