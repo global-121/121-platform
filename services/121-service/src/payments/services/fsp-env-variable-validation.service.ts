@@ -8,7 +8,7 @@ export class FspEnvVariableValidationService {
   private readonly logger = new Logger(FspEnvVariableValidationService.name);
 
   // A pure function.
-  validateFspEnvVariableSettings({
+  public validateFspEnvVariableSettings({
     fspEnvVariableSettings,
   }: {
     fspEnvVariableSettings: Record<Fsps, FspEnvVariablesDto>;
