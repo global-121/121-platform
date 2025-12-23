@@ -113,7 +113,7 @@ describe('Retry payment for 100k registrations with Safaricom within expected ra
 
     // Retry payment
     const patchRetryRequestStartTime = Date.now();
-    const doPaymentResponse = await retryPayment({
+    const retryPaymentResponse = await retryPayment({
       programId: programIdSafaricom,
       paymentId,
       accessToken,
@@ -125,7 +125,7 @@ describe('Retry payment for 100k registrations with Safaricom within expected ra
       Date.now() - patchRetryRequestStartTime;
     const fourMinutes = 4 * 60 * 1000;
     expect(patchRetryRequestElapsedTime).toBeLessThan(fourMinutes);
-    expect(doPaymentResponse.statusCode).toBe(HttpStatus.CREATED);
-    expect(doPaymentResponse.body.applicableCount).toBe(totalTransactions);
+    expect(retryPaymentResponse.statusCode).toBe(HttpStatus.ACCEPTED);
+    expect(retryPaymentResponse.body.applicableCount).toBe(totalTransactions);
   });
 });
