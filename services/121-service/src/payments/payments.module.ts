@@ -10,9 +10,9 @@ import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity
 import { PaymentEventsModule } from '@121-service/src/payments/payment-events/payment-events.module';
 import { PaymentsController } from '@121-service/src/payments/payments.controller';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
-import { PaymentsCreationService } from '@121-service/src/payments/services/payments-creation.service';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
+import { PaymentsManagementService } from '@121-service/src/payments/services/payments-management.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
@@ -29,6 +29,7 @@ import { RegistrationsModule } from '@121-service/src/registration/registrations
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { RegistrationEventsModule } from '@121-service/src/registration-events/registration-events.module';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
+import { ApproverModule } from '@121-service/src/user/approver/approver.module';
 import { UserModule } from '@121-service/src/user/user.module';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
@@ -50,9 +51,10 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     RegistrationEventsModule,
     TransactionEventsModule,
     MessageTemplateModule,
+    ApproverModule,
   ],
   providers: [
-    PaymentsCreationService,
+    PaymentsManagementService,
     PaymentsExecutionService,
     PaymentsReportingService,
     PaymentsReportingHelperService,

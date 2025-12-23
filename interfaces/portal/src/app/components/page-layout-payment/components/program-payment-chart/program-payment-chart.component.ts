@@ -29,11 +29,9 @@ export class ProgramPaymentChartComponent {
   readonly translatableStringService = inject(TranslatableStringService);
 
   readonly chartData = computed(() => {
-    const { pendingApproval, approved, waiting, success, failed } =
-      this.paymentDetails();
+    const { approved, waiting, success, failed } = this.paymentDetails();
     const data = {
       labels: [
-        TRANSACTION_STATUS_LABELS[TransactionStatusEnum.pendingApproval],
         TRANSACTION_STATUS_LABELS[TransactionStatusEnum.approved],
         TRANSACTION_STATUS_LABELS[TransactionStatusEnum.waiting],
         TRANSACTION_STATUS_LABELS[TransactionStatusEnum.success],
@@ -41,15 +39,8 @@ export class ProgramPaymentChartComponent {
       ],
       datasets: [
         {
-          data: [
-            pendingApproval.count,
-            approved.count,
-            waiting.count,
-            success.count,
-            failed.count,
-          ],
+          data: [approved.count, waiting.count, success.count, failed.count],
           backgroundColor: [
-            tailwindConfig.theme.colors.orange[500],
             tailwindConfig.theme.colors.purple[500],
             tailwindConfig.theme.colors.blue[500],
             tailwindConfig.theme.colors.green[500],

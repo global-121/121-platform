@@ -53,10 +53,10 @@ test('Table should reflect the actual transfer values sent to the PAs in this pa
       url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
     );
     await paymentPage.validateToastMessage('Payment created.');
-    await paymentPage.startPayment();
+    await paymentPage.approveAndStartPayment({});
+
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
-    await paymentPage.validateToastMessage('Payment started successfully.');
   });
 
   await test.step('Validate transfer value after "payment in progress" chip disappears in Payment overview', async () => {
