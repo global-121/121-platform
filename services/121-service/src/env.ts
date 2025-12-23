@@ -14,7 +14,7 @@ import { z } from 'zod/v4';
 //   - {empty line}
 //   - {FSP}_...other variables, alphabetically
 
-export const airtelEnvVariables = {
+export const airtelEnvVariablesSchema = {
   AIRTEL_ENABLED: z.stringbool().default(false),
 
   MOCK_AIRTEL: z.stringbool().default(false),
@@ -29,7 +29,7 @@ export const airtelEnvVariables = {
   AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY: z.string().optional(),
 };
 
-export const commercialBankEthiopiaEnvVariables = {
+export const commercialBankEthiopiaEnvVariablesSchema = {
   COMMERCIAL_BANK_ETHIOPIA_ENABLED: z.stringbool().default(false),
 
   MOCK_COMMERCIAL_BANK_ETHIOPIA: z.stringbool().default(false),
@@ -42,7 +42,7 @@ export const commercialBankEthiopiaEnvVariables = {
   CRON_CBE_ACCOUNT_ENQUIRIES_VALIDATION: z.stringbool().default(false),
 };
 
-export const cooperativeBankOfOromiaEnvVariables = {
+export const cooperativeBankOfOromiaEnvVariablesSchema = {
   COOPERATIVE_BANK_OF_OROMIA_ENABLED: z.stringbool().default(false),
 
   MOCK_COOPERATIVE_BANK_OF_OROMIA: z.stringbool().default(false),
@@ -64,7 +64,7 @@ export const cooperativeBankOfOromiaEnvVariables = {
   COOPERATIVE_BANK_OF_OROMIA_NARRATIVE: z.string().max(10).optional(),
 };
 
-export const intersolveVisaEnvVariables = {
+export const intersolveVisaEnvVariablesSchema = {
   INTERSOLVE_VISA_ENABLED: z.stringbool().default(false),
 
   // Used for Intersolve Visa and Intersolve Voucher Paper+Whatsapp.
@@ -92,7 +92,7 @@ export const intersolveVisaEnvVariables = {
 
 // FSPs "Intersolve Voucher Paper" and "Intersolve Voucher Whatsapp" are very
 // similar.
-export const intersolveVoucherPaperEnvVariables = {
+export const intersolveVoucherPaperEnvVariablesSchema = {
   INTERSOLVE_VOUCHER_PAPER_ENABLED: z.stringbool().default(false),
 
   // Used for Intersolve Visa and Intersolve Voucher Paper+Whatsapp.
@@ -108,16 +108,16 @@ export const intersolveVoucherPaperEnvVariables = {
   INTERSOLVE_URL: z.url().default(''),
 };
 
-export const intersolveVoucherWhatsappEnvVariables = {
+export const intersolveVoucherWhatsappEnvVariablesSchema = {
   INTERSOLVE_VOUCHER_WHATSAPP_ENABLED: z.stringbool().default(false),
 
-  ...intersolveVoucherPaperEnvVariables,
+  ...intersolveVoucherPaperEnvVariablesSchema,
   CRON_INTERSOLVE_VOUCHER_SEND_WHATSAPP_REMINDERS: z
     .stringbool()
     .default(false),
 };
 
-export const nedbankEnvVariables = {
+export const nedbankEnvVariablesSchema = {
   NEDBANK_ENABLED: z.stringbool().default(false),
 
   MOCK_NEDBANK: z.stringbool().default(false),
@@ -135,7 +135,7 @@ export const nedbankEnvVariables = {
   NEDBANK_CLIENT_SECRET: z.string().optional(),
 };
 
-export const onafriqEnvVariables = {
+export const onafriqEnvVariablesSchema = {
   ONAFRIQ_ENABLED: z.stringbool().default(false),
 
   MOCK_ONAFRIQ: z.stringbool().default(false),
@@ -162,7 +162,7 @@ export const onafriqEnvVariables = {
   ONAFRIQ_SFTP_USERNAME: z.string().optional(),
 };
 
-export const safaricomEnvVariables = {
+export const safaricomEnvVariablesSchema = {
   SAFARICOM_ENABLED: z.stringbool().default(false),
 
   MOCK_SAFARICOM: z.stringbool().default(false),
@@ -183,17 +183,17 @@ export const safaricomEnvVariables = {
   SAFARICOM_SECURITY_CREDENTIAL: z.string().optional(),
 };
 
-const fspEnvVariables = {
-  ...airtelEnvVariables,
-  ...commercialBankEthiopiaEnvVariables,
-  ...cooperativeBankOfOromiaEnvVariables,
+const fspEnvVariablesSchema = {
+  ...airtelEnvVariablesSchema,
+  ...commercialBankEthiopiaEnvVariablesSchema,
+  ...cooperativeBankOfOromiaEnvVariablesSchema,
   // No environment variables for Excel FSP.
-  ...intersolveVisaEnvVariables,
-  ...intersolveVoucherPaperEnvVariables,
-  ...intersolveVoucherWhatsappEnvVariables,
-  ...nedbankEnvVariables,
-  ...onafriqEnvVariables,
-  ...safaricomEnvVariables,
+  ...intersolveVisaEnvVariablesSchema,
+  ...intersolveVoucherPaperEnvVariablesSchema,
+  ...intersolveVoucherWhatsappEnvVariablesSchema,
+  ...nedbankEnvVariablesSchema,
+  ...onafriqEnvVariablesSchema,
+  ...safaricomEnvVariablesSchema,
 };
 
 // See: https://env.t3.gg/docs/core
@@ -342,7 +342,7 @@ export const env = createEnv({
       .url()
       .pipe(z.transform((url) => withoutTrailingSlash(url))),
 
-    ...fspEnvVariables,
+    ...fspEnvVariablesSchema,
   },
 
   createFinalSchema: (shape) =>
