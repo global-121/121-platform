@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
 import { OnafriqReconciliationReport } from '@121-service/src/fsp-integrations/reconciliation/onafriq/interfaces/onafriq-reconciliation-report.interface';
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';

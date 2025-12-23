@@ -4,8 +4,8 @@ import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-int
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa/intersolve-visa-data-synchronization.service';
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
-import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
-import { FspConfigurationProperties } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';

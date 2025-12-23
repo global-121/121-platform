@@ -17,7 +17,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { SkeletonModule } from 'primeng/skeleton';
 
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';

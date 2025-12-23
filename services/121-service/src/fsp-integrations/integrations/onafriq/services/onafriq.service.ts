@@ -8,7 +8,7 @@ import { OnafriqApiService } from '@121-service/src/fsp-integrations/integration
 import {
   FspConfigurationProperties,
   Fsps,
-} from '@121-service/src/fsp-management/enums/fsp-name.enum';
+} from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 
 @Injectable()

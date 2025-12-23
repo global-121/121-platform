@@ -11,7 +11,7 @@ import {
 } from 'class-validator';
 import { v4 as uuid } from 'uuid';
 
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 

@@ -6,8 +6,8 @@ import { castArray, unique } from 'radashi';
 import {
   FspConfigurationProperties,
   Fsps,
-} from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FspDto } from '@121-service/src/fsp-management/fsp.dto';
+} from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { FspSettingsDto } from '@121-service/src/fsp-management/fsp-settings.dto';
 import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 
 import {
@@ -35,7 +35,7 @@ export class FspConfigurationService {
     fspSetting,
     programAttributes,
   }: {
-    fspSetting: FspDto;
+    fspSetting: FspSettingsDto;
     programAttributes: AttributeWithTranslatedLabel[];
   }) {
     const requiredAttributes = fspSetting.attributes.filter(
@@ -58,7 +58,7 @@ export class FspConfigurationService {
     fspSetting,
     existingFspConfiguration,
   }: {
-    fspSetting: FspDto;
+    fspSetting: FspSettingsDto;
     existingFspConfiguration?: FspConfiguration;
   }): FspConfigurationFormGroup {
     return new FormGroup({
@@ -93,7 +93,7 @@ export class FspConfigurationService {
     fspSetting,
     existingFspConfiguration,
   }: {
-    fspSetting: FspDto;
+    fspSetting: FspSettingsDto;
     existingFspConfiguration?: FspConfiguration;
   }): FspFormField[] {
     return [
@@ -130,7 +130,7 @@ export class FspConfigurationService {
     fspSetting,
     existingFspConfiguration,
   }: {
-    fspSetting: FspDto;
+    fspSetting: FspSettingsDto;
     existingFspConfiguration: FspConfiguration;
   }): string[] {
     if (fspSetting.name !== Fsps.excel) {
@@ -156,7 +156,7 @@ export class FspConfigurationService {
     fspSetting,
     existingFspConfiguration,
   }: {
-    fspSetting: FspDto;
+    fspSetting: FspSettingsDto;
     existingFspConfiguration?: FspConfiguration;
   }) {
     const label = existingFspConfiguration

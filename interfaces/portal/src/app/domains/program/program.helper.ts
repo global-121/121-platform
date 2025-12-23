@@ -1,5 +1,5 @@
-import { FspIntegrationType } from '@121-service/src/fsp-management/enums/fsp-integration-type.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
+import { FspIntegrationType } from '@121-service/src/fsp-integrations/shared/enum/fsp-integration-type.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';

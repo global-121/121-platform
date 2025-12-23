@@ -1,9 +1,9 @@
 import { OnafriqTransactionEntity } from '@121-service/src/fsp-integrations/integrations/onafriq/entities/onafriq-transaction.entity';
 import { OnafriqService } from '@121-service/src/fsp-integrations/integrations/onafriq/services/onafriq.service';
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { TransactionJobsOnafriqService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-onafriq.service';
 import { OnafriqTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/onafriq-transaction-job.dto';
-import { FspConfigurationProperties } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';

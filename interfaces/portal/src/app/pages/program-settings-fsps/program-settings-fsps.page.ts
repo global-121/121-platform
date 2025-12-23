@@ -7,8 +7,8 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 
 import { PageLayoutProgramSettingsComponent } from '~/components/page-layout-program-settings/page-layout-program-settings.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
@@ -45,7 +45,9 @@ export class ProgramSettingsFspsPageComponent {
     );
 
   addFspConfiguration(fsp: Fsps) {
-    this.fspConfigurationFormDialog().show({ fspSetting: FSP_SETTINGS[fsp] });
+    this.fspConfigurationFormDialog().show({
+      fspSetting: FSP_SETTINGS[fsp],
+    });
   }
 
   reconfigureFspConfiguration(configuration: FspConfiguration) {

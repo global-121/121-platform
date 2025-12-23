@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import {
   DefaultRegistrationDataAttributeNames,
   GenericRegistrationAttributes,

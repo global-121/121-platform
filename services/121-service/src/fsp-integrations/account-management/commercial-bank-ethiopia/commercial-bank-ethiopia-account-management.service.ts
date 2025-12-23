@@ -6,8 +6,8 @@ import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/f
 import { CommercialBankEthiopiaValidationData } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
 import { CommercialBankEthiopiaApiService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.api.service';
 import { CommercialBankEthiopiaService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
-import { FspAttributes } from '@121-service/src/fsp-management/enums/fsp-attributes.enum';
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';

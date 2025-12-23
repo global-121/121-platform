@@ -9,7 +9,7 @@ import {
   ViewEntity,
 } from 'typeorm';
 
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';

@@ -4,7 +4,7 @@ import * as request from 'supertest';
 
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
