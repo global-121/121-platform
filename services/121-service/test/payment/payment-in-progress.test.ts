@@ -222,14 +222,6 @@ describe('Payment in progress', () => {
           accessToken,
         })
       ).body.id;
-      await waitForPaymentTransactionsToComplete({
-        programId: programIdPV,
-        paymentReferenceIds: registrationReferenceIdsPV,
-        accessToken,
-        maxWaitTimeMs: 5_000,
-        paymentId,
-        completeStatuses: [TransactionStatusEnum.pendingApproval],
-      });
       await approvePayment({
         programId: programIdPV,
         paymentId,

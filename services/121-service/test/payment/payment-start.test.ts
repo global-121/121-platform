@@ -57,13 +57,6 @@ describe('Payment start', () => {
       accessToken,
     });
     const paymentId = createPaymentResponse.body.id;
-    await waitForPaymentTransactionsToComplete({
-      programId,
-      paymentReferenceIds,
-      accessToken,
-      maxWaitTimeMs: 20_000,
-      completeStatuses: [TransactionStatusEnum.pendingApproval],
-    });
     await approvePayment({
       programId,
       paymentId,
@@ -90,7 +83,7 @@ describe('Payment start', () => {
     });
     const registrationBeforeStart = registrations.body.data[0];
 
-    expect(createPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(createPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(createPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
@@ -158,13 +151,6 @@ describe('Payment start', () => {
         accessToken,
       });
       paymentId = createPaymentResponse.body.id;
-      await waitForPaymentTransactionsToComplete({
-        programId,
-        paymentReferenceIds: registrations.map((r) => r.referenceId),
-        accessToken,
-        maxWaitTimeMs: 20_000,
-        completeStatuses: [TransactionStatusEnum.pendingApproval],
-      });
       await approvePayment({
         programId,
         paymentId,
@@ -308,13 +294,6 @@ describe('Payment start', () => {
       transferValue,
       referenceIds: registrations.map((r) => r.referenceId),
       accessToken,
-    });
-    await waitForPaymentTransactionsToComplete({
-      programId,
-      paymentReferenceIds: registrations.map((r) => r.referenceId),
-      accessToken,
-      maxWaitTimeMs: 20_000,
-      completeStatuses: [TransactionStatusEnum.pendingApproval],
     });
     await approvePayment({
       programId,

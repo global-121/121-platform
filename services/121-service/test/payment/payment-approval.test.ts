@@ -95,10 +95,8 @@ describe('Payment approval flow', () => {
 
     // Assert
     // Cva manager can only create a payment and a finance manager can create and start a payment
-    expect(createPaymentResponseCvaManager.status).toBe(HttpStatus.ACCEPTED);
-    expect(createPaymentResponseFinanceManager.status).toBe(
-      HttpStatus.ACCEPTED,
-    );
+    expect(createPaymentResponseCvaManager.status).toBe(HttpStatus.CREATED);
+    expect(createPaymentResponseFinanceManager.status).toBe(HttpStatus.CREATED);
     expect(startPaymentResponseCvaManager.status).toBe(HttpStatus.FORBIDDEN);
     expect(startPaymentResponseFinanceManager.status).toBe(HttpStatus.ACCEPTED);
   });
@@ -126,13 +124,6 @@ describe('Payment approval flow', () => {
       transferValue,
       referenceIds: [registrationPV5.referenceId],
       accessToken: adminAccessToken,
-    });
-    await waitForPaymentTransactionsToComplete({
-      programId,
-      paymentReferenceIds: [registrationPV5.referenceId],
-      accessToken: adminAccessToken,
-      maxWaitTimeMs: 5000,
-      completeStatuses: [TransactionStatusEnum.pendingApproval],
     });
 
     // 1st approve
@@ -174,7 +165,7 @@ describe('Payment approval flow', () => {
     });
 
     // Assert
-    expect(createPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(createPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(approvePaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(startPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
 
