@@ -83,28 +83,35 @@
           Approval flow
         </p>
         @for (approver of paymentDetails.approvalStatus; track $index) {
-          <!-- ##TODO style better according to Figma -->
-          <p
-            class="mb-3 flex items-center gap-3"
-            [ngClass]="{
-              'text-grey-500': !approver.approved,
-              'text-green-500': approver.approved,
-            }"
-          >
-            <i
-              class="pi"
-              [ngClass]="{
-                'pi-check-circle': approver.approved,
-                'pi-clock': !approver.approved,
-              }"
-            ></i>
+          <div class="relative mb-4 flex items-center">
+            <div class="z-10 me-3 flex flex-col items-center">
+              <div
+                class="flex h-7 w-7 items-center justify-center rounded-full border-2"
+                [ngClass]="{
+                  'border-green-500 bg-green-100 text-green-700':
+                    approver.approved,
+                  'border-purple-700 bg-purple-700 text-white':
+                    !approver.approved &&
+                    $index === firstPendingApprovalIndex(),
+                  'text-grey-700 border-purple-300 bg-purple-300':
+                    !approver.approved &&
+                    $index !== firstPendingApprovalIndex(),
+                }"
+              >
+                @if (approver.approved) {
+                  <i class="pi pi-check text-green-500"></i>
+                } @else {
+                  {{ $index + 1 }}
+                }
+              </div>
+            </div>
             <span>
               <app-colored-chip
                 [label]="approver.username!"
-                [variant]="approver.approved ? 'green' : 'grey'"
+                variant="grey"
               />
             </span>
-          </p>
+          </div>
         }
       </p-card>
     }

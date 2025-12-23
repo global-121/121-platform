@@ -89,15 +89,25 @@ class PaymentPage extends BasePage {
     await this.formDialogProceedButton.click();
   }
 
-  async validateStartPaymentButtonVisibility({
+  async validateButtonVisibility({
     isVisible,
+    button,
   }: {
     isVisible: boolean;
+    button: 'approve' | 'start';
   }) {
     if (isVisible) {
-      await expect(this.startPaymentButton).toBeVisible();
+      if (button === 'start') {
+        await expect(this.startPaymentButton).toBeVisible();
+      } else {
+        await expect(this.approvePaymentButton).toBeVisible();
+      }
     } else {
-      await expect(this.startPaymentButton).toBeHidden();
+      if (button === 'start') {
+        await expect(this.startPaymentButton).toBeHidden();
+      } else {
+        await expect(this.approvePaymentButton).toBeHidden();
+      }
     }
   }
 
