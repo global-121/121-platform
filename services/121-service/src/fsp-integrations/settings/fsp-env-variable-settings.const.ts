@@ -11,7 +11,7 @@ import { SAFARICOM_ENV_VARIABLE_SETTINGS } from '@121-service/src/fsp-integratio
 import { FspEnvVariablesDto } from '@121-service/src/fsp-integrations/shared/dto/fsp-env-variables.dto';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 
-// Please keep sorted. (doing this with ESLint requires a custom rule)
+// Please keep sorted for readability. (doing this with ESLint requires a custom rule)
 export const FSP_ENV_VARIABLE_SETTINGS: Record<Fsps, FspEnvVariablesDto> = {
   [Fsps.airtel]: AIRTEL_ENV_VARIABLE_SETTINGS,
   [Fsps.commercialBankEthiopia]: COMMERCIAL_BANK_ETHIOPIA_ENV_VARIABLE_SETTINGS,
