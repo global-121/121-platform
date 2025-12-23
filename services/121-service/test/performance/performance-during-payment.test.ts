@@ -63,7 +63,7 @@ describe('Measure performance during payment', () => {
       referenceIds: [],
       accessToken,
     });
-    expect(doPaymentResponse.statusCode).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.statusCode).toBe(HttpStatus.CREATED);
     // Assert
     // Check payment results have at least 50% success rate within 60 minutes
     const paymentResults = await getPaymentResults({
