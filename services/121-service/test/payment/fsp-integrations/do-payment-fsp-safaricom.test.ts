@@ -95,7 +95,7 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       });
 
-      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
@@ -157,7 +157,7 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       });
 
-      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
@@ -223,7 +223,7 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       });
 
-      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
@@ -287,7 +287,7 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       });
 
-      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
@@ -338,7 +338,7 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       });
 
-      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
       expect(doPaymentResponse.body.applicableCount).toBe(
         paymentReferenceIds.length,
       );
