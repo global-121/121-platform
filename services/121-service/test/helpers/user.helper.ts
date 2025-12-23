@@ -22,6 +22,7 @@ export async function getAllUsersByProgramId(
     .get(`/programs/${programId}/users`)
     .set('Cookie', [accessToken])
     .send();
+}
 
 export async function getCurrentUser({
   accessToken,
