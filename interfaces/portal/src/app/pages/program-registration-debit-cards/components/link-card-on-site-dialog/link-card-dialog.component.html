@@ -1,0 +1,141 @@
+<p-dialog
+  [visible]="dialogVisible()"
+  modal
+  closable
+  dismissableMask
+  [style]="{ width: '632px' }"
+>
+  @if (linkCardDialogState() === linkCardDialogStates.linking) {
+    <ng-template pTemplate="header">
+      <div class="flex items-center gap-2">
+        <i class="pi pi-link"></i>
+        <h3 i18n>{{ dialogLabels().header }}</h3>
+      </div>
+    </ng-template>
+    <div class="flex flex-col gap-2">
+      @if (currentTokenCode()) {
+        <p i18n>
+          You're about to replace debit card number
+          {{ currentTokenCode() }}.
+        </p>
+      }
+      <p i18n>
+        Scan the barcode in the back of the card you are handing over to the
+        registration with a scanner, or manually fill in the 19 digit serial
+        number found below the barcode.
+      </p>
+      <div class="py-1"></div>
+      <img
+        src="assets/intersolve-visa-card.svg"
+        height="200"
+        width="400"
+        alt=""
+        aria-hidden="false"
+        class="mx-auto"
+      />
+      <label
+        class="block w-full"
+        for="serial-number-input"
+      >
+        <span
+          class="mb-1 block font-bold"
+          i18n
+          >Serial number</span
+        >
+        <p-input-mask
+          inputId="serial-number-input"
+          [(ngModel)]="tokenCode"
+          placeholder="____-____-____-____-___"
+          mask="9999-9999-9999-9999-999"
+          [invalid]="showTokenCodeInvalidWarning()"
+          [style]="{ width: '100%' }"
+          [autoClear]="false"
+          (onInput)="showTokenCodeInvalidWarning.set(false)"
+        ></p-input-mask>
+      </label>
+      <app-form-error
+        [error]="
+          showTokenCodeInvalidWarning() && 'Fill up all 19 digits to link card'
+        "
+      />
+      <div class="w-full">
+        <div class="flex justify-end gap-2">
+          <p-button
+            i18n
+            (click)="closeDialog.emit()"
+            rounded
+            outlined
+            label="Cancel"
+            i18n-label
+            class="mt-4"
+          ></p-button>
+          <p-button
+            i18n
+            (click)="linkCard()"
+            rounded
+            [label]="dialogLabels().confirmationButton"
+            i18n-label
+            class="mt-4"
+          ></p-button>
+        </div>
+      </div>
+    </div>
+  }
+  @if (linkCardDialogState() === linkCardDialogStates.errorAlreadyLinked) {
+    <ng-template pTemplate="header">
+      <div class="flex items-center gap-2">
+        <i class="pi pi-exclamation-triangle"></i>
+        <h3 i18n>Error - Link visa card</h3>
+      </div>
+    </ng-template>
+    <div class="flex flex-col gap-4">
+      <p i18n>
+        The card number you entered is already linked to another registration.
+      </p>
+      <p i18n>
+        Please link this registration to a different card and inform your
+        supervisor.
+      </p>
+      <div class="w-full">
+        <div class="flex justify-end">
+          <p-button
+            i18n
+            (click)="closeDialog.emit()"
+            rounded
+            label="Go back"
+            i18n-label
+          ></p-button>
+        </div>
+      </div>
+    </div>
+  }
+  @if (linkCardDialogState() === linkCardDialogStates.errorNotFound) {
+    <ng-template pTemplate="header">
+      <div class="flex items-center gap-2">
+        <i class="pi pi-exclamation-triangle"></i>
+        <h3 i18n>Error - Link visa card</h3>
+      </div>
+    </ng-template>
+    <div class="flex flex-col gap-4">
+      <p i18n>
+        Card number not found. Please go back and check that the number is
+        correct.
+      </p>
+      <p i18n>
+        If the number is correct but this error persists, try a different card
+        and inform your supervisor.
+      </p>
+      <div class="w-full">
+        <div class="flex justify-end">
+          <p-button
+            i18n
+            (click)="closeDialog.emit()"
+            rounded
+            label="Go back"
+            i18n-label
+          ></p-button>
+        </div>
+      </div>
+    </div>
+  }
+</p-dialog>
