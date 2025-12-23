@@ -232,6 +232,7 @@ export class PaymentsManagementService {
       const paymentApproval = new PaymentApprovalEntity();
       paymentApproval.approverId = approver.id;
       paymentApproval.approved = false;
+      paymentApproval.order = approver.order;
       return paymentApproval;
     });
 
@@ -334,6 +335,9 @@ export class PaymentsManagementService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    this.checkLowestOrderOrThrow(currentPaymentApproval, allPaymentApprovals);
+
+    // store payment approval
     currentPaymentApproval.approved = true;
     await this.paymentApprovalRepository.save(currentPaymentApproval);
 
@@ -356,6 +360,25 @@ export class PaymentsManagementService {
         paymentId,
         programId,
       });
+    }
+  }
+
+  private checkLowestOrderOrThrow(
+    currentPaymentApproval: PaymentApprovalEntity,
+    allPaymentApprovals: PaymentApprovalEntity[],
+  ) {
+    const openApprovals = allPaymentApprovals.filter(
+      (approval) => !approval.approved,
+    );
+    // ##TODO: this does not handle non-unique orders well yet. Assume/enforce after all?
+    const isLowestOrder = openApprovals.every(
+      (approval) => currentPaymentApproval.order <= approval.order,
+    );
+    if (!isLowestOrder) {
+      throw new HttpException(
+        'Cannot approve payment before lower-order approvers have approved',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 

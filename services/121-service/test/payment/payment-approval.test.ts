@@ -101,84 +101,119 @@ describe('Payment approval flow', () => {
     expect(startPaymentResponseFinanceManager.status).toBe(HttpStatus.ACCEPTED);
   });
 
-  // ##TODO: split up? Overlap with above test?
-  it('should successfully do payment that needs 2 approvals', async () => {
-    // Arrange
-    // configure 2nd approver
-    const accessTokenFinanceManager = await getAccessTokenFinanceManager();
-    const financeManagerUserId = (
-      await getCurrentUser({
+  describe('do payment with 2 approvers', () => {
+    let accessTokenFinanceManager: string;
+
+    beforeEach(async () => {
+      // configure 2nd approver
+      accessTokenFinanceManager = await getAccessTokenFinanceManager();
+      const financeManagerUserId = (
+        await getCurrentUser({
+          accessToken: accessTokenFinanceManager,
+        })
+      ).body.user.id;
+      await createApprover({
+        programId,
+        userId: financeManagerUserId,
+        order: 2,
+        accessToken: adminAccessToken,
+      });
+    });
+
+    it('should successfully do payment', async () => {
+      // Arrange
+      const createPaymentResponse = await createPayment({
+        programId,
+        transferValue,
+        referenceIds: [registrationPV5.referenceId],
+        accessToken: adminAccessToken,
+      });
+
+      // Act
+      // 1st approve
+      const paymentId = createPaymentResponse.body.id;
+      const approvePaymentResponse = await approvePayment({
+        programId,
+        paymentId,
+        accessToken: adminAccessToken,
+      });
+      const getTransactionsResultAfter1stApprove =
+        await getTransactionsByPaymentIdPaginated({
+          programId,
+          paymentId,
+          accessToken: adminAccessToken,
+        });
+      expect(getTransactionsResultAfter1stApprove.body.data[0].status).toBe(
+        TransactionStatusEnum.pendingApproval,
+      );
+
+      // 2nd approve
+      await approvePayment({
+        programId,
+        paymentId,
         accessToken: accessTokenFinanceManager,
-      })
-    ).body.user.id;
-    await createApprover({
-      programId,
-      userId: financeManagerUserId,
-      order: 2,
-      accessToken: adminAccessToken,
-    });
+      });
 
-    // Act
-    const createPaymentResponse = await createPayment({
-      programId,
-      transferValue,
-      referenceIds: [registrationPV5.referenceId],
-      accessToken: adminAccessToken,
-    });
-
-    // 1st approve
-    const paymentId = createPaymentResponse.body.id;
-    const approvePaymentResponse = await approvePayment({
-      programId,
-      paymentId,
-      accessToken: adminAccessToken,
-    });
-    const getTransactionsResultAfter1stApprove =
-      await getTransactionsByPaymentIdPaginated({
+      const startPaymentResponse = await startPayment({
         programId,
         paymentId,
         accessToken: adminAccessToken,
       });
-    expect(getTransactionsResultAfter1stApprove.body.data[0].status).toBe(
-      TransactionStatusEnum.pendingApproval,
-    );
-
-    // 2nd approve
-    await approvePayment({
-      programId,
-      paymentId,
-      accessToken: accessTokenFinanceManager,
-    });
-
-    const startPaymentResponse = await startPayment({
-      programId,
-      paymentId,
-      accessToken: adminAccessToken,
-    });
-    await waitForPaymentTransactionsToComplete({
-      programId,
-      paymentId,
-      paymentReferenceIds: [registrationPV5.referenceId],
-      accessToken: adminAccessToken,
-      maxWaitTimeMs: 5000,
-      completeStatuses: [TransactionStatusEnum.success],
-    });
-
-    // Assert
-    expect(createPaymentResponse.status).toBe(HttpStatus.CREATED);
-    expect(approvePaymentResponse.status).toBe(HttpStatus.CREATED);
-    expect(startPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-
-    const getTransactionsResultFinal =
-      await getTransactionsByPaymentIdPaginated({
+      await waitForPaymentTransactionsToComplete({
         programId,
         paymentId,
+        paymentReferenceIds: [registrationPV5.referenceId],
+        accessToken: adminAccessToken,
+        maxWaitTimeMs: 5000,
+        completeStatuses: [TransactionStatusEnum.success],
+      });
+
+      // Assert
+      expect(createPaymentResponse.status).toBe(HttpStatus.CREATED);
+      expect(approvePaymentResponse.status).toBe(HttpStatus.CREATED);
+      expect(startPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+
+      const getTransactionsResultFinal =
+        await getTransactionsByPaymentIdPaginated({
+          programId,
+          paymentId,
+          accessToken: adminAccessToken,
+        });
+      expect(getTransactionsResultFinal.status).toBe(HttpStatus.OK);
+      expect(getTransactionsResultFinal.body.data[0].status).toBe(
+        TransactionStatusEnum.success,
+      );
+    });
+
+    it('should throw on 2nd approve when 1st approver has not yet approved', async () => {
+      // Arrange
+      const createPaymentResponse = await createPayment({
+        programId,
+        transferValue,
+        referenceIds: [registrationPV5.referenceId],
         accessToken: adminAccessToken,
       });
-    expect(getTransactionsResultFinal.status).toBe(HttpStatus.OK);
-    expect(getTransactionsResultFinal.body.data[0].status).toBe(
-      TransactionStatusEnum.success,
-    );
+
+      // Act
+      // 2nd approve without 1st approve
+      const paymentId = createPaymentResponse.body.id;
+      const approvePaymentResponseFinanceManager = await approvePayment({
+        programId,
+        paymentId,
+        accessToken: accessTokenFinanceManager,
+      });
+
+      // Assert
+      expect(createPaymentResponse.status).toBe(HttpStatus.CREATED);
+      expect(approvePaymentResponseFinanceManager.status).toBe(
+        HttpStatus.BAD_REQUEST,
+      );
+      expect(
+        approvePaymentResponseFinanceManager.body.message,
+      ).toMatchInlineSnapshot(
+        `"Cannot approve payment before lower-order approvers have approved"`,
+      );
+    });
   });
 
   it('should throw on create payment when no approvers configured for program', async () => {

@@ -22,4 +22,7 @@ export class PaymentApprovalEntity extends Base121Entity {
 
   @Column()
   public approved: boolean;
+
+  @Column()
+  public order: number;
 }

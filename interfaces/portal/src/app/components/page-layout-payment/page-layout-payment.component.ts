@@ -205,6 +205,14 @@ export class PageLayoutPaymentComponent {
     );
   });
 
+  readonly firstPendingApprovalIndex = computed(() => {
+    if (!this.payment.isSuccess()) {
+      return 0;
+    }
+
+    return this.payment.data().approvalStatus.findIndex((a) => !a.approved);
+  });
+
   readonly hasFspWithExportFileIntegration = computed(() =>
     programHasFspWithExportFileIntegration(this.program.data()),
   );
