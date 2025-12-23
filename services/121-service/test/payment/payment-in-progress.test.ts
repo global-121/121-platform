@@ -198,7 +198,7 @@ describe('Payment in progress', () => {
       }
       const paymentResponses = await Promise.all(paymentPromises);
       const createdPayments = paymentResponses.filter(
-        (res) => res.status === HttpStatus.ACCEPTED,
+        (res) => res.status === HttpStatus.CREATED,
       );
       const blockedPayments = paymentResponses.filter(
         (res) => res.status === HttpStatus.BAD_REQUEST,
