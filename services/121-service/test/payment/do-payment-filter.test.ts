@@ -78,7 +78,7 @@ describe('Do payment with filter', () => {
       accessToken,
     });
     // Assert
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(
       includedRefrenceIds.length,
     );
@@ -114,7 +114,7 @@ describe('Do payment with filter', () => {
       accessToken,
     });
     // Assert
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(
       includedRefrenceIds.length,
     );
@@ -152,7 +152,7 @@ describe('Do payment with filter', () => {
       accessToken,
     });
     // Assert
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(1);
     expect(doPaymentResponse.body.totalFilterCount).toBe(1);
     // Also check if the right amount of transactions are created
@@ -188,7 +188,7 @@ describe('Do payment with filter', () => {
       accessToken,
     });
     // Assert
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(1);
     // REFACTOR: this test no longer involves the scenario where applicableCount<totalFilterCount, which might have originally been part of the intention. Change/add this test again in the future.
     expect(doPaymentResponse.body.totalFilterCount).toBe(1);
@@ -225,7 +225,7 @@ describe('Do payment with filter', () => {
       accessToken,
     });
     // Assert
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(1);
     expect(doPaymentResponse.body.totalFilterCount).toBe(2);
     // Also check if the right amount of transactions are created

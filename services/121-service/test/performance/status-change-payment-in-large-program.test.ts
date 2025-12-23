@@ -125,7 +125,7 @@ describe('Status Change Payment In Large Program', () => {
       referenceIds: [],
       accessToken,
     });
-    expect(doPaymentResponse.statusCode).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.statusCode).toBe(HttpStatus.CREATED);
     // Monitor that 10% of payments is successful and then stop the test
     await getPaymentResults({
       programId: programIdOCW,
