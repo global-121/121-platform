@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -65,7 +67,7 @@ describe('Successfully mark registrations to ignore duplication', () => {
       reason,
     });
 
-    expect(createUniquesResult.status).toBe(201);
+    expect(createUniquesResult.status).toBe(HttpStatus.CREATED);
 
     // Get activities for each registration
     const activities1 = (
