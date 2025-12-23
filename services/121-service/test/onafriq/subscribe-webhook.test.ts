@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { subscribeWebhookOnafriq } from '@121-service/test/helpers/fsp-specific.helper';
 import {
@@ -19,7 +21,7 @@ describe('Subscribe webhook', () => {
 
     // Assert
     // This test only asserts the correct retrieval of programFspConfigProperties, as beyond that in mock-mode nothing happens
-    expect(response.statusCode).toBe(201);
+    expect(response.statusCode).toBe(HttpStatus.CREATED);
   });
 
   it('should fail when no onafriq program fsp config properties are found', async () => {

@@ -133,7 +133,7 @@ export class PaymentsController {
     type: BulkActionResultDto,
   })
   @ApiResponse({
-    status: HttpStatus.ACCEPTED,
+    status: HttpStatus.CREATED,
     description:
       'Creating payment and transactions successfully - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
@@ -170,7 +170,7 @@ export class PaymentsController {
     description: 'Not used for this endpoint',
     deprecated: true,
   })
-  @HttpCode(HttpStatus.ACCEPTED)
+  @HttpCode(HttpStatus.CREATED)
   @Post('programs/:programId/payments')
   public async createPayment(
     @Body() data: CreatePaymentDto,

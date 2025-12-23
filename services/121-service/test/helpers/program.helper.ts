@@ -186,26 +186,17 @@ export async function doPayment({
     filter,
     note,
   });
-  if (createResult.status !== HttpStatus.ACCEPTED) {
+  if (createResult.status !== HttpStatus.CREATED) {
     return createResult;
   }
 
   const paymentId = createResult.body.id;
-  await waitForPaymentTransactionsToComplete({
-    programId,
-    paymentReferenceIds: referenceIds,
-    accessToken,
-    maxWaitTimeMs: 20_000,
-    paymentId,
-    completeStatuses: [TransactionStatusEnum.pendingApproval],
-  });
-
   const approveResult = await approvePayment({
     programId,
     paymentId,
     accessToken,
   });
-  if (approveResult.status !== HttpStatus.ACCEPTED) {
+  if (approveResult.status !== HttpStatus.CREATED) {
     return approveResult;
   }
 
