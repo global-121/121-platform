@@ -58,7 +58,7 @@
         class="[grid-area:chart]"
         height="100%"
       ></p-skeleton>
-    } @else if (paymentDetails.approved.count > 0) {
+    } @else if (paymentDetails.pendingApproval.count === 0) {
       <p-card
         class="[grid-area:chart] [&_.p-card]:h-full [&_.p-card-body]:h-full"
       >
