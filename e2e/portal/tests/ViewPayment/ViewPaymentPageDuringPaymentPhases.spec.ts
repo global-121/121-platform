@@ -19,11 +19,11 @@ import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 const duplicateNumberOfRegistrations = 3;
 const registrationsCount = Math.pow(2, duplicateNumberOfRegistrations);
-const totalBadges = registrationsCount + 1; // +1 for top chart badge
 
 const approvedBadgeLabel = 'Approved';
 const successfulBadgeLabel = 'Successful';
-const pendingApprovalBadgeLabel = 'Pending approval';
+const pendingApprovalPaymentLabel = '0 of 1 approved';
+const pendingApprovalTxLabel = 'Pending approval';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
@@ -41,7 +41,6 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-// ##TODO fix and extend this whole test (and rename the test to be more clear)
 test('Badges and chart should display correct statuses during payment process', async ({
   page,
 }) => {
@@ -63,42 +62,67 @@ test('Badges and chart should display correct statuses during payment process', 
     await paymentPage.dismissToast();
   });
 
-  await test.step('Validate "Pending approval" badges and details', async () => {
+  await test.step('Validate payment-page in "Pending approval" state', async () => {
+    // ##TODO validate 'Approver flow'
+
+    await paymentPage.validateBadgeIsPresentByLabel({
+      badgeName: pendingApprovalPaymentLabel,
+      isVisible: true,
+      count: 1,
+    });
+    await paymentPage.validateBadgeIsPresentByLabel({
+      badgeName: pendingApprovalTxLabel,
+      isVisible: true,
+      count: 8, // 1 per transaction
+    });
+    await paymentPage.validateButtonVisibility({
+      isVisible: true,
+      button: 'approve',
+    });
+  });
+
+  await test.step('Approve payment', async () => {
+    await paymentPage.approvePayment();
+    await paymentPage.validateToastMessage('Payment approved successfully.');
+  });
+
+  await test.step('Validate payment-page in "Approved" state', async () => {
+    await paymentPage.validateBadgeIsPresentByLabel({
+      badgeName: approvedBadgeLabel,
+      isVisible: true,
+      count: 9, // 1 top of the chart + 8 transactions
+    });
     await paymentPage.validateGraphStatus({
-      approved: 0,
+      approved: registrationsCount,
       processing: 0,
       successful: 0,
       failed: 0,
     });
-    await paymentPage.validateBadgeIsPresentByLabel({
-      badgeName: pendingApprovalBadgeLabel,
+
+    await paymentPage.validateButtonVisibility({
       isVisible: true,
-      // Those are all registrations badges plus top chart badges 8 + 1
-      count: totalBadges,
+      button: 'start',
     });
   });
 
-  await test.step('Validate Start Payment button is visible', async () => {
-    await paymentPage.validateStartPaymentButtonVisibility({ isVisible: true });
-  });
-
-  await test.step('Approve and start payment', async () => {
+  await test.step('Start payment', async () => {
     await paymentPage.startPayment();
+    await paymentPage.validateToastMessage('Payment started successfully.');
+    await paymentPage.waitForPaymentToComplete();
   });
 
   await test.step('Validate top of the chart has "Approved" badge', async () => {
-    await paymentPage.waitForPaymentToComplete();
-    await paymentPage.validateToastMessage('Payment started successfully.');
+    // Reload the page because Successful badges are not displayed without reload
+    await page.goto(`/en-GB/program/${programIdOCW}/payments/1`);
+    await paymentPage.waitForPageLoad();
+
     await paymentPage.validateGraphStatus({
       approved: 0,
       processing: 0,
       successful: registrationsCount,
       failed: 0,
     });
-    // Reload the page because Successful badges are not displayed without reload
-    await page.goto(`/en-GB/program/${programIdOCW}/payments/1`);
-    await paymentPage.waitForPageLoad();
-    // Validate badges
+    // Validate 1 approved badge for payment and 8 successful badges for transactions
     await paymentPage.validateBadgeIsPresentByLabel({
       badgeName: approvedBadgeLabel,
       isVisible: true,
@@ -109,15 +133,10 @@ test('Badges and chart should display correct statuses during payment process', 
       isVisible: true,
       count: registrationsCount,
     });
-    await paymentPage.validateBadgeIsPresentByLabel({
-      badgeName: pendingApprovalBadgeLabel,
-      isVisible: false,
-    });
-  });
 
-  await test.step('Validate Start Payment button is hidden', async () => {
-    await paymentPage.validateStartPaymentButtonVisibility({
+    await paymentPage.validateButtonVisibility({
       isVisible: false,
+      button: 'start',
     });
   });
 });
