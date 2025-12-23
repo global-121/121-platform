@@ -139,6 +139,7 @@ export class ApproverService {
     const { user } = programAidworkerAssignment;
     return {
       id,
+      userId: user.id,
       username: user.username,
       order,
     };
