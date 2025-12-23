@@ -81,7 +81,7 @@ describe('Retry Failed Jobs On Startup During Queue Processing', () => {
       referenceIds: [],
       accessToken,
     });
-    expect(doPaymentResponse.statusCode).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.statusCode).toBe(HttpStatus.CREATED);
     // Wait long enough so that jobs are added to the queue but not finished processing
     await waitFor(2_000);
     // Kill 121 service to simulate crash during queue processing

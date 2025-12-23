@@ -95,7 +95,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
       accessToken,
     });
 
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
@@ -172,7 +172,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
       accessToken,
     });
 
-    expect(doSecondPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doSecondPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doSecondPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );

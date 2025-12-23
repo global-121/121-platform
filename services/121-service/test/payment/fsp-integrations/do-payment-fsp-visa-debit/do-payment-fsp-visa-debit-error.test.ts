@@ -91,7 +91,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       accessToken,
     });
 
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
@@ -153,7 +153,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       accessToken,
     });
 
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
@@ -202,7 +202,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       accessToken,
     });
 
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
@@ -251,7 +251,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       accessToken,
     });
 
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
@@ -321,7 +321,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       accessToken,
     });
 
-    expect(doPaymentResponse2.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse2.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse2.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
@@ -414,7 +414,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     });
 
     // Assert
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(transactionsResponse.text).toContain(
       'Operation reference is already used.',
     );
