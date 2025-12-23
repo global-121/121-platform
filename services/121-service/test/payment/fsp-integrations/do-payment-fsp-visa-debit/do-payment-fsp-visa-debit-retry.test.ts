@@ -100,7 +100,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
       accessToken,
     });
 
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );

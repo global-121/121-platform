@@ -161,8 +161,8 @@ describe('Payment in progress', () => {
     expect(getProgramPaymentsPvResult.inProgress).toBe(false);
     expect(getProgramPaymentsOcwResult.inProgress).toBe(false);
 
-    expect(doPaymentPvResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
-    expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentPvResultPaymentNext.status).toBe(HttpStatus.CREATED);
+    expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.CREATED);
 
     // Cleanup to make sure nothing is in progress anymore
     await waitForPaymentTransactionsToComplete({
@@ -402,7 +402,7 @@ describe('Payment in progress', () => {
     expect(getProgramPaymentsPvResult.inProgress).toBe(true);
     expect(getProgramPaymentsOcwResult.inProgress).toBe(false);
 
-    expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.CREATED);
     expect(multiEndpointPaymentProgressPv).toMatchObject({
       paymentIsInProgress: true,
       createPaymentBlocked: true,

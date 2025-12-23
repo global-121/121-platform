@@ -128,7 +128,7 @@ describe('Do payment', () => {
         const transaction = exportTransactionResponse[0];
 
         // Assert
-        expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+        expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
         expect(doPaymentResponse.body.applicableCount).toBe(
           paymentReferenceIds.length,
         );
