@@ -2,10 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import {
-  createPayment,
-  waitForPaymentAndTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
+import { createPayment } from '@121-service/test/helpers/program.helper';
 import {
   seedIncludedRegistrations,
   seedPaidRegistrations,
@@ -51,21 +48,11 @@ describe('Get program stats', () => {
       programIdPV,
       accessToken,
     );
-    const paymentId = (
-      await createPayment({
-        programId: programIdPV,
-        transferValue,
-        referenceIds: [registrationPV8.referenceId],
-        accessToken,
-      })
-    ).body.id;
-    await waitForPaymentAndTransactionsToComplete({
+    await createPayment({
       programId: programIdPV,
-      paymentReferenceIds: [registrationPV8.referenceId],
+      transferValue,
+      referenceIds: [registrationPV8.referenceId],
       accessToken,
-      maxWaitTimeMs: 4_000,
-      completeStatuses: [TransactionStatusEnum.pendingApproval],
-      paymentId,
     });
 
     // Act
