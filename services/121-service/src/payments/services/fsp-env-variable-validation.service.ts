@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FspEnvVariablesDto } from '@121-service/src/fsp-management/fsp-env-variables.dto';
+import { FspEnvVariablesDto } from '@121-service/src/fsp-integrations/shared/dto/fsp-env-variables.dto';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 
 @Injectable()
 export class FspEnvVariableValidationService {

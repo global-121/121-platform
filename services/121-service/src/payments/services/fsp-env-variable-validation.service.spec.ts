@@ -1,4 +1,4 @@
-import { FspEnvVariablesDto } from '@121-service/src/fsp-management/fsp-env-variables.dto';
+import { FspEnvVariablesDto } from '@121-service/src/fsp-integrations/shared/dto/fsp-env-variables.dto';
 import { FspEnvVariableValidationService } from '@121-service/src/payments/services/fsp-env-variable-validation.service';
 
 describe('FSP environment variable validation', () => {
