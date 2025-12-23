@@ -48,9 +48,8 @@ const createFivePayments = async (
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/${i}`),
     );
-    await paymentPage.approveAndStartPayment({});
+    await paymentPage.approveAndStartPayment({ validateToast: false });
     await paymentsPage.navigateToProgramPage('Payments');
-    // await paymentsPage.dismissToast();
   }
 };
 
