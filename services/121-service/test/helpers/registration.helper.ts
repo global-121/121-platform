@@ -131,6 +131,19 @@ export function exportRegistrations(
     .send();
 }
 
+export function exportAllRegistrations(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer()
+    .get(`/programs/${programId}/metrics/export-list/registrations`)
+    .set('Cookie', [accessToken])
+    .query({
+      format: 'json',
+    })
+    .send();
+}
+
 export function bulkUpdateRegistrationsCSV(
   programId: number,
   filePath: string,

@@ -1,12 +1,11 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
-import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
-import { exportRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   duplicateRegistrationsAndPaymentData,
+  exportAllRegistrations,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -15,9 +14,9 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-const duplicateLowNumber = 5;
+const duplicateLowNumber = 17;
 const duplicateHighNumber = 17; // cronjob duplicate number should be 2^17 = 131072
-const testTimeout = 5_400_000; // 90 minutes
+const testTimeout = 150_000; // 2,5 minutes
 const duplicateNumber =
   // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
   process.env.HIGH_DATA_VOLUME === 'true'
@@ -54,9 +53,8 @@ describe('Export High volume of registrations', () => {
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Export registrations
-    const exportResponse = await exportRegistrations(
+    const exportResponse = await exportAllRegistrations(
       programIdOCW,
-      ExportType.registrations,
       accessToken,
     );
 
