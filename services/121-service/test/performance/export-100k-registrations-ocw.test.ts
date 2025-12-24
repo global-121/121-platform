@@ -54,26 +54,13 @@ describe('Export High volume of registrations', () => {
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Export registrations
-    console.log('Exporting registrations...');
-    const startExportTime = Date.now();
-
     const exportResponse = await exportRegistrations(
       programIdOCW,
       ExportType.registrations,
       accessToken,
     );
 
-    const exportDurationMs = Date.now() - startExportTime;
     expect(exportResponse.statusCode).toBe(HttpStatus.OK);
-    console.log('exportResponse: ', exportResponse.body);
-
-    console.log(`Export completed in ${exportDurationMs}ms`);
-    console.log(
-      `Total registrations exported: ${exportResponse.body.data.length}`,
-    );
-
-    const totalDurationMs = Date.now() - startTime;
-    console.log(`Total test duration: ${totalDurationMs}ms`);
 
     // Verify we exported a significant number of registrations
     const expectedMinRegistrations =
@@ -81,5 +68,7 @@ describe('Export High volume of registrations', () => {
     expect(exportResponse.body.data.length).toBeGreaterThan(
       expectedMinRegistrations,
     );
+    const elapsedTime = Date.now() - startTime;
+    expect(elapsedTime).toBeLessThan(testTimeout);
   });
 });
