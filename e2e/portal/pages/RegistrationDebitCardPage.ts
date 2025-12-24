@@ -25,6 +25,10 @@ class RegistrationDebitCardPage extends RegistrationBasePage {
   async getReplaceCardButton(): Promise<Locator> {
     return this.page.getByRole('button', { name: 'Replace card' });
   }
+
+  async getLinkCardButton(): Promise<Locator> {
+    return this.page.getByRole('button', { name: 'Link visa card' });
+  }
 }
 
 export default RegistrationDebitCardPage;
