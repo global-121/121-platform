@@ -178,11 +178,11 @@ test('User can replace a debit card and view both new and old card', async ({
     const cancelButton = await dialog.getButton('Cancel');
     await expect(cancelButton).toBeVisible();
 
-    const confirmButton = await dialog.getButton('Proceed');
+    const confirmButton = await dialog.getButton('Request new card');
     await expect(confirmButton).toBeVisible();
 
     // Confirm the replacement
-    await dialog.confirm();
+    await dialog.confirm('Request new card');
   });
 
   await test.step('Verify new active card details after replacement', async () => {
@@ -289,11 +289,11 @@ test('User can pause and unpause a debit card', async ({ page }) => {
     const cancelButton = await dialog.getButton('Cancel');
     await expect(cancelButton).toBeVisible();
 
-    const confirmButton = await dialog.getButton('Proceed');
+    const confirmButton = await dialog.getButton('Pause card');
     await expect(confirmButton).toBeVisible();
 
     // Confirm the pause action
-    await dialog.confirm();
+    await dialog.confirm('Pause card');
   });
 
   await test.step('Verify card is paused', async () => {
@@ -352,11 +352,11 @@ test('User can pause and unpause a debit card', async ({ page }) => {
     const cancelButton = await dialog.getButton('Cancel');
     await expect(cancelButton).toBeVisible();
 
-    const confirmButton = await dialog.getButton('Proceed');
+    const confirmButton = await dialog.getButton('Unpause card');
     await expect(confirmButton).toBeVisible();
 
     // Confirm the unpause action
-    await dialog.confirm();
+    await dialog.confirm('Unpause card');
   });
 
   await test.step('Verify card is active again', async () => {
