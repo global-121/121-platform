@@ -14,7 +14,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-const duplicateLowNumber = 17;
+const duplicateLowNumber = 5;
 const duplicateHighNumber = 17; // cronjob duplicate number should be 2^17 = 131072
 const testTimeout = 150_000; // 2,5 minutes
 const duplicateNumber =
