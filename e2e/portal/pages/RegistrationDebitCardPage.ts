@@ -8,6 +8,10 @@ class RegistrationDebitCardPage extends RegistrationBasePage {
     return this.page.getByTestId('wallet-current-card-list');
   }
 
+  async getSubstituteDebitCardElement(): Promise<Locator> {
+    return this.page.getByTestId('old-card-list');
+  }
+
   async getLinkDebitCardInput(): Promise<Locator> {
     return this.page.getByTestId('serial-number-input');
   }
@@ -16,6 +20,16 @@ class RegistrationDebitCardPage extends RegistrationBasePage {
     return new DataListComponent(
       await this.getCurrentDebitCardElement(),
     ).getData();
+  }
+
+  async getSubstituteDebitCardDataList(): Promise<Record<string, string>> {
+    return new DataListComponent(
+      await this.getSubstituteDebitCardElement(),
+    ).getData();
+  }
+
+  async getMainPageReplaceCardButton(): Promise<Locator> {
+    return this.page.getByRole('button', { name: 'Replace card' });
   }
 
   async getPauseCardButton(): Promise<Locator> {
@@ -46,6 +60,21 @@ class RegistrationDebitCardPage extends RegistrationBasePage {
     await linkVisaCardButton.click();
     await linkCardInput.fill(serialNumber);
     await linkCardButton.click();
+  }
+
+  async replaceVisaCard(serialNumber: string): Promise<void> {
+    const mainPageReplaceCardButton = await this.getMainPageReplaceCardButton();
+    const replaceCardButton = await this.getReplaceCardButton();
+    const linkCardInput = await this.getLinkDebitCardInput();
+
+    await mainPageReplaceCardButton.click();
+    await linkCardInput.fill(serialNumber);
+    await replaceCardButton.click();
+  }
+
+  async closeLinkDebitCardModal(): Promise<void> {
+    const cancelButton = this.page.getByRole('button', { name: 'Cancel' });
+    await cancelButton.click();
   }
 }
 

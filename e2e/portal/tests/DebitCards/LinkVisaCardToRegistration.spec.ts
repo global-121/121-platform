@@ -6,14 +6,12 @@ import {
 } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { programIdVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { patchProgramFspConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
-  changeRegistrationStatus,
-  doPaymentAndWaitForCompletion,
   getRegistrationIdByReferenceId,
+  linkVisaCardOnSite,
   seedRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -25,6 +23,8 @@ import { registrationOCW1 } from '@121-service/test/registrations/pagination/pag
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationDebitCardPage from '@121-e2e/portal/pages/RegistrationDebitCardPage';
 
+const oldVisaCardNumber = '1111222233334444555';
+const newVisaCardNumber = '5555444433332222111';
 let registrationId: number;
 let accessToken: string;
 const updateProgramFspConfigurationDto: UpdateProgramFspConfigurationDto = {
@@ -91,7 +91,7 @@ test('User can link a debit card to a registration', async ({ page }) => {
   });
 
   await test.step('User can link a visa debit card to the registration', async () => {
-    await debitCardPage.linkVisaCard('1111222233334444555');
+    await debitCardPage.linkVisaCard(oldVisaCardNumber);
     await debitCardPage.validateToastMessageAndClose(
       'Link Visa card to registration',
     );
@@ -100,27 +100,30 @@ test('User can link a debit card to a registration', async ({ page }) => {
 });
 
 test('User can successfully replace a debit card', async ({ page }) => {
-  const changeStatusResult = await changeRegistrationStatus({
+  // Arrange
+  await linkVisaCardOnSite({
     programId: programIdVisa,
-    referenceIds: [registrationOCW1.referenceId],
-    status: RegistrationStatusEnum.included,
+    referenceId: registrationOCW1.referenceId,
+    tokenCode: oldVisaCardNumber,
     accessToken,
   });
-  console.log('changeStatusResult: ', changeStatusResult.body);
-  console.log('Waiting for payment to complete...');
-  const paymentResult = await doPaymentAndWaitForCompletion({
-    programId: programIdVisa,
-    referenceIds: [registrationOCW1.referenceId],
-    transferValue: 50,
-    accessToken,
-  });
-  console.log('paymentResult: ', paymentResult);
-
+  // Act & Assert
   await test.step('Replace debit card', async () => {
     const debitCardPage = new RegistrationDebitCardPage(page);
-    const linkCardButton = await debitCardPage.getLinkVisaCardButton();
 
-    console.log('Replace debit card - to be implemented');
-    await expect(linkCardButton).toBeVisible();
+    await debitCardPage.replaceVisaCard(newVisaCardNumber);
+    await debitCardPage.validateToastMessageAndClose(
+      'Link Visa card to registration',
+    );
+    await debitCardPage.closeLinkDebitCardModal();
+    // The behaviour of the page right now is that FE does not refresh immediately and the page should be refreshed to get new and old card numbers
+    // I think this should not work like that
+    await page.reload();
+    const currentDebitCardDataList =
+      await debitCardPage.getCurrentDebitCardDataList();
+    const substituteDebitCardDataList =
+      await debitCardPage.getSubstituteDebitCardDataList();
+    expect(currentDebitCardDataList['Card number']).toBe(newVisaCardNumber);
+    expect(substituteDebitCardDataList['Card number']).toBe(oldVisaCardNumber);
   });
 });
