@@ -81,7 +81,7 @@ class RegistrationDebitCardPage extends RegistrationBasePage {
   }
 
   async goBackToLinkDebitCardModal(): Promise<void> {
-    const goBackButton = this.page.getByRole('button', { name: 'Go back' });
+    const goBackButton = this.page.getByTestId('go-back-button');
     await goBackButton.click();
   }
 }
