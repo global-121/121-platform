@@ -27,19 +27,25 @@ class RegistrationDebitCardPage extends RegistrationBasePage {
   }
 
   async getReplaceCardButton(): Promise<Locator> {
-    return this.page.getByRole('button', { name: 'Replace card' });
+    return this.page.getByRole('button', { name: 'Replace card', exact: true });
   }
 
-  async getLinkCardButton(): Promise<Locator> {
+  async getLinkVisaCardButton(): Promise<Locator> {
     return this.page.getByRole('button', { name: 'Link visa card' });
   }
 
-  async linkVisaCard(serialNumber: string): Promise<void> {
-    const linkCardButton = await this.getLinkCardButton();
-    const linkCardInput = await this.getLinkDebitCardInput();
+  async getLinkCardButton(): Promise<Locator> {
+    return this.page.getByRole('button', { name: 'Link card' });
+  }
 
-    await linkCardButton.click();
+  async linkVisaCard(serialNumber: string): Promise<void> {
+    const linkVisaCardButton = await this.getLinkVisaCardButton();
+    const linkCardInput = await this.getLinkDebitCardInput();
+    const linkCardButton = await this.getLinkCardButton();
+
+    await linkVisaCardButton.click();
     await linkCardInput.fill(serialNumber);
+    await linkCardButton.click();
   }
 }
 

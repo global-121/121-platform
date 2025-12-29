@@ -6,10 +6,13 @@ import {
 } from '@121-service/src/fsp-management/enums/fsp-name.enum';
 import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { programIdVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { patchProgramFspConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
+  changeRegistrationStatus,
+  doPaymentAndWaitForCompletion,
   getRegistrationIdByReferenceId,
   seedRegistrations,
 } from '@121-service/test/helpers/registration.helper';
@@ -32,6 +35,18 @@ const updateProgramFspConfigurationDto: UpdateProgramFspConfigurationDto = {
     {
       name: FspConfigurationProperties.cardDistributionByMail,
       value: 'false',
+    },
+    {
+      name: FspConfigurationProperties.brandCode,
+      value: 'test-INTERSOLVE_VISA_BRAND_CODE',
+    },
+    {
+      name: FspConfigurationProperties.coverLetterCode,
+      value: 'TESTINTERSOLVEVISACOVERLETTERCODE',
+    },
+    {
+      name: FspConfigurationProperties.fundingTokenCode,
+      value: 'test_INTERSOLVE_VISA_FUNDINGTOKEN_CODE',
     },
   ],
 };
@@ -68,7 +83,8 @@ test.beforeEach(async ({ page }) => {
 
 test('User can link a debit card to a registration', async ({ page }) => {
   const debitCardPage = new RegistrationDebitCardPage(page);
-  const linkCardButton = await debitCardPage.getLinkCardButton();
+  const linkCardButton = await debitCardPage.getLinkVisaCardButton();
+  const replaceCardButton = await debitCardPage.getReplaceCardButton();
 
   await test.step('User can view link card button', async () => {
     await expect(linkCardButton).toBeVisible();
@@ -76,31 +92,35 @@ test('User can link a debit card to a registration', async ({ page }) => {
 
   await test.step('User can link a visa debit card to the registration', async () => {
     await debitCardPage.linkVisaCard('1111222233334444555');
+    await debitCardPage.validateToastMessageAndClose(
+      'Link Visa card to registration',
+    );
+    await expect(replaceCardButton).toBeVisible();
   });
 });
 
-// test('User can successfully replace a debit card', async ({ page }) => {
-//   const changeStatusResult = await changeRegistrationStatus({
-//     programId: programIdVisa,
-//     referenceIds: [registrationOCW1.referenceId],
-//     status: RegistrationStatusEnum.included,
-//     accessToken,
-//   });
-//   console.log('changeStatusResult: ', changeStatusResult.body);
-//   console.log('Waiting for payment to complete...');
-//   const paymentResult = await doPaymentAndWaitForCompletion({
-//     programId: programIdVisa,
-//     referenceIds: [registrationOCW1.referenceId],
-//     transferValue: 50,
-//     accessToken,
-//   });
-//   console.log('paymentResult: ', paymentResult);
+test('User can successfully replace a debit card', async ({ page }) => {
+  const changeStatusResult = await changeRegistrationStatus({
+    programId: programIdVisa,
+    referenceIds: [registrationOCW1.referenceId],
+    status: RegistrationStatusEnum.included,
+    accessToken,
+  });
+  console.log('changeStatusResult: ', changeStatusResult.body);
+  console.log('Waiting for payment to complete...');
+  const paymentResult = await doPaymentAndWaitForCompletion({
+    programId: programIdVisa,
+    referenceIds: [registrationOCW1.referenceId],
+    transferValue: 50,
+    accessToken,
+  });
+  console.log('paymentResult: ', paymentResult);
 
-//   // await test.step('Replace debit card', async () => {
-//   //   const debitCardPage = new RegistrationDebitCardPage(page);
-//   //   const linkCardButton = await debitCardPage.getLinkCardButton();
+  await test.step('Replace debit card', async () => {
+    const debitCardPage = new RegistrationDebitCardPage(page);
+    const linkCardButton = await debitCardPage.getLinkVisaCardButton();
 
-//   //   console.log('Replace debit card - to be implemented');
-//   //   await expect(linkCardButton).toBeVisible();
-//   // });
-// });
+    console.log('Replace debit card - to be implemented');
+    await expect(linkCardButton).toBeVisible();
+  });
+});
