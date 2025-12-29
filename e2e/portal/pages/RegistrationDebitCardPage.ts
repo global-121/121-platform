@@ -8,6 +8,10 @@ class RegistrationDebitCardPage extends RegistrationBasePage {
     return this.page.getByTestId('wallet-current-card-list');
   }
 
+  async getLinkDebitCardInput(): Promise<Locator> {
+    return this.page.getByTestId('serial-number-input');
+  }
+
   async getCurrentDebitCardDataList(): Promise<Record<string, string>> {
     return new DataListComponent(
       await this.getCurrentDebitCardElement(),
@@ -28,6 +32,14 @@ class RegistrationDebitCardPage extends RegistrationBasePage {
 
   async getLinkCardButton(): Promise<Locator> {
     return this.page.getByRole('button', { name: 'Link visa card' });
+  }
+
+  async linkVisaCard(serialNumber: string): Promise<void> {
+    const linkCardButton = await this.getLinkCardButton();
+    const linkCardInput = await this.getLinkDebitCardInput();
+
+    await linkCardButton.click();
+    await linkCardInput.fill(serialNumber);
   }
 }
 

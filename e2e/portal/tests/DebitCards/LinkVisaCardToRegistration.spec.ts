@@ -65,12 +65,16 @@ test('User can link a debit card to a registration', async ({ page }) => {
   });
 
   const debitCardPage = new RegistrationDebitCardPage(page);
+  const linkCardButton = await debitCardPage.getLinkCardButton();
   await debitCardPage.goto(
     `/program/${programIdVisa}/registrations/${registrationId}/debit-cards`,
   );
 
   await test.step('User can view link card button', async () => {
-    const linkCardButton = await debitCardPage.getLinkCardButton();
     await expect(linkCardButton).toBeVisible();
+  });
+
+  await test.step('User can link a visa debit card to the registration', async () => {
+    await debitCardPage.linkVisaCard('1234567890123456789');
   });
 });
