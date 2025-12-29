@@ -62,12 +62,15 @@ class RegistrationDebitCardPage extends RegistrationBasePage {
     await linkCardButton.click();
   }
 
+  async clickMainPageReplaceCardButton(): Promise<void> {
+    const replaceCardButton = await this.getMainPageReplaceCardButton();
+    await replaceCardButton.click();
+  }
+
   async replaceVisaCard(serialNumber: string): Promise<void> {
-    const mainPageReplaceCardButton = await this.getMainPageReplaceCardButton();
     const replaceCardButton = await this.getReplaceCardButton();
     const linkCardInput = await this.getLinkDebitCardInput();
 
-    await mainPageReplaceCardButton.click();
     await linkCardInput.fill(serialNumber);
     await replaceCardButton.click();
   }
@@ -75,6 +78,11 @@ class RegistrationDebitCardPage extends RegistrationBasePage {
   async closeLinkDebitCardModal(): Promise<void> {
     const cancelButton = this.page.getByRole('button', { name: 'Cancel' });
     await cancelButton.click();
+  }
+
+  async goBackToLinkDebitCardModal(): Promise<void> {
+    const goBackButton = this.page.getByRole('button', { name: 'Go back' });
+    await goBackButton.click();
   }
 }
 

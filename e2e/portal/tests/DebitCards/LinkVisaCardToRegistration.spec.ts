@@ -20,10 +20,11 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { registrationOCW1 } from '@121-service/test/registrations/pagination/pagination-data';
 
+import FormDialogComponent from '@121-e2e/portal/components/FormDialogComponent';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationDebitCardPage from '@121-e2e/portal/pages/RegistrationDebitCardPage';
 
-const oldVisaCardNumber = '1111222233334444555';
+const visaCardNumber = '1111222233334444555';
 const newVisaCardNumber = '5555444433332222111';
 let registrationId: number;
 let accessToken: string;
@@ -91,26 +92,42 @@ test('User can link a debit card to a registration', async ({ page }) => {
   });
 
   await test.step('User can link a visa debit card to the registration', async () => {
-    await debitCardPage.linkVisaCard(oldVisaCardNumber);
+    await debitCardPage.linkVisaCard(visaCardNumber);
     await debitCardPage.validateToastMessageAndClose(
       'Link Visa card to registration',
     );
     await expect(replaceCardButton).toBeVisible();
+    await debitCardPage.closeLinkDebitCardModal();
+    const currentDebitCardDataList =
+      await debitCardPage.getCurrentDebitCardDataList();
+    expect(currentDebitCardDataList['Card number']).toBe(visaCardNumber);
   });
 });
 
-test('User can successfully replace a debit card', async ({ page }) => {
+test('User can successfully replace a debit card and gets error if he tries to link an already linked card', async ({
+  page,
+}) => {
   // Arrange
   await linkVisaCardOnSite({
     programId: programIdVisa,
     referenceId: registrationOCW1.referenceId,
-    tokenCode: oldVisaCardNumber,
+    tokenCode: visaCardNumber,
     accessToken,
   });
   // Act & Assert
   await test.step('Replace debit card', async () => {
-    const debitCardPage = new RegistrationDebitCardPage(page);
+    const dialogLocator = page.locator('.p-dialog');
 
+    const debitCardPage = new RegistrationDebitCardPage(page);
+    const formDialog = new FormDialogComponent(dialogLocator);
+    // Link already existing card to check error message
+    await debitCardPage.clickMainPageReplaceCardButton();
+    await debitCardPage.replaceVisaCard(visaCardNumber);
+    await formDialog.hasContent(
+      'The card number you entered is already linked to the current registration.',
+    );
+    await debitCardPage.goBackToLinkDebitCardModal();
+    // Link new card
     await debitCardPage.replaceVisaCard(newVisaCardNumber);
     await debitCardPage.validateToastMessageAndClose(
       'Link Visa card to registration',
@@ -124,6 +141,6 @@ test('User can successfully replace a debit card', async ({ page }) => {
     const substituteDebitCardDataList =
       await debitCardPage.getSubstituteDebitCardDataList();
     expect(currentDebitCardDataList['Card number']).toBe(newVisaCardNumber);
-    expect(substituteDebitCardDataList['Card number']).toBe(oldVisaCardNumber);
+    expect(substituteDebitCardDataList['Card number']).toBe(visaCardNumber);
   });
 });
