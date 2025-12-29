@@ -36,20 +36,11 @@ const updateProgramFspConfigurationDto: UpdateProgramFspConfigurationDto = {
   ],
 };
 
-test.beforeEach(async () => {
+test.beforeEach(async ({ page }) => {
+  // Arrange
   await resetDB(SeedScript.nlrcMultiple, __filename);
 
   accessToken = await getAccessToken();
-});
-
-test('User can link a debit card to a registration', async ({ page }) => {
-  // Arrange
-  await seedRegistrations([registrationOCW1], programIdVisa);
-  registrationId = await getRegistrationIdByReferenceId({
-    programId: programIdVisa,
-    referenceId: registrationOCW1.referenceId,
-    accessToken,
-  });
 
   await patchProgramFspConfiguration({
     programId: programIdVisa,
@@ -57,24 +48,59 @@ test('User can link a debit card to a registration', async ({ page }) => {
     body: updateProgramFspConfigurationDto,
     accessToken,
   });
-
-  await test.step('Login', async () => {
-    const loginPage = new LoginPage(page);
-    await page.goto(`/`);
-    await loginPage.login();
+  // Seed registration
+  await seedRegistrations([registrationOCW1], programIdVisa);
+  registrationId = await getRegistrationIdByReferenceId({
+    programId: programIdVisa,
+    referenceId: registrationOCW1.referenceId,
+    accessToken,
   });
-
+  // Login
+  const loginPage = new LoginPage(page);
+  await page.goto(`/`);
+  await loginPage.login();
+  // Navigate to debit card page
   const debitCardPage = new RegistrationDebitCardPage(page);
-  const linkCardButton = await debitCardPage.getLinkCardButton();
   await debitCardPage.goto(
     `/program/${programIdVisa}/registrations/${registrationId}/debit-cards`,
   );
+});
+
+test('User can link a debit card to a registration', async ({ page }) => {
+  const debitCardPage = new RegistrationDebitCardPage(page);
+  const linkCardButton = await debitCardPage.getLinkCardButton();
 
   await test.step('User can view link card button', async () => {
     await expect(linkCardButton).toBeVisible();
   });
 
   await test.step('User can link a visa debit card to the registration', async () => {
-    await debitCardPage.linkVisaCard('1234567890123456789');
+    await debitCardPage.linkVisaCard('1111222233334444555');
   });
 });
+
+// test('User can successfully replace a debit card', async ({ page }) => {
+//   const changeStatusResult = await changeRegistrationStatus({
+//     programId: programIdVisa,
+//     referenceIds: [registrationOCW1.referenceId],
+//     status: RegistrationStatusEnum.included,
+//     accessToken,
+//   });
+//   console.log('changeStatusResult: ', changeStatusResult.body);
+//   console.log('Waiting for payment to complete...');
+//   const paymentResult = await doPaymentAndWaitForCompletion({
+//     programId: programIdVisa,
+//     referenceIds: [registrationOCW1.referenceId],
+//     transferValue: 50,
+//     accessToken,
+//   });
+//   console.log('paymentResult: ', paymentResult);
+
+//   // await test.step('Replace debit card', async () => {
+//   //   const debitCardPage = new RegistrationDebitCardPage(page);
+//   //   const linkCardButton = await debitCardPage.getLinkCardButton();
+
+//   //   console.log('Replace debit card - to be implemented');
+//   //   await expect(linkCardButton).toBeVisible();
+//   // });
+// });
