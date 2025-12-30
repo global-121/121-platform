@@ -70,7 +70,8 @@ test('User can view debit cards of a registration with a single active debit car
   });
 
   await test.step('User can view replace card button', async () => {
-    const replaceCardButton = await debitCardPage.getReplaceCardButton();
+    const replaceCardButton =
+      await debitCardPage.getMainPageReplaceCardButton();
     await expect(replaceCardButton).toBeVisible();
   });
 });
@@ -145,7 +146,7 @@ test('User can replace a debit card and view both new and old card', async ({
   });
 
   await test.step('Replace the debit card', async () => {
-    await (await debitCardPage.getReplaceCardButton()).click();
+    await (await debitCardPage.getMainPageReplaceCardButton()).click();
   });
 
   await test.step('Verify the confirmation dialog', async () => {

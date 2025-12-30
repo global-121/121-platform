@@ -45,6 +45,7 @@
         >
         <p-input-mask
           inputId="serial-number-input"
+          data-testid="serial-number-input"
           [(ngModel)]="tokenCode"
           placeholder="____-____-____-____-___"
           mask="9999-9999-9999-9999-999"
@@ -104,6 +105,7 @@
           rounded
           label="Go back"
           i18n-label
+          data-testid="go-back-button"
         ></p-button>
       }
     </div>
