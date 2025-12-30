@@ -94,8 +94,6 @@ export class PaymentsModule implements OnModuleInit {
       );
     } else {
       validationResult.messages.forEach((msg) => this.logger.error(msg));
-      // We don't throw an HTTPException here because we want the application
-      // to not start in case of a misconfiguration with environment variables.
       throw new Error(`${messagePrefix} failed, see previously logged errors.`);
     }
   }
