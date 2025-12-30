@@ -5,6 +5,7 @@ import { NedbankVoucherStatus } from '@121-service/src/fsp-integrations/integrat
 import { NedbankError } from '@121-service/src/fsp-integrations/integrations/nedbank/errors/nedbank.error';
 import { NedbankVoucherScopedRepository } from '@121-service/src/fsp-integrations/integrations/nedbank/repositories/nedbank-voucher.scoped.repository';
 import { NedbankService } from '@121-service/src/fsp-integrations/integrations/nedbank/services/nedbank.service';
+import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { NedbankTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/nedbank-transaction-job.dto';
@@ -76,7 +77,10 @@ export class TransactionJobsNedbankService {
       ).replace(/^(.{14})5/, '$14');
 
       // THIS IS MOCK FUNCTIONALITY FOR TESTING PURPOSES ONLY
-      if (env.MOCK_NEDBANK && transactionJob.referenceId.includes('mock')) {
+      if (
+        env.NEDBANK_MODE === FspMode.mock &&
+        transactionJob.referenceId.includes('mock')
+      ) {
         // If mock, add the referenceId to the orderCreateReference
         // This way you can add one of the Nedbank voucher statuses to the orderCreateReference
         // to simulate a specific statuses in responses from the Nedbank API on getOrderByOrderCreateReference

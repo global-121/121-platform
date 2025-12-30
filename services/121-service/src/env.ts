@@ -3,21 +3,21 @@ import { withoutLeadingSlash, withoutTrailingSlash } from 'ufo';
 import { v4 as createUuid } from 'uuid';
 import { z } from 'zod/v4';
 
+import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
+
 // Please keep the following order/structure for FSP-related environment variables:
 // - FSPs alphabetically
 // - Within each FSP
-//   - {FSP}_ENABLED
-//   - {empty line}
-//   - MOCK_{FSP}
+//   - {FSP}_MODE
 //   - {empty line}
 //   - CRON_{FSP}..variables, alphabetically
 //   - {empty line}
 //   - {FSP}_...other variables, alphabetically
 
-export const airtelEnvVariablesSchema = {
-  AIRTEL_ENABLED: z.stringbool().default(false),
+const FspModeSchema = z.enum(FspMode).default(FspMode.disabled);
 
-  MOCK_AIRTEL: z.stringbool().default(false),
+export const airtelEnvVariablesSchema = {
+  AIRTEL_MODE: FspModeSchema,
 
   AIRTEL_API_URL: z
     .url()
@@ -30,9 +30,7 @@ export const airtelEnvVariablesSchema = {
 };
 
 export const commercialBankEthiopiaEnvVariablesSchema = {
-  COMMERCIAL_BANK_ETHIOPIA_ENABLED: z.stringbool().default(false),
-
-  MOCK_COMMERCIAL_BANK_ETHIOPIA: z.stringbool().default(false),
+  COMMERCIAL_BANK_ETHIOPIA_MODE: FspModeSchema,
 
   COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH: z.string().default(''),
   COMMERCIAL_BANK_ETHIOPIA_URL: z
@@ -43,9 +41,7 @@ export const commercialBankEthiopiaEnvVariablesSchema = {
 };
 
 export const cooperativeBankOfOromiaEnvVariablesSchema = {
-  COOPERATIVE_BANK_OF_OROMIA_ENABLED: z.stringbool().default(false),
-
-  MOCK_COOPERATIVE_BANK_OF_OROMIA: z.stringbool().default(false),
+  COOPERATIVE_BANK_OF_OROMIA_MODE: FspModeSchema,
 
   CRON_COOPERATIVE_BANK_OF_OROMIA_ACCOUNT_VALIDATIONS: z
     .stringbool()
@@ -65,10 +61,8 @@ export const cooperativeBankOfOromiaEnvVariablesSchema = {
 };
 
 export const intersolveVisaEnvVariablesSchema = {
-  INTERSOLVE_VISA_ENABLED: z.stringbool().default(false),
-
   // Used for Intersolve Visa and Intersolve Voucher Paper+Whatsapp.
-  MOCK_INTERSOLVE: z.stringbool().default(false),
+  INTERSOLVE_MODE: FspModeSchema,
 
   CRON_INTERSOLVE_VISA_UPDATE_WALLET_DETAILS: z.stringbool().default(false),
 
@@ -96,10 +90,8 @@ export const intersolveVisaEnvVariablesSchema = {
 // for environment variables though. So here's an exception to that.
 // See AB#10288 for more context.
 export const intersolveVoucherEnvVariablesSchema = {
-  INTERSOLVE_VOUCHER_ENABLED: z.stringbool().default(false),
-
   // Used for Intersolve Visa and Intersolve Voucher Paper+Whatsapp.
-  MOCK_INTERSOLVE: z.stringbool().default(false),
+  INTERSOLVE_MODE: FspModeSchema,
 
   CRON_INTERSOLVE_VOUCHER_CACHE_UNUSED_VOUCHERS: z.stringbool().default(false),
   CRON_INTERSOLVE_VOUCHER_CANCEL_FAILED_CARDS: z.stringbool().default(false),
@@ -115,9 +107,7 @@ export const intersolveVoucherEnvVariablesSchema = {
 };
 
 export const nedbankEnvVariablesSchema = {
-  NEDBANK_ENABLED: z.stringbool().default(false),
-
-  MOCK_NEDBANK: z.stringbool().default(false),
+  NEDBANK_MODE: FspModeSchema,
 
   CRON_NEDBANK_VOUCHERS: z.stringbool().default(false),
 
@@ -133,9 +123,7 @@ export const nedbankEnvVariablesSchema = {
 };
 
 export const onafriqEnvVariablesSchema = {
-  ONAFRIQ_ENABLED: z.stringbool().default(false),
-
-  MOCK_ONAFRIQ: z.stringbool().default(false),
+  ONAFRIQ_MODE: FspModeSchema,
 
   CRON_ONAFRIQ_RECONCILIATION_REPORT: z.stringbool().default(false),
 
@@ -160,9 +148,7 @@ export const onafriqEnvVariablesSchema = {
 };
 
 export const safaricomEnvVariablesSchema = {
-  SAFARICOM_ENABLED: z.stringbool().default(false),
-
-  MOCK_SAFARICOM: z.stringbool().default(false),
+  SAFARICOM_MODE: FspModeSchema,
 
   SAFARICOM_API_URL: z
     .url()

@@ -51,10 +51,7 @@ describe('PaymentsModule', () => {
 
     it('should throw error and log error messages when validation fails', () => {
       // Arrange
-      const errorMessages = [
-        'FSP "safaricom" is enabled using "{FSP}_ENABLED", but is missing the following required environment variables: "SAFARICOM_API_KEY".',
-        'FSP "airtel" is enabled using "{FSP}_ENABLED", but is missing the following required environment variables: "AIRTEL_SECRET".',
-      ];
+      const errorMessages = ['error message 1', 'error message 2'];
       fspEnvVariableValidationService.validateFspEnvVariableSettings.mockReturnValue(
         {
           ok: false,

@@ -7,7 +7,7 @@ import { FspEnvVariablesDto } from '@121-service/src/fsp-integrations/shared/dto
 
 export const COOPERATIVE_BANK_OF_OROMIA_ENV_VARIABLE_SETTINGS: FspEnvVariablesDto =
   {
-    enabled: env.COOPERATIVE_BANK_OF_OROMIA_ENABLED,
+    mode: env.COOPERATIVE_BANK_OF_OROMIA_MODE,
     variables: getEnvVariablesForFsp({
       names: Object.keys(cooperativeBankOfOromiaEnvVariablesSchema),
       allEnvVariables: env,

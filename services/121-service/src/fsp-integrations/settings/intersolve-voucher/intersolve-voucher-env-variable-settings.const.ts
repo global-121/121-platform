@@ -3,7 +3,7 @@ import { getEnvVariablesForFsp } from '@121-service/src/fsp-integrations/setting
 import { FspEnvVariablesDto } from '@121-service/src/fsp-integrations/shared/dto/fsp-env-variables.dto';
 
 export const INTERSOLVE_VOUCHER_ENV_VARIABLE_SETTINGS: FspEnvVariablesDto = {
-  enabled: env.INTERSOLVE_VOUCHER_ENABLED,
+  mode: env.INTERSOLVE_MODE,
   variables: getEnvVariablesForFsp({
     names: Object.keys(intersolveVoucherEnvVariablesSchema),
     allEnvVariables: env,

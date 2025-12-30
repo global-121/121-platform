@@ -7,7 +7,7 @@ import { FspEnvVariablesDto } from '@121-service/src/fsp-integrations/shared/dto
 
 export const COMMERCIAL_BANK_ETHIOPIA_ENV_VARIABLE_SETTINGS: FspEnvVariablesDto =
   {
-    enabled: env.COMMERCIAL_BANK_ETHIOPIA_ENABLED,
+    mode: env.COMMERCIAL_BANK_ETHIOPIA_MODE,
     variables: getEnvVariablesForFsp({
       names: Object.keys(commercialBankEthiopiaEnvVariablesSchema),
       allEnvVariables: env,

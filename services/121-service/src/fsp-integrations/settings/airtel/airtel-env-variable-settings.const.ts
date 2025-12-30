@@ -3,7 +3,7 @@ import { getEnvVariablesForFsp } from '@121-service/src/fsp-integrations/setting
 import { FspEnvVariablesDto } from '@121-service/src/fsp-integrations/shared/dto/fsp-env-variables.dto';
 
 export const AIRTEL_ENV_VARIABLE_SETTINGS: FspEnvVariablesDto = {
-  enabled: env.AIRTEL_ENABLED,
+  mode: env.AIRTEL_MODE,
   variables: getEnvVariablesForFsp({
     names: Object.keys(airtelEnvVariablesSchema),
     allEnvVariables: env,

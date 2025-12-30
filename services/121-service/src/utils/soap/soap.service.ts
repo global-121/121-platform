@@ -5,6 +5,7 @@ import https from 'node:https';
 import * as convert from 'xml-js';
 
 import { env } from '@121-service/src/env';
+import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
@@ -169,7 +170,7 @@ export class SoapService {
 
     // TODO: REFACTOR: See the NedbankApiClientService for how to handle the certificate, so it works on Azure and locally
     let agent;
-    if (env.MOCK_COMMERCIAL_BANK_ETHIOPIA) {
+    if (env.COMMERCIAL_BANK_ETHIOPIA_MODE === FspMode.mock) {
       // Mock enabled
       agent = new https.Agent();
     } else {

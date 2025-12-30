@@ -6,11 +6,13 @@ import { v4 as uuid } from 'uuid';
 import { env } from '@121-service/src/env';
 import { NedbankApiError } from '@121-service/src/fsp-integrations/integrations/nedbank/errors/nedbank-api.error';
 import { NedbankApiHelperService } from '@121-service/src/fsp-integrations/integrations/nedbank/services/nedbank-api.helper.service';
+import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
-const nedbankApiUrl = env.MOCK_NEDBANK
-  ? `${env.MOCK_SERVICE_URL}/api/fsp/nedbank`
-  : env.NEDBANK_API_URL;
+const nedbankApiUrl =
+  env.NEDBANK_MODE === FspMode.mock
+    ? `${env.MOCK_SERVICE_URL}/api/fsp/nedbank`
+    : env.NEDBANK_API_URL;
 
 @Injectable()
 export class NedbankApiClientService {

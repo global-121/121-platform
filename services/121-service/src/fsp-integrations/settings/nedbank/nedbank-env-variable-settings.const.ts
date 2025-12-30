@@ -3,7 +3,7 @@ import { getEnvVariablesForFsp } from '@121-service/src/fsp-integrations/setting
 import { FspEnvVariablesDto } from '@121-service/src/fsp-integrations/shared/dto/fsp-env-variables.dto';
 
 export const NEDBANK_ENV_VARIABLE_SETTINGS: FspEnvVariablesDto = {
-  enabled: env.NEDBANK_ENABLED,
+  mode: env.NEDBANK_MODE,
   variables: getEnvVariablesForFsp({
     names: Object.keys(nedbankEnvVariablesSchema),
     allEnvVariables: env,

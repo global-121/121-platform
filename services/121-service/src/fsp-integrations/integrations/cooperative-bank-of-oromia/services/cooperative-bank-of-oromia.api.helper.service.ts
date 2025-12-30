@@ -26,7 +26,7 @@ export class CooperativeBankOfOromiaApiHelperService {
       debitAccount: debitAccountNumber,
       creditAccount: recipientCreditAccountNumber,
       creditAmount: amount,
-      narrative: env.COOPERATIVE_BANK_OF_OROMIA_NARRATIVE!, // Will be defined when COOPERATIVE_BANK_OF_OROMIA_ENABLED=true
+      narrative: env.COOPERATIVE_BANK_OF_OROMIA_NARRATIVE!, // Will be defined when COOPERATIVE_BANK_OF_OROMIA_MODE=EXTERNAL
       messageId: cooperativeBankOfOromiaMessageId, // Should be max 12 chars ALPHANUMERIC
     };
   }

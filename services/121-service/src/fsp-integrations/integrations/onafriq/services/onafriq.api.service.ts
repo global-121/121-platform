@@ -11,11 +11,13 @@ import { OnafriqError } from '@121-service/src/fsp-integrations/integrations/ona
 import { CallServiceResult } from '@121-service/src/fsp-integrations/integrations/onafriq/interfaces/call-service-result.interface.';
 import { OnafriqRequestIdentity } from '@121-service/src/fsp-integrations/integrations/onafriq/interfaces/onafriq-request-identity.interface';
 import { OnafriqApiHelperService } from '@121-service/src/fsp-integrations/integrations/onafriq/services/onafriq.api.helper.service';
+import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
-const onafriqApiUrl = env.MOCK_ONAFRIQ
-  ? `${env.MOCK_SERVICE_URL}/api/fsp/onafriq`
-  : `${env.ONAFRIQ_API_URL}/hub/async`;
+const onafriqApiUrl =
+  env.ONAFRIQ_MODE === FspMode.mock
+    ? `${env.MOCK_SERVICE_URL}/api/fsp/onafriq`
+    : `${env.ONAFRIQ_API_URL}/hub/async`;
 
 @Injectable()
 export class OnafriqApiService {
@@ -39,7 +41,7 @@ export class OnafriqApiService {
     corporateCode: string,
     password: string,
   ): Promise<OnafriqApiWebhookSubscribeResponseBody | undefined> {
-    if (env.MOCK_ONAFRIQ) {
+    if (env.ONAFRIQ_MODE === FspMode.mock) {
       return; // No need to subscribe to webhook in mock mode
     }
 

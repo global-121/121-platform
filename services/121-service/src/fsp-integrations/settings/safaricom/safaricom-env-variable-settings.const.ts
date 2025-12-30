@@ -3,7 +3,7 @@ import { getEnvVariablesForFsp } from '@121-service/src/fsp-integrations/setting
 import { FspEnvVariablesDto } from '@121-service/src/fsp-integrations/shared/dto/fsp-env-variables.dto';
 
 export const SAFARICOM_ENV_VARIABLE_SETTINGS: FspEnvVariablesDto = {
-  enabled: env.SAFARICOM_ENABLED,
+  mode: env.SAFARICOM_MODE,
   variables: getEnvVariablesForFsp({
     names: Object.keys(safaricomEnvVariablesSchema),
     allEnvVariables: env,

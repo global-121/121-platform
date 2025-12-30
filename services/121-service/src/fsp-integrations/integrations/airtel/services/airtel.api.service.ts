@@ -11,6 +11,7 @@ import { AirtelDisbursementResultEnum } from '@121-service/src/fsp-integrations/
 import { AirtelApiError } from '@121-service/src/fsp-integrations/integrations/airtel/errors/airtel-api.error';
 import { AirtelApiHelperService } from '@121-service/src/fsp-integrations/integrations/airtel/services/airtel.api.helper.service';
 import { AirtelEncryptionService } from '@121-service/src/fsp-integrations/integrations/airtel/services/airtel.encryption.service';
+import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
@@ -47,7 +48,7 @@ export class AirtelApiService {
   }
 
   private getAirtelApiBaseUrl(): URL {
-    if (env.MOCK_AIRTEL) {
+    if (env.AIRTEL_MODE === FspMode.mock) {
       return new URL('api/fsp/airtel/', env.MOCK_SERVICE_URL);
     } else if (!env.AIRTEL_API_URL) {
       throw new Error('AIRTEL_API_URL is not set');
