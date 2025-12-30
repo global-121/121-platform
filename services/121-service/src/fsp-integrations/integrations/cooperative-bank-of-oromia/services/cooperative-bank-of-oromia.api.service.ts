@@ -11,6 +11,7 @@ import { CooperativeBankOfOromiaApiTransferResponseBodyDto } from '@121-service/
 import { CooperativeBankOfOromiaTransferResultEnum } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/enums/cooperative-bank-of-oromia-disbursement-result.enum';
 import { CooperativeBankOfOromiaApiError } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/errors/cooperative-bank-of-oromia.api.error';
 import { CooperativeBankOfOromiaApiHelperService } from '@121-service/src/fsp-integrations/integrations/cooperative-bank-of-oromia/services/cooperative-bank-of-oromia.api.helper.service';
+import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
@@ -27,7 +28,7 @@ export class CooperativeBankOfOromiaApiService {
   private buildApiUrl({ urlPart, envUrl }): URL {
     const mockPathPrefix = 'api/fsp/cooperative-bank-of-oromia/';
     const mockServiceUrl = env.MOCK_SERVICE_URL;
-    const useMock = env.MOCK_COOPERATIVE_BANK_OF_OROMIA;
+    const useMock = env.COOPERATIVE_BANK_OF_OROMIA_MODE === FspMode.mock;
     if (useMock) {
       return new URL(`${mockPathPrefix}${urlPart}`, mockServiceUrl);
     }

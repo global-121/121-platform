@@ -1,7 +1,8 @@
 import { HttpModule } from '@nestjs/axios';
-import { Module } from '@nestjs/common';
+import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { FSP_ENV_VARIABLE_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-env-variable-settings.const';
 import { TransactionQueuesModule } from '@121-service/src/fsp-integrations/transaction-queues/transaction-queues.module';
 import { FspsModule } from '@121-service/src/fsp-management/fsp.module';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
@@ -10,6 +11,7 @@ import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity
 import { PaymentEventsModule } from '@121-service/src/payments/payment-events/payment-events.module';
 import { PaymentsController } from '@121-service/src/payments/payments.controller';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
+import { FspEnvVariableValidationService } from '@121-service/src/payments/services/fsp-env-variable-validation.service';
 import { PaymentsCreationService } from '@121-service/src/payments/services/payments-creation.service';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
@@ -59,6 +61,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     PaymentsProgressHelperService,
     PaymentsHelperService,
     TransactionJobsCreationService,
+    FspEnvVariableValidationService,
     LookupService,
     InclusionScoreService,
     AzureLogService,
@@ -71,4 +74,27 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     PaymentsProgressHelperService,
   ],
 })
-export class PaymentsModule {}
+export class PaymentsModule implements OnModuleInit {
+  private readonly logger = new Logger(PaymentsModule.name);
+
+  constructor(
+    private readonly fspEnvVariableValidationService: FspEnvVariableValidationService,
+  ) {}
+
+  onModuleInit() {
+    const validationResult =
+      this.fspEnvVariableValidationService.validateFspEnvVariableSettings({
+        fspEnvVariableSettings: FSP_ENV_VARIABLE_SETTINGS,
+      });
+
+    const messagePrefix = 'FSP environment variable validation';
+    if (validationResult.ok) {
+      this.logger.log(
+        `${messagePrefix} succeeded, ${validationResult.messages[0]}`,
+      );
+    } else {
+      validationResult.messages.forEach((msg) => this.logger.error(msg));
+      throw new Error(`${messagePrefix} failed, see previously logged errors.`);
+    }
+  }
+}

@@ -13,6 +13,7 @@ import { OnafriqApiCallbackStatusCode } from '@121-service/src/fsp-integrations/
 import { OnafriqTransactionStatus } from '@121-service/src/fsp-integrations/reconciliation/onafriq/enum/onafriq-transaction-status.enum';
 import { OnafriqReconciliationReport } from '@121-service/src/fsp-integrations/reconciliation/onafriq/interfaces/onafriq-reconciliation-report.interface';
 import { OnafriqReconciliationMapper } from '@121-service/src/fsp-integrations/reconciliation/onafriq/onafriq-reconciliation.mapper';
+import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import {
   FspConfigurationProperties,
   Fsps,
@@ -197,9 +198,13 @@ export class OnafriqReconciliationService {
         ),
     );
 
-    // Only send to SFTP if transactions, and only on production (staging also has IS_PRODUCTION, but also MOCK_ONAFRIQ=true. // REFACTOR: this is not full-proof)
+    // Only send to SFTP if transactions, and only on production (staging also has IS_PRODUCTION, but also ONAFRIQ_MODE=MOCK. // REFACTOR: this is not full-proof)
     // NOTE: If you need to touch this code and test locally, make sure to clean up any test results on sftp location.
-    if (report.length > 0 && IS_PRODUCTION && !env.MOCK_ONAFRIQ) {
+    if (
+      report.length > 0 &&
+      IS_PRODUCTION &&
+      env.ONAFRIQ_MODE === FspMode.external
+    ) {
       const csvContent =
         Object.keys(report[0]).join(',') +
         '\n' +
