@@ -14,6 +14,14 @@ import {
 } from '@121-service/test/performance/interfaces/registration-status.interface';
 import { StatusOverviewItem } from '@121-service/test/performance/interfaces/status-overview.interface';
 
+export function calculateMilliseconds({
+  minutes,
+}: {
+  minutes: number;
+}): number {
+  return minutes * 60 * 1000;
+}
+
 export async function getPaymentResults({
   programId,
   paymentId,
