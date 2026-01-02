@@ -241,6 +241,9 @@ describe('KoboMapper', () => {
                 name: 'favoriteSize',
                 select_from_list_name: 'sizes',
               }),
+              createSurveyItem({
+                name: 'textField',
+              }),
             ],
             choices: [
               createChoice({

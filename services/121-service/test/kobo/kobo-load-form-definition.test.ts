@@ -347,7 +347,11 @@ describe('Import kobo form definition', () => {
       'asset-id-happy-flow-with-changes', // version id from the second kobo definition
     );
 
-    const programAfterUpdate = (await getProgram(programId, accessToken)).body;
+    const getProgramResponseAfterUpdate = await getProgram(
+      programId,
+      accessToken,
+    );
+    const programAfterUpdate = getProgramResponseAfterUpdate.body;
     const programAttributesAfterUpdate =
       programAfterUpdate.programRegistrationAttributes;
     const programAttributeNamesAfterUpdate =
