@@ -1,7 +1,8 @@
-import { Column, Entity, OneToMany, Relation } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne, Relation } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
+import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
@@ -124,4 +125,7 @@ export class ProgramEntity extends Base121Entity {
 
   @Column({ default: false, select: false })
   public paymentsAreLocked: boolean;
+
+  @OneToOne(() => KoboEntity, (kobo) => kobo.program, { onDelete: 'SET NULL' })
+  public kobo: Relation<KoboEntity>;
 }

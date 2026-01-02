@@ -13,6 +13,7 @@ import {
 import { CreateOptionsDto } from '@121-service/src/programs/dto/create-options.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
+import { RegistrationPreferredLanguageTranslation } from '@121-service/src/shared/types/registration-preferred-language-translation.type';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
@@ -80,7 +81,7 @@ export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttr
     },
   })
   @IsNotEmpty()
-  public readonly label: UILanguageTranslation;
+  public readonly label: RegistrationPreferredLanguageTranslation;
 
   @ApiProperty({
     example: RegistrationAttributeTypes.text,
