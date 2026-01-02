@@ -53,7 +53,7 @@ export class KoboApiService {
       );
     }
 
-    // This should never happen but it makes TypeScript happy and throw a clear error
+    // This should never happen but it makes TypeScript happy and throws a meaningful error
     if (!responseBody.version_id || !responseBody.asset) {
       throw new Error('Kobo information is missing version_id or asset');
     }

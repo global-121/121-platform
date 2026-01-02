@@ -112,7 +112,7 @@ describe('KoboSurveyProcessorService', () => {
       });
     });
 
-    it('should fallback to English when no labels are provided', () => {
+    it('should fallback when no labels are provided', () => {
       // Arrange
       const fieldName = 'phoneNumber';
       const fieldType = 'text';

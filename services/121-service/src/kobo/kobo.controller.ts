@@ -62,14 +62,6 @@ export class KoboController {
     description:
       'Program does not exist or no Kobo integration found for this program',
   })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'User is not authenticated or lacks admin privileges',
-  })
-  @ApiResponse({
-    status: HttpStatus.FORBIDDEN,
-    description: 'User does not have permission to access this program',
-  })
   @Get(':programId/kobo')
   public async getKoboData(
     @Param('programId', ParseIntPipe)
@@ -110,16 +102,12 @@ export class KoboController {
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description:
-      'Validation failed - the Kobo form does not meet program requirements. Common issues: missing required FSP attributes, incompatible field types, missing required fields like phoneNumber or fullName.',
+      'Validation failed - the Kobo form does not meet program requirements. ',
   })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
     description:
       'User is not authenticated, Kobo API token is invalid, or user lacks admin privileges',
-  })
-  @ApiResponse({
-    status: HttpStatus.FORBIDDEN,
-    description: 'User does not have permission to modify this program',
   })
   @ApiQuery({
     name: 'dryRun',
@@ -146,7 +134,6 @@ export class KoboController {
       dryRun: dryRunBoolean,
     });
 
-    // Set appropriate status code based on dry run
     if (result.dryRun) {
       response.status(HttpStatus.OK);
     } else {

@@ -4,7 +4,7 @@ import { KoboMapper } from '@121-service/src/kobo/mappers/kobo.mapper';
 
 describe('KoboMapper', () => {
   describe('surveyItemsDtosToInterfaces', () => {
-    it('should transform survey items with simple names', () => {
+    it('should transform survey items', () => {
       // Arrange
       const koboSurveyItems: KoboSurveyItemDto[] = [
         {

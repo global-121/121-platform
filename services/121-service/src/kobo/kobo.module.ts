@@ -27,6 +27,6 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
     KoboSurveyProcessorService,
   ],
   controllers: [KoboController],
-  exports: [KoboService],
+  exports: [],
 })
 export class KoboModule {}

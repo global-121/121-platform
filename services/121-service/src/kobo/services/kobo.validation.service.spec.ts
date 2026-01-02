@@ -174,7 +174,7 @@ describe('KoboValidationService', () => {
               ],
               required: true,
             },
-            // Missing bankAccountNumber that both FSPs require
+            // Missing bankAccountNumber that is required for Commercial Bank Ethiopia
           ],
         };
 
