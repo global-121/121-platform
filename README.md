@@ -361,48 +361,19 @@ This project uses the [`CalVer`](https://calver.org/#scheme)-format: `YY.MM-MICR
 This is how we create and publish a new release of the 121-platform.
 (See [the glossary](#glossary) for definitions of some terms.)
 
-- Define what code gets released.  
+- Define _what_ code needs to be released.  
    (Is the current state of the `main`-branch what we want? Or a specific commit/point-in-the-past?)
 - Check the changes since the last release, by replacing `vX.X-X` with the latest release in this URL: `https://github.com/global-121/121-platform/compare/vX.X-X...main`  
-  Check any changes to:
-  - `services/.env.example`:  
-     If there are:
-    - related to the 121-service: Use the GitHub Actions-workflow: [`infrastructure`: Set Azure WebApp Environment variable](https://github.com/global-121/infrastructure/actions/workflows/set_azurewebapp_env-variable.yml) (Set the instance to `staging`!)
-    - related to the Mock-Service: Make any configuration changes in the Azure Portal to its `staging`-instance(s).
-  - `interfaces/portal/.env.example`  
-     If there are, then make any configuration changes to the ["staging"-environment settings on GitHub](https://github.com/global-121/121-platform/settings/environments/1000830806/edit).
+  Check any changes to make sure we highlight new user-features, or any required changes to the deployment-process or newly required environment-variables, etc.  
+  So we can include these in the release-notes.
 - Define the [`version`](#glossary)-name for the upcoming release.
 - "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub
   - For "Choose a tag": Insert the `version` to create a new tag
   - For "Target": Choose the commit which you would like to release (defined in the first step).
   - Set the title of the release to `<version>`.
   - Use the "Generate release notes" button and double-check the contents.  
-    This will be the basis of the "Inform stakeholders"-message to be posted on Teams
-- Publish the release on GitHub (as 'latest', not 'pre-release')  
-  This will trigger the deployment-workflow that can be monitored under [GitHub Action runs](https://github.com/global-121/121-platform/actions/workflows/deploy_staging_all.yml)
-- Check the deployed release on the staging-environment (_this can take some time..._)
-  - Now, and throughout the release process, it is wise to monitor the [combined CPU usage](https://portal.azure.com/#view/Microsoft_Azure_MonitoringMetrics/Metrics.ReactView/ResourceId/%2Fsubscriptions%2Fb2d243bd-7fab-4a8a-8261-a725ee0e3b47%2FresourceGroups%2F510-121%2Fproviders%2FMicrosoft.Web%2FserverFarms%2F121/TimeContext~/%7B%22relative%22%3A%7B%22duration%22%3A172800000%7D%2C%22options%22%3A%7B%22grain%22%3A1%2C%22showUTCTime%22%3Afalse%7D%7D/Chart~/%7B%22metrics%22%3A%5B%7B%22resourceMetadata%22%3A%7B%22id%22%3A%22%2Fsubscriptions%2Fb2d243bd-7fab-4a8a-8261-a725ee0e3b47%2FresourceGroups%2F510-121%2Fproviders%2FMicrosoft.Web%2FserverFarms%2F121%22%7D%2C%22name%22%3A%22CpuPercentage%22%2C%22namespace%22%3A%22microsoft.web%2Fserverfarms%22%2C%22metricVisualization%22%3A%7B%22displayName%22%3A%22CPU%20Percentage%22%2C%22resourceDisplayName%22%3A%22121%22%7D%2C%22aggregationType%22%3A3%2C%22thresholds%22%3A%5B%5D%7D%2C%7B%22resourceMetadata%22%3A%7B%22id%22%3A%22%2Fsubscriptions%2Fb2d243bd-7fab-4a8a-8261-a725ee0e3b47%2FresourceGroups%2F510-121%2Fproviders%2FMicrosoft.Web%2FserverFarms%2F121%22%7D%2C%22name%22%3A%22MemoryPercentage%22%2C%22namespace%22%3A%22microsoft.web%2Fserverfarms%22%2C%22metricVisualization%22%3A%7B%22displayName%22%3A%22Memory%20Percentage%22%2C%22resourceDisplayName%22%3A%22121%22%7D%2C%22aggregationType%22%3A3%2C%22thresholds%22%3A%5B%5D%7D%5D%2C%22filterCollection%22%3A%7B%22filters%22%3A%5B%5D%7D%2C%22grouping%22%3Anull%2C%22visualization%22%3A%7B%22chartType%22%3A2%2C%22legendVisualization%22%3A%7B%22isVisible%22%3Atrue%2C%22position%22%3A2%2C%22hideSubtitle%22%3Afalse%2C%22hideHoverCard%22%3Afalse%2C%22hideLabelNames%22%3Atrue%7D%2C%22axisVisualization%22%3A%7B%22x%22%3A%7B%22isVisible%22%3Atrue%2C%22axisType%22%3A2%7D%2C%22y%22%3A%7B%22isVisible%22%3Atrue%2C%22axisType%22%3A1%7D%7D%2C%22disablePinning%22%3Atrue%7D%2C%22title%22%3A%22CPU%20%26%20Memory%20Usage%20App%20Service%20%20Plan%20121%22%2C%22titleKind%22%3A2%2C%22timespan%22%3A%7B%22relative%22%3A%7B%22duration%22%3A172800000%7D%2C%22showUTCTime%22%3Afalse%2C%22grain%22%3A1%7D%2C%22ariaLabel%22%3Anull%7D/openInEditMode~/true) of our App-Services.
-- If all looks fine, proceed with deploying the release to all other production-instances.
-- Make any configuration changes (`ENV`-variables, etc.) on each App-Service just before deployment.
-  - For the 121-service: Use the GitHub Actions-workflow: [`infrastructure`: Set Azure WebApp Environment variable](https://github.com/global-121/infrastructure/actions/workflows/set_azurewebapp_env-variable.yml)
-  - For the Mock-Service: Use the Azure Portal to update its `production`-instance.
-- Make any configuration changes for the Portal in each client's [GitHub-environment-settings](https://github.com/global-121/121-platform/settings/environments).
-- Use the ["Deploy `<client name>` All" deployment-workflows on GitHub Actions](https://github.com/global-121/121-platform/actions) to deploy the `version`-tag to each production-instance.
-  - ⚠️ **Note:**  
-    Start with deployment of the "**_Demo_**"-instance.  
-    This will **_also_** deploy the Mock-Service to its production-environment.
-- Send the "Inform stakeholders"-message to the "121 Releases" Teams channel.
-
-#### Temporary Query Errors During Deployment
-
-Azure App Service uses deployment slots that can cause temporary database errors during releases:
-
-- **What happens**: New instance starts and runs migrations while the old instance still serves requests
-- **Symptoms**: Database query errors (missing columns/tables) that only occur during deployments
-- **Solution**: Retry affected endpoints to see if it was caused by this temporary state
-- **Note**: This is expected behavior and resolves automatically once deployment completes
-
-**Recognition**: Errors only appear during releases and disappear when you recheck the same endpoint.
+    Rephrase where necessary or highlight specific changes/features.
+- Publish the release on GitHub (as "**latest**", not "pre-release")
 
 ### Hotfix-release Checklist
 
@@ -420,57 +391,28 @@ This follows a similar process to regular release + deployment, with some small 
 - Push this branch to the upstream/origin repository on GitHub.  
   Verify the test-runs(s) on the hotfix-branch by looking at the status of the last commit on the [branches-overview](https://github.com/global-121/121-platform/branches/all?query=hotfix).
 - Create a new release + tag (see above) selecting the `hotfix/v*`-branch as target, and publish it.
-- Use the [deployment-workflows on GitHub Actions](https://github.com/global-121/121-platform/actions) to deploy the newly created _tag_ (**not the branch**). For each required instance.
-- After the hotfix has been released to production, follow standard procedures to get the hotfix-code into the `main`-branch.
+- Use the ["Deploy new code"](https://github.com/global-121/infrastructure/#deploy-new-code) checklist to deploy the newly created _tag_ (**not the branch**). For only the required instance.
+- After the hotfix has been released+deployed to production, follow standard procedures to get the hotfix-code into the `main`-branch.
 
-**Note:** Do not rebase/update the `hotfix/v*`-branch onto the `main`-branch until **AFTER** you have successfully deployed the hotfix to production.  
+**Note:** 💡 Do not rebase/update the `hotfix/v*`-branch onto the `main`-branch until **AFTER** you have successfully deployed the hotfix to production.  
 The hotfix branch is created from a "dangling" commit, this makes the GitHub UI confused when you look at a PR between the newly created `hotfix`-branch and the `main`-branch. Any conflict warnings shown on GitHub are not relevant for the hotfix-_deployment_, they'll only need to be addressed to merge the hotfix into the `main`-branch afterwards.
 
 ---
 
 ## Deployment
 
-### Database
+The 121-Platform should be deployed to:
 
-If you deploy the 121-platform to a server for the first time it is recommended to setup a separate Postgres database server. The connection to this database can be made by editing the `POSTGRES_*` variables in `services/.env`.
+- a static web-hosting service (for the Portal only)
+- a Node.js-capable environment (for 121-Service and Mock-Service)
+- using a (possibly externally hosted) PostgreSQL-database
+- using a (possible externally hosted) Redis-queue
+- using some (externally hosted) Azure-services (Blob Storage, E-mail sending, etc)
 
-### Interfaces
+This infrastructure is defined to be run using Docker (in use for local development only). But no guarantees are made that the platform can be deployed as-is to any Docker-capable hosting service.
 
-#### To "test" environment
-
-See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_*.yml` )
-
-- PR's to the branch `main` are automatically deployed to an individual preview-environment.
-- When merged, a separate deployment is done to the test-environment; for that interface only.
-
-#### To "staging" and/or "production" environment(s)
-
-See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_staging_*.yml` )
-
-- Created/published releases are automatically deployed to the staging-environment
-- A manual deploy can be done using the GitHub UI, using "Run workflow/`workflow_dispatch`" and selecting the preferred release-version `tag` (or `branch` for testing on the staging-environment).
-
-### Service(s)
-
-#### To "test" environment
-
-See: (via [GitHub Action(s)](.github/workflows/); i.e. `deploy_test_service.yml`, `deploy_test_mock-service.yml` )
-
-- When merged, a separate deployment is done to the test-environment.
-- Make sure to update any environment-configuration in the Azure-portal as soon as possible, preferably before the merge & deploy.
-
-#### To "staging" and/or "production" environment(s)
-
-#### On initial deployment (only)
-
-- [ ] Follow the steps from "Create an instance" in the: [`infrastructure`-repository](https://github.com/global-121/infrastructure).
-- [ ] Build/Deploy the platform via the [GitHub Action(s)](.github/workflows/) by selecting the target release-version `tag`
-
-#### On next deployments
-
-- [ ] Decide on what `version` to deploy
-- [ ] Prepare the environment accordingly (Setting all environment-variables etc.)
-- [ ] A manual deploy can be done using the GitHub UI, using "Run workflow/`workflow_dispatch`" and selecting the preferred release-version `tag` (or `branch` for testing on the staging-environment).
+> 🏗️ 510-only:  
+> See details on _how to deploy new code_ in the [`infrastructure`-repository](https://github.com/global-121/infrastructure/#deploy-new-code).
 
 ## Glossary
 

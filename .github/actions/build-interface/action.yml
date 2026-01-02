@@ -2,7 +2,14 @@
 # More specific about composite actions: https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
 
 name: 'Build: Interface'
-description: 'Builds an Angular interface.'
+description: Builds an Angular interface.
+
+#
+# NOTE! - This composite action is used externally!
+#
+# Make sure to verify changes to it will not break unexpectedly in other deployment-workflows
+# See the "infrastructure"-repository.
+#
 
 inputs:
   interfacePath:
@@ -24,9 +31,9 @@ runs:
     - name: Set up Node.js version
       uses: actions/setup-node@v4
       with:
-        node-version-file: '${{ inputs.interfacePath }}/.node-version'
-        cache: 'npm'
-        cache-dependency-path: '${{ inputs.interfacePath }}/package-lock.json'
+        node-version-file: ${{ inputs.interfacePath }}/.node-version
+        cache: npm
+        cache-dependency-path: ${{ inputs.interfacePath }}/package-lock.json
 
     - name: Set VERSION of build/deployment
       shell: bash
@@ -41,7 +48,8 @@ runs:
       working-directory: ${{ inputs.interfacePath }}
       env:
         HUSKY: '0'
-      run: 'npm ci'
+      run: |
+        npm ci
 
     - name: Re-use downloaded translations
       uses: actions/cache@v4
@@ -49,8 +57,8 @@ runs:
       env:
         TRANSLATIONS_SOURCE_FILE: ${{ inputs.interfacePath }}/src/locale/messages.xlf
       with:
-        path: '${{ inputs.interfacePath }}/src/locale/'
-        key: 'translations-${{ hashFiles(env.TRANSLATIONS_SOURCE_FILE) }}-${{ steps.build-version.outputs.date }}'
+        path: ${{ inputs.interfacePath }}/src/locale/
+        key: translations-${{ hashFiles(env.TRANSLATIONS_SOURCE_FILE) }}-${{ steps.build-version.outputs.date }}
 
     - name: Download translations
       if: steps.cache_translations.outputs.cache-hit != 'true'
