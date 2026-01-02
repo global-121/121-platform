@@ -1,0 +1,30 @@
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
+
+type TypeMapping = Record<string, RegistrationAttributeTypes>;
+export const KOBO_TO_121_TYPE_MAPPING: TypeMapping = {
+  integer: RegistrationAttributeTypes.numeric,
+  decimal: RegistrationAttributeTypes.numeric,
+  range: RegistrationAttributeTypes.numeric,
+  text: RegistrationAttributeTypes.text,
+  select_one: RegistrationAttributeTypes.dropdown,
+  select_multiple: RegistrationAttributeTypes.text,
+  select_one_from_file: RegistrationAttributeTypes.dropdown,
+  select_multiple_from_file: RegistrationAttributeTypes.text,
+  rank: RegistrationAttributeTypes.text,
+  geopoint: RegistrationAttributeTypes.text,
+  geotrace: RegistrationAttributeTypes.text,
+  geoshape: RegistrationAttributeTypes.text,
+  date: RegistrationAttributeTypes.text,
+  time: RegistrationAttributeTypes.text,
+  dateTime: RegistrationAttributeTypes.text,
+  image: RegistrationAttributeTypes.text,
+  audio: RegistrationAttributeTypes.text,
+  'background-audio': RegistrationAttributeTypes.text,
+  video: RegistrationAttributeTypes.text,
+  file: RegistrationAttributeTypes.text,
+  barcode: RegistrationAttributeTypes.text,
+  calculate: RegistrationAttributeTypes.text,
+  acknowledge: RegistrationAttributeTypes.text,
+  hidden: RegistrationAttributeTypes.text,
+  'xml-external': RegistrationAttributeTypes.text,
+};

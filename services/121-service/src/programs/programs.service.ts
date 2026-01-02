@@ -340,6 +340,37 @@ export class ProgramService {
     }
   }
 
+  public async upsertProgramRegistrationAttributes({
+    programId,
+    programRegistrationAttributes,
+  }: {
+    programId: number;
+    programRegistrationAttributes: ProgramRegistrationAttributeDto[];
+  }): Promise<void> {
+    for (const attribute of programRegistrationAttributes) {
+      const existingAttribute =
+        await this.programRegistrationAttributeRepository.findOne({
+          where: {
+            programId: Equal(programId),
+            name: Equal(attribute.name),
+          },
+        });
+
+      if (existingAttribute) {
+        await this.updateProgramRegistrationAttribute({
+          programId,
+          programRegistrationAttributeName: attribute.name,
+          updateProgramRegistrationAttribute: attribute,
+        });
+      } else {
+        await this.createProgramRegistrationAttributeEntity({
+          programId,
+          createProgramRegistrationAttributeDto: attribute,
+        });
+      }
+    }
+  }
+
   public async createProgramRegistrationAttribute({
     programId,
     createProgramRegistrationAttributeDto,
@@ -403,7 +434,7 @@ export class ProgramService {
     programRegistrationAttribute.scoring = dto.scoring ?? {};
     programRegistrationAttribute.pattern = dto.pattern ?? null;
     programRegistrationAttribute.editableInPortal =
-      dto.editableInPortal ?? false;
+      dto.editableInPortal ?? true;
     programRegistrationAttribute.includeInTransactionExport =
       dto.includeInTransactionExport ?? false;
     programRegistrationAttribute.duplicateCheck = dto.duplicateCheck ?? false;
@@ -414,11 +445,15 @@ export class ProgramService {
     return programRegistrationAttribute;
   }
 
-  public async updateProgramRegistrationAttribute(
-    programId: number,
-    programRegistrationAttributeName: string,
-    updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto,
-  ): Promise<ProgramRegistrationAttributeEntity> {
+  public async updateProgramRegistrationAttribute({
+    programId,
+    programRegistrationAttributeName,
+    updateProgramRegistrationAttribute,
+  }: {
+    programId: number;
+    programRegistrationAttributeName: string;
+    updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
+  }): Promise<ProgramRegistrationAttributeEntity> {
     const programRegistrationAttribute =
       await this.programRegistrationAttributeRepository.findOne({
         where: {

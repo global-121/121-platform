@@ -27,6 +27,7 @@ import { SafaricomReconciliationModule } from '@121-service/src/fsp-integrations
 import { TransactionJobsModule } from '@121-service/src/fsp-integrations/transaction-jobs/transaction-jobs.module';
 import { TransactionQueuesModule } from '@121-service/src/fsp-integrations/transaction-queues/transaction-queues.module';
 import { HealthModule } from '@121-service/src/health/health.module';
+import { KoboModule } from '@121-service/src/kobo/kobo.module';
 import { MetricsModule } from '@121-service/src/metrics/metrics.module';
 import { NoteModule } from '@121-service/src/notes/notes.module';
 import { MessageModule } from '@121-service/src/notifications/message.module';
@@ -102,6 +103,7 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
     OnafriqReconciliationModule,
     RegistrationsUpdateJobsModule,
     IntersolveVisaAccountManagementModule,
+    KoboModule,
   ],
   controllers: [AppController, TestController],
   providers: [
