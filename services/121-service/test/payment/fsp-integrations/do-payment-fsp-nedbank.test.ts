@@ -254,7 +254,6 @@ describe('Do payment', () => {
           completeStatuses: [
             TransactionStatusEnum.success,
             TransactionStatusEnum.error,
-            TransactionStatusEnum.waiting,
           ],
         });
 

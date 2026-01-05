@@ -67,7 +67,6 @@ describe('Do payment with FSP: CooperativeBankOfOromia', () => {
       completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
-        TransactionStatusEnum.waiting,
       ],
     });
     const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
@@ -130,7 +129,6 @@ describe('Do payment with FSP: CooperativeBankOfOromia', () => {
       completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
-        TransactionStatusEnum.waiting,
       ],
     });
     const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
@@ -183,7 +181,6 @@ describe('Do payment with FSP: CooperativeBankOfOromia', () => {
       completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
-        TransactionStatusEnum.waiting,
       ],
     });
     const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
@@ -233,7 +230,6 @@ describe('Do payment with FSP: CooperativeBankOfOromia', () => {
       completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
-        TransactionStatusEnum.waiting,
       ],
     });
     const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
