@@ -69,6 +69,8 @@ export class ApproverService {
     userId: number;
     order: number;
   }): Promise<ApproverResponseDto> {
+    await this.checkUniqueOrderOrThrow(programId, order);
+
     const programAidworkerAssignment =
       await this.assignmentRepository.findOneOrFail({
         where: {
@@ -84,6 +86,26 @@ export class ApproverService {
     return this.entityToDto(approver);
   }
 
+  private async checkUniqueOrderOrThrow(
+    programId: number,
+    order: number,
+  ): Promise<void> {
+    const existingApprover = await this.approverRepository.findOne({
+      where: {
+        order: Equal(order),
+        programAidworkerAssignment: {
+          program: { id: Equal(programId) },
+        },
+      },
+    });
+    if (existingApprover) {
+      throw new HttpException(
+        `An approver with order ${order} already exists for this program`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
   public async updateApprover({
     programId,
     approverId,
@@ -93,6 +115,8 @@ export class ApproverService {
     approverId: number;
     order: number;
   }): Promise<ApproverResponseDto> {
+    await this.checkUniqueOrderOrThrow(programId, order);
+
     const approver = await this.approverRepository.findOneOrFail({
       where: { id: Equal(approverId) },
       relations: {
