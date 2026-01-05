@@ -64,6 +64,25 @@ export async function createApprover({
     });
 }
 
+export async function updateApprover({
+  programId,
+  approverId,
+  order,
+  accessToken,
+}: {
+  programId: number;
+  approverId: number;
+  order: number;
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .patch(`/programs/${programId}/approvers/${approverId}`)
+    .set('Cookie', [accessToken])
+    .send({
+      order,
+    });
+}
+
 export async function deleteApprover({
   programId,
   approverId,

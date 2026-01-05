@@ -349,9 +349,13 @@ export class PaymentsManagementService {
       type: PaymentEvent.approved,
     });
 
-    // check if all approvals are done now
-
-    const allApproved = allPaymentApprovals.every(
+    // check if all approvals are done now - refetch in case of near-concurrent approvals
+    const refetchedApprovals = await this.paymentApprovalRepository.find({
+      where: {
+        paymentId: Equal(paymentId),
+      },
+    });
+    const allApproved = refetchedApprovals.every(
       (approval) => approval.approved,
     );
     if (allApproved) {
@@ -370,7 +374,6 @@ export class PaymentsManagementService {
     const openApprovals = allPaymentApprovals.filter(
       (approval) => !approval.approved,
     );
-    // ##TODO: this does not handle non-unique orders well yet. Assume/enforce after all?
     const isLowestOrder = openApprovals.every(
       (approval) => currentPaymentApproval.order <= approval.order,
     );
