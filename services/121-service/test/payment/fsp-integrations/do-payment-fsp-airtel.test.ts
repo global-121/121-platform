@@ -60,7 +60,6 @@ describe('Do payment with FSP: Airtel', () => {
       completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
-        TransactionStatusEnum.waiting,
       ],
     });
 
@@ -113,7 +112,6 @@ describe('Do payment with FSP: Airtel', () => {
       completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
-        TransactionStatusEnum.waiting,
       ],
     });
     const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
@@ -175,7 +173,6 @@ describe('Do payment with FSP: Airtel', () => {
       completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
-        TransactionStatusEnum.waiting,
       ],
     });
     const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
@@ -227,7 +224,6 @@ describe('Do payment with FSP: Airtel', () => {
       completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
-        TransactionStatusEnum.waiting,
       ],
     });
     const getTransactionsResult = await getTransactionsByPaymentIdPaginated({

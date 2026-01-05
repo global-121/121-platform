@@ -146,7 +146,6 @@ describe('Do payment to 1 PA', () => {
         completeStatuses: [
           TransactionStatusEnum.error,
           TransactionStatusEnum.success,
-          TransactionStatusEnum.waiting,
         ],
       });
 
@@ -196,7 +195,6 @@ describe('Do payment to 1 PA', () => {
         completeStatuses: [
           TransactionStatusEnum.error,
           TransactionStatusEnum.success,
-          TransactionStatusEnum.waiting,
         ],
       });
 
@@ -208,7 +206,6 @@ describe('Do payment to 1 PA', () => {
         'automated test',
         accessToken,
       );
-      // await waitFor(2_000);
 
       // retry payment
       await retryPayment({

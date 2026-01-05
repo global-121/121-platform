@@ -133,7 +133,6 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       maxWaitTimeMs: 4_000,
       completeStatuses: [
         TransactionStatusEnum.success,
-        TransactionStatusEnum.waiting,
         TransactionStatusEnum.error,
       ],
     });
