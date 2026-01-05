@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
+import { PaymentEventAttributeKey } from '@121-service/src/payments/payment-events/enums/payment-event-attribute-key.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
@@ -113,6 +114,23 @@ describe('Payment Events API', () => {
         username: env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
       },
       created: expect.any(String),
+    });
+
+    // Check for 'approved' event
+    const approvedEvent = data.find(
+      (event: { type: string }) => event.type === PaymentEvent.approved,
+    );
+    expect(approvedEvent).toMatchObject({
+      id: expect.any(Number),
+      type: PaymentEvent.approved,
+      user: {
+        id: expect.any(Number),
+        username: env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      },
+      attributes: {
+        [PaymentEventAttributeKey.approveOrder]: '1',
+        [PaymentEventAttributeKey.approveTotal]: '1',
+      },
     });
 
     // Check that we have a 'started' event

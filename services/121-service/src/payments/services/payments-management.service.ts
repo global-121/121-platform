@@ -342,11 +342,18 @@ export class PaymentsManagementService {
     await this.paymentApprovalRepository.save(currentPaymentApproval);
 
     // store payment event
-    // ##TODO: make the description become more specific (see Figma)
-    await this.paymentEventsService.createEvent({
+    const sortedApprovals = allPaymentApprovals
+      .slice()
+      .sort((a, b) => a.order - b.order);
+    const rank =
+      sortedApprovals.findIndex(
+        (a) => a.approverId === currentPaymentApproval.approverId,
+      ) + 1;
+    await this.paymentEventsService.createApprovedEvent({
       paymentId,
       userId,
-      type: PaymentEvent.approved,
+      rank,
+      total: allPaymentApprovals.length,
     });
 
     // check if all approvals are done now - refetch in case of near-concurrent approvals

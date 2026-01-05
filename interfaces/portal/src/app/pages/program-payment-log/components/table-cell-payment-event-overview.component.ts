@@ -22,9 +22,6 @@ import { PaymentEventType } from '~/domains/payment/payment.model';
   // TODO: Come up with elegant solution for naming this component + preventing too much duplication for the template/HTML
   template: `
     <span class="inline-flex items-center">
-      <span class="me-4 inline leading-[0]"
-        ><i [class]="icon() + ' text-xl'"></i>
-      </span>
       <span>{{ label() }}</span>
     </span>
   `,
@@ -44,8 +41,10 @@ export class TableCellPaymentEventOverviewComponent implements TableCellComponen
     switch (eventType) {
       case PaymentEvent.note:
         return event.attributes.note;
+      case PaymentEvent.approved:
+        return $localize`${PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS[eventType]} payment (${event.attributes.approveOrder} of ${event.attributes.approveTotal})`;
       default:
-        return `${PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS[eventType]} ${this.datePipe.transform(event.created, 'short') ?? ''}`;
+        return $localize`${PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS[eventType]} payment`;
     }
   });
   readonly icon = computed(

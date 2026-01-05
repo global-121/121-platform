@@ -2066,6 +2066,12 @@
       <trans-unit id="8708938501870841219" datatype="html">
         <source>Approval flow</source>
       </trans-unit>
+      <trans-unit id="5677475450475961620" datatype="html">
+        <source><x equiv-text="PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS[eventType]" id="PH"/> payment</source>
+      </trans-unit>
+      <trans-unit id="7617906385730294527" datatype="html">
+        <source><x equiv-text="PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS[eventType]" id="PH"/> payment (<x equiv-text="event.attributes.approveOrder" id="PH_1"/> of <x equiv-text="event.attributes.approveTotal" id="PH_2"/>)</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

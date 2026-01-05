@@ -45,6 +45,34 @@ export class PaymentEventsService {
     });
   }
 
+  public async createApprovedEvent({
+    paymentId,
+    userId,
+    rank,
+    total,
+  }: {
+    paymentId: number;
+    userId: number;
+    rank: number;
+    total: number;
+  }): Promise<void> {
+    await this.createEvent({
+      type: PaymentEvent.approved,
+      paymentId,
+      userId,
+      attributes: [
+        {
+          key: PaymentEventAttributeKey.approveOrder,
+          value: rank.toString(),
+        },
+        {
+          key: PaymentEventAttributeKey.approveTotal,
+          value: total.toString(),
+        },
+      ],
+    });
+  }
+
   public async createNoteEvent({
     paymentId,
     userId,
