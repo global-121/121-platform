@@ -17,7 +17,7 @@ import { programIdOCW } from '@121-service/test/registrations/pagination/paginat
 
 const duplicateLowNumber = 5;
 const duplicateHighNumber = 17; // cronjob duplicate number should be 2^17 = 131072
-const testTimeout = calculateMilliseconds({ minutes: 3 }); // Overall test timeout to prevent hanging
+const testTimeout = calculateMilliseconds({ minutes: 5 }); // Overall test timeout to prevent hanging
 const maximumExportTime = calculateMilliseconds({ minutes: 2.5 }); // Performance assertion limit for export operation
 const duplicateNumber =
   // eslint-disable-next-line n/no-process-env -- Required to detect high data volume mode for performance testing
