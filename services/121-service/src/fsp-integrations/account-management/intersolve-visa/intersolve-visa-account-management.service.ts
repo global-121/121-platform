@@ -105,7 +105,7 @@ export class IntersolveVisaAccountManagementService {
 
     await this.queueMessageService.addMessageJob({
       registration,
-      messageTemplateKey: ProgramNotificationEnum.reissueVisaCard,
+      messageTemplateKey: ProgramNotificationEnum.replaceVisaCard,
       messageContentType: MessageContentType.custom,
       messageProcessType:
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
@@ -204,7 +204,7 @@ export class IntersolveVisaAccountManagementService {
     }
 
     try {
-      await this.intersolveVisaService.reissueCard({
+      await this.intersolveVisaService.replaceCard({
         registrationId,
         contactInformation,
         brandCode,
@@ -214,7 +214,7 @@ export class IntersolveVisaAccountManagementService {
     } catch (error) {
       if (error instanceof IntersolveVisaApiError) {
         throw new HttpException(
-          `${IntersolveVisa121ErrorText.reissueCard} - ${error.message}`,
+          `${IntersolveVisa121ErrorText.replaceCard} - ${error.message}`,
           HttpStatus.BAD_REQUEST,
         );
       } else {

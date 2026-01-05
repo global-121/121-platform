@@ -29,7 +29,7 @@
             (click)="unpauseConfirmationDialog.show()"
           />
         }
-        @if (currentCardHasAction()('reissue')) {
+        @if (currentCardHasAction()('replace')) {
           <p-button
             label="Replace card"
             i18n-label="@@debit-card-actions-replace-card"
@@ -38,7 +38,7 @@
             icon="pi pi-refresh"
             [iconPos]="rtlHelper.createPosition('start')()"
             class="ms-4"
-            (click)="reissueConfirmationDialog.show()"
+            (click)="replaceConfirmationDialog.show()"
           />
         }
       </div>
@@ -114,13 +114,13 @@
   </p>
 </app-form-dialog>
 <app-form-dialog
-  #reissueConfirmationDialog
+  #replaceConfirmationDialog
   header="Replace card"
   headerIcon="pi pi-refresh"
   i18n-header="@@debit-card-actions-replace-card"
   acceptLabel="Replace card"
   i18n-acceptLabel="@@debit-card-actions-replace-card"
-  [mutation]="reissueCardMutation"
+  [mutation]="replaceCardMutation"
   [mutationData]="undefined"
 >
   <p i18n>

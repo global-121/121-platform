@@ -17,7 +17,7 @@ import { GetTokenResult } from '@121-service/src/fsp-integrations/integrations/i
 import { GetTransactionInformationResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/get-transaction-information-result.interface';
 import { IssueTokenResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/issue-token-result.interface';
 import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
-import { ReissueCardParams } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/reissue-card-params.interface';
+import { ReplaceCardParams } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/replace-card-params.interface';
 import { SendUpdatedContactInformationParams } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/send-updated-contact-information-params.interface';
 import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa.const';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
@@ -495,17 +495,17 @@ export class IntersolveVisaService {
   }
 
   /**
-   * This function reissues a card for a given registration ID.
+   * This function replaces a card for a given registration ID.
    * - The function first creates a new (child) token at Intersolve
    * - Creates a new child wallet entity,
    * - Substitutes the old token with the new one.
    * - Finally, it creates a new card and updates the child wallet status.
    *
-   * @param {ReissueCardParams} input - The parameters for the card re-issuance.
+   * @param {ReplaceCardParams} input - The parameters for the card replacement.
    * @throws {Error} Throws an Error if no customer, parent wallet, or child wallet is found for the given registration ID, or if the child wallet to be replaced does not have a card created for it.
    * @returns {Promise<void>}
    */
-  public async reissueCard(input: ReissueCardParams): Promise<void> {
+  public async replaceCard(input: ReplaceCardParams): Promise<void> {
     const intersolveVisaCustomer =
       await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
         input.registrationId,
@@ -513,12 +513,12 @@ export class IntersolveVisaService {
 
     if (!intersolveVisaCustomer) {
       throw new Error(
-        'This Registration does not have an Intersolve Visa Customer. Cannot reissue card.',
+        'This Registration does not have an Intersolve Visa Customer. Cannot replace card.',
       );
     }
     if (!intersolveVisaCustomer.intersolveVisaParentWallet) {
       throw new Error(
-        'This Registration does not have an Intersolve Visa Parent Wallet. Cannot reissue card.',
+        'This Registration does not have an Intersolve Visa Parent Wallet. Cannot replace card.',
       );
     }
     if (
@@ -526,7 +526,7 @@ export class IntersolveVisaService {
         .intersolveVisaChildWallets.length
     ) {
       throw new Error(
-        'This Registration does not have an Intersolve Visa Child Wallet. Cannot reissue card.',
+        'This Registration does not have an Intersolve Visa Child Wallet. Cannot replace card.',
       );
     }
     // Sort wallets by newest creation date first, so that we can hereafter assume the first element represents the current wallet
