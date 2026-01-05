@@ -5,10 +5,10 @@ import {
   createApprover,
   deleteApprover,
   getApprovers,
+  updateApprover,
 } from '@121-service/test/helpers/user.helper';
 import {
   getAccessToken,
-  getServer,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
@@ -54,12 +54,12 @@ describe('manage approvers', () => {
     // Update
     const approverId = postResponse.body.id;
     const newOrder = 10;
-    const patchResponse = await getServer()
-      .patch(`/programs/${programId}/approvers/${approverId}`)
-      .set('Cookie', [accessToken])
-      .send({
-        order: newOrder,
-      });
+    const patchResponse = await updateApprover({
+      programId,
+      approverId,
+      order: newOrder,
+      accessToken,
+    });
     expect(patchResponse.status).toBe(HttpStatus.OK);
     expect(patchResponse.body).toMatchObject({
       id: approverId,
@@ -80,5 +80,53 @@ describe('manage approvers', () => {
     });
     expect(getAfterDeleteResponse.status).toBe(HttpStatus.OK);
     expect(getAfterDeleteResponse.body).toHaveLength(1); // only admin left
+  });
+
+  it('should not allow creating approver with duplicate order for same program', async () => {
+    // Arrange
+    const programId = 1;
+    const userId = 3; // Not the admin-user, as that is approver by default already
+    const order = 1; // order 1 is already taken by admin
+
+    // Act
+    const postResponse = await createApprover({
+      programId,
+      userId,
+      order,
+      accessToken,
+    });
+    expect(postResponse.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(postResponse.body.message).toMatchInlineSnapshot(
+      `"An approver with order 1 already exists for this program"`,
+    );
+  });
+
+  it('should not allow updating approver to duplicate order for same program', async () => {
+    // Arrange
+    const programId = 1;
+    const userId = 2; // Not the admin-user, as that is approver by default already
+    const order = 5;
+
+    const postResponse = await createApprover({
+      programId,
+      userId,
+      order,
+      accessToken,
+    });
+    expect(postResponse.status).toBe(HttpStatus.CREATED);
+    const approverId = postResponse.body.id;
+
+    // Act
+    const newOrder = 1; // order 1 is already taken by admin
+    const patchResponse = await updateApprover({
+      programId,
+      approverId,
+      order: newOrder,
+      accessToken,
+    });
+    expect(patchResponse.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(patchResponse.body.message).toMatchInlineSnapshot(
+      `"An approver with order 1 already exists for this program"`,
+    );
   });
 });
