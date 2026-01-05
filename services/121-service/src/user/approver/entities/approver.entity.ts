@@ -11,7 +11,6 @@ export class ApproverEntity extends Base121Entity {
   @Column()
   public programAidworkerAssignmentId: number;
 
-  // TODO: for now we don't enforce uniqueness per program. If equal, sort by username.
   @Column()
   public order: number;
 }

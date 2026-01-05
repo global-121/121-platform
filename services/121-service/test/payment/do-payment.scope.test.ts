@@ -83,7 +83,7 @@ describe('Registrations - [Scoped]', () => {
     await createApprover({
       programId: PvProgramId,
       userId: userIdScoped,
-      order: 1,
+      order: 2,
       accessToken,
     });
     // .. and remove default admin-user approver
@@ -95,13 +95,13 @@ describe('Registrations - [Scoped]', () => {
 
     // Act
     // 7 registrations in total are included
-    // 3 registrations are in include in program PV
-    // 2 registrations are in include in program PV and are in the scope of the requesting user
+    // 3 registrations are included in program PV
+    // 2 registrations are included in program PV and are in the scope of the requesting user
     const doPaymentResponse = await doPayment({
       programId: PvProgramId,
       transferValue: 25,
       referenceIds: [],
-      accessToken: accessTokenScoped, //##TODO this test fails, as this cannot approve atm
+      accessToken: accessTokenScoped,
       filter: { 'filter.status': '$in:included' },
     });
     const paymentId = doPaymentResponse.body.id;
