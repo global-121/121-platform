@@ -21,13 +21,15 @@ const filterableColumns: Partial<{
 
 const maxLimit = -1; // No limit
 
-const columns = Object.keys(
-  filterableColumns,
-) as (keyof RegistrationEventViewEntity)[];
+const filterableColumnNames = Object.keys(filterableColumns);
+const sortableColumnNames = [
+  ...filterableColumnNames,
+  'created',
+] as (keyof RegistrationEventViewEntity)[];
 export const PaginateConfigRegistrationEventView: PaginateConfig<RegistrationEventViewEntity> =
   {
     ignoreSearchByInQueryParam: true,
     maxLimit,
-    sortableColumns: columns,
+    sortableColumns: sortableColumnNames,
     filterableColumns,
   };
