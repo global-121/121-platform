@@ -74,12 +74,9 @@ export class ScriptsController {
   @ApiQuery({
     name: 'approverMode',
     required: false,
-    default: ApproverSeedMode.admin,
     enum: ApproverSeedMode,
     enumName: 'ApproverSeedMode',
-    description:
-      'Set approvers per seeded program. Possible values: none (no approvers, for prod-seed), admin (admin-user is approver, for local dev & testing), demo (configure one demo approver user)',
-    example: ApproverSeedMode.admin,
+    description: `Set approvers per seeded program. Possible values: 'none' (no approvers, is default on production), 'admin' (admin-user is approver, is default on development & test) or 'demo' (configure one demo approver user). Default = 'none' on production, 'admin' otherwise.`,
   })
   @ApiOperation({
     summary: `Reset instance database.`,
@@ -130,11 +127,21 @@ export class ScriptsController {
         approverMode: ApproverSeedMode.admin, // NLRC mock always seeds with admin approver
       });
     } else if (Object.values(SeedScript).includes(script)) {
+      const defaultApproverMode = IS_PRODUCTION
+        ? ApproverSeedMode.none
+        : ApproverSeedMode.admin;
+      const safeApproverMode =
+        approverMode &&
+        Object.values(ApproverSeedMode).includes(
+          approverMode as ApproverSeedMode,
+        )
+          ? (approverMode as ApproverSeedMode)
+          : defaultApproverMode;
       await this.scriptsService.loadSeedScenario({
         resetIdentifier,
         seedScript: script,
         isApiTests,
-        approverMode: approverMode as ApproverSeedMode,
+        approverMode: safeApproverMode,
       });
     }
 

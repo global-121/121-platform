@@ -28,7 +28,7 @@ export class ScriptsService {
     mockPv = true,
     mockOcw = true,
     resetIdentifier,
-    approverMode = ApproverSeedMode.admin,
+    approverMode,
   }: {
     seedScript: string;
     isApiTests: boolean;
@@ -39,7 +39,7 @@ export class ScriptsService {
     mockPv?: boolean;
     mockOcw?: boolean;
     resetIdentifier?: string;
-    approverMode?: ApproverSeedMode;
+    approverMode: ApproverSeedMode;
   }) {
     console.log(
       `DB reset - Seed: ${seedScript} - Identifier: ${resetIdentifier}`,
