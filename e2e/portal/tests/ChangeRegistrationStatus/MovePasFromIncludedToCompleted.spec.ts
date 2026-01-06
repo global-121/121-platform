@@ -69,7 +69,6 @@ test('Move PA(s) from status "Included" to "Completed"', async ({ page }) => {
       maxWaitTimeMs: 4_000,
       completeStatuses: [
         TransactionStatusEnum.success,
-        TransactionStatusEnum.waiting,
         TransactionStatusEnum.error,
       ],
     });

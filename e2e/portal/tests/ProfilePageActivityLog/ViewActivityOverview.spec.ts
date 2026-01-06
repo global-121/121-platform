@@ -47,10 +47,6 @@ test.beforeEach(async () => {
     registrations: [registrationPV5],
     programId: programIdPV,
     transferValue: 100,
-    completeStatuses: [
-      TransactionStatusEnum.success,
-      TransactionStatusEnum.waiting,
-    ],
   });
 
   await updateRegistration(
@@ -173,10 +169,7 @@ test.describe('as user with only view paper voucher permissions', () => {
         transferValue: 100,
         referenceIds: [referenceIdPV5],
         accessToken: accessTokenAdmin,
-        completeStatuses: [
-          TransactionStatusEnum.success,
-          TransactionStatusEnum.waiting,
-        ],
+        completeStatuses: [TransactionStatusEnum.success],
       });
 
       // Create a user with only view paper voucher permission and login

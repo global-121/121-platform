@@ -742,10 +742,7 @@ export async function seedPaidRegistrations({
   registrations,
   programId,
   transferValue = 20,
-  completeStatuses = [
-    TransactionStatusEnum.success,
-    TransactionStatusEnum.waiting,
-  ],
+  completeStatuses = [TransactionStatusEnum.success],
 }: {
   registrations: any[];
   programId: number;
