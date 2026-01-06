@@ -21,4 +21,4 @@ rules:
     check-keys: false
   octal-values:
     forbid-implicit-octal: true
-  key-duplicates: enable
+  key-duplicates: {}
