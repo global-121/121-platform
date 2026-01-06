@@ -87,7 +87,6 @@ export class SeedInit implements InterfaceScript {
         role: DefaultUserRole.View,
         label: 'Only view data, including Personally Identifiable Information',
         permissions: [
-          PermissionEnum.ActionREAD,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherPaperREAD,
@@ -145,7 +144,6 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.RegistrationStatusIncludedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
           PermissionEnum.RegistrationDuplicationDELETE,
-          PermissionEnum.ActionREAD,
           PermissionEnum.AidWorkerProgramREAD,
           PermissionEnum.AidWorkerProgramUPDATE,
           PermissionEnum.RegistrationStatusPausedUPDATE,
@@ -173,7 +171,6 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE,
           PermissionEnum.RegistrationStatusMarkAsDeclinedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
-          PermissionEnum.ActionREAD,
           PermissionEnum.RegistrationStatusPausedUPDATE,
         ],
       },
@@ -197,7 +194,6 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.RegistrationREAD,
           PermissionEnum.RegistrationPersonalREAD,
           PermissionEnum.RegistrationPaymentExport,
-          PermissionEnum.ActionREAD,
         ],
       },
       {
@@ -216,7 +212,6 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.FspDebitCardUNBLOCK,
           PermissionEnum.RegistrationREAD,
           PermissionEnum.RegistrationPersonalREAD,
-          PermissionEnum.ActionREAD,
         ],
       },
       {
@@ -224,7 +219,6 @@ export class SeedInit implements InterfaceScript {
         label:
           'Only view data, not including Personally Identifiable Information',
         permissions: [
-          PermissionEnum.ActionREAD,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherPaperREAD,

@@ -80,10 +80,6 @@ export enum PermissionEnum {
   // Registrations - bulk
   RegistrationBulkUPDATE = 'registration:bulk.update',
 
-  // Action(s)
-  ActionREAD = 'action.read',
-  ActionCREATE = 'action.create',
-
   // User(s)
   AidWorkerProgramREAD = 'aid-worker:program.read',
   AidWorkerProgramUPDATE = 'aid-worker:program.update',
