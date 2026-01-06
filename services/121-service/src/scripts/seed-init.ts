@@ -22,7 +22,11 @@ export class SeedInit implements InterfaceScript {
     private readonly httpService: CustomHttpService,
   ) {}
 
-  public async run(isApiTests = false): Promise<void> {
+  public async run({
+    isApiTests = false,
+  }: {
+    isApiTests?: boolean;
+  }): Promise<void> {
     await this.clearCallbacksMockService();
     if (IS_DEVELOPMENT) {
       await this.queuesService.emptyAllQueues();
@@ -235,6 +239,29 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.RegistrationNotificationREAD,
           PermissionEnum.RegistrationREAD,
+        ],
+      },
+      {
+        role: DefaultUserRole.Approver,
+        label: 'Approve payments',
+        // ##TODO for now equal to FinanceManager. Check with PO.
+        permissions: [
+          PermissionEnum.ProgramMetricsREAD,
+          PermissionEnum.ProgramAttachmentsREAD,
+          PermissionEnum.ProgramAttachmentsCREATE,
+          PermissionEnum.PaymentCREATE,
+          PermissionEnum.PaymentUPDATE,
+          PermissionEnum.PaymentREAD,
+          PermissionEnum.PaymentTransactionREAD,
+          PermissionEnum.PaymentFspInstructionREAD,
+          PermissionEnum.PaymentVoucherPaperREAD,
+          PermissionEnum.PaymentVoucherWhatsappREAD,
+          PermissionEnum.FspDebitCardREAD,
+          PermissionEnum.FspDebitCardBLOCK,
+          PermissionEnum.FspDebitCardUNBLOCK,
+          PermissionEnum.RegistrationREAD,
+          PermissionEnum.RegistrationPersonalREAD,
+          PermissionEnum.RegistrationPaymentExport,
         ],
       },
     ];

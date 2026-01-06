@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { IS_PRODUCTION } from '@121-service/src/config';
+import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SEED_CONFIGURATION_SETTINGS } from '@121-service/src/scripts/seed-configuration.const';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
 import { SeedInit } from '@121-service/src/scripts/seed-init';
@@ -27,6 +28,7 @@ export class ScriptsService {
     mockPv = true,
     mockOcw = true,
     resetIdentifier,
+    approverMode = ApproverSeedMode.admin,
   }: {
     seedScript: string;
     isApiTests: boolean;
@@ -37,19 +39,22 @@ export class ScriptsService {
     mockPv?: boolean;
     mockOcw?: boolean;
     resetIdentifier?: string;
+    approverMode?: ApproverSeedMode;
   }) {
     console.log(
       `DB reset - Seed: ${seedScript} - Identifier: ${resetIdentifier}`,
     );
     const seedConfig = this.getSeedConfigByNameOrThrow(seedScript);
 
-    await this.seedInit.run(isApiTests);
+    await this.seedInit.run({
+      isApiTests,
+    });
     if (seedConfig.seedAdminOnly) {
       return;
     }
 
     if (seedConfig.includeMockData) {
-      await this.seedMultipleNlrcMockData.run(
+      await this.seedMultipleNlrcMockData.run({
         isApiTests,
         powerNrRegistrationsString,
         nrPaymentsString,
@@ -58,11 +63,12 @@ export class ScriptsService {
         mockPv,
         mockOcw,
         seedConfig,
-      );
+        approverMode,
+      });
       return;
     }
 
-    await this.seedHelper.seedData(seedConfig, isApiTests);
+    await this.seedHelper.seedData({ seedConfig, isApiTests, approverMode });
   }
 
   private getSeedConfigByNameOrThrow(seedScript: string): SeedConfigurationDto {

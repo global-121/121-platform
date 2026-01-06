@@ -40,7 +40,7 @@ describe('Payment approval flow', () => {
     );
   });
 
-  it('user who can create a payment is different from user starting payment', async () => {
+  it('user who can create a payment is different from user approving payment and different from user starting payment', async () => {
     // Arrange
     const registrationAh = { ...registrationPV5, maxPayments: 1 };
 
@@ -48,13 +48,13 @@ describe('Payment approval flow', () => {
     const accessTokenFinanceManager = await getAccessTokenFinanceManager();
 
     // Act
+    // create
     const createPaymentResponseFinanceManager = await createPayment({
       programId,
       transferValue,
       referenceIds: [registrationAh.referenceId],
       accessToken: accessTokenFinanceManager,
     });
-
     const createPaymentResponseCvaManager = await createPayment({
       programId,
       transferValue,
@@ -62,21 +62,30 @@ describe('Payment approval flow', () => {
       accessToken: accessTokenCvaManager,
     });
 
+    // approve
     const paymentId = createPaymentResponseCvaManager.body.id;
-
-    await approvePayment({
+    const approvePaymentResponseCvaManager = await approvePayment({
       programId,
       paymentId,
-      accessToken: adminAccessToken, // ##TODO: for now approve with admin. Extend this test properly.
+      accessToken: accessTokenCvaManager,
+    });
+    const approvePaymentResponseFinanceManager = await approvePayment({
+      programId,
+      paymentId,
+      accessToken: accessTokenFinanceManager,
+    });
+    const approvePaymentResponseAdmin = await approvePayment({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
     });
 
-    // Start payment with CVA manager
+    // start
     const startPaymentResponseCvaManager = await startPayment({
       programId,
       paymentId,
       accessToken: accessTokenCvaManager,
     });
-
     const startPaymentResponseFinanceManager = await startPayment({
       programId,
       paymentId,
@@ -97,6 +106,11 @@ describe('Payment approval flow', () => {
     // Cva manager can only create a payment and a finance manager can create and start a payment
     expect(createPaymentResponseCvaManager.status).toBe(HttpStatus.CREATED);
     expect(createPaymentResponseFinanceManager.status).toBe(HttpStatus.CREATED);
+    expect(approvePaymentResponseCvaManager.status).toBe(HttpStatus.FORBIDDEN);
+    expect(approvePaymentResponseFinanceManager.status).toBe(
+      HttpStatus.FORBIDDEN,
+    );
+    expect(approvePaymentResponseAdmin.status).toBe(HttpStatus.CREATED);
     expect(startPaymentResponseCvaManager.status).toBe(HttpStatus.FORBIDDEN);
     expect(startPaymentResponseFinanceManager.status).toBe(HttpStatus.ACCEPTED);
   });
