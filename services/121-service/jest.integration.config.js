@@ -19,4 +19,7 @@ module.exports = {
   randomize: true,
   verbose: true,
   reporters: ['default', ['github-actions', { silent: false }], 'summary'],
+  testEnvironmentOptions: {
+    globalsCleanup: 'on',
+  },
 };
