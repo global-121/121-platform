@@ -4,7 +4,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
-import { ValidationPipelineOptionsWithoutWhitelist } from '@121-service/src/registration/validators/consts/validation-pipeline-options-without-white-list.const';
+import { ValidationPipelineOptionsWithoutWhiteList } from '@121-service/src/registration/validators/consts/validation-pipeline-options-without-white-list.const';
 
 const RawBody = createParamDecorator(
   (_data: unknown, ctx: ExecutionContext): any => {
@@ -21,6 +21,6 @@ const RawBody = createParamDecorator(
 
 export const AnyValidBody = (...pipes: unknown[]) =>
   RawBody(
-    new ValidationPipe(ValidationPipelineOptionsWithoutWhitelist),
+    new ValidationPipe(ValidationPipelineOptionsWithoutWhiteList),
     ...pipes,
   );

@@ -19,7 +19,7 @@ import { ValidationRegistrationConfig } from '@121-service/src/registration/inte
 import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
 import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import { ValidationPipelineOptionsWithoutWhitelist } from '@121-service/src/registration/validators/consts/validation-pipeline-options-without-white-list.const';
+import { ValidationPipelineOptionsWithoutWhiteList } from '@121-service/src/registration/validators/consts/validation-pipeline-options-without-white-list.const';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UserService } from '@121-service/src/user/user.service';
 
@@ -360,7 +360,7 @@ export class RegistrationsInputValidator {
 
       const result = await validate(
         validatedRegistrationInput,
-        ValidationPipelineOptionsWithoutWhitelist,
+        ValidationPipelineOptionsWithoutWhiteList,
       );
       if (result.length > 0) {
         let error = result[0].toString();
