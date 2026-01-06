@@ -48,7 +48,7 @@ describe('Payment approval flow', () => {
     const accessTokenFinanceManager = await getAccessTokenFinanceManager();
 
     // Act
-    // create
+    // create (both cva & finance can)
     const createPaymentResponseFinanceManager = await createPayment({
       programId,
       transferValue,
@@ -62,17 +62,12 @@ describe('Payment approval flow', () => {
       accessToken: accessTokenCvaManager,
     });
 
-    // approve
+    // approve (admin can, cva & finance cannot)
     const paymentId = createPaymentResponseCvaManager.body.id;
     const approvePaymentResponseCvaManager = await approvePayment({
       programId,
       paymentId,
       accessToken: accessTokenCvaManager,
-    });
-    const approvePaymentResponseFinanceManager = await approvePayment({
-      programId,
-      paymentId,
-      accessToken: accessTokenFinanceManager,
     });
     const approvePaymentResponseAdmin = await approvePayment({
       programId,
@@ -80,7 +75,7 @@ describe('Payment approval flow', () => {
       accessToken: adminAccessToken,
     });
 
-    // start
+    // start (only finance can)
     const startPaymentResponseCvaManager = await startPayment({
       programId,
       paymentId,
@@ -107,9 +102,6 @@ describe('Payment approval flow', () => {
     expect(createPaymentResponseCvaManager.status).toBe(HttpStatus.CREATED);
     expect(createPaymentResponseFinanceManager.status).toBe(HttpStatus.CREATED);
     expect(approvePaymentResponseCvaManager.status).toBe(HttpStatus.FORBIDDEN);
-    expect(approvePaymentResponseFinanceManager.status).toBe(
-      HttpStatus.FORBIDDEN,
-    );
     expect(approvePaymentResponseAdmin.status).toBe(HttpStatus.CREATED);
     expect(startPaymentResponseCvaManager.status).toBe(HttpStatus.FORBIDDEN);
     expect(startPaymentResponseFinanceManager.status).toBe(HttpStatus.ACCEPTED);

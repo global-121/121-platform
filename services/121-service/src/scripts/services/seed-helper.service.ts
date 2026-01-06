@@ -276,25 +276,37 @@ export class SeedHelperService {
     approverMode: ApproverSeedMode;
   }): Promise<void> {
     const userRepository = this.dataSource.getRepository(UserEntity);
+    const adminUser = await userRepository.findOneOrFail({
+      where: { username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_ADMIN) },
+    });
+
     if (approverMode === ApproverSeedMode.admin) {
-      const user = await userRepository.findOneOrFail({
-        where: { username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_ADMIN) },
-      });
       await this.approverService.createApprover({
         programId,
-        userId: user.id,
+        userId: adminUser.id,
         order: 1,
       });
-    } else if (approverMode === ApproverSeedMode.demo) {
-      const user = await userRepository.findOneOrFail({
+      return;
+    }
+
+    if (approverMode === ApproverSeedMode.demo) {
+      const approverUser = await userRepository.findOneOrFail({
         where: { username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_APPROVER!) },
       });
       await this.approverService.createApprover({
         programId,
-        userId: user.id,
+        userId: adminUser.id,
         order: 1,
       });
+      await this.approverService.createApprover({
+        programId,
+        userId: approverUser.id,
+        order: 2,
+      });
+      return;
     }
+
+    // if 'none', do nothing
   }
 
   public async getOrSaveUser(userInput: {

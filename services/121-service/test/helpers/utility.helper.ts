@@ -3,6 +3,7 @@ import * as request from 'supertest';
 import TestAgent from 'supertest/lib/agent';
 
 import { env } from '@121-service/src/env';
+import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
@@ -26,6 +27,7 @@ export function resetDB(
   seedScript: SeedScript,
   resetIdentifier: string,
   includeRegistrationEvents = false,
+  approverMode?: ApproverSeedMode,
 ): Promise<request.Response> {
   return getServer()
     .post('/scripts/reset')
@@ -34,6 +36,7 @@ export function resetDB(
       isApiTests: true,
       includeRegistrationEvents,
       resetIdentifier,
+      approverMode,
     })
     .send({
       secret: env.RESET_SECRET,
