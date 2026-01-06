@@ -5,7 +5,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   createPayment,
   startPayment,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
@@ -73,7 +73,7 @@ describe('Payment approval flow', () => {
     });
 
     // Wait for payment transactions to complete to cleanup in progress stuff
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentId,
       paymentReferenceIds: [registrationAh.referenceId],

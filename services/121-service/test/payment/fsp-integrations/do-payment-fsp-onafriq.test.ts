@@ -10,7 +10,7 @@ import {
   createAndStartPayment,
   getTransactionsByPaymentIdPaginated,
   retryPayment,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   getTransactionEventDescriptions,
@@ -65,7 +65,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       accessToken,
@@ -126,7 +126,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       accessToken,
@@ -170,7 +170,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       paymentId,
       accessToken,
     });
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       accessToken,
@@ -228,7 +228,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     const paymentId = doPaymentResponse.body.id;
 
     // wait for non-waiting transactions only, to make sure callback came in
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       accessToken,
@@ -291,7 +291,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       accessToken,

@@ -10,7 +10,7 @@ import {
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   createAndStartPayment,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
@@ -65,7 +65,7 @@ describe('Load Visa debit cards and details', () => {
     });
 
     // Act
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds: referenceIds,
       accessToken,

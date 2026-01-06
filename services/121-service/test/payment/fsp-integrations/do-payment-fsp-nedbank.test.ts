@@ -14,7 +14,7 @@ import {
   exportTransactionsByDateRangeJson,
   getTransactionsByPaymentIdPaginated,
   retryPayment,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import { deleteProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
@@ -73,7 +73,7 @@ describe('Do payment', () => {
         });
         const paymentId = doPaymentResponse.body.id;
 
-        await waitForPaymentTransactionsToComplete({
+        await waitForPaymentAndTransactionsToComplete({
           programId,
           paymentReferenceIds,
           accessToken,
@@ -98,7 +98,7 @@ describe('Do payment', () => {
 
         // Cronjob should update the status of the transaction
         await runCronJobDoNedbankReconciliation();
-        await waitForPaymentTransactionsToComplete({
+        await waitForPaymentAndTransactionsToComplete({
           programId,
           paymentReferenceIds,
           accessToken,
@@ -190,7 +190,7 @@ describe('Do payment', () => {
         });
         const paymentId = doPaymentResponse.body.id;
 
-        await waitForPaymentTransactionsToComplete({
+        await waitForPaymentAndTransactionsToComplete({
           programId,
           paymentReferenceIds,
           accessToken,
@@ -246,7 +246,7 @@ describe('Do payment', () => {
         });
         const paymentId = doPaymentResponse.body.id;
 
-        await waitForPaymentTransactionsToComplete({
+        await waitForPaymentAndTransactionsToComplete({
           programId,
           paymentReferenceIds,
           accessToken,
@@ -306,7 +306,7 @@ describe('Do payment', () => {
         });
         const paymentId = doPaymentResponse.body.id;
 
-        await waitForPaymentTransactionsToComplete({
+        await waitForPaymentAndTransactionsToComplete({
           programId,
           paymentReferenceIds,
           accessToken,
@@ -370,7 +370,7 @@ describe('Do payment', () => {
           accessToken,
         });
 
-        await waitForPaymentTransactionsToComplete({
+        await waitForPaymentAndTransactionsToComplete({
           programId,
           paymentReferenceIds,
           accessToken,
@@ -426,7 +426,7 @@ describe('Do payment', () => {
           accessToken,
         });
         const paymentId = doPaymentResponse.body.id;
-        await waitForPaymentTransactionsToComplete({
+        await waitForPaymentAndTransactionsToComplete({
           programId,
           paymentReferenceIds: [registrationFailDebitorAccount.referenceId],
           accessToken,
@@ -454,7 +454,7 @@ describe('Do payment', () => {
           paymentId,
           accessToken,
         });
-        await waitForPaymentTransactionsToComplete({
+        await waitForPaymentAndTransactionsToComplete({
           programId,
           paymentReferenceIds: [registrationFailDebitorAccount.referenceId],
           accessToken,

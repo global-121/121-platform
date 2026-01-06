@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import CbeProgram from '@121-service/src/seed-data/program/program-cbe.json';
-import { waitForPaymentTransactionsToComplete } from '@121-service/test/helpers/program.helper';
+import { waitForPaymentAndTransactionsToComplete } from '@121-service/test/helpers/program.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -67,7 +67,7 @@ test('Do successful payment for Cbe fsp', async ({ page }) => {
     );
 
     // Wait for payment transactions to complete
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdCbe,
       paymentReferenceIds: registrationsCbe.map((r) => r.referenceId),
       accessToken,

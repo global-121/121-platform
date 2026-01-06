@@ -176,7 +176,7 @@ export async function createAndStartPayment({
   }
 
   const paymentId = createPaymentResult.body.id;
-  await waitForPaymentTransactionsToComplete({
+  await waitForPaymentAndTransactionsToComplete({
     programId,
     paymentReferenceIds: referenceIds,
     accessToken,
@@ -460,7 +460,7 @@ export async function exportList({
     .query(queryParams);
 }
 
-export async function waitForPaymentTransactionsToComplete({
+export async function waitForPaymentAndTransactionsToComplete({
   programId,
   paymentReferenceIds,
   accessToken,
@@ -474,9 +474,16 @@ export async function waitForPaymentTransactionsToComplete({
   maxWaitTimeMs: number;
   completeStatuses?: string[];
   paymentId?: number;
+  waitForPaymentToBeComplete?: boolean;
 }): Promise<void> {
   const startTime = Date.now();
   let allTransactionsComplete = false;
+
+  await waitForPaymentNotInProgress({
+    programId,
+    accessToken,
+    maxWaitTimeMs,
+  });
 
   while (Date.now() - startTime < maxWaitTimeMs && !allTransactionsComplete) {
     // Get payment transactions
@@ -497,9 +504,9 @@ export async function waitForPaymentTransactionsToComplete({
       });
     }
 
-    // If not all transactions are successful, wait for a short interval before checking again
+    // Wait before next check if transactions aren't complete
     if (!allTransactionsComplete) {
-      await waitFor(1_000); // Wait for 1 seconds (adjust as needed)
+      await waitFor(1_000);
     }
   }
 

@@ -6,7 +6,7 @@ import { registrationAHWhatsapp } from '@121-service/src/seed-data/mock/registra
 import {
   getPaymentSummary,
   retryPayment,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   seedPaidRegistrations,
@@ -134,7 +134,7 @@ describe('Do payment retry', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds: [registrationError1.referenceId],
       paymentId,
@@ -215,7 +215,7 @@ describe('Do payment retry', () => {
       referenceIds: [registrationError1.referenceId],
     });
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds: [registrationError1.referenceId],
       paymentId,
@@ -314,7 +314,7 @@ describe('Do payment retry', () => {
       search: registrationError2.referenceId,
     });
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds: [registrationError2.referenceId],
       paymentId,

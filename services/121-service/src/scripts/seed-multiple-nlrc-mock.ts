@@ -128,7 +128,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       accessToken,
     );
     const paymentId = createPaymentResponse.data.id;
-    await this.seedMockHelper.waitForPaymentTransactionsToComplete({
+    await this.seedMockHelper.waitForPaymentAndTransactionsToComplete({
       programId,
       paymentId,
       referenceIds: [registration.referenceId],
@@ -136,7 +136,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       completeStatuses: [TransactionStatusEnum.pendingApproval],
     });
     await this.seedMockHelper.startPayment(programId, paymentId, accessToken);
-    await this.seedMockHelper.waitForPaymentTransactionsToComplete({
+    await this.seedMockHelper.waitForPaymentAndTransactionsToComplete({
       programId,
       paymentId,
       referenceIds: [registration.referenceId],
