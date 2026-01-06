@@ -447,7 +447,7 @@ exports[`Create program should post a program: Create program response for progr
     },
     {
       "duplicateCheck": false,
-      "editableInPortal": false,
+      "editableInPortal": true,
       "id": 27,
       "includeInTransactionExport": true,
       "isRequired": false,
@@ -940,7 +940,7 @@ exports[`Create program should post a program: Create program response for progr
     },
     {
       "duplicateCheck": true,
-      "editableInPortal": true,
+      "editableInPortal": false,
       "id": 19,
       "includeInTransactionExport": false,
       "isRequired": false,
