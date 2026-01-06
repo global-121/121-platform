@@ -2,6 +2,9 @@
 
 extends: default
 
+ignore-from-file:
+  - .gitignore
+
 rules:
   document-start: disable
   quoted-strings:
@@ -16,3 +19,6 @@ rules:
     min-spaces-from-content: 1
   truthy:
     check-keys: false
+  octal-values:
+    forbid-implicit-octal: true
+  key-duplicates: {}
