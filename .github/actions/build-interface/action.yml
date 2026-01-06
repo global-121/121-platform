@@ -69,7 +69,6 @@ runs:
         LOKALISE_PROJECT_ID: ${{ env.LOKALISE_PROJECT_ID }}
         LOKALISE_API_TOKEN: ${{ env.LOKALISE_API_TOKEN }}
       run: |
-        echo "\n\n# This file should exist in Node v20, is optional in Node v22\n\n" >> .env
         npm run build:download-translations
 
     - name: Add environment-specific icon
@@ -85,7 +84,6 @@ runs:
       env:
         NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: false
       run: |
-        echo "\n\n# This file should exist in Node v20, is optional in Node v22\n\n" >> .env
         npm run build:production
 
     - name: Add environment-specific icon in well-known location
