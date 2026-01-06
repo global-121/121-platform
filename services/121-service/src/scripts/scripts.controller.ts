@@ -4,6 +4,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 
 import { IS_PRODUCTION } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
+import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { ScriptsService } from '@121-service/src/scripts/services/scripts.service';
 import { WrapperType } from '@121-service/src/wrapper.type';
@@ -70,6 +71,16 @@ export class ScriptsController {
     description: `Set to 'true' to include registration events in the duplication.`,
     example: 'false',
   })
+  @ApiQuery({
+    name: 'approverMode',
+    required: false,
+    default: ApproverSeedMode.admin,
+    enum: ApproverSeedMode,
+    enumName: 'ApproverSeedMode',
+    description:
+      'Set approvers per seeded program. Possible values: none (no approvers, for prod-seed), admin (admin-user is approver, for local dev & testing), demo (configure one demo approver user)',
+    example: ApproverSeedMode.admin,
+  })
   @ApiOperation({
     summary: `Reset instance database.`,
     description: `When using the reset script: ${SeedScript.demoPrograms}. The reset can take a while, because of the large amount of data. This can result in a timeout on the client side, but the reset will still be done.`,
@@ -87,6 +98,7 @@ export class ScriptsController {
     @Query('mockPv') mockPv: boolean,
     @Query('mockOcw') mockOcw: boolean,
     @Query('isApiTests') isApiTests: boolean,
+    @Query('approverMode') approverMode: string,
     @Res() res,
   ): Promise<string> {
     if (body.secret !== env.RESET_SECRET) {
@@ -115,12 +127,14 @@ export class ScriptsController {
         powerNrMessagesString: mockPowerNumberMessages,
         mockPv: booleanMockPv,
         mockOcw: booleanMockOcw,
+        approverMode: ApproverSeedMode.admin, // NLRC mock always seeds with admin approver
       });
     } else if (Object.values(SeedScript).includes(script)) {
       await this.scriptsService.loadSeedScenario({
         resetIdentifier,
         seedScript: script,
         isApiTests,
+        approverMode: approverMode as ApproverSeedMode,
       });
     }
 
