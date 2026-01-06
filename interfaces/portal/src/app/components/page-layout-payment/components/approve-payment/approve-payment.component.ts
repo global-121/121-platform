@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   input,
+  signal,
   viewChild,
 } from '@angular/core';
 
@@ -42,11 +43,13 @@ export class ApprovePaymentComponent {
     'approvePaymentDialog',
   );
 
+  private readonly note = signal('');
   approvePaymentMutation = injectMutation(() => ({
     mutationFn: () =>
       this.paymentApiService.approvePayment({
         programId: this.programId,
         paymentId: this.paymentId,
+        note: this.note,
       }),
     onSuccess: () => {
       this.approvePaymentDialog().hide();
@@ -81,7 +84,12 @@ export class ApprovePaymentComponent {
     },
     {
       label: $localize`Add note`,
-      // ##TODO: implement note functionality
+      type: 'input',
+      inputValue: this.note(),
+      inputPlaceholder: $localize`Optional`,
+      inputChange: (value: string) => {
+        this.note.set(value);
+      },
     },
   ]);
 

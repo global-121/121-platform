@@ -1,10 +1,12 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   approvePayment,
   createPayment,
+  getPaymentEvents,
   getTransactionsByPaymentIdPaginated,
   startPayment,
   waitForPaymentAndTransactionsToComplete,
@@ -243,5 +245,41 @@ describe('Payment approval flow', () => {
     expect(createPaymentResponse.body.message).toMatchInlineSnapshot(
       `"No approvers found for program, cannot create payment"`,
     );
+  });
+
+  it('should include note in payment approved event', async () => {
+    // Arrange
+    const note = 'Payment approved for testing purposes only.';
+    const createPaymentResponse = await createPayment({
+      programId,
+      transferValue,
+      referenceIds: [registrationPV5.referenceId],
+      accessToken: adminAccessToken,
+    });
+
+    // Act
+    const paymentId = createPaymentResponse.body.id;
+    await approvePayment({
+      programId,
+      paymentId,
+      note,
+      accessToken: adminAccessToken,
+    });
+
+    const paymentEventsResponse = await getPaymentEvents({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+
+    // Assert
+    expect(paymentEventsResponse.statusCode).toBe(HttpStatus.OK);
+
+    const { data } = paymentEventsResponse.body;
+    const approvedEvent = data.find(
+      (event) => event.type === PaymentEvent.approved,
+    );
+    expect(approvedEvent).toBeDefined();
+    expect(approvedEvent.attributes.note).toBe(note);
   });
 });
