@@ -137,15 +137,17 @@ export async function approvePayment({
   programId,
   paymentId,
   accessToken,
+  note,
 }: {
   programId: number;
   paymentId: number;
   accessToken: string;
+  note?: string;
 }): Promise<request.Response> {
   return await getServer()
     .post(`/programs/${programId}/payments/${paymentId}/approve`)
     .set('Cookie', [accessToken])
-    .send();
+    .send({ note });
 }
 
 export async function startPayment({

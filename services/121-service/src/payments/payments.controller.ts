@@ -227,6 +227,7 @@ export class PaymentsController {
   @HttpCode(HttpStatus.CREATED)
   @Post('programs/:programId/payments/:paymentId/approve')
   public async approvePayment(
+    @Body('note') note: string,
     @Param('programId', ParseIntPipe) programId: number,
     @Param('paymentId', ParseIntPipe) paymentId: number,
     @Req() req: ScopedUserRequest,
@@ -237,6 +238,7 @@ export class PaymentsController {
       userId,
       programId,
       paymentId,
+      note,
     });
   }
 
