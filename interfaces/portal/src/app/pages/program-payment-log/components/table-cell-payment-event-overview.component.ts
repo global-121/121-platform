@@ -37,14 +37,21 @@ export class TableCellPaymentEventOverviewComponent implements TableCellComponen
   readonly label = computed(() => {
     const event = this.value();
     const eventType = event.type;
+    const label = PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS[eventType];
 
     switch (eventType) {
       case PaymentEvent.note:
         return event.attributes.note;
-      case PaymentEvent.approved:
-        return $localize`${PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS[eventType]} payment (${event.attributes.approveOrder} of ${event.attributes.approveTotal})`;
+      case PaymentEvent.approved: {
+        const order = event.attributes.approveOrder;
+        const total = event.attributes.approveTotal;
+        if (event.attributes.note) {
+          return $localize`${label} payment (${order} of ${total}). Note: ${event.attributes.note}`;
+        }
+        return $localize`${label} payment (${order} of ${total})`;
+      }
       default:
-        return $localize`${PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS[eventType]} payment`;
+        return $localize`${label} payment`;
     }
   });
   readonly icon = computed(

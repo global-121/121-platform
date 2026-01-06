@@ -140,9 +140,11 @@ export class PaymentApiService extends DomainApiService {
   approvePayment({
     programId,
     paymentId,
+    note,
   }: {
     programId: Signal<number | string>;
     paymentId: Signal<string>;
+    note: Signal<string>;
   }) {
     return this.httpWrapperService.perform121ServiceRequest({
       method: 'POST',
@@ -151,6 +153,9 @@ export class PaymentApiService extends DomainApiService {
         paymentId,
         'approve',
       ]).join('/'),
+      body: {
+        note: note(),
+      },
     });
   }
 

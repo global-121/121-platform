@@ -311,10 +311,12 @@ export class PaymentsManagementService {
     userId,
     programId,
     paymentId,
+    note,
   }: {
     userId: number;
     programId: number;
     paymentId: number;
+    note?: string;
   }): Promise<void> {
     const approver = await this.approverService.getApproverByUserIdOrThrow({
       userId,
@@ -354,6 +356,7 @@ export class PaymentsManagementService {
       userId,
       rank,
       total: allPaymentApprovals.length,
+      note,
     });
 
     // check if all approvals are done now - refetch in case of near-concurrent approvals

@@ -50,26 +50,35 @@ export class PaymentEventsService {
     userId,
     rank,
     total,
+    note,
   }: {
     paymentId: number;
     userId: number;
     rank: number;
     total: number;
+    note?: string;
   }): Promise<void> {
+    const attributes = [
+      {
+        key: PaymentEventAttributeKey.approveOrder,
+        value: rank.toString(),
+      },
+      {
+        key: PaymentEventAttributeKey.approveTotal,
+        value: total.toString(),
+      },
+    ];
+    if (note) {
+      attributes.push({
+        key: PaymentEventAttributeKey.note,
+        value: note,
+      });
+    }
     await this.createEvent({
       type: PaymentEvent.approved,
       paymentId,
       userId,
-      attributes: [
-        {
-          key: PaymentEventAttributeKey.approveOrder,
-          value: rank.toString(),
-        },
-        {
-          key: PaymentEventAttributeKey.approveTotal,
-          value: total.toString(),
-        },
-      ],
+      attributes,
     });
   }
 
