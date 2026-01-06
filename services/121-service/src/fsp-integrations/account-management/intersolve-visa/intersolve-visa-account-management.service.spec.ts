@@ -69,7 +69,7 @@ describe('IntersolveVisaAccountManagementService', () => {
             retrieveAndUpdateWallet: jest.fn(),
             getWalletWithCards: jest.fn(),
             hasIntersolveCustomer: jest.fn(),
-            reissueCard: jest.fn(),
+            replaceCard: jest.fn(),
             sendUpdatedCustomerInformation: jest.fn(),
           },
         },

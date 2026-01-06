@@ -167,7 +167,7 @@ export const messageTemplateNlrcPv: SeedMessageTemplateConfig = {
       tr: 'Sevgili veli/bakıcı, kartınıza para yükledik: €[[1]] (önümüzdeki iki hafta için). Lütfen ilgili tutarı bir ay içinde kullanın. Bir takvim ayında en fazla 150€ harcayabilirsiniz. Kartı kullanmadan önce karttaki tutarı [www.rodekruis.nl/boodschappenkaart] üzerinden kontrol edin.\n\nSorularınız olursa, www.schoolmaaltijden.nl internet sitesini ziyaret edebilir, 097 010 204 851 numaralı telefona çağrı, mesaj ya da Whatsapp yoluyla ulaşabilir, veya info@schoolmaaltijden.nl adresine e-posta gönderebilirsiniz.\n\nSaygılarımızla, Rode Kruis/Programma Schoolmaaltijden',
     },
   },
-  reissueVisaCard: {
+  replaceVisaCard: {
     isSendMessageTemplate: false,
     isWhatsappTemplate: false,
     message: {

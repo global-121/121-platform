@@ -76,7 +76,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
   readonly currentCard = computed(() => this.walletWithCards.data()?.cards[0]);
 
   readonly currentCardHasAction = computed(
-    () => (action: 'pause' | 'reissue' | 'unpause') =>
+    () => (action: 'pause' | 'replace' | 'unpause') =>
       this.currentCard()?.actions.includes(VisaCardAction[action]),
   );
 
@@ -212,7 +212,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
     },
   }));
 
-  reissueCardMutation = injectMutation(() => ({
+  replaceCardMutation = injectMutation(() => ({
     mutationFn: () => {
       const referenceId = this.referenceId();
 
