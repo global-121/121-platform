@@ -44,6 +44,7 @@ describe('PaymentsManagementService', () => {
     paymentEventsService = {
       createEvent: jest.fn(),
       createNoteEvent: jest.fn(),
+      createApprovedEvent: jest.fn(),
     } as unknown as PaymentEventsService;
     transactionsService = {
       createTransactionsAndEvents: jest.fn(),
@@ -279,21 +280,21 @@ describe('PaymentsManagementService', () => {
       ];
       paymentApprovalRepository.find.mockResolvedValue(approvals);
       jest
-        .spyOn(paymentEventsService, 'createEvent')
+        .spyOn(paymentEventsService, 'createApprovedEvent')
         .mockResolvedValue(undefined);
 
       await service.approvePayment({ userId: 1, programId: 2, paymentId: 3 });
 
       expect(approvals[0].approved).toBe(true);
       expect(paymentApprovalRepository.save).toHaveBeenCalledWith(approvals[0]);
-      expect(paymentEventsService.createEvent).toHaveBeenCalled();
+      expect(paymentEventsService.createApprovedEvent).toHaveBeenCalled();
     });
 
     it('should call processFinalApproval if all approvals are approved', async () => {
       const approvals = [{ approverId: 1, approved: false, order: 1 }];
       paymentApprovalRepository.find.mockResolvedValue(approvals);
       jest
-        .spyOn(paymentEventsService, 'createEvent')
+        .spyOn(paymentEventsService, 'createApprovedEvent')
         .mockResolvedValue(undefined);
       const processFinalApprovalSpy = jest
         .spyOn(service as any, 'processFinalApproval')

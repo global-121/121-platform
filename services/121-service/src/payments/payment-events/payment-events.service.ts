@@ -45,6 +45,43 @@ export class PaymentEventsService {
     });
   }
 
+  public async createApprovedEvent({
+    paymentId,
+    userId,
+    rank,
+    total,
+    note,
+  }: {
+    paymentId: number;
+    userId: number;
+    rank: number;
+    total: number;
+    note?: string;
+  }): Promise<void> {
+    const attributes = [
+      {
+        key: PaymentEventAttributeKey.approveOrder,
+        value: rank.toString(),
+      },
+      {
+        key: PaymentEventAttributeKey.approveTotal,
+        value: total.toString(),
+      },
+    ];
+    if (note) {
+      attributes.push({
+        key: PaymentEventAttributeKey.note,
+        value: note,
+      });
+    }
+    await this.createEvent({
+      type: PaymentEvent.approved,
+      paymentId,
+      userId,
+      attributes,
+    });
+  }
+
   public async createNoteEvent({
     paymentId,
     userId,
