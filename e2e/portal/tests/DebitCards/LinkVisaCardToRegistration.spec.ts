@@ -26,6 +26,7 @@ import RegistrationDebitCardPage from '@121-e2e/portal/pages/RegistrationDebitCa
 
 const visaCardNumber = '1111222233334444555';
 const newVisaCardNumber = '5555444433332222111';
+const nonExistingVisaCardNumber = '3333444455556666777';
 let registrationId: number;
 let accessToken: string;
 const updateProgramFspConfigurationDto: UpdateProgramFspConfigurationDto = {
@@ -143,4 +144,14 @@ test('User can successfully replace a debit card and gets error if he tries to l
     expect(currentDebitCardDataList['Card number']).toBe(newVisaCardNumber);
     expect(substituteDebitCardDataList['Card number']).toBe(visaCardNumber);
   });
+});
+
+test('Error when linking non existing card', async ({ page }) => {
+  const debitCardPage = new RegistrationDebitCardPage(page);
+
+  await debitCardPage.linkVisaCard(nonExistingVisaCardNumber);
+  // For now, the error message is generic, but I assume this should be updated in the future to a more specific one
+  await debitCardPage.validateToastMessageAndClose(
+    'An unexpected error occurred while linking the Visa card to the registration',
+  );
 });
