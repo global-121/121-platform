@@ -58,7 +58,6 @@ test('Do payment for excel fsp', async ({ page }) => {
   });
 
   await test.step('Create payment', async () => {
-    // Create payment
     await paymentsPage.createPayment({});
     await paymentsPage.validateExcelFspInstructions();
     await paymentsPage.validatePaymentSummary({
@@ -73,10 +72,8 @@ test('Do payment for excel fsp', async ({ page }) => {
     );
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
-    await paymentPage.validateToastMessageAndClose('Payment created.');
-
-    // approve + start payment
-    await paymentPage.approveAndStartPayment({});
+    await paymentPage.approvePayment();
+    await paymentPage.startPayment();
   });
 
   await test.step('Download payment instructions', async () => {

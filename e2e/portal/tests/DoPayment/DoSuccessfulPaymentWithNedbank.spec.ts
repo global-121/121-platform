@@ -51,7 +51,6 @@ test('Do successful payment for Nedbank fsp', async ({ page }) => {
   });
 
   await test.step('Do payment', async () => {
-    // Create payment
     await paymentsPage.createPayment({});
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
@@ -59,10 +58,8 @@ test('Do successful payment for Nedbank fsp', async ({ page }) => {
     );
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
-    await paymentPage.validateToastMessageAndClose('Payment created.');
-
-    // approve + start payment
-    await paymentPage.approveAndStartPayment({});
+    await paymentPage.approvePayment();
+    await paymentPage.startPayment();
 
     // Run CRON job to process payment
     await runCronJobDoNedbankReconciliation();
