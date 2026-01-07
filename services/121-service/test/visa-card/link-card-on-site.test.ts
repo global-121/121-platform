@@ -2,17 +2,11 @@ import { HttpStatus } from '@nestjs/common';
 
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { VisaCard121Status } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/wallet-status-121.enum';
-import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdVisa,
   registrationVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
-import {
-  createAndStartPayment,
-  getTransactionsByPaymentIdPaginated,
-  waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
 import { updateProgramCardDistributionByMail } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   getVisaWalletsAndDetails,
@@ -187,59 +181,6 @@ describe('Link Visa debit card on site', () => {
     expect(response.status).toBe(HttpStatus.BAD_REQUEST);
     expect(response.body.message).toMatchInlineSnapshot(
       `"Linking a card on-site is not allowed when card distribution by mail is enabled."`,
-    );
-  });
-
-  it('should throw when doing a payment to a registration without a linked Visa Debit card', async () => {
-    const uniqueRegistration = {
-      ...registrationVisa,
-      referenceId: 'unique-ref-id-4567',
-    };
-    // Arrange
-    await seedIncludedRegistrations(
-      [uniqueRegistration],
-      programIdVisa,
-      accessToken,
-    );
-
-    await updateProgramCardDistributionByMail({
-      isCardDistributionByMail: false,
-      accessToken,
-    });
-
-    // Act
-    const doPaymentResponse = await createAndStartPayment({
-      programId: programIdVisa,
-      transferValue: 1000,
-      referenceIds: [uniqueRegistration.referenceId],
-      accessToken,
-    });
-
-    const paymentId = doPaymentResponse.body.id;
-
-    await waitForPaymentTransactionsToComplete({
-      programId: programIdVisa,
-      paymentReferenceIds: [uniqueRegistration.referenceId],
-      paymentId,
-      accessToken,
-      maxWaitTimeMs: 10_000,
-      completeStatuses: [
-        TransactionStatusEnum.success,
-        TransactionStatusEnum.error,
-      ],
-    });
-    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
-      programId: programIdVisa,
-      paymentId,
-      registrationReferenceId: uniqueRegistration.referenceId,
-      accessToken,
-    });
-    const transaction = getTransactionsResult.body.data[0];
-
-    // Assert
-    expect(transaction.status).toBe(TransactionStatusEnum.error);
-    expect(transaction.errorMessage).toMatchInlineSnapshot(
-      `"Cannot do a transaction when card distribution by mail is disabled and customer does not exist."`,
     );
   });
 });

@@ -20,11 +20,15 @@ import {
   getTransactionsByPaymentIdPaginated,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
-import { deleteProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
+import {
+  deleteProgramFspConfigurationProperty,
+  updateProgramCardDistributionByMail,
+} from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   awaitChangeRegistrationStatus,
   getTransactionEventDescriptions,
   importRegistrations,
+  seedIncludedRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -413,6 +417,59 @@ describe('Do failing payment with FSP Visa Debit', () => {
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(transactionsResponse.text).toContain(
       'Operation reference is already used.',
+    );
+  });
+
+  it('should throw when doing a payment to a registration without a linked Visa Debit card', async () => {
+    const uniqueRegistration = {
+      ...registrationVisa,
+      referenceId: 'unique-ref-id-4567',
+    };
+    // Arrange
+    await seedIncludedRegistrations(
+      [uniqueRegistration],
+      programIdVisa,
+      accessToken,
+    );
+
+    await updateProgramCardDistributionByMail({
+      isCardDistributionByMail: false,
+      accessToken,
+    });
+
+    // Act
+    const doPaymentResponse = await createAndStartPayment({
+      programId: programIdVisa,
+      transferValue: 1000,
+      referenceIds: [uniqueRegistration.referenceId],
+      accessToken,
+    });
+
+    const paymentId = doPaymentResponse.body.id;
+
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
+      paymentReferenceIds: [uniqueRegistration.referenceId],
+      paymentId,
+      accessToken,
+      maxWaitTimeMs: 10_000,
+      completeStatuses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
+    });
+    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
+      programId: programIdVisa,
+      paymentId,
+      registrationReferenceId: uniqueRegistration.referenceId,
+      accessToken,
+    });
+    const transaction = getTransactionsResult.body.data[0];
+
+    // Assert
+    expect(transaction.status).toBe(TransactionStatusEnum.error);
+    expect(transaction.errorMessage).toMatchInlineSnapshot(
+      `"Cannot do a transaction when card distribution by mail is disabled and customer does not exist."`,
     );
   });
 });
