@@ -52,7 +52,8 @@ test('Payment chart should reflect transaction statuses', async ({ page }) => {
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
     );
-    await paymentPage.approveAndStartPayment({ validateToast: false });
+    await paymentPage.approvePayment();
+    await paymentPage.startPayment();
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
