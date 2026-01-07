@@ -211,7 +211,7 @@ export class RegistrationApiService extends DomainApiService {
     status: RegistrationStatusEnum;
     reason?: string | undefined;
     messageData?: SendMessageData | undefined;
-    dryRun: boolean;
+    dryRun?: boolean;
   }) {
     let body: Dto<RegistrationStatusPatchDto> = {
       status,
@@ -233,7 +233,7 @@ export class RegistrationApiService extends DomainApiService {
       this.paginateQueryService.paginateQueryToHttpParamsObject(paginateQuery);
     params = {
       ...params,
-      dryRun,
+      dryRun: dryRun ?? true,
     };
 
     const method =
