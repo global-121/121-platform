@@ -399,10 +399,12 @@ export class RegistrationApiService extends DomainApiService {
 
     const body = { tokenCode: tokenCode() };
 
-    return this.httpWrapperService.perform121ServiceRequest({
+    const req = this.httpWrapperService.perform121ServiceRequest({
       method: 'POST',
       endpoint,
       body,
     });
+
+    return req;
   }
 }

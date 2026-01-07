@@ -1,4 +1,4 @@
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpStatusCode } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -19,6 +19,7 @@ import { FormErrorComponent } from '~/components/form-error/form-error.component
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { LinkCardDialogStates } from '~/pages/program-registration-debit-cards/components/link-card-on-site-dialog/enums/link-card-dialog-states.enum';
 import { ToastService } from '~/services/toast.service';
+import { isErrorWithStatusCode } from '~/utils/is-error-with-status-code.helper';
 
 @Component({
   selector: 'app-link-card-dialog',
@@ -148,29 +149,34 @@ export class LinkCardDialogComponent {
           tokenCode: tokenCodeWithoutDashes,
         });
       }
+
+      this.toastService.showToast({
+        severity: 'success',
+        detail: $localize`Link Visa card to registration`,
+      });
+
+      this.dialogVisible.set(false);
     } catch (error) {
-      // TODO: update/test this after tokenCode prefix check is implemented in the backend
-      if (error instanceof HttpErrorResponse && error.status === 400) {
+      if (
+        isErrorWithStatusCode({ error, statusCode: HttpStatusCode.BadRequest })
+      ) {
         this.linkCardDialogState.set(
           LinkCardDialogStates.errorAlreadyLinkedToOther,
         );
         return;
       }
-      if (error instanceof HttpErrorResponse && error.status === 404) {
+      if (
+        isErrorWithStatusCode({ error, statusCode: HttpStatusCode.NotFound })
+      ) {
         this.linkCardDialogState.set(LinkCardDialogStates.errorNotFound);
         return;
       }
+
       this.toastService.showToast({
         severity: 'error',
         detail: $localize`An unexpected error occurred while linking the Visa card to the registration`,
       });
-
-      return;
     }
-    this.toastService.showToast({
-      severity: 'success',
-      detail: $localize`Link Visa card to registration`,
-    });
   }
 
   goBackToLinkingState() {
