@@ -116,7 +116,7 @@ class FspSettingsPage extends BasePage {
             .getByLabel('Full Name')
             .nth(i + 1)
             .click();
-          await dropdown.nth(i).click(); // Click outside to close
+          await this.page.getByText('Display name').click(); // Click outside to close
         }
       } else {
         for (let i = 1; i < inputCount; i++) {
