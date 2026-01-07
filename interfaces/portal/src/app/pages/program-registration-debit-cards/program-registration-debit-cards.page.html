@@ -170,6 +170,7 @@
 <!-- LINK CARD ON SITE -->
 <app-link-card-dialog
   [currentTokenCode]="currentCard()?.tokenCode"
+  [previousTokenCodes]="previousTokenCodes()"
   [programId]="programId"
   [referenceId]="referenceId"
   [(dialogVisible)]="linkCardDialogVisible"

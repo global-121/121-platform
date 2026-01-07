@@ -87,6 +87,18 @@ export class ProgramRegistrationDebitCardsPageComponent {
   );
 
   readonly currentCard = computed(() => this.walletWithCards.data()?.cards[0]);
+  readonly previousTokenCodes = computed<string[]>(() => {
+    if (!this.walletWithCards.isSuccess()) {
+      return [];
+    }
+
+    const allTokenCodes = this.walletWithCards
+      .data()
+      .cards.map((card) => card.tokenCode);
+    return allTokenCodes.filter(
+      (tokenCode) => tokenCode !== this.currentCard()?.tokenCode,
+    );
+  });
 
   readonly currentCardHasAction = computed(
     () => (action: 'pause' | 'reissue' | 'unpause') =>

@@ -31,6 +31,7 @@ export class LinkCardDialogComponent {
   private readonly toastService = inject(ToastService);
   private readonly registrationApiService = inject(RegistrationApiService);
   readonly currentTokenCode = input<string>();
+  readonly previousTokenCodes = input.required<string[]>();
   readonly programId = input.required<Signal<number | string>>();
   readonly referenceId = input.required<Signal<string | undefined>>();
   readonly dialogVisible = model.required<boolean>();
@@ -63,11 +64,11 @@ export class LinkCardDialogComponent {
     return $localize`Link card`;
   });
 
-  readonly tokenCodeWithoutDashes = ({
+  readonly getTokenCodeWithoutDashes = ({
     tokenCodeToClean,
   }: {
     tokenCodeToClean: string;
-  }) => computed(() => tokenCodeToClean.replaceAll('-', ''));
+  }) => tokenCodeToClean.replaceAll(/\D/g, '');
 
   readonly isError = computed(
     () => this.linkCardDialogState() !== LinkCardDialogStates.linking,
@@ -119,15 +120,23 @@ export class LinkCardDialogComponent {
       return;
     }
 
-    const currentTokenCodeWithoutDashes = this.tokenCodeWithoutDashes({
+    const currentTokenCodeWithoutDashes = this.getTokenCodeWithoutDashes({
       tokenCodeToClean: this.currentTokenCode() ?? '',
     });
 
-    const tokenCodeWithoutDashes = this.tokenCodeWithoutDashes({
+    const previousTokenCodesWithoutDashes = this.previousTokenCodes().map(
+      (tokenCode) =>
+        this.getTokenCodeWithoutDashes({ tokenCodeToClean: tokenCode }),
+    );
+
+    const tokenCodeWithoutDashes = this.getTokenCodeWithoutDashes({
       tokenCodeToClean: this.tokenCode(),
     });
 
-    if (tokenCodeWithoutDashes() === currentTokenCodeWithoutDashes()) {
+    if (
+      tokenCodeWithoutDashes === currentTokenCodeWithoutDashes ||
+      previousTokenCodesWithoutDashes.includes(tokenCodeWithoutDashes)
+    ) {
       this.linkCardDialogState.set(
         LinkCardDialogStates.errorAlreadyLinkedToCurrent,
       );
