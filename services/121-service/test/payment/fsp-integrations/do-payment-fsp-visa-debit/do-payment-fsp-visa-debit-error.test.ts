@@ -420,7 +420,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     );
   });
 
-  it('should throw when doing a payment to a registration without a linked Visa Debit card', async () => {
+  it('should fail transaction when card distribution by mail is disabled', async () => {
     const uniqueRegistration = {
       ...registrationVisa,
       referenceId: 'unique-ref-id-4567',
