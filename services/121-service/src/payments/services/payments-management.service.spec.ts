@@ -260,10 +260,10 @@ describe('PaymentsManagementService', () => {
       ).rejects.toThrow('Approver not assigned to this payment');
     });
 
-    it('should throw if not lowest order approver', async () => {
+    it('should throw if not lowest rank  approver', async () => {
       const approvals = [
-        { approverId: 1, approved: false, order: 2 },
-        { approverId: 2, approved: false, order: 1 },
+        { approverId: 1, approved: false, rank: 2 },
+        { approverId: 2, approved: false, rank: 1 },
       ];
       paymentApprovalRepository.find.mockResolvedValue(approvals);
       await expect(
@@ -275,8 +275,8 @@ describe('PaymentsManagementService', () => {
 
     it('should approve the payment for the approver and save', async () => {
       const approvals = [
-        { approverId: 1, approved: false, order: 1 },
-        { approverId: 2, approved: false, order: 2 },
+        { approverId: 1, approved: false, rank: 1 },
+        { approverId: 2, approved: false, rank: 2 },
       ];
       paymentApprovalRepository.find.mockResolvedValue(approvals);
       jest
@@ -291,7 +291,7 @@ describe('PaymentsManagementService', () => {
     });
 
     it('should call processFinalApproval if all approvals are approved', async () => {
-      const approvals = [{ approverId: 1, approved: false, order: 1 }];
+      const approvals = [{ approverId: 1, approved: false, rank: 1 }];
       paymentApprovalRepository.find.mockResolvedValue(approvals);
       jest
         .spyOn(paymentEventsService, 'createApprovedEvent')
