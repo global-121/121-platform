@@ -474,7 +474,6 @@ export async function waitForPaymentAndTransactionsToComplete({
   maxWaitTimeMs: number;
   completeStatuses?: string[];
   paymentId?: number;
-  waitForPaymentToBeComplete?: boolean;
 }): Promise<void> {
   const startTime = Date.now();
   let allTransactionsComplete = false;
