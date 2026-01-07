@@ -24,9 +24,12 @@ const newPasswordValidator: ValidatorFn = (
 ): null | ValidationErrors => {
   const currentPassword = control.get('currentPassword');
   const newPassword = control.get('newPassword');
-  return newPassword &&
-    currentPassword &&
-    newPassword.value === currentPassword.value
+
+  if (!currentPassword || !newPassword) {
+    return null;
+  }
+
+  return newPassword.value === currentPassword.value
     ? { newPasswordIsNotDifferent: true }
     : null;
 };
@@ -36,9 +39,12 @@ const confirmPasswordValidator: ValidatorFn = (
 ): null | ValidationErrors => {
   const newPassword = control.get('newPassword');
   const confirmPassword = control.get('confirmPassword');
-  return newPassword &&
-    confirmPassword &&
-    newPassword.value !== confirmPassword.value
+
+  if (!newPassword || !confirmPassword) {
+    return null;
+  }
+
+  return newPassword.value !== confirmPassword.value
     ? { confirmPasswordDoesNotMatch: true }
     : null;
 };
