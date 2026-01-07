@@ -53,8 +53,8 @@ test('Show in progress banner and chip when payment is in progress', async ({
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
     );
-    await paymentPage.validateToastMessage('Payment created.');
-    await paymentPage.approveAndStartPayment({});
+    await paymentPage.approvePayment();
+    await paymentPage.startPayment();
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });

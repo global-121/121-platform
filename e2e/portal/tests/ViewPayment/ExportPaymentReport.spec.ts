@@ -51,14 +51,13 @@ test('Export Payment Report should contain the right data', async ({
     await test.step(`Do payment ${i}`, async () => {
       await paymentsPage.navigateToProgramPage('Payments');
 
-      // Create payment
       await paymentsPage.createPayment({});
       // Assert redirection to payment overview page
       await page.waitForURL((url) =>
         url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/${i}`),
       );
-      // approve + start payment
-      await paymentPage.approveAndStartPayment({ validateToast: false });
+      await paymentPage.approvePayment();
+      await paymentPage.startPayment();
       await paymentPage.waitForPaymentToComplete();
     });
   }

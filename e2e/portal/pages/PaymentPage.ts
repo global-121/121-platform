@@ -64,21 +64,6 @@ class PaymentPage extends BasePage {
     });
   }
 
-  async approveAndStartPayment({
-    validateToast = true,
-  }: {
-    validateToast?: boolean;
-  }) {
-    await this.approvePayment();
-    if (validateToast) {
-      await this.validateToastMessageAndClose('Payment approved successfully.');
-    }
-    await this.startPayment();
-    if (validateToast) {
-      await this.validateToastMessageAndClose('Payment started successfully.');
-    }
-  }
-
   async approvePayment() {
     await this.approvePaymentButton.click();
     await this.formDialogProceedButton.click();

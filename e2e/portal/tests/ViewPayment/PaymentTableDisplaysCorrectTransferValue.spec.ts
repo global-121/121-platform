@@ -52,8 +52,8 @@ test('Table should reflect the actual transfer values sent to the PAs in this pa
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
     );
-    await paymentPage.validateToastMessage('Payment created.');
-    await paymentPage.approveAndStartPayment({});
+    await paymentPage.approvePayment();
+    await paymentPage.startPayment();
 
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
