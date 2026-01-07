@@ -60,7 +60,7 @@ export class PaymentEventsService {
   }): Promise<void> {
     const attributes = [
       {
-        key: PaymentEventAttributeKey.approveOrder,
+        key: PaymentEventAttributeKey.approveRank,
         value: rank.toString(),
       },
       {

@@ -43,7 +43,7 @@ export class TableCellPaymentEventOverviewComponent implements TableCellComponen
       case PaymentEvent.note:
         return event.attributes.note;
       case PaymentEvent.approved: {
-        const order = event.attributes.approveOrder;
+        const order = event.attributes.approveRank;
         const total = event.attributes.approveTotal;
         if (event.attributes.note) {
           return $localize`${label} payment (${order} of ${total}). Note: ${event.attributes.note}`;

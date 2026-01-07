@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
+import { PaymentEventAttributeKey } from '@121-service/src/payments/payment-events/enums/payment-event-attribute-key.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
@@ -111,6 +112,7 @@ describe('Payment approval flow', () => {
 
   describe('do payment with 2 approvers', () => {
     let accessTokenFinanceManager: string;
+    let paymentId: number;
 
     beforeEach(async () => {
       // configure 2nd approver
@@ -126,20 +128,19 @@ describe('Payment approval flow', () => {
         order: 2,
         accessToken: adminAccessToken,
       });
-    });
 
-    it('should successfully do payment', async () => {
-      // Arrange
       const createPaymentResponse = await createPayment({
         programId,
         transferValue,
         referenceIds: [registrationPV5.referenceId],
         accessToken: adminAccessToken,
       });
+      paymentId = createPaymentResponse.body.id;
+    });
 
+    it('should successfully do payment', async () => {
       // Act
       // 1st approve
-      const paymentId = createPaymentResponse.body.id;
       const approvePaymentResponse = await approvePayment({
         programId,
         paymentId,
@@ -177,7 +178,6 @@ describe('Payment approval flow', () => {
       });
 
       // Assert
-      expect(createPaymentResponse.status).toBe(HttpStatus.CREATED);
       expect(approvePaymentResponse.status).toBe(HttpStatus.CREATED);
       expect(startPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
 
@@ -193,18 +193,51 @@ describe('Payment approval flow', () => {
       );
     });
 
-    it('should throw on 2nd approve when 1st approver has not yet approved', async () => {
-      // Arrange
-      const createPaymentResponse = await createPayment({
+    it('should create right approval payment events, including note', async () => {
+      const note = '2nd approval note';
+
+      // Act
+      // 1st approve
+      await approvePayment({
         programId,
-        transferValue,
-        referenceIds: [registrationPV5.referenceId],
+        paymentId,
         accessToken: adminAccessToken,
       });
 
+      // 2nd approve
+      await approvePayment({
+        programId,
+        paymentId,
+        accessToken: accessTokenFinanceManager,
+        note,
+      });
+
+      // Assert
+      const getPaymentEventsResponse = await getPaymentEvents({
+        programId,
+        paymentId,
+        accessToken: adminAccessToken,
+      });
+      const { data } = getPaymentEventsResponse.body;
+      const approveEvents = data.filter(
+        (event) => event.type === PaymentEvent.approved,
+      );
+      expect(approveEvents.length).toBe(2);
+      // payment-events are returned newest first
+      expect(approveEvents[1].attributes).toMatchObject({
+        [PaymentEventAttributeKey.approveRank]: '1',
+        [PaymentEventAttributeKey.approveTotal]: '2',
+      });
+      expect(approveEvents[0].attributes).toMatchObject({
+        [PaymentEventAttributeKey.approveRank]: '2',
+        [PaymentEventAttributeKey.approveTotal]: '2',
+        [PaymentEventAttributeKey.note]: note,
+      });
+    });
+
+    it('should throw on 2nd approve when 1st approver has not yet approved', async () => {
       // Act
       // 2nd approve without 1st approve
-      const paymentId = createPaymentResponse.body.id;
       const approvePaymentResponseFinanceManager = await approvePayment({
         programId,
         paymentId,
@@ -212,7 +245,6 @@ describe('Payment approval flow', () => {
       });
 
       // Assert
-      expect(createPaymentResponse.status).toBe(HttpStatus.CREATED);
       expect(approvePaymentResponseFinanceManager.status).toBe(
         HttpStatus.BAD_REQUEST,
       );

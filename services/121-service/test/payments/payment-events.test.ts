@@ -128,7 +128,7 @@ describe('Payment Events API', () => {
         username: env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
       },
       attributes: {
-        [PaymentEventAttributeKey.approveOrder]: '1',
+        [PaymentEventAttributeKey.approveRank]: '1',
         [PaymentEventAttributeKey.approveTotal]: '1',
       },
     });

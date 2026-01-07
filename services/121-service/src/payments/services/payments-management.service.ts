@@ -228,11 +228,12 @@ export class PaymentsManagementService {
     note?: string;
     approvers: ApproverResponseDto[];
   }): Promise<number> {
-    const paymentApprovals = approvers.map((approver) => {
+    const sortedApprovers = approvers.slice().sort((a, b) => a.order - b.order);
+    const paymentApprovals = sortedApprovers.map((approver, index) => {
       const paymentApproval = new PaymentApprovalEntity();
       paymentApproval.approverId = approver.id;
       paymentApproval.approved = false;
-      paymentApproval.order = approver.order;
+      paymentApproval.rank = index + 1;
       return paymentApproval;
     });
 
@@ -337,24 +338,17 @@ export class PaymentsManagementService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    this.checkLowestOrderOrThrow(currentPaymentApproval, allPaymentApprovals);
+    this.checkLowestRankOrThrow(currentPaymentApproval, allPaymentApprovals);
 
     // store payment approval
     currentPaymentApproval.approved = true;
     await this.paymentApprovalRepository.save(currentPaymentApproval);
 
     // store payment event
-    const sortedApprovals = allPaymentApprovals
-      .slice()
-      .sort((a, b) => a.order - b.order);
-    const rank =
-      sortedApprovals.findIndex(
-        (a) => a.approverId === currentPaymentApproval.approverId,
-      ) + 1;
     await this.paymentEventsService.createApprovedEvent({
       paymentId,
       userId,
-      rank,
+      rank: currentPaymentApproval.rank,
       total: allPaymentApprovals.length,
       note,
     });
@@ -377,17 +371,17 @@ export class PaymentsManagementService {
     }
   }
 
-  private checkLowestOrderOrThrow(
+  private checkLowestRankOrThrow(
     currentPaymentApproval: PaymentApprovalEntity,
     allPaymentApprovals: PaymentApprovalEntity[],
   ) {
     const openApprovals = allPaymentApprovals.filter(
       (approval) => !approval.approved,
     );
-    const isLowestOrder = openApprovals.every(
-      (approval) => currentPaymentApproval.order <= approval.order,
+    const isLowestRank = openApprovals.every(
+      (approval) => currentPaymentApproval.rank <= approval.rank,
     );
-    if (!isLowestOrder) {
+    if (!isLowestRank) {
       throw new HttpException(
         'Cannot approve payment before lower-order approvers have approved',
         HttpStatus.BAD_REQUEST,
