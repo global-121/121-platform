@@ -76,33 +76,6 @@
   },
   {
     "method": "get",
-    "path": "/api/roles",
-    "params": []
-  },
-  {
-    "method": "post",
-    "path": "/api/roles",
-    "params": [],
-    "returnType": "UserRoleResponseDTO"
-  },
-  {
-    "method": "put",
-    "path": "/api/roles/{userRoleId}",
-    "params": [
-      "userRoleId"
-    ],
-    "returnType": "UserRoleResponseDTO"
-  },
-  {
-    "method": "delete",
-    "path": "/api/roles/{userRoleId}",
-    "params": [
-      "userRoleId"
-    ],
-    "returnType": "UserRoleResponseDTO"
-  },
-  {
-    "method": "get",
     "path": "/api/users",
     "params": []
   },
@@ -202,6 +175,33 @@
     "params": [
       "programId"
     ]
+  },
+  {
+    "method": "get",
+    "path": "/api/roles",
+    "params": []
+  },
+  {
+    "method": "post",
+    "path": "/api/roles",
+    "params": [],
+    "returnType": "UserRoleResponseDTO"
+  },
+  {
+    "method": "put",
+    "path": "/api/roles/{userRoleId}",
+    "params": [
+      "userRoleId"
+    ],
+    "returnType": "UserRoleResponseDTO"
+  },
+  {
+    "method": "delete",
+    "path": "/api/roles/{userRoleId}",
+    "params": [
+      "userRoleId"
+    ],
+    "returnType": "UserRoleResponseDTO"
   },
   {
     "method": "get",
@@ -631,13 +631,6 @@
     ]
   },
   {
-    "method": "get",
-    "path": "/api/registrations",
-    "params": [
-      "phonenumber"
-    ]
-  },
-  {
     "method": "post",
     "path": "/api/programs/{programId}/registrations/message",
     "params": [
@@ -689,6 +682,13 @@
     "params": [
       "programId",
       "id"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/registrations",
+    "params": [
+      "phonenumber"
     ]
   },
   {
