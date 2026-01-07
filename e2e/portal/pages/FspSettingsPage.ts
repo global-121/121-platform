@@ -107,7 +107,6 @@ class FspSettingsPage extends BasePage {
         await this.page.waitForLoadState('domcontentloaded');
         const dropdown = this.page.getByPlaceholder('Select 1');
         const dropdownsCount = await dropdown.count();
-        console.log('dropdownsCount: ', dropdownsCount);
 
         for (let i = 0; i < dropdownsCount; i++) {
           await this.page.waitForTimeout(100);
