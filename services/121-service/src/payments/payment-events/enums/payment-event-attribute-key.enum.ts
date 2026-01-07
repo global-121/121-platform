@@ -1,5 +1,5 @@
 export enum PaymentEventAttributeKey {
   note = 'note',
-  approveOrder = 'approveOrder',
+  approveRank = 'approveRank',
   approveTotal = 'approveTotal',
 }
