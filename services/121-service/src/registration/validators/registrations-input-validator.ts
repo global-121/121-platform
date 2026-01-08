@@ -19,9 +19,9 @@ import { ValidationRegistrationConfig } from '@121-service/src/registration/inte
 import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
 import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import { ValidationPipelineOptionsWithoutWhiteList } from '@121-service/src/registration/validators/consts/validation-pipeline-options-without-white-list.const';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UserService } from '@121-service/src/user/user.service';
+import { ValidationPipelineOptionsWithoutWhiteList } from '@121-service/src/validation-options/validation-pipeline-options-without-white-list.const';
 
 type InputAttributeType = string | boolean | number | undefined | null;
 
