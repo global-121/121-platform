@@ -86,7 +86,6 @@ test.beforeEach(async ({ page }) => {
 test('User can link a debit card to a registration', async ({ page }) => {
   const debitCardPage = new RegistrationDebitCardPage(page);
   const linkCardButton = await debitCardPage.getLinkVisaCardButton();
-  const replaceCardButton = await debitCardPage.getReplaceCardButton();
 
   await test.step('User can view link card button', async () => {
     await expect(linkCardButton).toBeVisible();
@@ -97,8 +96,7 @@ test('User can link a debit card to a registration', async ({ page }) => {
     await debitCardPage.validateToastMessageAndClose(
       'Link Visa card to registration',
     );
-    await expect(replaceCardButton).toBeVisible();
-    await debitCardPage.closeLinkDebitCardModal();
+
     const currentDebitCardDataList =
       await debitCardPage.getCurrentDebitCardDataList();
     expect(currentDebitCardDataList['Card number']).toBe(visaCardNumber);
@@ -133,7 +131,7 @@ test('User can successfully replace a debit card and gets error if he tries to l
     await debitCardPage.validateToastMessageAndClose(
       'Link Visa card to registration',
     );
-    await debitCardPage.closeLinkDebitCardModal();
+
     // The behaviour of the page right now is that FE does not refresh immediately and the page should be refreshed to get new and old card numbers
     // I think this should not work like that
     await page.reload();
@@ -147,11 +145,14 @@ test('User can successfully replace a debit card and gets error if he tries to l
 });
 
 test('Error when linking non existing card', async ({ page }) => {
+  const dialogLocator = page.locator('.p-dialog');
+
   const debitCardPage = new RegistrationDebitCardPage(page);
+  const formDialog = new FormDialogComponent(dialogLocator);
 
   await debitCardPage.linkVisaCard(nonExistingVisaCardNumber);
-  // For now, the error message is generic, but I assume this should be updated in the future to a more specific one
-  await debitCardPage.validateToastMessageAndClose(
-    'An unexpected error occurred while linking the Visa card to the registration',
+
+  await formDialog.hasContent(
+    'Card number not found. Please go back and check that the number is correct.',
   );
 });
