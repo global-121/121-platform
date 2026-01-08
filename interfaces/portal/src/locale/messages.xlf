@@ -2057,17 +2057,11 @@
       <trans-unit id="debit-card-actions-link-visa-card" datatype="html">
         <source>Link visa card</source>
       </trans-unit>
-      <trans-unit id="734934965373819800" datatype="html">
-        <source>Go back</source>
-      </trans-unit>
       <trans-unit id="7960663124844501943" datatype="html">
         <source>Error - Link visa card</source>
       </trans-unit>
       <trans-unit id="7561977067156405830" datatype="html">
         <source>Link Visa card to registration</source>
-      </trans-unit>
-      <trans-unit id="2159130950882492111" datatype="html">
-        <source>Cancel</source>
       </trans-unit>
       <trans-unit id="2560790823235400386" datatype="html">
         <source>No debit cards found</source>
@@ -2087,14 +2081,8 @@
       <trans-unit id="4142926878648956866" datatype="html">
         <source>There are no debit cards linked to this registration. Link a visa card from your available cards to this registration by clicking the button below.</source>
       </trans-unit>
-      <trans-unit id="333843503035430789" datatype="html">
-        <source>You&apos;re about to replace debit card number <x equiv-text="{{ currentTokenCode() }}" id="INTERPOLATION"/>.</source>
-      </trans-unit>
       <trans-unit id="159499234601402136" datatype="html">
         <source>Replace card</source>
-      </trans-unit>
-      <trans-unit id="187187500641108332" datatype="html">
-        <source><x equiv-text="{{ dialogTitle() }}" id="INTERPOLATION"/></source>
       </trans-unit>
       <trans-unit id="1941641831210864467" datatype="html">
         <source>Replace visa card</source>
@@ -2113,6 +2101,9 @@
       </trans-unit>
       <trans-unit id="891683010392787907" datatype="html">
         <source>If the number is correct but this error persists, try a different card and inform your supervisor.</source>
+      </trans-unit>
+      <trans-unit id="2358567597663804258" datatype="html">
+        <source>You&apos;re about to replace debit card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentTokenCode() }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>.</source>
       </trans-unit>
     </body>
   </file>
