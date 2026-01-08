@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class SeperateRetryPermission1767868951564 implements MigrationInterface {
-  name = 'SeperateRetryPermission1767868951564';
+export class SeparateRetryPermission1767868951564 implements MigrationInterface {
+  name = 'SeparateRetryPermission1767868951564';
   closestPermissionName = 'payment.update';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
