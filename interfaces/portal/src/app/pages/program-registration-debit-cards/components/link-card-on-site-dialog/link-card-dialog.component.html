@@ -17,7 +17,8 @@
       @if (currentTokenCode()) {
         <p i18n>
           You're about to replace debit card number
-          {{ currentTokenCode() }}.
+          <span class="font-mono">{{ currentTokenCode() }}</span
+          >.
         </p>
       }
       <p i18n>
@@ -53,6 +54,7 @@
           [style]="{ width: '100%' }"
           [autoClear]="false"
           (onInput)="showTokenCodeInvalidWarning.set(false)"
+          class="font-mono"
         ></p-input-mask>
       </label>
       <app-form-error
