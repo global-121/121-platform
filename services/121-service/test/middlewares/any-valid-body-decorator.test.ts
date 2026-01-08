@@ -10,7 +10,7 @@ import { IsString } from 'class-validator';
 import * as request from 'supertest';
 
 import { AnyValidBody } from '@121-service/src/registration/validators/any-valid-body.validator';
-import { ValidationPipeOptions } from '@121-service/src/validation-pipe-options.const';
+import { ValidationPipeOptions } from '@121-service/src/validation-options/validation-pipe-options.const';
 
 class TestDto {
   @IsString()
