@@ -56,6 +56,18 @@ export class PageLayoutProgramSettingsComponent {
       visible: this.authService.isAdmin,
     },
     {
+      label: $localize`Registration data`,
+      icon: 'pi pi-file-edit',
+      routerLink: [
+        '/',
+        AppRoutes.program,
+        this.programId(),
+        AppRoutes.programSettings,
+        AppRoutes.programSettingsRegistrationData,
+      ],
+      visible: this.authService.isAdmin,
+    },
+    {
       label: $localize`:@@page-title-program-settings-team:Program team`,
       icon: 'pi pi-users',
       routerLink: [
