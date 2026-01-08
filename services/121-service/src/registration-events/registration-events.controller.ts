@@ -31,6 +31,7 @@ import { RegistrationEventsService } from '@121-service/src/registration-events/
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { sendXlsxReponse } from '@121-service/src/utils/send-xlsx-response';
 
+@ApiTags('programs/registration-events')
 @UseGuards(AuthenticatedUserGuard)
 @Controller()
 export class RegistrationEventsController {

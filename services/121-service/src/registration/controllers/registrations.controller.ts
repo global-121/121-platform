@@ -66,6 +66,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { FinancialAttributes } from '@121-service/src/user/enum/registration-financial-attributes.const';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
+@ApiTags('programs/registrations')
 @UseGuards(AuthenticatedUserGuard)
 @Controller()
 export class RegistrationsController {
@@ -75,7 +76,6 @@ export class RegistrationsController {
     private readonly registrationsBulkService: RegistrationsBulkService,
   ) {}
 
-  @ApiTags('programs/registrations')
   @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationCREATE] })
   @ApiOperation({
     summary: 'Import set of new PAs, from CSV',
@@ -99,7 +99,6 @@ export class RegistrationsController {
     );
   }
 
-  @ApiTags('programs/registrations')
   @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationCREATE] })
   @ApiOperation({
     summary: '[EXTERNALLY USED] Import set of new PAs',
@@ -124,7 +123,6 @@ export class RegistrationsController {
     );
   }
 
-  @ApiTags('programs/registrations')
   @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationREAD] })
   @ApiOperation({
     summary:
@@ -168,7 +166,6 @@ export class RegistrationsController {
   @AuthenticatedUser({
     permissions: [PermissionEnum.RegistrationBulkUPDATE],
   })
-  @ApiTags('programs/registrations')
   @ApiOperation({
     summary: `Bulk update registration using a CSV file. The columns in the CSV file should contain at least referenceId and the columns you want to update. If you leave a cell empty the corresponding registration data will be update with an empty string. Max file length is 100k rows. We do not support updating phone numbers or referenceId.`,
   })
@@ -193,7 +190,6 @@ export class RegistrationsController {
     );
   }
 
-  @ApiTags('programs/registrations')
   @AuthenticatedUser({
     permissions: [PermissionEnum.RegistrationImportTemplateREAD],
   })
@@ -211,7 +207,6 @@ export class RegistrationsController {
   }
 
   @AuthenticatedUser()
-  @ApiTags('programs/registrations')
   @ApiResponse({
     status: HttpStatus.OK,
     description:
@@ -344,7 +339,6 @@ export class RegistrationsController {
   }
 
   @AuthenticatedUser()
-  @ApiTags('programs/registrations')
   @ApiOperation({
     summary:
       '[SCOPED] [EXTERNALLY USED] Update provided attributes of registration (Used by Aidworker)',
@@ -428,43 +422,6 @@ export class RegistrationsController {
     });
   }
 
-  @AuthenticatedUser()
-  @ApiTags('registrations')
-  // There's no permission check here because there's a check included in the queries done to fetch data.
-  @ApiOperation({
-    summary:
-      '[SCOPED] Find registration by phone-number for Redline integration and FieldValidation',
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Return registrations that match the exact phone-number - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @ApiQuery({
-    name: 'phonenumber',
-    required: true,
-    type: 'string',
-  })
-  @Get('/registrations')
-  public async searchRegistration(
-    @Query('phonenumber') phonenumber: string,
-    @Req() req: ScopedUserRequest,
-  ) {
-    const userId = RequestHelper.getUserId(req);
-
-    if (typeof phonenumber !== 'string') {
-      throw new HttpException(
-        'phonenumber is not a string',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    return await this.registrationsService.searchRegistration(
-      phonenumber,
-      userId,
-    );
-  }
-
-  @ApiTags('programs/registrations')
   @ApiResponse({
     status: HttpStatus.OK,
     description:
@@ -541,7 +498,6 @@ export class RegistrationsController {
     return result;
   }
 
-  @ApiTags('programs/registrations')
   @ApiResponse({
     status: HttpStatus.OK,
     description:
@@ -630,7 +586,6 @@ export class RegistrationsController {
     return result;
   }
 
-  @ApiTags('programs/registrations')
   @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationPersonalREAD] })
   @ApiOperation({
     summary: '[SCOPED] Gets duplicate registrations for a registration',
@@ -683,7 +638,7 @@ export class RegistrationsController {
   }
 
   // This "wildcard" endpoint needs to be at the bottom of the file to avoid conflicts with other endpoints
-  @ApiTags('programs/registrations')
+
   @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationREAD] })
   @ApiOperation({
     summary:
