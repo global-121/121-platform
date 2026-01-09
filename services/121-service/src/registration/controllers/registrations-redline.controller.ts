@@ -27,7 +27,6 @@ export class RegistrationsRedlineController {
   ) {}
 
   @AuthenticatedUser()
-  @ApiTags('registrations')
   // There's no permission check here because there's a check included in the queries done to fetch data.
   @ApiOperation({
     summary:

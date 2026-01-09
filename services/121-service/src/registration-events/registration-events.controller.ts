@@ -42,7 +42,6 @@ export class RegistrationEventsController {
   @AuthenticatedUser({
     permissions: [PermissionEnum.RegistrationPersonalEXPORT],
   })
-  @ApiTags('programs/:programId/registration-events')
   @ApiOperation({ summary: 'Get list of registration events for query params' })
   @ApiParam({
     name: 'programId',
