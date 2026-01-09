@@ -108,6 +108,7 @@ describe('Do payment retry', () => {
       completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
+        TransactionStatusEnum.waiting,
       ],
     });
 
