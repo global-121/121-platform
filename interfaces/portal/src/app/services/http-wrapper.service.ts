@@ -55,10 +55,22 @@ export class HttpWrapperService {
     return headers;
   }
 
-  private handleError(error: HttpErrorResponse) {
+  private handleError(errorResponse: HttpErrorResponse) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- HttpStatusCode is a number enum
+    if (errorResponse.status === HttpStatusCode.InternalServerError) {
+      return of(
+        new Error(
+          $localize`:@@generic-error-try-again:An unexpected error has occurred. Please try again later.`,
+          {
+            cause: errorResponse,
+          },
+        ),
+      );
+    }
+
     if (
       // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- HttpStatusCode is a number enum
-      error.status === HttpStatusCode.TooManyRequests &&
+      errorResponse.status === HttpStatusCode.TooManyRequests &&
       !this.isRateLimitErrorShown
     ) {
       this.isRateLimitErrorShown = true;
@@ -69,30 +81,33 @@ export class HttpWrapperService {
       return of(
         new Error(
           $localize`:@@error-rate-limit:Rate limit exceeded. Please try again later.`,
+          {
+            cause: errorResponse,
+          },
         ),
       );
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- HttpStatusCode is a number enum
-    if (error.status === HttpStatusCode.Unauthorized) {
+    if (errorResponse.status === HttpStatusCode.Unauthorized) {
       const user = getUserFromLocalStorage();
 
-      if (!user) {
-        return of(error);
-      }
-
-      if (user.expires) {
+      if (user?.expires) {
         const expires = Date.parse(user.expires);
 
         if (expires < Date.now()) {
-          return of(new Error($localize`:@@error-token-expired:Token expired`));
+          return of(
+            new Error($localize`:@@error-token-expired:Token expired`, {
+              cause: errorResponse,
+            }),
+          );
         }
       }
     }
 
-    let errorMessage = get(error.error, 'message');
+    let errorMessage = get(errorResponse.error, 'message');
 
-    const errors: unknown = get(error, 'error.errors');
+    const errors: unknown = get(errorResponse, 'error.errors');
     if (errors) {
       let errorArray: unknown[] = [];
 
@@ -124,20 +139,18 @@ export class HttpWrapperService {
       return of(
         new Error(
           $localize`:@@generic-error-with-message:Something went wrong: ${JSON.stringify(errorMessage)}:errorMessage:`,
+          {
+            cause: errorResponse,
+          },
         ),
       );
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- HttpStatusCode is a number enum
-    if (error.status === HttpStatusCode.InternalServerError) {
-      return of(
-        new Error(
-          $localize`:@@generic-error-try-again:An unexpected error has occurred. Please try again later.`,
-        ),
-      );
-    }
-
-    return of(error);
+    return of(
+      new Error($localize`:@@generic-error:Something went wrong`, {
+        cause: errorResponse,
+      }),
+    );
   }
 
   public async performRequest<T>({
@@ -173,6 +186,7 @@ export class HttpWrapperService {
             catchError((error: HttpErrorResponse) => this.handleError(error)),
           ),
       );
+
       if (response instanceof Error || response instanceof HttpErrorResponse) {
         // eslint-disable-next-line @typescript-eslint/only-throw-error -- we're ok with throwing HttpErrorResponse
         throw response;

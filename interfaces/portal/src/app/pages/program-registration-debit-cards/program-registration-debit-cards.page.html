@@ -41,7 +41,7 @@
             (click)="
               cardDistributionByMailEnabled()
                 ? replaceCardByMailDialog.show()
-                : this.linkCardDialogVisible.set(true)
+                : linkCardDialogVisible.set(true)
             "
           />
         }
@@ -170,8 +170,9 @@
 <!-- LINK CARD ON SITE -->
 <app-link-card-dialog
   [currentTokenCode]="currentCard()?.tokenCode"
+  [previousTokenCodes]="previousTokenCodes()"
   [programId]="programId"
   [referenceId]="referenceId"
-  [dialogVisible]="linkCardDialogVisible()"
+  [(dialogVisible)]="linkCardDialogVisible"
   (closeDialog)="linkCardDialogVisible.set(false)"
 ></app-link-card-dialog>

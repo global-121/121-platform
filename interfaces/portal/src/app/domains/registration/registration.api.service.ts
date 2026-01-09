@@ -355,7 +355,7 @@ export class RegistrationApiService extends DomainApiService {
   }: {
     programId: Signal<number | string>;
     referenceId: Signal<string | undefined>;
-    tokenCode: Signal<string>;
+    tokenCode: string;
   }) {
     const endpoint = this.pathToQueryKey([
       ...BASE_ENDPOINT(programId),
@@ -368,7 +368,7 @@ export class RegistrationApiService extends DomainApiService {
       'link',
     ]).join('/');
 
-    const body = { tokenCode: tokenCode() };
+    const body = { tokenCode };
 
     return this.httpWrapperService.perform121ServiceRequest({
       method: 'POST',
@@ -384,7 +384,7 @@ export class RegistrationApiService extends DomainApiService {
   }: {
     programId: Signal<number | string>;
     referenceId: Signal<string | undefined>;
-    tokenCode: Signal<string>;
+    tokenCode: string;
   }) {
     const endpoint = this.pathToQueryKey([
       ...BASE_ENDPOINT(programId),
@@ -397,12 +397,14 @@ export class RegistrationApiService extends DomainApiService {
       'replace',
     ]).join('/');
 
-    const body = { tokenCode: tokenCode() };
+    const body = { tokenCode };
 
-    return this.httpWrapperService.perform121ServiceRequest({
+    const req = this.httpWrapperService.perform121ServiceRequest({
       method: 'POST',
       endpoint,
       body,
     });
+
+    return req;
   }
 }

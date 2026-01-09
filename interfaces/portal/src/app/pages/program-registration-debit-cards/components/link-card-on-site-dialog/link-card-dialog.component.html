@@ -1,22 +1,24 @@
 <p-dialog
-  [visible]="dialogVisible()"
-  modal
-  closable
-  dismissableMask
-  [style]="{ width: '632px' }"
+  [(visible)]="dialogVisible"
+  [modal]="true"
+  [closable]="true"
+  [dismissableMask]="true"
+  [style]="{ maxWidth: '45rem' }"
+  (onHide)="resetData()"
 >
-  @if (linkCardDialogState() === linkCardDialogStates.linking) {
+  @if (!isError()) {
     <ng-template pTemplate="header">
       <div class="flex items-center gap-2">
         <i class="pi pi-link"></i>
-        <h3 i18n>{{ dialogLabels().header }}</h3>
+        <h3>{{ dialogTitle() }}</h3>
       </div>
     </ng-template>
     <div class="flex flex-col gap-2">
       @if (currentTokenCode()) {
         <p i18n>
           You're about to replace debit card number
-          {{ currentTokenCode() }}.
+          <code>{{ currentTokenCode() }}</code
+          >.
         </p>
       }
       <p i18n>
@@ -44,6 +46,7 @@
         >
         <p-input-mask
           inputId="serial-number-input"
+          data-testid="serial-number-input"
           [(ngModel)]="tokenCode"
           placeholder="____-____-____-____-___"
           mask="9999-9999-9999-9999-999"
@@ -51,6 +54,7 @@
           [style]="{ width: '100%' }"
           [autoClear]="false"
           (onInput)="showTokenCodeInvalidWarning.set(false)"
+          class="font-mono"
         ></p-input-mask>
       </label>
       <app-form-error
@@ -58,30 +62,8 @@
           showTokenCodeInvalidWarning() && 'Fill up all 19 digits to link card'
         "
       />
-      <div class="w-full">
-        <div class="flex justify-end gap-2">
-          <p-button
-            i18n
-            (click)="closeDialog.emit()"
-            rounded
-            outlined
-            label="Cancel"
-            i18n-label
-            class="mt-4"
-          ></p-button>
-          <p-button
-            i18n
-            (click)="linkCard()"
-            rounded
-            [label]="dialogLabels().confirmationButton"
-            i18n-label
-            class="mt-4"
-          ></p-button>
-        </div>
-      </div>
     </div>
-  }
-  @if (linkCardDialogState() === linkCardDialogStates.errorAlreadyLinked) {
+  } @else {
     <ng-template pTemplate="header">
       <div class="flex items-center gap-2">
         <i class="pi pi-exclamation-triangle"></i>
@@ -89,53 +71,39 @@
       </div>
     </ng-template>
     <div class="flex flex-col gap-4">
-      <p i18n>
-        The card number you entered is already linked to another registration.
+      <p>
+        {{ errorMessage() }}
       </p>
-      <p i18n>
-        Please link this registration to a different card and inform your
-        supervisor.
+      <p>
+        {{ errorInstructions() }}
       </p>
-      <div class="w-full">
-        <div class="flex justify-end">
-          <p-button
-            i18n
-            (click)="closeDialog.emit()"
-            rounded
-            label="Go back"
-            i18n-label
-          ></p-button>
-        </div>
-      </div>
     </div>
   }
-  @if (linkCardDialogState() === linkCardDialogStates.errorNotFound) {
-    <ng-template pTemplate="header">
-      <div class="flex items-center gap-2">
-        <i class="pi pi-exclamation-triangle"></i>
-        <h3 i18n>Error - Link visa card</h3>
-      </div>
-    </ng-template>
-    <div class="flex flex-col gap-4">
-      <p i18n>
-        Card number not found. Please go back and check that the number is
-        correct.
-      </p>
-      <p i18n>
-        If the number is correct but this error persists, try a different card
-        and inform your supervisor.
-      </p>
-      <div class="w-full">
-        <div class="flex justify-end">
-          <p-button
-            i18n
-            (click)="closeDialog.emit()"
-            rounded
-            label="Go back"
-            i18n-label
-          ></p-button>
-        </div>
-      </div>
+
+  <div class="w-full">
+    <div class="mt-4 flex justify-end gap-2">
+      <p-button
+        (click)="dialogVisible.set(false)"
+        rounded
+        outlined
+        label="Cancel"
+        i18n-label="@@generic-cancel"
+      ></p-button>
+      @if (!isError()) {
+        <p-button
+          (click)="linkCard()"
+          rounded
+          [label]="confirmationButtonLabel()"
+        ></p-button>
+      } @else {
+        <p-button
+          (click)="goBackToLinkingState()"
+          rounded
+          label="Go back"
+          i18n-label="@@generic-go-back"
+          data-testid="go-back-button"
+        ></p-button>
+      }
     </div>
-  }
+  </div>
 </p-dialog>
