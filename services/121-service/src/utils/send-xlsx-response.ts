@@ -19,7 +19,9 @@ export function sendXlsxReponse(
   res.send(xls);
 }
 
-export function arrayToXlsx(array: any[]): Buffer {
+export function arrayToXlsx(array: Record<string, unknown>[]): Buffer {
+  array = truncateCellsWithInvalidLength(array);
+
   if (array.length > 1_000_000) {
     throw new HttpException(
       'Cannot export more than 1,000,000 rows to XLSX, please use a different filter',
@@ -47,6 +49,20 @@ export function arrayToXlsx(array: any[]): Buffer {
     }
     throw error;
   }
+}
+
+function truncateCellsWithInvalidLength(
+  data: Record<string, unknown>[],
+): Record<string, unknown>[] {
+  const MAX_CELL_LENGTH = 32_767; // XLSX cell character limit
+  for (const row of data) {
+    for (const key of Object.keys(row)) {
+      if (typeof row[key] === 'string' && row[key].length > MAX_CELL_LENGTH) {
+        row[key] = row[key].substring(0, MAX_CELL_LENGTH);
+      }
+    }
+  }
+  return data;
 }
 
 function toExportFileName(excelFileName: string): string {
