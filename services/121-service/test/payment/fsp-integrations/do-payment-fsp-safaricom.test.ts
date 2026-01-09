@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
@@ -12,7 +12,7 @@ import {
   getTransactionsByPaymentIdPaginated,
   patchProgram,
   retryPayment,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   getTransactionEventDescriptions,
@@ -76,7 +76,7 @@ describe('Do payment to 1 PA', () => {
       });
       const paymentId = doPaymentResponse.body.id;
 
-      await waitForPaymentTransactionsToComplete({
+      await waitForPaymentAndTransactionsToComplete({
         programId,
         paymentReferenceIds,
         accessToken,
@@ -138,7 +138,7 @@ describe('Do payment to 1 PA', () => {
       });
       const paymentId = doPaymentResponse.body.id;
 
-      await waitForPaymentTransactionsToComplete({
+      await waitForPaymentAndTransactionsToComplete({
         programId,
         paymentReferenceIds,
         accessToken,
@@ -146,7 +146,6 @@ describe('Do payment to 1 PA', () => {
         completeStatuses: [
           TransactionStatusEnum.error,
           TransactionStatusEnum.success,
-          TransactionStatusEnum.waiting,
         ],
       });
 
@@ -188,7 +187,7 @@ describe('Do payment to 1 PA', () => {
       });
       const paymentId = doPaymentResponse.body.id;
 
-      await waitForPaymentTransactionsToComplete({
+      await waitForPaymentAndTransactionsToComplete({
         programId,
         paymentReferenceIds,
         accessToken,
@@ -196,7 +195,6 @@ describe('Do payment to 1 PA', () => {
         completeStatuses: [
           TransactionStatusEnum.error,
           TransactionStatusEnum.success,
-          TransactionStatusEnum.waiting,
         ],
       });
 
@@ -208,7 +206,6 @@ describe('Do payment to 1 PA', () => {
         'automated test',
         accessToken,
       );
-      // await waitFor(2_000);
 
       // retry payment
       await retryPayment({
@@ -271,7 +268,7 @@ describe('Do payment to 1 PA', () => {
       });
       const paymentId = doPaymentResponse.body.id;
 
-      await waitForPaymentTransactionsToComplete({
+      await waitForPaymentAndTransactionsToComplete({
         programId,
         paymentReferenceIds,
         accessToken,
@@ -322,7 +319,7 @@ describe('Do payment to 1 PA', () => {
       });
       const paymentId = doPaymentResponse.body.id;
 
-      await waitForPaymentTransactionsToComplete({
+      await waitForPaymentAndTransactionsToComplete({
         programId,
         paymentReferenceIds,
         accessToken,

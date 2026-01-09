@@ -29,7 +29,7 @@
             (click)="unpauseConfirmationDialog.show()"
           />
         }
-        @if (currentCardHasAction()('reissue')) {
+        @if (currentCardHasAction()('replace')) {
           <p-button
             label="Replace card"
             i18n-label="@@debit-card-actions-replace-card"

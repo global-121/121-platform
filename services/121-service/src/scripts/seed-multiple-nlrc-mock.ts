@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
+import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
@@ -33,9 +34,9 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     mockOcw = true,
     seedConfig?: SeedConfigurationDto,
   ): Promise<void> {
-    if (!env.MOCK_INTERSOLVE || !env.MOCK_TWILIO) {
+    if (env.INTERSOLVE_MODE !== FspMode.mock || !env.MOCK_TWILIO) {
       throw new HttpException(
-        `MOCK_INTERSOLVE or MOCK_TWILIO is not set to true`,
+        `INTERSOLVE_MODE is not MOCK or MOCK_TWILIO is not set to true`,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -127,7 +128,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       accessToken,
     );
     const paymentId = createPaymentResponse.data.id;
-    await this.seedMockHelper.waitForPaymentTransactionsToComplete({
+    await this.seedMockHelper.waitForTransactionsToComplete({
       programId,
       paymentId,
       referenceIds: [registration.referenceId],
@@ -135,7 +136,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       completeStatuses: [TransactionStatusEnum.pendingApproval],
     });
     await this.seedMockHelper.startPayment(programId, paymentId, accessToken);
-    await this.seedMockHelper.waitForPaymentTransactionsToComplete({
+    await this.seedMockHelper.waitForTransactionsToComplete({
       programId,
       paymentId,
       referenceIds: [registration.referenceId],

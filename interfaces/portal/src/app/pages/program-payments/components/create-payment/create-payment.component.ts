@@ -22,7 +22,7 @@ import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { InputText } from 'primeng/inputtext';
 
-import { FspIntegrationType } from '@121-service/src/fsp-management/enums/fsp-integration-type.enum';
+import { FspIntegrationType } from '@121-service/src/fsp-integrations/shared/enum/fsp-integration-type.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';

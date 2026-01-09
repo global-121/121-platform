@@ -8,7 +8,7 @@ import { registrationsPV } from '@121-service/test/fixtures/scoped-registrations
 import {
   createAndStartPayment,
   getTransactionsByPaymentIdPaginated,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
@@ -86,7 +86,7 @@ describe('Registrations - [Scoped]', () => {
     const paymentId = doPaymentResponse.body.id;
 
     // Assert
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: PvProgramId,
       paymentReferenceIds: registrationsPvFirst2ReferenceIds,
       accessToken,

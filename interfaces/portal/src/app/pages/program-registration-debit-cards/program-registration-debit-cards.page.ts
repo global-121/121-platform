@@ -101,7 +101,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
   });
 
   readonly currentCardHasAction = computed(
-    () => (action: 'pause' | 'reissue' | 'unpause') =>
+    () => (action: 'pause' | 'replace' | 'unpause') =>
       this.currentCard()?.actions.includes(VisaCardAction[action]),
   );
 

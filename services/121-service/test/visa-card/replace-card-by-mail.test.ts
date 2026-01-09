@@ -5,7 +5,7 @@ import { VisaCard121Status } from '@121-service/src/fsp-integrations/integration
 import {
   FspConfigurationProperties,
   Fsps,
-} from '@121-service/src/fsp-management/enums/fsp-name.enum';
+} from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { messageTemplateNlrcOcw } from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.const';
@@ -99,7 +99,7 @@ describe('Replace Visa debit card by mail', () => {
     );
     const lastMessage = messageReponse.body[0];
     expect(lastMessage.attributes.body).toBe(
-      messageTemplateNlrcOcw?.reissueVisaCard?.message?.en,
+      messageTemplateNlrcOcw?.replaceVisaCard?.message?.en,
     );
   });
 
@@ -175,7 +175,7 @@ describe('Replace Visa debit card by mail', () => {
     // Assert
     expect(replaceVisaCardResponseAttempt1.status).toBe(400);
     expect(replaceVisaCardResponseAttempt1.text).toContain(
-      IntersolveVisa121ErrorText.reissueCard,
+      IntersolveVisa121ErrorText.replaceCard,
     );
     expect(replaceVisaCardResponseAttempt1.text).toContain(
       IntersolveVisa121ErrorText.createPhysicalCardError,
@@ -187,7 +187,7 @@ describe('Replace Visa debit card by mail', () => {
 
     const lastMessageAttempt1 = messageReponseAttempt1.body[0];
     expect(lastMessageAttempt1.attributes.body).not.toBe(
-      messageTemplateNlrcPv?.reissueVisaCard?.message?.en,
+      messageTemplateNlrcPv?.replaceVisaCard?.message?.en,
     );
 
     expect(replaceVisaCardResponseAttempt2.status).toBe(204);
@@ -203,7 +203,7 @@ describe('Replace Visa debit card by mail', () => {
     );
     const lastMessageAttempt2 = messageReponseAttempt2.body[0];
     expect(lastMessageAttempt2.attributes.body).toBe(
-      messageTemplateNlrcPv?.reissueVisaCard?.message?.en,
+      messageTemplateNlrcPv?.replaceVisaCard?.message?.en,
     );
   });
 

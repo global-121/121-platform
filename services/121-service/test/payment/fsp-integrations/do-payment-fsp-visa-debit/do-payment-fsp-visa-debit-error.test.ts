@@ -4,7 +4,7 @@ import { IntersolveVisa121ErrorText } from '@121-service/src/fsp-integrations/in
 import {
   FspConfigurationProperties,
   Fsps,
-} from '@121-service/src/fsp-management/enums/fsp-name.enum';
+} from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -18,13 +18,17 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   createAndStartPayment,
   getTransactionsByPaymentIdPaginated,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
-import { deleteProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
+import {
+  deleteProgramFspConfigurationProperty,
+  updateProgramCardDistributionByMail,
+} from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   awaitChangeRegistrationStatus,
   getTransactionEventDescriptions,
   importRegistrations,
+  seedIncludedRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -68,7 +72,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
@@ -130,7 +134,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
@@ -179,7 +183,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
@@ -228,7 +232,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
@@ -277,7 +281,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       accessToken,
     });
     const paymentId1 = doPaymentResponse1.body.id;
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
@@ -297,7 +301,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       accessToken,
     });
     const paymentId2 = doPaymentResponse2.body.id;
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
@@ -390,7 +394,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       accessToken,
     });
     const paymentId = doPaymentResponse.body.id;
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
@@ -413,6 +417,59 @@ describe('Do failing payment with FSP Visa Debit', () => {
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(transactionsResponse.text).toContain(
       'Operation reference is already used.',
+    );
+  });
+
+  it('should fail transaction when card distribution by mail is disabled', async () => {
+    const uniqueRegistration = {
+      ...registrationVisa,
+      referenceId: 'unique-ref-id-4567',
+    };
+    // Arrange
+    await seedIncludedRegistrations(
+      [uniqueRegistration],
+      programIdVisa,
+      accessToken,
+    );
+
+    await updateProgramCardDistributionByMail({
+      isCardDistributionByMail: false,
+      accessToken,
+    });
+
+    // Act
+    const doPaymentResponse = await createAndStartPayment({
+      programId: programIdVisa,
+      transferValue: 1000,
+      referenceIds: [uniqueRegistration.referenceId],
+      accessToken,
+    });
+
+    const paymentId = doPaymentResponse.body.id;
+
+    await waitForPaymentAndTransactionsToComplete({
+      programId: programIdVisa,
+      paymentReferenceIds: [uniqueRegistration.referenceId],
+      paymentId,
+      accessToken,
+      maxWaitTimeMs: 10_000,
+      completeStatuses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
+    });
+    const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
+      programId: programIdVisa,
+      paymentId,
+      registrationReferenceId: uniqueRegistration.referenceId,
+      accessToken,
+    });
+    const transaction = getTransactionsResult.body.data[0];
+
+    // Assert
+    expect(transaction.status).toBe(TransactionStatusEnum.error);
+    expect(transaction.errorMessage).toMatchInlineSnapshot(
+      `"Cannot do a transaction when card distribution by mail is disabled and customer does not exist."`,
     );
   });
 });

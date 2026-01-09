@@ -27,15 +27,17 @@ import { GetTransactionInformationResult } from '@121-service/src/fsp-integratio
 import { IssueTokenResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/issue-token-result.interface';
 import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
+import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
 import { repeatAttempt } from '@121-service/src/utils/repeat-attempt';
 import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
-const intersolveVisaApiUrl = env.MOCK_INTERSOLVE
-  ? `${env.MOCK_SERVICE_URL}/api/fsp/intersolve-visa`
-  : env.INTERSOLVE_VISA_API_URL;
+const intersolveVisaApiUrl =
+  env.INTERSOLVE_MODE === FspMode.mock
+    ? `${env.MOCK_SERVICE_URL}/api/fsp/intersolve-visa`
+    : env.INTERSOLVE_VISA_API_URL;
 
 // Number of months in a year
 const monthsPerYear = 12;
@@ -60,7 +62,7 @@ export class IntersolveVisaApiService {
   ) {}
 
   public async getAuthenticationToken() {
-    if (env.MOCK_INTERSOLVE) {
+    if (env.INTERSOLVE_MODE === FspMode.mock) {
       return 'mocked-token';
     }
     if (this.tokenValidationService.isTokenValid(this.tokenSet)) {

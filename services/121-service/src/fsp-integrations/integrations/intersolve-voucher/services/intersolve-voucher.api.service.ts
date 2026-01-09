@@ -11,6 +11,7 @@ import { IntersolveVoucherResultCode } from '@121-service/src/fsp-integrations/i
 import { IntersolveVoucherSoapElements } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/enum/intersolve-voucher-soap.enum';
 import { IntersolveGetCardSoapResponse } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/interfaces/intersolve-get-card-soap-response.interface';
 import { IntersolveVoucherMockService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/intersolve-voucher.mock';
+import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { repeatAttempt } from '@121-service/src/utils/repeat-attempt';
 import { SoapService } from '@121-service/src/utils/soap/soap.service';
 
@@ -66,15 +67,16 @@ export class IntersolveVoucherApiService {
 
     let result = new IntersolveIssueCardResponse();
     try {
-      const responseBody = env.MOCK_INTERSOLVE
-        ? await this.intersolveMock.post(payload, username, password)
-        : await this.soapService.post(
-            payload,
-            IntersolveVoucherSoapElements.LoyaltyHeader,
-            username,
-            password,
-            env.INTERSOLVE_URL,
-          );
+      const responseBody =
+        env.INTERSOLVE_MODE === FspMode.mock
+          ? await this.intersolveMock.post(payload, username, password)
+          : await this.soapService.post(
+              payload,
+              IntersolveVoucherSoapElements.LoyaltyHeader,
+              username,
+              password,
+              env.INTERSOLVE_URL,
+            );
       result = {
         resultCode: responseBody.IssueCardResponse.ResultCode._text,
         resultDescription:
@@ -173,7 +175,7 @@ export class IntersolveVoucherApiService {
     username: string;
     password: string;
   }): Promise<IntersolveGetCardSoapResponse> {
-    return env.MOCK_INTERSOLVE
+    return env.INTERSOLVE_MODE === FspMode.mock
       ? await this.intersolveMock.post(payload, username, password)
       : await this.soapService.post(
           payload,

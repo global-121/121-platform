@@ -119,9 +119,8 @@ describe('AzureAdStrategy', () => {
       });
 
       it('should process unique_name correctly', async () => {
-        await strategy.validate(mockRequest, mockPayload);
-
-        // Behavior is verified by the test not throwing and completing successfully
+        const result = await strategy.validate(mockRequest, mockPayload);
+        expect(result).toBeDefined();
       });
 
       it('should process preferred_username when unique_name is not available', async () => {
@@ -131,9 +130,8 @@ describe('AzureAdStrategy', () => {
           isOrganizationAdmin: false,
         };
 
-        await strategy.validate(mockRequest, payload);
-
-        // Behavior is verified by the test not throwing and completing successfully
+        const result = await strategy.validate(mockRequest, payload);
+        expect(result).toBeDefined();
       });
 
       it('should handle username with mail# prefix', async () => {
@@ -143,9 +141,8 @@ describe('AzureAdStrategy', () => {
           isOrganizationAdmin: false,
         };
 
-        await strategy.validate(mockRequest, payload);
-
-        // Behavior is verified by the test not throwing and completing successfully
+        const result = await strategy.validate(mockRequest, payload);
+        expect(result).toBeDefined();
       });
 
       it('should convert username to lowercase', async () => {
@@ -155,9 +152,8 @@ describe('AzureAdStrategy', () => {
           isOrganizationAdmin: false,
         };
 
-        await strategy.validate(mockRequest, payload);
-
-        // Behavior is verified by the test not throwing and completing successfully
+        const result = await strategy.validate(mockRequest, payload);
+        expect(result).toBeDefined();
       });
     });
 

@@ -15,7 +15,7 @@ describe('PaymentsHelperService', () => {
     service = new PaymentsHelperService(repo);
   });
 
-  it('should throw if any FSP configuration is missing', async () => {
+  it('should throw if a configuration is missing', async () => {
     (repo.findOne as jest.Mock).mockResolvedValueOnce(null);
     await expect(
       service.checkFspConfigurationsOrThrow(1, ['ConfigA']),

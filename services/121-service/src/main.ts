@@ -19,7 +19,7 @@ import {
 import { env } from '@121-service/src/env';
 import { INTERFACE_NAME_HEADER } from '@121-service/src/shared/enum/interface-names.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
-import { ValidationPipeOptions } from '@121-service/src/validation-pipe-options.const';
+import { ValidationPipeOptions } from '@121-service/src/validation-options/validation-pipe-options.const';
 
 import 'multer'; // This is import is required to prevent typing error on the MulterModule
 // eslint-disable-next-line @typescript-eslint/no-require-imports -- This version of AppInsighst still only works with require

@@ -6,7 +6,7 @@ import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json
 import { triggerUnusedVouchersCache } from '@121-service/test/helpers/fsp-specific.helper';
 import {
   createAndStartPayment,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
@@ -35,7 +35,7 @@ test.beforeEach(async ({ page }) => {
     accessToken,
   });
 
-  await waitForPaymentTransactionsToComplete({
+  await waitForPaymentAndTransactionsToComplete({
     programId: programIdPV,
     paymentReferenceIds: [registrationPV5.referenceId],
     accessToken,

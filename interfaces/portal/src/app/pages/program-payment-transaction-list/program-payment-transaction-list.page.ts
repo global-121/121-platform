@@ -283,7 +283,7 @@ export class ProgramPaymentTransactionListPageComponent {
         programId: this.programId(),
         requiredPermissions: [
           PermissionEnum.PaymentREAD,
-          PermissionEnum.PaymentUPDATE,
+          PermissionEnum.PaymentRETRY,
           PermissionEnum.PaymentTransactionREAD,
         ],
       })

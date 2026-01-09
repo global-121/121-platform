@@ -63,6 +63,12 @@ export function loginApi(
   });
 }
 
+export async function logoutUser(
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer().post('/users/logout').set('Cookie', [accessToken]).send();
+}
+
 export async function getAccessToken(
   username = env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
   password = env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,

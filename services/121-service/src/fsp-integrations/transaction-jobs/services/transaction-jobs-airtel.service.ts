@@ -5,6 +5,7 @@ import { env } from '@121-service/src/env';
 import { AirtelDisbursementResultEnum } from '@121-service/src/fsp-integrations/integrations/airtel/enums/airtel-disbursement-result.enum';
 import { AirtelError } from '@121-service/src/fsp-integrations/integrations/airtel/errors/airtel.error';
 import { AirtelService } from '@121-service/src/fsp-integrations/integrations/airtel/services/airtel.service';
+import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { AirtelTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/airtel-transaction-job.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -25,7 +26,7 @@ export class TransactionJobsAirtelService {
   public async processAirtelTransactionJob(
     transactionJob: AirtelTransactionJobDto,
   ): Promise<void> {
-    if (!env.AIRTEL_ENABLED) {
+    if (env.AIRTEL_MODE === FspMode.disabled) {
       console.error(
         'Airtel FSP is not enabled, not processing transaction jobs.',
       );

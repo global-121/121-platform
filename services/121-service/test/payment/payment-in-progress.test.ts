@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventInterface } from '@121-service/src/payments/payment-events/interfaces/payment-event.interface';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -20,7 +20,7 @@ import {
   getTransactionsByPaymentIdPaginated,
   retryPayment,
   startPayment,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   doPaymentAndWaitForCompletion,
@@ -123,7 +123,7 @@ describe('Payment in progress', () => {
       accessToken,
     });
     const paymentIdPvFirst = doPaymentResponse.body.id;
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdPV,
       paymentReferenceIds: registrationReferenceIdsPV,
       accessToken,
@@ -164,14 +164,14 @@ describe('Payment in progress', () => {
     expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
 
     // Cleanup to make sure nothing is in progress anymore
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdPV,
       paymentReferenceIds: registrationReferenceIdsPV,
       accessToken,
       maxWaitTimeMs: 30_000,
       paymentId: paymentIdPvNext,
     });
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdOCW,
       paymentReferenceIds: registrationReferenceIdsOCW,
       accessToken,
@@ -237,7 +237,7 @@ describe('Payment in progress', () => {
         (res) => res.status === HttpStatus.BAD_REQUEST,
       );
 
-      await waitForPaymentTransactionsToComplete({
+      await waitForPaymentAndTransactionsToComplete({
         programId: programIdPV,
         paymentReferenceIds: registrationReferenceIdsPV,
         accessToken,
@@ -322,7 +322,7 @@ describe('Payment in progress', () => {
         (res) => res.status === HttpStatus.BAD_REQUEST,
       );
 
-      await waitForPaymentTransactionsToComplete({
+      await waitForPaymentAndTransactionsToComplete({
         programId: programIdPV,
         paymentReferenceIds: registrationReferenceIdsPV,
         accessToken,
@@ -405,14 +405,14 @@ describe('Payment in progress', () => {
     });
 
     // Cleanup to make sure nothing is in progress anymore
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdPV,
       paymentReferenceIds: registrationReferenceIdsPV,
       accessToken,
       maxWaitTimeMs: 30_000,
       paymentId: paymentIdPv,
     });
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdOCW,
       paymentReferenceIds: registrationReferenceIdsOCW,
       accessToken,

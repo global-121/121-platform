@@ -3,13 +3,15 @@ import { Injectable } from '@nestjs/common';
 import { env } from '@121-service/src/env';
 import { CreditTransferApiParams } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
 import { CommercialBankEthiopiaSoapElements } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/enum/commercial-bank-ethiopia.enum';
+import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { RequiredUsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/required-username-password.interface';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
 import { SoapService } from '@121-service/src/utils/soap/soap.service';
 
-const cbeApiUrl = env.MOCK_COMMERCIAL_BANK_ETHIOPIA
-  ? `${env.MOCK_SERVICE_URL}/api/fsp/commercial-bank-ethiopia/services`
-  : env.COMMERCIAL_BANK_ETHIOPIA_URL;
+const cbeApiUrl =
+  env.COMMERCIAL_BANK_ETHIOPIA_MODE === FspMode.mock
+    ? `${env.MOCK_SERVICE_URL}/api/fsp/commercial-bank-ethiopia/services`
+    : env.COMMERCIAL_BANK_ETHIOPIA_URL;
 
 @Injectable()
 export class CommercialBankEthiopiaApiService {

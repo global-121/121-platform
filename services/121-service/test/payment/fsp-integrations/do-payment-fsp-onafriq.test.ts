@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -10,7 +10,7 @@ import {
   createAndStartPayment,
   getTransactionsByPaymentIdPaginated,
   retryPayment,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   getTransactionEventDescriptions,
@@ -65,7 +65,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       accessToken,
@@ -126,14 +126,13 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
       completeStatuses: [
         TransactionStatusEnum.success,
-        TransactionStatusEnum.waiting,
         TransactionStatusEnum.error,
       ],
     });
@@ -171,7 +170,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       paymentId,
       accessToken,
     });
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       accessToken,
@@ -229,7 +228,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     const paymentId = doPaymentResponse.body.id;
 
     // wait for non-waiting transactions only, to make sure callback came in
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       accessToken,
@@ -292,7 +291,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       accessToken,

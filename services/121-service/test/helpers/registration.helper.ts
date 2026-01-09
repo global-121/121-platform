@@ -4,7 +4,7 @@ import * as request from 'supertest';
 
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -13,7 +13,7 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   createAndStartPayment,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   getAccessToken,
@@ -126,6 +126,19 @@ export function exportRegistrations(
     .query({
       sortBy: 'registrationProgramId:DESC',
       select: `referenceId,${filter}`,
+      format: 'json',
+    })
+    .send();
+}
+
+export function exportAllRegistrations(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return getServer()
+    .get(`/programs/${programId}/metrics/export-list/registrations`)
+    .set('Cookie', [accessToken])
+    .query({
       format: 'json',
     })
     .send();
@@ -779,7 +792,7 @@ export async function doPaymentAndWaitForCompletion({
   });
   const paymentId = doPaymentResponse.body.id;
 
-  await waitForPaymentTransactionsToComplete({
+  await waitForPaymentAndTransactionsToComplete({
     programId,
     paymentReferenceIds: referenceIds,
     accessToken,

@@ -5,6 +5,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { messageTemplateNlrcOcw } from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.const';
 import {
   programIdVisa,
   registrationVisa as registrationVisaDefault,
@@ -15,11 +16,10 @@ import {
   createAndStartPayment,
   getTransactionsByPaymentIdPaginated,
   waitForMessagesToComplete,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
-  getMessageHistory,
   getTransactionEventDescriptions,
   importRegistrations,
   replaceVisaCardByMail,
@@ -33,6 +33,17 @@ import {
   registrationOCW3,
   registrationOCW4,
 } from '@121-service/test/registrations/pagination/pagination-data';
+
+const createEnglishMessageBodyForAmount = ({
+  amount,
+}: {
+  amount: number;
+}): string => {
+  const originalBody = messageTemplateNlrcOcw.visaLoad.message?.en;
+  const replaceString = '[[1]]';
+
+  return originalBody?.replace(replaceString, `${amount}`) ?? '';
+};
 
 describe('Do successful payment with FSP Visa Debit', () => {
   // Set WhatsApp-number for ALL tests in this suite only
@@ -69,7 +80,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
@@ -126,7 +137,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     });
     const firstPaymentId = doFirstPaymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
@@ -144,7 +155,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     });
     const secondPaymentId = doSecondPaymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
@@ -209,7 +220,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     });
     const paymentId1 = paymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds: referenceIds,
       accessToken,
@@ -243,7 +254,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     });
     const paymentId2 = paymentResponse2.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds: referenceIds,
       accessToken,
@@ -251,28 +262,41 @@ describe('Do successful payment with FSP Visa Debit', () => {
       completeStatuses: [TransactionStatusEnum.success],
       paymentId: paymentId2,
     });
+
+    // Assert Registration 1
+    const expectedCalculatedTransferValueRegistration1 =
+      150 - 13000 / 100 - 1000 / 100; // = 10
+    const expectedBody = createEnglishMessageBodyForAmount({
+      amount: expectedCalculatedTransferValueRegistration1,
+    });
+
+    // Assert Registration 1 -- message has the correct amount
     await waitForMessagesToComplete({
       programId: programIdVisa,
-      referenceIds,
+      referenceIds: [registrationVisa.referenceId],
       accessToken,
       expectedMessageAttribute: {
-        key: 'contentType',
-        values: [MessageContentType.payment],
+        key: 'body',
+        values: [expectedBody],
       },
     });
 
-    // Assert
+    // Assert Registration 1 -- transaction
     const transactionsResponse1 = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId: paymentId2,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
-    const messagesHistoryPa1 = await getMessageHistory(
-      programIdVisa,
-      registrationVisa.referenceId,
-      accessToken,
+
+    expect(transactionsResponse1.body.data[0].transferValue).toBe(
+      expectedCalculatedTransferValueRegistration1,
     );
+    expect(transactionsResponse1.text).toContain(TransactionStatusEnum.success);
+
+    // Assert Registration 2
+    const expectedCalculatedTransferValueRegistration2 =
+      150 - 14000 / 100 - 1000 / 100; // = 0
 
     const transactionsResponse2 = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
@@ -280,54 +304,32 @@ describe('Do successful payment with FSP Visa Debit', () => {
       registrationReferenceId: registrationOCW2.referenceId,
       accessToken,
     });
-    const messagesHistoryPa2 = await getMessageHistory(
-      programIdVisa,
-      registrationOCW2.referenceId,
-      accessToken,
+    expect(transactionsResponse2.body.data[0].transferValue).toBe(
+      expectedCalculatedTransferValueRegistration2, // = 0 : A transaction of 0 is created
     );
+    expect(transactionsResponse2.text).toContain(TransactionStatusEnum.success);
 
+    // Assert Registration 3
     const transactionsResponse3 = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
       paymentId: paymentId2,
       registrationReferenceId: registrationOCW3.referenceId,
       accessToken,
     });
-    const transactionsResponse4 = await getTransactionsByPaymentIdPaginated({
-      programId: programIdVisa,
-      paymentId: paymentId2,
-      registrationReferenceId: registrationOCW4.referenceId,
-      accessToken,
-    });
-
-    const expectedCalculatedTransferValuePa1 = 150 - 13000 / 100 - 1000 / 100; // = 10
-    expect(transactionsResponse1.body.data[0].transferValue).toBe(
-      expectedCalculatedTransferValuePa1,
-    );
-    expect(transactionsResponse1.text).toContain(TransactionStatusEnum.success);
-    // Validate for one message where amount is higher than 0 that it is send in a message
-    expect(messagesHistoryPa1.body.map((msg) => msg.attributes.body)).toEqual(
-      expect.arrayContaining([
-        expect.stringContaining(`€${expectedCalculatedTransferValuePa1}`),
-      ]),
-    );
-
-    const expectedCalculatedTransferValuePa2 = 150 - 14000 / 100 - 1000 / 100; // = 0
-    expect(transactionsResponse2.body.data[0].transferValue).toBe(
-      expectedCalculatedTransferValuePa2, // = 0 : A transaction of 0 is created
-    );
-    expect(transactionsResponse2.text).toContain(TransactionStatusEnum.success);
-    // Validate for one message where transferValue is 0 that it still sends a message with the amount 0, so people will know they have to spend money earlier next months
-    expect(messagesHistoryPa2.body.map((msg) => msg.attributes.body)).toEqual(
-      expect.arrayContaining([
-        expect.stringContaining(`€${expectedCalculatedTransferValuePa2}`),
-      ]),
-    );
 
     // should be able to payout the full transferValue
     expect(transactionsResponse3.body.data[0].transferValue).toBe(
       transferValueVisa * registrationOCW3.paymentAmountMultiplier,
     );
     expect(transactionsResponse3.text).toContain(TransactionStatusEnum.success);
+
+    // Assert registration 4
+    const transactionsResponse4 = await getTransactionsByPaymentIdPaginated({
+      programId: programIdVisa,
+      paymentId: paymentId2,
+      registrationReferenceId: registrationOCW4.referenceId,
+      accessToken,
+    });
 
     // Kyc requirement
     expect(transactionsResponse4.body.data[0].transferValue).toBe(

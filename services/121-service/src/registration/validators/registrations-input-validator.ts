@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { Equal, Repository } from 'typeorm';
 
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -21,6 +21,7 @@ import { ValidatedRegistrationInput } from '@121-service/src/registration/interf
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UserService } from '@121-service/src/user/user.service';
+import { ValidationPipelineOptionsWithoutWhiteList } from '@121-service/src/validation-options/validation-pipeline-options-without-white-list.const';
 
 type InputAttributeType = string | boolean | number | undefined | null;
 
@@ -357,7 +358,10 @@ export class RegistrationsInputValidator {
         throw new HttpException(errors, HttpStatus.BAD_REQUEST);
       }
 
-      const result = await validate(validatedRegistrationInput);
+      const result = await validate(
+        validatedRegistrationInput,
+        ValidationPipelineOptionsWithoutWhiteList,
+      );
       if (result.length > 0) {
         let error = result[0].toString();
         if (result[0]?.constraints) {

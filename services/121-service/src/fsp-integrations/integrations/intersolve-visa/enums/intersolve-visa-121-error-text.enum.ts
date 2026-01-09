@@ -14,5 +14,5 @@ export enum IntersolveVisa121ErrorText {
   updateCustomerIndividualNameError = 'UPDATE CUSTOMER INDIVIDUAL NAME ERROR',
   getCustomerIndividualError = 'GET CUSTOMER INDIVIDUAL ERROR',
   updatePhoneNumberError = 'UPDATE PHONE NUMBER ERROR',
-  reissueCard = 'Error reissuing card',
+  replaceCard = 'Error replacing card',
 }

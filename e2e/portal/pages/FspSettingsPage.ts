@@ -104,17 +104,19 @@ class FspSettingsPage extends BasePage {
 
       if (name === 'Excel Payment Instructions') {
         // Handle dropdowns for Excel Payment Instructions FSP
+        await this.page.waitForLoadState('domcontentloaded');
         const dropdown = this.page.getByPlaceholder('Select 1');
         const dropdownsCount = await dropdown.count();
 
         for (let i = 0; i < dropdownsCount; i++) {
+          await dropdown.nth(i).waitFor({ state: 'visible' });
           await dropdown.nth(i).click();
           // Select the option with the FSP name
           await this.page
             .getByLabel('Full Name')
             .nth(i + 1)
             .click();
-          await dropdown.nth(i).click(); // Close the dropdown
+          await this.page.getByText('Display name').click(); // Click outside to close
         }
       } else {
         for (let i = 1; i < inputCount; i++) {

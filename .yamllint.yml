@@ -1,0 +1,24 @@
+# https://yamllint.readthedocs.io/en/stable/configuration.html
+
+extends: default
+
+ignore-from-file:
+  - .gitignore
+
+rules:
+  document-start: disable
+  quoted-strings:
+    quote-type: single
+    required: false
+    extra-allowed: []
+    allow-quoted-quotes: true
+  line-length: disable
+  comments:
+    require-starting-space: true
+    ignore-shebangs: true
+    min-spaces-from-content: 1
+  truthy:
+    check-keys: false
+  octal-values:
+    forbid-implicit-octal: true
+  key-duplicates: {}

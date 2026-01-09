@@ -30,6 +30,8 @@ export enum PermissionEnum {
   PaymentREAD = 'payment.read',
   PaymentCREATE = 'payment.create',
   PaymentUPDATE = 'payment.update',
+  PaymentRETRY = 'payment.retry',
+  PaymentSTART = 'payment.start',
   PaymentFspInstructionREAD = 'payment:fsp-instruction.read',
   PaymentTransactionREAD = 'payment:transaction.read',
 
@@ -79,10 +81,6 @@ export enum PermissionEnum {
 
   // Registrations - bulk
   RegistrationBulkUPDATE = 'registration:bulk.update',
-
-  // Action(s)
-  ActionREAD = 'action.read',
-  ActionCREATE = 'action.create',
 
   // User(s)
   AidWorkerProgramREAD = 'aid-worker:program.read',

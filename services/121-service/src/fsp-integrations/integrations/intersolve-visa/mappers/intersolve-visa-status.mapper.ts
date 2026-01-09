@@ -7,7 +7,7 @@ import { IntersolveVisaTokenStatus } from '@121-service/src/fsp-integrations/int
 import { VisaCard121Status } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/wallet-status-121.enum';
 
 const StatusUnknownExplain = `Status is unknown, please contact the 121 Platform Team`;
-const CardDataMissingExplanation = `Unable to retrieve card data, refresh the page or try to reissue the card if you expect the card was never created. If the issue persists, please contact the 121 Platform Team`;
+const CardDataMissingExplanation = `Unable to retrieve card data, refresh the page or try to replace the card if you expect the card was never created. If the issue persists, please contact the 121 Platform Team`;
 
 interface VisaCard121StatusMapInterface {
   TokenBlocked: boolean;
@@ -121,7 +121,7 @@ export class IntersolveVisaStatusMapper {
       return {
         status: VisaCard121Status.CardDataMissing,
         explanation: CardDataMissingExplanation,
-        actions: [VisaCardAction.reissue],
+        actions: [VisaCardAction.replace],
       };
     }
 

@@ -94,4 +94,32 @@ describe('arrayToXlsx', () => {
     // Act & Assert
     expect(() => arrayToXlsx(testData)).toThrow(mockError);
   });
+
+  it('should truncate strings that exceed the XLSX cell character limit', () => {
+    // Arrange
+    const originalWrite = jest.requireActual('xlsx').write;
+    mockXLSX.write.mockImplementation(originalWrite);
+
+    const longString = 'a'.repeat(40_000); // Exceeds 32,767 limit
+    const testData = [
+      { id: '1', description: longString, name: 'Test' },
+      { id: '2', description: 'Short text', name: 'Another' },
+    ];
+
+    // Act
+    const result = arrayToXlsx(testData);
+
+    // Assert
+    expect(result).toBeInstanceOf(Buffer);
+    const workbook = XLSX.read(result, { type: 'buffer' });
+    const worksheet = workbook.Sheets['data'];
+    const jsonData = XLSX.utils.sheet_to_json(worksheet) as {
+      id: string;
+      description: string;
+      name: string;
+    }[];
+    expect(jsonData[0].description).toHaveLength(32_767);
+    expect(jsonData[0].description).toBe(longString.substring(0, 32_767));
+    expect(jsonData[1].description).toBe('Short text');
+  });
 });

@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 
-import { CooperativeBankOfOromiaAccountValidationReportRecordDto } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia-account-management/dtos/cooperative-bank-of-oromia-account-validation-report-record.dto';
+import { CooperativeBankOfOromiaAccountValidationReportRecordDto } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-account-validation-report-record.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getCooperativeBankOfOromiaValidationReport,

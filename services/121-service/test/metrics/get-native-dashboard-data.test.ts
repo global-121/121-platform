@@ -2,7 +2,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   createAndStartPayment,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   seedIncludedRegistrations,
@@ -47,7 +47,7 @@ const seedPayment = async () => {
     accessToken,
   });
   const paymentId = doPaymentResponse.body.id;
-  await waitForPaymentTransactionsToComplete({
+  await waitForPaymentAndTransactionsToComplete({
     programId: programIdPV,
     paymentReferenceIds: [
       registrationPV7.referenceId,

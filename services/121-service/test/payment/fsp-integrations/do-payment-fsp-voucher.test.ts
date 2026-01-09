@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { Fsps } from '@121-service/src/fsp-management/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
@@ -11,7 +11,7 @@ import {
   createAndStartPayment,
   getTransactionsByPaymentIdPaginated,
   waitForMessagesToComplete,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   doPaymentAndWaitForCompletion,
@@ -65,7 +65,7 @@ describe('Do payment to 1 PA', () => {
       });
       const paymentId = doPaymentResponse.body.id;
 
-      await waitForPaymentTransactionsToComplete({
+      await waitForPaymentAndTransactionsToComplete({
         programId,
         paymentReferenceIds,
         accessToken,
@@ -297,7 +297,7 @@ describe('Do payment to 1 PA', () => {
       });
       const paymentId = doPaymentResponse.body.id;
 
-      await waitForPaymentTransactionsToComplete({
+      await waitForPaymentAndTransactionsToComplete({
         programId,
         paymentReferenceIds,
         accessToken,
