@@ -436,7 +436,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     });
 
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: programIdVisa,
       transferValue: 1000,
       referenceIds: [uniqueRegistration.referenceId],
