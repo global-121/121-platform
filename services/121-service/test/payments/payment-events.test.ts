@@ -49,7 +49,6 @@ describe('Payment Events API', () => {
       note,
       completeStatuses: [
         TransactionStatusEnum.success,
-        TransactionStatusEnum.waiting,
         TransactionStatusEnum.error,
       ],
     });
