@@ -1,8 +1,4 @@
-import {
-  HttpErrorResponse,
-  HttpParamsOptions,
-  HttpStatusCode,
-} from '@angular/common/http';
+import { HttpParamsOptions, HttpStatusCode } from '@angular/common/http';
 import { inject, Injectable, Signal } from '@angular/core';
 
 import {
@@ -27,6 +23,7 @@ import {
 import { ToastService } from '~/services/toast.service';
 import { addDaysToDate, dateToIsoString } from '~/utils/date';
 import { Dto } from '~/utils/dto-type';
+import { isErrorWithStatusCode } from '~/utils/is-error-with-status-code.helper';
 
 @Injectable({
   providedIn: 'root',
@@ -204,8 +201,10 @@ export class ExportService {
           };
         } catch (error) {
           if (
-            error instanceof HttpErrorResponse &&
-            error.status === (HttpStatusCode.NotFound as number)
+            isErrorWithStatusCode({
+              error,
+              statusCode: HttpStatusCode.NotFound,
+            })
           ) {
             throw new Error($localize`There is currently no data to export`);
           }

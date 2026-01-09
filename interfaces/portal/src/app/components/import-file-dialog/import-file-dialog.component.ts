@@ -62,12 +62,11 @@ export class ImportFileDialogComponent {
   readonly detailedImportErrors = computed(() => {
     const error = this.mutation().failureReason();
 
-    if (error instanceof HttpErrorResponse) {
-      if (Array.isArray(error.error)) {
-        return error.error as unknown[];
-      }
-
-      return [error.error as unknown];
+    if (
+      error?.cause instanceof HttpErrorResponse &&
+      Array.isArray(error.cause.error)
+    ) {
+      return error.cause.error as unknown[];
     }
 
     return undefined;

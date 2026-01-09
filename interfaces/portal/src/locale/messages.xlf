@@ -2051,6 +2051,66 @@
       <trans-unit id="registration-duplicate-status" datatype="html">
         <source>Duplicate status</source>
       </trans-unit>
+      <trans-unit id="3176639329668271224" datatype="html">
+        <source>Link card</source>
+      </trans-unit>
+      <trans-unit id="debit-card-actions-link-visa-card" datatype="html">
+        <source>Link visa card</source>
+      </trans-unit>
+      <trans-unit id="7960663124844501943" datatype="html">
+        <source>Error - Link visa card</source>
+      </trans-unit>
+      <trans-unit id="7561977067156405830" datatype="html">
+        <source>Link Visa card to registration</source>
+      </trans-unit>
+      <trans-unit id="2560790823235400386" datatype="html">
+        <source>No debit cards found</source>
+      </trans-unit>
+      <trans-unit id="4606793880716021431" datatype="html">
+        <source>Serial number</source>
+      </trans-unit>
+      <trans-unit id="8751327662526303646" datatype="html">
+        <source>Scan the barcode in the back of the card you are handing over to the registration with a scanner, or manually fill in the 19 digit serial number found below the barcode.</source>
+      </trans-unit>
+      <trans-unit id="5257307362705018476" datatype="html">
+        <source>Link visa card</source>
+      </trans-unit>
+      <trans-unit id="3908185208619176727" datatype="html">
+        <source>An unexpected error occurred while linking the Visa card to the registration</source>
+      </trans-unit>
+      <trans-unit id="4142926878648956866" datatype="html">
+        <source>There are no debit cards linked to this registration. Link a visa card from your available cards to this registration by clicking the button below.</source>
+      </trans-unit>
+      <trans-unit id="159499234601402136" datatype="html">
+        <source>Replace card</source>
+      </trans-unit>
+      <trans-unit id="1941641831210864467" datatype="html">
+        <source>Replace visa card</source>
+      </trans-unit>
+      <trans-unit id="1327684604667303594" datatype="html">
+        <source>Card number not found. Please go back and check that the number is correct.</source>
+      </trans-unit>
+      <trans-unit id="2569677772635471712" datatype="html">
+        <source>The card number you entered is already linked to another registration.</source>
+      </trans-unit>
+      <trans-unit id="3063821478801011657" datatype="html">
+        <source>Please link this registration to a different card and inform your supervisor.</source>
+      </trans-unit>
+      <trans-unit id="8800018640518842840" datatype="html">
+        <source>The card number you entered is already linked to the current registration.</source>
+      </trans-unit>
+      <trans-unit id="891683010392787907" datatype="html">
+        <source>If the number is correct but this error persists, try a different card and inform your supervisor.</source>
+      </trans-unit>
+      <trans-unit id="2358567597663804258" datatype="html">
+        <source>You&apos;re about to replace debit card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentTokenCode() }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>.</source>
+      </trans-unit>
+      <trans-unit id="5758338325877529724" datatype="html">
+        <source>The position of the serial number, below the barcode on the back of the card. Highlighted in red.</source>
+      </trans-unit>
+      <trans-unit id="2800411489772677471" datatype="html">
+        <source>Fill up all 19 digits to link card</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

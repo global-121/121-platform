@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   input,
+  model,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -25,8 +26,14 @@ import {
 } from '~/components/data-list/data-list.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
+import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
+import {
+  FspConfigurationProperty,
+  IntersolveVisaFspConfigurationProperties,
+} from '~/domains/fsp-configuration/fsp-configuration.model';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { LinkCardDialogComponent } from '~/pages/program-registration-debit-cards/components/link-card-on-site-dialog/link-card-dialog.component';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
@@ -41,6 +48,7 @@ import { ToastService } from '~/services/toast.service';
     ColoredChipComponent,
     FormDialogComponent,
     PageLayoutRegistrationComponent,
+    LinkCardDialogComponent,
   ],
   providers: [ToastService],
   templateUrl: './program-registration-debit-cards.page.html',
@@ -56,6 +64,11 @@ export class ProgramRegistrationDebitCardsPageComponent {
   private readonly registrationApiService = inject(RegistrationApiService);
   private readonly toastService = inject(ToastService);
   private readonly programApiService = inject(ProgramApiService);
+  private readonly fspConfigurationApiService = inject(
+    FspConfigurationApiService,
+  );
+
+  readonly linkCardDialogVisible = model(false);
 
   registration = injectQuery(
     this.registrationApiService.getRegistrationById(
@@ -74,6 +87,18 @@ export class ProgramRegistrationDebitCardsPageComponent {
   );
 
   readonly currentCard = computed(() => this.walletWithCards.data()?.cards[0]);
+  readonly previousTokenCodes = computed<string[]>(() => {
+    if (!this.walletWithCards.isSuccess()) {
+      return [];
+    }
+
+    const allTokenCodes = this.walletWithCards
+      .data()
+      .cards.map((card) => card.tokenCode);
+    return allTokenCodes.filter(
+      (tokenCode) => tokenCode !== this.currentCard()?.tokenCode,
+    );
+  });
 
   readonly currentCardHasAction = computed(
     () => (action: 'pause' | 'replace' | 'unpause') =>
@@ -81,6 +106,32 @@ export class ProgramRegistrationDebitCardsPageComponent {
   );
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
+
+  fspConfigurationProperties = injectQuery(
+    this.fspConfigurationApiService.getFspConfigurationProperties({
+      programId: this.programId,
+      configurationName: 'Intersolve-visa',
+    }),
+  );
+
+  readonly cardDistributionByMailEnabled = computed(() => {
+    const props: FspConfigurationProperty[] =
+      this.fspConfigurationProperties.data() ?? [];
+
+    const cardDistributionByMailProperty = props.find(
+      (property) =>
+        property.name ===
+        (IntersolveVisaFspConfigurationProperties.cardDistributionByMail as string),
+    );
+
+    return cardDistributionByMailProperty?.value === 'true';
+  });
+
+  readonly cardByMailDisabledAndNoCurrentCards = computed(() => {
+    const hasAnyCard = !!this.currentCard() || this.oldCards().length > 0;
+
+    return !this.cardDistributionByMailEnabled() && !hasAnyCard;
+  });
 
   readonly convertCentsToMainUnits = (
     value: null | number | undefined,
@@ -212,7 +263,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
     },
   }));
 
-  replaceCardMutation = injectMutation(() => ({
+  replaceCardByMailMutation = injectMutation(() => ({
     mutationFn: () => {
       const referenceId = this.referenceId();
 
