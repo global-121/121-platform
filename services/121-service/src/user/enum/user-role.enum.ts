@@ -9,4 +9,5 @@ export enum DefaultUserRole {
   CvaOfficer = 'cva-officer',
   FinanceManager = 'finance-manager',
   FinanceOfficer = 'finance-officer',
+  Approver = 'approver',
 }

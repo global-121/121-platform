@@ -12,8 +12,9 @@ import {
   registrationScopedTurkanaNorthPv,
 } from '@121-service/test/fixtures/scoped-registrations';
 import {
-  createAndStartPayment,
+  approvePayment,
   createPayment,
+  doPayment,
   getPaymentEvents,
   getPayments,
   getProgramPaymentsStatus,
@@ -116,7 +117,7 @@ describe('Payment in progress', () => {
     );
 
     // We do a payment here and wait for it to complete
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: programIdPV,
       transferValue,
       referenceIds: registrationReferenceIdsPV,
@@ -139,7 +140,7 @@ describe('Payment in progress', () => {
       await getProgramPaymentsStatus(programIdOCW, accessToken)
     ).body;
 
-    const doPaymentPvResultPaymentNext = await createAndStartPayment({
+    const doPaymentPvResultPaymentNext = await doPayment({
       programId: programIdPV,
       transferValue,
       referenceIds: [],
@@ -147,7 +148,7 @@ describe('Payment in progress', () => {
     });
     const paymentIdPvNext = doPaymentPvResultPaymentNext.body.id;
 
-    const doPaymentOcwResultPaymentNext = await createAndStartPayment({
+    const doPaymentOcwResultPaymentNext = await doPayment({
       programId: programIdOCW,
       transferValue,
       referenceIds: [],
@@ -160,8 +161,8 @@ describe('Payment in progress', () => {
     expect(getProgramPaymentsPvResult.inProgress).toBe(false);
     expect(getProgramPaymentsOcwResult.inProgress).toBe(false);
 
-    expect(doPaymentPvResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
-    expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentPvResultPaymentNext.status).toBe(HttpStatus.CREATED);
+    expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.CREATED);
 
     // Cleanup to make sure nothing is in progress anymore
     await waitForPaymentAndTransactionsToComplete({
@@ -197,7 +198,7 @@ describe('Payment in progress', () => {
       }
       const paymentResponses = await Promise.all(paymentPromises);
       const createdPayments = paymentResponses.filter(
-        (res) => res.status === HttpStatus.ACCEPTED,
+        (res) => res.status === HttpStatus.CREATED,
       );
       const blockedPayments = paymentResponses.filter(
         (res) => res.status === HttpStatus.BAD_REQUEST,
@@ -221,6 +222,11 @@ describe('Payment in progress', () => {
           accessToken,
         })
       ).body.id;
+      await approvePayment({
+        programId: programIdPV,
+        paymentId,
+        accessToken,
+      });
 
       // Act
       const startPaymentPromises: ReturnType<typeof startPayment>[] = [];
@@ -363,7 +369,7 @@ describe('Payment in progress', () => {
 
     // Act
     // We do a payment and we do not wait for all transactions to complete
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: programIdPV,
       transferValue,
       referenceIds: [],
@@ -378,7 +384,7 @@ describe('Payment in progress', () => {
       await getProgramPaymentsStatus(programIdOCW, accessToken)
     ).body;
 
-    const doPaymentOcwResultPaymentNext = await createAndStartPayment({
+    const doPaymentOcwResultPaymentNext = await doPayment({
       programId: programIdOCW,
       transferValue,
       referenceIds: [],
@@ -396,7 +402,7 @@ describe('Payment in progress', () => {
     expect(getProgramPaymentsPvResult.inProgress).toBe(true);
     expect(getProgramPaymentsOcwResult.inProgress).toBe(false);
 
-    expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.CREATED);
     expect(multiEndpointPaymentProgressPv).toMatchObject({
       paymentIsInProgress: true,
       createPaymentBlocked: true,

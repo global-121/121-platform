@@ -22,9 +22,6 @@ import { PaymentEventType } from '~/domains/payment/payment.model';
   // TODO: Come up with elegant solution for naming this component + preventing too much duplication for the template/HTML
   template: `
     <span class="inline-flex items-center">
-      <span class="me-4 inline leading-[0]"
-        ><i [class]="icon() + ' text-xl'"></i>
-      </span>
       <span>{{ label() }}</span>
     </span>
   `,
@@ -40,12 +37,21 @@ export class TableCellPaymentEventOverviewComponent implements TableCellComponen
   readonly label = computed(() => {
     const event = this.value();
     const eventType = event.type;
+    const label = PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS[eventType];
 
     switch (eventType) {
       case PaymentEvent.note:
         return event.attributes.note;
+      case PaymentEvent.approved: {
+        const order = event.attributes.approveRank;
+        const total = event.attributes.approveTotal;
+        if (event.attributes.note) {
+          return $localize`${label} payment (${order} of ${total}). Note: ${event.attributes.note}`;
+        }
+        return $localize`${label} payment (${order} of ${total})`;
+      }
       default:
-        return `${PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS[eventType]} ${this.datePipe.transform(event.created, 'short') ?? ''}`;
+        return $localize`${label} payment`;
     }
   });
   readonly icon = computed(

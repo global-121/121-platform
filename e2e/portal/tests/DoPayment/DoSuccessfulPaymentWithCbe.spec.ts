@@ -50,7 +50,6 @@ test('Do successful payment for Cbe fsp', async ({ page }) => {
   });
 
   await test.step('Do payment', async () => {
-    // Create payment
     await paymentsPage.createPayment({});
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
@@ -58,13 +57,8 @@ test('Do successful payment for Cbe fsp', async ({ page }) => {
     );
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
-    await paymentPage.validateToastMessageAndClose('Payment created.');
-
-    // start payment
+    await paymentPage.approvePayment();
     await paymentPage.startPayment();
-    await paymentPage.validateToastMessageAndClose(
-      'Payment started successfully.',
-    );
 
     // Wait for payment transactions to complete
     await waitForPaymentAndTransactionsToComplete({
@@ -89,7 +83,7 @@ test('Do successful payment for Cbe fsp', async ({ page }) => {
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
-      successfulTransactions: defaultMaxTransferValue,
+      successfulPaymentAmount: defaultMaxTransferValue,
       failedTransactions: 0,
       currency: CbeProgram.currency,
       programId: programIdCbe,

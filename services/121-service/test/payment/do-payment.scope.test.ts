@@ -6,7 +6,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { registrationsPV } from '@121-service/test/fixtures/scoped-registrations';
 import {
-  createAndStartPayment,
+  doPayment,
   getTransactionsByPaymentIdPaginated,
   waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -14,6 +14,11 @@ import {
   awaitChangeRegistrationStatus,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
+import {
+  createApprover,
+  deleteApprover,
+  getCurrentUser,
+} from '@121-service/test/helpers/user.helper';
 import {
   createAccessTokenWithPermissions,
   getAccessToken,
@@ -71,12 +76,28 @@ describe('Registrations - [Scoped]', () => {
       scope: testScope,
       adminAccessToken: accessToken,
     });
+    // add scoped user as approver ..
+    const userIdScoped = (
+      await getCurrentUser({ accessToken: accessTokenScoped })
+    ).body.user.id;
+    await createApprover({
+      programId: PvProgramId,
+      userId: userIdScoped,
+      order: 2,
+      accessToken,
+    });
+    // .. and remove default admin-user approver
+    await deleteApprover({
+      programId: PvProgramId,
+      approverId: 1,
+      accessToken,
+    });
 
     // Act
     // 7 registrations in total are included
-    // 3 registrations are in include in program PV
-    // 2 registrations are in include in program PV and are in the scope of the requesting user
-    const doPaymentResponse = await createAndStartPayment({
+    // 3 registrations are included in program PV
+    // 2 registrations are included in program PV and are in the scope of the requesting user
+    const doPaymentResponse = await doPayment({
       programId: PvProgramId,
       transferValue: 25,
       referenceIds: [],
@@ -98,7 +119,7 @@ describe('Registrations - [Scoped]', () => {
       registrationReferenceId: null,
       accessToken,
     });
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(2);
     // Also check if the right amount of transactions are created
     const transactions = transactionsResponse.body.data;
