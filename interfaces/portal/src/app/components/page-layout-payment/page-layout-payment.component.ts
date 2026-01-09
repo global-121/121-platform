@@ -269,7 +269,7 @@ export class PageLayoutPaymentComponent {
       programId: this.programId(),
       requiredPermissions: [
         PermissionEnum.PaymentREAD,
-        PermissionEnum.PaymentUPDATE,
+        PermissionEnum.PaymentSTART,
         PermissionEnum.PaymentTransactionREAD,
       ],
     }),

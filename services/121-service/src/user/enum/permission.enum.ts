@@ -30,6 +30,8 @@ export enum PermissionEnum {
   PaymentREAD = 'payment.read',
   PaymentCREATE = 'payment.create',
   PaymentUPDATE = 'payment.update',
+  PaymentRETRY = 'payment.retry',
+  PaymentSTART = 'payment.start',
   PaymentFspInstructionREAD = 'payment:fsp-instruction.read',
   PaymentTransactionREAD = 'payment:transaction.read',
 

@@ -214,7 +214,7 @@ export class PaymentsController {
     return result;
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentUPDATE] })
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentSTART] })
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
     description: 'Successfully started the payment',
@@ -240,7 +240,7 @@ export class PaymentsController {
     });
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentUPDATE] })
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentRETRY] })
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
     description: 'Successfully retried the payment',

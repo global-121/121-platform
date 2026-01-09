@@ -70,6 +70,11 @@ export class SeedInit implements InterfaceScript {
     permissions: PermissionEntity[],
   ): Promise<UserRoleEntity[]> {
     const userRoleRepository = this.dataSource.getRepository(UserRoleEntity);
+    const paymentRelatedPermissionsNotForProgramAdmin = [
+      PermissionEnum.PaymentSTART,
+      PermissionEnum.PaymentRETRY,
+      PermissionEnum.PaymentUPDATE,
+    ];
     const defaultRoles = [
       {
         role: DefaultUserRole.Admin,
@@ -80,7 +85,8 @@ export class SeedInit implements InterfaceScript {
         role: DefaultUserRole.ProgramAdmin,
         label: 'Program Admin',
         permissions: Object.values(PermissionEnum).filter(
-          (p) => p !== PermissionEnum.PaymentUPDATE,
+          (permission: PermissionEnum) =>
+            !paymentRelatedPermissionsNotForProgramAdmin.includes(permission),
         ),
       },
       {
@@ -182,8 +188,10 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.ProgramAttachmentsREAD,
           PermissionEnum.ProgramAttachmentsCREATE,
           PermissionEnum.PaymentCREATE,
-          PermissionEnum.PaymentUPDATE,
+          PermissionEnum.PaymentSTART,
+          PermissionEnum.PaymentRETRY,
           PermissionEnum.PaymentREAD,
+          PermissionEnum.PaymentUPDATE,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentFspInstructionREAD,
           PermissionEnum.PaymentVoucherPaperREAD,

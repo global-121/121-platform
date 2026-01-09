@@ -152,7 +152,7 @@ export class TableCellOverviewComponent implements TableCellComponent<
         programId: this.context().programId(),
         requiredPermissions: [
           PermissionEnum.PaymentREAD,
-          PermissionEnum.PaymentUPDATE,
+          PermissionEnum.PaymentRETRY,
           PermissionEnum.PaymentTransactionREAD,
         ],
       })
