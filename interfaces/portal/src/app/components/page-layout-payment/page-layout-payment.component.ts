@@ -310,6 +310,11 @@ export class PageLayoutPaymentComponent {
       return false;
     }
 
+    // hide after starting, unless approved transactions left
+    if (this.payment.data().approved.count === 0) {
+      return false;
+    }
+
     if (!this.hasStartPaymentPermissions()) {
       return false;
     }
