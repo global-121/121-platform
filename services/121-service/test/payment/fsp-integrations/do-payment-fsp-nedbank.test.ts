@@ -489,7 +489,11 @@ describe('Do payment', () => {
           };
           registrations.push(registration);
         }
-        await seedPaidRegistrations({ registrations, programId });
+        await seedPaidRegistrations({
+          registrations,
+          programId,
+          completeStatuses: [TransactionStatusEnum.waiting],
+        });
 
         // Act
         await runCronJobDoNedbankReconciliation();
@@ -522,6 +526,7 @@ describe('Do payment', () => {
         await seedPaidRegistrations({
           registrations: [registrationFailTimeout],
           programId,
+          completeStatuses: [TransactionStatusEnum.waiting],
         });
         const transactionsExportBeforeCronResponse =
           await exportTransactionsByDateRangeJson({
@@ -572,6 +577,7 @@ describe('Do payment', () => {
         await seedPaidRegistrations({
           registrations: [registrationFailTimeout],
           programId,
+          completeStatuses: [TransactionStatusEnum.waiting],
         });
         const transactionExportBeforeCronResponse =
           await exportTransactionsByDateRangeJson({
