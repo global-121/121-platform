@@ -139,6 +139,13 @@ module.exports = {
           },
         },
         {
+          files: ['*.controller.ts'],
+          plugins: ['custom-rules'],
+          rules: {
+            'custom-rules/no-method-api-tags': 'error',
+          },
+        },
+        {
           files: ['*.spec.ts', '*.test.ts'],
           extends: ['plugin:jest/recommended'],
         },
