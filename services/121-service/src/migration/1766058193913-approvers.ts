@@ -4,6 +4,7 @@ export class Approvers1766058193913 implements MigrationInterface {
   name = 'Approvers1766058193913';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // Datamodel migration
     await queryRunner.query(
       `CREATE TABLE "121-service"."approver" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "programAidworkerAssignmentId" integer NOT NULL, "order" integer NOT NULL, CONSTRAINT "REL_58ca3f250fb902accdafddd724" UNIQUE ("programAidworkerAssignmentId"), CONSTRAINT "PK_760049de241c526dbfd1330f6dd" PRIMARY KEY ("id"))`,
     );
@@ -26,7 +27,17 @@ export class Approvers1766058193913 implements MigrationInterface {
       `ALTER TABLE "121-service"."payment_approval" ADD CONSTRAINT "FK_489750b2f9e0c35193c674302da" FOREIGN KEY ("paymentId") REFERENCES "121-service"."payment"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
 
-    // Data migration: create approvers for all current users with 'payment.update' permission (= current payment 'starters') in their programs (except admin)
+    // Data migration
+    await this.migrateApprovers(queryRunner);
+    await this.migratePaymentApprovals(queryRunner);
+    await this.migrateAttributesOfApprovedPaymentEvents(queryRunner);
+  }
+
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    // no down
+  }
+
+  private async migrateApprovers(queryRunner: QueryRunner) {
     const assignmentsWithPaymentUpdatePermission = await queryRunner.query(
       `SELECT p.id AS "programId", paa.id AS "programAidworkerAssignmentId"
       FROM "121-service"."program" p
@@ -62,7 +73,68 @@ export class Approvers1766058193913 implements MigrationInterface {
     }
   }
 
-  public async down(_queryRunner: QueryRunner): Promise<void> {
-    // no down
+  private async migratePaymentApprovals(queryRunner: QueryRunner) {
+    const paymentsPendingApproval = await queryRunner.query(
+      `SELECT DISTINCT p.id AS "paymentId", p."programId"
+      FROM "121-service"."payment" p
+      JOIN "121-service"."transaction" t ON t."paymentId" = p.id
+      WHERE t.status = 'pendingApproval'`,
+    );
+
+    const paymentApprovalInserts: string[] = [];
+    for (const payment of paymentsPendingApproval) {
+      const { paymentId, programId } = payment;
+      const approvers = await queryRunner.query(
+        `SELECT a.id AS "approverId", a."order"
+        FROM "121-service"."approver" a
+        WHERE a."programAidworkerAssignmentId" IN (
+          SELECT paa.id
+          FROM "121-service"."program_aidworker_assignment" paa
+          WHERE paa."programId" = $1
+        )
+        ORDER BY a."order"`,
+        [programId],
+      );
+
+      approvers.forEach((approver: { approverId: number; order: number }) => {
+        const { approverId, order } = approver;
+        paymentApprovalInserts.push(
+          `(${approverId}, ${paymentId}, false, ${order})`,
+        );
+      });
+    }
+
+    if (paymentApprovalInserts.length > 0) {
+      await queryRunner.query(
+        `INSERT INTO "121-service"."payment_approval" ("approverId", "paymentId", "approved", "rank") VALUES ${paymentApprovalInserts.join(
+          ', ',
+        )}`,
+      );
+    }
+  }
+
+  private async migrateAttributesOfApprovedPaymentEvents(
+    queryRunner: QueryRunner,
+  ) {
+    const approvedPaymentEvents = await queryRunner.query(
+      `SELECT *
+      FROM "121-service"."payment_event"
+      WHERE type = 'approved'`,
+    );
+
+    for (const event of approvedPaymentEvents) {
+      await queryRunner.query(
+        `INSERT INTO "121-service".payment_event_attribute
+        (created, updated, "eventId", "key", value)
+        VALUES($1, $1, $2, 'approveRank', '1')`,
+        [event.created, event.id],
+      );
+      await queryRunner.query(
+        `INSERT INTO "121-service".payment_event_attribute
+        (created, updated, "eventId", "key", value)
+        VALUES($1, $1, $2, 'approveTotal', '1')`,
+        [event.created, event.id],
+      );
+    }
   }
 }
