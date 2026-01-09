@@ -305,7 +305,7 @@ export class SeedMockHelperService {
     await this.httpService.post(url, {}, headers);
   }
 
-  public async waitForPaymentAndTransactionsToComplete({
+  public async waitForTransactionsToComplete({
     programId,
     paymentId,
     referenceIds,
