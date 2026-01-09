@@ -1,10 +1,10 @@
 import { expect, test } from '@playwright/test';
 
+import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import {
   FspConfigurationProperties,
   Fsps,
-} from '@121-service/src/fsp-management/enums/fsp-name.enum';
-import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const';
+} from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { programIdVisa } from '@121-service/src/seed-data/mock/visa-card.data';
