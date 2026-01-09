@@ -85,10 +85,8 @@ export class SeedInit implements InterfaceScript {
         role: DefaultUserRole.ProgramAdmin,
         label: 'Program Admin',
         permissions: Object.values(PermissionEnum).filter(
-          (permission) =>
-            !paymentRelatedPermissionsNotForProgramAdmin.includes(
-              permission as PermissionEnum,
-            ),
+          (permission: PermissionEnum) =>
+            !paymentRelatedPermissionsNotForProgramAdmin.includes(permission),
         ),
       },
       {
