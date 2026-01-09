@@ -55,7 +55,6 @@ describe('Set/calculate payment amount multiplier', () => {
       accessToken,
       completeStatuses: [
         TransactionStatusEnum.success,
-        TransactionStatusEnum.waiting,
         TransactionStatusEnum.error,
       ],
     });
