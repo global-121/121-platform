@@ -168,7 +168,7 @@ describe('Payment approval flow', () => {
         paymentId,
         accessToken: adminAccessToken,
       });
-      await waitForPaymentTransactionsToComplete({
+      await waitForPaymentAndTransactionsToComplete({
         programId,
         paymentId,
         paymentReferenceIds: [registrationPV5.referenceId],
