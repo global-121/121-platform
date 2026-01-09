@@ -70,9 +70,7 @@ import { ToastService } from '~/services/toast.service';
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChangeStatusDialogComponent
-  implements IActionDataHandler<Registration>
-{
+export class ChangeStatusDialogComponent implements IActionDataHandler<Registration> {
   readonly programId = input.required<string>();
   readonly actionComplete = output();
 
