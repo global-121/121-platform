@@ -1,4 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
+// import Node util
+import util from 'node:util';
 
 import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -54,6 +56,19 @@ describe('Find duplicates in 100k registrations within expected range', () => {
           secret: env.RESET_SECRET,
         },
       });
+    if (duplicateRegistrationsResponse.statusCode !== HttpStatus.CREATED) {
+      console.error(
+        'Duplicate Registrations Response Error:',
+        duplicateRegistrationsResponse.body,
+      );
+      console.error(
+        util.inspect(duplicateRegistrationsResponse, {
+          showHidden: false,
+          depth: null,
+          colors: false,
+        }),
+      );
+    }
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
     // Query for duplicate registrations
     const findDuplicatesResponse = await getRegistrations({
