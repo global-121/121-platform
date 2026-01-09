@@ -57,6 +57,7 @@ test('Show in progress banner and chip when payment is in progress', async ({
     await paymentPage.startPayment();
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await page.waitForTimeout(500); // wait a bit to allow the payment to start with 2^8 registrations
   });
 
   await test.step('Validate payment in progress in Payment overview', async () => {

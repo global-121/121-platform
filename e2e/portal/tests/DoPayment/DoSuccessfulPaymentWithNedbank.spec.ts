@@ -62,6 +62,7 @@ test('Do successful payment for Nedbank fsp', async ({ page }) => {
     await paymentPage.startPayment();
 
     // Run CRON job to process payment
+    await page.waitForTimeout(500); // wait a bit to allow the payment to start before running the CRON job
     await runCronJobDoNedbankReconciliation();
   });
 
@@ -76,7 +77,7 @@ test('Do successful payment for Nedbank fsp', async ({ page }) => {
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
-      successfulTransactions: defaultMaxTransferValue,
+      successfulPaymentAmount: defaultMaxTransferValue,
       failedTransactions: 0,
       currency: NedbankProgram.currencySymbol,
       programId: programIdNedbank,
