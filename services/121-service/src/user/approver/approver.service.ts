@@ -179,7 +179,7 @@ export class ApproverService {
         paymentId: Equal(paymentId),
       },
       relations: { approver: { programAidworkerAssignment: { user: true } } },
-      order: { approver: { order: 'ASC' } },
+      order: { rank: 'ASC' },
     });
     return paymentApprovals.map((approval) => {
       const { approver } = approval;
@@ -188,7 +188,7 @@ export class ApproverService {
         id: approval.id,
         approved: approval.approved,
         username: user.username,
-        order: approver.order,
+        rank: approval.rank,
       };
     });
   }

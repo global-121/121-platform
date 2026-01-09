@@ -275,35 +275,25 @@ export class PageLayoutPaymentComponent {
       return false;
     }
 
-    if (this.payment.data().pendingApproval.count === 0) {
-      return false;
-    }
-
-    if (this.hasAlreadyApproved()) {
-      return false;
-    }
-
     if (this.isPaymentInProgress()) {
       return false;
     }
 
-    if (!this.canApprovePayment()) {
-      return false;
+    const approvalStatus = this.payment.data().approvalStatus;
+    const currentPaymentApproval = approvalStatus.find(
+      (approval) => approval.username === this.authService.user?.username,
+    );
+    if (!currentPaymentApproval) {
+      return false; // not approver for this payment
     }
+    if (currentPaymentApproval.approved) {
+      return false; // already approved
+    }
+
+    // NOTE 1: we do not hide the button if previous approvers have not yet approved, to avoid confusion. Instead, the backend will block the approval action.
+    // NOTE 2: there is no permission-check here, as there is no approve permission.
 
     return true;
-  });
-
-  readonly hasAlreadyApproved = computed<boolean | undefined>(() => {
-    if (!this.payment.isSuccess()) {
-      return false;
-    }
-
-    return this.payment
-      .data()
-      .approvalStatus.filter((s) => s.approved)
-      .map((s) => s.username)
-      .includes(this.authService.user?.username);
   });
 
   readonly showStartPaymentButton = computed<boolean | undefined>(() => {
@@ -311,25 +301,23 @@ export class PageLayoutPaymentComponent {
       return false;
     }
 
-    if (this.payment.data().approved.count === 0) {
-      return false;
-    }
-
     if (this.isPaymentInProgress()) {
       return false;
     }
 
-    if (!this.canStartPayment()) {
+    const approvalStatus = this.payment.data().approvalStatus;
+    if (approvalStatus.some((approval) => !approval.approved)) {
+      return false;
+    }
+
+    if (!this.hasStartPaymentPermissions()) {
       return false;
     }
 
     return true;
   });
 
-  // ##TODO: implement real check
-  readonly canApprovePayment = computed(() => true);
-
-  readonly canStartPayment = computed(() =>
+  readonly hasStartPaymentPermissions = computed(() =>
     this.authService.hasAllPermissions({
       programId: this.programId(),
       requiredPermissions: [

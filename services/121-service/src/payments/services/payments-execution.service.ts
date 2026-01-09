@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PaginateQuery } from 'nestjs-paginate';
+import { Equal } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
@@ -13,6 +14,7 @@ import { TransactionViewScopedRepository } from '@121-service/src/payments/trans
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
+import { PaymentApprovalRepository } from '@121-service/src/user/approver/repositories/payment-approval.repository';
 
 @Injectable()
 export class PaymentsExecutionService {
@@ -24,6 +26,7 @@ export class PaymentsExecutionService {
     private readonly paymentEventsService: PaymentEventsService,
     private readonly transactionsService: TransactionsService,
     private readonly paymentsReportingService: PaymentsReportingService,
+    private readonly paymentApprovalRepository: PaymentApprovalRepository,
   ) {}
 
   public async startPayment({
@@ -40,6 +43,19 @@ export class PaymentsExecutionService {
     );
 
     try {
+      const notCompletedApprovals = await this.paymentApprovalRepository.count({
+        where: {
+          paymentId: Equal(paymentId),
+          approved: Equal(false),
+        },
+      });
+      if (notCompletedApprovals > 0) {
+        throw new HttpException(
+          `Cannot start payment. There are ${notCompletedApprovals} approval(s) to be done for this payment.`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       // check that all FSP configurations are still valid
       const uniqueFspConfigsForApprovedTransactions =
         await this.transactionViewScopedRepository.getUniqueProgramFspConfigForApprovedTransactions(
