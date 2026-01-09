@@ -56,10 +56,9 @@ import { Locale } from '~/utils/locale';
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TableCellOverviewComponent implements TableCellComponent<
-  Activity,
-  ActivityLogTableCellContext
-> {
+export class TableCellOverviewComponent
+  implements TableCellComponent<Activity, ActivityLogTableCellContext>
+{
   readonly value = input.required<Activity>();
   readonly context = input.required<ActivityLogTableCellContext>();
 

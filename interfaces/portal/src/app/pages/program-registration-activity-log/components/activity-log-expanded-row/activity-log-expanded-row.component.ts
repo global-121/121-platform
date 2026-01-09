@@ -39,10 +39,9 @@ import { Locale } from '~/utils/locale';
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ActivityLogExpandedRowComponent implements TableCellComponent<
-  Activity,
-  ActivityLogTableCellContext
-> {
+export class ActivityLogExpandedRowComponent
+  implements TableCellComponent<Activity, ActivityLogTableCellContext>
+{
   private locale = inject<Locale>(LOCALE_ID);
   private readonly programApiService = inject(ProgramApiService);
   private readonly registrationAttributeService = inject(

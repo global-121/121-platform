@@ -32,7 +32,9 @@ import { PaymentEventType } from '~/domains/payment/payment.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DatePipe],
 })
-export class TableCellPaymentEventOverviewComponent implements TableCellComponent<PaymentEventType> {
+export class TableCellPaymentEventOverviewComponent
+  implements TableCellComponent<PaymentEventType>
+{
   readonly value = input.required<PaymentEventType>();
   readonly context = input<never>();
   readonly datePipe = inject(DatePipe);

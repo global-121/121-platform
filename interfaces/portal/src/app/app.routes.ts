@@ -125,9 +125,9 @@ export const routes: Routes = [
               ' | ' +
               $localize`:@@page-title-program-monitoring:Monitoring`,
             loadComponent: () =>
-              import('~/pages/program-monitoring-dashboard/program-monitoring-dashboard.page').then(
-                (x) => x.ProgramMonitoringDashboardPageComponent,
-              ),
+              import(
+                '~/pages/program-monitoring-dashboard/program-monitoring-dashboard.page'
+              ).then((x) => x.ProgramMonitoringDashboardPageComponent),
           },
           {
             path: AppRoutes.programMonitoringPowerBI,
@@ -136,9 +136,9 @@ export const routes: Routes = [
               ' | ' +
               $localize`:@@page-title-program-monitoring:Monitoring`,
             loadComponent: () =>
-              import('~/pages/program-monitoring-powerbi/program-monitoring-powerbi.page').then(
-                (x) => x.ProgramMonitoringPowerbiPageComponent,
-              ),
+              import(
+                '~/pages/program-monitoring-powerbi/program-monitoring-powerbi.page'
+              ).then((x) => x.ProgramMonitoringPowerbiPageComponent),
           },
           {
             path: AppRoutes.programMonitoringDataChanges,
@@ -147,9 +147,9 @@ export const routes: Routes = [
               ' | ' +
               $localize`:@@page-title-program-monitoring:Monitoring`,
             loadComponent: () =>
-              import('~/pages/program-monitoring-data-changes/program-monitoring-data-changes.page').then(
-                (x) => x.ProgramMonitoringDataChangesPageComponent,
-              ),
+              import(
+                '~/pages/program-monitoring-data-changes/program-monitoring-data-changes.page'
+              ).then((x) => x.ProgramMonitoringDataChangesPageComponent),
           },
           {
             path: AppRoutes.programMonitoringFiles,
@@ -158,9 +158,9 @@ export const routes: Routes = [
               ' | ' +
               $localize`:@@page-title-program-monitoring:Monitoring`,
             loadComponent: () =>
-              import('~/pages/program-monitoring-files/program-monitoring-files.page').then(
-                (x) => x.ProgramMonitoringFilesPageComponent,
-              ),
+              import(
+                '~/pages/program-monitoring-files/program-monitoring-files.page'
+              ).then((x) => x.ProgramMonitoringFilesPageComponent),
             canActivate: [
               programPermissionsGuard({
                 permission: PermissionEnum.ProgramAttachmentsREAD,
@@ -185,9 +185,9 @@ export const routes: Routes = [
               ' | ' +
               $localize`:@@page-title-program-settings:Settings`,
             loadComponent: () =>
-              import('~/pages/program-settings-information/program-settings-information.page').then(
-                (x) => x.ProgramSettingsInformationPageComponent,
-              ),
+              import(
+                '~/pages/program-settings-information/program-settings-information.page'
+              ).then((x) => x.ProgramSettingsInformationPageComponent),
             canActivate: [
               programPermissionsGuard({
                 permission: PermissionEnum.ProgramUPDATE,
@@ -205,9 +205,9 @@ export const routes: Routes = [
               ' | ' +
               $localize`:@@page-title-program-program-settings:Program settings`,
             loadComponent: () =>
-              import('~/pages/program-settings-fsps/program-settings-fsps.page').then(
-                (x) => x.ProgramSettingsFspsPageComponent,
-              ),
+              import(
+                '~/pages/program-settings-fsps/program-settings-fsps.page'
+              ).then((x) => x.ProgramSettingsFspsPageComponent),
             canActivate: [
               authCapabilitiesGuard((authService) => authService.isAdmin),
             ],
@@ -219,9 +219,9 @@ export const routes: Routes = [
               ' | ' +
               $localize`:@@page-title-program-settings:Settings`,
             loadComponent: () =>
-              import('~/pages/program-settings-team/program-settings-team.page').then(
-                (x) => x.ProgramSettingsTeamPageComponent,
-              ),
+              import(
+                '~/pages/program-settings-team/program-settings-team.page'
+              ).then((x) => x.ProgramSettingsTeamPageComponent),
             canActivate: [
               programPermissionsGuard({
                 permission: PermissionEnum.AidWorkerProgramREAD,
@@ -242,9 +242,9 @@ export const routes: Routes = [
             path: ``,
             title: $localize`:@@page-title-program-registrations:Registrations`,
             loadComponent: () =>
-              import('~/pages/program-registrations/program-registrations.page').then(
-                (x) => x.ProgramRegistrationsPageComponent,
-              ),
+              import(
+                '~/pages/program-registrations/program-registrations.page'
+              ).then((x) => x.ProgramRegistrationsPageComponent),
           },
           {
             path: `:registrationId`,
@@ -258,9 +258,9 @@ export const routes: Routes = [
                   ' | ' +
                   $localize`:@@page-title-program-registration-details:Registration details`,
                 loadComponent: () =>
-                  import('~/pages/program-registration-activity-log/program-registration-activity-log.page').then(
-                    (x) => x.ProgramRegistrationActivityLogPageComponent,
-                  ),
+                  import(
+                    '~/pages/program-registration-activity-log/program-registration-activity-log.page'
+                  ).then((x) => x.ProgramRegistrationActivityLogPageComponent),
               },
               {
                 path: AppRoutes.programRegistrationPersonalInformation,
@@ -270,7 +270,9 @@ export const routes: Routes = [
                   $localize`:@@page-title-program-registration-details:Registration details`,
                 canDeactivate: [pendingChangesGuard],
                 loadComponent: () =>
-                  import('~/pages/program-registration-personal-information/program-registration-personal-information.page').then(
+                  import(
+                    '~/pages/program-registration-personal-information/program-registration-personal-information.page'
+                  ).then(
                     (x) =>
                       x.ProgramRegistrationPersonalInformationPageComponent,
                   ),
@@ -282,9 +284,9 @@ export const routes: Routes = [
                   ' | ' +
                   $localize`:@@page-title-program-registration-details:Registration details`,
                 loadComponent: () =>
-                  import('~/pages/program-registration-debit-cards/program-registration-debit-cards.page').then(
-                    (x) => x.ProgramRegistrationDebitCardsPageComponent,
-                  ),
+                  import(
+                    '~/pages/program-registration-debit-cards/program-registration-debit-cards.page'
+                  ).then((x) => x.ProgramRegistrationDebitCardsPageComponent),
               },
               {
                 path: ``,
@@ -314,17 +316,17 @@ export const routes: Routes = [
                 path: AppRoutes.programPaymentTransactionList,
                 title: $localize`:@@page-title-program-transaction-list:Transaction list`,
                 loadComponent: () =>
-                  import('~/pages/program-payment-transaction-list/program-payment-transaction-list.page').then(
-                    (x) => x.ProgramPaymentTransactionListPageComponent,
-                  ),
+                  import(
+                    '~/pages/program-payment-transaction-list/program-payment-transaction-list.page'
+                  ).then((x) => x.ProgramPaymentTransactionListPageComponent),
               },
               {
                 path: AppRoutes.programPaymentLog,
                 title: $localize`:@@page-title-program-payment-log:Payment log`,
                 loadComponent: () =>
-                  import('~/pages/program-payment-log/program-payment-log.page').then(
-                    (x) => x.ProgramPaymentLogPageComponent,
-                  ),
+                  import(
+                    '~/pages/program-payment-log/program-payment-log.page'
+                  ).then((x) => x.ProgramPaymentLogPageComponent),
               },
               {
                 path: ``,
@@ -338,9 +340,9 @@ export const routes: Routes = [
       {
         path: `${AppRoutes.registrationByReferenceId}/:referenceId`,
         loadComponent: () =>
-          import('~/pages/registration-by-reference-id/registration-by-reference-id.page').then(
-            (x) => x.RegistrationByReferenceIdPageComponent,
-          ),
+          import(
+            '~/pages/registration-by-reference-id/registration-by-reference-id.page'
+          ).then((x) => x.RegistrationByReferenceIdPageComponent),
         canActivate: [authGuard],
       },
       {

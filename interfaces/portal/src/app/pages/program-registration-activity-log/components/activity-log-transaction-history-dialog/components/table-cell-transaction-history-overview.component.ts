@@ -27,7 +27,9 @@ import { TransactionEvent } from '~/domains/transaction/transaction.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DatePipe],
 })
-export class TableCellTransactionHistoryOverviewComponent implements TableCellComponent<TransactionEvent> {
+export class TableCellTransactionHistoryOverviewComponent
+  implements TableCellComponent<TransactionEvent>
+{
   readonly value = input.required<TransactionEvent>();
   readonly context = input<never>();
   readonly datePipe = inject(DatePipe);
