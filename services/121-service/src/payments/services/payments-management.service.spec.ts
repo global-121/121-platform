@@ -1,14 +1,14 @@
+import { TestBed } from '@automock/jest';
+
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsManagementService } from '@121-service/src/payments/services/payments-management.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
-import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ApproverService } from '@121-service/src/user/approver/approver.service';
-import { PaymentApprovalRepository } from '@121-service/src/user/approver/repositories/payment-approval.repository';
 
 describe('PaymentsManagementService', () => {
   let service: PaymentsManagementService;
@@ -19,8 +19,6 @@ describe('PaymentsManagementService', () => {
   let registrationsBulkService: RegistrationsBulkService;
   let registrationsPaginationService: RegistrationsPaginationService;
   let approverService: ApproverService;
-  let transactionViewScopedRepository: TransactionViewScopedRepository;
-  let paymentApprovalRepository: PaymentApprovalRepository;
 
   const basePaymentParams = {
     userId: 1,
@@ -31,84 +29,46 @@ describe('PaymentsManagementService', () => {
     note: 'test',
   };
 
-  beforeEach(() => {
-    paymentsProgressHelperService = {
-      checkPaymentInProgressAndThrow: jest.fn(),
-      checkAndLockPaymentProgressOrThrow: jest.fn(),
-      unlockPaymentsForProgram: jest.fn(),
-    } as unknown as PaymentsProgressHelperService;
-
-    paymentsHelperService = {
-      checkFspConfigurationsOrThrow: jest.fn(),
-    } as unknown as PaymentsHelperService;
-    paymentEventsService = {
-      createEvent: jest.fn(),
-      createNoteEvent: jest.fn(),
-      createApprovedEvent: jest.fn(),
-    } as unknown as PaymentEventsService;
-    transactionsService = {
-      createTransactionsAndEvents: jest.fn(),
-      saveProgressBulk: jest.fn(),
-    } as unknown as TransactionsService;
-    registrationsBulkService = {
-      setQueryPropertiesBulkAction: jest.fn().mockReturnValue({}),
-      getBulkActionResult: jest.fn().mockResolvedValue({}),
-      getBaseQuery: jest
-        .fn()
-        .mockReturnValue({ andWhere: jest.fn().mockReturnThis() }),
-    } as unknown as RegistrationsBulkService;
-    registrationsPaginationService = {
-      getRegistrationViewsChunkedByPaginateQuery: jest.fn().mockResolvedValue([
-        {
-          paymentAmountMultiplier: 1,
-          programFspConfigurationName: 'fspA',
-          referenceId: 'ref1',
-        },
-      ]),
-      getRegistrationViewsChunkedByReferenceIds: jest
-        .fn()
-        .mockResolvedValue([
-          { id: 1, paymentAmountMultiplier: 1, programFspConfigurationId: 2 },
-        ]),
-      getRegistrationViewsNoLimit: jest.fn().mockResolvedValue([
-        {
-          referenceId: 'ref1',
-          paymentAmountMultiplier: 1,
-          programFspConfigurationName: 'fspA',
-        },
-      ]),
-    } as unknown as RegistrationsPaginationService;
-    approverService = {
-      getApprovers: jest.fn().mockResolvedValue([{ id: 1 }]),
-      getApproverByUserIdOrThrow: jest.fn().mockResolvedValue({ id: 1 }),
-    } as unknown as ApproverService;
-    transactionViewScopedRepository = {
-      getByStatusOfIncludedRegistrations: jest
-        .fn()
-        .mockResolvedValue([{ id: 1 }]),
-    } as unknown as TransactionViewScopedRepository;
-    paymentApprovalRepository = {
-      find: jest.fn(),
-      save: jest.fn(),
-    } as unknown as PaymentApprovalRepository;
-
-    service = new PaymentsManagementService(
-      registrationsBulkService,
-      registrationsPaginationService,
-      paymentsHelperService,
-      paymentEventsService,
-      paymentsProgressHelperService,
-      transactionsService,
-      approverService,
-      transactionViewScopedRepository,
-      paymentApprovalRepository,
+  beforeEach(async () => {
+    const { unit, unitRef } = TestBed.create(
+      PaymentsManagementService,
+    ).compile();
+    service = unit;
+    paymentsProgressHelperService = unitRef.get(PaymentsProgressHelperService);
+    paymentsHelperService = unitRef.get(PaymentsHelperService);
+    paymentEventsService = unitRef.get(PaymentEventsService);
+    transactionsService = unitRef.get(TransactionsService);
+    registrationsBulkService = unitRef.get(RegistrationsBulkService);
+    registrationsPaginationService = unitRef.get(
+      RegistrationsPaginationService,
     );
+    approverService = unitRef.get(ApproverService);
     (service as any).paymentRepository = {
       save: jest.fn().mockResolvedValue({ id: 123 }),
     };
+
+    registrationsBulkService.getBaseQuery = jest
+      .fn()
+      .mockReturnValue({ andWhere: jest.fn().mockReturnThis() });
   });
 
   it('should handle dryRun scenario and not call write function', async () => {
+    jest
+      .spyOn(approverService as any, 'getApprovers')
+      .mockResolvedValue([{ id: 1 }]);
+    jest
+      .spyOn(
+        registrationsPaginationService as any,
+        'getRegistrationViewsNoLimit',
+      )
+      .mockResolvedValue([
+        {
+          referenceId: 'ref1',
+          paymentAmountMultiplier: 1,
+          programFspConfigurationName: 'fspA',
+        },
+      ]);
+
     const params = { ...basePaymentParams, dryRun: true };
     const result = await service.createPayment(params);
 
@@ -246,6 +206,7 @@ describe('PaymentsManagementService', () => {
       paymentApprovalRepository = {
         find: jest.fn(),
         save: jest.fn(),
+        count: jest.fn(),
       };
       (service as any).paymentApprovalRepository = paymentApprovalRepository;
       (approverService as any).getApproverByUserIdOrThrow = jest
@@ -304,6 +265,7 @@ describe('PaymentsManagementService', () => {
     it('should call processFinalApproval if all approvals are approved', async () => {
       const approvals = [{ approverId: 1, approved: false, rank: 1 }];
       paymentApprovalRepository.find.mockResolvedValue(approvals);
+      paymentApprovalRepository.count.mockResolvedValue(0);
       jest
         .spyOn(paymentEventsService, 'createApprovedEvent')
         .mockResolvedValue(undefined);
