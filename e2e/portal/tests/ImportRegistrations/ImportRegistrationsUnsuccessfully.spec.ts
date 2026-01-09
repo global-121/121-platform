@@ -36,6 +36,8 @@ test('Unsuccessfully import registrations', async ({ page }) => {
   });
 
   await test.step('Validate import error message', async () => {
-    await registrationsPage.validateErrorMessage('Something went wrong');
+    await registrationsPage.validateErrorMessage(
+      'Something went wrong with this import. Please fix the errors reported below and try again.',
+    );
   });
 });

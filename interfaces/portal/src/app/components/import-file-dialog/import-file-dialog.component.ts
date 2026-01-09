@@ -60,7 +60,11 @@ export class ImportFileDialogComponent {
   formFieldErrors = generateFieldErrors(this.formGroup);
 
   readonly detailedImportErrors = computed(() => {
-    const error = this.mutation().failureReason();
+    let error = this.mutation().failureReason();
+
+    if (error instanceof Error && error.cause instanceof HttpErrorResponse) {
+      error = error.cause;
+    }
 
     if (error instanceof HttpErrorResponse) {
       if (Array.isArray(error.error)) {
