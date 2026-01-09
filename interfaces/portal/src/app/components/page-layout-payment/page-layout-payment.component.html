@@ -15,7 +15,7 @@
           [variant]="statusBadgeColor()"
         />
       </h1>
-      @if (showApprovePaymentButton() && canApprovePayment()) {
+      @if (showApprovePaymentButton()) {
         <app-approve-payment
           [programId]="programId()"
           [paymentId]="paymentId()"
@@ -25,7 +25,7 @@
           [approvedBadgeLabel]="statusBadgeLabel()"
         ></app-approve-payment>
       }
-      @if (showStartPaymentButton() && canStartPayment()) {
+      @if (showStartPaymentButton()) {
         <app-start-payment
           [programId]="programId()"
           [paymentId]="paymentId()"

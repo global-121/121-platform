@@ -338,7 +338,16 @@ export class PaymentsManagementService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    this.checkLowestRankOrThrow(currentPaymentApproval, allPaymentApprovals);
+    if (currentPaymentApproval.approved) {
+      throw new HttpException(
+        'Approver has already approved this payment',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    this.checkLowestRankOrThrow({
+      currentPaymentApproval,
+      allPaymentApprovals,
+    });
 
     // store payment approval
     currentPaymentApproval.approved = true;
@@ -353,16 +362,14 @@ export class PaymentsManagementService {
       note,
     });
 
-    // check if all approvals are done now - refetch in case of near-concurrent approvals
-    const refetchedApprovals = await this.paymentApprovalRepository.find({
+    // check if all approvals are done now - refetch to account for near-concurrent approvals
+    const notCompletedApprovals = await this.paymentApprovalRepository.count({
       where: {
         paymentId: Equal(paymentId),
+        approved: Equal(false),
       },
     });
-    const allApproved = refetchedApprovals.every(
-      (approval) => approval.approved,
-    );
-    if (allApproved) {
+    if (notCompletedApprovals === 0) {
       await this.processFinalApproval({
         userId,
         paymentId,
@@ -371,10 +378,13 @@ export class PaymentsManagementService {
     }
   }
 
-  private checkLowestRankOrThrow(
-    currentPaymentApproval: PaymentApprovalEntity,
-    allPaymentApprovals: PaymentApprovalEntity[],
-  ) {
+  private checkLowestRankOrThrow({
+    currentPaymentApproval,
+    allPaymentApprovals,
+  }: {
+    currentPaymentApproval: PaymentApprovalEntity;
+    allPaymentApprovals: PaymentApprovalEntity[];
+  }) {
     const openApprovals = allPaymentApprovals.filter(
       (approval) => !approval.approved,
     );

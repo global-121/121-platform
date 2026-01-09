@@ -137,15 +137,23 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       accessToken,
     });
 
-    const createPaymentResponse = await this.seedMockHelper.createPayment(
+    const createPaymentResponse = await this.seedMockHelper.createPayment({
       programId,
-      transferValueVisa,
-      [registration.referenceId],
+      transferValue: transferValueVisa,
+      referenceIds: [registration.referenceId],
       accessToken,
-    );
+    });
     const paymentId = createPaymentResponse.data.id;
-    await this.seedMockHelper.approvePayment(programId, paymentId, accessToken);
-    await this.seedMockHelper.startPayment(programId, paymentId, accessToken);
+    await this.seedMockHelper.approvePayment({
+      programId,
+      paymentId,
+      accessToken,
+    });
+    await this.seedMockHelper.startPayment({
+      programId,
+      paymentId,
+      accessToken,
+    });
     await this.seedMockHelper.waitForTransactionsToComplete({
       programId,
       paymentId,

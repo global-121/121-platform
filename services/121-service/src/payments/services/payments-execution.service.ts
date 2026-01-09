@@ -50,9 +50,7 @@ export class PaymentsExecutionService {
         );
       if (uniqueFspConfigsForApprovedTransactions.length === 0) {
         throw new HttpException(
-          {
-            errors: 'No "approved" transactions found for this payment.',
-          },
+          'No "approved" transactions found for this payment.',
           HttpStatus.BAD_REQUEST,
         );
       }
