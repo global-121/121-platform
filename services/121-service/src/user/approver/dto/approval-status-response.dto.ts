@@ -10,6 +10,6 @@ export class ApprovalStatusResponseDto {
   @ApiProperty({ example: 'johndoe' })
   public readonly username: string | null;
 
-  @ApiProperty({ example: 5 })
-  public readonly order: number;
+  @ApiProperty({ example: 1 })
+  public readonly rank: number;
 }
