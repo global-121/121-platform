@@ -38,7 +38,7 @@ export class Approvers1766058193913 implements MigrationInterface {
   }
 
   private async migrateApprovers(queryRunner: QueryRunner) {
-    const assignmentsWithPaymentUpdatePermission = await queryRunner.query(
+    const assignmentsWithPaymentStartPermission = await queryRunner.query(
       `SELECT p.id AS "programId", paa.id AS "programAidworkerAssignmentId"
       FROM "121-service"."program" p
       JOIN "121-service"."program_aidworker_assignment" paa ON paa."programId" = p.id
@@ -46,14 +46,14 @@ export class Approvers1766058193913 implements MigrationInterface {
       JOIN "121-service"."user_role_permissions_permission" urpp ON urpp."userRoleId" = paarur."userRoleId"
       JOIN "121-service"."permission" perm ON perm.id = urpp."permissionId"
       JOIN "121-service"."user" u ON u.id = paa."userId"
-      WHERE perm.name = 'payment.update'
+      WHERE perm.name = 'payment.start'
       AND u.admin = false
       ORDER BY paa.id`,
     );
 
     const approverInserts: string[] = [];
     const programApproverCount: Record<number, number> = {};
-    assignmentsWithPaymentUpdatePermission.forEach(
+    assignmentsWithPaymentStartPermission.forEach(
       (row: { programId: number; programAidworkerAssignmentId: number }) => {
         const { programId, programAidworkerAssignmentId } = row;
         if (!programApproverCount[programId]) {
