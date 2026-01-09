@@ -254,6 +254,29 @@ describe('Payment approval flow', () => {
         `"Cannot approve payment before lower-order approvers have approved"`,
       );
     });
+
+    it('should not allow starting payment before all approvers have approved', async () => {
+      // Act
+      // 1st approve
+      await approvePayment({
+        programId,
+        paymentId,
+        accessToken: adminAccessToken,
+      });
+
+      // start payment before 2nd approve
+      const startPaymentResponse = await startPayment({
+        programId,
+        paymentId,
+        accessToken: adminAccessToken,
+      });
+
+      // Assert
+      expect(startPaymentResponse.status).toBe(HttpStatus.BAD_REQUEST);
+      expect(startPaymentResponse.body.message).toMatchInlineSnapshot(
+        `"No "approved" transactions found for this payment."`,
+      );
+    });
   });
 
   it('should throw on create payment when no approvers configured for program', async () => {
@@ -315,3 +338,5 @@ describe('Payment approval flow', () => {
     expect(approvedEvent.attributes.note).toBe(note);
   });
 });
+
+// ##TODO add test on payment not starting when approver still missing

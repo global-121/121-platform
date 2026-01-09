@@ -260,6 +260,17 @@ describe('PaymentsManagementService', () => {
       ).rejects.toThrow('Approver not assigned to this payment');
     });
 
+    it('should throw if approver has already approved payment', async () => {
+      const approvals = [
+        { approverId: 1, approved: true, rank: 1 },
+        { approverId: 2, approved: false, rank: 2 },
+      ];
+      paymentApprovalRepository.find.mockResolvedValue(approvals);
+      await expect(
+        service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
+      ).rejects.toThrow('Approver has already approved this payment');
+    });
+
     it('should throw if not lowest rank  approver', async () => {
       const approvals = [
         { approverId: 1, approved: false, rank: 2 },

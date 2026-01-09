@@ -275,11 +275,23 @@ export class PageLayoutPaymentComponent {
       return false;
     }
 
-    return (
-      this.payment.data().pendingApproval.count > 0 &&
-      !this.hasAlreadyApproved() &&
-      !this.isPaymentInProgress()
-    );
+    if (this.payment.data().pendingApproval.count === 0) {
+      return false;
+    }
+
+    if (this.hasAlreadyApproved()) {
+      return false;
+    }
+
+    if (this.isPaymentInProgress()) {
+      return false;
+    }
+
+    if (!this.canApprovePayment()) {
+      return false;
+    }
+
+    return true;
   });
 
   readonly hasAlreadyApproved = computed<boolean | undefined>(() => {
@@ -299,9 +311,19 @@ export class PageLayoutPaymentComponent {
       return false;
     }
 
-    return (
-      this.payment.data().approved.count > 0 && !this.isPaymentInProgress()
-    );
+    if (this.payment.data().approved.count === 0) {
+      return false;
+    }
+
+    if (this.isPaymentInProgress()) {
+      return false;
+    }
+
+    if (!this.canStartPayment()) {
+      return false;
+    }
+
+    return true;
   });
 
   // ##TODO: implement real check
