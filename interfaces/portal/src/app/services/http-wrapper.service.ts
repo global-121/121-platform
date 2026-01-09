@@ -92,11 +92,7 @@ export class HttpWrapperService {
     if (errorResponse.status === HttpStatusCode.Unauthorized) {
       const user = getUserFromLocalStorage();
 
-      if (!user) {
-        return of(errorResponse);
-      }
-
-      if (user.expires) {
+      if (user?.expires) {
         const expires = Date.parse(user.expires);
 
         if (expires < Date.now()) {
