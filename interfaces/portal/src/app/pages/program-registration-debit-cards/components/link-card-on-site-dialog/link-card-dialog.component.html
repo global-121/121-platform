@@ -26,42 +26,44 @@
         registration with a scanner, or manually fill in the 19 digit serial
         number found below the barcode.
       </p>
-      <div class="py-1"></div>
-      <img
-        src="assets/intersolve-visa-card.svg"
-        height="200"
-        width="400"
-        alt="The position of the serial number, below the barcode on the back of the card. Highlighted in red."
-        i18n-alt
-        class="mx-auto"
-      />
-      <label
-        class="block w-full"
-        for="serial-number-input"
-      >
-        <span
-          class="mb-1 block font-bold"
-          i18n
-          >Serial number</span
+      <div class="py-1">
+        <img
+          src="assets/intersolve-visa-card.svg"
+          height="200"
+          width="400"
+          alt="The position of the serial number, below the barcode on the back of the card. Highlighted in red."
+          i18n-alt
+          class="mx-auto"
+        />
+        <label
+          class="block w-full"
+          for="serial-number-input"
         >
-        <p-input-mask
-          inputId="serial-number-input"
-          data-testid="serial-number-input"
-          [(ngModel)]="tokenCode"
-          placeholder="____-____-____-____-___"
-          mask="9999-9999-9999-9999-999"
-          [invalid]="showTokenCodeInvalidWarning()"
-          [style]="{ width: '100%' }"
-          [autoClear]="false"
-          (onInput)="showTokenCodeInvalidWarning.set(false)"
-          class="font-mono"
-        ></p-input-mask>
-      </label>
-      <app-form-error
-        [error]="
-          showTokenCodeInvalidWarning() && 'Fill up all 19 digits to link card'
-        "
-      />
+          <span
+            class="mb-1 block font-bold"
+            i18n
+            >Serial number</span
+          >
+          <p-input-mask
+            inputId="serial-number-input"
+            data-testid="serial-number-input"
+            [(ngModel)]="tokenCode"
+            placeholder="____-____-____-____-___"
+            mask="9999-9999-9999-9999-999"
+            [invalid]="showTokenCodeInvalidWarning()"
+            [style]="{ width: '100%' }"
+            [autoClear]="false"
+            (onInput)="showTokenCodeInvalidWarning.set(false)"
+            class="font-mono"
+          ></p-input-mask>
+        </label>
+        @if (showTokenCodeInvalidWarning()) {
+          <app-form-error
+            i18n-error
+            [error]="'Fill up all 19 digits to link card'"
+          />
+        }
+      </div>
     </div>
   } @else {
     <ng-template pTemplate="header">
