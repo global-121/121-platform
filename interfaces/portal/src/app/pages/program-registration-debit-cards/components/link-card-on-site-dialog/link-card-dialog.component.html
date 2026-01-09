@@ -58,10 +58,7 @@
           ></p-input-mask>
         </label>
         @if (showTokenCodeInvalidWarning()) {
-          <app-form-error
-            i18n-error
-            [error]="invalidTokenError"
-          />
+          <app-form-error [error]="invalidTokenError" />
         }
       </div>
     </div>
