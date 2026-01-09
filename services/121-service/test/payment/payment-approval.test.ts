@@ -274,7 +274,7 @@ describe('Payment approval flow', () => {
       // Assert
       expect(startPaymentResponse.status).toBe(HttpStatus.BAD_REQUEST);
       expect(startPaymentResponse.body.message).toMatchInlineSnapshot(
-        `"No "approved" transactions found for this payment."`,
+        `"Cannot start payment. There are 1 approval(s) to be done for this payment."`,
       );
     });
   });
@@ -338,5 +338,3 @@ describe('Payment approval flow', () => {
     expect(approvedEvent.attributes.note).toBe(note);
   });
 });
-
-// ##TODO add test on payment not starting when approver still missing

@@ -419,9 +419,7 @@ export class PaymentsManagementService {
       );
     if (transactionsToApprove.length === 0) {
       throw new HttpException(
-        {
-          errors: 'No "pending approval" transactions found for this payment.',
-        },
+        'No "pending approval" transactions found for this payment.',
         HttpStatus.BAD_REQUEST,
       );
     }
