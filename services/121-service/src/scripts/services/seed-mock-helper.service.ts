@@ -264,13 +264,19 @@ export class SeedMockHelperService {
     return await this.httpService.get(url, headers);
   }
 
-  public async createPayment(
-    programId: number,
-    transferValue: number,
-    referenceIds: string[],
-    accessToken: string,
-    filter: Record<string, string> = {},
-  ): Promise<any> {
+  public async createPayment({
+    programId,
+    transferValue,
+    referenceIds,
+    accessToken,
+    filter,
+  }: {
+    programId: number;
+    transferValue: number;
+    referenceIds: string[];
+    accessToken: string;
+    filter?: Record<string, string>;
+  }): Promise<any> {
     let queryParams = '';
     if (filter) {
       for (const [key, value] of Object.entries(filter)) {
@@ -294,22 +300,30 @@ export class SeedMockHelperService {
     return await this.httpService.post(url, body, headers);
   }
 
-  public async approvePayment(
-    programId: number,
-    paymentId: number,
-    accessToken: string,
-  ): Promise<any> {
+  public async approvePayment({
+    programId,
+    paymentId,
+    accessToken,
+  }: {
+    programId: number;
+    paymentId: number;
+    accessToken: string;
+  }): Promise<any> {
     const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/payments/${paymentId}/approve`;
     const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
 
     await this.httpService.post(url, {}, headers);
   }
 
-  public async startPayment(
-    programId: number,
-    paymentId: number,
-    accessToken: string,
-  ): Promise<any> {
+  public async startPayment({
+    programId,
+    paymentId,
+    accessToken,
+  }: {
+    programId: number;
+    paymentId: number;
+    accessToken: string;
+  }): Promise<any> {
     const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/payments/${paymentId}/start`;
     const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
 
