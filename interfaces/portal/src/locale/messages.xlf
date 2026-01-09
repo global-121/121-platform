@@ -2108,6 +2108,9 @@
       <trans-unit id="5758338325877529724" datatype="html">
         <source>The position of the serial number, below the barcode on the back of the card. Highlighted in red.</source>
       </trans-unit>
+      <trans-unit id="2800411489772677471" datatype="html">
+        <source>Fill up all 19 digits to link card</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

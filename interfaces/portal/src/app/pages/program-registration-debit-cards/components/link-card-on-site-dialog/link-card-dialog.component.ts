@@ -48,6 +48,8 @@ export class LinkCardDialogComponent {
     () => !this.tokenCode().includes('_') && this.tokenCode() !== '',
   );
 
+  readonly invalidTokenError = $localize`Fill up all 19 digits to link card`;
+
   readonly dialogTitle = computed(() => {
     if (this.currentTokenCode()) {
       return $localize`Replace visa card`;
