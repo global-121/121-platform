@@ -16,15 +16,15 @@ export class KoboResponseDto {
   public readonly versionId: string;
 
   @ApiProperty({
-    example: '2024-12-19T10:30:00Z',
+    // example: new Date().toISOString(),
     type: 'string',
     format: 'date-time',
-    description: 'Date when the Kobo form was deployed',
+    description: 'Date the Kobo form was deployed',
   })
   public readonly dateDeployed: Date;
 
   @ApiProperty({
-    example: 'https://kobo.example.com',
+    example: 'https://kobo.example.org',
     type: 'string',
     description: 'Kobo server URL',
   })

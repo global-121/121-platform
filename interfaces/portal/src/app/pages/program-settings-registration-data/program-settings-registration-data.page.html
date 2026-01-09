@@ -6,5 +6,41 @@
     >
       Registration integration
     </h2>
+
+    @if (koboIntegration.isPending()) {
+      <app-skeleton-inline />
+    } @else if (koboIntegration.isSuccess()) {
+      <app-card-with-link
+        title="Kobo toolbox"
+        i18n-title
+      >
+        <ng-container card-content>
+          <a
+            [href]="koboIntegration.data().url"
+            rel="external"
+            target="_blank"
+            title="Opens in a new window"
+            i18n-title="@@generic-opens-in-new-window"
+            class="inline-block [&_span:first-child]:underline hover:[&_span:first-child]:no-underline focus:[&_span:first-child]:no-underline"
+            ><span>{{ koboIntegration.data().url }}</span>
+            <span class="p-button-icon pi pi-external-link ms-1 text-sm"></span>
+          </a>
+        </ng-container>
+      </app-card-with-link>
+    } @else {
+      <p
+        i18n
+        class="mb-6"
+      >
+        Select a registration tool you want to use in the program.
+      </p>
+
+      <div class="flex gap-4">
+        <app-integrate-kobo-button
+          [programId]="programId()"
+          class="block w-1/2"
+        />
+      </div>
+    }
   </p-card>
 </app-page-layout-program-settings>

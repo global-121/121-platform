@@ -2051,6 +2051,66 @@
       <trans-unit id="registration-duplicate-status" datatype="html">
         <source>Duplicate status</source>
       </trans-unit>
+      <trans-unit id="1419676661357831374" datatype="html">
+        <source>Registration data</source>
+      </trans-unit>
+      <trans-unit id="2042073954990290851" datatype="html">
+        <source>Select a registration tool you want to use in the program.</source>
+      </trans-unit>
+      <trans-unit id="3054104681790532369" datatype="html">
+        <source>Kobo toolbox</source>
+      </trans-unit>
+      <trans-unit id="3069764081921374374" datatype="html">
+        <source>Kobo form successfully integrated.</source>
+      </trans-unit>
+      <trans-unit id="3096125963323588142" datatype="html">
+        <source>Integrate Kobo Toolbox</source>
+      </trans-unit>
+      <trans-unit id="3933760683279649879" datatype="html">
+        <source>Kobo server URL</source>
+      </trans-unit>
+      <trans-unit id="4124465588218417294" datatype="html">
+        <source>Kobo asset ID</source>
+      </trans-unit>
+      <trans-unit id="4575821526015368593" datatype="html">
+        <source>Import existing registration data from this form.</source>
+      </trans-unit>
+      <trans-unit id="6561381080846651069" datatype="html">
+        <source>We couldn&apos;t complete the integration due to the following issues in your Kobo form. Please review your form and fix these errors, then try again:</source>
+      </trans-unit>
+      <trans-unit id="6927943623949177165" datatype="html">
+        <source>Registration integration</source>
+      </trans-unit>
+      <trans-unit id="7190779898314379984" datatype="html">
+        <source>Kobo token</source>
+      </trans-unit>
+      <trans-unit id="7751381156275025670" datatype="html">
+        <source>For more information about how to integrate kobo see manual</source>
+      </trans-unit>
+      <trans-unit id="8153112678957419197" datatype="html">
+        <source>Error while integrating Kobo form</source>
+      </trans-unit>
+      <trans-unit id="8204729421762465455" datatype="html">
+        <source>You’re about to link this program with this Kobo form:</source>
+      </trans-unit>
+      <trans-unit id="8259134434818825921" datatype="html">
+        <source>To learn more about how to integrate Kobo forms see the 121 manual</source>
+      </trans-unit>
+      <trans-unit id="8679806927601731663" datatype="html">
+        <source>Try Again</source>
+      </trans-unit>
+      <trans-unit id="8820369126945258821" datatype="html">
+        <source>Integrate form</source>
+      </trans-unit>
+      <trans-unit id="generic-back" datatype="html">
+        <source>Back</source>
+      </trans-unit>
+      <trans-unit id="generic-continue" datatype="html">
+        <source>Continue</source>
+      </trans-unit>
+      <trans-unit id="page-title-program-settings-registration-data" datatype="html">
+        <source>Registration data</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
