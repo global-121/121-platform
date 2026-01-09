@@ -111,7 +111,7 @@ test('Badges and chart should display correct statuses during payment process', 
     await paymentPage.waitForPaymentToComplete();
   });
 
-  await test.step('Validate top of the chart has "Approved" badge', async () => {
+  await test.step('Validate payment-page after "Start" (and complete)', async () => {
     // Reload the page because Successful badges are not displayed without reload
     await page.goto(`/en-GB/program/${programIdOCW}/payments/1`);
     await paymentPage.waitForPageLoad();
