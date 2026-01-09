@@ -7,7 +7,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getPaymentEvents,
   retryPayment,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   doPaymentAndWaitForCompletion,
@@ -66,7 +66,7 @@ describe('Payment Events API', () => {
       paymentId,
       accessToken,
     });
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds: [registrationSafaricom.referenceId],
       accessToken,

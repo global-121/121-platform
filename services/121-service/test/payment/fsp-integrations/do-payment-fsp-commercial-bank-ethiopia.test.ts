@@ -7,7 +7,7 @@ import {
   createAndStartPayment,
   getTransactionsByPaymentIdPaginated,
   retryPayment,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   getTransactionEventDescriptions,
@@ -45,7 +45,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       accessToken,
@@ -110,7 +110,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       accessToken,
@@ -163,7 +163,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       accessToken,
@@ -215,7 +215,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       accessToken,
@@ -261,7 +261,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       accessToken,

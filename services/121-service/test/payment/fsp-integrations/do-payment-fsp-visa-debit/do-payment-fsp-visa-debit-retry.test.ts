@@ -14,7 +14,7 @@ import {
   createAndStartPayment,
   getTransactionsByPaymentIdPaginated,
   retryPayment,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
@@ -63,7 +63,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
@@ -144,7 +144,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds,
       accessToken,

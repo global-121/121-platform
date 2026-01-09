@@ -9,7 +9,7 @@ import {
 import {
   createAndStartPayment,
   getTransactionsByPaymentIdPaginated,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
@@ -65,7 +65,7 @@ describe('Do payment with filter', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds: includedRefrenceIds,
       accessToken,
@@ -101,7 +101,7 @@ describe('Do payment with filter', () => {
       filter: { 'filter.status': '$in:included' },
     });
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds: includedRefrenceIds,
       accessToken,
@@ -139,7 +139,7 @@ describe('Do payment with filter', () => {
       },
     });
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds: [registrationOCW1.referenceId],
       accessToken,
@@ -175,7 +175,7 @@ describe('Do payment with filter', () => {
       }, // This combination should only select registrationOCW3 that one is in both filters
     );
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds: [registrationOCW3.referenceId],
       accessToken,
@@ -212,7 +212,7 @@ describe('Do payment with filter', () => {
       }, // This combination should only be applicable to registrationOCW3, registrationOCW4 is filtered but not applicable because it is not included
     );
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds: [registrationOCW3.referenceId],
       accessToken,

@@ -6,7 +6,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   createAndStartPayment,
   getTransactionsByPaymentIdPaginated,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   getTransactionEventDescriptions,
@@ -58,7 +58,7 @@ describe('Do payment with FSP: CooperativeBankOfOromia', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       paymentId,
@@ -120,7 +120,7 @@ describe('Do payment with FSP: CooperativeBankOfOromia', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       paymentId,
@@ -172,7 +172,7 @@ describe('Do payment with FSP: CooperativeBankOfOromia', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       paymentId,
@@ -221,7 +221,7 @@ describe('Do payment with FSP: CooperativeBankOfOromia', () => {
     });
     const paymentId = doPaymentResponse.body.id;
 
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       paymentId,

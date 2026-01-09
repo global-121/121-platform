@@ -13,7 +13,7 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   createAndStartPayment,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   getAccessToken,
@@ -792,7 +792,7 @@ export async function doPaymentAndWaitForCompletion({
   });
   const paymentId = doPaymentResponse.body.id;
 
-  await waitForPaymentTransactionsToComplete({
+  await waitForPaymentAndTransactionsToComplete({
     programId,
     paymentReferenceIds: referenceIds,
     accessToken,

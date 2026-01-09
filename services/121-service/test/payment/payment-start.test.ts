@@ -12,8 +12,8 @@ import {
   getTransactionsByPaymentIdPaginated,
   retryPayment,
   startPayment,
+  waitForPaymentAndTransactionsToComplete,
   waitForPaymentNotInProgress,
-  waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
@@ -56,7 +56,7 @@ describe('Payment start', () => {
       accessToken,
     });
     const paymentId = createPaymentResponse.body.id;
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       accessToken,
@@ -102,7 +102,7 @@ describe('Payment start', () => {
       paymentId,
       accessToken,
     });
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds,
       accessToken,
@@ -152,7 +152,7 @@ describe('Payment start', () => {
         accessToken,
       });
       paymentId = createPaymentResponse.body.id;
-      await waitForPaymentTransactionsToComplete({
+      await waitForPaymentAndTransactionsToComplete({
         programId,
         paymentReferenceIds: registrations.map((r) => r.referenceId),
         accessToken,
@@ -178,7 +178,7 @@ describe('Payment start', () => {
         paymentId,
         accessToken,
       });
-      // Wait for payment not in progress anymore instead of using waitForPaymentTransactionsToComplete. As we cannot just wait for the other transaction to complete, as we should give the time in theory for the declined transaction to also process, even though the assertion is that it shouldn't.
+      // Wait for payment not in progress anymore instead of using waitForPaymentAndTransactionsToComplete. As we cannot just wait for the other transaction to complete, as we should give the time in theory for the declined transaction to also process, even though the assertion is that it shouldn't.
       await waitForPaymentNotInProgress({
         programId,
         accessToken,
@@ -214,7 +214,7 @@ describe('Payment start', () => {
         accessToken,
       });
       // only wait for the transaction of the included registration to complete
-      await waitForPaymentTransactionsToComplete({
+      await waitForPaymentAndTransactionsToComplete({
         programId,
         paymentReferenceIds: [registrationPV6].map((r) => r.referenceId),
         accessToken,
@@ -234,7 +234,7 @@ describe('Payment start', () => {
         paymentId,
         accessToken,
       });
-      await waitForPaymentTransactionsToComplete({
+      await waitForPaymentAndTransactionsToComplete({
         programId,
         paymentReferenceIds: [registrationPV5, registrationPV6].map(
           (r) => r.referenceId,
@@ -298,7 +298,7 @@ describe('Payment start', () => {
       referenceIds: registrations.map((r) => r.referenceId),
       accessToken,
     });
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds: registrations.map((r) => r.referenceId),
       accessToken,
@@ -317,7 +317,7 @@ describe('Payment start', () => {
       paymentId,
       accessToken: accessTokenKisumu,
     });
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds: [registrationScopeKisumu.referenceId],
       accessToken,
@@ -354,7 +354,7 @@ describe('Payment start', () => {
       paymentId,
       accessToken: accessTokenTurkana,
     });
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentReferenceIds: [registrationScopeTurkana.referenceId],
       accessToken,

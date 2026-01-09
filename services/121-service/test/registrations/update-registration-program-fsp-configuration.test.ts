@@ -11,7 +11,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
   createAndStartPayment,
   getTransactionsByPaymentIdPaginated,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import { postProgramFspConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
@@ -213,7 +213,7 @@ describe('Update program fsp configuration of PA', () => {
       referenceIds: [registrationPvScoped.referenceId],
       accessToken,
     });
-    await waitForPaymentTransactionsToComplete({
+    await waitForPaymentAndTransactionsToComplete({
       programId: programIdPv,
       paymentReferenceIds: [registrationPvScoped.referenceId],
       accessToken,

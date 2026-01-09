@@ -11,7 +11,7 @@ import {
   createAndStartPayment,
   getTransactionsByPaymentIdPaginated,
   waitForMessagesToComplete,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   doPaymentAndWaitForCompletion,
@@ -65,7 +65,7 @@ describe('Do payment to 1 PA', () => {
       });
       const paymentId = doPaymentResponse.body.id;
 
-      await waitForPaymentTransactionsToComplete({
+      await waitForPaymentAndTransactionsToComplete({
         programId,
         paymentReferenceIds,
         accessToken,
@@ -297,7 +297,7 @@ describe('Do payment to 1 PA', () => {
       });
       const paymentId = doPaymentResponse.body.id;
 
-      await waitForPaymentTransactionsToComplete({
+      await waitForPaymentAndTransactionsToComplete({
         programId,
         paymentReferenceIds,
         accessToken,

@@ -6,7 +6,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getTransactionsByPaymentIdPaginated,
   importFspReconciliationData,
-  waitForPaymentTransactionsToComplete,
+  waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   getTransactionEventDescriptions,
@@ -81,7 +81,7 @@ describe('Do payment with Excel FSP', () => {
       });
       const importResultRecords = JSON.parse(importResult.text).importResult;
 
-      await waitForPaymentTransactionsToComplete({
+      await waitForPaymentAndTransactionsToComplete({
         programId: programIdWesteros,
         paymentReferenceIds: [
           registrationWesteros1.referenceId,
