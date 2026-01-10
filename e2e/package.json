@@ -23,7 +23,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.2",
     "@playwright/test": "^1.57.0",
-    "@types/express": "^5.0.5",
+    "@types/express": "^4.17.25",
     "@types/jest": "^30.0.0",
     "@types/multer": "^2.0.0",
     "@types/node": "^22.x",
