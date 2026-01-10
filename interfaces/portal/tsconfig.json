@@ -32,7 +32,13 @@
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
-    "lib": ["ES2022", "dom"],
+    "lib": [
+      "dom",
+      "es2024",
+      "ESNext.Array",
+      "ESNext.Collection",
+      "ESNext.Iterator"
+    ],
     "types": ["@angular/localize", "jasmine"],
     "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": true,
