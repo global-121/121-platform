@@ -12,10 +12,10 @@
   "scripts": {
     "ng": "ng",
     "postinstall": "cd ../../services/121-service && npm run install:dependencies-for-portal",
-    "set-env-variables": "node --env-file=.env ./_set-env-variables.mjs",
-    "build:deployment-configuration": "node --env-file=.env ./_build-deployment-configuration.mjs",
-    "build:download-translations": "node --env-file=.env ./_build-download-translations.mjs",
-    "build:manual-logout": "node --env-file=.env ./_build-manual-logout.mjs",
+    "set-env-variables": "node --env-file-if-exists=.env ./_set-env-variables.mjs",
+    "build:deployment-configuration": "node --env-file-if-exists=.env ./_build-deployment-configuration.mjs",
+    "build:download-translations": "node --env-file-if-exists=.env ./_build-download-translations.mjs",
+    "build:manual-logout": "node --env-file-if-exists=.env ./_build-manual-logout.mjs",
     "build:root-404": "shx cp ./src/404.html ./www/404.html",
     "serve:static": "swa start ./www --port 8088",
     "prestart": "npm run set-env-variables -- --env=development",
@@ -30,16 +30,16 @@
     "lint": "ng lint",
     "fix": "ng lint --fix",
     "test:all": "npm run knip && npm run lint && npm run typecheck && npm test:ci && npm run extract-i18n",
-    "test:deployment-configuration": "node --env-file=.env ./_test-deployment-configuration.mjs",
+    "test:deployment-configuration": "node --env-file-if-exists=.env ./_test-deployment-configuration.mjs",
     "test:ci": "npm test -- --no-watch --no-progress --browsers=ChromeHeadless",
     "test:coverage": "npm run test:ci -- --code-coverage",
     "test": "ng test",
     "upgrade:angular": "ng update @angular/core @angular/cli --create-commits",
-    "verify:deployment-configuration": "node --env-file=.env ./_verify-deployment-configuration.mjs",
-    "verify:build": "node --env-file=.env ./_verify-build.mjs",
+    "verify:deployment-configuration": "node --env-file-if-exists=.env ./_verify-deployment-configuration.mjs",
+    "verify:build": "node --env-file-if-exists=.env ./_verify-build.mjs",
     "typecheck": "npx tsc --noEmit",
     "extract-i18n": "ng extract-i18n",
-    "extract-i18n:smart": "node --env-file=.env ./_extract-i18n-if-changed.mjs",
+    "extract-i18n:smart": "node --env-file-if-exists=.env ./_extract-i18n-if-changed.mjs",
     "knip": "knip"
   },
   "dependencies": {
@@ -87,7 +87,7 @@
     "@tanstack/eslint-plugin-query": "^5.91.2",
     "@types/jasmine": "~5.1.13",
     "@types/konami-code-js": "^0.8.3",
-    "@types/node": "^20.19.27",
+    "@types/node": "^22.x",
     "@types/papaparse": "^5.5.2",
     "angular-eslint": "^21.0.1",
     "autoprefixer": "^10.4.23",
@@ -117,6 +117,10 @@
     "tailwindcss": "^4.1.13",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.52.0"
+  },
+  "engines": {
+    "node": ">=22",
+    "npm": ">=10"
   },
   "overrides": {
     "ngx-filesize": {

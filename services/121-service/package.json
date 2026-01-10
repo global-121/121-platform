@@ -27,7 +27,7 @@
     "test:unit:all": "jest --runInBand --config=jest.unit.config.js",
     "test:unit:watch": "npm run test:unit:all -- --watchAll",
     "test:unit:coverage": "npm run test:unit:all -- --coverage --coverageDirectory=coverage/unit",
-    "test:integration:local": "node --env-file=../.env --require=tsconfig-paths/register --expose-gc node_modules/.bin/jest --config=jest.integration.config.js --runInBand --detectOpenHandles --logHeapUsage",
+    "test:integration:local": "node --env-file-if-exists=../.env --require=tsconfig-paths/register --expose-gc node_modules/.bin/jest --config=jest.integration.config.js --runInBand --detectOpenHandles --logHeapUsage",
     "test:integration:base": "node --require=tsconfig-paths/register --expose-gc node_modules/.bin/jest --config=jest.integration.config.js --runInBand --detectOpenHandles --logHeapUsage",
     "test:integration:all": "npm run test:integration:base -- --testPathIgnorePatterns=retry-failed-jobs-on-startup-during-queue-processing.test.ts",
     "test:integration:only-restart-service": "npm run test:integration:base -- retry-failed-jobs-on-startup-during-queue-processing.test.ts",
@@ -55,7 +55,7 @@
   },
   "private": true,
   "engines": {
-    "node": ">=20",
+    "node": ">=22",
     "npm": ">=10"
   },
   "dependencies": {
@@ -125,7 +125,7 @@
     "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.21",
     "@types/multer": "^2.0.0",
-    "@types/node": "^20.x",
+    "@types/node": "^22.x",
     "@types/passport-azure-ad": "^4.3.6",
     "@types/passport-jwt": "^4.0.1",
     "@types/ssh2-sftp-client": "^9.0.6",
