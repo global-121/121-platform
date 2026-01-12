@@ -17,6 +17,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspSettingsDto } from '@121-service/src/fsp-management/fsp-settings.dto';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
@@ -70,6 +71,7 @@ export class PageLayoutPaymentComponent {
   readonly paymentApiService = inject(PaymentApiService);
   readonly programApiService = inject(ProgramApiService);
   readonly translatableStringService = inject(TranslatableStringService);
+  readonly TransactionStatusEnum = TransactionStatusEnum;
 
   readonly fspSettings = signal<Record<Fsps, FspSettingsDto>>(FSP_SETTINGS);
   private authService = inject(AuthService);
@@ -238,27 +240,29 @@ export class PageLayoutPaymentComponent {
     });
   });
 
-  readonly paymentTransactionCount = (status: 'approve' | 'start') =>
+  readonly paymentTransactionCountByStatus = (
+    transactionStatus:
+      | TransactionStatusEnum.approved
+      | TransactionStatusEnum.pendingApproval,
+  ) =>
     computed<string>(() => {
       if (!this.payment.isSuccess()) {
         return '';
       }
-      const count =
-        status === 'approve'
-          ? this.payment.data().pendingApproval.count
-          : this.payment.data().approved.count;
+      const count = this.payment.data()[transactionStatus].count;
       return count.toString() + ' ' + $localize`registrations`;
     });
 
-  readonly paymentTotalPaymentAmount = (status: 'approve' | 'start') =>
+  readonly paymentTotalTransferValueByStatus = (
+    status:
+      | TransactionStatusEnum.approved
+      | TransactionStatusEnum.pendingApproval,
+  ) =>
     computed<string>(() => {
       if (!this.payment.isSuccess()) {
         return '';
       }
-      const totalPaymentAmount =
-        status === 'approve'
-          ? this.payment.data().pendingApproval.transferValue
-          : this.payment.data().approved.transferValue;
+      const totalPaymentAmount = this.payment.data()[status].transferValue;
 
       return (
         this.currencyPipe.transform(

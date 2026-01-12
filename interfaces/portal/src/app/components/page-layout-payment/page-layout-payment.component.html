@@ -20,8 +20,16 @@
           [programId]="programId()"
           [paymentId]="paymentId()"
           [fspList]="paymentFspList()"
-          [transactionCount]="paymentTransactionCount('approve')()"
-          [totalPaymentAmount]="paymentTotalPaymentAmount('approve')()"
+          [transactionCount]="
+            paymentTransactionCountByStatus(
+              TransactionStatusEnum.pendingApproval
+            )()
+          "
+          [totalPaymentAmount]="
+            paymentTotalTransferValueByStatus(
+              TransactionStatusEnum.pendingApproval
+            )()
+          "
           [approvedBadgeLabel]="statusBadgeLabel()"
         ></app-approve-payment>
       }
@@ -30,8 +38,12 @@
           [programId]="programId()"
           [paymentId]="paymentId()"
           [fspList]="paymentFspList()"
-          [transactionCount]="paymentTransactionCount('start')()"
-          [totalPaymentAmount]="paymentTotalPaymentAmount('start')()"
+          [transactionCount]="
+            paymentTransactionCountByStatus(TransactionStatusEnum.approved)()
+          "
+          [totalPaymentAmount]="
+            paymentTotalTransferValueByStatus(TransactionStatusEnum.approved)()
+          "
         ></app-start-payment>
       }
 
