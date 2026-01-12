@@ -10,7 +10,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DBNAME}
     volumes:
       - './postgresql.conf:/etc/postgresql.conf'
-      - './init.sql:/docker-entrypoint-initdb.d/init.sql'
+      - './${INIT_SQL_FILE:-init.sql}:/docker-entrypoint-initdb.d/init.sql'
     ports:
       - '5438:5432'
     restart: unless-stopped

@@ -228,6 +228,7 @@ export const env = createEnv({
     POSTGRES_USER: z.string(),
     POSTGRES_PASSWORD: z.string(),
     POSTGRES_DBNAME: z.string(),
+    POSTGRES_SCHEMA: z.string().default('121-service'),
 
     // Queue/Redis
     REDIS_HOST: z.string().default('121-redis'),

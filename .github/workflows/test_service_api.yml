@@ -65,10 +65,16 @@ jobs:
       - name: Set ENV-variables for test-environment
         run: |
           cp ./services/.env.example services/.env
-          grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
-          # override the default value for COVERAGE_DEV_STARTUP_SUFFIX from .env.example
-          # this is needed to collect coverage data during integration tests
-          echo "COVERAGE_DEV_STARTUP_SUFFIX=:collect-coverage" >> $GITHUB_ENV
+          {
+            grep -v "^#\|^$" services/.env.example
+            # override the default value for COVERAGE_DEV_STARTUP_SUFFIX from .env.example
+            # this is needed to collect coverage data during integration tests
+            echo "COVERAGE_DEV_STARTUP_SUFFIX=:collect-coverage"
+            # set schema name per shard to isolate each test shard's data
+            echo "POSTGRES_SCHEMA=121-service-${{ matrix.shard }}"
+            # use CI init script to create all shard schemas
+            echo "INIT_SQL_FILE=init.ci.sql"
+          } >> $GITHUB_ENV
 
       - name: Run Services with Docker
         run: |

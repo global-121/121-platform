@@ -36,7 +36,7 @@ export const ORMConfig: DataSourceOptions = {
   username: env.POSTGRES_USER,
   password: env.POSTGRES_PASSWORD,
   database: env.POSTGRES_DBNAME,
-  schema: '121-service',
+  schema: env.POSTGRES_SCHEMA,
   entities: ['dist/**/*.entity.js'],
   subscribers: ['dist/**/*.subscriber.js'],
   migrationsTableName: 'custom_migration_table',
