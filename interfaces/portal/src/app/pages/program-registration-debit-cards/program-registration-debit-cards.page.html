@@ -38,7 +38,11 @@
             icon="pi pi-refresh"
             [iconPos]="rtlHelper.createPosition('start')()"
             class="ms-4"
-            (click)="replaceConfirmationDialog.show()"
+            (click)="
+              cardDistributionByMailEnabled()
+                ? replaceCardByMailDialog.show()
+                : linkCardDialogVisible.set(true)
+            "
           />
         }
       </div>
@@ -46,6 +50,35 @@
         [data]="walletWithCurrentCardListData()"
         data-testid="wallet-current-card-list"
       />
+    }
+    @if (cardByMailDisabledAndNoCurrentCards()) {
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center gap-2">
+          <i
+            class="pi pi-credit-card"
+            style="font-size: 1rem"
+          ></i>
+          <p-header
+            class="font-bold"
+            i18n
+            >No debit cards found</p-header
+          >
+        </div>
+        <p i18n>
+          There are no debit cards linked to this registration. Link a visa card
+          from your available cards to this registration by clicking the button
+          below.
+        </p>
+        <p-button
+          label="Link visa card"
+          i18n-label="@@debit-card-actions-link-visa-card"
+          rounded
+          outlined
+          icon="pi pi-link"
+          [iconPos]="rtlHelper.createPosition('start')()"
+          (click)="this.linkCardDialogVisible.set(true)"
+        />
+      </div>
     }
     @if (oldCards().length > 0) {
       <div class="py-1"></div>
@@ -79,13 +112,14 @@
     }
   </div>
 </app-page-layout-registration>
+<!-- PAUSE CONFIRMATION -->
 <app-form-dialog
   #pauseConfirmationDialog
   header="Pause card"
   headerIcon="pi pi-pause"
   i18n-header="@@debit-card-actions-pause-card"
-  acceptLabel="Pause card"
-  i18n-acceptLabel="@@debit-card-actions-pause-card"
+  proceedLabel="Pause card"
+  i18n-proceedLabel="@@debit-card-actions-pause-card"
   [mutation]="changeCardPauseStatusMutation"
   [mutationData]="{ pauseStatus: true }"
 >
@@ -96,13 +130,14 @@
     A message will be sent to the registration about this update.
   </p>
 </app-form-dialog>
+<!-- UNPAUSE CONFIRMATION -->
 <app-form-dialog
   #unpauseConfirmationDialog
   header="Unpause card"
   headerIcon="pi pi-play"
   i18n-header="@@debit-card-actions-unpause-card"
-  acceptLabel="Unpause card"
-  i18n-acceptLabel="@@debit-card-actions-unpause-card"
+  proceedLabel="Unpause card"
+  i18n-proceedLabel="@@debit-card-actions-unpause-card"
   [mutation]="changeCardPauseStatusMutation"
   [mutationData]="{ pauseStatus: false }"
 >
@@ -113,14 +148,15 @@
     A message will be sent to the registration about this update.
   </p>
 </app-form-dialog>
+<!-- REPLACE CARD -->
 <app-form-dialog
-  #replaceConfirmationDialog
+  #replaceCardByMailDialog
   header="Replace card"
   headerIcon="pi pi-refresh"
   i18n-header="@@debit-card-actions-replace-card"
-  acceptLabel="Replace card"
-  i18n-acceptLabel="@@debit-card-actions-replace-card"
-  [mutation]="replaceCardMutation"
+  proceedLabel="Request new card"
+  i18n-proceedLabel="@@debit-card-actions-replace-card"
+  [mutation]="replaceCardByMailMutation"
   [mutationData]="undefined"
 >
   <p i18n>
@@ -131,3 +167,12 @@
     A message will be sent to the registration about this update.
   </p>
 </app-form-dialog>
+<!-- LINK CARD ON SITE -->
+<app-link-card-dialog
+  [currentTokenCode]="currentCard()?.tokenCode"
+  [previousTokenCodes]="previousTokenCodes()"
+  [programId]="programId"
+  [referenceId]="referenceId"
+  [(dialogVisible)]="linkCardDialogVisible"
+  (closeDialog)="linkCardDialogVisible.set(false)"
+></app-link-card-dialog>

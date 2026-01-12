@@ -1,0 +1,108 @@
+<p-dialog
+  [(visible)]="dialogVisible"
+  [modal]="true"
+  [closable]="true"
+  [dismissableMask]="true"
+  [style]="{ maxWidth: '45rem' }"
+  (onHide)="resetData()"
+>
+  @if (!isError()) {
+    <ng-template pTemplate="header">
+      <div class="flex items-center gap-2">
+        <i class="pi pi-link"></i>
+        <h3>{{ dialogTitle() }}</h3>
+      </div>
+    </ng-template>
+    <div class="flex flex-col gap-2">
+      @if (currentTokenCode()) {
+        <p i18n>
+          You're about to replace debit card number
+          <code>{{ currentTokenCode() }}</code
+          >.
+        </p>
+      }
+      <p i18n>
+        Scan the barcode in the back of the card you are handing over to the
+        registration with a scanner, or manually fill in the 19 digit serial
+        number found below the barcode.
+      </p>
+      <div class="py-1">
+        <img
+          src="assets/intersolve-visa-card.svg"
+          height="200"
+          width="400"
+          alt="The position of the serial number, below the barcode on the back of the card. Highlighted in red."
+          i18n-alt
+          class="mx-auto"
+        />
+        <label
+          class="block w-full"
+          for="serial-number-input"
+        >
+          <span
+            class="mb-1 block font-bold"
+            i18n
+            >Serial number</span
+          >
+          <p-input-mask
+            inputId="serial-number-input"
+            data-testid="serial-number-input"
+            [(ngModel)]="tokenCode"
+            placeholder="____-____-____-____-___"
+            mask="9999-9999-9999-9999-999"
+            [invalid]="showTokenCodeInvalidWarning()"
+            [style]="{ width: '100%' }"
+            [autoClear]="false"
+            (onInput)="showTokenCodeInvalidWarning.set(false)"
+            class="font-mono"
+          ></p-input-mask>
+        </label>
+        @if (showTokenCodeInvalidWarning()) {
+          <app-form-error [error]="invalidTokenError" />
+        }
+      </div>
+    </div>
+  } @else {
+    <ng-template pTemplate="header">
+      <div class="flex items-center gap-2">
+        <i class="pi pi-exclamation-triangle"></i>
+        <h3 i18n>Error - Link visa card</h3>
+      </div>
+    </ng-template>
+    <div class="flex flex-col gap-4">
+      <p>
+        {{ errorMessage() }}
+      </p>
+      <p>
+        {{ errorInstructions() }}
+      </p>
+    </div>
+  }
+
+  <div class="w-full">
+    <div class="mt-4 flex justify-end gap-2">
+      <p-button
+        (click)="dialogVisible.set(false)"
+        rounded
+        outlined
+        label="Cancel"
+        i18n-label="@@generic-cancel"
+      ></p-button>
+      @if (!isError()) {
+        <p-button
+          (click)="linkCard()"
+          rounded
+          [label]="confirmationButtonLabel()"
+        ></p-button>
+      } @else {
+        <p-button
+          (click)="goBackToLinkingState()"
+          rounded
+          label="Go back"
+          i18n-label="@@generic-go-back"
+          data-testid="go-back-button"
+        ></p-button>
+      }
+    </div>
+  </div>
+</p-dialog>
