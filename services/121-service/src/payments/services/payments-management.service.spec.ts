@@ -9,6 +9,7 @@ import { TransactionsService } from '@121-service/src/payments/transactions/tran
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ApproverService } from '@121-service/src/user/approver/approver.service';
+import { ApproverResponseDto } from '@121-service/src/user/approver/dto/approver-response.dto';
 
 describe('PaymentsManagementService', () => {
   let service: PaymentsManagementService;
@@ -195,6 +196,33 @@ describe('PaymentsManagementService', () => {
     expect(
       paymentsProgressHelperService.unlockPaymentsForProgram,
     ).toHaveBeenCalledWith(basePaymentParams.programId);
+  });
+
+  describe('createPaymentAndEventsEntities', () => {
+    it('should assign correct rank/order in createPaymentAndEventsEntities', async () => {
+      const approvers: ApproverResponseDto[] = [
+        { id: 1, order: 20 } as any,
+        { id: 2, order: 10 } as any,
+        { id: 3, order: 30 } as any,
+      ];
+
+      await (service as any).createPaymentAndEventsEntities({
+        userId: 2,
+        programId: 3,
+        approvers,
+      });
+
+      const expectedApprovals = [
+        expect.objectContaining({ approverId: 2, rank: 1, approved: false }),
+        expect.objectContaining({ approverId: 1, rank: 2, approved: false }),
+        expect.objectContaining({ approverId: 3, rank: 3, approved: false }),
+      ];
+      expect((service as any).paymentRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          approvals: expectedApprovals,
+        }),
+      );
+    });
   });
 
   describe('approvePayment', () => {

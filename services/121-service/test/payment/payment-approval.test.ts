@@ -32,7 +32,187 @@ import {
 let adminAccessToken: string;
 const programId = programIdPV;
 const transferValue = 25;
-describe('Payment approval flow', () => {
+
+describe('do payment with 2 approvers', () => {
+  let accessTokenFinanceManager: string;
+  let paymentId: number;
+
+  beforeAll(async () => {
+    await resetDB(SeedScript.nlrcMultiple, __filename);
+    adminAccessToken = await getAccessToken();
+    await seedIncludedRegistrations(
+      [registrationPV5],
+      programId,
+      adminAccessToken,
+    );
+
+    // configure 2nd approver
+    accessTokenFinanceManager = await getAccessTokenFinanceManager();
+    const financeManagerUserId = (
+      await getCurrentUser({
+        accessToken: accessTokenFinanceManager,
+      })
+    ).body.user.id;
+    await createApprover({
+      programId,
+      userId: financeManagerUserId,
+      order: 2,
+      accessToken: adminAccessToken,
+    });
+  });
+
+  beforeEach(async () => {
+    const createPaymentResponse = await createPayment({
+      programId,
+      transferValue,
+      referenceIds: [registrationPV5.referenceId],
+      accessToken: adminAccessToken,
+    });
+    paymentId = createPaymentResponse.body.id;
+  });
+
+  it('should successfully do payment', async () => {
+    // Act
+    // 1st approve
+    const approvePaymentResponse = await approvePayment({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+    const getTransactionsResultAfter1stApprove =
+      await getTransactionsByPaymentIdPaginated({
+        programId,
+        paymentId,
+        accessToken: adminAccessToken,
+      });
+    expect(getTransactionsResultAfter1stApprove.body.data[0].status).toBe(
+      TransactionStatusEnum.pendingApproval,
+    );
+
+    // 2nd approve
+    await approvePayment({
+      programId,
+      paymentId,
+      accessToken: accessTokenFinanceManager,
+    });
+
+    const startPaymentResponse = await startPayment({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+    await waitForPaymentAndTransactionsToComplete({
+      programId,
+      paymentId,
+      paymentReferenceIds: [registrationPV5.referenceId],
+      accessToken: adminAccessToken,
+      maxWaitTimeMs: 5000,
+      completeStatuses: [TransactionStatusEnum.success],
+    });
+
+    // Assert
+    expect(approvePaymentResponse.status).toBe(HttpStatus.CREATED);
+    expect(startPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+
+    const getTransactionsResultFinal =
+      await getTransactionsByPaymentIdPaginated({
+        programId,
+        paymentId,
+        accessToken: adminAccessToken,
+      });
+    expect(getTransactionsResultFinal.status).toBe(HttpStatus.OK);
+    expect(getTransactionsResultFinal.body.data[0].status).toBe(
+      TransactionStatusEnum.success,
+    );
+  });
+
+  it('should create right approval payment events, including note', async () => {
+    const note = '2nd approval note';
+
+    // Act
+    // 1st approve
+    await approvePayment({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+
+    // 2nd approve
+    await approvePayment({
+      programId,
+      paymentId,
+      accessToken: accessTokenFinanceManager,
+      note,
+    });
+
+    // Assert
+    const getPaymentEventsResponse = await getPaymentEvents({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+    const { data } = getPaymentEventsResponse.body;
+    const approveEvents = data.filter(
+      (event) => event.type === PaymentEvent.approved,
+    );
+    expect(approveEvents.length).toBe(2);
+    // payment-events are returned newest first
+    expect(approveEvents[1].attributes).toMatchObject({
+      [PaymentEventAttributeKey.approveRank]: '1',
+      [PaymentEventAttributeKey.approveTotal]: '2',
+    });
+    expect(approveEvents[0].attributes).toMatchObject({
+      [PaymentEventAttributeKey.approveRank]: '2',
+      [PaymentEventAttributeKey.approveTotal]: '2',
+      [PaymentEventAttributeKey.note]: note,
+    });
+  });
+
+  it('should throw on 2nd approve when 1st approver has not yet approved', async () => {
+    // Act
+    // 2nd approve without 1st approve
+    const approvePaymentResponseFinanceManager = await approvePayment({
+      programId,
+      paymentId,
+      accessToken: accessTokenFinanceManager,
+    });
+
+    // Assert
+    expect(approvePaymentResponseFinanceManager.status).toBe(
+      HttpStatus.BAD_REQUEST,
+    );
+    expect(
+      approvePaymentResponseFinanceManager.body.message,
+    ).toMatchInlineSnapshot(
+      `"Cannot approve payment before lower-order approvers have approved"`,
+    );
+  });
+
+  it('should not allow starting payment before all approvers have approved', async () => {
+    // Act
+    // 1st approve
+    await approvePayment({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+
+    // start payment before 2nd approve
+    const startPaymentResponse = await startPayment({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+
+    // Assert
+    expect(startPaymentResponse.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(startPaymentResponse.body.message).toMatchInlineSnapshot(
+      `"Cannot start payment. There are 1 approval(s) to be done for this payment."`,
+    );
+  });
+});
+
+describe('do payment with <2 approvers', () => {
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
     adminAccessToken = await getAccessToken();
@@ -45,6 +225,13 @@ describe('Payment approval flow', () => {
 
   it('user who can create a payment is different from user approving payment and different from user starting payment', async () => {
     // Arrange
+    await resetDB(SeedScript.nlrcMultiple, __filename);
+    adminAccessToken = await getAccessToken();
+    await seedIncludedRegistrations(
+      [registrationPV5],
+      programId,
+      adminAccessToken,
+    );
     const registrationAh = { ...registrationPV5, maxPayments: 1 };
 
     const accessTokenCvaManager = await getAccessTokenCvaManager();
@@ -108,175 +295,6 @@ describe('Payment approval flow', () => {
     expect(approvePaymentResponseAdmin.status).toBe(HttpStatus.CREATED);
     expect(startPaymentResponseCvaManager.status).toBe(HttpStatus.FORBIDDEN);
     expect(startPaymentResponseFinanceManager.status).toBe(HttpStatus.ACCEPTED);
-  });
-
-  describe('do payment with 2 approvers', () => {
-    let accessTokenFinanceManager: string;
-    let paymentId: number;
-
-    beforeEach(async () => {
-      // configure 2nd approver
-      accessTokenFinanceManager = await getAccessTokenFinanceManager();
-      const financeManagerUserId = (
-        await getCurrentUser({
-          accessToken: accessTokenFinanceManager,
-        })
-      ).body.user.id;
-      await createApprover({
-        programId,
-        userId: financeManagerUserId,
-        order: 2,
-        accessToken: adminAccessToken,
-      });
-
-      const createPaymentResponse = await createPayment({
-        programId,
-        transferValue,
-        referenceIds: [registrationPV5.referenceId],
-        accessToken: adminAccessToken,
-      });
-      paymentId = createPaymentResponse.body.id;
-    });
-
-    it('should successfully do payment', async () => {
-      // Act
-      // 1st approve
-      const approvePaymentResponse = await approvePayment({
-        programId,
-        paymentId,
-        accessToken: adminAccessToken,
-      });
-      const getTransactionsResultAfter1stApprove =
-        await getTransactionsByPaymentIdPaginated({
-          programId,
-          paymentId,
-          accessToken: adminAccessToken,
-        });
-      expect(getTransactionsResultAfter1stApprove.body.data[0].status).toBe(
-        TransactionStatusEnum.pendingApproval,
-      );
-
-      // 2nd approve
-      await approvePayment({
-        programId,
-        paymentId,
-        accessToken: accessTokenFinanceManager,
-      });
-
-      const startPaymentResponse = await startPayment({
-        programId,
-        paymentId,
-        accessToken: adminAccessToken,
-      });
-      await waitForPaymentAndTransactionsToComplete({
-        programId,
-        paymentId,
-        paymentReferenceIds: [registrationPV5.referenceId],
-        accessToken: adminAccessToken,
-        maxWaitTimeMs: 5000,
-        completeStatuses: [TransactionStatusEnum.success],
-      });
-
-      // Assert
-      expect(approvePaymentResponse.status).toBe(HttpStatus.CREATED);
-      expect(startPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-
-      const getTransactionsResultFinal =
-        await getTransactionsByPaymentIdPaginated({
-          programId,
-          paymentId,
-          accessToken: adminAccessToken,
-        });
-      expect(getTransactionsResultFinal.status).toBe(HttpStatus.OK);
-      expect(getTransactionsResultFinal.body.data[0].status).toBe(
-        TransactionStatusEnum.success,
-      );
-    });
-
-    it('should create right approval payment events, including note', async () => {
-      const note = '2nd approval note';
-
-      // Act
-      // 1st approve
-      await approvePayment({
-        programId,
-        paymentId,
-        accessToken: adminAccessToken,
-      });
-
-      // 2nd approve
-      await approvePayment({
-        programId,
-        paymentId,
-        accessToken: accessTokenFinanceManager,
-        note,
-      });
-
-      // Assert
-      const getPaymentEventsResponse = await getPaymentEvents({
-        programId,
-        paymentId,
-        accessToken: adminAccessToken,
-      });
-      const { data } = getPaymentEventsResponse.body;
-      const approveEvents = data.filter(
-        (event) => event.type === PaymentEvent.approved,
-      );
-      expect(approveEvents.length).toBe(2);
-      // payment-events are returned newest first
-      expect(approveEvents[1].attributes).toMatchObject({
-        [PaymentEventAttributeKey.approveRank]: '1',
-        [PaymentEventAttributeKey.approveTotal]: '2',
-      });
-      expect(approveEvents[0].attributes).toMatchObject({
-        [PaymentEventAttributeKey.approveRank]: '2',
-        [PaymentEventAttributeKey.approveTotal]: '2',
-        [PaymentEventAttributeKey.note]: note,
-      });
-    });
-
-    it('should throw on 2nd approve when 1st approver has not yet approved', async () => {
-      // Act
-      // 2nd approve without 1st approve
-      const approvePaymentResponseFinanceManager = await approvePayment({
-        programId,
-        paymentId,
-        accessToken: accessTokenFinanceManager,
-      });
-
-      // Assert
-      expect(approvePaymentResponseFinanceManager.status).toBe(
-        HttpStatus.BAD_REQUEST,
-      );
-      expect(
-        approvePaymentResponseFinanceManager.body.message,
-      ).toMatchInlineSnapshot(
-        `"Cannot approve payment before lower-order approvers have approved"`,
-      );
-    });
-
-    it('should not allow starting payment before all approvers have approved', async () => {
-      // Act
-      // 1st approve
-      await approvePayment({
-        programId,
-        paymentId,
-        accessToken: adminAccessToken,
-      });
-
-      // start payment before 2nd approve
-      const startPaymentResponse = await startPayment({
-        programId,
-        paymentId,
-        accessToken: adminAccessToken,
-      });
-
-      // Assert
-      expect(startPaymentResponse.status).toBe(HttpStatus.BAD_REQUEST);
-      expect(startPaymentResponse.body.message).toMatchInlineSnapshot(
-        `"Cannot start payment. There are 1 approval(s) to be done for this payment."`,
-      );
-    });
   });
 
   it('should throw on create payment when no approvers configured for program', async () => {

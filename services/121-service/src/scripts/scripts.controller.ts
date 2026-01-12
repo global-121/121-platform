@@ -1,4 +1,12 @@
-import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpException,
+  HttpStatus,
+  Post,
+  Query,
+  Res,
+} from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
@@ -76,7 +84,7 @@ export class ScriptsController {
     required: false,
     enum: ApproverSeedMode,
     enumName: 'ApproverSeedMode',
-    description: `Set approvers per seeded program. Possible values: 'none' (no approvers, is default on production), 'admin' (admin-user is approver, is default on development & test) or 'demo' (configure one demo approver user). Default = 'none' on production, 'admin' otherwise.`,
+    description: `Set approvers per seeded program. Possible values: 'none' (no approvers, is default on production), 'admin' (admin-user is approver, is default on development & test) or 'demo' (configure one demo approver user + the admin-user). Default = 'none' on production, 'admin' otherwise.`,
   })
   @ApiOperation({
     summary: `Reset instance database.`,
@@ -107,7 +115,21 @@ export class ScriptsController {
       includeRegistrationEvents !== undefined &&
       includeRegistrationEvents.toString() === 'true';
 
+    let approverModeToUse: ApproverSeedMode | undefined;
+    const isEmpty = !approverMode;
+    const isKnown = Object.values(ApproverSeedMode).includes(
+      approverMode as ApproverSeedMode,
+    );
+
     if (script == SeedScript.nlrcMultipleMock) {
+      if (isEmpty || approverMode === ApproverSeedMode.admin) {
+        approverModeToUse = ApproverSeedMode.admin;
+      } else {
+        throw new HttpException(
+          'NLRC multiple mock can only be seeded with admin approver mode',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
       const booleanMockPv = mockPv
         ? JSON.parse(mockPv as unknown as string)
         : true;
@@ -124,24 +146,26 @@ export class ScriptsController {
         powerNrMessagesString: mockPowerNumberMessages,
         mockPv: booleanMockPv,
         mockOcw: booleanMockOcw,
-        approverMode: ApproverSeedMode.admin, // NLRC mock always seeds with admin approver
+        approverMode: approverModeToUse,
       });
     } else if (Object.values(SeedScript).includes(script)) {
-      const defaultApproverMode = IS_PRODUCTION
-        ? ApproverSeedMode.none
-        : ApproverSeedMode.admin;
-      const safeApproverMode =
-        approverMode &&
-        Object.values(ApproverSeedMode).includes(
-          approverMode as ApproverSeedMode,
-        )
-          ? (approverMode as ApproverSeedMode)
-          : defaultApproverMode;
+      if (isKnown) {
+        approverModeToUse = approverMode as ApproverSeedMode;
+      } else if (isEmpty) {
+        approverModeToUse = IS_PRODUCTION
+          ? ApproverSeedMode.none
+          : ApproverSeedMode.admin;
+      } else {
+        throw new HttpException(
+          `Unknown approverMode: ${approverMode}`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
       await this.scriptsService.loadSeedScenario({
         resetIdentifier,
         seedScript: script,
         isApiTests,
-        approverMode: safeApproverMode,
+        approverMode: approverModeToUse,
       });
     }
 

@@ -280,33 +280,36 @@ export class SeedHelperService {
       where: { username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_ADMIN) },
     });
 
-    if (approverMode === ApproverSeedMode.admin) {
-      await this.approverService.createApprover({
-        programId,
-        userId: adminUser.id,
-        order: 1,
-      });
-      return;
+    switch (approverMode) {
+      case ApproverSeedMode.admin:
+        await this.approverService.createApprover({
+          programId,
+          userId: adminUser.id,
+          order: 1,
+        });
+        break;
+      case ApproverSeedMode.demo:
+        const approverUser = await userRepository.findOneOrFail({
+          where: {
+            username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_APPROVER!),
+          },
+        });
+        await this.approverService.createApprover({
+          programId,
+          userId: adminUser.id,
+          order: 1,
+        });
+        await this.approverService.createApprover({
+          programId,
+          userId: approverUser.id,
+          order: 2,
+        });
+        break;
+      case ApproverSeedMode.none:
+        break;
+      default:
+        break;
     }
-
-    if (approverMode === ApproverSeedMode.demo) {
-      const approverUser = await userRepository.findOneOrFail({
-        where: { username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_APPROVER!) },
-      });
-      await this.approverService.createApprover({
-        programId,
-        userId: adminUser.id,
-        order: 1,
-      });
-      await this.approverService.createApprover({
-        programId,
-        userId: approverUser.id,
-        order: 2,
-      });
-      return;
-    }
-
-    // if 'none', do nothing
   }
 
   public async getOrSaveUser(userInput: {
