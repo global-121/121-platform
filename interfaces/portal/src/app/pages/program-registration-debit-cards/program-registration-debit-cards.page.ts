@@ -115,16 +115,25 @@ export class ProgramRegistrationDebitCardsPageComponent {
   );
 
   readonly cardDistributionByMailEnabled = computed(() => {
-    const props: FspConfigurationProperty[] =
-      this.fspConfigurationProperties.data() ?? [];
+    // TODO: this is a temporary patch until we fixed permission issues in getFspConfigurationProperties
+    if (!this.fspConfigurationProperties.isSuccess()) {
+      return true;
+    }
 
-    const cardDistributionByMailProperty = props.find(
+    const props: FspConfigurationProperty[] =
+      this.fspConfigurationProperties.data();
+
+    const distributionByMailEnabled = props.find(
       (property) =>
         property.name ===
         (IntersolveVisaFspConfigurationProperties.cardDistributionByMail as string),
     );
+    // TODO: this is a temporary patch until we fixed permission issues in getFspConfigurationProperties
+    if (distributionByMailEnabled === undefined) {
+      return true;
+    }
 
-    return cardDistributionByMailProperty?.value === 'true';
+    return distributionByMailEnabled.value === 'true';
   });
 
   readonly cardByMailDisabledAndNoCurrentCards = computed(() => {
