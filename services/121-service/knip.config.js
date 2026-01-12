@@ -7,6 +7,7 @@ module.exports = {
   includeEntryExports: true,
   ignoreBinaries: [
     'open', // Default available on macOS
+    'retry-failed-jobs-on-startup-during-queue-processing.test.ts', // Weird false positive?
   ],
   ignoreDependencies: [
     // Known issues with devDependencies:
