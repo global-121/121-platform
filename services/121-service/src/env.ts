@@ -116,7 +116,7 @@ export const nedbankEnvVariablesSchema = {
     .url()
     .pipe(z.transform((url) => withoutTrailingSlash(url)))
     .optional(),
-  NEDBANK_CERTIFICATE_PASSWORD: z.string().optional(),
+
   NEDBANK_CERTIFICATE_PATH: z.string().default(''),
   NEDBANK_CLIENT_ID: z.string().optional(),
   NEDBANK_CLIENT_SECRET: z.string().optional(),
@@ -140,7 +140,6 @@ export const onafriqEnvVariablesSchema = {
   ONAFRIQ_SENDER_NAME: z.string().optional(),
   ONAFRIQ_SENDER_SURNAME: z.string().optional(),
   ONAFRIQ_SFTP_CERTIFICATE_CONTENT: z.string().optional(),
-  ONAFRIQ_SFTP_CERTIFICATE_PATH: z.string().optional(),
   ONAFRIQ_SFTP_HOST: z.string().optional(),
   ONAFRIQ_SFTP_PASSPHRASE: z.string().optional(),
   ONAFRIQ_SFTP_PORT: z.coerce.number().default(22),
@@ -325,6 +324,10 @@ export const env = createEnv({
       .pipe(z.transform((url) => withoutTrailingSlash(url))),
 
     ...fspEnvVariablesSchema,
+
+    // Optional FSP variables that should not be set in production and are only used for local testing
+    NEDBANK_CERTIFICATE_PASSWORD: z.string().optional(),
+    ONAFRIQ_SFTP_CERTIFICATE_PATH: z.string().optional(),
   },
 
   createFinalSchema: (shape) =>
