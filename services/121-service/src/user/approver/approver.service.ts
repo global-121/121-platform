@@ -79,6 +79,25 @@ export class ApproverService {
         },
         relations: { user: true },
       });
+    const existingApprover = await this.approverRepository.findOne({
+      where: {
+        programAidworkerAssignmentId: Equal(programAidworkerAssignment.id),
+      },
+    });
+    if (existingApprover) {
+      throw new HttpException(
+        'User is already an approver for this program',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (programAidworkerAssignment.scope !== '') {
+      throw new HttpException(
+        'Only users without scope (for a program) can be made approver (for that program). Edit the scope of the user-program assignment first (if intended) and retry here.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const approver = new ApproverEntity();
     approver.programAidworkerAssignment = programAidworkerAssignment;
     approver.order = order;
@@ -131,6 +150,7 @@ export class ApproverService {
         HttpStatus.BAD_REQUEST,
       );
     }
+
     approver.order = order;
     await this.approverRepository.save(approver);
     return this.entityToDto(approver);
