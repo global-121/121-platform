@@ -51,10 +51,8 @@ const main = async () => {
       break;
   }
 
-  await bootstrapApplication(
-    AppComponent,
-    getAppConfig(localeInitialization.locale),
-  );
+  const appConfig = getAppConfig(localeInitialization.locale);
+  await bootstrapApplication(AppComponent, appConfig);
 };
 
 void main();
