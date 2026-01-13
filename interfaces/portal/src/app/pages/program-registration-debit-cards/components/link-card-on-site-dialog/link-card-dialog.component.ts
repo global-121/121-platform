@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { injectMutation } from '@tanstack/angular-query-experimental';
 import { Button } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputMask } from 'primeng/inputmask';
@@ -127,12 +128,53 @@ export class LinkCardDialogComponent {
     return $localize`Please link this registration to a different card and inform your supervisor.`;
   });
 
-  resetData() {
-    this.linkCardDialogState.set(LinkCardDialogStates.linking);
-    this.tokenCode.set('');
-  }
+  linkCardMutation = injectMutation(() => ({
+    mutationFn: ({ tokenCode }: { tokenCode: string }) => {
+      if (this.currentTokenCode()) {
+        return this.registrationApiService.replaceCardOnSite({
+          programId: this.programId(),
+          referenceId: this.referenceId(),
+          tokenCode,
+        });
+      } else {
+        return this.registrationApiService.linkCardToRegistration({
+          programId: this.programId(),
+          referenceId: this.referenceId(),
+          tokenCode,
+        });
+      }
+    },
+    onSuccess: () => {
+      this.dialogVisible.set(false);
+      this.toastService.showToast({
+        severity: 'success',
+        detail: $localize`Link Visa card to registration`,
+      });
+    },
+    onError: (error) => {
+      if (
+        isErrorWithStatusCode({ error, statusCode: HttpStatusCode.BadRequest })
+      ) {
+        this.linkCardDialogState.set(
+          LinkCardDialogStates.errorAlreadyLinkedToOther,
+        );
+        return;
+      }
+      if (
+        isErrorWithStatusCode({ error, statusCode: HttpStatusCode.NotFound })
+      ) {
+        this.linkCardDialogState.set(LinkCardDialogStates.errorNotFound);
+        return;
+      }
 
-  async linkCard() {
+      this.toastService.showToast({
+        severity: 'error',
+        detail: $localize`An unexpected error occurred while linking the Visa card to the registration`,
+      });
+    },
+  }));
+
+  showWarningsOrTryToLink() {
     if (!this.tokenCodeFullyFilled()) {
       this.showTokenCodeInvalidWarning.set(true);
       return;
@@ -158,52 +200,15 @@ export class LinkCardDialogComponent {
       this.linkCardDialogState.set(
         LinkCardDialogStates.errorAlreadyLinkedToCurrent,
       );
-
       return;
     }
 
-    try {
-      if (this.currentTokenCode()) {
-        await this.intersolveVisaApiService.replaceCardOnSite({
-          programId: this.programId(),
-          referenceId: this.referenceId(),
-          tokenCode: tokenCodeWithoutDashes,
-        });
-      } else {
-        await this.intersolveVisaApiService.linkCardToRegistration({
-          programId: this.programId(),
-          referenceId: this.referenceId(),
-          tokenCode: tokenCodeWithoutDashes,
-        });
-      }
+    this.linkCardMutation.mutate({ tokenCode: tokenCodeWithoutDashes });
+  }
 
-      this.toastService.showToast({
-        severity: 'success',
-        detail: $localize`Link Visa card to registration`,
-      });
-
-      this.dialogVisible.set(false);
-    } catch (error) {
-      if (
-        isErrorWithStatusCode({ error, statusCode: HttpStatusCode.BadRequest })
-      ) {
-        this.linkCardDialogState.set(
-          LinkCardDialogStates.errorAlreadyLinkedToOther,
-        );
-        return;
-      }
-      if (
-        isErrorWithStatusCode({ error, statusCode: HttpStatusCode.NotFound })
-      ) {
-        this.linkCardDialogState.set(LinkCardDialogStates.errorNotFound);
-        return;
-      }
-
-      this.toastService.showToast({
-        severity: 'error',
-        detail: $localize`An unexpected error occurred while linking the Visa card to the registration`,
-      });
-    }
+  resetData() {
+    this.linkCardDialogState.set(LinkCardDialogStates.linking);
+    this.tokenCode.set('');
   }
 
   goBackToLinkingState() {
