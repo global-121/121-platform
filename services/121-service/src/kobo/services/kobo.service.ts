@@ -46,13 +46,13 @@ export class KoboService {
 
   public async integrateKobo({
     programId,
-    assetId,
+    assetUid,
     token,
     url,
     dryRun,
   }: {
     programId: number;
-    assetId: string;
+    assetUid: string;
     token: string;
     url: string;
     dryRun: boolean;
@@ -70,10 +70,11 @@ export class KoboService {
 
     const koboFormDefinition =
       await this.koboApiService.getDeployedAssetOrThrow({
-        assetId,
+        assetUid,
         token,
         baseUrl: url,
       });
+
     await this.koboValidationService.validateKoboFormDefinition({
       formDefinition: koboFormDefinition,
       programId,
@@ -89,7 +90,7 @@ export class KoboService {
     await this.upsertKoboEntity({
       koboFormDefinition,
       programId,
-      assetId,
+      assetUid,
       token,
       url,
     });
@@ -117,13 +118,13 @@ export class KoboService {
   public async upsertKoboEntity({
     koboFormDefinition,
     programId,
-    assetId,
+    assetUid,
     token,
     url,
   }: {
     koboFormDefinition: KoboFormDefinition;
     programId: number;
-    assetId: string;
+    assetUid: string;
     token: string;
     url: string;
   }): Promise<void> {
@@ -132,7 +133,7 @@ export class KoboService {
     });
 
     if (existingKoboEntity) {
-      existingKoboEntity.assetId = assetId;
+      existingKoboEntity.assetUid = assetUid;
       existingKoboEntity.token = token;
       existingKoboEntity.url = url;
       existingKoboEntity.dateDeployed = koboFormDefinition.dateDeployed;
@@ -141,7 +142,7 @@ export class KoboService {
     } else {
       const koboEntity = this.koboRepository.create({
         programId,
-        assetId,
+        assetUid,
         token,
         url,
         dateDeployed: koboFormDefinition.dateDeployed,

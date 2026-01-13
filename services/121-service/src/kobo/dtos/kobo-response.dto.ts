@@ -6,7 +6,7 @@ export class KoboResponseDto {
     type: 'string',
     description: 'Kobo asset ID',
   })
-  public readonly assetId: string;
+  public readonly assetUid: string;
 
   @ApiProperty({
     example: 'vAbBcCdDeEfF987654321',

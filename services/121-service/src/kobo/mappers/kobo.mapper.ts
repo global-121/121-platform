@@ -6,7 +6,7 @@ import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-sur
 export class KoboMapper {
   public static mapEntityToDto(entity: KoboEntity): KoboResponseDto {
     const dto: KoboResponseDto = {
-      assetId: entity.assetId,
+      assetUid: entity.assetUid,
       versionId: entity.versionId,
       dateDeployed: entity.dateDeployed,
       url: entity.url,

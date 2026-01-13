@@ -13,7 +13,7 @@ describe('KoboApiService', () => {
   let service: KoboApiService;
   let httpService: jest.Mocked<CustomHttpService>;
 
-  const mockAssetId = 'test-asset-id';
+  const mockAssetUid = 'test-asset-id';
   const mockToken = 'test-token';
   const mockBaseUrl = 'https://kobo.example.com';
 
@@ -97,7 +97,7 @@ describe('KoboApiService', () => {
 
       // Act
       const result = await service.getDeployedAssetOrThrow({
-        assetId: mockAssetId,
+        assetUid: mockAssetUid,
         token: mockToken,
         baseUrl: mockBaseUrl,
       });
@@ -126,7 +126,7 @@ describe('KoboApiService', () => {
       let error: any;
       try {
         await service.getDeployedAssetOrThrow({
-          assetId: mockAssetId,
+          assetUid: mockAssetUid,
           token: mockToken,
           baseUrl: mockBaseUrl,
         });
@@ -156,7 +156,7 @@ describe('KoboApiService', () => {
       let error: any;
       try {
         await service.getDeployedAssetOrThrow({
-          assetId: mockAssetId,
+          assetUid: mockAssetUid,
           token: mockToken,
           baseUrl: mockBaseUrl,
         });
@@ -188,7 +188,7 @@ describe('KoboApiService', () => {
       let error: any;
       try {
         await service.getDeployedAssetOrThrow({
-          assetId: mockAssetId,
+          assetUid: mockAssetUid,
           token: mockToken,
           baseUrl: mockBaseUrl,
         });
@@ -219,7 +219,7 @@ describe('KoboApiService', () => {
       let error: any;
       try {
         await service.getDeployedAssetOrThrow({
-          assetId: mockAssetId,
+          assetUid: mockAssetUid,
           token: mockToken,
           baseUrl: mockBaseUrl,
         });
@@ -247,7 +247,7 @@ describe('KoboApiService', () => {
       let error: any;
       try {
         await service.getDeployedAssetOrThrow({
-          assetId: mockAssetId,
+          assetUid: mockAssetUid,
           token: mockToken,
           baseUrl: mockBaseUrl,
         });
@@ -274,7 +274,7 @@ describe('KoboApiService', () => {
       let error: any;
       try {
         await service.getDeployedAssetOrThrow({
-          assetId: mockAssetId,
+          assetUid: mockAssetUid,
           token: mockToken,
           baseUrl: mockBaseUrl,
         });
@@ -307,7 +307,7 @@ describe('KoboApiService', () => {
 
       // Act
       const result = await service.getDeployedAssetOrThrow({
-        assetId: mockAssetId,
+        assetUid: mockAssetUid,
         token: mockToken,
         baseUrl: mockBaseUrl,
       });

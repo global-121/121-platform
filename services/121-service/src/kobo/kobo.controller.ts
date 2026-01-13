@@ -50,7 +50,7 @@ export class KoboController {
     description: 'Successfully retrieved Kobo integration data for the program',
     type: KoboResponseDto,
     example: {
-      assetId: 'aAbBcCdDeEfF123456789',
+      assetUid: 'aAbBcCdDeEfF123456789',
       versionId: 'vAbBcCdDeEfF987654321',
       dateDeployed: '2024-12-19T10:30:00Z',
       url: 'https://kobo.example.com',
@@ -128,7 +128,7 @@ export class KoboController {
     const dryRunBoolean = dryRun === 'true';
     const result = await this.koboService.integrateKobo({
       programId,
-      assetId: createKoboAssetData.assetId,
+      assetUid: createKoboAssetData.assetUid,
       token: createKoboAssetData.token,
       url: createKoboAssetData.url,
       dryRun: dryRunBoolean,

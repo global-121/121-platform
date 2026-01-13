@@ -5,7 +5,7 @@ export class CreateKoboDto {
   @ApiProperty({ example: 'your-asset-id-here' })
   @IsNotEmpty()
   @IsString()
-  public readonly assetId: string;
+  public readonly assetUid: string;
 
   @ApiProperty({ example: 'your-kobo-token-here' })
   @IsNotEmpty()

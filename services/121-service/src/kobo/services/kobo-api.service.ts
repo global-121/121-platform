@@ -11,15 +11,15 @@ export class KoboApiService {
   public constructor(private readonly httpService: CustomHttpService) {}
 
   public async getDeployedAssetOrThrow({
-    assetId,
+    assetUid,
     token,
     baseUrl,
   }: {
-    assetId: string;
+    assetUid: string;
     token: string;
     baseUrl: string;
   }): Promise<KoboFormDefinition> {
-    const apiUrl = `${baseUrl}/api/v2/assets/${assetId}/deployment/?format=json`;
+    const apiUrl = `${baseUrl}/api/v2/assets/${assetUid}/deployment/?format=json`;
     const headers = new Headers();
     headers.append('Authorization', `Token ${token}`);
 
@@ -33,14 +33,14 @@ export class KoboApiService {
       response.status === HttpStatus.FORBIDDEN
     ) {
       throw new HttpException(
-        `Unauthorized access to Kobo API for asset: ${assetId}. Please check if the provided token is valid.`,
+        `Unauthorized access to Kobo API for asset: ${assetUid}. Please check if the provided token is valid.`,
         HttpStatus.UNAUTHORIZED,
       );
     }
 
     if (response.status === HttpStatus.NOT_FOUND) {
       throw new HttpException(
-        `Kobo information not found for asset: ${assetId}. This form does not exist or is not (yet) deployed.`,
+        `Kobo information not found for asset: ${assetUid}. This form does not exist or is not (yet) deployed.`,
         HttpStatus.NOT_FOUND,
       );
     }

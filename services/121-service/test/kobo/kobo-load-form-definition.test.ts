@@ -90,7 +90,7 @@ describe('Import kobo form definition', () => {
     // Act
     const koboLinkDto: CreateKoboDto = {
       token: 'mock-token',
-      assetId: 'success-asset',
+      assetUid: 'success-asset',
       url: `${env.MOCK_SERVICE_URL}/api/kobo`, // our base path for the kobo part of the mock service
     };
 
@@ -150,7 +150,10 @@ describe('Import kobo form definition', () => {
 
     // Verify Kobo integration was created successfully
     expect(getKoboResponse.status).toBe(HttpStatus.OK);
-    expect(getKoboResponse.body).toHaveProperty('assetId', koboLinkDto.assetId);
+    expect(getKoboResponse.body).toHaveProperty(
+      'assetUid',
+      koboLinkDto.assetUid,
+    );
     expect(getKoboResponse.body).toHaveProperty('versionId');
 
     // Verify program registration attributes were updated based on Kobo form definition
@@ -292,7 +295,7 @@ describe('Import kobo form definition', () => {
     // Act - Link Kobo form that has English + Dutch languages
     const koboLinkDto: CreateKoboDto = {
       token: 'mock-token',
-      assetId: 'success-asset',
+      assetUid: 'success-asset',
       url: `${env.MOCK_SERVICE_URL}/api/kobo`,
     };
 
@@ -340,7 +343,7 @@ describe('Import kobo form definition', () => {
     // Act - Try to link Kobo form that is missing required FSP attributes
     const koboLinkDto: CreateKoboDto = {
       token: 'mock-token',
-      assetId: 'asset-id-body-that-triggers-errors', // This mock form is missing required FSP attributes
+      assetUid: 'asset-id-body-that-triggers-errors', // This mock form is missing required FSP attributes
       url: `${env.MOCK_SERVICE_URL}/api/kobo`,
     };
 
@@ -388,7 +391,7 @@ describe('Import kobo form definition', () => {
 
     const koboLinkDto: CreateKoboDto = {
       token: 'mock-token',
-      assetId: 'success-asset',
+      assetUid: 'success-asset',
       url: `${env.MOCK_SERVICE_URL}/api/kobo`,
     };
 
@@ -439,7 +442,7 @@ describe('Import kobo form definition', () => {
 
     const koboLinkDto: CreateKoboDto = {
       token: 'mock-token',
-      assetId: 'success-asset',
+      assetUid: 'success-asset',
       url: `${env.MOCK_SERVICE_URL}/api/kobo`,
     };
 
@@ -481,7 +484,7 @@ describe('Import kobo form definition', () => {
 
     const koboLinkDto: CreateKoboDto = {
       token: 'mock-token',
-      assetId: 'success-asset',
+      assetUid: 'success-asset',
       url: `${env.MOCK_SERVICE_URL}/api/kobo`,
     };
 
@@ -496,7 +499,7 @@ describe('Import kobo form definition', () => {
     // import a second kobo definition that has some changes compared to the first one
     const koboLinkDtoSecondImport: CreateKoboDto = {
       ...koboLinkDto,
-      assetId: 'asset-id-happy-flow-with-changes',
+      assetUid: 'asset-id-happy-flow-with-changes',
     };
 
     await postKobo({
@@ -546,7 +549,7 @@ describe('Import kobo form definition', () => {
   });
 
   it('should handle not found error from kobo api', async () => {
-    const assetId = 'asset-id-not-found';
+    const assetUid = 'asset-id-not-found';
     const program: CreateProgramDto = {
       ...baseProgram,
       titlePortal: {
@@ -566,7 +569,7 @@ describe('Import kobo form definition', () => {
 
     const koboLinkDto: CreateKoboDto = {
       token: 'mock-token',
-      assetId,
+      assetUid,
       url: `${env.MOCK_SERVICE_URL}/api/kobo`,
     };
 
