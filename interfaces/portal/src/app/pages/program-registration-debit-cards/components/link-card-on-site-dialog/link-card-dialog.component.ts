@@ -174,7 +174,7 @@ export class LinkCardDialogComponent {
     },
   }));
 
-  showWarningsOrTryToLink() {
+  validateAndLinkCard() {
     if (!this.tokenCodeFullyFilled()) {
       this.showTokenCodeInvalidWarning.set(true);
       return;
