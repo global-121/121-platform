@@ -3,6 +3,11 @@ import { HttpStatus } from '@nestjs/common';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import {
+  createApprover,
+  createUserProgramAssignment,
+  updateUserProgramAssignment,
+} from '@121-service/test/helpers/user.helper';
+import {
   getAccessToken,
   getServer,
   resetDB,
@@ -62,10 +67,13 @@ describe('Programs / Users / Roles', () => {
     };
 
     // Act
-    const response = await getServer()
-      .put(`/programs/${programId}/users/${userId}`)
-      .set('Cookie', [accessToken])
-      .send(testRoles);
+    const response = await createUserProgramAssignment({
+      programId,
+      userId,
+      roles: testRoles.roles,
+      scope: testRoles.scope,
+      accessToken,
+    });
 
     // Assert
     expect(response.status).toBe(HttpStatus.OK);
@@ -84,36 +92,69 @@ describe('Programs / Users / Roles', () => {
     };
 
     // Act
-    const response = await getServer()
-      .put(`/programs/${programId}/users/${selfUserId}`)
-      .set('Cookie', [accessToken])
-      .send(testRoles);
+    const response = await createUserProgramAssignment({
+      programId,
+      userId: selfUserId,
+      roles: testRoles.roles,
+      scope: testRoles.scope,
+      accessToken,
+    });
 
     // Assert
     expect(response.status).toBe(HttpStatus.FORBIDDEN);
     expect(response.body.message).toMatchSnapshot();
   });
 
-  it('should return user roles after add new role to specific program assignment', async () => {
-    // Arrange
-    const testUserRoles = fixtureUserRoles;
-    const testRoles = {
-      rolesToAdd: ['view'],
-      scope: 'test',
-    };
+  describe('Patch User Program Assignment', () => {
+    it('should return user roles after add new role to specific program assignment', async () => {
+      // Arrange
+      const testUserRoles = fixtureUserRoles;
+      const testRoles = ['view'];
+      const testScope = 'test-scope';
 
-    // Act
-    const response = await getServer()
-      .patch(`/programs/${programId}/users/${userId}`)
-      .set('Cookie', [accessToken])
-      .send(testRoles);
+      // Act
+      const response = await updateUserProgramAssignment({
+        programId,
+        userId,
+        roles: testRoles,
+        scope: testScope,
+        accessToken,
+      });
 
-    // Assert
-    expect(response.status).toBe(HttpStatus.OK);
-    expect(response.body.roles.length).toBe(2);
-    expect(response.body.roles[1].role).toBe(testUserRoles[1].role);
-    expect(response.body.roles[1].id).toBe(testUserRoles[1].id);
-    expect(response.body.roles[1].label).toBe(testUserRoles[1].label);
+      // Assert
+      expect(response.status).toBe(HttpStatus.OK);
+      expect(response.body.roles.length).toBe(2);
+      expect(response.body.roles[1].role).toBe(testUserRoles[1].role);
+      expect(response.body.roles[1].id).toBe(testUserRoles[1].id);
+      expect(response.body.roles[1].label).toBe(testUserRoles[1].label);
+    });
+
+    it('should throw when adding scope to assignment for user that is an approver in the program', async () => {
+      // Arrange
+      await createApprover({
+        programId,
+        userId,
+        order: 2,
+        accessToken,
+      });
+      const testScope = 'test-scope';
+      const testRoles = ['view']; // any role will do
+
+      // Act
+      const response = await updateUserProgramAssignment({
+        programId,
+        userId,
+        roles: testRoles,
+        scope: testScope,
+        accessToken,
+      });
+
+      // Assert
+      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.body.message).toMatchInlineSnapshot(
+        `"Cannot add scope to assignment because user is an approver for this program. Remove approver from program first (if intended) and retry."`,
+      );
+    });
   });
 
   it('should return user roles after delete roles from specific program assignment', async () => {
