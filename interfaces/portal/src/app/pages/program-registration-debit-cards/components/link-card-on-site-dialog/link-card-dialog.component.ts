@@ -131,13 +131,13 @@ export class LinkCardDialogComponent {
   linkCardMutation = injectMutation(() => ({
     mutationFn: ({ tokenCode }: { tokenCode: string }) => {
       if (this.currentTokenCode()) {
-        return this.intersolveVisaApiService.replaceCardOnSite({
+        return this.registrationApiService.replaceCardOnSite({
           programId: this.programId(),
           referenceId: this.referenceId(),
           tokenCode,
         });
       } else {
-        return this.intersolveVisaApiService.linkCardToRegistration({
+        return this.registrationApiService.linkCardToRegistration({
           programId: this.programId(),
           referenceId: this.referenceId(),
           tokenCode,
@@ -174,7 +174,7 @@ export class LinkCardDialogComponent {
     },
   }));
 
-  validateAndLinkCard() {
+  showWarningsOrTryToLink() {
     if (!this.tokenCodeFullyFilled()) {
       this.showTokenCodeInvalidWarning.set(true);
       return;

@@ -84,7 +84,7 @@
       ></p-button>
       @if (!isError()) {
         <p-button
-          (click)="validateAndLinkCard()"
+          (click)="showWarningsOrTryToLink()"
           rounded
           [label]="confirmationButtonLabel()"
         ></p-button>
