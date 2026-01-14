@@ -61,7 +61,10 @@ export class RegistrationEventsService {
         },
       );
 
-    const paginateQuery = {} as PaginateQuery;
+    const limit = 100_000;
+    const paginateQuery = {
+      limit,
+    } as PaginateQuery;
     return this.getPaginatedRegistrationEvents({
       paginateQuery,
       queryBuilder,
