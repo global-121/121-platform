@@ -67,6 +67,20 @@ export function getPaperVoucherImage(
     .query({ paymentId, referenceId });
 }
 
+export function getWhatsappVoucherImage(
+  programId: number,
+  paymentId: number,
+  referenceId: string,
+  accessToken: string,
+) {
+  return getServer()
+    .get(
+      `/programs/${programId}/fsps/intersolve-voucher/voucher/image-whatsapp`,
+    )
+    .set('Cookie', [accessToken])
+    .query({ paymentId, referenceId });
+}
+
 export async function triggerUnusedVouchersCache(
   accessToken: string,
 ): Promise<request.Response> {
