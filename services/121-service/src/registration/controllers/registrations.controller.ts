@@ -144,7 +144,7 @@ export class RegistrationsController {
     const userId = RequestHelper.getUserId(req);
     const queryWithDefaultLimit = {
       ...query,
-      limit: DEFAULT_PAGINATION_LIMIT,
+      limit: query.limit ?? DEFAULT_PAGINATION_LIMIT,
     };
 
     const hasPersonalRead =
