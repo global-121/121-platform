@@ -7,7 +7,6 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   getPaperVoucherImage,
   getTransactionsIntersolveVoucher,
-  getVoucherBalance,
 } from '@121-service/test/helpers/fsp-specific.helper';
 import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
 import {
@@ -61,19 +60,6 @@ describe('Intersolve Voucher Controller', () => {
         referenceId: registrationPV5.referenceId,
         accessToken,
       });
-      console.log('getTransactionsBody: ', getTransactionsBody);
-
-      // Act
-      const getVoucherBalanceResponse = await getVoucherBalance(
-        programIdPV,
-        paymentResponse.body.id,
-        registrationPV5.referenceId,
-        accessToken,
-      );
-      console.log(
-        'getVoucherBalanceResponse: ',
-        getVoucherBalanceResponse.body,
-      );
 
       // Act
       const getVoucherResponse = await getPaperVoucherImage(
@@ -82,8 +68,6 @@ describe('Intersolve Voucher Controller', () => {
         registrationPV5.referenceId,
         accessToken,
       );
-
-      console.log('getVoucherResponse: ', getVoucherResponse.body);
 
       // Assert
       expect(getTransactionsBody[0].status).toBe('success');
