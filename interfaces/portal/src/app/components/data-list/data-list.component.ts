@@ -56,12 +56,6 @@ export type DataListItem = {
       value?: Date | null | number | string;
     }
   | {
-      type: 'input';
-      inputValue: string;
-      inputPlaceholder?: string;
-      inputChange?: (value: string) => void;
-    }
-  | {
       type: 'number';
       value?: null | number;
     }

@@ -13,7 +13,8 @@
   i18n-header
   headerIcon="pi pi-check-circle"
   [mutation]="approvePaymentMutation"
-  [mutationData]="undefined"
+  [mutationData]="formGroup.getRawValue()"
+  [formGroup]="formGroup"
   proceedLabel="Approve payment"
   i18n-proceedLabel
 >
@@ -27,4 +28,18 @@
     [data]="dataList()"
     [forceOneColumn]="true"
   />
+  <app-form-field-wrapper
+    label="Add note"
+    i18n-label
+    class="px-2"
+  >
+    <input
+      pInputText
+      formControlName="note"
+      type="text"
+      placeholder="Optional"
+      i18n-placeholder
+      class="w-full"
+    />
+  </app-form-field-wrapper>
 </app-form-dialog>
