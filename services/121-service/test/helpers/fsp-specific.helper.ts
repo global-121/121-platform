@@ -67,7 +67,7 @@ export function getPaperVoucherImage(
     .set('Cookie', [accessToken])
     .query({ paymentId, referenceId });
 }
-export function getIntersolveInstructions(
+export function getIntersolveInstructionsImage(
   programId: number,
   accessToken?: string,
 ) {
@@ -95,7 +95,7 @@ export function getWhatsappVoucherImage(
     .query({ paymentId, referenceId });
 }
 
-export function postIntersolveInstructions(
+export function postIntersolveInstructionsImage(
   programId: number,
   accessToken: string,
   imageBuffer?: Buffer,

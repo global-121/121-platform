@@ -5,11 +5,11 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  getIntersolveInstructions,
+  getIntersolveInstructionsImage,
   getPaperVoucherImage,
   getTransactionsIntersolveVoucher,
   getWhatsappVoucherImage,
-  postIntersolveInstructions,
+  postIntersolveInstructionsImage,
 } from '@121-service/test/helpers/fsp-specific.helper';
 import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
 import {
@@ -105,6 +105,7 @@ describe('Intersolve Voucher Controller', () => {
     it('should return 403 when accessing paper voucher image with invalid programId', async () => {
       // Arrange
       registrationPV5.programFspConfigurationName = Fsps.intersolveVoucherPaper;
+      await importRegistrations(programIdPV, [registrationPV5], accessToken);
       await awaitChangeRegistrationStatus({
         programId: programIdPV,
         referenceIds: [registrationPV5.referenceId],
@@ -234,14 +235,14 @@ describe('Intersolve Voucher Controller', () => {
 
     it('should successfully get intersolve instructions image', async () => {
       // Arrange - First upload an image so we have something to retrieve
-      const postResponse = await postIntersolveInstructions(
+      const postResponse = await postIntersolveInstructionsImage(
         programIdPV,
         accessToken,
       );
       expect(postResponse.status).toBe(HttpStatus.CREATED);
 
       // Act
-      const response = await getIntersolveInstructions(programIdPV);
+      const response = await getIntersolveInstructionsImage(programIdPV);
 
       // Assert
       expect(response.status).toBe(HttpStatus.OK);
@@ -253,7 +254,7 @@ describe('Intersolve Voucher Controller', () => {
       const nonAdminAccessToken = await getAccessTokenCvaManager();
 
       // Act
-      const response = await postIntersolveInstructions(
+      const response = await postIntersolveInstructionsImage(
         programIdPV,
         nonAdminAccessToken,
       );
@@ -264,7 +265,7 @@ describe('Intersolve Voucher Controller', () => {
 
     it('should return 404 when intersolve instructions image does not exist for invalid program', async () => {
       // Act
-      const response = await getIntersolveInstructions(99999);
+      const response = await getIntersolveInstructionsImage(99999);
 
       // Assert
       expect(response.status).toBe(HttpStatus.NOT_FOUND);
