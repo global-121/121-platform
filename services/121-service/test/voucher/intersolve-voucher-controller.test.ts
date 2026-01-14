@@ -32,7 +32,6 @@ describe('Intersolve Voucher Controller', () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
     registrationPV5.programFspConfigurationName = Fsps.intersolveVoucherPaper;
-    await waitFor(3_000);
   });
 
   describe('Intersolve voucher controller endpoints', () => {
