@@ -32,6 +32,8 @@ interface RegistrationViewWithId extends Partial<RegistrationViewEntity> {
   id: number;
 }
 
+const exportLimit = 500_000;
+
 @Injectable()
 export class RegistrationEventsService {
   @Inject(getScopedRepositoryProviderName(RegistrationEventEntity))
@@ -61,7 +63,9 @@ export class RegistrationEventsService {
         },
       );
 
-    const paginateQuery = {} as PaginateQuery;
+    const paginateQuery = {
+      limit: exportLimit,
+    } as PaginateQuery;
     return this.getPaginatedRegistrationEvents({
       paginateQuery,
       queryBuilder,
@@ -96,7 +100,6 @@ export class RegistrationEventsService {
         },
       );
 
-    const exportLimit = 500_000;
     const paginateQuery = {
       limit: exportLimit,
     } as PaginateQuery;
