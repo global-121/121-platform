@@ -13,6 +13,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
+import { TimelineModule } from 'primeng/timeline';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
@@ -55,6 +56,7 @@ import { Locale } from '~/utils/locale';
     ApprovePaymentComponent,
     ColoredChipComponent,
     CommonModule,
+    TimelineModule,
   ],
   templateUrl: './page-layout-payment.component.html',
   styles: ``,
