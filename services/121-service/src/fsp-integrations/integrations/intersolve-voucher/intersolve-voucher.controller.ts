@@ -36,7 +36,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 @Controller()
 export class IntersolveVoucherController {
   public constructor(
-    readonly intersolveVoucherService: IntersolveVoucherService,
+    private readonly intersolveVoucherService: IntersolveVoucherService,
   ) {}
 
   @AuthenticatedUser({
