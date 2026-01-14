@@ -28,6 +28,7 @@ import {
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
+import { PaginateQueryLimitRequired } from '@121-service/src/shared/types/paginate-query-limit-required.type';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
@@ -50,7 +51,7 @@ export class RegistrationsPaginationService {
     noLimit,
     queryBuilder,
   }: {
-    query: PaginateQuery;
+    query: PaginateQueryLimitRequired;
     programId: number;
     hasPersonalReadPermission: boolean;
     noLimit: boolean;
@@ -205,9 +206,10 @@ export class RegistrationsPaginationService {
     queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>;
   }) {
     paginateQuery.page = 1;
+    const paginateQueryWithNoLimit = { ...paginateQuery, limit: -1 };
 
     const paginateResult = await this.getPaginate({
-      query: paginateQuery,
+      query: paginateQueryWithNoLimit,
       programId,
       hasPersonalReadPermission: true,
       noLimit: true,

@@ -29,6 +29,7 @@ import {
 } from '@nestjs/swagger';
 import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
 
+import { DEFAULT_PAGINATION_LIMIT } from '@121-service/src/config';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
@@ -141,6 +142,10 @@ export class RegistrationsController {
     @Param('programId', ParseIntPipe) programId: number,
   ): Promise<FindAllRegistrationsResultDto> {
     const userId = RequestHelper.getUserId(req);
+    const queryWithDefaultLimit = {
+      ...query,
+      limit: DEFAULT_PAGINATION_LIMIT,
+    };
 
     const hasPersonalRead =
       await this.registrationsPaginateService.userHasPermissionForProgram(
@@ -152,11 +157,11 @@ export class RegistrationsController {
     await this.registrationsPaginateService.throwIfNoPersonalReadPermission(
       userId,
       programId,
-      query,
+      queryWithDefaultLimit,
     );
 
     return await this.registrationsPaginateService.getPaginate({
-      query,
+      query: queryWithDefaultLimit,
       programId: Number(programId),
       hasPersonalReadPermission: hasPersonalRead,
       noLimit: false,
