@@ -209,12 +209,17 @@ export class PageLayoutPaymentComponent {
     );
   });
 
-  readonly firstPendingApprovalIndex = computed(() => {
+  readonly firstPendingApprovalRank = computed(() => {
     if (!this.payment.isSuccess()) {
       return 0;
     }
 
-    return this.payment.data().approvalStatus.findIndex((a) => !a.approved);
+    return Math.min(
+      ...this.payment
+        .data()
+        .approvalStatus.filter((a) => !a.approved)
+        .map((a) => a.rank),
+    );
   });
 
   readonly hasFspWithExportFileIntegration = computed(() =>

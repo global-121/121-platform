@@ -114,9 +114,9 @@
                 class="flex h-6 w-6 items-center justify-center rounded-full text-center"
                 [ngClass]="{
                   'bg-purple-700 text-white':
-                    approver.rank - 1 === firstPendingApprovalIndex(),
+                    approver.rank === firstPendingApprovalRank(),
                   'text-grey-700 bg-purple-300':
-                    approver.rank - 1 !== firstPendingApprovalIndex(),
+                    approver.rank !== firstPendingApprovalRank(),
                 }"
               >
                 {{ approver.rank }}
