@@ -5,9 +5,11 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
+  getIntersolveInstructions,
   getPaperVoucherImage,
   getTransactionsIntersolveVoucher,
   getWhatsappVoucherImage,
+  postIntersolveInstructions,
 } from '@121-service/test/helpers/fsp-specific.helper';
 import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
 import {
@@ -16,6 +18,7 @@ import {
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
+  getAccessTokenCvaManager,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
@@ -227,6 +230,44 @@ describe('Intersolve Voucher Controller', () => {
 
       // Assert
       expect(response.status).toBe(HttpStatus.FORBIDDEN);
+    });
+
+    it('should successfully get intersolve instructions image', async () => {
+      // Arrange - First upload an image so we have something to retrieve
+      const postResponse = await postIntersolveInstructions(
+        programIdPV,
+        accessToken,
+      );
+      expect(postResponse.status).toBe(HttpStatus.CREATED);
+
+      // Act
+      const response = await getIntersolveInstructions(programIdPV);
+
+      // Assert
+      expect(response.status).toBe(HttpStatus.OK);
+      expect(response.headers['content-type']).toBe('image/png');
+    });
+
+    it('should return 403 when posting intersolve instructions without admin access', async () => {
+      // Arrange - Get a non-admin access token
+      const nonAdminAccessToken = await getAccessTokenCvaManager();
+
+      // Act
+      const response = await postIntersolveInstructions(
+        programIdPV,
+        nonAdminAccessToken,
+      );
+
+      // Assert
+      expect(response.status).toBe(HttpStatus.FORBIDDEN);
+    });
+
+    it('should return 404 when intersolve instructions image does not exist for invalid program', async () => {
+      // Act
+      const response = await getIntersolveInstructions(99999);
+
+      // Assert
+      expect(response.status).toBe(HttpStatus.NOT_FOUND);
     });
   });
 });

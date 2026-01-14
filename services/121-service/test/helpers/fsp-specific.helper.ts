@@ -3,6 +3,7 @@ import * as request from 'supertest';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { getTransactionsByPaymentIdPaginated } from '@121-service/test/helpers/program.helper';
+import { MINIMAL_PNG_BUFFER } from '@121-service/test/helpers/test-fsp-constants';
 import { getServer } from '@121-service/test/helpers/utility.helper';
 
 //////////////////////
@@ -66,7 +67,20 @@ export function getPaperVoucherImage(
     .set('Cookie', [accessToken])
     .query({ paymentId, referenceId });
 }
+export function getIntersolveInstructions(
+  programId: number,
+  accessToken?: string,
+) {
+  const request = getServer().get(
+    `/programs/${programId}/fsps/intersolve-voucher/instructions`,
+  );
 
+  if (accessToken) {
+    request.set('Cookie', [accessToken]);
+  }
+
+  return request;
+}
 export function getWhatsappVoucherImage(
   programId: number,
   paymentId: number,
@@ -79,6 +93,26 @@ export function getWhatsappVoucherImage(
     )
     .set('Cookie', [accessToken])
     .query({ paymentId, referenceId });
+}
+
+export function postIntersolveInstructions(
+  programId: number,
+  accessToken: string,
+  imageBuffer?: Buffer,
+  filename = 'test-image.png',
+) {
+  const request = getServer()
+    .post(`/programs/${programId}/fsps/intersolve-voucher/instructions`)
+    .set('Cookie', [accessToken]);
+
+  if (imageBuffer) {
+    request.attach('image', imageBuffer, filename);
+  } else {
+    // Use minimal PNG buffer for testing
+    request.attach('image', MINIMAL_PNG_BUFFER, filename);
+  }
+
+  return request;
 }
 
 export async function triggerUnusedVouchersCache(
