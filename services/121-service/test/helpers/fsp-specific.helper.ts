@@ -55,6 +55,18 @@ export async function getVoucherBalance(
     .query({ paymentId, referenceId });
 }
 
+export function getPaperVoucherImage(
+  programId: number,
+  paymentId: number,
+  referenceId: string,
+  accessToken: string,
+) {
+  return getServer()
+    .get(`/programs/${programId}/fsps/intersolve-voucher/voucher/image-paper`)
+    .set('Cookie', [accessToken])
+    .query({ paymentId, referenceId });
+}
+
 export async function triggerUnusedVouchersCache(
   accessToken: string,
 ): Promise<request.Response> {
