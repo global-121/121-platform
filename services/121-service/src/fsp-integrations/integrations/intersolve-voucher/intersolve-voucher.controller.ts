@@ -26,11 +26,9 @@ import stream from 'node:stream';
 
 import { IdentifyVoucherDto } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/dto/identify-voucher.dto';
 import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
-import { IntersolveVoucherCronService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher-cron.service';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { IMAGE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
-import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 @UseGuards(AuthenticatedUserGuard)
@@ -38,9 +36,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 @Controller()
 export class IntersolveVoucherController {
   public constructor(
-    private intersolveVoucherService: IntersolveVoucherService,
-    private intersolveVoucherCronService: IntersolveVoucherCronService,
-    private azureLogService: AzureLogService,
+    readonly intersolveVoucherService: IntersolveVoucherService,
   ) {}
 
   @AuthenticatedUser({
@@ -69,12 +65,8 @@ export class IntersolveVoucherController {
       Number(queryParams.paymentId),
       programId,
     );
-    const bufferStream = new stream.PassThrough();
-    bufferStream.end(Buffer.from(blob, 'binary'));
-    response.writeHead(HttpStatus.OK, {
-      'Content-Type': 'image/png',
-    });
-    bufferStream.pipe(response);
+
+    this.sendImageResponse(blob, response);
   }
 
   @AuthenticatedUser({
@@ -103,12 +95,8 @@ export class IntersolveVoucherController {
       Number(queryParams.paymentId),
       programId,
     );
-    const bufferStream = new stream.PassThrough();
-    bufferStream.end(Buffer.from(blob, 'binary'));
-    response.writeHead(HttpStatus.OK, {
-      'Content-Type': 'image/png',
-    });
-    bufferStream.pipe(response);
+
+    this.sendImageResponse(blob, response);
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentREAD] })
@@ -152,6 +140,10 @@ export class IntersolveVoucherController {
     programId: number,
   ): Promise<void> {
     const blob = await this.intersolveVoucherService.getInstruction(programId);
+    this.sendImageResponse(blob, response);
+  }
+
+  private sendImageResponse(blob: string, response: Response): void {
     const bufferStream = new stream.PassThrough();
     bufferStream.end(Buffer.from(blob, 'binary'));
     response.writeHead(HttpStatus.OK, {
