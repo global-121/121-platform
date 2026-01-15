@@ -13,11 +13,9 @@ import { OnafriqApiCallbackStatusCode } from '@121-service/src/fsp-integrations/
 import { OnafriqTransactionStatus } from '@121-service/src/fsp-integrations/reconciliation/onafriq/enum/onafriq-transaction-status.enum';
 import { OnafriqReconciliationReport } from '@121-service/src/fsp-integrations/reconciliation/onafriq/interfaces/onafriq-reconciliation-report.interface';
 import { OnafriqReconciliationMapper } from '@121-service/src/fsp-integrations/reconciliation/onafriq/onafriq-reconciliation.mapper';
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
-import {
-  FspConfigurationProperties,
-  Fsps,
-} from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import {
   getRedisSetName,
   REDIS_CLIENT,
