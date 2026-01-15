@@ -1140,14 +1140,6 @@
     ]
   },
   {
-    "method": "get",
-    "path": "/api/programs/{programId}/kobo",
-    "params": [
-      "programId"
-    ],
-    "returnType": "KoboResponseDto"
-  },
-  {
     "method": "post",
     "path": "/api/programs/{programId}/kobo",
     "params": [
@@ -1155,5 +1147,13 @@
       "dryRun"
     ],
     "returnType": "KoboIntegrationResultDto"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/kobo",
+    "params": [
+      "programId"
+    ],
+    "returnType": "KoboResponseDto"
   }
 ]

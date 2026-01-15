@@ -2,13 +2,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
-import { KoboIntegrationResultDto } from '@121-service/src/kobo/dtos/kobo-integration-result.dto';
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
 import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
+import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
 import { KoboMapper } from '@121-service/src/kobo/mappers/kobo.mapper';
 import { KoboValidationService } from '@121-service/src/kobo/services/kobo.validation.service';
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
+import { KoboLanguageExtracterService } from '@121-service/src/kobo/services/kobo-language-extracter.service';
 import { KoboSurveyProcessorService } from '@121-service/src/kobo/services/kobo-survey-processor.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramService } from '@121-service/src/programs/programs.service';
@@ -17,7 +18,6 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 
 @Injectable()
 export class KoboService {
-  // kobo repo typeorm import
   @InjectRepository(KoboEntity)
   private readonly koboRepository: Repository<KoboEntity>;
 
@@ -26,6 +26,7 @@ export class KoboService {
     private readonly koboValidationService: KoboValidationService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly koboSurveyProcessorService: KoboSurveyProcessorService,
+    private readonly koboLanguageExtracterService: KoboLanguageExtracterService,
     private readonly programService: ProgramService,
     private readonly programRepository: ProgramRepository,
   ) {}
@@ -35,13 +36,13 @@ export class KoboService {
   }: {
     programId: number;
   }): Promise<KoboResponseDto> {
-    const koboData = await this.koboRepository.findOne({
+    const koboEntity = await this.koboRepository.findOne({
       where: { programId: Equal(programId) },
     });
-    if (!koboData) {
+    if (!koboEntity) {
       throw new HttpException('Kobo data not found', HttpStatus.NOT_FOUND);
     }
-    return KoboMapper.mapEntityToDto(koboData);
+    return KoboMapper.mapEntityToDto(koboEntity);
   }
 
   public async integrateKobo({
@@ -56,7 +57,10 @@ export class KoboService {
     token: string;
     url: string;
     dryRun: boolean;
-  }): Promise<KoboIntegrationResultDto> {
+  }): Promise<{
+    message: string;
+    dryRun: boolean;
+  }> {
     await this.programService.findProgramOrThrow(programId);
     const fspConfigs = await this.programFspConfigurationRepository.count({
       where: { programId: Equal(programId) },
@@ -68,15 +72,18 @@ export class KoboService {
       );
     }
 
-    const koboFormDefinition =
-      await this.koboApiService.getDeployedAssetOrThrow({
-        assetUid,
-        token,
-        baseUrl: url,
-      });
+    const asset = await this.koboApiService.getDeployedAssetOrThrow({
+      assetUid,
+      token,
+      baseUrl: url,
+    });
+
+    const formDefinition = KoboMapper.koboAssetDtoToKoboFormDefinition({
+      asset,
+    });
 
     await this.koboValidationService.validateKoboFormDefinition({
-      formDefinition: koboFormDefinition,
+      formDefinition,
       programId,
     });
 
@@ -88,18 +95,19 @@ export class KoboService {
     }
 
     await this.upsertKoboEntity({
-      koboFormDefinition,
+      formDefinition,
       programId,
       assetUid,
       token,
       url,
     });
-    const languageIsoCodes = this.getLanguageIsoCodes({
-      koboLanguages: koboFormDefinition.languages,
-    });
+    const languageIsoCodes =
+      this.koboLanguageExtracterService.getLanguageIsoCodes({
+        koboLanguages: formDefinition.languages,
+      });
 
     await this.upsertProgramAttributesFromKoboFormDefinition({
-      koboFormDefinition,
+      koboSurveyItems: formDefinition.survey,
       programId,
       languageIsoCodes,
     });
@@ -115,14 +123,14 @@ export class KoboService {
     };
   }
 
-  public async upsertKoboEntity({
-    koboFormDefinition,
+  private async upsertKoboEntity({
+    formDefinition,
     programId,
     assetUid,
     token,
     url,
   }: {
-    koboFormDefinition: KoboFormDefinition;
+    formDefinition: KoboFormDefinition;
     programId: number;
     assetUid: string;
     token: string;
@@ -136,8 +144,8 @@ export class KoboService {
       existingKoboEntity.assetUid = assetUid;
       existingKoboEntity.token = token;
       existingKoboEntity.url = url;
-      existingKoboEntity.dateDeployed = koboFormDefinition.dateDeployed;
-      existingKoboEntity.versionId = koboFormDefinition.versionId;
+      existingKoboEntity.dateDeployed = formDefinition.dateDeployed;
+      existingKoboEntity.versionId = formDefinition.versionId;
       await this.koboRepository.save(existingKoboEntity);
     } else {
       const koboEntity = this.koboRepository.create({
@@ -145,8 +153,8 @@ export class KoboService {
         assetUid,
         token,
         url,
-        dateDeployed: koboFormDefinition.dateDeployed,
-        versionId: koboFormDefinition.versionId,
+        dateDeployed: formDefinition.dateDeployed,
+        versionId: formDefinition.versionId,
       });
 
       await this.koboRepository.save(koboEntity);
@@ -154,18 +162,17 @@ export class KoboService {
   }
 
   private async upsertProgramAttributesFromKoboFormDefinition({
-    koboFormDefinition,
+    koboSurveyItems,
     programId,
     languageIsoCodes,
   }: {
-    koboFormDefinition: KoboFormDefinition;
+    koboSurveyItems: KoboSurveyItemCleaned[];
     programId: number;
     languageIsoCodes: RegistrationPreferredLanguage[];
   }): Promise<void> {
     const programRegistrationAttributes =
       this.koboSurveyProcessorService.surveyToProgramRegistrationAttributes({
-        koboSurvey: koboFormDefinition.survey,
-        koboChoices: koboFormDefinition.choices,
+        surveyItems: koboSurveyItems,
         languageIsoCodes,
       });
 
@@ -190,35 +197,5 @@ export class KoboService {
     await this.programService.updateProgram(programId, {
       languages: combinedLanguages,
     });
-  }
-
-  private getLanguageIsoCodes({
-    koboLanguages: koboLanguages,
-  }: {
-    koboLanguages: string[];
-  }): RegistrationPreferredLanguage[] {
-    const isoCodes: RegistrationPreferredLanguage[] = [];
-    for (const language of koboLanguages) {
-      const isoCode = this.extractIsoCode({ koboSurveyLanguage: language });
-      if (isoCode) {
-        isoCodes.push(isoCode);
-      }
-    }
-    return isoCodes;
-  }
-
-  private extractIsoCode({
-    koboSurveyLanguage,
-  }: {
-    koboSurveyLanguage: string;
-  }): RegistrationPreferredLanguage | undefined {
-    for (const isoLanguageCode of Object.values(
-      RegistrationPreferredLanguage,
-    )) {
-      if (koboSurveyLanguage.includes(`(${isoLanguageCode})`)) {
-        return isoLanguageCode;
-      }
-    }
-    return undefined;
   }
 }

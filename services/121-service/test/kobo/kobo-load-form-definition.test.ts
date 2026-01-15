@@ -142,7 +142,6 @@ describe('Import kobo form definition', () => {
 
     expect(linkKoboResponse.body).toMatchInlineSnapshot(`
      {
-       "dryRun": false,
        "message": "Kobo form integrated successfully",
      }
     `);
@@ -197,7 +196,7 @@ describe('Import kobo form definition', () => {
            "nl": "Hoe heet je?",
          },
          "name": "fullName",
-         "options": null,
+         "options": [],
          "showInPeopleAffectedTable": true,
          "type": "text",
        },
@@ -250,7 +249,7 @@ describe('Import kobo form definition', () => {
            "en": "Phone number",
          },
          "name": "phoneNumber",
-         "options": null,
+         "options": [],
          "showInPeopleAffectedTable": true,
          "type": "text",
        },
@@ -261,7 +260,7 @@ describe('Import kobo form definition', () => {
            "nl": "Wat is 2+2?",
          },
          "name": "What_is_2_2_number",
-         "options": null,
+         "options": [],
          "showInPeopleAffectedTable": true,
          "type": "numeric",
        },
@@ -581,8 +580,8 @@ describe('Import kobo form definition', () => {
     });
 
     expect(linkKoboResponse.status).toBe(HttpStatus.NOT_FOUND);
-    expect(linkKoboResponse.body.message).toMatchInlineSnapshot(
-      `"Kobo information not found for asset: asset-id-not-found. This form does not exist or is not (yet) deployed."`,
+    expect(linkKoboResponse.body.message).toMatch(
+      /Kobo information not found for asset: asset-id-not-found, url: .+\/api\/v2\/assets\/asset-id-not-found\/deployment\. This form does not exist or is not \(yet\) deployed\./,
     );
   });
 });

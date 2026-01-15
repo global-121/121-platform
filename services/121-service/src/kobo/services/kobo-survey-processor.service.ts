@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
 import { KOBO_TO_121_TYPE_MAPPING } from '@121-service/src/kobo/consts/kobo-survey-to-121-attribute-type.const';
-import { KoboChoiceDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-choice.dto';
+import { KoboChoiceCleaned } from '@121-service/src/kobo/interfaces/kobo-choice-cleaned.interface';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
-import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { RegistrationPreferredLanguageTranslation } from '@121-service/src/shared/types/registration-preferred-language-translation.type';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
@@ -21,23 +20,16 @@ export class KoboSurveyProcessorService {
   private static readonly KOBO_TYPE_SEPARATOR_INDEX = 0;
 
   public surveyToProgramRegistrationAttributes({
-    koboSurvey,
-    koboChoices,
+    surveyItems,
     languageIsoCodes,
   }: {
-    koboSurvey: KoboSurveyItemCleaned[];
-    koboChoices: KoboChoiceDto[];
+    surveyItems: KoboSurveyItemCleaned[];
     languageIsoCodes: RegistrationPreferredLanguage[];
   }): ProgramRegistrationAttributeDto[] {
-    const optionsPerListName = this.mapKoboChoicesToOptions({
-      koboChoices,
-      languageIsoCodes,
-    });
     const registrationAttributes: ProgramRegistrationAttributeDto[] = [];
-    for (const item of koboSurvey) {
+    for (const item of surveyItems) {
       const attribute = this.surveyItemToProgramRegistrationAttribute({
         koboSurveyItem: item,
-        optionsPerListName,
         languageIsoCodes,
       });
 
@@ -50,14 +42,9 @@ export class KoboSurveyProcessorService {
 
   private surveyItemToProgramRegistrationAttribute({
     koboSurveyItem,
-    optionsPerListName,
     languageIsoCodes,
   }: {
     koboSurveyItem: KoboSurveyItemCleaned;
-    optionsPerListName: Record<
-      string,
-      { option: string; label: RegistrationPreferredLanguageTranslation }[]
-    >;
     languageIsoCodes: RegistrationPreferredLanguage[];
   }): ProgramRegistrationAttributeDto | undefined {
     const primaryKoboType =
@@ -81,11 +68,10 @@ export class KoboSurveyProcessorService {
       name,
     });
 
-    const options =
-      attributeType === RegistrationAttributeTypes.dropdown &&
-      koboSurveyItem.select_from_list_name
-        ? optionsPerListName[koboSurveyItem.select_from_list_name]
-        : undefined;
+    const options = this.transformChoicesToOptions({
+      koboChoices: koboSurveyItem.choices,
+      languageIsoCodes,
+    });
 
     return {
       name,
@@ -126,32 +112,23 @@ export class KoboSurveyProcessorService {
     return label;
   }
 
-  private mapKoboChoicesToOptions({
+  private transformChoicesToOptions({
     koboChoices,
     languageIsoCodes,
   }: {
-    koboChoices: KoboChoiceDto[];
+    koboChoices: KoboChoiceCleaned[];
     languageIsoCodes: RegistrationPreferredLanguage[];
-  }): Record<
-    string,
-    { option: string; label: RegistrationPreferredLanguageTranslation }[]
-  > {
-    const optionsWithListNames = koboChoices.map((choice) => ({
-      ...this.transformChoiceToOption({
-        choice,
-        languageIsoCodes,
-      }),
-      listName: choice.list_name,
-    }));
-
-    return this.groupOptionsByListName(optionsWithListNames);
+  }): { option: string; label: RegistrationPreferredLanguageTranslation }[] {
+    return koboChoices.map((choice) =>
+      this.transformChoiceToOption({ choice, languageIsoCodes }),
+    );
   }
 
   private transformChoiceToOption({
     choice,
     languageIsoCodes,
   }: {
-    choice: KoboChoiceDto;
+    choice: KoboChoiceCleaned;
     languageIsoCodes: RegistrationPreferredLanguage[];
   }): { option: string; label: RegistrationPreferredLanguageTranslation } {
     const label: RegistrationPreferredLanguageTranslation = {};

@@ -4,6 +4,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  ParseBoolPipe,
   ParseIntPipe,
   Post,
   Query,
@@ -34,46 +35,13 @@ export class KoboController {
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
-    summary: 'Get Kobo integration data for a Program',
-    description:
-      'Retrieves the current Kobo form integration details for the specified program, including asset ID, version ID, deployment date, and server URL.',
-  })
-  @ApiParam({
-    name: 'programId',
-    required: true,
-    type: 'integer',
-    description: 'The unique identifier of the program',
-    example: 1,
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Successfully retrieved Kobo integration data for the program',
-    type: KoboResponseDto,
-    example: {
-      assetUid: 'aAbBcCdDeEfF123456789',
-      versionId: 'vAbBcCdDeEfF987654321',
-      dateDeployed: '2024-12-19T10:30:00Z',
-      url: 'https://kobo.example.com',
-      programId: 1,
-    },
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description:
-      'Program does not exist or no Kobo integration found for this program',
-  })
-  @Get(':programId/kobo')
-  public async getKoboData(
-    @Param('programId', ParseIntPipe)
-    programId: number,
-  ): Promise<KoboResponseDto> {
-    return this.koboService.getKoboData({ programId });
-  }
-
-  @AuthenticatedUser({ isAdmin: true })
-  @ApiOperation({
     summary: 'Integrate a Kobo form with a Program',
-    description: `Integrates a deployed Kobo form with the specified program. This will:\n    - Validate the Kobo form against program requirements and FSP configurations\n    - Import form fields as program registration attributes\n    - Add new languages from the form to the program\n    - Create or update the Kobo integration record\n    \n    Use dryRun=true to validate the integration without making changes.`,
+    description: `Integrates a deployed Kobo form with the specified program. This will:
+    - Validate the Kobo form against program requirements and FSP configurations
+    - Import form fields as program registration attributes
+    - Add new languages from the form to the program
+    - Create or update the Kobo integration record
+    Use dryRun=true to validate the integration without making changes.`,
   })
   @ApiParam({
     name: 'programId',
@@ -122,16 +90,16 @@ export class KoboController {
     createKoboAssetData: CreateKoboDto,
     @Param('programId', ParseIntPipe)
     programId: number,
-    @Query('dryRun') dryRun = 'false',
+    //       new ParseBoolPipe({ optional: true }),
+    @Query('dryRun', new ParseBoolPipe({ optional: true })) dryRun: boolean,
     @Res({ passthrough: true }) response: Response,
   ): Promise<KoboIntegrationResultDto> {
-    const dryRunBoolean = dryRun === 'true';
     const result = await this.koboService.integrateKobo({
       programId,
       assetUid: createKoboAssetData.assetUid,
       token: createKoboAssetData.token,
       url: createKoboAssetData.url,
-      dryRun: dryRunBoolean,
+      dryRun,
     });
 
     if (result.dryRun) {
@@ -140,6 +108,46 @@ export class KoboController {
       response.status(HttpStatus.CREATED);
     }
 
-    return result;
+    return {
+      message: result.message,
+    };
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary: 'Get Kobo integration data for a Program',
+    description:
+      'Retrieves the current Kobo form integration details for the specified program, including asset ID, version ID, deployment date, and server URL.',
+  })
+  @ApiParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+    description: 'The unique identifier of the program',
+    example: 1,
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Successfully retrieved Kobo integration data for the program',
+    type: KoboResponseDto,
+    example: {
+      assetUid: 'aAbBcCdDeEfF123456789',
+      versionId: 'vAbBcCdDeEfF987654321',
+      dateDeployed: '2024-12-19T10:30:00Z',
+      url: 'https://kobo.example.com',
+      programId: 1,
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description:
+      'Program does not exist or no Kobo integration found for this program',
+  })
+  @Get(':programId/kobo')
+  public async getKoboData(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<KoboResponseDto> {
+    return this.koboService.getKoboData({ programId });
   }
 }

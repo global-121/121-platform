@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { KoboChoiceDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-choice.dto';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
 import { KoboSurveyProcessorService } from '@121-service/src/kobo/services/kobo-survey-processor.service';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -36,10 +35,9 @@ describe('KoboSurveyProcessorService', () => {
           type: fieldType,
           label: Object.values(labels),
           required: isRequired,
+          choices: [],
         },
       ];
-
-      const koboChoices: KoboChoiceDto[] = [];
 
       const languageIsoCodes = [
         RegistrationPreferredLanguage.en,
@@ -48,8 +46,7 @@ describe('KoboSurveyProcessorService', () => {
 
       // Act
       const result = service.surveyToProgramRegistrationAttributes({
-        koboSurvey: koboSurveyItems,
-        koboChoices,
+        surveyItems: koboSurveyItems,
         languageIsoCodes,
       });
 
@@ -62,7 +59,7 @@ describe('KoboSurveyProcessorService', () => {
         isRequired,
         showInPeopleAffectedTable: true,
         editableInPortal: true,
-        options: undefined,
+        options: [],
       });
     });
 
@@ -82,10 +79,9 @@ describe('KoboSurveyProcessorService', () => {
           type: fieldType,
           label: Object.values(labels),
           required: isRequired,
+          choices: [],
         },
       ];
-
-      const koboChoices: KoboChoiceDto[] = [];
 
       const languageIsoCodes = [
         RegistrationPreferredLanguage.en,
@@ -94,8 +90,7 @@ describe('KoboSurveyProcessorService', () => {
 
       // Act
       const result = service.surveyToProgramRegistrationAttributes({
-        koboSurvey: koboSurveyItems,
-        koboChoices,
+        surveyItems: koboSurveyItems,
         languageIsoCodes,
       });
 
@@ -108,7 +103,7 @@ describe('KoboSurveyProcessorService', () => {
         isRequired,
         showInPeopleAffectedTable: true,
         editableInPortal: true,
-        options: undefined,
+        options: [],
       });
     });
 
@@ -124,10 +119,9 @@ describe('KoboSurveyProcessorService', () => {
           type: fieldType,
           // No label provided
           required: isRequired,
+          choices: [],
         },
       ];
-
-      const koboChoices: KoboChoiceDto[] = [];
 
       const languageIsoCodes = [
         RegistrationPreferredLanguage.en,
@@ -136,8 +130,7 @@ describe('KoboSurveyProcessorService', () => {
 
       // Act
       const result = service.surveyToProgramRegistrationAttributes({
-        koboSurvey: koboSurveyItems,
-        koboChoices,
+        surveyItems: koboSurveyItems,
         languageIsoCodes,
       });
 
@@ -152,7 +145,7 @@ describe('KoboSurveyProcessorService', () => {
         isRequired,
         showInPeopleAffectedTable: true,
         editableInPortal: true,
-        options: undefined,
+        options: [],
       });
     });
 
@@ -177,23 +170,22 @@ describe('KoboSurveyProcessorService', () => {
           type: supportedField.type,
           label: [supportedField.label],
           required: isRequired,
+          choices: [],
         },
         {
           name: unsupportedField.name,
           type: unsupportedField.type,
           label: [unsupportedField.label],
           required: isRequired,
+          choices: [],
         },
       ];
-
-      const koboChoices: KoboChoiceDto[] = [];
 
       const languageIsoCodes = [RegistrationPreferredLanguage.en];
 
       // Act
       const result = service.surveyToProgramRegistrationAttributes({
-        koboSurvey: koboSurveyItems,
-        koboChoices,
+        surveyItems: koboSurveyItems,
         languageIsoCodes,
       });
 
@@ -233,24 +225,18 @@ describe('KoboSurveyProcessorService', () => {
           type: fieldType,
           label: Object.values(labels),
           required: isRequired,
-          select_from_list_name: listName,
-        },
-      ];
-
-      const koboChoices: KoboChoiceDto[] = [
-        {
-          name: choices.male.name,
-          $kuid: choices.male.kuid,
-          label: Object.values(choices.male.labels),
-          list_name: listName,
-          $autovalue: choices.male.name,
-        },
-        {
-          name: choices.female.name,
-          $kuid: choices.female.kuid,
-          label: Object.values(choices.female.labels),
-          list_name: listName,
-          $autovalue: choices.female.name,
+          choices: [
+            {
+              name: choices.male.name,
+              label: Object.values(choices.male.labels),
+              list_name: listName,
+            },
+            {
+              name: choices.female.name,
+              label: Object.values(choices.female.labels),
+              list_name: listName,
+            },
+          ],
         },
       ];
 
@@ -261,8 +247,7 @@ describe('KoboSurveyProcessorService', () => {
 
       // Act
       const result = service.surveyToProgramRegistrationAttributes({
-        koboSurvey: koboSurveyItems,
-        koboChoices,
+        surveyItems: koboSurveyItems,
         languageIsoCodes,
       });
 
@@ -336,39 +321,31 @@ describe('KoboSurveyProcessorService', () => {
           type: genderField.type,
           label: Object.values(genderField.labels),
           required: false,
-          select_from_list_name: genderField.listName,
+          choices: [
+            {
+              name: genderChoices.male.name,
+              label: Object.values(genderChoices.male.labels),
+              list_name: genderField.listName,
+            },
+            {
+              name: genderChoices.female.name,
+              label: Object.values(genderChoices.female.labels),
+              list_name: genderField.listName,
+            },
+          ],
         },
         {
           name: educationField.name,
           type: educationField.type,
           label: Object.values(educationField.labels),
           required: true,
-          select_from_list_name: educationField.listName,
-        },
-      ];
-
-      const koboChoices: KoboChoiceDto[] = [
-        {
-          name: genderChoices.male.name,
-          $kuid: genderChoices.male.kuid,
-          label: Object.values(genderChoices.male.labels),
-          list_name: genderField.listName,
-          $autovalue: genderChoices.male.name,
-        },
-        {
-          name: genderChoices.female.name,
-          $kuid: genderChoices.female.kuid,
-          label: Object.values(genderChoices.female.labels),
-          list_name: genderField.listName,
-          $autovalue: genderChoices.female.name,
-        },
-
-        {
-          name: educationChoices.primary.name,
-          $kuid: educationChoices.primary.kuid,
-          label: Object.values(educationChoices.primary.labels),
-          list_name: educationField.listName,
-          $autovalue: educationChoices.primary.name,
+          choices: [
+            {
+              name: educationChoices.primary.name,
+              label: Object.values(educationChoices.primary.labels),
+              list_name: educationField.listName,
+            },
+          ],
         },
       ];
 
@@ -379,8 +356,7 @@ describe('KoboSurveyProcessorService', () => {
 
       // Act
       const result = service.surveyToProgramRegistrationAttributes({
-        koboSurvey: koboSurveyItems,
-        koboChoices,
+        surveyItems: koboSurveyItems,
         languageIsoCodes,
       });
 

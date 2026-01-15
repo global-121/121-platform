@@ -33,7 +33,6 @@ describe('KoboValidationService', () => {
 
   const baseFormDefinition = {
     name: 'Test Registration Form',
-    choices: [],
     languages: ['English (en)'],
     dateDeployed: new Date('2025-04-30T14:49:53.989148Z'),
     versionId: 'v6Y4ZtQE7MJAinjPeQCUqd',
@@ -42,46 +41,34 @@ describe('KoboValidationService', () => {
   const successFormDefinition: KoboFormDefinition = {
     ...baseFormDefinition,
     survey: [
-      ...baseSurveyItems,
+      ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
       {
         name: FspAttributes.phoneNumber,
         type: 'text',
         label: ['What is your phone number?', 'Wat is je telefoonnummer?'],
         required: true,
+        choices: [],
       },
       {
         name: FspAttributes.fullName,
         type: 'text',
         label: ['What is your full name?', 'Wat is je volledige naam?'],
         required: true,
+        choices: [],
       },
       {
         name: FspAttributes.whatsappPhoneNumber,
         type: 'text',
         label: ['WhatsApp phone number', 'WhatsApp telefoonnummer'],
         required: false,
+        choices: [],
       },
       {
         name: FspAttributes.nationalId,
         type: 'text',
         label: ['National ID number', 'Nationale ID nummer'],
         required: false,
-      },
-    ],
-    choices: [
-      {
-        name: 'yes',
-        $kuid: 'Op4dDqyni',
-        label: ['Yes', 'Ja'],
-        list_name: 'yes_no',
-        $autovalue: 'yes',
-      },
-      {
-        name: 'no',
-        $kuid: 'zExJMwth7',
-        label: ['No', 'Nee'],
-        list_name: 'yes_no',
-        $autovalue: 'no',
+        choices: [],
       },
     ],
     languages: ['English (en)', 'Dutch (nl)'],
@@ -164,7 +151,7 @@ describe('KoboValidationService', () => {
         const formDefinitionWithMissingAttributes: KoboFormDefinition = {
           ...baseFormDefinition,
           survey: [
-            ...baseSurveyItems,
+            ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
             {
               name: FspAttributes.phoneNumber,
               type: 'text',
@@ -173,6 +160,7 @@ describe('KoboValidationService', () => {
                 'Wat is je telefoonnummer?',
               ],
               required: true,
+              choices: [],
             },
             // Missing bankAccountNumber that is required for Commercial Bank Ethiopia
           ],
@@ -219,12 +207,13 @@ describe('KoboValidationService', () => {
         const formDefinitionWithWrongType: KoboFormDefinition = {
           ...baseFormDefinition,
           survey: [
-            ...baseSurveyItems,
+            ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
             {
               name: FspAttributes.nationalId,
               type: 'integer', // Wrong type nationalId is text
               label: ['National ID number', 'Nationale ID nummer'],
               required: false,
+              choices: [],
             },
             {
               name: FspAttributes.phoneNumber,
@@ -234,6 +223,7 @@ describe('KoboValidationService', () => {
                 'Wat is je telefoonnummer?',
               ],
               required: true,
+              choices: [],
             },
           ],
         };
@@ -273,24 +263,27 @@ describe('KoboValidationService', () => {
       const formDefinitionWithAllFullNameAttributes: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems,
+          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
           {
             name: 'firstName',
             type: 'text',
             label: ['First name'],
             required: true,
+            choices: [],
           },
           {
             name: 'lastName',
             type: 'text',
             label: ['Last name'],
             required: true,
+            choices: [],
           },
           {
             name: FspAttributes.phoneNumber,
             type: 'text',
             label: ['Phone number'],
             required: true,
+            choices: [],
           },
         ],
       };
@@ -320,12 +313,13 @@ describe('KoboValidationService', () => {
       const formDefinitionMissingFullNameAttributes: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems,
+          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
           {
             name: 'firstName',
             type: 'text',
             label: ['First name'],
             required: true,
+            choices: [],
           },
           // Missing lastName and middleName from fullnameNamingConvention
           {
@@ -333,6 +327,7 @@ describe('KoboValidationService', () => {
             type: 'text',
             label: ['Phone number'],
             required: true,
+            choices: [],
           },
         ],
       };
@@ -375,12 +370,13 @@ describe('KoboValidationService', () => {
       const formDefinitionWithValidPhoneNumber: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems,
+          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
           {
             name: FspAttributes.phoneNumber,
             type: 'text',
             label: ['Phone number'],
             required: true,
+            choices: [],
           },
         ],
       };
@@ -411,7 +407,7 @@ describe('KoboValidationService', () => {
       const formDefinitionMissingPhoneNumber: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems,
+          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
           // Missing phoneNumber field
         ],
       };
@@ -453,7 +449,7 @@ describe('KoboValidationService', () => {
       const formDefinitionMissingPhoneNumber: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems,
+          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
           // Missing phoneNumber field
         ],
       };
@@ -484,12 +480,13 @@ describe('KoboValidationService', () => {
       const formDefinitionWithWrongPhoneNumberType: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems,
+          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
           {
             name: FspAttributes.phoneNumber,
             type: 'integer', // Wrong type - should be text
             label: ['Phone number'],
             required: true,
+            choices: [],
           },
         ],
       };
@@ -533,7 +530,7 @@ describe('KoboValidationService', () => {
       const formDefinitionWithoutScope: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems,
+          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
           // No scope field present
         ],
       };
@@ -565,12 +562,13 @@ describe('KoboValidationService', () => {
       const formDefinitionWithValidScope: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems,
+          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
           {
             name: GenericRegistrationAttributes.scope,
             type: 'text',
             label: ['Scope'],
             required: true,
+            choices: [],
           },
         ],
       };
@@ -602,7 +600,7 @@ describe('KoboValidationService', () => {
       const formDefinitionMissingScope: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems,
+          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
           // Missing scope field
         ],
       };
@@ -645,12 +643,13 @@ describe('KoboValidationService', () => {
       const formDefinitionWithWrongScopeType: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems,
+          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
           {
             name: GenericRegistrationAttributes.scope,
             type: 'integer', // Wrong type - should be text
             label: ['Scope'],
             required: true,
+            choices: [],
           },
         ],
       };
@@ -695,12 +694,13 @@ describe('KoboValidationService', () => {
       const formDefinitionWithMatrixType: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems,
+          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
           {
             name: 'matrix_question',
             type: 'begin_kobomatrix',
             label: ['Matrix question group'],
             required: false,
+            choices: [],
           },
         ],
       };

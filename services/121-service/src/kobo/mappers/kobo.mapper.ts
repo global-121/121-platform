@@ -1,6 +1,10 @@
+import { KoboAssetDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset.dto';
+import { KoboChoiceDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-choice.dto';
 import { KoboSurveyItemDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-survey-item.dto';
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
+import { KoboChoiceCleaned } from '@121-service/src/kobo/interfaces/kobo-choice-cleaned.interface';
+import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
 
 export class KoboMapper {
@@ -19,19 +23,48 @@ export class KoboMapper {
     return entities.map((entity) => KoboMapper.mapEntityToDto(entity));
   }
 
-  public static surveyItemsDtosToInterfaces({
+  public static koboAssetDtoToKoboFormDefinition({
+    asset,
+  }: {
+    asset: KoboAssetDto;
+  }): KoboFormDefinition {
+    const cleanedChoices = this.choicesDtosToInterfaces({
+      koboChoices: asset.content.choices || [],
+    });
+
+    return {
+      name: asset.name ?? '',
+      survey: this.surveyItemsDtosToInterfaces({
+        koboSurveyItems: asset.content.survey || [],
+        cleanedChoices,
+      }),
+      languages: asset.summary.languages || [],
+      dateDeployed: asset.date_deployed,
+      versionId: asset.version_id,
+    };
+  }
+
+  private static surveyItemsDtosToInterfaces({
     koboSurveyItems,
+    cleanedChoices,
   }: {
     koboSurveyItems: KoboSurveyItemDto[];
+    cleanedChoices: KoboChoiceCleaned[];
   }): KoboSurveyItemCleaned[] {
     return koboSurveyItems.map((item) => {
       const parsedName = this.parseAttributeNameFromKoboSurveyItem({ item });
+      const itemChoices = item.select_from_list_name
+        ? cleanedChoices.filter(
+            (choice) => choice.list_name === item.select_from_list_name,
+          )
+        : [];
+
       return {
         name: parsedName,
         type: item.type,
         label: item.label,
         required: item.required,
-        select_from_list_name: item.select_from_list_name,
+        choices: itemChoices,
       };
     });
   }
@@ -41,7 +74,7 @@ export class KoboMapper {
   }: {
     item: KoboSurveyItemDto;
   }): string {
-    const name = item.name || item.$autoname || item.$kuid;
+    const name = this.getNameSurveyItem({ koboSurveyItem: item });
 
     return this.parseAttributeNameFromKoboSurveyItemName({
       name,
@@ -58,5 +91,38 @@ export class KoboMapper {
       return parts[parts.length - 1];
     }
     return name;
+  }
+
+  private static choicesDtosToInterfaces({
+    koboChoices,
+  }: {
+    koboChoices: KoboChoiceDto[];
+  }): KoboChoiceCleaned[] {
+    return koboChoices.map((choice) => {
+      const parsedName = this.getNameChoiceItem({ koboChoice: choice });
+      return {
+        name: parsedName,
+        label: choice.label,
+        list_name: choice.list_name,
+      };
+    });
+  }
+
+  private static getNameSurveyItem({
+    koboSurveyItem: koboSurveyItem,
+  }: {
+    koboSurveyItem: KoboSurveyItemDto;
+  }): string {
+    return (
+      koboSurveyItem.name || koboSurveyItem.$autoname || koboSurveyItem.$kuid
+    );
+  }
+
+  private static getNameChoiceItem({
+    koboChoice,
+  }: {
+    koboChoice: KoboChoiceDto;
+  }): string {
+    return koboChoice.name || koboChoice.$autovalue || koboChoice.$kuid;
   }
 }

@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
+import { joinURL } from 'ufo';
 
+import { KoboAssetDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset.dto';
 import { KoboAssetResponseDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset-response.dto';
-import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
-import { KoboMapper } from '@121-service/src/kobo/mappers/kobo.mapper';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
@@ -18,8 +18,10 @@ export class KoboApiService {
     assetUid: string;
     token: string;
     baseUrl: string;
-  }): Promise<KoboFormDefinition> {
-    const apiUrl = `${baseUrl}/api/v2/assets/${assetUid}/deployment/?format=json`;
+  }): Promise<KoboAssetDto> {
+    // Use joinURL instead of new URL as the baseUlr may have a path component
+    const apiUrl = joinURL(baseUrl, 'api/v2/assets', assetUid, 'deployment');
+
     const headers = new Headers();
     headers.append('Authorization', `Token ${token}`);
 
@@ -33,14 +35,14 @@ export class KoboApiService {
       response.status === HttpStatus.FORBIDDEN
     ) {
       throw new HttpException(
-        `Unauthorized access to Kobo API for asset: ${assetUid}. Please check if the provided token is valid.`,
+        `Unauthorized access to Kobo API for asset: ${assetUid}, url: ${apiUrl}. Please check if the provided token is valid.`,
         HttpStatus.UNAUTHORIZED,
       );
     }
 
     if (response.status === HttpStatus.NOT_FOUND) {
       throw new HttpException(
-        `Kobo information not found for asset: ${assetUid}. This form does not exist or is not (yet) deployed.`,
+        `Kobo information not found for asset: ${assetUid}, url: ${apiUrl}. This form does not exist or is not (yet) deployed.`,
         HttpStatus.NOT_FOUND,
       );
     }
@@ -48,7 +50,7 @@ export class KoboApiService {
     // Unexpected error
     if (response.status !== HttpStatus.OK) {
       throw new HttpException(
-        `Failed to fetch Kobo information: ${responseBody.detail || 'Unknown error'}`,
+        `Failed to fetch Kobo information from url: ${apiUrl}: ${responseBody.detail || 'Unknown error'}`,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -58,16 +60,6 @@ export class KoboApiService {
       throw new Error('Kobo information is missing version_id or asset');
     }
 
-    const surveyItemsCleaned = KoboMapper.surveyItemsDtosToInterfaces({
-      koboSurveyItems: responseBody.asset.content.survey || [],
-    });
-    return {
-      name: responseBody.asset.name ?? '',
-      survey: surveyItemsCleaned,
-      choices: responseBody.asset.content.choices || [],
-      languages: responseBody.asset.summary.languages || [],
-      dateDeployed: responseBody.asset.date_deployed,
-      versionId: responseBody.asset.version_id,
-    };
+    return responseBody.asset;
   }
 }

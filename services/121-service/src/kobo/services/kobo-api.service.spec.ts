@@ -2,12 +2,8 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { KoboAssetResponseDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset-response.dto';
-import { KoboMapper } from '@121-service/src/kobo/mappers/kobo.mapper';
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-
-// Mock KoboMapper
-jest.mock('@121-service/src/kobo/mappers/kobo.mapper');
 
 describe('KoboApiService', () => {
   let service: KoboApiService;
@@ -53,15 +49,6 @@ describe('KoboApiService', () => {
     },
   };
 
-  const mockCleanedSurveyItems = [
-    {
-      name: 'fullName',
-      type: 'text',
-      label: ['What is your full name?'],
-      required: true,
-    },
-  ];
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -80,15 +67,12 @@ describe('KoboApiService', () => {
 
     // Reset mocks
     jest.clearAllMocks();
-    (KoboMapper.surveyItemsDtosToInterfaces as jest.Mock).mockReturnValue(
-      mockCleanedSurveyItems,
-    );
   });
 
   describe('getDeployedAssetOrThrow', () => {
     // Not FOUND scenario is already covered in integrations tests
 
-    it('should return form definition for successful request (happy flow)', async () => {
+    it('should return asset for successful request (happy flow)', async () => {
       // Arrange
       httpService.get.mockResolvedValue({
         status: HttpStatus.OK,
@@ -103,14 +87,7 @@ describe('KoboApiService', () => {
       });
 
       // Assert
-      expect(result).toEqual({
-        name: 'Test Registration Form',
-        survey: mockCleanedSurveyItems,
-        choices: mockedChoices,
-        languages: ['English (en)'],
-        dateDeployed: new Date('2025-04-30T14:49:53.989148Z'),
-        versionId: 'v6Y4ZtQE7MJAinjPeQCUqd',
-      });
+      expect(result).toEqual(mockSuccessResponse.asset);
     });
 
     it('should throw HttpException with UNAUTHORIZED status', async () => {
@@ -138,7 +115,7 @@ describe('KoboApiService', () => {
       expect(error).toBeInstanceOf(HttpException);
       expect(error.getStatus()).toBe(HttpStatus.UNAUTHORIZED);
       expect(error.message).toMatchInlineSnapshot(
-        `"Unauthorized access to Kobo API for asset: test-asset-id. Please check if the provided token is valid."`,
+        `"Unauthorized access to Kobo API for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment. Please check if the provided token is valid."`,
       );
     });
 
@@ -168,7 +145,7 @@ describe('KoboApiService', () => {
       expect(error).toBeInstanceOf(HttpException);
       expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(
-        `"Failed to fetch Kobo information: Server error occurred"`,
+        `"Failed to fetch Kobo information from url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment: Server error occurred"`,
       );
     });
 
@@ -259,7 +236,7 @@ describe('KoboApiService', () => {
       expect(error).toBeInstanceOf(HttpException);
       expect(error.getStatus()).toBe(HttpStatus.UNAUTHORIZED);
       expect(error.message).toMatchInlineSnapshot(
-        `"Unauthorized access to Kobo API for asset: test-asset-id. Please check if the provided token is valid."`,
+        `"Unauthorized access to Kobo API for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment. Please check if the provided token is valid."`,
       );
     });
 
@@ -286,7 +263,7 @@ describe('KoboApiService', () => {
       expect(error).toBeInstanceOf(HttpException);
       expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(
-        `"Failed to fetch Kobo information: Unknown error"`,
+        `"Failed to fetch Kobo information from url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment: Unknown error"`,
       );
     });
 
@@ -313,6 +290,7 @@ describe('KoboApiService', () => {
       });
 
       // Assert
+      expect(result).toEqual(responseWithEmptyName.asset);
       expect(result.name).toBe('');
     });
   });
