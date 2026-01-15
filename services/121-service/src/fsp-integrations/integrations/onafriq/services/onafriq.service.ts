@@ -5,10 +5,8 @@ import { OnafriqApiResponseStatusType } from '@121-service/src/fsp-integrations/
 import { OnafriqError } from '@121-service/src/fsp-integrations/integrations/onafriq/errors/onafriq.error';
 import { CreateTransactionParams } from '@121-service/src/fsp-integrations/integrations/onafriq/interfaces/create-transaction-params.interface';
 import { OnafriqApiService } from '@121-service/src/fsp-integrations/integrations/onafriq/services/onafriq.api.service';
-import {
-  FspConfigurationProperties,
-  Fsps,
-} from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 
 @Injectable()
