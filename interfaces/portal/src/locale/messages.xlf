@@ -2051,9 +2051,6 @@
       <trans-unit id="7960663124844501943" datatype="html">
         <source>Error - Link visa card</source>
       </trans-unit>
-      <trans-unit id="7561977067156405830" datatype="html">
-        <source>Link Visa card to registration</source>
-      </trans-unit>
       <trans-unit id="2560790823235400386" datatype="html">
         <source>No debit cards found</source>
       </trans-unit>
