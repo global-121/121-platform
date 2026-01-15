@@ -110,21 +110,29 @@ export class MessageSeedFactory extends BaseSeedFactory<TwilioMessageEntity> {
   public async updateLatestMessages(): Promise<void> {
     console.log('Updating latest messages table');
 
+    // Using a transaction because we've had issues where the mock-service was
+    // still processing operations from a previous test run, causing duplicate
+    // key violations in this method.
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
     // Clear existing latest messages
-    await this.dataSource.query(
-      'TRUNCATE TABLE "121-service"."latest_message"',
-    );
+    await queryRunner.query('TRUNCATE TABLE "121-service"."latest_message"');
 
     // TODO: migrate to typed approach
-    await this.dataSource.query(`
-      INSERT INTO "121-service"."latest_message" ("registrationId", "messageId")
-      SELECT DISTINCT ON ("registrationId")
-        "registrationId",
-        "id" as "messageId"
-      FROM "121-service"."twilio_message"
-      WHERE "registrationId" IS NOT NULL
-      ORDER BY "registrationId", "created" DESC
-    `);
+    await queryRunner.query(`
+        INSERT INTO "121-service"."latest_message" ("registrationId", "messageId")
+        SELECT DISTINCT ON ("registrationId")
+          "registrationId",
+          "id" as "messageId"
+        FROM "121-service"."twilio_message"
+        WHERE "registrationId" IS NOT NULL
+        ORDER BY "registrationId", "created" DESC
+      `);
+
+    await queryRunner.commitTransaction();
+    await queryRunner.release();
 
     console.log('Latest messages table updated successfully');
   }
