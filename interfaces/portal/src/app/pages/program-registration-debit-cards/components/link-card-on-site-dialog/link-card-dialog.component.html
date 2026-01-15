@@ -5,13 +5,14 @@
   [style]="{ maxWidth: '45rem' }"
   (onHide)="resetData()"
 >
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-2">
+      <i [class]="headerIcon()"></i>
+      <h3>{{ dialogTitle() }}</h3>
+    </div>
+  </ng-template>
+
   @if (!isError()) {
-    <ng-template pTemplate="header">
-      <div class="flex items-center gap-2">
-        <i class="pi pi-link"></i>
-        <h3>{{ dialogTitle() }}</h3>
-      </div>
-    </ng-template>
     <div class="flex flex-col gap-2">
       @if (currentTokenCode()) {
         <p i18n>
@@ -62,12 +63,6 @@
       </div>
     </div>
   } @else {
-    <ng-template pTemplate="header">
-      <div class="flex items-center gap-2">
-        <i class="pi pi-exclamation-triangle"></i>
-        <h3 i18n>Error - Link visa card</h3>
-      </div>
-    </ng-template>
     <div class="flex flex-col gap-4">
       <p>
         {{ errorMessage() }}

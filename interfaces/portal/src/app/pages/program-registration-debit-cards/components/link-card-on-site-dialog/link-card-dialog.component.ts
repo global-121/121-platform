@@ -50,7 +50,23 @@ export class LinkCardDialogComponent {
 
   readonly invalidTokenError = $localize`Fill up all 19 digits to link card`;
 
+  readonly headerIcon = computed(() => {
+    if (this.isError()) {
+      return 'pi pi-exclamation-triangle';
+    }
+
+    if (this.currentTokenCode()) {
+      return 'pi pi-refresh';
+    }
+
+    return 'pi pi-link';
+  });
+
   readonly dialogTitle = computed(() => {
+    if (this.isError()) {
+      return $localize`Error - Link visa card`;
+    }
+
     if (this.currentTokenCode()) {
       return $localize`Replace visa card`;
     }
