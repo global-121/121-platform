@@ -6,7 +6,6 @@ import { MessageActivity } from '@121-service/src/activities/interfaces/message-
 import { NoteActivity } from '@121-service/src/activities/interfaces/note-activity.interface';
 import { StatusChangeActivity } from '@121-service/src/activities/interfaces/status-change-activity.interface';
 import { TransactionActivity } from '@121-service/src/activities/interfaces/transaction-activity.interface';
-import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { DuplicateReponseDto } from '@121-service/src/registration/dto/duplicate-response.dto';
 import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto/find-all-registrations-result.dto';
@@ -38,8 +37,6 @@ export type Activity =
 export type ActitivitiesResponse = {
   data: Activity[];
 } & Dto<Omit<ActivitiesDto, 'data'>>;
-
-export type WalletWithCards = Dto<IntersolveVisaWalletDto>;
 
 export type SendMessageData =
   | { customMessage: string }

@@ -26,6 +26,7 @@ import {
 } from '~/components/data-list/data-list.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
+import { IntersolveVisaApiService } from '~/domains/fsp-account-management/intersolve-visa.api.service';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import {
   FspConfigurationProperty,
@@ -62,6 +63,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
   readonly registrationId = input.required<string>();
 
   private readonly registrationApiService = inject(RegistrationApiService);
+  private readonly intersolveVisaApiService = inject(IntersolveVisaApiService);
   private readonly toastService = inject(ToastService);
   private readonly programApiService = inject(ProgramApiService);
   private readonly fspConfigurationApiService = inject(
@@ -80,7 +82,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
   readonly referenceId = computed(() => this.registration.data()?.referenceId);
 
   walletWithCards = injectQuery(
-    this.registrationApiService.getWalletWithCardsByReferenceId(
+    this.intersolveVisaApiService.getWalletWithCardsByReferenceId(
       this.programId,
       this.referenceId,
     ),
@@ -258,7 +260,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
         throw new Error('ReferenceId or tokenCode is missing');
       }
 
-      return this.registrationApiService.changeCardPauseStatus({
+      return this.intersolveVisaApiService.changeCardPauseStatus({
         programId: this.programId,
         referenceId,
         tokenCode,
@@ -281,7 +283,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
         throw new Error('ReferenceId is missing');
       }
 
-      return this.registrationApiService.replaceCardByMail({
+      return this.intersolveVisaApiService.replaceCardByMail({
         programId: this.programId,
         referenceId,
       });
