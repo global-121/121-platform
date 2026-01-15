@@ -511,7 +511,6 @@ describe('Import kobo form definition', () => {
     // Assert
     const updatedKobo = await getKobo({ programId, accessToken });
     const koboVersionIdAfterSecondImport = updatedKobo.body.versionId;
-    expect(koboVersionIdAfterSecondImport).toBeDefined();
     expect(koboVersionIdAfterSecondImport).toEqual(
       'asset-id-happy-flow-with-changes', // version id from the second kobo definition
     );

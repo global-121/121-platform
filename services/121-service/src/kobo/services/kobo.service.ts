@@ -7,9 +7,9 @@ import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
 import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
 import { KoboMapper } from '@121-service/src/kobo/mappers/kobo.mapper';
+import { KoboLanguageMapper } from '@121-service/src/kobo/mappers/kobo-language.mapper';
 import { KoboValidationService } from '@121-service/src/kobo/services/kobo.validation.service';
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
-import { KoboLanguageExtracterService } from '@121-service/src/kobo/services/kobo-language-extracter.service';
 import { KoboSurveyProcessorService } from '@121-service/src/kobo/services/kobo-survey-processor.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramService } from '@121-service/src/programs/programs.service';
@@ -26,7 +26,6 @@ export class KoboService {
     private readonly koboValidationService: KoboValidationService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly koboSurveyProcessorService: KoboSurveyProcessorService,
-    private readonly koboLanguageExtracterService: KoboLanguageExtracterService,
     private readonly programService: ProgramService,
     private readonly programRepository: ProgramRepository,
   ) {}
@@ -101,10 +100,9 @@ export class KoboService {
       token,
       url,
     });
-    const languageIsoCodes =
-      this.koboLanguageExtracterService.getLanguageIsoCodes({
-        koboLanguages: formDefinition.languages,
-      });
+    const languageIsoCodes = KoboLanguageMapper.getLanguageIsoCodes({
+      koboLanguages: formDefinition.languages,
+    });
 
     await this.upsertProgramAttributesFromKoboFormDefinition({
       koboSurveyItems: formDefinition.survey,

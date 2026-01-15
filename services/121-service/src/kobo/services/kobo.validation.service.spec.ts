@@ -735,4 +735,116 @@ describe('KoboValidationService', () => {
       `);
     });
   });
+
+  describe('kobo language codes validation', () => {
+    it('should pass validation when all languages have valid ISO codes', async () => {
+      // Arrange
+      const programId = 1;
+      const mockFspConfigs = [];
+
+      const formDefinitionWithValidLanguages: KoboFormDefinition = {
+        ...baseFormDefinition,
+        survey: [...baseSurveyItems.map((item) => ({ ...item, choices: [] }))],
+        languages: ['English (en)', 'Dutch (nl)', 'French (fr)'],
+      };
+
+      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
+        fullnameNamingConvention: [],
+        allowEmptyPhoneNumber: true,
+        enableScope: false,
+      });
+      (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
+        mockFspConfigs,
+      );
+
+      // Act & Assert
+      await expect(
+        service.validateKoboFormDefinition({
+          formDefinition: formDefinitionWithValidLanguages,
+          programId,
+        }),
+      ).resolves.not.toThrow();
+    });
+
+    it('should throw HttpException when language has invalid ISO code format', async () => {
+      // Arrange
+      const programId = 1;
+      const mockFspConfigs = [];
+
+      const formDefinitionWithInvalidLanguage: KoboFormDefinition = {
+        ...baseFormDefinition,
+        survey: [...baseSurveyItems.map((item) => ({ ...item, choices: [] }))],
+        languages: ['English (en)', 'Invalid Language', 'Another Invalid'],
+      };
+
+      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
+        fullnameNamingConvention: [],
+        allowEmptyPhoneNumber: true,
+        enableScope: false,
+      });
+      (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
+        mockFspConfigs,
+      );
+
+      // Act
+      let error: HttpException | any;
+      try {
+        await service.validateKoboFormDefinition({
+          formDefinition: formDefinitionWithInvalidLanguage,
+          programId,
+        });
+      } catch (e) {
+        error = e;
+      }
+
+      // Assert
+      expect(error).toBeInstanceOf(HttpException);
+      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error.message).toContain('Invalid Kobo language code');
+      expect(error.message).toContain('Invalid Language');
+      expect(error.message).toContain('Another Invalid');
+      expect(error.message).toContain(
+        'https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes',
+      );
+    });
+
+    it('should throw HttpException when language code is not in our system', async () => {
+      // Arrange
+      const programId = 1;
+      const mockFspConfigs = [];
+
+      const formDefinitionWithUnsupportedLanguage: KoboFormDefinition = {
+        ...baseFormDefinition,
+        survey: [...baseSurveyItems.map((item) => ({ ...item, choices: [] }))],
+        // 'xx' is a valid ISO 639 format but not in RegistrationPreferredLanguage enum
+        languages: ['English (en)', 'Unknown (xx)'],
+      };
+
+      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
+        fullnameNamingConvention: [],
+        allowEmptyPhoneNumber: true,
+        enableScope: false,
+      });
+      (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
+        mockFspConfigs,
+      );
+
+      // Act
+      let error: HttpException | any;
+      try {
+        await service.validateKoboFormDefinition({
+          formDefinition: formDefinitionWithUnsupportedLanguage,
+          programId,
+        });
+      } catch (e) {
+        error = e;
+      }
+
+      // Assert
+      expect(error).toBeInstanceOf(HttpException);
+      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error.message).toContain('Invalid Kobo language code');
+      expect(error.message).toContain('Unknown (xx)');
+    });
+  });
 });

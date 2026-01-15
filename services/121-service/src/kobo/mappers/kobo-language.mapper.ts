@@ -1,10 +1,7 @@
-import { Injectable } from '@nestjs/common';
-
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
-@Injectable()
-export class KoboLanguageExtracterService {
-  public getLanguageIsoCodes({
+export class KoboLanguageMapper {
+  public static getLanguageIsoCodes({
     koboLanguages,
   }: {
     koboLanguages: string[];
@@ -19,7 +16,7 @@ export class KoboLanguageExtracterService {
     return isoCodes;
   }
 
-  private extractIsoCode({
+  public static extractIsoCode({
     koboSurveyLanguage,
   }: {
     koboSurveyLanguage: string;

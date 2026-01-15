@@ -7,6 +7,7 @@ import { getFspAttributeNames } from '@121-service/src/fsp-management/fsp-settin
 import { KOBO_TO_121_TYPE_MAPPING } from '@121-service/src/kobo/consts/kobo-survey-to-121-attribute-type.const';
 import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
+import { KoboLanguageMapper } from '@121-service/src/kobo/mappers/kobo-language.mapper';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import {
@@ -76,6 +77,11 @@ export class KoboValidationService {
     if (matrixTypeError) {
       errorMessages.push(matrixTypeError);
     }
+
+    const koboLanguageCodeErrors = this.validateKoboLanguageCodes({
+      koboSurveyLanguages: formDefinition.languages,
+    });
+    errorMessages.push(...koboLanguageCodeErrors);
 
     this.throwErrorsIfAny(errorMessages);
   }
@@ -317,5 +323,24 @@ export class KoboValidationService {
         matrixItem.label,
       )}`;
     }
+  }
+
+  private validateKoboLanguageCodes({
+    koboSurveyLanguages,
+  }: {
+    koboSurveyLanguages: string[];
+  }): string[] {
+    const errorMessages: string[] = [];
+    for (const language of koboSurveyLanguages) {
+      const isoLanguageCode = KoboLanguageMapper.extractIsoCode({
+        koboSurveyLanguage: language,
+      });
+      if (!isoLanguageCode) {
+        errorMessages.push(
+          `Invalid Kobo language code: ${language}. Please use https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes`,
+        );
+      }
+    }
+    return errorMessages;
   }
 }
