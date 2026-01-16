@@ -37,7 +37,9 @@
       "es2024",
       "ESNext.Array",
       "ESNext.Collection",
-      "ESNext.Iterator"
+      "ESNext.Error",
+      "ESNext.Iterator",
+      "ESNext.Promise"
     ],
     "types": ["@angular/localize", "jasmine"],
     "forceConsistentCasingInFileNames": true,
