@@ -13,15 +13,18 @@ import { test } from '@121-e2e/portal/fixtures/fixture';
 import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
+let accessToken: string;
+
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-  await resetDBAndSeedRegistrations({
+  const result = await resetDBAndSeedRegistrations({
     seedScript: SeedScript.cbeProgram,
     registrations: registrationsCbe,
     programId: programIdCbe,
   });
+  accessToken = result.accessToken;
 });
 
-test('Do successful payment for Cbe fsp', async ({ page, accessToken }) => {
+test('Do successful payment for Cbe fsp', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const programTitle = CbeProgram.titlePortal.en;
