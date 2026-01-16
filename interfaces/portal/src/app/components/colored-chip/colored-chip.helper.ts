@@ -4,6 +4,7 @@ import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-st
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { ChipVariant } from '~/components/colored-chip/colored-chip.component';
+import { VISA_CARD_STATUS_LABELS } from '~/domains/fsp-account-management/intersolve-visa.helper';
 import {
   convertTwilioMessageStatusToMessageStatus,
   MESSAGE_STATUS_LABELS,
@@ -12,7 +13,6 @@ import {
 import {
   DUPLICATE_STATUS_LABELS,
   REGISTRATION_STATUS_LABELS,
-  VISA_CARD_STATUS_LABELS,
 } from '~/domains/registration/registration.helper';
 import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
 

@@ -16,7 +16,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputMask } from 'primeng/inputmask';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
-import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { IntersolveVisaApiService } from '~/domains/fsp-account-management/intersolve-visa.api.service';
 import { LinkCardDialogStates } from '~/pages/program-registration-debit-cards/components/link-card-on-site-dialog/enums/link-card-dialog-states.enum';
 import { ToastService } from '~/services/toast.service';
 import { isErrorWithStatusCode } from '~/utils/is-error-with-status-code.helper';
@@ -29,7 +29,7 @@ import { isErrorWithStatusCode } from '~/utils/is-error-with-status-code.helper'
 })
 export class LinkCardDialogComponent {
   private readonly toastService = inject(ToastService);
-  private readonly registrationApiService = inject(RegistrationApiService);
+  private readonly intersolveVisaApiService = inject(IntersolveVisaApiService);
   readonly currentTokenCode = input<string>();
   readonly previousTokenCodes = input.required<string[]>();
   readonly programId = input.required<Signal<number | string>>();
@@ -164,13 +164,13 @@ export class LinkCardDialogComponent {
 
     try {
       if (this.currentTokenCode()) {
-        await this.registrationApiService.replaceCardOnSite({
+        await this.intersolveVisaApiService.replaceCardOnSite({
           programId: this.programId(),
           referenceId: this.referenceId(),
           tokenCode: tokenCodeWithoutDashes,
         });
       } else {
-        await this.registrationApiService.linkCardToRegistration({
+        await this.intersolveVisaApiService.linkCardToRegistration({
           programId: this.programId(),
           referenceId: this.referenceId(),
           tokenCode: tokenCodeWithoutDashes,
