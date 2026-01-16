@@ -23,7 +23,9 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationDebitCardPage from '@121-e2e/portal/pages/RegistrationDebitCardPage';
 
 const visaCardNumber = '1111222233334444555';
+const visaCardNumberDashed = '1111-2222-3333-4444-555';
 const newVisaCardNumber = '5555444433332222111';
+const newVisaCardNumberDashed = '5555-4444-3333-2222-111';
 const nonExistingVisaCardNumber = '3333444455556666777';
 let registrationId: number;
 let accessToken: string;
@@ -97,7 +99,7 @@ test('User can link a debit card to a registration', async ({ page }) => {
 
     const currentDebitCardDataList =
       await debitCardPage.getCurrentDebitCardDataList();
-    expect(currentDebitCardDataList['Card number']).toBe(visaCardNumber);
+    expect(currentDebitCardDataList['Card number']).toBe(visaCardNumberDashed);
   });
 });
 
@@ -137,7 +139,9 @@ test('User can successfully replace a debit card and gets error if he tries to l
       await debitCardPage.getCurrentDebitCardDataList();
     const substituteDebitCardDataList =
       await debitCardPage.getSubstituteDebitCardDataList();
-    expect(currentDebitCardDataList['Card number']).toBe(newVisaCardNumber);
+    expect(currentDebitCardDataList['Card number']).toBe(
+      newVisaCardNumberDashed,
+    );
     expect(substituteDebitCardDataList['Card number']).toBe(visaCardNumber);
   });
 });
