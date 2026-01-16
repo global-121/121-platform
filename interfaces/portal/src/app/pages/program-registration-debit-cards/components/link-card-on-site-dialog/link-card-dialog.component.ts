@@ -45,7 +45,7 @@ export class LinkCardDialogComponent {
 
   readonly linkCardDialogStates = LinkCardDialogStates;
 
-  readonly tokenCodeFullyFilled: Signal<boolean> = computed(
+  readonly tokenCodeFullyFilled = computed(
     () => !this.tokenCode().includes('_') && this.tokenCode() !== '',
   );
 
@@ -148,7 +148,7 @@ export class LinkCardDialogComponent {
       this.dialogVisible.set(false);
       this.toastService.showToast({
         severity: 'success',
-        detail: $localize`Link Visa card to registration`,
+        detail: $localize`Visa card linked successfully.`,
       });
     },
     onError: (error) => {

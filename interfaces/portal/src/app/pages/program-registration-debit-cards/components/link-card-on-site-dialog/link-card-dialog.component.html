@@ -87,6 +87,7 @@
           (click)="validateAndLinkCard()"
           rounded
           [label]="confirmationButtonLabel()"
+          [loading]="linkCardMutation.isPending()"
         ></p-button>
       } @else {
         <p-button
