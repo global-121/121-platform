@@ -19,12 +19,20 @@ import { InputMask } from 'primeng/inputmask';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { IntersolveVisaApiService } from '~/domains/fsp-account-management/intersolve-visa.api.service';
 import { LinkCardDialogStates } from '~/pages/program-registration-debit-cards/components/link-card-on-site-dialog/enums/link-card-dialog-states.enum';
+import { CreditCardNumberPipe } from '~/pipes/credit-card-number.pipe';
 import { ToastService } from '~/services/toast.service';
 import { isErrorWithStatusCode } from '~/utils/is-error-with-status-code.helper';
 
 @Component({
   selector: 'app-link-card-dialog',
-  imports: [InputMask, Button, FormsModule, DialogModule, FormErrorComponent],
+  imports: [
+    InputMask,
+    Button,
+    FormsModule,
+    DialogModule,
+    FormErrorComponent,
+    CreditCardNumberPipe,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './link-card-dialog.component.html',
 })
