@@ -3,6 +3,7 @@ import * as request from 'supertest';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { getTransactionsByPaymentIdPaginated } from '@121-service/test/helpers/program.helper';
+import { MINIMAL_PNG_BUFFER } from '@121-service/test/helpers/test-fsp-constants';
 import { getServer } from '@121-service/test/helpers/utility.helper';
 
 //////////////////////
@@ -53,6 +54,65 @@ export async function getVoucherBalance(
     .get(`/programs/${programId}/fsps/intersolve-voucher/voucher/balance`)
     .set('Cookie', [accessToken])
     .query({ paymentId, referenceId });
+}
+
+export function getPaperVoucherImage(
+  programId: number,
+  paymentId: number,
+  referenceId: string,
+  accessToken: string,
+) {
+  return getServer()
+    .get(`/programs/${programId}/fsps/intersolve-voucher/voucher/image-paper`)
+    .set('Cookie', [accessToken])
+    .query({ paymentId, referenceId });
+}
+export function getIntersolveInstructionsImage(
+  programId: number,
+  accessToken?: string,
+) {
+  const request = getServer().get(
+    `/programs/${programId}/fsps/intersolve-voucher/instructions`,
+  );
+
+  if (accessToken) {
+    request.set('Cookie', [accessToken]);
+  }
+
+  return request;
+}
+export function getWhatsappVoucherImage(
+  programId: number,
+  paymentId: number,
+  referenceId: string,
+  accessToken: string,
+) {
+  return getServer()
+    .get(
+      `/programs/${programId}/fsps/intersolve-voucher/voucher/image-whatsapp`,
+    )
+    .set('Cookie', [accessToken])
+    .query({ paymentId, referenceId });
+}
+
+export function postIntersolveInstructionsImage(
+  programId: number,
+  accessToken: string,
+  imageBuffer?: Buffer,
+  filename = 'test-image.png',
+) {
+  const request = getServer()
+    .post(`/programs/${programId}/fsps/intersolve-voucher/instructions`)
+    .set('Cookie', [accessToken]);
+
+  if (imageBuffer) {
+    request.attach('image', imageBuffer, filename);
+  } else {
+    // Use minimal PNG buffer for testing
+    request.attach('image', MINIMAL_PNG_BUFFER, filename);
+  }
+
+  return request;
 }
 
 export async function triggerUnusedVouchersCache(
