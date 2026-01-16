@@ -21,24 +21,19 @@ type Fixtures = {
     seedScript: SeedScript;
     registrations: TestRegistration[];
     programId: number;
-  }) => Promise<void>;
-  accessToken: string;
+  }) => Promise<{ accessToken: string }>;
 };
 
 export const test = base.extend<Fixtures>({
-  accessToken: async ({}, use) => {
-    const token = await getAccessToken();
-    await use(token);
-  },
-
-  resetDBAndSeedRegistrations: async ({ page, accessToken }, use) => {
+  resetDBAndSeedRegistrations: async ({ page }, use) => {
     const resetAndSeed = async (params: {
       seedScript: SeedScript;
       registrations: TestRegistration[];
       programId: number;
-    }) => {
+    }): Promise<{ accessToken: string }> => {
       // Logic to reset the database and seed registrations
       await resetDB(params.seedScript, __filename);
+      const accessToken = await getAccessToken();
       await seedIncludedRegistrations(
         params.registrations,
         params.programId,
@@ -49,6 +44,8 @@ export const test = base.extend<Fixtures>({
       const loginPage = new LoginPage(page);
       await page.goto('/');
       await loginPage.login();
+
+      return { accessToken };
     };
 
     await use(resetAndSeed);
