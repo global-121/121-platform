@@ -230,9 +230,11 @@ export class RegistrationsBulkService {
     programId: number,
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
   ): Promise<BulkActionResultDto> {
+    // Set limit to 1 to optimize query for getting the meta data only
+    const paginateQueryLimit1 = { ...paginateQuery, limit: 1 };
     const selectedRegistrations =
       await this.registrationsPaginationService.getPaginate({
-        query: paginateQuery,
+        query: paginateQueryLimit1,
         programId,
         hasPersonalReadPermission: true,
         noLimit: false,
@@ -240,7 +242,7 @@ export class RegistrationsBulkService {
 
     const applicableRegistrations =
       await this.registrationsPaginationService.getPaginate({
-        query: paginateQuery,
+        query: paginateQueryLimit1,
         programId,
         hasPersonalReadPermission: true,
         noLimit: false,
@@ -554,10 +556,11 @@ export class RegistrationsBulkService {
     reason: string;
   }): Promise<void> {
     const chunkSize = 10000;
-    paginateQuery.limit = chunkSize;
+    const paginateQueryWithChunkSize = { ...paginateQuery, limit: chunkSize };
+
     const registrationForDeleteMeta =
       await this.registrationsPaginationService.getPaginate({
-        query: paginateQuery,
+        query: paginateQueryWithChunkSize,
         programId,
         hasPersonalReadPermission: true,
         noLimit: false,
@@ -570,7 +573,7 @@ export class RegistrationsBulkService {
     for (let i = 0; i < (registrationForDeleteMeta.meta.totalPages ?? 0); i++) {
       const registrationPaginateObject =
         await this.registrationsPaginationService.getPaginate({
-          query: paginateQuery,
+          query: paginateQueryWithChunkSize,
           programId,
           hasPersonalReadPermission: true,
           noLimit: false,

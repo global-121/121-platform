@@ -332,11 +332,11 @@ export class PaymentsReportingService {
     paginateQuery: PaginateQuery;
   }): Promise<string[]> {
     await this.findPaymentOrThrow(programId, paymentId);
-    paginateQuery.limit = -1; // No limit
+    const paginateQueryNoLimit = { ...paginateQuery, limit: -1 };
     const result = await this.getTransactionsByPaymentIdPaginated({
       programId,
       paymentId,
-      paginateQuery,
+      paginateQuery: paginateQueryNoLimit,
     });
 
     const referenceIds = result.data.map((t) => t.registrationReferenceId);

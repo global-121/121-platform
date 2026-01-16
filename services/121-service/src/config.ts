@@ -89,3 +89,5 @@ export const THROTTLING_LIMIT_HIGH = {
     ttl: env.HIGH_THROTTLING_TTL * 1_000, // TTL needs to be in milliseconds
   },
 };
+
+export const DEFAULT_PAGINATION_LIMIT = 20;

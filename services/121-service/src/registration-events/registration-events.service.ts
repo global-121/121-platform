@@ -6,6 +6,7 @@ import { isEqual, isMatch, isObject } from 'lodash';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { SelectQueryBuilder } from 'typeorm';
 
+import { DEFAULT_PAGINATION_LIMIT } from '@121-service/src/config';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { PaginateConfigRegistrationEventView } from '@121-service/src/registration-events/const/paginate-config-registration-event-view.const';
 import { FindAllRegistrationEventsResultDto } from '@121-service/src/registration-events/dto/find-all-registration-events-result.dto';
@@ -23,6 +24,7 @@ import { RegistrationEventViewScopedRepository } from '@121-service/src/registra
 import { ValueExtractor } from '@121-service/src/registration-events/utils/registration-events.helpers';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { PaginateQueryLimitRequired } from '@121-service/src/shared/types/paginate-query-limit-required.type';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
@@ -32,7 +34,9 @@ interface RegistrationViewWithId extends Partial<RegistrationViewEntity> {
   id: number;
 }
 
-const exportLimit = 500_000;
+// Set a high limit for methods that do not use pagination to avoid cutting off results
+// This is for example used in exports or for loading events for a single registration
+const paginationLimitForMethodsNotUsingPagination = 500_000;
 
 @Injectable()
 export class RegistrationEventsService {
@@ -64,8 +68,9 @@ export class RegistrationEventsService {
       );
 
     const paginateQuery = {
-      limit: exportLimit,
-    } as PaginateQuery;
+      path: '',
+      limit: paginationLimitForMethodsNotUsingPagination,
+    };
     return this.getPaginatedRegistrationEvents({
       paginateQuery,
       queryBuilder,
@@ -101,8 +106,9 @@ export class RegistrationEventsService {
       );
 
     const paginateQuery = {
-      limit: exportLimit,
-    } as PaginateQuery;
+      path: '',
+      limit: paginationLimitForMethodsNotUsingPagination,
+    };
     return this.getPaginatedRegistrationEvents({
       paginateQuery,
       queryBuilder,
@@ -121,8 +127,13 @@ export class RegistrationEventsService {
         programId,
       );
 
+    const queryWithLimit: PaginateQueryLimitRequired = {
+      ...paginateQuery,
+      limit: paginateQuery.limit ?? DEFAULT_PAGINATION_LIMIT,
+    };
+
     return this.getPaginatedRegistrationEvents({
-      paginateQuery,
+      paginateQuery: queryWithLimit,
       queryBuilder,
     });
   }
@@ -131,7 +142,7 @@ export class RegistrationEventsService {
     paginateQuery,
     queryBuilder,
   }: {
-    paginateQuery: PaginateQuery;
+    paginateQuery: PaginateQueryLimitRequired;
     queryBuilder: SelectQueryBuilder<RegistrationEventViewEntity>;
   }): Promise<FindAllRegistrationEventsResultDto> {
     const result = await paginate<RegistrationEventViewEntity>(
