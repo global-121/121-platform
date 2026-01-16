@@ -7,7 +7,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
-  createAndStartPayment,
+  doPayment,
   getTransactionsByPaymentIdPaginated,
   waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -205,7 +205,7 @@ describe('Update program fsp configuration of PA', () => {
       reason,
       accessToken,
     );
-    await createAndStartPayment({
+    await doPayment({
       programId: programIdPv,
       transferValue: 15,
       referenceIds: [registrationPvScoped.referenceId],

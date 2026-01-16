@@ -23,11 +23,13 @@ import { ProgramEntity } from '@121-service/src/programs/entities/program.entity
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
 import { SeedMessageTemplateConfig } from '@121-service/src/seed-data/message-template/interfaces/seed-message-template-config.interface';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
+import { ApproverService } from '@121-service/src/user/approver/approver.service';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
@@ -42,9 +44,18 @@ export class SeedHelperService {
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly httpService: CustomHttpService,
     private readonly axiosCallsService: AxiosCallsService,
+    private readonly approverService: ApproverService,
   ) {}
 
-  public async seedData(seedConfig: SeedConfigurationDto, isApiTests = false) {
+  public async seedData({
+    seedConfig,
+    isApiTests = false,
+    approverMode,
+  }: {
+    seedConfig: SeedConfigurationDto;
+    isApiTests?: boolean;
+    approverMode: ApproverSeedMode;
+  }) {
     // ***** SET SEQUENCE *****
     // This is to keep PV and OCW program ids on respectively 2 and 3
     // This to prevent differences between our local- and production database so we are less prone to mistakes
@@ -64,10 +75,11 @@ export class SeedHelperService {
 
       // Add default users
       const debugScopes = Object.values(DebugScope);
-      await this.addDefaultUsers(
-        programEntity,
-        seedConfig.includeDebugScopes ? debugScopes : [],
-      );
+      await this.addDefaultUsers({
+        program: programEntity,
+        debugScopeUsers: seedConfig.includeDebugScopes ? debugScopes : [],
+        approverMode,
+      });
 
       // Add registrations if provided this is only for demo purposes
       if (program.registrations) {
@@ -145,10 +157,15 @@ export class SeedHelperService {
     return path.join(__dirname, '../../seed-data', subPath);
   }
 
-  public async addDefaultUsers(
-    program: ProgramEntity,
-    debugScopeUsers: string[] = [],
-  ): Promise<void> {
+  public async addDefaultUsers({
+    program,
+    debugScopeUsers,
+    approverMode,
+  }: {
+    program: ProgramEntity;
+    debugScopeUsers: string[];
+    approverMode: ApproverSeedMode;
+  }): Promise<void> {
     const users = [
       {
         type: 'programAdminUser',
@@ -205,6 +222,14 @@ export class SeedHelperService {
         roles: [DefaultUserRole.ViewWithoutPII],
       },
     ];
+    if (approverMode === ApproverSeedMode.demo) {
+      users.push({
+        type: 'approver',
+        username: env.USERCONFIG_121_SERVICE_EMAIL_APPROVER,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_APPROVER,
+        roles: [DefaultUserRole.Approver],
+      });
+    }
 
     for (const user of users) {
       const savedUser = await this.getOrSaveUser(user);
@@ -231,7 +256,58 @@ export class SeedHelperService {
       }
     }
 
-    await this.assignAdminUserToProgram(program.id);
+    await this.assignAdminUserToProgram({
+      programId: program.id,
+    });
+
+    await this.configureApproversForProgram({
+      programId: program.id,
+      approverMode,
+    });
+  }
+
+  private async configureApproversForProgram({
+    programId,
+    approverMode,
+  }: {
+    programId: number;
+    approverMode: ApproverSeedMode;
+  }): Promise<void> {
+    const userRepository = this.dataSource.getRepository(UserEntity);
+    const adminUser = await userRepository.findOneOrFail({
+      where: { username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_ADMIN) },
+    });
+
+    switch (approverMode) {
+      case ApproverSeedMode.admin:
+        await this.approverService.createApprover({
+          programId,
+          userId: adminUser.id,
+          order: 1,
+        });
+        break;
+      case ApproverSeedMode.demo:
+        const approverUser = await userRepository.findOneOrFail({
+          where: {
+            username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_APPROVER!),
+          },
+        });
+        await this.approverService.createApprover({
+          programId,
+          userId: adminUser.id,
+          order: 1,
+        });
+        await this.approverService.createApprover({
+          programId,
+          userId: approverUser.id,
+          order: 2,
+        });
+        break;
+      case ApproverSeedMode.none:
+        break;
+      default:
+        break;
+    }
   }
 
   public async getOrSaveUser(userInput: {
@@ -402,7 +478,11 @@ export class SeedHelperService {
     } as DeepPartial<ProgramAidworkerAssignmentEntity>);
   }
 
-  public async assignAdminUserToProgram(programId: number): Promise<void> {
+  public async assignAdminUserToProgram({
+    programId,
+  }: {
+    programId: number;
+  }): Promise<void> {
     const userRepository = this.dataSource.getRepository(UserEntity);
     const adminUser = await userRepository.findOneOrFail({
       where: {

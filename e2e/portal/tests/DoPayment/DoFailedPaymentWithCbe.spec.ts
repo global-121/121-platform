@@ -48,21 +48,14 @@ test('Do failed payment for Cbe fsp', async ({ page }) => {
   });
 
   await test.step('Do payment', async () => {
-    // Create payment
     await paymentsPage.createPayment({});
-    // Assert redirection to payment overview page
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdCbe}/payments/1`),
     );
-    // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
     await paymentPage.validateToastMessageAndClose('Payment created.');
-
-    // start payment
+    await paymentPage.approvePayment();
     await paymentPage.startPayment();
-    await paymentPage.validateToastMessageAndClose(
-      'Payment started successfully.',
-    );
   });
 
   await test.step('Validate payment card with failed payment data', async () => {
@@ -72,7 +65,7 @@ test('Do failed payment for Cbe fsp', async ({ page }) => {
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
-      successfulTransactions: 0,
+      successfulPaymentAmount: 0,
       failedTransactions: numberOfPas,
       currency: CbeProgram.currency,
       programId: programIdCbe,

@@ -5,7 +5,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
-import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
+import { doPayment } from '@121-service/test/helpers/program.helper';
 import {
   changeRegistrationStatus,
   duplicateRegistrationsAndPaymentData,
@@ -75,13 +75,13 @@ describe('Retry Failed Jobs On Startup During Queue Processing', () => {
     expect(mockResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Do payment
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: programIdOCW,
       transferValue,
       referenceIds: [],
       accessToken,
     });
-    expect(doPaymentResponse.statusCode).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.statusCode).toBe(HttpStatus.CREATED);
     // Wait long enough so that jobs are added to the queue but not finished processing
     await waitFor(2_000);
     // Kill 121 service to simulate crash during queue processing

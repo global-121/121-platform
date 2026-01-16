@@ -98,6 +98,7 @@ graph LR
   OnafriqReconciliationModule-->QueuesRegistryModule
   OnafriqReconciliationModule-->RedisModule
   OnafriqReconciliationModule-->TransactionsModule
+  PaymentsModule-->ApproverModule
   PaymentsModule-->FspsModule
   PaymentsModule-->MessageTemplateModule
   PaymentsModule-->PaymentEventsModule

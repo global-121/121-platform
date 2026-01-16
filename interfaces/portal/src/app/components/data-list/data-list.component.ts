@@ -14,6 +14,7 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { InputTextModule } from 'primeng/inputtext';
 import { SkeletonModule } from 'primeng/skeleton';
 
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
@@ -55,6 +56,12 @@ export type DataListItem = {
       value?: Date | null | number | string;
     }
   | {
+      type: 'input';
+      inputValue: string;
+      inputPlaceholder?: string;
+      inputChange?: (value: string) => void;
+    }
+  | {
       type: 'number';
       value?: null | number;
     }
@@ -86,6 +93,7 @@ export type DataListItem = {
     NgClass,
     NgComponentOutlet,
     RouterLink,
+    InputTextModule,
   ],
   templateUrl: './data-list.component.html',
   styles: ``,

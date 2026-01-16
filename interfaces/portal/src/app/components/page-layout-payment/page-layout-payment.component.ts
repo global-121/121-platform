@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -17,12 +17,14 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspSettingsDto } from '@121-service/src/fsp-management/fsp-settings.dto';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { MetricTileComponent } from '~/components/metric-tile/metric-tile.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
+import { ApprovePaymentComponent } from '~/components/page-layout-payment/components/approve-payment/approve-payment.component';
 import { ImportReconciliationDataComponent } from '~/components/page-layout-payment/components/import-reconciliation-data/import-reconciliation-data.component';
 import { PaymentMenuComponent } from '~/components/page-layout-payment/components/payment-menu/payment-menu.component';
 import { ProgramPaymentChartComponent } from '~/components/page-layout-payment/components/program-payment-chart/program-payment-chart.component';
@@ -50,7 +52,9 @@ import { Locale } from '~/utils/locale';
     ImportReconciliationDataComponent,
     PaymentMenuComponent,
     StartPaymentComponent,
+    ApprovePaymentComponent,
     ColoredChipComponent,
+    CommonModule,
   ],
   templateUrl: './page-layout-payment.component.html',
   styles: ``,
@@ -67,6 +71,7 @@ export class PageLayoutPaymentComponent {
   readonly paymentApiService = inject(PaymentApiService);
   readonly programApiService = inject(ProgramApiService);
   readonly translatableStringService = inject(TranslatableStringService);
+  readonly TransactionStatusEnum = TransactionStatusEnum;
 
   readonly fspSettings = signal<Record<Fsps, FspSettingsDto>>(FSP_SETTINGS);
   private authService = inject(AuthService);
@@ -202,11 +207,19 @@ export class PageLayoutPaymentComponent {
     );
   });
 
+  readonly firstPendingApprovalIndex = computed(() => {
+    if (!this.payment.isSuccess()) {
+      return 0;
+    }
+
+    return this.payment.data().approvalStatus.findIndex((a) => !a.approved);
+  });
+
   readonly hasFspWithExportFileIntegration = computed(() =>
     programHasFspWithExportFileIntegration(this.program.data()),
   );
 
-  readonly startPaymentFspList = computed<string>(() => {
+  readonly paymentFspList = computed<string>(() => {
     if (!this.payment.isSuccess()) {
       return '';
     }
@@ -227,30 +240,64 @@ export class PageLayoutPaymentComponent {
     });
   });
 
-  readonly startPaymentTransactionCount = computed<string>(() => {
-    if (!this.payment.isSuccess()) {
-      return '';
-    }
-    return (
-      this.payment.data().pendingApproval.count.toString() +
-      ' ' +
-      $localize`registrations`
-    );
-  });
+  readonly paymentTransactionCountByStatus = (
+    transactionStatus:
+      | TransactionStatusEnum.approved
+      | TransactionStatusEnum.pendingApproval,
+  ) =>
+    computed<string>(() => {
+      if (!this.payment.isSuccess()) {
+        return '';
+      }
+      const count = this.payment.data()[transactionStatus].count;
+      return count.toString() + ' ' + $localize`registrations`;
+    });
 
-  readonly startPaymentTotalPaymentAmount = computed<string>(() => {
+  readonly paymentTotalTransferValueByStatus = (
+    status:
+      | TransactionStatusEnum.approved
+      | TransactionStatusEnum.pendingApproval,
+  ) =>
+    computed<string>(() => {
+      if (!this.payment.isSuccess()) {
+        return '';
+      }
+      const totalPaymentAmount = this.payment.data()[status].transferValue;
+
+      return (
+        this.currencyPipe.transform(
+          totalPaymentAmount,
+          this.program.data()?.currency,
+          'symbol-narrow',
+          '1.2-2',
+        ) ?? '0'
+      );
+    });
+
+  readonly showApprovePaymentButton = computed<boolean | undefined>(() => {
     if (!this.payment.isSuccess()) {
-      return '';
+      return false;
     }
 
-    return (
-      this.currencyPipe.transform(
-        this.payment.data().pendingApproval.transferValue,
-        this.program.data()?.currency,
-        'symbol-narrow',
-        '1.2-2',
-      ) ?? '0'
+    if (this.isPaymentInProgress()) {
+      return false;
+    }
+
+    const approvalStatus = this.payment.data().approvalStatus;
+    const currentPaymentApproval = approvalStatus.find(
+      (approval) => approval.username === this.authService.user?.username,
     );
+    if (!currentPaymentApproval) {
+      return false; // not approver for this payment
+    }
+    if (currentPaymentApproval.approved) {
+      return false; // already approved
+    }
+
+    // NOTE 1: we do not hide the button if previous approvers have not yet approved, to avoid confusion. Instead, the backend will block the approval action.
+    // NOTE 2: there is no permission-check here, as there is no approve permission.
+
+    return true;
   });
 
   readonly showStartPaymentButton = computed<boolean | undefined>(() => {
@@ -258,13 +305,28 @@ export class PageLayoutPaymentComponent {
       return false;
     }
 
-    return (
-      this.payment.data().pendingApproval.count > 0 &&
-      !this.isPaymentInProgress()
-    );
+    if (this.isPaymentInProgress()) {
+      return false;
+    }
+
+    const approvalStatus = this.payment.data().approvalStatus;
+    if (approvalStatus.some((approval) => !approval.approved)) {
+      return false;
+    }
+
+    // hide after starting, unless approved transactions left
+    if (this.payment.data().approved.count === 0) {
+      return false;
+    }
+
+    if (!this.hasStartPaymentPermissions()) {
+      return false;
+    }
+
+    return true;
   });
 
-  readonly canStartPayment = computed(() =>
+  readonly hasStartPaymentPermissions = computed(() =>
     this.authService.hasAllPermissions({
       programId: this.programId(),
       requiredPermissions: [
@@ -295,12 +357,15 @@ export class PageLayoutPaymentComponent {
       return '';
     }
 
-    // TODO: see if a payment status enum is needed
     if (this.isPaymentApproved()) {
       return $localize`Approved`;
     }
 
-    return $localize`Pending approval`;
+    const approvalData = this.payment.data().approvalStatus;
+    const approvedCount = approvalData.filter((status) => status.approved);
+    const totalCount = approvalData.length;
+
+    return $localize`${approvedCount.length} of ${totalCount} approved`;
   });
 
   readonly statusBadgeColor = computed(() => {

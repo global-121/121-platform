@@ -1,6 +1,7 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 
 import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
+import { ApprovalStatusResponseDto } from '@121-service/src/user/approver/dto/approval-status-response.dto';
 
 class CountAndTransferValueDto {
   @ApiProperty({ example: 0 })
@@ -49,4 +50,10 @@ export class PaymentReturnDto {
     TransactionViewEntity,
     'programFspConfigurationName' | 'programFspConfigurationLabel'
   >[];
+
+  @ApiProperty({
+    type: () => ApprovalStatusResponseDto,
+    isArray: true,
+  })
+  approvalStatus: ApprovalStatusResponseDto[];
 }
