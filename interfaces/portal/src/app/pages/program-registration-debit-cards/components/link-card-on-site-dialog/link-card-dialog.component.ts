@@ -131,13 +131,13 @@ export class LinkCardDialogComponent {
   linkCardMutation = injectMutation(() => ({
     mutationFn: ({ tokenCode }: { tokenCode: string }) => {
       if (this.currentTokenCode()) {
-        return this.registrationApiService.replaceCardOnSite({
+        return this.intersolveVisaApiService.replaceCardOnSite({
           programId: this.programId(),
           referenceId: this.referenceId(),
           tokenCode,
         });
       } else {
-        return this.registrationApiService.linkCardToRegistration({
+        return this.intersolveVisaApiService.linkCardToRegistration({
           programId: this.programId(),
           referenceId: this.referenceId(),
           tokenCode,
