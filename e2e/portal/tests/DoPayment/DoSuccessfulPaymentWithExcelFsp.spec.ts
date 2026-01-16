@@ -1,39 +1,26 @@
-import { test } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
   registrationsPvExcel,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import ExportData from '@121-e2e/portal/components/ExportData';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
+import { test } from '@121-e2e/portal/fixtures/fixture';
 import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 // Export Excel FSP payment list
 const amount = NLRCProgramPV.fixedTransferValue;
 
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-  const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(
-    registrationsPvExcel,
-    programIdPV,
-    accessToken,
-  );
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: registrationsPvExcel,
+    programId: programIdPV,
+  });
 });
 
 test('Do payment for excel fsp', async ({ page }) => {
