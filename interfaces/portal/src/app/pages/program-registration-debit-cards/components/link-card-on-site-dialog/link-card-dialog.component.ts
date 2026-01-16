@@ -45,7 +45,7 @@ export class LinkCardDialogComponent {
 
   readonly linkCardDialogStates = LinkCardDialogStates;
 
-  readonly tokenCodeFullyFilled: Signal<boolean> = computed(
+  readonly tokenCodeFullyFilled = computed(
     () => !this.tokenCode().includes('_') && this.tokenCode() !== '',
   );
 
