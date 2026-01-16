@@ -125,7 +125,7 @@
     "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.23",
     "@types/multer": "^2.0.0",
-    "@types/node": "^22.x",
+    "@types/node": "^24.x",
     "@types/passport-azure-ad": "^4.3.6",
     "@types/passport-jwt": "^4.0.1",
     "@types/ssh2-sftp-client": "^9.0.6",
