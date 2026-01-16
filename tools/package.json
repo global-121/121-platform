@@ -5,10 +5,14 @@
     "setup": "cp -i .env.example .env",
     "postinstall": "npm run setup",
     "check-versions": "node check-versions.mjs",
-    "download-logs": "node --env-file=.env download-logs.mjs"
+    "download-logs": "node --env-file-if-exists=.env download-logs.mjs"
   },
   "dependencies": {
     "@azure/identity": "^4.5.0",
     "node-html-parser": "^6.1.13"
+  },
+  "engines": {
+    "node": ">=22",
+    "npm": ">=10"
   }
 }
