@@ -237,7 +237,6 @@ export class RegistrationsBulkService {
         query: paginateQueryLimit1,
         programId,
         hasPersonalReadPermission: true,
-        noLimit: false,
       });
 
     const applicableRegistrations =
@@ -245,7 +244,6 @@ export class RegistrationsBulkService {
         query: paginateQueryLimit1,
         programId,
         hasPersonalReadPermission: true,
-        noLimit: false,
         queryBuilder,
       });
 
@@ -563,7 +561,6 @@ export class RegistrationsBulkService {
         query: paginateQueryWithChunkSize,
         programId,
         hasPersonalReadPermission: true,
-        noLimit: false,
         queryBuilder: this.getStatusUpdateBaseQuery(
           allowedCurrentStatuses,
           RegistrationStatusEnum.deleted,
@@ -576,7 +573,6 @@ export class RegistrationsBulkService {
           query: paginateQueryWithChunkSize,
           programId,
           hasPersonalReadPermission: true,
-          noLimit: false,
           queryBuilder: this.getStatusUpdateBaseQuery(
             allowedCurrentStatuses,
             RegistrationStatusEnum.deleted,

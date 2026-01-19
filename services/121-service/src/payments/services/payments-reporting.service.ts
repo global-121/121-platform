@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { Equal, Repository } from 'typeorm';
 
+import { DEFAULT_PAGINATION_LIMIT } from '@121-service/src/config';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { PaginateConfigTransactionView } from '@121-service/src/payments/consts/paginate-config-transaction-view.const';
 import { ExportTransactionResponseDto } from '@121-service/src/payments/dto/export-transaction-response.dto';
@@ -24,6 +25,7 @@ import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dt
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { PaginateQueryLimitRequired } from '@121-service/src/shared/types/paginate-query-limit-required.type';
 @Injectable()
 export class PaymentsReportingService {
   @InjectRepository(PaymentEntity)
@@ -292,7 +294,7 @@ export class PaymentsReportingService {
     }
   }
 
-  public async getTransactionsByPaymentIdPaginated({
+  public async getTransactionsByPaymentIdPaginatedAndSetDefaultLimit({
     programId,
     paymentId,
     paginateQuery,
@@ -300,6 +302,27 @@ export class PaymentsReportingService {
     programId: number;
     paymentId: number;
     paginateQuery: PaginateQuery;
+  }): Promise<FindAllTransactionsResultDto> {
+    const queryWithDefaultLimit = {
+      ...paginateQuery,
+      limit: paginateQuery.limit ?? DEFAULT_PAGINATION_LIMIT,
+    };
+
+    return this.getTransactionsByPaymentIdPaginated({
+      programId,
+      paymentId,
+      paginateQuery: queryWithDefaultLimit,
+    });
+  }
+
+  public async getTransactionsByPaymentIdPaginated({
+    programId,
+    paymentId,
+    paginateQuery,
+  }: {
+    programId: number;
+    paymentId: number;
+    paginateQuery: PaginateQueryLimitRequired;
   }): Promise<FindAllTransactionsResultDto> {
     await this.findPaymentOrThrow(programId, paymentId);
 

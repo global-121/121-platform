@@ -137,11 +137,12 @@ describe('PaymentsReportingService - getTransactions', () => {
       });
 
       // Act
-      const result = await service.getTransactionsByPaymentIdPaginated({
-        programId,
-        paymentId,
-        paginateQuery: { path: '' },
-      });
+      const result =
+        await service.getTransactionsByPaymentIdPaginatedAndSetDefaultLimit({
+          programId,
+          paymentId,
+          paginateQuery: { path: '' },
+        });
       const data = result.data;
       const meta = result.meta;
 
@@ -162,7 +163,7 @@ describe('PaymentsReportingService - getTransactions', () => {
 
       // Act & Assert
       await expect(
-        service.getTransactionsByPaymentIdPaginated({
+        service.getTransactionsByPaymentIdPaginatedAndSetDefaultLimit({
           programId,
           paymentId,
           paginateQuery: { path: '' },
@@ -178,11 +179,12 @@ describe('PaymentsReportingService - getTransactions', () => {
       mockPaginate.mockResolvedValueOnce({ data: [], meta: {}, links: {} });
 
       // Act
-      const result = await service.getTransactionsByPaymentIdPaginated({
-        programId,
-        paymentId,
-        paginateQuery: { path: '' },
-      });
+      const result =
+        await service.getTransactionsByPaymentIdPaginatedAndSetDefaultLimit({
+          programId,
+          paymentId,
+          paginateQuery: { path: '' },
+        });
 
       // Assert
       const data = result.data;

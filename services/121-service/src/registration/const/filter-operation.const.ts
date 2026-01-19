@@ -26,7 +26,7 @@ export const PaginateConfigRegistrationView: PaginateConfig<RegistrationViewEnti
   {
     searchableColumns: [dataSearchableColumn],
     ignoreSearchByInQueryParam: true,
-    maxLimit: 40000,
+    maxLimit: -1,
     sortableColumns: [
       'id',
       'created',
@@ -79,7 +79,7 @@ export const PaginateConfigRegistrationViewOnlyFilters: PaginateConfig<Registrat
       ...PaginateConfigRegistrationView.filterableColumns,
     },
     sortableColumns: [],
-    maxLimit: 0,
+    maxLimit: -1,
     searchableColumns: [dataSearchableColumn],
   };
 
@@ -87,10 +87,4 @@ export const PaginateConfigRegistrationWithoutSort: PaginateConfig<RegistrationV
   {
     ...PaginateConfigRegistrationView,
     sortableColumns: [],
-  };
-
-export const PaginateConfigRegistrationViewNoLimit: PaginateConfig<RegistrationViewEntity> =
-  {
-    ...PaginateConfigRegistrationView,
-    maxLimit: -1, // -1 means no limit in nestjs-paginate
   };

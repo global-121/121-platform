@@ -15,7 +15,6 @@ import {
   AllowedFiltersNumber,
   AllowedFiltersString,
   PaginateConfigRegistrationView,
-  PaginateConfigRegistrationViewNoLimit,
 } from '@121-service/src/registration/const/filter-operation.const';
 import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto/find-all-registrations-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
@@ -48,25 +47,17 @@ export class RegistrationsPaginationService {
     query,
     programId,
     hasPersonalReadPermission,
-    noLimit,
     queryBuilder,
   }: {
     query: PaginateQueryLimitRequired;
     programId: number;
     hasPersonalReadPermission: boolean;
-    noLimit: boolean;
     queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>;
   }): Promise<FindAllRegistrationsResultDto> {
     // Deep clone query here to prevent mutation out of this function
     query = structuredClone(query);
 
-    let paginateConfigCopy = { ...PaginateConfigRegistrationView };
-    if (noLimit) {
-      // These setting are needed to get all registrations
-      // This is used for doing bulk updates with a filter
-      paginateConfigCopy = { ...PaginateConfigRegistrationViewNoLimit };
-      query.limit = -1; // -1 means no limit in nestjs-paginate
-    }
+    const paginateConfigCopy = { ...PaginateConfigRegistrationView };
 
     const orignalSelect = query.select ? [...query.select] : [];
     const fullnameNamingConvention =
@@ -212,7 +203,6 @@ export class RegistrationsPaginationService {
       query: paginateQueryWithNoLimit,
       programId,
       hasPersonalReadPermission: true,
-      noLimit: true,
       queryBuilder: queryBuilder ? queryBuilder.clone() : undefined,
     });
 

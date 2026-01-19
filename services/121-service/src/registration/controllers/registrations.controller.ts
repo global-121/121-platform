@@ -164,7 +164,6 @@ export class RegistrationsController {
       query: queryWithDefaultLimit,
       programId: Number(programId),
       hasPersonalReadPermission: hasPersonalRead,
-      noLimit: false,
     });
   }
 

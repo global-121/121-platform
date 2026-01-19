@@ -113,7 +113,6 @@ export class RegistrationsService {
         query: { path: '', limit: 1 },
         programId,
         hasPersonalReadPermission: true,
-        noLimit: false,
         queryBuilder,
       });
     return paginateResult.data[0];
@@ -137,7 +136,6 @@ export class RegistrationsService {
         query: { path: '', limit: 1 },
         programId,
         hasPersonalReadPermission: true,
-        noLimit: false,
         queryBuilder,
       });
     return paginateResult.data[0];

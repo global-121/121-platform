@@ -362,7 +362,7 @@ export class PaymentsController {
     programId: number,
     @Param('paymentId', ParseIntPipe) paymentId: number,
   ): Promise<FindAllTransactionsResultDto> {
-    return await this.paymentsReportingService.getTransactionsByPaymentIdPaginated(
+    return await this.paymentsReportingService.getTransactionsByPaymentIdPaginatedAndSetDefaultLimit(
       {
         programId,
         paymentId,
