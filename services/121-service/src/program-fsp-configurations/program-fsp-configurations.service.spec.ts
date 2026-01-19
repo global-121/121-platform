@@ -120,6 +120,69 @@ describe('ProgramFspConfigurationsService', () => {
     });
   });
 
+  describe('getPublicFspConfigurationProperties', () => {
+    it('should return allowlisted public properties for Intersolve Visa', async () => {
+      const publicProperty = new ProgramFspConfigurationPropertyEntity();
+      publicProperty.id = 10;
+      publicProperty.name = FspConfigurationProperties.cardDistributionByMail;
+      publicProperty.value = 'true';
+      publicProperty.programFspConfigurationId = mockProgramFspConfigEntity.id;
+
+      mockProgramFspConfigurationPropertyRepository.find.mockResolvedValueOnce([
+        publicProperty,
+      ]);
+
+      const result = await service.getPublicFspConfigurationProperties(
+        programId,
+        configName,
+      );
+
+      expect(
+        mockProgramFspConfigurationRepository.findOne,
+      ).toHaveBeenCalledWith({
+        where: {
+          name: Equal(configName),
+          programId: Equal(programId),
+        },
+      });
+      expect(
+        mockProgramFspConfigurationPropertyRepository.find,
+      ).toHaveBeenCalledWith({
+        where: {
+          programFspConfigurationId: Equal(mockProgramFspConfigEntity.id),
+          name: expect.anything(),
+        },
+      });
+
+      expect(result).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            name: FspConfigurationProperties.cardDistributionByMail,
+            value: 'true',
+          }),
+        ]),
+      );
+    });
+
+    it('should return empty array for non-allowlisted FSPs', async () => {
+      const nonAllowlistedConfig = { ...mockProgramFspConfigEntity };
+      nonAllowlistedConfig.fspName = Fsps.excel;
+      mockProgramFspConfigurationRepository.findOne.mockResolvedValueOnce(
+        nonAllowlistedConfig,
+      );
+
+      const result = await service.getPublicFspConfigurationProperties(
+        programId,
+        configName,
+      );
+
+      expect(
+        mockProgramFspConfigurationPropertyRepository.find,
+      ).not.toHaveBeenCalled();
+      expect(result).toEqual([]);
+    });
+  });
+
   describe('validateAndCreate', () => {
     const createDto: CreateProgramFspConfigurationDto = {
       name: 'Test Configuration',

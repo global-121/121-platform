@@ -28,6 +28,7 @@ import { ProgramFspConfigurationResponseDto } from '@121-service/src/program-fsp
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
 import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 @UseGuards(AuthenticatedUserGuard)
@@ -197,7 +198,7 @@ export class ProgramFspConfigurationsController {
     );
   }
 
-  @AuthenticatedUser()
+  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationREAD] })
   @ApiOperation({
     summary: 'Retrieve public properties for Fsp Configuration.',
   })
@@ -213,12 +214,16 @@ export class ProgramFspConfigurationsController {
       'The Fsp Configuration properties have been successfully retrieved.',
   })
   @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Forbidden',
+  })
+  @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'Program does not exist or Fsp Configuration does not exist',
   })
   @Get(':programId/fsp-configurations/:name/properties/public')
   public async getPublicFspConfigurationProperties(
-    @Param('programId') programId: number,
+    @Param('programId', ParseIntPipe) programId: number,
     @Param('name') name: string,
   ): Promise<ProgramFspConfigurationPropertyResponseDto[]> {
     return this.programFspConfigurationsService.getPublicFspConfigurationProperties(
