@@ -22,15 +22,10 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('Do failed payment for Cbe fsp', async ({ page }) => {
+test('Do failed payment for Cbe fsp', async ({ page, validatePaymentCard }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const programTitle = CbeProgram.titlePortal.en;
-  const numberOfPas = registrationsCbe.length;
-  const defaultTransferValue = CbeProgram.fixedTransferValue;
-  const defaultMaxTransferValue = registrationsCbe.reduce((output, pa) => {
-    return output + pa.paymentAmountMultiplier * defaultTransferValue;
-  }, 0);
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
@@ -61,6 +56,7 @@ test('Do failed payment for Cbe fsp', async ({ page }) => {
       failedTransactions: numberOfPas,
       currency: CbeProgram.currency,
       programId: programIdCbe,
+      scenario: 'failed',
     });
   });
 });

@@ -19,15 +19,13 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('Do successful payment for Voucher fsp', async ({ page }) => {
+test('Do successful payment for Voucher fsp', async ({
+  page,
+  validatePaymentCard,
+}) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const programTitle = NLRCProgram.titlePortal.en;
-  const numberOfPas = registrationsVoucher.length;
-  const defaultTransferValue = NLRCProgram.fixedTransferValue;
-  const defaultMaxTransferValue = registrationsVoucher.reduce((output, pa) => {
-    return output + pa.paymentAmountMultiplier * defaultTransferValue;
-  }, 0);
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
@@ -63,6 +61,7 @@ test('Do successful payment for Voucher fsp', async ({ page }) => {
       successfulPaymentAmount: defaultMaxTransferValue,
       failedTransactions: 0,
       programId: programIdPV,
+      scenario: 'successful',
     });
   });
 });

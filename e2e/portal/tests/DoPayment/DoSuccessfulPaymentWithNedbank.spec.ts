@@ -1,4 +1,3 @@
-import { test } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -14,6 +13,7 @@ import {
   registrationsNedbank,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
+import { test } from '@121-e2e/portal/fixtures/fixture';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
@@ -33,15 +33,13 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('Do successful payment for Nedbank fsp', async ({ page }) => {
+test('Do successful payment for Nedbank fsp', async ({
+  page,
+  validatePaymentCard,
+}) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const programTitle = NedbankProgram.titlePortal.en;
-  const numberOfPas = registrationsNedbank.length;
-  const defaultTransferValue = NedbankProgram.fixedTransferValue;
-  const defaultMaxTransferValue = registrationsNedbank.reduce((output, pa) => {
-    return output + pa.paymentAmountMultiplier * defaultTransferValue;
-  }, 0);
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
@@ -81,6 +79,7 @@ test('Do successful payment for Nedbank fsp', async ({ page }) => {
       failedTransactions: 0,
       currency: NedbankProgram.currencySymbol,
       programId: programIdNedbank,
+      scenario: 'successful',
     });
   });
 });
