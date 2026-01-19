@@ -429,7 +429,7 @@ export class ProgramFspConfigurationsService {
     );
 
     const allowlistedPropertyNames =
-      PublicFspConfigurationProperties[config.fspName as Fsps];
+      PublicFspConfigurationProperties[config.fspName];
     if (!allowlistedPropertyNames || allowlistedPropertyNames.length === 0) {
       return [];
     }
