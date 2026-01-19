@@ -18,6 +18,7 @@ import {
   InterfaceNames,
 } from '@121-service/src/shared/enum/interface-names.enum';
 import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
+import { ApproverEntity } from '@121-service/src/user/approver/entities/approver.entity';
 import {
   CreateProgramAssignmentDto,
   UpdateProgramAssignmentDto,
@@ -64,6 +65,8 @@ export class UserService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramAidworkerAssignmentEntity)
   private readonly assignmentRepository: Repository<ProgramAidworkerAssignmentEntity>;
+  @InjectRepository(ApproverEntity)
+  private readonly approverRepository: Repository<ApproverEntity>;
 
   public constructor(
     @Inject(REQUEST) private readonly request: Request,
@@ -407,6 +410,11 @@ export class UserService {
     // if already assigned: add roles and scope to program assignment
     for (const programAssignment of user.programAssignments) {
       if (programAssignment.program.id === programId) {
+        if (scope) {
+          await this.checkNoApproverOrThrow({
+            programAssignmentId: programAssignment.id,
+          });
+        }
         programAssignment.roles = newRoles;
         programAssignment.scope = scope;
         await this.assignmentRepository.save(programAssignment);
@@ -426,6 +434,24 @@ export class UserService {
     });
     response.roles = newRoles.map((role) => this.getUserRoleResponse(role));
     return response;
+  }
+
+  private async checkNoApproverOrThrow({
+    programAssignmentId,
+  }: {
+    programAssignmentId: number;
+  }): Promise<void> {
+    const existingApprover = await this.approverRepository.findOne({
+      where: {
+        programAidworkerAssignmentId: Equal(programAssignmentId),
+      },
+    });
+    if (existingApprover) {
+      throw new HttpException(
+        'Cannot add scope to assignment because user is an approver for this program. Remove approver from program first (if intended) and retry.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   public async deleteAidworkerRolesOrAssignment({
@@ -866,6 +892,12 @@ export class UserService {
     // if already assigned: add roles to program assignment
     for (const programAssignment of user.programAssignments) {
       if (programAssignment.program.id === programId) {
+        if (assignAidworkerToProgram.scope) {
+          await this.checkNoApproverOrThrow({
+            programAssignmentId: programAssignment.id,
+          });
+        }
+
         // Get the existing roles
         const existingRoles = programAssignment.roles;
 
