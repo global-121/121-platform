@@ -152,4 +152,65 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
       credentials,
     });
   });
+
+  it('should save CBE transfer exactly once when not retry', async () => {
+    jest
+      .spyOn(programFspConfigurationRepository, 'getUsernamePasswordProperties')
+      .mockResolvedValue(credentials);
+    jest
+      .spyOn(transactionJobsHelperService, 'logTransactionJobStart')
+      .mockImplementation();
+    jest
+      .spyOn(programRepository, 'findOneOrFail')
+      .mockResolvedValue(program as any);
+    jest
+      .spyOn(
+        commercialBankEthiopiaService,
+        'createCreditTransferOrGetTransactionStatus',
+      )
+      .mockResolvedValue({
+        status: 'success',
+        errorMessage: null,
+      });
+
+    const saveCbeTransferSpy = jest
+      .spyOn(cbeTransferScopedRepository, 'save')
+      .mockResolvedValue({} as any);
+
+    await service.processCommercialBankEthiopiaTransactionJob(transactionJob);
+    expect(saveCbeTransferSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not save CBE transfer when retry', async () => {
+    jest
+      .spyOn(programFspConfigurationRepository, 'getUsernamePasswordProperties')
+      .mockResolvedValue(credentials);
+    jest
+      .spyOn(transactionJobsHelperService, 'logTransactionJobStart')
+      .mockImplementation();
+    jest
+      .spyOn(programRepository, 'findOneOrFail')
+      .mockResolvedValue(program as any);
+    jest
+      .spyOn(
+        commercialBankEthiopiaService,
+        'createCreditTransferOrGetTransactionStatus',
+      )
+      .mockResolvedValue({
+        status: 'success',
+        errorMessage: null,
+      });
+    jest
+      .spyOn(cbeTransferScopedRepository, 'getExistingCbeTransferOrFail')
+      .mockResolvedValue(existingCbeTransfer as any);
+
+    const saveCbeTransferSpy = jest
+      .spyOn(cbeTransferScopedRepository, 'save')
+      .mockResolvedValue({} as any);
+
+    await service.processCommercialBankEthiopiaTransactionJob(
+      transactionJobRetry,
+    );
+    expect(saveCbeTransferSpy).not.toHaveBeenCalled();
+  });
 });
