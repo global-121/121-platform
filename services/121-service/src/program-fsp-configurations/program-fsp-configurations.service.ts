@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { PublicFspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { getFspConfigurationProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
-import { PublicFspConfigurationPropertiesByFsp } from '@121-service/src/program-fsp-configurations/const/public-fsp-configuration-properties.const';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 import { ProgramFspConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-property-response.dto';
@@ -429,7 +429,7 @@ export class ProgramFspConfigurationsService {
     );
 
     const allowlistedPropertyNames =
-      PublicFspConfigurationPropertiesByFsp[config.fspName as Fsps];
+      PublicFspConfigurationProperties[config.fspName as Fsps];
     if (!allowlistedPropertyNames || allowlistedPropertyNames.length === 0) {
       return [];
     }
