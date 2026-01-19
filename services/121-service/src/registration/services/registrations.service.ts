@@ -110,10 +110,9 @@ export class RegistrationsService {
       .andWhere({ referenceId });
     const paginateResult =
       await this.registrationsPaginationService.getPaginate({
-        query: { path: '' },
+        query: { path: '', limit: 1 },
         programId,
         hasPersonalReadPermission: true,
-        noLimit: false,
         queryBuilder,
       });
     return paginateResult.data[0];
@@ -134,10 +133,9 @@ export class RegistrationsService {
       });
     const paginateResult =
       await this.registrationsPaginationService.getPaginate({
-        query: { path: '' },
+        query: { path: '', limit: 1 },
         programId,
         hasPersonalReadPermission: true,
-        noLimit: false,
         queryBuilder,
       });
     return paginateResult.data[0];

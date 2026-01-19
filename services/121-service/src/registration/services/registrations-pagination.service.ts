@@ -15,7 +15,6 @@ import {
   AllowedFiltersNumber,
   AllowedFiltersString,
   PaginateConfigRegistrationView,
-  PaginateConfigRegistrationViewNoLimit,
 } from '@121-service/src/registration/const/filter-operation.const';
 import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto/find-all-registrations-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
@@ -28,6 +27,7 @@ import {
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
+import { PaginateQueryLimitRequired } from '@121-service/src/shared/types/paginate-query-limit-required.type';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
@@ -47,25 +47,17 @@ export class RegistrationsPaginationService {
     query,
     programId,
     hasPersonalReadPermission,
-    noLimit,
     queryBuilder,
   }: {
-    query: PaginateQuery;
+    query: PaginateQueryLimitRequired;
     programId: number;
     hasPersonalReadPermission: boolean;
-    noLimit: boolean;
     queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>;
   }): Promise<FindAllRegistrationsResultDto> {
     // Deep clone query here to prevent mutation out of this function
     query = structuredClone(query);
 
-    let paginateConfigCopy = { ...PaginateConfigRegistrationView };
-    if (noLimit) {
-      // These setting are needed to get all registrations
-      // This is used for doing bulk updates with a filter
-      paginateConfigCopy = { ...PaginateConfigRegistrationViewNoLimit };
-      query.limit = -1; // -1 means no limit in nestjs-paginate
-    }
+    const paginateConfigCopy = { ...PaginateConfigRegistrationView };
 
     const orignalSelect = query.select ? [...query.select] : [];
     const fullnameNamingConvention =
@@ -205,12 +197,12 @@ export class RegistrationsPaginationService {
     queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>;
   }) {
     paginateQuery.page = 1;
+    const paginateQueryWithNoLimit = { ...paginateQuery, limit: -1 };
 
     const paginateResult = await this.getPaginate({
-      query: paginateQuery,
+      query: paginateQueryWithNoLimit,
       programId,
       hasPersonalReadPermission: true,
-      noLimit: true,
       queryBuilder: queryBuilder ? queryBuilder.clone() : undefined,
     });
 

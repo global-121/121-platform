@@ -1,5 +1,6 @@
 import { FilterOperator, FilterSuffix, PaginateConfig } from 'nestjs-paginate';
 
+import { DEFAULT_PAGINATION_LIMIT } from '@121-service/src/config';
 import {
   AllowedFiltersNumber,
   AllowedFiltersString,
@@ -32,4 +33,5 @@ export const PaginateConfigRegistrationEventView: PaginateConfig<RegistrationEve
     maxLimit,
     sortableColumns: sortableColumnNames,
     filterableColumns,
+    defaultLimit: DEFAULT_PAGINATION_LIMIT,
   };
