@@ -2,7 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 
-import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import {
+  FspConfigurationProperties,
+  PublicFspConfigurationProperties,
+} from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { getFspConfigurationProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
@@ -415,6 +418,28 @@ export class ProgramFspConfigurationsService {
       });
     return ProgramFspConfigurationMapper.mapPropertyEntitiesToDtos(
       allProperties,
+    );
+  }
+
+  public async getPublicFspConfigurationProperties(
+    programId: number,
+    name: string,
+  ): Promise<ProgramFspConfigurationPropertyResponseDto[]> {
+    const config = await this.getProgramFspConfigurationOrThrow(
+      programId,
+      name,
+    );
+    const allProperties =
+      await this.programFspConfigurationPropertyRepository.find({
+        where: { programFspConfigurationId: Equal(config.id) },
+      });
+    const publicProperties = allProperties.filter((p) =>
+      PublicFspConfigurationProperties.includes(
+        p.name as FspConfigurationProperties,
+      ),
+    );
+    return ProgramFspConfigurationMapper.mapPropertyEntitiesToDtos(
+      publicProperties,
     );
   }
 }

@@ -42,3 +42,7 @@ export const FspConfigPropertyValueVisibility: Record<
   // Cooperative Bank of Oromia
   [FspConfigurationProperties.debitAccountNumber]: true,
 };
+
+export const PublicFspConfigurationProperties: FspConfigurationProperties[] = [
+  FspConfigurationProperties.cardDistributionByMail,
+];
