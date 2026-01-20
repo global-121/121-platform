@@ -69,7 +69,7 @@ export class CommercialBankEthiopiaApiService {
       } else {
         console.error(
           'CBE API: CreditTransfer - Unknown error occurred:',
-          error.response ?? error,
+          error.response,
         );
         resultDescription =
           error.response ||
