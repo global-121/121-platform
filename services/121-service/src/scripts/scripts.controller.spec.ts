@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
@@ -104,10 +105,10 @@ describe('ScriptsController - resetDb approverMode logic', () => {
         thrownError = err;
       }
       expect(thrownError).toBeDefined();
-      expect(thrownError.message).toMatch(
-        /NLRC multiple mock can only be seeded with admin approver mode/,
+      expect(thrownError.message).toMatchInlineSnapshot(
+        `"NLRC multiple mock can only be seeded with admin approver mode"`,
       );
-      expect(thrownError.status).toBe(400);
+      expect(thrownError.status).toBe(HttpStatus.BAD_REQUEST);
     });
   });
 
@@ -149,8 +150,10 @@ describe('ScriptsController - resetDb approverMode logic', () => {
         thrownError = err;
       }
       expect(thrownError).toBeDefined();
-      expect(thrownError.message).toMatch(/Unknown approverMode: invalid-mode/);
-      expect(thrownError.status).toBe(400);
+      expect(thrownError.message).toMatchInlineSnapshot(
+        `"Unknown approverMode: invalid-mode"`,
+      );
+      expect(thrownError.status).toBe(HttpStatus.BAD_REQUEST);
     });
   });
 });

@@ -81,7 +81,7 @@ export class ScriptsController {
   })
   @ApiQuery({
     name: 'approverMode',
-    required: false,
+    required: false, // TODO: make this required instead of working with defaults
     enum: ApproverSeedMode,
     enumName: 'ApproverSeedMode',
     description: `Set approvers per seeded program. Possible values: 'none' (no approvers, is default on production), 'admin' (admin-user is approver, is default on development & test) or 'demo' (configure one demo approver user + the admin-user). Default = 'none' on production, 'admin' otherwise.`,
