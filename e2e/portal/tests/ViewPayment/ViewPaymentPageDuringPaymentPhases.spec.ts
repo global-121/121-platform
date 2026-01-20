@@ -24,6 +24,7 @@ const approvedBadgeLabel = 'Approved';
 const successfulBadgeLabel = 'Successful';
 const pendingApprovalPaymentLabel = '0 of 1 approved';
 const pendingApprovalTxLabel = 'Pending approval';
+const approverBadgeLabel = 'admin@example.org';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
@@ -75,6 +76,11 @@ test('Badges and chart should display correct statuses during payment process', 
       isVisible: true,
       count: 8, // 1 per transaction
     });
+    await paymentPage.validateApprovalFlowStep({
+      approver: approverBadgeLabel,
+      rank: 1,
+    });
+
     await paymentPage.validateButtonVisibility({
       isVisible: true,
       button: 'approve',
