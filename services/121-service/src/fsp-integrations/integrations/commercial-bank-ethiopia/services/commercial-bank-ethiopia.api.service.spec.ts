@@ -121,7 +121,7 @@ describe('CommercialBankEthiopiaApiService', () => {
 
       // Assert
       expect(result.resultDescription).toMatchInlineSnapshot(
-        `"Failed because of CBE connection error or timeout. Please try again later."`,
+        `"Failed because of CBE connection error or timeout (ECONNRESET). Please try again later."`,
       );
     });
   });
