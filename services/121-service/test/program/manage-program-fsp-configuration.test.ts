@@ -10,12 +10,14 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { programIdVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { paymentIdVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import programOCW from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { getTransactionsByPaymentIdPaginated } from '@121-service/test/helpers/program.helper';
 import {
   deleteProgramFspConfiguration,
   deleteProgramFspConfigurationProperty,
   getProgramFspConfigurationProperties,
   getProgramFspConfigurations,
+  getPublicProgramFspConfigurationProperties,
   patchProgramFspConfiguration,
   patchProgramFspConfigurationProperty,
   postProgramFspConfiguration,
@@ -28,6 +30,7 @@ import {
   waitForStatusChangeToComplete,
 } from '@121-service/test/helpers/registration.helper';
 import {
+  createAccessTokenWithPermissions,
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
@@ -442,5 +445,41 @@ describe('Manage Fsp configurations', () => {
     properties.forEach((property) => {
       expect(property.value).toBe(hiddenString); // Hidden properties should be masked
     });
+  });
+
+  it('Should return allowlisted public properties of a program Fsp configuration for non-admin users with registration.read permission', async () => {
+    // Arrange
+    const nonAdminAccessToken = await createAccessTokenWithPermissions({
+      permissions: [PermissionEnum.RegistrationREAD],
+      adminAccessToken: accessToken,
+      programId: programIdVisa,
+    });
+
+    // Act
+    const result = await getPublicProgramFspConfigurationProperties({
+      programId: programIdVisa,
+      configName: Fsps.intersolveVisa,
+      accessToken: nonAdminAccessToken,
+    });
+
+    // Assert
+    expect(result.statusCode).toBe(HttpStatus.OK);
+    expect(result.body).toHaveLength(1);
+    expect(result.body[0]).toEqual(
+      expect.objectContaining({
+        name: FspConfigurationProperties.cardDistributionByMail,
+      }),
+    );
+
+    const returnedPropertyNames = result.body.map((p) => p.name);
+    expect(returnedPropertyNames).not.toContain(
+      FspConfigurationProperties.brandCode,
+    );
+    expect(returnedPropertyNames).not.toContain(
+      FspConfigurationProperties.coverLetterCode,
+    );
+    expect(returnedPropertyNames).not.toContain(
+      FspConfigurationProperties.fundingTokenCode,
+    );
   });
 });
