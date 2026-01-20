@@ -283,8 +283,6 @@ export class MessageService {
           newTransactionStatus,
           errorMessage,
           messageSid,
-          intersolveVoucherId:
-            messageJobDto.customData.transactionData.intersolveVoucherId!,
         },
       );
     }

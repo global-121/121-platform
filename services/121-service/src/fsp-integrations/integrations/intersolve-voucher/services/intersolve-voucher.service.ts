@@ -657,10 +657,8 @@ export class IntersolveVoucherService {
 
     intersolveVoucher.lastRequestedBalance = realBalance;
     intersolveVoucher.updatedLastRequestedBalance = new Date();
-    //TODO: voucher send is set to true
     if (realBalance !== intersolveVoucher.transferValue) {
       intersolveVoucher.balanceUsed = true;
-      // does this make sense? send is set to true when balance is used?
       intersolveVoucher.send = true;
     }
     await this.intersolveVoucherScopedRepository.save(intersolveVoucher);
@@ -718,13 +716,11 @@ export class IntersolveVoucherService {
     newTransactionStatus,
     errorMessage,
     messageSid,
-    intersolveVoucherId: _intersolveVoucherId,
   }: {
     transactionId: number;
     newTransactionStatus: TransactionStatusEnum;
     errorMessage: string | null;
     messageSid?: string;
-    intersolveVoucherId: number;
   }): Promise<void> {
     await this.transactionsService.saveProgressFromExternalSource({
       transactionId,
