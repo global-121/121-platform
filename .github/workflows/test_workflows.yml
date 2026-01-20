@@ -20,6 +20,8 @@ jobs:
 
       - name: Lint GitHub Action workflows
         uses: raven-actions/actionlint@v2
+        env:
+          NPM_CONFIG_ENGINE_STRICT: false # Allows "@actions/tool-cache" to install, as it fails to on Node.js v24 with the "engine-strict"-setting
         with:
           group-result: false
           shellcheck: true
