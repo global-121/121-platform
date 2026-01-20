@@ -200,7 +200,8 @@ export class ProgramFspConfigurationsController {
 
   @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationREAD] })
   @ApiOperation({
-    summary: 'Retrieve public properties for Fsp Configuration.',
+    summary:
+      'Retrieve allowlisted public properties for Fsp Configuration. Only returns properties that are safe to expose to non-admin users based on the Fsp type.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
