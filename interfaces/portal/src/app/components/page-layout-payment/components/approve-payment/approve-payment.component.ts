@@ -4,25 +4,43 @@ import {
   computed,
   inject,
   input,
-  signal,
   viewChild,
 } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
 
 import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
+import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
+type ApprovePaymentFormGroup =
+  (typeof ApprovePaymentComponent)['prototype']['formGroup'];
+
 @Component({
   selector: 'app-approve-payment',
-  imports: [ButtonModule, FormDialogComponent, DataListComponent],
+  imports: [
+    ButtonModule,
+    FormDialogComponent,
+    DataListComponent,
+    FormFieldWrapperComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    InputTextModule,
+  ],
   templateUrl: './approve-payment.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,13 +61,21 @@ export class ApprovePaymentComponent {
     'approvePaymentDialog',
   );
 
-  private readonly note = signal('');
+  formGroup = new FormGroup({
+    note: new FormControl<string | undefined>({
+      value: undefined,
+      disabled: false,
+    }),
+  });
+
   approvePaymentMutation = injectMutation(() => ({
-    mutationFn: () =>
+    mutationFn: ({
+      note,
+    }: ReturnType<ApprovePaymentFormGroup['getRawValue']>) =>
       this.paymentApiService.approvePayment({
         programId: this.programId,
         paymentId: this.paymentId,
-        note: this.note,
+        note: note ?? undefined,
       }),
     onSuccess: () => {
       this.approvePaymentDialog().hide();
@@ -81,15 +107,6 @@ export class ApprovePaymentComponent {
       label: $localize`Total amount`,
       value: this.totalPaymentAmount(),
       type: 'text',
-    },
-    {
-      label: $localize`Add note`,
-      type: 'input',
-      inputValue: this.note(),
-      inputPlaceholder: $localize`Optional`,
-      inputChange: (value: string) => {
-        this.note.set(value);
-      },
     },
   ]);
 

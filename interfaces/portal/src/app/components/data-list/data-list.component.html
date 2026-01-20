@@ -31,16 +31,6 @@
             [variant]="item.chipVariant"
             [label]="item.chipLabel"
           />
-        }
-        @if (item.type === 'input') {
-          <input
-            pInputText
-            type="text"
-            class="w-full"
-            [value]="item.inputValue"
-            [placeholder]="item.inputPlaceholder"
-            (input)="item.inputChange?.($event.target.value)"
-          />
         } @else if (item.value !== undefined && item.value !== null) {
           <span class="me-1">
             @switch (item.type) {

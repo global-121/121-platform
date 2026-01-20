@@ -417,3 +417,11 @@ svg-icon svg {
     will-change: transform;
   }
 }
+
+.p-timeline-event-opposite,  .p-timeline-event-connector  {
+  display: none;
+}
+
+.p-timeline-event {
+  min-height: 3rem;
+}
