@@ -51,11 +51,11 @@ export class CommercialBankEthiopiaApiService {
     } catch (error) {
       // Handle errors here
       let resultDescription: string | undefined;
-
-      if (error.code === 'ENOTFOUND' || error.code === 'ECONNABORTED') {
-        console.error('Failed because of CBE connection error or timeout.');
-        resultDescription =
-          'Failed because of CBE connection error or timeout. Please try again later.';
+      if (this.isConnectionError(error)) {
+        console.error(
+          `Failed because of CBE connection error or timeout (${error.code}).`,
+        );
+        resultDescription = `Failed because of CBE connection error or timeout (${error.code}). Please try again later.`;
       } else if (error.code === 'ENOENT') {
         console.error(
           'Failed because the certificate file is not found or not valid.',
@@ -65,7 +65,7 @@ export class CommercialBankEthiopiaApiService {
       } else {
         console.error(
           'CBE API: CreditTransfer - Unknown error occurred:',
-          error.response ?? error,
+          error.response,
         );
         resultDescription =
           error.response ||
@@ -174,12 +174,11 @@ export class CommercialBankEthiopiaApiService {
         resultDescription: 'Unknown error occurred.',
       };
 
-      if (error.code === 'ENOTFOUND') {
+      if (this.isConnectionError(error)) {
         console.error(
-          'Failed because of CBE connection error. Please try again later',
+          `Failed because of CBE connection error (${error.code}). Please try again later`,
         );
-        result.resultDescription =
-          'Failed because of CBE connection error. Please try again later';
+        result.resultDescription = `Failed because of CBE connection error (${error.code}). Please try again later`;
       } else if (error.code === 'ENOENT') {
         console.error(
           'Failed because of ETHIOPIA_CERTIFICATE_PATH file or directory not found.',
@@ -274,9 +273,9 @@ export class CommercialBankEthiopiaApiService {
         resultDescription: 'Unknown error occurred.',
       };
 
-      if (['ENOTFOUND', 'ECONNREFUSED', 'ETIMEDOUT'].includes(error.code)) {
+      if (this.isConnectionError(error)) {
         console.error(
-          'Failed because of CBE connection error. Please try again later',
+          `Failed because of CBE connection error (${error.code}). Please try again later`,
         );
         throw error;
       } else if (error.code === 'ENOENT') {
@@ -347,5 +346,16 @@ export class CommercialBankEthiopiaApiService {
     });
 
     return payload;
+  }
+
+  private isConnectionError(error: any): boolean {
+    const connectionErrorCodes = [
+      'ENOTFOUND',
+      'ECONNABORTED',
+      'ECONNRESET',
+      'ECONNREFUSED',
+      'ETIMEDOUT',
+    ];
+    return connectionErrorCodes.includes(error.code);
   }
 }
