@@ -410,8 +410,20 @@ export class IntersolveVoucherService {
     let newTransactionStatus: TransactionStatusEnum;
     if (succesStatuses.includes(statusCallbackData.MessageStatus)) {
       newTransactionStatus = TransactionStatusEnum.success;
+      if (processType === MessageProcessType.whatsappPendingVoucher) {
+        await this.updateVoucherSendStatusForTransaction({
+          transactionId,
+          sendStatus: true,
+        });
+      }
     } else if (failStatuses.includes(statusCallbackData.MessageStatus)) {
       newTransactionStatus = TransactionStatusEnum.error;
+      if (processType === MessageProcessType.whatsappPendingVoucher) {
+        await this.updateVoucherSendStatusForTransaction({
+          transactionId,
+          sendStatus: false,
+        });
+      }
     } else {
       return;
     }
@@ -436,6 +448,43 @@ export class IntersolveVoucherService {
             ')'
           : undefined,
     });
+  }
+
+  private async updateVoucherSendStatusForTransaction({
+    transactionId,
+    sendStatus,
+  }: {
+    transactionId: number;
+    sendStatus: boolean;
+  }): Promise<void> {
+    const transaction = await this.transactionRepository.findOne({
+      where: { id: Equal(transactionId) },
+    });
+    if (!transaction) {
+      return;
+    }
+
+    const registration = await this.registrationScopedRepository.findOne({
+      where: { id: Equal(transaction.registrationId) },
+      relations: ['images', 'images.voucher'],
+    });
+    if (!registration) {
+      return;
+    }
+
+    const voucherToUpdate = registration.images.find(
+      (image) => image.voucher?.paymentId === transaction.paymentId,
+    )?.voucher;
+    if (!voucherToUpdate) {
+      return;
+    }
+
+    if (voucherToUpdate.send === sendStatus) {
+      return;
+    }
+
+    voucherToUpdate.send = sendStatus;
+    await this.intersolveVoucherScopedRepository.save(voucherToUpdate);
   }
 
   // TODO: move this code, such that intersolve-voucher module does not need to import transactions module
@@ -608,8 +657,10 @@ export class IntersolveVoucherService {
 
     intersolveVoucher.lastRequestedBalance = realBalance;
     intersolveVoucher.updatedLastRequestedBalance = new Date();
+    //TODO: voucher send is set to true
     if (realBalance !== intersolveVoucher.transferValue) {
       intersolveVoucher.balanceUsed = true;
+      // does this make sense? send is set to true when balance is used?
       intersolveVoucher.send = true;
     }
     await this.intersolveVoucherScopedRepository.save(intersolveVoucher);
@@ -667,7 +718,7 @@ export class IntersolveVoucherService {
     newTransactionStatus,
     errorMessage,
     messageSid,
-    intersolveVoucherId,
+    intersolveVoucherId: _intersolveVoucherId,
   }: {
     transactionId: number;
     newTransactionStatus: TransactionStatusEnum;
@@ -682,13 +733,6 @@ export class IntersolveVoucherService {
       newTransactionStatus,
       errorMessage: errorMessage ?? undefined,
     });
-
-    const intersolveVoucher =
-      await this.intersolveVoucherScopedRepository.findOneOrFail({
-        where: { id: Equal(intersolveVoucherId) },
-      });
-    intersolveVoucher.send = true;
-    await this.intersolveVoucherScopedRepository.save(intersolveVoucher);
 
     if (messageSid) {
       await this.twilioMessageRepository.update(
