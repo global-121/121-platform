@@ -64,8 +64,6 @@ test('Badges and chart should display correct statuses during payment process', 
   });
 
   await test.step('Validate payment-page in "Pending approval" state', async () => {
-    // ##TODO validate 'Approver flow'
-
     await paymentPage.validateBadgeIsPresentByLabel({
       badgeName: pendingApprovalPaymentLabel,
       isVisible: true,
