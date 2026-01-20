@@ -27,10 +27,50 @@ const mockSuccessResponse = {
   TransactionId: 'TXN123456',
 };
 
+const mockXmlPayload = {
+  elements: [
+    {
+      name: 'soapenv:Envelope',
+      elements: [
+        {
+          name: 'soapenv:Body',
+          elements: [
+            {
+              name: 'cber:RMTFundtransfer',
+              elements: [
+                {
+                  name: 'WebRequestCommon',
+                  elements: [
+                    { name: 'password', elements: [{ text: '' }] },
+                    { name: 'userName', elements: [{ text: '' }] },
+                  ],
+                },
+                {
+                  name: 'FUNDSTRANSFERCBEREMITANCEType',
+                  elements: [
+                    { name: 'fun:DEBITAMOUNT', elements: [{ text: '' }] },
+                    { name: 'fun:DEBITTHEIRREF', elements: [{ text: '' }] },
+                    { name: 'fun:CREDITTHEIRREF', elements: [{ text: '' }] },
+                    { name: 'fun:CREDITACCTNO', elements: [{ text: '' }] },
+                    { name: 'fun:CREDITCURRENCY', elements: [{ text: '' }] },
+                    { name: 'fun:RemitterName', elements: [{ text: '' }] },
+                    { name: 'fun:BeneficiaryName', elements: [{ text: '' }] },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
 describe('CommercialBankEthiopiaApiService', () => {
   let service: CommercialBankEthiopiaApiService;
   let soapService: SoapService;
   let postCBERequest: jest.Mock;
+  let readXmlAsJs: jest.Mock;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -51,6 +91,10 @@ describe('CommercialBankEthiopiaApiService', () => {
     );
     soapService = module.get<SoapService>(SoapService);
     postCBERequest = soapService.postCBERequest as jest.Mock;
+    readXmlAsJs = soapService.readXmlAsJs as jest.Mock;
+
+    // Mock readXmlAsJs to return a valid payload structure
+    readXmlAsJs.mockResolvedValue(mockXmlPayload);
   });
 
   describe('creditTransfer', () => {
