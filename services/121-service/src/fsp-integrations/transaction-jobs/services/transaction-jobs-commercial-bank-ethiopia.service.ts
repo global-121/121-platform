@@ -84,9 +84,11 @@ export class TransactionJobsCommercialBankEthiopiaService {
       newTransactionStatus: status,
     });
 
-    const newCbeTransfer = new CbeTransferEntity();
-    newCbeTransfer.debitTheirRef = debitTheirRef;
-    newCbeTransfer.transactionId = transactionJob.transactionId;
-    await this.cbeTransferScopedRepository.save(newCbeTransfer);
+    if (!transactionJob.isRetry) {
+      const newCbeTransfer = new CbeTransferEntity();
+      newCbeTransfer.debitTheirRef = debitTheirRef;
+      newCbeTransfer.transactionId = transactionJob.transactionId;
+      await this.cbeTransferScopedRepository.save(newCbeTransfer);
+    }
   }
 }
