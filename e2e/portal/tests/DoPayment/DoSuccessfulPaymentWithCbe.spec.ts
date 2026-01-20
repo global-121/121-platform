@@ -16,12 +16,11 @@ import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 let accessToken: string;
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-  const result = await resetDBAndSeedRegistrations({
+  ({ accessToken } = await resetDBAndSeedRegistrations({
     seedScript: SeedScript.cbeProgram,
     registrations: registrationsCbe,
     programId: programIdCbe,
-  });
-  accessToken = result.accessToken;
+  }));
 });
 
 test('Do successful payment for Cbe fsp', async ({
