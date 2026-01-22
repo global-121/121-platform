@@ -19,13 +19,15 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('Do successful payment for Visa fsp', async ({
-  page,
-  validatePaymentCard,
-}) => {
+test('Do successful payment for Visa fsp', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const programTitle = NLRCProgram.titlePortal.en;
+  const numberOfPas = registrationsVisa.length;
+  const defaultTransferValue = NLRCProgram.fixedTransferValue;
+  const defaultMaxTransferValue = registrationsVisa.reduce((output, pa) => {
+    return output + pa.paymentAmountMultiplier * defaultTransferValue;
+  }, 0);
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
@@ -56,7 +58,6 @@ test('Do successful payment for Visa fsp', async ({
       successfulPaymentAmount: defaultMaxTransferValue,
       failedTransactions: 0,
       programId: programIdOCW,
-      scenario: 'successful',
     });
   });
 });
