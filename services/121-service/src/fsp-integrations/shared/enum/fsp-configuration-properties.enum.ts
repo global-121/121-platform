@@ -8,7 +8,7 @@ export enum FspConfigurationProperties {
   coverLetterCode = 'coverLetterCode',
   fundingTokenCode = 'fundingTokenCode',
   cardDistributionByMail = 'cardDistributionByMail',
-  maxMonthlyAmount = 'maxMonthlyAmount',
+  maxCentsToSpendPerMonth = 'maxCentsToSpendPerMonth',
   // Nedbank
   paymentReferencePrefix = 'paymentReferencePrefix',
   // Onafriq
@@ -32,7 +32,7 @@ export const FspConfigPropertyValueVisibility: Record<
   [FspConfigurationProperties.coverLetterCode]: true,
   [FspConfigurationProperties.fundingTokenCode]: true,
   [FspConfigurationProperties.cardDistributionByMail]: true,
-  [FspConfigurationProperties.maxMonthlyAmount]: true,
+  [FspConfigurationProperties.maxCentsToSpendPerMonth]: true,
   // Nedbank
   [FspConfigurationProperties.paymentReferencePrefix]: true,
   // Onafriq

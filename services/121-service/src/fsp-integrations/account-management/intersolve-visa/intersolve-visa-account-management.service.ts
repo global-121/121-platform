@@ -39,14 +39,14 @@ export class IntersolveVisaAccountManagementService {
         programId,
       },
     );
-    const maxMonthlyAmount =
+    const maxCentsToSpendPerMonth =
       await this.programFspConfigurationRepository.getPropertyValueByName({
         programFspConfigurationId: registration.programFspConfigurationId,
-        name: FspConfigurationProperties.brandCode,
+        name: FspConfigurationProperties.maxCentsToSpendPerMonth,
       });
     return await this.intersolveVisaService.retrieveAndUpdateWallet({
       registrationId: registration.id,
-      maxMonthlyAmount: Number(maxMonthlyAmount),
+      maxCentsToSpendPerMonth: Number(maxCentsToSpendPerMonth),
     });
   }
 
@@ -61,14 +61,14 @@ export class IntersolveVisaAccountManagementService {
         programId,
       },
     );
-    const maxMonthlyAmount =
+    const maxCentsToSpendPerMonth =
       await this.programFspConfigurationRepository.getPropertyValueByName({
         programFspConfigurationId: registration.programFspConfigurationId,
-        name: FspConfigurationProperties.brandCode,
+        name: FspConfigurationProperties.maxCentsToSpendPerMonth,
       });
     return await this.intersolveVisaService.getWalletWithCards({
       registrationId: registration.id,
-      maxMonthlyAmount: Number(maxMonthlyAmount),
+      maxCentsToSpendPerMonth: Number(maxCentsToSpendPerMonth),
     });
   }
 

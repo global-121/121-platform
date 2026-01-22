@@ -2138,8 +2138,8 @@
       <trans-unit id="approverDeleted" datatype="html">
         <source>Approver deleted. Create new payment.</source>
       </trans-unit>
-      <trans-unit id="8963565142530489669" datatype="html">
-        <source>Max monthly amount (in cents)</source>
+      <trans-unit id="2993213000622028040" datatype="html">
+        <source>Max amount to spend per month (in cents)</source>
       </trans-unit>
     </body>
   </file>
