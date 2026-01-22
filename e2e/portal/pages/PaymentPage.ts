@@ -21,7 +21,7 @@ class PaymentPage extends BasePage {
   readonly paymentLogTable: Locator;
   readonly startPaymentButton: Locator;
   readonly approvePaymentButton: Locator;
-  readonly approvalRank: Locator;
+  readonly approvalFlowRow: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -63,7 +63,7 @@ class PaymentPage extends BasePage {
     this.approvePaymentButton = this.page.getByRole('button', {
       name: 'Approve payment',
     });
-    this.approvalRank = this.page.getByTestId('approval-rank');
+    this.approvalFlowRow = this.page.getByTestId('approval-flow-row');
   }
 
   async approvePayment() {
@@ -285,19 +285,26 @@ class PaymentPage extends BasePage {
   }
 
   async validateApprovalFlowStep({
-    approver,
+    approverName,
     rank,
+    approved,
   }: {
-    approver: string;
-    rank: number;
+    approverName: string;
+    rank?: number;
+    approved?: boolean;
   }) {
-    await expect(this.approvalRank).toContainText(rank.toString());
+    const row = this.approvalFlowRow.filter({ hasText: approverName });
+    await expect(row).toBeVisible();
 
-    await this.validateBadgeIsPresentByLabel({
-      badgeName: approver,
-      isVisible: true,
-      count: 1,
-    });
+    if (rank) {
+      const span = row.getByText(rank.toString(), { exact: true });
+      await expect(span).toBeVisible();
+    }
+
+    if (approved) {
+      const icon = row.locator(`.pi-check`);
+      return await icon.isVisible();
+    }
   }
 }
 
