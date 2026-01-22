@@ -119,7 +119,10 @@ describe('IntersolveVisaService', () => {
         spentThisMonth,
       });
 
-      await service.retrieveAndUpdateWallet(registrationId);
+      await service.retrieveAndUpdateWallet({
+        registrationId,
+        maxMonthlyAmount: 15000,
+      });
 
       expect(parentWalletRepo.updateUnscoped).toHaveBeenCalledWith(
         parentWallet.id,
@@ -139,7 +142,10 @@ describe('IntersolveVisaService', () => {
         spentThisMonth,
       });
 
-      await service.retrieveAndUpdateWallet(registrationId);
+      await service.retrieveAndUpdateWallet({
+        registrationId,
+        maxMonthlyAmount: 15000,
+      });
 
       expect(parentWalletRepo.updateUnscoped).toHaveBeenCalledWith(
         parentWallet.id,
@@ -209,6 +215,7 @@ describe('IntersolveVisaService', () => {
       const result = await service.calculateTransferValueWithWalletRetrieval({
         registrationId,
         inputTransferValueInMajorUnit,
+        maxMonthlyAmount: 15000,
       });
 
       // Assert
@@ -247,6 +254,7 @@ describe('IntersolveVisaService', () => {
       const result = await service.calculateTransferValueWithWalletRetrieval({
         registrationId,
         inputTransferValueInMajorUnit,
+        maxMonthlyAmount: 15000,
       });
 
       // Assert
@@ -267,6 +275,7 @@ describe('IntersolveVisaService', () => {
       const result = await service.calculateTransferValueWithWalletRetrieval({
         registrationId,
         inputTransferValueInMajorUnit,
+        maxMonthlyAmount: 15000,
       });
 
       // Assert

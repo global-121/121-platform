@@ -173,11 +173,11 @@
         {
           "name": "cardDistributionByMail",
           "value": "INTERSOLVE_VISA_CARD_DISTRIBUTION_BY_MAIL"
-        } //,
-        // {
-        //   "name": "maxMonthlyAmount",
-        //   "value": "MAX_MONTHLY_AMOUNT_CENTS"
-        // }
+        },
+        {
+          "name": "maxMonthlyAmount",
+          "value": "MAX_MONTHLY_AMOUNT_CENTS"
+        }
       ]
     },
     {

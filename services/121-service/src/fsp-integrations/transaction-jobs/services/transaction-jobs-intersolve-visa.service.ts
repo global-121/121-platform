@@ -45,6 +45,17 @@ export class TransactionJobsIntersolveVisaService {
         transactionJob.referenceId,
       );
 
+    //TODO: get earlier and add maxMonthlyAmount
+    const {
+      brandCode,
+      coverLetterCode,
+      fundingTokenCode,
+      cardDistributionByMail,
+      maxMonthlyAmount,
+    } = await this.getIntersolveVisaFspConfig(
+      transactionJob.programFspConfigurationId,
+    );
+
     let transferValueInMajorUnit: number;
     try {
       //TODO:
@@ -53,7 +64,7 @@ export class TransactionJobsIntersolveVisaService {
           {
             registrationId: registration.id,
             inputTransferValueInMajorUnit: transactionJob.transferValue,
-            //maxMonthlyAmount,
+            maxMonthlyAmount: Number(maxMonthlyAmount),
           },
         );
     } catch (error) {
@@ -78,17 +89,6 @@ export class TransactionJobsIntersolveVisaService {
 
     let intersolveVisaDoTransferOrIssueCardReturnDto: DoTransferOrIssueCardResult;
     try {
-      //TODO: get earlier and add maxMonthlyAmount
-      const {
-        brandCode,
-        coverLetterCode,
-        fundingTokenCode,
-        cardDistributionByMail,
-        //maxMonthlyAmount,
-      } = await this.getIntersolveVisaFspConfig(
-        transactionJob.programFspConfigurationId,
-      );
-
       const isChildWalletLinkedToRegistration =
         await this.intersolveVisaChildWalletScopedRepository.hasLinkedChildWalletForRegistrationId(
           registration.id,
@@ -165,7 +165,7 @@ export class TransactionJobsIntersolveVisaService {
     coverLetterCode: string;
     fundingTokenCode: string;
     cardDistributionByMail: string;
-    //maxMonthlyAmount: string;
+    maxMonthlyAmount: string;
   }> {
     const intersolveVisaConfig =
       await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
@@ -175,7 +175,7 @@ export class TransactionJobsIntersolveVisaService {
           FspConfigurationProperties.coverLetterCode,
           FspConfigurationProperties.fundingTokenCode,
           FspConfigurationProperties.cardDistributionByMail,
-          //FspConfigurationProperties.maxMonthlyAmount,
+          FspConfigurationProperties.maxMonthlyAmount,
         ],
       });
     return {
@@ -191,9 +191,9 @@ export class TransactionJobsIntersolveVisaService {
       cardDistributionByMail: intersolveVisaConfig.find(
         (c) => c.name === FspConfigurationProperties.cardDistributionByMail,
       )?.value as string,
-      //maxMonthlyAmount: intersolveVisaConfig.find(
-      //  (c) => c.name === FspConfigurationProperties.maxMonthlyAmount,
-      //)?.value as string,
+      maxMonthlyAmount: intersolveVisaConfig.find(
+        (c) => c.name === FspConfigurationProperties.maxMonthlyAmount,
+      )?.value as string,
     };
   }
 
