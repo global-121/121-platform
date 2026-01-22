@@ -51,7 +51,7 @@ export class MessageJobCustomDataDto {
  *   any time.
  * - non-templated messages: can only be sent when the conversation is "active".
  * - pending messages: messages that will be sent when the conversation is
- *   active or as soon it becomes "active" again. All pending messages are
+ *   active or as soon as it becomes "active" again. All pending messages are
  *   non-templated.
  */
 export enum MessageProcessType {
@@ -70,20 +70,20 @@ export enum MessageProcessType {
   whatsappTemplateVoucher = 'whatsapp-template-voucher',
 
   /**
-   * A templated message, reminding the registration a voucher is available,
+   * A templated message, reminding a registration that a voucher is available,
    * asking for a reply.
    */
   whatsappTemplateVoucherReminder = 'whatsapp-template-voucher-reminder',
 
   /**
    * A message that will be sent when the Whatsapp conversation is active or
-   * becomes "active" again.
+   * becomes active again.
    */
   whatsappPendingMessage = 'whatsapp-pending-message',
 
   /**
-   * A message that will be sent when the Whatsapp conversation is "active" or
-   * becomes "active" again. Informs the registration a voucher is available.
+   * A message that will be sent when the Whatsapp conversation is active or
+   * becomes active again. Informs a registration that a voucher is available.
    */
   whatsappPendingVoucher = 'whatsapp-pending-voucher',
 
