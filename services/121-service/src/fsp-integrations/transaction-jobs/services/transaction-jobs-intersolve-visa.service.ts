@@ -45,7 +45,6 @@ export class TransactionJobsIntersolveVisaService {
         transactionJob.referenceId,
       );
 
-    //TODO: get earlier and add maxMonthlyAmount
     const {
       brandCode,
       coverLetterCode,
@@ -58,7 +57,6 @@ export class TransactionJobsIntersolveVisaService {
 
     let transferValueInMajorUnit: number;
     try {
-      //TODO:
       transferValueInMajorUnit =
         await this.intersolveVisaService.calculateTransferValueWithWalletRetrieval(
           {

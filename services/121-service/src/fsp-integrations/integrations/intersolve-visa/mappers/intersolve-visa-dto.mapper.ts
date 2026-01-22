@@ -31,7 +31,6 @@ export class IntersolveVisaDtoMapper {
       this.mapChildWalletEntityToCard(wallet),
     );
 
-    //TODO: hier moet nog maxMonthlyAmount bij
     const dto: IntersolveVisaWalletDto = {
       tokenCode: intersolveVisaParentWalletEntity.tokenCode,
       balance: intersolveVisaParentWalletEntity.balance,
