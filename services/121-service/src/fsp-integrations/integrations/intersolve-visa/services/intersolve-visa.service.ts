@@ -678,16 +678,19 @@ export class IntersolveVisaService {
   }
 
   // Calculated the amount that can be transferred based on the limits of maximum amount on a wallet and maximum amount that can be spent per month.
+  //TODO:
   private calculateLimitedTransferValue({
     transferValueInMajorUnit,
     spentThisMonth,
     balance,
+    //maxMonthlyAmount,
   }: {
     transferValueInMajorUnit: number;
     spentThisMonth: number;
     balance: number;
   }): number {
     const calculatedTransferValueMajorUnit =
+      //(maxMonthlyAmount - spentThisMonth - balance) / 100;
       (maximumAmountOfSpentCentPerMonth - spentThisMonth - balance) / 100;
 
     if (calculatedTransferValueMajorUnit > 0) {
