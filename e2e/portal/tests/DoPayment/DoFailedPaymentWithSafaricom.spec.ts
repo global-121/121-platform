@@ -12,7 +12,7 @@ import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-  // Full name is set to 'error' to create a failed payment
+  // Full phoneNumber is set to create a failed payment
   registrationsSafaricom[0].phoneNumber = '254000000000';
 
   await resetDBAndSeedRegistrations({
@@ -22,13 +22,18 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('Do failed payment for Safaricom fsp', async ({
-  page,
-  validatePaymentCard,
-}) => {
+test('Do failed payment for Safaricom fsp', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const programTitle = KRCSProgram.titlePortal.en;
+  const numberOfPas = registrationsSafaricom.length;
+  const defaultTransferValue = KRCSProgram.fixedTransferValue;
+  const defaultMaxTransferValue = registrationsSafaricom.reduce(
+    (output, pa) => {
+      return output + pa.paymentAmountMultiplier * defaultTransferValue;
+    },
+    0,
+  );
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
@@ -63,7 +68,6 @@ test('Do failed payment for Safaricom fsp', async ({
       failedTransactions: numberOfPas,
       currency: KRCSProgram.currency,
       programId: programIdSafaricom,
-      scenario: 'failed',
     });
   });
 });
