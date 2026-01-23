@@ -30,7 +30,7 @@ parentWallet.intersolveVisaChildWallets = [];
 const newBalance = 150;
 const newDate = new Date('2024-02-02T00:00:00Z');
 const spentThisMonth = 50;
-const maxCentsToSpendPerMonth = 1500;
+const maxCentsToSpendPerMonth = 15000;
 
 let customer = new IntersolveVisaCustomerEntity();
 customer.intersolveVisaParentWallet = parentWallet;
