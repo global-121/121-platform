@@ -48,6 +48,7 @@ export class Approvers1766058193913 implements MigrationInterface {
       JOIN "121-service"."user_role" ur ON ur.id = paarur."userRoleId"
       WHERE perm.name = 'payment.start'
       AND ur.role <> 'admin'
+      AND paa.scope = ''
       ORDER BY paa.id`,
     );
 
