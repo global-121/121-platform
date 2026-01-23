@@ -1,6 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import {
+  FspConfigurationProperties,
+  PublicFspConfigurationProperties,
+} from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
@@ -465,21 +468,13 @@ describe('Manage Fsp configurations', () => {
     // Assert
     expect(result.statusCode).toBe(HttpStatus.OK);
     expect(result.body).toHaveLength(1);
-    expect(result.body[0]).toEqual(
-      expect.objectContaining({
-        name: FspConfigurationProperties.cardDistributionByMail,
-      }),
-    );
 
     const returnedPropertyNames = result.body.map((p) => p.name);
-    expect(returnedPropertyNames).not.toContain(
-      FspConfigurationProperties.brandCode,
-    );
-    expect(returnedPropertyNames).not.toContain(
-      FspConfigurationProperties.coverLetterCode,
-    );
-    expect(returnedPropertyNames).not.toContain(
-      FspConfigurationProperties.fundingTokenCode,
+    const allowlistedPropertyNames =
+      PublicFspConfigurationProperties[Fsps.intersolveVisa];
+
+    expect(returnedPropertyNames.sort()).toEqual(
+      allowlistedPropertyNames?.sort(),
     );
   });
 });

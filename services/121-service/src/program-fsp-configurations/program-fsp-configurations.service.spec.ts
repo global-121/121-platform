@@ -137,23 +137,6 @@ describe('ProgramFspConfigurationsService', () => {
         configName,
       );
 
-      expect(
-        mockProgramFspConfigurationRepository.findOne,
-      ).toHaveBeenCalledWith({
-        where: {
-          name: Equal(configName),
-          programId: Equal(programId),
-        },
-      });
-      expect(
-        mockProgramFspConfigurationPropertyRepository.find,
-      ).toHaveBeenCalledWith({
-        where: {
-          programFspConfigurationId: Equal(mockProgramFspConfigEntity.id),
-          name: expect.anything(),
-        },
-      });
-
       expect(result).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
@@ -164,7 +147,7 @@ describe('ProgramFspConfigurationsService', () => {
       );
     });
 
-    it('should return empty array for non-allowlisted FSPs', async () => {
+    it('should return empty array for FSP that do not have allow listed properties', async () => {
       const nonAllowlistedConfig = { ...mockProgramFspConfigEntity };
       nonAllowlistedConfig.fspName = Fsps.excel;
       mockProgramFspConfigurationRepository.findOne.mockResolvedValueOnce(
@@ -176,9 +159,6 @@ describe('ProgramFspConfigurationsService', () => {
         configName,
       );
 
-      expect(
-        mockProgramFspConfigurationPropertyRepository.find,
-      ).not.toHaveBeenCalled();
       expect(result).toEqual([]);
     });
   });

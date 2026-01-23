@@ -201,7 +201,7 @@ export class ProgramFspConfigurationsController {
   @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationREAD] })
   @ApiOperation({
     summary:
-      'Retrieve allowlisted public properties for Fsp Configuration. Only returns properties that are safe to expose to non-admin users based on the Fsp type.',
+      'Retrieve allowlisted public properties for Fsp Configuration. Only returns properties that are safe to expose to non-admin users based on the Program Fsp Configuration Property type.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -213,10 +213,6 @@ export class ProgramFspConfigurationsController {
     status: HttpStatus.OK,
     description:
       'The Fsp Configuration properties have been successfully retrieved.',
-  })
-  @ApiResponse({
-    status: HttpStatus.FORBIDDEN,
-    description: 'Forbidden',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
