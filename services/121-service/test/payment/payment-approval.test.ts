@@ -8,6 +8,7 @@ import {
   approvePayment,
   createPayment,
   getPaymentEvents,
+  getPaymentSummary,
   getTransactionsByPaymentIdPaginated,
   startPayment,
   waitForPaymentAndTransactionsToComplete,
@@ -318,6 +319,52 @@ describe('do payment with <2 approvers', () => {
     expect(createPaymentResponse.body.message).toMatchInlineSnapshot(
       `"No approvers found for program, cannot create payment"`,
     );
+  });
+
+  it('should return all payment approvals but without username for deleted approver(s)', async () => {
+    // Arrange
+    // add 2nd approver
+    const accessTokenFinanceManager = await getAccessTokenFinanceManager();
+    const financeManagerUserId = (
+      await getCurrentUser({
+        accessToken: accessTokenFinanceManager,
+      })
+    ).body.user.id;
+    const createApproverResult = await createApprover({
+      programId,
+      userId: financeManagerUserId,
+      order: 2,
+      accessToken: adminAccessToken,
+    });
+
+    // create payment
+    const createPaymentResponse = await createPayment({
+      programId,
+      transferValue,
+      referenceIds: [registrationPV5.referenceId],
+      accessToken: adminAccessToken,
+    });
+
+    // delete approver again
+    await deleteApprover({
+      programId,
+      approverId: createApproverResult.body.id,
+      accessToken: adminAccessToken,
+    });
+
+    // Act
+    const getPaymentResponse = await getPaymentSummary({
+      programId,
+      paymentId: createPaymentResponse.body.id,
+      accessToken: adminAccessToken,
+    });
+
+    // Assert
+    expect(getPaymentResponse.status).toBe(HttpStatus.OK);
+    expect(getPaymentResponse.body.approvalStatus.length).toBe(2);
+    expect(
+      getPaymentResponse.body.approvalStatus[1].username,
+    ).not.toBeDefined(); // The missing username is in the front-end handled as 'Approver deleted. Create new payment.'
   });
 
   it('should include note in payment approved event', async () => {

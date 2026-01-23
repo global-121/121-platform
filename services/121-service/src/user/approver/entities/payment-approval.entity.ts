@@ -6,10 +6,10 @@ import { ApproverEntity } from '@121-service/src/user/approver/entities/approver
 
 @Entity('payment_approval')
 export class PaymentApprovalEntity extends Base121Entity {
-  @ManyToOne(() => ApproverEntity, { onDelete: 'CASCADE' })
+  @ManyToOne(() => ApproverEntity, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'approverId' })
   public approver: Relation<ApproverEntity>;
-  @Column()
+  @Column({ nullable: true })
   public approverId: number;
 
   @ManyToOne(() => PaymentEntity, (payment) => payment.approvals, {

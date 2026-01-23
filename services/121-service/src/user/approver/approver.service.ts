@@ -17,8 +17,6 @@ export class ApproverService {
   @InjectRepository(PaymentApprovalEntity)
   private readonly paymentApprovalRepository: Repository<PaymentApprovalEntity>;
 
-  // ##TODO: move a lot of this stuff to repository?
-
   public async getApproverByUserIdOrThrow({
     userId,
     programId,
@@ -203,11 +201,10 @@ export class ApproverService {
     });
     return paymentApprovals.map((approval) => {
       const { approver } = approval;
-      const { user } = approver.programAidworkerAssignment;
       return {
         id: approval.id,
         approved: approval.approved,
-        username: user.username,
+        username: approver?.programAidworkerAssignment?.user?.username,
         rank: approval.rank,
       };
     });
