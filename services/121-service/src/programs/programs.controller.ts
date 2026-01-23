@@ -58,7 +58,7 @@ export class ProgramController {
   ) {}
 
   // Note: protecting this endpoint because we assume in this branch the PA-app will be removed
-  @AuthenticatedUser()
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramREAD] })
   @ApiOperation({ summary: 'Get program by id' })
   @ApiParam({
     name: 'programId',
