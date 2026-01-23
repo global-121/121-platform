@@ -10,7 +10,7 @@ export class PaymentApprovalEntity extends Base121Entity {
   @JoinColumn({ name: 'approverId' })
   public approver: Relation<ApproverEntity>;
   @Column({ nullable: true })
-  public approverId: number;
+  public approverId: number | null;
 
   @ManyToOne(() => PaymentEntity, (payment) => payment.approvals, {
     onDelete: 'CASCADE',
