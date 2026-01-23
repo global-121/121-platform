@@ -133,7 +133,7 @@ class PaymentsPage extends BasePage {
     date,
     registrationsNumber,
     paymentAmount,
-    successfulTransactions,
+    successfulPaymentAmount,
     failedTransactions,
     currency = '€',
     programId,
@@ -142,7 +142,7 @@ class PaymentsPage extends BasePage {
     date: string;
     registrationsNumber: number;
     paymentAmount: number;
-    successfulTransactions: number;
+    successfulPaymentAmount: number;
     failedTransactions: number;
     currency?: string;
     programId: number;
@@ -166,7 +166,7 @@ class PaymentsPage extends BasePage {
       .filter({ hasText: 'Expected total amount' })
       .textContent();
 
-    const successfulTransactionsElement = await card
+    const successfulAmountElement = await card
       .filter({ hasText: 'Amount successfully sent' })
       .textContent();
 
@@ -184,8 +184,8 @@ class PaymentsPage extends BasePage {
     expect(totalAmountElement).toContain(currency);
 
     await this.validateNumericValue(
-      successfulTransactionsElement,
-      successfulTransactions,
+      successfulAmountElement,
+      successfulPaymentAmount,
     );
 
     await this.validateNumericValue(

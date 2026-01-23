@@ -26,6 +26,7 @@ import { GenericRegistrationAttributes } from '@121-service/src/registration/enu
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { PaginateQueryLimitRequired } from '@121-service/src/shared/types/paginate-query-limit-required.type';
+import { ApproverService } from '@121-service/src/user/approver/approver.service';
 @Injectable()
 export class PaymentsReportingService {
   @InjectRepository(PaymentEntity)
@@ -39,6 +40,7 @@ export class PaymentsReportingService {
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentEventsService: PaymentEventsService,
     private readonly programRepository: ProgramRepository,
+    private readonly approverService: ApproverService,
   ) {}
 
   public async getPayments({
@@ -103,6 +105,9 @@ export class PaymentsReportingService {
         row.totalTransferValue,
       );
     }
+    const approvalStatus = await this.approverService.getPaymentApprovalStatus({
+      paymentId,
+    });
 
     return {
       [TransactionStatusEnum.success]: totalTransferValuePerStatus[
@@ -135,6 +140,7 @@ export class PaymentsReportingService {
         transferValue: 0,
       },
       fsps: fspsInPayment || [],
+      approvalStatus,
     };
   }
 

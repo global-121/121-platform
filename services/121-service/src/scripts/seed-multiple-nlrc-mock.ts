@@ -4,6 +4,7 @@ import { env } from '@121-service/src/env';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
 import { SeedHelperService } from '@121-service/src/scripts/services/seed-helper.service';
@@ -24,16 +25,27 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     private seedHelper: SeedHelperService,
   ) {}
 
-  public async run(
-    isApiTests?: boolean,
-    powerNrRegistrationsString?: string,
-    nrPaymentsString?: string,
-    powerNrMessagesString?: string,
+  public async run({
+    isApiTests = false,
+    powerNrRegistrationsString,
+    nrPaymentsString,
+    powerNrMessagesString,
     includeRegistrationEvents = false,
     mockPv = true,
     mockOcw = true,
-    seedConfig?: SeedConfigurationDto,
-  ): Promise<void> {
+    seedConfig,
+    approverMode,
+  }: {
+    isApiTests?: boolean;
+    powerNrRegistrationsString?: string;
+    nrPaymentsString?: string;
+    powerNrMessagesString?: string;
+    includeRegistrationEvents?: boolean;
+    mockPv?: boolean;
+    mockOcw?: boolean;
+    seedConfig?: SeedConfigurationDto;
+    approverMode: ApproverSeedMode;
+  }): Promise<void> {
     if (env.INTERSOLVE_MODE !== FspMode.mock || !env.MOCK_TWILIO) {
       throw new HttpException(
         `INTERSOLVE_MODE is not MOCK or MOCK_TWILIO is not set to true`,
@@ -48,7 +60,11 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       });
 
     // 0. Set up program data
-    await this.seedHelper.seedData(seedConfig!, isApiTests);
+    await this.seedHelper.seedData({
+      seedConfig: seedConfig!,
+      isApiTests,
+      approverMode,
+    });
 
     // 1. Set up 1 registration with 1 payment and 1 message via the API for each program
     const programIds: number[] = [];
@@ -121,21 +137,23 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       accessToken,
     });
 
-    const createPaymentResponse = await this.seedMockHelper.createPayment(
+    const createPaymentResponse = await this.seedMockHelper.createPayment({
       programId,
-      transferValueVisa,
-      [registration.referenceId],
-      accessToken,
-    );
-    const paymentId = createPaymentResponse.data.id;
-    await this.seedMockHelper.waitForTransactionsToComplete({
-      programId,
-      paymentId,
+      transferValue: transferValueVisa,
       referenceIds: [registration.referenceId],
       accessToken,
-      completeStatuses: [TransactionStatusEnum.pendingApproval],
     });
-    await this.seedMockHelper.startPayment(programId, paymentId, accessToken);
+    const paymentId = createPaymentResponse.data.id;
+    await this.seedMockHelper.approvePayment({
+      programId,
+      paymentId,
+      accessToken,
+    });
+    await this.seedMockHelper.startPayment({
+      programId,
+      paymentId,
+      accessToken,
+    });
     await this.seedMockHelper.waitForTransactionsToComplete({
       programId,
       paymentId,

@@ -55,6 +55,7 @@ test('Table should be a filtered list of registrations included in the transacti
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
     );
+    await paymentPage.approvePayment();
     await paymentPage.startPayment();
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);

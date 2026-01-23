@@ -50,7 +50,6 @@ test('Do successful payment for Voucher fsp', async ({ page }) => {
   });
 
   await test.step('Do payment', async () => {
-    // Create payment
     await paymentsPage.createPayment({});
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
@@ -58,13 +57,12 @@ test('Do successful payment for Voucher fsp', async ({ page }) => {
     );
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
-    await paymentPage.validateToastMessageAndClose('Payment created.');
-
-    // start payment
+    // also validate toast messages for just this 1 (random) FSP instead of for all
+    await paymentPage.validateToastMessageAndClose('Payment created');
+    await paymentPage.approvePayment();
+    await paymentPage.validateToastMessageAndClose('Payment approved');
     await paymentPage.startPayment();
-    await paymentPage.validateToastMessageAndClose(
-      'Payment started successfully.',
-    );
+    await paymentPage.validateToastMessageAndClose('Payment started');
   });
 
   await test.step('Validate payment card', async () => {
@@ -75,7 +73,7 @@ test('Do successful payment for Voucher fsp', async ({ page }) => {
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
-      successfulTransactions: defaultMaxTransferValue,
+      successfulPaymentAmount: defaultMaxTransferValue,
       failedTransactions: 0,
       programId: programIdPV,
     });

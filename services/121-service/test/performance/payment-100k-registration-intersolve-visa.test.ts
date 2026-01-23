@@ -4,7 +4,7 @@ import { env } from '@121-service/src/env';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
-import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
+import { doPayment } from '@121-service/test/helpers/program.helper';
 import {
   changeRegistrationStatus,
   duplicateRegistrationsAndPaymentData,
@@ -81,13 +81,13 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
     expect(duplicateRegistrationsResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Do payment
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: programIdOCW,
       transferValue,
       referenceIds: [],
       accessToken,
     });
-    expect(doPaymentResponse.statusCode).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.statusCode).toBe(HttpStatus.CREATED);
     // Assert
     // Check payment results have at least 10% success rate within 80 minutes
     const paymentResults = await getPaymentResults({

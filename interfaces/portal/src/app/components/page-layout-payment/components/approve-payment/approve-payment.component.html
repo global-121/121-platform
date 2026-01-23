@@ -1,0 +1,45 @@
+<p-button
+  label="Approve payment"
+  i18n-label
+  (click)="openApprovePaymentDialog()"
+  icon="pi pi-check-circle"
+  [iconPos]="rtlHelper.createPosition('start')()"
+  rounded
+></p-button>
+
+<app-form-dialog
+  #approvePaymentDialog
+  header="Approve payment"
+  i18n-header
+  headerIcon="pi pi-check-circle"
+  [mutation]="approvePaymentMutation"
+  [mutationData]="formGroup.getRawValue()"
+  [formGroup]="formGroup"
+  proceedLabel="Approve payment"
+  i18n-proceedLabel
+>
+  <p>
+    <span i18n
+      >Review summary and approve payment. The payment can only be started once
+      all needed users approve the payment.</span
+    >
+  </p>
+  <app-data-list
+    [data]="dataList()"
+    [forceOneColumn]="true"
+  />
+  <app-form-field-wrapper
+    label="Add note"
+    i18n-label
+    class="px-2"
+  >
+    <input
+      pInputText
+      formControlName="note"
+      type="text"
+      placeholder="Optional"
+      i18n-placeholder
+      class="w-full"
+    />
+  </app-form-field-wrapper>
+</app-form-dialog>

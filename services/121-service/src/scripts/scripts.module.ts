@@ -15,6 +15,7 @@ import { ScriptsService } from '@121-service/src/scripts/services/scripts.servic
 import { SeedHelperService } from '@121-service/src/scripts/services/seed-helper.service';
 import { SeedMockHelperService } from '@121-service/src/scripts/services/seed-mock-helper.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { ApproverModule } from '@121-service/src/user/approver/approver.module';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
 @Module({
@@ -25,6 +26,7 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
     ProgramModule,
     HttpModule,
     ProgramFspConfigurationsModule,
+    ApproverModule,
   ],
   providers: [
     ScriptsService,
@@ -41,10 +43,15 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
 export class ScriptsModule {}
 
 export interface InterfaceScript {
-  run(
-    isApiTests?: boolean,
-    squareString?: string,
-    nrPaymentsString?: string,
-    squareNumberBulkMessageString?: string,
-  ): Promise<void>;
+  run({
+    isApiTests,
+    squareString,
+    nrPaymentsString,
+    squareNumberBulkMessageString,
+  }: {
+    isApiTests?: boolean;
+    squareString?: string;
+    nrPaymentsString?: string;
+    squareNumberBulkMessageString?: string;
+  }): Promise<void>;
 }

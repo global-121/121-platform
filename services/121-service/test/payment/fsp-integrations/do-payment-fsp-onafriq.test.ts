@@ -7,7 +7,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
-  createAndStartPayment,
+  doPayment,
   getTransactionsByPaymentIdPaginated,
   retryPayment,
   waitForPaymentAndTransactionsToComplete,
@@ -57,7 +57,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     const paymentReferenceIds = [registrationOnafriq.referenceId];
 
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
@@ -84,7 +84,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       accessToken,
     });
 
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
@@ -118,7 +118,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     const paymentReferenceIds = [registrationOnafriq.referenceId];
 
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
@@ -145,7 +145,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       accessToken,
     });
 
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
@@ -219,7 +219,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     const paymentReferenceIds = [registrationOnafriq.referenceId];
 
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
@@ -247,7 +247,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       accessToken,
     });
 
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
@@ -283,7 +283,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     const paymentReferenceIds = [registrationOnafriq.referenceId];
 
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId,
       transferValue,
       referenceIds: paymentReferenceIds,
@@ -310,7 +310,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       accessToken,
     });
 
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );

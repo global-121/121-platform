@@ -31,8 +31,7 @@
             [variant]="item.chipVariant"
             [label]="item.chipLabel"
           />
-        }
-        @if (item.value !== undefined && item.value !== null) {
+        } @else if (item.value !== undefined && item.value !== null) {
           <span class="me-1">
             @switch (item.type) {
               @case ('boolean') {

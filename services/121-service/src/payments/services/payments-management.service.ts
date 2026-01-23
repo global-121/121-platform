@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
@@ -9,6 +9,9 @@ import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/pay
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
@@ -18,12 +21,15 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
+import { ApproverService } from '@121-service/src/user/approver/approver.service';
+import { ApproverResponseDto } from '@121-service/src/user/approver/dto/approver-response.dto';
+import { PaymentApprovalEntity } from '@121-service/src/user/approver/entities/payment-approval.entity';
+import { PaymentApprovalRepository } from '@121-service/src/user/approver/repositories/payment-approval.repository';
 
 @Injectable()
-export class PaymentsCreationService {
+export class PaymentsManagementService {
   @InjectRepository(PaymentEntity)
   private readonly paymentRepository: Repository<PaymentEntity>;
-
   public constructor(
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
@@ -31,6 +37,9 @@ export class PaymentsCreationService {
     private readonly paymentEventsService: PaymentEventsService,
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
     private readonly transactionsService: TransactionsService,
+    private readonly approverService: ApproverService,
+    private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
+    private readonly paymentApprovalRepository: PaymentApprovalRepository,
   ) {}
 
   public async createPayment({
@@ -62,18 +71,12 @@ export class PaymentsCreationService {
     // put all operations in try, to be able to always end with an unlock-payments action, also in case of failure
     try {
       // First run the logic that is needed in both dryRun and real payment scenario
-      const { bulkActionResultPaymentDto, registrationsForPayment } =
+      const { bulkActionResultPaymentDto, registrationsForPayment, approvers } =
         await this.getPaymentDryRunDetailsOrThrow({
           programId,
           transferValue,
           query,
         });
-      if (registrationsForPayment.length < 1) {
-        throw new HttpException(
-          'No registrations found to create payment for',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
 
       if (dryRun || !transferValue) {
         return bulkActionResultPaymentDto;
@@ -83,6 +86,7 @@ export class PaymentsCreationService {
         userId,
         programId,
         note,
+        approvers,
       });
       bulkActionResultPaymentDto.id = paymentId;
 
@@ -124,7 +128,17 @@ export class PaymentsCreationService {
   }): Promise<{
     bulkActionResultPaymentDto: BulkActionResultPaymentDto;
     registrationsForPayment: MappedPaginatedRegistrationDto[];
+    approvers: ApproverResponseDto[];
   }> {
+    const approvers = await this.approverService.getApprovers({
+      programId,
+    });
+    if (approvers.length < 1) {
+      throw new HttpException(
+        'No approvers found for program, cannot create payment',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     // TODO: REFACTOR: Move what happens in setQueryPropertiesBulkAction into this function, and call a refactored version of getBulkActionResult/getPaymentBaseQuery (create solution design first)
     const paginateQuery =
       this.registrationsBulkService.setQueryPropertiesBulkAction({
@@ -151,18 +165,24 @@ export class PaymentsCreationService {
           programFspConfigurationNames: [],
         },
         registrationsForPayment: [],
+        approvers,
       };
     }
 
     // Get array of RegistrationViewEntity objects to be paid
     const registrationsForPayment =
       await this.getRegistrationsForPaymentChunked(programId, paginateQuery);
+    if (registrationsForPayment.length < 1) {
+      throw new HttpException(
+        'No registrations found to create payment for',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     // Calculate the totalMultiplierSum and create an array with all FSPs for this payment
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
     let totalMultiplierSum = 0;
     // This loop is pretty fast: with 131k registrations it takes ~38ms
-
     for (const registration of registrationsForPayment) {
       totalMultiplierSum =
         totalMultiplierSum + registration.paymentAmountMultiplier;
@@ -193,6 +213,7 @@ export class PaymentsCreationService {
     return {
       bulkActionResultPaymentDto,
       registrationsForPayment,
+      approvers,
     };
   }
 
@@ -200,13 +221,25 @@ export class PaymentsCreationService {
     userId,
     programId,
     note,
+    approvers,
   }: {
     userId: number;
     programId: number;
     note?: string;
+    approvers: ApproverResponseDto[];
   }): Promise<number> {
+    const sortedApprovers = approvers.slice().sort((a, b) => a.order - b.order);
+    const paymentApprovals = sortedApprovers.map((approver, index) => {
+      const paymentApproval = new PaymentApprovalEntity();
+      paymentApproval.approverId = approver.id;
+      paymentApproval.approved = false;
+      paymentApproval.rank = index + 1;
+      return paymentApproval;
+    });
+
     const paymentEntity = new PaymentEntity();
     paymentEntity.programId = programId;
+    paymentEntity.approvals = paymentApprovals;
     const savedPaymentEntity = await this.paymentRepository.save(paymentEntity);
 
     await this.paymentEventsService.createEvent({
@@ -273,5 +306,144 @@ export class PaymentsCreationService {
       transferValue: transferValue * row.paymentAmountMultiplier,
       programFspConfigurationId: row.programFspConfigurationId,
     }));
+  }
+
+  public async approvePayment({
+    userId,
+    programId,
+    paymentId,
+    note,
+  }: {
+    userId: number;
+    programId: number;
+    paymentId: number;
+    note?: string;
+  }): Promise<void> {
+    const approver = await this.approverService.getApproverByUserIdOrThrow({
+      userId,
+      programId,
+    });
+
+    const allPaymentApprovals = await this.paymentApprovalRepository.find({
+      where: {
+        paymentId: Equal(paymentId),
+      },
+    });
+    const currentPaymentApproval = allPaymentApprovals.find(
+      (approval) => approval.approverId === approver.id,
+    );
+    if (!currentPaymentApproval) {
+      throw new HttpException(
+        'Approver not assigned to this payment',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (currentPaymentApproval.approved) {
+      throw new HttpException(
+        'Approver has already approved this payment',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    this.checkLowestRankOrThrow({
+      currentPaymentApproval,
+      allPaymentApprovals,
+    });
+
+    // store payment approval
+    currentPaymentApproval.approved = true;
+    await this.paymentApprovalRepository.save(currentPaymentApproval);
+
+    // store payment event
+    await this.paymentEventsService.createApprovedEvent({
+      paymentId,
+      userId,
+      rank: currentPaymentApproval.rank,
+      total: allPaymentApprovals.length,
+      note,
+    });
+
+    // check if all approvals are done now - refetch to account for near-concurrent approvals
+    const notCompletedApprovals = await this.paymentApprovalRepository.count({
+      where: {
+        paymentId: Equal(paymentId),
+        approved: Equal(false),
+      },
+    });
+    if (notCompletedApprovals === 0) {
+      await this.processFinalApproval({
+        userId,
+        paymentId,
+        programId,
+      });
+    }
+  }
+
+  private checkLowestRankOrThrow({
+    currentPaymentApproval,
+    allPaymentApprovals,
+  }: {
+    currentPaymentApproval: PaymentApprovalEntity;
+    allPaymentApprovals: PaymentApprovalEntity[];
+  }) {
+    const openApprovals = allPaymentApprovals.filter(
+      (approval) => !approval.approved,
+    );
+    const isLowestRank = openApprovals.every(
+      (approval) => currentPaymentApproval.rank <= approval.rank,
+    );
+    if (!isLowestRank) {
+      throw new HttpException(
+        'Cannot approve payment before lower-order approvers have approved',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  private async processFinalApproval({
+    userId,
+    paymentId,
+    programId,
+  }: {
+    userId: number;
+    paymentId: number;
+    programId: number;
+  }): Promise<void> {
+    // get transactions to approve
+    const transactionsToApprove =
+      await this.transactionViewScopedRepository.getByStatusOfIncludedRegistrations(
+        {
+          programId,
+          paymentId,
+          status: TransactionStatusEnum.pendingApproval,
+        },
+      );
+    if (transactionsToApprove.length === 0) {
+      throw new HttpException(
+        'No "pending approval" transactions found for this payment.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // loop over FSPs and approve transactions in bulk per FSP
+    const fspConfigIds = new Set(
+      transactionsToApprove
+        .map((t) => t.programFspConfigurationId)
+        .filter((id) => id !== null),
+    );
+    for (const programFspConfigurationId of fspConfigIds) {
+      const fspConfigTransactions = transactionsToApprove.filter(
+        (t) => t.programFspConfigurationId === programFspConfigurationId,
+      );
+      if (fspConfigTransactions.length === 0) {
+        continue;
+      }
+      await this.transactionsService.saveProgressBulk({
+        newTransactionStatus: TransactionStatusEnum.approved,
+        transactionIds: fspConfigTransactions.map((t) => t.id),
+        description: TransactionEventDescription.approval,
+        userId,
+        programFspConfigurationId,
+      });
+    }
   }
 }

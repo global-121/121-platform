@@ -51,7 +51,6 @@ test('Do successful payment for Nedbank fsp', async ({ page }) => {
   });
 
   await test.step('Do payment', async () => {
-    // Create payment
     await paymentsPage.createPayment({});
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
@@ -59,15 +58,11 @@ test('Do successful payment for Nedbank fsp', async ({ page }) => {
     );
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
-    await paymentPage.validateToastMessageAndClose('Payment created.');
-
-    // start payment
+    await paymentPage.approvePayment();
     await paymentPage.startPayment();
-    await paymentPage.validateToastMessageAndClose(
-      'Payment started successfully.',
-    );
 
     // Run CRON job to process payment
+    await page.waitForTimeout(500); // wait a bit to allow the payment to start before running the CRON job
     await runCronJobDoNedbankReconciliation();
   });
 
@@ -82,7 +77,7 @@ test('Do successful payment for Nedbank fsp', async ({ page }) => {
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
-      successfulTransactions: defaultMaxTransferValue,
+      successfulPaymentAmount: defaultMaxTransferValue,
       failedTransactions: 0,
       currency: NedbankProgram.currencySymbol,
       programId: programIdNedbank,

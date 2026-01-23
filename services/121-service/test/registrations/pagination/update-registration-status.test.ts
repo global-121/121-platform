@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -200,7 +202,7 @@ describe('change the status of a set of registrations', () => {
         });
 
         // Assert
-        expect(updateStatusResponse.status).toBe(202);
+        expect(updateStatusResponse.status).toBe(HttpStatus.ACCEPTED);
       }
     });
   });

@@ -53,7 +53,6 @@ test('Do successful payment for Safaricom fsp', async ({ page }) => {
   });
 
   await test.step('Do payment', async () => {
-    // Create payment
     await paymentsPage.createPayment({});
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
@@ -63,13 +62,8 @@ test('Do successful payment for Safaricom fsp', async ({ page }) => {
     );
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
-    await paymentPage.validateToastMessageAndClose('Payment created.');
-
-    // start payment
+    await paymentPage.approvePayment();
     await paymentPage.startPayment();
-    await paymentPage.validateToastMessageAndClose(
-      'Payment started successfully.',
-    );
   });
 
   await test.step('Validate payment card', async () => {
@@ -79,7 +73,7 @@ test('Do successful payment for Safaricom fsp', async ({ page }) => {
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
-      successfulTransactions: defaultMaxTransferValue,
+      successfulPaymentAmount: defaultMaxTransferValue,
       failedTransactions: 0,
       currency: KRCSProgram.currency,
       programId: programIdSafaricom,

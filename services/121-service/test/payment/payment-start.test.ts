@@ -7,6 +7,7 @@ import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import {
+  approvePayment,
   createPayment,
   getPaymentEvents,
   getTransactionsByPaymentIdPaginated,
@@ -48,7 +49,7 @@ describe('Payment start', () => {
     await seedIncludedRegistrations([registrationAh], programId, accessToken);
     const paymentReferenceIds = [registrationAh.referenceId];
 
-    // Act 1 - create payment
+    // Act 1 - create & approve payment
     const createPaymentResponse = await createPayment({
       programId,
       transferValue,
@@ -56,12 +57,10 @@ describe('Payment start', () => {
       accessToken,
     });
     const paymentId = createPaymentResponse.body.id;
-    await waitForPaymentAndTransactionsToComplete({
+    await approvePayment({
       programId,
-      paymentReferenceIds,
+      paymentId,
       accessToken,
-      maxWaitTimeMs: 20_000,
-      completeStatuses: [TransactionStatusEnum.pendingApproval],
     });
 
     // Assert 1 - before starting payment
@@ -84,12 +83,12 @@ describe('Payment start', () => {
     });
     const registrationBeforeStart = registrations.body.data[0];
 
-    expect(createPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(createPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(createPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
     expect(transactionsBeforeStart[0].status).toBe(
-      TransactionStatusEnum.pendingApproval,
+      TransactionStatusEnum.approved,
     );
     expect(registrationBeforeStart!.status).toBe(
       RegistrationStatusEnum.included,
@@ -144,7 +143,7 @@ describe('Payment start', () => {
     beforeEach(async () => {
       const registrations = [registrationPV5, registrationPV6];
       await seedIncludedRegistrations(registrations, programId, accessToken);
-      // only create, not start yet
+      // only create & approve, not start yet
       const createPaymentResponse = await createPayment({
         programId,
         transferValue,
@@ -152,12 +151,10 @@ describe('Payment start', () => {
         accessToken,
       });
       paymentId = createPaymentResponse.body.id;
-      await waitForPaymentAndTransactionsToComplete({
+      await approvePayment({
         programId,
-        paymentReferenceIds: registrations.map((r) => r.referenceId),
+        paymentId,
         accessToken,
-        maxWaitTimeMs: 20_000,
-        completeStatuses: [TransactionStatusEnum.pendingApproval],
       });
 
       // Make one registration non-included
@@ -291,19 +288,17 @@ describe('Payment start', () => {
     const registrations = [registrationScopeKisumu, registrationScopeTurkana];
     await seedIncludedRegistrations(registrations, programId, accessToken);
 
-    // create payment by admin-user with full scope
+    // create & approve payment by admin-user with full scope
     const createPaymentResponse = await createPayment({
       programId,
       transferValue,
       referenceIds: registrations.map((r) => r.referenceId),
       accessToken,
     });
-    await waitForPaymentAndTransactionsToComplete({
+    await approvePayment({
       programId,
-      paymentReferenceIds: registrations.map((r) => r.referenceId),
+      paymentId: createPaymentResponse.body.id,
       accessToken,
-      maxWaitTimeMs: 20_000,
-      completeStatuses: [TransactionStatusEnum.pendingApproval],
     });
 
     //////////////////
@@ -334,7 +329,7 @@ describe('Payment start', () => {
       });
     const allTransactions = getAllTransactionsResponse.body.data;
     const startedTransactions = allTransactions.filter(
-      (t: any) => t.status !== TransactionStatusEnum.pendingApproval,
+      (t: any) => t.status !== TransactionStatusEnum.approved,
     );
     expect(startedTransactions.length).toBe(1);
 
@@ -370,7 +365,7 @@ describe('Payment start', () => {
       });
     const allTransactionsEnd = getAllTransactionsResponseEnd.body.data;
     const startedTransactionsEnd = allTransactionsEnd.filter(
-      (t: any) => t.status !== TransactionStatusEnum.pendingApproval,
+      (t: any) => t.status !== TransactionStatusEnum.approved,
     );
 
     expect(startPaymentResponseTurkana.status).toBe(HttpStatus.ACCEPTED);

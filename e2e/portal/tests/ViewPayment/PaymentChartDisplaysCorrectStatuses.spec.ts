@@ -35,7 +35,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('Graph should reflect transaction statuses', async ({ page }) => {
+test('Payment chart should reflect transaction statuses', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const programTitle = NLRCProgram.titlePortal.en;
@@ -52,15 +52,15 @@ test('Graph should reflect transaction statuses', async ({ page }) => {
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
     );
+    await paymentPage.approvePayment();
     await paymentPage.startPayment();
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
-  await test.step('Graph displays all correct payment statuses', async () => {
+  await test.step('Chart displays all correct payment statuses', async () => {
     await page.goto(`/en-GB/program/${programIdOCW}/payments/1`);
     await paymentPage.waitForPaymentToComplete();
     await paymentPage.validateGraphStatus({
-      pendingApproval: 0,
       approved: 0,
       processing: 0,
       successful: 16,

@@ -1,9 +1,18 @@
-import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpException,
+  HttpStatus,
+  Post,
+  Query,
+  Res,
+} from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 import { IS_PRODUCTION } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
+import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { ScriptsService } from '@121-service/src/scripts/services/scripts.service';
 import { WrapperType } from '@121-service/src/wrapper.type';
@@ -70,6 +79,13 @@ export class ScriptsController {
     description: `Set to 'true' to include registration events in the duplication.`,
     example: 'false',
   })
+  @ApiQuery({
+    name: 'approverMode',
+    required: false, // TODO: make this required instead of working with defaults
+    enum: ApproverSeedMode,
+    enumName: 'ApproverSeedMode',
+    description: `Set approvers per seeded program. Possible values: 'none' (no approvers, is default on production), 'admin' (admin-user is approver, is default on development & test) or 'demo' (configure one demo approver user + the admin-user). Default = 'none' on production, 'admin' otherwise.`,
+  })
   @ApiOperation({
     summary: `Reset instance database.`,
     description: `When using the reset script: ${SeedScript.demoPrograms}. The reset can take a while, because of the large amount of data. This can result in a timeout on the client side, but the reset will still be done.`,
@@ -87,6 +103,7 @@ export class ScriptsController {
     @Query('mockPv') mockPv: boolean,
     @Query('mockOcw') mockOcw: boolean,
     @Query('isApiTests') isApiTests: boolean,
+    @Query('approverMode') approverMode: string,
     @Res() res,
   ): Promise<string> {
     if (body.secret !== env.RESET_SECRET) {
@@ -98,7 +115,21 @@ export class ScriptsController {
       includeRegistrationEvents !== undefined &&
       includeRegistrationEvents.toString() === 'true';
 
+    let approverModeToUse: ApproverSeedMode | undefined;
+    const isEmpty = !approverMode;
+    const isKnown = Object.values(ApproverSeedMode).includes(
+      approverMode as ApproverSeedMode,
+    );
+
     if (script == SeedScript.nlrcMultipleMock) {
+      if (isEmpty || approverMode === ApproverSeedMode.admin) {
+        approverModeToUse = ApproverSeedMode.admin;
+      } else {
+        throw new HttpException(
+          'NLRC multiple mock can only be seeded with admin approver mode',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
       const booleanMockPv = mockPv
         ? JSON.parse(mockPv as unknown as string)
         : true;
@@ -115,12 +146,26 @@ export class ScriptsController {
         powerNrMessagesString: mockPowerNumberMessages,
         mockPv: booleanMockPv,
         mockOcw: booleanMockOcw,
+        approverMode: approverModeToUse,
       });
     } else if (Object.values(SeedScript).includes(script)) {
+      if (isKnown) {
+        approverModeToUse = approverMode as ApproverSeedMode;
+      } else if (isEmpty) {
+        approverModeToUse = IS_PRODUCTION
+          ? ApproverSeedMode.none
+          : ApproverSeedMode.admin;
+      } else {
+        throw new HttpException(
+          `Unknown approverMode: ${approverMode}`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
       await this.scriptsService.loadSeedScenario({
         resetIdentifier,
         seedScript: script,
         isApiTests,
+        approverMode: approverModeToUse,
       });
     }
 

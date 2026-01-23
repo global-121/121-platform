@@ -55,6 +55,7 @@ test('View payment log, including note added to payment', async ({ page }) => {
         `/en-GB/program/${programIdOCW}/payments/${paymentId}`,
       ),
     );
+    await paymentPage.approvePayment();
     await paymentPage.startPayment();
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);

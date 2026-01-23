@@ -137,6 +137,28 @@ export class PaymentApiService extends DomainApiService {
     });
   }
 
+  approvePayment({
+    programId,
+    paymentId,
+    note,
+  }: {
+    programId: Signal<number | string>;
+    paymentId: Signal<string>;
+    note?: string;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'POST',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(programId),
+        paymentId,
+        'approve',
+      ]).join('/'),
+      body: {
+        note,
+      },
+    });
+  }
+
   retryFailedTransactions({
     programId,
     paymentId,

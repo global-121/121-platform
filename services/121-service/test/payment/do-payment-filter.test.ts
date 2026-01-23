@@ -7,7 +7,7 @@ import {
   transferValueVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
-  createAndStartPayment,
+  doPayment,
   getTransactionsByPaymentIdPaginated,
   waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
@@ -58,7 +58,7 @@ describe('Do payment with filter', () => {
 
   it('should only pay included people', async () => {
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: [],
@@ -78,7 +78,7 @@ describe('Do payment with filter', () => {
       accessToken,
     });
     // Assert
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(
       includedRefrenceIds.length,
     );
@@ -93,7 +93,7 @@ describe('Do payment with filter', () => {
   // So in practice this query filter will very often be used
   it('should only pay included people with query filter included', async () => {
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: [],
@@ -114,7 +114,7 @@ describe('Do payment with filter', () => {
       accessToken,
     });
     // Assert
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(
       includedRefrenceIds.length,
     );
@@ -128,7 +128,7 @@ describe('Do payment with filter', () => {
 
   it('should only pay included people with query filter referenceId', async () => {
     // Act
-    const doPaymentResponse = await createAndStartPayment({
+    const doPaymentResponse = await doPayment({
       programId: programIdVisa,
       transferValue: transferValueVisa,
       referenceIds: [],
@@ -152,7 +152,7 @@ describe('Do payment with filter', () => {
       accessToken,
     });
     // Assert
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(1);
     expect(doPaymentResponse.body.totalFilterCount).toBe(1);
     // Also check if the right amount of transactions are created
@@ -162,7 +162,7 @@ describe('Do payment with filter', () => {
 
   it('should only pay included people with a combination of filters', async () => {
     // Act
-    const doPaymentResponse = await createAndStartPayment(
+    const doPaymentResponse = await doPayment(
       {
         programId: programIdVisa,
         transferValue: transferValueVisa,
@@ -188,7 +188,7 @@ describe('Do payment with filter', () => {
       accessToken,
     });
     // Assert
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(1);
     // REFACTOR: this test no longer involves the scenario where applicableCount<totalFilterCount, which might have originally been part of the intention. Change/add this test again in the future.
     expect(doPaymentResponse.body.totalFilterCount).toBe(1);
@@ -199,7 +199,7 @@ describe('Do payment with filter', () => {
 
   it('should only pay included people with a combination of filter and search', async () => {
     // Act
-    const doPaymentResponse = await createAndStartPayment(
+    const doPaymentResponse = await doPayment(
       {
         programId: programIdVisa,
         transferValue: transferValueVisa,
@@ -225,7 +225,7 @@ describe('Do payment with filter', () => {
       accessToken,
     });
     // Assert
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
     expect(doPaymentResponse.body.applicableCount).toBe(1);
     expect(doPaymentResponse.body.totalFilterCount).toBe(2);
     // Also check if the right amount of transactions are created

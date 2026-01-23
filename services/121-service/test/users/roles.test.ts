@@ -90,7 +90,7 @@ describe('/ Roles', () => {
     const rolesLength = response.body.length;
     // Assert
     expect(response.status).toBe(HttpStatus.OK);
-    expect(rolesLength).toBe(10); // all default roles
+    expect(rolesLength).toBe(11); // all default roles
   });
 
   it('should update a role by userRoleId', async () => {

@@ -39,8 +39,8 @@ import { GetPaymentsDto } from '@121-service/src/payments/dto/get-payments.dto';
 import { PaymentReturnDto } from '@121-service/src/payments/dto/payment-return.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
-import { PaymentsCreationService } from '@121-service/src/payments/services/payments-creation.service';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
+import { PaymentsManagementService } from '@121-service/src/payments/services/payments-management.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { FindAllTransactionsResultDto } from '@121-service/src/payments/transactions/dto/find-all-transactions-result.dto';
 import { GetTransactionsQueryDto } from '@121-service/src/payments/transactions/dto/get-transaction-query.dto';
@@ -62,7 +62,7 @@ import { sendXlsxReponse } from '@121-service/src/utils/send-xlsx-response';
 @Controller()
 export class PaymentsController {
   public constructor(
-    private readonly paymentsCreationService: PaymentsCreationService,
+    private readonly paymentsManagementService: PaymentsManagementService,
     private readonly paymentsExecutionService: PaymentsExecutionService,
     private readonly paymentsReportingService: PaymentsReportingService,
     private readonly registrationsPaginateService: RegistrationsPaginationService,
@@ -133,7 +133,7 @@ export class PaymentsController {
     type: BulkActionResultDto,
   })
   @ApiResponse({
-    status: HttpStatus.ACCEPTED,
+    status: HttpStatus.CREATED,
     description:
       'Creating payment and transactions successfully - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
@@ -170,7 +170,7 @@ export class PaymentsController {
     description: 'Not used for this endpoint',
     deprecated: true,
   })
-  @HttpCode(HttpStatus.ACCEPTED)
+  @HttpCode(HttpStatus.CREATED)
   @Post('programs/:programId/payments')
   public async createPayment(
     @Body() data: CreatePaymentDto,
@@ -197,7 +197,7 @@ export class PaymentsController {
       );
     }
 
-    const result = await this.paymentsCreationService.createPayment({
+    const result = await this.paymentsManagementService.createPayment({
       userId,
       programId,
       transferValue: data.transferValue,
@@ -212,6 +212,34 @@ export class PaymentsController {
       throw new HttpException(result, HttpStatus.OK);
     }
     return result;
+  }
+
+  @AuthenticatedUser() // No permission-check, as this is handled by checking if the request userId is an approver for this payment's program
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Successfully approved the payment',
+  })
+  @ApiOperation({
+    summary: 'Approve payment',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
+  @HttpCode(HttpStatus.CREATED)
+  @Post('programs/:programId/payments/:paymentId/approve')
+  public async approvePayment(
+    @Body('note') note: string,
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('paymentId', ParseIntPipe) paymentId: number,
+    @Req() req: ScopedUserRequest,
+  ): Promise<void> {
+    const userId = RequestHelper.getUserId(req);
+
+    return await this.paymentsManagementService.approvePayment({
+      userId,
+      programId,
+      paymentId,
+      note,
+    });
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentSTART] })

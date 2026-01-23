@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
+import { doPayment } from '@121-service/test/helpers/program.helper';
 import { seedRegistrationsWithStatus } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -33,7 +33,7 @@ test.beforeEach(async ({ page }) => {
     RegistrationStatusEnum.included,
   );
 
-  await createAndStartPayment({
+  await doPayment({
     programId: 2,
     transferValue: 25,
     referenceIds: [registrationsPV[0].referenceId],

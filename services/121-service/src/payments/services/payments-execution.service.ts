@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PaginateQuery } from 'nestjs-paginate';
+import { Equal } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
@@ -13,6 +14,7 @@ import { TransactionViewScopedRepository } from '@121-service/src/payments/trans
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
+import { PaymentApprovalRepository } from '@121-service/src/user/approver/repositories/payment-approval.repository';
 
 @Injectable()
 export class PaymentsExecutionService {
@@ -24,6 +26,7 @@ export class PaymentsExecutionService {
     private readonly paymentEventsService: PaymentEventsService,
     private readonly transactionsService: TransactionsService,
     private readonly paymentsReportingService: PaymentsReportingService,
+    private readonly paymentApprovalRepository: PaymentApprovalRepository,
   ) {}
 
   public async startPayment({
@@ -40,24 +43,34 @@ export class PaymentsExecutionService {
     );
 
     try {
+      const notCompletedApprovals = await this.paymentApprovalRepository.count({
+        where: {
+          paymentId: Equal(paymentId),
+          approved: Equal(false),
+        },
+      });
+      if (notCompletedApprovals > 0) {
+        throw new HttpException(
+          `Cannot start payment. There are ${notCompletedApprovals} approval(s) to be done for this payment.`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       // check that all FSP configurations are still valid
-      const uniqueFspConfigsForPendingApprovalTransactions =
-        await this.transactionViewScopedRepository.getUniqueProgramFspConfigForPendingApproval(
+      const uniqueFspConfigsForApprovedTransactions =
+        await this.transactionViewScopedRepository.getUniqueProgramFspConfigForApprovedTransactions(
           {
             programId,
             paymentId,
           },
         );
-      if (uniqueFspConfigsForPendingApprovalTransactions.length === 0) {
+      if (uniqueFspConfigsForApprovedTransactions.length === 0) {
         throw new HttpException(
-          {
-            errors:
-              'No "pending approval" transactions found for this payment.',
-          },
+          'No "approved" transactions found for this payment.',
           HttpStatus.BAD_REQUEST,
         );
       }
-      const fspConfigNames = uniqueFspConfigsForPendingApprovalTransactions.map(
+      const fspConfigNames = uniqueFspConfigsForApprovedTransactions.map(
         (p) => p.programFspConfigurationName,
       );
       await this.paymentsHelperService.checkFspConfigurationsOrThrow(
@@ -65,21 +78,15 @@ export class PaymentsExecutionService {
         fspConfigNames,
       );
 
-      // store payment events
-      // TODO these 2 actions will later be slit up. For now they are together.
-      await this.paymentEventsService.createEvent({
-        paymentId,
-        userId,
-        type: PaymentEvent.approved,
-      });
+      // store payment event
       await this.paymentEventsService.createEvent({
         paymentId,
         userId,
         type: PaymentEvent.started,
       });
 
-      // process transactions to-fail and to-start
-      const fspConfigIds = uniqueFspConfigsForPendingApprovalTransactions.map(
+      // process transactions to-fail ..
+      const fspConfigIds = uniqueFspConfigsForApprovedTransactions.map(
         (p) => p.programFspConfigurationId,
       );
       await this.markTransactionsAsFailed({
@@ -88,8 +95,9 @@ export class PaymentsExecutionService {
         programId,
         paymentId,
       });
-      await this.markTransactionsAsApprovedAndStartQueue({
-        fspConfigIds,
+
+      // .. and to start
+      await this.startQueue({
         userId,
         programId,
         paymentId,
@@ -101,40 +109,23 @@ export class PaymentsExecutionService {
     }
   }
 
-  private async markTransactionsAsApprovedAndStartQueue({
-    fspConfigIds,
+  private async startQueue({
     userId,
     programId,
     paymentId,
   }: {
-    fspConfigIds: number[];
     userId: number;
     programId: number;
     paymentId: number;
   }) {
     const transactionsToStart =
-      await this.transactionViewScopedRepository.getPendingApprovalOfIncludedRegistrations(
+      await this.transactionViewScopedRepository.getByStatusOfIncludedRegistrations(
         {
           programId,
           paymentId,
+          status: TransactionStatusEnum.approved,
         },
       );
-    for (const programFspConfigurationId of fspConfigIds) {
-      const fspConfigTransactions = transactionsToStart.filter(
-        (t) => t.programFspConfigurationId === programFspConfigurationId,
-      );
-      if (fspConfigTransactions.length === 0) {
-        continue;
-      }
-      await this.transactionsService.saveProgressBulk({
-        newTransactionStatus: TransactionStatusEnum.approved,
-        transactionIds: fspConfigTransactions.map((t) => t.id),
-        description: TransactionEventDescription.approval,
-        userId,
-        programFspConfigurationId,
-      });
-    }
-
     await this.createTransactionJobs({
       programId,
       transactionIds: transactionsToStart.map((t) => t.id),
@@ -155,10 +146,11 @@ export class PaymentsExecutionService {
     paymentId: number;
   }) {
     const transactionsToFail =
-      await this.transactionViewScopedRepository.getPendingApprovalOfNonIncludedRegistrations(
+      await this.transactionViewScopedRepository.getByStatusOfNonIncludedRegistrations(
         {
           programId,
           paymentId,
+          status: TransactionStatusEnum.approved,
         },
       );
     for (const programFspConfigurationId of fspConfigIds) {

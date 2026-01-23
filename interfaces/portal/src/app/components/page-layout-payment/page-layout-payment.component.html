@@ -15,13 +15,35 @@
           [variant]="statusBadgeColor()"
         />
       </h1>
-      @if (showStartPaymentButton() && canStartPayment()) {
+      @if (showApprovePaymentButton()) {
+        <app-approve-payment
+          [programId]="programId()"
+          [paymentId]="paymentId()"
+          [fspList]="paymentFspList()"
+          [transactionCount]="
+            paymentTransactionCountByStatus(
+              TransactionStatusEnum.pendingApproval
+            )()
+          "
+          [totalPaymentAmount]="
+            paymentTotalTransferValueByStatus(
+              TransactionStatusEnum.pendingApproval
+            )()
+          "
+          [approvedBadgeLabel]="statusBadgeLabel()"
+        ></app-approve-payment>
+      }
+      @if (showStartPaymentButton()) {
         <app-start-payment
           [programId]="programId()"
           [paymentId]="paymentId()"
-          [fspList]="startPaymentFspList()"
-          [transactionCount]="startPaymentTransactionCount()"
-          [totalPaymentAmount]="startPaymentTotalPaymentAmount()"
+          [fspList]="paymentFspList()"
+          [transactionCount]="
+            paymentTransactionCountByStatus(TransactionStatusEnum.approved)()
+          "
+          [totalPaymentAmount]="
+            paymentTotalTransferValueByStatus(TransactionStatusEnum.approved)()
+          "
         ></app-start-payment>
       }
 
@@ -48,7 +70,7 @@
         class="[grid-area:chart]"
         height="100%"
       ></p-skeleton>
-    } @else {
+    } @else if (paymentDetails.pendingApproval.count === 0) {
       <p-card
         class="[grid-area:chart] [&_.p-card]:h-full [&_.p-card-body]:h-full"
       >
@@ -61,6 +83,46 @@
         <app-program-payment-chart
           [paymentDetails]="paymentDetails"
         ></app-program-payment-chart>
+      </p-card>
+    } @else {
+      <p-card
+        class="[grid-area:chart] [&_.p-card]:h-full [&_.p-card-body]:h-full"
+      >
+        <p
+          i18n
+          class="txt-h-2 mb-6 font-medium"
+        >
+          Approval flow
+        </p>
+        <div>
+          @for (approver of paymentDetails.approvalStatus; track $index) {
+            <div
+              class="mb-6 flex flex-row"
+              data-testid="approval-flow-row"
+            >
+              <span
+                class="me-3 flex h-6.5 w-6.5 items-center justify-center rounded-full"
+                [ngClass]="{
+                  'bg-purple-700 text-white':
+                    approver.rank === firstPendingApprovalRank(),
+                  'bg-purple-300 text-purple-700':
+                    approver.rank > firstPendingApprovalRank(),
+                }"
+              >
+                @if (approver.approved) {
+                  <i class="pi pi-check-circle text-2xl text-green-500"></i>
+                } @else {
+                  {{ approver.rank }}
+                }
+              </span>
+
+              <app-colored-chip
+                [label]="getApproverLabel(approver.username)()"
+                variant="grey"
+              />
+            </div>
+          }
+        </div>
       </p-card>
     }
 
