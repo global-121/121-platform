@@ -28,6 +28,8 @@ const visaConfiguration = [
   process.env.INTERSOLVE_VISA_FUNDINGTOKEN_CODE,
   // eslint-disable-next-line n/no-process-env -- Used in seed-data, not in code, so not in '@121-service/src/env'
   process.env.INTERSOLVE_VISA_CARD_DISTRIBUTION_BY_MAIL,
+  // eslint-disable-next-line n/no-process-env -- Used in seed-data, not in code, so not in '@121-service/src/env'
+  process.env.INTERSOLVE_VISA_MAX_MONTHLY_AMOUNT_CENTS,
 ].filter((item): item is string => item !== undefined);
 
 const newVisaConfiguration = [
@@ -36,6 +38,7 @@ const newVisaConfiguration = [
   'RC02', // Cover letter code
   '510121323', // Funding token code
   'true', // Card distribution by mail
+  '25000', // Max monthly amount cents
 ];
 
 // Arrange
