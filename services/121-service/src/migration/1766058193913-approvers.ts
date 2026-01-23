@@ -45,9 +45,9 @@ export class Approvers1766058193913 implements MigrationInterface {
       JOIN "121-service"."program_aidworker_assignment_roles_user_role" paarur ON paarur."programAidworkerAssignmentId" = paa.id
       JOIN "121-service"."user_role_permissions_permission" urpp ON urpp."userRoleId" = paarur."userRoleId"
       JOIN "121-service"."permission" perm ON perm.id = urpp."permissionId"
-      JOIN "121-service"."user" u ON u.id = paa."userId"
+      JOIN "121-service"."user_role" ur ON ur.id = paarur."userRoleId"
       WHERE perm.name = 'payment.start'
-      AND u.admin = false
+      AND ur.role <> 'admin'
       ORDER BY paa.id`,
     );
 
