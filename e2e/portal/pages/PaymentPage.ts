@@ -291,7 +291,7 @@ class PaymentPage extends BasePage {
   }: {
     approverName: string;
     rank?: number;
-    approved?: boolean;
+    approved: boolean;
   }) {
     const row = this.approvalFlowRow.filter({ hasText: approverName });
     await expect(row).toBeVisible();
