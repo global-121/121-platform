@@ -406,7 +406,7 @@ export class PageLayoutPaymentComponent {
       : undefined,
   );
 
-  readonly getApproverLabel = (username: null | string) =>
+  readonly getApproverLabel = (username: string | undefined) =>
     computed(
       () =>
         username ??
