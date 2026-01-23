@@ -244,26 +244,13 @@ export class SeedInit implements InterfaceScript {
       {
         role: DefaultUserRole.Approver,
         label: 'Approve payments',
-        // ##TODO for now equal to FinanceManager. Check with PO.
         permissions: [
           PermissionEnum.ProgramMetricsREAD,
-          PermissionEnum.ProgramAttachmentsREAD,
-          PermissionEnum.ProgramAttachmentsCREATE,
-          PermissionEnum.PaymentCREATE,
-          PermissionEnum.PaymentSTART,
-          PermissionEnum.PaymentRETRY,
-          PermissionEnum.PaymentUPDATE,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentFspInstructionREAD,
-          PermissionEnum.PaymentVoucherPaperREAD,
-          PermissionEnum.PaymentVoucherWhatsappREAD,
-          PermissionEnum.FspDebitCardREAD,
-          PermissionEnum.FspDebitCardBLOCK,
-          PermissionEnum.FspDebitCardUNBLOCK,
           PermissionEnum.RegistrationREAD,
           PermissionEnum.RegistrationPersonalREAD,
-          PermissionEnum.RegistrationPaymentExport,
         ],
       },
     ];

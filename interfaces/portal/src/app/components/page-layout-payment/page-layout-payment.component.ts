@@ -405,4 +405,11 @@ export class PageLayoutPaymentComponent {
       ? $localize`:@@inProgressChipTooltip:The payment will be in progress while the transactions in the table below are loading.`
       : undefined,
   );
+
+  readonly getApproverLabel = (username: string | undefined) =>
+    computed(
+      () =>
+        username ??
+        $localize`:@@approverDeleted:Approver deleted. Create new payment.`,
+    );
 }

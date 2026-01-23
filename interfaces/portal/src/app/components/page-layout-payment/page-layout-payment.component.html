@@ -117,7 +117,7 @@
               </span>
 
               <app-colored-chip
-                [label]="approver.username!"
+                [label]="getApproverLabel(approver.username)()"
                 variant="grey"
               />
             </div>
