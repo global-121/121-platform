@@ -1,5 +1,6 @@
 import { test } from '@playwright/test';
 
+import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -24,6 +25,7 @@ const approvedBadgeLabel = 'Approved';
 const successfulBadgeLabel = 'Successful';
 const pendingApprovalPaymentLabel = '0 of 1 approved';
 const pendingApprovalTxLabel = 'Pending approval';
+const approverBadgeLabel = env.USERCONFIG_121_SERVICE_EMAIL_ADMIN;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
@@ -63,8 +65,6 @@ test('Badges and chart should display correct statuses during payment process', 
   });
 
   await test.step('Validate payment-page in "Pending approval" state', async () => {
-    // ##TODO validate 'Approver flow'
-
     await paymentPage.validateBadgeIsPresentByLabel({
       badgeName: pendingApprovalPaymentLabel,
       isVisible: true,
@@ -75,6 +75,11 @@ test('Badges and chart should display correct statuses during payment process', 
       isVisible: true,
       count: 8, // 1 per transaction
     });
+    await paymentPage.validateApprovalFlowStep({
+      approverName: approverBadgeLabel,
+      rank: 1,
+    });
+
     await paymentPage.validateButtonVisibility({
       isVisible: true,
       button: 'approve',

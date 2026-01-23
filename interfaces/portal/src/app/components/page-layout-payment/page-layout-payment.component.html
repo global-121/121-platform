@@ -94,45 +94,35 @@
         >
           Approval flow
         </p>
-        <p-timeline
-          [layout]="'vertical'"
-          [value]="paymentDetails.approvalStatus"
-          [align]="'start'"
-        >
-          <ng-template
-            #marker
-            let-approver
-          >
-            @if (approver.approved) {
+        <div>
+          @for (approver of paymentDetails.approvalStatus; track $index) {
+            <div
+              class="mb-6 flex flex-row"
+              data-testid="approval-flow-row"
+            >
               <span
-                class="flex h-6 w-6 items-center justify-center rounded-full"
-              >
-                <i class="pi pi-check-circle text-2xl text-green-500"></i>
-              </span>
-            } @else {
-              <span
-                class="flex h-6 w-6 items-center justify-center rounded-full text-center"
+                class="me-3 flex h-6.5 w-6.5 items-center justify-center rounded-full"
                 [ngClass]="{
                   'bg-purple-700 text-white':
                     approver.rank === firstPendingApprovalRank(),
                   'bg-purple-300 text-purple-700':
-                    approver.rank !== firstPendingApprovalRank(),
+                    approver.rank > firstPendingApprovalRank(),
                 }"
               >
-                {{ approver.rank }}
+                @if (approver.approved) {
+                  <i class="pi pi-check-circle text-2xl text-green-500"></i>
+                } @else {
+                  {{ approver.rank }}
+                }
               </span>
-            }
-          </ng-template>
-          <ng-template
-            #content
-            let-approver
-          >
-            <app-colored-chip
-              [label]="approver.username!"
-              variant="grey"
-            />
-          </ng-template>
-        </p-timeline>
+
+              <app-colored-chip
+                [label]="approver.username!"
+                variant="grey"
+              />
+            </div>
+          }
+        </div>
       </p-card>
     }
 

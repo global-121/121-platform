@@ -21,6 +21,7 @@ class PaymentPage extends BasePage {
   readonly paymentLogTable: Locator;
   readonly startPaymentButton: Locator;
   readonly approvePaymentButton: Locator;
+  readonly approvalFlowRow: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -62,6 +63,7 @@ class PaymentPage extends BasePage {
     this.approvePaymentButton = this.page.getByRole('button', {
       name: 'Approve payment',
     });
+    this.approvalFlowRow = this.page.getByTestId('approval-flow-row');
   }
 
   async approvePayment() {
@@ -280,6 +282,29 @@ class PaymentPage extends BasePage {
   async validatePaymentLog(expectedNote: string): Promise<void> {
     await this.navigateToPaymentLog();
     await this.validatePaymentLogEntries(expectedNote);
+  }
+
+  async validateApprovalFlowStep({
+    approverName,
+    rank,
+    approved,
+  }: {
+    approverName: string;
+    rank?: number;
+    approved?: boolean;
+  }) {
+    const row = this.approvalFlowRow.filter({ hasText: approverName });
+    await expect(row).toBeVisible();
+
+    if (rank) {
+      const span = row.getByText(rank.toString(), { exact: true });
+      await expect(span).toBeVisible();
+    }
+
+    if (approved) {
+      const icon = row.locator(`.pi-check`);
+      return await icon.isVisible();
+    }
   }
 }
 
