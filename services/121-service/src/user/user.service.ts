@@ -502,8 +502,14 @@ export class UserService {
         let resultRoles: UserRoleEntity[] = [];
 
         if (rolesToDelete.length === 0 || rolesToKeep.length === 0) {
-          // If no roles to delete are passed OR no roles are left, delete the assignment
+          // If no roles to delete are passed OR no roles are left, delete the assignment ..
+          // .. but first deactivate any linked approver. On remove, the programAidworkerAssignmentId will be set to NULL automatically.
+          await this.approverRepository.update(
+            { programAidworkerAssignmentId: Equal(programAssignment.id) },
+            { isActive: false },
+          );
           await this.assignmentRepository.remove(programAssignment);
+
           return;
         } else if (rolesToKeep.length > 0) {
           // Keep only the roles that are not in the newRoles array

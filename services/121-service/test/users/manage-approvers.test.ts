@@ -4,7 +4,6 @@ import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   createApprover,
-  deleteApprover,
   getApprovers,
   getCurrentUser,
   updateApprover,
@@ -90,10 +89,21 @@ describe('Create Approver', () => {
 });
 
 describe('Read Approvers', () => {
-  it('should read approvers including the new one', async () => {
+  beforeEach(async () => {
+    // deactivate 1 approver
+    await updateApprover({
+      programId,
+      approverId: postResponse.body.id,
+      isActive: false,
+      accessToken,
+    });
+  });
+
+  it('should read all approvers', async () => {
     const getResponse = await getApprovers({
       programId,
       accessToken,
+      filterOnActive: false,
     });
     expect(getResponse.status).toBe(HttpStatus.OK);
     expect(getResponse.body).toHaveLength(2); // admin + new
@@ -105,6 +115,17 @@ describe('Read Approvers', () => {
       userId,
       order,
     });
+  });
+
+  it('should read active approvers only', async () => {
+    // Act
+    const getResponse = await getApprovers({
+      programId,
+      accessToken,
+    });
+    // Assert
+    expect(getResponse.status).toBe(HttpStatus.OK);
+    expect(getResponse.body).toHaveLength(1); // only admin
   });
 });
 
@@ -139,23 +160,5 @@ describe('Update Approver', () => {
     expect(patchResponse.body.message).toMatchInlineSnapshot(
       `"An approver with order 1 already exists for this program"`,
     );
-  });
-});
-
-describe('Delete Approver', () => {
-  it('should delete approver and only have admin left', async () => {
-    const approverId = postResponse.body.id;
-    const deleteResponse = await deleteApprover({
-      programId,
-      approverId,
-      accessToken,
-    });
-    expect(deleteResponse.status).toBe(HttpStatus.NO_CONTENT);
-    const getAfterDeleteResponse = await getApprovers({
-      programId,
-      accessToken,
-    });
-    expect(getAfterDeleteResponse.status).toBe(HttpStatus.OK);
-    expect(getAfterDeleteResponse.body).toHaveLength(1); // only admin left
   });
 });

@@ -79,13 +79,16 @@ export async function getCurrentUser({
 export async function getApprovers({
   programId,
   accessToken,
+  filterOnActive = true,
 }: {
   programId: number;
   accessToken: string;
+  filterOnActive?: boolean;
 }): Promise<request.Response> {
   return await getServer()
     .get(`/programs/${programId}/approvers`)
-    .set('Cookie', [accessToken]);
+    .set('Cookie', [accessToken])
+    .query({ filterOnActive });
 }
 
 export async function createApprover({
@@ -112,11 +115,13 @@ export async function updateApprover({
   programId,
   approverId,
   order,
+  isActive,
   accessToken,
 }: {
   programId: number;
   approverId: number;
-  order: number;
+  order?: number;
+  isActive?: boolean;
   accessToken: string;
 }): Promise<request.Response> {
   return await getServer()
@@ -124,6 +129,7 @@ export async function updateApprover({
     .set('Cookie', [accessToken])
     .send({
       order,
+      isActive,
     });
 }
 

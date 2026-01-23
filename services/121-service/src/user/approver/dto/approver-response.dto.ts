@@ -12,4 +12,7 @@ export class ApproverResponseDto {
 
   @ApiProperty({ example: 5 })
   public readonly order: number;
+
+  @ApiProperty({ example: true })
+  public readonly isActive: boolean;
 }

@@ -788,7 +788,8 @@
     "method": "get",
     "path": "/api/programs/{programId}/approvers",
     "params": [
-      "programId"
+      "programId",
+      "filterOnActive"
     ]
   },
   {
@@ -807,14 +808,6 @@
       "approverId"
     ],
     "returnType": "ApproverResponseDto"
-  },
-  {
-    "method": "delete",
-    "path": "/api/programs/{programId}/approvers/{approverId}",
-    "params": [
-      "programId",
-      "approverId"
-    ]
   },
   {
     "method": "get",

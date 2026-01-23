@@ -1,17 +1,22 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
-  HttpCode,
   HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
@@ -35,11 +40,21 @@ export class ApproverController {
     type: [ApproverResponseDto],
   })
   @ApiParam({ name: 'programId', required: true })
+  @ApiQuery({
+    name: 'filterOnActive',
+    required: false,
+    type: 'boolean',
+    description: 'Filter on active appprovers only (true) or all (false)',
+  })
   @Get('programs/:programId/approvers')
   public async getApprovers(
     @Param('programId', ParseIntPipe) programId: number,
+    @Query('filterOnActive') filterOnActive = 'true',
   ): Promise<ApproverResponseDto[]> {
-    return await this.approverService.getApprovers({ programId });
+    return await this.approverService.getApprovers({
+      programId,
+      filterOnActive: filterOnActive === 'true',
+    });
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
@@ -63,10 +78,12 @@ export class ApproverController {
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
-  @ApiOperation({ summary: 'Update an existing approver' })
+  @ApiOperation({
+    summary: 'Update order of existing approver and/or deactivate/reactivate',
+  })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Returns the updated approver ',
+    description: 'Returns the updated approver',
     type: ApproverResponseDto,
   })
   @ApiParam({ name: 'programId', required: true })
@@ -81,23 +98,7 @@ export class ApproverController {
       programId,
       approverId,
       order: body.order,
+      isActive: body.isActive,
     });
-  }
-
-  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
-  @ApiOperation({ summary: 'Delete an existing approver' })
-  @ApiResponse({
-    status: HttpStatus.NO_CONTENT,
-    description: 'Approver successfully deleted',
-  })
-  @ApiParam({ name: 'programId', required: true })
-  @ApiParam({ name: 'approverId', required: true })
-  @Delete('programs/:programId/approvers/:approverId')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  public async deleteApprover(
-    @Param('programId', ParseIntPipe) programId: number,
-    @Param('approverId', ParseIntPipe) approverId: number,
-  ): Promise<void> {
-    return await this.approverService.deleteApprover({ programId, approverId });
   }
 }

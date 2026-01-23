@@ -132,10 +132,11 @@ export class PaymentsManagementService {
   }> {
     const approvers = await this.approverService.getApprovers({
       programId,
+      filterOnActive: true,
     });
     if (approvers.length < 1) {
       throw new HttpException(
-        'No approvers found for program, cannot create payment',
+        'No (active) approvers found for program, cannot create payment',
         HttpStatus.BAD_REQUEST,
       );
     }

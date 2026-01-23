@@ -5,12 +5,15 @@ import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/enti
 
 @Entity('approver')
 export class ApproverEntity extends Base121Entity {
-  @OneToOne(() => ProgramAidworkerAssignmentEntity, { onDelete: 'CASCADE' })
+  @OneToOne(() => ProgramAidworkerAssignmentEntity, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'programAidworkerAssignmentId' })
   public programAidworkerAssignment: Relation<ProgramAidworkerAssignmentEntity>;
-  @Column()
+  @Column({ nullable: true })
   public programAidworkerAssignmentId: number;
 
   @Column()
   public order: number;
+
+  @Column()
+  public isActive: boolean;
 }

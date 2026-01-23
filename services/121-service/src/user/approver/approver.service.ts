@@ -32,12 +32,13 @@ export class ApproverService {
           program: { id: Equal(programId) },
           user: { id: Equal(userId) },
         },
+        isActive: Equal(true),
       },
       relations: { programAidworkerAssignment: { user: true } },
     });
     if (!approver) {
       throw new HttpException(
-        'User is not an approver for this program',
+        'User is not an (active) approver for this program',
         HttpStatus.FORBIDDEN,
       );
     }
@@ -46,15 +47,19 @@ export class ApproverService {
 
   public async getApprovers({
     programId,
+    filterOnActive = true,
   }: {
     programId: number;
+    filterOnActive?: boolean;
   }): Promise<ApproverResponseDto[]> {
+    const whereClause = {
+      programAidworkerAssignment: { program: { id: Equal(programId) } },
+    };
+    if (filterOnActive) {
+      Object.assign(whereClause, { isActive: Equal(true) });
+    }
     const approverEntities = await this.approverRepository.find({
-      where: {
-        programAidworkerAssignment: {
-          program: { id: Equal(programId) },
-        },
-      },
+      where: whereClause,
       relations: { programAidworkerAssignment: { user: true } },
     });
     return approverEntities.map((approver) => this.entityToDto(approver));
@@ -101,6 +106,7 @@ export class ApproverService {
     const approver = new ApproverEntity();
     approver.programAidworkerAssignment = programAidworkerAssignment;
     approver.order = order;
+    approver.isActive = true;
     await this.approverRepository.save(approver);
     return this.entityToDto(approver);
   }
@@ -129,63 +135,53 @@ export class ApproverService {
     programId,
     approverId,
     order,
+    isActive,
   }: {
     programId: number;
     approverId: number;
-    order: number;
+    order?: number;
+    isActive?: boolean;
   }): Promise<ApproverResponseDto> {
-    await this.checkUniqueOrderOrThrow(programId, order);
-
     const approver = await this.approverRepository.findOneOrFail({
-      where: { id: Equal(approverId) },
+      where: {
+        id: Equal(approverId),
+        programAidworkerAssignment: { programId: Equal(programId) },
+      },
       relations: {
         programAidworkerAssignment: {
           user: true,
         },
       },
     });
-    if (approver.programAidworkerAssignment.programId !== programId) {
-      throw new HttpException(
-        'Approver does not belong to the specified program',
-        HttpStatus.BAD_REQUEST,
-      );
+
+    if (order) {
+      await this.checkUniqueOrderOrThrow(programId, order);
+      approver.order = order;
     }
 
-    approver.order = order;
+    if (isActive !== undefined) {
+      if (isActive === approver.isActive) {
+        throw new HttpException(
+          `Approver is already ${isActive ? 'active' : 'inactive'}`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      approver.isActive = isActive;
+    }
+
     await this.approverRepository.save(approver);
     return this.entityToDto(approver);
   }
 
-  public async deleteApprover({
-    programId,
-    approverId,
-  }: {
-    programId: number;
-    approverId: number;
-  }): Promise<void> {
-    const approver = await this.approverRepository.findOneOrFail({
-      where: { id: Equal(approverId) },
-      relations: {
-        programAidworkerAssignment: true,
-      },
-    });
-    if (approver.programAidworkerAssignment.programId !== programId) {
-      throw new HttpException(
-        'Approver does not belong to the specified program',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    await this.approverRepository.remove(approver);
-  }
-
   private entityToDto(approver: ApproverEntity): ApproverResponseDto {
-    const { id, programAidworkerAssignment, order } = approver;
+    const { id, programAidworkerAssignment, order, isActive } = approver;
     const { user } = programAidworkerAssignment;
     return {
       id,
       userId: user.id,
       username: user.username,
       order,
+      isActive,
     };
   }
 

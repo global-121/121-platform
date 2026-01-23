@@ -6,7 +6,7 @@ export class Approvers1766058193913 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Datamodel migration
     await queryRunner.query(
-      `CREATE TABLE "121-service"."approver" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "programAidworkerAssignmentId" integer NOT NULL, "order" integer NOT NULL, CONSTRAINT "REL_58ca3f250fb902accdafddd724" UNIQUE ("programAidworkerAssignmentId"), CONSTRAINT "PK_760049de241c526dbfd1330f6dd" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "121-service"."approver" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "programAidworkerAssignmentId" integer, "order" integer NOT NULL, "isActive" boolean NOT NULL, CONSTRAINT "REL_58ca3f250fb902accdafddd724" UNIQUE ("programAidworkerAssignmentId"), CONSTRAINT "PK_760049de241c526dbfd1330f6dd" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_845370013478fda958aaecdec5" ON "121-service"."approver" ("created") `,

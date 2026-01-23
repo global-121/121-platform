@@ -1,8 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional } from 'class-validator';
 
 export class UpdateApproverDto {
   @ApiProperty({ example: 5 })
   @IsNumber()
-  public readonly order: number;
+  @IsOptional()
+  public readonly order?: number;
+
+  @ApiProperty({ example: false })
+  @IsBoolean()
+  @IsOptional()
+  public readonly isActive?: boolean;
 }
