@@ -57,7 +57,6 @@ export class ProgramController {
     private readonly koboConnectService: KoboConnectService,
   ) {}
 
-  // Note: protecting this endpoint because we assume in this branch the PA-app will be removed
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramREAD] })
   @ApiOperation({ summary: 'Get program by id' })
   @ApiParam({
