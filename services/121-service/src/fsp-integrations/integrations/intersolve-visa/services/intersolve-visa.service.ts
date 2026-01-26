@@ -128,21 +128,21 @@ export class IntersolveVisaService {
     registrationId: number;
     maxToSpendPerMonthInCents: number;
   }): Promise<IntersolveVisaWalletDto> {
-    const customerParentWallet = await this.getCustomerParentWalletOrThrow({
+    const parentWallet = await this.getParentWalletOrThrow({
       registrationId,
     });
 
-    for (const childWallet of customerParentWallet.intersolveVisaChildWallets) {
+    for (const childWallet of parentWallet.intersolveVisaChildWallets) {
       if (childWallet.walletStatus !== IntersolveVisaTokenStatus.Substituted) {
         await this.updateChildWallet(childWallet);
       }
     }
 
-    const intersolveVisaParentWallet =
-      await this.retrieveAndUpdateParentWallet(customerParentWallet);
+    const updatedParentWallet =
+      await this.retrieveAndUpdateParentWallet(parentWallet);
 
     return IntersolveVisaDtoMapper.mapParentWalletEntityToWalletDto({
-      intersolveVisaParentWalletEntity: intersolveVisaParentWallet,
+      intersolveVisaParentWalletEntity: updatedParentWallet,
       maxToSpendPerMonthInCents,
     });
   }
@@ -161,17 +161,17 @@ export class IntersolveVisaService {
     registrationId: number;
     maxToSpendPerMonthInCents: number;
   }): Promise<IntersolveVisaWalletDto> {
-    const customerParentWallet = await this.getCustomerParentWalletOrThrow({
+    const parentWallet = await this.getParentWalletOrThrow({
       registrationId,
     });
 
     return IntersolveVisaDtoMapper.mapParentWalletEntityToWalletDto({
-      intersolveVisaParentWalletEntity: customerParentWallet,
+      intersolveVisaParentWalletEntity: parentWallet,
       maxToSpendPerMonthInCents,
     });
   }
 
-  private async getCustomerParentWalletOrThrow({
+  private async getParentWalletOrThrow({
     registrationId,
   }: {
     registrationId: number;

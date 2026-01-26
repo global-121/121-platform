@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddMaxCentsToSpendPerMonthFspConfigProp1769092162355 implements MigrationInterface {
-  name = 'AddMaxCentsToSpendPerMonthFspConfigProp1769092162355';
+export class AddMaxToSpendPerMonthInCentsFspConfigProp1769430310109 implements MigrationInterface {
+  name = 'AddMaxToSpendPerMonthInCentsFspConfigProp1769430310109';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
