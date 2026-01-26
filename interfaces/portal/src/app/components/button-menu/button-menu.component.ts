@@ -30,6 +30,10 @@ export class ButtonMenuComponent {
   readonly plain = input<boolean>(false);
   readonly text = input<boolean>(false);
   readonly size = input<'large' | 'small'>();
+  // added this after the Angular 21 and PrimeNG 21 updates
+  // so it can be overridden by the account menu since
+  // it started behaving "weirdly" (not closing when clicking on options)
+  readonly appendTo = input('body');
 
   readonly menuOpen = model(false);
 

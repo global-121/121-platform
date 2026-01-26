@@ -35,7 +35,7 @@
     [popup]="true"
     (onShow)="menuOpen.set(true)"
     (onHide)="menuOpen.set(false)"
-    [appendTo]="'body'"
+    [appendTo]="appendTo()"
     styleClass="mt-3"
   >
     <ng-template pTemplate="start">
