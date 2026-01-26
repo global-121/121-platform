@@ -1,5 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
@@ -18,6 +20,7 @@ import {
   waitForMessagesToComplete,
   waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
+import { patchProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   awaitChangeRegistrationStatus,
   getTransactionEventDescriptions,
@@ -337,5 +340,68 @@ describe('Do successful payment with FSP Visa Debit', () => {
       75,
     );
     expect(transactionsResponse4.text).toContain(TransactionStatusEnum.success);
+  });
+
+  it('should cap transaction amount to maxToSpendPerMonthInCents when payment exceeds it', async () => {
+    // Arrange
+    const maxToSpendPerMonthInCents = 1_000;
+    const expectedMaxTransferValue = maxToSpendPerMonthInCents / 100;
+
+    await patchProgramFspConfigurationProperty({
+      programId: programIdVisa,
+      configName: Fsps.intersolveVisa,
+      propertyName: FspConfigurationProperties.maxToSpendPerMonthInCents,
+      body: {
+        value: String(maxToSpendPerMonthInCents),
+      },
+      accessToken,
+    });
+
+    const registrationVisa = {
+      ...registrationVisaDefault,
+      whatsappPhoneNumber: registrationVisaDefault.phoneNumber,
+      fullName: 'mock-current-balance-0-mock-spent-0',
+    };
+
+    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
+      referenceIds: [registrationVisa.referenceId],
+      status: RegistrationStatusEnum.included,
+      accessToken,
+    });
+
+    // Act
+    const doPaymentResponse = await doPayment({
+      programId: programIdVisa,
+      transferValue: transferValueVisa,
+      referenceIds: [registrationVisa.referenceId],
+      accessToken,
+    });
+    const paymentId = doPaymentResponse.body.id;
+
+    await waitForPaymentAndTransactionsToComplete({
+      programId: programIdVisa,
+      paymentReferenceIds: [registrationVisa.referenceId],
+      accessToken,
+      maxWaitTimeMs: 4_000,
+      completeStatuses: [TransactionStatusEnum.success],
+      paymentId,
+    });
+
+    // Assert
+    expect(doPaymentResponse.status).toBe(HttpStatus.CREATED);
+
+    const transactionsResponse = await getTransactionsByPaymentIdPaginated({
+      programId: programIdVisa,
+      paymentId,
+      registrationReferenceId: registrationVisa.referenceId,
+      accessToken,
+    });
+
+    expect(transactionsResponse.text).toContain(TransactionStatusEnum.success);
+    expect(transactionsResponse.body.data[0].transferValue).toBe(
+      expectedMaxTransferValue,
+    );
   });
 });

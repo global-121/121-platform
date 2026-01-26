@@ -476,7 +476,7 @@
         <source>Current balance</source>
       </trans-unit>
       <trans-unit id="debit-card-spent-this-month" datatype="html">
-        <source>Spent this month (max. EUR 150)</source>
+        <source>Spent this month (max. EUR <x equiv-text="this.convertCentsToMainUnits(this.walletWithCards.data()?.maxToSpendPerMonth)" id="PH"/>)</source>
       </trans-unit>
       <trans-unit id="debit-card-issued-on" datatype="html">
         <source>Issued on</source>

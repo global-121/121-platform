@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/intersolve-visa/intersolve-visa-account-management.service';
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa/intersolve-visa-data-synchronization.service';
-import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
@@ -122,45 +121,6 @@ describe('IntersolveVisaAccountManagementService', () => {
     registrationsService = module.get(
       RegistrationsService,
     ) as jest.Mocked<RegistrationsService>;
-  });
-
-  describe('retrieveAndUpdateIntersolveVisaWalletAndCards', () => {
-    it('should load maxToSpendPerMonthInCents from program config and forward it', async () => {
-      const registration = {
-        id: 7,
-        programFspConfigurationId: 123,
-      };
-
-      mockGetRegistrationOrThrow(registration);
-
-      programFspConfigurationRepository.getPropertyValueByName.mockResolvedValueOnce(
-        '15000',
-      );
-
-      const walletDto = {} as IntersolveVisaWalletDto;
-      intersolveVisaService.retrieveAndUpdateWallet.mockResolvedValueOnce(
-        walletDto,
-      );
-
-      const result =
-        await service.retrieveAndUpdateIntersolveVisaWalletAndCards('ref-1', 1);
-
-      expect(
-        programFspConfigurationRepository.getPropertyValueByName,
-      ).toHaveBeenCalledWith({
-        programFspConfigurationId: 123,
-        name: FspConfigurationProperties.maxToSpendPerMonthInCents,
-      });
-
-      expect(
-        intersolveVisaService.retrieveAndUpdateWallet,
-      ).toHaveBeenCalledWith({
-        registrationId: 7,
-        maxToSpendPerMonthInCents: 15000,
-      });
-
-      expect(result).toBe(walletDto);
-    });
   });
 
   describe('linkDebitCardToRegistration', () => {
