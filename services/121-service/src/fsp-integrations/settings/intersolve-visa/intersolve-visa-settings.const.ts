@@ -58,7 +58,7 @@ export const INTERSOLVE_VISA_SETTINGS: FspSettingsDto = {
       isRequired: true,
     },
     {
-      name: FspConfigurationProperties.maxCentsToSpendPerMonth,
+      name: FspConfigurationProperties.maxToSpendPerMonthInCents,
       isRequired: true,
     },
   ],

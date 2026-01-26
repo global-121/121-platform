@@ -16,10 +16,10 @@ export class IntersolveVisaDtoMapper {
    */
   public static mapParentWalletEntityToWalletDto({
     intersolveVisaParentWalletEntity,
-    maxCentsToSpendPerMonth,
+    maxToSpendPerMonthInCents,
   }: {
     intersolveVisaParentWalletEntity: IntersolveVisaParentWalletEntity;
-    maxCentsToSpendPerMonth: number;
+    maxToSpendPerMonthInCents: number;
   }): IntersolveVisaWalletDto {
     // Sort wallets by newest first, newest = current wallet
     const sortedWallets =
@@ -35,7 +35,7 @@ export class IntersolveVisaDtoMapper {
       tokenCode: intersolveVisaParentWalletEntity.tokenCode,
       balance: intersolveVisaParentWalletEntity.balance,
       spentThisMonth: intersolveVisaParentWalletEntity.spentThisMonth,
-      maxToSpendPerMonth: maxCentsToSpendPerMonth,
+      maxToSpendPerMonth: maxToSpendPerMonthInCents,
       lastUsedDate: intersolveVisaParentWalletEntity.lastUsedDate,
       lastExternalUpdate:
         intersolveVisaParentWalletEntity.lastExternalUpdate.toISOString(),

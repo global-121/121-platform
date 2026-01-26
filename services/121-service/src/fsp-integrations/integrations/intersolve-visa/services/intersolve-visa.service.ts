@@ -123,10 +123,10 @@ export class IntersolveVisaService {
    */
   public async retrieveAndUpdateWallet({
     registrationId,
-    maxCentsToSpendPerMonth,
+    maxToSpendPerMonthInCents,
   }: {
     registrationId: number;
-    maxCentsToSpendPerMonth: number;
+    maxToSpendPerMonthInCents: number;
   }): Promise<IntersolveVisaWalletDto> {
     const customerParentWallet = await this.getCustomerParentWalletOrThrow({
       registrationId,
@@ -143,7 +143,7 @@ export class IntersolveVisaService {
 
     return IntersolveVisaDtoMapper.mapParentWalletEntityToWalletDto({
       intersolveVisaParentWalletEntity: intersolveVisaParentWallet,
-      maxCentsToSpendPerMonth,
+      maxToSpendPerMonthInCents,
     });
   }
 
@@ -156,10 +156,10 @@ export class IntersolveVisaService {
    */
   public async getWalletWithCards({
     registrationId,
-    maxCentsToSpendPerMonth,
+    maxToSpendPerMonthInCents,
   }: {
     registrationId: number;
-    maxCentsToSpendPerMonth: number;
+    maxToSpendPerMonthInCents: number;
   }): Promise<IntersolveVisaWalletDto> {
     const customerParentWallet = await this.getCustomerParentWalletOrThrow({
       registrationId,
@@ -167,7 +167,7 @@ export class IntersolveVisaService {
 
     return IntersolveVisaDtoMapper.mapParentWalletEntityToWalletDto({
       intersolveVisaParentWalletEntity: customerParentWallet,
-      maxCentsToSpendPerMonth,
+      maxToSpendPerMonthInCents,
     });
   }
 
@@ -640,11 +640,11 @@ export class IntersolveVisaService {
   public async calculateTransferValueWithWalletRetrieval({
     registrationId,
     inputTransferValueInMajorUnit,
-    maxCentsToSpendPerMonth,
+    maxToSpendPerMonthInCents,
   }: {
     registrationId: number;
     inputTransferValueInMajorUnit: number;
-    maxCentsToSpendPerMonth: number;
+    maxToSpendPerMonthInCents: number;
   }): Promise<number> {
     const intersolveVisaCustomer =
       await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
@@ -674,7 +674,7 @@ export class IntersolveVisaService {
       spentThisMonth:
         intersolveVisaCustomer?.intersolveVisaParentWallet?.spentThisMonth ?? 0,
       balance: intersolveVisaCustomer?.intersolveVisaParentWallet?.balance ?? 0,
-      maxCentsToSpendPerMonth,
+      maxToSpendPerMonthInCents,
     });
   }
 
@@ -683,15 +683,15 @@ export class IntersolveVisaService {
     transferValueInMajorUnit,
     spentThisMonth,
     balance,
-    maxCentsToSpendPerMonth,
+    maxToSpendPerMonthInCents,
   }: {
     transferValueInMajorUnit: number;
     spentThisMonth: number;
     balance: number;
-    maxCentsToSpendPerMonth: number;
+    maxToSpendPerMonthInCents: number;
   }): number {
     const calculatedTransferValueMajorUnit =
-      (maxCentsToSpendPerMonth - spentThisMonth - balance) / 100;
+      (maxToSpendPerMonthInCents - spentThisMonth - balance) / 100;
 
     if (calculatedTransferValueMajorUnit > 0) {
       return Math.min(

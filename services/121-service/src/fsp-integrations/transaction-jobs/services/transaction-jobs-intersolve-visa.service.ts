@@ -47,16 +47,17 @@ export class TransactionJobsIntersolveVisaService {
 
     let transferValueInMajorUnit: number;
     try {
-      const { maxCentsToSpendPerMonth } = await this.getIntersolveVisaFspConfig(
-        transactionJob.programFspConfigurationId,
-      );
+      const { maxToSpendPerMonthInCents } =
+        await this.getIntersolveVisaFspConfig(
+          transactionJob.programFspConfigurationId,
+        );
 
       transferValueInMajorUnit =
         await this.intersolveVisaService.calculateTransferValueWithWalletRetrieval(
           {
             registrationId: registration.id,
             inputTransferValueInMajorUnit: transactionJob.transferValue,
-            maxCentsToSpendPerMonth: Number(maxCentsToSpendPerMonth),
+            maxToSpendPerMonthInCents: Number(maxToSpendPerMonthInCents),
           },
         );
     } catch (error) {
@@ -166,7 +167,7 @@ export class TransactionJobsIntersolveVisaService {
     coverLetterCode: string;
     fundingTokenCode: string;
     cardDistributionByMail: string;
-    maxCentsToSpendPerMonth: string;
+    maxToSpendPerMonthInCents: string;
   }> {
     const intersolveVisaConfig =
       await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
@@ -176,7 +177,7 @@ export class TransactionJobsIntersolveVisaService {
           FspConfigurationProperties.coverLetterCode,
           FspConfigurationProperties.fundingTokenCode,
           FspConfigurationProperties.cardDistributionByMail,
-          FspConfigurationProperties.maxCentsToSpendPerMonth,
+          FspConfigurationProperties.maxToSpendPerMonthInCents,
         ],
       });
     return {
@@ -192,8 +193,8 @@ export class TransactionJobsIntersolveVisaService {
       cardDistributionByMail: intersolveVisaConfig.find(
         (c) => c.name === FspConfigurationProperties.cardDistributionByMail,
       )?.value as string,
-      maxCentsToSpendPerMonth: intersolveVisaConfig.find(
-        (c) => c.name === FspConfigurationProperties.maxCentsToSpendPerMonth,
+      maxToSpendPerMonthInCents: intersolveVisaConfig.find(
+        (c) => c.name === FspConfigurationProperties.maxToSpendPerMonthInCents,
       )?.value as string,
     };
   }

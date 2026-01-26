@@ -148,7 +148,7 @@
           "value": "INTERSOLVE_VISA_CARD_DISTRIBUTION_BY_MAIL"
         },
         {
-          "name": "maxCentsToSpendPerMonth",
+          "name": "maxToSpendPerMonthInCents",
           "value": "15000"
         }
       ]

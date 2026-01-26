@@ -6,7 +6,7 @@ export class AddMaxCentsToSpendPerMonthFspConfigProp1769092162355 implements Mig
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
       INSERT INTO "121-service"."program_fsp_configuration_property" ("programFspConfigurationId", "name", "value")
-      SELECT pfc.id, 'maxCentsToSpendPerMonth', '15000'
+      SELECT pfc.id, 'maxToSpendPerMonthInCents', '15000'
       FROM "121-service"."program_fsp_configuration" pfc
       WHERE pfc."fspName" = 'Intersolve-visa';
     `);
