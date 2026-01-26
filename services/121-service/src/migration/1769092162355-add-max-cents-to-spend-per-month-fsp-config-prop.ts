@@ -12,13 +12,7 @@ export class AddMaxCentsToSpendPerMonthFspConfigProp1769092162355 implements Mig
     `);
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`
-      DELETE FROM "121-service"."program_fsp_configuration_property"
-      WHERE "name" = 'maxCentsToSpendPerMonth'
-        AND "programFspConfigurationId" IN (
-          SELECT id FROM "121-service"."program_fsp_configuration" WHERE "fspName" = 'Intersolve-visa'
-        );
-    `);
+  public async down(): Promise<void> {
+    'we never do down migrations';
   }
 }

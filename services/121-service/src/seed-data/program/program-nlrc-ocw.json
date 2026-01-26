@@ -149,7 +149,7 @@
         },
         {
           "name": "maxCentsToSpendPerMonth",
-          "value": "INTERSOLVE_VISA_MAX_CENTS_TO_SPEND_PER_MONTH"
+          "value": "15000"
         }
       ]
     }
