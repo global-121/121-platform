@@ -45,18 +45,12 @@ export class TransactionJobsIntersolveVisaService {
         transactionJob.referenceId,
       );
 
-    const {
-      brandCode,
-      coverLetterCode,
-      fundingTokenCode,
-      cardDistributionByMail,
-      maxCentsToSpendPerMonth,
-    } = await this.getIntersolveVisaFspConfig(
-      transactionJob.programFspConfigurationId,
-    );
-
     let transferValueInMajorUnit: number;
     try {
+      const { maxCentsToSpendPerMonth } = await this.getIntersolveVisaFspConfig(
+        transactionJob.programFspConfigurationId,
+      );
+
       transferValueInMajorUnit =
         await this.intersolveVisaService.calculateTransferValueWithWalletRetrieval(
           {
@@ -87,6 +81,15 @@ export class TransactionJobsIntersolveVisaService {
 
     let intersolveVisaDoTransferOrIssueCardReturnDto: DoTransferOrIssueCardResult;
     try {
+      const {
+        brandCode,
+        coverLetterCode,
+        fundingTokenCode,
+        cardDistributionByMail,
+      } = await this.getIntersolveVisaFspConfig(
+        transactionJob.programFspConfigurationId,
+      );
+
       const isChildWalletLinkedToRegistration =
         await this.intersolveVisaChildWalletScopedRepository.hasLinkedChildWalletForRegistrationId(
           registration.id,
