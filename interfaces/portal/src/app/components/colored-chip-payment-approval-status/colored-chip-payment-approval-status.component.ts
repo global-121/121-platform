@@ -20,7 +20,7 @@ import { PaymentApiService } from '~/domains/payment/payment.api.service';
 })
 export class ColoredChipPaymentApprovalStatusComponent {
   readonly programId = input.required<string>();
-  readonly paymentId = input.required<string>();
+  readonly paymentId = input.required<number | string>();
   private paymentApiService = inject(PaymentApiService);
 
   paymentStatus = injectQuery(
