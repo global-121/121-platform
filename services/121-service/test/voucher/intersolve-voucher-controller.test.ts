@@ -63,6 +63,7 @@ describe('Intersolve Voucher Controller', () => {
         referenceId: registrationPV5.referenceId,
         accessToken,
       });
+      expect(getTransactionsBody[0].status).toBe('success');
 
       // Act
       const getVoucherResponse = await getPaperVoucherImage(
@@ -73,7 +74,6 @@ describe('Intersolve Voucher Controller', () => {
       );
 
       // Assert
-      expect(getTransactionsBody[0].status).toBe('success');
       expect(getVoucherResponse.status).toBe(HttpStatus.OK);
       expect(getVoucherResponse.headers['content-type']).toBe('image/png');
       expect(getVoucherResponse.body.length).toBeGreaterThan(0);
