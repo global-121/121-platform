@@ -10,9 +10,9 @@
     <div class="flex items-center gap-x-4">
       <h1 class="me-auto">
         {{ paymentTitle() }}
-        <app-colored-chip
-          [label]="statusBadgeLabel()"
-          [variant]="statusBadgeColor()"
+        <app-colored-chip-payment-approval-status
+          [programId]="programId()"
+          [paymentId]="paymentId()"
         />
       </h1>
       @if (showApprovePaymentButton()) {

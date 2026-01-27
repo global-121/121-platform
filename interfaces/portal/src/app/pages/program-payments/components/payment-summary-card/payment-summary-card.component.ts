@@ -12,6 +12,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 
 import { CardSummaryMetricsContainerComponent } from '~/components/card-summary-metrics-container/card-summary-metrics-container.component';
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
+import { ColoredChipPaymentApprovalStatusComponent } from '~/components/colored-chip-payment-approval-status/colored-chip-payment-approval-status.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { paymentLink } from '~/domains/payment/payment.helpers';
 import { ProgramApiService } from '~/domains/program/program.api.service';
@@ -19,7 +20,11 @@ import { Locale } from '~/utils/locale';
 
 @Component({
   selector: 'app-payment-summary-card',
-  imports: [CardWithLinkComponent, CardSummaryMetricsContainerComponent],
+  imports: [
+    CardWithLinkComponent,
+    CardSummaryMetricsContainerComponent,
+    ColoredChipPaymentApprovalStatusComponent,
+  ],
   providers: [CurrencyPipe, DecimalPipe],
   templateUrl: './payment-summary-card.component.html',
   styles: ``,
@@ -87,11 +92,16 @@ export class PaymentSummaryCardComponent {
     paymentLink({ programId: this.programId(), paymentId: this.paymentId() }),
   );
 
+  readonly paymentCreationDate = computed(
+    () =>
+      new DatePipe(this.locale).transform(this.paymentDate(), 'short') ?? '',
+  );
+
   readonly paymentTitle = computed(
     () =>
       $localize`:@@page-title-program-payment:Payment` +
       ' ' +
-      (new DatePipe(this.locale).transform(this.paymentDate(), 'short') ?? ''),
+      this.paymentCreationDate(),
   );
 
   public readonly summaryMetrics = computed(() => {
