@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { Patch } from '@nestjs/common';
 import {
