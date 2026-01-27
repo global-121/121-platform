@@ -32,11 +32,6 @@ export class ColoredChipPaymentApprovalStatusComponent {
       programId: this.programId,
       paymentId: this.paymentId,
     })(),
-    // Refetch the data every second if this is the latest payment, and a payment is in progress
-    refetchInterval:
-      this.paymentStatus.isPending() || this.paymentStatus.data()?.inProgress
-        ? 1000
-        : undefined,
   }));
 
   readonly isPaymentApproved = computed(() => {
