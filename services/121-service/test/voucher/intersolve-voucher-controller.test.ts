@@ -11,7 +11,7 @@ import {
   getWhatsappVoucherImage,
   postIntersolveInstructionsImage,
 } from '@121-service/test/helpers/fsp-specific.helper';
-import { createAndStartPayment } from '@121-service/test/helpers/program.helper';
+import { doPayment } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
   importRegistrations,
@@ -37,8 +37,8 @@ describe('Intersolve Voucher Controller', () => {
     accessToken = await getAccessToken();
   });
 
-  describe('Intersolve voucher controller endpoints', () => {
-    it('should successfully get paper voucher image', async () => {
+  describe('GET /paper-voucher-image', () => {
+    it('should successfully return image', async () => {
       // Arrange
       registrationPV5.programFspConfigurationName = Fsps.intersolveVoucherPaper;
       await importRegistrations(programIdPV, [registrationPV5], accessToken);
@@ -49,7 +49,7 @@ describe('Intersolve Voucher Controller', () => {
         accessToken,
       });
       const paymentReferenceIds = [registrationPV5.referenceId];
-      const paymentResponse = await createAndStartPayment({
+      const paymentResponse = await doPayment({
         programId: programIdPV,
         transferValue,
         referenceIds: paymentReferenceIds,
@@ -79,7 +79,7 @@ describe('Intersolve Voucher Controller', () => {
       expect(getVoucherResponse.body.length).toBeGreaterThan(0);
     });
 
-    it('should return 404 when paper voucher image does not exist for invalid payment', async () => {
+    it('should return 403 for invalid payment', async () => {
       // Arrange
       registrationPV5.programFspConfigurationName = Fsps.intersolveVoucherPaper;
       await importRegistrations(programIdPV, [registrationPV5], accessToken);
@@ -102,7 +102,7 @@ describe('Intersolve Voucher Controller', () => {
       expect(response.status).toBe(HttpStatus.NOT_FOUND);
     });
 
-    it('should return 403 when accessing paper voucher image with invalid programId', async () => {
+    it('should return 403 for invalid programId', async () => {
       // Arrange
       registrationPV5.programFspConfigurationName = Fsps.intersolveVoucherPaper;
       await importRegistrations(programIdPV, [registrationPV5], accessToken);
@@ -113,7 +113,7 @@ describe('Intersolve Voucher Controller', () => {
         accessToken,
       });
       const paymentReferenceIds = [registrationPV5.referenceId];
-      const paymentResponse = await createAndStartPayment({
+      const paymentResponse = await doPayment({
         programId: programIdPV,
         transferValue,
         referenceIds: paymentReferenceIds,
@@ -133,8 +133,10 @@ describe('Intersolve Voucher Controller', () => {
       // Assert
       expect(response.status).toBe(HttpStatus.FORBIDDEN);
     });
+  });
 
-    it('should successfully get WhatsApp voucher image', async () => {
+  describe('GET /whatsapp-voucher-image', () => {
+    it('should successfully return image', async () => {
       // Arrange
       registrationPV5.programFspConfigurationName =
         Fsps.intersolveVoucherWhatsapp;
@@ -146,7 +148,7 @@ describe('Intersolve Voucher Controller', () => {
         accessToken,
       });
       const paymentReferenceIds = [registrationPV5.referenceId];
-      const paymentResponse = await createAndStartPayment({
+      const paymentResponse = await doPayment({
         programId: programIdPV,
         transferValue,
         referenceIds: paymentReferenceIds,
@@ -176,7 +178,7 @@ describe('Intersolve Voucher Controller', () => {
       expect(getVoucherResponse.body.length).toBeGreaterThan(0);
     });
 
-    it('should return 404 when WhatsApp voucher image does not exist for invalid payment', async () => {
+    it('should return 404 for invalid payment', async () => {
       // Arrange
       registrationPV5.programFspConfigurationName =
         Fsps.intersolveVoucherWhatsapp;
@@ -200,7 +202,7 @@ describe('Intersolve Voucher Controller', () => {
       expect(response.status).toBe(HttpStatus.NOT_FOUND);
     });
 
-    it('should return 403 when accessing WhatsApp voucher image with invalid programId', async () => {
+    it('should return 403 for invalid programId', async () => {
       // Arrange
       registrationPV5.programFspConfigurationName =
         Fsps.intersolveVoucherWhatsapp;
@@ -212,7 +214,7 @@ describe('Intersolve Voucher Controller', () => {
         accessToken,
       });
       const paymentReferenceIds = [registrationPV5.referenceId];
-      const paymentResponse = await createAndStartPayment({
+      const paymentResponse = await doPayment({
         programId: programIdPV,
         transferValue,
         referenceIds: paymentReferenceIds,
@@ -232,8 +234,10 @@ describe('Intersolve Voucher Controller', () => {
       // Assert
       expect(response.status).toBe(HttpStatus.FORBIDDEN);
     });
+  });
 
-    it('should successfully get intersolve instructions image', async () => {
+  describe('Intersolve instructions image', () => {
+    it('should successfully get image', async () => {
       // Arrange - First upload an image so we have something to retrieve
       const postResponse = await postIntersolveInstructionsImage(
         programIdPV,
@@ -249,7 +253,7 @@ describe('Intersolve Voucher Controller', () => {
       expect(response.headers['content-type']).toBe('image/png');
     });
 
-    it('should return 403 when posting intersolve instructions without admin access', async () => {
+    it('should return 403 when posting without admin access', async () => {
       // Arrange - Get a non-admin access token
       const nonAdminAccessToken = await getAccessTokenCvaManager();
 
@@ -263,7 +267,7 @@ describe('Intersolve Voucher Controller', () => {
       expect(response.status).toBe(HttpStatus.FORBIDDEN);
     });
 
-    it('should return 404 when intersolve instructions image does not exist for invalid program', async () => {
+    it('should return 404 for invalid program', async () => {
       // Act
       const response = await getIntersolveInstructionsImage(99999);
 
