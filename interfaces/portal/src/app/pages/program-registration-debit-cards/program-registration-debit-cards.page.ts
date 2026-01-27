@@ -178,7 +178,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
         currencyCode: this.currencyCode(),
       },
       {
-        label: $localize`:@@debit-card-spent-this-month:Spent this month (max. EUR 150)`,
+        label: $localize`:@@debit-card-spent-this-month:Spent this month (max. EUR ${this.convertCentsToMainUnits(this.walletWithCards.data()?.maxToSpendPerMonth)})`,
         value: this.convertCentsToMainUnits(
           this.walletWithCards.data()?.spentThisMonth,
         ),

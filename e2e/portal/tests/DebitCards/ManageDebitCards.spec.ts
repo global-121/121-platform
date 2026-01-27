@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getRegistrationIdByReferenceId,
+  getVisaWalletsAndDetails,
   seedIncludedRegistrations,
   seedPaidRegistrations,
 } from '@121-service/test/helpers/registration.helper';
@@ -38,6 +39,15 @@ test('User can view debit cards of a registration with a single active debit car
     accessToken,
   });
 
+  const walletResponse = await getVisaWalletsAndDetails(
+    programId,
+    registrationOCW1.referenceId,
+    accessToken,
+  );
+
+  const maxToSpendPerMonth = walletResponse.body.maxToSpendPerMonth / 100;
+  const spentThisMonthLabel = `Spent this month (max. EUR ${maxToSpendPerMonth})`;
+
   await test.step('Login', async () => {
     const loginPage = new LoginPage(page);
     await page.goto(`/`);
@@ -56,7 +66,7 @@ test('User can view debit cards of a registration with a single active debit car
       'Card number': expect.any(String),
       'Card status': 'Active',
       'Current balance': '€25.00',
-      'Spent this month (max. EUR 150)': '€3.00',
+      [spentThisMonthLabel]: '€3.00',
       'Issued on': currentDateString,
       'Last used': currentDateString,
     };
@@ -128,6 +138,15 @@ test('User can replace a debit card and view both new and old card', async ({
     accessToken,
   });
 
+  const walletResponse = await getVisaWalletsAndDetails(
+    programId,
+    registrationOCW1.referenceId,
+    accessToken,
+  );
+
+  const maxToSpendPerMonth = walletResponse.body.maxToSpendPerMonth / 100;
+  const spentThisMonthLabel = `Spent this month (max. EUR ${maxToSpendPerMonth})`;
+
   await test.step('Login', async () => {
     const loginPage = new LoginPage(page);
     await page.goto(`/`);
@@ -197,8 +216,7 @@ test('User can replace a debit card and view both new and old card', async ({
       'Card status': initialCardData['Card status'],
       'Last used': initialCardData['Last used'],
       'Current balance': initialCardData['Current balance'],
-      'Spent this month (max. EUR 150)':
-        initialCardData['Spent this month (max. EUR 150)'],
+      [spentThisMonthLabel]: initialCardData[spentThisMonthLabel],
     });
   });
 
@@ -242,6 +260,15 @@ test('User can pause and unpause a debit card', async ({ page }) => {
     referenceId: registrationOCW1.referenceId,
     accessToken,
   });
+
+  const walletResponse = await getVisaWalletsAndDetails(
+    programId,
+    registrationOCW1.referenceId,
+    accessToken,
+  );
+
+  const maxToSpendPerMonth = walletResponse.body.maxToSpendPerMonth / 100;
+  const spentThisMonthLabel = `Spent this month (max. EUR ${maxToSpendPerMonth})`;
 
   await test.step('Login', async () => {
     const loginPage = new LoginPage(page);
@@ -312,8 +339,7 @@ test('User can pause and unpause a debit card', async ({ page }) => {
       'Issued on': initialCardData['Issued on'],
       'Last used': initialCardData['Last used'],
       'Current balance': initialCardData['Current balance'],
-      'Spent this month (max. EUR 150)':
-        initialCardData['Spent this month (max. EUR 150)'],
+      [spentThisMonthLabel]: initialCardData[spentThisMonthLabel],
     });
 
     // Verify the Pause button changed to Unpause

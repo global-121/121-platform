@@ -18,6 +18,7 @@ export const FSP_CONFIGURATION_PROPERTY_LABELS: Record<
   [FspConfigurationProperties.uniqueKeyOnafriq]: $localize`Unique key`,
   [FspConfigurationProperties.debitAccountNumber]: $localize`Debit account number`,
   [FspConfigurationProperties.cardDistributionByMail]: $localize`Card distribution by mail`,
+  [FspConfigurationProperties.maxToSpendPerMonthInCents]: $localize`Max amount to spend per month (in cents)`,
 };
 
 export const FSP_IMAGE_URLS: Record<Fsps, string> = {

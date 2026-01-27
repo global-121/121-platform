@@ -19,7 +19,6 @@ import { IssueTokenResult } from '@121-service/src/fsp-integrations/integrations
 import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
 import { ReplaceCardParams } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/replace-card-params.interface';
 import { SendUpdatedContactInformationParams } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/send-updated-contact-information-params.interface';
-import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa.const';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaDtoMapper } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/mappers/intersolve-visa-dto.mapper';
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
@@ -122,48 +121,30 @@ export class IntersolveVisaService {
    * @throws {HttpException} Throws an HttpException if no customer or parent wallet is found for the given registration ID.
    * @returns {Promise<IntersolveVisaWalletDto>} The updated wallet information as a DTO.
    */
-  public async retrieveAndUpdateWallet(
-    registrationId: number,
-  ): Promise<IntersolveVisaWalletDto> {
-    const customer =
-      await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
-        registrationId,
-      );
+  public async retrieveAndUpdateWallet({
+    registrationId,
+    maxToSpendPerMonthInCents,
+  }: {
+    registrationId: number;
+    maxToSpendPerMonthInCents: number;
+  }): Promise<IntersolveVisaWalletDto> {
+    const parentWallet = await this.getParentWalletOrThrow({
+      registrationId,
+    });
 
-    if (!customer) {
-      throw new HttpException(
-        {
-          errors: `No Customer Entity found for Registration: ${registrationId}`,
-        },
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    if (!customer.intersolveVisaParentWallet) {
-      throw new HttpException(
-        {
-          errors: `No ParentWallet Entity found for Registration: ${registrationId}`,
-        },
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    // Retrieve and update the current wallet from Intersolve (= skip all substituted wallets)
-    for (const childWallet of customer.intersolveVisaParentWallet
-      .intersolveVisaChildWallets) {
+    for (const childWallet of parentWallet.intersolveVisaChildWallets) {
       if (childWallet.walletStatus !== IntersolveVisaTokenStatus.Substituted) {
         await this.updateChildWallet(childWallet);
       }
     }
 
-    // Retrieve and update the parent wallet from Intersolve
-    const intersolveVisaParentWallet = await this.retrieveAndUpdateParentWallet(
-      customer.intersolveVisaParentWallet,
-    );
+    const updatedParentWallet =
+      await this.retrieveAndUpdateParentWallet(parentWallet);
 
-    return IntersolveVisaDtoMapper.mapParentWalletEntityToWalletDto(
-      intersolveVisaParentWallet,
-    );
+    return IntersolveVisaDtoMapper.mapParentWalletEntityToWalletDto({
+      intersolveVisaParentWalletEntity: updatedParentWallet,
+      maxToSpendPerMonthInCents,
+    });
   }
 
   /**
@@ -173,9 +154,28 @@ export class IntersolveVisaService {
    * @throws {HttpException} Throws an HttpException if no customer or parent wallet is found for the given registration ID.
    * @returns {Promise<IntersolveVisaWalletDto>} The wallet and associated cards information as a DTO.
    */
-  public async getWalletWithCards(
-    registrationId: number,
-  ): Promise<IntersolveVisaWalletDto> {
+  public async getWalletWithCards({
+    registrationId,
+    maxToSpendPerMonthInCents,
+  }: {
+    registrationId: number;
+    maxToSpendPerMonthInCents: number;
+  }): Promise<IntersolveVisaWalletDto> {
+    const parentWallet = await this.getParentWalletOrThrow({
+      registrationId,
+    });
+
+    return IntersolveVisaDtoMapper.mapParentWalletEntityToWalletDto({
+      intersolveVisaParentWalletEntity: parentWallet,
+      maxToSpendPerMonthInCents,
+    });
+  }
+
+  private async getParentWalletOrThrow({
+    registrationId,
+  }: {
+    registrationId: number;
+  }): Promise<IntersolveVisaParentWalletEntity> {
     const customer =
       await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
         registrationId,
@@ -199,9 +199,7 @@ export class IntersolveVisaService {
       );
     }
 
-    return IntersolveVisaDtoMapper.mapParentWalletEntityToWalletDto(
-      customer.intersolveVisaParentWallet,
-    );
+    return customer.intersolveVisaParentWallet;
   }
 
   private async getCustomerOrCreate({
@@ -642,9 +640,11 @@ export class IntersolveVisaService {
   public async calculateTransferValueWithWalletRetrieval({
     registrationId,
     inputTransferValueInMajorUnit,
+    maxToSpendPerMonthInCents,
   }: {
     registrationId: number;
     inputTransferValueInMajorUnit: number;
+    maxToSpendPerMonthInCents: number;
   }): Promise<number> {
     const intersolveVisaCustomer =
       await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
@@ -674,6 +674,7 @@ export class IntersolveVisaService {
       spentThisMonth:
         intersolveVisaCustomer?.intersolveVisaParentWallet?.spentThisMonth ?? 0,
       balance: intersolveVisaCustomer?.intersolveVisaParentWallet?.balance ?? 0,
+      maxToSpendPerMonthInCents,
     });
   }
 
@@ -682,13 +683,15 @@ export class IntersolveVisaService {
     transferValueInMajorUnit,
     spentThisMonth,
     balance,
+    maxToSpendPerMonthInCents,
   }: {
     transferValueInMajorUnit: number;
     spentThisMonth: number;
     balance: number;
+    maxToSpendPerMonthInCents: number;
   }): number {
     const calculatedTransferValueMajorUnit =
-      (maximumAmountOfSpentCentPerMonth - spentThisMonth - balance) / 100;
+      (maxToSpendPerMonthInCents - spentThisMonth - balance) / 100;
 
     if (calculatedTransferValueMajorUnit > 0) {
       return Math.min(

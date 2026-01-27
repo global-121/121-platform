@@ -30,6 +30,7 @@ parentWallet.intersolveVisaChildWallets = [];
 const newBalance = 150;
 const newDate = new Date('2024-02-02T00:00:00Z');
 const spentThisMonth = 50;
+const maxToSpendPerMonthInCents = 15000;
 
 let customer = new IntersolveVisaCustomerEntity();
 customer.intersolveVisaParentWallet = parentWallet;
@@ -119,7 +120,10 @@ describe('IntersolveVisaService', () => {
         spentThisMonth,
       });
 
-      await service.retrieveAndUpdateWallet(registrationId);
+      await service.retrieveAndUpdateWallet({
+        registrationId,
+        maxToSpendPerMonthInCents,
+      });
 
       expect(parentWalletRepo.updateUnscoped).toHaveBeenCalledWith(
         parentWallet.id,
@@ -139,7 +143,10 @@ describe('IntersolveVisaService', () => {
         spentThisMonth,
       });
 
-      await service.retrieveAndUpdateWallet(registrationId);
+      await service.retrieveAndUpdateWallet({
+        registrationId,
+        maxToSpendPerMonthInCents,
+      });
 
       expect(parentWalletRepo.updateUnscoped).toHaveBeenCalledWith(
         parentWallet.id,
@@ -209,6 +216,7 @@ describe('IntersolveVisaService', () => {
       const result = await service.calculateTransferValueWithWalletRetrieval({
         registrationId,
         inputTransferValueInMajorUnit,
+        maxToSpendPerMonthInCents,
       });
 
       // Assert
@@ -247,6 +255,7 @@ describe('IntersolveVisaService', () => {
       const result = await service.calculateTransferValueWithWalletRetrieval({
         registrationId,
         inputTransferValueInMajorUnit,
+        maxToSpendPerMonthInCents,
       });
 
       // Assert
@@ -267,6 +276,7 @@ describe('IntersolveVisaService', () => {
       const result = await service.calculateTransferValueWithWalletRetrieval({
         registrationId,
         inputTransferValueInMajorUnit,
+        maxToSpendPerMonthInCents,
       });
 
       // Assert

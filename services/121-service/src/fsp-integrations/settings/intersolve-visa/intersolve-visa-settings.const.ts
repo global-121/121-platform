@@ -57,5 +57,9 @@ export const INTERSOLVE_VISA_SETTINGS: FspSettingsDto = {
       name: FspConfigurationProperties.cardDistributionByMail,
       isRequired: true,
     },
+    {
+      name: FspConfigurationProperties.maxToSpendPerMonthInCents,
+      isRequired: true,
+    },
   ],
 };
