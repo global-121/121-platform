@@ -174,3 +174,23 @@ export async function getProgramFspConfigurationProperties({
     .get(`/programs/${programId}/fsp-configurations/${configName}/properties`)
     .set('Cookie', [accessToken]);
 }
+
+export async function getPublicProgramFspConfigurationProperties({
+  programId,
+  configName,
+  accessToken,
+}: {
+  programId: number;
+  configName: string;
+  accessToken: string;
+}): Promise<
+  Omit<request.Response, 'body'> & {
+    body: ProgramFspConfigurationPropertyResponseDto[];
+  }
+> {
+  return await getServer()
+    .get(
+      `/programs/${programId}/fsp-configurations/${configName}/properties/public`,
+    )
+    .set('Cookie', [accessToken]);
+}

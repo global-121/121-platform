@@ -98,4 +98,21 @@ export class FspConfigurationApiService extends DomainApiService {
       path: [...BASE_ENDPOINT(programId), configurationName, 'properties'],
     });
   }
+
+  getPublicFspConfigurationProperties({
+    programId,
+    configurationName,
+  }: {
+    programId: Signal<number | string>;
+    configurationName: string;
+  }) {
+    return this.generateQueryOptions<FspConfigurationProperty[]>({
+      path: [
+        ...BASE_ENDPOINT(programId),
+        configurationName,
+        'properties',
+        'public',
+      ],
+    });
+  }
 }

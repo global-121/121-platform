@@ -110,14 +110,13 @@ export class ProgramRegistrationDebitCardsPageComponent {
   program = injectQuery(this.programApiService.getProgram(this.programId));
 
   fspConfigurationProperties = injectQuery(
-    this.fspConfigurationApiService.getFspConfigurationProperties({
+    this.fspConfigurationApiService.getPublicFspConfigurationProperties({
       programId: this.programId,
       configurationName: 'Intersolve-visa',
     }),
   );
 
   readonly cardDistributionByMailEnabled = computed(() => {
-    // TODO: this is a temporary patch until we fixed permission issues in getFspConfigurationProperties
     if (!this.fspConfigurationProperties.isSuccess()) {
       return true;
     }
@@ -130,7 +129,6 @@ export class ProgramRegistrationDebitCardsPageComponent {
         property.name ===
         (IntersolveVisaFspConfigurationProperties.cardDistributionByMail as string),
     );
-    // TODO: this is a temporary patch until we fixed permission issues in getFspConfigurationProperties
     if (distributionByMailEnabled === undefined) {
       return true;
     }
