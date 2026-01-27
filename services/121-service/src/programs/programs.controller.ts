@@ -57,7 +57,7 @@ export class ProgramController {
     private readonly koboConnectService: KoboConnectService,
   ) {}
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramREAD] })
+  @AuthenticatedUser()
   @ApiOperation({ summary: 'Get program by id' })
   @ApiParam({
     name: 'programId',
