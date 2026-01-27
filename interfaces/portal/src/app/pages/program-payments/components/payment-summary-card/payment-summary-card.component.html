@@ -9,4 +9,17 @@
       [summaryMetrics]="summaryMetrics()"
     ></app-card-summary-metrics-container>
   </ng-container>
+  <ng-container card-footer>
+    <div class="flex flex-row justify-between">
+      <app-colored-chip-payment-approval-status
+        [programId]="programId()"
+        [paymentId]="paymentId()"
+      />
+      <span
+        i18n
+        class="me-2"
+        >Created: {{ paymentCreationDate() }}</span
+      >
+    </div>
+  </ng-container>
 </app-card-with-link>

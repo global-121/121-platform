@@ -23,6 +23,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
+import { ColoredChipPaymentApprovalStatusComponent } from '~/components/colored-chip-payment-approval-status/colored-chip-payment-approval-status.component';
 import { MetricTileComponent } from '~/components/metric-tile/metric-tile.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { ApprovePaymentComponent } from '~/components/page-layout-payment/components/approve-payment/approve-payment.component';
@@ -55,6 +56,7 @@ import { Locale } from '~/utils/locale';
     StartPaymentComponent,
     ApprovePaymentComponent,
     ColoredChipComponent,
+    ColoredChipPaymentApprovalStatusComponent,
     CommonModule,
     TimelineModule,
   ],
