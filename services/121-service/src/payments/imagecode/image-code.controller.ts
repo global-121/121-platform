@@ -2,9 +2,9 @@ import { Controller, Get, HttpStatus, Param, Res } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 import { Response } from 'express';
-import stream from 'node:stream';
 
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
+import { sendImageResponse } from '@121-service/src/utils/send-image-response.helper';
 
 @ApiTags('notifications')
 // I am afraid to change this url as it may break already sent WhatsApps
@@ -31,11 +31,6 @@ export class ImageCodeController {
     @Res() response: Response,
   ): Promise<void> {
     const blob = (await this.imageCodeService.get(secret)) as string;
-    const bufferStream = new stream.PassThrough();
-    bufferStream.end(Buffer.from(blob, 'binary'));
-    response.writeHead(HttpStatus.OK, {
-      'Content-Type': 'image/png',
-    });
-    bufferStream.pipe(response);
+    sendImageResponse(blob, response);
   }
 }
