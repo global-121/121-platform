@@ -450,10 +450,10 @@ describe('Manage Fsp configurations', () => {
     });
   });
 
-  it('Should return allowlisted public properties of a program Fsp configuration for non-admin users with registration.read permission', async () => {
+  it('Should return allowlisted public properties of a program Fsp configuration for users with program.read permission', async () => {
     // Arrange
-    const nonAdminAccessToken = await createAccessTokenWithPermissions({
-      permissions: [PermissionEnum.RegistrationREAD],
+    const programReadAccessToken = await createAccessTokenWithPermissions({
+      permissions: [PermissionEnum.ProgramREAD],
       adminAccessToken: accessToken,
       programId: programIdVisa,
     });
@@ -462,7 +462,7 @@ describe('Manage Fsp configurations', () => {
     const result = await getPublicProgramFspConfigurationProperties({
       programId: programIdVisa,
       configName: Fsps.intersolveVisa,
-      accessToken: nonAdminAccessToken,
+      accessToken: programReadAccessToken,
     });
 
     // Assert
