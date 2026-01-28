@@ -9,6 +9,7 @@ import { NedbankMockModule } from '@mock-service/src/fsp-integration/nedbank/ned
 import { OnafriqMockModule } from '@mock-service/src/fsp-integration/onafriq/onafriq.mock.module';
 import { SafaricomMockModule } from '@mock-service/src/fsp-integration/safaricom/safaricom.mock.module';
 import { InstanceModule } from '@mock-service/src/instance.module';
+import { KoboMockModule } from '@mock-service/src/kobo/kobo.mock.module';
 import { ResetModule } from '@mock-service/src/reset/reset.module';
 import { TwilioModule } from '@mock-service/src/twilio/twilio.module';
 
@@ -25,6 +26,7 @@ import { TwilioModule } from '@mock-service/src/twilio/twilio.module';
     ExchangeRatesMockModule,
     NedbankMockModule,
     CommercialBankEthiopiaMockModule,
+    KoboMockModule,
   ],
   controllers: [],
   providers: [],
