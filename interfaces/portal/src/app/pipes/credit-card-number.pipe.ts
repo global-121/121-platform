@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class CreditCardNumberPipe implements PipeTransform {
   transform(value: null | string | undefined, defaultValue = ''): string {
-    if (!value || value === '') {
+    if (!value) {
       return defaultValue;
     }
 
@@ -26,6 +26,6 @@ export class CreditCardNumberPipe implements PipeTransform {
       splitValue.splice(dashIndex, 0, '-');
     }
 
-    return splitValue.join().replaceAll(',', '');
+    return splitValue.join('');
   }
 }
