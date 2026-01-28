@@ -2141,6 +2141,9 @@
       <trans-unit id="2993213000622028040" datatype="html">
         <source>Max amount to spend per month (in cents)</source>
       </trans-unit>
+      <trans-unit id="3727324658595204357" datatype="html">
+        <source>Created: <x equiv-text="{{ paymentCreationDate() }}" id="INTERPOLATION"/></source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
