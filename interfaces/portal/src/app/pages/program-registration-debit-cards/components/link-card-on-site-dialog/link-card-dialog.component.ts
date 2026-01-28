@@ -102,24 +102,29 @@ export class LinkCardDialogComponent {
   );
 
   readonly errorMessage = computed(() => {
-    if (!this.isError()) {
-      return '';
-    }
+    const state = this.linkCardDialogState();
+    const {
+      linking,
+      errorNotFound,
+      errorAlreadyLinkedToOtherRegistration,
+      errorAlreadyLinkedToCurrentRegistration,
+    } = LinkCardDialogStates;
 
-    if (
-      this.linkCardDialogState() === this.linkCardDialogStates.errorNotFound
-    ) {
-      return $localize`Card number not found. Please go back and check that the number is correct.`;
+    switch (state) {
+      case linking:
+        return;
+      case errorNotFound:
+        return $localize`Card number not found. Please go back and check that the number is correct.`;
+      case errorAlreadyLinkedToOtherRegistration:
+        return $localize`The card number you entered is already linked to another registration.`;
+      case errorAlreadyLinkedToCurrentRegistration:
+        return $localize`The card number you entered is already linked to the current registration.`;
+      default: {
+        // exhaustiveness checking
+        state satisfies never;
+        return;
+      }
     }
-
-    if (
-      this.linkCardDialogState() ===
-      this.linkCardDialogStates.errorAlreadyLinkedToOther
-    ) {
-      return $localize`The card number you entered is already linked to another registration.`;
-    }
-
-    return $localize`The card number you entered is already linked to the current registration.`;
   });
 
   readonly errorInstructions = computed(() => {
@@ -164,7 +169,7 @@ export class LinkCardDialogComponent {
         isErrorWithStatusCode({ error, statusCode: HttpStatusCode.BadRequest })
       ) {
         this.linkCardDialogState.set(
-          LinkCardDialogStates.errorAlreadyLinkedToOther,
+          LinkCardDialogStates.errorAlreadyLinkedToOtherRegistration,
         );
         return;
       }
@@ -206,7 +211,7 @@ export class LinkCardDialogComponent {
       previousTokenCodesWithoutDashes.includes(tokenCodeWithoutDashes)
     ) {
       this.linkCardDialogState.set(
-        LinkCardDialogStates.errorAlreadyLinkedToCurrent,
+        LinkCardDialogStates.errorAlreadyLinkedToCurrentRegistration,
       );
       return;
     }
