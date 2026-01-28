@@ -1,16 +1,9 @@
-export const createLocalStorageMock = () => {
-  // Needed because we can't reliably spy on localStorage with Firefox.
-  const mockLocalStorage = {
-    length: jasmine.createSpy('length'),
-    clear: jasmine.createSpy('clear'),
-    key: jasmine.createSpy('key'),
-    getItem: jasmine.createSpy('getItem'),
-    setItem: jasmine.createSpy('setItem'),
-    removeItem: jasmine.createSpy('removeItem'),
-  };
-  spyOnProperty(window, 'localStorage', 'get').and.returnValue(
-    mockLocalStorage as unknown as Storage,
-  );
-
-  return mockLocalStorage;
-};
+/*
+ * Needed because we can't directly spy on localStorage from Firefox.
+ *
+ * See: https://github.com/jasmine/jasmine/issues/299
+ */
+export const createLocalStorageMock = () =>
+  // This spies on session storage as well. We should rename this helper
+  // if we also rely on this function for that.
+  spyOnAllFunctions(Storage.prototype);
