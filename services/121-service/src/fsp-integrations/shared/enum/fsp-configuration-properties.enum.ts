@@ -1,3 +1,5 @@
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+
 export enum FspConfigurationProperties {
   password = 'password',
   username = 'username',
@@ -41,4 +43,10 @@ export const FspConfigPropertyValueVisibility: Record<
   [FspConfigurationProperties.uniqueKeyOnafriq]: false,
   // Cooperative Bank of Oromia
   [FspConfigurationProperties.debitAccountNumber]: true,
+};
+
+export const PublicFspConfigurationProperties: Partial<
+  Record<Fsps, FspConfigurationProperties[]>
+> = {
+  [Fsps.intersolveVisa]: [FspConfigurationProperties.cardDistributionByMail],
 };

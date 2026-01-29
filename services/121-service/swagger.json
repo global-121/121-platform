@@ -470,6 +470,14 @@
     ]
   },
   {
+    "method": "get",
+    "path": "/api/programs/{programId}/fsp-configurations/{name}/properties/public",
+    "params": [
+      "programId",
+      "name"
+    ]
+  },
+  {
     "method": "patch",
     "path": "/api/programs/{programId}/fsp-configurations/{name}/properties/{propertyName}",
     "params": [

@@ -102,6 +102,7 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.PaymentVoucherPaperREAD,
           PermissionEnum.PaymentVoucherWhatsappREAD,
           PermissionEnum.FspDebitCardREAD,
+          PermissionEnum.ProgramREAD,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.ProgramAttachmentsREAD,
           PermissionEnum.RegistrationNotificationREAD,
@@ -112,12 +113,16 @@ export class SeedInit implements InterfaceScript {
       {
         role: DefaultUserRole.KoboRegistrationUser,
         label: 'Only CREATE registrations',
-        permissions: [PermissionEnum.RegistrationCREATE],
+        permissions: [
+          PermissionEnum.ProgramREAD,
+          PermissionEnum.RegistrationCREATE,
+        ],
       },
       {
         role: DefaultUserRole.KoboValidationUser,
         label: 'Only UPDATE registrations',
         permissions: [
+          PermissionEnum.ProgramREAD,
           PermissionEnum.RegistrationAttributeUPDATE,
           PermissionEnum.RegistrationAttributeFinancialUPDATE,
           PermissionEnum.RegistrationPersonalUPDATE,
@@ -128,6 +133,7 @@ export class SeedInit implements InterfaceScript {
         role: DefaultUserRole.CvaManager,
         label: 'Cash Assistance Program Manager',
         permissions: [
+          PermissionEnum.ProgramREAD,
           PermissionEnum.ProgramUPDATE,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.ProgramAttachmentsREAD,
@@ -163,6 +169,7 @@ export class SeedInit implements InterfaceScript {
         role: DefaultUserRole.CvaOfficer,
         label: 'Cash Assistance Program Officer',
         permissions: [
+          PermissionEnum.ProgramREAD,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.ProgramAttachmentsREAD,
           PermissionEnum.PaymentREAD,
@@ -188,6 +195,7 @@ export class SeedInit implements InterfaceScript {
         role: DefaultUserRole.FinanceManager,
         label: 'Finance Manager',
         permissions: [
+          PermissionEnum.ProgramREAD,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.ProgramAttachmentsREAD,
           PermissionEnum.ProgramAttachmentsCREATE,
@@ -212,6 +220,7 @@ export class SeedInit implements InterfaceScript {
         role: DefaultUserRole.FinanceOfficer,
         label: 'Finance Officer',
         permissions: [
+          PermissionEnum.ProgramREAD,
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.ProgramAttachmentsREAD,
           PermissionEnum.PaymentREAD,
@@ -231,6 +240,7 @@ export class SeedInit implements InterfaceScript {
         label:
           'Only view data, not including Personally Identifiable Information',
         permissions: [
+          PermissionEnum.ProgramREAD,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherPaperREAD,
