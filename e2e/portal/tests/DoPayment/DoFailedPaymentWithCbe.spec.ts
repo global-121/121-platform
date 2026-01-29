@@ -19,25 +19,19 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     seedScript: SeedScript.cbeProgram,
     registrations: registrationsCbe,
     programId: programIdCbe,
+    navigateToProgramPage: `/en-GB/program/${programIdCbe}/payments`,
   });
 });
 
 test('Do failed payment for Cbe fsp', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
-  const programTitle = CbeProgram.titlePortal.en;
   const numberOfPas = registrationsCbe.length;
   const defaultTransferValue = CbeProgram.fixedTransferValue;
   const defaultMaxTransferValue = registrationsCbe.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
-
-  await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(programTitle);
-
-    await paymentsPage.navigateToProgramPage('Payments');
-  });
 
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});
