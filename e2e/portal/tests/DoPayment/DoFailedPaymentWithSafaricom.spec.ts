@@ -19,13 +19,13 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     seedScript: SeedScript.safaricomProgram,
     registrations: registrationsSafaricom,
     programId: programIdSafaricom,
+    navigateToProgramPage: `/en-GB/program/${programIdSafaricom}/payments`,
   });
 });
 
 test('Do failed payment for Safaricom fsp', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
-  const programTitle = KRCSProgram.titlePortal.en;
   const numberOfPas = registrationsSafaricom.length;
   const defaultTransferValue = KRCSProgram.fixedTransferValue;
   const defaultMaxTransferValue = registrationsSafaricom.reduce(
@@ -35,12 +35,6 @@ test('Do failed payment for Safaricom fsp', async ({ page }) => {
     0,
   );
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
-
-  await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(programTitle);
-
-    await paymentsPage.navigateToProgramPage('Payments');
-  });
 
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});
