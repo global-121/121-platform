@@ -2,6 +2,7 @@ import { enableProdMode } from '@angular/core';
 
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
+import { createLocalStorageMock } from '~/test-utils';
 import { getLocaleForInitialization, Locale } from '~/utils/locale';
 
 describe('getLocaleForInitialization', () => {
@@ -28,7 +29,7 @@ describe('getLocaleForInitialization', () => {
   });
 
   it('should default to the urlLocale whenever there is weirdness saved in local storage', () => {
-    spyOn(window.localStorage, 'getItem').and.callFake(() => 'nonsense');
+    createLocalStorageMock().getItem.and.callFake(() => 'nonsense');
 
     const localeInfo = getLocaleForInitialization({
       defaultLocale: 'en-GB',
@@ -39,7 +40,7 @@ describe('getLocaleForInitialization', () => {
   });
 
   it('should use the default locale when there is nothing saved in local storage', () => {
-    spyOn(window.localStorage, 'getItem').and.callFake(() => null);
+    createLocalStorageMock().getItem.and.callFake(() => null);
 
     let localeInfo = getLocaleForInitialization({
       defaultLocale: 'en-GB',
@@ -57,7 +58,7 @@ describe('getLocaleForInitialization', () => {
   });
 
   it('should prompt to change language when the local storage locale is out of sync with the url locale', () => {
-    spyOn(window.localStorage, 'getItem').and.callFake(() => UILanguage.nl);
+    createLocalStorageMock().getItem.and.callFake(() => UILanguage.nl);
 
     const localeInfo = getLocaleForInitialization({
       defaultLocale: 'en-GB',
@@ -71,7 +72,7 @@ describe('getLocaleForInitialization', () => {
   });
 
   it('should prompt to change language when the local storage locale does not exist and the url locale does not match the default locale', () => {
-    spyOn(window.localStorage, 'getItem').and.callFake(() => null);
+    createLocalStorageMock().getItem.and.callFake(() => null);
 
     const localeInfo = getLocaleForInitialization({
       defaultLocale: UILanguage.nl,
