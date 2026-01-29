@@ -35,6 +35,7 @@ import {
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { LinkCardDialogComponent } from '~/pages/program-registration-debit-cards/components/link-card-on-site-dialog/link-card-dialog.component';
+import { CreditCardNumberPipe } from '~/pipes/credit-card-number.pipe';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
@@ -50,8 +51,9 @@ import { ToastService } from '~/services/toast.service';
     FormDialogComponent,
     PageLayoutRegistrationComponent,
     LinkCardDialogComponent,
+    CreditCardNumberPipe,
   ],
-  providers: [ToastService],
+  providers: [ToastService, CreditCardNumberPipe],
   templateUrl: './program-registration-debit-cards.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -69,6 +71,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
   private readonly fspConfigurationApiService = inject(
     FspConfigurationApiService,
   );
+  private readonly creditCardNumberPipe = inject(CreditCardNumberPipe);
 
   readonly linkCardDialogVisible = model(false);
 
@@ -161,7 +164,9 @@ export class ProgramRegistrationDebitCardsPageComponent {
     const listData: DataListItem[] = [
       {
         label: $localize`:@@debit-card-number:Card number`,
-        value: this.currentCard()?.tokenCode,
+        value: this.creditCardNumberPipe.transform(
+          this.currentCard()?.tokenCode,
+        ),
         type: 'text',
       },
       {

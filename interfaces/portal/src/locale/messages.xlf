@@ -458,13 +458,13 @@
         <source>Old card:</source>
       </trans-unit>
       <trans-unit id="7097489496530398841" datatype="html">
-        <source>You&apos;re about to pause debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>.</source>
+        <source>You&apos;re about to pause debit card number <x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/>.</source>
       </trans-unit>
       <trans-unit id="generic-message-will-be-sent" datatype="html">
         <source>A message will be sent to the registration about this update.</source>
       </trans-unit>
       <trans-unit id="565163819313820565" datatype="html">
-        <source>You&apos;re about to unpause debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>.</source>
+        <source>You&apos;re about to unpause debit card number <x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/>.</source>
       </trans-unit>
       <trans-unit id="debit-card-number" datatype="html">
         <source>Card number</source>
@@ -929,7 +929,7 @@
         <source>Please allow pop-up windows in your browser settings to login</source>
       </trans-unit>
       <trans-unit id="5889532119950831763" datatype="html">
-        <source>You&apos;re about to replace debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>. This will block the current card and a new card will be issued.</source>
+        <source>You&apos;re about to replace debit card number <x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/>. This will block the current card and a new card will be issued.</source>
       </trans-unit>
       <trans-unit id="8108032945706896800" datatype="html">
         <source>You do not have permission to view this page.</source>
@@ -2091,7 +2091,7 @@
         <source>If the number is correct but this error persists, try a different card and inform your supervisor.</source>
       </trans-unit>
       <trans-unit id="2358567597663804258" datatype="html">
-        <source>You&apos;re about to replace debit card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentTokenCode() }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>.</source>
+        <source>You&apos;re about to replace debit card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentTokenCode() | creditCardNumber }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>.</source>
       </trans-unit>
       <trans-unit id="5758338325877529724" datatype="html">
         <source>The position of the serial number, below the barcode on the back of the card. Highlighted in red.</source>
