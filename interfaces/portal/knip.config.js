@@ -3,6 +3,8 @@ module.exports = {
   ignoreDependencies: [
     '@angular/platform-browser-dynamic', // Probably not 100% required
     'primeicons',
+    // Optional launcher for local testing
+    'karma-firefox-launcher',
     // Known issues with devDependencies:
     'autoprefixer',
     // Known issues with Unlisted dependencies:
