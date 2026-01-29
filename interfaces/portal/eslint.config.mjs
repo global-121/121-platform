@@ -139,6 +139,15 @@ export default tsEslint.config(
     },
   },
   {
+    files: ['**/*.spec.ts'],
+    rules: {
+      // This rule triggers for spy objects where the spied-upon method uses
+      // `this`. In that case the underlying method is just not called so the
+      // rule is irrelevant.
+      '@typescript-eslint/unbound-method': 'off',
+    },
+  },
+  {
     extends: [
       ...angularEslint.configs.templateRecommended,
       ...angularEslint.configs.templateAccessibility,
