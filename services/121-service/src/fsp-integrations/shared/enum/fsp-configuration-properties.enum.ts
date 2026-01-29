@@ -21,28 +21,75 @@ export enum FspConfigurationProperties {
   debitAccountNumber = 'debitAccountNumber',
 }
 
-export const FspConfigPropertyValueVisibility: Record<
+interface FspConfigPropertyAttributes {
+  visible: boolean;
+  type: 'string' | 'string[]' | 'number' | 'boolean';
+}
+
+export const FspConfigPropertyAttributes: Record<
   FspConfigurationProperties,
-  boolean
+  FspConfigPropertyAttributes
 > = {
-  [FspConfigurationProperties.password]: false,
-  [FspConfigurationProperties.username]: false,
-  [FspConfigurationProperties.columnsToExport]: true,
-  [FspConfigurationProperties.columnToMatch]: true,
+  [FspConfigurationProperties.password]: {
+    visible: false,
+    type: 'string',
+  },
+  [FspConfigurationProperties.username]: {
+    visible: false,
+    type: 'string',
+  },
+  [FspConfigurationProperties.columnsToExport]: {
+    visible: true,
+    type: 'string[]',
+  },
+  [FspConfigurationProperties.columnToMatch]: {
+    visible: true,
+    type: 'string',
+  },
   // Intersolve Visa
-  [FspConfigurationProperties.brandCode]: true,
-  [FspConfigurationProperties.coverLetterCode]: true,
-  [FspConfigurationProperties.fundingTokenCode]: true,
-  [FspConfigurationProperties.cardDistributionByMail]: true,
-  [FspConfigurationProperties.maxToSpendPerMonthInCents]: true,
+  [FspConfigurationProperties.brandCode]: {
+    visible: true,
+    type: 'string',
+  },
+  [FspConfigurationProperties.coverLetterCode]: {
+    visible: true,
+    type: 'string',
+  },
+  [FspConfigurationProperties.fundingTokenCode]: {
+    visible: true,
+    type: 'string',
+  },
+  [FspConfigurationProperties.cardDistributionByMail]: {
+    visible: true,
+    type: 'boolean',
+  },
+  [FspConfigurationProperties.maxToSpendPerMonthInCents]: {
+    visible: true,
+    type: 'number',
+  },
   // Nedbank
-  [FspConfigurationProperties.paymentReferencePrefix]: true,
+  [FspConfigurationProperties.paymentReferencePrefix]: {
+    visible: true,
+    type: 'string',
+  },
   // Onafriq
-  [FspConfigurationProperties.corporateCodeOnafriq]: true,
-  [FspConfigurationProperties.passwordOnafriq]: false,
-  [FspConfigurationProperties.uniqueKeyOnafriq]: false,
+  [FspConfigurationProperties.corporateCodeOnafriq]: {
+    visible: true,
+    type: 'string',
+  },
+  [FspConfigurationProperties.passwordOnafriq]: {
+    visible: false,
+    type: 'string',
+  },
+  [FspConfigurationProperties.uniqueKeyOnafriq]: {
+    visible: false,
+    type: 'string',
+  },
   // Cooperative Bank of Oromia
-  [FspConfigurationProperties.debitAccountNumber]: true,
+  [FspConfigurationProperties.debitAccountNumber]: {
+    visible: true,
+    type: 'string',
+  },
 };
 
 export const PublicFspConfigurationProperties: Partial<
