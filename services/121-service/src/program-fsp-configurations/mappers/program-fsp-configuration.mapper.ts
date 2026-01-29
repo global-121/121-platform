@@ -1,6 +1,6 @@
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import {
-  FspConfigPropertyValueVisibility,
+  FspConfigPropertyAttributes,
   FspConfigurationProperties,
 } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
@@ -69,7 +69,7 @@ export class ProgramFspConfigurationMapper {
   public static mapPropertyEntityToDto(
     property: ProgramFspConfigurationPropertyEntity,
   ): ProgramFspConfigurationPropertyResponseDto {
-    const isVisible = FspConfigPropertyValueVisibility[property.name];
+    const isVisible = FspConfigPropertyAttributes[property.name].visible;
     const value = isVisible ? property.value : sensitivePropertyString;
     return {
       name: property.name,
