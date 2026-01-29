@@ -16,25 +16,19 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     seedScript: SeedScript.nlrcMultiple,
     registrations: registrationsVoucher,
     programId: programIdPV,
+    navigateToProgramPage: `/en-GB/program/${programIdPV}/payments`,
   });
 });
 
 test('Do successful payment for Voucher fsp', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
-  const programTitle = NLRCProgram.titlePortal.en;
   const numberOfPas = registrationsVoucher.length;
   const defaultTransferValue = NLRCProgram.fixedTransferValue;
   const defaultMaxTransferValue = registrationsVoucher.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
-
-  await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(programTitle);
-
-    await paymentsPage.navigateToProgramPage('Payments');
-  });
 
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});
