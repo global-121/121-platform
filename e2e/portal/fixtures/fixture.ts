@@ -1,5 +1,6 @@
 import { test as base } from '@playwright/test';
 
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
@@ -9,11 +10,13 @@ import {
 
 import LoginPage from '../pages/LoginPage';
 
-// Define a proper type for registration data
-type TestRegistration = {
-  fullName?: string;
-  paymentAmountMultiplier?: number;
-  [key: string]: unknown; // Allow additional properties
+// Define a comprehensive type for test registration data
+// Based on RegistrationEntity with commonly used test-specific properties
+type TestRegistration = Partial<RegistrationEntity> & {
+  // Test-specific properties not in the entity
+  programFspConfigurationName?: string;
+  // Additional properties that might be added in tests
+  [key: string]: unknown;
 };
 
 type Fixtures = {
@@ -21,6 +24,7 @@ type Fixtures = {
     seedScript: SeedScript;
     registrations: TestRegistration[];
     programId: number;
+    fileName: string;
     navigateToProgramPage?: string;
   }) => Promise<{ accessToken: string }>;
 };
@@ -31,10 +35,11 @@ export const test = base.extend<Fixtures>({
       seedScript: SeedScript;
       registrations: TestRegistration[];
       programId: number;
+      fileName: string;
       navigateToProgramPage?: string;
     }): Promise<{ accessToken: string }> => {
       // Logic to reset the database and seed registrations
-      await resetDB(params.seedScript, __filename);
+      await resetDB(params.seedScript, params.fileName);
       const accessToken = await getAccessToken();
       await seedIncludedRegistrations(
         params.registrations,
@@ -49,7 +54,7 @@ export const test = base.extend<Fixtures>({
 
       // Optionally navigate to a specific page after login
       if (params.navigateToProgramPage) {
-        await page.goto(params.navigateToProgramPage ?? '/');
+        await page.goto(params.navigateToProgramPage);
       }
 
       return { accessToken };
