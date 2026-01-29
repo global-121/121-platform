@@ -28,6 +28,7 @@ import { ProgramFspConfigurationResponseDto } from '@121-service/src/program-fsp
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
 import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 @UseGuards(AuthenticatedUserGuard)
@@ -192,6 +193,37 @@ export class ProgramFspConfigurationsController {
     @Param('name') name: string,
   ): Promise<ProgramFspConfigurationPropertyResponseDto[]> {
     return this.programFspConfigurationsService.getFspConfigurationProperties(
+      programId,
+      name,
+    );
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramREAD] })
+  @ApiOperation({
+    summary:
+      'Retrieve allowlisted public properties for Fsp Configuration. Only returns properties that are safe to expose to non-admin users based on the Program Fsp Configuration Property type.',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({
+    name: 'name',
+    required: true,
+    type: 'string',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'The Fsp Configuration properties have been successfully retrieved.',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Program does not exist or Fsp Configuration does not exist',
+  })
+  @Get(':programId/fsp-configurations/:name/properties/public')
+  public async getPublicFspConfigurationProperties(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('name') name: string,
+  ): Promise<ProgramFspConfigurationPropertyResponseDto[]> {
+    return this.programFspConfigurationsService.getPublicFspConfigurationProperties(
       programId,
       name,
     );
