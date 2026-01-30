@@ -8,8 +8,6 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { test } from '@121-e2e/portal/fixtures/fixture';
-import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
-import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   // Full name is set to 'error' to create a failed payment
@@ -23,9 +21,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('Do failed payment for Cbe fsp', async ({ page }) => {
-  const paymentPage = new PaymentPage(page);
-  const paymentsPage = new PaymentsPage(page);
+test('Do failed payment for Cbe fsp', async ({ page, paymentSetup }) => {
   const numberOfPas = registrationsCbe.length;
   const defaultTransferValue = CbeProgram.fixedTransferValue;
   const defaultMaxTransferValue = registrationsCbe.reduce((output, pa) => {
@@ -34,20 +30,24 @@ test('Do failed payment for Cbe fsp', async ({ page }) => {
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Do payment', async () => {
-    await paymentsPage.createPayment({});
+    await paymentSetup.paymentsPage.createPayment({});
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdCbe}/payments/1`),
     );
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
-    await paymentPage.validateToastMessageAndClose('Payment created.');
-    await paymentPage.approvePayment();
-    await paymentPage.startPayment();
+    await paymentSetup.paymentPage.validatePaymentsDetailsPageByDate(
+      lastPaymentDate,
+    );
+    await paymentSetup.paymentPage.validateToastMessageAndClose(
+      'Payment created.',
+    );
+    await paymentSetup.paymentPage.approvePayment();
+    await paymentSetup.paymentPage.startPayment();
   });
 
   await test.step('Validate payment card with failed payment data', async () => {
-    await paymentPage.waitForPaymentToComplete();
-    await paymentPage.navigateToProgramPage('Payments');
-    await paymentsPage.validatePaymentCard({
+    await paymentSetup.paymentPage.waitForPaymentToComplete();
+    await paymentSetup.paymentPage.navigateToProgramPage('Payments');
+    await paymentSetup.paymentsPage.validatePaymentCard({
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
