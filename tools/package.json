@@ -12,7 +12,7 @@
     "node-html-parser": "^6.1.13"
   },
   "engines": {
-    "node": ">=22",
-    "npm": ">=10"
+    "node": ">=24",
+    "npm": ">=11"
   }
 }
