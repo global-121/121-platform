@@ -8,6 +8,9 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
+import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
+import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
+
 import LoginPage from '../pages/LoginPage';
 
 // Define a comprehensive type for test registration data
@@ -27,6 +30,10 @@ type Fixtures = {
     fileName?: string;
     navigateToPage?: string;
   }) => Promise<{ accessToken: string }>;
+  paymentSetup: {
+    paymentPage: PaymentPage;
+    paymentsPage: PaymentsPage;
+  };
 };
 
 export const test = base.extend<Fixtures>({
@@ -61,5 +68,11 @@ export const test = base.extend<Fixtures>({
     };
 
     await use(resetAndSeed);
+  },
+
+  paymentSetup: async ({ page }, use) => {
+    const paymentPage = new PaymentPage(page);
+    const paymentsPage = new PaymentsPage(page);
+    await use({ paymentPage, paymentsPage });
   },
 });
