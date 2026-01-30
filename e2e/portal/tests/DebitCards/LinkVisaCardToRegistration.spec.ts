@@ -99,7 +99,9 @@ test('User can link a debit card to a registration', async ({ page }) => {
 
     const currentDebitCardDataList =
       await debitCardPage.getCurrentDebitCardDataList();
-    expect(currentDebitCardDataList['Card number']).toBe(visaCardNumberDashed);
+    expect(currentDebitCardDataList['Serial number']).toBe(
+      visaCardNumberDashed,
+    );
   });
 });
 
@@ -134,15 +136,21 @@ test('User can successfully replace a debit card and gets error if he tries to l
 
     // The behaviour of the page right now is that FE does not refresh immediately and the page should be refreshed to get new and old card numbers
     // I think this should not work like that
-    await page.reload();
+    // await page.reload();
     const currentDebitCardDataList =
       await debitCardPage.getCurrentDebitCardDataList();
     const substituteDebitCardDataList =
       await debitCardPage.getSubstituteDebitCardDataList();
-    expect(currentDebitCardDataList['Card number']).toBe(
+    console.log(
+      '🚀 ~ substituteDebitCardDataList:',
+      substituteDebitCardDataList,
+    );
+    expect(currentDebitCardDataList['Serial number']).toBe(
       newVisaCardNumberDashed,
     );
-    expect(substituteDebitCardDataList['Card number']).toBe(visaCardNumber);
+    expect(substituteDebitCardDataList['Serial number']).toBe(
+      visaCardNumberDashed,
+    );
   });
 });
 

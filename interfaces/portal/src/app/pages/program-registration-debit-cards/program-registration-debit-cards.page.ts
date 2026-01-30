@@ -236,7 +236,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
         chipLabel,
         dataList: [
           {
-            label: $localize`:@@debit-card-number:Card serial number`,
+            label: $localize`:@@debit-card-number:Serial number`,
             value: this.creditCardNumberPipe.transform(card.tokenCode),
             type: 'text',
           },
