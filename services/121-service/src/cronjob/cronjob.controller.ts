@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { Patch } from '@nestjs/common';
 import {
@@ -21,16 +22,17 @@ import { CronjobExecutionService } from '@121-service/src/cronjob/services/cronj
 import { CronjobInitiateService } from '@121-service/src/cronjob/services/cronjob-initiate.service';
 import { RemoveDeprecatedImageCodesDto } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/dto/remove-deprecated-image-codes-dto';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 
 @ApiTags('cronjobs')
 @Controller('cronjobs')
+@UseGuards(AuthenticatedUserGuard)
 export class CronjobController {
   constructor(
     private readonly cronjobInitiateService: CronjobInitiateService,
     private readonly cronjobExecutionService: CronjobExecutionService, // Assuming this is a service to execute cron jobs
   ) {}
 
-  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: '[CRON] Cancel by refpos',
   })
@@ -38,12 +40,12 @@ export class CronjobController {
     status: HttpStatus.CREATED,
     description: 'Vouchers canceled by refpos',
   })
+  @AuthenticatedUser({ isAdmin: true })
   @Post('/fsps/intersolve-voucher/cancel')
   public async cancelByRefPos(): Promise<void> {
     await this.cronjobExecutionService.cronCancelByRefposIntersolve();
   }
 
-  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
       '[CRON] Get and store account enquiry data from Commercial Bank of Ethiopia for all registrations in all programs.',
@@ -53,12 +55,12 @@ export class CronjobController {
     description:
       'Done retrieving and updating/inserting enquiry data for all registrations in all programs.',
   })
+  @AuthenticatedUser({ isAdmin: true })
   @Put('fsps/commercial-bank-ethiopia/accounts')
   public async cronValidateCommercialBankEthiopiaAccountEnquiries(): Promise<void> {
     await this.cronjobExecutionService.cronValidateCommercialBankEthiopiaAccounts();
   }
 
-  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
       '[CRON] Get and store account validation data from Cooperative Bank of Oromia for all registrations in all programs.',
@@ -68,12 +70,12 @@ export class CronjobController {
     description:
       'Done retrieving and updating/inserting validation data for all registrations in all programs.',
   })
+  @AuthenticatedUser({ isAdmin: true })
   @Put('fsps/cooperative-bank-of-oromia/accounts')
   public async cronDoCooperativeBankOfOromiaAccountValidation(): Promise<void> {
     await this.cronjobExecutionService.cronValidateCooperativeBankOfOromiaAccounts();
   }
 
-  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: '[CRON] Cache unused vouchers',
   })
@@ -81,12 +83,12 @@ export class CronjobController {
     status: HttpStatus.CREATED,
     description: 'Cached unused vouchers',
   })
+  @AuthenticatedUser({ isAdmin: true })
   @Patch('/fsps/intersolve-voucher/unused-vouchers')
   public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<void> {
     await this.cronjobExecutionService.cronRetrieveAndUpdatedUnusedIntersolveVouchers();
   }
 
-  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
       '[CRON] Retrieve and update all Visa balance, spent this month and cards data for all programs',
@@ -96,12 +98,12 @@ export class CronjobController {
     description:
       'Data retrieved from Intersolve and entities updated for all programs.',
   })
+  @AuthenticatedUser({ isAdmin: true })
   @Patch('/fsps/intersolve-visa/')
   public async cronRetrieveAndUpdateVisaData(): Promise<void> {
     await this.cronjobExecutionService.cronRetrieveAndUpdateVisaData();
   }
 
-  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: '[CRON] Send WhatsApp reminders',
   })
@@ -109,12 +111,12 @@ export class CronjobController {
     status: HttpStatus.CREATED,
     description: 'Sent WhatsApp reminders',
   })
+  @AuthenticatedUser({ isAdmin: true })
   @Post('/fsps/intersolve-voucher/send-reminders')
   public async cronSendWhatsappReminders(): Promise<void> {
     await this.cronjobExecutionService.cronSendWhatsAppReminders();
   }
 
-  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
       '[CRON] Retrieve and update Nedbank vouchers and update transaction statuses',
@@ -123,12 +125,12 @@ export class CronjobController {
     status: HttpStatus.NO_CONTENT,
     description: 'Nedbank vouchers and transaction update process started',
   })
+  @AuthenticatedUser({ isAdmin: true })
   @Patch('fsps/nedbank')
   public async cronDoNedbankReconciliation(): Promise<void> {
     await this.cronjobExecutionService.cronDoNedbankReconciliation();
   }
 
-  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
       '[CRON] GET all exchange rates for all programs and store them in the database',
@@ -138,12 +140,12 @@ export class CronjobController {
     description:
       'Get all exchange rates for all programs and store them in the database',
   })
+  @AuthenticatedUser({ isAdmin: true })
   @Put('exchange-rates')
   public async cronGetDailyExchangeRates(): Promise<void> {
     await this.cronjobExecutionService.cronGetDailyExchangeRates();
   }
 
-  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: '[CRON] Remove deprecated image codes',
   })
@@ -151,6 +153,7 @@ export class CronjobController {
     status: HttpStatus.OK,
     description: 'Successfully removed deprecated image codes',
   })
+  @AuthenticatedUser({ isAdmin: true })
   @Delete('/fsps/intersolve-voucher/deprecated-image-codes')
   public async cronRemoveDeprecatedImageCodes(
     @Body() body: RemoveDeprecatedImageCodesDto,
@@ -160,7 +163,6 @@ export class CronjobController {
     );
   }
 
-  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
       '[CRON] Generate Onafriq reconciliation data and send to Onafriq SFTP (Returned json is just used for testing purposes)',
@@ -170,6 +172,7 @@ export class CronjobController {
     description: 'Reconciliation report generated and sent successfully.',
   })
   @HttpCode(HttpStatus.OK)
+  @AuthenticatedUser({ isAdmin: true })
   @Post('fsps/onafriq/reconciliation-report')
   public async generateReconciliationReport(): Promise<void> {
     return await this.cronjobExecutionService.cronSendOnafriqReconciliationReport();
