@@ -163,7 +163,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
 
     const listData: DataListItem[] = [
       {
-        label: $localize`:@@debit-card-number:Card number`,
+        label: $localize`:@@debit-card-number:Serial number`,
         value: this.creditCardNumberPipe.transform(
           this.currentCard()?.tokenCode,
         ),
@@ -236,8 +236,8 @@ export class ProgramRegistrationDebitCardsPageComponent {
         chipLabel,
         dataList: [
           {
-            label: $localize`:@@debit-card-number:Card number`,
-            value: card.tokenCode,
+            label: $localize`:@@debit-card-number:Card serial number`,
+            value: this.creditCardNumberPipe.transform(card.tokenCode),
             type: 'text',
           },
           {

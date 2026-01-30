@@ -33,7 +33,7 @@ describe('CreditCardNumberPipe', () => {
       expect(pipe.transform('')).toBe('');
     });
 
-    it("when first character is zero, it's not considered to be a number", () => {
+    it('when first character is zero, it is preserved', () => {
       expect(pipe.transform('010')).toBe('010');
     });
   });

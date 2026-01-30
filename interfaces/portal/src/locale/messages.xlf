@@ -457,9 +457,6 @@
       <trans-unit id="6987397690071959130" datatype="html">
         <source>Old card:</source>
       </trans-unit>
-      <trans-unit id="7097489496530398841" datatype="html">
-        <source>You&apos;re about to pause debit card number <x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/>.</source>
-      </trans-unit>
       <trans-unit id="generic-message-will-be-sent" datatype="html">
         <source>A message will be sent to the registration about this update.</source>
       </trans-unit>
@@ -467,7 +464,7 @@
         <source>You&apos;re about to unpause debit card number <x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/>.</source>
       </trans-unit>
       <trans-unit id="debit-card-number" datatype="html">
-        <source>Card number</source>
+        <source>Serial number</source>
       </trans-unit>
       <trans-unit id="debit-card-status" datatype="html">
         <source>Card status</source>
@@ -2143,6 +2140,9 @@
       </trans-unit>
       <trans-unit id="6633756087010559608" datatype="html">
         <source>Visa card linked successfully.</source>
+      </trans-unit>
+      <trans-unit id="3227041418581412600" datatype="html">
+        <source>You&apos;re about to pause debit card serial number <x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/>.</source>
       </trans-unit>
     </body>
   </file>
