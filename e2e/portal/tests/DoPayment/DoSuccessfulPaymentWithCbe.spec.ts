@@ -20,8 +20,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     seedScript: SeedScript.cbeProgram,
     registrations: registrationsCbe,
     programId: programIdCbe,
-    fileName: __filename,
-    navigateToProgramPage: `/en-GB/program/${programIdCbe}/payments`,
+    navigateToPage: `/en-GB/program/${programIdCbe}/payments`,
   });
   accessToken = result.accessToken;
 });

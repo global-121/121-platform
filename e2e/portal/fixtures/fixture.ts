@@ -24,8 +24,8 @@ type Fixtures = {
     seedScript: SeedScript;
     registrations: TestRegistration[];
     programId: number;
-    fileName: string;
-    navigateToProgramPage?: string;
+    fileName?: string;
+    navigateToPage?: string;
   }) => Promise<{ accessToken: string }>;
 };
 
@@ -35,8 +35,8 @@ export const test = base.extend<Fixtures>({
       seedScript: SeedScript;
       registrations: TestRegistration[];
       programId: number;
-      fileName: string;
-      navigateToProgramPage?: string;
+      fileName?: string;
+      navigateToPage?: string;
     }): Promise<{ accessToken: string }> => {
       // Logic to reset the database and seed registrations
       await resetDB(params.seedScript, params.fileName);
@@ -53,8 +53,8 @@ export const test = base.extend<Fixtures>({
       await loginPage.login();
 
       // Optionally navigate to a specific page after login
-      if (params.navigateToProgramPage) {
-        await page.goto(params.navigateToProgramPage);
+      if (params.navigateToPage) {
+        await page.goto(params.navigateToPage);
       }
 
       return { accessToken };
