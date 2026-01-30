@@ -271,11 +271,11 @@ You can also leave the body empty.`,
     @Param('programRegistrationAttributeName')
     programRegistrationAttributeName: string,
   ): Promise<ProgramRegistrationAttributeEntity> {
-    return await this.programService.updateProgramRegistrationAttribute(
+    return await this.programService.updateProgramRegistrationAttribute({
       programId,
       programRegistrationAttributeName,
-      updateProgramRegistrationAttributeDto,
-    );
+      updateProgramRegistrationAttribute: updateProgramRegistrationAttributeDto,
+    });
   }
 
   @AuthenticatedUser({

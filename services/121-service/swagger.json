@@ -1187,5 +1187,22 @@
       "programId",
       "referenceId"
     ]
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/kobo",
+    "params": [
+      "programId",
+      "dryRun"
+    ],
+    "returnType": "KoboIntegrationResultDto"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/kobo",
+    "params": [
+      "programId"
+    ],
+    "returnType": "KoboResponseDto"
   }
 ]

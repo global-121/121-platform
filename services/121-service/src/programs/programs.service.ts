@@ -338,6 +338,45 @@ export class ProgramService {
     }
   }
 
+  public async upsertProgramRegistrationAttributes({
+    programId,
+    programRegistrationAttributes,
+  }: {
+    programId: number;
+    programRegistrationAttributes: ProgramRegistrationAttributeDto[];
+  }): Promise<void> {
+    // Fetch all existing attributes for this program in one query
+    const existingAttributes =
+      await this.programRegistrationAttributeRepository.find({
+        where: { programId: Equal(programId) },
+      });
+
+    const existingAttributesMap = new Map(
+      existingAttributes.map((attr) => [attr.name, attr]),
+    );
+
+    const entitiesToSave: ProgramRegistrationAttributeEntity[] = [];
+
+    for (const attribute of programRegistrationAttributes) {
+      const existingAttribute = existingAttributesMap.get(attribute.name);
+
+      if (existingAttribute) {
+        // Update existing attribute
+        for (const key in attribute) {
+          existingAttribute[key] = attribute[key];
+        }
+        entitiesToSave.push(existingAttribute);
+      } else {
+        // Create new attribute
+        const newAttribute =
+          this.programRegistrationAttributeDtoToEntity(attribute);
+        newAttribute.programId = programId;
+        entitiesToSave.push(newAttribute);
+      }
+    }
+    await this.programRegistrationAttributeRepository.save(entitiesToSave);
+  }
+
   public async createProgramRegistrationAttribute({
     programId,
     createProgramRegistrationAttributeDto,
@@ -401,7 +440,7 @@ export class ProgramService {
     programRegistrationAttribute.scoring = dto.scoring ?? {};
     programRegistrationAttribute.pattern = dto.pattern ?? null;
     programRegistrationAttribute.editableInPortal =
-      dto.editableInPortal ?? false;
+      dto.editableInPortal ?? true;
     programRegistrationAttribute.includeInTransactionExport =
       dto.includeInTransactionExport ?? false;
     programRegistrationAttribute.duplicateCheck = dto.duplicateCheck ?? false;
@@ -412,11 +451,15 @@ export class ProgramService {
     return programRegistrationAttribute;
   }
 
-  public async updateProgramRegistrationAttribute(
-    programId: number,
-    programRegistrationAttributeName: string,
-    updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto,
-  ): Promise<ProgramRegistrationAttributeEntity> {
+  public async updateProgramRegistrationAttribute({
+    programId,
+    programRegistrationAttributeName,
+    updateProgramRegistrationAttribute,
+  }: {
+    programId: number;
+    programRegistrationAttributeName: string;
+    updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
+  }): Promise<ProgramRegistrationAttributeEntity> {
     const programRegistrationAttribute =
       await this.programRegistrationAttributeRepository.findOne({
         where: {
