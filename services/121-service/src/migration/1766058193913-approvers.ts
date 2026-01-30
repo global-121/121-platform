@@ -39,7 +39,7 @@ export class Approvers1766058193913 implements MigrationInterface {
 
   private async migrateApprovers(queryRunner: QueryRunner) {
     const assignmentsWithPaymentStartPermission = await queryRunner.query(
-      `SELECT p.id AS "programId", paa.id AS "programAidworkerAssignmentId"
+      `SELECT DISTINCT p.id AS "programId", paa.id AS "programAidworkerAssignmentId"
       FROM "121-service"."program" p
       JOIN "121-service"."program_aidworker_assignment" paa ON paa."programId" = p.id
       JOIN "121-service"."program_aidworker_assignment_roles_user_role" paarur ON paarur."programAidworkerAssignmentId" = paa.id
@@ -47,8 +47,9 @@ export class Approvers1766058193913 implements MigrationInterface {
       JOIN "121-service"."permission" perm ON perm.id = urpp."permissionId"
       JOIN "121-service"."user_role" ur ON ur.id = paarur."userRoleId"
       WHERE perm.name = 'payment.start'
-      AND ur.role <> 'admin'
-      AND paa.scope = ''
+        AND ur.role <> 'admin'
+        AND paa.scope = ''
+      GROUP BY p.id, paa.id
       ORDER BY paa.id`,
     );
 
