@@ -177,7 +177,7 @@ export class SoapService {
     };
 
     if (
-      env.COMMERCIAL_BANK_ETHIOPIA_MODE !== FspMode.external &&
+      env.COMMERCIAL_BANK_ETHIOPIA_MODE === FspMode.external &&
       env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH
     ) {
       try {
