@@ -8,10 +8,9 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
+import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
-
-import LoginPage from '../pages/LoginPage';
 
 // Define a comprehensive type for test registration data
 // Based on RegistrationEntity with commonly used test-specific properties
