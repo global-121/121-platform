@@ -1,37 +1,24 @@
-import { test } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
   registrationsVisa,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
-import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
+import { test } from '@121-e2e/portal/fixtures/fixture';
 
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-  const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsVisa, programIdOCW, accessToken);
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: registrationsVisa,
+    programId: programIdOCW,
+    navigateToPage: `/en-GB/program/${programIdOCW}/payments`,
+  });
 });
 
-test('Do successful payment for Visa fsp', async ({ page }) => {
-  const paymentPage = new PaymentPage(page);
-  const paymentsPage = new PaymentsPage(page);
-  const programTitle = NLRCProgram.titlePortal.en;
+test('Do successful payment for Visa fsp', async ({ page, paymentSetup }) => {
   const numberOfPas = registrationsVisa.length;
   const defaultTransferValue = NLRCProgram.fixedTransferValue;
   const defaultMaxTransferValue = registrationsVisa.reduce((output, pa) => {
@@ -39,28 +26,24 @@ test('Do successful payment for Visa fsp', async ({ page }) => {
   }, 0);
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
-  await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(programTitle);
-
-    await paymentsPage.navigateToProgramPage('Payments');
-  });
-
   await test.step('Do payment', async () => {
-    await paymentsPage.createPayment({});
+    await paymentSetup.paymentsPage.createPayment({});
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
-    await paymentPage.approvePayment();
-    await paymentPage.startPayment();
+    await paymentSetup.paymentPage.validatePaymentsDetailsPageByDate(
+      lastPaymentDate,
+    );
+    await paymentSetup.paymentPage.approvePayment();
+    await paymentSetup.paymentPage.startPayment();
   });
 
   await test.step('Validate payment card', async () => {
-    await paymentPage.waitForPaymentToComplete();
-    await paymentPage.navigateToProgramPage('Payments');
-    await paymentsPage.validatePaymentCard({
+    await paymentSetup.paymentPage.waitForPaymentToComplete();
+    await paymentSetup.paymentPage.navigateToProgramPage('Payments');
+    await paymentSetup.paymentsPage.validatePaymentCard({
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,

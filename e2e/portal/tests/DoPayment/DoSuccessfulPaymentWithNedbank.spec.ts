@@ -1,42 +1,28 @@
-import { test } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NedbankProgram from '@121-service/src/seed-data/program/program-nedbank.json';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-  runCronJobDoNedbankReconciliation,
-} from '@121-service/test/helpers/utility.helper';
+import { runCronJobDoNedbankReconciliation } from '@121-service/test/helpers/utility.helper';
 import {
   programIdNedbank,
   registrationsNedbank,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
-import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
+import { test } from '@121-e2e/portal/fixtures/fixture';
 
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nedbankProgram, __filename);
-  const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(
-    registrationsNedbank,
-    programIdNedbank,
-    accessToken,
-  );
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nedbankProgram,
+    registrations: registrationsNedbank,
+    programId: programIdNedbank,
+    navigateToPage: `/en-GB/program/${programIdNedbank}/payments`,
+  });
 });
 
-test('Do successful payment for Nedbank fsp', async ({ page }) => {
-  const paymentPage = new PaymentPage(page);
-  const paymentsPage = new PaymentsPage(page);
-  const programTitle = NedbankProgram.titlePortal.en;
+test('Do successful payment for Nedbank fsp', async ({
+  page,
+  paymentSetup,
+}) => {
   const numberOfPas = registrationsNedbank.length;
   const defaultTransferValue = NedbankProgram.fixedTransferValue;
   const defaultMaxTransferValue = registrationsNedbank.reduce((output, pa) => {
@@ -44,22 +30,18 @@ test('Do successful payment for Nedbank fsp', async ({ page }) => {
   }, 0);
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
-  await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(programTitle);
-
-    await paymentsPage.navigateToProgramPage('Payments');
-  });
-
   await test.step('Do payment', async () => {
-    await paymentsPage.createPayment({});
+    await paymentSetup.paymentsPage.createPayment({});
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdNedbank}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
-    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
-    await paymentPage.approvePayment();
-    await paymentPage.startPayment();
+    await paymentSetup.paymentPage.validatePaymentsDetailsPageByDate(
+      lastPaymentDate,
+    );
+    await paymentSetup.paymentPage.approvePayment();
+    await paymentSetup.paymentPage.startPayment();
 
     // Run CRON job to process payment
     await page.waitForTimeout(500); // wait a bit to allow the payment to start before running the CRON job
@@ -71,9 +53,9 @@ test('Do successful payment for Nedbank fsp', async ({ page }) => {
     // before we can validate the payment card
     // This way we can avoid reloading the page
     await page.waitForTimeout(1000);
-    await paymentPage.waitForPaymentToComplete();
-    await paymentPage.navigateToProgramPage('Payments');
-    await paymentsPage.validatePaymentCard({
+    await paymentSetup.paymentPage.waitForPaymentToComplete();
+    await paymentSetup.paymentPage.navigateToProgramPage('Payments');
+    await paymentSetup.paymentsPage.validatePaymentCard({
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
