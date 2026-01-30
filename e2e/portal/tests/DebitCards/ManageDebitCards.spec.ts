@@ -63,7 +63,7 @@ test('User can view debit cards of a registration with a single active debit car
     const currentDate = new Date();
     const currentDateString = format(currentDate, 'd MMMM yyyy');
     const expectedDebitCardData = {
-      'Card number': expect.any(String),
+      'Serial number': expect.any(String),
       'Card status': 'Active',
       'Current balance': '€25.00',
       [spentThisMonthLabel]: '€3.00',
@@ -186,7 +186,7 @@ test('User can replace a debit card and view both new and old card', async ({
       ),
     ).toBeTruthy();
     expect(
-      await dialog.hasContent(initialCardData['Card number']),
+      await dialog.hasContent(initialCardData['Serial number']),
     ).toBeTruthy();
     expect(
       await dialog.hasContent(
@@ -208,7 +208,9 @@ test('User can replace a debit card and view both new and old card', async ({
   await test.step('Verify new active card details after replacement', async () => {
     // Verify the new active card exists
     const newCardData = await debitCardPage.getCurrentDebitCardDataList();
-    expect(newCardData['Card number']).not.toBe(initialCardData['Card number']);
+    expect(newCardData['Card number']).not.toBe(
+      initialCardData['Serial number'],
+    );
 
     // Verify all other field that should match the initial card
     expect(newCardData).toMatchObject({
@@ -225,7 +227,7 @@ test('User can replace a debit card and view both new and old card', async ({
     await expect(oldCardList).toBeVisible();
 
     // Verify the accordion header contains the original card number
-    const originalCardNumber = initialCardData['Card number'];
+    const originalCardNumber = initialCardData['Serial number'];
     const accordionHeader = oldCardList.locator('p-accordion-header');
     await expect(accordionHeader).toContainText(
       `Old card: ${originalCardNumber}`,
@@ -305,7 +307,7 @@ test('User can pause and unpause a debit card', async ({ page }) => {
       await dialog.hasContent(`You're about to pause debit card`),
     ).toBeTruthy();
     expect(
-      await dialog.hasContent(initialCardData['Card number']),
+      await dialog.hasContent(initialCardData['Serial number']),
     ).toBeTruthy();
     expect(
       await dialog.hasContent(
@@ -332,7 +334,9 @@ test('User can pause and unpause a debit card', async ({ page }) => {
     expect(pausedCardData['Card status']).toBe('Paused');
 
     // Verify card number didn't change
-    expect(pausedCardData['Card number']).toBe(initialCardData['Card number']);
+    expect(pausedCardData['Serial number']).toBe(
+      initialCardData['Serial number'],
+    );
 
     // Verify other fields remain unchanged
     expect(pausedCardData).toMatchObject({
@@ -367,7 +371,7 @@ test('User can pause and unpause a debit card', async ({ page }) => {
       await dialog.hasContent(`You're about to unpause debit card`),
     ).toBeTruthy();
     expect(
-      await dialog.hasContent(initialCardData['Card number']),
+      await dialog.hasContent(initialCardData['Serial number']),
     ).toBeTruthy();
     expect(
       await dialog.hasContent(

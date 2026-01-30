@@ -23,7 +23,9 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationDebitCardPage from '@121-e2e/portal/pages/RegistrationDebitCardPage';
 
 const visaCardNumber = '1111222233334444555';
+const visaCardNumberDashed = '1111-2222-3333-4444-555';
 const newVisaCardNumber = '5555444433332222111';
+const newVisaCardNumberDashed = '5555-4444-3333-2222-111';
 const nonExistingVisaCardNumber = '3333444455556666777';
 let registrationId: number;
 let accessToken: string;
@@ -92,12 +94,14 @@ test('User can link a debit card to a registration', async ({ page }) => {
   await test.step('User can link a visa debit card to the registration', async () => {
     await debitCardPage.linkVisaCard(visaCardNumber);
     await debitCardPage.validateToastMessageAndClose(
-      'Link Visa card to registration',
+      'Visa card linked successfully',
     );
 
     const currentDebitCardDataList =
       await debitCardPage.getCurrentDebitCardDataList();
-    expect(currentDebitCardDataList['Card number']).toBe(visaCardNumber);
+    expect(currentDebitCardDataList['Serial number']).toBe(
+      visaCardNumberDashed,
+    );
   });
 });
 
@@ -127,18 +131,26 @@ test('User can successfully replace a debit card and gets error if he tries to l
     // Link new card
     await debitCardPage.replaceVisaCard(newVisaCardNumber);
     await debitCardPage.validateToastMessageAndClose(
-      'Link Visa card to registration',
+      'Visa card linked successfully',
     );
 
     // The behaviour of the page right now is that FE does not refresh immediately and the page should be refreshed to get new and old card numbers
     // I think this should not work like that
-    await page.reload();
+    // await page.reload();
     const currentDebitCardDataList =
       await debitCardPage.getCurrentDebitCardDataList();
     const substituteDebitCardDataList =
       await debitCardPage.getSubstituteDebitCardDataList();
-    expect(currentDebitCardDataList['Card number']).toBe(newVisaCardNumber);
-    expect(substituteDebitCardDataList['Card number']).toBe(visaCardNumber);
+    console.log(
+      '🚀 ~ substituteDebitCardDataList:',
+      substituteDebitCardDataList,
+    );
+    expect(currentDebitCardDataList['Serial number']).toBe(
+      newVisaCardNumberDashed,
+    );
+    expect(substituteDebitCardDataList['Serial number']).toBe(
+      visaCardNumberDashed,
+    );
   });
 });
 

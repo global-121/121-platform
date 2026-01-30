@@ -19,12 +19,20 @@ import { InputMask } from 'primeng/inputmask';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { IntersolveVisaApiService } from '~/domains/fsp-account-management/intersolve-visa.api.service';
 import { LinkCardDialogStates } from '~/pages/program-registration-debit-cards/components/link-card-on-site-dialog/enums/link-card-dialog-states.enum';
+import { CreditCardNumberPipe } from '~/pipes/credit-card-number.pipe';
 import { ToastService } from '~/services/toast.service';
 import { isErrorWithStatusCode } from '~/utils/is-error-with-status-code.helper';
 
 @Component({
   selector: 'app-link-card-dialog',
-  imports: [InputMask, Button, FormsModule, DialogModule, FormErrorComponent],
+  imports: [
+    InputMask,
+    Button,
+    FormsModule,
+    DialogModule,
+    FormErrorComponent,
+    CreditCardNumberPipe,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './link-card-dialog.component.html',
 })
@@ -45,7 +53,7 @@ export class LinkCardDialogComponent {
 
   readonly linkCardDialogStates = LinkCardDialogStates;
 
-  readonly tokenCodeFullyFilled: Signal<boolean> = computed(
+  readonly tokenCodeFullyFilled = computed(
     () => !this.tokenCode().includes('_') && this.tokenCode() !== '',
   );
 
@@ -94,24 +102,29 @@ export class LinkCardDialogComponent {
   );
 
   readonly errorMessage = computed(() => {
-    if (!this.isError()) {
-      return '';
-    }
+    const state = this.linkCardDialogState();
+    const {
+      linking,
+      errorNotFound,
+      errorAlreadyLinkedToOtherRegistration,
+      errorAlreadyLinkedToCurrentRegistration,
+    } = LinkCardDialogStates;
 
-    if (
-      this.linkCardDialogState() === this.linkCardDialogStates.errorNotFound
-    ) {
-      return $localize`Card number not found. Please go back and check that the number is correct.`;
+    switch (state) {
+      case linking:
+        return;
+      case errorNotFound:
+        return $localize`Card number not found. Please go back and check that the number is correct.`;
+      case errorAlreadyLinkedToOtherRegistration:
+        return $localize`The card number you entered is already linked to another registration.`;
+      case errorAlreadyLinkedToCurrentRegistration:
+        return $localize`The card number you entered is already linked to the current registration.`;
+      default: {
+        // exhaustiveness checking
+        state satisfies never;
+        return;
+      }
     }
-
-    if (
-      this.linkCardDialogState() ===
-      this.linkCardDialogStates.errorAlreadyLinkedToOther
-    ) {
-      return $localize`The card number you entered is already linked to another registration.`;
-    }
-
-    return $localize`The card number you entered is already linked to the current registration.`;
   });
 
   readonly errorInstructions = computed(() => {
@@ -148,7 +161,7 @@ export class LinkCardDialogComponent {
       this.dialogVisible.set(false);
       this.toastService.showToast({
         severity: 'success',
-        detail: $localize`Link Visa card to registration`,
+        detail: $localize`Visa card linked successfully.`,
       });
     },
     onError: (error) => {
@@ -156,7 +169,7 @@ export class LinkCardDialogComponent {
         isErrorWithStatusCode({ error, statusCode: HttpStatusCode.BadRequest })
       ) {
         this.linkCardDialogState.set(
-          LinkCardDialogStates.errorAlreadyLinkedToOther,
+          LinkCardDialogStates.errorAlreadyLinkedToOtherRegistration,
         );
         return;
       }
@@ -198,7 +211,7 @@ export class LinkCardDialogComponent {
       previousTokenCodesWithoutDashes.includes(tokenCodeWithoutDashes)
     ) {
       this.linkCardDialogState.set(
-        LinkCardDialogStates.errorAlreadyLinkedToCurrent,
+        LinkCardDialogStates.errorAlreadyLinkedToCurrentRegistration,
       );
       return;
     }
