@@ -19,8 +19,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     seedScript: SeedScript.safaricomProgram,
     registrations: registrationsSafaricom,
     programId: programIdSafaricom,
-    fileName: __filename,
-    navigateToProgramPage: `/en-GB/program/${programIdSafaricom}/payments`,
+    navigateToPage: `/en-GB/program/${programIdSafaricom}/payments`,
   });
 });
 
