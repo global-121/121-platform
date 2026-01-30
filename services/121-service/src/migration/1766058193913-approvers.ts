@@ -60,6 +60,10 @@ export class Approvers1766058193913 implements MigrationInterface {
         if (!programApproverCount[programId]) {
           programApproverCount[programId] = 0;
         }
+        if (approverInserts.includes(`(${programAidworkerAssignmentId}, ${programApproverCount[programId]})`)) {
+          // Skip if the user is already part of the set of approvers to be inserted.
+          return;
+        }
         programApproverCount[programId]++;
         approverInserts.push(
           `(${programAidworkerAssignmentId}, ${programApproverCount[programId]})`,
