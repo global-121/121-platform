@@ -27,7 +27,7 @@ jobs:
           flags: '-ignore SC2086'
 
       - name: Lint .env files
-        uses: dotenv-linter/action-dotenv-linter@v2
+        uses: dotenv-linter/action-dotenv-linter@v3
         with:
           reporter: github-code-suggestions
           dotenv_linter_flags: --skip UnorderedKey
