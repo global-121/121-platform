@@ -129,9 +129,12 @@ describe('AzureLogService', () => {
 
       it('should handle trackException errors gracefully', () => {
         const trackError = new Error('Track exception failed');
-        mockTelemetryClient.trackException.mockImplementation(() => {
+        const throwingMockImplementation = () => {
           throw trackError;
-        });
+        };
+        mockTelemetryClient.trackException.mockImplementation(
+          throwingMockImplementation,
+        );
 
         expect(() => service.logError(testError, false)).not.toThrow();
 
@@ -246,9 +249,8 @@ describe('AzureLogService', () => {
             throw flushError;
           });
 
-          expect(() =>
-            service.consoleLogAndTraceAzure(testMessage),
-          ).not.toThrow();
+          const testCall = () => service.consoleLogAndTraceAzure(testMessage);
+          expect(testCall).not.toThrow();
 
           expect(consoleLogSpy).toHaveBeenCalledWith(testMessage);
           expect(mockTelemetryClient.trackTrace).toHaveBeenCalledWith({
@@ -288,105 +290,107 @@ describe('AzureLogService', () => {
           expect(mockTelemetryClient.trackTrace).not.toHaveBeenCalled();
         });
       });
+    });
+  });
 
-      describe('integration and edge cases', () => {
-        describe('multiple method interactions', () => {
-          beforeEach(() => {
-            setupServiceWithClient();
-          });
+  describe('Integration Tests', () => {
+    describe('multiple method interactions with Azure client', () => {
+      beforeEach(() => {
+        setupServiceWithClient();
+      });
 
-          it('should handle multiple consecutive calls correctly', () => {
-            const error1 = createTestError('Error 1');
-            const error2 = createTestError('Error 2');
-            const message = 'Test message';
+      it('should handle multiple consecutive calls correctly', () => {
+        const error1 = createTestError('Error 1');
+        const error2 = createTestError('Error 2');
+        const message = 'Test message';
 
-            service.logError(error1, false);
-            service.logError(error2, true);
-            service.consoleLogAndTraceAzure(message);
+        service.logError(error1, false);
+        service.logError(error2, true);
+        service.consoleLogAndTraceAzure(message);
 
-            expect(mockTelemetryClient.trackException).toHaveBeenCalledTimes(2);
-            expect(mockTelemetryClient.trackTrace).toHaveBeenCalledTimes(1);
-            expect(mockTelemetryClient.flush).toHaveBeenCalledTimes(3);
-          });
+        expect(mockTelemetryClient.trackException).toHaveBeenCalledTimes(2);
+        expect(mockTelemetryClient.trackTrace).toHaveBeenCalledTimes(1);
+        expect(mockTelemetryClient.flush).toHaveBeenCalledTimes(3);
+      });
 
-          it('should handle interleaved calls correctly', () => {
-            const error = createTestError('Interleaved error');
-            const message = 'Interleaved message';
+      it('should handle interleaved calls correctly', () => {
+        const error = createTestError('Interleaved error');
+        const message = 'Interleaved message';
 
-            service.consoleLogAndTraceAzure(message);
-            service.logError(error, true);
-            service.consoleLogAndTraceAzure(message);
-            service.logError(error, false);
+        service.consoleLogAndTraceAzure(message);
+        service.logError(error, true);
+        service.consoleLogAndTraceAzure(message);
+        service.logError(error, false);
 
-            expect(mockTelemetryClient.trackTrace).toHaveBeenCalledTimes(2);
-            expect(mockTelemetryClient.trackException).toHaveBeenCalledTimes(2);
-            expect(mockTelemetryClient.flush).toHaveBeenCalledTimes(4);
-          });
+        expect(mockTelemetryClient.trackTrace).toHaveBeenCalledTimes(2);
+        expect(mockTelemetryClient.trackException).toHaveBeenCalledTimes(2);
+        expect(mockTelemetryClient.flush).toHaveBeenCalledTimes(4);
+      });
 
-          it('should maintain consistent behavior with rapid consecutive calls', () => {
-            const error = createTestError('Rapid call error');
-            const callCount = 10;
+      it('should maintain consistent behavior with rapid consecutive calls', () => {
+        const error = createTestError('Rapid call error');
+        const callCount = 10;
 
-            for (let i = 0; i < callCount; i++) {
-              service.logError(error, i % 2 === 0);
-            }
+        for (let i = 0; i < callCount; i++) {
+          service.logError(error, i % 2 === 0);
+        }
 
-            expect(mockTelemetryClient.trackException).toHaveBeenCalledTimes(
-              callCount,
-            );
-            expect(mockTelemetryClient.flush).toHaveBeenCalledTimes(callCount);
-          });
+        expect(mockTelemetryClient.trackException).toHaveBeenCalledTimes(
+          callCount,
+        );
+        expect(mockTelemetryClient.flush).toHaveBeenCalledTimes(callCount);
+      });
+    });
+
+    describe('state management', () => {
+      it('should maintain state correctly across method calls', () => {
+        const initialClient = mockTelemetryClient;
+        service.defaultClient = initialClient;
+
+        expect(service.defaultClient).toBe(initialClient);
+
+        // Test that methods work with the client
+        const testError = createTestError();
+        const testCall1 = () => service.logError(testError, false);
+        expect(testCall1).not.toThrow();
+
+        // Change state
+        Object.defineProperty(service, 'defaultClient', {
+          get: () => undefined,
+          configurable: true,
         });
+        expect(service.defaultClient).toBeUndefined();
 
-        describe('state management', () => {
-          it('should maintain state correctly across method calls', () => {
-            const initialClient = mockTelemetryClient;
-            service.defaultClient = initialClient;
+        // Test behavior change
+        const testCall2 = () => service.logError(testError, false);
+        expect(testCall2).toThrow(testError);
+      });
+    });
 
-            expect(service.defaultClient).toBe(initialClient);
+    describe('parameter validation with Azure client', () => {
+      beforeEach(() => {
+        setupServiceWithClient();
+      });
 
-            // Test that methods work with the client
-            const testError = createTestError();
-            expect(() => service.logError(testError, false)).not.toThrow();
+      it('should handle null error objects gracefully', () => {
+        const nullError = null as any;
 
-            // Change state
-            Object.defineProperty(service, 'defaultClient', {
-              get: () => undefined,
-              configurable: true,
-            });
-            expect(service.defaultClient).toBeUndefined();
-
-            // Test behavior change
-            expect(() => service.logError(testError, false)).toThrow(testError);
-          });
+        const testCall = () => service.logError(nullError, false);
+        expect(testCall).not.toThrow();
+        expect(mockTelemetryClient.trackException).toHaveBeenCalledWith({
+          exception: nullError,
+          severity: SeverityLevel.Error,
         });
+      });
 
-        describe('parameter validation', () => {
-          beforeEach(() => {
-            setupServiceWithClient();
-          });
+      it('should handle empty string messages', () => {
+        const emptyMessage = '';
 
-          it('should handle null error objects gracefully', () => {
-            const nullError = null as any;
-
-            expect(() => service.logError(nullError, false)).not.toThrow();
-            expect(mockTelemetryClient.trackException).toHaveBeenCalledWith({
-              exception: nullError,
-              severity: SeverityLevel.Error,
-            });
-          });
-
-          it('should handle empty string messages', () => {
-            const emptyMessage = '';
-
-            expect(() =>
-              service.consoleLogAndTraceAzure(emptyMessage),
-            ).not.toThrow();
-            expect(consoleLogSpy).toHaveBeenCalledWith(emptyMessage);
-            expect(mockTelemetryClient.trackTrace).toHaveBeenCalledWith({
-              message: emptyMessage,
-            });
-          });
+        const testCall = () => service.consoleLogAndTraceAzure(emptyMessage);
+        expect(testCall).not.toThrow();
+        expect(consoleLogSpy).toHaveBeenCalledWith(emptyMessage);
+        expect(mockTelemetryClient.trackTrace).toHaveBeenCalledWith({
+          message: emptyMessage,
         });
       });
     });
