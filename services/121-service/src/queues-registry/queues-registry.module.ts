@@ -88,8 +88,8 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
         },
       ],
       limiter: {
-        max: 5, // Max number of jobs processed
-        duration: 1000, // per duration in milliseconds
+        max: 1, // Max number of jobs processed
+        duration: 500, // per duration in milliseconds
       },
     }),
     BullModule.registerQueue({
