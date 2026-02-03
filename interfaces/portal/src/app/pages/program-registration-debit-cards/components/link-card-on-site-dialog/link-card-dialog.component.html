@@ -17,7 +17,7 @@
       @if (currentTokenCode()) {
         <p i18n>
           You're about to replace debit card number
-          <code>{{ currentTokenCode() }}</code
+          <code>{{ currentTokenCode() | creditCardNumber }}</code
           >.
         </p>
       }
@@ -87,6 +87,7 @@
           (click)="validateAndLinkCard()"
           rounded
           [label]="confirmationButtonLabel()"
+          [loading]="linkCardMutation.isPending()"
         ></p-button>
       } @else {
         <p-button
