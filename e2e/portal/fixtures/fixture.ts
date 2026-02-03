@@ -17,8 +17,8 @@ import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 type TestRegistration = Partial<RegistrationEntity> & {
   // Test-specific properties not in the entity
   programFspConfigurationName?: string;
-  // Additional properties that might be added in tests
-  [key: string]: unknown;
+  // Additional test-specific properties with constrained types
+  testProperties?: Record<string, string | number | boolean>;
 };
 
 type Fixtures = {
