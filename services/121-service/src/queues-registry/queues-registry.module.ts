@@ -85,6 +85,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       processors: [
         {
           path: 'src/fsp-integrations/transaction-jobs/processors/transaction-jobs-commercial-bank-ethiopia.processor.ts',
+          concurrency: 1, // CBE connections get reset when sent at the same time
         },
       ],
       limiter: {
