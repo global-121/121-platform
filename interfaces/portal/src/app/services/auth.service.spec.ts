@@ -9,6 +9,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserApiService } from '~/domains/user/user.api.service';
 import { AuthService } from '~/services/auth.service';
 import { LogService } from '~/services/log.service';
+import { createLocalStorageMock } from '~/test-utils';
 import { LocalStorageUser } from '~/utils/local-storage';
 
 interface MockAuthStrategy {
@@ -70,12 +71,7 @@ describe('AuthService - hasDeprecatedPermissions', () => {
   });
 
   describe('user getter with deprecated permissions', () => {
-    let localStorageGetItemSpy: jasmine.Spy<typeof localStorage.getItem>;
     beforeEach(() => {
-      localStorageGetItemSpy = spyOn(localStorage, 'getItem').and.returnValue(
-        null,
-      );
-      spyOn(localStorage, 'removeItem');
       mockAuthStrategy.isUserExpired.and.returnValue(false);
       mockAuthStrategy.logout.and.returnValue(Promise.resolve());
       mockRouter.navigate.and.returnValue(Promise.resolve(true));
@@ -89,8 +85,7 @@ describe('AuthService - hasDeprecatedPermissions', () => {
           'DEPRECATED_PERMISSION' as PermissionEnum,
         ],
       });
-
-      localStorageGetItemSpy.and.returnValue(
+      createLocalStorageMock().getItem.and.returnValue(
         JSON.stringify(userWithDeprecatedPermissions),
       );
       const logoutSpy = spyOn(service, 'logout').and.returnValue(
@@ -113,8 +108,7 @@ describe('AuthService - hasDeprecatedPermissions', () => {
           PermissionEnum.RegistrationBulkUPDATE,
         ],
       });
-
-      localStorageGetItemSpy.and.returnValue(
+      createLocalStorageMock().getItem.and.returnValue(
         JSON.stringify(userWithValidPermissions),
       );
 

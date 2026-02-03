@@ -35,7 +35,7 @@ export class SoapService {
       headers,
       url,
       xml,
-      timeout: 150000,
+      timeout: 150_000,
     })
       .then((rawResponse: any) => {
         const response = rawResponse.response;
@@ -169,33 +169,34 @@ export class SoapService {
     };
 
     // TODO: REFACTOR: See the NedbankApiClientService for how to handle the certificate, so it works on Azure and locally
-    let agent;
-    if (env.COMMERCIAL_BANK_ETHIOPIA_MODE === FspMode.mock) {
-      // Mock enabled
-      agent = new https.Agent();
-    } else {
-      // Mock disabled
-      if (!!env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH) {
-        try {
-          const certificate = fs.readFileSync(
-            env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH,
-          );
-          agent = new https.Agent({
-            ca: certificate,
-          });
-        } catch (error) {
-          throw error;
-        }
-      } else {
-        // If no certificate path is provided, create an agent without certificate (for use with the sandbox CBE-API)
-        agent = new https.Agent();
+    const cbeAgentOptions: https.AgentOptions = {
+      // Making sure we don't use too many sockets;
+      // Too many requests will be reset/refused by CBE otherwise.
+      keepAlive: true,
+      maxSockets: 1,
+    };
+
+    if (
+      env.COMMERCIAL_BANK_ETHIOPIA_MODE === FspMode.external &&
+      env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH
+    ) {
+      try {
+        const certificate = fs.readFileSync(
+          env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH,
+        );
+        cbeAgentOptions.ca = certificate;
+      } catch (error) {
+        throw error;
       }
     }
+
+    const agent = new https.Agent(cbeAgentOptions);
+
     return soapRequest({
       headers,
       url: apiUrl,
       xml: soapRequestXml,
-      timeout: 150000,
+      timeout: 150_000,
       extraOpts: {
         httpsAgent: agent,
       },
