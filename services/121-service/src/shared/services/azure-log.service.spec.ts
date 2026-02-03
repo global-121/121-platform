@@ -136,7 +136,8 @@ describe('AzureLogService', () => {
         throwingImplementation,
       );
 
-      expect(() => service.logError(testError, false)).not.toThrow();
+      const logErrorCall = () => service.logError(testError, false);
+      expect(logErrorCall).not.toThrow();
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         'An error occurred in logError:',
@@ -153,7 +154,8 @@ describe('AzureLogService', () => {
       };
       mockTelemetryClient.flush.mockImplementation(throwingImplementation);
 
-      expect(() => service.logError(testError, false)).not.toThrow();
+      const logErrorCall = () => service.logError(testError, false);
+      expect(logErrorCall).not.toThrow();
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         'An error occurred in AzureLogService::flushLogs:',
@@ -176,7 +178,8 @@ describe('AzureLogService', () => {
       );
       mockTelemetryClient.flush.mockImplementation(throwingFlushImplementation);
 
-      expect(() => service.logError(testError, false)).not.toThrow();
+      const logErrorCall = () => service.logError(testError, false);
+      expect(logErrorCall).not.toThrow();
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         'An error occurred in logError:',
@@ -196,21 +199,25 @@ describe('AzureLogService', () => {
 
     it('should throw the original error when defaultClient is not available', () => {
       const testError = createTestError();
+      const logErrorCall = () => service.logError(testError, false);
 
-      expect(() => service.logError(testError, false)).toThrow(testError);
+      expect(logErrorCall).toThrow(testError);
     });
 
     it('should throw the original error regardless of alert parameter', () => {
       const testError = createTestError();
+      const logErrorCallTrue = () => service.logError(testError, true);
+      const logErrorCallFalse = () => service.logError(testError, false);
 
-      expect(() => service.logError(testError, true)).toThrow(testError);
-      expect(() => service.logError(testError, false)).toThrow(testError);
+      expect(logErrorCallTrue).toThrow(testError);
+      expect(logErrorCallFalse).toThrow(testError);
     });
 
     it('should not call Azure client methods when unavailable', () => {
       const testError = createTestError();
+      const logErrorCall = () => service.logError(testError, false);
 
-      expect(() => service.logError(testError, false)).toThrow();
+      expect(logErrorCall).toThrow();
 
       expect(mockTelemetryClient.trackException).not.toHaveBeenCalled();
       expect(mockTelemetryClient.flush).not.toHaveBeenCalled();
@@ -262,7 +269,8 @@ describe('AzureLogService', () => {
       };
       mockTelemetryClient.flush.mockImplementation(throwingImplementation);
 
-      expect(() => service.consoleLogAndTraceAzure(testMessage)).not.toThrow();
+      const consoleLogCall = () => service.consoleLogAndTraceAzure(testMessage);
+      expect(consoleLogCall).not.toThrow();
 
       expect(consoleLogSpy).toHaveBeenCalledWith(testMessage);
       expect(mockTelemetryClient.trackTrace).toHaveBeenCalledWith({
@@ -362,7 +370,8 @@ describe('AzureLogService', () => {
 
       // Test that methods work with the client
       const testError = createTestError();
-      expect(() => service.logError(testError, false)).not.toThrow();
+      const logErrorWithClient = () => service.logError(testError, false);
+      expect(logErrorWithClient).not.toThrow();
 
       // Change state
       Object.defineProperty(service, 'defaultClient', {
@@ -372,34 +381,36 @@ describe('AzureLogService', () => {
       expect(service.defaultClient).toBeUndefined();
 
       // Test behavior change
-      expect(() => service.logError(testError, false)).toThrow(testError);
+      const logErrorWithoutClient = () => service.logError(testError, false);
+      expect(logErrorWithoutClient).toThrow(testError);
+    });
+  });
+
+  describe('parameter validation with Azure client', () => {
+    beforeEach(() => {
+      setupServiceWithClient();
     });
 
-    describe('parameter validation with Azure client', () => {
-      beforeEach(() => {
-        setupServiceWithClient();
+    it('should handle null error objects gracefully', () => {
+      const nullError = null as any;
+      const logNullError = () => service.logError(nullError, false);
+
+      expect(logNullError).not.toThrow();
+      expect(mockTelemetryClient.trackException).toHaveBeenCalledWith({
+        exception: nullError,
+        severity: SeverityLevel.Error,
       });
+    });
 
-      it('should handle null error objects gracefully', () => {
-        const nullError = null as any;
+    it('should handle empty string messages', () => {
+      const emptyMessage = '';
+      const logEmptyMessage = () =>
+        service.consoleLogAndTraceAzure(emptyMessage);
 
-        expect(() => service.logError(nullError, false)).not.toThrow();
-        expect(mockTelemetryClient.trackException).toHaveBeenCalledWith({
-          exception: nullError,
-          severity: SeverityLevel.Error,
-        });
-      });
-
-      it('should handle empty string messages', () => {
-        const emptyMessage = '';
-
-        expect(() =>
-          service.consoleLogAndTraceAzure(emptyMessage),
-        ).not.toThrow();
-        expect(consoleLogSpy).toHaveBeenCalledWith(emptyMessage);
-        expect(mockTelemetryClient.trackTrace).toHaveBeenCalledWith({
-          message: emptyMessage,
-        });
+      expect(logEmptyMessage).not.toThrow();
+      expect(consoleLogSpy).toHaveBeenCalledWith(emptyMessage);
+      expect(mockTelemetryClient.trackTrace).toHaveBeenCalledWith({
+        message: emptyMessage,
       });
     });
   });
