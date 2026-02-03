@@ -28,7 +28,7 @@
     "@types/multer": "^2.0.0",
     "@types/node": "^24.x",
     "@types/supertest": "^6.0.3",
-    "eslint": "^8.57.1",
+    "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-n": "^17.23.1",
