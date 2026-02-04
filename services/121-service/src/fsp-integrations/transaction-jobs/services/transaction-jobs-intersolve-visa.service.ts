@@ -5,6 +5,7 @@ import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integr
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { ParsedFspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/types/parsed-fsp-configuration-properties';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -159,13 +160,7 @@ export class TransactionJobsIntersolveVisaService {
 
   private async getIntersolveVisaFspConfig(
     programFspConfigurationId: number,
-  ): Promise<{
-    brandCode: string;
-    coverLetterCode: string;
-    fundingTokenCode: string;
-    cardDistributionByMail: boolean;
-    maxToSpendPerMonthInCents: number;
-  }> {
+  ): Promise<ParsedFspConfigurationProperties> {
     return await this.programFspConfigurationRepository.getPropertiesByNamesTypedOrThrow(
       {
         programFspConfigurationId,
