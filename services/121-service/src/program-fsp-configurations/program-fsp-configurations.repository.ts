@@ -4,6 +4,7 @@ import { Equal, Repository } from 'typeorm';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { parseFspConfigurationPropertyValue } from '@121-service/src/fsp-integrations/shared/helpers/parse-fsp-configuration-value.helper';
+import { ParsedFspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/types/parsed-fsp-configuration-properties';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
 
@@ -164,19 +165,13 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
   }: {
     programFspConfigurationId: number;
     names: FspConfigurationProperties[];
-  }): Promise<any> {
+  }): Promise<ParsedFspConfigurationProperties> {
     const properties = await this.getPropertiesByNamesOrThrow({
       programFspConfigurationId,
       names,
     });
 
-    const result: Record<
-      FspConfigurationProperties,
-      string | string[] | number | boolean
-    > = {} as Record<
-      FspConfigurationProperties,
-      string | string[] | number | boolean
-    >;
+    const result: ParsedFspConfigurationProperties = {};
 
     for (const property of properties) {
       result[property.name] = parseFspConfigurationPropertyValue({
