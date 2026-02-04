@@ -110,6 +110,7 @@ Fixtures are useful whenever you need consistent test setup, including:
 ### How to use fixtures?
 
 **1. Import fixtures from your project:**
+
 ```typescript
 import { test } from '@121-e2e/portal/fixtures/fixture';
 ```
@@ -117,6 +118,7 @@ import { test } from '@121-e2e/portal/fixtures/fixture';
 **2. Use fixtures as test parameters:**
 
 Declare the fixtures you need as parameters in your test function. Playwright will automatically provide them:
+
 ```typescript
 test('Do successful payment for CBE FSP', async ({ page, paymentSetup }) => {
   await paymentSetup.paymentsPage.createPayment({});
