@@ -1,7 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
-import { FspConfigurationPropertyTypes } from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-types.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { parseFspConfigurationPropertyValue } from '@121-service/src/fsp-integrations/shared/helpers/parse-fsp-configuration-value.helper';
@@ -130,10 +129,9 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
       );
     }
 
-    const type = FspConfigurationPropertyTypes[name];
     return parseFspConfigurationPropertyValue({
       value,
-      type,
+      name,
     });
   }
 
@@ -181,10 +179,9 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
     >;
 
     for (const property of properties) {
-      const type = FspConfigurationPropertyTypes[property.name];
       result[property.name] = parseFspConfigurationPropertyValue({
         value: property.value,
-        type,
+        name: property.name,
       });
     }
 
