@@ -1,24 +1,31 @@
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { FspConfigurationPropertyTypeInterface } from '@121-service/src/fsp-integrations/shared/interfaces/fsp-configuration-property-type.interface';
+
+export const typeMap: Partial<
+  Record<FspConfigurationProperties, (value: string) => any>
+> = {
+  [FspConfigurationProperties.cardDistributionByMail]: (value) =>
+    parseBoolean(value),
+  [FspConfigurationProperties.maxToSpendPerMonthInCents]: (value) =>
+    parseNumber(value),
+};
+
 export function parseFspConfigurationPropertyValue({
+  name,
   value,
-  type,
 }: {
+  name: FspConfigurationProperties;
   value: string | string[];
-  type: string | string[] | number | boolean;
-}): string | string[] | number | boolean {
-  //we expect arrays to contain strings only
-  if (Array.isArray(value) || type === 'string') {
+}): FspConfigurationPropertyTypeInterface[FspConfigurationProperties] {
+  if (Array.isArray(value)) {
     return value;
   }
 
-  if (type === 'number') {
-    return parseNumber(value);
+  const parser = typeMap[name];
+  if (parser) {
+    return parser(value);
   }
-
-  if (type === 'boolean') {
-    return parseBoolean(value);
-  }
-
-  throw new Error(`Unsupported FSP configuration property type: ${type}`);
+  return value;
 }
 
 const parseNumber = (value: string): number => {
