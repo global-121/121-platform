@@ -40,13 +40,16 @@ export class IntersolveVisaAccountManagementService {
       },
     );
     const maxToSpendPerMonthInCents =
-      await this.programFspConfigurationRepository.getPropertyValueByName({
-        programFspConfigurationId: registration.programFspConfigurationId,
-        name: FspConfigurationProperties.maxToSpendPerMonthInCents,
-      });
+      await this.programFspConfigurationRepository.getPropertyValueByNameTypedOrThrow(
+        {
+          programFspConfigurationId: registration.programFspConfigurationId,
+          name: FspConfigurationProperties.maxToSpendPerMonthInCents,
+        },
+      );
+
     return await this.intersolveVisaService.retrieveAndUpdateWallet({
       registrationId: registration.id,
-      maxToSpendPerMonthInCents: Number(maxToSpendPerMonthInCents),
+      maxToSpendPerMonthInCents,
     });
   }
 
@@ -62,13 +65,23 @@ export class IntersolveVisaAccountManagementService {
       },
     );
     const maxToSpendPerMonthInCents =
-      await this.programFspConfigurationRepository.getPropertyValueByName({
-        programFspConfigurationId: registration.programFspConfigurationId,
-        name: FspConfigurationProperties.maxToSpendPerMonthInCents,
-      });
+      await this.programFspConfigurationRepository.getPropertyValueByNameTypedOrThrow(
+        {
+          programFspConfigurationId: registration.programFspConfigurationId,
+          name: FspConfigurationProperties.maxToSpendPerMonthInCents,
+        },
+      );
+
+    if (maxToSpendPerMonthInCents === undefined) {
+      throw new HttpException(
+        'Missing maxToSpendPerMonthInCents for Intersolve Visa wallet retrieval',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     return await this.intersolveVisaService.getWalletWithCards({
       registrationId: registration.id,
-      maxToSpendPerMonthInCents: Number(maxToSpendPerMonthInCents),
+      maxToSpendPerMonthInCents,
     });
   }
 
@@ -296,12 +309,21 @@ export class IntersolveVisaAccountManagementService {
     programFspConfigurationId: number,
   ): Promise<boolean> {
     const cardDistributionByMail =
-      await this.programFspConfigurationRepository.getPropertyValueByName({
-        programFspConfigurationId,
-        name: FspConfigurationProperties.cardDistributionByMail,
-      });
+      await this.programFspConfigurationRepository.getPropertyValueByNameTypedOrThrow(
+        {
+          programFspConfigurationId,
+          name: FspConfigurationProperties.cardDistributionByMail,
+        },
+      );
 
-    return cardDistributionByMail === 'true';
+    if (cardDistributionByMail === undefined) {
+      throw new HttpException(
+        'Missing cardDistributionByMail for Intersolve Visa',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return cardDistributionByMail;
   }
 
   public async pauseCardAndSendMessage(
