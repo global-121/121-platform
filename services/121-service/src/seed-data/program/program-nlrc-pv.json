@@ -184,13 +184,6 @@
       "fsp": "Excel",
       "properties": [
         {
-          "name": "displayName",
-          "value": {
-            "en": "Occasional (physical)",
-            "nl": "Af-en-toe (Fysiek)"
-          }
-        },
-        {
           "name": "columnToMatch",
           "value": "phoneNumber"
         }

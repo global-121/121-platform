@@ -57,7 +57,7 @@ export class TransactionJobsIntersolveVisaService {
           {
             registrationId: registration.id,
             inputTransferValueInMajorUnit: transactionJob.transferValue,
-            maxToSpendPerMonthInCents: Number(maxToSpendPerMonthInCents),
+            maxToSpendPerMonthInCents,
           },
         );
     } catch (error) {
@@ -95,10 +95,7 @@ export class TransactionJobsIntersolveVisaService {
         await this.intersolveVisaChildWalletScopedRepository.hasLinkedChildWalletForRegistrationId(
           registration.id,
         );
-      if (
-        cardDistributionByMail === 'false' &&
-        !isChildWalletLinkedToRegistration
-      ) {
+      if (!cardDistributionByMail && !isChildWalletLinkedToRegistration) {
         throw new IntersolveVisaApiError(
           'Cannot do a transaction when card distribution by mail is disabled and customer does not exist.',
         );
@@ -166,11 +163,11 @@ export class TransactionJobsIntersolveVisaService {
     brandCode: string;
     coverLetterCode: string;
     fundingTokenCode: string;
-    cardDistributionByMail: string;
-    maxToSpendPerMonthInCents: string;
+    cardDistributionByMail: boolean;
+    maxToSpendPerMonthInCents: number;
   }> {
-    const intersolveVisaConfig =
-      await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
+    return await this.programFspConfigurationRepository.getPropertiesByNamesTypedOrThrow(
+      {
         programFspConfigurationId,
         names: [
           FspConfigurationProperties.brandCode,
@@ -179,24 +176,8 @@ export class TransactionJobsIntersolveVisaService {
           FspConfigurationProperties.cardDistributionByMail,
           FspConfigurationProperties.maxToSpendPerMonthInCents,
         ],
-      });
-    return {
-      brandCode: intersolveVisaConfig.find(
-        (c) => c.name === FspConfigurationProperties.brandCode,
-      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
-      coverLetterCode: intersolveVisaConfig.find(
-        (c) => c.name === FspConfigurationProperties.coverLetterCode,
-      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
-      fundingTokenCode: intersolveVisaConfig.find(
-        (c) => c.name === FspConfigurationProperties.fundingTokenCode,
-      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
-      cardDistributionByMail: intersolveVisaConfig.find(
-        (c) => c.name === FspConfigurationProperties.cardDistributionByMail,
-      )?.value as string,
-      maxToSpendPerMonthInCents: intersolveVisaConfig.find(
-        (c) => c.name === FspConfigurationProperties.maxToSpendPerMonthInCents,
-      )?.value as string,
-    };
+      },
+    );
   }
 
   private async updateTransferValue({ transactionId, value }) {
