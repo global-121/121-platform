@@ -1,8 +1,6 @@
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
-import {
-  FspConfigPropertyAttributes,
-  FspConfigurationProperties,
-} from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { SecretFspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/consts/secret-fsp-configuration-properties.const';
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
@@ -69,8 +67,8 @@ export class ProgramFspConfigurationMapper {
   public static mapPropertyEntityToDto(
     property: ProgramFspConfigurationPropertyEntity,
   ): ProgramFspConfigurationPropertyResponseDto {
-    const isVisible = FspConfigPropertyAttributes[property.name].visible;
-    const value = isVisible ? property.value : sensitivePropertyString;
+    const isSecret = SecretFspConfigurationProperties.includes(property.name);
+    const value = isSecret ? sensitivePropertyString : property.value;
     return {
       name: property.name,
       value,

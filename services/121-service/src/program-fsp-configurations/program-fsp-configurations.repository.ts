@@ -1,8 +1,10 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
+import { FspConfigurationPropertyTypes } from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-types.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { parseFspConfigurationPropertyValue } from '@121-service/src/fsp-integrations/shared/helpers/parse-fsp-configuration-value.helper';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
 
@@ -110,6 +112,31 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
       ?.value;
   }
 
+  public async getPropertyValueByNameTypedOrThrow({
+    programFspConfigurationId,
+    name,
+  }: {
+    programFspConfigurationId: number;
+    name: FspConfigurationProperties;
+  }): Promise<any> {
+    const value = await this.getPropertyValueByName({
+      programFspConfigurationId,
+      name,
+    });
+
+    if (!value) {
+      throw new Error(
+        `Configuration with name ${name} not found for ProgramFspConfigurationEntity with id: ${programFspConfigurationId}`,
+      );
+    }
+
+    const type = FspConfigurationPropertyTypes[name];
+    return parseFspConfigurationPropertyValue({
+      value,
+      type,
+    });
+  }
+
   public async getPropertiesByNamesOrThrow({
     programFspConfigurationId,
     names,
@@ -131,6 +158,37 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
       name: property.name,
       value: property.value,
     }));
+  }
+
+  public async getPropertiesByNamesTypedOrThrow({
+    programFspConfigurationId,
+    names,
+  }: {
+    programFspConfigurationId: number;
+    names: FspConfigurationProperties[];
+  }): Promise<any> {
+    const properties = await this.getPropertiesByNamesOrThrow({
+      programFspConfigurationId,
+      names,
+    });
+
+    const result: Record<
+      FspConfigurationProperties,
+      string | string[] | number | boolean
+    > = {} as Record<
+      FspConfigurationProperties,
+      string | string[] | number | boolean
+    >;
+
+    for (const property of properties) {
+      const type = FspConfigurationPropertyTypes[property.name];
+      result[property.name] = parseFspConfigurationPropertyValue({
+        value: property.value,
+        type,
+      });
+    }
+
+    return result;
   }
 
   private async getProperties(programFspConfigurationId: number) {
