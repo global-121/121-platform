@@ -72,13 +72,6 @@ export class IntersolveVisaAccountManagementService {
         },
       );
 
-    if (maxToSpendPerMonthInCents === undefined) {
-      throw new HttpException(
-        'Missing maxToSpendPerMonthInCents for Intersolve Visa wallet retrieval',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
     return await this.intersolveVisaService.getWalletWithCards({
       registrationId: registration.id,
       maxToSpendPerMonthInCents,
@@ -315,13 +308,6 @@ export class IntersolveVisaAccountManagementService {
           name: FspConfigurationProperties.cardDistributionByMail,
         },
       );
-
-    if (cardDistributionByMail === undefined) {
-      throw new HttpException(
-        'Missing cardDistributionByMail for Intersolve Visa',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
 
     return cardDistributionByMail;
   }
