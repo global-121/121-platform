@@ -12,6 +12,10 @@
 - [Running tests](#running-tests)
   - [Using the command-line](#using-the-command-line)
   - [Using the VS Code-extension](#using-the-vs-code-extension)
+- [Fixtures](#fixtures)
+  - [What are fixtures in Playwright?](#what-are-fixtures-in-playwright)
+  - [Where can we use fixtures?](#where-can-we-use-fixtures)
+  - [How to use fixtures?](#how-to-use-fixtures)
 - [Tests and Page Object Model (POM)](#tests-and-page-object-model-pom)
   - [What is Page Object Model (POM)?](#what-is-page-object-model-pom)
   - [Benefits of Using POM](#benefits-of-using-pom)
@@ -77,6 +81,51 @@ Use the built-in runner of the VS Code-extension: [`#ms-playwright.playwright`](
 ![Screenshot of Playwright-extension in VS Code](https://github.com/microsoft/playwright/assets/13063165/348e18ff-f819-4caa-8f7e-f16c20724f56)
 
 ---
+
+## Fixtures
+
+### What are fixtures in Playwright?
+
+Fixtures are reusable setup code that automatically prepares your test environment before each test runs. They provide:
+
+- **Isolation**: Each test gets a fresh, independent environment
+- **Reusability**: Common setup logic is defined once and shared across tests
+- **Clean organization**: Tests are grouped by their purpose rather than their setup requirements
+- **Automatic cleanup**: Teardown happens automatically after each test
+
+Instead of manually logging in or creating test data in every test, you declare "I need an authenticated page" and Playwright handles the setup and cleanup for you.
+
+### Where can we use fixtures?
+
+Fixtures are useful whenever you need consistent test setup, including:
+
+- **Authentication state**: Pre-authenticated sessions or user contexts
+- **Test data**: Database resets, seed data, or mock data
+- **Custom page objects**: Commonly used page object model instances
+- **API mocking**: Pre-configured API interceptors or mock responses
+- **Navigation**: Automatic routing to specific pages or application states
+
+**Example scenario**: If multiple tests require both `paymentPage` and `paymentsPage` objects to test payment flows, create a `paymentSetup` fixture instead of importing and initializing these objects in each test individually.
+
+### How to use fixtures?
+
+**1. Import fixtures from your project:**
+```typescript
+import { test } from '@121-e2e/portal/fixtures/fixture';
+```
+
+**2. Use fixtures as test parameters:**
+
+Declare the fixtures you need as parameters in your test function. Playwright will automatically provide them:
+```typescript
+test('Do successful payment for CBE FSP', async ({ page, paymentSetup }) => {
+  await paymentSetup.paymentsPage.createPayment({});
+});
+```
+
+Fixtures work the same way as Playwright's built-in fixtures like `page`, `context`, and `browser`.
+
+###
 
 ## Tests and Page Object Model (POM)
 
