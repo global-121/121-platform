@@ -127,8 +127,6 @@ test('Do successful payment for CBE FSP', async ({ page, paymentSetup }) => {
 
 Fixtures work the same way as Playwright's built-in fixtures like `page`, `context`, and `browser`.
 
-###
-
 ## Tests and Page Object Model (POM)
 
 ### What is Page Object Model (POM)?
