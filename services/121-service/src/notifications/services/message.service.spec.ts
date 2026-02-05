@@ -37,6 +37,7 @@ describe('MessageService', () => {
   let smsService: jest.Mocked<SmsService>;
   let intersolveVoucherService: jest.Mocked<IntersolveVoucherService>;
   let azureLogService: jest.Mocked<AzureLogService>;
+  let consoleLogSpy: jest.SpyInstance;
 
   beforeEach(() => {
     const { unit, unitRef } = TestBed.create(MessageService).compile();
@@ -51,11 +52,18 @@ describe('MessageService', () => {
       .spyOn(messageService.registrationRepository, 'findOneOrFail')
       .mockResolvedValue({ program: { id: 1 } } as RegistrationEntity);
 
-    jest.spyOn(console, 'log').mockImplementation();
+    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {
+      // Suppress console output in tests
+    });
 
     getMessageTemplateForLanguageOrFallback = jest
       .spyOn(messageService as any, 'getMessageTemplateForLanguageOrFallback')
       .mockResolvedValue(mockDefaultNotificationText);
+  });
+
+  afterEach(() => {
+    // Restore console methods
+    consoleLogSpy.mockRestore();
   });
 
   it('should be defined', () => {
