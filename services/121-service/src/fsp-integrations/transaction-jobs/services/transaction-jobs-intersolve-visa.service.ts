@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { DoTransferOrIssueCardResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/do-transfer-or-issue-card-result.interface';
 import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa-api.error';
@@ -52,6 +52,14 @@ export class TransactionJobsIntersolveVisaService {
         await this.getIntersolveVisaFspConfig(
           transactionJob.programFspConfigurationId,
         );
+
+      //TODO: fix error
+      if (typeof maxToSpendPerMonthInCents !== 'number') {
+        throw new HttpException(
+          'Invalid maxToSpendPerMonthInCents configuration for Intersolve Visa',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
 
       transferValueInMajorUnit =
         await this.intersolveVisaService.calculateTransferValueWithWalletRetrieval(
@@ -118,9 +126,9 @@ export class TransactionJobsIntersolveVisaService {
             phoneNumber: transactionJob.phoneNumber!,
           },
           transferValueInMajorUnit,
-          brandCode,
-          coverLetterCode,
-          fundingTokenCode,
+          brandCode: brandCode as string,
+          coverLetterCode: coverLetterCode as string,
+          fundingTokenCode: fundingTokenCode as string,
         });
     } catch (error) {
       if (error instanceof IntersolveVisaApiError) {

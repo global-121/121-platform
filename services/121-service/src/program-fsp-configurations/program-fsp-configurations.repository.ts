@@ -118,13 +118,13 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
   }: {
     programFspConfigurationId: number;
     name: FspConfigurationProperties;
-  }): Promise<any> {
+  }): Promise<string | boolean | number | string[]> {
     const value = await this.getPropertyValueByName({
       programFspConfigurationId,
       name,
     });
 
-    if (!value) {
+    if (value === undefined || value === null) {
       throw new Error(
         `Configuration with name ${name} not found for ProgramFspConfigurationEntity with id: ${programFspConfigurationId}`,
       );

@@ -47,6 +47,13 @@ export class IntersolveVisaAccountManagementService {
         },
       );
 
+    if (typeof maxToSpendPerMonthInCents !== 'number') {
+      throw new HttpException(
+        'Invalid maxToSpendPerMonthInCents configuration for Intersolve Visa',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
     return await this.intersolveVisaService.retrieveAndUpdateWallet({
       registrationId: registration.id,
       maxToSpendPerMonthInCents,
@@ -71,6 +78,13 @@ export class IntersolveVisaAccountManagementService {
           name: FspConfigurationProperties.maxToSpendPerMonthInCents,
         },
       );
+
+    if (typeof maxToSpendPerMonthInCents !== 'number') {
+      throw new HttpException(
+        'Invalid maxToSpendPerMonthInCents configuration for Intersolve Visa',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
 
     return await this.intersolveVisaService.getWalletWithCards({
       registrationId: registration.id,
@@ -308,6 +322,13 @@ export class IntersolveVisaAccountManagementService {
           name: FspConfigurationProperties.cardDistributionByMail,
         },
       );
+
+    if (typeof cardDistributionByMail !== 'boolean') {
+      throw new HttpException(
+        'Invalid cardDistributionByMail configuration for Intersolve Visa',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
 
     return cardDistributionByMail;
   }

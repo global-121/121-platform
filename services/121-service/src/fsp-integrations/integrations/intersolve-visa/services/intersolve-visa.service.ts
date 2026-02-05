@@ -646,6 +646,10 @@ export class IntersolveVisaService {
     inputTransferValueInMajorUnit: number;
     maxToSpendPerMonthInCents: number;
   }): Promise<number> {
+    console.log(
+      '🚀 ~ IntersolveVisaService ~ calculateTransferValueWithWalletRetrieval ~ maxToSpendPerMonthInCents:',
+      maxToSpendPerMonthInCents,
+    );
     const intersolveVisaCustomer =
       await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
         registrationId,
