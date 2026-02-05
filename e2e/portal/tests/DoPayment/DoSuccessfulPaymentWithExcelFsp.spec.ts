@@ -8,8 +8,7 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import ExportData from '@121-e2e/portal/components/ExportData';
-import { test } from '@121-e2e/portal/fixtures/fixture';
-
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 // Export Excel FSP payment list
 const amount = NLRCProgramPV.fixedTransferValue;
 
@@ -22,7 +21,11 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('Do payment for excel fsp', async ({ page, paymentSetup }) => {
+test('Do payment for excel fsp', async ({
+  page,
+  paymentPage,
+  paymentsPage,
+}) => {
   const exportDataComponent = new ExportData(page);
 
   const numberOfPas = registrationsPvExcel.length;
@@ -35,9 +38,9 @@ test('Do payment for excel fsp', async ({ page, paymentSetup }) => {
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Create payment', async () => {
-    await paymentSetup.paymentsPage.createPayment({});
-    await paymentSetup.paymentsPage.validateExcelFspInstructions();
-    await paymentSetup.paymentsPage.validatePaymentSummary({
+    await paymentsPage.createPayment({});
+    await paymentsPage.validateExcelFspInstructions();
+    await paymentsPage.validatePaymentSummary({
       fsp: fsps,
       registrationsNumber: numberOfPas,
       currency: '€',
@@ -48,15 +51,13 @@ test('Do payment for excel fsp', async ({ page, paymentSetup }) => {
       url.pathname.startsWith(`/en-GB/program/${programIdPV}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
-    await paymentSetup.paymentPage.validatePaymentsDetailsPageByDate(
-      lastPaymentDate,
-    );
-    await paymentSetup.paymentPage.approvePayment();
-    await paymentSetup.paymentPage.startPayment();
+    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.approvePayment();
+    await paymentPage.startPayment();
   });
 
   await test.step('Download payment instructions', async () => {
-    await paymentSetup.paymentPage.selectPaymentExportOption({
+    await paymentPage.selectPaymentExportOption({
       option: 'Export FSP payment list',
     });
     await exportDataComponent.exportAndAssertData({
