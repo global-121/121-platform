@@ -7,8 +7,7 @@ import {
   registrationsVoucher,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import { test } from '@121-e2e/portal/fixtures/fixture';
-
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
@@ -20,7 +19,8 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
 
 test('Do successful payment for Voucher fsp', async ({
   page,
-  paymentSetup,
+  paymentPage,
+  paymentsPage,
 }) => {
   const numberOfPas = registrationsVoucher.length;
   const defaultTransferValue = NLRCProgram.fixedTransferValue;
@@ -30,34 +30,26 @@ test('Do successful payment for Voucher fsp', async ({
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Do payment', async () => {
-    await paymentSetup.paymentsPage.createPayment({});
+    await paymentsPage.createPayment({});
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdPV}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
-    await paymentSetup.paymentPage.validatePaymentsDetailsPageByDate(
-      lastPaymentDate,
-    );
+    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
     // also validate toast messages for just this 1 (random) FSP instead of for all
-    await paymentSetup.paymentPage.validateToastMessageAndClose(
-      'Payment created',
-    );
-    await paymentSetup.paymentPage.approvePayment();
-    await paymentSetup.paymentPage.validateToastMessageAndClose(
-      'Payment approved',
-    );
-    await paymentSetup.paymentPage.startPayment();
-    await paymentSetup.paymentPage.validateToastMessageAndClose(
-      'Payment started',
-    );
+    await paymentPage.validateToastMessageAndClose('Payment created');
+    await paymentPage.approvePayment();
+    await paymentPage.validateToastMessageAndClose('Payment approved');
+    await paymentPage.startPayment();
+    await paymentPage.validateToastMessageAndClose('Payment started');
   });
 
   await test.step('Validate payment card', async () => {
     await page.waitForTimeout(1000);
-    await paymentSetup.paymentPage.waitForPaymentToComplete();
-    await paymentSetup.paymentPage.navigateToProgramPage('Payments');
-    await paymentSetup.paymentsPage.validatePaymentCard({
+    await paymentPage.waitForPaymentToComplete();
+    await paymentPage.navigateToProgramPage('Payments');
+    await paymentsPage.validatePaymentCard({
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,

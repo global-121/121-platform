@@ -8,8 +8,7 @@ import {
   registrationsNedbank,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import { test } from '@121-e2e/portal/fixtures/fixture';
-
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nedbankProgram,
@@ -21,7 +20,8 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
 
 test('Do successful payment for Nedbank fsp', async ({
   page,
-  paymentSetup,
+  paymentPage,
+  paymentsPage,
 }) => {
   const numberOfPas = registrationsNedbank.length;
   const defaultTransferValue = NedbankProgram.fixedTransferValue;
@@ -31,17 +31,15 @@ test('Do successful payment for Nedbank fsp', async ({
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Do payment', async () => {
-    await paymentSetup.paymentsPage.createPayment({});
+    await paymentsPage.createPayment({});
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/program/${programIdNedbank}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
-    await paymentSetup.paymentPage.validatePaymentsDetailsPageByDate(
-      lastPaymentDate,
-    );
-    await paymentSetup.paymentPage.approvePayment();
-    await paymentSetup.paymentPage.startPayment();
+    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.approvePayment();
+    await paymentPage.startPayment();
 
     // Run CRON job to process payment
     await page.waitForTimeout(500); // wait a bit to allow the payment to start before running the CRON job
@@ -53,9 +51,9 @@ test('Do successful payment for Nedbank fsp', async ({
     // before we can validate the payment card
     // This way we can avoid reloading the page
     await page.waitForTimeout(1000);
-    await paymentSetup.paymentPage.waitForPaymentToComplete();
-    await paymentSetup.paymentPage.navigateToProgramPage('Payments');
-    await paymentSetup.paymentsPage.validatePaymentCard({
+    await paymentPage.waitForPaymentToComplete();
+    await paymentPage.navigateToProgramPage('Payments');
+    await paymentsPage.validatePaymentCard({
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,

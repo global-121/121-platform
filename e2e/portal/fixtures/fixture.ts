@@ -1,4 +1,4 @@
-import { test as base } from '@playwright/test';
+import { test as base, TestInfo } from '@playwright/test';
 
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -26,26 +26,24 @@ type Fixtures = {
     seedScript: SeedScript;
     registrations: TestRegistration[];
     programId: number;
-    fileName?: string;
     navigateToPage?: string;
   }) => Promise<{ accessToken: string }>;
-  paymentSetup: {
-    paymentPage: PaymentPage;
-    paymentsPage: PaymentsPage;
-  };
+  paymentPage: PaymentPage;
+  paymentsPage: PaymentsPage;
 };
 
-export const test = base.extend<Fixtures>({
-  resetDBAndSeedRegistrations: async ({ page }, use) => {
+export const customSharedFixture = base.extend<Fixtures>({
+  resetDBAndSeedRegistrations: async ({ page }, use, testInfo: TestInfo) => {
     const resetAndSeed = async (params: {
       seedScript: SeedScript;
       registrations: TestRegistration[];
       programId: number;
-      fileName?: string;
       navigateToPage?: string;
     }): Promise<{ accessToken: string }> => {
       // Logic to reset the database and seed registrations
-      await resetDB(params.seedScript, params.fileName);
+      const nameOfFileContainingTest = testInfo.file;
+      // Logic to reset the database and seed registrations
+      await resetDB(params.seedScript, nameOfFileContainingTest);
       const accessToken = await getAccessToken();
       await seedIncludedRegistrations(
         params.registrations,
@@ -69,9 +67,11 @@ export const test = base.extend<Fixtures>({
     await use(resetAndSeed);
   },
 
-  paymentSetup: async ({ page }, use) => {
-    const paymentPage = new PaymentPage(page);
-    const paymentsPage = new PaymentsPage(page);
-    await use({ paymentPage, paymentsPage });
+  paymentPage: async ({ page }, use) => {
+    await use(new PaymentPage(page));
+  },
+
+  paymentsPage: async ({ page }, use) => {
+    await use(new PaymentsPage(page));
   },
 });
