@@ -53,8 +53,18 @@ describe('AzureLogService', () => {
     service = module.get<AzureLogService>(AzureLogService);
 
     // Set up console spies
-    consoleLogSpy = jest.spyOn(console, 'log');
-    consoleErrorSpy = jest.spyOn(console, 'error');
+    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {
+      // Suppress console output in tests
+    });
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {
+      // Suppress console output in tests
+    });
+  });
+
+  afterEach((): void => {
+    // Restore console methods
+    consoleLogSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
   });
 
   describe('service initialization', (): void => {
