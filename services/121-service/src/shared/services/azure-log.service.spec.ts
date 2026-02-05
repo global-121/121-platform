@@ -5,17 +5,17 @@ import { SeverityLevel } from 'applicationinsights/out/Declarations/Contracts';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 // Mock applicationinsights
-jest.mock('applicationinsights', () => ({
-  defaultClient: {
-    trackException: jest.fn(),
-    trackTrace: jest.fn(),
-    flush: jest.fn(),
-  },
-  SeverityLevel: {
-    Critical: 4,
-    Error: 3,
-  },
-}));
+jest.mock('applicationinsights', () => {
+  const actual = jest.requireActual('applicationinsights');
+  return {
+    defaultClient: {
+      trackException: jest.fn(),
+      trackTrace: jest.fn(),
+      flush: jest.fn(),
+    },
+    SeverityLevel: actual.SeverityLevel,
+  };
+});
 
 describe('AzureLogService', () => {
   let service: AzureLogService;
@@ -53,14 +53,8 @@ describe('AzureLogService', () => {
     service = module.get<AzureLogService>(AzureLogService);
 
     // Set up console spies
-    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
-    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-  });
-
-  afterEach((): void => {
-    // Restore console methods
-    consoleLogSpy.mockRestore();
-    consoleErrorSpy.mockRestore();
+    consoleLogSpy = jest.spyOn(console, 'log');
+    consoleErrorSpy = jest.spyOn(console, 'error');
   });
 
   describe('service initialization', (): void => {
