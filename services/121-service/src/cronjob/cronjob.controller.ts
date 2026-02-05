@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { Patch } from '@nestjs/common';
 import {
@@ -21,8 +22,10 @@ import { CronjobExecutionService } from '@121-service/src/cronjob/services/cronj
 import { CronjobInitiateService } from '@121-service/src/cronjob/services/cronjob-initiate.service';
 import { RemoveDeprecatedImageCodesDto } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/dto/remove-deprecated-image-codes-dto';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 
 @ApiTags('cronjobs')
+@UseGuards(AuthenticatedUserGuard)
 @Controller('cronjobs')
 export class CronjobController {
   constructor(
