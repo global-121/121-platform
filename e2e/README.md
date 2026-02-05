@@ -105,7 +105,7 @@ Fixtures are useful whenever you need consistent test setup, including:
 - **API mocking**: Pre-configured API interceptors or mock responses
 - **Navigation**: Automatic routing to specific pages or application states
 
-**Example scenario**: If multiple tests require both `paymentPage` and `paymentsPage` objects to test payment flows, create a `paymentSetup` fixture instead of importing and initializing these objects in each test individually.
+**Example scenario**: If multiple tests require both `paymentPage` and `paymentsPage` objects to test payment flows, create a fixture instead of importing and initializing these objects in each test individually.
 
 ### How to use fixtures?
 
@@ -120,7 +120,11 @@ import { test } from '@121-e2e/portal/fixtures/fixture';
 Declare the fixtures you need as parameters in your test function. Playwright will automatically provide them:
 
 ```typescript
-test('Do successful payment for CBE FSP', async ({ page, paymentSetup }) => {
+test('Do successful payment for CBE FSP', async ({
+  page,
+  paymentPage,
+  paymentsPage,
+}) => {
   await paymentSetup.paymentsPage.createPayment({});
 });
 ```
