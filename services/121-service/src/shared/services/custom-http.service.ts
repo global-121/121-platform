@@ -4,7 +4,8 @@ import { AxiosRequestConfig } from '@nestjs/terminus/dist/health-indicator/http/
 import { defaultClient, TelemetryClient } from 'applicationinsights';
 import { isPlainObject } from 'lodash';
 import fs from 'node:fs';
-import https from 'node:https';
+import https, { AgentOptions } from 'node:https';
+import { SecureContextOptions } from 'node:tls';
 import { catchError, lastValueFrom, map, of } from 'rxjs';
 
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
@@ -196,9 +197,7 @@ export class CustomHttpService {
       'Content-Type': 'application/json',
     };
     if (headers) {
-      headers.forEach((value, key) => {
-        returnHeaders[key] = value;
-      });
+      Object.assign(returnHeaders, Object.fromEntries(headers));
     }
     return returnHeaders;
   }
@@ -285,9 +284,43 @@ export class CustomHttpService {
     certificatePath: string,
     password?: string,
   ): https.Agent {
+    let certificate: SecureContextOptions['pfx'];
+    try {
+      certificate = fs.readFileSync(certificatePath);
+    } catch (error) {
+      throw new Error(`Certificate not found at: ${certificatePath}`, {
+        cause: error,
+      });
+    }
+
     return new https.Agent({
-      pfx: fs.readFileSync(certificatePath),
+      pfx: certificate,
       passphrase: password,
+    });
+  }
+
+  /**
+   * Create an HTTPS agent with a self-signed certificate and optional connection-options.
+   * @param certificatePath The path to the certificate.
+   * @param extraOpts Any extra options to pass to the HTTPS agent.
+   * @returns The HTTPS agent.
+   */
+  public createHttpsAgentWithSelfSignedCertificateOnly(
+    certificatePath: string,
+    extraOpts?: AgentOptions,
+  ): https.Agent {
+    let certificate: SecureContextOptions['ca'];
+    try {
+      certificate = fs.readFileSync(certificatePath);
+    } catch (error) {
+      throw new Error(`Certificate not found at: ${certificatePath}`, {
+        cause: error,
+      });
+    }
+
+    return new https.Agent({
+      ca: certificate,
+      ...extraOpts,
     });
   }
 

@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { env } from '@121-service/src/env';
 import { CreditTransferApiParams } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
 import { CommercialBankEthiopiaSoapElements } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/enum/commercial-bank-ethiopia.enum';
+import { CommercialBankEthiopiaApiClientService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia-api-client.service';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { RequiredUsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/required-username-password.interface';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
@@ -15,7 +16,10 @@ const cbeApiUrl =
 
 @Injectable()
 export class CommercialBankEthiopiaApiService {
-  public constructor(private readonly soapService: SoapService) {}
+  public constructor(
+    private readonly commercialBankEthiopiaApiClientService: CommercialBankEthiopiaApiClientService,
+    private readonly soapService: SoapService,
+  ) {}
 
   public async creditTransfer(
     payment: CreditTransferApiParams,
@@ -27,11 +31,12 @@ export class CommercialBankEthiopiaApiService {
     });
 
     try {
-      const responseBody = await this.soapService.postCBERequest({
-        apiUrl: cbeApiUrl,
-        payload,
-        soapAction: `${cbeApiUrl}?xsd=4`,
-      });
+      const responseBody =
+        await this.commercialBankEthiopiaApiClientService.makeApiRequest({
+          apiUrl: cbeApiUrl,
+          payload,
+          soapAction: `${cbeApiUrl}?xsd=4`,
+        });
 
       if (
         responseBody.Status &&
@@ -53,15 +58,9 @@ export class CommercialBankEthiopiaApiService {
       let resultDescription: string | undefined;
       if (this.isConnectionError(error)) {
         console.error(
-          `Failed because of CBE connection error or timeout (${error.code}).`,
+          `CBE API: CreditTransfer - Connection error or timeout: ${error.code}`,
         );
         resultDescription = `Failed because of CBE connection error or timeout (${error.code}). Please try again later.`;
-      } else if (error.code === 'ENOENT') {
-        console.error(
-          'Failed because the certificate file is not found or not valid.',
-        );
-        resultDescription =
-          'Failed because the certificate file is not found or not valid. Please contact 121 technical support.';
       } else {
         console.error(
           'CBE API: CreditTransfer - Unknown error occurred:',
@@ -161,11 +160,12 @@ export class CommercialBankEthiopiaApiService {
     );
 
     try {
-      const responseBody = await this.soapService.postCBERequest({
-        apiUrl: cbeApiUrl,
-        payload,
-        soapAction: `${cbeApiUrl}?xsd=6`,
-      });
+      const responseBody =
+        await this.commercialBankEthiopiaApiClientService.makeApiRequest({
+          apiUrl: cbeApiUrl,
+          payload,
+          soapAction: `${cbeApiUrl}?xsd=6`,
+        });
 
       return responseBody;
     } catch (error) {
@@ -176,15 +176,9 @@ export class CommercialBankEthiopiaApiService {
 
       if (this.isConnectionError(error)) {
         console.error(
-          `Failed because of CBE connection error (${error.code}). Please try again later`,
+          `CBE API: TransactionStatus - Connection error: ${error.code}`,
         );
         result.resultDescription = `Failed because of CBE connection error (${error.code}). Please try again later`;
-      } else if (error.code === 'ENOENT') {
-        console.error(
-          'Failed because of ETHIOPIA_CERTIFICATE_PATH file or directory not found.',
-        );
-        result.resultDescription =
-          'Failed because of ETHIOPIA_CERTIFICATE_PATH file or directory not found.';
       } else {
         console.error(
           'CBE API: TransactionStatus - Unknown error occurred:',
@@ -260,11 +254,12 @@ export class CommercialBankEthiopiaApiService {
     );
 
     try {
-      const responseBody = await this.soapService.postCBERequest({
-        apiUrl: cbeApiUrl,
-        payload,
-        soapAction: `${cbeApiUrl}?xsd=2`,
-      });
+      const responseBody =
+        await this.commercialBankEthiopiaApiClientService.makeApiRequest({
+          apiUrl: cbeApiUrl,
+          payload,
+          soapAction: `${cbeApiUrl}?xsd=2`,
+        });
 
       return responseBody;
     } catch (error) {
@@ -275,17 +270,12 @@ export class CommercialBankEthiopiaApiService {
 
       if (this.isConnectionError(error)) {
         console.error(
-          `Failed because of CBE connection error (${error.code}). Please try again later`,
-        );
-        throw error;
-      } else if (error.code === 'ENOENT') {
-        console.error(
-          'Failed because of ETHIOPIA_CERTIFICATE_PATH file or directory not found.',
+          `CBE API: ValidationStatus - Connection error: ${error.code}`,
         );
         throw error;
       } else {
         console.error(
-          'CBE API: ValidationStatus - Error occurred:',
+          'CBE API: ValidationStatus - Unknown error occurred:',
           error.response ?? error,
         );
         result.resultDescription = error.response;
