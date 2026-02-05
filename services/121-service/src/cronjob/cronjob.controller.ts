@@ -175,6 +175,7 @@ export class CronjobController {
     return await this.cronjobExecutionService.cronSendOnafriqReconciliationReport();
   }
 
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: 'Initiate all Cron Jobs. Only used for testing.',
   })
