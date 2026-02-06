@@ -125,7 +125,7 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
       name,
     });
 
-    if (!value) {
+    if (value === undefined || value === null) {
       throw new Error(
         `Configuration with name ${name} not found for ProgramFspConfigurationEntity with id: ${programFspConfigurationId}`,
       );
