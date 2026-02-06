@@ -35,4 +35,4 @@ jobs:
         uses: dotenv-linter/action-dotenv-linter@v3
         with:
           reporter: github-code-suggestions
-          dotenv_linter_flags: --skip UnorderedKey
+          dotenv_linter_flags: --ignore-checks UnorderedKey
