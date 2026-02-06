@@ -15,17 +15,23 @@ export function parseFspConfigurationPropertyValue({
   value,
 }: {
   name: FspConfigurationProperties;
-  value: string | string[];
+  value: string;
 }): FspConfigurationPropertyType {
-  if (Array.isArray(value)) {
-    return value;
-  }
-
   const parser = typeMap[name];
   if (parser) {
     return parser(value);
   }
-  return value;
+
+  try {
+    const parsedValue = JSON.parse(value);
+    if (Array.isArray(parsedValue)) {
+      return parsedValue;
+    }
+
+    return value;
+  } catch (error) {
+    return value;
+  }
 }
 
 const parseNumber = (value: string): number => {
