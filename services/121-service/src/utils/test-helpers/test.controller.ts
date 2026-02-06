@@ -1,17 +1,29 @@
-import { Body, Controller, Get, HttpStatus, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiExcludeEndpoint, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DataSource } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
+import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { indirectRelationConfig } from '@121-service/src/scoped.repository';
 import { SecretDto } from '@121-service/src/scripts/scripts.controller';
 
 @ApiTags('test')
+@UseGuards(AuthenticatedUserGuard)
 @Controller('test')
 export class TestController {
   constructor(private readonly dataSource: DataSource) {}
 
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
       'WARNING: Kills 121-service. Only works in DEBUG-mode. Only used for testing purposes.',
@@ -31,6 +43,7 @@ export class TestController {
     process.exit(1);
   }
 
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
       'WARNING: Only works in DEBUG-mode. Only used for testing purposes.',
