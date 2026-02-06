@@ -5,6 +5,7 @@ import { castArray, unique } from 'radashi';
 
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
 import { FspSettingsDto } from '@121-service/src/fsp-management/fsp-settings.dto';
 import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 
@@ -21,7 +22,7 @@ export type FspConfigurationFormGroup = FormGroup<
   } & Partial<
     Record<
       FspConfigurationProperties,
-      FormControl<boolean | number | string | string[]>
+      FormControl<FspConfigurationPropertyType>
     >
   >
 >;
@@ -74,7 +75,7 @@ export class FspConfigurationService {
       ...Object.fromEntries(
         fspSetting.configurationProperties.map((property) => [
           property.name,
-          new FormControl<boolean | number | string | string[]>(
+          new FormControl<FspConfigurationPropertyType>(
             this.getPropertyValue({
               propertyName: property.name,
               existingFspConfiguration,
@@ -182,7 +183,7 @@ export class FspConfigurationService {
   }: {
     propertyName: FspConfigurationProperties;
     existingFspConfiguration?: FspConfiguration;
-  }): boolean | number | string | string[] {
+  }): FspConfigurationPropertyType {
     let existingPropertyValue = existingFspConfiguration?.properties.find(
       (p) => p.name === propertyName,
     )?.value;
