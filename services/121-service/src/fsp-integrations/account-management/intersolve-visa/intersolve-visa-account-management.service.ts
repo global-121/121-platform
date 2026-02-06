@@ -44,9 +44,16 @@ export class IntersolveVisaAccountManagementService {
         programFspConfigurationId: registration.programFspConfigurationId,
         name: FspConfigurationProperties.maxToSpendPerMonthInCents,
       });
+
+    if (typeof maxToSpendPerMonthInCents !== 'number') {
+      throw new IntersolveVisaApiError(
+        'maxToSpendPerMonthInCents is not configured correctly for the program fsp configuration.',
+      );
+    }
+
     return await this.intersolveVisaService.retrieveAndUpdateWallet({
       registrationId: registration.id,
-      maxToSpendPerMonthInCents: Number(maxToSpendPerMonthInCents),
+      maxToSpendPerMonthInCents,
     });
   }
 
@@ -66,9 +73,16 @@ export class IntersolveVisaAccountManagementService {
         programFspConfigurationId: registration.programFspConfigurationId,
         name: FspConfigurationProperties.maxToSpendPerMonthInCents,
       });
+
+    if (typeof maxToSpendPerMonthInCents !== 'number') {
+      throw new IntersolveVisaApiError(
+        'maxToSpendPerMonthInCents is not configured correctly for the program fsp configuration.',
+      );
+    }
+
     return await this.intersolveVisaService.getWalletWithCards({
       registrationId: registration.id,
-      maxToSpendPerMonthInCents: Number(maxToSpendPerMonthInCents),
+      maxToSpendPerMonthInCents,
     });
   }
 
@@ -301,7 +315,13 @@ export class IntersolveVisaAccountManagementService {
         name: FspConfigurationProperties.cardDistributionByMail,
       });
 
-    return cardDistributionByMail === 'true';
+    if (typeof cardDistributionByMail !== 'boolean') {
+      throw new IntersolveVisaApiError(
+        'maxToSpendPerMonthInCents is not configured correctly for the program fsp configuration.',
+      );
+    }
+
+    return cardDistributionByMail;
   }
 
   public async pauseCardAndSendMessage(

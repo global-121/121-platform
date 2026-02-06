@@ -3,6 +3,7 @@ import { Equal, Repository } from 'typeorm';
 
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { FspConfigurationProperty } from '@121-service/src/fsp-integrations/shared/interfaces/fsp-configuration-property.interface';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
 
@@ -116,7 +117,7 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
   }: {
     programFspConfigurationId: number;
     names: string[];
-  }) {
+  }): Promise<FspConfigurationProperty[]> {
     const properties = await this.getProperties(programFspConfigurationId);
 
     for (const name of names) {

@@ -104,20 +104,20 @@ describe('Replace Visa debit card by mail', () => {
   it('should fail to replace a Visa debit card by mail if phonenumber is missing & successfully replace after phonenumber is updated again', async () => {
     // Arrange
     const programIdPv = 2;
+    await patchProgramFspConfigurationProperty({
+      programId: programIdPv,
+      configName: Fsps.intersolveVisa,
+      propertyName: FspConfigurationProperties.cardDistributionByMail,
+      body: { value: true },
+      accessToken,
+    });
+
     await seedPaidRegistrations({
       registrations: [registrationVisa],
       programId: programIdPv,
       completeStatuses: [TransactionStatusEnum.success],
     });
     const wrongPhoneNumber = '4534565434565434';
-
-    await patchProgramFspConfigurationProperty({
-      programId: programIdPv,
-      configName: Fsps.intersolveVisa,
-      propertyName: FspConfigurationProperties.cardDistributionByMail,
-      body: { value: 'true' },
-      accessToken,
-    });
 
     await updateRegistration(
       programIdPv,

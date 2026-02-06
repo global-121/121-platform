@@ -5,6 +5,7 @@ import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integr
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { ParsedFspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/types/parsed-fsp-configuration-properties';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -52,12 +53,18 @@ export class TransactionJobsIntersolveVisaService {
           transactionJob.programFspConfigurationId,
         );
 
+      if (typeof maxToSpendPerMonthInCents !== 'number') {
+        throw new IntersolveVisaApiError(
+          'maxToSpendPerMonthInCents is not configured correctly for the program fsp configuration.',
+        );
+      }
+
       transferValueInMajorUnit =
         await this.intersolveVisaService.calculateTransferValueWithWalletRetrieval(
           {
             registrationId: registration.id,
             inputTransferValueInMajorUnit: transactionJob.transferValue,
-            maxToSpendPerMonthInCents: Number(maxToSpendPerMonthInCents),
+            maxToSpendPerMonthInCents,
           },
         );
     } catch (error) {
@@ -91,14 +98,21 @@ export class TransactionJobsIntersolveVisaService {
         transactionJob.programFspConfigurationId,
       );
 
+      if (
+        typeof brandCode !== 'string' ||
+        typeof coverLetterCode !== 'string' ||
+        typeof fundingTokenCode !== 'string'
+      ) {
+        throw new IntersolveVisaApiError(
+          'One or more of the following properties are not configured correctly for the program fsp configuration: brandCode, coverLetterCode, fundingTokenCode.',
+        );
+      }
+
       const isChildWalletLinkedToRegistration =
         await this.intersolveVisaChildWalletScopedRepository.hasLinkedChildWalletForRegistrationId(
           registration.id,
         );
-      if (
-        cardDistributionByMail === 'false' &&
-        !isChildWalletLinkedToRegistration
-      ) {
+      if (!cardDistributionByMail && !isChildWalletLinkedToRegistration) {
         throw new IntersolveVisaApiError(
           'Cannot do a transaction when card distribution by mail is disabled and customer does not exist.',
         );
@@ -162,13 +176,7 @@ export class TransactionJobsIntersolveVisaService {
 
   private async getIntersolveVisaFspConfig(
     programFspConfigurationId: number,
-  ): Promise<{
-    brandCode: string;
-    coverLetterCode: string;
-    fundingTokenCode: string;
-    cardDistributionByMail: string;
-    maxToSpendPerMonthInCents: string;
-  }> {
+  ): Promise<ParsedFspConfigurationProperties> {
     const intersolveVisaConfig =
       await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
         programFspConfigurationId,

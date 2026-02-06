@@ -1,9 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
-import {
-  FspConfigurationProperties,
-  PublicFspConfigurationProperties,
-} from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { PublicFspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/consts/public-fsp-configuration-properties.const';
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';

@@ -11,11 +11,6 @@ export interface FspFormField {
   isSensitive: boolean;
 }
 
-export interface FspConfigurationProperty {
-  name: string;
-  value: string;
-}
-
 export enum IntersolveVisaFspConfigurationProperties {
   cardDistributionByMail = 'cardDistributionByMail',
 }

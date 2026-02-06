@@ -2,10 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 
-import {
-  FspConfigurationProperties,
-  PublicFspConfigurationProperties,
-} from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { PublicFspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/consts/public-fsp-configuration-properties.const';
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { getFspConfigurationProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
@@ -97,6 +95,7 @@ export class ProgramFspConfigurationsService {
     return ProgramFspConfigurationMapper.mapEntityToDto(savedEntity);
   }
 
+  //TODO:
   public async update(
     programId: number,
     name: string,
@@ -269,6 +268,7 @@ export class ProgramFspConfigurationsService {
     }
   }
 
+  //TODO:
   public async updateProperty({
     programId,
     name: name,
@@ -280,6 +280,8 @@ export class ProgramFspConfigurationsService {
     propertyName: FspConfigurationProperties;
     property: UpdateProgramFspConfigurationPropertyDto;
   }): Promise<ProgramFspConfigurationPropertyResponseDto> {
+    //expect config with string or string[] as prop values, which we can expect if serialized correctly
+    //we need to serialize the property!
     const config = await this.getProgramFspConfigurationOrThrow(
       programId,
       name,
@@ -341,6 +343,7 @@ export class ProgramFspConfigurationsService {
     );
   }
 
+  //TODO:
   private async overwriteProperties(
     programFspConfigurationId: number,
     properties: CreateProgramFspConfigurationPropertyDto[],
@@ -401,6 +404,7 @@ export class ProgramFspConfigurationsService {
         HttpStatus.NOT_FOUND,
       );
     }
+
     return property;
   }
 

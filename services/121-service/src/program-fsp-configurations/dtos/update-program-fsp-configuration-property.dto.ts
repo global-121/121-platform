@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
+import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
+
 export class UpdateProgramFspConfigurationPropertyDto {
   @ApiProperty({
     example: 'redcross-user',
@@ -8,5 +10,5 @@ export class UpdateProgramFspConfigurationPropertyDto {
       'Should be string (for e.g. name=username) or array of strings (for e.g. name=columnsToExport)',
   })
   @IsNotEmpty()
-  value: string | string[];
+  value: FspConfigurationPropertyType;
 }
