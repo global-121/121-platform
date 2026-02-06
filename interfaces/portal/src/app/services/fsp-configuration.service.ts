@@ -19,7 +19,10 @@ export type FspConfigurationFormGroup = FormGroup<
   {
     displayName: FormControl<string>;
   } & Partial<
-    Record<FspConfigurationProperties, FormControl<string | string[]>>
+    Record<
+      FspConfigurationProperties,
+      FormControl<boolean | number | string | string[]>
+    >
   >
 >;
 
@@ -71,7 +74,7 @@ export class FspConfigurationService {
       ...Object.fromEntries(
         fspSetting.configurationProperties.map((property) => [
           property.name,
-          new FormControl<string | string[]>(
+          new FormControl<boolean | number | string | string[]>(
             this.getPropertyValue({
               propertyName: property.name,
               existingFspConfiguration,
@@ -147,6 +150,15 @@ export class FspConfigurationService {
       existingFspConfiguration,
     });
 
+    if (
+      typeof columnsToExport !== 'string' ||
+      typeof columnToMatch !== 'string'
+    ) {
+      throw new Error(
+        'Expected columnsToExport and columnToMatch to be of type string[] or string',
+      );
+    }
+
     return unique([...castArray(columnsToExport), ...castArray(columnToMatch)]);
   }
 
@@ -170,7 +182,7 @@ export class FspConfigurationService {
   }: {
     propertyName: FspConfigurationProperties;
     existingFspConfiguration?: FspConfiguration;
-  }): string | string[] {
+  }): boolean | number | string | string[] {
     let existingPropertyValue = existingFspConfiguration?.properties.find(
       (p) => p.name === propertyName,
     )?.value;

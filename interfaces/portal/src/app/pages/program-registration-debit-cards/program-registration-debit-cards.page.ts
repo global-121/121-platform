@@ -136,7 +136,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
       return true;
     }
 
-    return distributionByMailEnabled.value === 'true';
+    return distributionByMailEnabled.value;
   });
 
   readonly cardByMailDisabledAndNoCurrentCards = computed(() => {
