@@ -5,6 +5,7 @@ import { Equal, In, Repository } from 'typeorm';
 import { PublicFspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/consts/public-fsp-configuration-properties.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { parseFspConfigurationPropertyValue } from '@121-service/src/fsp-integrations/shared/helpers/parse-fsp-configuration-value.helper';
 import { getFspConfigurationProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
@@ -268,6 +269,7 @@ export class ProgramFspConfigurationsService {
     }
   }
 
+  //TODO:
   public async updateProperty({
     programId,
     name: name,
@@ -279,6 +281,8 @@ export class ProgramFspConfigurationsService {
     propertyName: FspConfigurationProperties;
     property: UpdateProgramFspConfigurationPropertyDto;
   }): Promise<ProgramFspConfigurationPropertyResponseDto> {
+    //expect config with string or string[] as prop values, which we can expect if serialized correctly
+    //we need to serialize the property!
     const config = await this.getProgramFspConfigurationOrThrow(
       programId,
       name,
@@ -384,10 +388,11 @@ export class ProgramFspConfigurationsService {
     return config;
   }
 
+  //TODO: fix any
   private async getProgramFspConfigurationPropertyOrThrow(
     programFspConfigurationId: number,
     propertyName: FspConfigurationProperties,
-  ): Promise<ProgramFspConfigurationPropertyEntity> {
+  ): Promise<any /*ProgramFspConfigurationPropertyEntity*/> {
     const property =
       await this.programFspConfigurationPropertyRepository.findOne({
         where: {
@@ -401,7 +406,13 @@ export class ProgramFspConfigurationsService {
         HttpStatus.NOT_FOUND,
       );
     }
-    return property;
+
+    const parsedValue = parseFspConfigurationPropertyValue({
+      name: property.name,
+      value: property.value,
+    });
+
+    return { ...property, value: parsedValue };
   }
 
   public async getFspConfigurationProperties(
