@@ -1,6 +1,7 @@
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { SecretFspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/consts/secret-fsp-configuration-properties.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { serializeFspConfigurationPropertyValue } from '@121-service/src/fsp-integrations/shared/helpers/serialize-fsp-configuration-value.helper';
 import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
 import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
@@ -107,13 +108,8 @@ export class ProgramFspConfigurationMapper {
 
   public static mapPropertyDtoValueToEntityValue(
     dtoValue: FspConfigurationPropertyType,
-    property: FspConfigurationProperties,
-  ): string {
-    // For now columnsToExport is the only property that is an array
-    // Later we can add a switch case and a type for each property if there are more non-string properties
-    if (property === FspConfigurationProperties.columnsToExport) {
-      return JSON.stringify(dtoValue);
-    }
-    return dtoValue as string;
+    _property: FspConfigurationProperties,
+  ): string | string[] {
+    return serializeFspConfigurationPropertyValue(dtoValue);
   }
 }

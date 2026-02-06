@@ -143,7 +143,9 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
   }: {
     programFspConfigurationId: number;
     names: string[];
-  }) {
+  }): Promise<
+    { name: FspConfigurationProperties; value: string | string[] }[]
+  > {
     const properties = await this.getProperties(programFspConfigurationId);
 
     for (const name of names) {
