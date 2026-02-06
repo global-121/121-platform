@@ -1,4 +1,5 @@
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
 import { ProgramFspConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-response.dto';
 
 import { Dto } from '~/utils/dto-type';
@@ -13,7 +14,7 @@ export interface FspFormField {
 
 export interface FspConfigurationProperty {
   name: string;
-  value: boolean | number | string | string[];
+  value: FspConfigurationPropertyType;
 }
 
 export enum IntersolveVisaFspConfigurationProperties {
