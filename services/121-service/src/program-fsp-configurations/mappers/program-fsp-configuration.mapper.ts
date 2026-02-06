@@ -105,7 +105,7 @@ export class ProgramFspConfigurationMapper {
   }
 
   public static mapPropertyDtoValueToEntityValue(
-    dtoValue: string | string[],
+    dtoValue: string | string[] | number | boolean,
     property: FspConfigurationProperties,
   ): string {
     // For now columnsToExport is the only property that is an array

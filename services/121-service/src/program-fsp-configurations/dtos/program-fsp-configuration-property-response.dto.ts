@@ -7,7 +7,7 @@ export class ProgramFspConfigurationPropertyResponseDto {
   public readonly name: FspConfigurationProperties;
 
   @ApiProperty({ example: 'RC01' })
-  public readonly value?: string | string[];
+  public readonly value?: string | string[] | boolean | number;
 
   @ApiProperty({ example: new Date() })
   public updated: Date;

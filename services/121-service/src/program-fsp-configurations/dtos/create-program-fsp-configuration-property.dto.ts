@@ -18,5 +18,5 @@ export class CreateProgramFspConfigurationPropertyDto {
     description: `Should be string (for e.g. name=username) or array of strings (for e.g. name=columnsToExport)`,
   })
   @IsNotEmpty()
-  public readonly value: string | string[];
+  public readonly value: string | string[] | number | boolean;
 }

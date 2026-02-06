@@ -13,7 +13,7 @@ export interface FspFormField {
 
 export interface FspConfigurationProperty {
   name: string;
-  value: string;
+  value: boolean | number | string | string[];
 }
 
 export enum IntersolveVisaFspConfigurationProperties {
