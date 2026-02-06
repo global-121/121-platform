@@ -1,5 +1,5 @@
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
-import { FspConfigurationPropertyTypeInterface } from '@121-service/src/fsp-integrations/shared/interfaces/fsp-configuration-property-type.interface';
+import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
 
 export const typeMap: Partial<
   Record<FspConfigurationProperties, (value: string) => any>
@@ -16,7 +16,7 @@ export function parseFspConfigurationPropertyValue({
 }: {
   name: FspConfigurationProperties;
   value: string | string[];
-}): FspConfigurationPropertyTypeInterface[FspConfigurationProperties] {
+}): FspConfigurationPropertyType {
   if (Array.isArray(value)) {
     return value;
   }
