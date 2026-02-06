@@ -53,6 +53,12 @@ export class TransactionJobsIntersolveVisaService {
           transactionJob.programFspConfigurationId,
         );
 
+      if (typeof maxToSpendPerMonthInCents !== 'number') {
+        throw new IntersolveVisaApiError(
+          'maxToSpendPerMonthInCents is not configured correctly for the program fsp configuration.',
+        );
+      }
+
       transferValueInMajorUnit =
         await this.intersolveVisaService.calculateTransferValueWithWalletRetrieval(
           {
@@ -91,6 +97,16 @@ export class TransactionJobsIntersolveVisaService {
       } = await this.getIntersolveVisaFspConfig(
         transactionJob.programFspConfigurationId,
       );
+
+      if (
+        typeof brandCode !== 'string' ||
+        typeof coverLetterCode !== 'string' ||
+        typeof fundingTokenCode !== 'string'
+      ) {
+        throw new IntersolveVisaApiError(
+          'One or more of the following properties are not configured correctly for the program fsp configuration: brandCode, coverLetterCode, fundingTokenCode.',
+        );
+      }
 
       const isChildWalletLinkedToRegistration =
         await this.intersolveVisaChildWalletScopedRepository.hasLinkedChildWalletForRegistrationId(
