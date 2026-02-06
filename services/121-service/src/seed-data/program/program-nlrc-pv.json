@@ -172,7 +172,7 @@
         },
         {
           "name": "cardDistributionByMail",
-          "value": "false"
+          "value": "true"
         },
         {
           "name": "maxToSpendPerMonthInCents",

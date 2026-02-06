@@ -101,18 +101,9 @@ describe('Replace Visa debit card by mail', () => {
     );
   });
 
-  fit('should fail to replace a Visa debit card by mail if phonenumber is missing & successfully replace after phonenumber is updated again', async () => {
+  it('should fail to replace a Visa debit card by mail if phonenumber is missing & successfully replace after phonenumber is updated again', async () => {
     // Arrange
-    console.log("STARTING TEST")
     const programIdPv = 2;
-    await seedPaidRegistrations({
-      registrations: [registrationVisa],
-      programId: programIdPv,
-      completeStatuses: [TransactionStatusEnum.success],
-    });
-    console.log("SEEDED REGISTRATION")
-    const wrongPhoneNumber = '4534565434565434';
-    console.log("ONE")
     await patchProgramFspConfigurationProperty({
       programId: programIdPv,
       configName: Fsps.intersolveVisa,
@@ -120,7 +111,14 @@ describe('Replace Visa debit card by mail', () => {
       body: { value: true },
       accessToken,
     });
-    console.log("TWO")
+
+    await seedPaidRegistrations({
+      registrations: [registrationVisa],
+      programId: programIdPv,
+      completeStatuses: [TransactionStatusEnum.success],
+    });
+    const wrongPhoneNumber = '4534565434565434';
+
     await updateRegistration(
       programIdPv,
       registrationVisa.referenceId,
@@ -128,7 +126,7 @@ describe('Replace Visa debit card by mail', () => {
       'Set wrong phonenumber',
       accessToken,
     );
-    console.log("THREE")
+
     // Act
     const replaceVisaCardResponseAttempt1 = await replaceVisaCardByMail(
       programIdPv,
