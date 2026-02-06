@@ -2,7 +2,7 @@ import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/sh
 import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
 
 export const typeMap: Partial<
-  Record<FspConfigurationProperties, (value: string) => any>
+  Record<FspConfigurationProperties, (value: string) => boolean | number>
 > = {
   [FspConfigurationProperties.cardDistributionByMail]: (value) =>
     parseBoolean(value),
