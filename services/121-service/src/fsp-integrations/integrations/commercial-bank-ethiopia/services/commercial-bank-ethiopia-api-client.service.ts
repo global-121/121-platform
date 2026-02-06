@@ -10,21 +10,17 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
 
 @Injectable()
 export class CommercialBankEthiopiaApiClientService implements OnModuleDestroy {
-  private httpsAgent: https.Agent | undefined;
+  private httpsAgent: https.Agent;
 
   public constructor(private readonly httpService: CustomHttpService) {
     this.httpsAgent = this.createHttpsAgent();
   }
 
   onModuleDestroy(): void {
-    this.httpsAgent?.destroy();
+    this.httpsAgent.destroy();
   }
 
-  private createHttpsAgent(): https.Agent | undefined {
-    if (this.httpsAgent) {
-      return this.httpsAgent;
-    }
-
+  private createHttpsAgent(): https.Agent {
     const cbeConnectionConfig: https.AgentOptions = {
       // The connection with CBE can be unstable/unpredictable;
       // We want to reuse any open connections as much as possible, and reduce the chance of running into connection errors (ECONNRESET)
@@ -34,14 +30,14 @@ export class CommercialBankEthiopiaApiClientService implements OnModuleDestroy {
 
     if (
       env.COMMERCIAL_BANK_ETHIOPIA_MODE === FspMode.external &&
-      env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH
+      env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH // For the CBE Acceptance environment we do not use a certificate.
     ) {
       return this.httpService.createHttpsAgentWithSelfSignedCertificateOnly(
         env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH,
         cbeConnectionConfig,
       );
     }
-    // Use a 'default' https agent for non-production modes, without certificate
+    // Use a 'default' https agent for Mock mode and for CBE Acceptance environment, without certificate
     return new https.Agent(cbeConnectionConfig);
   }
 
