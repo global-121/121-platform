@@ -5,7 +5,6 @@ import { IntersolveVisaApiError } from '@121-service/src/fsp-integrations/integr
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
-import { ParsedFspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/types/parsed-fsp-configuration-properties';
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -176,9 +175,15 @@ export class TransactionJobsIntersolveVisaService {
 
   private async getIntersolveVisaFspConfig(
     programFspConfigurationId: number,
-  ): Promise<ParsedFspConfigurationProperties> {
-    return await this.programFspConfigurationRepository.getPropertiesByNamesTypedOrThrow(
-      {
+  ): Promise<{
+    brandCode: string;
+    coverLetterCode: string;
+    fundingTokenCode: string;
+    cardDistributionByMail: string;
+    maxToSpendPerMonthInCents: string;
+  }> {
+    const intersolveVisaConfig =
+      await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
         programFspConfigurationId,
         names: [
           FspConfigurationProperties.brandCode,
@@ -187,8 +192,24 @@ export class TransactionJobsIntersolveVisaService {
           FspConfigurationProperties.cardDistributionByMail,
           FspConfigurationProperties.maxToSpendPerMonthInCents,
         ],
-      },
-    );
+      });
+    return {
+      brandCode: intersolveVisaConfig.find(
+        (c) => c.name === FspConfigurationProperties.brandCode,
+      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+      coverLetterCode: intersolveVisaConfig.find(
+        (c) => c.name === FspConfigurationProperties.coverLetterCode,
+      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+      fundingTokenCode: intersolveVisaConfig.find(
+        (c) => c.name === FspConfigurationProperties.fundingTokenCode,
+      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+      cardDistributionByMail: intersolveVisaConfig.find(
+        (c) => c.name === FspConfigurationProperties.cardDistributionByMail,
+      )?.value as string,
+      maxToSpendPerMonthInCents: intersolveVisaConfig.find(
+        (c) => c.name === FspConfigurationProperties.maxToSpendPerMonthInCents,
+      )?.value as string,
+    };
   }
 
   private async updateTransferValue({ transactionId, value }) {

@@ -133,7 +133,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
     if (distributionByMailEnabled === undefined) {
       return true;
     }
-
+    console.log('🚀 ~ distributionByMailEnabled:', distributionByMailEnabled);
     return distributionByMailEnabled.value;
   });
 
