@@ -151,10 +151,7 @@ export class FspConfigurationService {
       existingFspConfiguration,
     });
 
-    if (
-      typeof columnsToExport !== 'string' ||
-      typeof columnToMatch !== 'string'
-    ) {
+    if (!Array.isArray(columnsToExport) || typeof columnToMatch !== 'string') {
       throw new Error(
         'Expected columnsToExport and columnToMatch to be of type string[] or string',
       );
