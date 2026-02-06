@@ -5,7 +5,6 @@ import { Equal, In, Repository } from 'typeorm';
 import { PublicFspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/consts/public-fsp-configuration-properties.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
-import { parseFspConfigurationPropertyValue } from '@121-service/src/fsp-integrations/shared/helpers/parse-fsp-configuration-value.helper';
 import { getFspConfigurationProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
@@ -388,11 +387,10 @@ export class ProgramFspConfigurationsService {
     return config;
   }
 
-  //TODO: fix any
   private async getProgramFspConfigurationPropertyOrThrow(
     programFspConfigurationId: number,
     propertyName: FspConfigurationProperties,
-  ): Promise<any /*ProgramFspConfigurationPropertyEntity*/> {
+  ): Promise<ProgramFspConfigurationPropertyEntity> {
     const property =
       await this.programFspConfigurationPropertyRepository.findOne({
         where: {
@@ -407,12 +405,7 @@ export class ProgramFspConfigurationsService {
       );
     }
 
-    const parsedValue = parseFspConfigurationPropertyValue({
-      name: property.name,
-      value: property.value,
-    });
-
-    return { ...property, value: parsedValue };
+    return property;
   }
 
   public async getFspConfigurationProperties(

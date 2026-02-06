@@ -1,4 +1,5 @@
 import {
+  AfterLoad,
   Column,
   Entity,
   JoinColumn,
@@ -9,6 +10,9 @@ import {
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { parseFspConfigurationPropertyValue } from '@121-service/src/fsp-integrations/shared/helpers/parse-fsp-configuration-value.helper';
+import { serializeFspConfigurationPropertyValue } from '@121-service/src/fsp-integrations/shared/helpers/serialize-fsp-configuration-value.helper';
+import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 
 @Unique('programFspConfigurationPropertyUnique', [
@@ -23,28 +27,24 @@ export class ProgramFspConfigurationPropertyEntity extends Base121Entity {
   @Column({
     type: 'varchar',
     transformer: {
-      to: (value: any) => {
-        if (Array.isArray(value)) {
-          return JSON.stringify(value);
-        }
-
-        return value;
+      to: (value: FspConfigurationPropertyType) => {
+        return serializeFspConfigurationPropertyValue(value);
       },
-      from: (value: any) => {
-        try {
-          const parsedValue = JSON.parse(value);
-          if (Array.isArray(parsedValue)) {
-            return parsedValue;
-          }
-
-          return value;
-        } catch (error) {
-          return value;
-        }
+      from: (value: string | string[]) => {
+        //parsing happens in AfterLoad
+        return value;
       },
     },
   })
-  public value: string | string[];
+  public value: FspConfigurationPropertyType;
+
+  @AfterLoad()
+  parseValue(): void {
+    this.value = parseFspConfigurationPropertyValue({
+      name: this.name,
+      value: this.value as string | string[],
+    });
+  }
 
   @ManyToOne(
     (_type) => ProgramFspConfigurationEntity,
@@ -53,6 +53,7 @@ export class ProgramFspConfigurationPropertyEntity extends Base121Entity {
   )
   @JoinColumn({ name: 'programFspConfigurationId' })
   public programFspConfiguration: Relation<ProgramFspConfigurationEntity>;
+
   @Column()
   public programFspConfigurationId: number;
 }

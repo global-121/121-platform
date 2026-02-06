@@ -3,9 +3,7 @@ import { Equal, Repository } from 'typeorm';
 
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
-import { parseFspConfigurationPropertyValue } from '@121-service/src/fsp-integrations/shared/helpers/parse-fsp-configuration-value.helper';
-import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
-import { ParsedFspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/types/parsed-fsp-configuration-properties';
+import { FspConfigurationProperty } from '@121-service/src/fsp-integrations/shared/interfaces/fsp-configuration-property.interface';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
 
@@ -113,39 +111,13 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
       ?.value;
   }
 
-  public async getPropertyValueByNameTypedOrThrow({
-    programFspConfigurationId,
-    name,
-  }: {
-    programFspConfigurationId: number;
-    name: FspConfigurationProperties;
-  }): Promise<FspConfigurationPropertyType> {
-    const value = await this.getPropertyValueByName({
-      programFspConfigurationId,
-      name,
-    });
-
-    if (value === undefined || value === null) {
-      throw new Error(
-        `Configuration with name ${name} not found for ProgramFspConfigurationEntity with id: ${programFspConfigurationId}`,
-      );
-    }
-
-    return parseFspConfigurationPropertyValue({
-      value,
-      name,
-    });
-  }
-
   public async getPropertiesByNamesOrThrow({
     programFspConfigurationId,
     names,
   }: {
     programFspConfigurationId: number;
     names: string[];
-  }): Promise<
-    { name: FspConfigurationProperties; value: string | string[] }[]
-  > {
+  }): Promise<FspConfigurationProperty[]> {
     const properties = await this.getProperties(programFspConfigurationId);
 
     for (const name of names) {
@@ -160,30 +132,6 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
       name: property.name,
       value: property.value,
     }));
-  }
-
-  public async getPropertiesByNamesTypedOrThrow({
-    programFspConfigurationId,
-    names,
-  }: {
-    programFspConfigurationId: number;
-    names: FspConfigurationProperties[];
-  }): Promise<ParsedFspConfigurationProperties> {
-    const properties = await this.getPropertiesByNamesOrThrow({
-      programFspConfigurationId,
-      names,
-    });
-
-    const result: ParsedFspConfigurationProperties = {};
-
-    for (const property of properties) {
-      result[property.name] = parseFspConfigurationPropertyValue({
-        value: property.value,
-        name: property.name,
-      });
-    }
-
-    return result;
   }
 
   private async getProperties(programFspConfigurationId: number) {
