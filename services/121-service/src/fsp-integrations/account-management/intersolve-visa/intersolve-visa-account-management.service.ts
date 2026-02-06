@@ -40,12 +40,10 @@ export class IntersolveVisaAccountManagementService {
       },
     );
     const maxToSpendPerMonthInCents =
-      await this.programFspConfigurationRepository.getPropertyValueByNameTypedOrThrow(
-        {
-          programFspConfigurationId: registration.programFspConfigurationId,
-          name: FspConfigurationProperties.maxToSpendPerMonthInCents,
-        },
-      );
+      await this.programFspConfigurationRepository.getPropertyValueByName({
+        programFspConfigurationId: registration.programFspConfigurationId,
+        name: FspConfigurationProperties.maxToSpendPerMonthInCents,
+      });
 
     if (typeof maxToSpendPerMonthInCents !== 'number') {
       throw new IntersolveVisaApiError(
@@ -71,12 +69,10 @@ export class IntersolveVisaAccountManagementService {
       },
     );
     const maxToSpendPerMonthInCents =
-      await this.programFspConfigurationRepository.getPropertyValueByNameTypedOrThrow(
-        {
-          programFspConfigurationId: registration.programFspConfigurationId,
-          name: FspConfigurationProperties.maxToSpendPerMonthInCents,
-        },
-      );
+      await this.programFspConfigurationRepository.getPropertyValueByName({
+        programFspConfigurationId: registration.programFspConfigurationId,
+        name: FspConfigurationProperties.maxToSpendPerMonthInCents,
+      });
 
     if (typeof maxToSpendPerMonthInCents !== 'number') {
       throw new IntersolveVisaApiError(
@@ -314,12 +310,10 @@ export class IntersolveVisaAccountManagementService {
     programFspConfigurationId: number,
   ): Promise<boolean> {
     const cardDistributionByMail =
-      await this.programFspConfigurationRepository.getPropertyValueByNameTypedOrThrow(
-        {
-          programFspConfigurationId,
-          name: FspConfigurationProperties.cardDistributionByMail,
-        },
-      );
+      await this.programFspConfigurationRepository.getPropertyValueByName({
+        programFspConfigurationId,
+        name: FspConfigurationProperties.cardDistributionByMail,
+      });
 
     if (typeof cardDistributionByMail !== 'boolean') {
       throw new IntersolveVisaApiError(
