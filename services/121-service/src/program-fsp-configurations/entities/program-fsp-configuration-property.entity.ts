@@ -42,7 +42,7 @@ export class ProgramFspConfigurationPropertyEntity extends Base121Entity {
   parseValue(): void {
     this.value = parseFspConfigurationPropertyValue({
       name: this.name,
-      value: this.value as string | string[],
+      value: this.value as string,
     });
   }
 

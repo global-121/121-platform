@@ -4,7 +4,7 @@ export function serializeFspConfigurationPropertyValue(
   value: FspConfigurationPropertyType,
 ): string | string[] {
   if (Array.isArray(value)) {
-    return value;
+    return JSON.stringify(value);
   }
 
   if (typeof value === 'string') {
