@@ -4,6 +4,7 @@ import { Equal, Repository } from 'typeorm';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { parseFspConfigurationPropertyValue } from '@121-service/src/fsp-integrations/shared/helpers/parse-fsp-configuration-value.helper';
+import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
 import { ParsedFspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/types/parsed-fsp-configuration-properties';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
@@ -118,7 +119,7 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
   }: {
     programFspConfigurationId: number;
     name: FspConfigurationProperties;
-  }): Promise<any> {
+  }): Promise<FspConfigurationPropertyType> {
     const value = await this.getPropertyValueByName({
       programFspConfigurationId,
       name,
