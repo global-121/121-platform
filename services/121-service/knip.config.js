@@ -13,6 +13,7 @@ module.exports = {
     // Known issues with devDependencies:
     '@automock/adapters.nestjs', // Auto-loaded by @automock/jest
     '@compodoc/compodoc', // Only used 'manually', see README.md
+    'eslint-plugin-custom-rules', // Local plugin imported via file path in eslint.config.mjs, not detected by Knip
   ],
   rules: {
     binaries: 'error',
