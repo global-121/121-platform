@@ -6,11 +6,9 @@ describe('Form Validation Utils', () => {
   describe('generateFieldErrors', () => {
     const formGroup = new FormGroup({
       required: new FormControl('', {
-        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
         validators: [Validators.required],
       }),
       email: new FormControl('invalid-email', {
-        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
         validators: [Validators.email],
       }),
       minLength: new FormControl('a', {
@@ -28,7 +26,6 @@ describe('Form Validation Utils', () => {
       untouchedButRequired: new FormControl<string | undefined>(
         { value: undefined, disabled: false },
         {
-          // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
           validators: [Validators.required],
         },
       ),
