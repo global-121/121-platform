@@ -1,51 +1,37 @@
-import { test } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import CbeProgram from '@121-service/src/seed-data/program/program-cbe.json';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
 import {
   programIdCbe,
   registrationsCbe,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
-import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.cbeProgram, __filename);
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   // Full name is set to 'error' to create a failed payment
   registrationsCbe[0].fullName = 'error';
-  const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsCbe, programIdCbe, accessToken);
 
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.cbeProgram,
+    registrations: registrationsCbe,
+    programId: programIdCbe,
+    navigateToPage: `/en-GB/program/${programIdCbe}/payments`,
+  });
 });
 
-test('Do failed payment for Cbe fsp', async ({ page }) => {
-  const paymentPage = new PaymentPage(page);
-  const paymentsPage = new PaymentsPage(page);
-  const programTitle = CbeProgram.titlePortal.en;
+test('Do failed payment for Cbe fsp', async ({
+  page,
+  paymentPage,
+  paymentsPage,
+}) => {
   const numberOfPas = registrationsCbe.length;
   const defaultTransferValue = CbeProgram.fixedTransferValue;
   const defaultMaxTransferValue = registrationsCbe.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
-
-  await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(programTitle);
-
-    await paymentsPage.navigateToProgramPage('Payments');
-  });
 
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});
