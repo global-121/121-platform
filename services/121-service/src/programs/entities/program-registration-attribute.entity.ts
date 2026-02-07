@@ -15,7 +15,7 @@ import { RegistrationAttributeDataEntity } from '@121-service/src/registration/e
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { NameConstraintQuestions } from '@121-service/src/shared/const';
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
-import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
+import { RegistrationPreferredLanguageTranslation } from '@121-service/src/shared/types/registration-preferred-language-translation.type';
 
 @Unique('programAttributeUnique', ['name', 'programId'])
 @Check(`"name" NOT IN (${NameConstraintQuestions})`)
@@ -25,7 +25,7 @@ export class ProgramRegistrationAttributeEntity extends Base121Entity {
   public name: string;
 
   @Column('json')
-  public label: UILanguageTranslation;
+  public label: RegistrationPreferredLanguageTranslation;
 
   @Column({ type: 'character varying' })
   public type: RegistrationAttributeTypes;
@@ -34,7 +34,7 @@ export class ProgramRegistrationAttributeEntity extends Base121Entity {
   public isRequired: boolean;
 
   @Column('json', { nullable: true })
-  public placeholder: UILanguageTranslation | null;
+  public placeholder: RegistrationPreferredLanguageTranslation | null;
 
   @Column('json', { nullable: true })
   public options: QuestionOption[] | null;
@@ -71,6 +71,6 @@ export class ProgramRegistrationAttributeEntity extends Base121Entity {
   )
   public registrationAttributeData: Relation<RegistrationAttributeDataEntity[]>;
 
-  @Column({ default: false })
+  @Column({ default: true })
   public editableInPortal: boolean;
 }
