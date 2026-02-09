@@ -36,7 +36,7 @@ const updateProgramFspConfigurationDto: UpdateProgramFspConfigurationDto = {
   properties: [
     {
       name: FspConfigurationProperties.cardDistributionByMail,
-      value: 'false',
+      value: false,
     },
     {
       name: FspConfigurationProperties.brandCode,

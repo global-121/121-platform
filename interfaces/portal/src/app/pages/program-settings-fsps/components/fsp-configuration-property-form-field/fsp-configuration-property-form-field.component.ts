@@ -11,7 +11,7 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
-import { ToggleSwitch } from 'primeng/toggleswitch';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 
@@ -29,7 +29,7 @@ import { FspConfigurationService } from '~/services/fsp-configuration.service';
     MultiSelectModule,
     SelectModule,
     InputTextModule,
-    ToggleSwitch,
+    ToggleSwitchModule,
   ],
   templateUrl: './fsp-configuration-property-form-field.component.html',
   styles: ``,
