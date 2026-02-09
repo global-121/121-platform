@@ -79,7 +79,7 @@ describe('Intersolve Voucher Controller', () => {
       expect(getVoucherResponse.body.length).toBeGreaterThan(0);
     });
 
-    it('should return 403 for invalid payment', async () => {
+    it('should return 404 for non-existent payment', async () => {
       // Arrange
       registrationPV5.programFspConfigurationName = Fsps.intersolveVoucherPaper;
       await importRegistrations(programIdPV, [registrationPV5], accessToken);
