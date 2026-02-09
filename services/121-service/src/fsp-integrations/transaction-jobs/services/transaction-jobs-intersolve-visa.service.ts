@@ -105,7 +105,7 @@ export class TransactionJobsIntersolveVisaService {
         typeof cardDistributionByMail !== 'boolean'
       ) {
         throw new IntersolveVisaApiError(
-          'One or more of the following properties are not configured correctly for the program fsp configuration: brandCode, coverLetterCode, fundingTokenCode.',
+          'One or more of the following properties are not configured correctly for the program fsp configuration: brandCode, coverLetterCode, fundingTokenCode or cardDistributionByMail.',
         );
       }
 
