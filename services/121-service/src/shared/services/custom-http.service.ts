@@ -320,6 +320,11 @@ export class CustomHttpService {
 
     return new https.Agent({
       ca: certificate,
+      // // Node.js 24+ has stricter TLS defaults that reject weak keys (e.g., RSA 1024-bit).
+      // // Lower the minimum TLS version and security level to allow legacy/weak certificates
+      // // from external services that we cannot control.
+      minVersion: 'TLSv1',
+      secureOptions: 0, // Disable all security restrictions to allow weak keys
       ...extraOpts,
     });
   }
