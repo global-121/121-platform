@@ -128,7 +128,7 @@ describe('ProgramFspConfigurationMapper', () => {
       expect(entity.value).toBe(dto.value);
     });
 
-    it('should correctly handle columnsToExport as an array and convert to JSON string', () => {
+    it('should correctly handle columnsToExport as an array', () => {
       // Arrange
       const dto: CreateProgramFspConfigurationPropertyDto = {
         name: FspConfigurationProperties.columnsToExport,
@@ -146,7 +146,7 @@ describe('ProgramFspConfigurationMapper', () => {
       // Assert
       expect(entity.name).toBe(dto.name);
       expect(entity.programFspConfigurationId).toBe(programFspConfigurationId);
-      expect(entity.value).toBe(JSON.stringify(dto.value)); // Expect value to be JSON string
+      expect(entity.value).toBe(dto.value);
     });
   });
 });
