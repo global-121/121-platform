@@ -27,7 +27,7 @@ describe('CommercialBankEthiopiaApiClientService', () => {
         {
           provide: CustomHttpService,
           useValue: {
-            createHttpsAgentWithSelfSignedCertificateOnly: jest.fn(),
+            createHttpsAgentWithWeakSelfSignedCertificateOnly: jest.fn(),
             logMessageRequest: jest.fn(),
             logErrorRequest: jest.fn(),
           },
@@ -53,8 +53,8 @@ describe('CommercialBankEthiopiaApiClientService', () => {
 
       // Assert
       expect(
-        httpService.createHttpsAgentWithSelfSignedCertificateOnly,
-      ).not.toHaveBeenCalled(); // Unfortunately we can't directly check the creation of the default https.Agent since it's private and we therefore have to test the internal working of this method to see if createHttpsAgentWithSelfSignedCertificateOnly is called or not
+        httpService.createHttpsAgentWithWeakSelfSignedCertificateOnly,
+      ).not.toHaveBeenCalled(); // Unfortunately we can't directly check the creation of the default https.Agent since it's private and we therefore have to test the internal working of this method to see if createHttpsAgentWithWeakSelfSignedCertificateOnly is called or not
     });
 
     it('should create an HTTPS agent with certificate when mode is external and certificate path is provided', () => {
@@ -65,7 +65,7 @@ describe('CommercialBankEthiopiaApiClientService', () => {
       (env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH as any) = certificatePath;
 
       jest
-        .spyOn(httpService, 'createHttpsAgentWithSelfSignedCertificateOnly')
+        .spyOn(httpService, 'createHttpsAgentWithWeakSelfSignedCertificateOnly')
         .mockReturnValue(mockAgent);
 
       // Act - createHttpsAgent is called in constructor
@@ -73,8 +73,8 @@ describe('CommercialBankEthiopiaApiClientService', () => {
 
       // Assert
       expect(
-        httpService.createHttpsAgentWithSelfSignedCertificateOnly,
-      ).toHaveBeenCalledWith(certificatePath, { keepAlive: true }); // Unfortunately we can't directly check the creation of the default https.Agent since it's private and we therefore have to test the internal working of this method to see if createHttpsAgentWithSelfSignedCertificateOnly is called or not
+        httpService.createHttpsAgentWithWeakSelfSignedCertificateOnly,
+      ).toHaveBeenCalledWith(certificatePath, { keepAlive: true }); // Unfortunately we can't directly check the creation of the default https.Agent since it's private and we therefore have to test the internal working of this method to see if createHttpsAgentWithWeakSelfSignedCertificateOnly is called or not
     });
 
     it('should create a default HTTPS agent when mode is external but certificate path is not provided', () => {
@@ -89,8 +89,8 @@ describe('CommercialBankEthiopiaApiClientService', () => {
 
       // Assert
       expect(
-        httpService.createHttpsAgentWithSelfSignedCertificateOnly,
-      ).not.toHaveBeenCalled(); // Unfortunately we can't directly check the creation of the default https.Agent since it's private and we therefore have to test the internal working of this method to see if createHttpsAgentWithSelfSignedCertificateOnly is called or not
+        httpService.createHttpsAgentWithWeakSelfSignedCertificateOnly,
+      ).not.toHaveBeenCalled(); // Unfortunately we can't directly check the creation of the default https.Agent since it's private and we therefore have to test the internal working of this method to see if createHttpsAgentWithWeakSelfSignedCertificateOnly is called or not
     });
   });
 });

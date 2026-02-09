@@ -96,7 +96,7 @@ describe('CommercialBankEthiopiaApiService', () => {
           provide: CustomHttpService,
           useValue: {
             request: jest.fn(),
-            createHttpsAgentWithSelfSignedCertificateOnly: jest.fn(),
+            createHttpsAgentWithWeakSelfSignedCertificateOnly: jest.fn(),
           },
         },
       ],
