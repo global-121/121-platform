@@ -250,6 +250,20 @@ describe('FspConfigurationService', () => {
         ),
       ).toBe('select-attributes-multiple');
     });
+    it('should return toggle-switch for cardDistributionByMail', () => {
+      expect(
+        service.getPropertyFieldType(
+          FspConfigurationProperties.cardDistributionByMail,
+        ),
+      ).toBe('toggle-switch');
+    });
+    it('should return number-input for maxToSpendPerMonthInCents', () => {
+      expect(
+        service.getPropertyFieldType(
+          FspConfigurationProperties.maxToSpendPerMonthInCents,
+        ),
+      ).toBe('number-input');
+    });
     it('should default to string for other properties', () => {
       expect(
         service.getPropertyFieldType(FspConfigurationProperties.brandCode),
