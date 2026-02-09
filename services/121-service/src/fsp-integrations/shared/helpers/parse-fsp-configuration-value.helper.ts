@@ -1,15 +1,6 @@
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
 
-export const typeMap: Partial<
-  Record<FspConfigurationProperties, (value: string) => boolean | number>
-> = {
-  [FspConfigurationProperties.cardDistributionByMail]: (value) =>
-    parseBoolean(value),
-  [FspConfigurationProperties.maxToSpendPerMonthInCents]: (value) =>
-    parseNumber(value),
-};
-
 export function parseFspConfigurationPropertyValue({
   name,
   value,
@@ -33,6 +24,15 @@ export function parseFspConfigurationPropertyValue({
     return value;
   }
 }
+
+const typeMap: Partial<
+  Record<FspConfigurationProperties, (value: string) => boolean | number>
+> = {
+  [FspConfigurationProperties.cardDistributionByMail]: (value) =>
+    parseBoolean(value),
+  [FspConfigurationProperties.maxToSpendPerMonthInCents]: (value) =>
+    parseNumber(value),
+};
 
 const parseNumber = (value: string): number => {
   const parsedNumber = Number(value);
