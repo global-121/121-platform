@@ -40,7 +40,6 @@ export const customSharedFixture = base.extend<Fixtures>({
       programId: number;
       navigateToPage?: string;
     }): Promise<{ accessToken: string }> => {
-      // Logic to reset the database and seed registrations
       const nameOfFileContainingTest = testInfo.file;
       // Logic to reset the database and seed registrations
       await resetDB(params.seedScript, nameOfFileContainingTest);
@@ -50,12 +49,10 @@ export const customSharedFixture = base.extend<Fixtures>({
         params.programId,
         accessToken,
       );
-
       // Login
       const loginPage = new LoginPage(page);
       await page.goto('/');
       await loginPage.login();
-
       // Optionally navigate to a specific page after login
       if (params.navigateToPage) {
         await page.goto(params.navigateToPage);
