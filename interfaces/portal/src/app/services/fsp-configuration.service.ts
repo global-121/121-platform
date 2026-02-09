@@ -206,6 +206,23 @@ export class FspConfigurationService {
       existingPropertyValue = existingPropertyValue ?? [];
     }
 
-    return existingPropertyValue ?? '';
+    return (
+      existingPropertyValue ?? this.getDefaultValueForProperty(propertyName)
+    );
+  }
+
+  private getDefaultValueForProperty(
+    propertyName: FspConfigurationProperties,
+  ): FspConfigurationPropertyType {
+    if (propertyName === FspConfigurationProperties.columnsToExport) {
+      return [];
+    }
+    if (propertyName === FspConfigurationProperties.cardDistributionByMail) {
+      return true;
+    }
+    if (propertyName === FspConfigurationProperties.maxToSpendPerMonthInCents) {
+      return 0;
+    }
+    return '';
   }
 }

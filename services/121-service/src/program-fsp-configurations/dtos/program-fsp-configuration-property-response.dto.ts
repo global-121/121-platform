@@ -7,7 +7,13 @@ export class ProgramFspConfigurationPropertyResponseDto {
   @ApiProperty({ example: 'username' })
   public readonly name: FspConfigurationProperties;
 
-  @ApiProperty({ example: 'RC01' })
+  @ApiProperty({
+    oneOf: [
+      { type: 'string', example: 'RC01' },
+      { type: 'number', example: 1 },
+      { type: 'boolean', example: true },
+    ],
+  })
   public readonly value?: FspConfigurationPropertyType;
 
   @ApiProperty({ example: new Date() })

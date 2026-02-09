@@ -95,7 +95,6 @@ export class ProgramFspConfigurationsService {
     return ProgramFspConfigurationMapper.mapEntityToDto(savedEntity);
   }
 
-  //TODO:
   public async update(
     programId: number,
     name: string,
@@ -268,7 +267,6 @@ export class ProgramFspConfigurationsService {
     }
   }
 
-  //TODO:
   public async updateProperty({
     programId,
     name: name,
@@ -292,11 +290,7 @@ export class ProgramFspConfigurationsService {
         propertyName,
       );
 
-    existingProperty.value =
-      ProgramFspConfigurationMapper.mapPropertyDtoValueToEntityValue(
-        property.value,
-        existingProperty.name,
-      );
+    existingProperty.value = property.value;
 
     const savedProperty =
       await this.programFspConfigurationPropertyRepository.save(
@@ -343,7 +337,6 @@ export class ProgramFspConfigurationsService {
     );
   }
 
-  //TODO:
   private async overwriteProperties(
     programFspConfigurationId: number,
     properties: CreateProgramFspConfigurationPropertyDto[],

@@ -101,7 +101,8 @@ export class TransactionJobsIntersolveVisaService {
       if (
         typeof brandCode !== 'string' ||
         typeof coverLetterCode !== 'string' ||
-        typeof fundingTokenCode !== 'string'
+        typeof fundingTokenCode !== 'string' ||
+        typeof cardDistributionByMail !== 'boolean'
       ) {
         throw new IntersolveVisaApiError(
           'One or more of the following properties are not configured correctly for the program fsp configuration: brandCode, coverLetterCode, fundingTokenCode.',

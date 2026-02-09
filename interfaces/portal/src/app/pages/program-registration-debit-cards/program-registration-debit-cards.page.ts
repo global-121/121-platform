@@ -17,6 +17,7 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 
 import { VisaCardAction } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-action.enum';
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { FspConfigurationProperty } from '@121-service/src/fsp-integrations/shared/interfaces/fsp-configuration-property.interface';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
@@ -29,7 +30,6 @@ import { FormDialogComponent } from '~/components/form-dialog/form-dialog.compon
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
 import { IntersolveVisaApiService } from '~/domains/fsp-account-management/intersolve-visa.api.service';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
-import { IntersolveVisaFspConfigurationProperties } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { LinkCardDialogComponent } from '~/pages/program-registration-debit-cards/components/link-card-on-site-dialog/link-card-dialog.component';
@@ -127,13 +127,11 @@ export class ProgramRegistrationDebitCardsPageComponent {
 
     const distributionByMailEnabled = props.find(
       (property) =>
-        property.name ===
-        (IntersolveVisaFspConfigurationProperties.cardDistributionByMail as string),
+        property.name === FspConfigurationProperties.cardDistributionByMail,
     );
     if (distributionByMailEnabled === undefined) {
       return true;
     }
-    console.log('🚀 ~ distributionByMailEnabled:', distributionByMailEnabled);
     return distributionByMailEnabled.value;
   });
 
