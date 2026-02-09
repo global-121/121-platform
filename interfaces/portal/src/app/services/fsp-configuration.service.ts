@@ -117,12 +117,21 @@ export class FspConfigurationService {
 
   getPropertyFieldType(
     propertyName: 'displayName' | FspConfigurationProperties,
-  ): 'select-attribute' | 'select-attributes-multiple' | 'string' {
+  ):
+    | 'number-input'
+    | 'select-attribute'
+    | 'select-attributes-multiple'
+    | 'string'
+    | 'toggle-switch' {
     switch (propertyName) {
       case FspConfigurationProperties.columnToMatch:
         return 'select-attribute';
       case FspConfigurationProperties.columnsToExport:
         return 'select-attributes-multiple';
+      case FspConfigurationProperties.cardDistributionByMail:
+        return 'toggle-switch';
+      case FspConfigurationProperties.maxToSpendPerMonthInCents:
+        return 'number-input';
       default:
         return 'string';
     }

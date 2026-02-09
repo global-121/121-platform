@@ -30,6 +30,15 @@
       [filter]="true"
       [showClear]="false"
     />
+  } @else if (fieldType() === 'toggle-switch') {
+    <p-toggle-switch [formControlName]="fspFormField().name" />
+  } @else if (fieldType() === 'number-input') {
+    <input
+      pInputText
+      type="number"
+      [formControlName]="fspFormField().name"
+      autocomplete="off"
+    />
   } @else {
     <input
       pInputText
