@@ -25,7 +25,7 @@ export function getServer(): TestAgent<request.Test> {
 
 export function resetDB(
   seedScript: SeedScript,
-  resetIdentifier?: string,
+  resetIdentifier: string,
   includeRegistrationEvents = false,
   approverMode?: ApproverSeedMode,
 ): Promise<request.Response> {
