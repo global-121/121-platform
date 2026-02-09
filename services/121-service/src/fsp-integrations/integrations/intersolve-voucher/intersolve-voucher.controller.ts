@@ -22,7 +22,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
-import stream from 'node:stream';
 
 import { IdentifyVoucherDto } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/dto/identify-voucher.dto';
 import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
@@ -30,6 +29,7 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { IMAGE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { sendImageResponse } from '@121-service/src/utils/send-image-response.helper';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('fsps/intersolve-voucher')
@@ -66,7 +66,7 @@ export class IntersolveVoucherController {
       programId,
     );
 
-    this.sendImageResponse(blob, response);
+    sendImageResponse(blob, response);
   }
 
   @AuthenticatedUser({
@@ -96,7 +96,7 @@ export class IntersolveVoucherController {
       programId,
     );
 
-    this.sendImageResponse(blob, response);
+    sendImageResponse(blob, response);
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentREAD] })
@@ -140,16 +140,7 @@ export class IntersolveVoucherController {
     programId: number,
   ): Promise<void> {
     const blob = await this.intersolveVoucherService.getInstruction(programId);
-    this.sendImageResponse(blob, response);
-  }
-
-  private sendImageResponse(blob: string, response: Response): void {
-    const bufferStream = new stream.PassThrough();
-    bufferStream.end(Buffer.from(blob, 'binary'));
-    response.writeHead(HttpStatus.OK, {
-      'Content-Type': 'image/png',
-    });
-    bufferStream.pipe(response);
+    sendImageResponse(blob, response);
   }
 
   @AuthenticatedUser({ isAdmin: true })
