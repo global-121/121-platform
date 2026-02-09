@@ -37,7 +37,7 @@ const typeMap: Partial<
 const parseNumber = (value: string): number => {
   const parsedNumber = Number(value);
 
-  if (isNaN(parsedNumber)) {
+  if (isNaN(parsedNumber) || value.trim() === '') {
     throw new Error(`Cannot parse value "${value}" as number`);
   }
 
