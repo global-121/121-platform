@@ -278,8 +278,6 @@ export class ProgramFspConfigurationsService {
     propertyName: FspConfigurationProperties;
     property: UpdateProgramFspConfigurationPropertyDto;
   }): Promise<ProgramFspConfigurationPropertyResponseDto> {
-    //expect config with string or string[] as prop values, which we can expect if serialized correctly
-    //we need to serialize the property!
     const config = await this.getProgramFspConfigurationOrThrow(
       programId,
       name,
@@ -397,7 +395,6 @@ export class ProgramFspConfigurationsService {
         HttpStatus.NOT_FOUND,
       );
     }
-
     return property;
   }
 
