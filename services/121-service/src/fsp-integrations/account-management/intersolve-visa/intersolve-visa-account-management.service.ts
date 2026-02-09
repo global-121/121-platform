@@ -317,7 +317,7 @@ export class IntersolveVisaAccountManagementService {
 
     if (typeof cardDistributionByMail !== 'boolean') {
       throw new IntersolveVisaApiError(
-        'maxToSpendPerMonthInCents is not configured correctly for the program fsp configuration.',
+        'cardDistributionByMail is not configured correctly for the program fsp configuration.',
       );
     }
 

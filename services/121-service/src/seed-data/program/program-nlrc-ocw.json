@@ -145,11 +145,11 @@
         },
         {
           "name": "cardDistributionByMail",
-          "value": "true"
+          "value": true
         },
         {
           "name": "maxToSpendPerMonthInCents",
-          "value": "15000"
+          "value": 15000
         }
       ]
     }
