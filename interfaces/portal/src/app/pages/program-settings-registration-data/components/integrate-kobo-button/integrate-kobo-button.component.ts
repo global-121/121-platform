@@ -11,6 +11,7 @@ import {
 import {
   FormControl,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -20,8 +21,12 @@ import {
   injectQuery,
 } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { PanelModule } from 'primeng/panel';
 import { PasswordModule } from 'primeng/password';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { EllipsisMenuComponent } from '~/components/ellipsis-menu/ellipsis-menu.component';
@@ -38,13 +43,18 @@ type KoboConfigurationFormGroup =
 @Component({
   selector: 'app-integrate-kobo-button',
   imports: [
+    DialogModule,
     FormDialogComponent,
     FormFieldWrapperComponent,
     InputTextModule,
     PasswordModule,
+    ButtonModule,
+    FormsModule,
     ReactiveFormsModule,
+    ToggleSwitchModule,
     CardWithLinkComponent,
     ManualLinkComponent,
+    PanelModule,
     EllipsisMenuComponent,
     DatePipe,
   ],
@@ -148,15 +158,14 @@ export class IntegrateKoboButtonComponent {
 
   readonly isKoboIntegrated = computed<boolean>(() => {
     if (!this.koboIntegration.isSuccess()) {
+      console.log('🚀 ~ IntegrateKoboButtonComponent ~ false:');
       return false;
     }
     const data = this.koboIntegration.data();
+    console.log('🚀 ~ IntegrateKoboButtonComponent ~ data:', data);
+
     return data.versionId ? true : false;
   });
-
-  readonly titleColoredChipLabel = computed(() =>
-    this.isKoboIntegrated() ? $localize`Linked` : undefined,
-  );
 
   readonly cardSubtitle = computed(() =>
     this.isKoboIntegrated()
@@ -166,7 +175,7 @@ export class IntegrateKoboButtonComponent {
 
   readonly menuItems = computed<MenuItem[]>(() => [
     {
-      label: $localize`Reconfigure`,
+      label: 'Reconfigure',
       icon: 'pi pi-pencil',
       command: () => {
         this.koboConfigurationDialog().show();

@@ -2090,66 +2090,6 @@
       <trans-unit id="2800411489772677471" datatype="html">
         <source>Fill up all 19 digits to link card</source>
       </trans-unit>
-      <trans-unit id="1714518910559654498" datatype="html">
-        <source>Approve payment</source>
-      </trans-unit>
-      <trans-unit id="4207014437413577720" datatype="html">
-        <source>Start payment</source>
-      </trans-unit>
-      <trans-unit id="4605701201545136761" datatype="html">
-        <source>Click start payment to initiate the payment through your FSP(s).</source>
-      </trans-unit>
-      <trans-unit id="5558547280081275233" datatype="html">
-        <source>Approvals</source>
-      </trans-unit>
-      <trans-unit id="6722480348579256749" datatype="html">
-        <source>Payment approved successfully.</source>
-      </trans-unit>
-      <trans-unit id="7006682445961797483" datatype="html">
-        <source><x equiv-text="approvedCount.length" id="PH"/> of <x equiv-text="totalCount" id="PH_1"/> approved</source>
-      </trans-unit>
-      <trans-unit id="8409002705238592127" datatype="html">
-        <source>Review summary and approve payment. The payment can only be started once all needed users approve the payment.</source>
-      </trans-unit>
-      <trans-unit id="8708938501870841219" datatype="html">
-        <source>Approval flow</source>
-      </trans-unit>
-      <trans-unit id="5677475450475961620" datatype="html">
-        <source><x equiv-text="label" id="PH"/> payment</source>
-      </trans-unit>
-      <trans-unit id="2717935367210661025" datatype="html">
-        <source><x equiv-text="label" id="PH"/> payment (<x equiv-text="order" id="PH_1"/> of <x equiv-text="total" id="PH_2"/>). Note: <x equiv-text="event.attributes.note" id="PH_3"/></source>
-      </trans-unit>
-      <trans-unit id="7617906385730294527" datatype="html">
-        <source><x equiv-text="label" id="PH"/> payment (<x equiv-text="order" id="PH_1"/> of <x equiv-text="total" id="PH_2"/>)</source>
-      </trans-unit>
-      <trans-unit id="approverDeleted" datatype="html">
-        <source>Approver deleted. Create new payment.</source>
-      </trans-unit>
-      <trans-unit id="2993213000622028040" datatype="html">
-        <source>Max amount to spend per month (in cents)</source>
-      </trans-unit>
-      <trans-unit id="3727324658595204357" datatype="html">
-        <source>Created: <x equiv-text="{{ paymentCreationDate() }}" id="INTERPOLATION"/></source>
-      </trans-unit>
-      <trans-unit id="6633756087010559608" datatype="html">
-        <source>Visa card linked successfully.</source>
-      </trans-unit>
-      <trans-unit id="5189461683300981166" datatype="html">
-        <source>You&apos;re about to unpause debit card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>.</source>
-      </trans-unit>
-      <trans-unit id="5420760055917675082" datatype="html">
-        <source>You&apos;re about to replace debit card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>. This will block the current card and a new card will be issued.</source>
-      </trans-unit>
-      <trans-unit id="8900867446691163282" datatype="html">
-        <source>You&apos;re about to pause debit card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>.</source>
-      </trans-unit>
-      <trans-unit id="debit-card-actions-request-new-card" datatype="html">
-        <source>Request new card</source>
-      </trans-unit>
-      <trans-unit id="generic-error-unknown" datatype="html">
-        <source>Something went wrong</source>
-      </trans-unit>
       <trans-unit id="1419676661357831374" datatype="html">
         <source>Registration data</source>
       </trans-unit>
@@ -2186,17 +2126,14 @@
       <trans-unit id="7466544001784367462" datatype="html">
         <source>Kobo Toolbox is already integrated</source>
       </trans-unit>
+      <trans-unit id="8044670304293704178" datatype="html">
+        <source>Link to form</source>
+      </trans-unit>
       <trans-unit id="8153112678957419197" datatype="html">
         <source>Error while integrating Kobo form</source>
       </trans-unit>
       <trans-unit id="page-title-program-settings-registration-data" datatype="html">
         <source>Registration data</source>
-      </trans-unit>
-      <trans-unit id="3099882906994173432" datatype="html">
-        <source>Linked</source>
-      </trans-unit>
-      <trans-unit id="generic-continue" datatype="html">
-        <source>Continue</source>
       </trans-unit>
     </body>
   </file>

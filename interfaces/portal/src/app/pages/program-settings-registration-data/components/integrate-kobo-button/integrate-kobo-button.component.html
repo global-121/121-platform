@@ -1,8 +1,8 @@
 <app-card-with-link
   title="Kobo toolbox"
-  i18n-title
-  [titleColoredChipLabel]="titleColoredChipLabel()"
+  [titleColoredChipLabel]="isKoboIntegrated() ? 'Linked' : undefined"
   [titleColoredChipColor]="'green'"
+  i18n-title
   (cardClicked)="
     isKoboIntegrated() ? undefined : koboConfigurationDialog.show()
   "
@@ -15,14 +15,11 @@
       <app-ellipsis-menu [menuItems]="menuItems()" />
 
       <a
+        i18n
         [href]="koboIntegration.data()?.url"
-        [rel]="'external'"
-        target="_blank"
-        title="Opens in a new window"
-        i18n-title="@@generic-opens-in-new-window"
-        class="inline-block [&_span:first-child]:underline hover:[&_span:first-child]:no-underline focus:[&_span:first-child]:no-underline"
-        ><span>{{ koboIntegration.data()?.url }}</span>
-        <span class="p-button-icon pi pi-external-link ms-1 text-sm"></span>
+        class="underline"
+      >
+        Link to form
       </a>
     }
   </ng-container>
@@ -81,9 +78,10 @@
     [errorMessage]="koboConfigurationFormFieldErrors()('token')"
   >
     <p-password
-      autocomplete="off"
+      autocomplete="one-time-code"
       [toggleMask]="true"
       [feedback]="false"
+      type="text"
       formControlName="token"
     />
   </app-form-field-wrapper>
@@ -97,7 +95,7 @@
   [mutation]="linkKoboMutation"
   [mutationData]="undefined"
   proceedLabel="Continue"
-  i18n-proceedLabel="@@generic-continue"
+  i18n-proceedLabel
 >
   <p>{{ koboFormName() }}</p>
 </app-form-dialog>

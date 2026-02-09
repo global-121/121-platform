@@ -1,10 +1,12 @@
-import { Injectable, Signal } from '@angular/core';
+import { inject, Injectable, Signal } from '@angular/core';
 
 import { CreateKoboDto } from '@121-service/src/kobo/dtos/create-kobo.dto';
 import { KoboIntegrationResultDto } from '@121-service/src/kobo/dtos/kobo-integration-result.dto';
+// import { KoboIntegration } from '~/domains/kobo/kobo.model';
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
+import { ProgramApiService } from '~/domains/program/program.api.service';
 import { Dto } from '~/utils/dto-type';
 
 const BASE_ENDPOINT = (programId: Signal<number | string>) => [
@@ -17,9 +19,12 @@ const BASE_ENDPOINT = (programId: Signal<number | string>) => [
   providedIn: 'root',
 })
 export class KoboApiService extends DomainApiService {
+  readonly programApiService = inject(ProgramApiService);
+
   getKoboIntegration(programId: Signal<number | string>) {
     return this.generateQueryOptions<KoboResponseDto>({
       path: BASE_ENDPOINT(programId),
+      queryKey: this.pathToQueryKey(BASE_ENDPOINT(programId)),
     });
   }
 
@@ -41,6 +46,16 @@ export class KoboApiService extends DomainApiService {
       httpParams: {
         dryRun,
       },
+    });
+  }
+
+  importKoboSubmissions({ projectId }: { projectId: Signal<number | string> }) {
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'PUT',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(projectId),
+        'submissions',
+      ]).join('/'),
     });
   }
 }
