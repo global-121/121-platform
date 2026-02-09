@@ -10,7 +10,3 @@ export interface FspFormField {
   isRequired: boolean;
   isSensitive: boolean;
 }
-
-export enum IntersolveVisaFspConfigurationProperties {
-  cardDistributionByMail = 'cardDistributionByMail',
-}
