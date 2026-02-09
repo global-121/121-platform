@@ -166,6 +166,8 @@ describe('IntersolveVisaAccountManagementService', () => {
         programFspConfigurationRepository.getPropertyValueByName as jest.Mock
       ).mockImplementation(async ({ name }) => {
         if (name === FspConfigurationProperties.brandCode) return 'BRAND';
+        if (name === FspConfigurationProperties.cardDistributionByMail)
+          return false;
         return undefined;
       });
 

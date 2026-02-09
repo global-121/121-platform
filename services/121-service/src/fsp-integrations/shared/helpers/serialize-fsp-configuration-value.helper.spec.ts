@@ -25,9 +25,8 @@ describe('serializeFspConfigurationPropertyValue', () => {
   });
 
   it('should return string array as-is', () => {
-    expect(serializeFspConfigurationPropertyValue(['a', 'b'])).toEqual([
-      'a',
-      'b',
-    ]);
+    expect(serializeFspConfigurationPropertyValue(['a', 'b'])).toBe(
+      '["a","b"]',
+    );
   });
 });
