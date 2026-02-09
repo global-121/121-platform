@@ -17,7 +17,6 @@ import { AnyValidBody } from '@121-service/src/registration/validators/any-valid
 
 @ApiTags('fsps/safaricom')
 @Controller('fsps/safaricom')
-@Controller()
 @NoUserAuthenticationController()
 export class SafaricomReconciliationController {
   public constructor(
