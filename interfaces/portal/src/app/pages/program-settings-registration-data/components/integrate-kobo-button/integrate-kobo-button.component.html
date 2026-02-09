@@ -1,0 +1,101 @@
+<app-card-with-link
+  title="Kobo toolbox"
+  [titleColoredChipLabel]="isKoboIntegrated() ? 'Linked' : undefined"
+  [titleColoredChipColor]="'green'"
+  i18n-title
+  (cardClicked)="
+    isKoboIntegrated() ? undefined : koboConfigurationDialog.show()
+  "
+  [subtitle]="cardSubtitle()"
+  [image]="'assets/registration-data/kobo-toolbox.svg'"
+  [enableLink]="!isKoboIntegrated()"
+>
+  <ng-container card-content>
+    @if (isKoboIntegrated()) {
+      <app-ellipsis-menu [menuItems]="menuItems()" />
+
+      <a
+        i18n
+        [href]="koboIntegration.data()?.url"
+        class="underline"
+      >
+        Link to form
+      </a>
+    }
+  </ng-container>
+  <ng-container card-footer>
+    @if (isKoboIntegrated()) {
+      <p
+        i18n
+        class="text-end"
+      >
+        Last updated:
+        <span>{{ koboIntegration.data()?.dateDeployed | date }}</span>
+      </p>
+    }
+  </ng-container>
+</app-card-with-link>
+
+<app-form-dialog
+  #koboConfigurationDialog
+  header="Link Kobo Toolbox"
+  i18n-header
+  headerIcon="pi pi-link"
+  [formGroup]="koboConfigurationFormGroup"
+  [mutation]="koboConfigurationMutation"
+  [mutationData]="koboConfigurationFormGroup.getRawValue()"
+  proceedLabel="Continue"
+  i18n-proceedLabel
+>
+  <p i18n>
+    For more information about how to integrate Kobo see <app-manual-link />
+  </p>
+  <app-form-field-wrapper
+    label="Kobo server URL"
+    i18n-label
+    [errorMessage]="koboConfigurationFormFieldErrors()('url')"
+  >
+    <input
+      pInputText
+      type="text"
+      formControlName="url"
+    />
+  </app-form-field-wrapper>
+  <app-form-field-wrapper
+    label="Kobo asset ID"
+    i18n-label
+    [errorMessage]="koboConfigurationFormFieldErrors()('assetUid')"
+  >
+    <input
+      pInputText
+      type="text"
+      formControlName="assetUid"
+    />
+  </app-form-field-wrapper>
+  <app-form-field-wrapper
+    label="API key"
+    i18n-label
+    [errorMessage]="koboConfigurationFormFieldErrors()('token')"
+  >
+    <p-password
+      autocomplete="one-time-code"
+      [toggleMask]="true"
+      [feedback]="false"
+      type="text"
+      formControlName="token"
+    />
+  </app-form-field-wrapper>
+</app-form-dialog>
+
+<app-form-dialog
+  #linkKoboDialog
+  header="Link Kobo Toolbox"
+  i18n-header
+  headerIcon="pi pi-link"
+  [mutation]="linkKoboMutation"
+  [mutationData]="undefined"
+  proceedLabel="Continue"
+  i18n-proceedLabel
+>
+  <p>{{ koboFormName() }}</p>
+</app-form-dialog>

@@ -1,5 +1,5 @@
 <p-card
-  styleClass="[&_.p-card-content]:flex-end group shadow-clickable-cards relative h-full border border-transparent transition-colors *:h-full focus-within:border-purple-500 hover:border-purple-500 [&_.p-card-title]:flex-grow [&_.p-card-title]:ps-0"
+  class="[&_.p-card-content]:flex-end group shadow-clickable-cards relative h-full border border-transparent transition-colors *:h-full focus-within:border-purple-500 hover:border-purple-500 [&_.p-card-title]:grow [&_.p-card-title]:ps-0"
   data-testid="card-with-link"
 >
   <ng-template pTemplate="title">
@@ -16,26 +16,23 @@
         </div>
       }
       <div>
-        <a
-          [routerLink]="href()"
-          (click)="cardClicked.emit()"
-          class="group-focus-within:text-purple group-hover:text-purple cursor-pointer transition-colors after:absolute after:inset-0 after:block"
-        >
-          @if (loading()) {
-            <app-skeleton-inline />
+        @if (!!title()) {
+          @if (!enableLink()) {
+            <ng-container *ngTemplateOutlet="cardTitle"></ng-container>
           } @else {
-            <span
-              class="line-clamp-2 text-ellipsis"
-              [title]="title()"
+            <a
+              [routerLink]="href()"
+              (click)="cardClicked.emit()"
+              class="group-focus-within:text-purple group-hover:text-purple cursor-pointer transition-colors after:absolute after:inset-0 after:block"
             >
-              {{ title() }}
-            </span>
+              <ng-container *ngTemplateOutlet="cardTitle"></ng-container>
+            </a>
           }
-        </a>
-        @if (subtitle()) {
-          <div class="txt-body-m font-normal">
-            {{ subtitle() }}
-          </div>
+          @if (subtitle()) {
+            <div class="txt-body-m font-normal">
+              {{ subtitle() }}
+            </div>
+          }
         }
       </div>
     </div>
@@ -47,3 +44,22 @@
     <ng-content select="[card-footer]"></ng-content>
   </ng-template>
 </p-card>
+
+<ng-template #cardTitle>
+  @if (loading()) {
+    <app-skeleton-inline />
+  } @else {
+    <span
+      class="line-clamp-2 text-ellipsis"
+      [title]="title()"
+    >
+      {{ title() }}
+      @if (!!titleColoredChipLabel()) {
+        <app-colored-chip
+          [label]="titleColoredChipLabel() ?? ''"
+          [variant]="titleColoredChipColor()"
+        ></app-colored-chip>
+      }
+    </span>
+  }
+</ng-template>

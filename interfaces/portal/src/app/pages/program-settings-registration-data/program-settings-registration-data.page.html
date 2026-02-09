@@ -1,0 +1,21 @@
+<app-page-layout-program-settings [programId]="programId()">
+  <p-card class="[&_.p-card]:border-grey-300 mb-4 [&_.p-card]:border">
+    <h2
+      i18n
+      class="mb-4"
+    >
+      Registration integration
+    </h2>
+    <p
+      i18n
+      class="mb-6"
+    >
+      Select a registration tool you want to integrate to the program
+    </p>
+    <div class="flex flex-row"></div>
+    <app-integrate-kobo-button
+      [programId]="programId()"
+      class="w-1/2"
+    ></app-integrate-kobo-button>
+  </p-card>
+</app-page-layout-program-settings>

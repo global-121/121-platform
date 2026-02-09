@@ -31,7 +31,11 @@
           <ng-content></ng-content>
           @if (mutation().isError()) {
             <div class="mt-4">
-              <app-form-error [error]="mutation().failureReason()?.message" />
+              <app-form-error
+                [error]="
+                  mutation().failureReason()?.message?.replaceAll('\\n', '\n')
+                "
+              />
             </div>
           }
         </div>
