@@ -12,11 +12,13 @@ import { validate } from 'class-validator';
 import { SafaricomTimeoutCallbackDto } from '@121-service/src/fsp-integrations/reconciliation/safaricom/dtos/safaricom-timeout-callback.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/fsp-integrations/reconciliation/safaricom/dtos/safaricom-transfer-callback.dto';
 import { SafaricomReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/safaricom/safaricom-reconciliation.service';
+import { NoUserAuthenticationController } from '@121-service/src/guards/no-user-authentication.decorator';
 import { AnyValidBody } from '@121-service/src/registration/validators/any-valid-body.validator';
 
 @ApiTags('fsps/safaricom')
 @Controller('fsps/safaricom')
 @Controller()
+@NoUserAuthenticationController()
 export class SafaricomReconciliationController {
   public constructor(
     private safaricomReconciliationService: SafaricomReconciliationService,

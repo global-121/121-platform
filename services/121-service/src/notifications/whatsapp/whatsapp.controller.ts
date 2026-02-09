@@ -4,6 +4,7 @@ import { SkipThrottle } from '@nestjs/throttler';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { NoUserAuthenticationEndpoint } from '@121-service/src/guards/no-user-authentication.decorator';
 import { TwilioStatusCallbackDto } from '@121-service/src/notifications/dto/twilio.dto';
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
 import { AnyValidBody } from '@121-service/src/registration/validators/any-valid-body.validator';
@@ -26,6 +27,7 @@ export class WhatsappController {
   }
 
   @SkipThrottle()
+  @NoUserAuthenticationEndpoint() // This endpoint is unprotected, as it is called by Twilio.
   @ApiOperation({
     summary:
       'Url for callbacks from Twilio triggered by a GET request to /notifications/whatsapp/templates',

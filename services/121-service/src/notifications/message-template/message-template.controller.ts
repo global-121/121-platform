@@ -54,6 +54,7 @@ export class MessageTemplateController {
     required: true,
     type: 'integer',
   })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramREAD] })
   @Get(':programId/message-templates')
   public async getMessageTemplatesByProgramId(
     @Param('programId', ParseIntPipe)

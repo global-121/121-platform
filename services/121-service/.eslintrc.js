@@ -143,6 +143,7 @@ module.exports = {
           plugins: ['custom-rules'],
           rules: {
             'custom-rules/no-method-api-tags': 'error',
+            'custom-rules/controller-authenticated-user': 'error',
           },
         },
         {

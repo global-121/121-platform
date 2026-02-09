@@ -12,6 +12,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 
 import { IS_PRODUCTION } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
+import { NoUserAuthenticationController } from '@121-service/src/guards/no-user-authentication.decorator';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { ScriptsService } from '@121-service/src/scripts/services/scripts.service';
@@ -23,6 +24,7 @@ export class SecretDto {
   public readonly secret: string;
 }
 
+@NoUserAuthenticationController() // These controllers are protected by a secret instead
 @ApiTags('instance')
 // TODO: REFACTOR: rename to instance
 @Controller('scripts')

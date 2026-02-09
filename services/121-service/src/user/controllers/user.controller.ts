@@ -27,6 +27,7 @@ import { Throttle } from '@nestjs/throttler';
 import { THROTTLING_LIMIT_HIGH } from '@121-service/src/config';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { NoUserAuthenticationEndpoint } from '@121-service/src/guards/no-user-authentication.decorator';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
 import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
@@ -75,6 +76,7 @@ export class UserController {
     return this.userService.createUsers(userData);
   }
 
+  @NoUserAuthenticationEndpoint()
   @Throttle(THROTTLING_LIMIT_HIGH)
   @ApiOperation({ summary: '[EXTERNALLY USED] Log in existing user' })
   @ApiResponse({
