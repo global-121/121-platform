@@ -1,5 +1,8 @@
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
-import { SecretFspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/consts/secret-fsp-configuration-properties.const';
+import {
+  FspConfigurationPropertyVisibility,
+  FspConfigurationPropertyVisibilityMap,
+} from '@121-service/src/fsp-integrations/shared/consts/fps-configuration-property-visibility.const';
 import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
@@ -66,7 +69,10 @@ export class ProgramFspConfigurationMapper {
   public static mapPropertyEntityToDto(
     property: ProgramFspConfigurationPropertyEntity,
   ): ProgramFspConfigurationPropertyResponseDto {
-    const isSecret = SecretFspConfigurationProperties.includes(property.name);
+    const isSecret =
+      FspConfigurationPropertyVisibilityMap[property.name] ===
+      FspConfigurationPropertyVisibility.secret;
+
     const value = isSecret ? sensitivePropertyString : property.value;
     return {
       name: property.name,

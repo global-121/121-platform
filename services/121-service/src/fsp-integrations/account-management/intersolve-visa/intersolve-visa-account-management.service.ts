@@ -40,16 +40,12 @@ export class IntersolveVisaAccountManagementService {
       },
     );
     const maxToSpendPerMonthInCents =
-      await this.programFspConfigurationRepository.getPropertyValueByName({
-        programFspConfigurationId: registration.programFspConfigurationId,
-        name: FspConfigurationProperties.maxToSpendPerMonthInCents,
-      });
-
-    if (typeof maxToSpendPerMonthInCents !== 'number') {
-      throw new IntersolveVisaApiError(
-        'maxToSpendPerMonthInCents is not configured correctly for the program fsp configuration.',
+      await this.programFspConfigurationRepository.getPropertyValueByNameOrThrow(
+        {
+          programFspConfigurationId: registration.programFspConfigurationId,
+          name: FspConfigurationProperties.maxToSpendPerMonthInCents,
+        },
       );
-    }
 
     return await this.intersolveVisaService.retrieveAndUpdateWallet({
       registrationId: registration.id,
@@ -69,16 +65,12 @@ export class IntersolveVisaAccountManagementService {
       },
     );
     const maxToSpendPerMonthInCents =
-      await this.programFspConfigurationRepository.getPropertyValueByName({
-        programFspConfigurationId: registration.programFspConfigurationId,
-        name: FspConfigurationProperties.maxToSpendPerMonthInCents,
-      });
-
-    if (typeof maxToSpendPerMonthInCents !== 'number') {
-      throw new IntersolveVisaApiError(
-        'maxToSpendPerMonthInCents is not configured correctly for the program fsp configuration.',
+      await this.programFspConfigurationRepository.getPropertyValueByNameOrThrow(
+        {
+          programFspConfigurationId: registration.programFspConfigurationId,
+          name: FspConfigurationProperties.maxToSpendPerMonthInCents,
+        },
       );
-    }
 
     return await this.intersolveVisaService.getWalletWithCards({
       registrationId: registration.id,
@@ -215,21 +207,19 @@ export class IntersolveVisaAccountManagementService {
     });
 
     const brandCode =
-      await this.programFspConfigurationRepository.getPropertyValueByName({
-        programFspConfigurationId,
-        name: FspConfigurationProperties.brandCode,
-      });
-    const coverLetterCode =
-      await this.programFspConfigurationRepository.getPropertyValueByName({
-        programFspConfigurationId,
-        name: FspConfigurationProperties.coverLetterCode,
-      });
-    if (typeof brandCode !== 'string' || typeof coverLetterCode !== 'string') {
-      throw new HttpException(
-        'Missing or invalid brandCode or coverLetterCode for Intersolve Visa replace card',
-        HttpStatus.BAD_REQUEST,
+      await this.programFspConfigurationRepository.getPropertyValueByNameOrThrow(
+        {
+          programFspConfigurationId,
+          name: FspConfigurationProperties.brandCode,
+        },
       );
-    }
+    const coverLetterCode =
+      await this.programFspConfigurationRepository.getPropertyValueByNameOrThrow(
+        {
+          programFspConfigurationId,
+          name: FspConfigurationProperties.coverLetterCode,
+        },
+      );
 
     try {
       await this.intersolveVisaService.replaceCard({
@@ -286,16 +276,12 @@ export class IntersolveVisaAccountManagementService {
       });
 
     const brandCode =
-      await this.programFspConfigurationRepository.getPropertyValueByName({
-        programFspConfigurationId: registration.programFspConfigurationId,
-        name: FspConfigurationProperties.brandCode,
-      });
-    if (typeof brandCode !== 'string') {
-      throw new HttpException(
-        'Missing or invalid brandCode for Intersolve Visa link card on-site',
-        HttpStatus.BAD_REQUEST,
+      await this.programFspConfigurationRepository.getPropertyValueByNameOrThrow(
+        {
+          programFspConfigurationId: registration.programFspConfigurationId,
+          name: FspConfigurationProperties.brandCode,
+        },
       );
-    }
 
     await this.intersolveVisaService.linkPhysicalCardToRegistration({
       contactInformation,
@@ -310,16 +296,12 @@ export class IntersolveVisaAccountManagementService {
     programFspConfigurationId: number,
   ): Promise<boolean> {
     const cardDistributionByMail =
-      await this.programFspConfigurationRepository.getPropertyValueByName({
-        programFspConfigurationId,
-        name: FspConfigurationProperties.cardDistributionByMail,
-      });
-
-    if (typeof cardDistributionByMail !== 'boolean') {
-      throw new IntersolveVisaApiError(
-        'cardDistributionByMail is not configured correctly for the program fsp configuration.',
+      await this.programFspConfigurationRepository.getPropertyValueByNameOrThrow(
+        {
+          programFspConfigurationId,
+          name: FspConfigurationProperties.cardDistributionByMail,
+        },
       );
-    }
 
     return cardDistributionByMail;
   }

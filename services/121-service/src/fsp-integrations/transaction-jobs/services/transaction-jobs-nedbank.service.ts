@@ -165,10 +165,12 @@ export class TransactionJobsNedbankService {
     // It's therefore a human readable identifier, which is unique for each transaction and can be related to the registration and transaction manually
     // Payment reference cannot be longer than 30 characters
     const paymentReferencePrefix =
-      (await this.programFspConfigurationRepository.getPropertyValueByName({
-        programFspConfigurationId,
-        name: FspConfigurationProperties.paymentReferencePrefix,
-      })) as string; // This must be a string. If it is undefined the validation in payment service should have caught it. If a user set it as an array string you should get an internal server error here, this seems like an edge case;
+      await this.programFspConfigurationRepository.getPropertyValueByNameOrThrow(
+        {
+          programFspConfigurationId,
+          name: FspConfigurationProperties.paymentReferencePrefix,
+        },
+      );
     const sanitizedPaymentReferencePrefix = paymentReferencePrefix.replace(
       /[^a-zA-Z0-9-]/g,
       '',

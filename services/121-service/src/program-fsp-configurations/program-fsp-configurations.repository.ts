@@ -1,6 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
+import { FspConfigurationDto } from '@121-service/src/fsp-integrations/shared/dto/fsp-configuration-property-types.dto';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspConfigurationProperty } from '@121-service/src/fsp-integrations/shared/interfaces/fsp-configuration-property.interface';
@@ -91,32 +92,66 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
   }
 
   // This methods specifically does not throw as it also used to check if the property exists
-  public async getPropertyValueByName({
+  public async getPropertyValueByName<
+    TName extends FspConfigurationProperties,
+  >({
     programFspConfigurationId,
     name,
   }: {
     programFspConfigurationId: number;
-    name: FspConfigurationProperties;
-  }) {
-    const configuration = await this.baseRepository
-      .createQueryBuilder('configuration')
-      .leftJoinAndSelect('configuration.properties', 'properties')
-      .where('configuration.id = :id', {
-        id: programFspConfigurationId,
-      })
-      .andWhere('properties.name = :name', { name })
-      .orderBy('properties.name', 'ASC')
-      .getOne();
-    return configuration?.properties.find((property) => property.name === name)
-      ?.value;
+    name: TName;
+  }): Promise<FspConfigurationDto[TName] | undefined> {
+    const configuration: ProgramFspConfigurationEntity | null =
+      await this.baseRepository
+        .createQueryBuilder('configuration')
+        .leftJoinAndSelect('configuration.properties', 'properties')
+        .where('configuration.id = :id', {
+          id: programFspConfigurationId,
+        })
+        .andWhere('properties.name = :name', { name })
+        .orderBy('properties.name', 'ASC')
+        .getOne();
+
+    if (!configuration) {
+      return undefined;
+    }
+
+    const property = configuration.properties.find(
+      (property) => property.name === name,
+    );
+
+    if (!property) {
+      return undefined;
+    }
+
+    return property.value as FspConfigurationDto[TName];
   }
 
-  public async getPropertiesByNamesOrThrow({
+  public async getPropertyValueByNameOrThrow<
+    TName extends FspConfigurationProperties,
+  >(params: {
+    programFspConfigurationId: number;
+    name: TName;
+  }): Promise<FspConfigurationDto[TName]> {
+    const value = await this.getPropertyValueByName(params);
+
+    if (value === undefined) {
+      throw new Error(
+        `Property with name ${params.name} not found for ProgramFspConfigurationEntity with id:  ${params.programFspConfigurationId}`,
+      );
+    }
+
+    return value;
+  }
+
+  public async getPropertiesByNamesOrThrow<
+    TName extends FspConfigurationProperties,
+  >({
     programFspConfigurationId,
     names,
   }: {
     programFspConfigurationId: number;
-    names: string[];
+    names: TName[];
   }): Promise<FspConfigurationProperty[]> {
     const properties = await this.getProperties(programFspConfigurationId);
 
@@ -130,7 +165,7 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
 
     return properties.map((property) => ({
       name: property.name,
-      value: property.value,
+      value: property.value as FspConfigurationDto[TName],
     }));
   }
 

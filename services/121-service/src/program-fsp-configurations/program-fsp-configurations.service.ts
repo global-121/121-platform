@@ -2,7 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 
-import { PublicFspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/consts/public-fsp-configuration-properties.const';
+import {
+  FspConfigurationPropertyVisibility,
+  FspConfigurationPropertyVisibilityMap,
+} from '@121-service/src/fsp-integrations/shared/consts/fps-configuration-property-visibility.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { getFspConfigurationProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
@@ -424,8 +427,9 @@ export class ProgramFspConfigurationsService {
       name,
     );
 
-    const allowlistedPropertyNames =
-      PublicFspConfigurationProperties[config.fspName];
+    const allowlistedPropertyNames = this.getAllowlistedPropertyNamesForFsp(
+      config.fspName,
+    );
     if (!allowlistedPropertyNames || allowlistedPropertyNames.length === 0) {
       return [];
     }
@@ -440,6 +444,22 @@ export class ProgramFspConfigurationsService {
 
     return ProgramFspConfigurationMapper.mapPropertyEntitiesToDtos(
       publicProperties,
+    );
+  }
+
+  public getAllowlistedPropertyNamesForFsp(fspName: Fsps): string[] {
+    const fspConfigurationProperties = getFspConfigurationProperties(fspName);
+    if (
+      !fspConfigurationProperties ||
+      fspConfigurationProperties.length === 0
+    ) {
+      return [];
+    }
+
+    return fspConfigurationProperties.filter(
+      (propertyName) =>
+        FspConfigurationPropertyVisibilityMap[propertyName] ===
+        FspConfigurationPropertyVisibility.public,
     );
   }
 }

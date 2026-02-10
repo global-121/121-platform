@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { castArray, unique } from 'radashi';
 
+import { FspConfigurationDto } from '@121-service/src/fsp-integrations/shared/dto/fsp-configuration-property-types.dto';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
@@ -214,13 +215,13 @@ export class FspConfigurationService {
   private getDefaultValueForProperty(
     propertyName: FspConfigurationProperties,
   ): FspConfigurationPropertyType {
-    if (propertyName === FspConfigurationProperties.columnsToExport) {
+    if (Array.isArray(FspConfigurationDto[propertyName])) {
       return [];
     }
-    if (propertyName === FspConfigurationProperties.cardDistributionByMail) {
+    if (typeof FspConfigurationDto[propertyName] === 'boolean') {
       return true;
     }
-    if (propertyName === FspConfigurationProperties.maxToSpendPerMonthInCents) {
+    if (typeof FspConfigurationDto[propertyName] === 'number') {
       return 0;
     }
     return '';
