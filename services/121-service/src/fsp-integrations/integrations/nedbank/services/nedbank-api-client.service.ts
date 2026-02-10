@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import https from 'node:https';
 import { v4 as uuid } from 'uuid';
@@ -15,7 +15,7 @@ const nedbankApiUrl =
     : env.NEDBANK_API_URL;
 
 @Injectable()
-export class NedbankApiClientService {
+export class NedbankApiClientService implements OnModuleDestroy {
   private httpsAgent: https.Agent | undefined;
 
   public constructor(
@@ -23,6 +23,10 @@ export class NedbankApiClientService {
     private readonly nedbankApiHelperService: NedbankApiHelperService,
   ) {
     this.httpsAgent = this.createHttpsAgent();
+  }
+
+  onModuleDestroy(): void {
+    this.httpsAgent?.destroy();
   }
 
   public async makeApiRequestOrThrow<T>({

@@ -18,6 +18,11 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Set up Node.js version
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+
       - name: Lint GitHub Action workflows
         uses: raven-actions/actionlint@v2
         with:
@@ -27,7 +32,7 @@ jobs:
           flags: '-ignore SC2086'
 
       - name: Lint .env files
-        uses: dotenv-linter/action-dotenv-linter@v2
+        uses: dotenv-linter/action-dotenv-linter@v3
         with:
           reporter: github-code-suggestions
-          dotenv_linter_flags: --skip UnorderedKey
+          dotenv_linter_flags: --ignore-checks UnorderedKey

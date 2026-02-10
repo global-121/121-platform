@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { CommercialBankEthiopiaApiService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.api.service';
+import { CommercialBankEthiopiaApiClientService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia-api-client.service';
+import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { SoapService } from '@121-service/src/utils/soap/soap.service';
 
 const mockPayment = {
@@ -68,19 +70,33 @@ const mockXmlPayload = {
 
 describe('CommercialBankEthiopiaApiService', () => {
   let service: CommercialBankEthiopiaApiService;
+  let commercialBankEthiopiaApiClientService: CommercialBankEthiopiaApiClientService;
   let soapService: SoapService;
-  let postCBERequest: jest.Mock;
+  let makeApiRequest: jest.Mock;
   let readXmlAsJs: jest.Mock;
+  let consoleErrorSpy: jest.SpyInstance;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CommercialBankEthiopiaApiService,
         {
+          provide: CommercialBankEthiopiaApiClientService,
+          useValue: {
+            makeApiRequest: jest.fn(),
+          },
+        },
+        {
           provide: SoapService,
           useValue: {
-            postCBERequest: jest.fn(),
             readXmlAsJs: jest.fn(),
+          },
+        },
+        {
+          provide: CustomHttpService,
+          useValue: {
+            request: jest.fn(),
+            createHttpsAgentWithSelfSignedCertificateOnly: jest.fn(),
           },
         },
       ],
@@ -90,23 +106,37 @@ describe('CommercialBankEthiopiaApiService', () => {
       CommercialBankEthiopiaApiService,
     );
     soapService = module.get<SoapService>(SoapService);
-    postCBERequest = soapService.postCBERequest as jest.Mock;
+    commercialBankEthiopiaApiClientService =
+      module.get<CommercialBankEthiopiaApiClientService>(
+        CommercialBankEthiopiaApiClientService,
+      );
+    makeApiRequest =
+      commercialBankEthiopiaApiClientService.makeApiRequest as jest.Mock;
     readXmlAsJs = soapService.readXmlAsJs as jest.Mock;
 
     // Mock readXmlAsJs to return a valid payload structure
     readXmlAsJs.mockResolvedValue(mockXmlPayload);
+
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {
+      // Suppress console output in tests
+    });
+  });
+
+  afterEach(() => {
+    // Restore console methods
+    consoleErrorSpy.mockRestore();
   });
 
   describe('creditTransfer', () => {
     it('should successfully complete a credit transfer (happy flow)', async () => {
       // Arrange
-      postCBERequest.mockResolvedValue(mockSuccessResponse);
+      makeApiRequest.mockResolvedValue(mockSuccessResponse);
 
       // Act
       const result = await service.creditTransfer(mockPayment, mockCredentials);
 
       // Assert
-      expect(postCBERequest).toHaveBeenCalledTimes(1);
+      expect(makeApiRequest).toHaveBeenCalledTimes(1);
       expect(result).toEqual(mockSuccessResponse);
     });
 
@@ -114,7 +144,7 @@ describe('CommercialBankEthiopiaApiService', () => {
       // Arrange
       const connectionError = new Error('Connection reset by peer');
       (connectionError as any).code = 'ECONNRESET';
-      postCBERequest.mockRejectedValue(connectionError);
+      makeApiRequest.mockRejectedValue(connectionError);
 
       // Act
       const result = await service.creditTransfer(mockPayment, mockCredentials);
@@ -122,6 +152,9 @@ describe('CommercialBankEthiopiaApiService', () => {
       // Assert
       expect(result.resultDescription).toMatchInlineSnapshot(
         `"Failed because of CBE connection error or timeout (ECONNRESET). Please try again later."`,
+      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        `CBE API: CreditTransfer - Connection error or timeout: ECONNRESET`,
       );
     });
   });

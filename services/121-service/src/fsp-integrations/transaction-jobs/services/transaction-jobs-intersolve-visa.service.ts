@@ -177,7 +177,13 @@ export class TransactionJobsIntersolveVisaService {
 
   private async getIntersolveVisaFspConfig(
     programFspConfigurationId: number,
-  ): Promise<ParsedFspConfigurationProperties> {
+  ): Promise<{
+    brandCode: string;
+    coverLetterCode: string;
+    fundingTokenCode: string;
+    cardDistributionByMail: boolean;
+    maxToSpendPerMonthInCents: number;
+  }> {
     const intersolveVisaConfig =
       await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
         programFspConfigurationId,
@@ -201,10 +207,10 @@ export class TransactionJobsIntersolveVisaService {
       )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
       cardDistributionByMail: intersolveVisaConfig.find(
         (c) => c.name === FspConfigurationProperties.cardDistributionByMail,
-      )?.value as string,
+      )?.value as boolean,
       maxToSpendPerMonthInCents: intersolveVisaConfig.find(
         (c) => c.name === FspConfigurationProperties.maxToSpendPerMonthInCents,
-      )?.value as string,
+      )?.value as number,
     };
   }
 

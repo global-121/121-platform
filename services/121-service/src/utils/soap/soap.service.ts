@@ -1,11 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import soapRequest from 'easy-soap-request';
 import fs from 'node:fs';
-import https from 'node:https';
 import * as convert from 'xml-js';
 
-import { env } from '@121-service/src/env';
-import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
@@ -146,108 +143,5 @@ export class SoapService {
       }
     }
     return xml;
-  }
-
-  async postCBERequest({
-    apiUrl,
-    payload,
-    soapAction,
-  }: {
-    apiUrl: string;
-    payload: any;
-    soapAction: string;
-  }): Promise<any> {
-    const soapRequestXml = convert.js2xml(payload, {
-      compact: false,
-      spaces: 4,
-    });
-
-    // Configure and send the SOAP request
-    const headers = {
-      'Content-Type': 'text/xml;charset=UTF-8',
-      soapAction,
-    };
-
-    // TODO: REFACTOR: See the NedbankApiClientService for how to handle the certificate, so it works on Azure and locally
-    const cbeAgentOptions: https.AgentOptions = {
-      // Making sure we don't use too many sockets;
-      // Too many requests will be reset/refused by CBE otherwise.
-      keepAlive: true,
-      maxSockets: 1,
-    };
-
-    if (
-      env.COMMERCIAL_BANK_ETHIOPIA_MODE === FspMode.external &&
-      env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH
-    ) {
-      try {
-        const certificate = fs.readFileSync(
-          env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH,
-        );
-        cbeAgentOptions.ca = certificate;
-      } catch (error) {
-        throw error;
-      }
-    }
-
-    const agent = new https.Agent(cbeAgentOptions);
-
-    return soapRequest({
-      headers,
-      url: apiUrl,
-      xml: soapRequestXml,
-      timeout: 150_000,
-      extraOpts: {
-        httpsAgent: agent,
-      },
-    })
-      .then((rawResponse: any) => {
-        const response = rawResponse.response;
-        this.httpService.logMessageRequest(
-          { url: apiUrl, payload: soapRequestXml },
-          {
-            status: response.statusCode,
-            statusText: undefined,
-            data: response.body,
-          },
-        );
-
-        // Parse the SOAP response if needed
-        const parsedResponse = convert.xml2js(response.body, { compact: true });
-
-        if (
-          parsedResponse['S:Envelope']['S:Body']['ns10:RMTFundtransferResponse']
-        ) {
-          return parsedResponse['S:Envelope']['S:Body'][
-            'ns10:RMTFundtransferResponse'
-          ];
-        } else if (
-          parsedResponse['S:Envelope']['S:Body'][
-            'ns10:CBERemitanceTransactionStatusResponse'
-          ]
-        ) {
-          return parsedResponse['S:Envelope']['S:Body'][
-            'ns10:CBERemitanceTransactionStatusResponse'
-          ];
-        } else if (
-          parsedResponse['S:Envelope']['S:Body']['ns10:AccountEnquiryResponse']
-        ) {
-          return parsedResponse['S:Envelope']['S:Body'][
-            'ns10:AccountEnquiryResponse'
-          ];
-        }
-        return null;
-      })
-      .catch((err: any) => {
-        this.httpService.logErrorRequest(
-          { url: apiUrl, payload: soapRequestXml },
-          {
-            status: undefined,
-            statusText: undefined,
-            data: { error: err },
-          },
-        );
-        throw err;
-      });
   }
 }

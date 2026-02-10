@@ -8,6 +8,7 @@ import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/f
 import { CbeTransferEntity } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/commercial-bank-ethiopia-transfer.entity';
 import { CommercialBankEthiopiaApiService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.api.service';
 import { CommercialBankEthiopiaService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
+import { CommercialBankEthiopiaApiClientService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia-api-client.service';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
@@ -25,6 +26,7 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
   providers: [
     CommercialBankEthiopiaService,
     CommercialBankEthiopiaApiService,
+    CommercialBankEthiopiaApiClientService,
     SoapService,
     CustomHttpService,
     createScopedRepositoryProvider(

@@ -47,15 +47,13 @@
     "@prettier/plugin-xml": "^3.4.2",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
-    "prettier": "^3.7.4",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.8.1",
     "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-tailwindcss": "^0.7.2"
   },
   "engines": {
-    "node": ">=22",
-    "npm": ">=10"
-  },
-  "optionalDependencies": {
-    "npm-run-all": "^4.1.5"
+    "node": ">=24",
+    "npm": ">=11"
   }
 }
