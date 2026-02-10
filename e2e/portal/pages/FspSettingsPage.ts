@@ -102,10 +102,13 @@ class FspSettingsPage extends BasePage {
       const inputs = this.page.locator('input');
       const inputCount = await inputs.count();
 
-      if (name === 'Excel Payment Instructions') {
-        // Handle dropdowns for Excel Payment Instructions FSP
+      // Check if this FSP uses dropdowns by looking for specific placeholder
+      const dropdown = this.page.getByPlaceholder('Select 1');
+      const hasDropdowns = (await dropdown.count()) > 0;
+
+      if (hasDropdowns) {
+        // Handle dropdowns (e.g., Excel Payment Instructions FSP)
         await this.page.waitForLoadState('domcontentloaded');
-        const dropdown = this.page.getByPlaceholder('Select 1');
         const dropdownsCount = await dropdown.count();
 
         for (let i = 0; i < dropdownsCount; i++) {
@@ -121,7 +124,18 @@ class FspSettingsPage extends BasePage {
       } else {
         for (let i = 1; i < inputCount; i++) {
           const input = inputs.nth(i);
-          await input.fill(name);
+          const inputType = await input.getAttribute('type');
+
+          switch (inputType) {
+            case 'checkbox':
+              await input.check();
+              break;
+            case 'number':
+              await input.fill('150');
+              break;
+            default:
+              await input.fill(name);
+          }
         }
       }
 
