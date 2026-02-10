@@ -12,6 +12,7 @@ export class ProgramFspConfigurationPropertyResponseDto {
       { type: 'string', example: 'RC01' },
       { type: 'number', example: 1 },
       { type: 'boolean', example: true },
+      { type: 'array', items: { type: 'string' }, example: ['RC01', 'RC02'] },
     ],
   })
   public readonly value?: FspConfigurationPropertyType;

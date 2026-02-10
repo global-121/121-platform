@@ -53,7 +53,6 @@ export class ProgramFspConfigurationPropertyEntity extends Base121Entity {
   )
   @JoinColumn({ name: 'programFspConfigurationId' })
   public programFspConfiguration: Relation<ProgramFspConfigurationEntity>;
-
   @Column()
   public programFspConfigurationId: number;
 }
