@@ -49,53 +49,6 @@ jobs:
             - services/mock-service/**
             - '!**.md'
 
-  test-shard:
-    runs-on: ubuntu-latest
-    needs: path-filter
-    if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: ['1', '2', '3', '4', '5', '6']
-        shardCount: ['6']
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v6
-
-      - name: Set ENV-variables for test-environment
-        run: |
-          cp ./services/.env.example services/.env
-          grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
-          # override the default value for COVERAGE_DEV_STARTUP_SUFFIX from .env.example
-          # this is needed to collect coverage data during integration tests
-          echo "COVERAGE_DEV_STARTUP_SUFFIX=:collect-coverage" >> $GITHUB_ENV
-
-      - name: Run Services with Docker
-        run: |
-          npm run start:services:ci
-
-      - name: Run integration tests (inside Docker-container, for Coverage-report)
-        working-directory: ${{ env.workingDirectory }}
-        run: |
-          docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
-
-      # For more info, see services/121-service/README.md#Integration-test-coverage
-      - name: Generate Coverage-report from 121-service
-        working-directory: ${{ env.workingDirectory }}
-        run: |
-          curl -d '{"secret":"${{ env.RESET_SECRET }}"}' -H "Content-Type: application/json" -X POST '${{ env.EXTERNAL_121_SERVICE_URL }}/api/test/kill-service' || true
-          docker compose exec 121-service npm run coverage:report:integration
-
-      - uses: actions/upload-artifact@v6
-        with:
-          name: integration-test-coverage-report-${{ matrix.shard }}
-          path: |
-            ${{ env.workingDirectory }}coverage
-
-      - name: Docker logs
-        if: always()
-        uses: jwalton/gh-docker-logs@v2
-
   test:
     runs-on: ubuntu-latest
     needs: path-filter
@@ -142,13 +95,56 @@ jobs:
           path: |
             ${{ env.workingDirectory }}/coverage
 
+  test-shard:
+    runs-on: ubuntu-latest
+    needs: [path-filter, test]
+    if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ['1', '2', '3', '4', '5', '6']
+        shardCount: ['6']
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v6
+
+      - name: Set ENV-variables for test-environment
+        run: |
+          cp ./services/.env.example services/.env
+          grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
+          # override the default value for COVERAGE_DEV_STARTUP_SUFFIX from .env.example
+          # this is needed to collect coverage data during integration tests
+          echo "COVERAGE_DEV_STARTUP_SUFFIX=:collect-coverage" >> $GITHUB_ENV
+
+      - name: Run Services with Docker
+        run: |
+          npm run start:services:ci
+
+      - name: Run integration tests (inside Docker-container, for Coverage-report)
+        working-directory: ${{ env.workingDirectory }}
+        run: |
+          docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
+
+      # For more info, see services/121-service/README.md#Integration-test-coverage
+      - name: Generate Coverage-report from 121-service
+        working-directory: ${{ env.workingDirectory }}
+        run: |
+          curl -d '{"secret":"${{ env.RESET_SECRET }}"}' -H "Content-Type: application/json" -X POST '${{ env.EXTERNAL_121_SERVICE_URL }}/api/test/kill-service' || true
+          docker compose exec 121-service npm run coverage:report:integration
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: integration-test-coverage-report-${{ matrix.shard }}
+          path: |
+            ${{ env.workingDirectory }}coverage
+
       - name: Docker logs
         if: always()
         uses: jwalton/gh-docker-logs@v2
 
   upload_coverage_reports:
     runs-on: ubuntu-latest
-    needs: [test-shard, test]
+    needs: [test, test-shard]
 
     steps:
       - uses: actions/checkout@v6
@@ -181,7 +177,7 @@ jobs:
   # This is a workaround for this issue: https://github.com/orgs/community/discussions/44490
   test-shard-resolution-api:
     runs-on: ubuntu-latest
-    needs: [test-shard, test]
+    needs: [test, test-shard]
     if: always()
     steps:
       - name: Check required job results
