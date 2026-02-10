@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -22,8 +23,11 @@ import { OnafriqTransactionCallbackDto } from '@121-service/src/fsp-integrations
 import { OnafriqReconciliationReport } from '@121-service/src/fsp-integrations/reconciliation/onafriq/interfaces/onafriq-reconciliation-report.interface';
 import { OnafriqReconciliationService } from '@121-service/src/fsp-integrations/reconciliation/onafriq/onafriq-reconciliation.service';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
+import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { NoUserAuthenticationEndpoint } from '@121-service/src/guards/no-user-authentication.decorator';
 import { AnyValidBody } from '@121-service/src/registration/validators/any-valid-body.validator';
 
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('fsps/onafriq')
 @Controller('fsps/onafriq')
 export class OnafriqReconciliationController {
@@ -32,6 +36,9 @@ export class OnafriqReconciliationController {
   ) {}
 
   @SkipThrottle()
+  @NoUserAuthenticationEndpoint(
+    'Called by Onafriq. Notification of the status of a transaction, based on unique transaction-id.',
+  )
   @ApiOperation({
     summary:
       '[EXTERNALLY USED] Notification callback used by Onafriq to notify status of transaction to us. Update if needed via /fsps/onafriq/webhook/subscribe endpoint.',

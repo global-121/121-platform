@@ -29,6 +29,7 @@ import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/inte
 import { IntersolveVoucherCronService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher-cron.service';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { NoUserAuthenticationEndpoint } from '@121-service/src/guards/no-user-authentication.decorator';
 import { IMAGE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -136,6 +137,9 @@ export class IntersolveVoucherController {
     );
   }
 
+  @NoUserAuthenticationEndpoint(
+    'Called by Twilio (to collect the image to attach to a message) and does not contain sensitive data, so can be unprotected.',
+  )
   @ApiOperation({
     summary:
       'Get intersolve voucher instructions image - used by Twilio to include in WhatsApp message',

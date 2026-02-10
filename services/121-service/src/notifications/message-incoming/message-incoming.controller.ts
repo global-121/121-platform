@@ -3,6 +3,7 @@ import { ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { NoUserAuthenticationEndpoint } from '@121-service/src/guards/no-user-authentication.decorator';
 import {
   TwilioIncomingCallbackDto,
   TwilioStatusCallbackDto,
@@ -19,6 +20,9 @@ export class MessageIncomingController {
   ) {}
 
   @SkipThrottle()
+  @NoUserAuthenticationEndpoint(
+    'Called by Twillio. Protected by `AuthMiddlewareTwilio`.',
+  )
   @ApiOperation({
     summary: 'Status callback used by Twilio to notify us of WhatsApp status.',
   })
@@ -33,6 +37,9 @@ export class MessageIncomingController {
   }
 
   @SkipThrottle()
+  @NoUserAuthenticationEndpoint(
+    'Called by Twillio. Protected by `AuthMiddlewareTwilio`.',
+  )
   @ApiOperation({
     summary:
       'Status callback used by Twilio to forward incoming messages to us',
@@ -48,6 +55,9 @@ export class MessageIncomingController {
   }
 
   @SkipThrottle()
+  @NoUserAuthenticationEndpoint(
+    'Called by Twillio. Protected by `AuthMiddlewareTwilio`.',
+  )
   @ApiOperation({
     summary: 'Status callback used by Twilio to notify us of SMS status.',
   })
