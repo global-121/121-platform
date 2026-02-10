@@ -44,7 +44,7 @@ describe('CustomHttpService', () => {
     });
   });
 
-  describe('createHttpsAgentWithSelfSignedCertificateOnly', () => {
+  describe('createHttpsAgentWithWeakSelfSignedCertificateOnly', () => {
     it('should create an HTTPS agent with a self-signed certificate and extra options', () => {
       const certificatePath = 'path/to/certificate.crt';
       const dummyCertificate = Buffer.from('dummy-ca-certificate');
@@ -52,7 +52,7 @@ describe('CustomHttpService', () => {
 
       (fs.readFileSync as jest.Mock).mockReturnValue(dummyCertificate);
 
-      const agent = service.createHttpsAgentWithSelfSignedCertificateOnly(
+      const agent = service.createHttpsAgentWithWeakSelfSignedCertificateOnly(
         certificatePath,
         extraOpts,
       );
@@ -72,7 +72,9 @@ describe('CustomHttpService', () => {
       });
 
       expect(() => {
-        service.createHttpsAgentWithSelfSignedCertificateOnly(certificatePath);
+        service.createHttpsAgentWithWeakSelfSignedCertificateOnly(
+          certificatePath,
+        );
       }).toThrowErrorMatchingInlineSnapshot(`
        "Certificate not found at: path/to/nonexistent.crt
        Cause: ENOENT: no such file or directory"

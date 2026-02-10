@@ -300,12 +300,19 @@ export class CustomHttpService {
   }
 
   /**
-   * Create an HTTPS agent with a self-signed certificate and optional connection-options.
+   * Create an HTTPS agent that accepts weak certificates (e.g., 1024-bit RSA keys).
+   *
+   * **Why needed:** Node.js 24+ rejects certificates with RSA keys < 2048 bits.
+   * Some external services (e.g., CBE) still use legacy 1024-bit certificates that cannot be upgraded.
+   *
+   * Should only be used for VPN-protected connections where the certificate
+   * still provides identity verification, and the VPN ensures encrypted transport layer security.
+   *
    * @param certificatePath The path to the certificate.
    * @param extraOpts Any extra options to pass to the HTTPS agent.
-   * @returns The HTTPS agent.
+   * @returns The HTTPS agent configured to accept weak keys.
    */
-  public createHttpsAgentWithSelfSignedCertificateOnly(
+  public createHttpsAgentWithWeakSelfSignedCertificateOnly(
     certificatePath: string,
     extraOpts?: AgentOptions,
   ): https.Agent {
@@ -320,6 +327,8 @@ export class CustomHttpService {
 
     return new https.Agent({
       ca: certificate,
+      // Lower OpenSSL security level to accept weak keys (1024-bit RSA)
+      ciphers: 'DEFAULT:@SECLEVEL=0',
       ...extraOpts,
     });
   }
