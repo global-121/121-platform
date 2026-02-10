@@ -49,7 +49,7 @@ jobs:
             - services/mock-service/**
             - '!**.md'
 
-  test:
+  lint:
     runs-on: ubuntu-latest
     needs: path-filter
     if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
@@ -63,11 +63,6 @@ jobs:
           node-version-file: '${{ env.workingDirectory }}/.node-version'
           cache: 'npm'
           cache-dependency-path: '${{ env.workingDirectory }}/package-lock.json'
-
-      - name: Set ENV-variables for test-environment
-        run: |
-          cp ./services/.env.example services/.env
-          grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
 
       - name: Install
         working-directory: ${{ env.workingDirectory }}
@@ -85,19 +80,9 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: 'npm run typecheck'
 
-      - name: Run unit tests
-        working-directory: ${{ env.workingDirectory }}
-        run: 'npm run test:unit:coverage'
-
-      - uses: actions/upload-artifact@v6
-        with:
-          name: unit-test-coverage-report
-          path: |
-            ${{ env.workingDirectory }}/coverage
-
   test-shard:
     runs-on: ubuntu-latest
-    needs: [path-filter, test]
+    needs: [path-filter, lint]
     if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
     strategy:
       fail-fast: false
@@ -141,6 +126,41 @@ jobs:
       - name: Docker logs
         if: always()
         uses: jwalton/gh-docker-logs@v2
+
+  test:
+    runs-on: ubuntu-latest
+    needs: [path-filter, lint]
+    if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v6
+        with:
+          # See supported Node.js versions: https://github.com/Azure/app-service-linux-docs/blob/master/Runtime_Support/node_support.md
+          node-version-file: '${{ env.workingDirectory }}/.node-version'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.workingDirectory }}/package-lock.json'
+
+      - name: Set ENV-variables for test-environment
+        run: |
+          cp ./services/.env.example services/.env
+          grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
+
+      - name: Install
+        working-directory: ${{ env.workingDirectory }}
+        run: 'npm ci'
+
+      - name: Run unit tests
+        working-directory: ${{ env.workingDirectory }}
+        run: 'npm run test:unit:coverage'
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: unit-test-coverage-report
+          path: |
+            ${{ env.workingDirectory }}/coverage
+
 
   upload_coverage_reports:
     runs-on: ubuntu-latest
