@@ -36,7 +36,9 @@ export class OnafriqReconciliationController {
   ) {}
 
   @SkipThrottle()
-  @NoUserAuthenticationEndpoint()
+  @NoUserAuthenticationEndpoint(
+    '[EXTERNALLY USED] Notification callback used by Onafriq to notify status of transaction to us.',
+  )
   @ApiOperation({
     summary:
       '[EXTERNALLY USED] Notification callback used by Onafriq to notify status of transaction to us. Update if needed via /fsps/onafriq/webhook/subscribe endpoint.',

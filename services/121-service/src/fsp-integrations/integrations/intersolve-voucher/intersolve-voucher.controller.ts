@@ -137,7 +137,9 @@ export class IntersolveVoucherController {
     );
   }
 
-  @NoUserAuthenticationEndpoint() // This endpoint is called by twilio and does not contain sensitive data, so we can allow it to be unprotected.
+  @NoUserAuthenticationEndpoint(
+    'This endpoint is called by twilio and does not contain sensitive data, so we can allow it to be unprotected.',
+  )
   @ApiOperation({
     summary:
       'Get intersolve voucher instructions image - used by Twilio to include in WhatsApp message',

@@ -24,7 +24,7 @@ export class SecretDto {
   public readonly secret: string;
 }
 
-@NoUserAuthenticationController() // These controllers are protected by a secret instead
+@NoUserAuthenticationController('Protected by using the `RESET_SECRET`.')
 @ApiTags('instance')
 // TODO: REFACTOR: rename to instance
 @Controller('scripts')

@@ -76,7 +76,9 @@ export class UserController {
     return this.userService.createUsers(userData);
   }
 
-  @NoUserAuthenticationEndpoint()
+  @NoUserAuthenticationEndpoint(
+    '[EXTERNALLY USED] Login endpoint must be accessible without authentication.',
+  )
   @Throttle(THROTTLING_LIMIT_HIGH)
   @ApiOperation({ summary: '[EXTERNALLY USED] Log in existing user' })
   @ApiResponse({
