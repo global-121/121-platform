@@ -9,7 +9,7 @@ import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code
 
 @ApiTags('notifications')
 @NoUserAuthenticationController(
-  'This endpoint is protected by a secret instead of authentication',
+  'This controller is protected by a secret instead of authentication',
 )
 // I am afraid to change this url as it may break already sent WhatsApps
 @Controller('notifications/imageCode')

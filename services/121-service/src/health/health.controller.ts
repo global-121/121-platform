@@ -12,7 +12,7 @@ import { NoUserAuthenticationController } from '@121-service/src/guards/no-user-
 import { GetVersionDto } from '@121-service/src/health/dto/get-version.dto';
 
 @NoUserAuthenticationController(
-  'This endpoint is unprotected, as it is called by the public status-page and other monitoring tools.',
+  'This controller is unprotected, as it is called by the public status-page and other monitoring tools.',
 )
 @ApiTags('instance')
 // TODO: REFACTOR: rename to instance
