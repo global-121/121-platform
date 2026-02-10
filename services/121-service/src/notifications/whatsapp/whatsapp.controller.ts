@@ -28,7 +28,7 @@ export class WhatsappController {
 
   @SkipThrottle()
   @NoUserAuthenticationEndpoint(
-    'This endpoint is unprotected, as it is called by Twilio.',
+    'Called by Twillio. Processed based on unique message-id.',
   )
   @ApiOperation({
     summary:

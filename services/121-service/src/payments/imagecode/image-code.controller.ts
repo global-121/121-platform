@@ -9,7 +9,7 @@ import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code
 
 @ApiTags('notifications')
 @NoUserAuthenticationController(
-  'This controller is protected by a secret instead of authentication.',
+    'Called by Twillio. Processed based on unique (long) secret.',
 )
 // I am afraid to change this url as it may break already sent WhatsApps
 @Controller('notifications/imageCode')

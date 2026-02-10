@@ -37,7 +37,7 @@ export class OnafriqReconciliationController {
 
   @SkipThrottle()
   @NoUserAuthenticationEndpoint(
-    '[EXTERNALLY USED] Notification callback used by Onafriq to notify status of transaction to us.',
+    'Called by Onafriq. Notification of the status of a transaction, based on unique transaction-id.',
   )
   @ApiOperation({
     summary:

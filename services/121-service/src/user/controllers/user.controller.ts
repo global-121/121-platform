@@ -77,7 +77,7 @@ export class UserController {
   }
 
   @NoUserAuthenticationEndpoint(
-    '[EXTERNALLY USED] Login endpoint must be accessible without authentication.',
+    'Login endpoint must be publicly accessible, to be able to authenticate further use.',
   )
   @Throttle(THROTTLING_LIMIT_HIGH)
   @ApiOperation({ summary: '[EXTERNALLY USED] Log in existing user' })
