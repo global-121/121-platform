@@ -7,12 +7,11 @@ import { SetMetadata } from '@nestjs/common';
  * (for example Twilio signatures, shared secrets, or IP allowlists)
  * instead of AuthenticatedUserGuard.
  *
- * @param reason - Explanation for why this controller does not require user authentication
+ * @param _reason - Explanation for why this controller does not require user authentication
  */
-export const NoUserAuthenticationController = (reason: string) =>
+export const NoUserAuthenticationController = (_reason: string) =>
   SetMetadata('authenticationParameters', {
     isGuarded: false,
-    reason,
   });
 
 /**
@@ -22,10 +21,9 @@ export const NoUserAuthenticationController = (reason: string) =>
  * intentionally exempt from AuthenticatedUserGuard but secured
  * through other means.
  *
- * @param reason - Explanation for why this endpoint does not require user authentication
+ * @param _reason - Explanation for why this endpoint does not require user authentication
  */
-export const NoUserAuthenticationEndpoint = (reason: string) =>
+export const NoUserAuthenticationEndpoint = (_reason: string) =>
   SetMetadata('authenticationParameters', {
     isGuarded: false,
-    reason,
   });
