@@ -3,7 +3,7 @@ module.exports = {
     type: 'problem',
     docs: {
       description:
-        'Require @UseGuards(AuthenticatedUserGuard) on controller classes and @AuthenticatedUser() on each endpoint method',
+        'Require `@UseGuards(AuthenticatedUserGuard)` on controller classes and `@AuthenticatedUser()` on each endpoint method, to prevent accidental unprotected endpoints (and explain external use-cases)',
       category: 'Best Practices',
       recommended: false,
     },
@@ -97,7 +97,7 @@ module.exports = {
           context.report({
             node,
             message:
-              'Controller classes must be decorated with @UseGuards(AuthenticatedUserGuard), unless explicitly marked with @NoUserAuthenticationController().',
+              'Controller classes must be decorated with `@UseGuards(AuthenticatedUserGuard)`, unless explicitly marked with `@NoUserAuthenticationController()`.',
           });
         }
 
@@ -150,7 +150,7 @@ module.exports = {
             context.report({
               node: element.key,
               message:
-                'Endpoint methods in controllers must be decorated with @AuthenticatedUser(), unless explicitly marked with @NoUserAuthenticationEndpoint().',
+                'Endpoint methods in controllers must be decorated with `@AuthenticatedUser()`, unless explicitly marked with `@NoUserAuthenticationEndpoint()`.',
             });
           }
         }

@@ -27,7 +27,9 @@ export class WhatsappController {
   }
 
   @SkipThrottle()
-  @NoUserAuthenticationEndpoint() // This endpoint is unprotected, as it is called by Twilio.
+  @NoUserAuthenticationEndpoint(
+    'Called by Twillio. Processed based on unique message-id.',
+  )
   @ApiOperation({
     summary:
       'Url for callbacks from Twilio triggered by a GET request to /notifications/whatsapp/templates',

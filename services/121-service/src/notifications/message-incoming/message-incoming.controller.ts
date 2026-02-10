@@ -20,7 +20,9 @@ export class MessageIncomingController {
   ) {}
 
   @SkipThrottle()
-  @NoUserAuthenticationEndpoint() // This endpoint is protected by AuthMiddlewareTwilio instead of normal authentication
+  @NoUserAuthenticationEndpoint(
+    'Called by Twillio. Protected by `AuthMiddlewareTwilio`.',
+  )
   @ApiOperation({
     summary: 'Status callback used by Twilio to notify us of WhatsApp status.',
   })
@@ -35,7 +37,9 @@ export class MessageIncomingController {
   }
 
   @SkipThrottle()
-  @NoUserAuthenticationEndpoint() // This endpoint is protected by AuthMiddlewareTwilio instead of normal authentication
+  @NoUserAuthenticationEndpoint(
+    'Called by Twillio. Protected by `AuthMiddlewareTwilio`.',
+  )
   @ApiOperation({
     summary:
       'Status callback used by Twilio to forward incoming messages to us',
@@ -51,7 +55,9 @@ export class MessageIncomingController {
   }
 
   @SkipThrottle()
-  @NoUserAuthenticationEndpoint() // This endpoint is protected by AuthMiddlewareTwilio instead of normal authentication
+  @NoUserAuthenticationEndpoint(
+    'Called by Twillio. Protected by `AuthMiddlewareTwilio`.',
+  )
   @ApiOperation({
     summary: 'Status callback used by Twilio to notify us of SMS status.',
   })

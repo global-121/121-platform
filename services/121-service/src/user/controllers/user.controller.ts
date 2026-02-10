@@ -76,7 +76,9 @@ export class UserController {
     return this.userService.createUsers(userData);
   }
 
-  @NoUserAuthenticationEndpoint()
+  @NoUserAuthenticationEndpoint(
+    'Login endpoint must be publicly accessible, to be able to authenticate further use.',
+  )
   @Throttle(THROTTLING_LIMIT_HIGH)
   @ApiOperation({ summary: '[EXTERNALLY USED] Log in existing user' })
   @ApiResponse({

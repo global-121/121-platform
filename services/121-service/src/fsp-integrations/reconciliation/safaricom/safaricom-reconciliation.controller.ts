@@ -17,7 +17,9 @@ import { AnyValidBody } from '@121-service/src/registration/validators/any-valid
 
 @ApiTags('fsps/safaricom')
 @Controller('fsps/safaricom')
-@NoUserAuthenticationController()
+@NoUserAuthenticationController(
+  'Called by Safaricom. Notification of transfer status and timeouts, based on unique transaction-id.',
+)
 export class SafaricomReconciliationController {
   public constructor(
     private safaricomReconciliationService: SafaricomReconciliationService,
