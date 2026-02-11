@@ -1,14 +1,8 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 import { CardModule } from 'primeng/card';
 
 import { PageLayoutProgramSettingsComponent } from '~/components/page-layout-program-settings/page-layout-program-settings.component';
-import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { IntegrateKoboButtonComponent } from '~/pages/program-settings-registration-data/components/integrate-kobo-button/integrate-kobo-button.component';
 
 @Component({
@@ -24,6 +18,4 @@ import { IntegrateKoboButtonComponent } from '~/pages/program-settings-registrat
 })
 export class ProgramSettingsRegistrationDataPageComponent {
   readonly programId = input.required<string>();
-
-  readonly koboApiService = inject(KoboApiService);
 }
