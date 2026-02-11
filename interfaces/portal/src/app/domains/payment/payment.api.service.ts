@@ -90,7 +90,7 @@ export class PaymentApiService extends DomainApiService {
   getPaymentStatus(programId: Signal<number | string>) {
     return this.generateQueryOptions<PaymentStatus>({
       path: [...BASE_ENDPOINT(programId), 'status'],
-      refetchInterval: 3000,
+      refetchInterval: (query) => (query.state.data?.inProgress ? 3000 : false),
     });
   }
 
