@@ -139,13 +139,7 @@ test('User can successfully replace a debit card and gets error if he tries to l
       await debitCardPage.getCurrentDebitCardDataList();
     const substituteDebitCardDataList =
       await debitCardPage.getSubstituteDebitCardDataList();
-    console.log(
-      '🚀 ~ substituteDebitCardDataList:',
-      substituteDebitCardDataList,
-    );
-    expect(currentDebitCardDataList['Serial number']).toBe(
-      newVisaCardNumberDashed,
-    );
+    expect(currentDebitCardDataList['Serial number']).toBe(newVisaCardNumber);
     expect(substituteDebitCardDataList['Serial number']).toBe(
       visaCardNumberDashed,
     );
