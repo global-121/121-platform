@@ -167,6 +167,10 @@ export class IntegrateKoboButtonComponent {
     return data.versionId ? true : false;
   });
 
+  readonly titleColoredChipLabel = computed(() =>
+    this.isKoboIntegrated() ? $localize`Linked` : undefined,
+  );
+
   readonly cardSubtitle = computed(() =>
     this.isKoboIntegrated()
       ? $localize`Kobo Toolbox is already integrated`
@@ -175,7 +179,7 @@ export class IntegrateKoboButtonComponent {
 
   readonly menuItems = computed<MenuItem[]>(() => [
     {
-      label: 'Reconfigure',
+      label: $localize`Reconfigure`,
       icon: 'pi pi-pencil',
       command: () => {
         this.koboConfigurationDialog().show();

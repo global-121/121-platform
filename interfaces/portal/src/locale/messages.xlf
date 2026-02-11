@@ -2126,14 +2126,17 @@
       <trans-unit id="7466544001784367462" datatype="html">
         <source>Kobo Toolbox is already integrated</source>
       </trans-unit>
-      <trans-unit id="8044670304293704178" datatype="html">
-        <source>Link to form</source>
-      </trans-unit>
       <trans-unit id="8153112678957419197" datatype="html">
         <source>Error while integrating Kobo form</source>
       </trans-unit>
       <trans-unit id="page-title-program-settings-registration-data" datatype="html">
         <source>Registration data</source>
+      </trans-unit>
+      <trans-unit id="3099882906994173432" datatype="html">
+        <source>Linked</source>
+      </trans-unit>
+      <trans-unit id="generic-continue" datatype="html">
+        <source>Continue</source>
       </trans-unit>
     </body>
   </file>

@@ -2,7 +2,6 @@ import { inject, Injectable, Signal } from '@angular/core';
 
 import { CreateKoboDto } from '@121-service/src/kobo/dtos/create-kobo.dto';
 import { KoboIntegrationResultDto } from '@121-service/src/kobo/dtos/kobo-integration-result.dto';
-// import { KoboIntegration } from '~/domains/kobo/kobo.model';
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
