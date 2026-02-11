@@ -3,6 +3,7 @@ module.exports = {
   preset: 'ts-jest',
   rootDir: '.',
   testMatch: ['<rootDir>/test/**/*.test.ts'],
+  setupFilesAfterEnv: ['jest-extended/all'],
   coverageReporters: ['json', 'lcov'],
   collectCoverageFrom: ['src/**/*.ts', '!src/migration/**'],
   modulePathIgnorePatterns: ['<rootDir>/dist/'],

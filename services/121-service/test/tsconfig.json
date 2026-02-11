@@ -3,7 +3,7 @@
   "compilerOptions": {
     "allowJs": false,
     "checkJs": false,
-    "types": ["node", "jest", "supertest", "Multer"]
+    "types": ["node", "jest", "jest-extended", "supertest", "Multer"]
   },
   "exclude": ["../node_modules", "../dist", "../src/**/*"],
   "include": ["**/*.ts"],
