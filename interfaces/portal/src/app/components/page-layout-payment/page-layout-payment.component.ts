@@ -136,8 +136,6 @@ export class PageLayoutPaymentComponent {
     () => this.transactionsResponse.data()?.meta.totalItems,
   );
 
-  // readonly refetchPayment = signal(true);
-
   readonly allPaymentsLink = computed(() => [
     '/',
     AppRoutes.program,
