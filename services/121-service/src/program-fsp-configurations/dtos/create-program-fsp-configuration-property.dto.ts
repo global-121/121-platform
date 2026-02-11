@@ -17,7 +17,7 @@ export class CreateProgramFspConfigurationPropertyDto {
   @ApiProperty({
     example: `password-${uuid()}`,
     description:
-      'Should be string (for e.g. name=username), boolean (for e.g. name=cardDistributionByMail), number (for e.g. name=maxAmountToSpendPerMonthInCents) or array of strings (for e.g. name=columnsToExport)',
+      'Should be string (for e.g. name=username), boolean (for e.g. name=cardDistributionByMail), number (for e.g. name=maxToSpendPerMonthInCents) or array of strings (for e.g. name=columnsToExport)',
   })
   @IsNotEmpty()
   public readonly value: FspConfigurationPropertyType;
