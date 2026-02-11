@@ -236,7 +236,7 @@ describe('KoboValidationService', () => {
       expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
          "Kobo form definition validation failed:
-         - Kobo form attribute "nationalId" has incompatible type for 121 attribute: expected: "background-audio, xml-external, acknowledge, audio, barcode, calculate, date, dateTime, file, geopoint, geoshape, geotrace, hidden, image, rank, select_multiple_from_file, select_multiple, text, time, video", got "integer"  "
+         - Kobo form attribute "nationalId" has incompatible type for 121 attribute, expected one of the following types: "background-audio, xml-external, acknowledge, audio, barcode, calculate, date, dateTime, file, geopoint, geoshape, geotrace, hidden, image, rank, select_multiple_from_file, select_multiple, text, time, video", got "integer"  "
         `);
     });
   });
@@ -497,7 +497,7 @@ describe('KoboValidationService', () => {
       expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
          "Kobo form definition validation failed:
-         - Kobo form attribute "phoneNumber" has incompatible type for 121 attribute: expected: "text", got "integer"  "
+         - Kobo form attribute "phoneNumber" has incompatible type for 121 attribute, expected one of the following types: "text", got "integer"  "
         `);
     });
   });
@@ -657,7 +657,7 @@ describe('KoboValidationService', () => {
       expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
        "Kobo form definition validation failed:
-       - Kobo form attribute "scope" has incompatible type for 121 attribute: expected: "background-audio, xml-external, acknowledge, audio, barcode, calculate, date, dateTime, file, geopoint, geoshape, geotrace, hidden, image, rank, select_multiple_from_file, select_multiple, text, time, video", got "integer"  "
+       - Kobo form attribute "scope" has incompatible type for 121 attribute, expected one of the following types: "background-audio, xml-external, acknowledge, audio, barcode, calculate, date, dateTime, file, geopoint, geoshape, geotrace, hidden, image, rank, select_multiple_from_file, select_multiple, text, time, video", got "integer"  "
       `);
     });
   });

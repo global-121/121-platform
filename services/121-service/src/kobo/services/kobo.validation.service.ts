@@ -362,7 +362,7 @@ export class KoboValidationService {
     }
 
     if (!expectedKoboTypes.includes(surveyItemType)) {
-      return `Kobo form attribute "${attributeName}" has incompatible type for 121 attribute: expected: "${expectedKoboTypes.join(', ')}", got "${surveyItemType}"  `;
+      return `Kobo form attribute "${attributeName}" has incompatible type for 121 attribute, expected one of the following types: "${expectedKoboTypes.join(', ')}", got "${surveyItemType}"  `;
     }
   }
 
