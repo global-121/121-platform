@@ -1,4 +1,4 @@
-import { fspConfigurationPropertyTypes } from '@121-service/src/fsp-integrations/shared/dto/fsp-configuration-property-types.dto';
+import { fspConfigurationPropertyTypes } from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-types.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
 
