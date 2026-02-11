@@ -52,12 +52,6 @@ export class TransactionJobsIntersolveVisaService {
           transactionJob.programFspConfigurationId,
         );
 
-      if (typeof maxToSpendPerMonthInCents !== 'number') {
-        throw new IntersolveVisaApiError(
-          'maxToSpendPerMonthInCents is not configured correctly for the program fsp configuration.',
-        );
-      }
-
       transferValueInMajorUnit =
         await this.intersolveVisaService.calculateTransferValueWithWalletRetrieval(
           {

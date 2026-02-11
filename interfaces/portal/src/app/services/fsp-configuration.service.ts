@@ -124,17 +124,30 @@ export class FspConfigurationService {
     | 'select-attributes-multiple'
     | 'string'
     | 'toggle-switch' {
+    // Specific exceptions for excel fsp and the display name
     switch (propertyName) {
       case FspConfigurationProperties.columnToMatch:
         return 'select-attribute';
       case FspConfigurationProperties.columnsToExport:
         return 'select-attributes-multiple';
-      case FspConfigurationProperties.cardDistributionByMail:
-        return 'toggle-switch';
-      case FspConfigurationProperties.maxToSpendPerMonthInCents:
-        return 'number-input';
-      default:
+      case 'displayName':
         return 'string';
+      default:
+        return this.getPropertyFieldNameForDefaultName(propertyName);
+    }
+  }
+
+  getPropertyFieldNameForDefaultName(name: FspConfigurationProperties) {
+    const type = fspConfigurationPropertyTypes[name];
+    switch (type) {
+      case 'number':
+        return 'number-input';
+      case 'boolean':
+        return 'toggle-switch';
+      case 'string':
+        return 'string';
+      case 'array':
+        return 'select-attributes-multiple';
     }
   }
 

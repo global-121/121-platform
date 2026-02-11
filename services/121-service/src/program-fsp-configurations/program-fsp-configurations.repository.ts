@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
-import { FspConfigurationDto } from '@121-service/src/fsp-integrations/shared/dto/fsp-configuration-property-types.dto';
+import { FspConfigurationPropertyTypeMap } from '@121-service/src/fsp-integrations/shared/dto/fsp-configuration-property-types.dto';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspConfigurationProperty } from '@121-service/src/fsp-integrations/shared/interfaces/fsp-configuration-property.interface';
@@ -100,7 +100,7 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
   }: {
     programFspConfigurationId: number;
     name: TName;
-  }): Promise<FspConfigurationDto[TName] | undefined> {
+  }): Promise<FspConfigurationPropertyTypeMap[TName] | undefined> {
     const configuration: ProgramFspConfigurationEntity | null =
       await this.baseRepository
         .createQueryBuilder('configuration')
@@ -124,7 +124,7 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
       return undefined;
     }
 
-    return property.value as FspConfigurationDto[TName];
+    return property.value as FspConfigurationPropertyTypeMap[TName];
   }
 
   public async getPropertyValueByNameOrThrow<
@@ -132,7 +132,7 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
   >(params: {
     programFspConfigurationId: number;
     name: TName;
-  }): Promise<FspConfigurationDto[TName]> {
+  }): Promise<FspConfigurationPropertyTypeMap[TName]> {
     const value = await this.getPropertyValueByName(params);
 
     if (value === undefined) {
@@ -144,14 +144,12 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
     return value;
   }
 
-  public async getPropertiesByNamesOrThrow<
-    TName extends FspConfigurationProperties,
-  >({
+  public async getPropertiesByNamesOrThrow({
     programFspConfigurationId,
     names,
   }: {
     programFspConfigurationId: number;
-    names: TName[];
+    names: FspConfigurationProperties[];
   }): Promise<FspConfigurationProperty[]> {
     const properties = await this.getProperties(programFspConfigurationId);
 
@@ -165,7 +163,7 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
 
     return properties.map((property) => ({
       name: property.name,
-      value: property.value as FspConfigurationDto[TName],
+      value: property.value,
     }));
   }
 
