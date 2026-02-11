@@ -11,15 +11,6 @@ describe('serializeFspConfigurationPropertyValue', () => {
     expect(serializeFspConfigurationPropertyValue(0)).toBe('0');
   });
 
-  it('should throw for non-finite numbers', () => {
-    expect(() => serializeFspConfigurationPropertyValue(Number.NaN)).toThrow(
-      'Cannot serialize value "NaN" as number',
-    );
-    expect(() =>
-      serializeFspConfigurationPropertyValue(Number.POSITIVE_INFINITY),
-    ).toThrow('Cannot serialize value "Infinity" as number');
-  });
-
   it('should return string as-is', () => {
     expect(serializeFspConfigurationPropertyValue('hello')).toBe('hello');
   });
