@@ -14,6 +14,7 @@ import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { NoUserAuthenticationEndpoint } from '@121-service/src/guards/no-user-authentication.decorator';
 import { indirectRelationConfig } from '@121-service/src/scoped.repository';
 import { SecretDto } from '@121-service/src/scripts/scripts.controller';
 
@@ -23,7 +24,9 @@ import { SecretDto } from '@121-service/src/scripts/scripts.controller';
 export class TestController {
   constructor(private readonly dataSource: DataSource) {}
 
-  @AuthenticatedUser({ isAdmin: true })
+  @NoUserAuthenticationEndpoint(
+    'This endpoint is for testing purposes only and does not require authentication. It is protected by a secret and disabled in production. Authentication is intentionally bypassed as this endpoint is used to terminate the service for generating qlty reports.',
+  )
   @ApiOperation({
     summary:
       'WARNING: Kills 121-service. Only works in DEBUG-mode. Only used for testing purposes.',
