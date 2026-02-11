@@ -25,7 +25,6 @@ import RegistrationDebitCardPage from '@121-e2e/portal/pages/RegistrationDebitCa
 const visaCardNumber = '1111222233334444555';
 const visaCardNumberDashed = '1111-2222-3333-4444-555';
 const newVisaCardNumber = '5555444433332222111';
-const newVisaCardNumberDashed = '5555-4444-3333-2222-111';
 const nonExistingVisaCardNumber = '3333444455556666777';
 let registrationId: number;
 let accessToken: string;
