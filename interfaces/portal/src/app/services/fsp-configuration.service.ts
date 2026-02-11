@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { castArray, unique } from 'radashi';
 
-import { FspConfigurationDto } from '@121-service/src/fsp-integrations/shared/dto/fsp-configuration-property-types.dto';
+import { fspConfigurationPropertyTypes } from '@121-service/src/fsp-integrations/shared/dto/fsp-configuration-property-types.dto';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
@@ -201,12 +201,6 @@ export class FspConfigurationService {
       existingPropertyValue = '';
     }
 
-    const fieldType = this.getPropertyFieldType(propertyName);
-    if (fieldType === 'select-attributes-multiple') {
-      // we need to default these properties it to an empty array instead of an empty string
-      existingPropertyValue = existingPropertyValue ?? [];
-    }
-
     return (
       existingPropertyValue ?? this.getDefaultValueForProperty(propertyName)
     );
@@ -215,15 +209,18 @@ export class FspConfigurationService {
   private getDefaultValueForProperty(
     propertyName: FspConfigurationProperties,
   ): FspConfigurationPropertyType {
-    if (Array.isArray(FspConfigurationDto[propertyName])) {
-      return [];
+    const propType = fspConfigurationPropertyTypes[propertyName];
+    switch (propType) {
+      case 'array':
+        return [];
+      case 'boolean':
+        return true;
+      case 'number':
+        return 0;
+      case 'string':
+        return '';
+      default:
+        throw new Error(`Unsupported type for property: ${propertyName}`);
     }
-    if (typeof FspConfigurationDto[propertyName] === 'boolean') {
-      return true;
-    }
-    if (typeof FspConfigurationDto[propertyName] === 'number') {
-      return 0;
-    }
-    return '';
   }
 }
