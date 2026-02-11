@@ -1,8 +1,8 @@
 <app-card-with-link
   title="Kobo toolbox"
-  [titleColoredChipLabel]="isKoboIntegrated() ? 'Linked' : undefined"
-  [titleColoredChipColor]="'green'"
   i18n-title
+  [titleColoredChipLabel]="titleColoredChipLabel()"
+  [titleColoredChipColor]="'green'"
   (cardClicked)="
     isKoboIntegrated() ? undefined : koboConfigurationDialog.show()
   "
@@ -15,11 +15,14 @@
       <app-ellipsis-menu [menuItems]="menuItems()" />
 
       <a
-        i18n
         [href]="koboIntegration.data()?.url"
-        class="underline"
-      >
-        Link to form
+        [rel]="'external'"
+        target="_blank"
+        title="Opens in a new window"
+        i18n-title="@@generic-opens-in-new-window"
+        class="inline-block [&_span:first-child]:underline hover:[&_span:first-child]:no-underline focus:[&_span:first-child]:no-underline"
+        ><span>{{ koboIntegration.data()?.url }}</span>
+        <span class="p-button-icon pi pi-external-link ms-1 text-sm"></span>
       </a>
     }
   </ng-container>
@@ -95,7 +98,7 @@
   [mutation]="linkKoboMutation"
   [mutationData]="undefined"
   proceedLabel="Continue"
-  i18n-proceedLabel
+  i18n-proceedLabel="@@generic-continue"
 >
   <p>{{ koboFormName() }}</p>
 </app-form-dialog>
