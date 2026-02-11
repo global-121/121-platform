@@ -81,10 +81,9 @@
     [errorMessage]="koboConfigurationFormFieldErrors()('token')"
   >
     <p-password
-      autocomplete="one-time-code"
+      autocomplete="off"
       [toggleMask]="true"
       [feedback]="false"
-      type="text"
       formControlName="token"
     />
   </app-form-field-wrapper>
