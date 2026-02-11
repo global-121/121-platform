@@ -49,6 +49,9 @@
                   >
                 }
               }
+              @case ('code') {
+                <code>{{ item.value }}</code>
+              }
               @case ('currency') {
                 {{
                   item.value

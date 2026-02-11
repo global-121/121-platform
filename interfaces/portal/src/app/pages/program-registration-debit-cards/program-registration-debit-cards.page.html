@@ -91,9 +91,7 @@
             <p-accordion-header
               ><span class="flex items-center gap-1">
                 <strong i18n>Old card:</strong>
-                <span class="font-normal">
-                  {{ oldCard.tokenCode | creditCardNumber }}
-                </span>
+                <code>{{ oldCard.tokenCode | creditCardNumber }}</code>
                 <app-colored-chip
                   [variant]="oldCard.chipVariant"
                   [label]="oldCard.chipLabel"
@@ -125,7 +123,8 @@
 >
   <p i18n>
     You're about to pause debit card number
-    {{ currentCard()?.tokenCode | creditCardNumber }}.
+    <code>{{ currentCard()?.tokenCode | creditCardNumber }}</code
+    >.
   </p>
   <p i18n="@@generic-message-will-be-sent">
     A message will be sent to the registration about this update.
@@ -144,7 +143,8 @@
 >
   <p i18n>
     You're about to unpause debit card number
-    {{ currentCard()?.tokenCode | creditCardNumber }}.
+    <code>{{ currentCard()?.tokenCode | creditCardNumber }}</code
+    >.
   </p>
   <p i18n="@@generic-message-will-be-sent">
     A message will be sent to the registration about this update.
@@ -163,8 +163,8 @@
 >
   <p i18n>
     You're about to replace debit card number
-    {{ currentCard()?.tokenCode | creditCardNumber }}. This will block the
-    current card and a new card will be issued.
+    <code>{{ currentCard()?.tokenCode | creditCardNumber }}</code
+    >. This will block the current card and a new card will be issued.
   </p>
   <p i18n="@@generic-message-will-be-sent">
     A message will be sent to the registration about this update.

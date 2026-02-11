@@ -99,9 +99,7 @@ test('User can link a debit card to a registration', async ({ page }) => {
 
     const currentDebitCardDataList =
       await debitCardPage.getCurrentDebitCardDataList();
-    expect(currentDebitCardDataList['Serial number']).toBe(
-      visaCardNumberDashed,
-    );
+    expect(currentDebitCardDataList['Serial number']).toBe(visaCardNumber);
   });
 });
 
