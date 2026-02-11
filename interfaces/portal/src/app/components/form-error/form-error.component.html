@@ -1,9 +1,9 @@
 @if (error()) {
-  <div class="inline-flex items-center gap-2 py-2 text-red-500">
+  <div class="inline-flex items-start gap-2 py-2 text-red-500">
     <i class="pi pi-exclamation-triangle text-xl"></i>
     <span
       data-testid="form-error"
-      class="txt-system-s"
+      class="txt-system-s whitespace-pre-wrap"
       >{{ error() }}</span
     >
   </div>

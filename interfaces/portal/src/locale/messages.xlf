@@ -2144,6 +2144,54 @@
       <trans-unit id="7097489496530398841" datatype="html">
         <source>You&apos;re about to pause debit card number <x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/>.</source>
       </trans-unit>
+      <trans-unit id="1419676661357831374" datatype="html">
+        <source>Registration data</source>
+      </trans-unit>
+      <trans-unit id="179685117939127283" datatype="html">
+        <source>For more information about how to integrate Kobo see <x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="START_TAG_APP_MANUAL_LINK"/><x ctype="x-app_manual_link" equiv-text="&lt;app-manual-link /&gt;" id="CLOSE_TAG_APP_MANUAL_LINK"/></source>
+      </trans-unit>
+      <trans-unit id="2467968235830364853" datatype="html">
+        <source>Select a registration tool you want to integrate to the program</source>
+      </trans-unit>
+      <trans-unit id="3054104681790532369" datatype="html">
+        <source>Kobo toolbox</source>
+      </trans-unit>
+      <trans-unit id="3069764081921374374" datatype="html">
+        <source>Kobo form successfully integrated.</source>
+      </trans-unit>
+      <trans-unit id="3933760683279649879" datatype="html">
+        <source>Kobo server URL</source>
+      </trans-unit>
+      <trans-unit id="4084990812407796583" datatype="html">
+        <source>Last updated: <x ctype="x-span" equiv-text="&lt;span&gt;" id="START_TAG_SPAN"/><x equiv-text="{{ koboIntegration.data()?.dateDeployed | date }}" id="INTERPOLATION"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/></source>
+      </trans-unit>
+      <trans-unit id="4124465588218417294" datatype="html">
+        <source>Kobo asset ID</source>
+      </trans-unit>
+      <trans-unit id="4671562292257026998" datatype="html">
+        <source>API key</source>
+      </trans-unit>
+      <trans-unit id="5270958968110720770" datatype="html">
+        <source>Link Kobo Toolbox</source>
+      </trans-unit>
+      <trans-unit id="6927943623949177165" datatype="html">
+        <source>Registration integration</source>
+      </trans-unit>
+      <trans-unit id="7466544001784367462" datatype="html">
+        <source>Kobo Toolbox is already integrated</source>
+      </trans-unit>
+      <trans-unit id="8153112678957419197" datatype="html">
+        <source>Error while integrating Kobo form</source>
+      </trans-unit>
+      <trans-unit id="page-title-program-settings-registration-data" datatype="html">
+        <source>Registration data</source>
+      </trans-unit>
+      <trans-unit id="3099882906994173432" datatype="html">
+        <source>Linked</source>
+      </trans-unit>
+      <trans-unit id="generic-continue" datatype="html">
+        <source>Continue</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
