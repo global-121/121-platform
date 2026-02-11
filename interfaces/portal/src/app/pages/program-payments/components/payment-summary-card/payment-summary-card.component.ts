@@ -47,7 +47,7 @@ export class PaymentSummaryCardComponent {
     this.paymentApiService.getPaymentStatus(this.programId),
   );
   metrics = injectQuery(() => ({
-    ...this.paymentApiService.getPayment({
+    ...this.paymentApiService.getPaymentAggregate({
       programId: this.programId,
       paymentId: this.paymentId,
     })(),
