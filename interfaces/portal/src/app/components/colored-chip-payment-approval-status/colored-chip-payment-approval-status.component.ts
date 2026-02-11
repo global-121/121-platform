@@ -23,12 +23,8 @@ export class ColoredChipPaymentApprovalStatusComponent {
   readonly paymentId = input.required<number | string>();
   private paymentApiService = inject(PaymentApiService);
 
-  paymentStatus = injectQuery(
-    this.paymentApiService.getPaymentStatus(this.programId),
-  );
-
   payment = injectQuery(() => ({
-    ...this.paymentApiService.getPayment({
+    ...this.paymentApiService.getPaymentAggregate({
       programId: this.programId,
       paymentId: this.paymentId,
     })(),

@@ -33,7 +33,6 @@ import { ProgramPaymentChartComponent } from '~/components/page-layout-payment/c
 import { SinglePaymentExportComponent } from '~/components/page-layout-payment/components/single-payment-export/single-payment-export.component';
 import { StartPaymentComponent } from '~/components/page-layout-payment/components/start-payment/start-payment.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
-import { PaymentAggregate } from '~/domains/payment/payment.model';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { programHasFspWithExportFileIntegration } from '~/domains/program/program.helper';
 import { AuthService } from '~/services/auth.service';
@@ -84,24 +83,29 @@ export class PageLayoutPaymentComponent {
   paymentStatus = injectQuery(
     this.paymentApiService.getPaymentStatus(this.programId),
   );
-  payment = injectQuery(() => ({
-    ...this.paymentApiService.getPayment({
+  paymentAggregate = injectQuery(() => ({
+    ...this.paymentApiService.getPaymentAggregate({
       programId: this.programId,
       paymentId: this.paymentId,
     })(),
-    // Refetch the data every second if a payment count !== transactions count
-    refetchInterval: this.refetchPayment() ? 1000 : undefined,
-    success: (data: PaymentAggregate) => {
-      if (
-        data.success.count +
-          data.failed.count +
-          data.waiting.count +
-          data.approved.count +
-          data.pendingApproval.count ===
-        this.totalTransactions()
-      ) {
-        this.refetchPayment.set(false);
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      if (!data || !this.totalTransactions()) {
+        return 1000;
       }
+
+      const isPaymentWaitingToStart =
+        data.approved.count + data.pendingApproval.count ===
+        this.totalTransactions();
+
+      const isPaymentFinished =
+        data.success.count + data.failed.count === this.totalTransactions();
+
+      if (isPaymentWaitingToStart || isPaymentFinished) {
+        return false;
+      }
+
+      return 1000;
     },
   }));
   payments = injectQuery(this.paymentApiService.getPayments(this.programId));
@@ -129,10 +133,8 @@ export class PageLayoutPaymentComponent {
     () => this.transactionsResponse.data()?.data ?? [],
   );
   protected readonly totalTransactions = computed(
-    () => this.transactionsResponse.data()?.meta.totalItems ?? 0,
+    () => this.transactionsResponse.data()?.meta.totalItems,
   );
-
-  readonly refetchPayment = signal(true);
 
   readonly allPaymentsLink = computed(() => [
     '/',
@@ -160,31 +162,31 @@ export class PageLayoutPaymentComponent {
   );
 
   readonly totalRegistrations = computed(() => {
-    if (!this.payment.isSuccess()) {
+    if (!this.paymentAggregate.isSuccess()) {
       return '-';
     }
 
     const totalRegistrations =
-      this.payment.data().failed.count +
-      this.payment.data().success.count +
-      this.payment.data().waiting.count +
-      this.payment.data().pendingApproval.count +
-      this.payment.data().approved.count;
+      this.paymentAggregate.data().failed.count +
+      this.paymentAggregate.data().success.count +
+      this.paymentAggregate.data().waiting.count +
+      this.paymentAggregate.data().pendingApproval.count +
+      this.paymentAggregate.data().approved.count;
 
     return totalRegistrations.toString();
   });
 
   readonly totalPaymentAmount = computed(() => {
-    if (!this.payment.isSuccess()) {
+    if (!this.paymentAggregate.isSuccess()) {
       return '-';
     }
 
     const totalTransferValue =
-      this.payment.data().failed.transferValue +
-      this.payment.data().success.transferValue +
-      this.payment.data().waiting.transferValue +
-      this.payment.data().pendingApproval.transferValue +
-      this.payment.data().approved.transferValue;
+      this.paymentAggregate.data().failed.transferValue +
+      this.paymentAggregate.data().success.transferValue +
+      this.paymentAggregate.data().waiting.transferValue +
+      this.paymentAggregate.data().pendingApproval.transferValue +
+      this.paymentAggregate.data().approved.transferValue;
 
     return (
       this.currencyPipe.transform(
@@ -197,13 +199,13 @@ export class PageLayoutPaymentComponent {
   });
 
   readonly successfulPaymentsAmount = computed(() => {
-    if (!this.payment.isSuccess()) {
+    if (!this.paymentAggregate.isSuccess()) {
       return '-';
     }
 
     return (
       this.currencyPipe.transform(
-        this.payment.data().success.transferValue,
+        this.paymentAggregate.data().success.transferValue,
         this.program.data()?.currency,
         'symbol-narrow',
         '1.0-0',
@@ -212,12 +214,12 @@ export class PageLayoutPaymentComponent {
   });
 
   readonly firstPendingApprovalRank = computed(() => {
-    if (!this.payment.isSuccess()) {
+    if (!this.paymentAggregate.isSuccess()) {
       return 0;
     }
 
     return Math.min(
-      ...this.payment
+      ...this.paymentAggregate
         .data()
         .approvalStatus.filter((a) => !a.approved)
         .map((a) => a.rank),
@@ -229,11 +231,11 @@ export class PageLayoutPaymentComponent {
   );
 
   readonly paymentFspList = computed<string>(() => {
-    if (!this.payment.isSuccess()) {
+    if (!this.paymentAggregate.isSuccess()) {
       return '';
     }
 
-    const fspLabels = this.payment
+    const fspLabels = this.paymentAggregate
       .data()
       .fsps.map(
         (fsp) =>
@@ -255,10 +257,10 @@ export class PageLayoutPaymentComponent {
       | TransactionStatusEnum.pendingApproval,
   ) =>
     computed<string>(() => {
-      if (!this.payment.isSuccess()) {
+      if (!this.paymentAggregate.isSuccess()) {
         return '';
       }
-      const count = this.payment.data()[transactionStatus].count;
+      const count = this.paymentAggregate.data()[transactionStatus].count;
       return count.toString() + ' ' + $localize`registrations`;
     });
 
@@ -268,10 +270,11 @@ export class PageLayoutPaymentComponent {
       | TransactionStatusEnum.pendingApproval,
   ) =>
     computed<string>(() => {
-      if (!this.payment.isSuccess()) {
+      if (!this.paymentAggregate.isSuccess()) {
         return '';
       }
-      const totalPaymentAmount = this.payment.data()[status].transferValue;
+      const totalPaymentAmount =
+        this.paymentAggregate.data()[status].transferValue;
 
       return (
         this.currencyPipe.transform(
@@ -284,7 +287,7 @@ export class PageLayoutPaymentComponent {
     });
 
   readonly showApprovePaymentButton = computed<boolean | undefined>(() => {
-    if (!this.payment.isSuccess()) {
+    if (!this.paymentAggregate.isSuccess()) {
       return false;
     }
 
@@ -292,7 +295,7 @@ export class PageLayoutPaymentComponent {
       return false;
     }
 
-    const approvalStatus = this.payment.data().approvalStatus;
+    const approvalStatus = this.paymentAggregate.data().approvalStatus;
     const currentPaymentApproval = approvalStatus.find(
       (approval) => approval.username === this.authService.user?.username,
     );
@@ -310,7 +313,19 @@ export class PageLayoutPaymentComponent {
   });
 
   readonly showStartPaymentButton = computed<boolean | undefined>(() => {
-    if (!this.payment.isSuccess()) {
+    if (!this.isPaymentReadyToStart()) {
+      return false;
+    }
+
+    if (!this.hasStartPaymentPermissions()) {
+      return false;
+    }
+
+    return true;
+  });
+
+  readonly isPaymentReadyToStart = computed(() => {
+    if (!this.paymentAggregate.isSuccess()) {
       return false;
     }
 
@@ -318,17 +333,13 @@ export class PageLayoutPaymentComponent {
       return false;
     }
 
-    const approvalStatus = this.payment.data().approvalStatus;
+    const approvalStatus = this.paymentAggregate.data().approvalStatus;
     if (approvalStatus.some((approval) => !approval.approved)) {
       return false;
     }
 
     // hide after starting, unless approved transactions left
-    if (this.payment.data().approved.count === 0) {
-      return false;
-    }
-
-    if (!this.hasStartPaymentPermissions()) {
+    if (this.paymentAggregate.data().approved.count === 0) {
       return false;
     }
 
@@ -347,11 +358,11 @@ export class PageLayoutPaymentComponent {
   );
 
   readonly isPaymentApproved = computed(() => {
-    if (!this.payment.isSuccess()) {
+    if (!this.paymentAggregate.isSuccess()) {
       return false;
     }
 
-    const data = this.payment.data();
+    const data = this.paymentAggregate.data();
 
     const failed = data.failed.count;
     const success = data.success.count;
@@ -362,7 +373,7 @@ export class PageLayoutPaymentComponent {
   });
 
   readonly statusBadgeLabel = computed(() => {
-    if (!this.payment.isSuccess()) {
+    if (!this.paymentAggregate.isSuccess()) {
       return '';
     }
 
@@ -370,7 +381,7 @@ export class PageLayoutPaymentComponent {
       return $localize`Approved`;
     }
 
-    const approvalData = this.payment.data().approvalStatus;
+    const approvalData = this.paymentAggregate.data().approvalStatus;
     const approvedCount = approvalData.filter((status) => status.approved);
     const totalCount = approvalData.length;
 
@@ -378,7 +389,7 @@ export class PageLayoutPaymentComponent {
   });
 
   readonly statusBadgeColor = computed(() => {
-    if (!this.payment.isSuccess()) {
+    if (!this.paymentAggregate.isSuccess()) {
       return 'blue';
     }
 
