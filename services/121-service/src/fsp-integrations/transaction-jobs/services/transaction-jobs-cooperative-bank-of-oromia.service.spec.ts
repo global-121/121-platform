@@ -37,7 +37,7 @@ describe('TransactionJobsCooperativeBankOfOromiaService', () => {
     );
     transactionsService = module.get(TransactionsService);
 
-    programConfigurationRepository.getPropertyValueByName = jest
+    programConfigurationRepository.getPropertyValueByNameOrThrow = jest
       .fn()
       .mockResolvedValue('debit-acc');
 

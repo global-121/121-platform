@@ -25,7 +25,7 @@ describe('IntersolveVisaAccountManagementService', () => {
   let service: IntersolveVisaAccountManagementService;
   let intersolveVisaService: jest.Mocked<IntersolveVisaService>;
   let queueMessageService: jest.Mocked<MessageQueuesService>;
-  let programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
+  let _programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
   let registrationsPaginationService: jest.Mocked<RegistrationsPaginationService>;
   let registrationsService: jest.Mocked<RegistrationsService>;
 
@@ -77,13 +77,16 @@ describe('IntersolveVisaAccountManagementService', () => {
           provide: ProgramFspConfigurationRepository,
           useValue: {
             getPropertiesByNamesOrThrow: jest.fn(),
-            getPropertyValueByName: jest
+            getPropertyValueByName: jest.fn(),
+            getPropertyValueByNameOrThrow: jest
               .fn()
               .mockImplementation(async ({ name }) => {
                 if (name === FspConfigurationProperties.brandCode)
                   return 'BRAND';
                 if (name === FspConfigurationProperties.coverLetterCode)
                   return 'COVER';
+                if (name === FspConfigurationProperties.cardDistributionByMail)
+                  return false;
                 return undefined;
               }),
           },
@@ -112,7 +115,7 @@ describe('IntersolveVisaAccountManagementService', () => {
     service = module.get(IntersolveVisaAccountManagementService);
     queueMessageService = module.get(MessageQueuesService);
     intersolveVisaService = module.get(IntersolveVisaService);
-    programFspConfigurationRepository = module.get(
+    _programFspConfigurationRepository = module.get(
       ProgramFspConfigurationRepository,
     );
     registrationsPaginationService = module.get(
@@ -161,15 +164,6 @@ describe('IntersolveVisaAccountManagementService', () => {
           } as any,
         ],
       );
-
-      (
-        programFspConfigurationRepository.getPropertyValueByName as jest.Mock
-      ).mockImplementation(async ({ name }) => {
-        if (name === FspConfigurationProperties.brandCode) return 'BRAND';
-        if (name === FspConfigurationProperties.cardDistributionByMail)
-          return false;
-        return undefined;
-      });
 
       await service.linkCardOnSiteToRegistration({
         referenceId: 'ref-1',
