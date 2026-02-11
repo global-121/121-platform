@@ -63,14 +63,14 @@
   <div
     class="grid gap-5 [grid-template-areas:'chart_chart''metric1_metric2''table_table'] md:grid-cols-[1fr_24rem] md:[grid-template-areas:'chart_metric1''chart_metric2''table_table']"
   >
-    @let paymentDetails = this.payment.data();
+    @let paymentAggregate = this.paymentAggregate.data();
 
-    @if (!paymentDetails) {
+    @if (!paymentAggregate) {
       <p-skeleton
         class="[grid-area:chart]"
         height="100%"
       ></p-skeleton>
-    } @else if (paymentDetails.pendingApproval.count === 0) {
+    } @else if (paymentAggregate.pendingApproval.count === 0) {
       <p-card
         class="[grid-area:chart] [&_.p-card]:h-full [&_.p-card-body]:h-full"
       >
@@ -81,7 +81,7 @@
           Transactions data
         </p>
         <app-program-payment-chart
-          [paymentDetails]="paymentDetails"
+          [paymentDetails]="paymentAggregate"
         ></app-program-payment-chart>
       </p-card>
     } @else {
@@ -95,7 +95,7 @@
           Approval flow
         </p>
         <div>
-          @for (approver of paymentDetails.approvalStatus; track $index) {
+          @for (approver of paymentAggregate.approvalStatus; track $index) {
             <div
               class="mb-6 flex flex-row"
               data-testid="approval-flow-row"

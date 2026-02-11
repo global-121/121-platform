@@ -37,7 +37,7 @@ export class PaymentApiService extends DomainApiService {
     });
   }
 
-  getPayment({
+  getPaymentAggregate({
     programId,
     paymentId,
   }: {
