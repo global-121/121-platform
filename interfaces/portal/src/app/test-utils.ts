@@ -1,4 +1,5 @@
 export const createLocalStorageMock = () => {
+  const originalLocalStorage = window.localStorage;
   const storageMock = {
     getItem: jest.fn(),
     setItem: jest.fn(),
@@ -10,6 +11,14 @@ export const createLocalStorageMock = () => {
   Object.defineProperty(window, 'localStorage', {
     value: storageMock,
     writable: true,
+    configurable: true,
   });
-  return storageMock;
+  const restore = () => {
+    Object.defineProperty(window, 'localStorage', {
+      value: originalLocalStorage,
+      writable: true,
+      configurable: true,
+    });
+  };
+  return { ...storageMock, restore };
 };

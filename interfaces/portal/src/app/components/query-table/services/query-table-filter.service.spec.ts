@@ -7,13 +7,19 @@ import { createLocalStorageMock } from '~/test-utils';
 describe('QueryTableFilterService', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for test-setup
   let service: QueryTableFilterService<any>;
+  let mockLocalStorage: ReturnType<typeof createLocalStorageMock>;
 
   beforeEach(() => {
+    mockLocalStorage = createLocalStorageMock();
     TestBed.configureTestingModule({
       providers: [QueryTableFilterService, QueryTableCellService],
     });
 
     service = TestBed.inject(QueryTableFilterService);
+  });
+
+  afterEach(() => {
+    mockLocalStorage.restore();
   });
 
   it('should be created and initialize with correct default state', () => {
@@ -35,7 +41,6 @@ describe('QueryTableFilterService', () => {
   it('should clear all filters', () => {
     const clearTableSpy = jest.fn();
     const resetSelectionSpy = jest.fn();
-    const mockLocalStorage = createLocalStorageMock();
 
     service.globalFilterVisible.set(true);
 

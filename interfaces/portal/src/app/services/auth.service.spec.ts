@@ -75,6 +75,10 @@ describe('AuthService - hasDeprecatedPermissions', () => {
     service = TestBed.inject(AuthService);
   });
 
+  afterEach(() => {
+    mockLocalStorage.restore();
+  });
+
   describe('user getter with deprecated permissions', () => {
     beforeEach(() => {
       mockAuthStrategy.isUserExpired.mockReturnValue(false);

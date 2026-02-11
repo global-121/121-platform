@@ -5,9 +5,16 @@ import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 import { createLocalStorageMock } from '~/test-utils';
 import { getLocaleForInitialization, Locale } from '~/utils/locale';
 
+let mockLocalStorage: ReturnType<typeof createLocalStorageMock>;
+
 describe('getLocaleForInitialization', () => {
   beforeEach(() => {
     enableProdMode();
+    mockLocalStorage = createLocalStorageMock();
+  });
+
+  afterEach(() => {
+    mockLocalStorage.restore();
   });
 
   it('should throw an error when an invalid default locale is passed in', () => {
@@ -29,7 +36,6 @@ describe('getLocaleForInitialization', () => {
   });
 
   it('should default to the urlLocale whenever there is weirdness saved in local storage', () => {
-    const mockLocalStorage = createLocalStorageMock();
     mockLocalStorage.getItem.mockImplementation(() => 'nonsense');
 
     const localeInfo = getLocaleForInitialization({
@@ -41,7 +47,6 @@ describe('getLocaleForInitialization', () => {
   });
 
   it('should use the default locale when there is nothing saved in local storage', () => {
-    const mockLocalStorage = createLocalStorageMock();
     mockLocalStorage.getItem.mockImplementation(() => null);
 
     let localeInfo = getLocaleForInitialization({
@@ -60,7 +65,6 @@ describe('getLocaleForInitialization', () => {
   });
 
   it('should prompt to change language when the local storage locale is out of sync with the url locale', () => {
-    const mockLocalStorage = createLocalStorageMock();
     mockLocalStorage.getItem.mockImplementation(() => UILanguage.nl);
 
     const localeInfo = getLocaleForInitialization({
@@ -75,7 +79,6 @@ describe('getLocaleForInitialization', () => {
   });
 
   it('should prompt to change language when the local storage locale does not exist and the url locale does not match the default locale', () => {
-    const mockLocalStorage = createLocalStorageMock();
     mockLocalStorage.getItem.mockImplementation(() => null);
 
     const localeInfo = getLocaleForInitialization({

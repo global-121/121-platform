@@ -1,5 +1,9 @@
 export default {
-  collectCoverageFrom: ['src/**/*.ts'],
+  collectCoverageFrom: [
+    'src/**/*.ts',
+    '!src/**/*.spec.ts',
+    '!src/app/test-utils.ts',
+  ],
   coverageReporters: ['json', 'lcov', 'text-summary'],
   moduleFileExtensions: ['ts', 'js', 'mjs', 'html'],
   moduleNameMapper: {
