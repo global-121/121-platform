@@ -158,12 +158,9 @@ export class IntegrateKoboButtonComponent {
 
   readonly isKoboIntegrated = computed<boolean>(() => {
     if (!this.koboIntegration.isSuccess()) {
-      console.log('🚀 ~ IntegrateKoboButtonComponent ~ false:');
       return false;
     }
     const data = this.koboIntegration.data();
-    console.log('🚀 ~ IntegrateKoboButtonComponent ~ data:', data);
-
     return data.versionId ? true : false;
   });
 
