@@ -2,24 +2,19 @@ import { TestBed } from '@angular/core/testing';
 
 import { QueryTableCellService } from '~/components/query-table/services/query-table-cell.service';
 import { QueryTableFilterService } from '~/components/query-table/services/query-table-filter.service';
-import { createLocalStorageMock } from '~/test-utils';
+import { useLocalStorageMock } from '~/test-utils';
 
 describe('QueryTableFilterService', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for test-setup
   let service: QueryTableFilterService<any>;
-  let mockLocalStorage: ReturnType<typeof createLocalStorageMock>;
+  const localStorageMock = useLocalStorageMock();
 
   beforeEach(() => {
-    mockLocalStorage = createLocalStorageMock();
     TestBed.configureTestingModule({
       providers: [QueryTableFilterService, QueryTableCellService],
     });
 
     service = TestBed.inject(QueryTableFilterService);
-  });
-
-  afterEach(() => {
-    mockLocalStorage.restore();
   });
 
   it('should be created and initialize with correct default state', () => {
@@ -51,7 +46,7 @@ describe('QueryTableFilterService', () => {
     });
 
     expect(clearTableSpy).toHaveBeenCalled();
-    expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('test-key');
+    expect(localStorageMock.removeItem).toHaveBeenCalledWith('test-key');
     expect(service.globalFilterVisible()).toBe(false);
     expect(resetSelectionSpy).toHaveBeenCalled();
   });

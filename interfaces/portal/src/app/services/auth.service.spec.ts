@@ -9,7 +9,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserApiService } from '~/domains/user/user.api.service';
 import { AuthService } from '~/services/auth.service';
 import { LogService } from '~/services/log.service';
-import { createLocalStorageMock } from '~/test-utils';
+import { useLocalStorageMock } from '~/test-utils';
 import { LocalStorageUser } from '~/utils/local-storage';
 
 interface MockAuthStrategy {
@@ -34,10 +34,9 @@ describe('AuthService - hasDeprecatedPermissions', () => {
     isOrganizationAdmin: false,
     permissions,
   });
-  let mockLocalStorage: ReturnType<typeof createLocalStorageMock>;
+  const localStorageMock = useLocalStorageMock();
 
   beforeEach(() => {
-    mockLocalStorage = createLocalStorageMock();
     mockRouter = {
       navigate: jest.fn(),
     } as unknown as jest.Mocked<Router>;
@@ -75,10 +74,6 @@ describe('AuthService - hasDeprecatedPermissions', () => {
     service = TestBed.inject(AuthService);
   });
 
-  afterEach(() => {
-    mockLocalStorage.restore();
-  });
-
   describe('user getter with deprecated permissions', () => {
     beforeEach(() => {
       mockAuthStrategy.isUserExpired.mockReturnValue(false);
@@ -93,7 +88,7 @@ describe('AuthService - hasDeprecatedPermissions', () => {
           'DEPRECATED_PERMISSION' as PermissionEnum,
         ],
       });
-      mockLocalStorage.getItem.mockReturnValue(
+      localStorageMock.getItem.mockReturnValue(
         JSON.stringify(userWithDeprecatedPermissions),
       );
       jest.spyOn(service, 'logout').mockResolvedValue(undefined);
@@ -113,7 +108,7 @@ describe('AuthService - hasDeprecatedPermissions', () => {
           PermissionEnum.RegistrationBulkUPDATE,
         ],
       });
-      mockLocalStorage.getItem.mockReturnValue(
+      localStorageMock.getItem.mockReturnValue(
         JSON.stringify(userWithValidPermissions),
       );
 
