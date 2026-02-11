@@ -340,12 +340,12 @@ const getHappyFlowWithChanges = (): KoboAssetDeployment => {
   });
 
   // update an existing attribute label
-  const attributeToUpdate = withChanges.asset.content.survey.find(
+  const fullNameAttribute = withChanges.asset.content.survey.find(
     (item) => item.name === 'fullName',
   );
-  if (attributeToUpdate) {
-    attributeToUpdate.label = ['new label', 'new label', 'new label'];
-  }
+
+  fullNameAttribute.label = ['new label', 'new label', 'new label'];
+
   // remove an attribute from the survey that existed before
   withChanges.asset.content.survey = withChanges.asset.content.survey.filter(
     (item) => item.name !== 'How_are_you_today_select_one',

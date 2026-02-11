@@ -90,7 +90,6 @@ export class KoboController {
     createKoboAssetData: CreateKoboDto,
     @Param('programId', ParseIntPipe)
     programId: number,
-    //       new ParseBoolPipe({ optional: true }),
     @Query('dryRun', new ParseBoolPipe({ optional: true })) dryRun: boolean,
     @Res({ passthrough: true }) response: Response,
   ): Promise<KoboIntegrationResultDto> {

@@ -74,5 +74,31 @@ describe('KoboLanguageMapper', () => {
       // Assert
       expect(result).toBeUndefined();
     });
+
+    it('should correctly extract ISO code from valid kobo language string', () => {
+      // Arrange
+      const koboSurveyLanguage = 'English (en)';
+
+      // Act
+      const result = KoboLanguageMapper.extractIsoCode({
+        koboSurveyLanguage,
+      });
+
+      // Assert
+      expect(result).toBe(RegistrationPreferredLanguage.en);
+    });
+
+    it('should return undefined when string does not contain valid language code', () => {
+      // Arrange
+      const koboSurveyLanguage = 'Invalid Language';
+
+      // Act
+      const result = KoboLanguageMapper.extractIsoCode({
+        koboSurveyLanguage,
+      });
+
+      // Assert
+      expect(result).toBeUndefined();
+    });
   });
 });
