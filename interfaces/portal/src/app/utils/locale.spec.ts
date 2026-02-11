@@ -16,7 +16,7 @@ describe('getLocaleForInitialization', () => {
         defaultLocale: 'nonsense',
         urlLocale: 'en-GB',
       });
-    }).toThrowError('Invalid default locale "nonsense" found in environment.');
+    }).toThrow('Invalid default locale "nonsense" found in environment.');
   });
 
   it('should throw an error when an invalid url locale is passed in', () => {
@@ -25,11 +25,12 @@ describe('getLocaleForInitialization', () => {
         defaultLocale: 'en-GB',
         urlLocale: 'nonsense',
       });
-    }).toThrowError('Invalid locale "nonsense" found in URL: /context.html');
+    }).toThrow('Invalid locale "nonsense" found in URL:');
   });
 
   it('should default to the urlLocale whenever there is weirdness saved in local storage', () => {
-    createLocalStorageMock().getItem.and.callFake(() => 'nonsense');
+    const mockLocalStorage = createLocalStorageMock();
+    mockLocalStorage.getItem.mockImplementation(() => 'nonsense');
 
     const localeInfo = getLocaleForInitialization({
       defaultLocale: 'en-GB',
@@ -40,7 +41,8 @@ describe('getLocaleForInitialization', () => {
   });
 
   it('should use the default locale when there is nothing saved in local storage', () => {
-    createLocalStorageMock().getItem.and.callFake(() => null);
+    const mockLocalStorage = createLocalStorageMock();
+    mockLocalStorage.getItem.mockImplementation(() => null);
 
     let localeInfo = getLocaleForInitialization({
       defaultLocale: 'en-GB',
@@ -58,7 +60,8 @@ describe('getLocaleForInitialization', () => {
   });
 
   it('should prompt to change language when the local storage locale is out of sync with the url locale', () => {
-    createLocalStorageMock().getItem.and.callFake(() => UILanguage.nl);
+    const mockLocalStorage = createLocalStorageMock();
+    mockLocalStorage.getItem.mockImplementation(() => UILanguage.nl);
 
     const localeInfo = getLocaleForInitialization({
       defaultLocale: 'en-GB',
@@ -72,7 +75,8 @@ describe('getLocaleForInitialization', () => {
   });
 
   it('should prompt to change language when the local storage locale does not exist and the url locale does not match the default locale', () => {
-    createLocalStorageMock().getItem.and.callFake(() => null);
+    const mockLocalStorage = createLocalStorageMock();
+    mockLocalStorage.getItem.mockImplementation(() => null);
 
     const localeInfo = getLocaleForInitialization({
       defaultLocale: UILanguage.nl,

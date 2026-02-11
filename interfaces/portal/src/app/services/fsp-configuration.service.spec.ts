@@ -99,7 +99,7 @@ describe('FspConfigurationService', () => {
       const fspSetting = FSP_SETTINGS[Fsps.intersolveVisa];
       const formGroup = service.fspSettingToFormGroup({ fspSetting });
 
-      expect(formGroup instanceof FormGroup).toBeTrue();
+      expect(formGroup instanceof FormGroup).toBe(true);
       expect(formGroup.get('displayName')?.value).toBe(
         fspSetting.defaultLabel.en,
       );
@@ -232,8 +232,8 @@ describe('FspConfigurationService', () => {
       const usernameField = fields.find(
         (f) => f.name === FspConfigurationProperties.username,
       );
-      expect(passwordField?.isSensitive).toBeTrue();
-      expect(usernameField?.isSensitive).toBeFalse();
+      expect(passwordField?.isSensitive).toBe(true);
+      expect(usernameField?.isSensitive).toBe(false);
     });
   });
 

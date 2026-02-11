@@ -11,32 +11,24 @@ import {
 describe('QueryTablePaginationService', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for test-setup
   let service: QueryTablePaginationService<any>;
-
-  let paginateQueryService: jasmine.SpyObj<PaginateQueryService>;
-  const convertPrimeNGLazyLoadEventToPaginateQuerySpy = jasmine.createSpy();
+  let convertPrimeNGLazyLoadEventToPaginateQuerySpy: jest.Mock;
 
   beforeEach(() => {
+    convertPrimeNGLazyLoadEventToPaginateQuerySpy = jest.fn();
     TestBed.configureTestingModule({
       providers: [
         QueryTablePaginationService,
         {
           provide: PaginateQueryService,
-          useValue: jasmine.createSpyObj(
-            'PaginateQueryService',
-            {},
-            {
-              convertPrimeNGLazyLoadEventToPaginateQuery:
-                convertPrimeNGLazyLoadEventToPaginateQuerySpy,
-            },
-          ) as jasmine.SpyObj<PaginateQueryService>,
+          useValue: {
+            convertPrimeNGLazyLoadEventToPaginateQuery:
+              convertPrimeNGLazyLoadEventToPaginateQuerySpy,
+          },
         },
       ],
     });
 
     service = TestBed.inject(QueryTablePaginationService);
-    paginateQueryService = TestBed.inject(
-      PaginateQueryService,
-    ) as jasmine.SpyObj<PaginateQueryService>;
   });
 
   it('should be created', () => {
@@ -68,7 +60,7 @@ describe('QueryTablePaginationService', () => {
   it('should throw error when server-side filtering enabled but no total records provider set', () => {
     const totalRecordsFunction = service.totalRecords();
 
-    expect(() => totalRecordsFunction([], true)).toThrowError(
+    expect(() => totalRecordsFunction([], true)).toThrow(
       'Server side filtering requires totalRecords to be set',
     );
   });
@@ -103,10 +95,10 @@ describe('QueryTablePaginationService', () => {
       sortBy: [['name', 'ASC']],
     };
 
-    paginateQueryService.convertPrimeNGLazyLoadEventToPaginateQuery.and.returnValue(
+    convertPrimeNGLazyLoadEventToPaginateQuerySpy.mockReturnValue(
       mockPaginateQuery,
     );
-    const updateCallback = jasmine.createSpy('updateCallback');
+    const updateCallback = jest.fn();
 
     service.onLazyLoadEvent(mockLazyLoadEvent, updateCallback);
 
@@ -118,10 +110,8 @@ describe('QueryTablePaginationService', () => {
 
   it('should not call update callback when conversion returns undefined', () => {
     const mockLazyLoadEvent: TableLazyLoadEvent = { first: 0, rows: 10 };
-    paginateQueryService.convertPrimeNGLazyLoadEventToPaginateQuery.and.returnValue(
-      undefined,
-    );
-    const updateCallback = jasmine.createSpy('updateCallback');
+    convertPrimeNGLazyLoadEventToPaginateQuerySpy.mockReturnValue(undefined);
+    const updateCallback = jest.fn();
 
     service.onLazyLoadEvent(mockLazyLoadEvent, updateCallback);
 

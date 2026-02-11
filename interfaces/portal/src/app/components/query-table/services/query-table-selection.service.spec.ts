@@ -10,27 +10,25 @@ import { ToastService } from '~/services/toast.service';
 describe('QueryTableSelectionService', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for test-setup
   let service: QueryTableSelectionService<any>;
-  let paginateQueryService: jasmine.SpyObj<PaginateQueryService>;
-
-  const showToastSpy = jasmine.createSpy();
+  let paginateQueryService: jest.Mocked<PaginateQueryService>;
+  let showToastSpy: jest.Mock;
 
   beforeEach(() => {
+    showToastSpy = jest.fn();
     TestBed.configureTestingModule({
       providers: [
         QueryTableSelectionService,
         {
           provide: PaginateQueryService,
-          useValue: jasmine.createSpyObj('PaginateQueryService', [
-            'selectionEventToActionData',
-          ]) as jasmine.SpyObj<PaginateQueryService>,
+          useValue: {
+            selectionEventToActionData: jest.fn(),
+          } as unknown as jest.Mocked<PaginateQueryService>,
         },
         {
           provide: ToastService,
-          useValue: jasmine.createSpyObj<ToastService>(
-            'ToastService',
-            {},
-            { showToast: showToastSpy },
-          ),
+          useValue: {
+            showToast: showToastSpy,
+          },
         },
       ],
     });
@@ -38,7 +36,7 @@ describe('QueryTableSelectionService', () => {
     service = TestBed.inject(QueryTableSelectionService);
     paginateQueryService = TestBed.inject(
       PaginateQueryService,
-    ) as jasmine.SpyObj<PaginateQueryService>;
+    ) as jest.Mocked<PaginateQueryService>;
   });
 
   it('should be created and initialize with empty selection state', () => {
@@ -85,7 +83,7 @@ describe('QueryTableSelectionService', () => {
   });
 
   it('should show toast when no items are selected', () => {
-    paginateQueryService.selectionEventToActionData.and.returnValue(
+    paginateQueryService.selectionEventToActionData.mockReturnValue(
       {} as ActionDataWithPaginateQuery<unknown>,
     );
 

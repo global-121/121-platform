@@ -151,7 +151,7 @@ describe('PaginateQueryService', () => {
         service.convertPrimeNGMatchModeToFilterOperator({
           matchMode: FilterMatchMode.GREATER_THAN_OR_EQUAL_TO,
         }),
-      ).toThrowError('Unsupported match mode: gte');
+      ).toThrow('Unsupported match mode: gte');
     });
   });
 
@@ -254,7 +254,7 @@ describe('PaginateQueryService', () => {
       };
       expect(() =>
         service.convertPrimeNGLazyLoadEventToPaginateQuery(event),
-      ).toThrowError('An unexpected error occurred');
+      ).toThrow('An unexpected error occurred');
     });
   });
 

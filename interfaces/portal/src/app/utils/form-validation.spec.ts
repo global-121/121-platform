@@ -120,7 +120,7 @@ describe('Form Validation Utils', () => {
 
       // If we ever lose the TS error, that means the typing is broken
       // @ts-expect-error Testing incorrect mapping
-      expect(() => getFieldError('nonExistentControl')).toThrowError();
+      expect(() => getFieldError('nonExistentControl')).toThrow();
 
       expect(getFieldError('required')).toBe('This field is required.'); // Should use generic validator
     });

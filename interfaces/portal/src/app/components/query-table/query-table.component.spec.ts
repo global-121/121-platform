@@ -100,8 +100,19 @@ class RtlHelperServiceStub {
 }
 
 class TrackingServiceStub {
-  trackEvent = jasmine.createSpy('trackEvent');
+  trackEvent = jest.fn();
 }
+
+window.matchMedia = jest.fn().mockImplementation((query) => ({
+  matches: false,
+  media: String(query),
+  onchange: null,
+  addEventListener: jest.fn(),
+  removeEventListener: jest.fn(),
+  addListener: jest.fn(), // deprecated
+  removeListener: jest.fn(), // deprecated
+  dispatchEvent: jest.fn(),
+}));
 
 describe('QueryTableComponent', () => {
   const DEFAULT_ITEMS: TestRow[] = [
@@ -349,7 +360,7 @@ describe('QueryTableComponent', () => {
 
   describe('behaviour', () => {
     it('emits updatePaginateQuery when PrimeNG emits a lazy load event', () => {
-      const updateSpy = spyOn(
+      const updateSpy = jest.spyOn(
         fixture.componentInstance.updatePaginateQuery,
         'emit',
       );
@@ -374,7 +385,7 @@ describe('QueryTableComponent', () => {
       const trackingService = TestBed.inject(
         TrackingService,
       ) as unknown as TrackingServiceStub;
-      const toggleSpy = spyOn(
+      const toggleSpy = jest.spyOn(
         fixture.componentInstance.updateContextMenuItem,
         'emit',
       );
@@ -384,7 +395,7 @@ describe('QueryTableComponent', () => {
 
       const extraOptionsMenu = fixture.componentInstance.extraOptionsMenu();
       if (extraOptionsMenu) {
-        spyOn(extraOptionsMenu, 'toggle');
+        jest.spyOn(extraOptionsMenu, 'toggle');
       }
 
       const item = DEFAULT_ITEMS[0];
@@ -392,7 +403,7 @@ describe('QueryTableComponent', () => {
 
       expect(toggleSpy).toHaveBeenCalledWith(item);
       expect(trackingService.trackEvent).toHaveBeenCalledWith(
-        jasmine.objectContaining({
+        expect.objectContaining({
           action: 'click: More-Actions-menu Button',
         }),
       );
@@ -412,12 +423,9 @@ describe('QueryTableComponent', () => {
       localStorage.setItem('query-table-test', 'cached-columns');
 
       const table = fixture.componentInstance.table();
-      const clearTableSpy = spyOn(table, 'clear');
-      const resetSelectionSpy = spyOn(selectionService, 'resetSelection');
-      const clearAllFiltersSpy = spyOn(
-        filterService,
-        'clearAllFilters',
-      ).and.callThrough();
+      const clearTableSpy = jest.spyOn(table, 'clear');
+      const resetSelectionSpy = jest.spyOn(selectionService, 'resetSelection');
+      const clearAllFiltersSpy = jest.spyOn(filterService, 'clearAllFilters');
 
       fixture.componentInstance.clearAllFilters();
 
@@ -433,10 +441,9 @@ describe('QueryTableComponent', () => {
       ) as unknown as QueryTableSelectionService<TestRow>;
 
       const expectedResult = {} as ActionDataWithPaginateQuery<TestRow>;
-      const getActionDataSpy = spyOn(
-        selectionService,
-        'getActionData',
-      ).and.returnValue(expectedResult);
+      const getActionDataSpy = jest
+        .spyOn(selectionService, 'getActionData')
+        .mockReturnValue(expectedResult);
 
       const result = fixture.componentInstance.getActionData({
         fieldForFilter: 'status',

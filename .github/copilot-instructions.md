@@ -45,7 +45,7 @@ Check `.vscode/extensions.json` for the complete list of recommended extensions 
 - **UI Library**: PrimeNG components
 - **Styling**: Tailwind CSS utility classes
 - **State Management**: angular services and tanstack-query
-- **Testing**: Jest and Karma
+- **Testing**: Jest
 - **Build**: Angular CLI with production optimizations
 
 ### Development Tools

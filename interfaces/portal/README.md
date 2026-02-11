@@ -88,11 +88,11 @@ Run `npm run start:debug-production` to run a local server with the production b
 
 Run `npm run test:all` to run code-style, syntax-test and unit-tests combined.
 
-Run `npm test` to execute the unit-tests via [Karma](https://karma-runner.github.io).
+Run `npm test` to execute the unit-tests via Jest.
 
 ### Test coverage
 
-The coverage report is generated for unit test coverage using Karma, by running `npm run test:coverage`.
+The coverage report is generated for unit test coverage using Jest, by running `npm run test:coverage`.
 
 ## Contributing
 

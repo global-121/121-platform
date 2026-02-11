@@ -336,7 +336,7 @@ How are Unit Tests affected when we make changes within the code in future?
 
 #### Our testing framework(s)
 
-We are using `jasmine` for executing unit tests within `interfaces` and `jest` within `services`. However, while writing the unit test cases, the writing style and testing paradigm do not differ since `jest` is based on `jasmine`.
+We are using `jest` for executing unit tests within `interfaces` and `services`.
 
 #### Writing tests
 

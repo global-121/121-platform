@@ -33,8 +33,8 @@ describe('QueryTableFilterService', () => {
   });
 
   it('should clear all filters', () => {
-    const clearTableSpy = jasmine.createSpy('clearTable');
-    const resetSelectionSpy = jasmine.createSpy('resetSelection');
+    const clearTableSpy = jest.fn();
+    const resetSelectionSpy = jest.fn();
     const mockLocalStorage = createLocalStorageMock();
 
     service.globalFilterVisible.set(true);

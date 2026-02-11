@@ -4,8 +4,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
-    "types": ["jasmine", "@angular/localize"]
+    "types": ["jest", "@angular/localize"],
+    "isolatedModules": true
   },
   "exclude": ["dist/**"],
-  "include": ["src/**/*.spec.ts", "./*.spec.ts"] // NOTE: This must be 'in-syc' (but NOT exactly the same) with the "test"-section in angular.json
+  "include": ["src/**/*.spec.ts", "./*.spec.ts"]
 }

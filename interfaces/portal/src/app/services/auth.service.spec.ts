@@ -13,18 +13,18 @@ import { createLocalStorageMock } from '~/test-utils';
 import { LocalStorageUser } from '~/utils/local-storage';
 
 interface MockAuthStrategy {
-  isUserExpired: jasmine.Spy<() => boolean>;
-  logout: jasmine.Spy<() => Promise<void>>;
+  isUserExpired: jest.Mock<boolean>;
+  logout: jest.Mock<Promise<void>>;
 }
 
 describe('AuthService - hasDeprecatedPermissions', () => {
   let service: AuthService;
-  let mockRouter: jasmine.SpyObj<Router>;
-  let mockLogService: jasmine.SpyObj<LogService>;
+  let mockRouter: jest.Mocked<Router>;
+  let mockLogService: jest.Mocked<LogService>;
   let mockAuthStrategy: MockAuthStrategy;
-  let mockInjector: jasmine.SpyObj<Injector>;
-  let mockUserApiService: jasmine.SpyObj<UserApiService>;
-  let mockQueryClient: jasmine.SpyObj<QueryClient>;
+  let mockInjector: jest.Mocked<Injector>;
+  let mockUserApiService: jest.Mocked<UserApiService>;
+  let mockQueryClient: jest.Mocked<QueryClient>;
 
   const createMockUser = (
     permissions: Record<number, PermissionEnum[]>,
@@ -34,27 +34,32 @@ describe('AuthService - hasDeprecatedPermissions', () => {
     isOrganizationAdmin: false,
     permissions,
   });
+  let mockLocalStorage: ReturnType<typeof createLocalStorageMock>;
 
   beforeEach(() => {
-    mockRouter = jasmine.createSpyObj<Router>('Router', ['navigate']);
-    mockLogService = jasmine.createSpyObj<LogService>('LogService', [
-      'logEvent',
-    ]);
-    mockInjector = jasmine.createSpyObj<Injector>('Injector', ['get']);
+    mockLocalStorage = createLocalStorageMock();
+    mockRouter = {
+      navigate: jest.fn(),
+    } as unknown as jest.Mocked<Router>;
+    mockLogService = {
+      logEvent: jest.fn(),
+    } as unknown as jest.Mocked<LogService>;
+    mockInjector = {
+      get: jest.fn(),
+    } as unknown as jest.Mocked<Injector>;
     mockAuthStrategy = {
-      logout: jasmine.createSpy<() => Promise<void>>('logout'),
-      isUserExpired: jasmine.createSpy<() => boolean>('isUserExpired'),
+      logout: jest.fn<Promise<void>, []>(),
+      isUserExpired: jest.fn<boolean, []>(),
     };
-    mockUserApiService = jasmine.createSpyObj<UserApiService>(
-      'UserApiService',
-      ['getCurrent'],
-    );
-    mockQueryClient = jasmine.createSpyObj<QueryClient>('QueryClient', [
-      'fetchQuery',
-    ]);
+    mockUserApiService = {
+      getCurrent: jest.fn(),
+    } as unknown as jest.Mocked<UserApiService>;
+    mockQueryClient = {
+      fetchQuery: jest.fn(),
+    } as unknown as jest.Mocked<QueryClient>;
 
     // eslint-disable-next-line @typescript-eslint/no-deprecated -- Did not manage to get test working otherwise
-    mockInjector.get.and.returnValue(mockAuthStrategy);
+    mockInjector.get.mockReturnValue(mockAuthStrategy);
 
     TestBed.configureTestingModule({
       providers: [
@@ -72,50 +77,44 @@ describe('AuthService - hasDeprecatedPermissions', () => {
 
   describe('user getter with deprecated permissions', () => {
     beforeEach(() => {
-      mockAuthStrategy.isUserExpired.and.returnValue(false);
-      mockAuthStrategy.logout.and.returnValue(Promise.resolve());
-      mockRouter.navigate.and.returnValue(Promise.resolve(true));
+      mockAuthStrategy.isUserExpired.mockReturnValue(false);
+      mockAuthStrategy.logout.mockResolvedValue(undefined);
+      mockRouter.navigate.mockResolvedValue(true);
     });
 
     it('should trigger logout when user has deprecated permissions', () => {
-      // Arrange
       const userWithDeprecatedPermissions = createMockUser({
         1: [
           PermissionEnum.RegistrationREAD,
           'DEPRECATED_PERMISSION' as PermissionEnum,
         ],
       });
-      createLocalStorageMock().getItem.and.returnValue(
+      mockLocalStorage.getItem.mockReturnValue(
         JSON.stringify(userWithDeprecatedPermissions),
       );
-      const logoutSpy = spyOn(service, 'logout').and.returnValue(
-        Promise.resolve(),
-      );
+      jest.spyOn(service, 'logout').mockResolvedValue(undefined);
 
-      // Act - the user getter is called
       const result = service.user;
 
-      // Assert
       expect(result).toBeNull();
-      expect(logoutSpy).toHaveBeenCalledWith(userWithDeprecatedPermissions);
+      expect(service.logout).toHaveBeenCalledWith(
+        userWithDeprecatedPermissions,
+      );
     });
 
     it('should return user when permissions are valid', () => {
-      // Arrange
       const userWithValidPermissions = createMockUser({
         1: [
           PermissionEnum.RegistrationREAD,
           PermissionEnum.RegistrationBulkUPDATE,
         ],
       });
-      createLocalStorageMock().getItem.and.returnValue(
+      mockLocalStorage.getItem.mockReturnValue(
         JSON.stringify(userWithValidPermissions),
       );
 
-      // Act - the user getter is called
       const result = service.user;
 
-      // Assert
       expect(result).toEqual(userWithValidPermissions);
     });
   });

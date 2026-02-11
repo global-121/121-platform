@@ -33,7 +33,7 @@
     "module": "es2022",
     "useDefineForClassFields": false,
     "lib": ["dom", "es2024"],
-    "types": ["@angular/localize", "jasmine"],
+    "types": ["@angular/localize", "jest"],
     "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
