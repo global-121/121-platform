@@ -22,7 +22,7 @@
     "checkJs": true,
     "incremental": true,
     "outDir": "./dist",
-    "types": ["express", "node", "jest", "jest-extended"],
+    "types": ["express", "node", "jest"],
     "typeRoots": ["./node_modules/@types"],
     "resolveJsonModule": true,
     "paths": {
