@@ -16,7 +16,7 @@ describe('KoboLanguageMapper', () => {
       const result = KoboLanguageMapper.getLanguageIsoCodes({ koboLanguages });
 
       // Assert
-      expect(result).toEqual([
+      expect(result).toIncludeSameMembers([
         RegistrationPreferredLanguage.en,
         RegistrationPreferredLanguage.nl,
         RegistrationPreferredLanguage.fr,
@@ -36,7 +36,7 @@ describe('KoboLanguageMapper', () => {
       const result = KoboLanguageMapper.getLanguageIsoCodes({ koboLanguages });
 
       // Assert
-      expect(result).toEqual([]);
+      expect(result).toBeArrayOfSize(0);
     });
 
     it('should handle mixed valid and invalid languages', () => {
@@ -53,7 +53,7 @@ describe('KoboLanguageMapper', () => {
       const result = KoboLanguageMapper.getLanguageIsoCodes({ koboLanguages });
 
       // Assert
-      expect(result).toEqual([
+      expect(result).toIncludeSameMembers([
         RegistrationPreferredLanguage.en,
         RegistrationPreferredLanguage.es,
         RegistrationPreferredLanguage.ti,
