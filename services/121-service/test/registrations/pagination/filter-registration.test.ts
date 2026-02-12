@@ -1,3 +1,4 @@
+import { UILanguage } from '@121-platform/shared';
 import { HttpStatus } from '@nestjs/common';
 import { FilterOperator, FilterSuffix } from 'nestjs-paginate';
 
@@ -5,7 +6,6 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 import { getProgram } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
