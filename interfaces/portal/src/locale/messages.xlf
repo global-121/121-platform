@@ -460,9 +460,6 @@
       <trans-unit id="generic-message-will-be-sent" datatype="html">
         <source>A message will be sent to the registration about this update.</source>
       </trans-unit>
-      <trans-unit id="565163819313820565" datatype="html">
-        <source>You&apos;re about to unpause debit card number <x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/>.</source>
-      </trans-unit>
       <trans-unit id="debit-card-number" datatype="html">
         <source>Serial number</source>
       </trans-unit>
@@ -924,9 +921,6 @@
       </trans-unit>
       <trans-unit id="2772534939673815092" datatype="html">
         <source>Please allow pop-up windows in your browser settings to login</source>
-      </trans-unit>
-      <trans-unit id="5889532119950831763" datatype="html">
-        <source>You&apos;re about to replace debit card number <x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/>. This will block the current card and a new card will be issued.</source>
       </trans-unit>
       <trans-unit id="8108032945706896800" datatype="html">
         <source>You do not have permission to view this page.</source>
@@ -2141,8 +2135,20 @@
       <trans-unit id="6633756087010559608" datatype="html">
         <source>Visa card linked successfully.</source>
       </trans-unit>
-      <trans-unit id="7097489496530398841" datatype="html">
-        <source>You&apos;re about to pause debit card number <x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/>.</source>
+      <trans-unit id="5189461683300981166" datatype="html">
+        <source>You&apos;re about to unpause debit card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>.</source>
+      </trans-unit>
+      <trans-unit id="5420760055917675082" datatype="html">
+        <source>You&apos;re about to replace debit card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>. This will block the current card and a new card will be issued.</source>
+      </trans-unit>
+      <trans-unit id="8900867446691163282" datatype="html">
+        <source>You&apos;re about to pause debit card number <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/><x equiv-text="{{ currentCard()?.tokenCode | creditCardNumber }}" id="INTERPOLATION"/><x ctype="x-code" equiv-text="&lt;/code &gt;" id="CLOSE_TAG_CODE"/>.</source>
+      </trans-unit>
+      <trans-unit id="debit-card-actions-request-new-card" datatype="html">
+        <source>Request new card</source>
+      </trans-unit>
+      <trans-unit id="generic-error-unknown" datatype="html">
+        <source>Something went wrong</source>
       </trans-unit>
       <trans-unit id="1419676661357831374" datatype="html">
         <source>Registration data</source>

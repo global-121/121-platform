@@ -147,7 +147,7 @@ export class HttpWrapperService {
     }
 
     return of(
-      new Error($localize`:@@generic-error:Something went wrong`, {
+      new Error($localize`:@@generic-error-unknown:Something went wrong`, {
         cause: errorResponse,
       }),
     );

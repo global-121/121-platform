@@ -25,7 +25,6 @@ import RegistrationDebitCardPage from '@121-e2e/portal/pages/RegistrationDebitCa
 const visaCardNumber = '1111222233334444555';
 const visaCardNumberDashed = '1111-2222-3333-4444-555';
 const newVisaCardNumber = '5555444433332222111';
-const newVisaCardNumberDashed = '5555-4444-3333-2222-111';
 const nonExistingVisaCardNumber = '3333444455556666777';
 let registrationId: number;
 let accessToken: string;
@@ -99,9 +98,7 @@ test('User can link a debit card to a registration', async ({ page }) => {
 
     const currentDebitCardDataList =
       await debitCardPage.getCurrentDebitCardDataList();
-    expect(currentDebitCardDataList['Serial number']).toBe(
-      visaCardNumberDashed,
-    );
+    expect(currentDebitCardDataList['Serial number']).toBe(visaCardNumber);
   });
 });
 
@@ -141,13 +138,7 @@ test('User can successfully replace a debit card and gets error if he tries to l
       await debitCardPage.getCurrentDebitCardDataList();
     const substituteDebitCardDataList =
       await debitCardPage.getSubstituteDebitCardDataList();
-    console.log(
-      '🚀 ~ substituteDebitCardDataList:',
-      substituteDebitCardDataList,
-    );
-    expect(currentDebitCardDataList['Serial number']).toBe(
-      newVisaCardNumberDashed,
-    );
+    expect(currentDebitCardDataList['Serial number']).toBe(newVisaCardNumber);
     expect(substituteDebitCardDataList['Serial number']).toBe(
       visaCardNumberDashed,
     );

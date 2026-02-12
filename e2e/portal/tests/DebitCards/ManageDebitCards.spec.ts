@@ -229,9 +229,9 @@ test('User can replace a debit card and view both new and old card', async ({
     // Verify the accordion header contains the original card number
     const originalCardNumber = initialCardData['Serial number'];
     const accordionHeader = oldCardList.locator('p-accordion-header');
-    await expect(accordionHeader).toContainText(
-      `Old card: ${originalCardNumber}`,
-    );
+
+    await expect(accordionHeader).toContainText(`Old card:`);
+    await expect(accordionHeader).toContainText(`${originalCardNumber}`);
 
     const statusChip = accordionHeader.locator('app-colored-chip');
     await expect(statusChip).toBeVisible();
