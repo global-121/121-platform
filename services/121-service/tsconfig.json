@@ -34,6 +34,6 @@
     "watchFile": "fixedPollingInterval",
     "excludeDirectories": ["node_modules", "dist"]
   },
-  "include": ["src/**/*.ts", "test/**/*.ts", "jest-extended-setup.d.ts"],
+  "include": ["src/**/*.ts", "test/**/*.ts", "types/**/*.d.ts"],
   "exclude": ["node_modules"]
 }
