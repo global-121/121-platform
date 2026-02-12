@@ -8,7 +8,10 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 
-import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
+import {
+  FspConfiguration,
+  FspConfigurationPropertyInputType,
+} from '~/domains/fsp-configuration/fsp-configuration.model';
 import { AttributeWithTranslatedLabel } from '~/domains/program/program.model';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
 
@@ -241,33 +244,33 @@ describe('FspConfigurationService', () => {
     it('should return select-attribute for columnToMatch', () => {
       expect(
         service.getPropertyFieldType(FspConfigurationProperties.columnToMatch),
-      ).toBe('select-attribute');
+      ).toBe(FspConfigurationPropertyInputType.selectAttribute);
     });
     it('should return select-attributes-multiple for columnsToExport', () => {
       expect(
         service.getPropertyFieldType(
           FspConfigurationProperties.columnsToExport,
         ),
-      ).toBe('select-attributes-multiple');
+      ).toBe(FspConfigurationPropertyInputType.selectAttributeMultiple);
     });
     it('should return toggle-switch for cardDistributionByMail', () => {
       expect(
         service.getPropertyFieldType(
           FspConfigurationProperties.cardDistributionByMail,
         ),
-      ).toBe('toggle-switch');
+      ).toBe(FspConfigurationPropertyInputType.toggleSwitch);
     });
     it('should return number-input for maxToSpendPerMonthInCents', () => {
       expect(
         service.getPropertyFieldType(
           FspConfigurationProperties.maxToSpendPerMonthInCents,
         ),
-      ).toBe('number-input');
+      ).toBe(FspConfigurationPropertyInputType.numberInput);
     });
     it('should default to string for other properties', () => {
       expect(
         service.getPropertyFieldType(FspConfigurationProperties.brandCode),
-      ).toBe('string');
+      ).toBe(FspConfigurationPropertyInputType.stringInput);
     });
   });
 

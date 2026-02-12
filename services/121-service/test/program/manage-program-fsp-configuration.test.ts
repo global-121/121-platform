@@ -3,7 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import {
   FspConfigurationPropertyVisibility,
   FspConfigurationPropertyVisibilityMap,
-} from '@121-service/src/fsp-integrations/shared/consts/fps-configuration-property-visibility.const';
+} from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-visibility.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { getFspConfigurationProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';

@@ -8,7 +8,9 @@
   [isRequired]="fspFormField().isRequired"
   [formGroup]="formGroup()"
 >
-  @if (fieldType() === 'select-attributes-multiple') {
+  @if (
+    fieldType() === FspConfigurationPropertyInputType.selectAttributeMultiple
+  ) {
     <p-multiselect
       [options]="programAttributes.data()"
       [formControlName]="fspFormField().name"
@@ -19,7 +21,9 @@
       [filter]="true"
       [showClear]="false"
     />
-  } @else if (fieldType() === 'select-attribute') {
+  } @else if (
+    fieldType() === FspConfigurationPropertyInputType.selectAttribute
+  ) {
     <p-select
       [options]="programAttributes.data()"
       [formControlName]="fspFormField().name"
@@ -30,9 +34,9 @@
       [filter]="true"
       [showClear]="false"
     />
-  } @else if (fieldType() === 'toggle-switch') {
+  } @else if (fieldType() === FspConfigurationPropertyInputType.toggleSwitch) {
     <p-toggle-switch [formControlName]="fspFormField().name" />
-  } @else if (fieldType() === 'number-input') {
+  } @else if (fieldType() === FspConfigurationPropertyInputType.numberInput) {
     <input
       pInputText
       type="number"
@@ -49,8 +53,8 @@
   }
   <ng-container slot="details">
     @if (
-      fieldType() === 'select-attribute' ||
-      fieldType() === 'select-attributes-multiple'
+      fieldType() === FspConfigurationPropertyInputType.selectAttribute ||
+      fieldType() === FspConfigurationPropertyInputType.selectAttributeMultiple
     ) {
       <p
         i18n

@@ -2,7 +2,7 @@ import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-set
 import {
   FspConfigurationPropertyVisibility,
   FspConfigurationPropertyVisibilityMap,
-} from '@121-service/src/fsp-integrations/shared/consts/fps-configuration-property-visibility.const';
+} from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-visibility.const';
 import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';

@@ -18,6 +18,7 @@ import { sensitivePropertyString } from '@121-service/src/program-fsp-configurat
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { FSP_CONFIGURATION_PROPERTY_LABELS } from '~/domains/fsp-configuration/fsp-configuration.helper';
 import { FspFormField } from '~/domains/fsp-configuration/fsp-configuration.model';
+import { FspConfigurationPropertyInputType } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { FspConfigurationService } from '~/services/fsp-configuration.service';
 
@@ -36,6 +37,9 @@ import { FspConfigurationService } from '~/services/fsp-configuration.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FspConfigurationPropertyFormFieldComponent {
+  readonly FspConfigurationPropertyInputType =
+    FspConfigurationPropertyInputType;
+
   readonly programId = input.required<number | string>();
   readonly formGroup = input.required<FormGroup>();
   readonly fspFormField = input.required<FspFormField>();
