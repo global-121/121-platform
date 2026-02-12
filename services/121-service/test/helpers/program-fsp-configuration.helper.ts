@@ -134,7 +134,7 @@ export async function updateProgramCardDistributionByMail({
     programId: programIdVisa,
     configName: Fsps.intersolveVisa,
     propertyName: FspConfigurationProperties.cardDistributionByMail,
-    body: { value: isCardDistributionByMail.toString() },
+    body: { value: isCardDistributionByMail },
     accessToken,
   });
 }
