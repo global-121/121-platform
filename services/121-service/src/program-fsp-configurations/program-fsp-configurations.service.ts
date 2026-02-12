@@ -2,12 +2,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 
+import { fspConfigurationPropertyTypes } from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-types.const';
 import {
   FspConfigurationPropertyVisibility,
   FspConfigurationPropertyVisibilityMap,
 } from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-visibility.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
 import { getFspConfigurationProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
@@ -76,6 +78,10 @@ export class ProgramFspConfigurationsService {
         propertyNames: programFspConfigurationDto.properties.map((p) => p.name),
         fspName: programFspConfigurationDto.fspName,
       });
+
+      this.validatePropertyValueTypesOrThrow(
+        programFspConfigurationDto.properties,
+      );
     }
   }
 
@@ -128,6 +134,10 @@ export class ProgramFspConfigurationsService {
         ),
         fspName: config.fspName,
       });
+
+      this.validatePropertyValueTypesOrThrow(
+        updateProgramFspConfigurationDto.properties,
+      );
     }
 
     const savedEntity =
@@ -193,6 +203,9 @@ export class ProgramFspConfigurationsService {
       propertyNames: inputProperties.map((p) => p.name),
       fspName: config.fspName,
     });
+
+    this.validatePropertyValueTypesOrThrow(inputProperties);
+
     await this.validateNoDuplicateExistingProperties({
       propertyNames: inputProperties.map((p) => p.name),
       configIdToCheckForDuplicates: config.id,
@@ -291,6 +304,11 @@ export class ProgramFspConfigurationsService {
         propertyName,
       );
 
+    this.validatePropertyValueTypeOrThrow({
+      propertyName,
+      propertyValue: property.value,
+    });
+
     existingProperty.value = property.value;
 
     const savedProperty =
@@ -357,6 +375,46 @@ export class ProgramFspConfigurationsService {
     if (!label.en) {
       throw new HttpException(
         `Label must have an English translation`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  private validatePropertyValueTypesOrThrow(
+    properties: readonly {
+      readonly name: FspConfigurationProperties;
+      readonly value: FspConfigurationPropertyType;
+    }[],
+  ): void {
+    for (const property of properties) {
+      this.validatePropertyValueTypeOrThrow({
+        propertyName: property.name,
+        propertyValue: property.value,
+      });
+    }
+  }
+
+  private validatePropertyValueTypeOrThrow({
+    propertyName,
+    propertyValue,
+  }: {
+    propertyName: FspConfigurationProperties;
+    propertyValue: FspConfigurationPropertyType;
+  }) {
+    const expectedType = fspConfigurationPropertyTypes[propertyName];
+    let actualType: string = typeof propertyValue;
+
+    if (Array.isArray(propertyValue)) {
+      actualType = 'array';
+    }
+
+    if (actualType === 'number' && Number.isNaN(propertyValue as number)) {
+      actualType = 'NaN';
+    }
+
+    if (expectedType !== actualType) {
+      throw new HttpException(
+        `Invalid value type for property "${propertyName}". Expected ${expectedType}, got ${actualType}.`,
         HttpStatus.BAD_REQUEST,
       );
     }
