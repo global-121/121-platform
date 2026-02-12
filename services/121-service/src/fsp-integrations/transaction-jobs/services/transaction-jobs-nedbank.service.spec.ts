@@ -83,7 +83,7 @@ describe('TransactionJobsNedbankService', () => {
       )
       .mockResolvedValue(0);
     jest
-      .spyOn(programFspConfigurationRepository, 'getPropertyValueByName')
+      .spyOn(programFspConfigurationRepository, 'getPropertyValueByNameOrThrow')
       .mockResolvedValue('ref#1');
   });
 

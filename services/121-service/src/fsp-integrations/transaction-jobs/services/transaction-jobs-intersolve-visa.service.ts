@@ -57,7 +57,7 @@ export class TransactionJobsIntersolveVisaService {
           {
             registrationId: registration.id,
             inputTransferValueInMajorUnit: transactionJob.transferValue,
-            maxToSpendPerMonthInCents: Number(maxToSpendPerMonthInCents),
+            maxToSpendPerMonthInCents,
           },
         );
     } catch (error) {
@@ -95,10 +95,7 @@ export class TransactionJobsIntersolveVisaService {
         await this.intersolveVisaChildWalletScopedRepository.hasLinkedChildWalletForRegistrationId(
           registration.id,
         );
-      if (
-        cardDistributionByMail === 'false' &&
-        !isChildWalletLinkedToRegistration
-      ) {
+      if (!cardDistributionByMail && !isChildWalletLinkedToRegistration) {
         throw new IntersolveVisaApiError(
           'Cannot do a transaction when card distribution by mail is disabled and customer does not exist.',
         );
@@ -166,8 +163,8 @@ export class TransactionJobsIntersolveVisaService {
     brandCode: string;
     coverLetterCode: string;
     fundingTokenCode: string;
-    cardDistributionByMail: string;
-    maxToSpendPerMonthInCents: string;
+    cardDistributionByMail: boolean;
+    maxToSpendPerMonthInCents: number;
   }> {
     const intersolveVisaConfig =
       await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
@@ -192,10 +189,10 @@ export class TransactionJobsIntersolveVisaService {
       )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
       cardDistributionByMail: intersolveVisaConfig.find(
         (c) => c.name === FspConfigurationProperties.cardDistributionByMail,
-      )?.value as string,
+      )?.value as boolean,
       maxToSpendPerMonthInCents: intersolveVisaConfig.find(
         (c) => c.name === FspConfigurationProperties.maxToSpendPerMonthInCents,
-      )?.value as string,
+      )?.value as number,
     };
   }
 

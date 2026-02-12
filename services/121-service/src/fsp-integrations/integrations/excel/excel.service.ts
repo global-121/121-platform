@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
@@ -67,15 +67,6 @@ export class ExcelService {
       });
 
     if (columnsToExportConfig) {
-      // check if columnsToExportConfig is a string array or throw an error
-      if (!Array.isArray(columnsToExportConfig)) {
-        throw new HttpException(
-          {
-            errors: `FspConfigurationProperty ${FspConfigurationProperties.columnsToExport} must be an array, but received ${typeof columnsToExportConfig}`,
-          },
-          HttpStatus.NOT_FOUND,
-        );
-      }
       return columnsToExportConfig;
     }
 
@@ -155,26 +146,13 @@ export class ExcelService {
     programFspConfigurationId: number,
   ): Promise<string> {
     const matchColumn =
-      await this.programFspConfigurationRepository.getPropertyValueByName({
-        programFspConfigurationId,
-        name: FspConfigurationProperties.columnToMatch,
-      });
-    if (!matchColumn) {
-      throw new HttpException(
+      await this.programFspConfigurationRepository.getPropertyValueByNameOrThrow(
         {
-          errors: `No match column found for FSP 'Excel' and programFspConfigurationId with id ${programFspConfigurationId}`,
+          programFspConfigurationId,
+          name: FspConfigurationProperties.columnToMatch,
         },
-        HttpStatus.NOT_FOUND,
       );
-    }
-    if (typeof matchColumn !== 'string') {
-      throw new HttpException(
-        {
-          errors: `Match column must be a string, but received ${typeof matchColumn}`,
-        },
-        HttpStatus.NOT_FOUND,
-      );
-    }
+
     return matchColumn;
   }
 }

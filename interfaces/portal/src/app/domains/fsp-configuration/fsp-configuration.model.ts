@@ -11,11 +11,10 @@ export interface FspFormField {
   isSensitive: boolean;
 }
 
-export interface FspConfigurationProperty {
-  name: string;
-  value: string;
-}
-
-export enum IntersolveVisaFspConfigurationProperties {
-  cardDistributionByMail = 'cardDistributionByMail',
+export enum FspConfigurationPropertyInputType {
+  numberInput = 'number-input',
+  selectAttribute = 'select-attribute',
+  selectAttributeMultiple = 'select-attribute-multiple',
+  stringInput = 'string',
+  toggleSwitch = 'toggle-switch',
 }

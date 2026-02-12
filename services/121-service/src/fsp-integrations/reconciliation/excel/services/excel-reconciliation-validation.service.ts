@@ -28,10 +28,12 @@ export class ExcelReconciliationValidationService {
     const matchColumnsFromProgramFsps: string[] = [];
     for (const fspConfig of fspConfigs) {
       const matchColumn =
-        (await this.programFspConfigurationRepository.getPropertyValueByName({
-          programFspConfigurationId: fspConfig.id,
-          name: FspConfigurationProperties.columnToMatch,
-        })) as string;
+        await this.programFspConfigurationRepository.getPropertyValueByNameOrThrow(
+          {
+            programFspConfigurationId: fspConfig.id,
+            name: FspConfigurationProperties.columnToMatch,
+          },
+        );
       matchColumnsFromProgramFsps.push(matchColumn);
     }
     const uniqueMatchColumns = new Set(matchColumnsFromProgramFsps);
