@@ -10,3 +10,11 @@ export interface FspFormField {
   isRequired: boolean;
   isSensitive: boolean;
 }
+
+export enum FspConfigurationPropertyInputType {
+  numberInput = 'number-input',
+  selectAttribute = 'select-attribute',
+  selectAttributeMultiple = 'select-attribute-multiple',
+  stringInput = 'string',
+  toggleSwitch = 'toggle-switch',
+}

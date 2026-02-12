@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { castArray, unique } from 'radashi';
 
-import { fspConfigurationPropertyTypes } from '@121-service/src/fsp-integrations/shared/dto/fsp-configuration-property-types.dto';
+import { fspConfigurationPropertyTypes } from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-types.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
@@ -12,6 +12,7 @@ import { sensitivePropertyString } from '@121-service/src/program-fsp-configurat
 
 import {
   FspConfiguration,
+  FspConfigurationPropertyInputType,
   FspFormField,
 } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { AttributeWithTranslatedLabel } from '~/domains/program/program.model';
@@ -118,36 +119,35 @@ export class FspConfigurationService {
 
   getPropertyFieldType(
     propertyName: 'displayName' | FspConfigurationProperties,
-  ):
-    | 'number-input'
-    | 'select-attribute'
-    | 'select-attributes-multiple'
-    | 'string'
-    | 'toggle-switch' {
+  ): FspConfigurationPropertyInputType {
     // Specific exceptions for excel fsp and the display name
     switch (propertyName) {
       case FspConfigurationProperties.columnToMatch:
-        return 'select-attribute';
+        return FspConfigurationPropertyInputType.selectAttribute;
       case FspConfigurationProperties.columnsToExport:
-        return 'select-attributes-multiple';
+        return FspConfigurationPropertyInputType.selectAttributeMultiple;
       case 'displayName':
-        return 'string';
+        return FspConfigurationPropertyInputType.stringInput;
       default:
         return this.getPropertyFieldNameForDefaultName(propertyName);
     }
   }
 
-  getPropertyFieldNameForDefaultName(name: FspConfigurationProperties) {
+  getPropertyFieldNameForDefaultName(
+    name: FspConfigurationProperties,
+  ): FspConfigurationPropertyInputType {
     const type = fspConfigurationPropertyTypes[name];
     switch (type) {
       case 'number':
-        return 'number-input';
+        return FspConfigurationPropertyInputType.numberInput;
       case 'boolean':
-        return 'toggle-switch';
+        return FspConfigurationPropertyInputType.toggleSwitch;
       case 'string':
-        return 'string';
+        return FspConfigurationPropertyInputType.stringInput;
       case 'array':
-        return 'select-attributes-multiple';
+        return FspConfigurationPropertyInputType.selectAttributeMultiple;
+      default:
+        throw new Error(`Unsupported type for property: ${name}`);
     }
   }
 
