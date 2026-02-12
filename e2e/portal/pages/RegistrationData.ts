@@ -47,6 +47,14 @@ class RegistrationData extends BasePage {
       .getByText('Dry run successful - validation passed')
       .waitFor();
   }
+
+  async validateKoboIntegrationErrorMessage() {
+    await this.page
+      .getByText(
+        'Something went wrong: "Kobo form definition validation failed',
+      )
+      .waitFor();
+  }
 }
 
 export default RegistrationData;
