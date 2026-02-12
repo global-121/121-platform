@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "strict": true,
+
+    // TODO: AB#28804 (portal work item: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28804)
+    "strictPropertyInitialization": false,
+
+    // TODO: AB#28419 (portal work item: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28419)
+    "noImplicitAny": false,
+
+    // TODO: AB#27718 (portal work item: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27718)
+    "useUnknownInCatchVariables": false,
+
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "bundler",
+    "sourceMap": true,
+    "declaration": false
+  }
+}

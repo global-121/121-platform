@@ -1,4 +1,5 @@
-import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
+import { UILanguage } from '@121-platform/shared';
+
 import { Language } from '@121-service/src/shared/types/language.type';
 
 /**
