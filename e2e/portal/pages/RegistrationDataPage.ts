@@ -2,10 +2,9 @@ import { Locator, Page } from 'playwright';
 
 import BasePage from './BasePage';
 
-class RegistrationData extends BasePage {
+class RegistrationDataPage extends BasePage {
   readonly addKoboToolBoxButton: Locator;
   readonly continueButton: Locator;
-  readonly cancelButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -13,7 +12,6 @@ class RegistrationData extends BasePage {
       .getByTestId('card-with-link')
       .getByTitle('Kobo toolbox');
     this.continueButton = this.page.getByRole('button', { name: 'Continue' });
-    this.cancelButton = this.page.getByRole('button', { name: 'Cancel' });
   }
 
   async clickRegistrationDataSection() {
@@ -57,4 +55,4 @@ class RegistrationData extends BasePage {
   }
 }
 
-export default RegistrationData;
+export default RegistrationDataPage;
