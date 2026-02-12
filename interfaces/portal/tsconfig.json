@@ -1,7 +1,6 @@
 /* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
 /* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
-  "extends": "../../tsconfig.shared.json",
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
@@ -12,16 +11,30 @@
       "~/*": ["./src/app/*"]
     },
     "outDir": "./dist/out-tsc",
+    "strict": true,
+    // TODO: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28804
+    "strictPropertyInitialization": false,
+    // TODO: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28419
+    "noImplicitAny": false,
+    // TODO: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27718
+    "useUnknownInCatchVariables": false,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "declaration": false,
+    "experimentalDecorators": true,
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "es2022",
     "module": "es2022",
     "useDefineForClassFields": false,
     "lib": ["dom", "es2024"],
     "types": ["@angular/localize", "jasmine"],
+    "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strictFunctionTypes": true,
