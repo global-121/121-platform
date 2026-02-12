@@ -102,21 +102,21 @@ describe('parseFspConfigurationPropertyValue', () => {
     it('should parse valid JSON array values', () => {
       expect(
         parseFspConfigurationPropertyValue({
-          name: FspConfigurationProperties.brandCode,
+          name: FspConfigurationProperties.columnsToExport,
           value: '["a","b","c"]',
         }),
       ).toEqual(['a', 'b', 'c']);
 
       expect(
         parseFspConfigurationPropertyValue({
-          name: FspConfigurationProperties.brandCode,
+          name: FspConfigurationProperties.columnsToExport,
           value: '[]',
         }),
       ).toEqual([]);
 
       expect(
         parseFspConfigurationPropertyValue({
-          name: FspConfigurationProperties.brandCode,
+          name: FspConfigurationProperties.columnsToExport,
           value: '["single"]',
         }),
       ).toEqual(['single']);
