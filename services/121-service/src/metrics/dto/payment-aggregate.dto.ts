@@ -1,9 +1,9 @@
-import { PaymentReturnDto } from '@121-service/src/payments/dto/payment-return.dto';
+import { PaymentAggregationSummaryDto } from '@121-service/src/payments/dto/payment-aggregation-summary.dto';
 
 export class AggregatePerPayment {
   id: number;
   date: Date;
-  aggregatedStatuses: PaymentReturnDto;
+  aggregatedStatuses: PaymentAggregationSummaryDto;
 }
 
 export class AggregatePerMonth {

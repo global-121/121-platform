@@ -1,7 +1,4 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
-
-import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
-import { ApprovalStatusResponseDto } from '@121-service/src/user/approver/dto/approval-status-response.dto';
+import { ApiProperty } from '@nestjs/swagger';
 
 class CountAndTransferValueDto {
   @ApiProperty({ example: 0 })
@@ -11,7 +8,10 @@ class CountAndTransferValueDto {
   transferValue: number;
 }
 
-export class PaymentReturnDto {
+export class PaymentAggregationSummaryDto {
+  @ApiProperty({ example: 1 })
+  paymentId: number;
+
   @ApiProperty({
     example: { count: 0, transferValue: 0 },
     type: CountAndTransferValueDto,
@@ -42,18 +42,15 @@ export class PaymentReturnDto {
   })
   approved: CountAndTransferValueDto;
 
-  @ApiProperty({
-    type: () => PartialType(TransactionViewEntity),
-    isArray: true,
-  })
-  fsps: Pick<
-    TransactionViewEntity,
-    'programFspConfigurationName' | 'programFspConfigurationLabel'
-  >[];
+  @ApiProperty({ example: true })
+  isPaymentApproved: boolean;
 
-  @ApiProperty({
-    type: () => ApprovalStatusResponseDto,
-    isArray: true,
-  })
-  approvalStatus: ApprovalStatusResponseDto[];
+  @ApiProperty({ example: 2 })
+  approvalsRequired: number;
+
+  @ApiProperty({ example: 1 })
+  approvalsGiven: number;
+
+  @ApiProperty({ example: '2024-01-01T00:00:00.000Z' })
+  paymentDate: Date;
 }

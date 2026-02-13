@@ -455,28 +455,19 @@ export class MetricsService {
     programId: number;
     limitNumberOfPayments?: number;
   }): Promise<AggregatePerPayment[]> {
-    const allPaymentsAggregates: AggregatePerPayment[] = [];
-
-    const payments = await this.paymentsReportingService.getPayments({
-      programId,
-      limitNumberOfPayments,
-    });
+    const payments =
+      await this.paymentsReportingService.getPaymentAggregationsSummaries({
+        programId,
+        limitNumberOfPayments,
+      });
 
     const paymentsSorted = dateSort(payments, (payment) => payment.paymentDate);
 
-    for (const payment of paymentsSorted) {
-      const aggregate = {
-        id: payment.paymentId,
-        date: payment.paymentDate,
-        aggregatedStatuses:
-          await this.paymentsReportingService.getPaymentAggregation(
-            programId,
-            payment.paymentId,
-          ),
-      };
-      allPaymentsAggregates.push(aggregate);
-    }
-    return allPaymentsAggregates;
+    return paymentsSorted.map((payment) => ({
+      id: payment.paymentId,
+      date: payment.paymentDate,
+      aggregatedStatuses: payment,
+    }));
   }
 
   public async getAmountSentByMonth({
@@ -488,10 +479,11 @@ export class MetricsService {
   }): Promise<AggregatePerMonth> {
     const res: AggregatePerMonth = {};
 
-    const payments = await this.paymentsReportingService.getPayments({
-      programId,
-      limitNumberOfPayments,
-    });
+    const payments =
+      await this.paymentsReportingService.getPaymentAggregationsSummaries({
+        programId,
+        limitNumberOfPayments,
+      });
 
     for (const payment of payments) {
       const month = new Date(payment.paymentDate)
@@ -509,19 +501,13 @@ export class MetricsService {
         };
       }
 
-      const aggregate =
-        await this.paymentsReportingService.getPaymentAggregation(
-          programId,
-          payment.paymentId,
-        );
-
-      res[month].success += Number(aggregate.success.transferValue);
-      res[month].waiting += Number(aggregate.waiting.transferValue);
-      res[month].failed += Number(aggregate.failed.transferValue);
+      res[month].success += Number(payment.success.transferValue);
+      res[month].waiting += Number(payment.waiting.transferValue);
+      res[month].failed += Number(payment.failed.transferValue);
       res[month].pendingApproval += Number(
-        aggregate.pendingApproval.transferValue,
+        payment.pendingApproval.transferValue,
       );
-      res[month].approved += Number(aggregate.approved.transferValue);
+      res[month].approved += Number(payment.approved.transferValue);
     }
     return res;
   }

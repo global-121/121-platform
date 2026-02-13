@@ -2106,7 +2106,7 @@
         <source>Payment approved successfully.</source>
       </trans-unit>
       <trans-unit id="7006682445961797483" datatype="html">
-        <source><x equiv-text="approvedCount.length" id="PH"/> of <x equiv-text="totalCount" id="PH_1"/> approved</source>
+        <source><x equiv-text="this.approvalsGiven()" id="PH"/> of <x equiv-text="this.approvalsRequired()" id="PH_1"/> approved</source>
       </trans-unit>
       <trans-unit id="8409002705238592127" datatype="html">
         <source>Review summary and approve payment. The payment can only be started once all needed users approve the payment.</source>

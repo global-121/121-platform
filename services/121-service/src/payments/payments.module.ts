@@ -11,6 +11,7 @@ import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity
 import { PaymentEventsModule } from '@121-service/src/payments/payment-events/payment-events.module';
 import { PaymentsController } from '@121-service/src/payments/payments.controller';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
+import { PaymentRepository } from '@121-service/src/payments/repositories/payment.repository';
 import { FspEnvVariableValidationService } from '@121-service/src/payments/services/fsp-env-variable-validation.service';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
@@ -67,6 +68,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     LookupService,
     InclusionScoreService,
     AzureLogService,
+    PaymentRepository,
     createScopedRepositoryProvider(RegistrationAttributeDataEntity),
   ],
   controllers: [PaymentsController],

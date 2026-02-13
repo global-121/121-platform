@@ -115,7 +115,9 @@ export class CreatePaymentComponent {
     this.fspConfigurationApiService.getFspConfigurations(this.programId),
   );
   program = injectQuery(this.programApiService.getProgram(this.programId));
-  payments = injectQuery(this.paymentApiService.getPayments(this.programId));
+  payments = injectQuery(
+    this.paymentApiService.getPaymentAggregationsSummaries(this.programId),
+  );
   paymentStatus = injectQuery(
     this.paymentApiService.getPaymentStatus(this.programId),
   );

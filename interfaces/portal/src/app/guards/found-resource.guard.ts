@@ -38,7 +38,9 @@ export const foundResourceGuard: (
         foundResource = !!registration;
       } else if (resourceType === 'payment') {
         const payments = await queryClient.fetchQuery({
-          ...paymentApiService.getPayments(signal(route.params.programId))(),
+          ...paymentApiService.getPaymentAggregationsSummaries(
+            signal(route.params.programId),
+          )(),
           staleTime: 0,
         });
 
