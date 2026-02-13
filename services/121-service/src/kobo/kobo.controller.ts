@@ -109,6 +109,7 @@ export class KoboController {
 
     return {
       message: result.message,
+      name: result.name,
     };
   }
 

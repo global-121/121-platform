@@ -15,6 +15,7 @@ export class KoboMapper {
       dateDeployed: entity.dateDeployed,
       url: entity.url,
       programId: entity.programId,
+      name: entity.name,
     };
     return dto;
   }
@@ -29,12 +30,14 @@ export class KoboMapper {
     assetUid,
     token,
     url,
+    name,
   }: {
     formDefinition: KoboFormDefinition;
     programId: number;
     assetUid: string;
     token: string;
     url: string;
+    name: string | null;
   }): Omit<KoboEntity, 'id' | 'created' | 'updated' | 'program'> {
     return {
       programId,
@@ -43,6 +46,7 @@ export class KoboMapper {
       url,
       dateDeployed: formDefinition.dateDeployed,
       versionId: formDefinition.versionId,
+      name,
     };
   }
 

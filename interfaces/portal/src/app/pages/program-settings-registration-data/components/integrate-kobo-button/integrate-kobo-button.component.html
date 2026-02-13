@@ -21,7 +21,9 @@
         title="Opens in a new window"
         i18n-title="@@generic-opens-in-new-window"
         class="inline-block [&_span:first-child]:underline hover:[&_span:first-child]:no-underline focus:[&_span:first-child]:no-underline"
-        ><span>{{ koboIntegration.data()?.url }}</span>
+        ><span>{{
+          koboIntegration.data()?.name ?? koboIntegration.data()?.url
+        }}</span>
         <span class="p-button-icon pi pi-external-link ms-1 text-sm"></span>
       </a>
     }
@@ -99,5 +101,14 @@
   proceedLabel="Continue"
   i18n-proceedLabel="@@generic-continue"
 >
-  <p>{{ koboFormName() }}</p>
+  @if (!!koboFormName()) {
+    <p i18n>You're about to link this program with this Kobo form:</p>
+    <div class="bg-grey-100 p-2">
+      <p>
+        <strong>{{ koboFormName() }}</strong>
+      </p>
+    </div>
+  } @else {
+    <p>{{ koboConfigurationMutation.data()?.message }}</p>
+  }
 </app-form-dialog>

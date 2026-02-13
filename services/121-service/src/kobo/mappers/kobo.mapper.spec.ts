@@ -83,6 +83,7 @@ describe('KoboMapper', () => {
         assetUid,
         token,
         url,
+        name: '25042025 Prototype Sprint',
       });
 
       // Assert
