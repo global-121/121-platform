@@ -106,7 +106,7 @@ export class IntegrateKoboButtonComponent {
         dryRun: true,
       }),
     onSuccess: (koboFormResponse) => {
-      this.koboFormName.set(koboFormResponse.message);
+      this.koboFormName.set(koboFormResponse.name);
       this.koboConfigurationDialog().hide({
         resetMutation: false,
         resetFormGroup: false,
