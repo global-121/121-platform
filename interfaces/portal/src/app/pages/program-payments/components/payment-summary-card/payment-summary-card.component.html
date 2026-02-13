@@ -1,7 +1,7 @@
 <app-card-with-link
   [href]="paymentLink()"
   [title]="paymentTitle()"
-  [loading]="metrics.isPending()"
+  [loading]="isLatestPayment() && latestPayment.isPending()"
 >
   <ng-container card-content>
     <app-card-summary-metrics-container
@@ -12,8 +12,9 @@
   <ng-container card-footer>
     <div class="flex flex-row justify-between">
       <app-colored-chip-payment-approval-status
-        [programId]="programId()"
-        [paymentId]="paymentId()"
+        [isPaymentApproved]="currentPaymentData().isPaymentApproved"
+        [approvalsGiven]="currentPaymentData().approvalsGiven"
+        [approvalsRequired]="currentPaymentData().approvalsRequired"
       />
       <span
         i18n

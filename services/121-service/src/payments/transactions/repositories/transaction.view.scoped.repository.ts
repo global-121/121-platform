@@ -266,6 +266,51 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       .getRawMany();
   }
 
+  public async aggregateTransactionsByStatusForAllPayments({
+    programId,
+    paymentId,
+  }: {
+    programId: number;
+    paymentId?: number;
+  }): Promise<
+    {
+      paymentId: number;
+      paymentDate: Date;
+      status: TransactionStatusEnum;
+      count: string;
+      totalTransferValue: string;
+    }[]
+  > {
+    const query = await this.createQueryBuilder('transaction')
+      .select('transaction.paymentId', 'paymentId')
+      .addSelect('transaction.status', 'status')
+      .leftJoin('transaction.payment', 'p')
+      .addSelect('COUNT(*)', 'count')
+      .addSelect(
+        'SUM(ROUND(transaction."transferValue"::numeric, 2))',
+        'totalTransferValue',
+      )
+      .andWhere('p."programId" = :programId', {
+        programId,
+      })
+
+      .groupBy('transaction.paymentId')
+      .addGroupBy('transaction.status')
+      .orderBy('transaction.paymentId', 'DESC');
+
+    if (paymentId !== undefined && paymentId !== null) {
+      query.andWhere('transaction.paymentId = :paymentId', { paymentId });
+    }
+
+    return await query.getRawMany<{
+      paymentId: number;
+      paymentDate: Date;
+      status: TransactionStatusEnum;
+      count: string;
+      totalTransferValue: string;
+    }>();
+  }
+
   public async getAllFspsInPayment({
     programId,
     paymentId,

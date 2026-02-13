@@ -2,14 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  inject,
   input,
 } from '@angular/core';
 
-import { injectQuery } from '@tanstack/angular-query-experimental';
-
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
-import { PaymentApiService } from '~/domains/payment/payment.api.service';
 
 @Component({
   selector: 'app-colored-chip-payment-approval-status',
@@ -19,53 +15,19 @@ import { PaymentApiService } from '~/domains/payment/payment.api.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ColoredChipPaymentApprovalStatusComponent {
-  readonly programId = input.required<string>();
-  readonly paymentId = input.required<number | string>();
-  private paymentApiService = inject(PaymentApiService);
-
-  payment = injectQuery(() => ({
-    ...this.paymentApiService.getPaymentAggregate({
-      programId: this.programId,
-      paymentId: this.paymentId,
-    })(),
-  }));
-
-  readonly isPaymentApproved = computed(() => {
-    if (!this.payment.isSuccess()) {
-      return false;
-    }
-
-    const data = this.payment.data();
-
-    const failed = data.failed.count;
-    const success = data.success.count;
-    const waiting = data.waiting.count;
-    const approved = data.approved.count;
-
-    return failed + success + waiting + approved > 0;
-  });
+  readonly isPaymentApproved = input.required<boolean>();
+  readonly approvalsGiven = input.required<number>();
+  readonly approvalsRequired = input.required<number>();
 
   readonly label = computed(() => {
-    if (!this.payment.isSuccess()) {
-      return '';
-    }
-
     if (this.isPaymentApproved()) {
       return $localize`Approved`;
     }
 
-    const approvalData = this.payment.data().approvalStatus;
-    const approvedCount = approvalData.filter((status) => status.approved);
-    const totalCount = approvalData.length;
-
-    return $localize`${approvedCount.length} of ${totalCount} approved`;
+    return $localize`${this.approvalsGiven()} of ${this.approvalsRequired()} approved`;
   });
 
   readonly variant = computed(() => {
-    if (!this.payment.isSuccess()) {
-      return 'blue';
-    }
-
     if (this.isPaymentApproved()) {
       return 'purple';
     }

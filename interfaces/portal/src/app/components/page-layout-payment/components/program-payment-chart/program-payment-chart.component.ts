@@ -12,7 +12,7 @@ import { ChartModule } from 'primeng/chart';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 
 import tailwindConfig from '~/../../tailwind.config';
-import { PaymentAggregate } from '~/domains/payment/payment.model';
+import { PaymentAggregationFull } from '~/domains/payment/payment.model';
 import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
@@ -24,7 +24,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProgramPaymentChartComponent {
-  readonly paymentDetails = input.required<PaymentAggregate>();
+  readonly paymentDetails = input.required<PaymentAggregationFull>();
 
   readonly translatableStringService = inject(TranslatableStringService);
 

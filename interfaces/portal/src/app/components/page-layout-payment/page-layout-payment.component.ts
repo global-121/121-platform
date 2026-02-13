@@ -84,7 +84,7 @@ export class PageLayoutPaymentComponent {
     this.paymentApiService.getPaymentStatus(this.programId),
   );
   paymentAggregate = injectQuery(() => ({
-    ...this.paymentApiService.getPaymentAggregate({
+    ...this.paymentApiService.getPaymentAggregationFull({
       programId: this.programId,
       paymentId: this.paymentId,
     })(),
@@ -108,7 +108,11 @@ export class PageLayoutPaymentComponent {
       return 1000;
     },
   }));
-  payments = injectQuery(this.paymentApiService.getPayments(this.programId));
+  payments = injectQuery(
+    this.paymentApiService.getPaymentAggregationsSummaries(this.programId),
+  );
+
+  readonly paymentAggregateData = computed(() => this.paymentAggregate.data());
 
   protected readonly paginateQuery = signal<PaginateQuery | undefined>(
     undefined,

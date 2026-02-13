@@ -74,6 +74,18 @@ describe('do payment with 2 approvers', () => {
 
   it('should successfully do payment', async () => {
     // Act
+    // Check approval status before any approvals
+    const paymentSummaryBeforeApprovals = await getPaymentSummary({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+    expect(paymentSummaryBeforeApprovals.body).toMatchObject({
+      isPaymentApproved: false,
+      approvalsGiven: 0,
+      approvalsRequired: 2,
+    });
+
     // 1st approve
     const approvePaymentResponse = await approvePayment({
       programId,
@@ -90,11 +102,35 @@ describe('do payment with 2 approvers', () => {
       TransactionStatusEnum.pendingApproval,
     );
 
+    // Check approval status after 1st approval
+    const paymentSummaryAfter1stApproval = await getPaymentSummary({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+    expect(paymentSummaryAfter1stApproval.body).toMatchObject({
+      isPaymentApproved: false,
+      approvalsGiven: 1,
+      approvalsRequired: 2,
+    });
+
     // 2nd approve
     await approvePayment({
       programId,
       paymentId,
       accessToken: accessTokenFinanceManager,
+    });
+
+    // Check approval status after 2nd approval
+    const paymentSummaryAfter2ndApproval = await getPaymentSummary({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+    expect(paymentSummaryAfter2ndApproval.body).toMatchObject({
+      isPaymentApproved: true,
+      approvalsGiven: 2,
+      approvalsRequired: 2,
     });
 
     const startPaymentResponse = await startPayment({

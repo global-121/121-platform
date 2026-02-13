@@ -1,23 +1,22 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
-import { Equal, Repository } from 'typeorm';
+import { Equal } from 'typeorm';
 
 import { DEFAULT_PAGINATION_LIMIT } from '@121-service/src/config';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { PaginateConfigTransactionView } from '@121-service/src/payments/consts/paginate-config-transaction-view.const';
 import { ExportTransactionResponseDto } from '@121-service/src/payments/dto/export-transaction-response.dto';
 import { PaginatedTransactionDto } from '@121-service/src/payments/dto/paginated-transaction.dto';
-import { PaymentReturnDto } from '@121-service/src/payments/dto/payment-return.dto';
+import { PaymentAggregationFullDto } from '@121-service/src/payments/dto/payment-aggregation-full.dto';
+import { PaymentAggregationSummaryDto } from '@121-service/src/payments/dto/payment-aggregation-summary.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
-import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
+import { PaymentRepository } from '@121-service/src/payments/repositories/payment.repository';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
 import { FindAllTransactionsResultDto } from '@121-service/src/payments/transactions/dto/find-all-transactions-result.dto';
 import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
-import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
@@ -29,10 +28,8 @@ import { PaginateQueryLimitRequired } from '@121-service/src/shared/types/pagina
 import { ApproverService } from '@121-service/src/user/approver/approver.service';
 @Injectable()
 export class PaymentsReportingService {
-  @InjectRepository(PaymentEntity)
-  private readonly paymentRepository: Repository<PaymentEntity>;
-
   public constructor(
+    private readonly paymentRepository: PaymentRepository,
     private readonly paymentsReportingHelperService: PaymentsReportingHelperService,
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
     private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
@@ -43,105 +40,67 @@ export class PaymentsReportingService {
     private readonly approverService: ApproverService,
   ) {}
 
-  public async getPayments({
+  public async getPaymentAggregationsSummaries({
     programId,
     limitNumberOfPayments,
+    paymentId,
   }: {
     programId: number;
     limitNumberOfPayments?: number;
-  }) {
-    const rawPayments = await this.paymentRepository.find({
-      where: {
-        programId: Equal(programId),
-      },
-      select: ['id', 'created'],
-      order: {
-        id: 'DESC',
-      },
-      take: limitNumberOfPayments,
-    });
+    paymentId?: number;
+  }): Promise<PaymentAggregationSummaryDto[]> {
+    const paymentsAndApprovalStatusses =
+      await this.paymentRepository.getPaymentsAndApprovalState({
+        programId,
+        paymentId,
+      });
 
-    const payments = rawPayments.map((payment) => ({
-      paymentId: payment.id,
-      paymentDate: payment.created,
-    }));
+    const aggregationResults =
+      await this.transactionViewScopedRepository.aggregateTransactionsByStatusForAllPayments(
+        {
+          programId,
+          paymentId,
+        },
+      );
+
+    let payments =
+      this.paymentsReportingHelperService.buildPaymentAggregationSummaries({
+        paymentsAndApprovalStatusses,
+        aggregationResults,
+      });
+
+    if (limitNumberOfPayments) {
+      payments = payments.slice(0, limitNumberOfPayments);
+    }
+
     return payments;
   }
 
-  public async getPaymentAggregation(
-    programId: number,
-    paymentId: number,
-  ): Promise<PaymentReturnDto> {
-    // Scoped, as this.transactionScopedRepository is used in the transaction.service.ts
-    const statusAggregation =
-      await this.transactionViewScopedRepository.aggregateTransactionsByStatus({
+  public async getPaymentAggregationFull({
+    programId,
+    paymentId,
+  }: {
+    programId: number;
+    paymentId: number;
+  }): Promise<PaymentAggregationFullDto> {
+    await this.findPaymentOrThrow(programId, paymentId);
+    const getPaymentAggregationSummary =
+      await this.getPaymentAggregationsSummaries({
         programId,
         paymentId,
       });
-
-    const totalTransferValuePerStatus: Record<
-      string,
-      { count: number; transferValue: number }
-    > = {};
-
-    const fspsInPayment =
-      await this.transactionViewScopedRepository.getAllFspsInPayment({
+    const fsps = await this.transactionViewScopedRepository.getAllFspsInPayment(
+      {
         programId,
         paymentId,
-      });
+      },
+    );
 
-    for (const row of statusAggregation) {
-      const status = row.status;
-
-      if (!totalTransferValuePerStatus[status]) {
-        totalTransferValuePerStatus[status] = {
-          count: 0,
-          transferValue: 0,
-        };
-      }
-
-      totalTransferValuePerStatus[status].count = Number(row.count);
-      totalTransferValuePerStatus[status].transferValue = Number(
-        row.totalTransferValue,
-      );
-    }
     const approvalStatus = await this.approverService.getPaymentApprovalStatus({
       paymentId,
     });
 
-    return {
-      [TransactionStatusEnum.success]: totalTransferValuePerStatus[
-        TransactionStatusEnum.success
-      ] || {
-        count: 0,
-        transferValue: 0,
-      },
-      [TransactionStatusEnum.waiting]: totalTransferValuePerStatus[
-        TransactionStatusEnum.waiting
-      ] || {
-        count: 0,
-        transferValue: 0,
-      },
-      // TODO: as soon as this has changed update metric.model.ts in the frontend
-      failed: totalTransferValuePerStatus[TransactionStatusEnum.error] || {
-        count: 0,
-        transferValue: 0,
-      },
-      [TransactionStatusEnum.pendingApproval]: totalTransferValuePerStatus[
-        TransactionStatusEnum.pendingApproval
-      ] || {
-        count: 0,
-        transferValue: 0,
-      },
-      [TransactionStatusEnum.approved]: totalTransferValuePerStatus[
-        TransactionStatusEnum.approved
-      ] || {
-        count: 0,
-        transferValue: 0,
-      },
-      fsps: fspsInPayment || [],
-      approvalStatus,
-    };
+    return { ...getPaymentAggregationSummary[0], fsps, approvalStatus };
   }
 
   public async getProgramPaymentsStatus(

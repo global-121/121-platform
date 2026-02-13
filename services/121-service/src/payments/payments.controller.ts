@@ -34,9 +34,8 @@ import {
 } from '@121-service/src/payments/consts/paginate-config-transaction-view.const';
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
 import { ExportTransactionResponseDto } from '@121-service/src/payments/dto/export-transaction-response.dto';
-import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-payment-aggregation.dto';
-import { GetPaymentsDto } from '@121-service/src/payments/dto/get-payments.dto';
-import { PaymentReturnDto } from '@121-service/src/payments/dto/payment-return.dto';
+import { PaymentAggregationFullDto } from '@121-service/src/payments/dto/payment-aggregation-full.dto';
+import { PaymentAggregationSummaryDto } from '@121-service/src/payments/dto/payment-aggregation-summary.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
@@ -69,18 +68,20 @@ export class PaymentsController {
   ) {}
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentREAD] })
-  @ApiOperation({ summary: 'Get past payments for program' })
+  @ApiOperation({ summary: 'Get past payment aggregate results for program' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get past payments for program',
+    description: 'Get past payment aggregate results for program',
   })
   @Get('programs/:programId/payments')
   public async getPayments(
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<GetPaymentsDto[]> {
-    return await this.paymentsReportingService.getPayments({ programId });
+  ): Promise<PaymentAggregationSummaryDto[]> {
+    return await this.paymentsReportingService.getPaymentAggregationsSummaries({
+      programId,
+    });
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentREAD] })
@@ -107,22 +108,23 @@ export class PaymentsController {
     name: 'paymentId',
     required: true,
     type: 'integer',
-    description: 'Request transactions from a specific payment id',
+    description: 'Request aggregates from a specific payment id',
   })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
       'Retrieved payment aggregate results - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-    type: PaymentReturnDto,
+    type: PaymentAggregationFullDto,
   })
   @Get('programs/:programId/payments/:paymentId')
   public async getPaymentAggregation(
-    @Param() params: GetPaymentAggregationDto,
-  ): Promise<PaymentReturnDto> {
-    return await this.paymentsReportingService.getPaymentAggregation(
-      Number(params.programId),
-      Number(params.paymentId),
-    );
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('paymentId', ParseIntPipe) paymentId: number,
+  ): Promise<PaymentAggregationFullDto> {
+    return await this.paymentsReportingService.getPaymentAggregationFull({
+      programId,
+      paymentId,
+    });
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentCREATE] })

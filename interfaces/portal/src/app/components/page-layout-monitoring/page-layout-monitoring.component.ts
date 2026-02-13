@@ -59,11 +59,11 @@ export class PageLayoutMonitoringComponent {
     enabled: !!this.program.data()?.id,
   }));
   payments = injectQuery(() => ({
-    ...this.paymentApiService.getPayments(this.programId)(),
+    ...this.paymentApiService.getPaymentAggregationsSummaries(this.programId)(),
     enabled: !!this.program.data()?.id,
   }));
   latestPayment = injectQuery(() => ({
-    ...this.paymentApiService.getPaymentAggregate({
+    ...this.paymentApiService.getPaymentAggregationFull({
       programId: this.programId,
       paymentId: this.latestPaymentNumber,
     })(),
