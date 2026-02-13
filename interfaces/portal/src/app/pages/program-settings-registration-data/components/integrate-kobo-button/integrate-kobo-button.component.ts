@@ -59,7 +59,7 @@ export class IntegrateKoboButtonComponent {
   readonly koboApiService = inject(KoboApiService);
   readonly toastService = inject(ToastService);
 
-  readonly koboFormName = model<string>();
+  readonly koboFormName = model<null | string>();
 
   readonly koboConfigurationDialog = viewChild.required<FormDialogComponent>(
     'koboConfigurationDialog',

@@ -58,7 +58,7 @@ export class KoboService {
     dryRun: boolean;
   }): Promise<{
     message: string;
-    name: string | undefined;
+    name: string | null;
     dryRun: boolean;
   }> {
     await this.programService.findProgramOrThrow(programId);
@@ -90,7 +90,7 @@ export class KoboService {
     if (dryRun) {
       return {
         message: 'Dry run successful - validation passed',
-        name: asset.name,
+        name: asset.name ?? null,
         dryRun: true,
       };
     }
@@ -120,7 +120,7 @@ export class KoboService {
 
     return {
       message: 'Kobo form integrated successfully',
-      name: asset.name,
+      name: asset.name ?? null,
       dryRun: false,
     };
   }
