@@ -11,8 +11,9 @@
       <h1 class="me-auto">
         {{ paymentTitle() }}
         <app-colored-chip-payment-approval-status
-          [programId]="programId()"
-          [paymentId]="paymentId()"
+          [isPaymentApproved]="payment.data()?.isPaymentApproved ?? false"
+          [approvalsGiven]="payment.data()?.approvalsGiven ?? 0"
+          [approvalsRequired]="payment.data()?.approvalsRequired ?? 0"
         />
       </h1>
       @if (showApprovePaymentButton()) {

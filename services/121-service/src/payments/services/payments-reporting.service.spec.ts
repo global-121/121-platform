@@ -1,7 +1,6 @@
 import { TestBed } from '@automock/jest';
-import { Repository } from 'typeorm';
 
-import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
+import { PaymentRepository } from '@121-service/src/payments/repositories/payment.repository';
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -12,6 +11,7 @@ import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dt
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { ApproverService } from '@121-service/src/user/approver/approver.service';
 
 function createMockTransaction(
   referenceId: string,
@@ -68,8 +68,9 @@ describe('PaymentsReportingService - getTransactions', () => {
   let registrationPaginationService: RegistrationsPaginationService;
   let programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository;
   let paymentsHelperService: PaymentsReportingHelperService;
-  let paymentRepository: Repository<PaymentEntity>;
+  let paymentRepository: PaymentRepository;
   let programRepository: ProgramRepository;
+  let approverService: ApproverService;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -92,8 +93,9 @@ describe('PaymentsReportingService - getTransactions', () => {
       ProgramRegistrationAttributeRepository,
     );
     paymentsHelperService = unitRef.get(PaymentsReportingHelperService);
-    paymentRepository = unitRef.get('PaymentEntityRepository');
+    paymentRepository = unitRef.get(PaymentRepository);
     programRepository = unitRef.get(ProgramRepository);
+    approverService = unitRef.get(ApproverService);
 
     jest.spyOn<any, any>(service, 'getTransactions');
     jest.spyOn(paymentsHelperService, 'getSelectForExport');
@@ -246,6 +248,147 @@ describe('PaymentsReportingService - getTransactions', () => {
       // Act & Assert
       await expect(
         service.getPaymentEvents({ programId, paymentId }),
+      ).rejects.toMatchSnapshot();
+    });
+  });
+
+  describe('getPaymentAggregationsSummaries', () => {
+    it('should limit the number of payments when limitNumberOfPayments is provided', async () => {
+      // Arrange
+      const programId = 1;
+      const limitNumberOfPayments = 2;
+
+      const mockSummaries = [
+        {
+          paymentId: 1,
+          paymentDate: new Date('2024-01-15T10:00:00Z'),
+          isPaymentApproved: true,
+          approvalsRequired: 2,
+          approvalsGiven: 2,
+          success: { count: 10, transferValue: 1000 },
+          waiting: { count: 0, transferValue: 0 },
+          failed: { count: 0, transferValue: 0 },
+          pendingApproval: { count: 0, transferValue: 0 },
+          approved: { count: 0, transferValue: 0 },
+        },
+        {
+          paymentId: 2,
+          paymentDate: new Date('2024-01-20T10:00:00Z'),
+          isPaymentApproved: false,
+          approvalsRequired: 2,
+          approvalsGiven: 1,
+          success: { count: 0, transferValue: 0 },
+          waiting: { count: 5, transferValue: 500 },
+          failed: { count: 0, transferValue: 0 },
+          pendingApproval: { count: 0, transferValue: 0 },
+          approved: { count: 0, transferValue: 0 },
+        },
+        {
+          paymentId: 3,
+          paymentDate: new Date('2024-01-25T10:00:00Z'),
+          isPaymentApproved: false,
+          approvalsRequired: 1,
+          approvalsGiven: 0,
+          success: { count: 0, transferValue: 0 },
+          waiting: { count: 0, transferValue: 0 },
+          failed: { count: 2, transferValue: 200 },
+          pendingApproval: { count: 0, transferValue: 0 },
+          approved: { count: 0, transferValue: 0 },
+        },
+      ];
+
+      jest
+        .spyOn(paymentRepository as any, 'getPaymentsAndApprovalState')
+        .mockResolvedValue([]); // Return empty array as the actual values are not relevant for this test
+
+      jest
+        .spyOn(
+          transactionScopedRepository,
+          'aggregateTransactionsByStatusForAllPayments',
+        )
+        .mockResolvedValue([]); // Return empty array as the actual values are not relevant for this test
+
+      jest
+        .spyOn(paymentsHelperService, 'buildPaymentAggregationSummaries')
+        .mockReturnValue(mockSummaries);
+
+      // Act
+      const result = await service.getPaymentAggregationsSummaries({
+        programId,
+        limitNumberOfPayments,
+      });
+
+      // Assert
+      expect(result).toHaveLength(2);
+      expect(result).toEqual([mockSummaries[0], mockSummaries[1]]);
+      expect(result).not.toContain(mockSummaries[2]);
+    });
+  });
+
+  describe('getPaymentAggregationFull', () => {
+    it('should return full payment aggregation data', async () => {
+      // Arrange
+      const programId = 1;
+      const paymentId = 2;
+
+      const mockSummary = {
+        paymentId: 2,
+        paymentDate: new Date('2024-01-15T10:00:00Z'),
+        isPaymentApproved: true,
+        approvalsRequired: 2,
+        approvalsGiven: 2,
+        success: { count: 10, transferValue: 1000 },
+        waiting: { count: 0, transferValue: 0 },
+        failed: { count: 0, transferValue: 0 },
+        pendingApproval: { count: 0, transferValue: 0 },
+        approved: { count: 0, transferValue: 0 },
+      };
+
+      const mockFsps = [
+        {
+          programFspConfigurationName: 'fsp1',
+          programFspConfigurationLabel: { en: 'FSP 1' },
+        },
+        {
+          programFspConfigurationName: 'fsp2',
+          programFspConfigurationLabel: { en: 'FSP 2' },
+        },
+      ];
+      const mockApprovalStatus = [];
+
+      jest
+        .spyOn(service, 'getPaymentAggregationsSummaries')
+        .mockResolvedValue([mockSummary]);
+      jest
+        .spyOn(transactionScopedRepository, 'getAllFspsInPayment')
+        .mockResolvedValue(mockFsps);
+      jest
+        .spyOn(approverService, 'getPaymentApprovalStatus')
+        .mockResolvedValue(mockApprovalStatus);
+
+      // Act
+      const result = await service.getPaymentAggregationFull({
+        programId,
+        paymentId,
+      });
+
+      // Assert
+      expect(result).toEqual({
+        ...mockSummary,
+        fsps: mockFsps,
+        approvalStatus: mockApprovalStatus,
+      });
+    });
+
+    it('should throw 404 if payment does not exist', async () => {
+      // Arrange
+      const programId = 1;
+      const paymentId = 999;
+      (paymentRepository.findOne as jest.Mock).mockResolvedValue(undefined);
+
+      // Act & Assert
+      await expect(
+        service.getPaymentAggregationFull({ programId, paymentId }),
       ).rejects.toMatchSnapshot();
     });
   });

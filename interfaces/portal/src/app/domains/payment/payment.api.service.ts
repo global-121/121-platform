@@ -11,8 +11,8 @@ import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto'
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import {
-  Payment,
-  PaymentAggregate,
+  PaymentAggregationFull,
+  PaymentAggregationSummary,
   PaymentEventsResponse,
   PaymentStatus,
 } from '~/domains/payment/payment.model';
@@ -31,20 +31,20 @@ const BASE_ENDPOINT = (programId: Signal<number | string>) => [
   providedIn: 'root',
 })
 export class PaymentApiService extends DomainApiService {
-  getPayments(programId: Signal<number | string>) {
-    return this.generateQueryOptions<Payment[]>({
+  getPaymentAggregationsSummaries(programId: Signal<number | string>) {
+    return this.generateQueryOptions<PaymentAggregationSummary[]>({
       path: [...BASE_ENDPOINT(programId)],
     });
   }
 
-  getPaymentAggregate({
+  getPaymentAggregationFull({
     programId,
     paymentId,
   }: {
     programId: Signal<number | string | undefined>;
     paymentId: Signal<number | string | undefined>;
   }) {
-    return this.generateQueryOptions<PaymentAggregate>({
+    return this.generateQueryOptions<PaymentAggregationFull>({
       path: [...BASE_ENDPOINT(programId as Signal<number | string>), paymentId],
       enabled: () => !!programId() && !!paymentId(),
     });
