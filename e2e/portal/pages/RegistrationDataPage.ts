@@ -40,7 +40,7 @@ class RegistrationDataPage extends BasePage {
     await this.continueButton.click();
   }
 
-  async validateKoboInegrationSuccessfulMessage() {
+  async validateKoboIntegrationSuccessfulMessage() {
     await this.page
       .getByText('Dry run successful - validation passed')
       .waitFor();

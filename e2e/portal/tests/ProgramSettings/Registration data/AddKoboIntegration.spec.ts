@@ -60,7 +60,7 @@ test.describe('Add Kobo integration and validate status messages', () => {
         apiKey: koboIntegrationDetails.apiKey,
       });
 
-      await registrationData.validateKoboInegrationSuccessfulMessage();
+      await registrationData.validateKoboIntegrationSuccessfulMessage();
     });
   });
 
