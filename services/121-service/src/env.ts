@@ -325,10 +325,6 @@ export const env = createEnv({
     KOBO_CONNECT_API_URL: z
       .url()
       .pipe(z.transform((url) => withoutTrailingSlash(url))),
-    KOBO_SERVER_URL: z
-      .url()
-      .pipe(z.transform((url) => withoutTrailingSlash(url))),
-    KOBO_TOKEN: z.string(),
 
     ...fspEnvVariablesSchema,
 

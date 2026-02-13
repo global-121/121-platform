@@ -18,6 +18,10 @@ class RegistrationDataPage extends BasePage {
     await this.page.getByRole('link', { name: 'Registration Data' }).click();
   }
 
+  async clickContinueButton() {
+    await this.continueButton.first().click();
+  }
+
   async addKoboToolboxIntegration({
     url,
     assetId,
@@ -37,21 +41,11 @@ class RegistrationDataPage extends BasePage {
     await assetIdInput.fill(assetId);
     await apiKeyInput.fill(apiKey);
     // Click continue to save the integration
-    await this.continueButton.click();
+    await this.clickContinueButton();
   }
 
-  async validateKoboIntegrationSuccessfulMessage() {
-    await this.page
-      .getByText('Dry run successful - validation passed')
-      .waitFor();
-  }
-
-  async validateKoboIntegrationErrorMessage() {
-    await this.page
-      .getByText(
-        'Something went wrong: "Kobo form definition validation failed',
-      )
-      .waitFor();
+  async validateKoboIntegrationMessage({ message }: { message: string }) {
+    await this.page.getByText(message).waitFor();
   }
 }
 
