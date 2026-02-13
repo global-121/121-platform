@@ -28,4 +28,7 @@ export class KoboEntity extends Base121Entity {
   @Index()
   @Column({ type: 'int' })
   public programId: number;
+
+  @Column({ type: 'character varying', nullable: true })
+  public name: string | null;
 }
