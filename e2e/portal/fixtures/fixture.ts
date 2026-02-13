@@ -11,6 +11,7 @@ import {
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
+import RegistrationDataPage from '@121-e2e/portal/pages/RegistrationDataPage';
 
 // Define a comprehensive type for test registration data
 // Based on RegistrationEntity with commonly used test-specific properties
@@ -30,6 +31,7 @@ type Fixtures = {
   }) => Promise<{ accessToken: string }>;
   paymentPage: PaymentPage;
   paymentsPage: PaymentsPage;
+  registrationDataPage: RegistrationDataPage;
 };
 
 export const customSharedFixture = base.extend<Fixtures>({
@@ -70,5 +72,9 @@ export const customSharedFixture = base.extend<Fixtures>({
 
   paymentsPage: async ({ page }, use) => {
     await use(new PaymentsPage(page));
+  },
+
+  registrationDataPage: async ({ page }, use) => {
+    await use(new RegistrationDataPage(page));
   },
 });
