@@ -41,6 +41,7 @@ export class KoboResponseDto {
     example: 'Kobo form',
     type: 'string',
     description: 'Name of the Kobo form',
+    nullable: true,
   })
   public readonly name: string | null;
 }

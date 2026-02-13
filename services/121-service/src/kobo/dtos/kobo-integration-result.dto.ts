@@ -10,6 +10,7 @@ export class KoboIntegrationResultDto {
   @ApiProperty({
     example: 'Kobo Form',
     description: 'The name of the Kobo form',
+    nullable: true,
   })
-  public readonly name: string | undefined;
+  public readonly name: string | null;
 }
