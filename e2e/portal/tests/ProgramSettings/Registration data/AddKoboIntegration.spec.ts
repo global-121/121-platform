@@ -1,6 +1,5 @@
 import { test } from '@playwright/test';
 
-import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
@@ -17,12 +16,15 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationDataPage from '@121-e2e/portal/pages/RegistrationDataPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
+const KOBO_SERVER_URL = 'http://mock-service:3001/api/kobo';
+const KOBO_TOKEN = 'mock-token';
+
 // KOBO INTEGRATION DETAILS
 const koboIntegrationDetails = {
-  url: env.KOBO_SERVER_URL,
+  url: KOBO_SERVER_URL,
   successfulAssetId: 'success-asset',
   unsuccessfulAssetId: 'asset-id-body-that-triggers-errors',
-  apiKey: env.KOBO_TOKEN,
+  apiKey: KOBO_TOKEN,
 };
 
 test.describe('Add Kobo integration and validate status messages', () => {
