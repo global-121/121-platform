@@ -133,6 +133,7 @@ describe('Import kobo form definition', () => {
     expect(linkKoboResponse.body).toMatchInlineSnapshot(`
      {
        "message": "Kobo form integrated successfully",
+       "name": "25042025 Prototype Sprint",
      }
     `);
     expect(linkKoboResponse.status).toBe(HttpStatus.CREATED);
