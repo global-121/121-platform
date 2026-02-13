@@ -112,6 +112,8 @@ export class PageLayoutPaymentComponent {
     this.paymentApiService.getPaymentAggregationsSummaries(this.programId),
   );
 
+  readonly paymentAggregateData = computed(() => this.paymentAggregate.data());
+
   protected readonly paginateQuery = signal<PaginateQuery | undefined>(
     undefined,
   );
