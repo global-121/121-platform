@@ -316,6 +316,44 @@ class TableComponent {
     await this.page.getByRole('option', { name: selection }).first().click();
   }
 
+  async validateDropdownValuesInTable({
+    columnName,
+    expectedValues,
+  }: {
+    columnName: string;
+    expectedValues: string[];
+  }) {
+    const filterMenuButton = this.table
+      .getByRole('columnheader', { name: columnName })
+      .getByLabel('Show Filter Menu');
+
+    await filterMenuButton.scrollIntoViewIfNeeded();
+    await filterMenuButton.click();
+
+    await this.page.getByText('Choose option(s)').click();
+
+    const options = this.page.getByRole('option');
+    const optionsCount = await options.count();
+    const actualValues: string[] = [];
+
+    for (let i = 0; i < optionsCount; i++) {
+      const textContent = await options.nth(i).textContent();
+      if (textContent) {
+        actualValues.push(textContent.trim());
+      }
+    }
+
+    // Sort arrays alphabetically for reliable comparison
+    const sortedActualValues = actualValues.toSorted((a, b) =>
+      a.localeCompare(b),
+    );
+    const sortedExpectedValues = expectedValues.toSorted((a, b) =>
+      a.localeCompare(b),
+    );
+
+    expect(sortedActualValues).toEqual(sortedExpectedValues);
+  }
+
   async filterColumnByDate({
     columnName,
     day,

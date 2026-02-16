@@ -13,20 +13,43 @@ const koboIntegrationDetails = {
   apiKey: 'mock-token',
 };
 
-test.beforeEach(
-  async ({ resetDBAndSeedRegistrations, registrationDataPage }) => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.safaricomProgram,
-      registrations: registrationsSafaricom,
-      programId: programIdSafaricom,
-      navigateToPage: `/en-GB/program/${programIdSafaricom}/settings/registration-data`,
-    });
-    await registrationDataPage.clickRegistrationDataSection();
-  },
-);
+const koboIntegrationFormColumns = [
+  'National ID number',
+  'What is 2+2 (number)?',
+  'How are you today (select one)?',
+];
 
-test('Add Kobo integration successfully', async ({ registrationDataPage }) => {
+const howAreYouTodayQuestionOptions = ['Great', 'Ok', 'Terrible'];
+
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.safaricomProgram,
+    registrations: registrationsSafaricom,
+    programId: programIdSafaricom,
+    navigateToPage: `/en-GB/program/${programIdSafaricom}/registrations`,
+  });
+});
+
+test('Add Kobo integration successfully', async ({
+  registrationDataPage,
+  registrationsPage,
+  tableComponent,
+}) => {
+  await test.step('Validate column availability from Registrations page', async () => {
+    for (const column of koboIntegrationFormColumns) {
+      await registrationsPage.checkColumnAvailability({
+        column,
+        shouldBeAvailable: false,
+      });
+    }
+  });
+
+  await test.step('Navigate to registration data page', async () => {
+    await registrationDataPage.navigateToProgramPage('Settings');
+  });
+
   await test.step('Add Kobo integration', async () => {
+    await registrationDataPage.clickRegistrationDataSection();
     await registrationDataPage.addKoboToolboxIntegration({
       url: koboIntegrationDetails.url,
       assetId: koboIntegrationDetails.successfulAssetId,
@@ -36,11 +59,26 @@ test('Add Kobo integration successfully', async ({ registrationDataPage }) => {
     await registrationDataPage.validateKoboIntegrationMessage({
       message: 'Dry run successful - validation passed',
     });
-    // click continue button to exit the form
+    // Click continue button to exit the form
     await registrationDataPage.clickContinueButton();
-    // validate toast message after exiting the form
+    // Validate toast message after exiting the form
     await registrationDataPage.validateToastMessageAndClose(
       'Kobo form successfully integrated.',
     );
+  });
+
+  await test.step('Validate Kobo integration details on Registrations page', async () => {
+    // Navigate to Registrations page
+    await registrationsPage.navigateToProgramPage('Registrations');
+    // Set Registrations table to display Kobo integration details
+    await registrationsPage.configureTableColumns({
+      columns: ['Name', ...koboIntegrationFormColumns],
+      onlyGivenColumns: false,
+    });
+    // Validate dropdown values for "How are you today (select one)?" question
+    await tableComponent.validateDropdownValuesInTable({
+      columnName: 'How are you today (select one)?',
+      expectedValues: howAreYouTodayQuestionOptions,
+    });
   });
 });

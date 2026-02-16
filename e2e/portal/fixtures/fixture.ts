@@ -8,10 +8,12 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
+import TableComponent from '@121-e2e/portal/components/TableComponent';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 import RegistrationDataPage from '@121-e2e/portal/pages/RegistrationDataPage';
+import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 // Define a comprehensive type for test registration data
 // Based on RegistrationEntity with commonly used test-specific properties
@@ -32,6 +34,8 @@ type Fixtures = {
   paymentPage: PaymentPage;
   paymentsPage: PaymentsPage;
   registrationDataPage: RegistrationDataPage;
+  registrationsPage: RegistrationsPage;
+  tableComponent: TableComponent;
 };
 
 export const customSharedFixture = base.extend<Fixtures>({
@@ -76,5 +80,13 @@ export const customSharedFixture = base.extend<Fixtures>({
 
   registrationDataPage: async ({ page }, use) => {
     await use(new RegistrationDataPage(page));
+  },
+
+  registrationsPage: async ({ page }, use) => {
+    await use(new RegistrationsPage(page));
+  },
+
+  tableComponent: async ({ page }, use) => {
+    await use(new TableComponent(page));
   },
 });
