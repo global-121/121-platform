@@ -104,13 +104,21 @@ describe('change the status of a set of registrations', () => {
 
   it('should not update statuses if not possible', async () => {
     // Arrange
-    const newStatus = RegistrationStatusEnum.paused; // 'new' to paused IS NOT possible
+    // First change status to declined as from new you can move to any status which is not suitable for the test case
+    const firstUpdatedStatus = RegistrationStatusEnum.declined;
+    await awaitChangeRegistrationStatus({
+      programId: programIdOCW,
+      referenceIds,
+      status: firstUpdatedStatus,
+      accessToken,
+    });
+    const secondUpdatedStatus = RegistrationStatusEnum.paused; // 'declined' to 'paused' is NOT possible, so no status should be updated in the end
 
     // Act
     const updateStatusResponse = await awaitChangeRegistrationStatus({
       programId: programIdOCW,
       referenceIds,
-      status: newStatus,
+      status: secondUpdatedStatus,
       accessToken,
     });
     const getRegistrationsResponse = await getRegistrations({
@@ -125,7 +133,7 @@ describe('change the status of a set of registrations', () => {
     );
     expect(updateStatusResponse.body.applicableCount).toBe(0);
     for (const registration of data) {
-      expect(registration.status).toBe(oldStatus);
+      expect(registration.status).toBe(firstUpdatedStatus);
     }
   });
 
