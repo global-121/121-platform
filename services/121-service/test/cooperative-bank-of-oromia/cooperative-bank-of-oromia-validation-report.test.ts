@@ -118,7 +118,7 @@ describe('Validate cooperative bank of oromia accounts', () => {
         unexpectedErrorRegistration.bankAccountNumber,
     });
     expect(record.errorMessage).toMatchInlineSnapshot(
-      `"Unknown error occurred"`,
+      `"CooperativeBankOfOromia Error: Cooperative Bank of Oromia did not provide error details for account validation. The service may be temporarily unavailable or returned an unexpected response format."`,
     );
   });
 });
