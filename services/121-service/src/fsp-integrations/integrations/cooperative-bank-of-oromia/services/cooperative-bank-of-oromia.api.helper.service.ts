@@ -51,16 +51,23 @@ export class CooperativeBankOfOromiaApiHelperService {
   public handleTransferResponse(
     responseData: CooperativeBankOfOromiaApiTransferResponseBodyDto,
   ): { result: CooperativeBankOfOromiaTransferResultEnum; message?: string } {
-    if (responseData && responseData.success === true) {
+    if (!responseData) {
+      return {
+        result: CooperativeBankOfOromiaTransferResultEnum.fail,
+        message:
+          'No response received from Cooperative Bank of Oromia API. The service may be temporarily unavailable.',
+      };
+    }
+
+    if (responseData.success === true) {
       return {
         result: CooperativeBankOfOromiaTransferResultEnum.success,
       };
     }
 
     if (
-      responseData &&
       responseData?.error?.messages ===
-        CooperativeBankOfOromiaTransferMessageEnum.duplicateMessageId
+      CooperativeBankOfOromiaTransferMessageEnum.duplicateMessageId
     ) {
       return {
         result: CooperativeBankOfOromiaTransferResultEnum.duplicate,
@@ -77,7 +84,7 @@ export class CooperativeBankOfOromiaApiHelperService {
     errorObject?: CooperativeBankOfOromiaApiTransferErrorResponseBodyDto,
   ): string {
     if (!errorObject) {
-      return this.unknownError();
+      return 'Cooperative Bank of Oromia did not provide error details. The service may be temporarily unavailable or returned an unexpected response format.';
     }
 
     return `Error description: ${errorObject.description}, Error Code: ${errorObject.code}, Message: ${errorObject.messages || errorObject.message}`;
@@ -87,12 +94,8 @@ export class CooperativeBankOfOromiaApiHelperService {
     errorObject?: CooperativeBankOfOromiaApiAccountValidationErrorResponseBodyDto,
   ): string {
     if (!errorObject || !errorObject.message) {
-      return this.unknownError();
+      return 'Cooperative Bank of Oromia did not provide error details for account validation. The service may be temporarily unavailable or returned an unexpected response format.';
     }
     return `Message: ${errorObject.message}`;
-  }
-
-  private unknownError(): string {
-    return 'Unknown error occurred';
   }
 }

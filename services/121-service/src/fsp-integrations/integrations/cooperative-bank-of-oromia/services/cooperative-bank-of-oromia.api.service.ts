@@ -104,9 +104,20 @@ export class CooperativeBankOfOromiaApiService {
         AxiosResponse<CooperativeBankOfOromiaApiTransferResponseBodyDto>
       >(this.getTransferUrl().href, payload, headers);
     } catch (error) {
+      const statusCode = error.response?.status;
+      const isServiceUnavailable =
+        statusCode === 503 || statusCode === 502 || statusCode === 504;
+
+      if (isServiceUnavailable) {
+        return {
+          result: CooperativeBankOfOromiaTransferResultEnum.fail,
+          message: `Cooperative Bank of Oromia service is temporarily unavailable (HTTP ${statusCode}). Please try again later.`,
+        };
+      }
+
       return {
         result: CooperativeBankOfOromiaTransferResultEnum.fail,
-        message: `Transfer failed: ${error.message}`,
+        message: `Transfer failed: ${error.message}${statusCode ? ` (HTTP ${statusCode})` : ''}`,
       };
     }
 
