@@ -19,6 +19,9 @@ import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 import RegistrationDataPage from '@121-e2e/portal/pages/RegistrationDataPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
+// Re-export expect for convenience
+export { expect } from '@playwright/test';
+
 // Define a comprehensive type for test registration data
 // Based on RegistrationEntity with commonly used test-specific properties
 type TestRegistration = Partial<RegistrationEntity> & {
@@ -40,6 +43,7 @@ type Fixtures = {
   paymentsPage: PaymentsPage;
   registrationDataPage: RegistrationDataPage;
   registrationsPage: RegistrationsPage;
+  registrationDebitCardPage: RegistrationDebitCardPage;
   tableComponent: TableComponent;
 };
 
@@ -103,5 +107,9 @@ export const customSharedFixture = base.extend<Fixtures>({
 
   tableComponent: async ({ page }, use) => {
     await use(new TableComponent(page));
+  },
+
+  registrationDebitCardPage: async ({ page }, use) => {
+    await use(new RegistrationDebitCardPage(page));
   },
 });
