@@ -19,8 +19,6 @@ const koboIntegrationFormColumns = [
   'How are you today (select one)?',
 ];
 
-const howAreYouTodayQuestionOptions = ['Great', 'Ok', 'Terrible'];
-
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.safaricomProgram,
@@ -70,6 +68,13 @@ test('Add Kobo integration successfully', async ({
   await test.step('Validate Kobo integration details on Registrations page', async () => {
     // Navigate to Registrations page
     await registrationsPage.navigateToProgramPage('Registrations');
+    // Validate Kobo integration columns are visible in table selection options
+    for (const column of koboIntegrationFormColumns) {
+      await registrationsPage.checkColumnAvailability({
+        column,
+        shouldBeAvailable: true,
+      });
+    }
     // Set Registrations table to display Kobo integration details
     await registrationsPage.configureTableColumns({
       columns: ['Name', ...koboIntegrationFormColumns],
@@ -78,7 +83,7 @@ test('Add Kobo integration successfully', async ({
     // Validate dropdown values for "How are you today (select one)?" question
     await tableComponent.validateDropdownValuesInTable({
       columnName: 'How are you today (select one)?',
-      expectedValues: howAreYouTodayQuestionOptions,
+      expectedValues: new Set(['Great', 'Ok', 'Terrible']),
     });
   });
 });

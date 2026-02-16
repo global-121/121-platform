@@ -321,7 +321,7 @@ class TableComponent {
     expectedValues,
   }: {
     columnName: string;
-    expectedValues: string[];
+    expectedValues: Set<string>;
   }) {
     const filterMenuButton = this.table
       .getByRole('columnheader', { name: columnName })
@@ -329,29 +329,15 @@ class TableComponent {
 
     await filterMenuButton.scrollIntoViewIfNeeded();
     await filterMenuButton.click();
-
     await this.page.getByText('Choose option(s)').click();
 
-    const options = this.page.getByRole('option');
-    const optionsCount = await options.count();
-    const actualValues: string[] = [];
+    const dropdownActualValues = new Set<string>();
 
-    for (let i = 0; i < optionsCount; i++) {
-      const textContent = await options.nth(i).textContent();
-      if (textContent) {
-        actualValues.push(textContent.trim());
-      }
+    for (const option of await this.page.getByRole('option').all()) {
+      const textContent = (await option.textContent())!;
+      dropdownActualValues.add(textContent.trim());
     }
-
-    // Sort arrays alphabetically for reliable comparison
-    const sortedActualValues = actualValues.toSorted((a, b) =>
-      a.localeCompare(b),
-    );
-    const sortedExpectedValues = expectedValues.toSorted((a, b) =>
-      a.localeCompare(b),
-    );
-
-    expect(sortedActualValues).toEqual(sortedExpectedValues);
+    expect(expectedValues).toEqual(dropdownActualValues);
   }
 
   async filterColumnByDate({
