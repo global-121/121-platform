@@ -1,8 +1,12 @@
 import { test as base, TestInfo } from '@playwright/test';
 
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
+import {
+  seedIncludedRegistrations,
+  seedRegistrationsWithStatus,
+} from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
@@ -30,6 +34,7 @@ type Fixtures = {
     registrations: TestRegistration[];
     programId: number;
     navigateToPage?: string;
+    seedWithStatus?: RegistrationStatusEnum;
   }) => Promise<{ accessToken: string }>;
   paymentPage: PaymentPage;
   paymentsPage: PaymentsPage;
@@ -45,16 +50,26 @@ export const customSharedFixture = base.extend<Fixtures>({
       registrations: TestRegistration[];
       programId: number;
       navigateToPage?: string;
+      seedWithStatus?: RegistrationStatusEnum;
     }): Promise<{ accessToken: string }> => {
       const nameOfFileContainingTest = testInfo.file;
       // Logic to reset the database and seed registrations
       await resetDB(params.seedScript, nameOfFileContainingTest);
       const accessToken = await getAccessToken();
-      await seedIncludedRegistrations(
-        params.registrations,
-        params.programId,
-        accessToken,
-      );
+      if (params.seedWithStatus) {
+        await seedRegistrationsWithStatus(
+          params.registrations,
+          params.programId,
+          accessToken,
+          params.seedWithStatus,
+        );
+      } else {
+        await seedIncludedRegistrations(
+          params.registrations,
+          params.programId,
+          accessToken,
+        );
+      }
       // Login
       const loginPage = new LoginPage(page);
       await page.goto('/');
