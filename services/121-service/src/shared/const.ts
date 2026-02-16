@@ -54,9 +54,6 @@ const registrationViewAttributeNamesTyped = Object.keys(
   registrationViewAttributeNamesRecord,
 ) as RegistrationViewAttributeNameWithoutPhoneNumber[];
 
-// Export the typed array for type safety
-export { registrationViewAttributeNamesTyped };
-
 // Export as string array for runtime checks
 export const registrationViewAttributeNames: readonly string[] =
   registrationViewAttributeNamesTyped;
