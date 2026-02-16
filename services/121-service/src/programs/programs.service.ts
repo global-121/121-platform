@@ -24,7 +24,7 @@ import { ProgramRegistrationAttributeMapper } from '@121-service/src/programs/ma
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { nameConstraintQuestionsArray } from '@121-service/src/shared/const';
+import { registrationViewAttributeNames } from '@121-service/src/shared/const';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
@@ -330,8 +330,8 @@ export class ProgramService {
       )} are already in use`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
-    if (nameConstraintQuestionsArray.includes(name)) {
-      const errors = `Unable to create program registration attribute with name ${name}. The names ${nameConstraintQuestionsArray.join(
+    if (registrationViewAttributeNames.includes(name)) {
+      const errors = `Unable to create program registration attribute with name ${name}. The names ${registrationViewAttributeNames.join(
         ', ',
       )} are forbidden to use`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);

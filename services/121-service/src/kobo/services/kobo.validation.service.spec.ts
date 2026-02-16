@@ -823,4 +823,176 @@ describe('KoboValidationService', () => {
       expect(error.message).toContain('Unknown (xx)');
     });
   });
+
+  describe('constrained attribute types validation', () => {
+    it('should pass validation when constrained attribute has correct type', async () => {
+      // Arrange
+      const programId = 1;
+      const mockFspConfigs = [];
+
+      const formDefinitionWithCorrectConstrainedType: KoboFormDefinition = {
+        ...baseFormDefinition,
+        survey: [
+          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          {
+            name: 'preferredLanguage', // Constrained attribute
+            type: 'text', // Correct type - should be text
+            label: ['Preferred Language'],
+            required: true,
+            choices: [],
+          },
+        ],
+      };
+
+      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
+        fullnameNamingConvention: [],
+        allowEmptyPhoneNumber: true,
+        enableScope: false,
+      });
+      (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
+        mockFspConfigs,
+      );
+
+      // Act & Assert
+      await expect(
+        service.validateKoboFormDefinition({
+          formDefinition: formDefinitionWithCorrectConstrainedType,
+          programId,
+        }),
+      ).resolves.not.toThrow();
+    });
+
+    it('should throw HttpException when constrained attribute has incorrect type', async () => {
+      // Arrange
+      const programId = 1;
+      const mockFspConfigs = [];
+
+      const formDefinitionWithIncorrectConstrainedType: KoboFormDefinition = {
+        ...baseFormDefinition,
+        survey: [
+          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          {
+            name: 'preferredLanguage', // Constrained attribute
+            type: 'integer', // Wrong type - should be text
+            label: ['Preferred Language'],
+            required: true,
+            choices: [],
+          },
+        ],
+      };
+
+      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
+        fullnameNamingConvention: [],
+        allowEmptyPhoneNumber: true,
+        enableScope: false,
+      });
+      (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
+        mockFspConfigs,
+      );
+
+      // Act
+      let error: HttpException | any;
+      try {
+        await service.validateKoboFormDefinition({
+          formDefinition: formDefinitionWithIncorrectConstrainedType,
+          programId,
+        });
+      } catch (e) {
+        error = e;
+      }
+
+      // Assert
+      expect(error).toBeInstanceOf(HttpException);
+      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error.message).toMatchInlineSnapshot(`
+       "Kobo form definition validation failed:
+       - Kobo form attribute "preferredLanguage" has incompatible type for 121 attribute, expected one of the following types: "background-audio, xml-external, acknowledge, audio, barcode, calculate, date, dateTime, file, geopoint, geoshape, geotrace, hidden, image, rank, select_multiple_from_file, select_multiple, text, time, video", got "integer"  "
+      `);
+    });
+
+    it('should allow hidden type for any attribute regardless of expected type', async () => {
+      // Arrange
+      const programId = 1;
+      const mockFspConfigs = [];
+
+      const formDefinitionWithHiddenType: KoboFormDefinition = {
+        ...baseFormDefinition,
+        survey: [
+          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          {
+            name: 'preferredLanguage', // Expects text type, but hidden is also allowed
+            type: 'hidden',
+            label: ['Preferred Language'],
+            required: false,
+            choices: [],
+          },
+        ],
+      };
+
+      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
+        fullnameNamingConvention: [],
+        allowEmptyPhoneNumber: true,
+        enableScope: false,
+      });
+      (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
+        mockFspConfigs,
+      );
+
+      // Act & Assert
+      await expect(
+        service.validateKoboFormDefinition({
+          formDefinition: formDefinitionWithHiddenType,
+          programId,
+        }),
+      ).resolves.not.toThrow();
+    });
+
+    it('should throw HttpException when kobo survey uses a forbidden registration view attribute', async () => {
+      // Arrange
+      const programId = 1;
+      const mockFspConfigs = [];
+
+      const formDefinitionWithForbiddenAttribute: KoboFormDefinition = {
+        ...baseFormDefinition,
+        survey: [
+          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          {
+            name: 'paymentCount', // Auto-generated registration view attribute, not in KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES
+            type: 'integer',
+            label: ['Payment Count'],
+            required: false,
+            choices: [],
+          },
+        ],
+      };
+
+      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
+        fullnameNamingConvention: [],
+        allowEmptyPhoneNumber: true,
+        enableScope: false,
+      });
+      (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
+        mockFspConfigs,
+      );
+
+      // Act
+      let error: HttpException | any;
+      try {
+        await service.validateKoboFormDefinition({
+          formDefinition: formDefinitionWithForbiddenAttribute,
+          programId,
+        });
+      } catch (e) {
+        error = e;
+      }
+
+      // Assert
+      expect(error).toBeInstanceOf(HttpException);
+      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error.message).toMatchInlineSnapshot(`
+       "Kobo form definition validation failed:
+       - Kobo form attribute "paymentCount" is a reserved attribute name cannot be filled from Kobo."
+      `);
+    });
+  });
 });

@@ -4,6 +4,7 @@ import { Equal } from 'typeorm';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING } from '@121-service/src/fsp-management/fsp-attribute-type-mapping';
 import { getFspAttributeNames } from '@121-service/src/fsp-management/fsp-settings.helpers';
+import { KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES } from '@121-service/src/kobo/consts/kobo-allowed-registration-view-attributes.const';
 import { KOBO_TO_121_TYPE_MAPPING } from '@121-service/src/kobo/consts/kobo-survey-to-121-attribute-type.const';
 import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
@@ -14,6 +15,10 @@ import {
   GenericRegistrationAttributes,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
+import {
+  registrationViewAttributeNames,
+  type RegistrationViewAttributeNameWithoutPhoneNumber,
+} from '@121-service/src/shared/const';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
 @Injectable()
@@ -93,6 +98,20 @@ export class KoboValidationService {
       accumulatedErrors: errorMessages,
       error: this.validateKoboLanguageCodes({
         koboSurveyLanguages: formDefinition.languages,
+      }),
+    });
+
+    errorMessages = this.collectErrors({
+      accumulatedErrors: errorMessages,
+      error: this.validateAllowedRegistrationViewAttributeTypes({
+        koboSurveyItems: formDefinition.survey,
+      }),
+    });
+
+    errorMessages = this.collectErrors({
+      accumulatedErrors: errorMessages,
+      error: this.validateForbiddenRegistrationViewAttributes({
+        koboSurveyItems: formDefinition.survey,
       }),
     });
 
@@ -355,6 +374,11 @@ export class KoboValidationService {
     surveyItemType: string;
     expected121Type: RegistrationAttributeTypes;
   }): string | undefined {
+    // Hidden fields are allowed for any attribute type as they are now used by our cash-im team for any values
+    if (surveyItemType === 'hidden') {
+      return;
+    }
+
     const expectedKoboTypes = this.getKoboTypesFrom121Type(expected121Type);
     // There is no direct mapping for tel to kobo types, so we use text as acceptable type
     if (expected121Type === RegistrationAttributeTypes.tel) {
@@ -370,6 +394,71 @@ export class KoboValidationService {
     return Object.entries(KOBO_TO_121_TYPE_MAPPING)
       .filter(([_, value]) => value === type)
       .map(([key]) => key);
+  }
+
+  private validateAllowedRegistrationViewAttributeTypes({
+    koboSurveyItems,
+  }: {
+    koboSurveyItems: KoboSurveyItemCleaned[];
+  }): string[] {
+    const errorMessages: string[] = [];
+
+    for (const attributeName of registrationViewAttributeNames) {
+      const surveyItem = koboSurveyItems.find(
+        (item) => item.name === attributeName,
+      );
+
+      // Only validate type if the attribute exists in the survey
+      if (surveyItem) {
+        const expectedType =
+          KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES[attributeName];
+        if (expectedType) {
+          const error = this.validateSurveyItemTypeMatchExpected121Type({
+            attributeName,
+            surveyItemType: surveyItem.type,
+            expected121Type: expectedType,
+          });
+          if (error) {
+            errorMessages.push(error);
+          }
+        }
+      }
+    }
+
+    return errorMessages;
+  }
+
+  private validateForbiddenRegistrationViewAttributes({
+    koboSurveyItems,
+  }: {
+    koboSurveyItems: KoboSurveyItemCleaned[];
+  }): string[] {
+    const errorMessages: string[] = [];
+
+    for (const surveyItem of koboSurveyItems) {
+      // Scope has its own validation logic, so skip it here
+      if (surveyItem.name === GenericRegistrationAttributes.scope) {
+        continue;
+      }
+
+      // Type-safe check: if the name is a registration view attribute
+      if (
+        this.isRegistrationViewAttributeName(surveyItem.name) &&
+        !KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES[surveyItem.name]
+      ) {
+        errorMessages.push(
+          `Kobo form attribute "${surveyItem.name}" is a reserved attribute name cannot be filled from Kobo.`,
+        );
+      }
+    }
+
+    return errorMessages;
+  }
+
+  private isRegistrationViewAttributeName(
+    name: string,
+  ): name is RegistrationViewAttributeNameWithoutPhoneNumber {
+    return registrationViewAttributeNames.includes(name);
   }
 
   private collectErrors({
