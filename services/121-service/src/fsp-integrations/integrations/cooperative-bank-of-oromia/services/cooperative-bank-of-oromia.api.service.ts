@@ -117,7 +117,7 @@ export class CooperativeBankOfOromiaApiService {
 
       return {
         result: CooperativeBankOfOromiaTransferResultEnum.fail,
-        message: `Transfer failed: ${error.message}${statusCode ? ` (HTTP ${statusCode})` : ''}`,
+        message: `Transfer failed: ${error.message}${this.formatHttpStatusCodeSuffix(statusCode)}`,
       };
     }
 
@@ -153,8 +153,9 @@ export class CooperativeBankOfOromiaApiService {
         AxiosResponse<CooperativeBankOfOromiaApiAccountValidationResponseBodyDto>
       >(this.getAccountValidationUrl().href, payload, headers);
     } catch (error) {
+      const statusCode = error.response?.status;
       return {
-        errorMessage: `Account validation error: ${error.message}, HTTP Status: ${error.status}`,
+        errorMessage: `Account validation error: ${error.message}${this.formatHttpStatusCodeSuffix(statusCode)}`,
       };
     }
     return this.cooperativeBankOfOromiaApiHelperService.handleAccountValidationResponse(
@@ -185,9 +186,10 @@ export class CooperativeBankOfOromiaApiService {
         AxiosResponse<CooperativeBankOfOromiaApiAuthenticationResponseBodyDto>
       >(this.getAuthenticateUrl().href, payload, headers);
     } catch (error) {
+      const statusCode = error.response?.status;
       // This error is not something we expect to happen (e.g. network error)
       throw new CooperativeBankOfOromiaApiError(
-        `authentication failed: ${error.message}, http code: ${error.status}`,
+        `authentication failed: ${error.message}${this.formatHttpStatusCodeSuffix(statusCode)}`,
       );
     }
 
@@ -231,5 +233,9 @@ export class CooperativeBankOfOromiaApiService {
     const headers = this.createDefaultHeaders();
     headers.append('Authorization', `Bearer ${token}`);
     return headers;
+  }
+
+  private formatHttpStatusCodeSuffix(statusCode?: number): string {
+    return statusCode ? ` (HTTP ${statusCode})` : '';
   }
 }

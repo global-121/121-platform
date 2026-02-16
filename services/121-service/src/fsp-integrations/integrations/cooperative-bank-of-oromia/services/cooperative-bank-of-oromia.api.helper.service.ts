@@ -66,7 +66,7 @@ export class CooperativeBankOfOromiaApiHelperService {
     }
 
     if (
-      responseData?.error?.messages ===
+      responseData.error?.messages ===
       CooperativeBankOfOromiaTransferMessageEnum.duplicateMessageId
     ) {
       return {

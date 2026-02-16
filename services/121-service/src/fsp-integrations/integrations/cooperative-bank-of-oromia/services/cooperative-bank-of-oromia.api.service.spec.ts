@@ -216,7 +216,7 @@ describe('CooperativeBankOfOromiaApiService', () => {
     });
 
     it('should handle other HTTP errors with status code', async () => {
-      const mockError = new Error('Request failed with status code 400');
+      const mockError = new Error('Request failed because of reason X');
       (mockError as any).response = { status: 400 };
       post.mockImplementationOnce(() => Promise.reject(mockError));
 
@@ -226,7 +226,7 @@ describe('CooperativeBankOfOromiaApiService', () => {
         CooperativeBankOfOromiaTransferResultEnum.fail,
       );
       expect(result.message).toBe(
-        'Transfer failed: Request failed with status code 400 (HTTP 400)',
+        'Transfer failed: Request failed because of reason X (HTTP 400)',
       );
     });
 
