@@ -316,6 +316,30 @@ class TableComponent {
     await this.page.getByRole('option', { name: selection }).first().click();
   }
 
+  async validateDropdownValuesInTable({
+    columnName,
+    expectedValues,
+  }: {
+    columnName: string;
+    expectedValues: Set<string>;
+  }) {
+    const filterMenuButton = this.table
+      .getByRole('columnheader', { name: columnName })
+      .getByLabel('Show Filter Menu');
+
+    await filterMenuButton.scrollIntoViewIfNeeded();
+    await filterMenuButton.click();
+    await this.page.getByText('Choose option(s)').click();
+
+    const dropdownActualValues = new Set<string>();
+
+    for (const option of await this.page.getByRole('option').all()) {
+      const textContent = (await option.textContent())!;
+      dropdownActualValues.add(textContent.trim());
+    }
+    expect(expectedValues).toEqual(dropdownActualValues);
+  }
+
   async filterColumnByDate({
     columnName,
     day,
