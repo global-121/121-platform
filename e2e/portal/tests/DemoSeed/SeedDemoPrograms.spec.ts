@@ -10,6 +10,7 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.demoPrograms,
+    skipSeedRegistrations: true,
   });
 });
 

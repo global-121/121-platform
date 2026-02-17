@@ -13,7 +13,6 @@ import {
 } from '@121-e2e/portal/helpers/PersonalInformationFields';
 
 let registrationId: number;
-let accessToken: string;
 
 test.describe('Edit all the fields in registration Personal Information', () => {
   test.beforeEach(
@@ -21,13 +20,11 @@ test.describe('Edit all the fields in registration Personal Information', () => 
       resetDBAndSeedRegistrations,
       registrationPersonalInformationPage,
     }) => {
-      const result = await resetDBAndSeedRegistrations({
+      const { accessToken } = await resetDBAndSeedRegistrations({
         seedScript: SeedScript.nlrcMultiple,
         registrations: [registrationPV5],
         programId: programIdPV,
       });
-
-      accessToken = result.accessToken;
 
       registrationId = await getRegistrationIdByReferenceId({
         programId: programIdPV,

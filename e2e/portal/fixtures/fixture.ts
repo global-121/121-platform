@@ -17,6 +17,7 @@ import TableComponent from '@121-e2e/portal/components/TableComponent';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
+import ProgramTeamPage from '@121-e2e/portal/pages/ProgramTeamPage';
 import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActivityLogPage';
 import RegistrationDataPage from '@121-e2e/portal/pages/RegistrationDataPage';
 import RegistrationDebitCardPage from '@121-e2e/portal/pages/RegistrationDebitCardPage';
@@ -59,6 +60,7 @@ type Fixtures = {
   exportDataComponent: ExportData;
   homePage: HomePage;
   loginPage: LoginPage;
+  programTeamPage: ProgramTeamPage;
 };
 
 export const customSharedFixture = base.extend<Fixtures>({
@@ -151,5 +153,9 @@ export const customSharedFixture = base.extend<Fixtures>({
 
   loginPage: async ({ page }, use) => {
     await use(new LoginPage(page));
+  },
+
+  programTeamPage: async ({ page }, use) => {
+    await use(new ProgramTeamPage(page));
   },
 });
