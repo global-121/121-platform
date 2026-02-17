@@ -1,14 +1,12 @@
-import { expect, Page, test } from '@playwright/test';
+import { expect } from '@playwright/test';
 import os from 'node:os';
 import path from 'node:path';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { resetDB } from '@121-service/test/helpers/utility.helper';
+import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-import TableComponent from '@121-e2e/portal/components/TableComponent';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 import { generateLargeTestFile } from '@121-e2e/portal/helpers/largeFileGenerator';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import ProgramMonitoring from '@121-e2e/portal/pages/ProgramMonitoringPage';
 
 const pdfFilePath = path.resolve(
   __dirname,
@@ -39,38 +37,26 @@ const getFileName = (filePath: string) =>
 
 // Arrange
 test.describe('Attachments on Program Level', () => {
-  let page: Page;
-  const programTitle = 'NLRC OCW Program';
-
-  test.beforeAll(async ({ browser }) => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+  test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     // Generate the large file in the OS temp directory
     largeFilePath = path.join(os.tmpdir(), 'large-test-file.pdf');
     await generateLargeTestFile(largeFilePath, 105 * 1024 * 1024); // 105MB
-
-    page = await browser.newPage();
-    // Login
-    const loginPage = new LoginPage(page);
-    await page.goto('/');
-    await loginPage.login();
+    // reset
+    await resetDBAndSeedRegistrations({
+      seedScript: SeedScript.nlrcMultiple,
+      skipSeedRegistrations: true,
+      navigateToPage: `en-GB/program/${programIdOCW}/monitoring/files`, // Navigate directly to files tab
+    });
   });
 
-  test.beforeEach(async () => {
-    const programMonitoring = new ProgramMonitoring(page);
-
-    await page.goto('/');
-    await programMonitoring.selectProgram(programTitle);
-    await programMonitoring.navigateToProgramPage('Monitoring');
-    await programMonitoring.selectTab({ tabName: 'Files' });
-  });
-
-  test('Upload: Word, PDF, JPG and PNG attachments formats', async () => {
-    const programMonitoring = new ProgramMonitoring(page);
-    const tableComponent = new TableComponent(page);
-
+  test('Upload: Word, PDF, JPG and PNG attachments formats', async ({
+    page,
+    tableComponent,
+    programMonitoringPage,
+  }) => {
     await test.step('Upload files', async () => {
       for (const filePath of testFilePaths) {
-        await programMonitoring.uploadAttachment({
+        await programMonitoringPage.uploadAttachment({
           filePath,
           filename: `Test ${path.basename(filePath, path.extname(filePath)).toUpperCase()} file upload`,
         });
@@ -93,36 +79,36 @@ test.describe('Attachments on Program Level', () => {
     });
   });
 
-  test('Error when uploading not accepted format', async () => {
-    const programMonitoring = new ProgramMonitoring(page);
-
+  test('Error when uploading not accepted format', async ({
+    programMonitoringPage,
+  }) => {
     await test.step('Upload file with unsupported format', async () => {
-      await programMonitoring.uploadAttachment({
+      await programMonitoringPage.uploadAttachment({
         filePath: wrongFileFormatPath,
         filename: `Test ${path.basename(wrongFileFormatPath, path.extname(wrongFileFormatPath)).toUpperCase()} file upload`,
       });
     });
 
     await test.step('Validate wrong file format error message', async () => {
-      await programMonitoring.validateFormError({
+      await programMonitoringPage.validateFormError({
         errorText:
           'Something went wrong: "Validation failed (invalid file type)"',
       });
     });
   });
 
-  test('Error when uploading file bigger than 100mb', async () => {
-    const programMonitoring = new ProgramMonitoring(page);
-
+  test('Error when uploading file bigger than 100mb', async ({
+    programMonitoringPage,
+  }) => {
     await test.step('Upload file bigger than 100mb', async () => {
-      await programMonitoring.uploadAttachment({
+      await programMonitoringPage.uploadAttachment({
         filePath: largeFilePath,
         filename: `Test ${path.basename(largeFilePath, path.extname(largeFilePath)).toUpperCase()} file upload`,
       });
     });
 
     await test.step('Validate file size error message', async () => {
-      await programMonitoring.validateFormError({
+      await programMonitoringPage.validateFormError({
         errorText:
           'Something went wrong: "Validation failed (current file size is 110100480, expected size is less than 100000000)"',
       });
