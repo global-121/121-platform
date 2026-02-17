@@ -1,0 +1,7 @@
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
+
+export interface FspConfigurationProperty {
+  readonly name: FspConfigurationProperties;
+  readonly value: FspConfigurationPropertyType;
+}

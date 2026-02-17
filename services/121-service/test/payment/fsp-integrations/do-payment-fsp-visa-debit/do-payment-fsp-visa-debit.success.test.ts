@@ -352,7 +352,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
       configName: Fsps.intersolveVisa,
       propertyName: FspConfigurationProperties.maxToSpendPerMonthInCents,
       body: {
-        value: String(maxToSpendPerMonthInCents),
+        value: maxToSpendPerMonthInCents,
       },
       accessToken,
     });

@@ -3,13 +3,16 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { castArray, unique } from 'radashi';
 
+import { fspConfigurationPropertyTypes } from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-types.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
 import { FspSettingsDto } from '@121-service/src/fsp-management/fsp-settings.dto';
 import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 
 import {
   FspConfiguration,
+  FspConfigurationPropertyInputType,
   FspFormField,
 } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { AttributeWithTranslatedLabel } from '~/domains/program/program.model';
@@ -19,7 +22,10 @@ export type FspConfigurationFormGroup = FormGroup<
   {
     displayName: FormControl<string>;
   } & Partial<
-    Record<FspConfigurationProperties, FormControl<string | string[]>>
+    Record<
+      FspConfigurationProperties,
+      FormControl<FspConfigurationPropertyType>
+    >
   >
 >;
 
@@ -71,7 +77,7 @@ export class FspConfigurationService {
       ...Object.fromEntries(
         fspSetting.configurationProperties.map((property) => [
           property.name,
-          new FormControl<string | string[]>(
+          new FormControl<FspConfigurationPropertyType>(
             this.getPropertyValue({
               propertyName: property.name,
               existingFspConfiguration,
@@ -113,14 +119,35 @@ export class FspConfigurationService {
 
   getPropertyFieldType(
     propertyName: 'displayName' | FspConfigurationProperties,
-  ): 'select-attribute' | 'select-attributes-multiple' | 'string' {
+  ): FspConfigurationPropertyInputType {
+    // Specific exceptions for excel fsp and the display name
     switch (propertyName) {
       case FspConfigurationProperties.columnToMatch:
-        return 'select-attribute';
+        return FspConfigurationPropertyInputType.selectAttribute;
       case FspConfigurationProperties.columnsToExport:
-        return 'select-attributes-multiple';
+        return FspConfigurationPropertyInputType.selectAttributeMultiple;
+      case 'displayName':
+        return FspConfigurationPropertyInputType.stringInput;
       default:
-        return 'string';
+        return this.getPropertyFieldTypeForDefaultName(propertyName);
+    }
+  }
+
+  getPropertyFieldTypeForDefaultName(
+    name: FspConfigurationProperties,
+  ): FspConfigurationPropertyInputType {
+    const type = fspConfigurationPropertyTypes[name];
+    switch (type) {
+      case 'number':
+        return FspConfigurationPropertyInputType.numberInput;
+      case 'boolean':
+        return FspConfigurationPropertyInputType.toggleSwitch;
+      case 'string':
+        return FspConfigurationPropertyInputType.stringInput;
+      case 'array':
+        return FspConfigurationPropertyInputType.selectAttributeMultiple;
+      default:
+        throw new Error(`Unsupported type for property: ${name}`);
     }
   }
 
@@ -147,6 +174,12 @@ export class FspConfigurationService {
       existingFspConfiguration,
     });
 
+    if (!Array.isArray(columnsToExport) || typeof columnToMatch !== 'string') {
+      throw new Error(
+        'Expected columnsToExport and columnToMatch to be of type string[] or string',
+      );
+    }
+
     return unique([...castArray(columnsToExport), ...castArray(columnToMatch)]);
   }
 
@@ -170,7 +203,7 @@ export class FspConfigurationService {
   }: {
     propertyName: FspConfigurationProperties;
     existingFspConfiguration?: FspConfiguration;
-  }): string | string[] {
+  }): FspConfigurationPropertyType {
     let existingPropertyValue = existingFspConfiguration?.properties.find(
       (p) => p.name === propertyName,
     )?.value;
@@ -181,12 +214,26 @@ export class FspConfigurationService {
       existingPropertyValue = '';
     }
 
-    const fieldType = this.getPropertyFieldType(propertyName);
-    if (fieldType === 'select-attributes-multiple') {
-      // we need to default these properties it to an empty array instead of an empty string
-      existingPropertyValue = existingPropertyValue ?? [];
-    }
+    return (
+      existingPropertyValue ?? this.getDefaultValueForProperty(propertyName)
+    );
+  }
 
-    return existingPropertyValue ?? '';
+  private getDefaultValueForProperty(
+    propertyName: FspConfigurationProperties,
+  ): FspConfigurationPropertyType {
+    const propType = fspConfigurationPropertyTypes[propertyName];
+    switch (propType) {
+      case 'array':
+        return [];
+      case 'boolean':
+        return true;
+      case 'number':
+        return 0;
+      case 'string':
+        return '';
+      default:
+        throw new Error(`Unsupported type for property: ${propertyName}`);
+    }
   }
 }

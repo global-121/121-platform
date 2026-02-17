@@ -2,11 +2,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 
+import { fspConfigurationPropertyTypes } from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-types.const';
 import {
-  FspConfigurationProperties,
-  PublicFspConfigurationProperties,
-} from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+  FspConfigurationPropertyVisibility,
+  FspConfigurationPropertyVisibilityMap,
+} from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-visibility.const';
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/shared/types/fsp-configuration-property.type';
 import { getFspConfigurationProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
@@ -75,6 +78,10 @@ export class ProgramFspConfigurationsService {
         propertyNames: programFspConfigurationDto.properties.map((p) => p.name),
         fspName: programFspConfigurationDto.fspName,
       });
+
+      this.validatePropertyValueTypesOrThrow(
+        programFspConfigurationDto.properties,
+      );
     }
   }
 
@@ -127,6 +134,10 @@ export class ProgramFspConfigurationsService {
         ),
         fspName: config.fspName,
       });
+
+      this.validatePropertyValueTypesOrThrow(
+        updateProgramFspConfigurationDto.properties,
+      );
     }
 
     const savedEntity =
@@ -192,6 +203,9 @@ export class ProgramFspConfigurationsService {
       propertyNames: inputProperties.map((p) => p.name),
       fspName: config.fspName,
     });
+
+    this.validatePropertyValueTypesOrThrow(inputProperties);
+
     await this.validateNoDuplicateExistingProperties({
       propertyNames: inputProperties.map((p) => p.name),
       configIdToCheckForDuplicates: config.id,
@@ -290,11 +304,12 @@ export class ProgramFspConfigurationsService {
         propertyName,
       );
 
-    existingProperty.value =
-      ProgramFspConfigurationMapper.mapPropertyDtoValueToEntityValue(
-        property.value,
-        existingProperty.name,
-      );
+    this.validatePropertyValueTypeOrThrow({
+      propertyName,
+      propertyValue: property.value,
+    });
+
+    existingProperty.value = property.value;
 
     const savedProperty =
       await this.programFspConfigurationPropertyRepository.save(
@@ -365,6 +380,53 @@ export class ProgramFspConfigurationsService {
     }
   }
 
+  private validatePropertyValueTypesOrThrow(
+    properties: readonly {
+      readonly name: FspConfigurationProperties;
+      readonly value: FspConfigurationPropertyType;
+    }[],
+  ): void {
+    for (const property of properties) {
+      this.validatePropertyValueTypeOrThrow({
+        propertyName: property.name,
+        propertyValue: property.value,
+      });
+    }
+  }
+
+  private validatePropertyValueTypeOrThrow({
+    propertyName,
+    propertyValue,
+  }: {
+    propertyName: FspConfigurationProperties;
+    propertyValue: FspConfigurationPropertyType;
+  }) {
+    const expectedType = fspConfigurationPropertyTypes[propertyName];
+    let actualType: string = typeof propertyValue;
+
+    // we have a special case for arrays, because typeof [] is 'object'
+    if (Array.isArray(propertyValue)) {
+      actualType = 'array';
+
+      // Check if all items in the array are strings
+      if (!propertyValue.every((item) => typeof item === 'string')) {
+        actualType = 'non-string-array';
+      }
+    }
+
+    // typeof NaN is 'number' but we want to catch it as an invalid value
+    if (actualType === 'number' && Number.isNaN(propertyValue as number)) {
+      actualType = 'NaN';
+    }
+
+    if (expectedType !== actualType) {
+      throw new HttpException(
+        `Invalid value type for property "${propertyName}". Expected ${expectedType}, got ${actualType}.`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
   private async getProgramFspConfigurationOrThrow(
     programId: number,
     name: string,
@@ -430,8 +492,9 @@ export class ProgramFspConfigurationsService {
       name,
     );
 
-    const allowlistedPropertyNames =
-      PublicFspConfigurationProperties[config.fspName];
+    const allowlistedPropertyNames = this.getAllowlistedPropertyNamesForFsp(
+      config.fspName,
+    );
     if (!allowlistedPropertyNames || allowlistedPropertyNames.length === 0) {
       return [];
     }
@@ -446,6 +509,22 @@ export class ProgramFspConfigurationsService {
 
     return ProgramFspConfigurationMapper.mapPropertyEntitiesToDtos(
       publicProperties,
+    );
+  }
+
+  private getAllowlistedPropertyNamesForFsp(fspName: Fsps): string[] {
+    const fspConfigurationProperties = getFspConfigurationProperties(fspName);
+    if (
+      !fspConfigurationProperties ||
+      fspConfigurationProperties.length === 0
+    ) {
+      return [];
+    }
+
+    return fspConfigurationProperties.filter(
+      (propertyName) =>
+        FspConfigurationPropertyVisibilityMap[propertyName] ===
+        FspConfigurationPropertyVisibility.public,
     );
   }
 }

@@ -266,6 +266,22 @@ describe('ProgramFspConfigurationsService', () => {
         service.create(programId, invalidPropertiesDto),
       ).rejects.toThrow(new RegExp(`Duplicate property names are not allowed`));
     });
+
+    it('should throw an exception if a property value has an invalid type', async () => {
+      const invalidTypeDto: CreateProgramFspConfigurationDto = {
+        ...createDto,
+        properties: [
+          {
+            name: FspConfigurationProperties.maxToSpendPerMonthInCents,
+            value: '25000',
+          },
+        ],
+      };
+
+      await expect(service.create(programId, invalidTypeDto)).rejects.toThrow(
+        new RegExp('Invalid value type'),
+      );
+    });
   });
 
   describe('update', () => {
@@ -312,6 +328,22 @@ describe('ProgramFspConfigurationsService', () => {
       await expect(
         service.update(programId, nonExistingConfigName, updateDto),
       ).rejects.toThrow(new HttpException('Not found', HttpStatus.NOT_FOUND));
+    });
+
+    it('should throw an exception if an updated property value has an invalid type', async () => {
+      const updateDto: UpdateProgramFspConfigurationDto = {
+        label: { en: 'Updated Label' },
+        properties: [
+          {
+            name: FspConfigurationProperties.maxToSpendPerMonthInCents,
+            value: '25000',
+          },
+        ],
+      };
+
+      await expect(
+        service.update(programId, configName, updateDto),
+      ).rejects.toThrow(new RegExp('Invalid value type'));
     });
   });
 
@@ -382,6 +414,23 @@ describe('ProgramFspConfigurationsService', () => {
         mockProgramFspConfigurationPropertyRepository.save,
       ).not.toHaveBeenCalled();
     });
+
+    it('should throw an error if a property value has an invalid type', async () => {
+      const invalidPropertiesDto: CreateProgramFspConfigurationPropertyDto[] = [
+        {
+          name: FspConfigurationProperties.cardDistributionByMail,
+          value: 'true',
+        },
+      ];
+
+      await expect(
+        service.createProperties({
+          programId,
+          name: configName,
+          properties: invalidPropertiesDto,
+        }),
+      ).rejects.toThrow(new RegExp('Invalid value type'));
+    });
   });
 
   describe('updateProperty', () => {
@@ -435,6 +484,17 @@ describe('ProgramFspConfigurationsService', () => {
       expect(
         mockProgramFspConfigurationPropertyRepository.save,
       ).not.toHaveBeenCalled();
+    });
+
+    it('should throw an error if the property value has an invalid type', async () => {
+      await expect(
+        service.updateProperty({
+          programId,
+          name: configName,
+          propertyName: FspConfigurationProperties.cardDistributionByMail,
+          property: { value: 'true' },
+        }),
+      ).rejects.toThrow(new RegExp('Invalid value type'));
     });
   });
 

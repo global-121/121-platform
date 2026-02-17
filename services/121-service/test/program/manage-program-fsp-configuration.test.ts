@@ -1,10 +1,12 @@
 import { HttpStatus } from '@nestjs/common';
 
 import {
-  FspConfigurationProperties,
-  PublicFspConfigurationProperties,
-} from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+  FspConfigurationPropertyVisibility,
+  FspConfigurationPropertyVisibilityMap,
+} from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-visibility.const';
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { getFspConfigurationProperties } from '@121-service/src/fsp-management/fsp-settings.helpers';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
@@ -470,8 +472,13 @@ describe('Manage Fsp configurations', () => {
     expect(result.body).toHaveLength(1);
 
     const returnedPropertyNames = result.body.map((p) => p.name);
-    const allowlistedPropertyNames =
-      PublicFspConfigurationProperties[Fsps.intersolveVisa];
+    const allowlistedPropertyNames = getFspConfigurationProperties(
+      Fsps.intersolveVisa,
+    ).filter(
+      (propertyName) =>
+        FspConfigurationPropertyVisibilityMap[propertyName] ===
+        FspConfigurationPropertyVisibility.public,
+    );
 
     expect(returnedPropertyNames.sort()).toEqual(
       allowlistedPropertyNames?.sort(),

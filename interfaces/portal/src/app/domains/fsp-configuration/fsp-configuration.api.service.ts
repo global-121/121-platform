@@ -1,14 +1,12 @@
 import { Injectable, Signal } from '@angular/core';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
+import { FspConfigurationProperty } from '@121-service/src/fsp-integrations/shared/interfaces/fsp-configuration-property.interface';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
-import {
-  FspConfiguration,
-  FspConfigurationProperty,
-} from '~/domains/fsp-configuration/fsp-configuration.model';
+import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 import { Dto } from '~/utils/dto-type';
 
 const BASE_ENDPOINT = (programId: Signal<number | string>) => [

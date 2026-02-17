@@ -1,8 +1,8 @@
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import {
-  FspConfigPropertyValueVisibility,
-  FspConfigurationProperties,
-} from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
+  FspConfigurationPropertyVisibility,
+  FspConfigurationPropertyVisibilityMap,
+} from '@121-service/src/fsp-integrations/shared/consts/fsp-configuration-property-visibility.const';
 import { sensitivePropertyString } from '@121-service/src/program-fsp-configurations/const/sensitive-property-string.const';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
@@ -69,8 +69,11 @@ export class ProgramFspConfigurationMapper {
   public static mapPropertyEntityToDto(
     property: ProgramFspConfigurationPropertyEntity,
   ): ProgramFspConfigurationPropertyResponseDto {
-    const isVisible = FspConfigPropertyValueVisibility[property.name];
-    const value = isVisible ? property.value : sensitivePropertyString;
+    const isSecret =
+      FspConfigurationPropertyVisibilityMap[property.name] ===
+      FspConfigurationPropertyVisibility.secret;
+
+    const value = isSecret ? sensitivePropertyString : property.value;
     return {
       name: property.name,
       value,
@@ -97,24 +100,7 @@ export class ProgramFspConfigurationMapper {
     const entity = new ProgramFspConfigurationPropertyEntity();
     entity.name = dto.name;
     entity.programFspConfigurationId = programFspConfigurationId;
-    // Later we can add a switch case and a type for each property if there are more non-string properties
-    entity.value =
-      ProgramFspConfigurationMapper.mapPropertyDtoValueToEntityValue(
-        dto.value,
-        dto.name,
-      );
+    entity.value = dto.value;
     return entity;
-  }
-
-  public static mapPropertyDtoValueToEntityValue(
-    dtoValue: string | string[],
-    property: FspConfigurationProperties,
-  ): string {
-    // For now columnsToExport is the only property that is an array
-    // Later we can add a switch case and a type for each property if there are more non-string properties
-    if (property === FspConfigurationProperties.columnsToExport) {
-      return JSON.stringify(dtoValue);
-    }
-    return dtoValue as string;
   }
 }

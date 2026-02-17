@@ -1,5 +1,3 @@
-import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
-
 export enum FspConfigurationProperties {
   password = 'password',
   username = 'username',
@@ -20,33 +18,3 @@ export enum FspConfigurationProperties {
   // Cooperative Bank of Oromia
   debitAccountNumber = 'debitAccountNumber',
 }
-
-export const FspConfigPropertyValueVisibility: Record<
-  FspConfigurationProperties,
-  boolean
-> = {
-  [FspConfigurationProperties.password]: false,
-  [FspConfigurationProperties.username]: false,
-  [FspConfigurationProperties.columnsToExport]: true,
-  [FspConfigurationProperties.columnToMatch]: true,
-  // Intersolve Visa
-  [FspConfigurationProperties.brandCode]: true,
-  [FspConfigurationProperties.coverLetterCode]: true,
-  [FspConfigurationProperties.fundingTokenCode]: true,
-  [FspConfigurationProperties.cardDistributionByMail]: true,
-  [FspConfigurationProperties.maxToSpendPerMonthInCents]: true,
-  // Nedbank
-  [FspConfigurationProperties.paymentReferencePrefix]: true,
-  // Onafriq
-  [FspConfigurationProperties.corporateCodeOnafriq]: true,
-  [FspConfigurationProperties.passwordOnafriq]: false,
-  [FspConfigurationProperties.uniqueKeyOnafriq]: false,
-  // Cooperative Bank of Oromia
-  [FspConfigurationProperties.debitAccountNumber]: true,
-};
-
-export const PublicFspConfigurationProperties: Partial<
-  Record<Fsps, FspConfigurationProperties[]>
-> = {
-  [Fsps.intersolveVisa]: [FspConfigurationProperties.cardDistributionByMail],
-};
