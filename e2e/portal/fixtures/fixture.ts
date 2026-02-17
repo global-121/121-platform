@@ -42,6 +42,8 @@ type Fixtures = {
     programId?: number;
     navigateToPage?: string;
     seedWithStatus?: RegistrationStatusEnum;
+    username?: string;
+    password?: string;
   }) => Promise<{ accessToken: string }>;
   paymentPage: PaymentPage;
   paymentsPage: PaymentsPage;
@@ -62,6 +64,8 @@ export const customSharedFixture = base.extend<Fixtures>({
       programId?: number;
       navigateToPage?: string;
       seedWithStatus?: RegistrationStatusEnum;
+      username?: string;
+      password?: string;
     }): Promise<{ accessToken: string }> => {
       const nameOfFileContainingTest = testInfo.file;
       // Logic to reset the database and seed registrations
@@ -84,7 +88,7 @@ export const customSharedFixture = base.extend<Fixtures>({
       // Login
       const loginPage = new LoginPage(page);
       await page.goto('/');
-      await loginPage.login();
+      await loginPage.login(params.username, params.password);
       // Optionally navigate to a specific page after login
       if (params.navigateToPage) {
         await page.goto(params.navigateToPage);

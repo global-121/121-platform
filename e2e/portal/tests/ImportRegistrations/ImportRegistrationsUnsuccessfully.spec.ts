@@ -16,7 +16,6 @@ test('Unsuccessfully import registrations', async ({ registrationsPage }) => {
     __dirname,
     '../../../test-registration-data/test-registrations-OCW-scoped.csv',
   );
-
   const programTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {

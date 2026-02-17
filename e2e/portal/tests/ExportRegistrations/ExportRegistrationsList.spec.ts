@@ -12,7 +12,7 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 let accessToken: string;
 
 test.describe('Export registrations with different formats and configurations', () => {
-  test.beforeAll(async ({ resetDBAndSeedRegistrations }) => {
+  test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     const result = await resetDBAndSeedRegistrations({
       seedScript: SeedScript.nlrcMultiple,
       registrations: [registrationPvMaxPayment, ...registrationsPV],
@@ -26,10 +26,6 @@ test.describe('Export registrations with different formats and configurations', 
       referenceIds: [registrationPvMaxPayment.referenceId],
       accessToken,
     });
-  });
-
-  test.afterEach(async ({ page }) => {
-    await page.goto('/');
   });
 
   test('Export Selected Registrations', async ({
