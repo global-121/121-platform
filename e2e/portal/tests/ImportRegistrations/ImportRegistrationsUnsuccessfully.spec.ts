@@ -4,7 +4,6 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
-import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
@@ -12,8 +11,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('Unsuccessfully import registrations', async ({ page }) => {
-  const registrationsPage = new RegistrationsPage(page);
+test('Unsuccessfully import registrations', async ({ registrationsPage }) => {
   const wrongRegistrationsDataFilePath = path.resolve(
     __dirname,
     '../../../test-registration-data/test-registrations-OCW-scoped.csv',
