@@ -19,7 +19,6 @@ test('Successfully import registrations', async ({
     __dirname,
     '../../../test-registration-data/test-registrations-PV.csv',
   );
-
   const programTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {
