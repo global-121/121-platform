@@ -75,6 +75,7 @@ describe('KoboMapper', () => {
       const assetUid = 'test-asset-uid';
       const token = 'test-token';
       const url = 'https://kobo.example.com';
+      const name = '25042025 Prototype Sprint';
 
       // Act
       const result = KoboMapper.formDefinitionToEntity({
@@ -83,6 +84,7 @@ describe('KoboMapper', () => {
         assetUid,
         token,
         url,
+        name,
       });
 
       // Assert
@@ -93,6 +95,7 @@ describe('KoboMapper', () => {
         url,
         dateDeployed: deployDate,
         versionId: formDefinition.versionId,
+        name,
       });
     });
   });

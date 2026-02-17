@@ -36,4 +36,12 @@ export class KoboResponseDto {
     description: 'ID of the associated program',
   })
   public readonly programId: number;
+
+  @ApiProperty({
+    example: 'Kobo form',
+    type: 'string',
+    description: 'Name of the Kobo form',
+    nullable: true,
+  })
+  public readonly name: string | null;
 }
