@@ -24,10 +24,10 @@ export default tsEslint.config(
       eslintPluginN.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
-    files: ['**/*.js'],
+    files: ['**/*.mjs'],
     languageOptions: {
-      ecmaVersion: 2021,
-      sourceType: 'script',
+      ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
+      sourceType: 'module',
     },
     plugins: {
       'eslint-comments': eslintPluginComments,

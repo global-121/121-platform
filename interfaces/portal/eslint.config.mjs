@@ -248,7 +248,7 @@ export default tsEslint.config(
     ],
     files: ['**/*.js', '**/*.mjs'],
     languageOptions: {
-      ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file; See: https://compat-table.github.io/compat-table/es2016plus/#node20_0
+      ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
       globals: {
         module: 'readonly',
         process: 'readonly',

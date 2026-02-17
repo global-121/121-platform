@@ -10,7 +10,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "lint": "eslint \"**/*.{ts,js}\"",
+    "lint": "eslint \"**/*.{ts,js,mjs}\"",
     "fix": "npm run lint -- --fix",
     "build": "nest build --path=tsconfig.json",
     "start": "GLOBAL_121_VERSION=$(test -f \"VERSION.txt\" && cat VERSION.txt || echo $GLOBAL_121_VERSION)  node dist/main.js",

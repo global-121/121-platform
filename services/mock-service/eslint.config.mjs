@@ -26,10 +26,10 @@ export default tsEslint.config(
       eslintPluginRegexp.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
-    files: ['**/*.js'],
+    files: ['**/*.js', '**/*.mjs'],
     languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: 'script',
+      ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
+      sourceType: 'module',
     },
     plugins: {
       'eslint-comments': eslintPluginComments,
@@ -37,6 +37,12 @@ export default tsEslint.config(
     rules: {
       'eslint-comments/no-unused-disable': 'error',
       'eslint-comments/require-description': 'error',
+    },
+  },
+  {
+    files: ['**/*.js'],
+    languageOptions: {
+      sourceType: 'script',
     },
   },
   // TypeScript files config
@@ -48,7 +54,7 @@ export default tsEslint.config(
       eslintPluginRegexp.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
-    files: ['**/*.ts', '**/*.tsx'],
+    files: ['**/*.ts'],
     plugins: {
       'eslint-comments': eslintPluginComments,
       'no-relative-import-paths': eslintPluginNoRelativePaths,
