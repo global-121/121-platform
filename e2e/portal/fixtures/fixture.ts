@@ -17,6 +17,7 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 import RegistrationDataPage from '@121-e2e/portal/pages/RegistrationDataPage';
+import RegistrationDebitCardPage from '@121-e2e/portal/pages/RegistrationDebitCardPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 // Re-export expect for convenience
