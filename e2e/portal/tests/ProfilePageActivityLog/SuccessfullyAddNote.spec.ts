@@ -1,38 +1,25 @@
-import { test } from '@playwright/test';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
   registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import TableComponent from '@121-e2e/portal/components/TableComponent';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActivityLogPage';
-import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-  const accessToken = await getAccessToken();
-  await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: [registrationPV5],
+    programId: programIdPV,
+  });
 });
 
-test('Successfully Add Note', async ({ page }) => {
-  const registrationsPage = new RegistrationsPage(page);
-  const tableComponent = new TableComponent(page);
-  const activityLogPage = new RegistrationActivityLogPage(page);
-
+test('Successfully Add Note', async ({
+  registrationsPage,
+  tableComponent,
+  registrationActivityLogPage,
+}) => {
   const programTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {
@@ -46,8 +33,8 @@ test('Successfully Add Note', async ({ page }) => {
   });
 
   await test.step('Add note', async () => {
-    await activityLogPage.initiateAction('Add note');
-    await activityLogPage.fillNote('This is a test note');
+    await registrationActivityLogPage.initiateAction('Add note');
+    await registrationActivityLogPage.fillNote('This is a test note');
     await tableComponent.validateActivityPresentByType({
       notificationType: 'Note',
       count: 1,
