@@ -35,8 +35,8 @@ type TestRegistration = Partial<RegistrationEntity> & {
 type Fixtures = {
   resetDBAndSeedRegistrations: (params: {
     seedScript: SeedScript;
-    registrations: TestRegistration[];
-    programId: number;
+    registrations?: TestRegistration[];
+    programId?: number;
     navigateToPage?: string;
     seedWithStatus?: RegistrationStatusEnum;
   }) => Promise<{ accessToken: string }>;
@@ -52,8 +52,8 @@ export const customSharedFixture = base.extend<Fixtures>({
   resetDBAndSeedRegistrations: async ({ page }, use, testInfo: TestInfo) => {
     const resetAndSeed = async (params: {
       seedScript: SeedScript;
-      registrations: TestRegistration[];
-      programId: number;
+      registrations?: TestRegistration[];
+      programId?: number;
       navigateToPage?: string;
       seedWithStatus?: RegistrationStatusEnum;
     }): Promise<{ accessToken: string }> => {
@@ -63,15 +63,15 @@ export const customSharedFixture = base.extend<Fixtures>({
       const accessToken = await getAccessToken();
       if (params.seedWithStatus) {
         await seedRegistrationsWithStatus(
-          params.registrations,
-          params.programId,
+          params.registrations ?? [],
+          params.programId ?? 1,
           accessToken,
           params.seedWithStatus,
         );
       } else {
         await seedIncludedRegistrations(
-          params.registrations,
-          params.programId,
+          params.registrations ?? [],
+          params.programId ?? 1,
           accessToken,
         );
       }
