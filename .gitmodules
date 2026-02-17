@@ -1,0 +1,3 @@
+[submodule "121-platform.wiki"]
+	path = 121-platform.wiki
+	url = https://github.com/global-121/121-platform.wiki.git
