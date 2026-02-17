@@ -10,6 +10,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   const { accessToken } = await resetDBAndSeedRegistrations({
     seedScript: SeedScript.cooperativeBankOfOromiaProgram,
     programId: coopBankProgramId,
+    skipSeedRegistrations: true,
   });
   await startCooperativeBankOfOromiaValidationProcess(
     coopBankProgramId,
