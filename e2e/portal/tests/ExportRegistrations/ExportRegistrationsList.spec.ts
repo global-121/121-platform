@@ -1,63 +1,41 @@
-import { type Page, test } from '@playwright/test';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
-import {
-  deleteRegistrations,
-  seedIncludedRegistrations,
-} from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
+import { deleteRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   programIdPV,
   registrationPvMaxPayment,
   registrationsPV,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import ExportData from '@121-e2e/portal/components/ExportData';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
+
+let accessToken: string;
 
 test.describe('Export registrations with different formats and configurations', () => {
-  let page: Page;
+  test.beforeAll(async ({ resetDBAndSeedRegistrations }) => {
+    const result = await resetDBAndSeedRegistrations({
+      seedScript: SeedScript.nlrcMultiple,
+      registrations: [registrationPvMaxPayment, ...registrationsPV],
+      programId: programIdPV,
+    });
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage();
-    await resetDB(SeedScript.nlrcMultiple, __filename);
-    const accessToken = await getAccessToken();
-    await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);
-    // Seed and delete registration to have a deleted one in the list and validate data integrity
-    await seedIncludedRegistrations(
-      [registrationPvMaxPayment],
-      programIdPV,
-      accessToken,
-    );
+    accessToken = result.accessToken;
+
     await deleteRegistrations({
       programId: programIdPV,
       referenceIds: [registrationPvMaxPayment.referenceId],
       accessToken,
     });
-
-    // Login
-    const loginPage = new LoginPage(page);
-    await page.goto('/');
-    await loginPage.login();
   });
 
-  test.afterEach(async () => {
+  test.afterEach(async ({ page }) => {
     await page.goto('/');
   });
 
-  test.afterAll(async () => {
-    await page.close();
-  });
-
-  test('Export Selected Registrations', async () => {
-    const registrationsPage = new RegistrationsPage(page);
-    const exportDataComponent = new ExportData(page);
-
+  test('Export Selected Registrations', async ({
+    registrationsPage,
+    exportDataComponent,
+  }) => {
     const programTitle = NLRCProgramPV.titlePortal.en;
 
     await test.step('Select program', async () => {
@@ -85,10 +63,10 @@ test.describe('Export registrations with different formats and configurations', 
     });
   });
 
-  test('Export should only have selected columns', async () => {
-    const registrationsPage = new RegistrationsPage(page);
-    const exportDataComponent = new ExportData(page);
-
+  test('Export should only have selected columns', async ({
+    registrationsPage,
+    exportDataComponent,
+  }) => {
     const programTitle = NLRCProgramPV.titlePortal.en;
 
     await test.step('Select program', async () => {

@@ -12,6 +12,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
+import ExportData from '@121-e2e/portal/components/ExportData';
 import TableComponent from '@121-e2e/portal/components/TableComponent';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
@@ -50,6 +51,7 @@ type Fixtures = {
   registrationPersonalInformationPage: RegistrationPersonalInformationPage;
   registrationActivityLogPage: RegistrationActivityLogPage;
   tableComponent: TableComponent;
+  exportDataComponent: ExportData;
 };
 
 export const customSharedFixture = base.extend<Fixtures>({
@@ -124,5 +126,9 @@ export const customSharedFixture = base.extend<Fixtures>({
 
   registrationActivityLogPage: async ({ page }, use) => {
     await use(new RegistrationActivityLogPage(page));
+  },
+
+  exportDataComponent: async ({ page }, use) => {
+    await use(new ExportData(page));
   },
 });
