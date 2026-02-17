@@ -1,27 +1,20 @@
-import { expect, test } from '@playwright/test';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { resetDB } from '@121-service/test/helpers/utility.helper';
 
-import HomePage from '@121-e2e/portal/pages/HomePage';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
+import {
+  customSharedFixture as test,
+  expect,
+} from '@121-e2e/portal/fixtures/fixture';
 
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.testMultiple, __filename);
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    skipSeedRegistrations: true, // Skip seeding registrations for logout tests
+  });
 });
 
-test('Log Out via Menu', async ({ page }) => {
-  const homePage = new HomePage(page);
-  const loginPage = new LoginPage(page);
-
+test('Log Out via Menu', async ({ homePage, loginPage }) => {
   await test.step('Should navigate to user account dropdown and select Log-out option', async () => {
     await homePage.selectAccountOption('Logout');
-
     await loginPage.loginButton.isVisible();
   });
 });

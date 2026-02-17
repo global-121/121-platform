@@ -23,6 +23,8 @@ import RegistrationDebitCardPage from '@121-e2e/portal/pages/RegistrationDebitCa
 import RegistrationPersonalInformationPage from '@121-e2e/portal/pages/RegistrationPersonalInformationPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
+import HomePage from '../pages/HomePage';
+
 // Re-export expect for convenience
 export { expect } from '@playwright/test';
 
@@ -38,6 +40,7 @@ type TestRegistration = Partial<RegistrationEntity> & {
 type Fixtures = {
   resetDBAndSeedRegistrations: (params: {
     seedScript: SeedScript;
+    skipSeedRegistrations?: boolean;
     registrations?: TestRegistration[];
     programId?: number;
     navigateToPage?: string;
@@ -54,12 +57,15 @@ type Fixtures = {
   registrationActivityLogPage: RegistrationActivityLogPage;
   tableComponent: TableComponent;
   exportDataComponent: ExportData;
+  homePage: HomePage;
+  loginPage: LoginPage;
 };
 
 export const customSharedFixture = base.extend<Fixtures>({
   resetDBAndSeedRegistrations: async ({ page }, use, testInfo: TestInfo) => {
     const resetAndSeed = async (params: {
       seedScript: SeedScript;
+      skipSeedRegistrations?: boolean;
       registrations?: TestRegistration[];
       programId?: number;
       navigateToPage?: string;
@@ -71,19 +77,22 @@ export const customSharedFixture = base.extend<Fixtures>({
       // Logic to reset the database and seed registrations
       await resetDB(params.seedScript, nameOfFileContainingTest);
       const accessToken = await getAccessToken();
-      if (params.seedWithStatus) {
-        await seedRegistrationsWithStatus(
-          params.registrations ?? [],
-          params.programId ?? 1,
-          accessToken,
-          params.seedWithStatus,
-        );
-      } else {
-        await seedIncludedRegistrations(
-          params.registrations ?? [],
-          params.programId ?? 1,
-          accessToken,
-        );
+
+      if (!params.skipSeedRegistrations) {
+        if (params.seedWithStatus) {
+          await seedRegistrationsWithStatus(
+            params.registrations ?? [],
+            params.programId ?? 1,
+            accessToken,
+            params.seedWithStatus,
+          );
+        } else {
+          await seedIncludedRegistrations(
+            params.registrations ?? [],
+            params.programId ?? 1,
+            accessToken,
+          );
+        }
       }
       // Login
       const loginPage = new LoginPage(page);
@@ -134,5 +143,13 @@ export const customSharedFixture = base.extend<Fixtures>({
 
   exportDataComponent: async ({ page }, use) => {
     await use(new ExportData(page));
+  },
+
+  homePage: async ({ page }, use) => {
+    await use(new HomePage(page));
+  },
+
+  loginPage: async ({ page }, use) => {
+    await use(new LoginPage(page));
   },
 });
