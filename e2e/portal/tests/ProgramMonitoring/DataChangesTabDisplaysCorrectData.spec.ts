@@ -1,29 +1,19 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import {
-  seedIncludedRegistrations,
-  updateRegistration,
-} from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
+import { updateRegistration } from '@121-service/test/helpers/registration.helper';
 import {
   programIdOCW,
   registrationOCW4,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import TableComponent from '@121-e2e/portal/components/TableComponent';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 import {
   dropdownInputs,
   numberInputs,
   textInputs,
 } from '@121-e2e/portal/helpers/PersonalInformationFields';
-import BasePage from '@121-e2e/portal/pages/BasePage';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import ProgramMonitoring from '@121-e2e/portal/pages/ProgramMonitoringPage';
 
 const reason = 'automated test';
 
@@ -59,14 +49,13 @@ const dataUpdate = {
   addressPostalCode: '5678ZY',
 };
 
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-  const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(
-    [registrationOCW4],
-    programIdOCW,
-    accessToken,
-  );
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  const { accessToken } = await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: [registrationOCW4],
+    programId: programIdOCW,
+  });
+
   // Make data changes
   const response = await updateRegistration(
     programIdOCW,
@@ -77,25 +66,17 @@ test.beforeEach(async ({ page }) => {
   );
   // Assert
   expect(response.statusCode).toBe(200);
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
 });
 
 test("All elements of Monitoring's `Data Changes` sub-page display correct data for Registration", async ({
-  page,
+  programMonitoringPage,
+  tableComponent,
 }) => {
-  const basePage = new BasePage(page);
-  const programMonitoring = new ProgramMonitoring(page);
-  const tableComponent = new TableComponent(page);
-
-  const programTitle = 'NLRC OCW program';
-
   await test.step("Navigate to monitoring's 'data changes' tab", async () => {
-    await basePage.selectProgram(programTitle);
-    await programMonitoring.navigateToProgramPage('Monitoring');
-    await programMonitoring.selectTab({ tabName: 'Data Changes' });
+    await programMonitoringPage.goto(
+      `/program/${programIdOCW}/monitoring/dashboard`,
+    );
+    await programMonitoringPage.selectTab({ tabName: 'Data Changes' });
   });
 
   await test.step('Verify data changes are displayed correctly', async () => {

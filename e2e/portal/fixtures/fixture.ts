@@ -1,10 +1,12 @@
 import { test as base, TestInfo } from '@playwright/test';
 
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   seedIncludedRegistrations,
+  seedPaidRegistrations,
   seedRegistrationsWithStatus,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -47,6 +49,8 @@ type Fixtures = {
     programId?: number;
     navigateToPage?: string;
     seedWithStatus?: RegistrationStatusEnum;
+    seedPaidRegistrations?: boolean;
+    transferValue?: number;
     username?: string;
     password?: string;
   }) => Promise<{ accessToken: string }>;
@@ -74,6 +78,8 @@ export const customSharedFixture = base.extend<Fixtures>({
       programId?: number;
       navigateToPage?: string;
       seedWithStatus?: RegistrationStatusEnum;
+      seedPaidRegistrations?: boolean;
+      transferValue?: number;
       username?: string;
       password?: string;
     }): Promise<{ accessToken: string }> => {
@@ -83,7 +89,14 @@ export const customSharedFixture = base.extend<Fixtures>({
       const accessToken = await getAccessToken();
 
       if (!params.skipSeedRegistrations) {
-        if (params.seedWithStatus) {
+        if (params.seedPaidRegistrations) {
+          await seedPaidRegistrations({
+            registrations: params.registrations!,
+            programId: params.programId!,
+            transferValue: params.transferValue ?? 20,
+            completeStatuses: [TransactionStatusEnum.success],
+          });
+        } else if (params.seedWithStatus) {
           await seedRegistrationsWithStatus(
             params.registrations ?? [],
             params.programId ?? 1,
