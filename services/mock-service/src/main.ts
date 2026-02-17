@@ -20,7 +20,8 @@ import {
 import { env } from '@mock-service/src/env';
 
 declare global {
-  // To define the global queue-collection without namespace, we need to define it using `var`. See: https://typescript-eslint.io/troubleshooting/faqs/eslint/#i-get-errors-from-the-typescript-eslintno-namespace-andor-no-var-rules-about-declaring-global-variables
+  // To define the global queue-collection without namespace, we need to define it using `var`.
+  // See: https://typescript-eslint.io/troubleshooting/faqs/eslint/#i-get-errors-from-the-typescript-eslintno-namespace-andor-no-var-rules-about-declaring-global-variables
   var queueCallbacks: Record<string, string>;
 }
 
