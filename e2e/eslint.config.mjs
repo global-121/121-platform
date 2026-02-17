@@ -16,9 +16,10 @@ export default tsEslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    name: 'Root config',
   },
-  // JavaScript files config
   {
+    name: 'JavaScript (config) files',
     extends: [
       eslint.configs.recommended,
       eslintPluginN.configs['flat/recommended'],
@@ -37,8 +38,8 @@ export default tsEslint.config(
       'eslint-comments/require-description': 'error',
     },
   },
-  // TypeScript files config
   {
+    name: 'TypeScript files',
     extends: [
       ...tsEslint.configs.recommended,
       ...tsEslint.configs.stylisticTypeChecked,

@@ -17,8 +17,8 @@ export default tsEslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    name: 'Root config',
   },
-  // JavaScript files config
   {
     extends: [
       eslint.configs.recommended,
@@ -27,6 +27,7 @@ export default tsEslint.config(
       eslintPluginPrettierRecommended,
     ],
     files: ['**/*.js', '**/*.mjs'],
+    name: 'JavaScript files (ESM)',
     languageOptions: {
       ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
       sourceType: 'module',
@@ -40,12 +41,12 @@ export default tsEslint.config(
     },
   },
   {
+    name: 'JavaScript files (old, pre-ESM)',
     files: ['**/*.js'],
     languageOptions: {
       sourceType: 'script',
     },
   },
-  // TypeScript files config
   {
     extends: [
       ...tsEslint.configs.recommended,
@@ -55,6 +56,7 @@ export default tsEslint.config(
       eslintPluginPrettierRecommended,
     ],
     files: ['**/*.ts'],
+    name: 'TypeScript files',
     plugins: {
       'eslint-comments': eslintPluginComments,
       'no-relative-import-paths': eslintPluginNoRelativePaths,

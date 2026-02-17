@@ -24,8 +24,8 @@ export default tsEslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    name: 'Root config',
   },
-  // JavaScript files config
   {
     extends: [
       eslint.configs.recommended,
@@ -37,6 +37,7 @@ export default tsEslint.config(
       ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
       sourceType: 'module',
     },
+    name: 'JavaScript files (ESM)',
     plugins: {
       'eslint-comments': eslintPluginComments,
     },
@@ -46,12 +47,12 @@ export default tsEslint.config(
     },
   },
   {
+    name: 'JavaScript files (old, pre-ESM)',
     files: ['**/*.js'],
     languageOptions: {
       sourceType: 'script',
     },
   },
-  // TypeScript files config
   {
     extends: [
       ...tsEslint.configs.recommended,
@@ -61,6 +62,7 @@ export default tsEslint.config(
       eslintPluginPrettierRecommended,
     ],
     files: ['**/*.ts'],
+    name: 'TypeScript files',
     plugins: {
       'eslint-comments': eslintPluginComments,
       'no-relative-import-paths': eslintPluginNoRelativePaths,
@@ -155,9 +157,9 @@ export default tsEslint.config(
       ],
     },
   },
-  // Entity files config
   {
     files: ['**/*.entity.ts'],
+    name: 'Entity files',
     plugins: {
       'custom-rules': customRulesPlugin,
     },
@@ -165,9 +167,9 @@ export default tsEslint.config(
       'custom-rules/typeorm-cascade-ondelete': 'error',
     },
   },
-  // Controller files config
   {
     files: ['**/*.controller.ts'],
+    name: 'Controller files',
     plugins: {
       'custom-rules': customRulesPlugin,
     },
@@ -176,9 +178,9 @@ export default tsEslint.config(
       'custom-rules/no-method-api-tags': 'error',
     },
   },
-  // Test files config
   {
     extends: [eslintPluginJest.configs['flat/recommended']],
     files: ['**/*.spec.ts', '**/*.test.ts'],
+    name: 'Test files',
   },
 );

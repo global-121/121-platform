@@ -33,6 +33,7 @@ export default tsEslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    name: 'Root config',
   },
   {
     extends: [
@@ -46,6 +47,7 @@ export default tsEslint.config(
       eslintPluginPrettierRecommended,
     ],
     files: ['**/*.ts'],
+    name: 'TypeScript files',
     plugins: {
       'custom-rules': customRulesPlugin,
       'eslint-comments': eslintPluginComments,
@@ -140,6 +142,7 @@ export default tsEslint.config(
   },
   {
     files: ['**/*.spec.ts'],
+    name: '(Unit-)test files',
     rules: {
       // This rule triggers for spy objects where the spied-upon method uses
       // `this`. In that case the underlying method is just not called so the
@@ -154,6 +157,7 @@ export default tsEslint.config(
       eslintPluginPrettierRecommended,
     ],
     files: ['src/app/**/*.html'],
+    name: 'Component templates (HTML)',
     plugins: {
       'better-tailwindcss': eslintPluginBetterTailwindcss,
     },
@@ -255,6 +259,7 @@ export default tsEslint.config(
         require: 'readonly',
       },
     },
+    name: 'JavaScript files',
     plugins: {
       'eslint-comments': eslintPluginComments,
       regexp: eslintPluginRegexp,
