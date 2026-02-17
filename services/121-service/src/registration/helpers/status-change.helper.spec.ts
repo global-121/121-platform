@@ -18,7 +18,7 @@ describe('isValidStatusChange', () => {
     [newStatus, included, true],
     [newStatus, validated, true],
     [newStatus, declined, true],
-    [newStatus, paused, false],
+    [newStatus, paused, true],
     [newStatus, completed, false],
     [newStatus, deleted, true],
 
