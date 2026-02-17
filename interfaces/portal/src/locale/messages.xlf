@@ -2198,6 +2198,15 @@
       <trans-unit id="generic-continue" datatype="html">
         <source>Continue</source>
       </trans-unit>
+      <trans-unit id="4066782653095048324" datatype="html">
+        <source>Are you still working?</source>
+      </trans-unit>
+      <trans-unit id="7425401724603547434" datatype="html">
+        <source>Your session will expire in <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>2 minutes<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> for security reasons.</source>
+      </trans-unit>
+      <trans-unit id="8700467260765504553" datatype="html">
+        <source>Click &quot;Continue&quot; to stay logged in.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
