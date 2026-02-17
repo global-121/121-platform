@@ -2,7 +2,6 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
-import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
@@ -10,9 +9,9 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('Download template for import registrations', async ({ page }) => {
-  const registrationsPage = new RegistrationsPage(page);
-
+test('Download template for import registrations', async ({
+  registrationsPage,
+}) => {
   const programTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {
