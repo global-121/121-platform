@@ -44,8 +44,19 @@ class RegistrationDataPage extends BasePage {
     await this.clickContinueButton();
   }
 
-  async validateKoboIntegrationMessage({ message }: { message: string }) {
-    await this.page.getByText(message).waitFor();
+  async validateKoboIntegration({
+    message,
+    koboFormName,
+  }: {
+    message?: string;
+    koboFormName?: string;
+  }) {
+    if (message) {
+      await this.page.getByText(message).waitFor();
+    }
+    if (koboFormName) {
+      await this.page.getByText(koboFormName).waitFor();
+    }
   }
 }
 

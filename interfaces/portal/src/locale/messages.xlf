@@ -2198,6 +2198,9 @@
       <trans-unit id="generic-continue" datatype="html">
         <source>Continue</source>
       </trans-unit>
+      <trans-unit id="8329565273054861257" datatype="html">
+        <source>You&apos;re about to link this program with this Kobo form:</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

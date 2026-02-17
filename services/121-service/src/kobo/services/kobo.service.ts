@@ -59,6 +59,7 @@ export class KoboService {
   }): Promise<{
     message: string;
     dryRun: boolean;
+    name: string | null;
   }> {
     await this.programService.findProgramOrThrow(programId);
     const fspConfigs = await this.programFspConfigurationRepository.count({
@@ -89,6 +90,7 @@ export class KoboService {
     if (dryRun) {
       return {
         message: 'Dry run successful - validation passed',
+        name: asset.name ?? null,
         dryRun: true,
       };
     }
@@ -99,6 +101,7 @@ export class KoboService {
       assetUid,
       token,
       url,
+      name: asset.name ?? null,
     });
     const languageIsoCodes = KoboLanguageMapper.getLanguageIsoCodes({
       koboLanguages: formDefinition.languages,
@@ -117,6 +120,7 @@ export class KoboService {
 
     return {
       message: 'Kobo form integrated successfully',
+      name: asset.name ?? null,
       dryRun: false,
     };
   }
@@ -127,12 +131,14 @@ export class KoboService {
     assetUid,
     token,
     url,
+    name,
   }: {
     formDefinition: KoboFormDefinition;
     programId: number;
     assetUid: string;
     token: string;
     url: string;
+    name: string | null;
   }): Promise<void> {
     const existingKoboEntity = await this.koboRepository.findOne({
       where: { programId: Equal(programId) },
@@ -144,6 +150,7 @@ export class KoboService {
       assetUid,
       token,
       url,
+      name,
     });
 
     if (existingKoboEntity) {

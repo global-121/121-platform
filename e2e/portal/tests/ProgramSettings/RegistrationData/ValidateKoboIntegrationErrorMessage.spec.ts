@@ -37,7 +37,7 @@ test('Add Kobo integration with invalid details and validate error message', asy
       apiKey: koboIntegrationDetails.apiKey,
     });
     // Validate error message after adding Kobo integration with details that trigger errors in the mock service
-    await registrationData.validateKoboIntegrationMessage({
+    await registrationData.validateKoboIntegration({
       message: 'Something went wrong: "Kobo form definition validation failed',
     });
   });

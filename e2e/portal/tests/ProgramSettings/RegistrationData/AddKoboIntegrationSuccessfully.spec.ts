@@ -54,8 +54,8 @@ test('Add Kobo integration successfully', async ({
       apiKey: koboIntegrationDetails.apiKey,
     });
     // Validate success message after adding Kobo integration with correct details
-    await registrationDataPage.validateKoboIntegrationMessage({
-      message: 'Dry run successful - validation passed',
+    await registrationDataPage.validateKoboIntegration({
+      koboFormName: '25042025 Prototype Sprint',
     });
     // Click continue button to exit the form
     await registrationDataPage.clickContinueButton();
