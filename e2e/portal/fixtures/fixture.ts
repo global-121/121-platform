@@ -18,6 +18,7 @@ import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 import RegistrationDataPage from '@121-e2e/portal/pages/RegistrationDataPage';
 import RegistrationDebitCardPage from '@121-e2e/portal/pages/RegistrationDebitCardPage';
+import RegistrationPersonalInformationPage from '@121-e2e/portal/pages/RegistrationPersonalInformationPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 // Re-export expect for convenience
@@ -45,6 +46,7 @@ type Fixtures = {
   registrationDataPage: RegistrationDataPage;
   registrationsPage: RegistrationsPage;
   registrationDebitCardPage: RegistrationDebitCardPage;
+  registrationPersonalInformationPage: RegistrationPersonalInformationPage;
   tableComponent: TableComponent;
 };
 
@@ -112,5 +114,9 @@ export const customSharedFixture = base.extend<Fixtures>({
 
   registrationDebitCardPage: async ({ page }, use) => {
     await use(new RegistrationDebitCardPage(page));
+  },
+
+  registrationPersonalInformationPage: async ({ page }, use) => {
+    await use(new RegistrationPersonalInformationPage(page));
   },
 });
