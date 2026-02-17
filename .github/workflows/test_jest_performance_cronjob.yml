@@ -10,7 +10,7 @@ permissions:
   id-token: write
 
 env:
-  workingDirectory: services/121-service/
+  workingDirectory: services/121-service
   EXTERNAL_121_SERVICE_URL: http://localhost:3000
 
 jobs:

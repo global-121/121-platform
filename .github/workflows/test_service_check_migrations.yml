@@ -24,7 +24,7 @@ on:
       - '!**.md'
 
 env:
-  workingDirectory: services/121-service/
+  workingDirectory: services/121-service
 
 jobs:
   test:
