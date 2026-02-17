@@ -1,4 +1,4 @@
-import { inject, Injectable, Injector } from '@angular/core';
+import { inject, Injectable, Injector, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { QueryClient } from '@tanstack/angular-query-experimental';
@@ -41,10 +41,16 @@ export class AuthService {
 
   private readonly authStrategy: IAuthStrategy;
   private tokenExpirationMonitor?: Subscription;
+  private hasShownExpirationWarning = false;
   // private readonly CHECK_INTERVAL_MS = 60000; // Check every minute. Should we use something else in production?
   // private readonly FORCE_LOGOUT_WHEN_EXP_IN_MS = 120000; // Logout 2 minutes before expiry. Should we use something else in production?
-  private readonly CHECK_INTERVAL_MS = 6000; // Check every 6 seconds for testing
-  private readonly FORCE_LOGOUT_WHEN_EXP_IN_MS = 18000; // Logout 18 seconds before expiry for testing
+  // private readonly SHOW_WARNING_WHEN_EXP_IN_MS = 900000; // Show warning 15 minutes before expiry. Should we use something else in production?
+  private readonly CHECK_INTERVAL_MS = 3000; // Check every 3 seconds for testing
+  private readonly FORCE_LOGOUT_WHEN_EXP_IN_MS = 7000; // Logout 7 seconds before expiry for testing
+  private readonly SHOW_WARNING_WHEN_EXP_IN_MS = 15000; // Show warning 15 seconds before expiry for testing
+
+  // Signal to control the token expiration warning dialog
+  public readonly showExpirationWarning = signal(false);
 
   constructor() {
     this.authStrategy = this.injector.get<IAuthStrategy>(AuthStrategy);
@@ -82,6 +88,7 @@ export class AuthService {
     console.log('👀 AuthService: Token expiration monitor started');
     this.tokenExpirationMonitor = interval(this.CHECK_INTERVAL_MS).subscribe(
       () => {
+        console.log('⏰ AuthService: Running token expiration check...');
         const timeUntilExpiry = this.authStrategy.getTimeUntilExpiration();
 
         if (timeUntilExpiry === Infinity) {
@@ -94,18 +101,45 @@ export class AuthService {
           `⏰ AuthService: Token check - ${String(secondsRemaining)} seconds remaining until expiry`,
         );
 
-        // Check if token expires within the warning threshold
+        // Show warning dialog if token expires soon (and we haven't shown it yet)
+        if (
+          timeUntilExpiry <= this.SHOW_WARNING_WHEN_EXP_IN_MS &&
+          timeUntilExpiry > this.FORCE_LOGOUT_WHEN_EXP_IN_MS &&
+          !this.hasShownExpirationWarning
+        ) {
+          console.log(
+            '⚠️ AuthService: Token expiring soon. Showing warning dialog.',
+          );
+          this.showExpirationWarning.set(true);
+          this.hasShownExpirationWarning = true;
+        }
+
+        // Check if token expires within the logout threshold
         if (timeUntilExpiry <= this.FORCE_LOGOUT_WHEN_EXP_IN_MS) {
           console.log(
             '🔒 AuthService: Token is about to expire. Logging out user.',
           );
-          // For the real implmentation we should instead of calling the logout function create a similair function
-          // only it should navigate to a 'you have been logged out due to inactivity' designed by design team
 
-          void this.logout();
+          void this.handleTokenExpiration();
         }
       },
     );
+  }
+
+  /**
+   * Handles token expiration by logging out and preserving the current URL
+   * for redirect after re-authentication.
+   *
+   * @private
+   */
+  private async handleTokenExpiration(): Promise<void> {
+    // Reset warning flag for next session
+    this.hasShownExpirationWarning = false;
+    // Close dialog if it's still open
+    this.showExpirationWarning.set(false);
+
+    const currentUrl = this.router.url;
+    await this.logout(undefined, currentUrl);
   }
 
   public get isLoggedIn(): boolean {
@@ -168,7 +202,7 @@ export class AuthService {
     return this.router.navigate(['/', AppRoutes.authCallback]);
   }
 
-  public async logout(user?: LocalStorageUser | null) {
+  public async logout(user?: LocalStorageUser | null, returnUrl?: string) {
     try {
       await this.authStrategy.logout(user ?? this.user);
     } catch (error) {
@@ -178,7 +212,11 @@ export class AuthService {
     // Cleanup local state, to leave no trace of the user.
     localStorage.removeItem(LOCAL_STORAGE_AUTH_USER_KEY);
 
-    await this.router.navigate(['/', AppRoutes.login]);
+    const navigationExtras = returnUrl
+      ? { queryParams: { returnUrl } }
+      : undefined;
+
+    await this.router.navigate(['/', AppRoutes.login], navigationExtras);
   }
 
   public async changePassword({

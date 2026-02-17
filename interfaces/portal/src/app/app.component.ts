@@ -14,6 +14,7 @@ import { ToastModule, ToastPositionType } from 'primeng/toast';
 import { Subscription } from 'rxjs';
 
 import { AppRoutes } from '~/app.routes';
+import { TokenExpirationDialogComponent } from '~/components/token-expiration-dialog/token-expiration-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import { LogService } from '~/services/log.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
@@ -22,7 +23,7 @@ import { environment } from '~environment';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ToastModule],
+  imports: [RouterOutlet, ToastModule, TokenExpirationDialogComponent],
   providers: [
     MessageService, // Needed by the ToastModule
   ],
@@ -39,6 +40,8 @@ export class AppComponent implements OnInit, OnDestroy {
   readonly toastKey = ToastService.TOAST_KEY;
   readonly toastPosition = ('top-' +
     this.rtlHelper.createPosition('end')()) as ToastPositionType;
+
+  readonly showExpirationWarning = this.authService.showExpirationWarning;
 
   private readonly logService = inject(LogService);
 
