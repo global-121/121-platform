@@ -51,7 +51,7 @@ import { UserEmailType } from '@121-service/src/user/user-emails/enum/user-email
 import { UserEmailInput } from '@121-service/src/user/user-emails/interfaces/user-email-input.interface';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
-const tokenExpirationDays = 14;
+// const tokenExpirationDays = 14;
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserService {
@@ -604,7 +604,7 @@ export class UserService {
   public generateJWT(user: UserEntity): string {
     const today = new Date();
     const exp = new Date(today);
-    exp.setDate(today.getDate() + tokenExpirationDays);
+    exp.setSeconds(today.getSeconds() + 26); // Expire in 26 seconds for testing //
 
     const roles = {};
     if (user.programAssignments && user.programAssignments[0]) {
@@ -710,7 +710,7 @@ export class UserService {
       sameSite,
       secure,
       httpOnly,
-      expires: new Date(Date.now() + tokenExpirationDays * 24 * 3600000),
+      expires: new Date(Date.now() + 26 * 1000), // Set cookie to expire in 24.8 days, which is the maximum allowed value for cookie expiration
     };
   }
 

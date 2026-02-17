@@ -1,0 +1,49 @@
+<p-dialog
+  [modal]="true"
+  [(visible)]="dialogVisible"
+  [closable]="true"
+  [style]="{ width: '32rem' }"
+  appendTo="body"
+  (onHide)="closeDialog()"
+>
+  <ng-template #header>
+    <div class="flex items-center gap-2">
+      <i class="pi pi-clock"></i>
+      <span i18n>Are you still working?</span>
+    </div>
+  </ng-template>
+  <div class="flex flex-col gap-4">
+    <p
+      class="text-base"
+      i18n
+    >
+      Your session will expire in <strong>2 minutes</strong> for security
+      reasons.
+    </p>
+    <p
+      class="text-base"
+      i18n
+    >
+      Click "Continue" to stay logged in.
+    </p>
+    <div class="flex justify-end gap-3">
+      <p-button
+        label="Logout"
+        i18n-label
+        (click)="logout()"
+        rounded
+        outlined
+        severity="contrast"
+        data-testid="token-expiration-logout-button"
+      />
+      <p-button
+        label="Continue"
+        i18n-label
+        (click)="closeDialog()"
+        rounded
+        severity="primary"
+        data-testid="token-expiration-continue-button"
+      />
+    </div>
+  </div>
+</p-dialog>
