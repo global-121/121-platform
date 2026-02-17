@@ -129,11 +129,11 @@ export class FspConfigurationService {
       case 'displayName':
         return FspConfigurationPropertyInputType.stringInput;
       default:
-        return this.getPropertyFieldNameForDefaultName(propertyName);
+        return this.getPropertyFieldTypeForDefaultName(propertyName);
     }
   }
 
-  getPropertyFieldNameForDefaultName(
+  getPropertyFieldTypeForDefaultName(
     name: FspConfigurationProperties,
   ): FspConfigurationPropertyInputType {
     const type = fspConfigurationPropertyTypes[name];

@@ -404,10 +404,17 @@ export class ProgramFspConfigurationsService {
     const expectedType = fspConfigurationPropertyTypes[propertyName];
     let actualType: string = typeof propertyValue;
 
+    // we have a special case for arrays, because typeof [] is 'object'
     if (Array.isArray(propertyValue)) {
       actualType = 'array';
+
+      // Check if all items in the array are strings
+      if (!propertyValue.every((item) => typeof item === 'string')) {
+        actualType = 'non-string-array';
+      }
     }
 
+    // typeof NaN is 'number' but we want to catch it as an invalid value
     if (actualType === 'number' && Number.isNaN(propertyValue as number)) {
       actualType = 'NaN';
     }

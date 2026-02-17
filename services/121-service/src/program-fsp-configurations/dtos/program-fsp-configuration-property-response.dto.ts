@@ -8,12 +8,9 @@ export class ProgramFspConfigurationPropertyResponseDto {
   public readonly name: FspConfigurationProperties;
 
   @ApiProperty({
-    oneOf: [
-      { type: 'string', example: 'RC01' },
-      { type: 'number', example: 1 },
-      { type: 'boolean', example: true },
-      { type: 'array', items: { type: 'string' }, example: ['RC01', 'RC02'] },
-    ],
+    example: 'my-username',
+    description:
+      'Configuration property value. Type depends on the property: string (e.g. username="my-username"), number (e.g. maxToSpendPerMonthInCents=15000), boolean (e.g. cardDistributionByMail=true), or array of strings (e.g. columnsToExport=["fullName", "phoneNumber"])',
   })
   public readonly value?: FspConfigurationPropertyType;
 
