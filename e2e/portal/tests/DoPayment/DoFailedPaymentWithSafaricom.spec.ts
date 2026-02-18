@@ -8,7 +8,6 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
-
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   // Full phoneNumber is set to create a failed payment
   registrationsSafaricom[0].phoneNumber = '254000000000';
