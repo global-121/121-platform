@@ -1,56 +1,40 @@
-import { expect, test } from '@playwright/test';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
   registrationsPV,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import HomePage from '@121-e2e/portal/pages/HomePage';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
+import {
+  customSharedFixture as test,
+  expect,
+} from '@121-e2e/portal/fixtures/fixture';
 import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActivityLogPage';
-import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
-
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-  const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
-});
 
 test('Validate that "Duplicate" banner is displayed in overview of duplicated registrations', async ({
+  registrationsPage,
+  registrationActivityLogPage,
+  resetDBAndSeedRegistrations,
   page,
 }) => {
-  const homePage = new HomePage(page);
-  const registrations = new RegistrationsPage(page);
-  const registrationActivityLogPage = new RegistrationActivityLogPage(page);
-
-  const programTitle = 'NLRC Direct Digital Aid Program (PV)';
-
+  await test.step('Setup and seed database', async () => {
+    await resetDBAndSeedRegistrations({
+      seedScript: SeedScript.nlrcMultiple,
+      registrations: registrationsPV,
+      programId: programIdPV,
+      navigateToPage: `/program/${programIdPV}/registrations`,
+    });
+  });
   const duplicateRegistrationA = registrationsPV[1]; // 'Jan Janssen'
   const duplicateRegistrationB = registrationsPV[2]; // 'Joost Herlembach'
   const uniqueRegistration = registrationsPV[0]; // 'Gemma Houtenbos'
 
-  await test.step('Select program', async () => {
-    await homePage.selectProgram(programTitle);
-  });
-
   await test.step('Wait for registrations to load', async () => {
     const allRegistrationsCount = registrationsPV.length;
-    await registrations.waitForLoaded(allRegistrationsCount);
+    await registrationsPage.waitForLoaded(allRegistrationsCount);
   });
 
   await test.step('Open registration page', async () => {
-    await registrations.goToRegistrationByName({
+    await registrationsPage.goToRegistrationByName({
       registrationName: duplicateRegistrationA.fullName,
     });
   });
@@ -74,9 +58,9 @@ test('Validate that "Duplicate" banner is displayed in overview of duplicated re
   await test.step('Verify new tab is opened and contains link to orignial duplicate', async () => {
     await page.waitForTimeout(2000); //waitForNavigation and waitForLoadState do not work in this case
 
-    const pages = await page.context().pages();
+    const pages = page.context().pages();
 
-    await expect(pages).toHaveLength(2);
+    expect(pages).toHaveLength(2);
 
     const registrationActivityLogPageForDuplicateB =
       new RegistrationActivityLogPage(pages[1]);
@@ -92,7 +76,7 @@ test('Validate that "Duplicate" banner is displayed in overview of duplicated re
   });
 
   await test.step('Open registration page for unique registration', async () => {
-    await registrations.goToRegistrationByName({
+    await registrationsPage.goToRegistrationByName({
       registrationName: uniqueRegistration.fullName,
     });
   });
