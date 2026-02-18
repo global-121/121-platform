@@ -29,6 +29,7 @@ import RegistrationDataPage from '@121-e2e/portal/pages/RegistrationDataPage';
 import RegistrationDebitCardPage from '@121-e2e/portal/pages/RegistrationDebitCardPage';
 import RegistrationPersonalInformationPage from '@121-e2e/portal/pages/RegistrationPersonalInformationPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
+import UsersPage from '@121-e2e/portal/pages/UsersPage';
 
 // Re-export expect for convenience
 export { expect } from '@playwright/test';
@@ -70,6 +71,7 @@ type Fixtures = {
   programMonitoringPage: ProgramMonitoring;
   fspSettingsPage: FspSettingsPage;
   programSettingsPage: ProgramSettingsPage;
+  usersPage: UsersPage;
 };
 
 export const customSharedFixture = base.extend<Fixtures>({
@@ -187,5 +189,9 @@ export const customSharedFixture = base.extend<Fixtures>({
 
   programSettingsPage: async ({ page }, use) => {
     await use(new ProgramSettingsPage(page));
+  },
+
+  usersPage: async ({ page }, use) => {
+    await use(new UsersPage(page));
   },
 });
