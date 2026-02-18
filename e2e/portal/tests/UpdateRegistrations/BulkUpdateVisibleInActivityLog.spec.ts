@@ -1,49 +1,28 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
   registrationPV5,
   registrationPV6,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import TableComponent from '@121-e2e/portal/components/TableComponent';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
-
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-  const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(
-    [registrationPV5, registrationPV6],
-    programIdPV,
-    accessToken,
-  );
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
-});
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const newName = 'Michael Scarn';
 
 test('Data should be updated according to selected columns and registrations', async ({
-  page,
+  resetDBAndSeedRegistrations,
+  registrationsPage,
+  tableComponent,
 }) => {
-  const registrationsPage = new RegistrationsPage(page);
-  const tableComponent = new TableComponent(page);
-
-  const programTitle = NLRCProgramPV.titlePortal.en;
-
-  await test.step('Select program', async () => {
-    await registrationsPage.selectProgram(programTitle);
+  await test.step('Setup', async () => {
+    await resetDBAndSeedRegistrations({
+      seedScript: SeedScript.nlrcMultiple,
+      registrations: [registrationPV5, registrationPV6],
+      programId: programIdPV,
+      navigateToPage: `/program/${programIdPV}/registrations`,
+    });
   });
 
   await test.step('Select all registrations and open "Update registrations" dialog', async () => {

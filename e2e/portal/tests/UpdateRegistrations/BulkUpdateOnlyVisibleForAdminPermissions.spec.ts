@@ -1,44 +1,25 @@
-import { test } from '@playwright/test';
-
 import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
   registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
-
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-  const accessToken = await getAccessToken();
-  await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login(
-    env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
-    env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
-  );
-});
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 test('User does not have sufficient Role to bulk update with CSV (import modal not visible)', async ({
-  page,
+  resetDBAndSeedRegistrations,
+  registrationsPage,
 }) => {
-  const registrationsPage = new RegistrationsPage(page);
-
-  const programTitle = NLRCProgramPV.titlePortal.en;
-
-  await test.step('Select program', async () => {
-    await registrationsPage.selectProgram(programTitle);
+  await test.step('Setup', async () => {
+    await resetDBAndSeedRegistrations({
+      seedScript: SeedScript.nlrcMultiple,
+      registrations: [registrationPV5],
+      programId: programIdPV,
+      username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+      password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
+      navigateToPage: `/program/${programIdPV}/registrations`,
+    });
   });
 
   await test.step('Select all registrations, open "Update registrations" dialog and validate "Update selected registrations" are not visible', async () => {
