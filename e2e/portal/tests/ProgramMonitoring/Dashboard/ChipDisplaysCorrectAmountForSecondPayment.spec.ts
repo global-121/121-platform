@@ -26,7 +26,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations, page }) => {
     accessToken,
   });
   // The test only worked because without the fixture it had to login and navigate to correct page
-  // Now to maintain the same test flow we need to navigate to the same page as it was done before with login and navigation in the test
+  // Now to maintain the same test flow we need to navigate to the same page as it was done before with login and navigation in the previous test
   // I could not find the source of the issue thus I left the navigation to the page for now
   await page.goto('/');
 });
