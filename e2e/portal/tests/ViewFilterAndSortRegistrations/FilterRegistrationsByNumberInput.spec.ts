@@ -1,56 +1,32 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { doPayment } from '@121-service/test/helpers/program.helper';
-import { seedRegistrationsWithStatus } from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
   registrationPvMaxPayment,
   registrationsPV,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import TableComponent from '@121-e2e/portal/components/TableComponent';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 let registrationName: string;
 
-// Arrange
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-  const accessToken = await getAccessToken();
-
-  registrationsPV.push(registrationPvMaxPayment);
-  await seedRegistrationsWithStatus(
-    registrationsPV,
-    programIdPV,
-    accessToken,
-    RegistrationStatusEnum.included,
-  );
-
-  await doPayment({
-    programId: 2,
-    transferValue: 25,
-    referenceIds: [registrationsPV[0].referenceId],
-    accessToken,
+test('Filter registrations by Input number', async ({
+  registrationsPage,
+  tableComponent,
+  resetDBAndSeedRegistrations,
+}) => {
+  await test.step('Setup and seed database', async () => {
+    await resetDBAndSeedRegistrations({
+      seedScript: SeedScript.nlrcMultiple,
+      seedPaidRegistrations: true,
+      registrations: [...registrationsPV, registrationPvMaxPayment],
+      programId: programIdPV,
+      seedWithStatus: RegistrationStatusEnum.included,
+      navigateToPage: `/program/${programIdPV}/registrations`,
+    });
   });
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
-  // Navigate to program
-  await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
-});
-
-test('Filter registrations by Input number', async ({ page }) => {
-  const registrationsPage = new RegistrationsPage(page);
-  const tableComponent = new TableComponent(page);
 
   // Act & Assert
   await test.step('Filter Reg. # column by number 2', async () => {
