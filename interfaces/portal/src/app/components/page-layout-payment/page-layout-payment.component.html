@@ -11,8 +11,11 @@
       <h1 class="me-auto">
         {{ paymentTitle() }}
         <app-colored-chip-payment-approval-status
-          [programId]="programId()"
-          [paymentId]="paymentId()"
+          [isPaymentApproved]="
+            paymentAggregateData()?.isPaymentApproved ?? false
+          "
+          [approvalsGiven]="paymentAggregateData()?.approvalsGiven ?? 0"
+          [approvalsRequired]="paymentAggregateData()?.approvalsRequired ?? 0"
         />
       </h1>
       @if (showApprovePaymentButton()) {
@@ -63,14 +66,12 @@
   <div
     class="grid gap-5 [grid-template-areas:'chart_chart''metric1_metric2''table_table'] md:grid-cols-[1fr_24rem] md:[grid-template-areas:'chart_metric1''chart_metric2''table_table']"
   >
-    @let paymentAggregate = this.paymentAggregate.data();
-
-    @if (!paymentAggregate) {
+    @if (!paymentAggregateData()) {
       <p-skeleton
         class="[grid-area:chart]"
         height="100%"
       ></p-skeleton>
-    } @else if (paymentAggregate.pendingApproval.count === 0) {
+    } @else if (paymentAggregateData()?.pendingApproval?.count === 0) {
       <p-card
         class="[grid-area:chart] [&_.p-card]:h-full [&_.p-card-body]:h-full"
       >
@@ -80,8 +81,9 @@
         >
           Transactions data
         </p>
+        <!-- ! required because Angular doesn't track type narrowing across @if/@else blocks -->
         <app-program-payment-chart
-          [paymentDetails]="paymentAggregate"
+          [paymentDetails]="paymentAggregateData()!"
         ></app-program-payment-chart>
       </p-card>
     } @else {
@@ -95,7 +97,10 @@
           Approval flow
         </p>
         <div>
-          @for (approver of paymentAggregate.approvalStatus; track $index) {
+          @for (
+            approver of paymentAggregateData()?.approvalStatus;
+            track $index
+          ) {
             <div
               class="mb-6 flex flex-row"
               data-testid="approval-flow-row"

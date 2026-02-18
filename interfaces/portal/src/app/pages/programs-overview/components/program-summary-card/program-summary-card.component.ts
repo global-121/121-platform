@@ -47,7 +47,7 @@ export class ProgramSummaryCardComponent {
     enabled: !!this.program.data()?.id,
   }));
   public payments = injectQuery(() => ({
-    ...this.paymentApiService.getPayments(this.id)(),
+    ...this.paymentApiService.getPaymentAggregationsSummaries(this.id)(),
     enabled: !!this.program.data()?.id,
   }));
   programLink = (programId: number) => ['/', AppRoutes.program, programId];

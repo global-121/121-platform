@@ -61,7 +61,9 @@ export class ExportPaymentsComponent {
   private trackingService = inject(TrackingService);
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
-  payments = injectQuery(this.paymentApiService.getPayments(this.programId));
+  payments = injectQuery(
+    this.paymentApiService.getPaymentAggregationsSummaries(this.programId),
+  );
 
   readonly exportlastPaymentsDialog = viewChild.required<FormDialogComponent>(
     'exportlastPaymentsDialog',

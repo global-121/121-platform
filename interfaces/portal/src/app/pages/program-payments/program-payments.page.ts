@@ -40,7 +40,9 @@ export class ProgramPaymentsPageComponent {
   private authService = inject(AuthService);
   private paymentApiService = inject(PaymentApiService);
 
-  payments = injectQuery(this.paymentApiService.getPayments(this.programId));
+  payments = injectQuery(
+    this.paymentApiService.getPaymentAggregationsSummaries(this.programId),
+  );
 
   readonly paymentStatus = injectQuery(
     this.paymentApiService.getPaymentStatus(this.programId),

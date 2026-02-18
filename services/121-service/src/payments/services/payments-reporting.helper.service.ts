@@ -5,6 +5,10 @@ import { Equal, Repository } from 'typeorm';
 import { NedbankVoucherEntity } from '@121-service/src/fsp-integrations/integrations/nedbank/entities/nedbank-voucher.entity';
 import { SafaricomTransferEntity } from '@121-service/src/fsp-integrations/integrations/safaricom/entities/safaricom-transfer.entity';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { PaymentAggregationSummaryDto } from '@121-service/src/payments/dto/payment-aggregation-summary.dto';
+import { PaymentRepository } from '@121-service/src/payments/repositories/payment.repository';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import {
@@ -150,5 +154,77 @@ export class PaymentsReportingHelperService {
     ].filter(Boolean);
 
     return fileNameParts.join('_');
+  }
+
+  public buildPaymentAggregationSummaries({
+    paymentsAndApprovalStatusses,
+    aggregationResults,
+  }: {
+    paymentsAndApprovalStatusses: Awaited<
+      ReturnType<PaymentRepository['getPaymentsAndApprovalState']>
+    >;
+    aggregationResults: Awaited<
+      ReturnType<
+        TransactionViewScopedRepository['aggregateTransactionsByStatusForAllPayments']
+      >
+    >;
+  }): PaymentAggregationSummaryDto[] {
+    return paymentsAndApprovalStatusses.map((payment) => ({
+      paymentId: payment.id,
+      paymentDate: payment.created,
+      isPaymentApproved: payment.isPaymentApproved,
+      approvalsRequired: payment.approvalsRequired,
+      approvalsGiven: payment.approvalsGiven,
+      [TransactionStatusEnum.success]: this.getAggregateForPaymentAndStatus({
+        aggregationResults,
+        paymentId: payment.id,
+        status: TransactionStatusEnum.success,
+      }),
+      [TransactionStatusEnum.waiting]: this.getAggregateForPaymentAndStatus({
+        aggregationResults,
+        paymentId: payment.id,
+        status: TransactionStatusEnum.waiting,
+      }),
+      failed: this.getAggregateForPaymentAndStatus({
+        aggregationResults,
+        paymentId: payment.id,
+        status: TransactionStatusEnum.error,
+      }),
+      [TransactionStatusEnum.pendingApproval]:
+        this.getAggregateForPaymentAndStatus({
+          aggregationResults,
+          paymentId: payment.id,
+          status: TransactionStatusEnum.pendingApproval,
+        }),
+      [TransactionStatusEnum.approved]: this.getAggregateForPaymentAndStatus({
+        aggregationResults,
+        paymentId: payment.id,
+        status: TransactionStatusEnum.approved,
+      }),
+    }));
+  }
+
+  private getAggregateForPaymentAndStatus({
+    aggregationResults,
+    paymentId,
+    status,
+  }: {
+    aggregationResults: Awaited<
+      ReturnType<
+        TransactionViewScopedRepository['aggregateTransactionsByStatusForAllPayments']
+      >
+    >;
+    paymentId: number;
+    status: TransactionStatusEnum;
+  }): { count: number; transferValue: number } {
+    const row = aggregationResults.find(
+      (r) => r.paymentId === paymentId && r.status === status,
+    );
+    return row
+      ? {
+          count: Number(row.count),
+          transferValue: Number(row.totalTransferValue),
+        }
+      : { count: 0, transferValue: 0 };
   }
 }

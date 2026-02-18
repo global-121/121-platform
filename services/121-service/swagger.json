@@ -964,10 +964,10 @@
     "method": "get",
     "path": "/api/programs/{programId}/payments/{paymentId}",
     "params": [
-      "paymentId",
-      "programId"
+      "programId",
+      "paymentId"
     ],
-    "returnType": "PaymentReturnDto"
+    "returnType": "PaymentAggregationFullDto"
   },
   {
     "method": "post",

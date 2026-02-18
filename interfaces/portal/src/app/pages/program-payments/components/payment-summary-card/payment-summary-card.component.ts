@@ -15,6 +15,7 @@ import { CardWithLinkComponent } from '~/components/card-with-link/card-with-lin
 import { ColoredChipPaymentApprovalStatusComponent } from '~/components/colored-chip-payment-approval-status/colored-chip-payment-approval-status.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { paymentLink } from '~/domains/payment/payment.helpers';
+import { PaymentAggregationSummary } from '~/domains/payment/payment.model';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { Locale } from '~/utils/locale';
 
@@ -41,51 +42,62 @@ export class PaymentSummaryCardComponent {
   readonly paymentId = input.required<number>();
   readonly paymentDate = input.required<string>();
   readonly cardIndex = input.required<number>();
+  readonly paymentData = input.required<PaymentAggregationSummary>();
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
   paymentStatus = injectQuery(
     this.paymentApiService.getPaymentStatus(this.programId),
   );
-  metrics = injectQuery(() => ({
-    ...this.paymentApiService.getPaymentAggregate({
+
+  // Only fetch live data for the latest payment when payment is in progress
+  latestPayment = injectQuery(() => ({
+    ...this.paymentApiService.getPaymentAggregationFull({
       programId: this.programId,
       paymentId: this.paymentId,
     })(),
-    // Refetch the data every second if this is the latest payment, and a payment is in progress
+    enabled: this.isLatestPayment(),
     refetchInterval:
-      this.isLatestPayment() &&
-      (this.paymentStatus.isPending() || this.paymentStatus.data()?.inProgress)
+      this.isLatestPayment() && this.paymentStatus.data()?.inProgress
         ? 1000
-        : undefined,
+        : false,
   }));
 
   readonly isLatestPayment = computed(() => this.cardIndex() === 0);
 
-  readonly includedRegistrations = computed(() => {
-    const successCount = this.metrics.data()?.success.count ?? 0;
-    const waitingCount = this.metrics.data()?.waiting.count ?? 0;
-    const failedCount = this.metrics.data()?.failed.count ?? 0;
-    const createdCount = this.metrics.data()?.pendingApproval.count ?? 0;
+  // Use live data for latest payment if available, otherwise use passed-in data
+  readonly currentPaymentData = computed(() => {
+    const latestPaymentData = this.latestPayment.data();
+    return this.isLatestPayment() && latestPaymentData
+      ? latestPaymentData
+      : this.paymentData();
+  });
 
-    return successCount + waitingCount + failedCount + createdCount;
+  readonly includedRegistrations = computed(() => {
+    const data = this.currentPaymentData();
+    return (
+      data.success.count +
+      data.waiting.count +
+      data.failed.count +
+      data.pendingApproval.count
+    );
   });
 
   readonly expectedAmount = computed(() => {
-    const successAmount = this.metrics.data()?.success.transferValue ?? 0;
-    const waitingAmount = this.metrics.data()?.waiting.transferValue ?? 0;
-    const failedAmount = this.metrics.data()?.failed.transferValue ?? 0;
-    const createdAmount =
-      this.metrics.data()?.pendingApproval.transferValue ?? 0;
-
-    return successAmount + waitingAmount + failedAmount + createdAmount;
+    const data = this.currentPaymentData();
+    return (
+      data.success.transferValue +
+      data.waiting.transferValue +
+      data.failed.transferValue +
+      data.pendingApproval.transferValue
+    );
   });
 
   readonly showFailedAlert = computed(
-    () => (this.metrics.data()?.failed.count ?? 0) > 0,
+    () => this.currentPaymentData().failed.count > 0,
   );
 
   readonly successAmount = computed(
-    () => this.metrics.data()?.success.transferValue ?? 0,
+    () => this.currentPaymentData().success.transferValue,
   );
 
   readonly paymentLink = computed(() =>
@@ -104,39 +116,33 @@ export class PaymentSummaryCardComponent {
       this.paymentCreationDate(),
   );
 
-  public readonly summaryMetrics = computed(() => {
-    if (this.metrics.isPending() || !this.metrics.data()) {
-      return [];
-    }
-
-    return [
-      {
-        value: this.decimalPipe.transform(this.includedRegistrations()),
-        label: $localize`Included reg.`,
-      },
-      {
-        value: this.currencyPipe.transform(
-          this.expectedAmount(),
-          this.program.data()?.currency,
-          'symbol-narrow',
-          '1.2-2',
-        ),
-        label: $localize`Expected total amount`,
-      },
-      {
-        value: this.decimalPipe.transform(this.metrics.data()?.failed.count),
-        label: $localize`Failed transactions`,
-        showAlert: this.showFailedAlert(),
-      },
-      {
-        value: this.currencyPipe.transform(
-          this.successAmount(),
-          this.program.data()?.currency,
-          'symbol-narrow',
-          '1.2-2',
-        ),
-        label: $localize`Amount successfully sent`,
-      },
-    ];
-  });
+  public readonly summaryMetrics = computed(() => [
+    {
+      value: this.decimalPipe.transform(this.includedRegistrations()),
+      label: $localize`Included reg.`,
+    },
+    {
+      value: this.currencyPipe.transform(
+        this.expectedAmount(),
+        this.program.data()?.currency,
+        'symbol-narrow',
+        '1.2-2',
+      ),
+      label: $localize`Expected total amount`,
+    },
+    {
+      value: this.decimalPipe.transform(this.currentPaymentData().failed.count),
+      label: $localize`Failed transactions`,
+      showAlert: this.showFailedAlert(),
+    },
+    {
+      value: this.currencyPipe.transform(
+        this.successAmount(),
+        this.program.data()?.currency,
+        'symbol-narrow',
+        '1.2-2',
+      ),
+      label: $localize`Amount successfully sent`,
+    },
+  ]);
 }
