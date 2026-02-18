@@ -1,31 +1,26 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import {
-  searchRegistrationByReferenceId,
-  seedPaidRegistrations,
-} from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
+import { searchRegistrationByReferenceId } from '@121-service/test/helpers/registration.helper';
 import { registrationPvScoped } from '@121-service/test/registrations/pagination/pagination-data';
 
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActivityLogPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const programId = 2;
 let registrationId: number;
 let registrationProgramId: number;
 
-test('User should see a summary of a registration', async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-
-  const accessToken = await getAccessToken();
-  await seedPaidRegistrations({
+test('User should see a summary of a registration', async ({
+  registrationActivityLogPage,
+  resetDBAndSeedRegistrations,
+}) => {
+  const { accessToken } = await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    seedPaidRegistrations: true,
     registrations: [registrationPvScoped],
     programId,
   });
+
   const searchRegistrationResponse = await searchRegistrationByReferenceId(
     registrationPvScoped.referenceId,
     programId,
@@ -35,16 +30,12 @@ test('User should see a summary of a registration', async ({ page }) => {
   registrationId = registration.id;
   registrationProgramId = registration.registrationProgramId;
 
-  const loginPage = new LoginPage(page);
-  await page.goto(`/`);
-  await loginPage.login();
-  const activityLogPage = new RegistrationActivityLogPage(page);
-  await activityLogPage.goto(
+  await registrationActivityLogPage.goto(
     `/program/${programId}/registrations/${registrationId}`,
   );
 
   await test.step('Validate registration title', async () => {
-    const title = await activityLogPage.getRegistrationTitle();
+    const title = await registrationActivityLogPage.getRegistrationTitle();
     const expectedTitle = `Reg. #${registrationProgramId} - ${registrationPvScoped.fullName}`;
     expect(title).toBe(expectedTitle);
   });
@@ -57,12 +48,13 @@ test('User should see a summary of a registration', async ({ page }) => {
       Scope: registrationPvScoped.scope,
     };
     const receivedValueObject =
-      await activityLogPage.getRegistrationSummaryList();
+      await registrationActivityLogPage.getRegistrationSummaryList();
     expect(receivedValueObject).toMatchObject(expectedValueObject);
   });
 
   await test.step('Validate registration created date', async () => {
-    const dateText = await activityLogPage.getRegistrationCreatedDate();
+    const dateText =
+      await registrationActivityLogPage.getRegistrationCreatedDate();
     // Simple pattern validation for DD/MM/YYYY
     const dateFormatRegex = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
     expect(dateFormatRegex.test(dateText)).toBeTruthy();
