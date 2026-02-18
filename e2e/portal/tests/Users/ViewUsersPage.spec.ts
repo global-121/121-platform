@@ -1,11 +1,6 @@
-import { test } from '@playwright/test';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { resetDB } from '@121-service/test/helpers/utility.helper';
 
-import BasePage from '@121-e2e/portal/pages/BasePage';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import UsersPage from '@121-e2e/portal/pages/UsersPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const expectedUserEmails = [
   'admin@example.org',
@@ -33,25 +28,23 @@ const expectedAssignedUsers = [
   'view-user',
 ];
 
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.testMultiple, __filename);
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
-});
-
-test('[Admin] View "Names" and "E-mails" on "Users" page', async ({ page }) => {
-  const basePage = new BasePage(page);
-  const users = new UsersPage(page);
+test('[Admin] View "Names" and "E-mails" on "Users" page', async ({
+  resetDBAndSeedRegistrations,
+  usersPage,
+}) => {
+  await test.step('Setup', async () => {
+    await resetDBAndSeedRegistrations({
+      seedScript: SeedScript.testMultiple,
+      skipSeedRegistrations: true,
+    });
+  });
 
   await test.step('Navigate to Users page', async () => {
-    await basePage.navigateToPage('Users');
+    await usersPage.navigateToPage('Users');
   });
 
   await test.step('Validate Users table elements', async () => {
-    await users.validateAssignedUsersNames(expectedAssignedUsers);
-    await users.validateAssignedUserEmails(expectedUserEmails);
+    await usersPage.validateAssignedUsersNames(expectedAssignedUsers);
+    await usersPage.validateAssignedUserEmails(expectedUserEmails);
   });
 });
