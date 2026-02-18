@@ -21,7 +21,7 @@ permissions:
   id-token: write
 
 env:
-  workingDirectory: services/121-service/
+  workingDirectory: services/121-service
 
 jobs:
   path-filter:
@@ -90,7 +90,7 @@ jobs:
         with:
           name: integration-test-coverage-report-${{ matrix.shard }}
           path: |
-            ${{ env.workingDirectory }}coverage
+            ${{ env.workingDirectory }}/coverage
 
       - name: Docker logs
         if: always()
