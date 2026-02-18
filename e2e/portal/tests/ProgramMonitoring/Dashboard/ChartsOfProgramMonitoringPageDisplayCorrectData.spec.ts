@@ -19,7 +19,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     seedPaidRegistrations: true,
     registrations: registrationsOCW,
     programId: programIdOCW,
-    navigateToPage: `en-GB/program/${programIdOCW}/monitoring/dashboard`,
+    navigateToPage: `/program/${programIdOCW}/monitoring/dashboard`,
   });
 });
 

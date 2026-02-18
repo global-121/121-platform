@@ -18,7 +18,7 @@ test.describe('Change status of registration with and without templated message'
       seedWithStatus: RegistrationStatusEnum.new,
       registrations: [registrationPV5, registrationPV6],
       programId: programIdPV,
-      navigateToPage: `/en-GB/program/${programIdPV}/registrations`,
+      navigateToPage: `/program/${programIdPV}/registrations`,
     });
   });
 

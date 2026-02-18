@@ -16,18 +16,19 @@ import {
 
 import ExportData from '@121-e2e/portal/components/ExportData';
 import TableComponent from '@121-e2e/portal/components/TableComponent';
+import FspSettingsPage from '@121-e2e/portal/pages/FspSettingsPage';
+import HomePage from '@121-e2e/portal/pages/HomePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 import ProgramMonitoring from '@121-e2e/portal/pages/ProgramMonitoringPage';
+import ProgramSettingsPage from '@121-e2e/portal/pages/ProgramSettingsPage';
 import ProgramTeamPage from '@121-e2e/portal/pages/ProgramTeamPage';
 import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActivityLogPage';
 import RegistrationDataPage from '@121-e2e/portal/pages/RegistrationDataPage';
 import RegistrationDebitCardPage from '@121-e2e/portal/pages/RegistrationDebitCardPage';
 import RegistrationPersonalInformationPage from '@121-e2e/portal/pages/RegistrationPersonalInformationPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
-
-import HomePage from '../pages/HomePage';
 
 // Re-export expect for convenience
 export { expect } from '@playwright/test';
@@ -67,6 +68,8 @@ type Fixtures = {
   loginPage: LoginPage;
   programTeamPage: ProgramTeamPage;
   programMonitoringPage: ProgramMonitoring;
+  fspSettingsPage: FspSettingsPage;
+  programSettingsPage: ProgramSettingsPage;
 };
 
 export const customSharedFixture = base.extend<Fixtures>({
@@ -113,11 +116,11 @@ export const customSharedFixture = base.extend<Fixtures>({
       }
       // Login
       const loginPage = new LoginPage(page);
-      await page.goto('/');
+      await loginPage.goto('/');
       await loginPage.login(params.username, params.password);
       // Optionally navigate to a specific page after login
       if (params.navigateToPage) {
-        await page.goto(params.navigateToPage);
+        await loginPage.goto(params.navigateToPage);
       }
 
       return { accessToken };
@@ -176,5 +179,13 @@ export const customSharedFixture = base.extend<Fixtures>({
 
   programMonitoringPage: async ({ page }, use) => {
     await use(new ProgramMonitoring(page));
+  },
+
+  fspSettingsPage: async ({ page }, use) => {
+    await use(new FspSettingsPage(page));
+  },
+
+  programSettingsPage: async ({ page }, use) => {
+    await use(new ProgramSettingsPage(page));
   },
 });

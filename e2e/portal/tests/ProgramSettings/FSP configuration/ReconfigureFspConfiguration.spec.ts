@@ -1,17 +1,8 @@
-import test from '@playwright/test';
-
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
 
-import FspSettingsPage from '@121-e2e/portal/pages/FspSettingsPage';
-import HomePage from '@121-e2e/portal/pages/HomePage';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const configuredFsps = [
   FSP_SETTINGS[Fsps.intersolveVisa].defaultLabel.en,
@@ -41,48 +32,46 @@ const newVisaConfiguration = [
   '25000', // Max amount to spend per month in cents
 ];
 
-// Arrange
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-  await getAccessToken();
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    skipSeedRegistrations: true,
+  });
 });
 
-test('Reconfigure FSP', async ({ page }) => {
-  const homePage = new HomePage(page);
-  const registrations = new RegistrationsPage(page);
-  const fspSettings = new FspSettingsPage(page);
-
+test('Reconfigure FSP', async ({
+  homePage,
+  registrationsPage,
+  fspSettingsPage,
+}) => {
   await test.step('Navigate to program', async () => {
     await homePage.selectProgram('NLRC OCW program');
   });
 
   await test.step('Navigate to FSP configuration', async () => {
-    await registrations.navigateToProgramPage('Settings');
-    await fspSettings.clickEditFspSection();
+    await registrationsPage.navigateToProgramPage('Settings');
+    await fspSettingsPage.clickEditFspSection();
   });
 
   await test.step('Validate that configured FSPs are visible', async () => {
-    await fspSettings.validateFspVisibility({
+    await fspSettingsPage.validateFspVisibility({
       fspNames: configuredFsps,
     });
   });
 
   await test.step('Check Visa debit card configuration', async () => {
-    await fspSettings.openEditFspConfigurationByName(visaConfiguration[0]);
-    await fspSettings.validateFspConfiguration(visaConfiguration);
+    await fspSettingsPage.openEditFspConfigurationByName(visaConfiguration[0]);
+    await fspSettingsPage.validateFspConfiguration(visaConfiguration);
   });
 
   await test.step('Reconfigure Visa debit card FSP', async () => {
-    await fspSettings.reconfigureFsp(newVisaConfiguration);
+    await fspSettingsPage.reconfigureFsp(newVisaConfiguration);
   });
 
   await test.step('Validate new Visa debit card was reconfigured', async () => {
-    await fspSettings.openEditFspConfigurationByName(newVisaConfiguration[0]);
-    await fspSettings.validateFspConfiguration(newVisaConfiguration);
+    await fspSettingsPage.openEditFspConfigurationByName(
+      newVisaConfiguration[0],
+    );
+    await fspSettingsPage.validateFspConfiguration(newVisaConfiguration);
   });
 });

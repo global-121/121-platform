@@ -14,7 +14,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     seedScript: SeedScript.nedbankProgram,
     registrations: registrationsNedbank,
     programId: programIdNedbank,
-    navigateToPage: `/en-GB/program/${programIdNedbank}/payments`,
+    navigateToPage: `/program/${programIdNedbank}/payments`,
   });
 });
 

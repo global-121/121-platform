@@ -18,7 +18,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     seedScript: SeedScript.cbeProgram,
     registrations: registrationsCbe,
     programId: programIdCbe,
-    navigateToPage: `/en-GB/program/${programIdCbe}/payments`,
+    navigateToPage: `/program/${programIdCbe}/payments`,
   });
   accessToken = result.accessToken;
 });
