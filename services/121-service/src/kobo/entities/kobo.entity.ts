@@ -5,7 +5,7 @@ import { ProgramEntity } from '@121-service/src/programs/entities/program.entity
 
 @Entity('kobo')
 export class KoboEntity extends Base121Entity {
-  @Column({ nullable: false, unique: true, type: 'varchar' })
+  @Column({ nullable: false, type: 'varchar' })
   public assetUid: string;
 
   @Column({ type: 'character varying' })
