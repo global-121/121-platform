@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { TokenSet } from 'openid-client';
 
@@ -104,9 +104,24 @@ export class CooperativeBankOfOromiaApiService {
         AxiosResponse<CooperativeBankOfOromiaApiTransferResponseBodyDto>
       >(this.getTransferUrl().href, payload, headers);
     } catch (error) {
+      const statusCode = error.response?.status;
+      const isServiceUnavailable = [
+        HttpStatus.BAD_GATEWAY,
+        HttpStatus.GATEWAY_TIMEOUT,
+        HttpStatus.SERVICE_UNAVAILABLE,
+        HttpStatus.TOO_MANY_REQUESTS, // This would also qualify as "unavailable"
+      ].includes(statusCode);
+
+      if (isServiceUnavailable) {
+        return {
+          result: CooperativeBankOfOromiaTransferResultEnum.fail,
+          message: `Cooperative Bank of Oromia service is temporarily unavailable (HTTP ${statusCode}). Please try again later.`,
+        };
+      }
+
       return {
         result: CooperativeBankOfOromiaTransferResultEnum.fail,
-        message: `Transfer failed: ${error.message}`,
+        message: `Transfer failed: ${error.message}${this.formatHttpStatusCodeSuffix(statusCode)}`,
       };
     }
 
@@ -142,8 +157,9 @@ export class CooperativeBankOfOromiaApiService {
         AxiosResponse<CooperativeBankOfOromiaApiAccountValidationResponseBodyDto>
       >(this.getAccountValidationUrl().href, payload, headers);
     } catch (error) {
+      const statusCode = error.response?.status;
       return {
-        errorMessage: `Account validation error: ${error.message}, HTTP Status: ${error.status}`,
+        errorMessage: `Account validation error: ${error.message}${this.formatHttpStatusCodeSuffix(statusCode)}`,
       };
     }
     return this.cooperativeBankOfOromiaApiHelperService.handleAccountValidationResponse(
@@ -174,9 +190,10 @@ export class CooperativeBankOfOromiaApiService {
         AxiosResponse<CooperativeBankOfOromiaApiAuthenticationResponseBodyDto>
       >(this.getAuthenticateUrl().href, payload, headers);
     } catch (error) {
+      const statusCode = error.response?.status;
       // This error is not something we expect to happen (e.g. network error)
       throw new CooperativeBankOfOromiaApiError(
-        `authentication failed: ${error.message}, http code: ${error.status}`,
+        `authentication failed: ${error.message}${this.formatHttpStatusCodeSuffix(statusCode)}`,
       );
     }
 
@@ -220,5 +237,9 @@ export class CooperativeBankOfOromiaApiService {
     const headers = this.createDefaultHeaders();
     headers.append('Authorization', `Bearer ${token}`);
     return headers;
+  }
+
+  private formatHttpStatusCodeSuffix(statusCode?: number): string {
+    return statusCode ? ` (HTTP ${statusCode})` : '';
   }
 }

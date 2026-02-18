@@ -76,13 +76,22 @@ describe('CooperativeBankOfOromiaApiHelperService', () => {
     });
   });
 
-  it('should return fail and unknown error message if error object is missing for failed transfer', () => {
+  it('should return fail and descriptive error message if error object is missing for failed transfer', () => {
     const response: CooperativeBankOfOromiaApiTransferResponseBodyDto = {
       success: false,
     } as any;
     expect(service.handleTransferResponse(response)).toEqual({
       result: CooperativeBankOfOromiaTransferResultEnum.fail,
-      message: 'Unknown error occurred',
+      message:
+        'Cooperative Bank of Oromia did not provide error details. The service may be temporarily unavailable or returned an unexpected response format.',
+    });
+  });
+
+  it('should return fail and descriptive error message if response is null or undefined', () => {
+    expect(service.handleTransferResponse(null as any)).toEqual({
+      result: CooperativeBankOfOromiaTransferResultEnum.fail,
+      message:
+        'No response received from Cooperative Bank of Oromia API. The service may be temporarily unavailable.',
     });
   });
 
@@ -96,12 +105,13 @@ describe('CooperativeBankOfOromiaApiHelperService', () => {
     });
   });
 
-  it('should return unknown error for missing account validation error object', () => {
+  it('should return descriptive error for missing account validation error object', () => {
     const response = {
       success: false,
     };
     expect(service.handleAccountValidationResponse(response)).toEqual({
-      errorMessage: 'Unknown error occurred',
+      errorMessage:
+        'Cooperative Bank of Oromia did not provide error details for account validation. The service may be temporarily unavailable or returned an unexpected response format.',
     });
   });
 });

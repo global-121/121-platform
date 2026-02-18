@@ -2,4 +2,4 @@
 
 exports[`Do payment with FSP: CooperativeBankOfOromia should successfully handle an error in the expected format during the payment 1`] = `"CooperativeBankOfOromia Error: Error description: Invalid account number., Error Code: T24Error, Message: CREDIT.ACCT.NO:1:1=Bucket Error E-110980CREDIT.ACCT.NO:1:1=Bucket Error E-113962DEBIT.ACCT.NO:1:1=Bucket Error E-156260"`;
 
-exports[`Do payment with FSP: CooperativeBankOfOromia should successfully handle an unexpected error during the payment 1`] = `"CooperativeBankOfOromia Error: Unknown error occurred"`;
+exports[`Do payment with FSP: CooperativeBankOfOromia should successfully handle an unexpected error during the payment 1`] = `"CooperativeBankOfOromia Error: Cooperative Bank of Oromia did not provide error details. The service may be temporarily unavailable or returned an unexpected response format."`;

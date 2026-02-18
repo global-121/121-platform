@@ -160,4 +160,86 @@ describe('CooperativeBankOfOromiaApiService', () => {
       expect(post.mock.calls[2][0]).toContain('nrc/1.0.0/transfer');
     });
   });
+
+  describe('HTTP error handling', () => {
+    beforeEach(() => {
+      // Mock successful authentication for these tests
+      const mockAuthResponse = {
+        data: { access_token: 'mock-access-token', expires_in: 10000 },
+      };
+      post.mockImplementationOnce(() => Promise.resolve(mockAuthResponse));
+    });
+
+    it('should handle 503 Service Unavailable error with clear message', async () => {
+      const mockError = new Error('Request failed with status code 503');
+      (mockError as any).response = { status: 503 };
+      post.mockImplementationOnce(() => Promise.reject(mockError));
+
+      const result = await service.initiateTransfer(transferInput);
+
+      expect(result.result).toBe(
+        CooperativeBankOfOromiaTransferResultEnum.fail,
+      );
+      expect(result.message).toBe(
+        'Cooperative Bank of Oromia service is temporarily unavailable (HTTP 503). Please try again later.',
+      );
+    });
+
+    it('should handle 502 Bad Gateway error with clear message', async () => {
+      const mockError = new Error('Request failed with status code 502');
+      (mockError as any).response = { status: 502 };
+      post.mockImplementationOnce(() => Promise.reject(mockError));
+
+      const result = await service.initiateTransfer(transferInput);
+
+      expect(result.result).toBe(
+        CooperativeBankOfOromiaTransferResultEnum.fail,
+      );
+      expect(result.message).toBe(
+        'Cooperative Bank of Oromia service is temporarily unavailable (HTTP 502). Please try again later.',
+      );
+    });
+
+    it('should handle 504 Gateway Timeout error with clear message', async () => {
+      const mockError = new Error('Request failed with status code 504');
+      (mockError as any).response = { status: 504 };
+      post.mockImplementationOnce(() => Promise.reject(mockError));
+
+      const result = await service.initiateTransfer(transferInput);
+
+      expect(result.result).toBe(
+        CooperativeBankOfOromiaTransferResultEnum.fail,
+      );
+      expect(result.message).toBe(
+        'Cooperative Bank of Oromia service is temporarily unavailable (HTTP 504). Please try again later.',
+      );
+    });
+
+    it('should handle other HTTP errors with status code', async () => {
+      const mockError = new Error('Request failed because of reason X');
+      (mockError as any).response = { status: 400 };
+      post.mockImplementationOnce(() => Promise.reject(mockError));
+
+      const result = await service.initiateTransfer(transferInput);
+
+      expect(result.result).toBe(
+        CooperativeBankOfOromiaTransferResultEnum.fail,
+      );
+      expect(result.message).toBe(
+        'Transfer failed: Request failed because of reason X (HTTP 400)',
+      );
+    });
+
+    it('should handle network errors without status code', async () => {
+      const mockError = new Error('Network error');
+      post.mockImplementationOnce(() => Promise.reject(mockError));
+
+      const result = await service.initiateTransfer(transferInput);
+
+      expect(result.result).toBe(
+        CooperativeBankOfOromiaTransferResultEnum.fail,
+      );
+      expect(result.message).toBe('Transfer failed: Network error');
+    });
+  });
 });
