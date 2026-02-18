@@ -78,6 +78,21 @@ export class KoboService {
       baseUrl: url,
     });
 
+    const existingWebhookEndpoints =
+      await this.koboApiService.getExistingKoboWebhooks({
+        assetUid,
+        token,
+        baseUrl: url,
+      });
+
+    if (existingWebhookEndpoints.length > 0) {
+      const webhooksList = existingWebhookEndpoints.join(', ');
+      throw new HttpException(
+        `This Kobo form already has ${existingWebhookEndpoints.length} webhook(s) configured: ${webhooksList}. Please remove existing webhooks before integrating with 121 Platform.`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const formDefinition = KoboMapper.koboAssetDtoToKoboFormDefinition({
       asset,
     });

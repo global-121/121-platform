@@ -46,6 +46,7 @@ export enum KoboMockAssetUids {
   bodyThatTriggersErrors = 'asset-id-body-that-triggers-errors',
   notFound = 'asset-id-not-found',
   happyFlowWithChanges = 'asset-id-happy-flow-with-changes',
+  withExistingWebhook = 'asset-id-with-existing-webhook',
 }
 
 const bodyThatTriggersErrors: KoboAssetDeployment = {
@@ -372,6 +373,38 @@ export class KoboMockService {
       default: {
         return happyFlowFromDefinition;
       }
+    }
+  }
+
+  public getExistingWebhooks(uid_asset: string): {
+    results: {
+      name: string;
+      url: string;
+      subset_fields: string[];
+    }[];
+  } {
+    switch (uid_asset) {
+      case KoboMockAssetUids.notFound:
+        throw new HttpException(
+          {
+            detail: 'Not found.', // Kobo API style error message
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      case KoboMockAssetUids.withExistingWebhook:
+        return {
+          results: [
+            {
+              name: 'External System Webhook',
+              url: 'https://external-system.example.com/webhook',
+              subset_fields: ['fullName', 'phoneNumber', 'nationalId'],
+            },
+          ],
+        };
+      default:
+        return {
+          results: [],
+        };
     }
   }
 }

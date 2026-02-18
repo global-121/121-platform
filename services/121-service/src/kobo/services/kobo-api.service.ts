@@ -30,6 +30,74 @@ export class KoboApiService {
     >(apiUrl, headers);
     const responseBody = response.data;
 
+    this.handleKoboApiError({
+      response,
+      assetUid,
+      apiUrl,
+      notFoundMessage:
+        'Kobo information not found. This form does not exist or is not (yet) deployed',
+      operationDescription: 'fetch Kobo information',
+    });
+
+    // This should never happen but it makes TypeScript happy and throws a meaningful error
+    if (!responseBody.version_id || !responseBody.asset) {
+      throw new Error('Kobo information is missing version_id or asset');
+    }
+
+    return responseBody.asset;
+  }
+
+  public async getExistingKoboWebhooks({
+    assetUid,
+    token,
+    baseUrl,
+  }: {
+    assetUid: string;
+    token: string;
+    baseUrl: string;
+  }): Promise<string[]> {
+    // Use joinURL instead of template strings as the baseUrl may have a path component
+    const apiUrl = joinURL(baseUrl, 'api/v2/assets', assetUid, 'hooks');
+
+    const headers = new Headers();
+    headers.append('Authorization', `Token ${token}`);
+
+    const response = await this.httpService.get<
+      AxiosResponse<{
+        results: {
+          url: string;
+        }[];
+      }>
+    >(apiUrl, headers);
+
+    this.handleKoboApiError({
+      response,
+      assetUid,
+      apiUrl,
+      notFoundMessage: 'Kobo asset not found. This asset does not exist',
+      operationDescription: 'fetch Kobo webhooks',
+    });
+
+    if (!response.data.results) {
+      throw new Error('Kobo webhook response is missing results');
+    }
+
+    return response.data.results.map((webhook) => webhook.url);
+  }
+
+  private handleKoboApiError({
+    response,
+    assetUid,
+    apiUrl,
+    notFoundMessage,
+    operationDescription,
+  }: {
+    response: AxiosResponse;
+    assetUid: string;
+    apiUrl: string;
+    notFoundMessage: string;
+    operationDescription: string;
+  }): void {
     if (
       response.status === HttpStatus.UNAUTHORIZED ||
       response.status === HttpStatus.FORBIDDEN
@@ -42,24 +110,17 @@ export class KoboApiService {
 
     if (response.status === HttpStatus.NOT_FOUND) {
       throw new HttpException(
-        `Kobo information not found for asset: ${assetUid}, url: ${apiUrl}. This form does not exist or is not (yet) deployed.`,
+        `${notFoundMessage} for asset: ${assetUid}, url: ${apiUrl}.`,
         HttpStatus.NOT_FOUND,
       );
     }
 
-    // Unexpected error
     if (response.status !== HttpStatus.OK) {
+      const errorDetail = (response.data as any)?.detail || 'Unknown error';
       throw new HttpException(
-        `Failed to fetch Kobo information from url: ${apiUrl}: ${responseBody.detail || 'Unknown error'}`,
+        `Failed to ${operationDescription} for asset: ${assetUid}, url: ${apiUrl}: ${errorDetail}`,
         HttpStatus.BAD_REQUEST,
       );
     }
-
-    // This should never happen but it makes TypeScript happy and throws a meaningful error
-    if (!responseBody.version_id || !responseBody.asset) {
-      throw new Error('Kobo information is missing version_id or asset');
-    }
-
-    return responseBody.asset;
   }
 }

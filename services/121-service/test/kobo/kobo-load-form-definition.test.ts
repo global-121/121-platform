@@ -409,7 +409,47 @@ describe('Import a Kobo form definition', () => {
 
     expect(linkKoboResponse.status).toBe(HttpStatus.NOT_FOUND);
     expect(linkKoboResponse.body.message).toMatch(
-      /Kobo information not found for asset: asset-id-not-found, url: .+\/api\/v2\/assets\/asset-id-not-found\/deployment\. This form does not exist or is not \(yet\) deployed\./,
+      /Kobo information not found\. This form does not exist or is not \(yet\) deployed for asset: asset-id-not-found, url: .+\/api\/v2\/assets\/asset-id-not-found\/deployment\./,
+    );
+  });
+
+  it('should reject kobo form that already has a webhook configured', async () => {
+    // Arrange
+    const program: CreateProgramDto = {
+      ...baseProgram,
+      titlePortal: {
+        en: 'Program for kobo webhook validation test',
+      },
+      languages: [RegistrationPreferredLanguage.en],
+    } as CreateProgramDto;
+
+    const createProgramResponse = await postProgram(program, accessToken);
+    const programId = createProgramResponse.body.id;
+
+    await postProgramFspConfiguration({
+      programId: createProgramResponse.body.id,
+      body: createProgramFspConfigurationSafaricomDto,
+      accessToken,
+    });
+
+    const koboLinkDto: CreateKoboDto = {
+      token: 'mock-token',
+      assetUid: 'asset-id-with-existing-webhook', // This mock form has a webhook configured
+      url: `${env.MOCK_SERVICE_URL}/api/kobo`,
+    };
+
+    // Act
+    const linkKoboResponse = await postKoboToProgram({
+      programId,
+      body: koboLinkDto,
+      accessToken,
+      dryRun: false,
+    });
+
+    // Assert
+    expect(linkKoboResponse.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(linkKoboResponse.body.message).toMatchInlineSnapshot(
+      `"This Kobo form already has 1 webhook(s) configured: https://external-system.example.com/webhook. Please remove existing webhooks before integrating with 121 Platform."`,
     );
   });
 });
