@@ -18,7 +18,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     seedScript: SeedScript.nlrcMultiple,
     registrations: [registrationPvMaxPayment],
     programId: programIdPV,
-    navigateToPage: `/en-GB/program/${programIdPV}/registrations`,
+    navigateToPage: `/program/${programIdPV}/registrations`,
     seedWithStatus: RegistrationStatusEnum.included,
   });
 });

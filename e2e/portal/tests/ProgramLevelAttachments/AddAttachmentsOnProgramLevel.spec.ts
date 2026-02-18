@@ -45,7 +45,7 @@ test.describe('Attachments on Program Level', () => {
     await resetDBAndSeedRegistrations({
       seedScript: SeedScript.nlrcMultiple,
       skipSeedRegistrations: true,
-      navigateToPage: `en-GB/program/${programIdOCW}/monitoring/files`, // Navigate directly to files tab
+      navigateToPage: `/program/${programIdOCW}/monitoring/files`, // Navigate directly to files tab
     });
   });
 

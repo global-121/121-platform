@@ -18,7 +18,7 @@ test.describe('Change status of registration with and without templated message'
       seedScript: SeedScript.nlrcMultiple,
       registrations: [registrationPV5, registrationPV6],
       programId: programIdPV,
-      navigateToPage: `/en-GB/program/${programIdPV}/registrations`,
+      navigateToPage: `/program/${programIdPV}/registrations`,
     });
   });
 

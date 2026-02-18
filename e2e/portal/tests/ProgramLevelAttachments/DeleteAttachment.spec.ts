@@ -35,7 +35,7 @@ test.describe('Attachments on Program Level', () => {
     const { accessToken } = await resetDBAndSeedRegistrations({
       seedScript: SeedScript.nlrcMultiple,
       skipSeedRegistrations: true,
-      navigateToPage: `en-GB/program/${programIdOCW}/monitoring/files`,
+      navigateToPage: `/program/${programIdOCW}/monitoring/files`,
     });
 
     for (const filePath of testFilePaths) {
