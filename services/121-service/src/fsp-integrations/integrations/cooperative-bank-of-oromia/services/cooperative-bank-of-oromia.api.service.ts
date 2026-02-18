@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { TokenSet } from 'openid-client';
 
@@ -105,8 +105,12 @@ export class CooperativeBankOfOromiaApiService {
       >(this.getTransferUrl().href, payload, headers);
     } catch (error) {
       const statusCode = error.response?.status;
-      const isServiceUnavailable =
-        statusCode === 503 || statusCode === 502 || statusCode === 504;
+      const isServiceUnavailable = [
+        HttpStatus.BAD_GATEWAY,
+        HttpStatus.GATEWAY_TIMEOUT,
+        HttpStatus.SERVICE_UNAVAILABLE,
+        HttpStatus.TOO_MANY_REQUESTS, // This would also qualify as "unavailable"
+      ].includes(statusCode);
 
       if (isServiceUnavailable) {
         return {
