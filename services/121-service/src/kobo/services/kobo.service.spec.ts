@@ -70,6 +70,7 @@ describe('KoboService', () => {
           provide: KoboApiService,
           useValue: {
             getDeployedAssetOrThrow: jest.fn(),
+            getExistingKoboWebhooks: jest.fn(),
           },
         },
         {
@@ -145,6 +146,9 @@ describe('KoboService', () => {
     (
       programService.upsertProgramRegistrationAttributes as jest.Mock
     ).mockResolvedValue(undefined);
+    (koboApiService.getExistingKoboWebhooks as jest.Mock) = jest
+      .fn()
+      .mockResolvedValue([]);
   });
 
   it('should throw HttpException when program has no FSP configurations', async () => {
@@ -258,6 +262,74 @@ describe('KoboService', () => {
       const calledLanguages = updateProgramSpy.mock.calls[0][1].languages;
       expect(calledLanguages).toHaveLength(4);
       expect(new Set(calledLanguages).size).toBe(4); // All unique
+    });
+  });
+
+  describe('integrateKobo - webhook validation', () => {
+    it('should throw HttpException when Kobo form already has webhooks configured', async () => {
+      // Arrange
+      const programId = 1;
+      const mockAsset = createMockAsset();
+      const existingWebhooks = [
+        'https://example.com/webhook1',
+        'https://example.com/webhook2',
+      ];
+
+      jest
+        .spyOn(koboApiService, 'getDeployedAssetOrThrow')
+        .mockResolvedValue(mockAsset);
+      jest
+        .spyOn(koboApiService, 'getExistingKoboWebhooks')
+        .mockResolvedValue(existingWebhooks);
+
+      // Act & Assert
+      await expect(
+        service.integrateKobo({
+          programId,
+          assetUid: 'test-asset',
+          token: 'test-token',
+          url: 'https://kobo.example.com',
+          dryRun: false,
+        }),
+      ).rejects.toMatchInlineSnapshot(
+        `[HttpException: This Kobo form already has 2 webhook(s) configured: https://example.com/webhook1, https://example.com/webhook2. Please remove existing webhooks before integrating with 121 Platform.]`,
+      );
+    });
+
+    it('should successfully integrate when Kobo form has no webhooks', async () => {
+      // Arrange
+      const programId = 1;
+      const mockAsset = createMockAsset();
+      const programWithLanguages = {
+        id: programId,
+        languages: [RegistrationPreferredLanguage.en],
+      } as ProgramEntity;
+
+      jest
+        .spyOn(koboApiService, 'getDeployedAssetOrThrow')
+        .mockResolvedValue(mockAsset);
+      jest
+        .spyOn(koboApiService, 'getExistingKoboWebhooks')
+        .mockResolvedValue([]); // No existing webhooks
+      jest
+        .spyOn(programRepository, 'findByIdOrFail')
+        .mockResolvedValue(programWithLanguages);
+
+      // Act
+      const result = await service.integrateKobo({
+        programId,
+        assetUid: 'test-asset',
+        token: 'test-token',
+        url: 'https://kobo.example.com',
+        dryRun: false,
+      });
+
+      // Assert
+      expect(result).toEqual({
+        message: 'Kobo form integrated successfully',
+        name: 'Test Form',
+        dryRun: false,
+      });
     });
   });
 });
