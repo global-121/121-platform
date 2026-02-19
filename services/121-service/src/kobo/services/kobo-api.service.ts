@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { joinURL } from 'ufo';
 
+import { env } from '@121-service/src/env';
 import { KoboAssetDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset.dto';
 import { KoboAssetResponseDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset-response.dto';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
@@ -101,6 +102,51 @@ export class KoboApiService {
       HttpStatus.ACCEPTED,
       HttpStatus.NO_CONTENT,
     ].includes(response.status);
+  }
+
+  public async createKoboWebhook({
+    assetUid,
+    token,
+    baseUrl,
+  }: {
+    assetUid: string;
+    token: string;
+    baseUrl: string;
+  }): Promise<void> {
+    const apiUrl = joinURL(baseUrl, 'api/v2/assets', assetUid, 'hooks');
+
+    const headers = new Headers();
+    headers.append('Authorization', `Token ${token}`);
+
+    const webhookName =
+      'Create a registration in the 121 Platform when a submission is received';
+    const webhookUrl = joinURL(env.EXTERNAL_121_SERVICE_URL, 'kobo/webhook');
+    const webhookSubsetFields = ['_uuid', '_xform_id_string'];
+
+    const body = {
+      name: webhookName,
+      url: webhookUrl,
+      active: true,
+      subset_fields: webhookSubsetFields,
+    };
+
+    const response = await this.httpService.post<AxiosResponse>(
+      apiUrl,
+      body,
+      headers,
+    );
+
+    if (this.isValidKoboResponse(response)) {
+      return;
+    }
+
+    this.throwKoboApiError({
+      response,
+      assetUid,
+      apiUrl,
+      notFoundMessage: 'Kobo asset not found. This asset does not exist',
+      operationDescription: 'create Kobo webhook',
+    });
   }
 
   private throwKoboApiError({

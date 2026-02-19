@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
 import { KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES } from '@121-service/src/kobo/consts/kobo-allowed-registration-view-attributes.const';
+
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
 import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
@@ -16,6 +17,7 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { IS_DEVELOPMENT } from '@121-service/src/config';
 
 @Injectable()
 export class KoboService {
@@ -132,6 +134,16 @@ export class KoboService {
       languageIsoCodes,
       programId,
     });
+
+    // Functionality is hidden behind development flag as for it to be used in production we need follow up work where we handle incoming kobo webhook calls, which is not yet implemented.
+    // This way we can split up functionality in smaller PRs
+    if (IS_DEVELOPMENT) {
+      await this.koboApiService.createKoboWebhook({
+        assetUid,
+        token,
+        baseUrl: url,
+      });
+    }
 
     return {
       message: 'Kobo form integrated successfully',
