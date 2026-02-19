@@ -27,7 +27,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     approverMode: ApproverSeedMode.demo,
     navigateToPage: `/program/${programIdOCW}/payments`,
   });
-
+  // Seed duplicate registrations to have more transactions in the payment and better validate the badges on the payment page during the test
   await resetDuplicateRegistrations(duplicateNumberOfRegistrations);
 });
 
