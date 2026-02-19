@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
+import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
 import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
@@ -132,6 +133,16 @@ export class KoboService {
       languageIsoCodes,
       programId,
     });
+
+    // Functionality is hidden behind development flag as for it to be used in production we need follow up work where we handle incoming kobo webhook calls, which is not yet implemented.
+    // This way we can split up functionality in smaller PRs
+    if (IS_DEVELOPMENT) {
+      await this.koboApiService.createKoboWebhook({
+        assetUid,
+        token,
+        baseUrl: url,
+      });
+    }
 
     return {
       message: 'Kobo form integrated successfully',
