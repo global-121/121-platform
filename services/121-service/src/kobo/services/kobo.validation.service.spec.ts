@@ -825,11 +825,22 @@ describe('KoboValidationService', () => {
   });
 
   describe('constrained attribute types validation', () => {
+    const programId = 1;
+    const mockFspConfigs = [];
+
+    beforeEach(() => {
+      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
+        fullnameNamingConvention: [],
+        allowEmptyPhoneNumber: true,
+        enableScope: false,
+      });
+      (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
+        mockFspConfigs,
+      );
+    });
+
     it('should pass validation when constrained attribute has correct type', async () => {
       // Arrange
-      const programId = 1;
-      const mockFspConfigs = [];
-
       const formDefinitionWithCorrectConstrainedType: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
@@ -844,15 +855,6 @@ describe('KoboValidationService', () => {
         ],
       };
 
-      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
-        fullnameNamingConvention: [],
-        allowEmptyPhoneNumber: true,
-        enableScope: false,
-      });
-      (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
-        mockFspConfigs,
-      );
-
       // Act & Assert
       await expect(
         service.validateKoboFormDefinition({
@@ -864,9 +866,6 @@ describe('KoboValidationService', () => {
 
     it('should throw HttpException when constrained attribute has incorrect type', async () => {
       // Arrange
-      const programId = 1;
-      const mockFspConfigs = [];
-
       const formDefinitionWithIncorrectConstrainedType: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
@@ -880,15 +879,6 @@ describe('KoboValidationService', () => {
           },
         ],
       };
-
-      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
-        fullnameNamingConvention: [],
-        allowEmptyPhoneNumber: true,
-        enableScope: false,
-      });
-      (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
-        mockFspConfigs,
-      );
 
       // Act
       let error: HttpException | any;
@@ -912,9 +902,6 @@ describe('KoboValidationService', () => {
 
     it('should allow hidden type for any attribute regardless of expected type', async () => {
       // Arrange
-      const programId = 1;
-      const mockFspConfigs = [];
-
       const formDefinitionWithHiddenType: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
@@ -929,15 +916,6 @@ describe('KoboValidationService', () => {
         ],
       };
 
-      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
-        fullnameNamingConvention: [],
-        allowEmptyPhoneNumber: true,
-        enableScope: false,
-      });
-      (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
-        mockFspConfigs,
-      );
-
       // Act & Assert
       await expect(
         service.validateKoboFormDefinition({
@@ -949,9 +927,6 @@ describe('KoboValidationService', () => {
 
     it('should throw HttpException when kobo survey uses a forbidden registration view attribute', async () => {
       // Arrange
-      const programId = 1;
-      const mockFspConfigs = [];
-
       const formDefinitionWithForbiddenAttribute: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
@@ -965,15 +940,6 @@ describe('KoboValidationService', () => {
           },
         ],
       };
-
-      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
-        fullnameNamingConvention: [],
-        allowEmptyPhoneNumber: true,
-        enableScope: false,
-      });
-      (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
-        mockFspConfigs,
-      );
 
       // Act
       let error: HttpException | any;
