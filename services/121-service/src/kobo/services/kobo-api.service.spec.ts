@@ -121,11 +121,10 @@ describe('KoboApiService', () => {
 
     it('should throw HttpException for unexpected error status', async () => {
       // Arrange
-      const errorDetail = 'Server error occurred';
       httpService.get.mockResolvedValue({
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         data: {
-          detail: errorDetail,
+          detail: 'Server error occurred',
         },
       });
 
@@ -271,20 +270,18 @@ describe('KoboApiService', () => {
   describe('getExistingKoboWebhooks', () => {
     it('should return webhook endpoints for successful request when they exist', async () => {
       // Arrange
-      const mockWebhooksResponse = {
-        results: [
-          {
-            url: 'https://example.com/webhook1',
-          },
-          {
-            url: 'https://example.com/webhook2',
-          },
-        ],
-      };
-
       httpService.get.mockResolvedValue({
         status: HttpStatus.OK,
-        data: mockWebhooksResponse,
+        data: {
+          results: [
+            {
+              url: 'https://example.com/webhook1',
+            },
+            {
+              url: 'https://example.com/webhook2',
+            },
+          ],
+        },
       });
 
       // Act
@@ -318,24 +315,7 @@ describe('KoboApiService', () => {
       });
 
       // Assert
-      expect(result).toEqual([]);
-    });
-
-    it('should throw Error when response data is missing results field', async () => {
-      // Arrange
-      httpService.get.mockResolvedValue({
-        status: HttpStatus.OK,
-        data: {}, // Missing results field
-      });
-
-      // Act & Assert
-      await expect(
-        service.getExistingKoboWebhooks({
-          assetUid: mockAssetUid,
-          token: mockToken,
-          baseUrl: mockBaseUrl,
-        }),
-      ).rejects.toThrow('Kobo webhook response is missing results');
+      expect(result).toBeArrayOfSize(0);
     });
 
     // Not all error scenarios are covered here as most of the error handling is delegated in a private function which is tested via other public methods

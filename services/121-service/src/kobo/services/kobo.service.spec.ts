@@ -25,6 +25,8 @@ describe('KoboService', () => {
   let koboSurveyProcessorService: KoboSurveyProcessorService;
   let koboRepository: Repository<KoboEntity>;
 
+  const programId = 1;
+
   const createMockAsset = (
     languages: string[] = ['English (en)', 'French (fr)'],
   ): KoboAssetDto => {
@@ -153,8 +155,6 @@ describe('KoboService', () => {
 
   it('should throw HttpException when program has no FSP configurations', async () => {
     // Arrange
-    const programId = 1;
-
     // Override mock to return 0 FSP configurations
     jest.spyOn(programFspConfigurationRepository, 'count').mockResolvedValue(0);
 
@@ -175,7 +175,6 @@ describe('KoboService', () => {
   describe('integrateKobo - language addition', () => {
     it('should add new languages from Kobo form to program with no existing languages', async () => {
       // Arrange
-      const programId = 1;
       const mockAsset = createMockAsset(['English (en)', 'Spanish (es)']);
       const programWithNoLanguages = {
         id: programId,
@@ -214,7 +213,6 @@ describe('KoboService', () => {
 
     it('should merge Kobo languages with existing program languages without duplicates', async () => {
       // Arrange
-      const programId = 1;
       const mockAsset = createMockAsset([
         'English (en)',
         'French (fr)',
@@ -266,10 +264,35 @@ describe('KoboService', () => {
   });
 
   describe('integrateKobo - webhook validation', () => {
-    it('should throw HttpException when Kobo form already has webhooks configured', async () => {
+    const mockAsset = createMockAsset();
+
+    it('should throw HttpException when Kobo form has one webhook configured', async () => {
       // Arrange
-      const programId = 1;
-      const mockAsset = createMockAsset();
+      const existingWebhooks = ['https://example.com/webhook1'];
+
+      jest
+        .spyOn(koboApiService, 'getDeployedAssetOrThrow')
+        .mockResolvedValue(mockAsset);
+      jest
+        .spyOn(koboApiService, 'getExistingKoboWebhooks')
+        .mockResolvedValue(existingWebhooks);
+
+      // Act & Assert
+      await expect(
+        service.integrateKobo({
+          programId,
+          assetUid: 'test-asset',
+          token: 'test-token',
+          url: 'https://kobo.example.com',
+          dryRun: false,
+        }),
+      ).rejects.toMatchInlineSnapshot(
+        `[HttpException: This Kobo form already has a webhook configured: https://example.com/webhook1. Please remove it before integrating with 121 Platform.]`,
+      );
+    });
+
+    it('should throw HttpException when Kobo form has multiple webhooks configured', async () => {
+      // Arrange
       const existingWebhooks = [
         'https://example.com/webhook1',
         'https://example.com/webhook2',
@@ -292,14 +315,12 @@ describe('KoboService', () => {
           dryRun: false,
         }),
       ).rejects.toMatchInlineSnapshot(
-        `[HttpException: This Kobo form already has 2 webhook(s) configured: https://example.com/webhook1, https://example.com/webhook2. Please remove existing webhooks before integrating with 121 Platform.]`,
+        `[HttpException: This Kobo form already has 2 webhooks configured: https://example.com/webhook1, https://example.com/webhook2. Please remove them before integrating with 121 Platform.]`,
       );
     });
 
     it('should successfully integrate when Kobo form has no webhooks', async () => {
       // Arrange
-      const programId = 1;
-      const mockAsset = createMockAsset();
       const programWithLanguages = {
         id: programId,
         languages: [RegistrationPreferredLanguage.en],
