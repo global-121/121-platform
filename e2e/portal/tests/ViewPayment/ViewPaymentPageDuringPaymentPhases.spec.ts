@@ -1,6 +1,7 @@
 import { env } from '@121-service/src/env';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { resetDuplicateRegistrations } from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
   registrationOCW1,
@@ -26,6 +27,8 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     approverMode: ApproverSeedMode.demo,
     navigateToPage: `/program/${programIdOCW}/payments`,
   });
+
+  await resetDuplicateRegistrations(duplicateNumberOfRegistrations);
 });
 
 test('Payment page should display correctly during all phases of payment with 2 approvers', async ({
