@@ -1,5 +1,6 @@
 /// <reference types="@angular/localize" />
 
+import { provideZoneChangeDetection } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 
 import { AppComponent } from '~/app.component';
@@ -51,10 +52,11 @@ const main = async () => {
       break;
   }
 
-  await bootstrapApplication(
-    AppComponent,
-    getAppConfig(localeInitialization.locale),
-  );
+  const appConfig = getAppConfig(localeInitialization.locale);
+  await bootstrapApplication(AppComponent, {
+    ...appConfig,
+    providers: [provideZoneChangeDetection(), ...appConfig.providers],
+  });
 };
 
 void main();
