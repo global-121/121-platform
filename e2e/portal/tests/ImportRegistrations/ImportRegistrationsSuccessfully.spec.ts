@@ -1,31 +1,25 @@
-import { test } from '@playwright/test';
 import path from 'node:path';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
-import { resetDB } from '@121-service/test/helpers/utility.helper';
 
-import TableComponent from '@121-e2e/portal/components/TableComponent';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    skipSeedRegistrations: true,
+  });
 });
 
-test('Successfully import registrations', async ({ page }) => {
-  const registrationsPage = new RegistrationsPage(page);
-  const table = new TableComponent(page);
+test('Successfully import registrations', async ({
+  registrationsPage,
+  tableComponent,
+}) => {
   const registrationsDataFilePath = path.resolve(
     __dirname,
     '../../../test-registration-data/test-registrations-PV.csv',
   );
-
   const programTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {
@@ -41,8 +35,8 @@ test('Successfully import registrations', async ({ page }) => {
 
   await test.step('Validate registrations are present in the table and the counts match', async () => {
     // Default display filter number
-    await table.validateWaitForTableRowCount({ expectedRowCount: 10 });
+    await tableComponent.validateWaitForTableRowCount({ expectedRowCount: 10 });
     // Uploaded records count
-    await table.validateAllRecordsCount(20);
+    await tableComponent.validateAllRecordsCount(20);
   });
 });

@@ -1,15 +1,7 @@
-import { test } from '@playwright/test';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import {
-  getAccessToken,
-  removeProgramAssignment,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
+import { removeProgramAssignment } from '@121-service/test/helpers/utility.helper';
 
-import BasePage from '@121-e2e/portal/pages/BasePage';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import ProgramTeamPage from '@121-e2e/portal/pages/ProgramTeamPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const expectedAssignedUsers = ['admin@example.org', 'cva-officer@example.org'];
 const userSearchPhrase = 'cva-officer';
@@ -17,39 +9,34 @@ const userFullEmail = 'cva-officer@example.org';
 const userRole = 'Only CREATE registrations';
 const programId = 2;
 
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.testMultiple, __filename);
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  const { accessToken } = await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.testMultiple,
+    skipSeedRegistrations: true,
+  });
   // remove assignments of all users except admin again, to create the context for this test
-  const accessToken = await getAccessToken();
   for (let userId = 2; userId <= 10; userId++) {
     await removeProgramAssignment(programId, userId, accessToken);
   }
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
 });
 
-test('Assign successfully roles to a user ', async ({ page }) => {
-  const basePage = new BasePage(page);
-  const manageTeam = new ProgramTeamPage(page);
+test('Assign successfully roles to a user ', async ({ programTeamPage }) => {
   const programTitle = 'Cash program Westeros';
 
   await test.step('Select program and navigate to Manage team', async () => {
-    await basePage.selectProgram(programTitle);
-    await basePage.navigateToProgramSettingsPage('Program team');
+    await programTeamPage.selectProgram(programTitle);
+    await programTeamPage.navigateToProgramSettingsPage('Program team');
   });
 
   await test.step('Validate available system users are visible', async () => {
-    await manageTeam.enableEditMode();
-    await manageTeam.openAddUserForm();
-    await manageTeam.addUserToTeam({
+    await programTeamPage.enableEditMode();
+    await programTeamPage.openAddUserForm();
+    await programTeamPage.addUserToTeam({
       userSearchPhrase,
       userEmail: userFullEmail,
       role: userRole,
     });
-    await manageTeam.validateToastMessage('User added');
-    await manageTeam.validateAssignedTeamMembers(expectedAssignedUsers);
+    await programTeamPage.validateToastMessage('User added');
+    await programTeamPage.validateAssignedTeamMembers(expectedAssignedUsers);
   });
 });

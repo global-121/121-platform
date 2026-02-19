@@ -1,16 +1,10 @@
-import { Page, test } from '@playwright/test';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
-import { resetDB } from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
   registrationOCW5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import ExportData from '@121-e2e/portal/components/ExportData';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 // Get current date information
 // TODO: use library (date-fns) here (e2e-wide)
@@ -22,35 +16,20 @@ pastDate.setDate(currentDate.getDate() - 1);
 
 // Arrange
 test.describe('Export Payments with Date Range', () => {
-  let page: Page;
-  const programTitle = 'NLRC OCW Program';
-
-  test.beforeAll(async ({ browser }) => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
-    await seedPaidRegistrations({
+  test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+    await resetDBAndSeedRegistrations({
+      seedScript: SeedScript.nlrcMultiple,
+      seedPaidRegistrations: true,
       registrations: [registrationOCW5],
       programId: programIdOCW,
+      navigateToPage: `/program/${programIdOCW}/payments`,
     });
-
-    page = await browser.newPage();
-    // Login
-    const loginPage = new LoginPage(page);
-    await page.goto('/');
-    await loginPage.login();
   });
 
-  test.beforeEach(async () => {
-    const paymentsPage = new PaymentsPage(page);
-
-    await page.goto('/');
-    await paymentsPage.selectProgram(programTitle);
-    await paymentsPage.navigateToProgramPage('Payments');
-  });
-
-  test('Export payments with date range - Current', async () => {
-    const paymentsPage = new PaymentsPage(page);
-    const exportDataComponent = new ExportData(page);
-
+  test('Export payments with date range - Current', async ({
+    paymentsPage,
+    exportDataComponent,
+  }) => {
     await test.step('Validate export payment button', async () => {
       await paymentsPage.exportButton.waitFor({ state: 'visible' });
     });
@@ -72,10 +51,10 @@ test.describe('Export Payments with Date Range', () => {
     });
   });
 
-  test('Export payments with date range - Future', async () => {
-    const paymentsPage = new PaymentsPage(page);
-    const exportDataComponent = new ExportData(page);
-
+  test('Export payments with date range - Future', async ({
+    paymentsPage,
+    exportDataComponent,
+  }) => {
     await test.step('Validate export payment button', async () => {
       await paymentsPage.exportButton.waitFor({ state: 'visible' });
     });
@@ -96,10 +75,10 @@ test.describe('Export Payments with Date Range', () => {
     });
   });
 
-  test('Export payments with date range - Past', async () => {
-    const paymentsPage = new PaymentsPage(page);
-    const exportDataComponent = new ExportData(page);
-
+  test('Export payments with date range - Past', async ({
+    paymentsPage,
+    exportDataComponent,
+  }) => {
     await test.step('Validate export payment button', async () => {
       await paymentsPage.exportButton.waitFor({ state: 'visible' });
     });

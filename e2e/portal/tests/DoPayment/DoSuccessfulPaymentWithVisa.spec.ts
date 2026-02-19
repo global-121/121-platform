@@ -13,7 +13,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     seedScript: SeedScript.nlrcMultiple,
     registrations: registrationsVisa,
     programId: programIdOCW,
-    navigateToPage: `/en-GB/program/${programIdOCW}/payments`,
+    navigateToPage: `/program/${programIdOCW}/payments`,
   });
 });
 

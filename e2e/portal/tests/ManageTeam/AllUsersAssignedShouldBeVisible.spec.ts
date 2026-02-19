@@ -1,11 +1,6 @@
-import { test } from '@playwright/test';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { resetDB } from '@121-service/test/helpers/utility.helper';
 
-import BasePage from '@121-e2e/portal/pages/BasePage';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import ProgramTeamPage from '@121-e2e/portal/pages/ProgramTeamPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const expectedAssignedUsers = [
   'admin@example.org',
@@ -20,28 +15,24 @@ const expectedAssignedUsers = [
   'view-no-pii@example.org',
 ];
 
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.testMultiple, __filename);
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.testMultiple,
+    skipSeedRegistrations: true,
+  });
 });
 
 test('All users assigned to the program should be visible', async ({
-  page,
+  programTeamPage,
 }) => {
-  const basePage = new BasePage(page);
-  const manageTeam = new ProgramTeamPage(page);
   const programTitle = 'Cash program Westeros';
 
   await test.step('Select program and navigate to Manage team', async () => {
-    await basePage.selectProgram(programTitle);
-    await basePage.navigateToProgramSettingsPage('Program team');
+    await programTeamPage.selectProgram(programTitle);
+    await programTeamPage.navigateToProgramSettingsPage('Program team');
   });
 
   await test.step('Validate assigned users are visible', async () => {
-    await manageTeam.validateAssignedTeamMembers(expectedAssignedUsers);
+    await programTeamPage.validateAssignedTeamMembers(expectedAssignedUsers);
   });
 });
