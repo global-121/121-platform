@@ -11,15 +11,13 @@ const formatArray = (array: string[]): string => {
     .join(' ');
 };
 
-// All properties from RegistrationViewEntity (including relations and arrays)
-export type RegistrationViewAttributeName = keyof RegistrationViewEntity;
-
 // All registration view attribute names, exhaustively, except for `phoneNumber`
 export type RegistrationViewAttributeNameWithoutPhoneNumber = Exclude<
-  RegistrationViewAttributeName,
+  keyof RegistrationViewEntity,
   'phoneNumber'
 >;
 
+// The reason this is a Record<> is to ensure type-safety: all keys must be present, so if we add a new attribute to RegistrationViewEntity, we will get a type error until we explicitly decide whether to allow it from Kobo or not (by adding it to this record or not)
 const registrationViewAttributeNamesRecord: Record<
   RegistrationViewAttributeNameWithoutPhoneNumber,
   true
@@ -50,16 +48,9 @@ const registrationViewAttributeNamesRecord: Record<
   transactions: true,
 };
 
-const registrationViewAttributeNamesTyped = Object.keys(
-  registrationViewAttributeNamesRecord,
-) as RegistrationViewAttributeNameWithoutPhoneNumber[];
-
 // Export as string array for runtime checks
-export const registrationViewAttributeNames: readonly string[] =
-  registrationViewAttributeNamesTyped;
-
-export const RegistrationViewAttributeNamesFormatted = formatArray(
-  registrationViewAttributeNamesTyped,
+export const registrationViewAttributeNames: readonly string[] = Object.keys(
+  registrationViewAttributeNamesRecord,
 );
 
 //To avoid endpoint confusion in registration.controller
