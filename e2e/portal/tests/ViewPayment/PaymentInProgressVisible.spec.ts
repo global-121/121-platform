@@ -9,22 +9,22 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: [registrationOCW1],
+    programId: programIdOCW,
+    navigateToPage: `/program/${programIdOCW}/payments`,
+  });
+
+  await resetDuplicateRegistrations(8);
+});
+
 test('Show in progress banner and chip when payment is in progress', async ({
   paymentPage,
   paymentsPage,
-  resetDBAndSeedRegistrations,
   page,
 }) => {
-  await test.step('Setup', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: [registrationOCW1],
-      programId: programIdOCW,
-      navigateToPage: `/program/${programIdOCW}/payments`,
-    });
-
-    await resetDuplicateRegistrations(8);
-  });
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Do payment', async () => {

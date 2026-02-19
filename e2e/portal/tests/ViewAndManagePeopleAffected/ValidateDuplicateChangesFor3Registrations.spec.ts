@@ -19,23 +19,21 @@ const extraDuplicate = {
 };
 
 const seededRegistrations = [...registrationsPV, extraDuplicate];
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    seedWithStatus: RegistrationStatusEnum.included,
+    registrations: seededRegistrations,
+    programId: programIdPV,
+    navigateToPage: `/program/${programIdPV}/registrations`,
+  });
+});
 
 test('After the data change of 1 out of 3 duplicates, only 1 registration gets unique badge', async ({
   registrationsPage,
   registrationActivityLogPage,
   registrationPersonalInformationPage,
-  resetDBAndSeedRegistrations,
 }) => {
-  await test.step('Setup and seed database', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      seedWithStatus: RegistrationStatusEnum.included,
-      registrations: seededRegistrations,
-      programId: programIdPV,
-      navigateToPage: `/program/${programIdPV}/registrations`,
-    });
-  });
-
   await test.step('Wait for registrations to load', async () => {
     const allRegistrationsCount = seededRegistrations.length;
     await registrationsPage.waitForLoaded(allRegistrationsCount);

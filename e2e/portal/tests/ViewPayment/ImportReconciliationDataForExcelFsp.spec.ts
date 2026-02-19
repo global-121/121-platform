@@ -9,21 +9,20 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: registrationsPvExcel,
+    programId: programIdPV,
+    navigateToPage: `/program/${programIdPV}/payments`,
+  });
+});
+
 test('[Excel fsp]: Import reconciliation data should work similar to import registration data', async ({
   paymentPage,
   paymentsPage,
-  resetDBAndSeedRegistrations,
   page,
 }) => {
-  await test.step('Setup', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: registrationsPvExcel,
-      programId: programIdPV,
-      navigateToPage: `/program/${programIdPV}/payments`,
-    });
-  });
-
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
   const reconciliationData = path.resolve(
     __dirname,

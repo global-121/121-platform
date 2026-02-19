@@ -9,19 +9,18 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 const fakeReferenceId =
   'this-is-not-the-greatest-reference-id-in-the-world-this-is-just-a-tribute';
 
+test.beforeEach('Setup', async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: [registrationPV5],
+    programId: programIdPV,
+    navigateToPage: `/program/${programIdPV}/registrations`,
+  });
+});
+
 test('Wrong CSV should trigger error (wrong data, column name etc.)', async ({
-  resetDBAndSeedRegistrations,
   registrationsPage,
 }) => {
-  await test.step('Setup', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: [registrationPV5],
-      programId: programIdPV,
-      navigateToPage: `/program/${programIdPV}/registrations`,
-    });
-  });
-
   await test.step('Select all registrations and open "Update registrations" dialog', async () => {
     await registrationsPage.selectAllRegistrations();
     await registrationsPage.clickAndSelectImportOption(

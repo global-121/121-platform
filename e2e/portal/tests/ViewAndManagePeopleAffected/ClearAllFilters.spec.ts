@@ -8,19 +8,16 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-test('[Bug] Clear all filters does not work', async ({
-  registrationsPage,
-  resetDBAndSeedRegistrations,
-}) => {
-  await test.step('Setup and seed database', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: registrationsPV,
-      programId: programIdPV,
-      navigateToPage: `/program/${programIdPV}/registrations`,
-    });
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: registrationsPV,
+    programId: programIdPV,
+    navigateToPage: `/program/${programIdPV}/registrations`,
   });
+});
 
+test('[Bug] Clear all filters does not work', async ({ registrationsPage }) => {
   await test.step('Apply filter and then clear all filters', async () => {
     // Count all registrations
     const allRegistrationsCount = registrationsPV.length;

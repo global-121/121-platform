@@ -9,20 +9,20 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: registrationsOCW,
+    programId: programIdOCW,
+    navigateToPage: `/program/${programIdOCW}/payments`,
+  });
+});
+
 test('Table should reflect the actual transfer values sent to the PAs in this payment', async ({
   paymentPage,
   paymentsPage,
-  resetDBAndSeedRegistrations,
   page,
 }) => {
-  await test.step('Setup', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: registrationsOCW,
-      programId: programIdOCW,
-      navigateToPage: `/program/${programIdOCW}/payments`,
-    });
-  });
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   const defaultTransferValue = NLRCProgram.fixedTransferValue;

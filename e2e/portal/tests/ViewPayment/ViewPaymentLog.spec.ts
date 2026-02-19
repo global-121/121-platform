@@ -10,20 +10,20 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const note = 'test payment note';
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: [registrationOCW1],
+    programId: programIdOCW,
+    navigateToPage: `/program/${programIdOCW}/payments`,
+  });
+});
+
 test('View payment log, including note added to payment', async ({
   paymentPage,
   paymentsPage,
-  resetDBAndSeedRegistrations,
   page,
 }) => {
-  await test.step('Setup', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: [registrationOCW1],
-      programId: programIdOCW,
-      navigateToPage: `/program/${programIdOCW}/payments`,
-    });
-  });
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Do payment with note', async () => {

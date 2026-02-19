@@ -13,17 +13,14 @@ import {
 } from '@121-e2e/portal/helpers/PersonalInformationFields';
 
 let registrationId: number;
-let accessToken: string;
 
 // Arrange
 test.beforeEach(async ({ page, resetDBAndSeedRegistrations }) => {
-  const result = await resetDBAndSeedRegistrations({
+  const { accessToken } = await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     registrations: [registrationPV5],
     programId: programIdPV,
   });
-
-  accessToken = result.accessToken;
 
   registrationId = await getRegistrationIdByReferenceId({
     programId: programIdPV,
