@@ -1,5 +1,4 @@
 import {
-  Check,
   Column,
   Entity,
   JoinColumn,
@@ -13,12 +12,10 @@ import { Base121Entity } from '@121-service/src/base.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { NameConstraintQuestions } from '@121-service/src/shared/const';
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
 import { RegistrationPreferredLanguageTranslation } from '@121-service/src/shared/types/registration-preferred-language-translation.type';
 
 @Unique('programAttributeUnique', ['name', 'programId'])
-@Check(`"name" NOT IN (${NameConstraintQuestions})`)
 @Entity('program_registration_attribute')
 export class ProgramRegistrationAttributeEntity extends Base121Entity {
   @Column()
