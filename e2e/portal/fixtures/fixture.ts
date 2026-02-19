@@ -3,6 +3,7 @@ import { test as base, TestInfo } from '@playwright/test';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   seedIncludedRegistrations,
@@ -55,6 +56,8 @@ type Fixtures = {
     transferValue?: number;
     username?: string;
     password?: string;
+    includeRegistrationEvents?: boolean;
+    approverMode?: ApproverSeedMode;
   }) => Promise<{ accessToken: string }>;
   paymentPage: PaymentPage;
   paymentsPage: PaymentsPage;
@@ -87,10 +90,17 @@ export const customSharedFixture = base.extend<Fixtures>({
       transferValue?: number;
       username?: string;
       password?: string;
+      includeRegistrationEvents?: boolean;
+      approverMode?: ApproverSeedMode;
     }): Promise<{ accessToken: string }> => {
       const nameOfFileContainingTest = testInfo.file;
       // Logic to reset the database and seed registrations
-      await resetDB(params.seedScript, nameOfFileContainingTest);
+      await resetDB(
+        params.seedScript,
+        nameOfFileContainingTest,
+        params.includeRegistrationEvents ?? false,
+        params.approverMode,
+      );
       const accessToken = await getAccessToken();
 
       if (!params.skipSeedRegistrations) {

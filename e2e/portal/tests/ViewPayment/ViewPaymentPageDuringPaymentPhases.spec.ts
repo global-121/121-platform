@@ -1,37 +1,12 @@
-import { Page, test } from '@playwright/test';
-
 import { env } from '@121-service/src/env';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import programOcw from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-  resetDuplicateRegistrations,
-} from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
   registrationOCW1,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
-import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
-
-const login = async ({
-  page,
-  email,
-  password,
-}: {
-  page: Page;
-  email?: string;
-  password?: string;
-}) => {
-  const loginPage = new LoginPage(page);
-  await page.goto(`/`);
-  await loginPage.login(email, password);
-};
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const duplicateNumberOfRegistrations = 3;
 const registrationsCount = Math.pow(2, duplicateNumberOfRegistrations);
@@ -43,39 +18,22 @@ const pendingApprovalTransactionLabel = 'Pending approval';
 const approverBadgeLabelAdmin = env.USERCONFIG_121_SERVICE_EMAIL_ADMIN;
 const approverBadgeLabelApprover = env.USERCONFIG_121_SERVICE_EMAIL_APPROVER;
 
-test.beforeEach(async ({ page }) => {
-  await resetDB(
-    SeedScript.nlrcMultiple,
-    __filename,
-    undefined,
-    ApproverSeedMode.demo, // seeds 2 approvers: admin and approver-role user
-  );
-  const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(
-    [registrationOCW1],
-    programIdOCW,
-    accessToken,
-  );
-  await resetDuplicateRegistrations(duplicateNumberOfRegistrations);
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: [registrationOCW1],
+    programId: programIdOCW,
+    approverMode: ApproverSeedMode.demo,
+    navigateToPage: `/program/${programIdOCW}/payments`,
+  });
 });
 
 test('Payment page should display correctly during all phases of payment with 2 approvers', async ({
   page,
+  loginPage,
+  paymentPage,
+  paymentsPage,
 }) => {
-  const paymentPage = new PaymentPage(page);
-  const paymentsPage = new PaymentsPage(page);
-  const programTitle = programOcw.titlePortal.en;
-
-  await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(programTitle);
-    await paymentsPage.navigateToProgramPage('Payments');
-  });
-
   await test.step('Create payment', async () => {
     await paymentsPage.createPayment({});
     await page.waitForURL((url) =>
@@ -151,11 +109,10 @@ test('Payment page should display correctly during all phases of payment with 2 
   await test.step('2nd Approve payment by approver-role user', async () => {
     // log in as approver-user
     await paymentPage.selectAccountOption('Logout');
-    await login({
-      page,
-      email: env.USERCONFIG_121_SERVICE_EMAIL_APPROVER!,
-      password: env.USERCONFIG_121_SERVICE_PASSWORD_APPROVER!,
-    });
+    await loginPage.login(
+      env.USERCONFIG_121_SERVICE_EMAIL_APPROVER ?? '',
+      env.USERCONFIG_121_SERVICE_PASSWORD_APPROVER ?? '',
+    );
     await page.goto(`/en-GB/program/${programIdOCW}/payments/${paymentId}`);
     await paymentPage.waitForPageLoad();
 
@@ -185,9 +142,7 @@ test('Payment page should display correctly during all phases of payment with 2 
   await test.step('Start payment', async () => {
     // return to admin-user
     await paymentPage.selectAccountOption('Logout');
-    await login({
-      page,
-    });
+    await loginPage.login();
     await page.goto(`/en-GB/program/${programIdOCW}/payments/${paymentId}`);
     await paymentPage.waitForPageLoad();
 
