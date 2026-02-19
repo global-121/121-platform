@@ -145,8 +145,8 @@ describe('Import kobo form definition', () => {
     expect(body).toHaveProperty('versionId');
 
     // Verify program registration attributes were updated based on Kobo form definition
-    expect(programAttributeNamesAfterKobo.sort()).toEqual(
-      expectedAttributeNamesAfterKobo.sort(),
+    expect(programAttributeNamesAfterKobo).toIncludeSameMembers(
+      expectedAttributeNamesAfterKobo,
     );
 
     // Only test the first attribute in detail to test if the whole flow from Kobo form definition to program attribute worked
@@ -281,8 +281,8 @@ describe('Import kobo form definition', () => {
         (attribute) => attribute.name,
       );
 
-    expect(programAttributesAfterDryRun.sort()).toEqual(
-      programAttributesBeforeDryRun.sort(),
+    expect(programAttributesAfterDryRun).toIncludeSameMembers(
+      programAttributesBeforeDryRun,
     );
 
     // Verify kobo entity was NOT created
