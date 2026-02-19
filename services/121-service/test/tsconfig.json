@@ -5,8 +5,9 @@
     "checkJs": false,
     "types": ["node", "jest", "supertest", "Multer"]
   },
+  "files": ["../node_modules/jest-extended/types/index.d.ts"],
   "exclude": ["../node_modules", "../dist", "../src/**/*"],
-  "include": ["**/*.ts", "types/**/*.d.ts"],
+  "include": ["**/*.ts"],
   "baseUrl": "./",
   "paths": {
     "@121-service/*": ["../*"]
