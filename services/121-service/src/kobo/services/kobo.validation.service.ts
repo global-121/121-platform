@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { isDefined } from 'class-validator';
 import { Equal } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
@@ -401,30 +402,27 @@ export class KoboValidationService {
   }: {
     koboSurveyItems: KoboSurveyItemCleaned[];
   }): string[] {
-    const errorMessages: string[] = [];
+    const hasRegistrationViewAttributeName = (item: KoboSurveyItemCleaned) => {
+      return registrationViewAttributeNames.includes(item.name);
+    };
 
-    for (const attributeName of registrationViewAttributeNames) {
-      const surveyItem = koboSurveyItems.find(
-        (item) => item.name === attributeName,
-      );
+    const hasExpectedType = (item: KoboSurveyItemCleaned) => {
+      return item.name in KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES;
+    };
 
-      // Only validate type if the attribute exists in the survey
-      if (surveyItem) {
-        const expectedType =
-          KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES[attributeName];
-        if (expectedType) {
-          const error = this.validateSurveyItemTypeMatchExpected121Type({
-            attributeName,
-            surveyItemType: surveyItem.type,
-            expected121Type: expectedType,
-          });
-          if (error) {
-            errorMessages.push(error);
-          }
-        }
-      }
-    }
+    const getError = ({ name, type }: KoboSurveyItemCleaned) => {
+      return this.validateSurveyItemTypeMatchExpected121Type({
+        attributeName: name,
+        surveyItemType: type,
+        expected121Type: KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES[name],
+      });
+    };
 
+    const errorMessages = koboSurveyItems
+      .filter(hasRegistrationViewAttributeName)
+      .filter(hasExpectedType)
+      .map(getError)
+      .filter(isDefined);
     return errorMessages;
   }
 
