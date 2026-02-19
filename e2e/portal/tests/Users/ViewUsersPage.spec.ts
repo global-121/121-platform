@@ -28,17 +28,16 @@ const expectedAssignedUsers = [
   'view-user',
 ];
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.testMultiple,
+    skipSeedRegistrations: true,
+  });
+});
+
 test('[Admin] View "Names" and "E-mails" on "Users" page', async ({
-  resetDBAndSeedRegistrations,
   usersPage,
 }) => {
-  await test.step('Setup', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.testMultiple,
-      skipSeedRegistrations: true,
-    });
-  });
-
   await test.step('Navigate to Users page', async () => {
     await usersPage.navigateToPage('Users');
   });

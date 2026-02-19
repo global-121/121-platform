@@ -10,22 +10,22 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: [registrationOCW1, registrationOCW6Fail],
+    programId: programIdOCW,
+    navigateToPage: `/program/${programIdOCW}/payments`,
+  });
+
+  await resetDuplicateRegistrations(4);
+});
+
 test('Payment chart should reflect transaction statuses', async ({
   paymentPage,
   paymentsPage,
-  resetDBAndSeedRegistrations,
   page,
 }) => {
-  await test.step('Setup', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: [registrationOCW1, registrationOCW6Fail],
-      programId: programIdOCW,
-      navigateToPage: `/program/${programIdOCW}/payments`,
-    });
-
-    await resetDuplicateRegistrations(4);
-  });
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Do payment', async () => {

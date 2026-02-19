@@ -14,11 +14,11 @@ let registrationId: number;
 let accessToken: string;
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-  const result = await resetDBAndSeedRegistrations({
+  const { accessToken: token } = await resetDBAndSeedRegistrations({
     seedScript: SeedScript.testMultiple,
     skipSeedRegistrations: true,
   });
-  accessToken = result.accessToken;
+  accessToken = token;
 });
 
 test('User can view the registration data of registration that has all data types', async ({

@@ -9,19 +9,18 @@ import {
   expect,
 } from '@121-e2e/portal/fixtures/fixture';
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: registrationsPV,
+    programId: programIdPV,
+    navigateToPage: `/program/${programIdPV}/registrations`,
+  });
+});
+
 test('Registration table should clear row selections when filter criteria change', async ({
   tableComponent,
-  resetDBAndSeedRegistrations,
 }) => {
-  await test.step('Setup and seed database', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: registrationsPV,
-      programId: programIdPV,
-      navigateToPage: `/program/${programIdPV}/registrations`,
-    });
-  });
-
   await test.step('should clear single row selection when applying a filter', async () => {
     await tableComponent.selectRowByName('Jan Janssen');
     expect(await tableComponent.getSelectedRowsCount()).toBe(1);

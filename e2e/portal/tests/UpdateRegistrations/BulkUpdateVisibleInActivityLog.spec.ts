@@ -11,20 +11,19 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const newName = 'Michael Scarn';
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: [registrationPV5, registrationPV6],
+    programId: programIdPV,
+    navigateToPage: `/program/${programIdPV}/registrations`,
+  });
+});
+
 test('Data should be updated according to selected columns and registrations', async ({
-  resetDBAndSeedRegistrations,
   registrationsPage,
   tableComponent,
 }) => {
-  await test.step('Setup', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: [registrationPV5, registrationPV6],
-      programId: programIdPV,
-      navigateToPage: `/program/${programIdPV}/registrations`,
-    });
-  });
-
   await test.step('Select all registrations and open "Update registrations" dialog', async () => {
     // adding this extra step to ensure that deleted registrations are excluded from exports
     // for more info: AB#37336

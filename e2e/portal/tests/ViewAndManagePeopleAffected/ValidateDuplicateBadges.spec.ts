@@ -6,19 +6,18 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: registrationsPV,
+    programId: programIdPV,
+    navigateToPage: `/program/${programIdPV}/registrations`,
+  });
+});
+
 test('Validate that duplicate badges are present in the UI', async ({
   registrationsPage,
-  resetDBAndSeedRegistrations,
 }) => {
-  await test.step('Setup and seed database', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: registrationsPV,
-      programId: programIdPV,
-      navigateToPage: `/program/${programIdPV}/registrations`,
-    });
-  });
-
   await test.step('Wait for registrations to load', async () => {
     const allRegistrationsCount = registrationsPV.length;
     await registrationsPage.waitForLoaded(allRegistrationsCount);

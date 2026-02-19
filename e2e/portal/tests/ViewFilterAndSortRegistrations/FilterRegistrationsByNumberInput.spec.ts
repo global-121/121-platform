@@ -12,22 +12,21 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 let registrationName: string;
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    seedPaidRegistrations: true,
+    registrations: [...registrationsPV, registrationPvMaxPayment],
+    programId: programIdPV,
+    seedWithStatus: RegistrationStatusEnum.included,
+    navigateToPage: `/program/${programIdPV}/registrations`,
+  });
+});
+
 test('Filter registrations by Input number', async ({
   registrationsPage,
   tableComponent,
-  resetDBAndSeedRegistrations,
 }) => {
-  await test.step('Setup and seed database', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      seedPaidRegistrations: true,
-      registrations: [...registrationsPV, registrationPvMaxPayment],
-      programId: programIdPV,
-      seedWithStatus: RegistrationStatusEnum.included,
-      navigateToPage: `/program/${programIdPV}/registrations`,
-    });
-  });
-
   // Act & Assert
   await test.step('Filter Reg. # column by number 2', async () => {
     await tableComponent.filterColumnByNumber({

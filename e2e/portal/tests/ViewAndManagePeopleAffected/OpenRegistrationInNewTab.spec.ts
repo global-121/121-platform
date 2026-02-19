@@ -10,20 +10,19 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const chosenRegistration = registrationsPV[registrationsPV.length - 1];
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: registrationsPV,
+    programId: programIdPV,
+    navigateToPage: `/program/${programIdPV}/registrations`,
+  });
+});
+
 test('Open registration in new tab and verify new tab', async ({
   registrationsPage,
-  resetDBAndSeedRegistrations,
   page,
 }) => {
-  await test.step('Setup and seed database', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: registrationsPV,
-      programId: programIdPV,
-      navigateToPage: `/program/${programIdPV}/registrations`,
-    });
-  });
-
   await test.step('Open registration in new tab', async () => {
     // Count all registrations
     const allRegistrationsCount = registrationsPV.length;

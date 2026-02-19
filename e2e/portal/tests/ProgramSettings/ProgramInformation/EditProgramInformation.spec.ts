@@ -17,10 +17,11 @@ futureDate.setDate(futureDate.getDate() + 1);
 let accessToken: string;
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-  ({ accessToken } = await resetDBAndSeedRegistrations({
+  const { accessToken: token } = await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     skipSeedRegistrations: true,
-  }));
+  });
+  accessToken = token;
 
   await patchProgram(
     programIdOCW,

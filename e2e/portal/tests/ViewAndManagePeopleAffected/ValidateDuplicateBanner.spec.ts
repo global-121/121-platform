@@ -10,20 +10,20 @@ import {
 } from '@121-e2e/portal/fixtures/fixture';
 import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActivityLogPage';
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: registrationsPV,
+    programId: programIdPV,
+    navigateToPage: `/program/${programIdPV}/registrations`,
+  });
+});
+
 test('Validate that "Duplicate" banner is displayed in overview of duplicated registrations', async ({
   registrationsPage,
   registrationActivityLogPage,
-  resetDBAndSeedRegistrations,
   page,
 }) => {
-  await test.step('Setup and seed database', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: registrationsPV,
-      programId: programIdPV,
-      navigateToPage: `/program/${programIdPV}/registrations`,
-    });
-  });
   const duplicateRegistrationA = registrationsPV[1]; // 'Jan Janssen'
   const duplicateRegistrationB = registrationsPV[2]; // 'Joost Herlembach'
   const uniqueRegistration = registrationsPV[0]; // 'Gemma Houtenbos'

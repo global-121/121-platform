@@ -14,19 +14,17 @@ const month = currentDate.getMonth();
 const year = currentDate.getFullYear();
 const formattedDate = `${year}-${month}-${day}`;
 
-test('Filter registrations by Date selection', async ({
-  tableComponent,
-  resetDBAndSeedRegistrations,
-}) => {
-  await test.step('Setup and seed database', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: registrationsPV,
-      programId: programIdPV,
-      seedWithStatus: RegistrationStatusEnum.included,
-      navigateToPage: `/program/${programIdPV}/registrations`,
-    });
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: registrationsPV,
+    programId: programIdPV,
+    seedWithStatus: RegistrationStatusEnum.included,
+    navigateToPage: `/program/${programIdPV}/registrations`,
   });
+});
+
+test('Filter registrations by Date selection', async ({ tableComponent }) => {
   // Act & Assert
   await test.step('Filter registration created column by "Date is" date', async () => {
     // Filter Registration column by date

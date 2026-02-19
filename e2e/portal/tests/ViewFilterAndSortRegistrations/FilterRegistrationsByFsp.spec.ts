@@ -11,21 +11,20 @@ let registrationName: string;
 const ahVoucherFsp = 'Albert Heijn voucher WhatsApp';
 const visaFsp = 'Visa debit card';
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: registrationsPV,
+    programId: programIdPV,
+    seedWithStatus: RegistrationStatusEnum.included,
+    navigateToPage: `/program/${programIdPV}/registrations`,
+  });
+});
+
 test('Filter registrations by FSP (from the bug)', async ({
   registrationsPage,
   tableComponent,
-  resetDBAndSeedRegistrations,
 }) => {
-  await test.step('Setup and seed database', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: registrationsPV,
-      programId: programIdPV,
-      seedWithStatus: RegistrationStatusEnum.included,
-      navigateToPage: `/program/${programIdPV}/registrations`,
-    });
-  });
-
   // Act & Assert
   // First ensure the FSP column is visible
   await test.step('Display FSP column in the table', async () => {

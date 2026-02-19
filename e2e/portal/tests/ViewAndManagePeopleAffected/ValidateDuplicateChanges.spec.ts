@@ -8,20 +8,20 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: registrationsPV,
+    programId: programIdPV,
+    navigateToPage: `/program/${programIdPV}/registrations`,
+  });
+});
+
 test('After the data change of duplicate registration, both registrations get unique badge', async ({
   registrationsPage,
   registrationActivityLogPage,
   registrationPersonalInformationPage,
-  resetDBAndSeedRegistrations,
 }) => {
-  await test.step('Setup and seed database', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: registrationsPV,
-      programId: programIdPV,
-      navigateToPage: `/program/${programIdPV}/registrations`,
-    });
-  });
   const duplicateRegistration = registrationsPV[1]; // 'Jan Janssen'
 
   await test.step('Wait for registrations to load', async () => {

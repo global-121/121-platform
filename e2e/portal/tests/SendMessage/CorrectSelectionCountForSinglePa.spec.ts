@@ -6,19 +6,18 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: registrationsPV,
+    programId: programIdPV,
+    navigateToPage: `/program/${programIdPV}/registrations`,
+  });
+});
+
 test('Selection should show correct PA count for bulk action (Single PA)', async ({
-  resetDBAndSeedRegistrations,
   registrationsPage,
 }) => {
-  await test.step('Setup', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: registrationsPV,
-      programId: programIdPV,
-      navigateToPage: `/program/${programIdPV}/registrations`,
-    });
-  });
-
   await test.step('Apply bulk action on one PA', async () => {
     await registrationsPage.performActionOnRegistrationByName({
       registrationName: 'Gemma Houtenbos',

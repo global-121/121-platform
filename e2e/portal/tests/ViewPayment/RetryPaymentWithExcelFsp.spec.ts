@@ -9,22 +9,21 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: registrationsPvExcel,
+    programId: programIdPV,
+    navigateToPage: `/program/${programIdPV}/payments`,
+  });
+});
+
 test('Retry payments should put failed transactions back in processing and download the payment instructions file for those processing transactions', async ({
   paymentsPage,
   paymentPage,
   exportDataComponent,
-  resetDBAndSeedRegistrations,
   page,
 }) => {
-  await test.step('Setup', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: registrationsPvExcel,
-      programId: programIdPV,
-      navigateToPage: `/program/${programIdPV}/payments`,
-    });
-  });
-
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
   const reconciliationData = path.join(
     __dirname,

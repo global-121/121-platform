@@ -10,21 +10,20 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 const toastMessage =
   'The status of 1 registration(s) is being changed to "Paused" successfully. The status change can take up to a minute to process.';
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: registrationsPV,
+    programId: programIdPV,
+    seedWithStatus: RegistrationStatusEnum.included,
+    navigateToPage: `/program/${programIdPV}/registrations`,
+  });
+});
+
 test('Filter registrations by dropdown selection', async ({
   registrationsPage,
   tableComponent,
-  resetDBAndSeedRegistrations,
 }) => {
-  await test.step('Setup and seed database', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: registrationsPV,
-      programId: programIdPV,
-      seedWithStatus: RegistrationStatusEnum.included,
-      navigateToPage: `/program/${programIdPV}/registrations`,
-    });
-  });
-
   const registrations = registrationsPage;
   // Act & Assert
   await test.step('Filter Status column with "New" selection', async () => {

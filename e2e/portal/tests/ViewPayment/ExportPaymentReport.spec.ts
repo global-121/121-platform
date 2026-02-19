@@ -7,22 +7,21 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: [registrationOCW1, registrationOCW6Fail],
+    programId: programIdOCW,
+    navigateToPage: `/program/${programIdOCW}/payments`,
+  });
+});
+
 test('Export Payment Report should contain the right data', async ({
   paymentPage,
   paymentsPage,
   exportDataComponent,
-  resetDBAndSeedRegistrations,
   page,
 }) => {
-  await test.step('Setup', async () => {
-    await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: [registrationOCW1, registrationOCW6Fail],
-      programId: programIdOCW,
-      navigateToPage: `/program/${programIdOCW}/payments`,
-    });
-  });
-
   for (let i = 1; i <= 2; i++) {
     // Do 2 payments to make sure that the export only contains the latest payment
     await test.step(`Do payment ${i}`, async () => {

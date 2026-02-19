@@ -9,27 +9,26 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  const { accessToken } = await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: registrationsPvExcel,
+    programId: programIdPV,
+    navigateToPage: `/program/${programIdPV}/payments`,
+  });
+
+  await deleteProgramFspConfigurationProperty({
+    programId: programIdPV,
+    accessToken,
+    configName: Fsps.excel,
+    propertyName: FspConfigurationProperties.columnToMatch,
+  });
+});
+
 test('[Excel fsp]: Error message should be shown in case no matching column was configured', async ({
   paymentsPage,
   paymentPage,
-  resetDBAndSeedRegistrations,
 }) => {
-  await test.step('Setup', async () => {
-    const { accessToken } = await resetDBAndSeedRegistrations({
-      seedScript: SeedScript.nlrcMultiple,
-      registrations: registrationsPvExcel,
-      programId: programIdPV,
-      navigateToPage: `/program/${programIdPV}/payments`,
-    });
-
-    await deleteProgramFspConfigurationProperty({
-      programId: programIdPV,
-      accessToken,
-      configName: Fsps.excel,
-      propertyName: FspConfigurationProperties.columnToMatch,
-    });
-  });
-
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment({ onlyStep1: true });
     await paymentPage.validateToastMessageAndClose(
