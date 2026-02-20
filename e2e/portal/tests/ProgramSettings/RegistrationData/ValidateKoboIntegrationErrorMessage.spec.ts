@@ -1,3 +1,4 @@
+import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdSafaricom,
@@ -9,7 +10,7 @@ import RegistrationDataPage from '@121-e2e/portal/pages/RegistrationDataPage';
 
 // KOBO INTEGRATION DETAILS
 const koboIntegrationDetails = {
-  url: 'http://mock-service:3001/api/kobo',
+  url: `${env.MOCK_SERVICE_URL}}/api/kobo`,
   unsuccessfulAssetId: 'asset-id-body-that-triggers-errors',
   apiKey: 'mock-token',
 };

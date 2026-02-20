@@ -81,13 +81,13 @@ test('Add all available FSPs', async ({ page }) => {
     });
   });
 
-  await test.step('Add fsps that are not do not match kobo form configuration', async () => {
+  await test.step('Add FSPs that do not match Kobo form configuration', async () => {
     await fspSettings.validateFspConfigurationIsNotPresent({
       fspNames: fspsNotConfigurableForOcwProgram,
     });
   });
 
-  await test.step('Add all available FSPs that match kobo form configuration', async () => {
+  await test.step('Add all available FSPs that match Kobo form configuration', async () => {
     await fspSettings.addFsp({ fspNames: fspsConfiguredInKobo });
   });
 

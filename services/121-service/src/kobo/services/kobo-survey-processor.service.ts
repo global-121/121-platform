@@ -48,7 +48,7 @@ export class KoboSurveyProcessorService {
     const attributeType = KOBO_TO_121_TYPE_MAPPING[primaryKoboType];
 
     if (!attributeType) {
-      // Only create program registration attributes for kobo survey items with supported types
+      // Only create program registration attributes for Kobo survey items with supported types
       // survey items that are not supported which are relevant for the users are handled during the validation phase
       // this part excludes survey items that are not relevant at all for the 121 system (e.g. note, (begin + end of) group, etc.)
       return;

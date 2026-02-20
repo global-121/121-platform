@@ -159,9 +159,7 @@ export class IntegrateKoboButtonComponent {
   );
 
   readonly cardSubtitle = computed(() =>
-    this.isKoboIntegrated()
-      ? $localize`Kobo Toolbox is already integrated`
-      : $localize`Click to integrate`,
+    this.isKoboIntegrated() ? '' : $localize`Click to integrate`,
   );
 
   readonly menuItems = computed<MenuItem[]>(() => [
