@@ -168,6 +168,7 @@ export default tsEslint.config(
         {
           checkId: false,
           ignoreAttributes: [
+            'a[rel]',
             'data-testid',
             'field',
             'img[ngSrc]',

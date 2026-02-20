@@ -2,7 +2,6 @@
   #confirmDialog
   [closeOnEscape]="false"
   [focusTrap]="true"
-  [defaultFocus]="'close'"
 >
   <ng-template #headless>
     <div class="w-[632px] space-y-6 p-6">
@@ -17,7 +16,6 @@
             {{ header() }}
           </h3>
           <p-button
-            id="close"
             autofocus="true"
             ariaLabel="Close"
             i18n-ariaLabel="@@generic-close"
