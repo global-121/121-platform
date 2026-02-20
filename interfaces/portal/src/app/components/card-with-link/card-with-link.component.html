@@ -24,7 +24,7 @@
               [routerLink]="href()"
               (click)="cardClicked.emit()"
               (keydown.enter)="cardClicked.emit()"
-              (keydown.space)="cardClicked.emit()"
+              (keydown.space)="cardClicked.emit(); $event.preventDefault()"
               [tabindex]="!href() ? 0 : null"
               class="group-focus-within:text-purple group-hover:text-purple cursor-pointer transition-colors after:absolute after:inset-0 after:block"
             >
