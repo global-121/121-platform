@@ -3,6 +3,7 @@
   i18n-title
   [titleColoredChipLabel]="titleColoredChipLabel()"
   [titleColoredChipColor]="'green'"
+  [enableLink]="true"
   (cardClicked)="
     isKoboIntegrated() ? undefined : koboConfigurationDialog.show()
   "
