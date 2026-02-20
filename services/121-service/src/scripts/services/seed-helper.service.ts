@@ -19,6 +19,7 @@ import { MessageTemplateService } from '@121-service/src/notifications/message-t
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ApproversService } from '@121-service/src/programs/approvers/approvers.service';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
@@ -29,7 +30,6 @@ import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuratio
 import { SeedMessageTemplateConfig } from '@121-service/src/seed-data/message-template/interfaces/seed-message-template-config.interface';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
-import { ApproverService } from '@121-service/src/user/approver/approver.service';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
@@ -44,7 +44,7 @@ export class SeedHelperService {
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly httpService: CustomHttpService,
     private readonly axiosCallsService: AxiosCallsService,
-    private readonly approverService: ApproverService,
+    private readonly approversService: ApproversService,
   ) {}
 
   public async seedData({
@@ -280,7 +280,7 @@ export class SeedHelperService {
 
     switch (approverMode) {
       case ApproverSeedMode.admin:
-        await this.approverService.createApprover({
+        await this.approversService.createApprover({
           programId,
           userId: adminUser.id,
           order: 1,
@@ -292,12 +292,12 @@ export class SeedHelperService {
             username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_APPROVER!),
           },
         });
-        await this.approverService.createApprover({
+        await this.approversService.createApprover({
           programId,
           userId: adminUser.id,
           order: 1,
         });
-        await this.approverService.createApprover({
+        await this.approversService.createApprover({
           programId,
           userId: approverUser.id,
           order: 2,

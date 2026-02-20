@@ -10,8 +10,8 @@ import {
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
+import { ApproverEntity } from '@121-service/src/programs/approvers/entities/approver.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { ApproverEntity } from '@121-service/src/user/approver/entities/approver.entity';
 
 @Entity('program_approval_threshold')
 export class ProgramApprovalThresholdEntity extends Base121Entity {

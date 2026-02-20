@@ -3,13 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
 import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
+import { ApprovalStatusResponseDto } from '@121-service/src/programs/approvers/dto/approval-status-response.dto';
+import { ApproverResponseDto } from '@121-service/src/programs/approvers/dto/approver-response.dto';
+import { ApproverEntity } from '@121-service/src/programs/approvers/entities/approver.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
-import { ApprovalStatusResponseDto } from '@121-service/src/user/approver/dto/approval-status-response.dto';
-import { ApproverResponseDto } from '@121-service/src/user/approver/dto/approver-response.dto';
-import { ApproverEntity } from '@121-service/src/user/approver/entities/approver.entity';
 
 @Injectable()
-export class ApproverService {
+export class ApproversService {
   @InjectRepository(ApproverEntity)
   private readonly approverRepository: Repository<ApproverEntity>;
   @InjectRepository(ProgramAidworkerAssignmentEntity)

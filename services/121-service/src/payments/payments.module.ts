@@ -25,6 +25,7 @@ import { TransactionJobsCreationService } from '@121-service/src/payments/servic
 import { TransactionEventsModule } from '@121-service/src/payments/transactions/transaction-events/transaction-events.module';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
+import { ApproversModule } from '@121-service/src/programs/approvers/approvers.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
@@ -34,7 +35,6 @@ import { RegistrationsModule } from '@121-service/src/registration/registrations
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { RegistrationEventsModule } from '@121-service/src/registration-events/registration-events.module';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
-import { ApproverModule } from '@121-service/src/user/approver/approver.module';
 import { UserModule } from '@121-service/src/user/user.module';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
@@ -60,7 +60,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     RegistrationEventsModule,
     TransactionEventsModule,
     MessageTemplateModule,
-    ApproverModule,
+    ApproversModule,
   ],
   providers: [
     PaymentsManagementService,

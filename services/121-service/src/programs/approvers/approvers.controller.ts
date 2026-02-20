@@ -15,17 +15,17 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import { ApproverService } from '@121-service/src/user/approver/approver.service';
-import { ApproverResponseDto } from '@121-service/src/user/approver/dto/approver-response.dto';
-import { CreateApproverDto } from '@121-service/src/user/approver/dto/create-approver.dto';
-import { UpdateApproverDto } from '@121-service/src/user/approver/dto/update-approver.dto';
+import { ApproversService } from '@121-service/src/programs/approvers/approvers.service';
+import { ApproverResponseDto } from '@121-service/src/programs/approvers/dto/approver-response.dto';
+import { CreateApproverDto } from '@121-service/src/programs/approvers/dto/create-approver.dto';
+import { UpdateApproverDto } from '@121-service/src/programs/approvers/dto/update-approver.dto';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs/approvers')
 @Controller()
-export class ApproverController {
-  public constructor(private readonly approverService: ApproverService) {}
+export class ApproversController {
+  public constructor(private readonly approversService: ApproversService) {}
 
   @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramREAD] })
   @ApiOperation({ summary: 'Get all approvers for program' })
@@ -39,7 +39,7 @@ export class ApproverController {
   public async getApprovers(
     @Param('programId', ParseIntPipe) programId: number,
   ): Promise<ApproverResponseDto[]> {
-    return await this.approverService.getApprovers({ programId });
+    return await this.approversService.getApprovers({ programId });
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
@@ -55,7 +55,7 @@ export class ApproverController {
     @Param('programId', ParseIntPipe) programId: number,
     @Body() body: CreateApproverDto,
   ): Promise<ApproverResponseDto> {
-    return await this.approverService.createApprover({
+    return await this.approversService.createApprover({
       programId,
       userId: body.userId,
       order: body.order,
@@ -77,7 +77,7 @@ export class ApproverController {
     @Param('approverId', ParseIntPipe) approverId: number,
     @Body() body: UpdateApproverDto,
   ): Promise<ApproverResponseDto> {
-    return await this.approverService.updateApprover({
+    return await this.approversService.updateApprover({
       programId,
       approverId,
       order: body.order,
@@ -98,6 +98,9 @@ export class ApproverController {
     @Param('programId', ParseIntPipe) programId: number,
     @Param('approverId', ParseIntPipe) approverId: number,
   ): Promise<void> {
-    return await this.approverService.deleteApprover({ programId, approverId });
+    return await this.approversService.deleteApprover({
+      programId,
+      approverId,
+    });
   }
 }

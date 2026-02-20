@@ -6,10 +6,10 @@ import { PaymentsHelperService } from '@121-service/src/payments/services/paymen
 import { PaymentsManagementService } from '@121-service/src/payments/services/payments-management.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ApproversService } from '@121-service/src/programs/approvers/approvers.service';
+import { ApproverResponseDto } from '@121-service/src/programs/approvers/dto/approver-response.dto';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import { ApproverService } from '@121-service/src/user/approver/approver.service';
-import { ApproverResponseDto } from '@121-service/src/user/approver/dto/approver-response.dto';
 
 describe('PaymentsManagementService', () => {
   let service: PaymentsManagementService;
@@ -19,7 +19,7 @@ describe('PaymentsManagementService', () => {
   let transactionsService: TransactionsService;
   let registrationsBulkService: RegistrationsBulkService;
   let registrationsPaginationService: RegistrationsPaginationService;
-  let approverService: ApproverService;
+  let approversService: ApproversService;
 
   const basePaymentParams = {
     userId: 1,
@@ -43,7 +43,7 @@ describe('PaymentsManagementService', () => {
     registrationsPaginationService = unitRef.get(
       RegistrationsPaginationService,
     );
-    approverService = unitRef.get(ApproverService);
+    approversService = unitRef.get(ApproversService);
     (service as any).paymentRepository = {
       save: jest.fn().mockResolvedValue({ id: 123 }),
     };
@@ -55,7 +55,7 @@ describe('PaymentsManagementService', () => {
 
   it('should handle dryRun scenario and not call write function', async () => {
     jest
-      .spyOn(approverService as any, 'getApprovers')
+      .spyOn(approversService as any, 'getApprovers')
       .mockResolvedValue([{ id: 1 }]);
     jest
       .spyOn(
@@ -237,7 +237,7 @@ describe('PaymentsManagementService', () => {
         count: jest.fn(),
       };
       (service as any).paymentApprovalRepository = paymentApprovalRepository;
-      (approverService as any).getApproverByUserIdOrThrow = jest
+      (approversService as any).getApproverByUserIdOrThrow = jest
         .fn()
         .mockResolvedValue(mockApproverResponseDto);
     });
