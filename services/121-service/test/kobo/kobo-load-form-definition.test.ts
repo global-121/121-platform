@@ -449,7 +449,7 @@ describe('Import a Kobo form definition', () => {
     // Assert
     expect(linkKoboResponse.status).toBe(HttpStatus.BAD_REQUEST);
     expect(linkKoboResponse.body.message).toMatchInlineSnapshot(
-      `"This Kobo form already has 1 webhook(s) configured: https://external-system.example.com/webhook. Please remove existing webhook(s) before integrating with 121 Platform."`,
+      `"This Kobo form already has a webhook configured: https://external-system.example.com/webhook. Please remove it before integrating with 121 Platform."`,
     );
   });
 });
