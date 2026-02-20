@@ -160,6 +160,12 @@ export class IntegrateKoboButtonComponent {
     this.isKoboIntegrated() ? '' : $localize`Click to integrate`,
   );
 
+  readonly externalFormUrl = computed<null | string>(() =>
+    this.isKoboIntegrated() && this.koboIntegration.isSuccess()
+      ? `${this.koboIntegration.data().url}/#forms/${this.koboIntegration.data().assetUid}/summary`
+      : null,
+  );
+
   readonly menuItems = computed<MenuItem[]>(() => [
     {
       label: $localize`Reconfigure`,

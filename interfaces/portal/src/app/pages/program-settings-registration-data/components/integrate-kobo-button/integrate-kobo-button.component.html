@@ -16,15 +16,13 @@
       <app-ellipsis-menu [menuItems]="menuItems()" />
 
       <a
-        [href]="koboIntegration.data()?.url"
+        [href]="externalFormUrl()"
         [rel]="'external'"
         target="_blank"
         title="Opens in a new window"
         i18n-title="@@generic-opens-in-new-window"
         class="inline-block [&_span:first-child]:underline hover:[&_span:first-child]:no-underline focus:[&_span:first-child]:no-underline"
-        ><span>{{
-          koboIntegration.data()?.name ?? koboIntegration.data()?.url
-        }}</span>
+        ><span>{{ koboIntegration.data()?.name ?? externalFormUrl() }}</span>
         <span class="p-button-icon pi pi-external-link ms-1 text-sm"></span>
       </a>
     }
