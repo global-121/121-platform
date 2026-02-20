@@ -6,6 +6,7 @@ import { MessageTemplateModule } from '@121-service/src/notifications/message-te
 import { ORMConfig } from '@121-service/src/ormconfig';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ApproversModule } from '@121-service/src/programs/approvers/approvers.module';
+import { ProgramApprovalThresholdsModule } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { MockSeedFactoryService } from '@121-service/src/scripts/factories/mock-seed-factory.service';
@@ -27,6 +28,7 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
     HttpModule,
     ProgramFspConfigurationsModule,
     ApproversModule,
+    ProgramApprovalThresholdsModule,
   ],
   providers: [
     ScriptsService,
