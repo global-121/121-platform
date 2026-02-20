@@ -10,6 +10,9 @@ export class ApproverResponseDto {
   @ApiProperty({ example: 'johndoe' })
   public readonly username: string | null;
 
+  @ApiProperty({ example: 1 })
+  public readonly programApprovalThresholdId: number;
+
   @ApiProperty({ example: 5 })
   public readonly order: number;
 }
