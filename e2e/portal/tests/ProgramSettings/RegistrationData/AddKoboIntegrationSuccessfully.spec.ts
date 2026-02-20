@@ -9,7 +9,7 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 // KOBO INTEGRATION DETAILS
 const koboIntegrationDetails = {
-  url: `${env.MOCK_SERVICE_URL}}/api/kobo`,
+  url: `${env.MOCK_SERVICE_URL}/api/kobo`,
   successfulAssetId: 'success-asset',
   apiKey: 'mock-token',
 };

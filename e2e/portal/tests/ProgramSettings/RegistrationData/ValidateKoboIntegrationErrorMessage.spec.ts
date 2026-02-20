@@ -10,7 +10,7 @@ import RegistrationDataPage from '@121-e2e/portal/pages/RegistrationDataPage';
 
 // KOBO INTEGRATION DETAILS
 const koboIntegrationDetails = {
-  url: `${env.MOCK_SERVICE_URL}}/api/kobo`,
+  url: `${env.MOCK_SERVICE_URL}/api/kobo`,
   unsuccessfulAssetId: 'asset-id-body-that-triggers-errors',
   apiKey: 'mock-token',
 };
