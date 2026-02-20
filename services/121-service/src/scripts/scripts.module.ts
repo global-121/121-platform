@@ -5,6 +5,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { ORMConfig } from '@121-service/src/ormconfig';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
+import { ApproversModule } from '@121-service/src/programs/approvers/approvers.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { MockSeedFactoryService } from '@121-service/src/scripts/factories/mock-seed-factory.service';
@@ -15,7 +16,6 @@ import { ScriptsService } from '@121-service/src/scripts/services/scripts.servic
 import { SeedHelperService } from '@121-service/src/scripts/services/seed-helper.service';
 import { SeedMockHelperService } from '@121-service/src/scripts/services/seed-mock-helper.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-import { ApproverModule } from '@121-service/src/user/approver/approver.module';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
 @Module({
@@ -26,7 +26,7 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
     ProgramModule,
     HttpModule,
     ProgramFspConfigurationsModule,
-    ApproverModule,
+    ApproversModule,
   ],
   providers: [
     ScriptsService,

@@ -15,6 +15,8 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ApproversService } from '@121-service/src/programs/approvers/approvers.service';
+import { ApproverResponseDto } from '@121-service/src/programs/approvers/dto/approver-response.dto';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
@@ -23,8 +25,6 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
-import { ApproverService } from '@121-service/src/user/approver/approver.service';
-import { ApproverResponseDto } from '@121-service/src/user/approver/dto/approver-response.dto';
 
 @Injectable()
 export class PaymentsManagementService {
@@ -37,7 +37,7 @@ export class PaymentsManagementService {
     private readonly paymentEventsService: PaymentEventsService,
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
     private readonly transactionsService: TransactionsService,
-    private readonly approverService: ApproverService,
+    private readonly approversService: ApproversService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentApprovalRepository: PaymentApprovalRepository,
   ) {}
@@ -130,7 +130,7 @@ export class PaymentsManagementService {
     registrationsForPayment: MappedPaginatedRegistrationDto[];
     approvers: ApproverResponseDto[];
   }> {
-    const approvers = await this.approverService.getApprovers({
+    const approvers = await this.approversService.getApprovers({
       programId,
     });
     if (approvers.length < 1) {
@@ -319,7 +319,7 @@ export class PaymentsManagementService {
     paymentId: number;
     note?: string;
   }): Promise<void> {
-    const approver = await this.approverService.getApproverByUserIdOrThrow({
+    const approver = await this.approversService.getApproverByUserIdOrThrow({
       userId,
       programId,
     });
