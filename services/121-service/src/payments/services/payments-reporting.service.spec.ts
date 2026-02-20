@@ -5,13 +5,13 @@ import { PaymentsReportingHelperService } from '@121-service/src/payments/servic
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
+import { ApproversService } from '@121-service/src/programs/approvers/approvers.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import { ApproverService } from '@121-service/src/user/approver/approver.service';
 
 function createMockTransaction(
   referenceId: string,
@@ -70,7 +70,7 @@ describe('PaymentsReportingService - getTransactions', () => {
   let paymentsHelperService: PaymentsReportingHelperService;
   let paymentRepository: PaymentRepository;
   let programRepository: ProgramRepository;
-  let approverService: ApproverService;
+  let approversService: ApproversService;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -95,7 +95,7 @@ describe('PaymentsReportingService - getTransactions', () => {
     paymentsHelperService = unitRef.get(PaymentsReportingHelperService);
     paymentRepository = unitRef.get(PaymentRepository);
     programRepository = unitRef.get(ProgramRepository);
-    approverService = unitRef.get(ApproverService);
+    approversService = unitRef.get(ApproversService);
 
     jest.spyOn<any, any>(service, 'getTransactions');
     jest.spyOn(paymentsHelperService, 'getSelectForExport');
@@ -363,7 +363,7 @@ describe('PaymentsReportingService - getTransactions', () => {
         .spyOn(transactionScopedRepository, 'getAllFspsInPayment')
         .mockResolvedValue(mockFsps);
       jest
-        .spyOn(approverService, 'getPaymentApprovalStatus')
+        .spyOn(approversService, 'getPaymentApprovalStatus')
         .mockResolvedValue(mockApprovalStatus);
 
       // Act
