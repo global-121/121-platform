@@ -8,10 +8,12 @@ import { FspsModule } from '@121-service/src/fsp-management/fsp.module';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
+import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
 import { PaymentEventsModule } from '@121-service/src/payments/payment-events/payment-events.module';
 import { PaymentsController } from '@121-service/src/payments/payments.controller';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { PaymentRepository } from '@121-service/src/payments/repositories/payment.repository';
+import { PaymentApprovalRepository } from '@121-service/src/payments/repositories/payment-approval.repository';
 import { FspEnvVariableValidationService } from '@121-service/src/payments/services/fsp-env-variable-validation.service';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
@@ -38,7 +40,11 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ProgramEntity, PaymentEntity]),
+    TypeOrmModule.forFeature([
+      ProgramEntity,
+      PaymentEntity,
+      PaymentApprovalEntity,
+    ]),
     UserModule,
     HttpModule,
     TransactionsModule,
@@ -69,6 +75,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     InclusionScoreService,
     AzureLogService,
     PaymentRepository,
+    PaymentApprovalRepository,
     createScopedRepositoryProvider(RegistrationAttributeDataEntity),
   ],
   controllers: [PaymentsController],
@@ -76,6 +83,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     PaymentsExecutionService,
     PaymentsReportingService,
     PaymentsProgressHelperService,
+    PaymentApprovalRepository,
   ],
 })
 export class PaymentsModule implements OnModuleInit {
