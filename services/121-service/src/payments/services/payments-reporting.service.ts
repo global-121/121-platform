@@ -18,6 +18,7 @@ import { PaymentsReportingHelperService } from '@121-service/src/payments/servic
 import { FindAllTransactionsResultDto } from '@121-service/src/payments/transactions/dto/find-all-transactions-result.dto';
 import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
+import { ApproversService } from '@121-service/src/programs/approvers/approvers.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
@@ -25,7 +26,6 @@ import { GenericRegistrationAttributes } from '@121-service/src/registration/enu
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { PaginateQueryLimitRequired } from '@121-service/src/shared/types/paginate-query-limit-required.type';
-import { ApproverService } from '@121-service/src/user/approver/approver.service';
 @Injectable()
 export class PaymentsReportingService {
   public constructor(
@@ -37,7 +37,7 @@ export class PaymentsReportingService {
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentEventsService: PaymentEventsService,
     private readonly programRepository: ProgramRepository,
-    private readonly approverService: ApproverService,
+    private readonly approversService: ApproversService,
   ) {}
 
   public async getPaymentAggregationsSummaries({
@@ -96,9 +96,11 @@ export class PaymentsReportingService {
       },
     );
 
-    const approvalStatus = await this.approverService.getPaymentApprovalStatus({
-      paymentId,
-    });
+    const approvalStatus = await this.approversService.getPaymentApprovalStatus(
+      {
+        paymentId,
+      },
+    );
 
     return { ...getPaymentAggregationSummary[0], fsps, approvalStatus };
   }

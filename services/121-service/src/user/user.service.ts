@@ -10,6 +10,7 @@ import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/email-constants';
 import { env } from '@121-service/src/env';
+import { ApproverEntity } from '@121-service/src/programs/approvers/entities/approver.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
@@ -18,7 +19,6 @@ import {
   InterfaceNames,
 } from '@121-service/src/shared/enum/interface-names.enum';
 import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
-import { ApproverEntity } from '@121-service/src/user/approver/entities/approver.entity';
 import {
   CreateProgramAssignmentDto,
   UpdateProgramAssignmentDto,
