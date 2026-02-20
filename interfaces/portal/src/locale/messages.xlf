@@ -2156,14 +2156,8 @@
       <trans-unit id="3069764081921374374" datatype="html">
         <source>Kobo form successfully integrated.</source>
       </trans-unit>
-      <trans-unit id="3933760683279649879" datatype="html">
-        <source>Kobo server URL</source>
-      </trans-unit>
       <trans-unit id="4084990812407796583" datatype="html">
         <source>Last updated: <x ctype="x-span" equiv-text="&lt;span&gt;" id="START_TAG_SPAN"/><x equiv-text="{{ koboIntegration.data()?.dateDeployed | date }}" id="INTERPOLATION"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/></source>
-      </trans-unit>
-      <trans-unit id="4124465588218417294" datatype="html">
-        <source>Kobo asset ID</source>
       </trans-unit>
       <trans-unit id="4671562292257026998" datatype="html">
         <source>API key</source>
@@ -2203,6 +2197,19 @@
       </trans-unit>
       <trans-unit id="274004434910655724" datatype="html">
         <source>We couldn&apos;t configure this FSP due to missing fields in your program.</source>
+      </trans-unit>
+      <trans-unit id="3978034238801036238" datatype="html">
+        <source>Kobo form URL</source>
+      </trans-unit>
+      <trans-unit id="1383533176932798822" datatype="html">
+        <source>We couldn&apos;t process this URL. Please verify in KoboToolbox.</source>
+      </trans-unit>
+      <trans-unit id="integrate-kobo-form-url-explanation" datatype="html">
+        <source>The full URL from the form&apos;s page in KoboToolbox, i.e: https://kobo.ifrc.org/#/forms/XXXXXX/summary</source>
+        <note priority="1" from="description">Do NOT translate the URL!</note>
+      </trans-unit>
+      <trans-unit id="integrate-kobo-form-api-key-explanation" datatype="html">
+        <source>In KoboToolbox, go to &quot;Account Settings&quot; (top-right menu), sub-page &quot;Security&quot;.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Make sure to click &quot;Display&quot; next to the API Key before copying.</source>
       </trans-unit>
     </body>
   </file>
