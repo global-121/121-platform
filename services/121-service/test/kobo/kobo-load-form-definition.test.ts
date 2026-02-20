@@ -54,7 +54,7 @@ const baseProgram: Partial<CreateProgramDto> = {
     requiredProgramRegistrationAttributesForSafaricom,
 };
 
-describe('Import kobo form definition', () => {
+describe('Import a Kobo form definition', () => {
   let accessToken: string;
 
   beforeEach(async () => {
@@ -62,12 +62,12 @@ describe('Import kobo form definition', () => {
     accessToken = await getAccessToken();
   });
 
-  it('successfully imports kobo form definition', async () => {
+  it('successfully imports a Kobo form definition', async () => {
     // Arrange
     const program: CreateProgramDto = {
       ...baseProgram,
       titlePortal: {
-        en: 'Program that successfully integrates kobo',
+        en: 'Program that successfully integrates with KoboToolbox',
       },
       languages: [
         RegistrationPreferredLanguage.en,
@@ -87,7 +87,7 @@ describe('Import kobo form definition', () => {
     const koboLinkDto: CreateKoboDto = {
       token: 'mock-token',
       assetUid: 'success-asset',
-      url: `${env.MOCK_SERVICE_URL}/api/kobo`, // our base path for the kobo part of the mock service
+      url: `${env.MOCK_SERVICE_URL}/api/kobo`,
     };
 
     const linkKoboResponse = await postKoboToProgram({
@@ -181,7 +181,7 @@ describe('Import kobo form definition', () => {
     `);
   });
 
-  it('should return multiple validation errors when linking kobo form', async () => {
+  it('should return multiple validation errors when linking an invalid Kobo form', async () => {
     // Arrange
     const program: CreateProgramDto = {
       ...baseProgram,
@@ -230,7 +230,7 @@ describe('Import kobo form definition', () => {
      `);
   });
 
-  it('should not update program or create kobo entity when dryRun is true', async () => {
+  it('should not update program or create Kobo entity when dryRun is true', async () => {
     // Arrange
     const program: CreateProgramDto = {
       ...baseProgram,
@@ -285,7 +285,7 @@ describe('Import kobo form definition', () => {
       programAttributesBeforeDryRun,
     );
 
-    // Verify kobo entity was NOT created
+    // Verify Kobo entity was NOT created
     const getKoboResponse = await getKoboFromProgram({
       programId,
       accessToken,
@@ -293,11 +293,11 @@ describe('Import kobo form definition', () => {
     expect(getKoboResponse.status).toBe(HttpStatus.NOT_FOUND);
   });
 
-  it('should merge new kobo form definition with existing one', async () => {
+  it('should merge new Kobo form definition with existing one', async () => {
     const program: CreateProgramDto = {
       ...baseProgram,
       titlePortal: {
-        en: 'Program for merging kobo definitions',
+        en: 'Program for merging Kobo definitions',
       },
       languages: [
         RegistrationPreferredLanguage.en,
@@ -328,7 +328,7 @@ describe('Import kobo form definition', () => {
     });
 
     // Act
-    // import a second kobo definition that has some changes compared to the first one
+    // import a second Kobo definition that has some changes compared to the first one
     const koboLinkDtoSecondImport: CreateKoboDto = {
       ...koboLinkDto,
       assetUid: 'asset-id-happy-flow-with-changes',
@@ -345,7 +345,7 @@ describe('Import kobo form definition', () => {
     const updatedKobo = await getKoboFromProgram({ programId, accessToken });
     const koboVersionIdAfterSecondImport = updatedKobo.body.versionId;
     expect(koboVersionIdAfterSecondImport).toEqual(
-      'asset-id-happy-flow-with-changes', // version id from the second kobo definition
+      koboLinkDtoSecondImport.assetUid,
     );
 
     const programAfterUpdate = (await getProgram(programId, accessToken)).body;
@@ -356,9 +356,9 @@ describe('Import kobo form definition', () => {
         (attribute) => attribute.name,
       );
 
-    // test that the new attribute from the second kobo form is added
+    // test that the new attribute from the second Kobo form is added
     expect(programAttributeNamesAfterUpdate).toContain('newAttribute');
-    // Test that the updated attribute has the new label from the second kobo form
+    // Test that the updated attribute has the new label from the second Kobo form
     const updatedAttribute = programAttributesAfterUpdate.find(
       (attr) => attr.name === 'fullName',
     );
@@ -368,19 +368,19 @@ describe('Import kobo form definition', () => {
       fr: 'new label',
     });
 
-    // Test that How_are_you_today_select_one attribute still exists in the program even though it was removed in the second kobo form
+    // Test that How_are_you_today_select_one attribute still exists in the program even though it was removed in the second Kobo form
     const removedInKoboAttribute = programAttributesAfterUpdate.find(
       (attr) => attr.name === 'How_are_you_today_select_one',
     );
     expect(removedInKoboAttribute).toBeDefined();
   });
 
-  it('should handle not found error from kobo api', async () => {
+  it('should handle not found error from Kobo API', async () => {
     const assetUid = 'asset-id-not-found';
     const program: CreateProgramDto = {
       ...baseProgram,
       titlePortal: {
-        en: 'Program for kobo not found test',
+        en: 'Program for Kobo not found test',
       },
       languages: [RegistrationPreferredLanguage.en],
     } as CreateProgramDto;

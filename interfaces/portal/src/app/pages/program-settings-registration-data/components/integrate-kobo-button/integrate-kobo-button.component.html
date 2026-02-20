@@ -1,5 +1,5 @@
 <app-card-with-link
-  title="Kobo toolbox"
+  title="KoboToolbox"
   i18n-title
   [titleColoredChipLabel]="titleColoredChipLabel()"
   [titleColoredChipColor]="'green'"
@@ -15,15 +15,13 @@
       <app-ellipsis-menu [menuItems]="menuItems()" />
 
       <a
-        [href]="koboIntegration.data()?.url"
+        [href]="externalFormUrl()"
         [rel]="'external'"
         target="_blank"
         title="Opens in a new window"
         i18n-title="@@generic-opens-in-new-window"
         class="inline-block [&_span:first-child]:underline hover:[&_span:first-child]:no-underline focus:[&_span:first-child]:no-underline"
-        ><span>{{
-          koboIntegration.data()?.name ?? koboIntegration.data()?.url
-        }}</span>
+        ><span>{{ koboIntegration.data()?.name ?? externalFormUrl() }}</span>
         <span class="p-button-icon pi pi-external-link ms-1 text-sm"></span>
       </a>
     }
@@ -43,7 +41,7 @@
 
 <app-form-dialog
   #koboConfigurationDialog
-  header="Link Kobo Toolbox"
+  header="Link with KoboToolbox"
   i18n-header
   headerIcon="pi pi-link"
   [formGroup]="koboConfigurationFormGroup"
@@ -62,19 +60,22 @@
   >
     <input
       pInputText
-      type="text"
+      type="url"
+      inputmode="url"
       formControlName="url"
     />
   </app-form-field-wrapper>
   <app-form-field-wrapper
     label="Kobo asset ID"
     i18n-label
-    [errorMessage]="koboConfigurationFormFieldErrors()('assetUid')"
+    [errorMessage]="koboConfigurationFormFieldErrors()('assetId')"
   >
     <input
+      autocomplete="off"
       pInputText
       type="text"
-      formControlName="assetUid"
+      formControlName="assetId"
+      class="font-mono"
     />
   </app-form-field-wrapper>
   <app-form-field-wrapper
@@ -82,18 +83,19 @@
     i18n-label
     [errorMessage]="koboConfigurationFormFieldErrors()('token')"
   >
-    <p-password
+    <input
       autocomplete="off"
-      [toggleMask]="true"
-      [feedback]="false"
+      pInputText
+      type="text"
       formControlName="token"
+      class="font-mono"
     />
   </app-form-field-wrapper>
 </app-form-dialog>
 
 <app-form-dialog
   #linkKoboDialog
-  header="Link Kobo Toolbox"
+  header="Link with KoboToolbox"
   i18n-header
   headerIcon="pi pi-link"
   [mutation]="linkKoboMutation"

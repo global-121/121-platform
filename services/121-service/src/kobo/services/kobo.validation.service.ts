@@ -356,7 +356,7 @@ export class KoboValidationService {
     expected121Type: RegistrationAttributeTypes;
   }): string | undefined {
     const expectedKoboTypes = this.getKoboTypesFrom121Type(expected121Type);
-    // There is no direct mapping for tel to kobo types, so we use text as acceptable type
+    // There is no direct mapping for tel to Kobo types, so we use text as acceptable type
     if (expected121Type === RegistrationAttributeTypes.tel) {
       expectedKoboTypes.push('text');
     }

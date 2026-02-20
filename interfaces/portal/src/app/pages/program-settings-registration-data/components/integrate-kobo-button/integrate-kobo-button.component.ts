@@ -21,7 +21,6 @@ import {
 } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { EllipsisMenuComponent } from '~/components/ellipsis-menu/ellipsis-menu.component';
@@ -41,7 +40,6 @@ type KoboConfigurationFormGroup =
     FormDialogComponent,
     FormFieldWrapperComponent,
     InputTextModule,
-    PasswordModule,
     ReactiveFormsModule,
     CardWithLinkComponent,
     ManualLinkComponent,
@@ -74,7 +72,7 @@ export class IntegrateKoboButtonComponent {
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
     }),
-    assetUid: new FormControl<string>('', {
+    assetId: new FormControl<string>('', {
       nonNullable: true,
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
@@ -93,14 +91,14 @@ export class IntegrateKoboButtonComponent {
   readonly koboConfigurationMutation = injectMutation(() => ({
     mutationFn: ({
       url,
-      assetUid,
+      assetId,
       token,
     }: ReturnType<KoboConfigurationFormGroup['getRawValue']>) =>
       this.koboApiService.createKoboIntegration({
         programId: this.programId,
         integration: {
           url,
-          assetUid,
+          assetUid: assetId,
           token,
         },
         dryRun: true,
@@ -116,14 +114,18 @@ export class IntegrateKoboButtonComponent {
   }));
 
   readonly linkKoboMutation = injectMutation(() => ({
-    mutationFn: () =>
-      this.koboApiService.createKoboIntegration({
+    mutationFn: () => {
+      const formRawValue = this.koboConfigurationFormGroup.getRawValue();
+      return this.koboApiService.createKoboIntegration({
         programId: this.programId,
         integration: {
-          ...this.koboConfigurationFormGroup.getRawValue(),
+          url: formRawValue.url,
+          assetUid: formRawValue.assetId,
+          token: formRawValue.token,
         },
         dryRun: false,
-      }),
+      });
+    },
     onSuccess: () => {
       this.koboConfigurationMutation.reset();
       this.koboConfigurationFormGroup.reset();
@@ -141,7 +143,7 @@ export class IntegrateKoboButtonComponent {
     },
   }));
 
-  koboIntegration = injectQuery(() => ({
+  readonly koboIntegration = injectQuery(() => ({
     ...this.koboApiService.getKoboIntegration(this.programId)(),
     enabled: !!this.programId(),
   }));
@@ -159,10 +161,16 @@ export class IntegrateKoboButtonComponent {
   );
 
   readonly cardSubtitle = computed(() =>
-    this.isKoboIntegrated()
-      ? $localize`Kobo Toolbox is already integrated`
-      : $localize`Click to integrate`,
+    this.isKoboIntegrated() ? '' : $localize`Click to integrate`,
   );
+
+  readonly externalFormUrl = computed<null | string>(() => {
+    if (!this.isKoboIntegrated() || !this.koboIntegration.isSuccess()) {
+      return null;
+    }
+    const koboIntegrationData = this.koboIntegration.data();
+    return `${koboIntegrationData.url}/#forms/${koboIntegrationData.assetUid}/summary`;
+  });
 
   readonly menuItems = computed<MenuItem[]>(() => [
     {

@@ -19,7 +19,7 @@ export class KoboApiService {
     token: string;
     baseUrl: string;
   }): Promise<KoboAssetDto> {
-    // Use joinURL instead of new URL as the baseUlr may have a path component
+    // Use joinURL instead of new URL as the baseURL may have a path component
     const apiUrl = joinURL(baseUrl, 'api/v2/assets', assetUid, 'deployment');
 
     const headers = new Headers();
