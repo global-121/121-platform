@@ -121,11 +121,10 @@ describe('KoboApiService', () => {
 
     it('should throw HttpException for unexpected error status', async () => {
       // Arrange
-      const errorDetail = 'Server error occurred';
       httpService.get.mockResolvedValue({
         status: HttpStatus.INTERNAL_SERVER_ERROR,
         data: {
-          detail: errorDetail,
+          detail: 'Server error occurred',
         },
       });
 
@@ -145,7 +144,7 @@ describe('KoboApiService', () => {
       expect(error).toBeInstanceOf(HttpException);
       expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(
-        `"Failed to fetch Kobo information from url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment: Server error occurred"`,
+        `"Failed to fetch Kobo information for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment: Server error occurred"`,
       );
     });
 
@@ -263,7 +262,89 @@ describe('KoboApiService', () => {
       expect(error).toBeInstanceOf(HttpException);
       expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(
-        `"Failed to fetch Kobo information from url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment: Unknown error"`,
+        `"Failed to fetch Kobo information for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment: Unknown error"`,
+      );
+    });
+  });
+
+  describe('getExistingKoboWebhooks', () => {
+    it('should return webhook endpoints for successful request when they exist', async () => {
+      // Arrange
+      httpService.get.mockResolvedValue({
+        status: HttpStatus.OK,
+        data: {
+          results: [
+            {
+              url: 'https://example.com/webhook1',
+            },
+            {
+              url: 'https://example.com/webhook2',
+            },
+          ],
+        },
+      });
+
+      // Act
+      const result = await service.getExistingKoboWebhooks({
+        assetUid: mockAssetUid,
+        token: mockToken,
+        baseUrl: mockBaseUrl,
+      });
+
+      // Assert
+      expect(result).toEqual([
+        'https://example.com/webhook1',
+        'https://example.com/webhook2',
+      ]);
+    });
+
+    it('should return empty array when no webhooks exist', async () => {
+      // Arrange
+      httpService.get.mockResolvedValue({
+        status: HttpStatus.OK,
+        data: {
+          results: [],
+        },
+      });
+
+      // Act
+      const result = await service.getExistingKoboWebhooks({
+        assetUid: mockAssetUid,
+        token: mockToken,
+        baseUrl: mockBaseUrl,
+      });
+
+      // Assert
+      expect(result).toBeArrayOfSize(0);
+    });
+
+    // Not all error scenarios are covered here as most of the error handling is delegated in a private function which is tested via other public methods
+    it('should properly handle error responses', async () => {
+      // Arrange - test that error handling is properly delegated to handleKoboApiError
+      httpService.get.mockResolvedValue({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        data: {
+          detail: 'Server error occurred',
+        },
+      });
+
+      // Act
+      let error: any;
+      try {
+        await service.getExistingKoboWebhooks({
+          assetUid: mockAssetUid,
+          token: mockToken,
+          baseUrl: mockBaseUrl,
+        });
+      } catch (e) {
+        error = e;
+      }
+
+      // Assert
+      expect(error).toBeInstanceOf(HttpException);
+      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error.message).toMatchInlineSnapshot(
+        `"Failed to fetch Kobo webhooks for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/hooks: Server error occurred"`,
       );
     });
   });
