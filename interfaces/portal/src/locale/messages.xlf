@@ -2198,6 +2198,12 @@
       <trans-unit id="8809702678611776373" datatype="html">
         <source>Link with KoboToolbox</source>
       </trans-unit>
+      <trans-unit id="1662143734484495356" datatype="html">
+        <source>We couldn&apos;t process this URL. Please verify the fields below manually.</source>
+      </trans-unit>
+      <trans-unit id="3978034238801036238" datatype="html">
+        <source>Kobo form URL</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
