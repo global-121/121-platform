@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Equal } from 'typeorm';
+import { Equal, LessThanOrEqual } from 'typeorm';
 
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/get-program-approval-threshold-response.dto';
@@ -97,6 +97,20 @@ export class ProgramApprovalThresholdsService {
     }
 
     await this.programApprovalThresholdRepository.remove(threshold);
+  }
+
+  public async getThresholdsForPaymentAmount(
+    programId: number,
+    paymentAmount: number,
+  ): Promise<ProgramApprovalThresholdEntity[]> {
+    const thresholds = await this.programApprovalThresholdRepository.find({
+      where: {
+        programId: Equal(programId),
+        thresholdAmount: LessThanOrEqual(paymentAmount),
+      },
+      order: { approvalLevel: 'ASC' },
+    });
+    return thresholds;
   }
 
   private mapEntityToDto(
