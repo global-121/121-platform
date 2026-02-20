@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { PaymentApprovalEntity } from '@121-service/src/user/approver/entities/payment-approval.entity';
+import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
 
 export class PaymentApprovalRepository extends Repository<PaymentApprovalEntity> {
   constructor(

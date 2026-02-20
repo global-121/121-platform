@@ -2,11 +2,11 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
+import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { ApprovalStatusResponseDto } from '@121-service/src/user/approver/dto/approval-status-response.dto';
 import { ApproverResponseDto } from '@121-service/src/user/approver/dto/approver-response.dto';
 import { ApproverEntity } from '@121-service/src/user/approver/entities/approver.entity';
-import { PaymentApprovalEntity } from '@121-service/src/user/approver/entities/payment-approval.entity';
 
 @Injectable()
 export class ApproverService {
