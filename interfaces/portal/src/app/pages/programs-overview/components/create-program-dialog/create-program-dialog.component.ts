@@ -10,10 +10,9 @@ import {
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { UILanguage } from '@121-platform/shared';
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
-
-import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
 import { AppRoutes } from '~/app.routes';
 import { FullscreenStepperDialogComponent } from '~/components/fullscreen-stepper-dialog/fullscreen-stepper-dialog.component';

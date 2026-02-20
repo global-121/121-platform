@@ -1,0 +1,25 @@
+{
+  "name": "@121-platform/shared",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Minimal shared types for 121-platform (PoC)",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "prettier": "^3.8.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
