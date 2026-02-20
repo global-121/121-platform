@@ -21,7 +21,6 @@ import {
 } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { EllipsisMenuComponent } from '~/components/ellipsis-menu/ellipsis-menu.component';
@@ -41,7 +40,6 @@ type KoboConfigurationFormGroup =
     FormDialogComponent,
     FormFieldWrapperComponent,
     InputTextModule,
-    PasswordModule,
     ReactiveFormsModule,
     CardWithLinkComponent,
     ManualLinkComponent,

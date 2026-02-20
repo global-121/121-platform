@@ -63,7 +63,8 @@
   >
     <input
       pInputText
-      type="text"
+      type="url"
+      inputmode="url"
       formControlName="url"
     />
   </app-form-field-wrapper>
@@ -73,9 +74,11 @@
     [errorMessage]="koboConfigurationFormFieldErrors()('assetUid')"
   >
     <input
+      autocomplete="off"
       pInputText
       type="text"
       formControlName="assetUid"
+      class="font-mono"
     />
   </app-form-field-wrapper>
   <app-form-field-wrapper
@@ -83,11 +86,12 @@
     i18n-label
     [errorMessage]="koboConfigurationFormFieldErrors()('token')"
   >
-    <p-password
+    <input
       autocomplete="off"
-      [toggleMask]="true"
-      [feedback]="false"
+      pInputText
+      type="text"
       formControlName="token"
+      class="font-mono"
     />
   </app-form-field-wrapper>
 </app-form-dialog>

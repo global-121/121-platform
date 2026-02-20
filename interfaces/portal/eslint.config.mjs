@@ -190,6 +190,7 @@ export default tsEslint.config(
             'p-table[stateStorage]',
             'appendTo',
             'inputId',
+            'input[inputmode]',
             'queryParamsHandling',
             'styleClass',
             'severity',
