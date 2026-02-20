@@ -61,13 +61,15 @@ export class ApproversService {
   public async createApprover({
     programId,
     userId,
+    programApprovalThresholdId,
     order,
   }: {
     programId: number;
     userId: number;
+    programApprovalThresholdId: number;
     order: number;
   }): Promise<ApproverResponseDto> {
-    await this.checkUniqueOrderOrThrow(programId, order);
+    await this.checkUniqueOrderOrThrow(programApprovalThresholdId, order);
 
     const programAidworkerAssignment =
       await this.assignmentRepository.findOneOrFail({
@@ -80,11 +82,12 @@ export class ApproversService {
     const existingApprover = await this.approverRepository.findOne({
       where: {
         programAidworkerAssignmentId: Equal(programAidworkerAssignment.id),
+        programApprovalThresholdId: Equal(programApprovalThresholdId),
       },
     });
     if (existingApprover) {
       throw new HttpException(
-        'User is already an approver for this program',
+        'User is already an approver for this threshold',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -98,26 +101,25 @@ export class ApproversService {
 
     const approver = new ApproverEntity();
     approver.programAidworkerAssignment = programAidworkerAssignment;
+    approver.programApprovalThresholdId = programApprovalThresholdId;
     approver.order = order;
     await this.approverRepository.save(approver);
     return this.entityToDto(approver);
   }
 
   private async checkUniqueOrderOrThrow(
-    programId: number,
+    programApprovalThresholdId: number,
     order: number,
   ): Promise<void> {
     const existingApprover = await this.approverRepository.findOne({
       where: {
         order: Equal(order),
-        programAidworkerAssignment: {
-          program: { id: Equal(programId) },
-        },
+        programApprovalThresholdId: Equal(programApprovalThresholdId),
       },
     });
     if (existingApprover) {
       throw new HttpException(
-        `An approver with order ${order} already exists for this program`,
+        `An approver with order ${order} already exists for this threshold`,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -177,12 +179,18 @@ export class ApproversService {
   }
 
   private entityToDto(approver: ApproverEntity): ApproverResponseDto {
-    const { id, programAidworkerAssignment, order } = approver;
+    const {
+      id,
+      programAidworkerAssignment,
+      programApprovalThresholdId,
+      order,
+    } = approver;
     const { user } = programAidworkerAssignment;
     return {
       id,
       userId: user.id,
       username: user.username,
+      programApprovalThresholdId,
       order,
     };
   }
@@ -196,15 +204,22 @@ export class ApproversService {
       where: {
         paymentId: Equal(paymentId),
       },
-      relations: { approver: { programAidworkerAssignment: { user: true } } },
+      relations: {
+        programApprovalThreshold: {
+          approvers: { programAidworkerAssignment: { user: true } },
+        },
+      },
       order: { rank: 'ASC' },
     });
     return paymentApprovals.map((approval) => {
-      const { approver } = approval;
+      const { programApprovalThreshold } = approval;
       return {
         id: approval.id,
         approved: approval.approved,
-        username: approver?.programAidworkerAssignment?.user?.username,
+        username: programApprovalThreshold?.approvers
+          ?.map((a) => a.programAidworkerAssignment?.user?.username)
+          .filter(Boolean)
+          .join(', '),
         rank: approval.rank,
       };
     });

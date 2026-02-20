@@ -104,6 +104,7 @@ graph LR
   PaymentsModule-->FspsModule
   PaymentsModule-->MessageTemplateModule
   PaymentsModule-->PaymentEventsModule
+  PaymentsModule-->ProgramApprovalThresholdsModule
   PaymentsModule-->ProgramFspConfigurationsModule
   PaymentsModule-->ProgramModule
   PaymentsModule-->RedisModule

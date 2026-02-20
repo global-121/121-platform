@@ -825,6 +825,44 @@
     ]
   },
   {
+    "method": "post",
+    "path": "/api/programs/{programId}/approval-thresholds",
+    "params": [
+      "programId"
+    ],
+    "returnType": "GetProgramApprovalThresholdResponseDto"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/approval-thresholds",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/approval-thresholds/{thresholdId}",
+    "params": [
+      "thresholdId"
+    ],
+    "returnType": "GetProgramApprovalThresholdResponseDto"
+  },
+  {
+    "method": "patch",
+    "path": "/api/approval-thresholds/{thresholdId}",
+    "params": [
+      "thresholdId"
+    ],
+    "returnType": "GetProgramApprovalThresholdResponseDto"
+  },
+  {
+    "method": "delete",
+    "path": "/api/approval-thresholds/{thresholdId}",
+    "params": [
+      "thresholdId"
+    ]
+  },
+  {
     "method": "get",
     "path": "/api/notifications/whatsapp/templates",
     "params": []

@@ -58,6 +58,7 @@ export class ApproversController {
     return await this.approversService.createApprover({
       programId,
       userId: body.userId,
+      programApprovalThresholdId: body.programApprovalThresholdId,
       order: body.order,
     });
   }

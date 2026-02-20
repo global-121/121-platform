@@ -27,6 +27,7 @@ import { TransactionsModule } from '@121-service/src/payments/transactions/trans
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ApproversModule } from '@121-service/src/programs/approvers/approvers.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { ProgramApprovalThresholdsModule } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
@@ -61,6 +62,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     TransactionEventsModule,
     MessageTemplateModule,
     ApproversModule,
+    ProgramApprovalThresholdsModule,
   ],
   providers: [
     PaymentsManagementService,

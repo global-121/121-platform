@@ -16,7 +16,8 @@ import { TransactionViewScopedRepository } from '@121-service/src/payments/trans
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ApproversService } from '@121-service/src/programs/approvers/approvers.service';
-import { ApproverResponseDto } from '@121-service/src/programs/approvers/dto/approver-response.dto';
+import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
+import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
@@ -38,6 +39,7 @@ export class PaymentsManagementService {
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
     private readonly transactionsService: TransactionsService,
     private readonly approversService: ApproversService,
+    private readonly programApprovalThresholdsService: ProgramApprovalThresholdsService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentApprovalRepository: PaymentApprovalRepository,
   ) {}
@@ -71,12 +73,15 @@ export class PaymentsManagementService {
     // put all operations in try, to be able to always end with an unlock-payments action, also in case of failure
     try {
       // First run the logic that is needed in both dryRun and real payment scenario
-      const { bulkActionResultPaymentDto, registrationsForPayment, approvers } =
-        await this.getPaymentDryRunDetailsOrThrow({
-          programId,
-          transferValue,
-          query,
-        });
+      const {
+        bulkActionResultPaymentDto,
+        registrationsForPayment,
+        thresholds,
+      } = await this.getPaymentDryRunDetailsOrThrow({
+        programId,
+        transferValue,
+        query,
+      });
 
       if (dryRun || !transferValue) {
         return bulkActionResultPaymentDto;
@@ -86,7 +91,7 @@ export class PaymentsManagementService {
         userId,
         programId,
         note,
-        approvers,
+        thresholds,
       });
       bulkActionResultPaymentDto.id = paymentId;
 
@@ -128,17 +133,8 @@ export class PaymentsManagementService {
   }): Promise<{
     bulkActionResultPaymentDto: BulkActionResultPaymentDto;
     registrationsForPayment: MappedPaginatedRegistrationDto[];
-    approvers: ApproverResponseDto[];
+    thresholds: ProgramApprovalThresholdEntity[];
   }> {
-    const approvers = await this.approversService.getApprovers({
-      programId,
-    });
-    if (approvers.length < 1) {
-      throw new HttpException(
-        'No approvers found for program, cannot create payment',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     // TODO: REFACTOR: Move what happens in setQueryPropertiesBulkAction into this function, and call a refactored version of getBulkActionResult/getPaymentBaseQuery (create solution design first)
     const paginateQuery =
       this.registrationsBulkService.setQueryPropertiesBulkAction({
@@ -165,8 +161,21 @@ export class PaymentsManagementService {
           programFspConfigurationNames: [],
         },
         registrationsForPayment: [],
-        approvers,
+        thresholds: [],
       };
+    }
+
+    // Get thresholds that apply to this payment amount
+    const thresholds =
+      await this.programApprovalThresholdsService.getThresholdsForPaymentAmount(
+        programId,
+        transferValue,
+      );
+    if (thresholds.length < 1) {
+      throw new HttpException(
+        'No approval thresholds found for this payment amount, cannot create payment',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     // Get array of RegistrationViewEntity objects to be paid
@@ -213,7 +222,7 @@ export class PaymentsManagementService {
     return {
       bulkActionResultPaymentDto,
       registrationsForPayment,
-      approvers,
+      thresholds,
     };
   }
 
@@ -221,17 +230,19 @@ export class PaymentsManagementService {
     userId,
     programId,
     note,
-    approvers,
+    thresholds,
   }: {
     userId: number;
     programId: number;
     note?: string;
-    approvers: ApproverResponseDto[];
+    thresholds: ProgramApprovalThresholdEntity[];
   }): Promise<number> {
-    const sortedApprovers = approvers.slice().sort((a, b) => a.order - b.order);
-    const paymentApprovals = sortedApprovers.map((approver, index) => {
+    const sortedThresholds = thresholds
+      .slice()
+      .sort((a, b) => a.approvalLevel - b.approvalLevel);
+    const paymentApprovals = sortedThresholds.map((threshold, index) => {
       const paymentApproval = new PaymentApprovalEntity();
-      paymentApproval.approverId = approver.id;
+      paymentApproval.programApprovalThresholdId = threshold.id;
       paymentApproval.approved = false;
       paymentApproval.rank = index + 1;
       return paymentApproval;
@@ -328,19 +339,22 @@ export class PaymentsManagementService {
       where: {
         paymentId: Equal(paymentId),
       },
+      relations: { programApprovalThreshold: true },
     });
     const currentPaymentApproval = allPaymentApprovals.find(
-      (approval) => approval.approverId === approver.id,
+      (approval) =>
+        approval.programApprovalThresholdId ===
+        approver.programApprovalThresholdId,
     );
     if (!currentPaymentApproval) {
       throw new HttpException(
-        'Approver not assigned to this payment',
+        'Approver not assigned to any threshold for this payment',
         HttpStatus.BAD_REQUEST,
       );
     }
     if (currentPaymentApproval.approved) {
       throw new HttpException(
-        'Approver has already approved this payment',
+        'This threshold has already been approved for this payment',
         HttpStatus.BAD_REQUEST,
       );
     }

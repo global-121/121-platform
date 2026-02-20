@@ -4,7 +4,6 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
   Relation,
 } from 'typeorm';
 
@@ -29,13 +28,13 @@ export class ProgramApprovalThresholdEntity extends Base121Entity {
 
   @OneToMany(
     () => ApproverEntity,
-    (approver) => approver.programAidworkerAssignment,
+    (approver) => approver.programApprovalThreshold,
   )
   public approvers: Relation<ApproverEntity[]>;
 
-  @OneToOne(() => PaymentApprovalEntity, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'paymentApprovalId' })
-  public paymentApproval: Relation<PaymentApprovalEntity>;
-  @Column({ nullable: true })
-  public paymentApprovalId: number | null;
+  @OneToMany(
+    () => PaymentApprovalEntity,
+    (paymentApproval) => paymentApproval.programApprovalThreshold,
+  )
+  public paymentApprovals: Relation<PaymentApprovalEntity[]>;
 }

@@ -23,6 +23,7 @@ import { ApproversService } from '@121-service/src/programs/approvers/approvers.
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
+import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
@@ -45,6 +46,7 @@ export class SeedHelperService {
     private readonly httpService: CustomHttpService,
     private readonly axiosCallsService: AxiosCallsService,
     private readonly approversService: ApproversService,
+    private readonly programApprovalThresholdsService: ProgramApprovalThresholdsService,
   ) {}
 
   public async seedData({
@@ -278,11 +280,22 @@ export class SeedHelperService {
       where: { username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_ADMIN) },
     });
 
+    // Create default thresholds for demo purposes
+    const threshold1 =
+      await this.programApprovalThresholdsService.createProgramApprovalThreshold(
+        {
+          programId,
+          thresholdAmount: 0,
+          approvalLevel: 1,
+        },
+      );
+
     switch (approverMode) {
       case ApproverSeedMode.admin:
         await this.approversService.createApprover({
           programId,
           userId: adminUser.id,
+          programApprovalThresholdId: threshold1.id,
           order: 1,
         });
         break;
@@ -295,11 +308,22 @@ export class SeedHelperService {
         await this.approversService.createApprover({
           programId,
           userId: adminUser.id,
+          programApprovalThresholdId: threshold1.id,
           order: 1,
         });
+        // Create second threshold for demo
+        const threshold2 =
+          await this.programApprovalThresholdsService.createProgramApprovalThreshold(
+            {
+              programId,
+              thresholdAmount: 100,
+              approvalLevel: 2,
+            },
+          );
         await this.approversService.createApprover({
           programId,
           userId: approverUser.id,
+          programApprovalThresholdId: threshold2.id,
           order: 2,
         });
         break;

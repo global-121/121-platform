@@ -2,15 +2,19 @@ import { Column, Entity, JoinColumn, ManyToOne, Relation } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
-import { ApproverEntity } from '@121-service/src/programs/approvers/entities/approver.entity';
+import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 
 @Entity('payment_approval')
 export class PaymentApprovalEntity extends Base121Entity {
-  @ManyToOne(() => ApproverEntity, { onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'approverId' })
-  public approver: Relation<ApproverEntity>;
-  @Column({ nullable: true })
-  public approverId: number | null;
+  @ManyToOne(
+    () => ProgramApprovalThresholdEntity,
+    (threshold) => threshold.paymentApprovals,
+    { onDelete: 'CASCADE' },
+  )
+  @JoinColumn({ name: 'programApprovalThresholdId' })
+  public programApprovalThreshold: Relation<ProgramApprovalThresholdEntity>;
+  @Column()
+  public programApprovalThresholdId: number;
 
   @ManyToOne(() => PaymentEntity, (payment) => payment.approvals, {
     onDelete: 'CASCADE',
