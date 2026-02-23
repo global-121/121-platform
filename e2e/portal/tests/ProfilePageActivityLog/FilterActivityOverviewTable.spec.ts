@@ -14,13 +14,17 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 let registrationId: number;
 const paymentReferenceId = [registrationPV5.referenceId];
 
-test.beforeEach(async ({ page, resetDBAndSeedRegistrations }) => {
-  // Arrange once because tests don't mutate backend state.
-  const { accessToken } = await resetDBAndSeedRegistrations({
+test.beforeAll(async ({ onlyResetAndSeedRegistrations }) => {
+  await onlyResetAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     registrations: [registrationPV5],
     programId: programIdPV,
   });
+});
+
+test.beforeEach(async ({ page, login, accessToken }) => {
+  // Arrange once because tests don't mutate backend state.
+  await login();
 
   registrationId = await getRegistrationIdByReferenceId({
     programId: programIdPV,

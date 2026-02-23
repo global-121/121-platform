@@ -59,6 +59,9 @@ type Fixtures = {
     includeRegistrationEvents?: boolean;
     approverMode?: ApproverSeedMode;
   }) => Promise<{ accessToken: string }>;
+  login: () => Promise<void>;
+  onlyResetAndSeedRegistrations: (params) => Promise<void>;
+  accessToken: string;
   paymentPage: PaymentPage;
   paymentsPage: PaymentsPage;
   registrationDataPage: RegistrationDataPage;
@@ -207,6 +210,46 @@ export const customSharedFixture = base.extend<Fixtures>({
     };
 
     await use(fn);
+  },
+
+  login: async ({ page }, use) => {
+    const fn = async (): Promise<void> => {
+      const loginPage = new LoginPage(page);
+      await loginPage.goto('/');
+      await loginPage.login();
+    };
+    await use(fn);
+  },
+
+  /**
+   * "only" to indicate that it _only_ does those things and not a bunch of
+   * other stuff like the resetDBAndSeedRegistrations fixture.
+   *
+   * Can be used in beforeAll and beforeEach as it does not use page.
+   */
+  onlyResetAndSeedRegistrations: async ({}, use, testInfo: TestInfo) => {
+    const fn = async (params) => {
+      await resetDatabase({
+        approverMode: params.approverMode,
+        includeRegistrationEvents: params.includeRegistrationEvents,
+        seedScript: params.seedScript,
+        nameOfFileContainingTest: testInfo.file,
+      });
+      await seedRegistrations({
+        skipSeedRegistrations: params.skipSeedRegistrations,
+        registrations: params.registrations,
+        programId: params.programId,
+        seedWithStatus: params.seedWithStatus,
+        addPaidRegistrations: params.seedPaidRegistrations,
+        transferValue: params.transferValue,
+      });
+    };
+    await use(fn);
+  },
+
+  accessToken: async ({}, use) => {
+    const accessToken = await getAccessToken();
+    await use(accessToken);
   },
 
   paymentPage: async ({ page }, use) => {
