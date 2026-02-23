@@ -168,6 +168,7 @@ export default tsEslint.config(
         {
           checkId: false,
           ignoreAttributes: [
+            'a[rel]',
             'data-testid',
             'field',
             'img[ngSrc]',
@@ -190,6 +191,7 @@ export default tsEslint.config(
             'p-table[stateStorage]',
             'appendTo',
             'inputId',
+            'input[inputmode]',
             'queryParamsHandling',
             'styleClass',
             'severity',

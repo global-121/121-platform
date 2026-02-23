@@ -3,7 +3,7 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 
 describe('KoboLanguageMapper', () => {
   describe('getLanguageIsoCodes', () => {
-    it('should extract valid ISO codes from kobo languages', () => {
+    it('should extract valid ISO codes from Kobo languages', () => {
       // Arrange
       const koboLanguages = [
         'English (en)',
@@ -75,7 +75,7 @@ describe('KoboLanguageMapper', () => {
       expect(result).toBeUndefined();
     });
 
-    it('should correctly extract ISO code from valid kobo language string', () => {
+    it('should correctly extract ISO code from valid Kobo language string', () => {
       // Arrange
       const koboSurveyLanguage = 'English (en)';
 

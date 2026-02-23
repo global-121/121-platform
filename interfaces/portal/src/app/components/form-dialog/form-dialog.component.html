@@ -1,6 +1,7 @@
 <p-confirmDialog
   #confirmDialog
   [closeOnEscape]="false"
+  [focusTrap]="true"
 >
   <ng-template #headless>
     <div class="w-[632px] space-y-6 p-6">
@@ -8,7 +9,6 @@
         (ngSubmit)="onProceed()"
         (keydown.control.enter)="onProceed()"
         (keydown.meta.enter)="onProceed()"
-        pFocusTrap
       >
         <div class="flex w-full items-center">
           <h3 [class]="headerClass()">
@@ -16,6 +16,7 @@
             {{ header() }}
           </h3>
           <p-button
+            [autofocus]="true"
             ariaLabel="Close"
             i18n-ariaLabel="@@generic-close"
             title="Close"

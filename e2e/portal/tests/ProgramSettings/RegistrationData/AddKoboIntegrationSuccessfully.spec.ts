@@ -1,3 +1,4 @@
+import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   programIdSafaricom,
@@ -8,7 +9,7 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 // KOBO INTEGRATION DETAILS
 const koboIntegrationDetails = {
-  url: 'http://mock-service:3001/api/kobo',
+  url: `${env.MOCK_SERVICE_URL}/api/kobo`,
   successfulAssetId: 'success-asset',
   apiKey: 'mock-token',
 };

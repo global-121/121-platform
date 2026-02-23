@@ -2159,9 +2159,6 @@
       <trans-unit id="2467968235830364853" datatype="html">
         <source>Select a registration tool you want to integrate to the program</source>
       </trans-unit>
-      <trans-unit id="3054104681790532369" datatype="html">
-        <source>Kobo toolbox</source>
-      </trans-unit>
       <trans-unit id="3069764081921374374" datatype="html">
         <source>Kobo form successfully integrated.</source>
       </trans-unit>
@@ -2177,14 +2174,8 @@
       <trans-unit id="4671562292257026998" datatype="html">
         <source>API key</source>
       </trans-unit>
-      <trans-unit id="5270958968110720770" datatype="html">
-        <source>Link Kobo Toolbox</source>
-      </trans-unit>
       <trans-unit id="6927943623949177165" datatype="html">
         <source>Registration integration</source>
-      </trans-unit>
-      <trans-unit id="7466544001784367462" datatype="html">
-        <source>Kobo Toolbox is already integrated</source>
       </trans-unit>
       <trans-unit id="8153112678957419197" datatype="html">
         <source>Error while integrating Kobo form</source>
@@ -2200,6 +2191,12 @@
       </trans-unit>
       <trans-unit id="8329565273054861257" datatype="html">
         <source>You&apos;re about to link this program with this Kobo form:</source>
+      </trans-unit>
+      <trans-unit id="6770883928375952203" datatype="html">
+        <source>KoboToolbox</source>
+      </trans-unit>
+      <trans-unit id="8809702678611776373" datatype="html">
+        <source>Link with KoboToolbox</source>
       </trans-unit>
     </body>
   </file>
