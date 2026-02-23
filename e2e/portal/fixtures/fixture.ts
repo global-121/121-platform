@@ -77,65 +77,133 @@ type Fixtures = {
   usersPage: UsersPage;
 };
 
+/**
+ * Resets the database to some known state.
+ *
+ * Can be used as part of a beforeAll or beforeEach hook.
+ * We need this to be a separate function because we want to use it in multiple fixtures.
+ */
+const resetDatabase = async ({
+  seedScript,
+  includeRegistrationEvents,
+  approverMode,
+  nameOfFileContainingTest,
+}: {
+  seedScript: SeedScript;
+  includeRegistrationEvents?: boolean;
+  approverMode?: ApproverSeedMode;
+  nameOfFileContainingTest: string;
+}) => {
+  // Logic to reset the database and seed registrations
+  await resetDB(
+    seedScript,
+    nameOfFileContainingTest,
+    includeRegistrationEvents ?? false,
+    approverMode,
+  );
+};
+
+/**
+ * Seeds the database with registrations.
+ *
+ * Can be used as part of a beforeAll or beforeEach hook.
+ * We need this to be a separate function because we want to use it in multiple fixtures.
+ */
+const seedRegistrations = async ({
+  addPaidRegistrations,
+  programId,
+  registrations,
+  seedWithStatus,
+  skipSeedRegistrations,
+  transferValue,
+}: {
+  addPaidRegistrations?: boolean;
+  programId?: number;
+  registrations?: TestRegistration[];
+  seedWithStatus?: RegistrationStatusEnum;
+  skipSeedRegistrations?: boolean;
+  transferValue?: number;
+}) => {
+  if (skipSeedRegistrations) {
+    return;
+  }
+  // The access token does not need to be the same as in tests.
+  const accessToken = await getAccessToken();
+
+  if (addPaidRegistrations) {
+    await seedPaidRegistrations({
+      registrations: registrations!,
+      programId: programId!,
+      transferValue: transferValue ?? 20,
+      completeStatuses: [TransactionStatusEnum.success],
+    });
+  } else if (seedWithStatus) {
+    await seedRegistrationsWithStatus(
+      registrations ?? [],
+      programId ?? 1,
+      accessToken,
+      seedWithStatus,
+    );
+  } else {
+    await seedIncludedRegistrations(
+      registrations ?? [],
+      programId ?? 1,
+      accessToken,
+    );
+  }
+};
+
 export const customSharedFixture = base.extend<Fixtures>({
+  // This fixture function actually does 5 things:
+  // 1. Resets the database to a known state.
+  // 2. Seeds the database with registrations.
+  // 3. Logs in to the portal.
+  // 4. Optionally navigates to a specific page after login.
+  // 5. Returns the access token.
   resetDBAndSeedRegistrations: async ({ page }, use, testInfo: TestInfo) => {
     const resetAndSeed = async (params: {
+      // For resetting the database.
+      approverMode?: ApproverSeedMode;
+      includeRegistrationEvents?: boolean;
       seedScript: SeedScript;
-      skipSeedRegistrations?: boolean;
-      registrations?: TestRegistration[];
+      // For seeding registrations.
       programId?: number;
-      navigateToPage?: string;
-      seedWithStatus?: RegistrationStatusEnum;
+      registrations?: TestRegistration[];
       seedPaidRegistrations?: boolean;
+      seedWithStatus?: RegistrationStatusEnum;
+      skipSeedRegistrations?: boolean;
       transferValue?: number;
+      // For logging and navigation afterwards.
+      navigateToPage?: string;
       username?: string;
       password?: string;
-      includeRegistrationEvents?: boolean;
-      approverMode?: ApproverSeedMode;
     }): Promise<{ accessToken: string }> => {
-      const nameOfFileContainingTest = testInfo.file;
-      // Logic to reset the database and seed registrations
-      await resetDB(
-        params.seedScript,
-        nameOfFileContainingTest,
-        params.includeRegistrationEvents ?? false,
-        params.approverMode,
-      );
-      const accessToken = await getAccessToken();
+      await resetDatabase({
+        approverMode: params.approverMode,
+        includeRegistrationEvents: params.includeRegistrationEvents,
+        seedScript: params.seedScript,
+        nameOfFileContainingTest: testInfo.file,
+      });
+      await seedRegistrations({
+        skipSeedRegistrations: params.skipSeedRegistrations,
+        registrations: params.registrations,
+        programId: params.programId,
+        seedWithStatus: params.seedWithStatus,
+        addPaidRegistrations: params.seedPaidRegistrations,
+        transferValue: params.transferValue,
+      });
 
-      if (!params.skipSeedRegistrations) {
-        if (params.seedPaidRegistrations) {
-          await seedPaidRegistrations({
-            registrations: params.registrations!,
-            programId: params.programId!,
-            transferValue: params.transferValue ?? 20,
-            completeStatuses: [TransactionStatusEnum.success],
-          });
-        } else if (params.seedWithStatus) {
-          await seedRegistrationsWithStatus(
-            params.registrations ?? [],
-            params.programId ?? 1,
-            accessToken,
-            params.seedWithStatus,
-          );
-        } else {
-          await seedIncludedRegistrations(
-            params.registrations ?? [],
-            params.programId ?? 1,
-            accessToken,
-          );
-        }
-      }
       // Login
       const loginPage = new LoginPage(page);
       await loginPage.goto('/');
       await loginPage.login(params.username, params.password);
+
       // Optionally navigate to a specific page after login
       if (params.navigateToPage) {
         await loginPage.goto(params.navigateToPage);
       }
 
-      return { accessToken };
+      return { accessToken: await getAccessToken() };
     };
 
     await use(resetAndSeed);
