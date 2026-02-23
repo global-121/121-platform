@@ -179,7 +179,7 @@ class FspSettingsPage extends BasePage {
       }
       await this.integrateFspButton.click();
       await expect(this.integrationErrorMessage).toBeVisible();
-      await this.page.waitForTimeout(200);
+      await this.page.waitForTimeout(500);
       await this.cancelButton.click();
     }
   }
