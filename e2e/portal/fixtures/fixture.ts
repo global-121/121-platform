@@ -161,7 +161,7 @@ export const customSharedFixture = base.extend<Fixtures>({
   // 4. Optionally navigates to a specific page after login.
   // 5. Returns the access token.
   resetDBAndSeedRegistrations: async ({ page }, use, testInfo: TestInfo) => {
-    const resetAndSeed = async (params: {
+    const fn = async (params: {
       // For resetting the database.
       approverMode?: ApproverSeedMode;
       includeRegistrationEvents?: boolean;
@@ -206,7 +206,7 @@ export const customSharedFixture = base.extend<Fixtures>({
       return { accessToken: await getAccessToken() };
     };
 
-    await use(resetAndSeed);
+    await use(fn);
   },
 
   paymentPage: async ({ page }, use) => {
