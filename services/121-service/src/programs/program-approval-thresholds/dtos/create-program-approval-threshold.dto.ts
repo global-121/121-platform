@@ -14,7 +14,7 @@ export class CreateProgramApprovalThresholdDto {
   @IsNotEmpty()
   public readonly approvalLevel: number;
 
-  @ApiProperty({ example: 1, description: 'Program ID' })
+  @ApiProperty({ example: 2, description: 'Program ID' })
   @IsInt()
   @IsPositive()
   @IsNotEmpty()

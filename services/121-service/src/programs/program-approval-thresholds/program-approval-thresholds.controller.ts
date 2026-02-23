@@ -33,9 +33,7 @@ export class ProgramApprovalThresholdsController {
     this.programApprovalThresholdsService = programApprovalThresholdsService;
   }
 
-  @AuthenticatedUser({
-    permissions: [PermissionEnum.ProgramUPDATE],
-  })
+  @AuthenticatedUser()
   @ApiOperation({
     summary: 'Create a program approval threshold',
   })
@@ -49,6 +47,10 @@ export class ProgramApprovalThresholdsController {
     @Param('programId', ParseIntPipe) programId: number,
     @Body() createDto: CreateProgramApprovalThresholdDto,
   ): Promise<GetProgramApprovalThresholdResponseDto> {
+    console.log('Creating program approval threshold with data:', {
+      ...createDto,
+      programId,
+    });
     return await this.programApprovalThresholdsService.createProgramApprovalThreshold(
       {
         ...createDto,
