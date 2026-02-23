@@ -54,22 +54,23 @@ test.beforeEach(async ({ page, login, accessToken }) => {
   );
 });
 
-test('Filter activity overview table by different activities', async ({
-  tableComponent,
-}) => {
-  for (const activity of [
-    'Transaction',
-    'Message',
-    'Data change',
-    'Status update',
-  ]) {
-    await test.step(`Filter and validate "${activity}"`, async () => {
-      await tableComponent.filterColumnByDropDownSelection({
-        columnName: 'Activity',
-        selection: activity,
+['Transaction', 'Message', 'Data change', 'Status update'].forEach(
+  (activity) => {
+    test(`Filter activity overview table by  ${activity}`, async ({
+      tableComponent,
+    }) => {
+      // Act
+      await test.step(`Filter activity log on "${activity}".`, async () => {
+        await tableComponent.filterColumnByDropDownSelection({
+          columnName: 'Activity',
+          selection: activity,
+        });
       });
-      await tableComponent.validateFirstLogActivity(activity);
-      await tableComponent.clearAllFilters();
+
+      // Assert
+      await test.step(`Validating whether "${activity}" is visible.`, async () => {
+        await tableComponent.validateFirstLogActivity(activity);
+      });
     });
-  }
-});
+  },
+);
