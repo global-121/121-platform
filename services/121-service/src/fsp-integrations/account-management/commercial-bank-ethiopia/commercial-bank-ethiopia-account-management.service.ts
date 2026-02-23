@@ -108,6 +108,7 @@ export class CommercialBankEthiopiaAccountManagementService {
         `Error fetching validation status for Registration ID ${registration.id} with account number ${registration.bankAccountNumber}:`,
         error,
       );
+      console.timeEnd(logMessageRegistration);
       return;
     }
     console.timeEnd(logMessageRegistration);
