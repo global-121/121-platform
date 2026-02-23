@@ -829,8 +829,7 @@
     "path": "/api/programs/{programId}/approval-thresholds",
     "params": [
       "programId"
-    ],
-    "returnType": "GetProgramApprovalThresholdResponseDto"
+    ]
   },
   {
     "method": "get",
@@ -840,26 +839,10 @@
     ]
   },
   {
-    "method": "get",
-    "path": "/api/approval-thresholds/{thresholdId}",
-    "params": [
-      "thresholdId"
-    ],
-    "returnType": "GetProgramApprovalThresholdResponseDto"
-  },
-  {
-    "method": "patch",
-    "path": "/api/approval-thresholds/{thresholdId}",
-    "params": [
-      "thresholdId"
-    ],
-    "returnType": "GetProgramApprovalThresholdResponseDto"
-  },
-  {
     "method": "delete",
-    "path": "/api/approval-thresholds/{thresholdId}",
+    "path": "/api/programs/{programId}/approval-thresholds",
     "params": [
-      "thresholdId"
+      "programId"
     ]
   },
   {

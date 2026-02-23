@@ -1,9 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Equal, LessThanOrEqual } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Equal, LessThanOrEqual, Repository } from 'typeorm';
 
+import { ApproverEntity } from '@121-service/src/programs/approvers/entities/approver.entity';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/get-program-approval-threshold-response.dto';
-import { UpdateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/update-program-approval-threshold.dto';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 import { ProgramApprovalThresholdRepository } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.repository';
 
@@ -11,15 +13,111 @@ import { ProgramApprovalThresholdRepository } from '@121-service/src/programs/pr
 export class ProgramApprovalThresholdsService {
   public constructor(
     private readonly programApprovalThresholdRepository: ProgramApprovalThresholdRepository,
+    private readonly dataSource: DataSource,
+    @InjectRepository(ApproverEntity)
+    private readonly approverRepository: Repository<ApproverEntity>,
+    @InjectRepository(ProgramAidworkerAssignmentEntity)
+    private readonly aidworkerAssignmentRepository: Repository<ProgramAidworkerAssignmentEntity>,
   ) {}
 
+  public async replaceProgramApprovalThresholds(
+    programId: number,
+    thresholds: CreateProgramApprovalThresholdDto[],
+  ): Promise<GetProgramApprovalThresholdResponseDto[]> {
+    return await this.dataSource.transaction(async (manager) => {
+      // Delete all existing thresholds for this program (CASCADE will delete approvers)
+      await manager.delete(ProgramApprovalThresholdEntity, {
+        programId: Equal(programId),
+      });
+
+      const results: GetProgramApprovalThresholdResponseDto[] = [];
+
+      for (const thresholdDto of thresholds) {
+        // Create threshold
+        const threshold = new ProgramApprovalThresholdEntity();
+        threshold.thresholdAmount = thresholdDto.thresholdAmount;
+        threshold.approvalLevel = thresholdDto.approvalLevel;
+        threshold.programId = programId;
+
+        const savedThreshold = await manager.save(
+          ProgramApprovalThresholdEntity,
+          threshold,
+        );
+
+        // Create approvers if provided
+        if (thresholdDto.approvers && thresholdDto.approvers.length > 0) {
+          for (let i = 0; i < thresholdDto.approvers.length; i++) {
+            const approverDto = thresholdDto.approvers[i];
+
+            // Validate that the aidworker assignment exists and belongs to this program
+            const assignment = await manager.findOne(
+              ProgramAidworkerAssignmentEntity,
+              {
+                where: {
+                  id: Equal(approverDto.programAidworkerAssignmentId),
+                  programId: Equal(programId),
+                },
+              },
+            );
+
+            if (!assignment) {
+              throw new HttpException(
+                `Program aidworker assignment with ID ${approverDto.programAidworkerAssignmentId} not found for program ${programId}`,
+                HttpStatus.BAD_REQUEST,
+              );
+            }
+
+            if (assignment.scope !== '') {
+              throw new HttpException(
+                `Only users without scope can be made approvers. Program aidworker assignment ${approverDto.programAidworkerAssignmentId} has a scope.`,
+                HttpStatus.BAD_REQUEST,
+              );
+            }
+
+            // Check if this assignment is already an approver for this threshold
+            const existingApprover = await manager.findOne(ApproverEntity, {
+              where: {
+                programAidworkerAssignmentId: Equal(
+                  approverDto.programAidworkerAssignmentId,
+                ),
+                programApprovalThresholdId: Equal(savedThreshold.id),
+              },
+            });
+
+            if (existingApprover) {
+              throw new HttpException(
+                `Program aidworker assignment ${approverDto.programAidworkerAssignmentId} is already an approver for this threshold`,
+                HttpStatus.BAD_REQUEST,
+              );
+            }
+
+            // Create the approver
+            const approver = new ApproverEntity();
+            approver.programAidworkerAssignmentId =
+              approverDto.programAidworkerAssignmentId;
+            approver.programApprovalThresholdId = savedThreshold.id;
+            approver.order = i + 1; // Order starts from 1
+
+            await manager.save(ApproverEntity, approver);
+          }
+        }
+
+        results.push(this.mapEntityToDto(savedThreshold));
+      }
+
+      return results;
+    });
+  }
+
+  // Internal helper for seed data - creates a single threshold without approvers
   public async createProgramApprovalThreshold(
+    programId: number,
     createDto: CreateProgramApprovalThresholdDto,
   ): Promise<GetProgramApprovalThresholdResponseDto> {
     const threshold = new ProgramApprovalThresholdEntity();
     threshold.thresholdAmount = createDto.thresholdAmount;
     threshold.approvalLevel = createDto.approvalLevel;
-    threshold.programId = createDto.programId;
+    threshold.programId = programId;
 
     const savedThreshold =
       await this.programApprovalThresholdRepository.save(threshold);
@@ -38,65 +136,12 @@ export class ProgramApprovalThresholdsService {
     return thresholds.map((threshold) => this.mapEntityToDto(threshold));
   }
 
-  public async getProgramApprovalThresholdById(
-    id: number,
-  ): Promise<GetProgramApprovalThresholdResponseDto> {
-    const threshold = await this.programApprovalThresholdRepository.findOne({
-      where: { id: Equal(id) },
+  public async deleteAllProgramApprovalThresholds(
+    programId: number,
+  ): Promise<void> {
+    await this.programApprovalThresholdRepository.delete({
+      programId: Equal(programId),
     });
-
-    if (!threshold) {
-      throw new HttpException(
-        `Program approval threshold with ID ${id} not found`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    return this.mapEntityToDto(threshold);
-  }
-
-  public async updateProgramApprovalThreshold(
-    id: number,
-    updateDto: UpdateProgramApprovalThresholdDto,
-  ): Promise<GetProgramApprovalThresholdResponseDto> {
-    const threshold = await this.programApprovalThresholdRepository.findOne({
-      where: { id: Equal(id) },
-    });
-
-    if (!threshold) {
-      throw new HttpException(
-        `Program approval threshold with ID ${id} not found`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    if (updateDto.thresholdAmount !== undefined) {
-      threshold.thresholdAmount = updateDto.thresholdAmount;
-    }
-
-    if (updateDto.approvalLevel !== undefined) {
-      threshold.approvalLevel = updateDto.approvalLevel;
-    }
-
-    const updatedThreshold =
-      await this.programApprovalThresholdRepository.save(threshold);
-
-    return this.mapEntityToDto(updatedThreshold);
-  }
-
-  public async deleteProgramApprovalThreshold(id: number): Promise<void> {
-    const threshold = await this.programApprovalThresholdRepository.findOne({
-      where: { id: Equal(id) },
-    });
-
-    if (!threshold) {
-      throw new HttpException(
-        `Program approval threshold with ID ${id} not found`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    await this.programApprovalThresholdRepository.remove(threshold);
   }
 
   public async getThresholdsForPaymentAmount(
