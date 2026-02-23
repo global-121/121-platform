@@ -14,14 +14,12 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 const todaysDate = new Date();
 const futureDate = new Date();
 futureDate.setDate(futureDate.getDate() + 1);
-let accessToken: string;
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-  const { accessToken: token } = await resetDBAndSeedRegistrations({
+test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
+  await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     skipSeedRegistrations: true,
   });
-  accessToken = token;
 
   await patchProgram(
     programIdOCW,
@@ -35,7 +33,10 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   );
 });
 
-test('Edit Program Information', async ({ programSettingsPage }) => {
+test('Edit Program Information', async ({
+  programSettingsPage,
+  accessToken,
+}) => {
   const programInfo = {
     name: 'TUiR Warta',
     description: 'TUiR Warta description',

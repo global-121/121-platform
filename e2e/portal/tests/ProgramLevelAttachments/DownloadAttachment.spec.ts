@@ -14,8 +14,8 @@ const fileName = 'Test TEST-DOCUMENT file upload.pdf';
 
 // Arrange
 test.describe('Attachments on Program Level', () => {
-  test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-    const { accessToken } = await resetDBAndSeedRegistrations({
+  test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
+    await resetDBAndSeedRegistrations({
       seedScript: SeedScript.nlrcMultiple,
       skipSeedRegistrations: true,
       navigateToPage: `/program/${programIdOCW}/monitoring/files`,

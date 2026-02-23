@@ -49,8 +49,8 @@ const dataUpdate = {
   addressPostalCode: '5678ZY',
 };
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-  const { accessToken } = await resetDBAndSeedRegistrations({
+test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
+  await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     registrations: [registrationOCW4],
     programId: programIdOCW,

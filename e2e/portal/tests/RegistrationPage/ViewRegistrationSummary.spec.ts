@@ -13,8 +13,9 @@ let registrationProgramId: number;
 test('User should see a summary of a registration', async ({
   registrationActivityLogPage,
   resetDBAndSeedRegistrations,
+  accessToken,
 }) => {
-  const { accessToken } = await resetDBAndSeedRegistrations({
+  await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     seedPaidRegistrations: true,
     registrations: [registrationPvScoped],

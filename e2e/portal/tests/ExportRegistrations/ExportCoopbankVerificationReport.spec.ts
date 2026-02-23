@@ -7,8 +7,8 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const coopBankProgramId = 1;
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-  const { accessToken } = await resetDBAndSeedRegistrations({
+test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
+  await resetDBAndSeedRegistrations({
     seedScript: SeedScript.cooperativeBankOfOromiaProgram,
     registrations: registrationsCooperativeBankOfOromia,
     programId: coopBankProgramId,

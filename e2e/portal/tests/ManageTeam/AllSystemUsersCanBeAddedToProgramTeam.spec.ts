@@ -17,8 +17,8 @@ const expectedAvailablesystemUsers = [
 ];
 const programId = 2;
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-  const { accessToken } = await resetDBAndSeedRegistrations({
+test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
+  await resetDBAndSeedRegistrations({
     seedScript: SeedScript.testMultiple,
     skipSeedRegistrations: true,
   });

@@ -58,7 +58,7 @@ type Fixtures = {
     password?: string;
     includeRegistrationEvents?: boolean;
     approverMode?: ApproverSeedMode;
-  }) => Promise<{ accessToken: string }>;
+  }) => Promise<void>;
   login: () => Promise<void>;
   onlyResetAndSeedRegistrations: (params) => Promise<void>;
   accessToken: string;
@@ -180,7 +180,7 @@ export const customSharedFixture = base.extend<Fixtures>({
       navigateToPage?: string;
       username?: string;
       password?: string;
-    }): Promise<{ accessToken: string }> => {
+    }): Promise<void> => {
       await resetDatabase({
         approverMode: params.approverMode,
         includeRegistrationEvents: params.includeRegistrationEvents,
@@ -205,8 +205,6 @@ export const customSharedFixture = base.extend<Fixtures>({
       if (params.navigateToPage) {
         await loginPage.goto(params.navigateToPage);
       }
-
-      return { accessToken: await getAccessToken() };
     };
 
     await use(fn);

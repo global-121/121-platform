@@ -11,18 +11,17 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const programId = 2;
 let registrationId: number;
-let accessToken: string;
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-  const { accessToken: token } = await resetDBAndSeedRegistrations({
+  await resetDBAndSeedRegistrations({
     seedScript: SeedScript.testMultiple,
     skipSeedRegistrations: true,
   });
-  accessToken = token;
 });
 
 test('User can view the registration data of registration that has all data types', async ({
   registrationPersonalInformationPage,
+  accessToken,
 }) => {
   await seedIncludedRegistrations(
     [registrationWesteros4],
@@ -68,6 +67,7 @@ test('User can view the registration data of registration that has all data type
 
 test('User can view the registration data of registration that has only the required data', async ({
   registrationPersonalInformationPage,
+  accessToken,
 }) => {
   const registrationWithOnlyRequiredData = {
     referenceId: registrationWesteros4.referenceId,

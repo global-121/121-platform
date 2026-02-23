@@ -7,8 +7,8 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-  const { accessToken } = await resetDBAndSeedRegistrations({
+test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
+  await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     seedPaidRegistrations: true,
     transferValue: 12.5,

@@ -15,8 +15,8 @@ import {
 let registrationId: number;
 
 // Arrange
-test.beforeEach(async ({ page, resetDBAndSeedRegistrations }) => {
-  const { accessToken } = await resetDBAndSeedRegistrations({
+test.beforeEach(async ({ page, resetDBAndSeedRegistrations, accessToken }) => {
+  await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     registrations: [registrationPV5],
     programId: programIdPV,

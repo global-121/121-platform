@@ -11,20 +11,21 @@ import {
   expect,
 } from '@121-e2e/portal/fixtures/fixture';
 
-let accessToken: string;
-
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-  const { accessToken: token } = await resetDBAndSeedRegistrations({
+  await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     seedPaidRegistrations: true,
     registrations: registrationsOCW,
     programId: programIdOCW,
     navigateToPage: `/program/${programIdOCW}/registrations`,
   });
-  accessToken = token;
 });
 
-test('ExportPayments', async ({ paymentsPage, exportDataComponent }) => {
+test('ExportPayments', async ({
+  paymentsPage,
+  exportDataComponent,
+  accessToken,
+}) => {
   await test.step('Do payments', async () => {
     for (let i = 0; i < 4; i++) {
       await doPaymentAndWaitForCompletion({

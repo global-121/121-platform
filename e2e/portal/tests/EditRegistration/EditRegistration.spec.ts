@@ -19,8 +19,9 @@ test.describe('Edit all the fields in registration Personal Information', () => 
     async ({
       resetDBAndSeedRegistrations,
       registrationPersonalInformationPage,
+      accessToken,
     }) => {
-      const { accessToken } = await resetDBAndSeedRegistrations({
+      await resetDBAndSeedRegistrations({
         seedScript: SeedScript.nlrcMultiple,
         registrations: [registrationPV5],
         programId: programIdPV,

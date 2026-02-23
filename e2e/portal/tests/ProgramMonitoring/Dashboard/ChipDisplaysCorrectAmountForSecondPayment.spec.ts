@@ -9,8 +9,8 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const transferValueForSecondPayment = 10;
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations, page }) => {
-  const { accessToken } = await resetDBAndSeedRegistrations({
+test.beforeEach(async ({ resetDBAndSeedRegistrations, page, accessToken }) => {
+  await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     seedPaidRegistrations: true,
     registrations: registrationsVisa,

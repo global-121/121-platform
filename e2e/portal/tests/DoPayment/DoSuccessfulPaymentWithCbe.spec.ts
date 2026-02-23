@@ -11,22 +11,20 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-let accessToken: string;
-
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-  const { accessToken: token } = await resetDBAndSeedRegistrations({
+  await resetDBAndSeedRegistrations({
     seedScript: SeedScript.cbeProgram,
     registrations: registrationsCbe,
     programId: programIdCbe,
     navigateToPage: `/program/${programIdCbe}/payments`,
   });
-  accessToken = token;
 });
 
 test('Do successful payment for Cbe fsp', async ({
   page,
   paymentPage,
   paymentsPage,
+  accessToken,
 }) => {
   const numberOfPas = registrationsCbe.length;
   const defaultTransferValue = CbeProgram.fixedTransferValue;
