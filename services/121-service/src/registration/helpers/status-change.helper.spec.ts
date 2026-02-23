@@ -51,7 +51,7 @@ describe('isValidStatusChange', () => {
 
     // paused to...
     [paused, newStatus, false],
-    [paused, validated, false],
+    [paused, validated, true],
     [paused, included, true],
     [paused, declined, true],
     [paused, paused, false],
