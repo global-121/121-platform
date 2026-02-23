@@ -78,6 +78,20 @@ export class KoboService {
       baseUrl: url,
     });
 
+    const existingWebhookEndpoints =
+      await this.koboApiService.getExistingKoboWebhooks({
+        assetUid,
+        token,
+        baseUrl: url,
+      });
+
+    if (existingWebhookEndpoints.length > 0) {
+      throw new HttpException(
+        this.buildWebhookErrorMessage(existingWebhookEndpoints),
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const formDefinition = KoboMapper.koboAssetDtoToKoboFormDefinition({
       asset,
     });
@@ -198,5 +212,14 @@ export class KoboService {
     await this.programService.updateProgram(programId, {
       languages: combinedLanguages,
     });
+  }
+
+  private buildWebhookErrorMessage(webhookEndpoints: string[]): string {
+    if (webhookEndpoints.length === 1) {
+      return `This Kobo form already has a webhook configured: ${webhookEndpoints[0]}. Please remove it before integrating with 121 Platform.`;
+    }
+
+    const webhooksList = webhookEndpoints.join(', ');
+    return `This Kobo form already has ${webhookEndpoints.length} webhooks configured: ${webhooksList}. Please remove them before integrating with 121 Platform.`;
   }
 }

@@ -19,17 +19,103 @@ export class KoboApiService {
     token: string;
     baseUrl: string;
   }): Promise<KoboAssetDto> {
-    // Use joinURL instead of new URL as the baseURL may have a path component
+    // Use joinURL instead of new URL as the baseUrl may have a path component and new URL would ignore it
     const apiUrl = joinURL(baseUrl, 'api/v2/assets', assetUid, 'deployment');
 
     const headers = new Headers();
     headers.append('Authorization', `Token ${token}`);
 
     const response = await this.httpService.get<
-      AxiosResponse<KoboAssetResponseDto>
+      AxiosResponse<KoboAssetResponseDto | unknown>
     >(apiUrl, headers);
-    const responseBody = response.data;
 
+    if (this.isValidKoboResponse<KoboAssetResponseDto>(response)) {
+      const responseBody = response.data;
+      if (!responseBody.version_id || !responseBody.asset) {
+        throw new Error('Kobo information is missing version_id or asset');
+      }
+      return responseBody.asset;
+    }
+
+    this.throwKoboApiError({
+      response,
+      assetUid,
+      apiUrl,
+      notFoundMessage:
+        'Kobo information not found. This form does not exist or is not (yet) deployed',
+      operationDescription: 'fetch Kobo information',
+    });
+  }
+
+  public async getExistingKoboWebhooks({
+    assetUid,
+    token,
+    baseUrl,
+  }: {
+    assetUid: string;
+    token: string;
+    baseUrl: string;
+  }): Promise<string[]> {
+    // Use joinURL instead of new URL as the baseUrl may have a path component and new URL would ignore it
+    const apiUrl = joinURL(baseUrl, 'api/v2/assets', assetUid, 'hooks');
+
+    const headers = new Headers();
+    headers.append('Authorization', `Token ${token}`);
+
+    const response = await this.httpService.get<
+      AxiosResponse<
+        | {
+            results: {
+              url: string;
+            }[];
+          }
+        | unknown
+      >
+    >(apiUrl, headers);
+
+    if (
+      this.isValidKoboResponse<{
+        results: {
+          url: string;
+        }[];
+      }>(response)
+    ) {
+      return response.data.results.map((webhook) => webhook.url);
+    }
+
+    this.throwKoboApiError({
+      response,
+      assetUid,
+      apiUrl,
+      notFoundMessage: 'Kobo asset not found. This asset does not exist',
+      operationDescription: 'fetch Kobo webhooks',
+    });
+  }
+
+  private isValidKoboResponse<T>(
+    response: AxiosResponse<T | unknown>,
+  ): response is AxiosResponse<T> {
+    return [
+      HttpStatus.OK,
+      HttpStatus.CREATED,
+      HttpStatus.ACCEPTED,
+      HttpStatus.NO_CONTENT,
+    ].includes(response.status);
+  }
+
+  private throwKoboApiError({
+    response,
+    assetUid,
+    apiUrl,
+    notFoundMessage,
+    operationDescription,
+  }: {
+    response: AxiosResponse<unknown>;
+    assetUid: string;
+    apiUrl: string;
+    notFoundMessage: string;
+    operationDescription: string;
+  }): never {
     if (
       response.status === HttpStatus.UNAUTHORIZED ||
       response.status === HttpStatus.FORBIDDEN
@@ -42,24 +128,15 @@ export class KoboApiService {
 
     if (response.status === HttpStatus.NOT_FOUND) {
       throw new HttpException(
-        `Kobo information not found for asset: ${assetUid}, url: ${apiUrl}. This form does not exist or is not (yet) deployed.`,
+        `${notFoundMessage} for asset: ${assetUid}, url: ${apiUrl}.`,
         HttpStatus.NOT_FOUND,
       );
     }
 
-    // Unexpected error
-    if (response.status !== HttpStatus.OK) {
-      throw new HttpException(
-        `Failed to fetch Kobo information from url: ${apiUrl}: ${responseBody.detail || 'Unknown error'}`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    // This should never happen but it makes TypeScript happy and throws a meaningful error
-    if (!responseBody.version_id || !responseBody.asset) {
-      throw new Error('Kobo information is missing version_id or asset');
-    }
-
-    return responseBody.asset;
+    const errorDetail = (response.data as any)?.detail || 'Unknown error';
+    throw new HttpException(
+      `Failed to ${operationDescription} for asset: ${assetUid}, url: ${apiUrl}: ${errorDetail}`,
+      HttpStatus.BAD_REQUEST,
+    );
   }
 }
