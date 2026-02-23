@@ -35,24 +35,24 @@ export class ThresholdBasedApprovals1771835116000 implements MigrationInterface 
       `ALTER TABLE "121-service"."payment_approval" DROP COLUMN IF EXISTS "approverId"`,
     );
 
-    // Add approvalThresholdId column to payment_approval table
+    // Add programApprovalThresholdId column to payment_approval table
     await queryRunner.query(
-      `ALTER TABLE "121-service"."payment_approval" ADD "approvalThresholdId" integer`,
+      `ALTER TABLE "121-service"."payment_approval" ADD "programApprovalThresholdId" integer`,
     );
 
-    // Add approvalThresholdId column to approver table
+    // Add programApprovalThresholdId column to approver table
     await queryRunner.query(
-      `ALTER TABLE "121-service"."approver" ADD "approvalThresholdId" integer`,
+      `ALTER TABLE "121-service"."approver" ADD "programApprovalThresholdId" integer`,
     );
 
     // Add foreign key constraint from approver to program_approval_threshold
     await queryRunner.query(
-      `ALTER TABLE "121-service"."approver" ADD CONSTRAINT "FK_approver_program_approval_threshold" FOREIGN KEY ("approvalThresholdId") REFERENCES "121-service"."program_approval_threshold"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+      `ALTER TABLE "121-service"."approver" ADD CONSTRAINT "FK_approver_program_approval_threshold" FOREIGN KEY ("programApprovalThresholdId") REFERENCES "121-service"."program_approval_threshold"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
 
     // Add foreign key constraint from payment_approval to program_approval_threshold
     await queryRunner.query(
-      `ALTER TABLE "121-service"."payment_approval" ADD CONSTRAINT "FK_payment_approval_program_approval_threshold" FOREIGN KEY ("approvalThresholdId") REFERENCES "121-service"."program_approval_threshold"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+      `ALTER TABLE "121-service"."payment_approval" ADD CONSTRAINT "FK_payment_approval_program_approval_threshold" FOREIGN KEY ("programApprovalThresholdId") REFERENCES "121-service"."program_approval_threshold"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
   }
 
@@ -67,14 +67,14 @@ export class ThresholdBasedApprovals1771835116000 implements MigrationInterface 
       `ALTER TABLE "121-service"."approver" DROP CONSTRAINT "FK_approver_program_approval_threshold"`,
     );
 
-    // Drop approvalThresholdId column from approver table
+    // Drop programApprovalThresholdId column from approver table
     await queryRunner.query(
-      `ALTER TABLE "121-service"."approver" DROP COLUMN "approvalThresholdId"`,
+      `ALTER TABLE "121-service"."approver" DROP COLUMN "programApprovalThresholdId"`,
     );
 
-    // Drop approvalThresholdId column from payment_approval table
+    // Drop programApprovalThresholdId column from payment_approval table
     await queryRunner.query(
-      `ALTER TABLE "121-service"."payment_approval" DROP COLUMN "approvalThresholdId"`,
+      `ALTER TABLE "121-service"."payment_approval" DROP COLUMN "programApprovalThresholdId"`,
     );
 
     // Re-add approverId column to payment_approval table
