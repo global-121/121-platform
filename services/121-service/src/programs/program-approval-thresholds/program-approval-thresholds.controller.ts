@@ -7,7 +7,6 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
-  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -17,7 +16,6 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/get-program-approval-threshold-response.dto';
-import { UpdateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/update-program-approval-threshold.dto';
 import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
@@ -35,27 +33,23 @@ export class ProgramApprovalThresholdsController {
 
   @AuthenticatedUser()
   @ApiOperation({
-    summary: 'Create a program approval threshold',
+    summary: 'Replace all approval thresholds for a program',
+    description:
+      'Replaces the entire threshold configuration. Deletes existing thresholds and creates new ones with their approvers.',
   })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'Program approval threshold created successfully',
-    type: GetProgramApprovalThresholdResponseDto,
+    description: 'Program approval thresholds replaced successfully',
+    type: [GetProgramApprovalThresholdResponseDto],
   })
   @Post('programs/:programId/approval-thresholds')
-  public async createProgramApprovalThreshold(
+  public async replaceProgramApprovalThresholds(
     @Param('programId', ParseIntPipe) programId: number,
-    @Body() createDto: CreateProgramApprovalThresholdDto,
-  ): Promise<GetProgramApprovalThresholdResponseDto> {
-    console.log('Creating program approval threshold with data:', {
-      ...createDto,
+    @Body() thresholds: CreateProgramApprovalThresholdDto[],
+  ): Promise<GetProgramApprovalThresholdResponseDto[]> {
+    return await this.programApprovalThresholdsService.replaceProgramApprovalThresholds(
       programId,
-    });
-    return await this.programApprovalThresholdsService.createProgramApprovalThreshold(
-      {
-        ...createDto,
-        programId,
-      },
+      thresholds,
     );
   }
 
@@ -81,67 +75,23 @@ export class ProgramApprovalThresholdsController {
   }
 
   @AuthenticatedUser({
-    permissions: [PermissionEnum.ProgramREAD],
-  })
-  @ApiOperation({
-    summary: 'Get a specific approval threshold by ID',
-  })
-  @ApiParam({ name: 'thresholdId', required: true, type: 'integer' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Retrieved approval threshold successfully',
-    type: GetProgramApprovalThresholdResponseDto,
-  })
-  @Get('approval-thresholds/:thresholdId')
-  public async getProgramApprovalThresholdById(
-    @Param('thresholdId', ParseIntPipe) thresholdId: number,
-  ): Promise<GetProgramApprovalThresholdResponseDto> {
-    return await this.programApprovalThresholdsService.getProgramApprovalThresholdById(
-      thresholdId,
-    );
-  }
-
-  @AuthenticatedUser({
     permissions: [PermissionEnum.ProgramUPDATE],
   })
   @ApiOperation({
-    summary: 'Update a program approval threshold',
+    summary: 'Delete all approval thresholds for a program',
   })
-  @ApiParam({ name: 'thresholdId', required: true, type: 'integer' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Program approval threshold updated successfully',
-    type: GetProgramApprovalThresholdResponseDto,
-  })
-  @Patch('approval-thresholds/:thresholdId')
-  public async updateProgramApprovalThreshold(
-    @Param('thresholdId', ParseIntPipe) thresholdId: number,
-    @Body() updateDto: UpdateProgramApprovalThresholdDto,
-  ): Promise<GetProgramApprovalThresholdResponseDto> {
-    return await this.programApprovalThresholdsService.updateProgramApprovalThreshold(
-      thresholdId,
-      updateDto,
-    );
-  }
-
-  @AuthenticatedUser({
-    permissions: [PermissionEnum.ProgramUPDATE],
-  })
-  @ApiOperation({
-    summary: 'Delete a program approval threshold',
-  })
-  @ApiParam({ name: 'thresholdId', required: true, type: 'integer' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
-    description: 'Program approval threshold deleted successfully',
+    description: 'All program approval thresholds deleted successfully',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Delete('approval-thresholds/:thresholdId')
-  public async deleteProgramApprovalThreshold(
-    @Param('thresholdId', ParseIntPipe) thresholdId: number,
+  @Delete('programs/:programId/approval-thresholds')
+  public async deleteAllProgramApprovalThresholds(
+    @Param('programId', ParseIntPipe) programId: number,
   ): Promise<void> {
-    return await this.programApprovalThresholdsService.deleteProgramApprovalThreshold(
-      thresholdId,
+    return await this.programApprovalThresholdsService.deleteAllProgramApprovalThresholds(
+      programId,
     );
   }
 }

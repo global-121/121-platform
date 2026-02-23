@@ -283,8 +283,8 @@ export class SeedHelperService {
     // Create default thresholds for demo purposes
     const threshold1 =
       await this.programApprovalThresholdsService.createProgramApprovalThreshold(
+        programId,
         {
-          programId,
           thresholdAmount: 0,
           approvalLevel: 1,
         },
@@ -314,8 +314,8 @@ export class SeedHelperService {
         // Create second threshold for demo
         const threshold2 =
           await this.programApprovalThresholdsService.createProgramApprovalThreshold(
+            programId,
             {
-              programId,
               thresholdAmount: 100,
               approvalLevel: 2,
             },

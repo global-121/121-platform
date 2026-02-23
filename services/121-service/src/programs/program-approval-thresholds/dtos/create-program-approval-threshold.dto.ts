@@ -1,5 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  ValidateNested,
+} from 'class-validator';
+
+import { CreateApproverForThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-approver-for-threshold.dto';
 
 export class CreateProgramApprovalThresholdDto {
   @ApiProperty({ example: 1000, description: 'Threshold amount for approval' })
@@ -14,9 +25,14 @@ export class CreateProgramApprovalThresholdDto {
   @IsNotEmpty()
   public readonly approvalLevel: number;
 
-  @ApiProperty({ example: 2, description: 'Program ID' })
-  @IsInt()
-  @IsPositive()
-  @IsNotEmpty()
-  public readonly programId: number;
+  @ApiProperty({
+    type: [CreateApproverForThresholdDto],
+    required: false,
+    description: 'List of approvers for this threshold',
+  })
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => CreateApproverForThresholdDto)
+  public readonly approvers?: CreateApproverForThresholdDto[];
 }
