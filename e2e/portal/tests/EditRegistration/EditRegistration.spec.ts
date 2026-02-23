@@ -15,18 +15,17 @@ import {
 let registrationId: number;
 
 test.describe('Edit all the fields in registration Personal Information', () => {
-  test.beforeEach(
-    async ({
-      resetDBAndSeedRegistrations,
-      registrationPersonalInformationPage,
-      accessToken,
-    }) => {
-      await resetDBAndSeedRegistrations({
-        seedScript: SeedScript.nlrcMultiple,
-        registrations: [registrationPV5],
-        programId: programIdPV,
-      });
+  test.beforeAll(async ({ onlyResetAndSeedRegistrations }) => {
+    await onlyResetAndSeedRegistrations({
+      seedScript: SeedScript.nlrcMultiple,
+      registrations: [registrationPV5],
+      programId: programIdPV,
+    });
+  });
 
+  test.beforeEach(
+    async ({ login, registrationPersonalInformationPage, accessToken }) => {
+      await login();
       registrationId = await getRegistrationIdByReferenceId({
         programId: programIdPV,
         referenceId: registrationPV5.referenceId,

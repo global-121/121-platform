@@ -13,15 +13,18 @@ const customMessage =
   'Test custom message to change the status of registration';
 
 test.describe('Change status of registration with and without templated message', () => {
-  test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-    await resetDBAndSeedRegistrations({
+  test.beforeAll(async ({ onlyResetAndSeedRegistrations }) => {
+    await onlyResetAndSeedRegistrations({
       seedScript: SeedScript.nlrcMultiple,
       registrations: [registrationPV5, registrationPV6],
       programId: programIdPV,
-      navigateToPage: `/program/${programIdPV}/registrations`,
     });
   });
 
+  test.beforeEach(async ({ page, login }) => {
+    await login();
+    await page.goto(`en-GB/program/${programIdPV}/registrations`);
+  });
   // Act
   test('Change status of registration with custom message', async ({
     page,

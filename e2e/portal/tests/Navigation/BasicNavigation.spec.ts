@@ -13,13 +13,17 @@ const programTitle = 'NLRC Direct Digital Aid Program (PV)';
 
 // Arrange
 test.describe('Validate basic navigation of the Portal', () => {
-  test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-    await resetDBAndSeedRegistrations({
+  test.beforeAll(async ({ onlyResetAndSeedRegistrations }) => {
+    await onlyResetAndSeedRegistrations({
       seedScript: SeedScript.nlrcMultiple,
       registrations: registrationsPV,
       programId: programIdPV,
-      navigateToPage: `/program/${programIdPV}/registrations`,
     });
+  });
+
+  test.beforeEach(async ({ page, login }) => {
+    await login();
+    await page.goto(`en-GB/program/${programIdPV}/registrations`);
   });
 
   test('Navigation from sidebar', async ({ page, homePage }) => {

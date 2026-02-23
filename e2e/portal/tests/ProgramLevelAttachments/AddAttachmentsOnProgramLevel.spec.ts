@@ -37,16 +37,20 @@ const getFileName = (filePath: string) =>
 
 // Arrange
 test.describe('Attachments on Program Level', () => {
-  test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  test.beforeAll(async ({ onlyResetAndSeedRegistrations }) => {
     // Generate the large file in the OS temp directory
     largeFilePath = path.join(os.tmpdir(), 'large-test-file.pdf');
     await generateLargeTestFile(largeFilePath, 105 * 1024 * 1024); // 105MB
     // reset
-    await resetDBAndSeedRegistrations({
+    await onlyResetAndSeedRegistrations({
       seedScript: SeedScript.nlrcMultiple,
       skipSeedRegistrations: true,
-      navigateToPage: `/program/${programIdOCW}/monitoring/files`, // Navigate directly to files tab
     });
+  });
+
+  test.beforeEach(async ({ page, login }) => {
+    await login();
+    await page.goto(`/en-GB/program/${programIdOCW}/monitoring/files`);
   });
 
   test('Upload: Word, PDF, JPG and PNG attachments formats', async ({

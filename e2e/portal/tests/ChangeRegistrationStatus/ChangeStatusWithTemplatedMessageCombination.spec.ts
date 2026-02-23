@@ -12,8 +12,8 @@ const toastMessage =
   'The status of 1 registration(s) is being changed to "Included" successfully. The status change can take up to a minute to process.';
 
 test.describe('Change status of registration with and without templated message', () => {
-  test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
-    await resetDBAndSeedRegistrations({
+  test.beforeAll(async ({ onlyResetAndSeedRegistrations }) => {
+    await onlyResetAndSeedRegistrations({
       seedScript: SeedScript.nlrcMultiple,
       seedWithStatus: RegistrationStatusEnum.new,
       registrations: [registrationPV5, registrationPV6],
@@ -22,6 +22,10 @@ test.describe('Change status of registration with and without templated message'
     });
   });
 
+  test.beforeEach(async ({ page, login }) => {
+    await login();
+    await page.goto(`en-GB/program/${programIdPV}/registrations`);
+  });
   // Act
   test('Change status of registration with templated message', async ({
     page,
