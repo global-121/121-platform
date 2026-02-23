@@ -331,6 +331,9 @@ class TableComponent {
     await filterMenuButton.click();
     await this.page.getByText('Choose option(s)').click();
 
+    const list = this.page.getByRole('listbox');
+    await expect(list).toBeVisible();
+
     const dropdownActualValues = new Set<string>();
 
     for (const option of await this.page.getByRole('option').all()) {
