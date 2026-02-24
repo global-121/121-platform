@@ -10,7 +10,13 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
@@ -37,10 +43,78 @@ export class ProgramApprovalThresholdsController {
     description:
       'Replaces the entire threshold configuration. Deletes existing thresholds and creates new ones with their approvers.',
   })
+  @ApiBody({
+    description: 'Array of approval thresholds with their approvers',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        required: ['thresholdAmount', 'approvalLevel', 'approvers'],
+        properties: {
+          thresholdAmount: {
+            type: 'number',
+            description: 'Payment amount threshold in program currency',
+            example: 3000,
+          },
+          approvalLevel: {
+            type: 'integer',
+            description:
+              'Hierarchical approval level (1 = first, 2 = second, etc.)',
+            example: 1,
+          },
+          approvers: {
+            type: 'array',
+            description: 'Array of approvers for this threshold level',
+            items: {
+              type: 'object',
+              required: ['programAidworkerAssignmentId'],
+              properties: {
+                programAidworkerAssignmentId: {
+                  type: 'integer',
+                  description: 'ID of the program aidworker assignment',
+                  example: 2,
+                },
+              },
+            },
+          },
+        },
+      },
+      example: [
+        {
+          thresholdAmount: 3000,
+          approvalLevel: 1,
+          approvers: [
+            { programAidworkerAssignmentId: 2 },
+            { programAidworkerAssignmentId: 7 },
+          ],
+        },
+        {
+          thresholdAmount: 5000,
+          approvalLevel: 2,
+          approvers: [
+            { programAidworkerAssignmentId: 3 },
+            { programAidworkerAssignmentId: 5 },
+          ],
+        },
+      ],
+    },
+  })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Program approval thresholds replaced successfully',
     type: [GetProgramApprovalThresholdResponseDto],
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid request body or validation failed',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Not authenticated',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Program not found',
   })
   @Post('programs/:programId/approval-thresholds')
   public async replaceProgramApprovalThresholds(
