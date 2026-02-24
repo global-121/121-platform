@@ -61,50 +61,7 @@ export class ThresholdBasedApprovals1771835116000 implements MigrationInterface 
     );
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
-    // Drop foreign key constraint from payment_approval to program_approval_threshold
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."payment_approval" DROP CONSTRAINT "FK_payment_approval_program_approval_threshold"`,
-    );
-
-    // Drop foreign key constraint from approver to program_approval_threshold
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."approver" DROP CONSTRAINT "FK_approver_program_approval_threshold"`,
-    );
-
-    // Drop programApprovalThresholdId column from approver table
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."approver" DROP COLUMN "programApprovalThresholdId"`,
-    );
-
-    // Drop programApprovalThresholdId column from payment_approval table
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."payment_approval" DROP COLUMN "programApprovalThresholdId"`,
-    );
-
-    // Drop approvedByUserId column from payment_approval table
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."payment_approval" DROP COLUMN "approvedByUserId"`,
-    );
-
-    // Re-add approverId column to payment_approval table
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."payment_approval" ADD "approverId" integer`,
-    );
-
-    // Re-add foreign key constraint from payment_approval to approver
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."payment_approval" ADD CONSTRAINT "FK_payment_approval_approver" FOREIGN KEY ("approverId") REFERENCES "121-service"."approver"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-
-    // Drop foreign key constraint from program_approval_threshold to program
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."program_approval_threshold" DROP CONSTRAINT "FK_program_approval_threshold_program"`,
-    );
-
-    // Drop program_approval_threshold table
-    await queryRunner.query(
-      `DROP TABLE "121-service"."program_approval_threshold"`,
-    );
+  public async down(): Promise<void> {
+    //we never go down. No way back from this.
   }
 }
