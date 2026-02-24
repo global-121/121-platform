@@ -15,9 +15,10 @@ import {
 } from '@121-service/test/helpers/program.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
-  createApprover,
-  deleteApprover,
+  getAllUsersByProgramId,
   getCurrentUser,
+  getProgramApprovalThresholds,
+  replaceProgramApprovalThresholds,
 } from '@121-service/test/helpers/user.helper';
 import {
   getAccessToken,
@@ -49,15 +50,62 @@ describe('do payment with 2 approvers', () => {
 
     // configure 2nd approver
     accessTokenFinanceManager = await getAccessTokenFinanceManager();
-    const financeManagerUserId = (
-      await getCurrentUser({
-        accessToken: accessTokenFinanceManager,
-      })
-    ).body.user.id;
-    await createApprover({
+    const financeManagerUser = await getCurrentUser({
+      accessToken: accessTokenFinanceManager,
+    });
+
+    // Get existing thresholds
+    const thresholdsResponse = await getProgramApprovalThresholds({
       programId,
-      userId: financeManagerUserId,
-      order: 2,
+      accessToken: adminAccessToken,
+    });
+
+    // Get all user assignments for the program to find assignment IDs
+    const allUsersResponse = await getAllUsersByProgramId(
+      adminAccessToken,
+      programId.toString(),
+    );
+    const financeManagerAssignment = allUsersResponse.body.find(
+      (u: any) => u.id === financeManagerUser.body.user.id,
+    );
+
+    if (!financeManagerAssignment) {
+      throw new Error('Finance manager assignment not found');
+    }
+
+    // Update first threshold to include finance manager as 2nd approver
+    const updatedThresholds = thresholdsResponse.body.map(
+      (threshold: any, index: number) => {
+        const approvers = threshold.approvers.map((approver: any) => {
+          // Find the assignment ID for this approver
+          const assignment = allUsersResponse.body.find(
+            (u: any) => u.id === approver.userId,
+          );
+          return {
+            programAidworkerAssignmentId:
+              assignment?.programAidworkerAssignmentId,
+          };
+        });
+
+        // Add finance manager to the first threshold
+        if (index === 0) {
+          approvers.push({
+            programAidworkerAssignmentId:
+              financeManagerAssignment.programAidworkerAssignmentId,
+          });
+        }
+
+        return {
+          thresholdAmount: threshold.thresholdAmount,
+          approvalLevel: threshold.approvalLevel,
+          approvers,
+        };
+      },
+    );
+
+    await replaceProgramApprovalThresholds({
+      programId,
+      thresholds: updatedThresholds,
       accessToken: adminAccessToken,
     });
   });
@@ -336,9 +384,10 @@ describe('do payment with <2 approvers', () => {
 
   it('should throw on create payment when no approvers configured for program', async () => {
     // Arrange
-    await deleteApprover({
+    // Remove all approver thresholds
+    await replaceProgramApprovalThresholds({
       programId,
-      approverId: 1, // admin-user approver
+      thresholds: [],
       accessToken: adminAccessToken,
     });
 
@@ -359,21 +408,55 @@ describe('do payment with <2 approvers', () => {
 
   it('should return all payment approvals but without username for deleted approver(s)', async () => {
     // Arrange
-    // add 2nd approver
+    // add 2nd approver via threshold
     const accessTokenFinanceManager = await getAccessTokenFinanceManager();
-    const financeManagerUserId = (
-      await getCurrentUser({
-        accessToken: accessTokenFinanceManager,
-      })
-    ).body.user.id;
-    const createApproverResult = await createApprover({
+    const financeManagerUser = await getCurrentUser({
+      accessToken: accessTokenFinanceManager,
+    });
+
+    // Get existing thresholds and user assignments
+    const thresholdsResponse = await getProgramApprovalThresholds({
       programId,
-      userId: financeManagerUserId,
-      order: 2,
+      accessToken: adminAccessToken,
+    });
+    const allUsersResponse = await getAllUsersByProgramId(
+      adminAccessToken,
+      programId.toString(),
+    );
+    const financeManagerAssignment = allUsersResponse.body.find(
+      (u: any) => u.id === financeManagerUser.body.user.id,
+    );
+
+    // Add finance manager as 2nd approver
+    const updatedThresholds = thresholdsResponse.body.map((threshold: any) => {
+      const approvers = threshold.approvers.map((approver: any) => {
+        const assignment = allUsersResponse.body.find(
+          (u: any) => u.id === approver.userId,
+        );
+        return {
+          programAidworkerAssignmentId:
+            assignment?.programAidworkerAssignmentId,
+        };
+      });
+      // Add finance manager to first threshold
+      approvers.push({
+        programAidworkerAssignmentId:
+          financeManagerAssignment.programAidworkerAssignmentId,
+      });
+      return {
+        thresholdAmount: threshold.thresholdAmount,
+        approvalLevel: threshold.approvalLevel,
+        approvers,
+      };
+    });
+
+    await replaceProgramApprovalThresholds({
+      programId,
+      thresholds: updatedThresholds,
       accessToken: adminAccessToken,
     });
 
-    // create payment
+    // create payment (this creates approval records)
     const createPaymentResponse = await createPayment({
       programId,
       transferValue,
@@ -381,10 +464,26 @@ describe('do payment with <2 approvers', () => {
       accessToken: adminAccessToken,
     });
 
-    // delete approver again
-    await deleteApprover({
+    // Remove the 2nd approver by replacing thresholds without finance manager
+    const thresholdsWithoutFinanceManager = thresholdsResponse.body.map(
+      (threshold: any) => ({
+        thresholdAmount: threshold.thresholdAmount,
+        approvalLevel: threshold.approvalLevel,
+        approvers: threshold.approvers.map((approver: any) => {
+          const assignment = allUsersResponse.body.find(
+            (u: any) => u.id === approver.userId,
+          );
+          return {
+            programAidworkerAssignmentId:
+              assignment?.programAidworkerAssignmentId,
+          };
+        }),
+      }),
+    );
+
+    await replaceProgramApprovalThresholds({
       programId,
-      approverId: createApproverResult.body.id,
+      thresholds: thresholdsWithoutFinanceManager,
       accessToken: adminAccessToken,
     });
 

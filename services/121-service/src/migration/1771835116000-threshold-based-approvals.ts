@@ -40,6 +40,11 @@ export class ThresholdBasedApprovals1771835116000 implements MigrationInterface 
       `ALTER TABLE "121-service"."payment_approval" ADD "programApprovalThresholdId" integer`,
     );
 
+    // Add approvedByUserId column to payment_approval table for audit trail
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."payment_approval" ADD "approvedByUserId" integer`,
+    );
+
     // Add programApprovalThresholdId column to approver table
     await queryRunner.query(
       `ALTER TABLE "121-service"."approver" ADD "programApprovalThresholdId" integer`,
@@ -75,6 +80,11 @@ export class ThresholdBasedApprovals1771835116000 implements MigrationInterface 
     // Drop programApprovalThresholdId column from payment_approval table
     await queryRunner.query(
       `ALTER TABLE "121-service"."payment_approval" DROP COLUMN "programApprovalThresholdId"`,
+    );
+
+    // Drop approvedByUserId column from payment_approval table
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."payment_approval" DROP COLUMN "approvedByUserId"`,
     );
 
     // Re-add approverId column to payment_approval table
