@@ -9,7 +9,7 @@ import {
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
-import { ApproverEntity } from '@121-service/src/programs/approvers/entities/approver.entity';
+import { ApproverEntity } from '@121-service/src/programs/approver/entities/approver.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 
 @Entity('program_approval_threshold')

@@ -20,7 +20,7 @@ import { PaymentsReportingHelperService } from '@121-service/src/payments/servic
 import { FindAllTransactionsResultDto } from '@121-service/src/payments/transactions/dto/find-all-transactions-result.dto';
 import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
-import { ApprovalStatusResponseDto } from '@121-service/src/programs/approvers/dto/approval-status-response.dto';
+import { ApprovalStatusResponseDto } from '@121-service/src/programs/approver/dto/approval-status-response.dto';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';

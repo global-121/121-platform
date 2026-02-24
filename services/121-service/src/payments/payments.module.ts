@@ -25,7 +25,7 @@ import { TransactionJobsCreationService } from '@121-service/src/payments/servic
 import { TransactionEventsModule } from '@121-service/src/payments/transactions/transaction-events/transaction-events.module';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
-import { ApproversModule } from '@121-service/src/programs/approvers/approvers.module';
+import { ApproverModule } from '@121-service/src/programs/approver/approver.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramApprovalThresholdsModule } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
@@ -61,7 +61,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     RegistrationEventsModule,
     TransactionEventsModule,
     MessageTemplateModule,
-    ApproversModule,
+    ApproverModule,
     ProgramApprovalThresholdsModule,
   ],
   providers: [
