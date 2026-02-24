@@ -43,9 +43,8 @@ describe('FileImportService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.response[0]).toBe('Wrong file extension. It should be .csv');
-      expect(error.status).toBe(HttpStatus.BAD_REQUEST);
     });
 
     it('should throw on invalid csv file contents - 0 lines', async () => {
@@ -61,9 +60,8 @@ describe('FileImportService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.response).toBe('Could not parse CSV file, please check it');
-      expect(error.status).toBe(HttpStatus.BAD_REQUEST);
     });
 
     it('should throw on invalid csv file contents - 1 line', async () => {
@@ -79,9 +77,8 @@ describe('FileImportService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.response).toBe('Could not parse CSV file, please check it');
-      expect(error.status).toBe(HttpStatus.BAD_REQUEST);
     });
 
     it('should throw when we import a CSV with too many rows', async () => {
@@ -97,11 +94,10 @@ describe('FileImportService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.response[0]).toBe(
         'Too many records. Maximum number of records is 50. You have 100 records.',
       );
-      expect(error.status).toBe(HttpStatus.BAD_REQUEST);
     });
   });
 });

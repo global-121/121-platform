@@ -176,8 +176,7 @@ describe('KoboValidationService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
          "Kobo form definition validation failed:
          - Missing required FSP attribute 'bankAccountNumber' for FSP 'Commercial Bank Ethiopia' in Kobo asset survey.
@@ -232,8 +231,7 @@ describe('KoboValidationService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
          "Kobo form definition validation failed:
          - Kobo form attribute "nationalId" has incompatible type for 121 attribute, expected one of the following types: "background-audio, xml-external, acknowledge, audio, barcode, calculate, date, dateTime, file, geopoint, geoshape, geotrace, hidden, image, rank, select_multiple_from_file, select_multiple, text, time, video", got "integer"  "
@@ -337,8 +335,8 @@ describe('KoboValidationService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+
       expect(error.message).toMatchInlineSnapshot(`
          "Kobo form definition validation failed:
          - Kobo form must contain the following name attributes defined in program.fullnameNamingConvention. However the following attributes are missing: lastName, middleName"
@@ -416,8 +414,7 @@ describe('KoboValidationService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
          "Kobo form definition validation failed:
          - Kobo form must contain a question with name phoneNumber (should be a text type and country code should be included) or program.allowEmptyPhoneNumber must be set to true."
@@ -493,8 +490,7 @@ describe('KoboValidationService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
          "Kobo form definition validation failed:
          - Kobo form attribute "phoneNumber" has incompatible type for 121 attribute, expected one of the following types: "text", got "integer"  "
@@ -605,8 +601,7 @@ describe('KoboValidationService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
          "Kobo form definition validation failed:
          - Kobo form must contain a scope item if program.enableScope is set to true."
@@ -653,8 +648,7 @@ describe('KoboValidationService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
        "Kobo form definition validation failed:
        - Kobo form attribute "scope" has incompatible type for 121 attribute, expected one of the following types: "background-audio, xml-external, acknowledge, audio, barcode, calculate, date, dateTime, file, geopoint, geoshape, geotrace, hidden, image, rank, select_multiple_from_file, select_multiple, text, time, video", got "integer"  "
@@ -703,8 +697,7 @@ describe('KoboValidationService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
        "Kobo form definition validation failed:
        - Kobo form must not contain a matrix item. Found: ["Matrix question group"]"
@@ -774,8 +767,7 @@ describe('KoboValidationService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toContain('Invalid Kobo language code');
       expect(error.message).toContain('Invalid Language');
       expect(error.message).toContain('Another Invalid');
@@ -817,8 +809,7 @@ describe('KoboValidationService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toContain('Invalid Kobo language code');
       expect(error.message).toContain('Unknown (xx)');
     });

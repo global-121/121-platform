@@ -3,7 +3,10 @@ module.exports = {
   preset: 'ts-jest',
   rootDir: '.',
   testMatch: ['<rootDir>/**/*.spec.ts'],
-  setupFilesAfterEnv: ['jest-extended/all'],
+  setupFilesAfterEnv: [
+    'jest-extended/all',
+    '<rootDir>/src/utils/test-helpers/matchers/httpExceptionMatcher.ts',
+  ],
   coverageReporters: ['json', 'lcov'],
   collectCoverageFrom: ['src/**/*.ts', '!src/migration/**'],
   modulePathIgnorePatterns: ['<rootDir>/dist/'],

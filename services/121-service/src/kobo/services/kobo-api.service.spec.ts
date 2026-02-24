@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { KoboAssetResponseDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset-response.dto';
@@ -112,8 +112,7 @@ describe('KoboApiService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.getStatus()).toBe(HttpStatus.UNAUTHORIZED);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.UNAUTHORIZED);
       expect(error.message).toMatchInlineSnapshot(
         `"Unauthorized access to Kobo API for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment. Please check if the provided token is valid."`,
       );
@@ -141,8 +140,7 @@ describe('KoboApiService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(
         `"Failed to fetch Kobo information for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment: Server error occurred"`,
       );
@@ -232,8 +230,7 @@ describe('KoboApiService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.getStatus()).toBe(HttpStatus.UNAUTHORIZED);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.UNAUTHORIZED);
       expect(error.message).toMatchInlineSnapshot(
         `"Unauthorized access to Kobo API for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment. Please check if the provided token is valid."`,
       );
@@ -259,8 +256,7 @@ describe('KoboApiService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(
         `"Failed to fetch Kobo information for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment: Unknown error"`,
       );
@@ -341,8 +337,7 @@ describe('KoboApiService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(
         `"Failed to fetch Kobo webhooks for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/hooks: Server error occurred"`,
       );
