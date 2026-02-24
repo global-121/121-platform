@@ -29,4 +29,7 @@ export class PaymentApprovalEntity extends Base121Entity {
 
   @Column()
   public rank: number;
+
+  @Column({ type: 'integer', nullable: true })
+  public approvedByUserId: number | null;
 }

@@ -6,14 +6,11 @@ import { PaymentApprovalEntity } from '@121-service/src/payments/entities/paymen
 import { ApprovalStatusResponseDto } from '@121-service/src/programs/approvers/dto/approval-status-response.dto';
 import { ApproverResponseDto } from '@121-service/src/programs/approvers/dto/approver-response.dto';
 import { ApproverEntity } from '@121-service/src/programs/approvers/entities/approver.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 
 @Injectable()
 export class ApproversService {
   @InjectRepository(ApproverEntity)
   private readonly approverRepository: Repository<ApproverEntity>;
-  @InjectRepository(ProgramAidworkerAssignmentEntity)
-  private readonly assignmentRepository: Repository<ProgramAidworkerAssignmentEntity>;
   @InjectRepository(PaymentApprovalEntity)
   private readonly paymentApprovalRepository: Repository<PaymentApprovalEntity>;
 
@@ -40,142 +37,6 @@ export class ApproversService {
       );
     }
     return this.entityToDto(approver);
-  }
-
-  public async getApprovers({
-    programId,
-  }: {
-    programId: number;
-  }): Promise<ApproverResponseDto[]> {
-    const approverEntities = await this.approverRepository.find({
-      where: {
-        programAidworkerAssignment: {
-          program: { id: Equal(programId) },
-        },
-      },
-      relations: { programAidworkerAssignment: { user: true } },
-    });
-    return approverEntities.map((approver) => this.entityToDto(approver));
-  }
-
-  public async createApprover({
-    programId,
-    userId,
-    programApprovalThresholdId,
-    order,
-  }: {
-    programId: number;
-    userId: number;
-    programApprovalThresholdId: number;
-    order: number;
-  }): Promise<ApproverResponseDto> {
-    await this.checkUniqueOrderOrThrow(programApprovalThresholdId, order);
-
-    const programAidworkerAssignment =
-      await this.assignmentRepository.findOneOrFail({
-        where: {
-          program: { id: Equal(programId) },
-          user: { id: Equal(userId) },
-        },
-        relations: { user: true },
-      });
-    const existingApprover = await this.approverRepository.findOne({
-      where: {
-        programAidworkerAssignmentId: Equal(programAidworkerAssignment.id),
-        programApprovalThresholdId: Equal(programApprovalThresholdId),
-      },
-    });
-    if (existingApprover) {
-      throw new HttpException(
-        'User is already an approver for this threshold',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    if (programAidworkerAssignment.scope !== '') {
-      throw new HttpException(
-        'Only users without scope (for a program) can be made approver (for that program). Edit the scope of the user-program assignment first (if intended) and retry here.',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const approver = new ApproverEntity();
-    approver.programAidworkerAssignment = programAidworkerAssignment;
-    approver.programApprovalThresholdId = programApprovalThresholdId;
-    approver.order = order;
-    await this.approverRepository.save(approver);
-    return this.entityToDto(approver);
-  }
-
-  private async checkUniqueOrderOrThrow(
-    programApprovalThresholdId: number,
-    order: number,
-  ): Promise<void> {
-    const existingApprover = await this.approverRepository.findOne({
-      where: {
-        order: Equal(order),
-        programApprovalThresholdId: Equal(programApprovalThresholdId),
-      },
-    });
-    if (existingApprover) {
-      throw new HttpException(
-        `An approver with order ${order} already exists for this threshold`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-  }
-
-  public async updateApprover({
-    programId,
-    approverId,
-    order,
-  }: {
-    programId: number;
-    approverId: number;
-    order: number;
-  }): Promise<ApproverResponseDto> {
-    await this.checkUniqueOrderOrThrow(programId, order);
-
-    const approver = await this.approverRepository.findOneOrFail({
-      where: { id: Equal(approverId) },
-      relations: {
-        programAidworkerAssignment: {
-          user: true,
-        },
-      },
-    });
-    if (approver.programAidworkerAssignment.programId !== programId) {
-      throw new HttpException(
-        'Approver does not belong to the specified program',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    approver.order = order;
-    await this.approverRepository.save(approver);
-    return this.entityToDto(approver);
-  }
-
-  public async deleteApprover({
-    programId,
-    approverId,
-  }: {
-    programId: number;
-    approverId: number;
-  }): Promise<void> {
-    const approver = await this.approverRepository.findOneOrFail({
-      where: { id: Equal(approverId) },
-      relations: {
-        programAidworkerAssignment: true,
-      },
-    });
-    if (approver.programAidworkerAssignment.programId !== programId) {
-      throw new HttpException(
-        'Approver does not belong to the specified program',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    await this.approverRepository.remove(approver);
   }
 
   private entityToDto(approver: ApproverEntity): ApproverResponseDto {

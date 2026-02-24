@@ -365,6 +365,7 @@ export class PaymentsManagementService {
 
     // store payment approval
     currentPaymentApproval.approved = true;
+    currentPaymentApproval.approvedByUserId = userId;
     await this.paymentApprovalRepository.save(currentPaymentApproval);
 
     // store payment event

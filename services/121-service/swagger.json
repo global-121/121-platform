@@ -496,38 +496,6 @@
     ]
   },
   {
-    "method": "get",
-    "path": "/api/programs/{programId}/approvers",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/approvers",
-    "params": [
-      "programId"
-    ],
-    "returnType": "ApproverResponseDto"
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/approvers/{approverId}",
-    "params": [
-      "programId",
-      "approverId"
-    ],
-    "returnType": "ApproverResponseDto"
-  },
-  {
-    "method": "delete",
-    "path": "/api/programs/{programId}/approvers/{approverId}",
-    "params": [
-      "programId",
-      "approverId"
-    ]
-  },
-  {
     "method": "put",
     "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/accounts",
     "params": [
