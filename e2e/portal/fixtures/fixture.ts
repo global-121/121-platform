@@ -59,7 +59,7 @@ type Fixtures = {
     includeRegistrationEvents?: boolean;
     approverMode?: ApproverSeedMode;
   }) => Promise<void>;
-  login: () => Promise<void>;
+  login: (params?: { username?: string; password?: string }) => Promise<void>;
   onlyResetAndSeedRegistrations: (params) => Promise<void>;
   accessToken: string;
   exportDataComponent: ExportData;
@@ -211,10 +211,13 @@ export const customSharedFixture = base.extend<Fixtures>({
   },
 
   login: async ({ page }, use) => {
-    const fn = async (): Promise<void> => {
+    const fn = async (params?: {
+      username?: string;
+      password?: string;
+    }): Promise<void> => {
       const loginPage = new LoginPage(page);
       await loginPage.goto('/');
-      await loginPage.login();
+      await loginPage.login(params?.username, params?.password);
     };
     await use(fn);
   },
