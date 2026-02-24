@@ -39,6 +39,7 @@ import {
 import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
 import { Transaction } from '~/domains/transaction/transaction.model';
 import { RetryTransactionsDialogComponent } from '~/pages/program-payment-transaction-list/components/retry-transactions-dialog/retry-transactions-dialog.component';
+import { ActivityLogTransactionHistoryDialogComponent } from '~/pages/program-registration-activity-log/components/activity-log-transaction-history-dialog/activity-log-transaction-history-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import {
   FilterOperator,
@@ -57,6 +58,8 @@ import { getOriginUrl } from '~/utils/url-helper';
     QueryTableComponent,
     ButtonModule,
     SkeletonModule,
+    ActivityLogTransactionHistoryDialogComponent,
+    DatePipe,
     RetryTransactionsDialogComponent,
   ],
   templateUrl: './program-payment-transaction-list.page.html',
@@ -84,8 +87,14 @@ export class ProgramPaymentTransactionListPageComponent {
     viewChild.required<RetryTransactionsDialogComponent>(
       'retryTransactionsDialog',
     );
+  readonly transactionHistoryDialog =
+    viewChild.required<ActivityLogTransactionHistoryDialogComponent>(
+      'transactionHistoryDialog',
+    );
 
   readonly contextMenuSelection = signal<Transaction | undefined>(undefined);
+  readonly selectedTransactionId = signal<number | undefined>(undefined);
+  readonly selectedPaymentDate = signal<string>('');
 
   protected readonly paginateQuery = signal<PaginateQuery | undefined>(
     undefined,
@@ -230,6 +239,15 @@ export class ProgramPaymentTransactionListPageComponent {
             ),
           );
           window.open(getOriginUrl() + url, '_blank');
+        },
+      },
+      {
+        label: $localize`Transfer history`,
+        icon: 'pi pi-history',
+        command: () => {
+          this.selectedTransactionId.set(transaction.id);
+          this.selectedPaymentDate.set(transaction.created);
+          this.transactionHistoryDialog().dialogVisible.set(true);
         },
       },
       {

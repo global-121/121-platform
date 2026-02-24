@@ -2192,11 +2192,8 @@
       <trans-unit id="8329565273054861257" datatype="html">
         <source>You&apos;re about to link this program with this Kobo form:</source>
       </trans-unit>
-      <trans-unit id="6770883928375952203" datatype="html">
-        <source>KoboToolbox</source>
-      </trans-unit>
-      <trans-unit id="8809702678611776373" datatype="html">
-        <source>Link with KoboToolbox</source>
+      <trans-unit id="5687538980626463491" datatype="html">
+        <source>Transfer history</source>
       </trans-unit>
     </body>
   </file>

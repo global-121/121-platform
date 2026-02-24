@@ -41,3 +41,12 @@
   [paymentId]="paymentId()"
   [paginateQuery]="paginateQuery()"
 />
+
+@if (selectedTransactionId()) {
+  <app-activity-log-transaction-history-dialog
+    #transactionHistoryDialog
+    [programId]="programId()"
+    [transactionId]="selectedTransactionId()!"
+    [paymentDate]="(selectedPaymentDate() | date: 'short')!"
+  />
+}
