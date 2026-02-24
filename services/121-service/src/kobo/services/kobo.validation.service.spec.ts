@@ -953,8 +953,7 @@ describe('KoboValidationService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
        "Kobo form definition validation failed:
        - Kobo form attribute "paymentCount" is a reserved attribute name cannot be filled from Kobo."
