@@ -8,6 +8,7 @@ import { CommercialBankEthiopiaApiService } from '@121-service/src/fsp-integrati
 import { CommercialBankEthiopiaService } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { RequiredUsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/required-username-password.interface';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -67,85 +68,109 @@ export class CommercialBankEthiopiaAccountManagementService {
         { programId },
       );
 
-    const getAllPersonsAffectedData =
-      await this.getAllPersonsAffectedData(programId);
+    const registrationsWithCbe = await this.getAllRegistrationData(programId);
 
     const logMessageProgram = `CBE Reconciliation - Program: ${programId} - getValidationStatus total`;
     console.time(logMessageProgram);
 
-    for (const pa of getAllPersonsAffectedData) {
-      const logMessageRegistration = `CBE Reconciliation - Program: ${programId} - getValidationStatus for Registration: ${pa.id}`;
-      console.time(logMessageRegistration);
-      const paResult =
-        await this.commercialBankEthiopiaApiService.getValidationStatus(
-          pa.bankAccountNumber,
-          credentials,
-        );
-      console.timeEnd(logMessageRegistration);
-
-      const result = new CommercialBankEthiopiaAccountEnquiriesEntity();
-      result.registrationId = pa?.id;
-      result.fullNameUsedForTheMatch = pa?.fullName || null;
-      result.bankAccountNumberUsedForCall = pa?.bankAccountNumber || null;
-      result.cbeName = null;
-      result.cbeStatus = null;
-      result.errorMessage = null;
-
-      if (paResult?.Status?.successIndicator?._text === 'Success') {
-        const accountInfo =
-          paResult?.EACCOUNTCBEREMITANCEType?.[
-            'ns4:gEACCOUNTCBEREMITANCEDetailType'
-          ]?.['ns4:mEACCOUNTCBEREMITANCEDetailType'];
-        const cbeName = accountInfo?.['ns4:CUSTOMERNAME']?._text;
-        const cbeStatus = accountInfo?.['ns4:ACCOUNTSTATUS']?._text;
-
-        result.cbeName = cbeName || null;
-        result.cbeStatus = cbeStatus || null;
-
-        const hasFullName = Boolean(pa.fullName);
-        const hasCbeName = Boolean(cbeName);
-
-        if (hasFullName && hasCbeName) {
-          result.errorMessage = null; // All infrormation is present so no error
-        } else if (hasFullName && !hasCbeName) {
-          result.errorMessage =
-            'Did not get a name from CBE for account number';
-        } else if (!hasFullName && hasCbeName) {
-          result.errorMessage = 'FullName in 121 is missing';
-        } else {
-          result.errorMessage =
-            'FullName in 121 is missing and did not get a name from CBE for account number';
-        }
-      } else {
-        result.errorMessage =
-          paResult.resultDescription ||
-          (paResult.Status &&
-            paResult.Status.messages &&
-            (paResult.Status.messages.length > 0
-              ? paResult.Status.messages[0]._text
-              : paResult.Status.messages._text));
-      }
-      const existingRecord =
-        await this.commercialBankEthiopiaAccountEnquiriesScopedRepo.findOne({
-          where: { registrationId: Equal(pa.id) },
-        });
-
-      if (existingRecord) {
-        await this.commercialBankEthiopiaAccountEnquiriesScopedRepo.updateUnscoped(
-          { registrationId: pa.id },
-          result as QueryDeepPartialEntity<CommercialBankEthiopiaAccountEnquiriesEntity>,
-        );
-      } else {
-        await this.commercialBankEthiopiaAccountEnquiriesScopedRepo.save(
-          result,
-        );
-      }
+    for (const registration of registrationsWithCbe) {
+      await this.retrieveAndUpsertAccountEnqueryPerRegistration({
+        registration,
+        credentials,
+        programId,
+      });
     }
     console.timeEnd(logMessageProgram);
-    return getAllPersonsAffectedData.length;
+    return registrationsWithCbe.length;
   }
 
-  public async getAllPersonsAffectedData(
+  private async retrieveAndUpsertAccountEnqueryPerRegistration({
+    registration,
+    credentials,
+    programId,
+  }: {
+    registration: CommercialBankEthiopiaValidationData;
+    credentials: RequiredUsernamePasswordInterface;
+    programId: number;
+  }) {
+    const logMessageRegistration = `CBE Reconciliation - Program: ${programId} - getValidationStatus for Registration: ${registration.id}`;
+    console.time(logMessageRegistration);
+    let validationResult;
+    try {
+      validationResult =
+        await this.commercialBankEthiopiaApiService.getValidationStatus(
+          registration.bankAccountNumber,
+          credentials,
+        );
+    } catch (error) {
+      // We made a generic try catch here because we do not want the entire reconciliation process to fail if the API call for one registration fails. By catching the error and logging it, we can still get validation results for other registrations and have a record of which ones failed for further investigation.
+      console.error(
+        `Error fetching validation status for Registration ID ${registration.id} with account number ${registration.bankAccountNumber}:`,
+        error,
+      );
+      console.timeEnd(logMessageRegistration);
+      return;
+    }
+    console.timeEnd(logMessageRegistration);
+
+    const result = new CommercialBankEthiopiaAccountEnquiriesEntity();
+    result.registrationId = registration?.id;
+    result.fullNameUsedForTheMatch = registration?.fullName || null;
+    result.bankAccountNumberUsedForCall =
+      registration?.bankAccountNumber || null;
+    result.cbeName = null;
+    result.cbeStatus = null;
+    result.errorMessage = null;
+
+    if (validationResult?.Status?.successIndicator?._text === 'Success') {
+      const accountInfo =
+        validationResult?.EACCOUNTCBEREMITANCEType?.[
+          'ns4:gEACCOUNTCBEREMITANCEDetailType'
+        ]?.['ns4:mEACCOUNTCBEREMITANCEDetailType'];
+      const cbeName = accountInfo?.['ns4:CUSTOMERNAME']?._text;
+      const cbeStatus = accountInfo?.['ns4:ACCOUNTSTATUS']?._text;
+
+      result.cbeName = cbeName || null;
+      result.cbeStatus = cbeStatus || null;
+
+      const hasFullName = Boolean(registration.fullName);
+      const hasCbeName = Boolean(cbeName);
+
+      if (hasFullName && hasCbeName) {
+        result.errorMessage = null; // All infrormation is present so no error
+      } else if (hasFullName && !hasCbeName) {
+        result.errorMessage = 'Did not get a name from CBE for account number';
+      } else if (!hasFullName && hasCbeName) {
+        result.errorMessage = 'FullName in 121 is missing';
+      } else {
+        result.errorMessage =
+          'FullName in 121 is missing and did not get a name from CBE for account number';
+      }
+    } else {
+      result.errorMessage =
+        validationResult.resultDescription ||
+        (validationResult.Status &&
+          validationResult.Status.messages &&
+          (validationResult.Status.messages.length > 0
+            ? validationResult.Status.messages[0]._text
+            : validationResult.Status.messages._text));
+    }
+    const existingRecord =
+      await this.commercialBankEthiopiaAccountEnquiriesScopedRepo.findOne({
+        where: { registrationId: Equal(registration.id) },
+      });
+
+    if (existingRecord) {
+      await this.commercialBankEthiopiaAccountEnquiriesScopedRepo.updateUnscoped(
+        { registrationId: registration.id },
+        result as QueryDeepPartialEntity<CommercialBankEthiopiaAccountEnquiriesEntity>,
+      );
+    } else {
+      await this.commercialBankEthiopiaAccountEnquiriesScopedRepo.save(result);
+    }
+  }
+
+  public async getAllRegistrationData(
     programId: number,
   ): Promise<CommercialBankEthiopiaValidationData[]> {
     const queryBuilderCbeRegistrations =
