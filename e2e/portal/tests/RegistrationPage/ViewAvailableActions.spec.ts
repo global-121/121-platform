@@ -33,7 +33,7 @@ test.describe('Admin user actions', () => {
     registrationUrl = `/program/${programIdPV}/registrations/${registrationId}`;
   });
 
-  test.beforeEach(async ({ page }) => {
+  test.afterEach(async ({ page }) => {
     await page.goto('/logout');
   });
 
