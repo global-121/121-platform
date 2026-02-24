@@ -361,15 +361,18 @@ describe('KoboApiService', () => {
       });
 
       // Assert
+      const expectedHeaders = new Headers();
+      expectedHeaders.append('Authorization', `Token ${mockToken}`);
+
       expect(httpService.post).toHaveBeenCalledWith(
         'https://kobo.example.com/api/v2/assets/test-asset-id/hooks',
         {
-          name: 'Notify 121 on new submission',
+          name: 'Create a registration in the 121 Platform when a submission is received',
           url: expect.stringContaining('kobo/webhook'),
           active: true,
           subset_fields: ['_uuid', '_xform_id_string'],
         },
-        expect.anything(), // headers argument
+        expectedHeaders,
       );
     });
 
@@ -396,8 +399,7 @@ describe('KoboApiService', () => {
       }
 
       // Assert
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(
         `"Failed to create Kobo webhook for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/hooks: Server error occurred"`,
       );
