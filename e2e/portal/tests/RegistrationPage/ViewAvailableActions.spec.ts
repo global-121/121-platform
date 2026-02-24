@@ -15,9 +15,10 @@ import {
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 let registrationId: number;
+let registrationUrl: string;
 
 test.describe('Admin user actions', () => {
-  test.beforeEach(async ({ onlyResetAndSeedRegistrations, accessToken }) => {
+  test.beforeAll(async ({ onlyResetAndSeedRegistrations, accessToken }) => {
     await onlyResetAndSeedRegistrations({
       seedScript: SeedScript.nlrcMultiple,
       seedWithStatus: RegistrationStatusEnum.included,
@@ -29,6 +30,11 @@ test.describe('Admin user actions', () => {
       referenceId: registrationPV5.referenceId,
       accessToken,
     });
+    registrationUrl = `/program/${programIdPV}/registrations/${registrationId}`;
+  });
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/logout');
   });
 
   test('Admin should see all expected actions', async ({
@@ -38,9 +44,7 @@ test.describe('Admin user actions', () => {
   }) => {
     await test.step('Login and navigate to registration activity log page', async () => {
       await login();
-      await registrationActivityLogPage.goto(
-        `/program/${programIdPV}/registrations/${registrationId}`,
-      );
+      await registrationActivityLogPage.goto(registrationUrl);
     });
 
     await test.step('Open action menu', async () => {
@@ -95,9 +99,7 @@ test.describe('Admin user actions', () => {
         username: env.USERCONFIG_121_SERVICE_EMAIL_CVA_OFFICER ?? '',
         password: env.USERCONFIG_121_SERVICE_PASSWORD_CVA_OFFICER ?? '',
       });
-      await registrationActivityLogPage.goto(
-        `/program/${programIdPV}/registrations/${registrationId}`,
-      );
+      await registrationActivityLogPage.goto(registrationUrl);
     });
 
     await test.step('Open action menu', async () => {
@@ -155,9 +157,7 @@ test.describe('Admin user actions', () => {
     await test.step('Setup and navigate', async () => {
       // Setup with admin user first
       await login();
-      await registrationActivityLogPage.goto(
-        `/program/${programIdPV}/registrations/${registrationId}`,
-      );
+      await registrationActivityLogPage.goto(registrationUrl);
       // Logout as admin to add permissions to "viewOnlyUser"
       await page.goto('/logout');
       // Add UPDATE permission to "viewOnlyUser" so that the actions menu becomes visible
