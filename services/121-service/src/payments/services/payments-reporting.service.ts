@@ -6,6 +6,7 @@ import { Equal, Repository } from 'typeorm';
 import { DEFAULT_PAGINATION_LIMIT } from '@121-service/src/config';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { PaginateConfigTransactionView } from '@121-service/src/payments/consts/paginate-config-transaction-view.const';
+import { ApprovalStatusResponseDto } from '@121-service/src/payments/dto/approval-status-response.dto';
 import { ExportTransactionResponseDto } from '@121-service/src/payments/dto/export-transaction-response.dto';
 import { PaginatedTransactionDto } from '@121-service/src/payments/dto/paginated-transaction.dto';
 import { PaymentAggregationFullDto } from '@121-service/src/payments/dto/payment-aggregation-full.dto';
@@ -20,7 +21,6 @@ import { PaymentsReportingHelperService } from '@121-service/src/payments/servic
 import { FindAllTransactionsResultDto } from '@121-service/src/payments/transactions/dto/find-all-transactions-result.dto';
 import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
-import { ApprovalStatusResponseDto } from '@121-service/src/programs/approver/dto/approval-status-response.dto';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
