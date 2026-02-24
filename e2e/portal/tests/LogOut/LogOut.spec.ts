@@ -1,9 +1,8 @@
+import { expect } from '@playwright/test';
+
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 
-import {
-  customSharedFixture as test,
-  expect,
-} from '@121-e2e/portal/fixtures/fixture';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({

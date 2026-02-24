@@ -1,3 +1,5 @@
+import { expect } from '@playwright/test';
+
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
@@ -13,10 +15,7 @@ import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import { registrationOCW1 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import FormDialogComponent from '@121-e2e/portal/components/FormDialogComponent';
-import {
-  customSharedFixture as test,
-  expect,
-} from '@121-e2e/portal/fixtures/fixture';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const visaCardNumber = '1111222233334444555';
 const visaCardNumberDashed = '1111-2222-3333-4444-555';

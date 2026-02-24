@@ -1,3 +1,5 @@
+import { expect } from '@playwright/test';
+
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
@@ -5,10 +7,7 @@ import {
   registrationsPV,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import {
-  customSharedFixture as test,
-  expect,
-} from '@121-e2e/portal/fixtures/fixture';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const duplicateRegistration = registrationsPV[1]; // 'Jan Janssen'
 // making sure we have 3 duplicate registrations

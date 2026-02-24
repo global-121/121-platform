@@ -32,9 +32,6 @@ import RegistrationPersonalInformationPage from '@121-e2e/portal/pages/Registrat
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 import UsersPage from '@121-e2e/portal/pages/UsersPage';
 
-// Re-export expect for convenience
-export { expect } from '@playwright/test';
-
 // Define a comprehensive type for test registration data
 // Based on RegistrationEntity with commonly used test-specific properties
 type TestRegistration = Partial<RegistrationEntity> & {

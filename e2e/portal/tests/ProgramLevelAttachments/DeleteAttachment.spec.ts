@@ -1,13 +1,11 @@
+import { expect } from '@playwright/test';
 import path from 'node:path';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { uploadAttachment } from '@121-service/test/helpers/program-attachments.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-import {
-  customSharedFixture as test,
-  expect,
-} from '@121-e2e/portal/fixtures/fixture';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const pdfFilePath = path.resolve(
   __dirname,

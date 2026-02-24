@@ -1,3 +1,5 @@
+import { expect } from '@playwright/test';
+
 import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { doPaymentAndWaitForCompletion } from '@121-service/test/helpers/registration.helper';
@@ -6,10 +8,7 @@ import {
   registrationsOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import {
-  customSharedFixture as test,
-  expect,
-} from '@121-e2e/portal/fixtures/fixture';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({

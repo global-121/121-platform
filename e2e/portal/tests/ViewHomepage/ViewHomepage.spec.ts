@@ -1,9 +1,8 @@
+import { expect } from '@playwright/test';
+
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 
-import {
-  customSharedFixture as test,
-  expect,
-} from '@121-e2e/portal/fixtures/fixture';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 /**
  * This test is here to just load the homepage and check if it loads without any errors to make sure we don't break the infrastructure that runs the tests.

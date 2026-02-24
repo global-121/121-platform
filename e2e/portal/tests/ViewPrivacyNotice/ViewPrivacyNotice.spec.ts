@@ -1,7 +1,6 @@
-import {
-  customSharedFixture as test,
-  expect,
-} from '@121-e2e/portal/fixtures/fixture';
+import { expect } from '@playwright/test';
+
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 test.describe('View Privacy Notice', () => {
   test('when logged-out', async ({ page }) => {

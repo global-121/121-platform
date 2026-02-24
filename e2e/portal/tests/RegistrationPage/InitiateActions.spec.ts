@@ -1,3 +1,5 @@
+import { expect } from '@playwright/test';
+
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { getRegistrationIdByReferenceId } from '@121-service/test/helpers/registration.helper';
 import {
@@ -5,10 +7,7 @@ import {
   registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import {
-  customSharedFixture as test,
-  expect,
-} from '@121-e2e/portal/fixtures/fixture';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const programId = 2;
 let registrationId: number;
