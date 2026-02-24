@@ -1,2 +1,2 @@
 paymentId,registrationProgramId,registrationReferenceId,registrationId,registrationStatus,status,amount,errorMessage,programFspConfigurationName,registrationName,phoneNumber,preferredLanguage,paymentAmountMultiplier,programFspConfigurationLabel,paymentCount,fullName,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
-1,1,63e62864557597e0d,2,included,success,25,,Intersolve-visa,John Smith,14155236666,en,1,,5,John Smith,14155238886,Teststraat,1,,1234AB,Stad
+1,1,63e62864557597e0d,2,included,success,20,,Intersolve-visa,John Smith,14155236666,en,1,,5,John Smith,14155238886,Teststraat,1,,1234AB,Stad

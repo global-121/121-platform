@@ -1,4 +1,4 @@
-import test, { expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
@@ -7,25 +7,19 @@ import {
   getProgram,
   patchProgram,
 } from '@121-service/test/helpers/program.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import ProgramSettingsPage from '@121-e2e/portal/pages/ProgramSettingsPage';
-import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const todaysDate = new Date();
 const futureDate = new Date();
 futureDate.setDate(futureDate.getDate() + 1);
-let accessToken: string;
 
-// Arrange
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-  accessToken = await getAccessToken();
+test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    skipSeedRegistrations: true,
+  });
 
   await patchProgram(
     programIdOCW,
@@ -37,19 +31,12 @@ test.beforeEach(async ({ page }) => {
     },
     accessToken,
   );
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
-  // Navigate to program
-  await loginPage.selectProgram('NLRC OCW program');
 });
 
-test('Edit Program Information', async ({ page }) => {
-  const registrations = new RegistrationsPage(page);
-  const programSettings = new ProgramSettingsPage(page);
-
+test('Edit Program Information', async ({
+  programSettingsPage,
+  accessToken,
+}) => {
   const programInfo = {
     name: 'TUiR Warta',
     description: 'TUiR Warta description',
@@ -68,43 +55,46 @@ test('Edit Program Information', async ({ page }) => {
 
   // Act
   await test.step('Navigate to program settings', async () => {
-    await registrations.navigateToProgramPage('Settings');
+    // First navigate to the program's settings that was created during setup
+    await programSettingsPage.goto(`/program/${programIdOCW}/settings`);
   });
 
   await test.step('Select: Program Information', async () => {
-    await programSettings.navigateToProgramSettingsPage('Program information');
+    await programSettingsPage.navigateToProgramSettingsPage(
+      'Program information',
+    );
   });
 
   await test.step('Edit basic information', async () => {
-    await programSettings.clickEditProgramInformationSectionByTitle(
+    await programSettingsPage.clickEditProgramInformationSectionByTitle(
       'Basic information',
     );
-    await programSettings.editInformationFieldByLabel(
+    await programSettingsPage.editInformationFieldByLabel(
       'Program name',
       programInfo.name,
     );
-    await programSettings.editInformationFieldByLabel(
+    await programSettingsPage.editInformationFieldByLabel(
       'Program description',
       programInfo.description,
     );
-    await programSettings.selectDateRange(programInfo.dateRange);
-    await programSettings.editInformationFieldByLabel(
+    await programSettingsPage.selectDateRange(programInfo.dateRange);
+    await programSettingsPage.editInformationFieldByLabel(
       'Location',
       programInfo.location,
     );
-    await programSettings.editInformationFieldByLabel(
+    await programSettingsPage.editInformationFieldByLabel(
       '*Target registrations',
       programInfo.targetRegistrations,
     );
-    await programSettings.saveChanges();
-    await programSettings.validateToastMessageAndClose(
+    await programSettingsPage.saveChanges();
+    await programSettingsPage.validateToastMessageAndClose(
       'Basic information details saved successfully.',
     );
 
     // expect with a timeout because we might need to wait for the cache to invalidate
     await expect(async () => {
       const basicInformationData =
-        await programSettings.basicInformationDataList.getData();
+        await programSettingsPage.basicInformationDataList.getData();
       expect(basicInformationData).toEqual({
         '*Program name': programInfo.name,
         'Program description': programInfo.description,
@@ -117,35 +107,37 @@ test('Edit Program Information', async ({ page }) => {
       });
     }).toPass({ timeout: 2000 });
 
-    // Also validate the API still returns other language translactions for a translatable field
-    // It is suboptimal to do this check via the API, but this to cover a bug that occurred before by using a combination of the UI and API
+    // Also validate the API still returns other language translations for a translatable field
+    // It is suboptimal to do this check via the API, but this is for covering a bug that occurred before, by using a combination of the UI and API
     const program = await getProgram(programIdOCW, accessToken);
     expect(program.body.titlePortal?.nl).toBeDefined();
   });
 
   await test.step('Edit Budget information', async () => {
-    await programSettings.clickEditProgramInformationSectionByTitle('Budget');
-    await programSettings.editInformationFieldByLabel(
+    await programSettingsPage.clickEditProgramInformationSectionByTitle(
+      'Budget',
+    );
+    await programSettingsPage.editInformationFieldByLabel(
       'Funds available',
       budgetInfo.fundsAvailable,
     );
-    await programSettings.selectCurrency(budgetInfo.currency);
-    await programSettings.editInformationFieldByLabel(
+    await programSettingsPage.selectCurrency(budgetInfo.currency);
+    await programSettingsPage.editInformationFieldByLabel(
       'Default transactions per registration',
       budgetInfo.defaultTransferValue,
     );
-    await programSettings.editInformationFieldByLabel(
+    await programSettingsPage.editInformationFieldByLabel(
       '*Fixed transfer value',
       budgetInfo.fixedTransferValue,
     );
-    await programSettings.saveChanges();
-    await programSettings.validateToastMessageAndClose(
+    await programSettingsPage.saveChanges();
+    await programSettingsPage.validateToastMessageAndClose(
       'Budget details saved successfully.',
     );
 
     // expect with a timeout because we might need to wait for the cache to invalidate
     await expect(async () => {
-      const budgetData = await programSettings.budgetDataList.getData();
+      const budgetData = await programSettingsPage.budgetDataList.getData();
       expect(budgetData).toEqual({
         'Funds available': budgetInfo.fundsAvailable,
         '*Currency': budgetInfo.currency,

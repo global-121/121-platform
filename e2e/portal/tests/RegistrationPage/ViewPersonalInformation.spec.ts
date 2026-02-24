@@ -1,36 +1,27 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getRegistrationIdByReferenceId,
   seedIncludedRegistrations,
 } from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
 import { registrationWesteros4 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import RegistrationPersonalInformationPage from '@121-e2e/portal/pages/RegistrationPersonalInformationPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const programId = 2;
 let registrationId: number;
-let accessToken: string;
 
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.testMultiple, __filename);
-
-  accessToken = await getAccessToken();
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto(`/`);
-  await loginPage.login();
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.testMultiple,
+    skipSeedRegistrations: true,
+  });
 });
 
 test('User can view the registration data of registration that has all data types', async ({
-  page,
+  registrationPersonalInformationPage,
+  accessToken,
 }) => {
   await seedIncludedRegistrations(
     [registrationWesteros4],
@@ -65,19 +56,18 @@ test('User can view the registration data of registration that has all data type
     Choice: 'No',
   };
 
-  const personalInfoPage = new RegistrationPersonalInformationPage(page);
-
-  await personalInfoPage.goto(
+  await registrationPersonalInformationPage.goto(
     `/program/${programId}/registrations/${registrationId}/personal-information`,
   );
 
-  const personalInfo = await personalInfoPage.personalInformationDataList();
-
+  const personalInfo =
+    await registrationPersonalInformationPage.personalInformationDataList();
   expect(personalInfo).toMatchObject(expectedRegistrationData);
 });
 
 test('User can view the registration data of registration that has only the required data', async ({
-  page,
+  registrationPersonalInformationPage,
+  accessToken,
 }) => {
   const registrationWithOnlyRequiredData = {
     referenceId: registrationWesteros4.referenceId,
@@ -120,13 +110,11 @@ test('User can view the registration data of registration that has only the requ
     Choice: '—',
   };
 
-  const personalInfoPage = new RegistrationPersonalInformationPage(page);
-
-  await personalInfoPage.goto(
+  await registrationPersonalInformationPage.goto(
     `/program/${programId}/registrations/${registrationId}/personal-information`,
   );
 
-  const personalInfo = await personalInfoPage.personalInformationDataList();
-
+  const personalInfo =
+    await registrationPersonalInformationPage.personalInformationDataList();
   expect(personalInfo).toMatchObject(expectedRegistrationData);
 });

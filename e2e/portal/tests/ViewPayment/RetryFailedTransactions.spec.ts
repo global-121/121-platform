@@ -1,66 +1,46 @@
-import { test } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
-import {
-  seedIncludedRegistrations,
-  updateRegistration,
-} from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
+import { updateRegistration } from '@121-service/test/helpers/registration.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
   registrationOCW6Fail,
   registrationsOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
-import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-let paymentPage: PaymentPage;
-let paymentsPage: PaymentsPage;
-const programTitle = NLRCProgram.titlePortal.en;
 const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 const paymentPageUrl = `/en-GB/program/${programIdOCW}/payments/1`;
 const registrations = [...registrationsOCW, registrationOCW6Fail];
 
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-  const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrations, programIdOCW, accessToken);
+test.beforeEach(
+  async ({ paymentsPage, paymentPage, resetDBAndSeedRegistrations, page }) => {
+    await resetDBAndSeedRegistrations({
+      seedScript: SeedScript.nlrcMultiple,
+      registrations: [...registrationsOCW, registrationOCW6Fail],
+      programId: programIdOCW,
+      navigateToPage: `/program/${programIdOCW}/payments`,
+    });
 
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
-
-  paymentPage = new PaymentPage(page);
-  paymentsPage = new PaymentsPage(page);
-
-  await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(programTitle);
-
-    await paymentsPage.navigateToProgramPage('Payments');
-  });
-
-  await test.step('Do payment', async () => {
     await paymentsPage.createPayment({});
     await page.waitForURL((url) => url.pathname.startsWith(paymentPageUrl));
     await paymentPage.approvePayment();
     await paymentPage.startPayment();
-
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
-  });
-});
+  },
+);
 
-test('Retry failed transactions without filtering', async ({ page }) => {
+test('Retry failed transactions without filtering', async ({
+  page,
+  paymentPage,
+}) => {
   await test.step('Check presence of retry button', async () => {
     await paymentPage.waitForPaymentToComplete();
+    // Leaving this for now
+    // My assumption is that there are a lot of jobs running in the background and for the test to retry the failed transactions correctly we need to re-navigate to payment overview page
     await page.goto(paymentPageUrl, {
       waitUntil: 'networkidle',
     });
@@ -91,10 +71,13 @@ test('Retry failed transactions without filtering', async ({ page }) => {
 });
 
 test('Retry failed transactions with filtering on failed transactions', async ({
+  paymentPage,
   page,
 }) => {
   await test.step('Check presence of retry button', async () => {
     await paymentPage.waitForPaymentToComplete();
+    // Leaving this for now
+    // My assumption is that there are a lot of jobs running in the background and for the test to retry the failed transactions correctly we need to re-navigate to payment overview page
     await page.goto(paymentPageUrl, {
       waitUntil: 'networkidle',
     });

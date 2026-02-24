@@ -1,11 +1,6 @@
-import { test } from '@playwright/test';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { resetDB } from '@121-service/test/helpers/utility.helper';
 
-import BasePage from '@121-e2e/portal/pages/BasePage';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import ProgramTeamPage from '@121-e2e/portal/pages/ProgramTeamPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const expectedInitialAssignedUsers = [
   'admin@example.org',
@@ -24,35 +19,37 @@ const expectedFinalAssignedUsers = expectedInitialAssignedUsers.filter(
   (email) => email !== userToRemove,
 );
 
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.testMultiple, __filename);
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.testMultiple,
+    skipSeedRegistrations: true,
+  });
 });
 
-test('Users should be removable from "program team"', async ({ page }) => {
-  const basePage = new BasePage(page);
-  const manageTeam = new ProgramTeamPage(page);
+test('Users should be removable from "program team"', async ({
+  programTeamPage,
+}) => {
   const programTitle = 'Cash program Westeros';
 
   await test.step('Select program and navigate to Manage team', async () => {
-    await basePage.selectProgram(programTitle);
-    await basePage.navigateToProgramSettingsPage('Program team');
+    await programTeamPage.selectProgram(programTitle);
+    await programTeamPage.navigateToProgramSettingsPage('Program team');
   });
 
   await test.step('Validate assigned users are visible', async () => {
-    await manageTeam.validateAssignedTeamMembers(expectedInitialAssignedUsers);
+    await programTeamPage.validateAssignedTeamMembers(
+      expectedInitialAssignedUsers,
+    );
   });
 
   await test.step('Validate available system users are visible', async () => {
-    await manageTeam.enableEditMode();
-    await manageTeam.removeUserFromTeam({
+    await programTeamPage.enableEditMode();
+    await programTeamPage.removeUserFromTeam({
       userEmail: userToRemove,
     });
-    await manageTeam.validateToastMessage('User removed');
-    await manageTeam.validateAssignedTeamMembers(expectedFinalAssignedUsers);
+    await programTeamPage.validateToastMessage('User removed');
+    await programTeamPage.validateAssignedTeamMembers(
+      expectedFinalAssignedUsers,
+    );
   });
 });

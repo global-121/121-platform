@@ -1,35 +1,21 @@
-import { test } from '@playwright/test';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import {
-  doPaymentAndWaitForCompletion,
-  seedIncludedRegistrations,
-} from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
+import { doPaymentAndWaitForCompletion } from '@121-service/test/helpers/registration.helper';
 import {
   programIdOCW,
   registrationsVisa,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import BasePage from '@121-e2e/portal/pages/BasePage';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import ProgramMonitoring from '@121-e2e/portal/pages/ProgramMonitoringPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const transferValueForSecondPayment = 10;
 
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-  const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsVisa, programIdOCW, accessToken);
-  // do 1st payment
-  await doPaymentAndWaitForCompletion({
-    programId: programIdOCW,
+test.beforeEach(async ({ resetDBAndSeedRegistrations, page, accessToken }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    seedPaidRegistrations: true,
+    registrations: registrationsVisa,
     transferValue: 25,
-    referenceIds: registrationsVisa.map((reg) => reg.referenceId),
-    accessToken,
+    programId: programIdOCW,
   });
 
   // do 2nd payment
@@ -39,22 +25,20 @@ test.beforeEach(async ({ page }) => {
     referenceIds: registrationsVisa.map((reg) => reg.referenceId),
     accessToken,
   });
-
-  // Login
-  const loginPage = new LoginPage(page);
+  // The test only worked because without the fixture it had to login and navigate to correct page
+  // Now to maintain the same test flow we need to navigate to the same page as it was done before with login and navigation in the previous test
+  // I could not find the source of the issue thus I left the navigation to the page for now
   await page.goto('/');
-  await loginPage.login();
 });
 
-test('Chip displays correct amount for second payment', async ({ page }) => {
-  const basePage = new BasePage(page);
-  const programMonitoring = new ProgramMonitoring(page);
-
+test('Chip displays correct amount for second payment', async ({
+  programMonitoringPage,
+}) => {
   const programTitle = 'NLRC OCW program';
 
   await test.step('Navigate to program`s monitoring page', async () => {
-    await basePage.selectProgram(programTitle);
-    await programMonitoring.navigateToProgramPage('Monitoring');
+    await programMonitoringPage.selectProgram(programTitle);
+    await programMonitoringPage.navigateToProgramPage('Monitoring');
   });
 
   await test.step('Check if last payment value is displayed correctly', async () => {
@@ -72,10 +56,10 @@ test('Chip displays correct amount for second payment', async ({ page }) => {
       );
     }, 0);
 
-    await programMonitoring.assertMonitoringTabElements({
+    await programMonitoringPage.assertMonitoringTabElements({
       shouldHaveIframe: true,
     });
-    await programMonitoring.assertValuesInMonitoringTab({
+    await programMonitoringPage.assertValuesInMonitoringTab({
       peopleIncluded: 4,
       peopleRegistered: 4,
       lastPaymentAmount: `€${defaultMaxTransferValue.toString()}`,

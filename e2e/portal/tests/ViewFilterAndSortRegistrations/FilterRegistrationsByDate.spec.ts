@@ -1,19 +1,11 @@
-import { test } from '@playwright/test';
-
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { seedRegistrationsWithStatus } from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
   registrationsPV,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import TableComponent from '@121-e2e/portal/components/TableComponent';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 // Get current date information
 const currentDate = new Date();
@@ -22,28 +14,17 @@ const month = currentDate.getMonth();
 const year = currentDate.getFullYear();
 const formattedDate = `${year}-${month}-${day}`;
 
-// Arrange
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-  const accessToken = await getAccessToken();
-
-  await seedRegistrationsWithStatus(
-    registrationsPV,
-    programIdPV,
-    accessToken,
-    RegistrationStatusEnum.included,
-  );
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
-  // Navigate to program
-  await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    registrations: registrationsPV,
+    programId: programIdPV,
+    seedWithStatus: RegistrationStatusEnum.included,
+    navigateToPage: `/program/${programIdPV}/registrations`,
+  });
 });
 
-test('Filter registrations by Date selection', async ({ page }) => {
-  const tableComponent = new TableComponent(page);
+test('Filter registrations by Date selection', async ({ tableComponent }) => {
   // Act & Assert
   await test.step('Filter registration created column by "Date is" date', async () => {
     // Filter Registration column by date

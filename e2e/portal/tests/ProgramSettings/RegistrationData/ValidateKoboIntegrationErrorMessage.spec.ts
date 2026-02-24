@@ -21,7 +21,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations, page }) => {
     seedScript: SeedScript.safaricomProgram,
     registrations: registrationsSafaricom,
     programId: programIdSafaricom,
-    navigateToPage: `/en-GB/program/${programIdSafaricom}/settings/registration-data`,
+    navigateToPage: `/program/${programIdSafaricom}/settings/registration-data`,
   });
   await registrationData.clickRegistrationDataSection();
 });

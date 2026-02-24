@@ -1,18 +1,12 @@
-import { expect, Page, test } from '@playwright/test';
+import { expect } from '@playwright/test';
 import path from 'node:path';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { uploadAttachment } from '@121-service/test/helpers/program-attachments.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
+import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
-import TableComponent from '@121-e2e/portal/components/TableComponent';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import ProgramMonitoring from '@121-e2e/portal/pages/ProgramMonitoringPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-let accessToken: string;
 const pdfFilePath = path.resolve(
   __dirname,
   '../../../test-file-upload-data/test-document.pdf',
@@ -35,46 +29,32 @@ const fileNameToDelete = 'test-document.docx';
 
 // Arrange
 test.describe('Attachments on Program Level', () => {
-  let page: Page;
-  const programTitle = 'NLRC OCW Program';
-
-  test.beforeAll(async ({ browser }) => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
-    accessToken = await getAccessToken();
+  test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
+    await resetDBAndSeedRegistrations({
+      seedScript: SeedScript.nlrcMultiple,
+      skipSeedRegistrations: true,
+      navigateToPage: `/program/${programIdOCW}/monitoring/files`,
+    });
 
     for (const filePath of testFilePaths) {
       const baseName = path.basename(filePath);
       fileNames.push(baseName);
       await uploadAttachment({
-        programId: 3,
+        programId: programIdOCW,
         filePath,
         filename: baseName,
         accessToken,
       });
     }
-
-    page = await browser.newPage();
-    // Login
-    const loginPage = new LoginPage(page);
-    await page.goto('/');
-    await loginPage.login();
   });
 
-  test.beforeEach(async () => {
-    const programMonitoring = new ProgramMonitoring(page);
-
-    await page.goto('/');
-    await programMonitoring.selectProgram(programTitle);
-    await programMonitoring.navigateToProgramPage('Monitoring');
-    await programMonitoring.selectTab({ tabName: 'Files' });
-  });
-
-  test('Delete Attachment', async () => {
-    const programMonitoring = new ProgramMonitoring(page);
-    const tableComponent = new TableComponent(page);
-
+  test('Delete Attachment', async ({
+    page,
+    programMonitoringPage,
+    tableComponent,
+  }) => {
     await test.step('Delete attachment', async () => {
-      await programMonitoring.deleteAttachmentByName({
+      await programMonitoringPage.deleteAttachmentByName({
         fileName: fileNameToDelete,
       });
       fileNames = fileNames.filter((name) => name !== fileNameToDelete);

@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
@@ -10,17 +10,12 @@ import { patchProgramFspConfiguration } from '@121-service/test/helpers/program-
 import {
   getRegistrationIdByReferenceId,
   linkVisaCardOnSite,
-  seedRegistrations,
 } from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import { registrationOCW1 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import FormDialogComponent from '@121-e2e/portal/components/FormDialogComponent';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import RegistrationDebitCardPage from '@121-e2e/portal/pages/RegistrationDebitCardPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const visaCardNumber = '1111222233334444555';
 const visaCardNumberDashed = '1111-2222-3333-4444-555';
@@ -55,109 +50,109 @@ const updateProgramFspConfigurationDto: UpdateProgramFspConfigurationDto = {
     },
   ],
 };
-
-test.beforeEach(async ({ page }) => {
-  // Arrange
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-
-  accessToken = await getAccessToken();
-
-  await patchProgramFspConfiguration({
-    programId: programIdVisa,
-    name: 'Intersolve-visa',
-    body: updateProgramFspConfigurationDto,
-    accessToken,
-  });
-  // Seed registration
-  await seedRegistrations([registrationOCW1], programIdVisa);
-  registrationId = await getRegistrationIdByReferenceId({
-    programId: programIdVisa,
-    referenceId: registrationOCW1.referenceId,
-    accessToken,
-  });
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto(`/`);
-  await loginPage.login();
-  // Navigate to debit card page
-  const debitCardPage = new RegistrationDebitCardPage(page);
-  await debitCardPage.goto(
-    `/program/${programIdVisa}/registrations/${registrationId}/debit-cards`,
+test.describe('Link Visa card to registration', () => {
+  test.beforeEach(
+    async ({ resetDBAndSeedRegistrations, registrationDebitCardPage }) => {
+      await resetDBAndSeedRegistrations({
+        seedScript: SeedScript.nlrcMultiple,
+        registrations: [registrationOCW1],
+        programId: programIdVisa,
+      });
+      accessToken = await getAccessToken();
+      // Get registration id by reference id to be able to navigate to debit card page for the registration and link visa cards
+      registrationId = await getRegistrationIdByReferenceId({
+        programId: programIdVisa,
+        referenceId: registrationOCW1.referenceId,
+        accessToken,
+      });
+      // Update program fsp configuration to set card distribution by mail to false to be able to link visa cards on the site
+      await patchProgramFspConfiguration({
+        programId: programIdVisa,
+        name: 'Intersolve-visa',
+        body: updateProgramFspConfigurationDto,
+        accessToken,
+      });
+      // Navigate to debit card page
+      await registrationDebitCardPage.goto(
+        `/program/${programIdVisa}/registrations/${registrationId}/debit-cards`,
+      );
+    },
   );
-});
 
-test('User can link a debit card to a registration', async ({ page }) => {
-  const debitCardPage = new RegistrationDebitCardPage(page);
-  const linkCardButton = await debitCardPage.getLinkVisaCardButton();
+  test('User can link a debit card to a registration', async ({
+    registrationDebitCardPage,
+  }) => {
+    const linkCardButton =
+      await registrationDebitCardPage.getLinkVisaCardButton();
 
-  await test.step('User can view link card button', async () => {
-    await expect(linkCardButton).toBeVisible();
+    await test.step('User can view link card button', async () => {
+      await expect(linkCardButton).toBeVisible();
+    });
+
+    await test.step('User can link a visa debit card to the registration', async () => {
+      await registrationDebitCardPage.linkVisaCard(visaCardNumber);
+      await registrationDebitCardPage.validateToastMessageAndClose(
+        'Visa card linked successfully',
+      );
+
+      const currentDebitCardDataList =
+        await registrationDebitCardPage.getCurrentDebitCardDataList();
+      expect(currentDebitCardDataList['Serial number']).toBe(visaCardNumber);
+    });
   });
 
-  await test.step('User can link a visa debit card to the registration', async () => {
-    await debitCardPage.linkVisaCard(visaCardNumber);
-    await debitCardPage.validateToastMessageAndClose(
-      'Visa card linked successfully',
-    );
+  test('User can successfully replace a debit card and gets error if he tries to link an already linked card', async ({
+    registrationDebitCardPage,
+  }) => {
+    // Arrange
+    await linkVisaCardOnSite({
+      programId: programIdVisa,
+      referenceId: registrationOCW1.referenceId,
+      tokenCode: visaCardNumber,
+      accessToken,
+    });
+    // Act & Assert
+    await test.step('Replace debit card', async () => {
+      const dialogLocator = registrationDebitCardPage.page.locator('.p-dialog');
 
-    const currentDebitCardDataList =
-      await debitCardPage.getCurrentDebitCardDataList();
-    expect(currentDebitCardDataList['Serial number']).toBe(visaCardNumber);
+      const formDialog = new FormDialogComponent(dialogLocator);
+      // Link already existing card to check error message
+      await registrationDebitCardPage.clickMainPageReplaceCardButton();
+      await registrationDebitCardPage.replaceVisaCard(visaCardNumber);
+      await formDialog.hasContent(
+        'The card number you entered is already linked to the current registration.',
+      );
+      await registrationDebitCardPage.goBackToLinkDebitCardModal();
+      // Link new card
+      await registrationDebitCardPage.replaceVisaCard(newVisaCardNumber);
+      await registrationDebitCardPage.validateToastMessageAndClose(
+        'Visa card linked successfully',
+      );
+
+      // The behaviour of the page right now is that FE does not refresh immediately and the page should be refreshed to get new and old card numbers
+      // I think this should not work like that
+      // await page.reload();
+      const currentDebitCardDataList =
+        await registrationDebitCardPage.getCurrentDebitCardDataList();
+      const substituteDebitCardDataList =
+        await registrationDebitCardPage.getSubstituteDebitCardDataList();
+      expect(currentDebitCardDataList['Serial number']).toBe(newVisaCardNumber);
+      expect(substituteDebitCardDataList['Serial number']).toBe(
+        visaCardNumberDashed,
+      );
+    });
   });
-});
 
-test('User can successfully replace a debit card and gets error if he tries to link an already linked card', async ({
-  page,
-}) => {
-  // Arrange
-  await linkVisaCardOnSite({
-    programId: programIdVisa,
-    referenceId: registrationOCW1.referenceId,
-    tokenCode: visaCardNumber,
-    accessToken,
-  });
-  // Act & Assert
-  await test.step('Replace debit card', async () => {
-    const dialogLocator = page.locator('.p-dialog');
-
-    const debitCardPage = new RegistrationDebitCardPage(page);
+  test('Error when linking non existing card', async ({
+    registrationDebitCardPage,
+  }) => {
+    const dialogLocator = registrationDebitCardPage.page.locator('.p-dialog');
     const formDialog = new FormDialogComponent(dialogLocator);
-    // Link already existing card to check error message
-    await debitCardPage.clickMainPageReplaceCardButton();
-    await debitCardPage.replaceVisaCard(visaCardNumber);
-    await formDialog.hasContent(
-      'The card number you entered is already linked to the current registration.',
-    );
-    await debitCardPage.goBackToLinkDebitCardModal();
-    // Link new card
-    await debitCardPage.replaceVisaCard(newVisaCardNumber);
-    await debitCardPage.validateToastMessageAndClose(
-      'Visa card linked successfully',
-    );
 
-    // The behaviour of the page right now is that FE does not refresh immediately and the page should be refreshed to get new and old card numbers
-    // I think this should not work like that
-    // await page.reload();
-    const currentDebitCardDataList =
-      await debitCardPage.getCurrentDebitCardDataList();
-    const substituteDebitCardDataList =
-      await debitCardPage.getSubstituteDebitCardDataList();
-    expect(currentDebitCardDataList['Serial number']).toBe(newVisaCardNumber);
-    expect(substituteDebitCardDataList['Serial number']).toBe(
-      visaCardNumberDashed,
+    await registrationDebitCardPage.linkVisaCard(nonExistingVisaCardNumber);
+
+    await formDialog.hasContent(
+      'Card number not found. Please go back and check that the number is correct.',
     );
   });
-});
-
-test('Error when linking non existing card', async ({ page }) => {
-  const dialogLocator = page.locator('.p-dialog');
-
-  const debitCardPage = new RegistrationDebitCardPage(page);
-  const formDialog = new FormDialogComponent(dialogLocator);
-
-  await debitCardPage.linkVisaCard(nonExistingVisaCardNumber);
-
-  await formDialog.hasContent(
-    'Card number not found. Please go back and check that the number is correct.',
-  );
 });

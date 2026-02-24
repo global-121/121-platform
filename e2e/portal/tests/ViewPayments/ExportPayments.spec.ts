@@ -1,85 +1,41 @@
-import { expect, Page, test } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
+import { doPaymentAndWaitForCompletion } from '@121-service/test/helpers/registration.helper';
 import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
-import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
+  programIdOCW,
+  registrationsOCW,
+} from '@121-service/test/registrations/pagination/pagination-data';
 
-import ExportData from '@121-e2e/portal/components/ExportData';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
-import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-import HomePage from '../../pages/HomePage';
-
-const login = async ({
-  page,
-  email,
-  password,
-}: {
-  page: Page;
-  email?: string;
-  password?: string;
-}) => {
-  const loginPage = new LoginPage(page);
-  await page.goto(`/`);
-  await loginPage.login(email, password);
-};
-
-const navigateToPaymentsPage = async (paymentsPage: PaymentsPage) => {
-  const programTitle = 'NLRC OCW Program';
-  await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(programTitle);
-    await paymentsPage.navigateToProgramPage('Payments');
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.nlrcMultiple,
+    seedPaidRegistrations: true,
+    registrations: registrationsOCW,
+    programId: programIdOCW,
+    navigateToPage: `/program/${programIdOCW}/registrations`,
   });
-};
-
-const createFivePayments = async (
-  paymentsPage: PaymentsPage,
-  paymentPage: PaymentPage,
-  programIdOCW: number,
-) => {
-  for (let i = 1; i <= 5; i++) {
-    await paymentsPage.createPayment({});
-    await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/program/${programIdOCW}/payments/${i}`),
-    );
-    await paymentPage.approvePayment();
-    await paymentPage.startPayment();
-    await paymentsPage.navigateToProgramPage('Payments');
-  }
-};
-
-let page: Page;
-
-test.beforeAll(async ({ browser }) => {
-  page = await browser.newPage();
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-  const programIdOCW = 3;
-  const OcwProgramId = programIdOCW;
-
-  const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsOCW, OcwProgramId, accessToken);
-
-  await login({
-    page,
-  });
-
-  const paymentsPage = new PaymentsPage(page);
-  const paymentPage = new PaymentPage(page);
-
-  await navigateToPaymentsPage(paymentsPage);
-
-  await createFivePayments(paymentsPage, paymentPage, programIdOCW);
 });
 
-test('ExportPayments', async () => {
-  const paymentsPage = new PaymentsPage(page);
-  const exportDataComponent = new ExportData(page);
+test('ExportPayments', async ({
+  paymentsPage,
+  exportDataComponent,
+  accessToken,
+}) => {
+  await test.step('Do payments', async () => {
+    for (let i = 0; i < 4; i++) {
+      await doPaymentAndWaitForCompletion({
+        programId: programIdOCW,
+        referenceIds: registrationsOCW.map((reg) => reg.referenceId),
+        transferValue: 25,
+        accessToken,
+      });
+    }
+    await paymentsPage.navigateToProgramPage('Payments');
+  });
 
   await test.step('Validate export payment button', async () => {
     await paymentsPage.exportButton.waitFor({ state: 'visible' });
@@ -119,12 +75,10 @@ test('ExportPayments', async () => {
   });
 });
 
-test('View available actions for admin', async () => {
-  const paymentsPage = new PaymentsPage(page);
-
+test('View available actions for admin', async ({ page, paymentsPage }) => {
   await test.step('Validate export options', async () => {
-    await paymentsPage.exportButton.waitFor({ state: 'visible' });
-
+    await paymentsPage.navigateToProgramPage('Payments');
+    await page.waitForTimeout(200); // wait for the export options to be rendered
     await paymentsPage.exportButton.click();
 
     const expectedMenuItems = [
@@ -146,23 +100,19 @@ test('View available actions for admin', async () => {
   });
 });
 
-test('View available actions for a "view only" user', async () => {
-  const homePage = new HomePage(page);
+test('View available actions for a "view only" user', async ({
+  paymentsPage,
+  homePage,
+  loginPage,
+}) => {
   await homePage.selectAccountOption('Logout');
-
-  await login({
-    page,
-    email: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
-    password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
-  });
-
-  const paymentsPage = new PaymentsPage(page);
-
-  await navigateToPaymentsPage(paymentsPage);
+  await loginPage.login(
+    env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+    env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
+  );
 
   await test.step('Validate hidden buttons', async () => {
     await paymentsPage.exportButton.waitFor({ state: 'hidden' });
-
     await paymentsPage.createNewPaymentButton.waitFor({ state: 'hidden' });
   });
 });

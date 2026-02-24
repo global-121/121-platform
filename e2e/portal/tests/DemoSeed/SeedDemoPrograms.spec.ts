@@ -1,24 +1,17 @@
-import { test } from '@playwright/test';
-
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { SEED_CONFIGURATION_SETTINGS } from '@121-service/src/scripts/seed-configuration.const';
 import DemoProgramBankTransfer from '@121-service/src/seed-data/program/demo-program-bank-transfer.json';
 import DemoProgramExcel from '@121-service/src/seed-data/program/demo-program-excel.json';
 import DemoProgramMobileMoney from '@121-service/src/seed-data/program/demo-program-mobile-money.json';
 import ProgramNlrcOcw from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
-import { resetDB } from '@121-service/test/helpers/utility.helper';
 
-import TableComponent from '@121-e2e/portal/components/TableComponent';
-import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
+import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.demoPrograms, __filename);
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+  await resetDBAndSeedRegistrations({
+    seedScript: SeedScript.demoPrograms,
+    skipSeedRegistrations: true,
+  });
 });
 
 const programsMap: Record<
@@ -34,10 +27,7 @@ const programsMap: Record<
   'demo-program-excel.json': DemoProgramExcel,
 };
 
-test('Seed Demo Setup', async ({ page }) => {
-  const registrationsPage = new RegistrationsPage(page);
-  const table = new TableComponent(page);
-
+test('Seed Demo Setup', async ({ page, registrationsPage, tableComponent }) => {
   const seedConfigDemo = SEED_CONFIGURATION_SETTINGS.find(
     (config) => config.name === SeedScript.demoPrograms,
   )!;
@@ -54,7 +44,7 @@ test('Seed Demo Setup', async ({ page }) => {
       // In this reset, we expect 4 registrations for each program because we do not seed all registrations because that takes too long for CI/CD
       // We are not validating the registrations here, just the count
       // Validating imported registrations is covered in other tests
-      await table.validateAllRecordsCount(4);
+      await tableComponent.validateAllRecordsCount(4);
     });
   }
 });
