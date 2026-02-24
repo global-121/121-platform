@@ -17,8 +17,8 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 let registrationId: number;
 let registrationUrl: string;
 
-test.describe('Admin user actions', () => {
-  test.beforeAll(async ({ onlyResetAndSeedRegistrations, accessToken }) => {
+test.describe('User actions', () => {
+  test.beforeEach(async ({ onlyResetAndSeedRegistrations, accessToken }) => {
     await onlyResetAndSeedRegistrations({
       seedScript: SeedScript.nlrcMultiple,
       seedWithStatus: RegistrationStatusEnum.included,
@@ -31,10 +31,6 @@ test.describe('Admin user actions', () => {
       accessToken,
     });
     registrationUrl = `/program/${programIdPV}/registrations/${registrationId}`;
-  });
-
-  test.afterEach(async ({ page }) => {
-    await page.goto('/logout');
   });
 
   test('Admin should see all expected actions', async ({
