@@ -62,21 +62,21 @@ type Fixtures = {
   login: () => Promise<void>;
   onlyResetAndSeedRegistrations: (params) => Promise<void>;
   accessToken: string;
-  paymentPage: PaymentPage;
-  paymentsPage: PaymentsPage;
-  registrationDataPage: RegistrationDataPage;
-  registrationsPage: RegistrationsPage;
-  registrationDebitCardPage: RegistrationDebitCardPage;
-  registrationPersonalInformationPage: RegistrationPersonalInformationPage;
-  registrationActivityLogPage: RegistrationActivityLogPage;
-  tableComponent: TableComponent;
   exportDataComponent: ExportData;
+  tableComponent: TableComponent;
+  fspSettingsPage: FspSettingsPage;
   homePage: HomePage;
   loginPage: LoginPage;
-  programTeamPage: ProgramTeamPage;
+  paymentPage: PaymentPage;
+  paymentsPage: PaymentsPage;
   programMonitoringPage: ProgramMonitoring;
-  fspSettingsPage: FspSettingsPage;
   programSettingsPage: ProgramSettingsPage;
+  programTeamPage: ProgramTeamPage;
+  registrationActivityLogPage: RegistrationActivityLogPage;
+  registrationDataPage: RegistrationDataPage;
+  registrationDebitCardPage: RegistrationDebitCardPage;
+  registrationPersonalInformationPage: RegistrationPersonalInformationPage;
+  registrationsPage: RegistrationsPage;
   usersPage: UsersPage;
 };
 
@@ -250,40 +250,16 @@ export const customSharedFixture = base.extend<Fixtures>({
     await use(accessToken);
   },
 
-  paymentPage: async ({ page }, use) => {
-    await use(new PaymentPage(page));
-  },
-
-  paymentsPage: async ({ page }, use) => {
-    await use(new PaymentsPage(page));
-  },
-
-  registrationDataPage: async ({ page }, use) => {
-    await use(new RegistrationDataPage(page));
-  },
-
-  registrationsPage: async ({ page }, use) => {
-    await use(new RegistrationsPage(page));
+  exportDataComponent: async ({ page }, use) => {
+    await use(new ExportData(page));
   },
 
   tableComponent: async ({ page }, use) => {
     await use(new TableComponent(page));
   },
 
-  registrationDebitCardPage: async ({ page }, use) => {
-    await use(new RegistrationDebitCardPage(page));
-  },
-
-  registrationPersonalInformationPage: async ({ page }, use) => {
-    await use(new RegistrationPersonalInformationPage(page));
-  },
-
-  registrationActivityLogPage: async ({ page }, use) => {
-    await use(new RegistrationActivityLogPage(page));
-  },
-
-  exportDataComponent: async ({ page }, use) => {
-    await use(new ExportData(page));
+  fspSettingsPage: async ({ page }, use) => {
+    await use(new FspSettingsPage(page));
   },
 
   homePage: async ({ page }, use) => {
@@ -294,20 +270,44 @@ export const customSharedFixture = base.extend<Fixtures>({
     await use(new LoginPage(page));
   },
 
-  programTeamPage: async ({ page }, use) => {
-    await use(new ProgramTeamPage(page));
+  paymentPage: async ({ page }, use) => {
+    await use(new PaymentPage(page));
+  },
+
+  paymentsPage: async ({ page }, use) => {
+    await use(new PaymentsPage(page));
   },
 
   programMonitoringPage: async ({ page }, use) => {
     await use(new ProgramMonitoring(page));
   },
 
-  fspSettingsPage: async ({ page }, use) => {
-    await use(new FspSettingsPage(page));
-  },
-
   programSettingsPage: async ({ page }, use) => {
     await use(new ProgramSettingsPage(page));
+  },
+
+  programTeamPage: async ({ page }, use) => {
+    await use(new ProgramTeamPage(page));
+  },
+
+  registrationActivityLogPage: async ({ page }, use) => {
+    await use(new RegistrationActivityLogPage(page));
+  },
+
+  registrationDataPage: async ({ page }, use) => {
+    await use(new RegistrationDataPage(page));
+  },
+
+  registrationDebitCardPage: async ({ page }, use) => {
+    await use(new RegistrationDebitCardPage(page));
+  },
+
+  registrationPersonalInformationPage: async ({ page }, use) => {
+    await use(new RegistrationPersonalInformationPage(page));
+  },
+
+  registrationsPage: async ({ page }, use) => {
+    await use(new RegistrationsPage(page));
   },
 
   usersPage: async ({ page }, use) => {

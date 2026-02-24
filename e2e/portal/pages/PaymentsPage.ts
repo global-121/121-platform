@@ -230,7 +230,6 @@ class PaymentsPage extends BasePage {
     dateRange?: { start: Date; end: Date };
   }) {
     await this.page.waitForLoadState('networkidle');
-    await this.page.waitForTimeout(200); // wait for the export button to be interactive
     await this.exportButton.click();
     await this.page.getByRole('menuitem', { name: option }).click();
     if (dateRange) {
