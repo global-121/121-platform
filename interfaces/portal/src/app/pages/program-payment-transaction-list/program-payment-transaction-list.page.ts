@@ -247,7 +247,9 @@ export class ProgramPaymentTransactionListPageComponent {
         command: () => {
           this.selectedTransactionId.set(transaction.id);
           this.selectedPaymentDate.set(transaction.created);
-          this.transactionHistoryDialog().dialogVisible.set(true);
+          queueMicrotask(() => {
+            this.transactionHistoryDialog().dialogVisible.set(true);
+          });
         },
       },
       {
