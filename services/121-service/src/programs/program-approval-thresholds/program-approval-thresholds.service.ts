@@ -131,6 +131,13 @@ export class ProgramApprovalThresholdsService {
     const thresholds = await this.programApprovalThresholdRepository.find({
       where: { programId: Equal(programId) },
       order: { approvalLevel: 'ASC' },
+      relations: {
+        approvers: {
+          programAidworkerAssignment: {
+            user: true,
+          },
+        },
+      },
     });
 
     return thresholds.map((threshold) => this.mapEntityToDto(threshold));
@@ -168,6 +175,15 @@ export class ProgramApprovalThresholdsService {
       programId: entity.programId,
       created: entity.created,
       updated: entity.updated,
+      approvers: (entity.approvers || [])
+        .sort((a, b) => a.order - b.order)
+        .map((approver) => ({
+          id: approver.id,
+          userId: approver.programAidworkerAssignment?.user?.id || 0,
+          username:
+            approver.programAidworkerAssignment?.user?.username || 'Unknown',
+          order: approver.order,
+        })),
     };
   }
 }
