@@ -261,6 +261,74 @@ describe('KoboService', () => {
       expect(calledLanguages).toHaveLength(4);
       expect(new Set(calledLanguages).size).toBe(4); // All unique
     });
+
+    it('should filter out registration view attributes before upserting program attributes', async () => {
+      // Arrange
+      const programId = 1;
+      const mockAsset = createMockAsset(['English (en)']);
+      const programWithLanguages = {
+        id: programId,
+        languages: [RegistrationPreferredLanguage.en],
+      } as ProgramEntity;
+
+      // Mock survey processor to return one regular attribute and one registration view attribute
+      const mockAttributes = [
+        {
+          name: 'customAttribute',
+          type: RegistrationAttributeTypes.text,
+          label: { en: 'Custom Attribute' },
+        },
+        {
+          name: 'preferredLanguage', // This is in KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES
+          type: RegistrationAttributeTypes.text,
+          label: { en: 'Preferred Language' },
+        },
+      ];
+
+      jest
+        .spyOn(koboApiService, 'getDeployedAssetOrThrow')
+        .mockResolvedValue(mockAsset);
+      jest
+        .spyOn(programRepository, 'findByIdOrFail')
+        .mockResolvedValue(programWithLanguages);
+      jest
+        .spyOn(
+          koboSurveyProcessorService,
+          'surveyToProgramRegistrationAttributes',
+        )
+        .mockReturnValue(mockAttributes);
+
+      const upsertSpy = jest.spyOn(
+        programService,
+        'upsertProgramRegistrationAttributes',
+      );
+
+      // Act
+      await service.integrateKobo({
+        programId,
+        assetUid: 'test-asset',
+        token: 'test-token',
+        url: 'https://kobo.example.com',
+        dryRun: false,
+      });
+
+      // Assert
+      expect(upsertSpy).toHaveBeenCalledWith({
+        programId,
+        programRegistrationAttributes: [
+          {
+            name: 'customAttribute',
+            type: RegistrationAttributeTypes.text,
+            label: { en: 'Custom Attribute' },
+          },
+        ],
+      });
+      // Verify preferredLanguage was filtered out
+      const calledAttributes =
+        upsertSpy.mock.calls[0][0].programRegistrationAttributes;
+      expect(calledAttributes).toHaveLength(1);
+      expect(calledAttributes[0].name).toBe('customAttribute');
+    });
   });
 
   describe('integrateKobo - webhook validation', () => {
