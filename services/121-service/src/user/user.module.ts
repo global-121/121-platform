@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ApproverEntity } from '@121-service/src/programs/approvers/entities/approver.entity';
+import { ApproverEntity } from '@121-service/src/programs/approver/entities/approver.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { RolesController } from '@121-service/src/user/controllers/roles.controller';
