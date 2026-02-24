@@ -104,18 +104,6 @@ export class ProgramApprovalThresholdsController {
     description: 'Program approval thresholds replaced successfully',
     type: [GetProgramApprovalThresholdResponseDto],
   })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Invalid request body or validation failed',
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'Not authenticated',
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'Program not found',
-  })
   @Post('programs/:programId/approval-thresholds')
   public async replaceProgramApprovalThresholds(
     @Param('programId', ParseIntPipe) programId: number,

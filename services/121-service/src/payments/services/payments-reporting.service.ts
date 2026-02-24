@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
-import { Equal } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { DEFAULT_PAGINATION_LIMIT } from '@121-service/src/config';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
@@ -10,6 +11,7 @@ import { PaginatedTransactionDto } from '@121-service/src/payments/dto/paginated
 import { PaymentAggregationFullDto } from '@121-service/src/payments/dto/payment-aggregation-full.dto';
 import { PaymentAggregationSummaryDto } from '@121-service/src/payments/dto/payment-aggregation-summary.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
+import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
 import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentRepository } from '@121-service/src/payments/repositories/payment.repository';
@@ -18,7 +20,7 @@ import { PaymentsReportingHelperService } from '@121-service/src/payments/servic
 import { FindAllTransactionsResultDto } from '@121-service/src/payments/transactions/dto/find-all-transactions-result.dto';
 import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
-import { ApproversService } from '@121-service/src/programs/approvers/approvers.service';
+import { ApprovalStatusResponseDto } from '@121-service/src/programs/approvers/dto/approval-status-response.dto';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
@@ -28,6 +30,9 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 import { PaginateQueryLimitRequired } from '@121-service/src/shared/types/paginate-query-limit-required.type';
 @Injectable()
 export class PaymentsReportingService {
+  @InjectRepository(PaymentApprovalEntity)
+  private readonly paymentApprovalRepository: Repository<PaymentApprovalEntity>;
+
   public constructor(
     private readonly paymentRepository: PaymentRepository,
     private readonly paymentsReportingHelperService: PaymentsReportingHelperService,
@@ -37,7 +42,6 @@ export class PaymentsReportingService {
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentEventsService: PaymentEventsService,
     private readonly programRepository: ProgramRepository,
-    private readonly approversService: ApproversService,
   ) {}
 
   public async getPaymentAggregationsSummaries({
@@ -96,11 +100,9 @@ export class PaymentsReportingService {
       },
     );
 
-    const approvalStatus = await this.approversService.getPaymentApprovalStatus(
-      {
-        paymentId,
-      },
-    );
+    const approvalStatus = await this.getPaymentApprovalStatus({
+      paymentId,
+    });
 
     return { ...getPaymentAggregationSummary[0], fsps, approvalStatus };
   }
@@ -112,6 +114,36 @@ export class PaymentsReportingService {
       inProgress:
         await this.paymentsProgressHelperService.isPaymentInProgress(programId),
     };
+  }
+
+  public async getPaymentApprovalStatus({
+    paymentId,
+  }: {
+    paymentId: number;
+  }): Promise<ApprovalStatusResponseDto[]> {
+    const paymentApprovals = await this.paymentApprovalRepository.find({
+      where: {
+        paymentId: Equal(paymentId),
+      },
+      relations: {
+        programApprovalThreshold: {
+          approvers: { programAidworkerAssignment: { user: true } },
+        },
+      },
+      order: { rank: 'ASC' },
+    });
+    return paymentApprovals.map((approval) => {
+      const { programApprovalThreshold } = approval;
+      return {
+        id: approval.id,
+        approved: approval.approved,
+        username: programApprovalThreshold?.approvers
+          ?.map((a) => a.programAidworkerAssignment?.user?.username)
+          .filter(Boolean)
+          .join(', '),
+        rank: approval.rank,
+      };
+    });
   }
 
   public async exportTransactionsUsingDateFilter({

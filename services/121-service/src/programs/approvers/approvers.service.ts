@@ -2,8 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
-import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
-import { ApprovalStatusResponseDto } from '@121-service/src/programs/approvers/dto/approval-status-response.dto';
 import { ApproverResponseDto } from '@121-service/src/programs/approvers/dto/approver-response.dto';
 import { ApproverEntity } from '@121-service/src/programs/approvers/entities/approver.entity';
 
@@ -11,8 +9,6 @@ import { ApproverEntity } from '@121-service/src/programs/approvers/entities/app
 export class ApproversService {
   @InjectRepository(ApproverEntity)
   private readonly approverRepository: Repository<ApproverEntity>;
-  @InjectRepository(PaymentApprovalEntity)
-  private readonly paymentApprovalRepository: Repository<PaymentApprovalEntity>;
 
   public async getApproverByUserIdOrThrow({
     userId,
@@ -54,35 +50,5 @@ export class ApproversService {
       programApprovalThresholdId,
       order,
     };
-  }
-
-  public async getPaymentApprovalStatus({
-    paymentId,
-  }: {
-    paymentId: number;
-  }): Promise<ApprovalStatusResponseDto[]> {
-    const paymentApprovals = await this.paymentApprovalRepository.find({
-      where: {
-        paymentId: Equal(paymentId),
-      },
-      relations: {
-        programApprovalThreshold: {
-          approvers: { programAidworkerAssignment: { user: true } },
-        },
-      },
-      order: { rank: 'ASC' },
-    });
-    return paymentApprovals.map((approval) => {
-      const { programApprovalThreshold } = approval;
-      return {
-        id: approval.id,
-        approved: approval.approved,
-        username: programApprovalThreshold?.approvers
-          ?.map((a) => a.programAidworkerAssignment?.user?.username)
-          .filter(Boolean)
-          .join(', '),
-        rank: approval.rank,
-      };
-    });
   }
 }

@@ -5,7 +5,6 @@ import { PaymentsReportingHelperService } from '@121-service/src/payments/servic
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
-import { ApproversService } from '@121-service/src/programs/approvers/approvers.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
@@ -70,7 +69,6 @@ describe('PaymentsReportingService - getTransactions', () => {
   let paymentsHelperService: PaymentsReportingHelperService;
   let paymentRepository: PaymentRepository;
   let programRepository: ProgramRepository;
-  let approversService: ApproversService;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -95,7 +93,6 @@ describe('PaymentsReportingService - getTransactions', () => {
     paymentsHelperService = unitRef.get(PaymentsReportingHelperService);
     paymentRepository = unitRef.get(PaymentRepository);
     programRepository = unitRef.get(ProgramRepository);
-    approversService = unitRef.get(ApproversService);
 
     jest.spyOn<any, any>(service, 'getTransactions');
     jest.spyOn(paymentsHelperService, 'getSelectForExport');
@@ -363,7 +360,7 @@ describe('PaymentsReportingService - getTransactions', () => {
         .spyOn(transactionScopedRepository, 'getAllFspsInPayment')
         .mockResolvedValue(mockFsps);
       jest
-        .spyOn(approversService, 'getPaymentApprovalStatus')
+        .spyOn(service, 'getPaymentApprovalStatus')
         .mockResolvedValue(mockApprovalStatus);
 
       // Act
