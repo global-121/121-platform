@@ -15,7 +15,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ApproversService } from '@121-service/src/programs/approvers/approvers.service';
+import { ApproverService } from '@121-service/src/programs/approver/approver.service';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
@@ -38,7 +38,7 @@ export class PaymentsManagementService {
     private readonly paymentEventsService: PaymentEventsService,
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
     private readonly transactionsService: TransactionsService,
-    private readonly approversService: ApproversService,
+    private readonly approverService: ApproverService,
     private readonly programApprovalThresholdsService: ProgramApprovalThresholdsService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentApprovalRepository: PaymentApprovalRepository,
@@ -330,7 +330,7 @@ export class PaymentsManagementService {
     paymentId: number;
     note?: string;
   }): Promise<void> {
-    const approver = await this.approversService.getApproverByUserIdOrThrow({
+    const approver = await this.approverService.getApproverByUserIdOrThrow({
       userId,
       programId,
     });

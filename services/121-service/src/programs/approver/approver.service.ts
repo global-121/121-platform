@@ -2,11 +2,11 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
-import { ApproverResponseDto } from '@121-service/src/programs/approvers/dto/approver-response.dto';
-import { ApproverEntity } from '@121-service/src/programs/approvers/entities/approver.entity';
+import { ApproverResponseDto } from '@121-service/src/programs/approver/dto/approver-response.dto';
+import { ApproverEntity } from '@121-service/src/programs/approver/entities/approver.entity';
 
 @Injectable()
-export class ApproversService {
+export class ApproverService {
   @InjectRepository(ApproverEntity)
   private readonly approverRepository: Repository<ApproverEntity>;
 
