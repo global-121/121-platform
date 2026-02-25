@@ -7,6 +7,7 @@ import {
   IsNumber,
   IsOptional,
   IsPositive,
+  Min,
   ValidateNested,
 } from 'class-validator';
 
@@ -15,7 +16,7 @@ import { CreateApproverForThresholdDto } from '@121-service/src/programs/program
 export class CreateProgramApprovalThresholdDto {
   @ApiProperty({ example: 1000, description: 'Threshold amount for approval' })
   @IsNumber()
-  @IsPositive()
+  @Min(0)
   @IsNotEmpty()
   public readonly thresholdAmount: number;
 
