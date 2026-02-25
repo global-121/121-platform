@@ -45,6 +45,7 @@
 <app-activity-log-transaction-history-dialog
   #transactionHistoryDialog
   [programId]="programId()"
-  [transactionId]="selectedTransactionId()!"
-  [paymentDate]="(selectedPaymentDate() | date: 'short')!"
+  [transactionId]="selectedTransactionId() ?? 0"
+  [paymentDate]="(selectedPaymentDate() | date: 'short') ?? ''"
+  [hideButton]="true"
 />
