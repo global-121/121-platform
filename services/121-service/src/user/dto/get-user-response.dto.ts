@@ -20,6 +20,9 @@ export class GetUserReponseDto {
   scope: string;
 
   @ApiProperty()
+  programAidworkerAssignmentId: number;
+
+  @ApiProperty()
   roles: {
     id: number;
     role: string;
