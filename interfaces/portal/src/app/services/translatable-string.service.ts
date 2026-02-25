@@ -1,6 +1,7 @@
 import { inject, Injectable, LOCALE_ID } from '@angular/core';
 
-import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
+import { UILanguage } from '@121-platform/shared';
+
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
 import { getUILanguageFromLocale, Locale } from '~/utils/locale';
