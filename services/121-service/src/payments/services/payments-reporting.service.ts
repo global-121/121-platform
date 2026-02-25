@@ -137,10 +137,11 @@ export class PaymentsReportingService {
       return {
         id: approval.id,
         approved: approval.approved,
-        username: programApprovalThreshold?.approvers
-          ?.map((a) => a.programAidworkerAssignment?.user?.username)
-          .filter(Boolean)
-          .join(', '),
+        username:
+          programApprovalThreshold?.approvers
+            ?.map((a) => a.programAidworkerAssignment?.user?.username)
+            .filter(Boolean)
+            .join(', ') || null,
         rank: approval.rank,
       };
     });

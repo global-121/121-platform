@@ -9,12 +9,12 @@ export class PaymentApprovalEntity extends Base121Entity {
   @ManyToOne(
     () => ProgramApprovalThresholdEntity,
     (threshold) => threshold.paymentApprovals,
-    { onDelete: 'CASCADE' },
+    { onDelete: 'SET NULL', nullable: true },
   )
   @JoinColumn({ name: 'programApprovalThresholdId' })
-  public programApprovalThreshold: Relation<ProgramApprovalThresholdEntity>;
-  @Column()
-  public programApprovalThresholdId: number;
+  public programApprovalThreshold: Relation<ProgramApprovalThresholdEntity> | null;
+  @Column({ nullable: true })
+  public programApprovalThresholdId: number | null;
 
   @ManyToOne(() => PaymentEntity, (payment) => payment.approvals, {
     onDelete: 'CASCADE',
