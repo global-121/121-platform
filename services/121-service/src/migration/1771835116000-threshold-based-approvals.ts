@@ -47,7 +47,7 @@ export class ThresholdBasedApprovals1771835116000 implements MigrationInterface 
 
     // Add approvedByUserId column to payment_approval table for audit trail
     await queryRunner.query(
-      `ALTER TABLE "121-service"."payment_approval" ADD "approvedByUserId" integer`,
+      `ALTER TABLE "121-service"."payment_approval" ADD "approvedByUserId" integer NULL`,
     );
 
     // Add programApprovalThresholdId column to approver table (nullable to handle existing data)

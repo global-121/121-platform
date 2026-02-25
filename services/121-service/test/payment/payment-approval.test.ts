@@ -540,7 +540,6 @@ describe('do payment with <2 approvers', () => {
       paymentId: createPaymentResponse.body.id,
       accessToken: adminAccessToken,
     });
-    console.log('🚀 ~ getPaymentResponse:', getPaymentResponse.body);
 
     // Assert
     expect(getPaymentResponse.status).toBe(HttpStatus.OK);

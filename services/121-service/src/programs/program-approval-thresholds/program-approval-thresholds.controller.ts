@@ -29,15 +29,13 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 @ApiTags('programs/approval-thresholds')
 @Controller()
 export class ProgramApprovalThresholdsController {
-  private readonly programApprovalThresholdsService: ProgramApprovalThresholdsService;
-
   public constructor(
-    programApprovalThresholdsService: ProgramApprovalThresholdsService,
-  ) {
-    this.programApprovalThresholdsService = programApprovalThresholdsService;
-  }
+    private readonly programApprovalThresholdsService: ProgramApprovalThresholdsService,
+  ) {}
 
-  @AuthenticatedUser()
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.ProgramUPDATE],
+  })
   @ApiOperation({
     summary: 'Replace all approval thresholds for a program',
     description:
