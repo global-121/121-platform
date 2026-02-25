@@ -1,19 +1,12 @@
 import { env } from '@121-service/src/env';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { resetDuplicateRegistrations } from '@121-service/test/helpers/utility.helper';
-import programOcw from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAllUsersByProgramId,
   getProgramApprovalThresholds,
   replaceProgramApprovalThresholds,
 } from '@121-service/test/helpers/user.helper';
-import {
-  getAccessToken,
-  resetDB,
-  resetDuplicateRegistrations,
-} from '@121-service/test/helpers/utility.helper';
+import { resetDuplicateRegistrations } from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
   registrationOCW1,
@@ -31,7 +24,7 @@ const pendingApprovalTransactionLabel = 'Pending approval';
 const approverBadgeLabelAdmin = env.USERCONFIG_121_SERVICE_EMAIL_ADMIN;
 const approverBadgeLabelApprover = env.USERCONFIG_121_SERVICE_EMAIL_APPROVER;
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     registrations: [registrationOCW1],
@@ -92,11 +85,6 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     ],
     accessToken,
   });
-
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
 });
 
 test('Payment page should display correctly during all phases of payment with 2 approvers', async ({
