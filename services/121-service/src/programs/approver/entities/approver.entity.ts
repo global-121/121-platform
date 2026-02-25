@@ -22,12 +22,15 @@ export class ApproverEntity extends Base121Entity {
   @ManyToOne(
     () => ProgramApprovalThresholdEntity,
     (threshold) => threshold.approvers,
-    { onDelete: 'CASCADE' },
+    { onDelete: 'CASCADE', nullable: true },
   )
-  @JoinColumn({ name: 'programApprovalThresholdId' })
-  public programApprovalThreshold: Relation<ProgramApprovalThresholdEntity>;
-  @Column()
-  public programApprovalThresholdId: number;
+  @JoinColumn({
+    name: 'programApprovalThresholdId',
+    foreignKeyConstraintName: 'FK_approver_program_approval_threshold',
+  })
+  public programApprovalThreshold: Relation<ProgramApprovalThresholdEntity> | null;
+  @Column({ nullable: true })
+  public programApprovalThresholdId: number | null;
 
   @Column()
   public order: number;
