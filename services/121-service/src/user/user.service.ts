@@ -783,12 +783,13 @@ export class UserService {
         'user.admin AS admin',
         'user.active AS active',
         'user.lastLogin AS "lastLogin"',
+        'assignment.id AS "programAidworkerAssignmentId"',
         'ARRAY_AGG(roles.id) AS rolesId',
         'ARRAY_AGG(roles.role) AS role',
         'ARRAY_AGG(roles.label) AS label',
         'MAX(assignment.scope) AS scope',
       ])
-      .groupBy('user.id')
+      .groupBy('user.id, assignment.id')
       .getRawMany();
 
     const result = users.map((user) => {
@@ -804,6 +805,7 @@ export class UserService {
         admin: user.admin,
         active: user.active,
         lastLogin: user.lastLogin,
+        programAidworkerAssignmentId: user.programAidworkerAssignmentId,
         roles,
         scope: user.scope,
       };

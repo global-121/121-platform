@@ -24,6 +24,16 @@ export class ProgramApprovalThresholdsService {
     programId: number,
     thresholds: CreateProgramApprovalThresholdDto[],
   ): Promise<GetProgramApprovalThresholdResponseDto[]> {
+    // Validate that all thresholdAmounts are unique
+    const thresholdAmounts = thresholds.map((t) => t.thresholdAmount);
+    const uniqueAmounts = new Set(thresholdAmounts);
+    if (thresholdAmounts.length !== uniqueAmounts.size) {
+      throw new HttpException(
+        'Threshold amounts must be unique. Cannot have multiple thresholds with the same amount.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     return await this.dataSource.transaction(async (manager) => {
       // Delete all existing thresholds for this program (CASCADE will delete approvers)
       await manager.delete(ProgramApprovalThresholdEntity, {
