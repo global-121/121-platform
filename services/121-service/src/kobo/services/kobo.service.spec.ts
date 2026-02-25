@@ -73,6 +73,7 @@ describe('KoboService', () => {
           useValue: {
             getDeployedAssetOrThrow: jest.fn(),
             getExistingKoboWebhooks: jest.fn(),
+            createKoboWebhook: jest.fn(),
           },
         },
         {
@@ -151,6 +152,90 @@ describe('KoboService', () => {
     (koboApiService.getExistingKoboWebhooks as jest.Mock) = jest
       .fn()
       .mockResolvedValue([]);
+    (koboApiService.createKoboWebhook as jest.Mock) = jest
+      .fn()
+      .mockResolvedValue(undefined);
+  });
+
+  it('should call all update operations (save, upsert, create) in successful integration', async () => {
+    // Arrange
+    const programId = 1;
+    const mockAsset = createMockAsset(['English (en)', 'French (fr)']);
+    const programWithLanguages = {
+      id: programId,
+      languages: [RegistrationPreferredLanguage.en],
+    } as ProgramEntity;
+
+    jest
+      .spyOn(koboApiService, 'getDeployedAssetOrThrow')
+      .mockResolvedValue(mockAsset);
+    jest.spyOn(koboApiService, 'getExistingKoboWebhooks').mockResolvedValue([]);
+    jest
+      .spyOn(programRepository, 'findByIdOrFail')
+      .mockResolvedValue(programWithLanguages);
+
+    const saveSpy = jest
+      .spyOn(koboRepository, 'save')
+      .mockResolvedValue({} as any);
+    const upsertAttributesSpy = jest.spyOn(
+      programService,
+      'upsertProgramRegistrationAttributes',
+    );
+    const updateProgramSpy = jest.spyOn(programService, 'updateProgram');
+    const createWebhookSpy = jest
+      .spyOn(koboApiService, 'createKoboWebhook')
+      .mockResolvedValue();
+
+    // Act
+    const result = await service.integrateKobo({
+      programId,
+      assetUid: 'test-asset',
+      token: 'test-token',
+      url: 'https://kobo.example.com',
+      dryRun: false,
+    });
+
+    // Assert - verify all update operations were called
+    expect(saveSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        programId,
+        assetUid: 'test-asset',
+        token: 'test-token',
+        url: 'https://kobo.example.com',
+      }),
+    );
+
+    expect(upsertAttributesSpy).toHaveBeenCalledWith({
+      programId,
+      programRegistrationAttributes: expect.arrayContaining([
+        expect.objectContaining({
+          name: 'phoneNumber',
+          type: RegistrationAttributeTypes.text,
+        }),
+      ]),
+    });
+
+    expect(updateProgramSpy).toHaveBeenCalledWith(
+      programId,
+      expect.objectContaining({
+        languages: expect.arrayContaining([
+          RegistrationPreferredLanguage.en,
+          RegistrationPreferredLanguage.fr,
+        ]),
+      }),
+    );
+
+    expect(createWebhookSpy).toHaveBeenCalledWith({
+      assetUid: 'test-asset',
+      token: 'test-token',
+      baseUrl: 'https://kobo.example.com',
+    });
+
+    expect(result).toEqual({
+      message: 'Kobo form integrated successfully',
+      name: 'Test Form',
+      dryRun: false,
+    });
   });
 
   it('should throw HttpException when program has no FSP configurations', async () => {

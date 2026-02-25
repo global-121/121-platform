@@ -1,4 +1,12 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import {
@@ -29,5 +37,27 @@ export class KoboMockController {
     }[];
   } {
     return this.koboMockService.getExistingWebhooks(uid_asset);
+  }
+
+  @ApiOperation({ summary: 'Create a new webhook (REST service) for asset' })
+  @Post(':uid_asset/hooks')
+  @HttpCode(HttpStatus.CREATED)
+  public createWebhook(
+    @Param('uid_asset') _: string,
+    @Body()
+    body: {
+      name: string;
+      url: string;
+      active: boolean;
+      subset_fields: string[];
+    },
+  ): {
+    uid: string;
+    name: string;
+    url: string;
+    active: boolean;
+    subset_fields: string[];
+  } {
+    return this.koboMockService.createWebhook(body);
   }
 }

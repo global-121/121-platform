@@ -57,6 +57,7 @@ describe('KoboApiService', () => {
           provide: CustomHttpService,
           useValue: {
             get: jest.fn(),
+            post: jest.fn(),
           },
         },
       ],
@@ -340,6 +341,67 @@ describe('KoboApiService', () => {
       expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(
         `"Failed to fetch Kobo webhooks for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/hooks: Server error occurred"`,
+      );
+    });
+  });
+
+  describe('createKoboWebhook', () => {
+    it('should successfully create webhook for successful request (happy flow)', async () => {
+      // Arrange
+      httpService.post.mockResolvedValue({
+        status: HttpStatus.CREATED,
+        data: {},
+      });
+
+      // Act
+      await service.createKoboWebhook({
+        assetUid: mockAssetUid,
+        token: mockToken,
+        baseUrl: mockBaseUrl,
+      });
+
+      // Assert
+      const expectedHeaders = new Headers();
+      expectedHeaders.append('Authorization', `Token ${mockToken}`);
+
+      expect(httpService.post).toHaveBeenCalledWith(
+        'https://kobo.example.com/api/v2/assets/test-asset-id/hooks',
+        {
+          name: 'Create a registration in the 121 Platform when a submission is received',
+          url: expect.stringContaining('kobo/webhook'),
+          active: true,
+          subset_fields: ['_uuid', '_xform_id_string'],
+        },
+        expectedHeaders,
+      );
+    });
+
+    // Not all error scenarios are covered here as most of the error handling is delegated in a private function which is tested via other public methods
+    it('should properly handle error responses', async () => {
+      // Arrange - test that error handling is properly delegated to handleKoboApiError
+      httpService.post.mockResolvedValue({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        data: {
+          detail: 'Server error occurred',
+        },
+      });
+
+      // Act
+      let error: any;
+      try {
+        await service.createKoboWebhook({
+          assetUid: mockAssetUid,
+          token: mockToken,
+          baseUrl: mockBaseUrl,
+        });
+      } catch (e) {
+        error = e;
+      }
+
+      // Assert
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+      expect(error.message).toMatchInlineSnapshot(
+        `"Failed to create Kobo webhook for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/hooks: Server error occurred"`,
       );
     });
   });

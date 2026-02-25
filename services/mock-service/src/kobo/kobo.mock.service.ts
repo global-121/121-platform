@@ -407,4 +407,23 @@ export class KoboMockService {
         };
     }
   }
+
+  public createWebhook(body: {
+    name: string;
+    url: string;
+    active: boolean;
+    subset_fields: string[];
+  }): {
+    uid: string;
+    name: string;
+    url: string;
+    active: boolean;
+    subset_fields: string[];
+  } {
+    // Mock implementation - return the created webhook with a generated uid
+    return {
+      uid: 'hook_' + Math.random().toString(36).substring(2, 15),
+      ...body,
+    };
+  }
 }
