@@ -116,6 +116,14 @@ export class KoboValidationService {
       }),
     });
 
+    errorMessages = this.collectErrors({
+      accumulatedErrors: errorMessages,
+      error: this.validateFspQuestion({
+        koboSurveyItems: formDefinition.survey,
+        fspConfigs,
+      }),
+    });
+
     this.throwErrorsIfAny(errorMessages);
   }
 
@@ -457,6 +465,65 @@ export class KoboValidationService {
     name: string,
   ): name is RegistrationViewAttributeNameWithoutPhoneNumber {
     return registrationViewAttributeNames.includes(name);
+  }
+
+  private validateFspQuestion({
+    koboSurveyItems,
+    fspConfigs,
+  }: {
+    koboSurveyItems: KoboSurveyItemCleaned[];
+    fspConfigs: { fspName: Fsps; name: string }[];
+  }): string | undefined {
+    const fspQuestionName = 'fsp';
+
+    const fspItem = koboSurveyItems.find(
+      (item) => item.name === fspQuestionName,
+    );
+    if (!fspItem) {
+      return `Kobo form must contain a question with name "${fspQuestionName}".`;
+    }
+
+    const validTypes = ['hidden', 'select_one', 'calculate'];
+    const isValidType =
+      validTypes.includes(fspItem.type) ||
+      fspItem.type.startsWith('select_one ');
+
+    if (!isValidType) {
+      return `Kobo form attribute "${fspQuestionName}" must be of type "hidden" or "select_one" (dropdown), got "${fspItem.type}".`;
+    }
+
+    // If it's a select_one, validate that the choices match the FSP configuration names
+    if (fspItem.type.includes('select_one') && fspItem.choices.length > 0) {
+      return this.validateFspQuestionChoices({
+        fspItem,
+        fspConfigs,
+        fspQuestionName,
+      });
+    }
+  }
+
+  private validateFspQuestionChoices({
+    fspItem,
+    fspConfigs,
+    fspQuestionName,
+  }: {
+    fspItem: KoboSurveyItemCleaned;
+    fspConfigs: { fspName: Fsps; name: string }[];
+    fspQuestionName: string;
+  }): string | undefined {
+    const fspConfigNames = fspConfigs.map((config) => config.name);
+    const choiceNames = fspItem.choices.map((choice) => choice.name);
+
+    // Check if all choices exist in FSP configs
+    const invalidChoices = choiceNames.filter(
+      (choice) => !fspConfigNames.includes(choice),
+    );
+
+    if (invalidChoices.length > 0) {
+      return `Kobo form attribute "${fspQuestionName}" has choices that don't match program FSP configuration names. Invalid choices: ${invalidChoices.join(', ')}. Expected one of: ${fspConfigNames.join(', ')}.`;
+    }
+    // There is no check if to see if all FSP configs from the 121 program are represented in choices from kobo
+    // Sometimes an fsp will only be set via the 121-platform and not be visible in Kobo, so we cannot enforce that all FSP configs are represented in the Kobo choices. We only check that if a choice is made in Kobo, it must be a valid FSP config.
   }
 
   private collectErrors({

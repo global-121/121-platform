@@ -14,13 +14,14 @@ describe('KoboValidationService', () => {
   let programFspConfigurationRepository: ProgramFspConfigurationRepository;
   let programRepository: ProgramRepository;
 
-  const baseSurveyItems = [
+  const startAndEndSurveyItems = [
     {
       name: 'start',
       type: 'start',
       $kuid: '3pTXFjOFa',
       $xpath: 'start',
       $autoname: 'start',
+      choices: [],
     },
     {
       name: 'end',
@@ -28,6 +29,18 @@ describe('KoboValidationService', () => {
       $kuid: 'gHDXZWdPn',
       $xpath: 'end',
       $autoname: 'end',
+      choices: [],
+    },
+  ];
+
+  const baseSurveyItems = [
+    ...startAndEndSurveyItems,
+    {
+      name: 'fsp',
+      type: 'hidden',
+      label: ['Financial Service Provider', 'Financiële dienstverlener'],
+      required: false,
+      choices: [],
     },
   ];
 
@@ -41,7 +54,9 @@ describe('KoboValidationService', () => {
   const successFormDefinition: KoboFormDefinition = {
     ...baseFormDefinition,
     survey: [
-      ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+      ...baseSurveyItems.map((item) => ({
+        ...item,
+      })),
       {
         name: FspAttributes.phoneNumber,
         type: 'text',
@@ -85,6 +100,8 @@ describe('KoboValidationService', () => {
     },
   ];
 
+  const programId = 1;
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -117,7 +134,6 @@ describe('KoboValidationService', () => {
   describe('validate fsp attributes', () => {
     it('should pass validation when all required FSP attributes are present in form definition', async () => {
       // Arrange
-      const programId = 1;
 
       // Mock repository to return FSP configs
       (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
@@ -135,7 +151,6 @@ describe('KoboValidationService', () => {
 
     it('should throw HttpException with array of 2 errors when required FSP attributes are missing', async () => {
       // Arrange
-      const programId = 1;
       const mockFspConfigsWithMissingAttributes = [
         {
           fspName: Fsps.commercialBankEthiopia,
@@ -186,7 +201,6 @@ describe('KoboValidationService', () => {
 
     it('should throw HttpException when FSP attribute has incompatible type', async () => {
       // Arrange
-      const programId = 1;
       const mockFspConfigsForTypeValidation = [
         {
           fspName: Fsps.safaricom,
@@ -242,7 +256,6 @@ describe('KoboValidationService', () => {
   describe('validate fullnameNamingConvention attributes', () => {
     it('should pass validation when attributes are present', async () => {
       // Arrange
-      const programId = 1;
       const mockFspConfigs = [];
 
       const formDefinitionWithAllFullNameAttributes: KoboFormDefinition = {
@@ -291,13 +304,12 @@ describe('KoboValidationService', () => {
 
     it('should throw HttpException when fullnameNamingConvention attributes are missing', async () => {
       // Arrange
-      const programId = 1;
       const mockFspConfigs = [];
 
       const formDefinitionMissingFullNameAttributes: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          ...baseSurveyItems,
           {
             name: 'firstName',
             type: 'text',
@@ -347,13 +359,12 @@ describe('KoboValidationService', () => {
   describe('phoneNumber validation', () => {
     it('should pass validation when phoneNumber is present with correct type', async () => {
       // Arrange
-      const programId = 1;
       const mockFspConfigs = [];
 
       const formDefinitionWithValidPhoneNumber: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          ...baseSurveyItems,
           {
             name: FspAttributes.phoneNumber,
             type: 'text',
@@ -383,13 +394,12 @@ describe('KoboValidationService', () => {
 
     it('should throw HttpException when phoneNumber is missing and allowEmptyPhoneNumber is false', async () => {
       // Arrange
-      const programId = 1;
       const mockFspConfigs = [];
 
       const formDefinitionMissingPhoneNumber: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          ...baseSurveyItems,
           // Missing phoneNumber field
         ],
       };
@@ -423,13 +433,12 @@ describe('KoboValidationService', () => {
 
     it('should pass validation when phoneNumber is missing but allowEmptyPhoneNumber is true', async () => {
       // Arrange
-      const programId = 1;
       const mockFspConfigs = [];
 
       const formDefinitionMissingPhoneNumber: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          ...baseSurveyItems,
           // Missing phoneNumber field
         ],
       };
@@ -453,13 +462,12 @@ describe('KoboValidationService', () => {
 
     it('should throw HttpException when phoneNumber has incompatible type', async () => {
       // Arrange
-      const programId = 1;
       const mockFspConfigs = [];
 
       const formDefinitionWithWrongPhoneNumberType: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          ...baseSurveyItems,
           {
             name: FspAttributes.phoneNumber,
             type: 'integer', // Wrong type - should be text
@@ -501,13 +509,12 @@ describe('KoboValidationService', () => {
   describe('scope validation', () => {
     it('should pass validation when scope is disabled', async () => {
       // Arrange
-      const programId = 1;
       const mockFspConfigs = [];
 
       const formDefinitionWithoutScope: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          ...baseSurveyItems,
           // No scope field present
         ],
       };
@@ -532,13 +539,12 @@ describe('KoboValidationService', () => {
 
     it('should pass validation when scope is enabled and scope item exists with correct type', async () => {
       // Arrange
-      const programId = 1;
       const mockFspConfigs = [];
 
       const formDefinitionWithValidScope: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          ...baseSurveyItems,
           {
             name: GenericRegistrationAttributes.scope,
             type: 'text',
@@ -569,13 +575,12 @@ describe('KoboValidationService', () => {
 
     it('should throw HttpException when scope is enabled but scope item is missing', async () => {
       // Arrange
-      const programId = 1;
       const mockFspConfigs = [];
 
       const formDefinitionMissingScope: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          ...baseSurveyItems,
           // Missing scope field
         ],
       };
@@ -610,13 +615,12 @@ describe('KoboValidationService', () => {
 
     it('should throw HttpException when scope has incompatible type', async () => {
       // Arrange
-      const programId = 1;
       const mockFspConfigs = [];
 
       const formDefinitionWithWrongScopeType: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          ...baseSurveyItems,
           {
             name: GenericRegistrationAttributes.scope,
             type: 'integer', // Wrong type - should be text
@@ -659,13 +663,12 @@ describe('KoboValidationService', () => {
   describe('matrix type validation', () => {
     it('should throw HttpException when form contains matrix type', async () => {
       // Arrange
-      const programId = 1;
       const mockFspConfigs = [];
 
       const formDefinitionWithMatrixType: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          ...baseSurveyItems,
           {
             name: 'matrix_question',
             type: 'begin_kobomatrix',
@@ -708,12 +711,11 @@ describe('KoboValidationService', () => {
   describe('kobo language codes validation', () => {
     it('should pass validation when all languages have valid ISO codes', async () => {
       // Arrange
-      const programId = 1;
       const mockFspConfigs = [];
 
       const formDefinitionWithValidLanguages: KoboFormDefinition = {
         ...baseFormDefinition,
-        survey: [...baseSurveyItems.map((item) => ({ ...item, choices: [] }))],
+        survey: [...baseSurveyItems],
         languages: ['English (en)', 'Dutch (nl)', 'French (fr)'],
       };
 
@@ -737,12 +739,11 @@ describe('KoboValidationService', () => {
 
     it('should throw HttpException when language has invalid ISO code format', async () => {
       // Arrange
-      const programId = 1;
       const mockFspConfigs = [];
 
       const formDefinitionWithInvalidLanguage: KoboFormDefinition = {
         ...baseFormDefinition,
-        survey: [...baseSurveyItems.map((item) => ({ ...item, choices: [] }))],
+        survey: [...baseSurveyItems],
         languages: ['English (en)', 'Invalid Language', 'Another Invalid'],
       };
 
@@ -778,12 +779,11 @@ describe('KoboValidationService', () => {
 
     it('should throw HttpException when language code is not in our system', async () => {
       // Arrange
-      const programId = 1;
       const mockFspConfigs = [];
 
       const formDefinitionWithUnsupportedLanguage: KoboFormDefinition = {
         ...baseFormDefinition,
-        survey: [...baseSurveyItems.map((item) => ({ ...item, choices: [] }))],
+        survey: [...baseSurveyItems],
         // 'xx' is a valid ISO 639 format but not in RegistrationPreferredLanguage enum
         languages: ['English (en)', 'Unknown (xx)'],
       };
@@ -816,7 +816,6 @@ describe('KoboValidationService', () => {
   });
 
   describe('constrained attribute types validation', () => {
-    const programId = 1;
     const mockFspConfigs = [];
 
     beforeEach(() => {
@@ -835,7 +834,7 @@ describe('KoboValidationService', () => {
       const formDefinitionWithCorrectConstrainedType: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          ...baseSurveyItems,
           {
             name: 'preferredLanguage', // Constrained attribute
             type: 'text', // Correct type - should be text
@@ -860,7 +859,7 @@ describe('KoboValidationService', () => {
       const formDefinitionWithIncorrectConstrainedType: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          ...baseSurveyItems,
           {
             name: 'preferredLanguage', // Constrained attribute
             type: 'integer', // Wrong type - should be text
@@ -895,7 +894,7 @@ describe('KoboValidationService', () => {
       const formDefinitionWithHiddenType: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          ...baseSurveyItems,
           {
             name: 'preferredLanguage', // Expects text type, but hidden is also allowed
             type: 'hidden',
@@ -920,7 +919,7 @@ describe('KoboValidationService', () => {
       const formDefinitionWithForbiddenAttribute: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          ...baseSurveyItems,
           {
             name: 'paymentCount', // Auto-generated registration view attribute, not in KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES
             type: 'integer',
@@ -947,6 +946,221 @@ describe('KoboValidationService', () => {
       expect(error.message).toMatchInlineSnapshot(`
        "Kobo form definition validation failed:
        - Kobo form attribute "paymentCount" is a reserved attribute name cannot be filled from Kobo."
+      `);
+    });
+  });
+
+  describe('fsp question validation', () => {
+    const commonFspAttributeFields = [
+      {
+        name: FspAttributes.phoneNumber,
+        type: 'text',
+        label: ['What is your phone number?'],
+        required: true,
+        choices: [],
+      },
+      {
+        name: FspAttributes.fullName,
+        type: 'text',
+        label: ['What is your full name?'],
+        required: true,
+        choices: [],
+      },
+      {
+        name: FspAttributes.whatsappPhoneNumber,
+        type: 'text',
+        label: ['WhatsApp phone number'],
+        required: false,
+        choices: [],
+      },
+      {
+        name: FspAttributes.nationalId,
+        type: 'text',
+        label: ['National ID number'],
+        required: false,
+        choices: [],
+      },
+    ];
+
+    beforeEach(() => {
+      (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue(
+        mockFspConfigs,
+      );
+    });
+
+    it('should throw HttpException when fsp question is missing', async () => {
+      // Arrange
+      const formDefinitionWithoutFsp: KoboFormDefinition = {
+        ...baseFormDefinition,
+        survey: [...startAndEndSurveyItems, ...commonFspAttributeFields],
+      };
+
+      // Act
+      let error: HttpException | any;
+      try {
+        await service.validateKoboFormDefinition({
+          formDefinition: formDefinitionWithoutFsp,
+          programId,
+        });
+      } catch (e) {
+        error = e;
+      }
+
+      // Assert
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+      expect(error.message).toMatchInlineSnapshot(`
+       "Kobo form definition validation failed:
+       - Kobo form must contain a question with name "fsp"."
+      `);
+    });
+
+    it('should pass validation when fsp is select_one and choices match FSP configurations', async () => {
+      // Arrange
+      const formDefinitionWithValidSelectOneFsp: KoboFormDefinition = {
+        ...baseFormDefinition,
+        survey: [
+          ...startAndEndSurveyItems,
+          {
+            name: 'fsp',
+            type: 'select_one fsp_options',
+            label: ['Financial Service Provider'],
+            required: false,
+            choices: [
+              {
+                name: 'Safaricom Kenya',
+                label: ['Safaricom Kenya'],
+                list_name: 'fsp_options',
+              },
+              {
+                name: 'Intersolve WhatsApp',
+                label: ['Intersolve WhatsApp'],
+                list_name: 'fsp_options',
+              },
+            ],
+          },
+          ...commonFspAttributeFields,
+        ],
+      };
+
+      // Act & Assert
+      await expect(
+        service.validateKoboFormDefinition({
+          formDefinition: formDefinitionWithValidSelectOneFsp,
+          programId,
+        }),
+      ).resolves.not.toThrow();
+    });
+
+    it('should throw HttpException when fsp is select_one but choices do not match FSP configurations', async () => {
+      // Arrange
+      const formDefinitionWithInvalidSelectOneFsp: KoboFormDefinition = {
+        ...baseFormDefinition,
+        survey: [
+          ...startAndEndSurveyItems,
+          {
+            name: 'fsp',
+            type: 'select_one fsp_options',
+            label: ['Financial Service Provider'],
+            required: false,
+            choices: [
+              {
+                name: 'Invalid FSP Name',
+                label: ['Invalid FSP Name'],
+                list_name: 'fsp_options',
+              },
+              {
+                name: 'Another Invalid FSP',
+                label: ['Another Invalid FSP'],
+                list_name: 'fsp_options',
+              },
+            ],
+          },
+          ...commonFspAttributeFields,
+        ],
+      };
+
+      // Act
+      let error: HttpException | any;
+      try {
+        await service.validateKoboFormDefinition({
+          formDefinition: formDefinitionWithInvalidSelectOneFsp,
+          programId,
+        });
+      } catch (e) {
+        error = e;
+      }
+
+      // Assert
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+      expect(error.message).toMatchInlineSnapshot(`
+       "Kobo form definition validation failed:
+       - Kobo form attribute "fsp" has choices that don't match program FSP configuration names. Invalid choices: Invalid FSP Name, Another Invalid FSP. Expected one of: Safaricom Kenya, Intersolve WhatsApp."
+      `);
+    });
+
+    it('should pass validation when fsp is hidden or calculate type', async () => {
+      // Arrange
+      const validFspTypes = ['hidden', 'calculate'];
+
+      for (const fspType of validFspTypes) {
+        const formDefinitionWithFspType: KoboFormDefinition = {
+          ...baseFormDefinition,
+          survey: [
+            ...startAndEndSurveyItems,
+            {
+              name: 'fsp',
+              type: fspType,
+              label: ['Financial Service Provider'],
+              required: false,
+              choices: [],
+            },
+            ...commonFspAttributeFields,
+          ],
+        };
+
+        // Act & Assert
+        await expect(
+          service.validateKoboFormDefinition({
+            formDefinition: formDefinitionWithFspType,
+            programId,
+          }),
+        ).resolves.not.toThrow();
+      }
+    });
+
+    it('should throw HttpException when fsp has invalid type', async () => {
+      // Arrange
+      const formDefinitionWithInvalidFspType: KoboFormDefinition = {
+        ...baseFormDefinition,
+        survey: [
+          ...startAndEndSurveyItems,
+          {
+            name: 'fsp',
+            type: 'text',
+            label: ['Financial Service Provider'],
+            required: false,
+            choices: [],
+          },
+          ...commonFspAttributeFields,
+        ],
+      };
+
+      // Act
+      let error: HttpException | any;
+      try {
+        await service.validateKoboFormDefinition({
+          formDefinition: formDefinitionWithInvalidFspType,
+          programId,
+        });
+      } catch (e) {
+        error = e;
+      }
+
+      // Assert
+      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+      expect(error.message).toMatchInlineSnapshot(`
+       "Kobo form definition validation failed:
+       - Kobo form attribute "fsp" must be of type "hidden" or "select_one" (dropdown), got "text"."
       `);
     });
   });
