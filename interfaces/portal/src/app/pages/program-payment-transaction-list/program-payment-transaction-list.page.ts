@@ -247,7 +247,7 @@ export class ProgramPaymentTransactionListPageComponent {
         command: () => {
           this.selectedTransactionId.set(transaction.id);
           this.selectedPaymentDate.set(transaction.created);
-          this.transactionHistoryDialog().dialogVisible.set(true);
+          this.transactionHistoryDialog().show();
         },
       },
       {
