@@ -331,8 +331,8 @@ class PaymentPage extends BasePage {
       .locator('tbody tr');
 
     const actualValues = new Map<string, string>();
-
-    await this.page.waitForLoadState('networkidle'); // Wait for the table to be populated
+    // Wait for the expected number of rows to be present
+    await expect(rows).toHaveCount(expectedValues.size); // Wait for the table to be populated
 
     for (const row of await rows.all()) {
       // Get only first two columns (Overview and Done by), skip Date and Time
