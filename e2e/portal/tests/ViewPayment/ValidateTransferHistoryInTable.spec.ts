@@ -23,7 +23,6 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
 
 test('Transfer History displays correct values in payment table', async ({
   paymentPage,
-  registrationsPage,
 }) => {
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
   console.log('lastPaymentDate: ', lastPaymentDate);
@@ -37,6 +36,10 @@ test('Transfer History displays correct values in payment table', async ({
     await paymentPage.table.validateWaitForTableRowCount({
       expectedRowCount: 1,
     });
-    await registrationsPage.performActionWithRightClick('Transfer history');
+    await paymentPage.rightClickAction('Transfer history');
+    // Assert
+    await paymentPage.validateTransferHistoryDialog({
+      title: `Transaction ${lastPaymentDate}`,
+    });
   });
 });

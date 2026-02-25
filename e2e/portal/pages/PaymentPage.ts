@@ -306,6 +306,12 @@ class PaymentPage extends BasePage {
       return await icon.isVisible();
     }
   }
+
+  async validateTransferHistoryDialog({ title }: { title: string }) {
+    await expect(this.page.getByText('transaction history')).toContainText(
+      title,
+    );
+  }
 }
 
 export default PaymentPage;
