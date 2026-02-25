@@ -2,8 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
+import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES } from '@121-service/src/kobo/consts/kobo-allowed-registration-view-attributes.const';
-
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
 import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
@@ -17,7 +17,6 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
-import { IS_DEVELOPMENT } from '@121-service/src/config';
 
 @Injectable()
 export class KoboService {
