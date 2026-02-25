@@ -11,7 +11,10 @@ export class PaymentApprovalEntity extends Base121Entity {
     (threshold) => threshold.paymentApprovals,
     { onDelete: 'SET NULL', nullable: true },
   )
-  @JoinColumn({ name: 'programApprovalThresholdId' })
+  @JoinColumn({
+    name: 'programApprovalThresholdId',
+    foreignKeyConstraintName: 'FK_payment_approval_program_approval_threshold',
+  })
   public programApprovalThreshold: Relation<ProgramApprovalThresholdEntity> | null;
   @Column({ nullable: true })
   public programApprovalThresholdId: number | null;

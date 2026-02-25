@@ -9,6 +9,11 @@ export class ThresholdBasedApprovals1771835116000 implements MigrationInterface 
       `CREATE TABLE "121-service"."program_approval_threshold" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "programId" integer NOT NULL, "thresholdAmount" numeric(10,2) NOT NULL, "approvalLevel" integer NOT NULL, CONSTRAINT "PK_program_approval_threshold_id" PRIMARY KEY ("id"))`,
     );
 
+    // Create index on created column (inherited from Base121Entity)
+    await queryRunner.query(
+      `CREATE INDEX "IDX_a0a41b64e26afcbf569a2ca716" ON "121-service"."program_approval_threshold" ("created")`,
+    );
+
     // Add foreign key constraint from program_approval_threshold to program
     await queryRunner.query(
       `ALTER TABLE "121-service"."program_approval_threshold" ADD CONSTRAINT "FK_program_approval_threshold_program" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
@@ -45,7 +50,7 @@ export class ThresholdBasedApprovals1771835116000 implements MigrationInterface 
       `ALTER TABLE "121-service"."payment_approval" ADD "approvedByUserId" integer`,
     );
 
-    // Add programApprovalThresholdId column to approver table
+    // Add programApprovalThresholdId column to approver table (nullable to handle existing data)
     await queryRunner.query(
       `ALTER TABLE "121-service"."approver" ADD "programApprovalThresholdId" integer`,
     );
