@@ -10,6 +10,7 @@ import { KOBO_TO_121_TYPE_MAPPING } from '@121-service/src/kobo/consts/kobo-surv
 import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
 import { KoboLanguageMapper } from '@121-service/src/kobo/mappers/kobo-language.mapper';
+import { fspQuestionName } from '@121-service/src/kobo/services/kobo.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import {
@@ -474,8 +475,6 @@ export class KoboValidationService {
     koboSurveyItems: KoboSurveyItemCleaned[];
     fspConfigs: { fspName: Fsps; name: string }[];
   }): string | undefined {
-    const fspQuestionName = 'fsp';
-
     const fspItem = koboSurveyItems.find(
       (item) => item.name === fspQuestionName,
     );
@@ -497,7 +496,6 @@ export class KoboValidationService {
       return this.validateFspQuestionChoices({
         fspItem,
         fspConfigs,
-        fspQuestionName,
       });
     }
   }
@@ -505,11 +503,9 @@ export class KoboValidationService {
   private validateFspQuestionChoices({
     fspItem,
     fspConfigs,
-    fspQuestionName,
   }: {
     fspItem: KoboSurveyItemCleaned;
     fspConfigs: { fspName: Fsps; name: string }[];
-    fspQuestionName: string;
   }): string | undefined {
     const fspConfigNames = fspConfigs.map((config) => config.name);
     const choiceNames = fspItem.choices.map((choice) => choice.name);
