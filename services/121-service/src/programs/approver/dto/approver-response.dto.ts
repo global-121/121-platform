@@ -11,7 +11,7 @@ export class ApproverResponseDto {
   public readonly username: string | null;
 
   @ApiProperty({ example: 1 })
-  public readonly programApprovalThresholdId: number;
+  public readonly programApprovalThresholdId: number | null;
 
   @ApiProperty({ example: 5 })
   public readonly order: number;

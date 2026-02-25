@@ -447,11 +447,7 @@ describe('do payment with <2 approvers', () => {
     );
   });
 
-  it.skip('should return all payment approvals but without username for deleted approver(s)', async () => {
-    // TODO: This test is skipped due to an issue where payment approval records aren't being created
-    // Payment is created successfully but with 0 approval records (approvalsRequired: 0)
-    // Need to debug why getThresholdsForPaymentAmount or createPaymentAndEventsEntities isn't working in this specific scenario
-    // All other threshold-based approval tests are passing
+  it('should return all payment approvals but without username for deleted approver(s)', async () => {
     const accessTokenFinanceManager = await getAccessTokenFinanceManager();
     const financeManagerUser = await getCurrentUser({
       accessToken: accessTokenFinanceManager,
@@ -483,7 +479,7 @@ describe('do payment with <2 approvers', () => {
 
     const updatedThresholds = [
       {
-        thresholdAmount: 0, // Covers all amounts starting from 0
+        thresholdAmount: 0,
         approvalLevel: 1,
         approvers: [
           {
@@ -493,7 +489,7 @@ describe('do payment with <2 approvers', () => {
         ],
       },
       {
-        thresholdAmount: 10, // Covers all amounts starting from 0
+        thresholdAmount: 10,
         approvalLevel: 2,
         approvers: [
           {
@@ -544,13 +540,12 @@ describe('do payment with <2 approvers', () => {
       paymentId: createPaymentResponse.body.id,
       accessToken: adminAccessToken,
     });
+    console.log('🚀 ~ getPaymentResponse:', getPaymentResponse.body);
 
     // Assert
     expect(getPaymentResponse.status).toBe(HttpStatus.OK);
     expect(getPaymentResponse.body.approvalStatus.length).toBe(2);
-    expect(
-      getPaymentResponse.body.approvalStatus[1].username,
-    ).not.toBeDefined(); // The missing username is in the front-end handled as 'Approver deleted. Create new payment.'
+    expect(getPaymentResponse.body.approvalStatus[1].username).toBeNull(); // The missing username is in the front-end handled as 'Approver deleted. Create new payment.'
   });
 
   it('should include note in payment approved event', async () => {
