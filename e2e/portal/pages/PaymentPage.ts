@@ -307,10 +307,47 @@ class PaymentPage extends BasePage {
     }
   }
 
+  async closeDialog() {
+    const closeButton = this.page
+      .getByRole('dialog')
+      .locator('.p-dialog-close-button');
+    await closeButton.click();
+  }
+
   async validateTransferHistoryDialog({ title }: { title: string }) {
     await expect(this.page.getByText('transaction history')).toContainText(
       title,
     );
+  }
+
+  async validateTransactionHistoryTableValues({
+    expectedValues,
+  }: {
+    expectedValues: Map<string, string>;
+  }) {
+    const rows = this.page
+      .getByRole('dialog')
+      .locator('p-table')
+      .locator('tbody tr');
+
+    const actualValues = new Map<string, string>();
+
+    await this.page.waitForLoadState('networkidle'); // Wait for the table to be populated
+
+    for (const row of await rows.all()) {
+      // Get only first two columns (Overview and Done by), skip Date and Time
+      const overviewColumn = await row.locator('td:nth-child(1)').textContent();
+      const doneByColumn = await row.locator('td:nth-child(2)').textContent();
+
+      if (overviewColumn && doneByColumn) {
+        actualValues.set(overviewColumn.trim(), doneByColumn.trim());
+      }
+    }
+    // Compare the maps
+    expect(actualValues.size).toBe(expectedValues.size);
+    for (const [key, value] of expectedValues.entries()) {
+      expect(actualValues.get(key)).toBe(value);
+    }
   }
 }
 

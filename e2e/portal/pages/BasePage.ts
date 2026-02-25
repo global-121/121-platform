@@ -89,7 +89,13 @@ class BasePage {
     await this.accountDropdown.click();
   }
 
-  async rightClickAction(action: string, row = 0) {
+  async rightClickAction({
+    action,
+    row = 0,
+  }: {
+    action: string;
+    row?: number;
+  }) {
     await this.table.tableRows.nth(row).click({ button: 'right' });
     await this.page.getByLabel(action).click({ force: true });
   }

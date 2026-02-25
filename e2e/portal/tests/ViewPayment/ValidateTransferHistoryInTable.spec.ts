@@ -8,8 +8,21 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-const registrationIds = ['Reg. #1', 'Reg. #2', 'Reg. #3', 'Reg. #4', 'Reg. #5'];
-console.log('registrationIds: ', registrationIds);
+const expectedTableValuesVoucher = new Map([
+  ['AH message delivery', '121 system'],
+  ['AH voucher-is-ready message dispatch', 'admin@example.org'],
+  ['AH voucher message dispatch', '121 system'],
+  ['AH voucher creation', 'admin@example.org'],
+  ['Transaction started', 'admin@example.org'],
+  ['Transaction approval', 'admin@example.org'],
+  ['Transaction created', 'admin@example.org'],
+]);
+const expectedTableValuesVisa = new Map([
+  ['Visa payment request', 'admin@example.org'],
+  ['Transaction started', 'admin@example.org'],
+  ['Transaction approval', 'admin@example.org'],
+  ['Transaction created', 'admin@example.org'],
+]);
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
@@ -25,9 +38,8 @@ test('Transfer History displays correct values in payment table', async ({
   paymentPage,
 }) => {
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
-  console.log('lastPaymentDate: ', lastPaymentDate);
 
-  await test.step('Validate transfer history for Albert Heijn voucher WhatsApp FSP', async () => {
+  await test.step('Navigate to transfer history for Albert Heijn voucher WhatsApp FSP', async () => {
     // Apply filter for FSP
     await paymentPage.table.filterColumnByDropDownSelection({
       columnName: 'FSP',
@@ -36,10 +48,39 @@ test('Transfer History displays correct values in payment table', async ({
     await paymentPage.table.validateWaitForTableRowCount({
       expectedRowCount: 1,
     });
-    await paymentPage.rightClickAction('Transfer history');
-    // Assert
+    await paymentPage.rightClickAction({ action: 'Transfer history' });
+
     await paymentPage.validateTransferHistoryDialog({
       title: `Transaction ${lastPaymentDate}`,
+    });
+  });
+
+  await test.step('Validate values in transfer history table of Albert Heijn voucher WhatsApp FSP', async () => {
+    await paymentPage.validateTransactionHistoryTableValues({
+      expectedValues: expectedTableValuesVoucher,
+    });
+  });
+
+  await test.step('Navigate to Visa debit card FSP', async () => {
+    await paymentPage.closeDialog();
+    await paymentPage.table.clearAllFilters();
+    // Apply filters for FSP and registration ID
+    await paymentPage.table.filterColumnByDropDownSelection({
+      columnName: 'FSP',
+      selection: 'Visa debit card',
+    });
+    await paymentPage.table.validateWaitForTableRowCount({
+      expectedRowCount: 4,
+    });
+    await paymentPage.rightClickAction({ action: 'Transfer history', row: 1 });
+  });
+
+  await test.step('Validate values in transfer history table of Visa debit card FSP', async () => {
+    await paymentPage.validateTransferHistoryDialog({
+      title: `Transaction ${lastPaymentDate}`,
+    });
+    await paymentPage.validateTransactionHistoryTableValues({
+      expectedValues: expectedTableValuesVisa,
     });
   });
 });
