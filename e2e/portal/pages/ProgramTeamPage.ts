@@ -70,6 +70,8 @@ class ProgramTeamPage extends BasePage {
 
   async validateAvailableSystemUsers(expectedAssignedUsers: string[]) {
     await this.addUserFormChooseUserDropdown.click();
+    const list = this.page.getByRole('listbox');
+    await expect(list).toBeVisible();
     const actualAssignedUsers = await this.addUserFormUsersDropdown.evaluateAll(
       (options) => options.map((option) => option.textContent.trim()),
     );

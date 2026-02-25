@@ -90,7 +90,7 @@ export class FullscreenStepperDialogComponent implements OnInit, OnDestroy {
     });
   });
 
-  @HostListener('window:popstate', ['$event'])
+  @HostListener('window:popstate')
   onPopState() {
     // triggered when the browser "back" button is pressed
     this.goBack.emit();
