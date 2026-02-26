@@ -312,15 +312,6 @@ class RegistrationsPage extends BasePage {
     await this.table.validateSelectionCount(selectionCount);
   }
 
-  async performActionWithRightClick(action: string, row = 0) {
-    await this.table.tableRows.nth(row).click({ button: 'right' });
-    await this.page.getByLabel(action).click();
-
-    if (action !== 'Message' && action !== 'Open in new tab') {
-      await this.page.getByRole('button', { name: 'Approve' }).click();
-    }
-  }
-
   async clickAndSelectImportOption(option: string) {
     await this.importButton.click();
     await this.page.getByRole('menuitem', { name: option }).click();

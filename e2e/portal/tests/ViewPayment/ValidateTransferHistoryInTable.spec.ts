@@ -48,7 +48,7 @@ test('Transfer History displays correct values in payment table', async ({
     await paymentPage.table.validateWaitForTableRowCount({
       expectedRowCount: 1,
     });
-    await paymentPage.rightClickAction({ action: 'Transfer history' });
+    await paymentPage.performActionWithRightClick('Transfer history');
 
     await paymentPage.validateTransferHistoryDialog({
       title: `Transaction ${lastPaymentDate}`,
@@ -72,7 +72,7 @@ test('Transfer History displays correct values in payment table', async ({
     await paymentPage.table.validateWaitForTableRowCount({
       expectedRowCount: 4,
     });
-    await paymentPage.rightClickAction({ action: 'Transfer history', row: 1 });
+    await paymentPage.performActionWithRightClick('Transfer history', 1);
   });
 
   await test.step('Validate values in transfer history table of Visa debit card FSP', async () => {

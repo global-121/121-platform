@@ -89,15 +89,17 @@ class BasePage {
     await this.accountDropdown.click();
   }
 
-  async rightClickAction({
-    action,
-    row = 0,
-  }: {
-    action: string;
-    row?: number;
-  }) {
+  async performActionWithRightClick(action: string, row = 0) {
     await this.table.tableRows.nth(row).click({ button: 'right' });
     await this.page.getByLabel(action).click();
+
+    if (
+      action !== 'Message' &&
+      action !== 'Open in new tab' &&
+      action !== 'Transfer history'
+    ) {
+      await this.page.getByRole('button', { name: 'Approve' }).click();
+    }
   }
 
   async selectAccountOption(option: string) {
