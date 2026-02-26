@@ -134,21 +134,25 @@ export class RegistrationsImportService {
     return [...new Set(attributes)]; // Deduplicates attributes
   }
 
-  public async importRegistrations(
-    inputRegistrations: Record<string, string | boolean | number | undefined>[],
-    program: ProgramEntity,
-    userId: number,
-  ): Promise<ImportResult> {
+  public async importRegistrations({
+    inputRegistrations,
+    program,
+    userId,
+  }: {
+    inputRegistrations: Record<string, string | boolean | number | undefined>[];
+    program: ProgramEntity;
+    userId: number | null;
+  }): Promise<ImportResult> {
     const validatedImportRecords = await this.validateImportRegistrationsInput(
       inputRegistrations,
       program.id,
       userId,
     );
-    return await this.importValidatedRegistrations(
+    return await this.importValidatedRegistrations({
       validatedImportRecords,
       program,
       userId,
-    );
+    });
   }
 
   public async importRegistrationsFromCsv(
@@ -162,18 +166,25 @@ export class RegistrationsImportService {
       maxRecords,
     );
     // TODO: Improve the typing of what comes out validateCsv function to avoid this cast
-    return this.importRegistrations(
-      importRecords as Record<string, string | boolean | number | undefined>[],
+    return this.importRegistrations({
+      inputRegistrations: importRecords as Record<
+        string,
+        string | boolean | number | undefined
+      >[],
       program,
       userId,
-    );
+    });
   }
 
-  public async importValidatedRegistrations(
-    validatedImportRecords: ValidatedRegistrationInput[],
-    program: ProgramEntity,
-    userId: number,
-  ): Promise<ImportResult> {
+  public async importValidatedRegistrations({
+    validatedImportRecords,
+    program,
+    userId,
+  }: {
+    validatedImportRecords: ValidatedRegistrationInput[];
+    program: ProgramEntity;
+    userId: number | null;
+  }): Promise<ImportResult> {
     let countImported = 0;
     const dynamicAttributes = await this.getDynamicAttributes(program.id);
     const registrations: RegistrationEntity[] = [];
@@ -399,7 +410,7 @@ export class RegistrationsImportService {
       string | boolean | number | undefined
     >[],
     programId: number,
-    userId: number,
+    userId: number | null,
   ): Promise<ValidatedRegistrationInput[]> {
     const validationConfig: ValidationRegistrationConfig = {
       validateUniqueReferenceId: true,

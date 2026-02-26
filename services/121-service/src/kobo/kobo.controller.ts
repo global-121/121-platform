@@ -12,26 +12,34 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  ApiBody,
   ApiOperation,
   ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { SkipThrottle } from '@nestjs/throttler/dist/throttler.decorator';
 import { Response } from 'express';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { NoUserAuthenticationEndpoint } from '@121-service/src/guards/no-user-authentication.decorator';
 import { CreateKoboDto } from '@121-service/src/kobo/dtos/create-kobo.dto';
 import { KoboIntegrationResultDto } from '@121-service/src/kobo/dtos/kobo-integration-result.dto';
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
+import { KoboWebhookIncomingSubmission } from '@121-service/src/kobo/dtos/kobo-webhook-incoming-submission.dto';
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
+import { KoboSubmissionService } from '@121-service/src/kobo/services/kobo-submission.service';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs/kobo')
-@Controller('programs')
+@Controller()
 export class KoboController {
-  public constructor(private readonly koboService: KoboService) {}
+  public constructor(
+    private readonly koboService: KoboService,
+    private readonly koboSubmissionService: KoboSubmissionService,
+  ) {}
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
@@ -84,7 +92,7 @@ export class KoboController {
     description: `When set to "true", validates the Kobo form integration without making any changes to the program. This allows you to check if the integration would succeed before executing it. Returns 200 if validation passes, or an appropriate error status if validation fails.`,
     example: false,
   })
-  @Post(':programId/kobo')
+  @Post('programs/:programId/kobo')
   public async createKoboAsset(
     @Body()
     createKoboAssetData: CreateKoboDto,
@@ -143,11 +151,35 @@ export class KoboController {
     description:
       'Program does not exist or no Kobo integration found for this program',
   })
-  @Get(':programId/kobo')
+  @Get('programs/:programId/kobo')
   public async getKoboData(
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<KoboResponseDto> {
     return this.koboService.getKoboData({ programId });
+  }
+
+  @NoUserAuthenticationEndpoint(
+    'This endpoint is called by Kobo and does not require user authentication',
+  )
+  @SkipThrottle() // Skip rate limiting as this endpoint is called by Kobo and we want to avoid rejecting calls due to rate limits
+  @ApiOperation({
+    summary: `Post a new kobo submission [USED BY KOBO]`,
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Incoming submission processed successfully',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+  })
+  @ApiBody({
+    type: KoboWebhookIncomingSubmission,
+  })
+  @Post(`kobo/webhook`)
+  public async processKoboWebhookCall(
+    @Body() body: KoboWebhookIncomingSubmission,
+  ) {
+    await this.koboSubmissionService.processKoboWebhookCall(body);
   }
 }

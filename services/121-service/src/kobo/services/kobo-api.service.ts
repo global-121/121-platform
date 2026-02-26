@@ -2,9 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { joinURL } from 'ufo';
 
-import { env } from '@121-service/src/env';
+import { EXTERNAL_API } from '@121-service/src/config';
 import { KoboAssetDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset.dto';
 import { KoboAssetResponseDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset-response.dto';
+import { KoboSubmissionDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-submission.dto';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
@@ -113,19 +114,21 @@ export class KoboApiService {
     token: string;
     baseUrl: string;
   }): Promise<void> {
-    const apiUrl = joinURL(baseUrl, 'api/v2/assets', assetUid, 'hooks');
+    // Trailing slash is required: without it the API returns a 301 redirect,
+    // which Axios follows by downgrading POST → GET (returning a list response instead of creating)
+    const apiUrl = joinURL(baseUrl, 'api/v2/assets', assetUid, 'hooks/');
 
     const headers = new Headers();
     headers.append('Authorization', `Token ${token}`);
 
     const webhookName =
       'Create a registration in the 121 Platform when a submission is received';
-    const webhookUrl = joinURL(env.EXTERNAL_121_SERVICE_URL, 'kobo/webhook');
+    const webhookUrl = joinURL(EXTERNAL_API.rootApi, 'kobo/webhook');
     const webhookSubsetFields = ['_uuid', '_xform_id_string'];
 
     const body = {
       name: webhookName,
-      url: webhookUrl,
+      endpoint: webhookUrl,
       active: true,
       subset_fields: webhookSubsetFields,
     };
@@ -146,6 +149,45 @@ export class KoboApiService {
       apiUrl,
       notFoundMessage: 'Kobo asset not found. This asset does not exist',
       operationDescription: 'create Kobo webhook',
+    });
+  }
+
+  public async getSubmission({
+    token,
+    assetId,
+    baseUrl,
+    submissionUuid,
+  }: {
+    token: string;
+    assetId: string;
+    baseUrl: string;
+    submissionUuid: string;
+  }): Promise<KoboSubmissionDto> {
+    const apiUrl = joinURL(
+      baseUrl,
+      'api/v2/assets',
+      assetId,
+      'data',
+      submissionUuid,
+    );
+
+    const headers = new Headers();
+    headers.append('Authorization', `Token ${token}`);
+
+    const response = await this.httpService.get<
+      AxiosResponse<KoboSubmissionDto>
+    >(apiUrl, headers);
+
+    if (this.isValidKoboResponse<KoboSubmissionDto>(response)) {
+      return response.data;
+    }
+
+    this.throwKoboApiError({
+      response,
+      assetUid: assetId,
+      apiUrl,
+      notFoundMessage: 'Kobo submission not found',
+      operationDescription: 'fetch Kobo submission',
     });
   }
 
