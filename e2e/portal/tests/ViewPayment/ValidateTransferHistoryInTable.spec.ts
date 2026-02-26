@@ -49,7 +49,7 @@ test('Transfer History displays correct values in payment table', async ({
       expectedRowCount: 1,
     });
     await paymentPage.performActionWithRightClick('Transfer history');
-    await paymentPage.validateTransferHistoryDialog({
+    await paymentPage.validateTransferHistoryDialogTitle({
       title: `Transaction ${lastPaymentDate}`,
     });
   });
@@ -75,7 +75,7 @@ test('Transfer History displays correct values in payment table', async ({
   });
 
   await test.step('Validate values in transfer history table of Visa debit card FSP', async () => {
-    await paymentPage.validateTransferHistoryDialog({
+    await paymentPage.validateTransferHistoryDialogTitle({
       title: `Transaction ${lastPaymentDate}`,
     });
     await paymentPage.validateTransactionHistoryTableValues({
