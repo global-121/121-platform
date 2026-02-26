@@ -218,8 +218,7 @@ export default tsEslint.config(
       'better-tailwindcss/no-conflicting-classes': 'error',
       'better-tailwindcss/no-deprecated-classes': 'error',
       'better-tailwindcss/no-restricted-classes': 'error',
-      'better-tailwindcss/no-unnecessary-whitespace': 'off', // handled by Prettier
-      'better-tailwindcss/no-unregistered-classes': [
+      'better-tailwindcss/no-unknown-classes': [
         'error',
         {
           ignore: [
@@ -232,6 +231,7 @@ export default tsEslint.config(
           ],
         },
       ],
+      'better-tailwindcss/no-unnecessary-whitespace': 'off', // handled by Prettier
       'prettier/prettier': [
         'error',
         {
