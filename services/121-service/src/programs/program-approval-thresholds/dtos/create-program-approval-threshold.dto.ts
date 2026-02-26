@@ -27,5 +27,5 @@ export class CreateProgramApprovalThresholdDto {
   @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => CreateApproverForThresholdDto)
-  public readonly approvers?: CreateApproverForThresholdDto[];
+  public readonly approvers: CreateApproverForThresholdDto[];
 }
