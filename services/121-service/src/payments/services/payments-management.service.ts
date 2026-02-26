@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
-import { Equal, Repository } from 'typeorm';
+import { Equal, IsNull, Not, Repository } from 'typeorm';
 
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
@@ -15,7 +15,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ApproverService } from '@121-service/src/programs/approver/approver.service';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
@@ -31,6 +31,8 @@ import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 export class PaymentsManagementService {
   @InjectRepository(PaymentEntity)
   private readonly paymentRepository: Repository<PaymentEntity>;
+  @InjectRepository(ProgramAidworkerAssignmentEntity)
+  private readonly aidworkerAssignmentRepository: Repository<ProgramAidworkerAssignmentEntity>;
   public constructor(
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
@@ -38,7 +40,6 @@ export class PaymentsManagementService {
     private readonly paymentEventsService: PaymentEventsService,
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
     private readonly transactionsService: TransactionsService,
-    private readonly approverService: ApproverService,
     private readonly programApprovalThresholdsService: ProgramApprovalThresholdsService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentApprovalRepository: PaymentApprovalRepository,
@@ -330,10 +331,23 @@ export class PaymentsManagementService {
     paymentId: number;
     note?: string;
   }): Promise<void> {
-    const approver = await this.approverService.getApproverByUserIdOrThrow({
-      userId,
-      programId,
-    });
+    // Get the user's aidworker assignment and verify they are an approver
+    const approverAssignment = await this.aidworkerAssignmentRepository.findOne(
+      {
+        where: {
+          userId: Equal(userId),
+          programId: Equal(programId),
+          programApprovalThresholdId: Not(IsNull()),
+        },
+      },
+    );
+
+    if (!approverAssignment || !approverAssignment.programApprovalThresholdId) {
+      throw new HttpException(
+        'User is not an approver for this program',
+        HttpStatus.FORBIDDEN,
+      );
+    }
 
     const allPaymentApprovals = await this.paymentApprovalRepository.find({
       where: {
@@ -344,7 +358,7 @@ export class PaymentsManagementService {
     const currentPaymentApproval = allPaymentApprovals.find(
       (approval) =>
         approval.programApprovalThresholdId ===
-        approver.programApprovalThresholdId,
+        approverAssignment.programApprovalThresholdId,
     );
     if (!currentPaymentApproval) {
       throw new HttpException(

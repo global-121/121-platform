@@ -9,7 +9,6 @@ import { LookupModule } from '@121-service/src/notifications/lookup/lookup.modul
 import { ProgramAttributesModule } from '@121-service/src/program-attributes/program-attributes.module';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
-import { ApproverModule } from '@121-service/src/programs/approver/approver.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramAttachmentsModule } from '@121-service/src/programs/program-attachments/program-attachments.module';
@@ -37,7 +36,6 @@ import { UserModule } from '@121-service/src/user/user.module';
     KoboConnectModule,
     ProgramFspConfigurationsModule,
     IntersolveVisaModule,
-    ApproverModule,
   ],
   providers: [
     ProgramService,
@@ -49,7 +47,6 @@ import { UserModule } from '@121-service/src/user/user.module';
   exports: [
     ProgramService,
     ProgramRepository,
-    ApproverModule,
     ProgramRegistrationAttributeRepository,
   ],
 })

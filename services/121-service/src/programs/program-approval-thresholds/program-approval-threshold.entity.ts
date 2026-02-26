@@ -9,8 +9,8 @@ import {
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
-import { ApproverEntity } from '@121-service/src/programs/approver/entities/approver.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 
 @Entity('program_approval_threshold')
 export class ProgramApprovalThresholdEntity extends Base121Entity {
@@ -30,10 +30,10 @@ export class ProgramApprovalThresholdEntity extends Base121Entity {
   public approvalLevel: number;
 
   @OneToMany(
-    () => ApproverEntity,
-    (approver) => approver.programApprovalThreshold,
+    () => ProgramAidworkerAssignmentEntity,
+    (assignment) => assignment.programApprovalThreshold,
   )
-  public approvers: Relation<ApproverEntity[]>;
+  public approverAssignments: Relation<ProgramAidworkerAssignmentEntity[]>;
 
   @OneToMany(
     () => PaymentApprovalEntity,

@@ -5,12 +5,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
 import crypto from 'node:crypto';
-import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
+import {
+  Equal,
+  FindOptionsRelations,
+  In,
+  IsNull,
+  Not,
+  Repository,
+} from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/email-constants';
 import { env } from '@121-service/src/env';
-import { ApproverEntity } from '@121-service/src/programs/approver/entities/approver.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
@@ -65,8 +71,6 @@ export class UserService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramAidworkerAssignmentEntity)
   private readonly assignmentRepository: Repository<ProgramAidworkerAssignmentEntity>;
-  @InjectRepository(ApproverEntity)
-  private readonly approverRepository: Repository<ApproverEntity>;
 
   public constructor(
     @Inject(REQUEST) private readonly request: Request,
@@ -441,12 +445,13 @@ export class UserService {
   }: {
     programAssignmentId: number;
   }): Promise<void> {
-    const existingApprover = await this.approverRepository.findOne({
+    const assignment = await this.assignmentRepository.findOne({
       where: {
-        programAidworkerAssignmentId: Equal(programAssignmentId),
+        id: Equal(programAssignmentId),
+        programApprovalThresholdId: Not(IsNull()),
       },
     });
-    if (existingApprover) {
+    if (assignment) {
       throw new HttpException(
         'Cannot add scope to assignment because user is an approver for this program. Remove approver from program first (if intended) and retry.',
         HttpStatus.BAD_REQUEST,
