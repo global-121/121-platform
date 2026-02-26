@@ -51,7 +51,8 @@ export class ProgramApprovalThresholdsService {
         },
       );
 
-      // Delete all existing thresholds for this program (CASCADE will delete PaymentApprovals)
+      // Delete all existing thresholds for this program; related PaymentApprovals are retained and their
+      // programApprovalThresholdId is set to NULL via the ON DELETE SET NULL foreign key constraint
       await manager.delete(ProgramApprovalThresholdEntity, {
         programId: Equal(programId),
       });
