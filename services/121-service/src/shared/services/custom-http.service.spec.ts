@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import fs from 'node:fs';
 import https from 'node:https';
 
@@ -109,7 +110,7 @@ describe('CustomHttpService', () => {
             password: sensitivePassword,
           },
         },
-        { status: 200, statusText: 'OK', data: {} },
+        { status: HttpStatus.OK, statusText: 'OK', data: {} },
       );
 
       expect(getTracedMessage()).not.toContain(sensitivePassword);
@@ -124,7 +125,7 @@ describe('CustomHttpService', () => {
           url: 'http://example.com/api',
           payload: { access_token: sensitiveToken },
         },
-        { status: 200, statusText: 'OK', data: {} },
+        { status: HttpStatus.OK, statusText: 'OK', data: {} },
       );
 
       expect(getTracedMessage()).not.toContain(sensitiveToken);
@@ -137,7 +138,7 @@ describe('CustomHttpService', () => {
       service.logMessageRequest(
         { url: 'http://example.com/api', payload: null },
         {
-          status: 200,
+          status: HttpStatus.OK,
           statusText: 'OK',
           data: { [CookieNames.general]: sensitiveToken },
         },
@@ -153,7 +154,7 @@ describe('CustomHttpService', () => {
       service.logMessageRequest(
         { url: 'http://example.com/api', payload: null },
         {
-          status: 200,
+          status: HttpStatus.OK,
           statusText: 'OK',
           data: { [CookieNames.portal]: sensitiveToken },
         },
@@ -169,7 +170,7 @@ describe('CustomHttpService', () => {
           url: 'http://example.com/api',
           payload: { username: 'user@example.com', password: 'secret' },
         },
-        { status: 200, statusText: 'OK', data: {} },
+        { status: HttpStatus.OK, statusText: 'OK', data: {} },
       );
 
       expect(getTracedMessage()).toContain('use'); // First 3 characters are kept
@@ -182,7 +183,11 @@ describe('CustomHttpService', () => {
           url: 'http://example.com/api',
           payload: { transactionReference: 'TXN-12345', amount: 100 },
         },
-        { status: 200, statusText: 'OK', data: { resultCode: 'SUCCESS' } },
+        {
+          status: HttpStatus.OK,
+          statusText: 'OK',
+          data: { resultCode: 'SUCCESS' },
+        },
       );
 
       expect(getTracedMessage()).toContain('TXN-12345');
@@ -200,7 +205,7 @@ describe('CustomHttpService', () => {
 
       service.logMessageRequest(
         { url: 'http://example.com/api', payload: originalPayload },
-        { status: 200, statusText: 'OK', data: {} },
+        { status: HttpStatus.OK, statusText: 'OK', data: {} },
       );
 
       expect(originalPayload).toEqual(payloadCopy);
@@ -210,7 +215,7 @@ describe('CustomHttpService', () => {
       expect(() => {
         service.logMessageRequest(
           { url: 'http://example.com/api', payload: null },
-          { status: 200, statusText: 'OK', data: null },
+          { status: HttpStatus.OK, statusText: 'OK', data: null },
         );
       }).not.toThrow();
     });
@@ -242,7 +247,11 @@ describe('CustomHttpService', () => {
             password: sensitivePassword,
           },
         },
-        { status: 401, statusText: 'Unauthorized', data: {} },
+        {
+          status: HttpStatus.UNAUTHORIZED,
+          statusText: 'Unauthorized',
+          data: {},
+        },
       );
 
       expect(getExceptionMessage()).not.toContain(sensitivePassword);
@@ -255,7 +264,7 @@ describe('CustomHttpService', () => {
       service.logErrorRequest(
         { url: 'http://example.com/api', payload: null },
         {
-          status: 401,
+          status: HttpStatus.UNAUTHORIZED,
           statusText: 'Unauthorized',
           data: { access_token: sensitiveToken },
         },
@@ -271,7 +280,7 @@ describe('CustomHttpService', () => {
       service.logErrorRequest(
         { url: 'http://example.com/api', payload: null },
         {
-          status: 500,
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
           statusText: 'Internal Server Error',
           data: { [CookieNames.general]: sensitiveToken },
         },
@@ -287,7 +296,7 @@ describe('CustomHttpService', () => {
       service.logErrorRequest(
         { url: 'http://example.com/api', payload: null },
         {
-          status: 500,
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
           statusText: 'Internal Server Error',
           data: { [CookieNames.portal]: sensitiveToken },
         },
@@ -303,7 +312,11 @@ describe('CustomHttpService', () => {
           url: 'http://example.com/api',
           payload: { username: 'user@example.com', password: 'secret' },
         },
-        { status: 401, statusText: 'Unauthorized', data: {} },
+        {
+          status: HttpStatus.UNAUTHORIZED,
+          statusText: 'Unauthorized',
+          data: {},
+        },
       );
 
       expect(getExceptionMessage()).toContain('use'); // First 3 characters are kept
@@ -317,7 +330,7 @@ describe('CustomHttpService', () => {
           payload: { transactionReference: 'TXN-12345' },
         },
         {
-          status: 400,
+          status: HttpStatus.BAD_REQUEST,
           statusText: 'Bad Request',
           data: { errorCode: 'INVALID_AMOUNT' },
         },
@@ -338,7 +351,11 @@ describe('CustomHttpService', () => {
 
       service.logErrorRequest(
         { url: 'http://example.com/api', payload: originalPayload },
-        { status: 500, statusText: 'Internal Server Error', data: {} },
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          statusText: 'Internal Server Error',
+          data: {},
+        },
       );
 
       expect(originalPayload).toEqual(payloadCopy);
@@ -348,7 +365,11 @@ describe('CustomHttpService', () => {
       expect(() => {
         service.logErrorRequest(
           { url: 'http://example.com/api', payload: null },
-          { status: 500, statusText: 'Internal Server Error', data: null },
+          {
+            status: HttpStatus.INTERNAL_SERVER_ERROR,
+            statusText: 'Internal Server Error',
+            data: null,
+          },
         );
       }).not.toThrow();
     });
