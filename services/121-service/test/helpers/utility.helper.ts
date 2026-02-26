@@ -23,6 +23,10 @@ export function getServer(): TestAgent<request.Test> {
   return request.agent(getHostname());
 }
 
+export function getMockServer(): TestAgent<request.Test> {
+  return request.agent(`${env.MOCK_SERVICE_URL}/api`);
+}
+
 export function resetDB(
   seedScript: SeedScript,
   resetIdentifier: string,

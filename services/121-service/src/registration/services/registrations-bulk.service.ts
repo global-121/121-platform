@@ -375,7 +375,7 @@ export class RegistrationsBulkService {
     referenceIds: string[];
     programId: number;
     registrationStatus: RegistrationStatusEnum;
-    userId: number;
+    userId: number | null;
     messageContentDetails: MessageContentDetails;
     reason?: string;
   }): Promise<void> {
@@ -441,7 +441,7 @@ export class RegistrationsBulkService {
   }: {
     referenceIds: string[];
     programId: number;
-    userId: number;
+    userId: number | null;
     messageContentDetails: MessageContentDetails;
   }): Promise<void> {
     const usedPlaceholders =
@@ -656,7 +656,7 @@ export class RegistrationsBulkService {
     messageContentDetails: MessageContentDetails;
     bulksize: number;
     usedPlaceholders: string[];
-    userId: number;
+    userId: number | null;
   }): Promise<void> {
     for (const registration of registrations) {
       const placeholderData = {};

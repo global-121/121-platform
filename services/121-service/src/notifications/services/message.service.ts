@@ -229,7 +229,7 @@ export class MessageService {
         {
           transactionId: messageJobDto.customData.transactionData.transactionId,
           newTransactionStatus,
-          userId: messageJobDto.userId,
+          userId: messageJobDto.userId!, // We know this is always defined for intersolve voucher messages
           programFspConfigurationId:
             messageJobDto.customData.transactionData.programFspConfigurationId!,
           messageSid:
@@ -303,7 +303,7 @@ export class MessageService {
     registrationId: number;
     messageContentType?: MessageContentType;
     tryWhatsapp?: boolean;
-    userId: number;
+    userId: number | null;
   }): Promise<void> {
     const pendingMesssage = new WhatsappPendingMessageEntity();
     pendingMesssage.body = message;
