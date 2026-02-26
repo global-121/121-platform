@@ -121,26 +121,26 @@ describe('CustomHttpService', () => {
         response: { status: HttpStatus.OK, statusText: 'OK', data: {} },
       },
       {
-        caseName: 'access_token_general cookie value',
-        sensitiveValue: 'access_token_general=secret-session-value',
+        caseName: `${CookieNames.general} cookie value`,
+        sensitiveValue: `${CookieNames.general}=secret-session-value`,
         request: { url: 'http://example.com/api', payload: null },
         response: {
           status: HttpStatus.OK,
           statusText: 'OK',
           data: {
-            [CookieNames.general]: 'access_token_general=secret-session-value',
+            [CookieNames.general]: `${CookieNames.general}=secret-session-value`,
           },
         },
       },
       {
-        caseName: 'access_token_portal cookie value',
-        sensitiveValue: 'access_token_portal=secret-portal-value',
+        caseName: `${CookieNames.portal} cookie value`,
+        sensitiveValue: `${CookieNames.portal}=secret-portal-value`,
         request: { url: 'http://example.com/api', payload: null },
         response: {
           status: HttpStatus.OK,
           statusText: 'OK',
           data: {
-            [CookieNames.portal]: 'access_token_portal=secret-portal-value',
+            [CookieNames.portal]: `${CookieNames.portal}=secret-portal-value`,
           },
         },
       },
@@ -255,26 +255,26 @@ describe('CustomHttpService', () => {
         },
       },
       {
-        caseName: 'access_token_general cookie value',
-        sensitiveValue: 'access_token_general=secret-session-value',
+        caseName: `${CookieNames.general} cookie value`,
+        sensitiveValue: `${CookieNames.general}=secret-session-value`,
         request: { url: 'http://example.com/api', payload: null },
         errorResponse: {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
           statusText: 'Internal Server Error',
           data: {
-            [CookieNames.general]: 'access_token_general=secret-session-value',
+            [CookieNames.general]: `${CookieNames.general}=secret-session-value`,
           },
         },
       },
       {
-        caseName: 'access_token_portal cookie value',
-        sensitiveValue: 'access_token_portal=secret-portal-value',
+        caseName: `${CookieNames.portal} cookie value`,
+        sensitiveValue: `${CookieNames.portal}=secret-portal-value`,
         request: { url: 'http://example.com/api', payload: null },
         errorResponse: {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
           statusText: 'Internal Server Error',
           data: {
-            [CookieNames.portal]: 'access_token_portal=secret-portal-value',
+            [CookieNames.portal]: `${CookieNames.portal}=secret-portal-value`,
           },
         },
       },
