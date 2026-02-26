@@ -254,6 +254,10 @@ export class ProgramPaymentTransactionListPageComponent {
           this.selectedPaymentDate.set(formattedDate);
           this.transactionHistoryDialog().show();
         },
+        visible: this.authService.hasPermission({
+          programId: this.programId(),
+          requiredPermission: PermissionEnum.PaymentTransactionREAD,
+        }),
       },
       {
         label: $localize`Retry failed transaction`,
