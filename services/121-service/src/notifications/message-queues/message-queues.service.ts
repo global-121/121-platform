@@ -73,7 +73,7 @@ export class MessageQueuesService {
     mediaUrl?: string | null;
     customData?: MessageJobCustomDataDto;
     bulksize?: number;
-    userId: number;
+    userId: number | null;
   }): Promise<void> {
     let whatsappPhoneNumber =
       registration[DefaultRegistrationDataAttributeNames.whatsappPhoneNumber];

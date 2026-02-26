@@ -285,11 +285,11 @@ export class RegistrationsService {
     userId: number,
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
-    return await this.registrationsImportService.importRegistrations(
-      jsonData,
+    return await this.registrationsImportService.importRegistrations({
+      inputRegistrations: jsonData,
       program,
       userId,
-    );
+    });
   }
 
   private async findProgramOrThrow(programId: number): Promise<ProgramEntity> {

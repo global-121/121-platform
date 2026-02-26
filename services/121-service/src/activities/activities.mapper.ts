@@ -135,8 +135,8 @@ export class ActivitiesMapper {
     return messages.map((message, index) => ({
       id: `${ActivityTypeEnum.Message}${index}`,
       user: {
-        id: message.userId,
-        username: message.user.username ?? undefined,
+        id: message.userId ?? undefined,
+        username: message.user?.username ?? undefined,
       },
       created: message.created,
       type: ActivityTypeEnum.Message,

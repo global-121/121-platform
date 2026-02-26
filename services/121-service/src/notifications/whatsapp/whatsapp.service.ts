@@ -60,7 +60,7 @@ export class WhatsappService {
     messageContentType?: MessageContentType;
     messageProcessType?: MessageProcessType;
     existingSidToUpdate?: string;
-    userId: number;
+    userId: number | null;
     firstAttempt?: boolean; // Controls retry logic for Twilio media errors (63021)
   }): Promise<string | undefined> {
     const payload = {
@@ -184,7 +184,7 @@ export class WhatsappService {
       | 'errorMessage'
       | 'dateCreated'
     >;
-    userId: number;
+    userId: number | null;
     registrationId?: number;
     mediaUrl?: string | null;
     messageContentType?: MessageContentType;

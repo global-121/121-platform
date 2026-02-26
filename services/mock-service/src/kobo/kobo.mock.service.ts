@@ -1,4 +1,9 @@
+import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { lastValueFrom } from 'rxjs';
+import { joinURL } from 'ufo';
+
+import { env } from '@mock-service/src/env';
 
 interface KoboSurveyItem {
   name?: string;
@@ -47,6 +52,11 @@ export enum KoboMockAssetUids {
   notFound = 'asset-id-not-found',
   happyFlowWithChanges = 'asset-id-happy-flow-with-changes',
   withExistingWebhook = 'asset-id-with-existing-webhook',
+}
+
+export enum KoboMockSubmissionUuids {
+  success = 'success',
+  failure = 'failure',
 }
 
 const bodyThatTriggersErrors: KoboAssetDeployment = {
@@ -371,6 +381,8 @@ const getHappyFlowWithChanges = (): KoboAssetDeployment => {
 
 @Injectable()
 export class KoboMockService {
+  public constructor(private readonly httpService: HttpService) {}
+
   public getAssetDeployment(uid_asset: string): KoboAssetDeployment {
     switch (uid_asset) {
       case KoboMockAssetUids.notFound:
@@ -438,6 +450,95 @@ export class KoboMockService {
     return {
       uid: 'hook_' + Math.random().toString(36).substring(2, 15),
       ...body,
+    };
+  }
+
+  public getSubmission({
+    uid_asset,
+    submissionId,
+  }: {
+    uid_asset: string;
+    submissionId: string;
+  }): Record<string, any> {
+    const asset = this.getAssetDeployment(uid_asset);
+
+    if (submissionId.includes(KoboMockSubmissionUuids.success)) {
+      return {
+        _id: 1,
+        _uuid: submissionId,
+        _xform_id_string: uid_asset,
+        _submission_time: '2025-04-30T15:30:00.000Z',
+        _status: 'submitted_via_web',
+        start: '2025-04-30T15:29:00.000Z',
+        end: '2025-04-30T15:30:00.000Z',
+        fsp: 'Safaricom',
+        'group_ad8jk55/fullName': 'John Doe',
+        'group_ad8jk55/group_gz24g15/What_is_2_2_number': 4,
+        nationalId: '123456789',
+        phoneNumber: '+31612345678',
+        'group_or1bl43/How_are_you_today_select_one': 'great',
+        __version__: asset.version_id,
+      };
+    }
+
+    if (submissionId.includes(KoboMockSubmissionUuids.failure)) {
+      return {
+        _id: 2,
+        _uuid: submissionId,
+        _xform_id_string: uid_asset,
+        _submission_time: '2025-04-30T16:00:00.000Z',
+        _status: 'submitted_via_web',
+        start: '2025-04-30T15:59:00.000Z',
+        end: '2025-04-30T16:00:00.000Z',
+        fsp: 'Invalid-FSP',
+        'group_ad8jk55/fullName': 'Jane Doe',
+        'group_ad8jk55/group_gz24g15/What_is_2_2_number': 5,
+        nationalId: '987654321',
+        phoneNumber: '+31687654321',
+        'group_or1bl43/How_are_you_today_select_one': 'terrible',
+        __version__: asset.version_id,
+      };
+    }
+
+    throw new HttpException(
+      {
+        detail: 'Not found.',
+      },
+      HttpStatus.NOT_FOUND,
+    );
+  }
+
+  public async triggerIncomingSubmission({
+    assetUid,
+    submissionUuid,
+  }: {
+    assetUid: string;
+    submissionUuid: string;
+  }): Promise<{ message: string; submissionUuid: string }> {
+    const webhookPayload = {
+      _uuid: submissionUuid,
+      _xform_id_string: assetUid,
+    };
+
+    const url = joinURL(env.EXTERNAL_121_SERVICE_URL, 'api', 'kobo', 'webhook');
+
+    try {
+      await lastValueFrom(this.httpService.post(url, webhookPayload));
+    } catch (error) {
+      // Forward the HTTP status and body from 121-service back to the caller
+      // to allow our test to see the actual error (e.g. validation failures)
+      const response = error?.response;
+      const status = response?.status;
+      if (!status) {
+        throw error; // rethrow if it's not an HTTP error or doesn't have a response
+      }
+      const body = response?.data ?? { message: error?.message };
+      throw new HttpException(body, status);
+    }
+
+    return {
+      message: 'Webhook triggered successfully',
+      submissionUuid,
     };
   }
 }

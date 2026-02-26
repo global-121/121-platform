@@ -1204,5 +1204,10 @@
       "programId"
     ],
     "returnType": "KoboResponseDto"
+  },
+  {
+    "method": "post",
+    "path": "/api/kobo/webhook",
+    "params": []
   }
 ]

@@ -431,4 +431,36 @@ describe('RegistrationsInputValidator', () => {
     };
     expect(result[0]).toEqual(expectedResult);
   });
+
+  it('should not error when userId is null (e.g. system-triggered import like Kobo webhook) with registrations having empty or random scope values', async () => {
+    const csvArray = [
+      {
+        referenceId: '00dc9451-1273-484c-b2e8-ae21b51a96ab',
+        preferredLanguage: RegistrationPreferredLanguage.en,
+        phoneNumber: '14155238880',
+        programFspConfigurationName: Fsps.excel,
+        scope: '',
+      },
+      {
+        referenceId: '11dc9451-1273-484c-b2e8-ae21b51a96ab',
+        preferredLanguage: RegistrationPreferredLanguage.en,
+        programFspConfigurationName: Fsps.excel,
+        phoneNumber: '14155238880',
+        scope: 'random.scope.value',
+      },
+    ];
+
+    await expect(
+      validator.validateAndCleanInput({
+        registrationInputArray: csvArray,
+        programId,
+        userId: null,
+        typeOfInput: RegistrationValidationInputType.create,
+        validationConfig: {
+          validateUniqueReferenceId: true,
+          validateExistingReferenceId: true,
+        },
+      }),
+    ).resolves.not.toThrow();
+  });
 });
