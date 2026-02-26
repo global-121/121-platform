@@ -99,70 +99,64 @@ describe('CustomHttpService', () => {
       } as any;
     });
 
-    it('should not include the actual password value in the logged message', () => {
-      const sensitivePassword = 'super-secret-password';
-
-      service.logMessageRequest(
-        {
+    it.each([
+      {
+        caseName: 'password value',
+        sensitiveValue: 'super-secret-password',
+        request: {
+          url: 'http://example.com/api',
+          payload: { password: 'super-secret-password' },
+        },
+        response: { status: HttpStatus.OK, statusText: 'OK', data: {} },
+      },
+      {
+        caseName: 'access_token value',
+        sensitiveValue: 'eyJhbGciOiJSUzI1NiJ9.sensitive-token-value',
+        request: {
           url: 'http://example.com/api',
           payload: {
-            username: 'admin@example.com',
-            password: sensitivePassword,
+            access_token: 'eyJhbGciOiJSUzI1NiJ9.sensitive-token-value',
           },
         },
-        { status: HttpStatus.OK, statusText: 'OK', data: {} },
-      );
-
-      expect(getTracedMessage()).not.toContain(sensitivePassword);
-      expect(getTracedMessage()).toContain('**REDACTED**');
-    });
-
-    it('should not include the actual access_token value in the logged message', () => {
-      const sensitiveToken = 'eyJhbGciOiJSUzI1NiJ9.sensitive-token-value';
-
-      service.logMessageRequest(
-        {
-          url: 'http://example.com/api',
-          payload: { access_token: sensitiveToken },
-        },
-        { status: HttpStatus.OK, statusText: 'OK', data: {} },
-      );
-
-      expect(getTracedMessage()).not.toContain(sensitiveToken);
-      expect(getTracedMessage()).toContain('**REDACTED**');
-    });
-
-    it('should not include the actual access_token_general cookie value in the logged message', () => {
-      const sensitiveToken = 'access_token_general=secret-session-value';
-
-      service.logMessageRequest(
-        { url: 'http://example.com/api', payload: null },
-        {
+        response: { status: HttpStatus.OK, statusText: 'OK', data: {} },
+      },
+      {
+        caseName: 'access_token_general cookie value',
+        sensitiveValue: 'access_token_general=secret-session-value',
+        request: { url: 'http://example.com/api', payload: null },
+        response: {
           status: HttpStatus.OK,
           statusText: 'OK',
-          data: { [CookieNames.general]: sensitiveToken },
+          data: {
+            [CookieNames.general]: 'access_token_general=secret-session-value',
+          },
         },
-      );
-
-      expect(getTracedMessage()).not.toContain(sensitiveToken);
-      expect(getTracedMessage()).toContain('**REDACTED**');
-    });
-
-    it('should not include the actual access_token_portal cookie value in the logged message', () => {
-      const sensitiveToken = 'access_token_portal=secret-portal-value';
-
-      service.logMessageRequest(
-        { url: 'http://example.com/api', payload: null },
-        {
+      },
+      {
+        caseName: 'access_token_portal cookie value',
+        sensitiveValue: 'access_token_portal=secret-portal-value',
+        request: { url: 'http://example.com/api', payload: null },
+        response: {
           status: HttpStatus.OK,
           statusText: 'OK',
-          data: { [CookieNames.portal]: sensitiveToken },
+          data: {
+            [CookieNames.portal]: 'access_token_portal=secret-portal-value',
+          },
         },
-      );
+      },
+    ])(
+      'should not include the actual $caseName in the logged message',
+      ({ request, response, sensitiveValue }) => {
+        // Arrange
 
-      expect(getTracedMessage()).not.toContain(sensitiveToken);
-      expect(getTracedMessage()).toContain('**REDACTED**');
-    });
+        // Act
+        service.logMessageRequest(request, response);
+
+        // Assert
+        expect(getTracedMessage()).not.toContain(sensitiveValue);
+        expect(getTracedMessage()).toContain('**REDACTED**');
+      },
+    );
 
     it('should mask the username but still include its first characters in the logged message', () => {
       service.logMessageRequest(
@@ -236,75 +230,67 @@ describe('CustomHttpService', () => {
       } as any;
     });
 
-    it('should not include the actual password value in the logged error', () => {
-      const sensitivePassword = 'super-secret-password';
-
-      service.logErrorRequest(
-        {
+    it.each([
+      {
+        caseName: 'password value',
+        sensitiveValue: 'super-secret-password',
+        request: {
           url: 'http://example.com/api',
-          payload: {
-            username: 'admin@example.com',
-            password: sensitivePassword,
-          },
+          payload: { password: 'super-secret-password' },
         },
-        {
+        errorResponse: {
           status: HttpStatus.UNAUTHORIZED,
           statusText: 'Unauthorized',
           data: {},
         },
-      );
-
-      expect(getExceptionMessage()).not.toContain(sensitivePassword);
-      expect(getExceptionMessage()).toContain('**REDACTED**');
-    });
-
-    it('should not include the actual access_token value in the logged error', () => {
-      const sensitiveToken = 'eyJhbGciOiJSUzI1NiJ9.sensitive-token-value';
-
-      service.logErrorRequest(
-        { url: 'http://example.com/api', payload: null },
-        {
+      },
+      {
+        caseName: 'access_token value',
+        sensitiveValue: 'eyJhbGciOiJSUzI1NiJ9.sensitive-token-value',
+        request: { url: 'http://example.com/api', payload: null },
+        errorResponse: {
           status: HttpStatus.UNAUTHORIZED,
           statusText: 'Unauthorized',
-          data: { access_token: sensitiveToken },
+          data: { access_token: 'eyJhbGciOiJSUzI1NiJ9.sensitive-token-value' },
         },
-      );
-
-      expect(getExceptionMessage()).not.toContain(sensitiveToken);
-      expect(getExceptionMessage()).toContain('**REDACTED**');
-    });
-
-    it('should not include the actual access_token_general cookie value in the logged error', () => {
-      const sensitiveToken = 'access_token_general=secret-session-value';
-
-      service.logErrorRequest(
-        { url: 'http://example.com/api', payload: null },
-        {
+      },
+      {
+        caseName: 'access_token_general cookie value',
+        sensitiveValue: 'access_token_general=secret-session-value',
+        request: { url: 'http://example.com/api', payload: null },
+        errorResponse: {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
           statusText: 'Internal Server Error',
-          data: { [CookieNames.general]: sensitiveToken },
+          data: {
+            [CookieNames.general]: 'access_token_general=secret-session-value',
+          },
         },
-      );
-
-      expect(getExceptionMessage()).not.toContain(sensitiveToken);
-      expect(getExceptionMessage()).toContain('**REDACTED**');
-    });
-
-    it('should not include the actual access_token_portal cookie value in the logged error', () => {
-      const sensitiveToken = 'access_token_portal=secret-portal-value';
-
-      service.logErrorRequest(
-        { url: 'http://example.com/api', payload: null },
-        {
+      },
+      {
+        caseName: 'access_token_portal cookie value',
+        sensitiveValue: 'access_token_portal=secret-portal-value',
+        request: { url: 'http://example.com/api', payload: null },
+        errorResponse: {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
           statusText: 'Internal Server Error',
-          data: { [CookieNames.portal]: sensitiveToken },
+          data: {
+            [CookieNames.portal]: 'access_token_portal=secret-portal-value',
+          },
         },
-      );
+      },
+    ])(
+      'should not include the actual $caseName in the logged error',
+      ({ request, errorResponse, sensitiveValue }) => {
+        // Arrange
 
-      expect(getExceptionMessage()).not.toContain(sensitiveToken);
-      expect(getExceptionMessage()).toContain('**REDACTED**');
-    });
+        // Act
+        service.logErrorRequest(request, errorResponse);
+
+        // Assert
+        expect(getExceptionMessage()).not.toContain(sensitiveValue);
+        expect(getExceptionMessage()).toContain('**REDACTED**');
+      },
+    );
 
     it('should mask the username but still include its first characters in the logged error', () => {
       service.logErrorRequest(
