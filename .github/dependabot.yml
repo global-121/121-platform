@@ -32,6 +32,8 @@ updates:
         patterns: ['@nestjs/*']
     ignore:
       # Dependencies below are ordered alphabetically!
+      - dependency-name: '@eslint/js'
+        update-types: ['version-update:semver-major']
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
       - dependency-name: 'applicationinsights'
@@ -62,6 +64,8 @@ updates:
         patterns: ['@nestjs/*']
     ignore:
       # Dependencies below are ordered alphabetically!
+      - dependency-name: '@eslint/js'
+        update-types: ['version-update:semver-major']
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
       - dependency-name: 'eslint'
@@ -103,12 +107,16 @@ updates:
       # Dependencies below are ordered alphabetically!
       - dependency-name: '@angular*'
         update-types: ['version-update:semver-major']
+      - dependency-name: '@eslint/js'
+        update-types: ['version-update:semver-major']
       - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'eslint'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'eslint-plugin-better-tailwindcss'
         update-types: ['version-update:semver-major']
       - dependency-name: 'filesize'
         update-types: ['version-update:semver-major'] # See: https://www.npmjs.com/package/ngx-filesize
-      - dependency-name: 'ngx-matomo-client' # Requires Angular v21+ See AB#39490
-        update-types: ['version-update:semver-major']
       - dependency-name: 'primeng'
         update-types: ['version-update:semver-major']
 
@@ -125,5 +133,9 @@ updates:
           - '*'
     ignore:
       # Dependencies below are ordered alphabetically!
+      - dependency-name: '@eslint/js'
+        update-types: ['version-update:semver-major']
       - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'eslint'
         update-types: ['version-update:semver-major']
