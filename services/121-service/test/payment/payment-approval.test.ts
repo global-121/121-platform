@@ -544,7 +544,7 @@ describe('do payment with <2 approvers', () => {
     // Assert
     expect(getPaymentResponse.status).toBe(HttpStatus.OK);
     expect(getPaymentResponse.body.approvalStatus.length).toBe(2);
-    expect(getPaymentResponse.body.approvalStatus[1].username).toBeNull(); // The missing username is in the front-end handled as 'Approver deleted. Create new payment.'
+    expect(getPaymentResponse.body.approvalStatus[1].approvers).toEqual([]); // The missing approvers are handled in the front-end as 'Approver deleted. Create new payment.'
   });
 
   it('should include note in payment approved event', async () => {
