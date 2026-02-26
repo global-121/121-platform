@@ -1022,7 +1022,7 @@ describe('KoboValidationService', () => {
           ...startAndEndSurveyItems,
           {
             name: 'fsp',
-            type: 'select_one fsp_options',
+            type: 'select_one',
             label: ['Financial Service Provider'],
             required: false,
             choices: [
@@ -1059,7 +1059,7 @@ describe('KoboValidationService', () => {
           ...startAndEndSurveyItems,
           {
             name: 'fsp',
-            type: 'select_one fsp_options',
+            type: 'select_one',
             label: ['Financial Service Provider'],
             required: false,
             choices: [
@@ -1098,11 +1098,10 @@ describe('KoboValidationService', () => {
       `);
     });
 
-    it('should pass validation when fsp is hidden or calculate type', async () => {
-      // Arrange
-      const validFspTypes = ['hidden', 'calculate'];
-
-      for (const fspType of validFspTypes) {
+    it.each(['hidden', 'calculate'])(
+      'should pass validation when fsp is of type %s',
+      async (fspType) => {
+        // Arrange
         const formDefinitionWithFspType: KoboFormDefinition = {
           ...baseFormDefinition,
           survey: [
@@ -1117,7 +1116,6 @@ describe('KoboValidationService', () => {
             ...commonFspAttributeFields,
           ],
         };
-
         // Act & Assert
         await expect(
           service.validateKoboFormDefinition({
@@ -1125,8 +1123,8 @@ describe('KoboValidationService', () => {
             programId,
           }),
         ).resolves.not.toThrow();
-      }
-    });
+      },
+    );
 
     it('should throw HttpException when fsp has invalid type', async () => {
       // Arrange
@@ -1160,7 +1158,7 @@ describe('KoboValidationService', () => {
       expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
       expect(error.message).toMatchInlineSnapshot(`
        "Kobo form definition validation failed:
-       - Kobo form attribute "fsp" must be of type "hidden" or "select_one" (dropdown), got "text"."
+       - Kobo form attribute "fsp" must be one of the following types: "hidden", "select_one", "calculate", got "text"."
       `);
     });
   });
