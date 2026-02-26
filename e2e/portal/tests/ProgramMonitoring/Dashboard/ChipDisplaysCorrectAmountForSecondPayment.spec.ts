@@ -1,5 +1,6 @@
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { doPaymentAndWaitForCompletion } from '@121-service/test/helpers/registration.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
   registrationsVisa,
@@ -9,7 +10,7 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const transferValueForSecondPayment = 10;
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations, page, accessToken }) => {
+test.beforeEach(async ({ resetDBAndSeedRegistrations, page }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     seedPaidRegistrations: true,
@@ -17,6 +18,9 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations, page, accessToken }) => {
     transferValue: 25,
     programId: programIdOCW,
   });
+
+  // Get access token after DB reset to avoid race condition
+  const accessToken = await getAccessToken();
 
   // do 2nd payment
   await doPaymentAndWaitForCompletion({
