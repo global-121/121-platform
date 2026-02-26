@@ -300,8 +300,8 @@ export class PageLayoutPaymentComponent {
     }
 
     const approvalStatus = this.paymentAggregate.data().approvalStatus;
-    const currentPaymentApproval = approvalStatus.find(
-      (approval) => approval.username === this.authService.user?.username,
+    const currentPaymentApproval = approvalStatus.find((approval) =>
+      approval.approvers.includes(this.authService.user?.username ?? ''),
     );
     if (!currentPaymentApproval) {
       return false; // not approver for this payment
@@ -423,10 +423,10 @@ export class PageLayoutPaymentComponent {
       : undefined,
   );
 
-  readonly getApproverLabel = (username: string | undefined) =>
-    computed(
-      () =>
-        username ??
-        $localize`:@@approverDeleted:Approver deleted. Create new payment.`,
+  readonly getApproverLabel = (approvers: string[]) =>
+    computed(() =>
+      approvers.length > 0
+        ? approvers.join(', ')
+        : $localize`:@@approverDeleted:Approver deleted. Create new payment.`,
     );
 }
