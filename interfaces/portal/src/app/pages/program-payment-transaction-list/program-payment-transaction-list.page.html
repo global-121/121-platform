@@ -46,6 +46,6 @@
   #transactionHistoryDialog
   [programId]="programId()"
   [transactionId]="selectedTransactionId() ?? 0"
-  [paymentDate]="(selectedPaymentDate() | date: 'short') ?? ''"
+  [paymentDate]="selectedPaymentDate()"
   [hideButton]="true"
 />

@@ -5,6 +5,7 @@ import {
   computed,
   inject,
   input,
+  LOCALE_ID,
   signal,
   viewChild,
 } from '@angular/core';
@@ -48,6 +49,7 @@ import {
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+import { Locale } from '~/utils/locale';
 import { getOriginUrl } from '~/utils/url-helper';
 
 @Component({
@@ -59,7 +61,6 @@ import { getOriginUrl } from '~/utils/url-helper';
     ButtonModule,
     SkeletonModule,
     ActivityLogTransactionHistoryDialogComponent,
-    DatePipe,
     RetryTransactionsDialogComponent,
   ],
   templateUrl: './program-payment-transaction-list.page.html',
@@ -74,6 +75,7 @@ export class ProgramPaymentTransactionListPageComponent {
 
   readonly authService = inject(AuthService);
   readonly currencyPipe = inject(CurrencyPipe);
+  private readonly locale = inject<Locale>(LOCALE_ID);
   readonly paymentApiService = inject(PaymentApiService);
   readonly programApiService = inject(ProgramApiService);
   readonly rtlHelper = inject(RtlHelperService);
@@ -246,7 +248,10 @@ export class ProgramPaymentTransactionListPageComponent {
         icon: 'pi pi-history',
         command: () => {
           this.selectedTransactionId.set(transaction.id);
-          this.selectedPaymentDate.set(transaction.created);
+          const formattedDate =
+            new DatePipe(this.locale).transform(transaction.created, 'short') ??
+            '';
+          this.selectedPaymentDate.set(formattedDate);
           this.transactionHistoryDialog().show();
         },
       },
