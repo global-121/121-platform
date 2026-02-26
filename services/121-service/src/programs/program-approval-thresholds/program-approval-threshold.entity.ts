@@ -26,9 +26,6 @@ export class ProgramApprovalThresholdEntity extends Base121Entity {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   public thresholdAmount: number;
 
-  @Column()
-  public approvalLevel: number;
-
   @OneToMany(
     () => ProgramAidworkerAssignmentEntity,
     (assignment) => assignment.programApprovalThreshold,

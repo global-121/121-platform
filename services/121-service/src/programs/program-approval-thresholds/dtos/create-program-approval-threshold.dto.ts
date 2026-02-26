@@ -2,11 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsArray,
-  IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  IsPositive,
   Min,
   ValidateNested,
 } from 'class-validator';
@@ -19,12 +17,6 @@ export class CreateProgramApprovalThresholdDto {
   @Min(0)
   @IsNotEmpty()
   public readonly thresholdAmount: number;
-
-  @ApiProperty({ example: 1, description: 'Approval level' })
-  @IsInt()
-  @IsPositive()
-  @IsNotEmpty()
-  public readonly approvalLevel: number;
 
   @ApiProperty({
     type: [CreateApproverForThresholdDto],

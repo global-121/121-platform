@@ -167,7 +167,6 @@ describe('Programs / Users / Roles', () => {
           }
           return {
             thresholdAmount: threshold.thresholdAmount,
-            approvalLevel: threshold.approvalLevel,
             approvers,
           };
         },

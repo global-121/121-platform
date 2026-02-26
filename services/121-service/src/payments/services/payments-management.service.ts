@@ -240,7 +240,7 @@ export class PaymentsManagementService {
   }): Promise<number> {
     const sortedThresholds = thresholds
       .slice()
-      .sort((a, b) => a.approvalLevel - b.approvalLevel);
+      .sort((a, b) => a.thresholdAmount - b.thresholdAmount);
     const paymentApprovals = sortedThresholds.map((threshold, index) => {
       const paymentApproval = new PaymentApprovalEntity();
       paymentApproval.programApprovalThresholdId = threshold.id;

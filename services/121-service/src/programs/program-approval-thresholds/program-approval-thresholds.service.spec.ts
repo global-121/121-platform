@@ -44,8 +44,8 @@ describe('ProgramApprovalThresholdsService', () => {
     it('should throw BAD_REQUEST when duplicate threshold amounts provided', async () => {
       // Arrange
       const thresholds: CreateProgramApprovalThresholdDto[] = [
-        { thresholdAmount: 100, approvalLevel: 1, approvers: [] },
-        { thresholdAmount: 100, approvalLevel: 2, approvers: [] },
+        { thresholdAmount: 100, approvers: [] },
+        { thresholdAmount: 100, approvers: [] },
       ];
 
       // Act & Assert
@@ -62,15 +62,14 @@ describe('ProgramApprovalThresholdsService', () => {
     it('should successfully create thresholds without approvers', async () => {
       // Arrange
       const thresholds: CreateProgramApprovalThresholdDto[] = [
-        { thresholdAmount: 0, approvalLevel: 1, approvers: [] },
-        { thresholdAmount: 100, approvalLevel: 2, approvers: [] },
+        { thresholdAmount: 0, approvers: [] },
+        { thresholdAmount: 100, approvers: [] },
       ];
 
       const savedThreshold1 = {
         id: 1,
         programId,
         thresholdAmount: 0,
-        approvalLevel: 1,
         created: new Date(),
         updated: new Date(),
         approverAssignments: [],
@@ -80,7 +79,6 @@ describe('ProgramApprovalThresholdsService', () => {
         id: 2,
         programId,
         thresholdAmount: 100,
-        approvalLevel: 2,
         created: new Date(),
         updated: new Date(),
         approverAssignments: [],
@@ -107,13 +105,11 @@ describe('ProgramApprovalThresholdsService', () => {
       expect(result[0]).toMatchObject({
         id: 1,
         thresholdAmount: 0,
-        approvalLevel: 1,
         approvers: [],
       });
       expect(result[1]).toMatchObject({
         id: 2,
         thresholdAmount: 100,
-        approvalLevel: 2,
         approvers: [],
       });
     });
@@ -123,7 +119,6 @@ describe('ProgramApprovalThresholdsService', () => {
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {
           thresholdAmount: 0,
-          approvalLevel: 1,
           approvers: [{ programAidworkerAssignmentId: 999 }],
         },
       ];
@@ -132,7 +127,6 @@ describe('ProgramApprovalThresholdsService', () => {
         id: 1,
         programId,
         thresholdAmount: 0,
-        approvalLevel: 1,
       } as ProgramApprovalThresholdEntity;
 
       mockEntityManager.delete.mockResolvedValue({} as any);
@@ -155,7 +149,6 @@ describe('ProgramApprovalThresholdsService', () => {
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {
           thresholdAmount: 0,
-          approvalLevel: 1,
           approvers: [{ programAidworkerAssignmentId: 1 }],
         },
       ];
@@ -164,7 +157,6 @@ describe('ProgramApprovalThresholdsService', () => {
         id: 1,
         programId,
         thresholdAmount: 0,
-        approvalLevel: 1,
       } as ProgramApprovalThresholdEntity;
 
       mockEntityManager.delete.mockResolvedValue({} as any);
@@ -187,7 +179,6 @@ describe('ProgramApprovalThresholdsService', () => {
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {
           thresholdAmount: 0,
-          approvalLevel: 1,
           approvers: [{ programAidworkerAssignmentId: 1 }],
         },
       ];
@@ -196,7 +187,6 @@ describe('ProgramApprovalThresholdsService', () => {
         id: 1,
         programId,
         thresholdAmount: 0,
-        approvalLevel: 1,
       } as ProgramApprovalThresholdEntity;
 
       const assignmentWithScope = {
@@ -225,7 +215,6 @@ describe('ProgramApprovalThresholdsService', () => {
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {
           thresholdAmount: 0,
-          approvalLevel: 1,
           approvers: [
             { programAidworkerAssignmentId: 1 },
             { programAidworkerAssignmentId: 1 }, // Duplicate
@@ -237,7 +226,6 @@ describe('ProgramApprovalThresholdsService', () => {
         id: 1,
         programId,
         thresholdAmount: 0,
-        approvalLevel: 1,
       } as ProgramApprovalThresholdEntity;
 
       const assignment1 = {
@@ -279,7 +267,6 @@ describe('ProgramApprovalThresholdsService', () => {
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {
           thresholdAmount: 0,
-          approvalLevel: 1,
           approvers: [
             { programAidworkerAssignmentId: 1 },
             { programAidworkerAssignmentId: 2 },
@@ -291,7 +278,6 @@ describe('ProgramApprovalThresholdsService', () => {
         id: 1,
         programId,
         thresholdAmount: 0,
-        approvalLevel: 1,
         created: new Date(),
         updated: new Date(),
         approverAssignments: [],
@@ -302,7 +288,6 @@ describe('ProgramApprovalThresholdsService', () => {
         programId,
         scope: '',
         programApprovalThresholdId: null,
-        approverOrder: null,
       } as ProgramAidworkerAssignmentEntity;
 
       const assignment2 = {
@@ -310,7 +295,6 @@ describe('ProgramApprovalThresholdsService', () => {
         programId,
         scope: '',
         programApprovalThresholdId: null,
-        approverOrder: null,
       } as ProgramAidworkerAssignmentEntity;
 
       mockEntityManager.delete.mockResolvedValue({} as any);
@@ -337,7 +321,6 @@ describe('ProgramApprovalThresholdsService', () => {
         expect.objectContaining({
           id: 1,
           programApprovalThresholdId: 1,
-          approverOrder: 1,
         }),
       );
       expect(mockEntityManager.save).toHaveBeenNthCalledWith(
@@ -346,7 +329,6 @@ describe('ProgramApprovalThresholdsService', () => {
         expect.objectContaining({
           id: 2,
           programApprovalThresholdId: 1,
-          approverOrder: 2,
         }),
       );
       expect(result).toHaveLength(1);
@@ -355,14 +337,13 @@ describe('ProgramApprovalThresholdsService', () => {
     it('should delete existing thresholds before creating new ones', async () => {
       // Arrange
       const thresholds: CreateProgramApprovalThresholdDto[] = [
-        { thresholdAmount: 50, approvalLevel: 1, approvers: [] },
+        { thresholdAmount: 50, approvers: [] },
       ];
 
       const savedThreshold = {
         id: 1,
         programId,
         thresholdAmount: 50,
-        approvalLevel: 1,
         created: new Date(),
         updated: new Date(),
         approverAssignments: [],
@@ -396,19 +377,16 @@ describe('ProgramApprovalThresholdsService', () => {
           id: 1,
           programId,
           thresholdAmount: 0,
-          approvalLevel: 1,
         },
         {
           id: 2,
           programId,
           thresholdAmount: 50,
-          approvalLevel: 2,
         },
         {
           id: 3,
           programId,
           thresholdAmount: 100,
-          approvalLevel: 3,
         },
       ] as ProgramApprovalThresholdEntity[];
 
@@ -428,7 +406,7 @@ describe('ProgramApprovalThresholdsService', () => {
           programId: expect.anything(),
           thresholdAmount: expect.anything(), // LessThanOrEqual(100)
         },
-        order: { approvalLevel: 'ASC' },
+        order: { thresholdAmount: 'ASC' },
       });
       expect(result).toEqual(thresholds);
       expect(result).toHaveLength(3);
@@ -442,13 +420,11 @@ describe('ProgramApprovalThresholdsService', () => {
           id: 1,
           programId,
           thresholdAmount: 0,
-          approvalLevel: 1,
         },
         {
           id: 2,
           programId,
           thresholdAmount: 50,
-          approvalLevel: 2,
         },
       ] as ProgramApprovalThresholdEntity[];
 
@@ -492,7 +468,6 @@ describe('ProgramApprovalThresholdsService', () => {
           id: 1,
           programId,
           thresholdAmount: 100,
-          approvalLevel: 1,
         },
       ] as ProgramApprovalThresholdEntity[];
 
@@ -521,13 +496,12 @@ describe('ProgramApprovalThresholdsService', () => {
           id: 2,
           programId,
           thresholdAmount: 100,
-          approvalLevel: 2,
           created: new Date(),
           updated: new Date(),
           approverAssignments: [
             {
               id: 2,
-              approverOrder: 1,
+
               user: { id: 2, username: 'user2' },
             },
           ],
@@ -536,13 +510,12 @@ describe('ProgramApprovalThresholdsService', () => {
           id: 1,
           programId,
           thresholdAmount: 0,
-          approvalLevel: 1,
           created: new Date(),
           updated: new Date(),
           approverAssignments: [
             {
               id: 1,
-              approverOrder: 1,
+
               user: { id: 1, username: 'user1' },
             },
           ],
@@ -559,7 +532,7 @@ describe('ProgramApprovalThresholdsService', () => {
       // Assert
       expect(programApprovalThresholdRepository.find).toHaveBeenCalledWith({
         where: { programId: expect.anything() },
-        order: { approvalLevel: 'ASC' },
+        order: { thresholdAmount: 'ASC' },
         relations: {
           approverAssignments: {
             user: true,
@@ -579,7 +552,6 @@ describe('ProgramApprovalThresholdsService', () => {
           id: 1,
           programId,
           thresholdAmount: 0,
-          approvalLevel: 1,
           created: new Date(),
           updated: new Date(),
           approverAssignments: [],
@@ -606,18 +578,17 @@ describe('ProgramApprovalThresholdsService', () => {
           id: 1,
           programId,
           thresholdAmount: 0,
-          approvalLevel: 1,
           created: new Date(),
           updated: new Date(),
           approverAssignments: [
             {
               id: 2,
-              approverOrder: 2,
+
               user: { id: 2, username: 'secondUser' },
             },
             {
               id: 1,
-              approverOrder: 1,
+
               user: { id: 1, username: 'firstUser' },
             },
           ],
@@ -661,7 +632,6 @@ describe('ProgramApprovalThresholdsService', () => {
       const programId = 1;
       const createDto: CreateProgramApprovalThresholdDto = {
         thresholdAmount: 50,
-        approvalLevel: 1,
         approvers: [],
       };
 
@@ -669,7 +639,6 @@ describe('ProgramApprovalThresholdsService', () => {
         id: 1,
         programId,
         thresholdAmount: 50,
-        approvalLevel: 1,
         created: new Date(),
         updated: new Date(),
         approvers: [],
@@ -678,6 +647,11 @@ describe('ProgramApprovalThresholdsService', () => {
       programApprovalThresholdRepository.save = jest
         .fn()
         .mockResolvedValue(savedThreshold);
+
+      // Mock the requery to compute approval level
+      programApprovalThresholdRepository.find = jest
+        .fn()
+        .mockResolvedValue([savedThreshold]);
 
       // Act
       const result = await service.createProgramApprovalThreshold(
@@ -690,13 +664,11 @@ describe('ProgramApprovalThresholdsService', () => {
         expect.objectContaining({
           programId,
           thresholdAmount: 50,
-          approvalLevel: 1,
         }),
       );
       expect(result).toMatchObject({
         id: 1,
         thresholdAmount: 50,
-        approvalLevel: 1,
         approvers: [],
       });
     });

@@ -64,7 +64,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
     thresholds: [
       {
         thresholdAmount: 0,
-        approvalLevel: 1,
+
         approvers: [
           {
             programAidworkerAssignmentId:
@@ -74,7 +74,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
       },
       {
         thresholdAmount: 10, // Lower than fixedTransferValue (25) to trigger 2nd approval
-        approvalLevel: 2,
+
         approvers: [
           {
             programAidworkerAssignmentId:
