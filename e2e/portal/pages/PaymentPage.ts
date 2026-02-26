@@ -307,14 +307,8 @@ class PaymentPage extends BasePage {
     }
   }
 
-  async closeDialog() {
-    const closeButton = this.page
-      .getByRole('dialog')
-      .locator('.p-dialog-close-button');
-    await closeButton.click();
-  }
-
   async validateTransferHistoryDialog({ title }: { title: string }) {
+    await this.page.waitForSelector('role=dialog');
     await expect(this.page.getByText('transaction history')).toContainText(
       title,
     );

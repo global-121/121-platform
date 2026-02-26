@@ -49,7 +49,6 @@ test('Transfer History displays correct values in payment table', async ({
       expectedRowCount: 1,
     });
     await paymentPage.performActionWithRightClick('Transfer history');
-
     await paymentPage.validateTransferHistoryDialog({
       title: `Transaction ${lastPaymentDate}`,
     });
@@ -62,9 +61,9 @@ test('Transfer History displays correct values in payment table', async ({
   });
 
   await test.step('Navigate to Visa debit card FSP', async () => {
-    await paymentPage.closeDialog();
+    await paymentPage.table.closeViewTransactionHistory();
     await paymentPage.table.clearAllFilters();
-    // Apply filters for FSP and registration ID
+    // Apply filters for FSP
     await paymentPage.table.filterColumnByDropDownSelection({
       columnName: 'FSP',
       selection: 'Visa debit card',
