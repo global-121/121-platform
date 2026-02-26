@@ -1,13 +1,12 @@
 /** @type {import('knip').KnipConfig} */
 module.exports = {
   ignoreDependencies: [
+    // Known issues with "Unused dependencies":
     '@angular/platform-browser-dynamic', // Probably not 100% required
     'primeicons',
-    // Optional launcher for local testing
-    'karma-firefox-launcher',
-    // Known issues with devDependencies:
+    // Known issues with "Unused devDependencies":
     'autoprefixer',
-    // Known issues with Unlisted dependencies:
+    // Known issues with "Unlisted dependencies":
     '@angular-eslint/builder',
     '@angular-devkit/build-angular',
   ],
