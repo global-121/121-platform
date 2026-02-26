@@ -13,7 +13,7 @@
       <ng-container [ngTemplateOutlet]="header()"></ng-container>
     </h3>
   </ng-template>
-  <div class="flex h-full w-full items-start gap-5 px-6 lg:px-24">
+  <div class="flex size-full items-start gap-5 px-6 lg:px-24">
     @defer (when dialogVisible()) {
       <!-- This ngClass is a trick where we are hiding the table instead of not rendering it -->
       <!-- because this makes the selection in the table persist without saving it to local storage. -->
@@ -60,7 +60,7 @@
         }
         <span
           i18n
-          class="absolute start-1/2 -translate-x-1/2"
+          class="absolute inset-s-1/2 -translate-x-1/2"
           >Step {{ currentStep() }} of {{ totalSteps() }}</span
         >
         <p-button

@@ -15,7 +15,7 @@ import { TransactionEvent } from '~/domains/transaction/transaction.model';
   imports: [],
   template: `
     <span class="inline-flex items-center">
-      <span class="me-4 inline leading-[0]">
+      <span class="me-4 inline leading-0">
         @if (icon()) {
           <i [class]="icon() + ' text-xl'"></i>
         }
