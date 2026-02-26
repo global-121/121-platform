@@ -92,3 +92,40 @@ it('XYZ', (done) => {
 
 - By using the `defaultEl` and the monitoring the changes within the HTML pages. However, the testing here does not bring a lot of productivity in terms of what we get out of it. So, we can choose to discard this aspect of testing.
 - HTML elements are tested by matching the `string` values, which is not very intuitive with `i18n` modules in use
+
+## Arrange, Act, Assert sections
+
+Each test should have clearly defined Arrange, Act, Assert steps. These should be delimited by single line comments like the examples below. This should make it more clear what is being tested vs what is set up for the test. It should also make it less natural to have a test assert something and then take another action + assert step.
+
+Examples
+
+```typescript
+it('should add', () => {
+  // Arrange
+  const number1 = 1;
+  const number2 = 2;
+
+  // Act
+  const sum = add(number1, number2);
+
+  // Assert
+  expect(sum).toEqual(3);
+});
+```
+
+When there's no arrange work: skip that comment.
+
+It can also make sense to combine the Act and Assert:
+
+```typescript
+it('should not throw when dividing by 0', () => {
+  // Arrange
+  const dividend = 1;
+  const divisor = 0;
+
+  // Act & Assert
+  expect(() => {
+    divide(dividend, divisor);
+  }).not.toThrow();
+});
+```
