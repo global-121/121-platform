@@ -101,7 +101,6 @@ graph LR
   OnafriqReconciliationModule-->QueuesRegistryModule
   OnafriqReconciliationModule-->RedisModule
   OnafriqReconciliationModule-->TransactionsModule
-  PaymentsModule-->ApproverModule
   PaymentsModule-->FspsModule
   PaymentsModule-->MessageTemplateModule
   PaymentsModule-->PaymentEventsModule
@@ -117,7 +116,6 @@ graph LR
   PaymentsModule-->TransactionQueuesModule
   PaymentsModule-->TransactionsModule
   PaymentsModule-->UserModule
-  ProgramModule-->ApproverModule
   ProgramModule-->FspsModule
   ProgramModule-->IntersolveVisaModule
   ProgramModule-->KoboConnectModule

@@ -5,7 +5,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { ApproverEntity } from '@121-service/src/programs/approver/entities/approver.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
@@ -48,10 +47,6 @@ describe('UserService', () => {
         },
         {
           provide: getRepositoryToken(ProgramAidworkerAssignmentEntity),
-          useClass: Repository,
-        },
-        {
-          provide: getRepositoryToken(ApproverEntity),
           useClass: Repository,
         },
         {
