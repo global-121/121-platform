@@ -87,7 +87,7 @@ describe('do payment with 2 approvers', () => {
     const updatedThresholds = [
       {
         thresholdAmount: 0, // Covers all amounts starting from 0
-        approvalLevel: 1,
+
         approvers: [
           {
             programAidworkerAssignmentId:
@@ -97,7 +97,7 @@ describe('do payment with 2 approvers', () => {
       },
       {
         thresholdAmount: 10, // Covers payments >= 10
-        approvalLevel: 2,
+
         approvers: [
           {
             programAidworkerAssignmentId:
@@ -415,7 +415,7 @@ describe('do payment with <2 approvers', () => {
     const thresholdsWithDuplicates = [
       {
         thresholdAmount: 100,
-        approvalLevel: 1,
+
         approvers: [
           {
             programAidworkerAssignmentId: 1, // Will be validated by the service
@@ -424,7 +424,7 @@ describe('do payment with <2 approvers', () => {
       },
       {
         thresholdAmount: 100, // Duplicate!
-        approvalLevel: 2,
+
         approvers: [
           {
             programAidworkerAssignmentId: 2,
@@ -480,7 +480,7 @@ describe('do payment with <2 approvers', () => {
     const updatedThresholds = [
       {
         thresholdAmount: 0,
-        approvalLevel: 1,
+
         approvers: [
           {
             programAidworkerAssignmentId:
@@ -490,7 +490,7 @@ describe('do payment with <2 approvers', () => {
       },
       {
         thresholdAmount: 10,
-        approvalLevel: 2,
+
         approvers: [
           {
             programAidworkerAssignmentId:
@@ -518,7 +518,7 @@ describe('do payment with <2 approvers', () => {
     const thresholdsWithoutFinanceManager = [
       {
         thresholdAmount: 0, // Covers all amounts starting from 0
-        approvalLevel: 1,
+
         approvers: [
           {
             programAidworkerAssignmentId:
@@ -648,7 +648,7 @@ describe('multiple approvers per threshold', () => {
     const updatedThresholds = [
       {
         thresholdAmount: 0,
-        approvalLevel: 1,
+
         approvers: [
           {
             programAidworkerAssignmentId:

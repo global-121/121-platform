@@ -300,7 +300,7 @@ export class SeedHelperService {
       case ApproverSeedMode.admin:
         thresholds.push({
           thresholdAmount: 0,
-          approvalLevel: 1,
+
           approvers: [
             {
               programAidworkerAssignmentId: adminAssignment.id,
@@ -325,7 +325,7 @@ export class SeedHelperService {
         thresholds.push(
           {
             thresholdAmount: 0,
-            approvalLevel: 1,
+
             approvers: [
               {
                 programAidworkerAssignmentId: adminAssignment.id,
@@ -334,7 +334,7 @@ export class SeedHelperService {
           },
           {
             thresholdAmount: 100,
-            approvalLevel: 2,
+
             approvers: [
               {
                 programAidworkerAssignmentId: approverAssignment.id,

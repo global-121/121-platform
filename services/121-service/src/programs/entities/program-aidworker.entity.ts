@@ -54,7 +54,4 @@ export class ProgramAidworkerAssignmentEntity extends Base121Entity {
   public programApprovalThreshold: Relation<ProgramApprovalThresholdEntity> | null;
   @Column({ type: 'integer', nullable: true })
   public programApprovalThresholdId: number | null;
-
-  @Column({ type: 'integer', nullable: true })
-  public approverOrder: number | null;
 }

@@ -42,23 +42,19 @@ export class ProgramApprovalThresholdsController {
       'Replaces the entire threshold configuration. Deletes existing thresholds and creates new ones with their approvers.',
   })
   @ApiBody({
-    description: 'Array of approval thresholds with their approvers',
+    description:
+      'Array of approval thresholds with their approvers. Approval levels are automatically derived from thresholdAmount (sorted ascending).',
     schema: {
       type: 'array',
       items: {
         type: 'object',
-        required: ['thresholdAmount', 'approvalLevel', 'approvers'],
+        required: ['thresholdAmount', 'approvers'],
         properties: {
           thresholdAmount: {
             type: 'number',
-            description: 'Payment amount threshold in program currency',
-            example: 3000,
-          },
-          approvalLevel: {
-            type: 'integer',
             description:
-              'Hierarchical approval level (1 = first, 2 = second, etc.)',
-            example: 1,
+              'Payment amount threshold in program currency. Approval levels are computed by sorting these amounts ascending.',
+            example: 3000,
           },
           approvers: {
             type: 'array',
@@ -80,7 +76,6 @@ export class ProgramApprovalThresholdsController {
       example: [
         {
           thresholdAmount: 3000,
-          approvalLevel: 1,
           approvers: [
             { programAidworkerAssignmentId: 2 },
             { programAidworkerAssignmentId: 7 },
@@ -88,7 +83,6 @@ export class ProgramApprovalThresholdsController {
         },
         {
           thresholdAmount: 5000,
-          approvalLevel: 2,
           approvers: [
             { programAidworkerAssignmentId: 3 },
             { programAidworkerAssignmentId: 5 },

@@ -6,6 +6,7 @@ import { PaymentsHelperService } from '@121-service/src/payments/services/paymen
 import { PaymentsManagementService } from '@121-service/src/payments/services/payments-management.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
@@ -60,7 +61,7 @@ describe('PaymentsManagementService', () => {
         programApprovalThresholdsService as any,
         'getThresholdsForPaymentAmount',
       )
-      .mockResolvedValue([{ id: 1, approvalLevel: 1 }]);
+      .mockResolvedValue([{ id: 1, thresholdAmount: 0 }]);
     jest
       .spyOn(
         registrationsPaginationService as any,
@@ -110,7 +111,7 @@ describe('PaymentsManagementService', () => {
           },
         ],
         programFspConfigurationNames: ['fspA'],
-        thresholds: [{ id: 1, approvalLevel: 1 }],
+        thresholds: [{ id: 1, thresholdAmount: 0 }],
       });
     (
       paymentsHelperService.checkFspConfigurationsOrThrow as jest.Mock
@@ -204,12 +205,12 @@ describe('PaymentsManagementService', () => {
   });
 
   describe('createPaymentAndEventsEntities', () => {
-    it('should assign correct rank based on approvalLevel in createPaymentAndEventsEntities', async () => {
+    it('should assign correct rank based on thresholdAmount in createPaymentAndEventsEntities', async () => {
       const thresholds = [
-        { id: 1, approvalLevel: 2 },
-        { id: 2, approvalLevel: 1 },
-        { id: 3, approvalLevel: 3 },
-      ];
+        { id: 1, thresholdAmount: 100 },
+        { id: 2, thresholdAmount: 0 },
+        { id: 3, thresholdAmount: 500 },
+      ] as ProgramApprovalThresholdEntity[];
 
       await (service as any).createPaymentAndEventsEntities({
         userId: 2,
@@ -258,7 +259,6 @@ describe('PaymentsManagementService', () => {
         findOne: jest.fn().mockResolvedValue({
           id: 1,
           programApprovalThresholdId: 1,
-          approverOrder: 1,
         }),
       };
       (service as any).aidworkerAssignmentRepository =
