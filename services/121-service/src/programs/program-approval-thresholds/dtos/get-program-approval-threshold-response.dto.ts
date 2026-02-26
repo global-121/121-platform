@@ -10,9 +10,6 @@ export class GetProgramApprovalThresholdResponseDto {
   public readonly thresholdAmount: number;
 
   @ApiProperty({ example: 1 })
-  public readonly approvalLevel: number;
-
-  @ApiProperty({ example: 1 })
   public readonly programId: number;
 
   @ApiProperty()

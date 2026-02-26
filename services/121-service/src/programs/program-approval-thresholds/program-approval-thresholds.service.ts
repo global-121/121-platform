@@ -48,7 +48,6 @@ export class ProgramApprovalThresholdsService {
         },
         {
           programApprovalThresholdId: null,
-          approverOrder: null,
         },
       );
 
@@ -57,13 +56,17 @@ export class ProgramApprovalThresholdsService {
         programId: Equal(programId),
       });
 
+      // Sort thresholds by amount to determine approval levels
+      const sortedThresholds = thresholds
+        .slice()
+        .sort((a, b) => a.thresholdAmount - b.thresholdAmount);
+
       const results: GetProgramApprovalThresholdResponseDto[] = [];
 
-      for (const thresholdDto of thresholds) {
+      for (const thresholdDto of sortedThresholds) {
         // Create threshold
         const threshold = new ProgramApprovalThresholdEntity();
         threshold.thresholdAmount = thresholdDto.thresholdAmount;
-        threshold.approvalLevel = thresholdDto.approvalLevel;
         threshold.programId = programId;
 
         const savedThreshold = await manager.save(
@@ -73,9 +76,7 @@ export class ProgramApprovalThresholdsService {
 
         // Assign approvers if provided
         if (thresholdDto.approvers && thresholdDto.approvers.length > 0) {
-          for (let i = 0; i < thresholdDto.approvers.length; i++) {
-            const approverDto = thresholdDto.approvers[i];
-
+          for (const approverDto of thresholdDto.approvers) {
             // Validate that the aidworker assignment exists and belongs to this program
             const assignment = await manager.findOne(
               ProgramAidworkerAssignmentEntity,
@@ -119,7 +120,6 @@ export class ProgramApprovalThresholdsService {
 
             // Update the assignment to make it an approver
             assignment.programApprovalThresholdId = savedThreshold.id;
-            assignment.approverOrder = i + 1; // Order starts from 1
             await manager.save(ProgramAidworkerAssignmentEntity, assignment);
           }
         }
@@ -138,7 +138,6 @@ export class ProgramApprovalThresholdsService {
   ): Promise<GetProgramApprovalThresholdResponseDto> {
     const threshold = new ProgramApprovalThresholdEntity();
     threshold.thresholdAmount = createDto.thresholdAmount;
-    threshold.approvalLevel = createDto.approvalLevel;
     threshold.programId = programId;
 
     const savedThreshold =
@@ -152,7 +151,7 @@ export class ProgramApprovalThresholdsService {
   ): Promise<GetProgramApprovalThresholdResponseDto[]> {
     const thresholds = await this.programApprovalThresholdRepository.find({
       where: { programId: Equal(programId) },
-      order: { approvalLevel: 'ASC' },
+      order: { thresholdAmount: 'ASC' },
       relations: {
         approverAssignments: {
           user: true,
@@ -180,7 +179,7 @@ export class ProgramApprovalThresholdsService {
         programId: Equal(programId),
         thresholdAmount: LessThanOrEqual(paymentAmount),
       },
-      order: { approvalLevel: 'ASC' },
+      order: { thresholdAmount: 'ASC' },
     });
     return thresholds;
   }
@@ -191,17 +190,16 @@ export class ProgramApprovalThresholdsService {
     return {
       id: entity.id,
       thresholdAmount: entity.thresholdAmount,
-      approvalLevel: entity.approvalLevel,
       programId: entity.programId,
       created: entity.created,
       updated: entity.updated,
       approvers: (entity.approverAssignments || [])
-        .sort((a, b) => (a.approverOrder || 0) - (b.approverOrder || 0))
-        .map((assignment) => ({
+        .sort((a, b) => a.id - b.id) // Sort by ID for consistent ordering
+        .map((assignment, index) => ({
           id: assignment.id,
           userId: assignment.user?.id || 0,
           username: assignment.user?.username || 'Unknown',
-          order: assignment.approverOrder || 0,
+          order: index + 1, // Compute order from array position
         })),
     };
   }
