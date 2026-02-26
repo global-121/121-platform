@@ -1,8 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Equal, LessThanOrEqual, Repository } from 'typeorm';
+import {
+  DataSource,
+  Equal,
+  IsNull,
+  LessThanOrEqual,
+  Not,
+  Repository,
+} from 'typeorm';
 
-import { ApproverEntity } from '@121-service/src/programs/approver/entities/approver.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/get-program-approval-threshold-response.dto';
@@ -14,8 +20,6 @@ export class ProgramApprovalThresholdsService {
   public constructor(
     private readonly programApprovalThresholdRepository: ProgramApprovalThresholdRepository,
     private readonly dataSource: DataSource,
-    @InjectRepository(ApproverEntity)
-    private readonly approverRepository: Repository<ApproverEntity>,
     @InjectRepository(ProgramAidworkerAssignmentEntity)
     private readonly aidworkerAssignmentRepository: Repository<ProgramAidworkerAssignmentEntity>,
   ) {}
@@ -35,7 +39,20 @@ export class ProgramApprovalThresholdsService {
     }
 
     return await this.dataSource.transaction(async (manager) => {
-      // Delete all existing thresholds for this program (CASCADE will delete approvers)
+      // First, clear any existing approver assignments for this program
+      await manager.update(
+        ProgramAidworkerAssignmentEntity,
+        {
+          programId: Equal(programId),
+          programApprovalThresholdId: Not(IsNull()),
+        },
+        {
+          programApprovalThresholdId: null,
+          approverOrder: null,
+        },
+      );
+
+      // Delete all existing thresholds for this program (CASCADE will delete PaymentApprovals)
       await manager.delete(ProgramApprovalThresholdEntity, {
         programId: Equal(programId),
       });
@@ -54,7 +71,7 @@ export class ProgramApprovalThresholdsService {
           threshold,
         );
 
-        // Create approvers if provided
+        // Assign approvers if provided
         if (thresholdDto.approvers && thresholdDto.approvers.length > 0) {
           for (let i = 0; i < thresholdDto.approvers.length; i++) {
             const approverDto = thresholdDto.approvers[i];
@@ -85,30 +102,25 @@ export class ProgramApprovalThresholdsService {
             }
 
             // Check if this assignment is already an approver for this threshold
-            const existingApprover = await manager.findOne(ApproverEntity, {
-              where: {
-                programAidworkerAssignmentId: Equal(
-                  approverDto.programAidworkerAssignmentId,
-                ),
-                programApprovalThresholdId: Equal(savedThreshold.id),
-              },
-            });
-
-            if (existingApprover) {
+            if (assignment.programApprovalThresholdId === savedThreshold.id) {
               throw new HttpException(
                 `Program aidworker assignment ${approverDto.programAidworkerAssignmentId} is already an approver for this threshold`,
                 HttpStatus.BAD_REQUEST,
               );
             }
 
-            // Create the approver
-            const approver = new ApproverEntity();
-            approver.programAidworkerAssignmentId =
-              approverDto.programAidworkerAssignmentId;
-            approver.programApprovalThresholdId = savedThreshold.id;
-            approver.order = i + 1; // Order starts from 1
+            // Check if this assignment is already an approver for a different threshold
+            if (assignment.programApprovalThresholdId !== null) {
+              throw new HttpException(
+                `Program aidworker assignment ${approverDto.programAidworkerAssignmentId} is already an approver for another threshold`,
+                HttpStatus.BAD_REQUEST,
+              );
+            }
 
-            await manager.save(ApproverEntity, approver);
+            // Update the assignment to make it an approver
+            assignment.programApprovalThresholdId = savedThreshold.id;
+            assignment.approverOrder = i + 1; // Order starts from 1
+            await manager.save(ProgramAidworkerAssignmentEntity, assignment);
           }
         }
 
@@ -142,10 +154,8 @@ export class ProgramApprovalThresholdsService {
       where: { programId: Equal(programId) },
       order: { approvalLevel: 'ASC' },
       relations: {
-        approvers: {
-          programAidworkerAssignment: {
-            user: true,
-          },
+        approverAssignments: {
+          user: true,
         },
       },
     });
@@ -185,14 +195,13 @@ export class ProgramApprovalThresholdsService {
       programId: entity.programId,
       created: entity.created,
       updated: entity.updated,
-      approvers: (entity.approvers || [])
-        .sort((a, b) => a.order - b.order)
-        .map((approver) => ({
-          id: approver.id,
-          userId: approver.programAidworkerAssignment?.user?.id || 0,
-          username:
-            approver.programAidworkerAssignment?.user?.username || 'Unknown',
-          order: approver.order,
+      approvers: (entity.approverAssignments || [])
+        .sort((a, b) => (a.approverOrder || 0) - (b.approverOrder || 0))
+        .map((assignment) => ({
+          id: assignment.id,
+          userId: assignment.user?.id || 0,
+          username: assignment.user?.username || 'Unknown',
+          order: assignment.approverOrder || 0,
         })),
     };
   }

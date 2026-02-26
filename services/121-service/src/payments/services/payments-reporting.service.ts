@@ -127,7 +127,7 @@ export class PaymentsReportingService {
       },
       relations: {
         programApprovalThreshold: {
-          approvers: { programAidworkerAssignment: { user: true } },
+          approverAssignments: { user: true },
         },
       },
       order: { rank: 'ASC' },
@@ -138,8 +138,8 @@ export class PaymentsReportingService {
         id: approval.id,
         approved: approval.approved,
         username:
-          programApprovalThreshold?.approvers
-            ?.map((a) => a.programAidworkerAssignment?.user?.username)
+          programApprovalThreshold?.approverAssignments
+            ?.map((a) => a.user?.username)
             .filter(Boolean)
             .join(', ') || null,
         rank: approval.rank,

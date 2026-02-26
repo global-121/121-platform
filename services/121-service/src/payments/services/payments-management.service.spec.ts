@@ -6,7 +6,6 @@ import { PaymentsHelperService } from '@121-service/src/payments/services/paymen
 import { PaymentsManagementService } from '@121-service/src/payments/services/payments-management.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ApproverService } from '@121-service/src/programs/approver/approver.service';
 import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
@@ -19,7 +18,6 @@ describe('PaymentsManagementService', () => {
   let transactionsService: TransactionsService;
   let registrationsBulkService: RegistrationsBulkService;
   let registrationsPaginationService: RegistrationsPaginationService;
-  let approverService: ApproverService;
   let programApprovalThresholdsService: ProgramApprovalThresholdsService;
 
   const basePaymentParams = {
@@ -44,7 +42,6 @@ describe('PaymentsManagementService', () => {
     registrationsPaginationService = unitRef.get(
       RegistrationsPaginationService,
     );
-    approverService = unitRef.get(ApproverService);
     programApprovalThresholdsService = unitRef.get(
       ProgramApprovalThresholdsService,
     );
@@ -255,10 +252,17 @@ describe('PaymentsManagementService', () => {
         count: jest.fn(),
       };
       (service as any).paymentApprovalRepository = paymentApprovalRepository;
-      // Mock approverService to return an approver with programApprovalThresholdId
-      jest
-        .spyOn(approverService as any, 'getApproverByUserIdOrThrow')
-        .mockResolvedValue({ id: 1, programApprovalThresholdId: 1 });
+
+      // Mock aidworkerAssignmentRepository to return assignment with threshold
+      const aidworkerAssignmentRepository = {
+        findOne: jest.fn().mockResolvedValue({
+          id: 1,
+          programApprovalThresholdId: 1,
+          approverOrder: 1,
+        }),
+      };
+      (service as any).aidworkerAssignmentRepository =
+        aidworkerAssignmentRepository;
     });
 
     it('should throw if approver is not assigned to payment', async () => {

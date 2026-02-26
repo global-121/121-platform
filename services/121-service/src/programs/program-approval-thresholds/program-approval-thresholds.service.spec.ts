@@ -2,7 +2,6 @@ import { TestBed } from '@automock/jest';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { DataSource, EntityManager } from 'typeorm';
 
-import { ApproverEntity } from '@121-service/src/programs/approver/entities/approver.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
@@ -31,6 +30,7 @@ describe('ProgramApprovalThresholdsService', () => {
       delete: jest.fn(),
       save: jest.fn(),
       findOne: jest.fn(),
+      update: jest.fn().mockResolvedValue({}),
     } as any;
 
     dataSource.transaction = jest.fn().mockImplementation(async (callback) => {
@@ -73,7 +73,7 @@ describe('ProgramApprovalThresholdsService', () => {
         approvalLevel: 1,
         created: new Date(),
         updated: new Date(),
-        approvers: [],
+        approverAssignments: [],
       } as unknown as ProgramApprovalThresholdEntity;
 
       const savedThreshold2 = {
@@ -83,7 +83,7 @@ describe('ProgramApprovalThresholdsService', () => {
         approvalLevel: 2,
         created: new Date(),
         updated: new Date(),
-        approvers: [],
+        approverAssignments: [],
       } as unknown as ProgramApprovalThresholdEntity;
 
       mockEntityManager.delete.mockResolvedValue({} as any);
@@ -240,35 +240,35 @@ describe('ProgramApprovalThresholdsService', () => {
         approvalLevel: 1,
       } as ProgramApprovalThresholdEntity;
 
-      const assignment = {
+      const assignment1 = {
         id: 1,
         programId,
         scope: '',
+        programApprovalThresholdId: null,
       } as ProgramAidworkerAssignmentEntity;
 
-      const existingApprover = {
+      const assignment2 = {
         id: 1,
-        programAidworkerAssignmentId: 1,
-        programApprovalThresholdId: 1,
-      } as ApproverEntity;
+        programId,
+        scope: '',
+        programApprovalThresholdId: 2, // Already assigned to a different threshold
+      } as ProgramAidworkerAssignmentEntity;
 
       mockEntityManager.delete.mockResolvedValue({} as any);
       mockEntityManager.save
         .mockResolvedValueOnce(savedThreshold)
-        .mockResolvedValueOnce({} as any); // First approver save
+        .mockResolvedValueOnce(assignment1); // First assignment save
 
       mockEntityManager.findOne
-        .mockResolvedValueOnce(assignment) // First approver assignment check
-        .mockResolvedValueOnce(null) // First approver - no existing
-        .mockResolvedValueOnce(assignment) // Second approver assignment check
-        .mockResolvedValueOnce(existingApprover); // Second approver - exists!
+        .mockResolvedValueOnce(assignment1) // First approver assignment check
+        .mockResolvedValueOnce(assignment2); // Second approver check - already assigned!
 
       // Act & Assert
       await expect(
         service.replaceProgramApprovalThresholds(programId, thresholds),
       ).rejects.toThrow(
         new HttpException(
-          `Program aidworker assignment 1 is already an approver for this threshold`,
+          `Program aidworker assignment 1 is already an approver for another threshold`,
           HttpStatus.BAD_REQUEST,
         ),
       );
@@ -294,46 +294,34 @@ describe('ProgramApprovalThresholdsService', () => {
         approvalLevel: 1,
         created: new Date(),
         updated: new Date(),
-        approvers: [],
+        approverAssignments: [],
       } as unknown as ProgramApprovalThresholdEntity;
 
       const assignment1 = {
         id: 1,
         programId,
         scope: '',
+        programApprovalThresholdId: null,
+        approverOrder: null,
       } as ProgramAidworkerAssignmentEntity;
 
       const assignment2 = {
         id: 2,
         programId,
         scope: '',
+        programApprovalThresholdId: null,
+        approverOrder: null,
       } as ProgramAidworkerAssignmentEntity;
-
-      const approver1 = {
-        id: 1,
-        programAidworkerAssignmentId: 1,
-        programApprovalThresholdId: 1,
-        order: 1,
-      } as ApproverEntity;
-
-      const approver2 = {
-        id: 2,
-        programAidworkerAssignmentId: 2,
-        programApprovalThresholdId: 1,
-        order: 2,
-      } as ApproverEntity;
 
       mockEntityManager.delete.mockResolvedValue({} as any);
       mockEntityManager.save
         .mockResolvedValueOnce(savedThreshold) // Threshold
-        .mockResolvedValueOnce(approver1 as any) // First approver
-        .mockResolvedValueOnce(approver2 as any); // Second approver
+        .mockResolvedValueOnce(assignment1) // First assignment update
+        .mockResolvedValueOnce(assignment2); // Second assignment update
 
       mockEntityManager.findOne
         .mockResolvedValueOnce(assignment1) // First assignment check
-        .mockResolvedValueOnce(null) // First approver - no existing
-        .mockResolvedValueOnce(assignment2) // Second assignment check
-        .mockResolvedValueOnce(null); // Second approver - no existing
+        .mockResolvedValueOnce(assignment2); // Second assignment check
 
       // Act
       const result = await service.replaceProgramApprovalThresholds(
@@ -342,23 +330,23 @@ describe('ProgramApprovalThresholdsService', () => {
       );
 
       // Assert
-      expect(mockEntityManager.save).toHaveBeenCalledTimes(3); // 1 threshold + 2 approvers
+      expect(mockEntityManager.save).toHaveBeenCalledTimes(3); // 1 threshold + 2 assignment updates
       expect(mockEntityManager.save).toHaveBeenNthCalledWith(
         2,
-        ApproverEntity,
+        ProgramAidworkerAssignmentEntity,
         expect.objectContaining({
-          programAidworkerAssignmentId: 1,
+          id: 1,
           programApprovalThresholdId: 1,
-          order: 1,
+          approverOrder: 1,
         }),
       );
       expect(mockEntityManager.save).toHaveBeenNthCalledWith(
         3,
-        ApproverEntity,
+        ProgramAidworkerAssignmentEntity,
         expect.objectContaining({
-          programAidworkerAssignmentId: 2,
+          id: 2,
           programApprovalThresholdId: 1,
-          order: 2,
+          approverOrder: 2,
         }),
       );
       expect(result).toHaveLength(1);
@@ -377,7 +365,7 @@ describe('ProgramApprovalThresholdsService', () => {
         approvalLevel: 1,
         created: new Date(),
         updated: new Date(),
-        approvers: [],
+        approverAssignments: [],
       } as unknown as ProgramApprovalThresholdEntity;
 
       mockEntityManager.delete.mockResolvedValue({} as any);
@@ -536,13 +524,11 @@ describe('ProgramApprovalThresholdsService', () => {
           approvalLevel: 2,
           created: new Date(),
           updated: new Date(),
-          approvers: [
+          approverAssignments: [
             {
               id: 2,
-              order: 1,
-              programAidworkerAssignment: {
-                user: { id: 2, username: 'user2' },
-              },
+              approverOrder: 1,
+              user: { id: 2, username: 'user2' },
             },
           ],
         },
@@ -553,13 +539,11 @@ describe('ProgramApprovalThresholdsService', () => {
           approvalLevel: 1,
           created: new Date(),
           updated: new Date(),
-          approvers: [
+          approverAssignments: [
             {
               id: 1,
-              order: 1,
-              programAidworkerAssignment: {
-                user: { id: 1, username: 'user1' },
-              },
+              approverOrder: 1,
+              user: { id: 1, username: 'user1' },
             },
           ],
         },
@@ -577,10 +561,8 @@ describe('ProgramApprovalThresholdsService', () => {
         where: { programId: expect.anything() },
         order: { approvalLevel: 'ASC' },
         relations: {
-          approvers: {
-            programAidworkerAssignment: {
-              user: true,
-            },
+          approverAssignments: {
+            user: true,
           },
         },
       });
@@ -600,7 +582,7 @@ describe('ProgramApprovalThresholdsService', () => {
           approvalLevel: 1,
           created: new Date(),
           updated: new Date(),
-          approvers: [],
+          approverAssignments: [],
         },
       ] as unknown as ProgramApprovalThresholdEntity;
 
@@ -627,20 +609,16 @@ describe('ProgramApprovalThresholdsService', () => {
           approvalLevel: 1,
           created: new Date(),
           updated: new Date(),
-          approvers: [
+          approverAssignments: [
             {
               id: 2,
-              order: 2,
-              programAidworkerAssignment: {
-                user: { id: 2, username: 'secondUser' },
-              },
+              approverOrder: 2,
+              user: { id: 2, username: 'secondUser' },
             },
             {
               id: 1,
-              order: 1,
-              programAidworkerAssignment: {
-                user: { id: 1, username: 'firstUser' },
-              },
+              approverOrder: 1,
+              user: { id: 1, username: 'firstUser' },
             },
           ],
         },
