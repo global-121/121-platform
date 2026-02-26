@@ -720,6 +720,16 @@ describe('multiple approvers per threshold', () => {
       accessToken: adminAccessToken,
     });
     expect(startResponse.statusCode).toBe(HttpStatus.ACCEPTED);
+
+    // Wait for payment to complete to avoid interference with next test
+    await waitForPaymentAndTransactionsToComplete({
+      programId,
+      paymentId,
+      paymentReferenceIds: [registrationPV5.referenceId],
+      accessToken: adminAccessToken,
+      maxWaitTimeMs: 5000,
+      completeStatuses: [TransactionStatusEnum.success],
+    });
   });
 
   it('should prevent second approver from same threshold from approving again', async () => {
