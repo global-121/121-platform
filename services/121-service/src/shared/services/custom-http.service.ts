@@ -373,6 +373,7 @@ export class CustomHttpService {
 
     const sensitiveProperties = [
       'password',
+      'access_token',
       CookieNames.general,
       CookieNames.portal,
     ];
