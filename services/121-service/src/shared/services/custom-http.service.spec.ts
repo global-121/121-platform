@@ -147,7 +147,6 @@ describe('CustomHttpService', () => {
     ])(
       'should not include the actual $caseName in the logged message',
       ({ request, response, sensitiveValue }) => {
-        // Arrange
 
         // Act
         service.logMessageRequest(request, response);
@@ -281,7 +280,6 @@ describe('CustomHttpService', () => {
     ])(
       'should not include the actual $caseName in the logged error',
       ({ request, errorResponse, sensitiveValue }) => {
-        // Arrange
 
         // Act
         service.logErrorRequest(request, errorResponse);
