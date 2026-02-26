@@ -309,7 +309,7 @@ class PaymentPage extends BasePage {
 
   async validateTransferHistoryDialogTitle({ title }: { title: string }) {
     await this.page.waitForSelector('role=dialog');
-    await expect(this.page.getByText('transaction history')).toContainText(
+    await expect(this.page.getByText(/transaction history/i)).toContainText(
       title,
     ); // the title does not contain 'transfer history' text therefore we check for 'transaction history' text which is always present and then check if the date and rest of the string is correct
   }
