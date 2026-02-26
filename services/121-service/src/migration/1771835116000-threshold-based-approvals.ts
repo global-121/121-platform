@@ -6,7 +6,7 @@ export class ThresholdBasedApprovals1771835116000 implements MigrationInterface 
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Create program_approval_threshold table
     await queryRunner.query(
-      `CREATE TABLE "121-service"."program_approval_threshold" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "programId" integer NOT NULL, "thresholdAmount" numeric(10,2) NOT NULL, CONSTRAINT "PK_program_approval_threshold_id" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "121-service"."program_approval_threshold" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "programId" integer NOT NULL, "thresholdAmount" integer NOT NULL, CONSTRAINT "PK_program_approval_threshold_id" PRIMARY KEY ("id"))`,
     );
 
     // Create index on created column (inherited from Base121Entity)
@@ -101,7 +101,7 @@ export class ThresholdBasedApprovals1771835116000 implements MigrationInterface 
     );
   }
 
-  public async down(): Promise<void> {
+  public async down(_queryRunner: QueryRunner): Promise<void> {
     //we never go down. No way back from this.
   }
 }

@@ -1,13 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import {
-  DataSource,
-  Equal,
-  IsNull,
-  LessThanOrEqual,
-  Not,
-  Repository,
-} from 'typeorm';
+import { DataSource, Equal, IsNull, LessThanOrEqual, Not } from 'typeorm';
 
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
@@ -20,8 +12,6 @@ export class ProgramApprovalThresholdsService {
   public constructor(
     private readonly programApprovalThresholdRepository: ProgramApprovalThresholdRepository,
     private readonly dataSource: DataSource,
-    @InjectRepository(ProgramAidworkerAssignmentEntity)
-    private readonly aidworkerAssignmentRepository: Repository<ProgramAidworkerAssignmentEntity>,
   ) {}
 
   public async replaceProgramApprovalThresholds(
@@ -61,8 +51,6 @@ export class ProgramApprovalThresholdsService {
       const sortedThresholds = thresholds
         .slice()
         .sort((a, b) => a.thresholdAmount - b.thresholdAmount);
-
-      const results: GetProgramApprovalThresholdResponseDto[] = [];
 
       for (const thresholdDto of sortedThresholds) {
         // Create threshold
@@ -124,11 +112,25 @@ export class ProgramApprovalThresholdsService {
             await manager.save(ProgramAidworkerAssignmentEntity, assignment);
           }
         }
-
-        results.push(this.mapEntityToDto(savedThreshold));
       }
 
-      return results;
+      // Re-query all thresholds with their relations to build accurate response
+      const thresholdsWithRelations = await manager.find(
+        ProgramApprovalThresholdEntity,
+        {
+          where: { programId: Equal(programId) },
+          relations: {
+            approverAssignments: {
+              user: true,
+            },
+          },
+          order: { thresholdAmount: 'ASC' },
+        },
+      );
+
+      return thresholdsWithRelations.map((threshold) =>
+        this.mapEntityToDto(threshold),
+      );
     });
   }
 

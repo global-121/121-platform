@@ -89,6 +89,11 @@ describe('ProgramApprovalThresholdsService', () => {
         .mockResolvedValueOnce(savedThreshold1 as any)
         .mockResolvedValueOnce(savedThreshold2 as any);
 
+      // Mock the re-query that loads relations
+      mockEntityManager.find = jest
+        .fn()
+        .mockResolvedValue([savedThreshold1, savedThreshold2]);
+
       // Act
       const result = await service.replaceProgramApprovalThresholds(
         programId,
@@ -283,6 +288,18 @@ describe('ProgramApprovalThresholdsService', () => {
         approverAssignments: [],
       } as unknown as ProgramApprovalThresholdEntity;
 
+      const thresholdWithRelations = {
+        id: 1,
+        programId,
+        thresholdAmount: 0,
+        created: new Date(),
+        updated: new Date(),
+        approverAssignments: [
+          { id: 1, user: { id: 1, username: 'user1' } },
+          { id: 2, user: { id: 2, username: 'user2' } },
+        ],
+      } as unknown as ProgramApprovalThresholdEntity;
+
       const assignment1 = {
         id: 1,
         programId,
@@ -306,6 +323,11 @@ describe('ProgramApprovalThresholdsService', () => {
       mockEntityManager.findOne
         .mockResolvedValueOnce(assignment1) // First assignment check
         .mockResolvedValueOnce(assignment2); // Second assignment check
+
+      // Mock the re-query that loads relations
+      mockEntityManager.find = jest
+        .fn()
+        .mockResolvedValue([thresholdWithRelations]);
 
       // Act
       const result = await service.replaceProgramApprovalThresholds(
@@ -332,6 +354,11 @@ describe('ProgramApprovalThresholdsService', () => {
         }),
       );
       expect(result).toHaveLength(1);
+      expect(result[0].approvers).toHaveLength(2);
+      expect(result[0].approvers).toEqual([
+        { id: 1, userId: 1, username: 'user1', order: 1 },
+        { id: 2, userId: 2, username: 'user2', order: 2 },
+      ]);
     });
 
     it('should delete existing thresholds before creating new ones', async () => {
@@ -351,6 +378,9 @@ describe('ProgramApprovalThresholdsService', () => {
 
       mockEntityManager.delete.mockResolvedValue({} as any);
       mockEntityManager.save.mockResolvedValueOnce(savedThreshold);
+
+      // Mock the re-query that loads relations
+      mockEntityManager.find = jest.fn().mockResolvedValue([savedThreshold]);
 
       // Act
       await service.replaceProgramApprovalThresholds(programId, thresholds);
