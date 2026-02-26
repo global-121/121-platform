@@ -95,7 +95,7 @@ it('XYZ', (done) => {
 
 ## Arrange, Act, Assert sections
 
-Each test should have clearly defined Arrange, Act, Assert steps. These should be delimited by single line comments like the examples below. This should make it more clear what is being tested vs what is setup for the test. It should also make it less natural to have a test assert something and then take another action + assert step.
+Each test should have clearly defined Arrange, Act, Assert steps. These should be delimited by single line comments like the examples below. This should make it more clear what is being tested vs what is set up for the test. It should also make it less natural to have a test assert something and then take another action + assert step.
 
 Examples
 
