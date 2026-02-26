@@ -314,13 +314,9 @@ class RegistrationsPage extends BasePage {
 
   async performActionWithRightClick(action: string, row = 0) {
     await this.table.tableRows.nth(row).click({ button: 'right' });
-    await this.page.getByLabel(action).click({ force: true });
+    await this.page.getByLabel(action).click();
 
-    if (
-      action !== 'Message' &&
-      action !== 'Open in new tab' &&
-      action !== 'Transfer history'
-    ) {
+    if (action !== 'Message' && action !== 'Open in new tab') {
       await this.page.getByRole('button', { name: 'Approve' }).click();
     }
   }

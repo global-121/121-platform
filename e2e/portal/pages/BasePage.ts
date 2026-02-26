@@ -97,7 +97,7 @@ class BasePage {
     row?: number;
   }) {
     await this.table.tableRows.nth(row).click({ button: 'right' });
-    await this.page.getByLabel(action).click({ force: true });
+    await this.page.getByLabel(action).click();
   }
 
   async selectAccountOption(option: string) {
