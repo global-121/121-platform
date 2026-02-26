@@ -9,8 +9,7 @@ import {
 import { inject, Injectable } from '@angular/core';
 
 import { get } from 'radashi';
-import { lastValueFrom, of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, lastValueFrom, of, tap } from 'rxjs';
 
 import {
   INTERFACE_NAME_HEADER,
