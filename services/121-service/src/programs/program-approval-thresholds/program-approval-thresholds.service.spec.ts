@@ -5,7 +5,6 @@ import { DataSource, EntityManager } from 'typeorm';
 import { ApproverEntity } from '@121-service/src/programs/approver/entities/approver.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
-import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/get-program-approval-threshold-response.dto';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 import { ProgramApprovalThresholdRepository } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.repository';
 import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
@@ -75,7 +74,7 @@ describe('ProgramApprovalThresholdsService', () => {
         created: new Date(),
         updated: new Date(),
         approvers: [],
-      } as GetProgramApprovalThresholdResponseDto;
+      } as unknown as ProgramApprovalThresholdEntity;
 
       const savedThreshold2 = {
         id: 2,
@@ -85,7 +84,7 @@ describe('ProgramApprovalThresholdsService', () => {
         created: new Date(),
         updated: new Date(),
         approvers: [],
-      } as GetProgramApprovalThresholdResponseDto;
+      } as unknown as ProgramApprovalThresholdEntity;
 
       mockEntityManager.delete.mockResolvedValue({} as any);
       mockEntityManager.save
@@ -296,7 +295,7 @@ describe('ProgramApprovalThresholdsService', () => {
         created: new Date(),
         updated: new Date(),
         approvers: [],
-      } as GetProgramApprovalThresholdResponseDto;
+      } as unknown as ProgramApprovalThresholdEntity;
 
       const assignment1 = {
         id: 1,
@@ -379,7 +378,7 @@ describe('ProgramApprovalThresholdsService', () => {
         created: new Date(),
         updated: new Date(),
         approvers: [],
-      } as GetProgramApprovalThresholdResponseDto;
+      } as unknown as ProgramApprovalThresholdEntity;
 
       mockEntityManager.delete.mockResolvedValue({} as any);
       mockEntityManager.save.mockResolvedValueOnce(savedThreshold);
@@ -564,7 +563,7 @@ describe('ProgramApprovalThresholdsService', () => {
             },
           ],
         },
-      ] as any;
+      ] as unknown as ProgramApprovalThresholdEntity[];
 
       programApprovalThresholdRepository.find = jest
         .fn()
@@ -603,7 +602,7 @@ describe('ProgramApprovalThresholdsService', () => {
           updated: new Date(),
           approvers: [],
         },
-      ] as any;
+      ] as unknown as ProgramApprovalThresholdEntity;
 
       programApprovalThresholdRepository.find = jest
         .fn()
@@ -645,7 +644,7 @@ describe('ProgramApprovalThresholdsService', () => {
             },
           ],
         },
-      ] as any;
+      ] as unknown as ProgramApprovalThresholdEntity[];
 
       programApprovalThresholdRepository.find = jest
         .fn()
@@ -696,7 +695,7 @@ describe('ProgramApprovalThresholdsService', () => {
         created: new Date(),
         updated: new Date(),
         approvers: [],
-      } as GetProgramApprovalThresholdResponseDto;
+      } as unknown as ProgramApprovalThresholdEntity;
 
       programApprovalThresholdRepository.save = jest
         .fn()
