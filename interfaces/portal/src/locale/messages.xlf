@@ -2198,6 +2198,9 @@
       <trans-unit id="8809702678611776373" datatype="html">
         <source>Link with KoboToolbox</source>
       </trans-unit>
+      <trans-unit id="6627551976444260400" datatype="html">
+        <source>or</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

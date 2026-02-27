@@ -98,7 +98,7 @@
         </p>
         <div>
           @for (
-            approver of paymentAggregateData()?.approvalStatus;
+            approvalStep of paymentAggregateData()?.approvalStatus;
             track $index
           ) {
             <div
@@ -109,22 +109,34 @@
                 class="me-3 flex h-6.5 w-6.5 items-center justify-center rounded-full"
                 [ngClass]="{
                   'bg-purple-700 text-white':
-                    approver.rank === firstPendingApprovalRank(),
+                    approvalStep.rank === firstPendingApprovalRank(),
                   'bg-purple-300 text-purple-700':
-                    approver.rank > firstPendingApprovalRank(),
+                    approvalStep.rank > firstPendingApprovalRank(),
                 }"
               >
-                @if (approver.approved) {
+                @if (approvalStep.approved) {
                   <i class="pi pi-check-circle text-2xl text-green-500"></i>
                 } @else {
-                  {{ approver.rank }}
+                  {{ approvalStep.rank }}
                 }
               </span>
-
-              <app-colored-chip
-                [label]="getApproverLabel(approver.approvers)()"
-                variant="grey"
-              />
+              @for (
+                approver of approvalStep.approvers;
+                track $index;
+                let lastElement = $last
+              ) {
+                <app-colored-chip
+                  [label]="approver"
+                  variant="grey"
+                />
+                @if (!lastElement) {
+                  <span
+                    i18n
+                    class="mx-2"
+                    >or</span
+                  >
+                }
+              }
             </div>
           }
         </div>
