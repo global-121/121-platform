@@ -76,6 +76,8 @@ describe('KoboMapper', () => {
       const token = 'test-token';
       const url = 'https://kobo.example.com';
       const name = '25042025 Prototype Sprint';
+      const webhookAuthUsername = 'test-webhook-user';
+      const webhookAuthPassword = 'test-webhook-pass';
 
       // Act
       const result = KoboMapper.formDefinitionToEntity({
@@ -85,6 +87,8 @@ describe('KoboMapper', () => {
         token,
         url,
         name,
+        webhookAuthUsername,
+        webhookAuthPassword,
       });
 
       // Assert
@@ -96,6 +100,8 @@ describe('KoboMapper', () => {
         dateDeployed: deployDate,
         versionId: formDefinition.versionId,
         name,
+        webhookAuthUsername,
+        webhookAuthPassword,
       });
     });
   });

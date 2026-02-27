@@ -229,6 +229,8 @@ describe('KoboService', () => {
       assetUid: 'test-asset',
       token: 'test-token',
       baseUrl: 'https://kobo.example.com',
+      webhookAuthUsername: expect.any(String),
+      webhookAuthPassword: expect.any(String),
     });
 
     expect(result).toEqual({
