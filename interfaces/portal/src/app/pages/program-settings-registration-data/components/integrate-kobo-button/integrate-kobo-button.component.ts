@@ -6,6 +6,7 @@ import {
   inject,
   input,
   model,
+  signal,
   viewChild,
 } from '@angular/core';
 import {
@@ -65,8 +66,13 @@ export class IntegrateKoboButtonComponent {
   readonly linkKoboDialog =
     viewChild.required<FormDialogComponent>('linkKoboDialog');
 
+  readonly formUrlIsValid = signal<boolean>(true);
+
   readonly koboConfigurationFormGroup = new FormGroup({
-    // dryRun: new FormControl<boolean>(true, { nonNullable: true }),
+    formUrl: new FormControl<string>('', {
+      nonNullable: false,
+      validators: [Validators.minLength(25)],
+    }),
     url: new FormControl<string>('', {
       nonNullable: true,
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
@@ -86,6 +92,12 @@ export class IntegrateKoboButtonComponent {
 
   koboConfigurationFormFieldErrors = generateFieldErrors(
     this.koboConfigurationFormGroup,
+    {
+      formUrl: () =>
+        this.formUrlIsValid()
+          ? undefined
+          : $localize`We couldn't process this URL. Please verify the fields below manually.`,
+    },
   );
 
   readonly koboConfigurationMutation = injectMutation(() => ({
@@ -181,4 +193,34 @@ export class IntegrateKoboButtonComponent {
       },
     },
   ]);
+
+  extractServerUrlAndAssetIdFromUrl = ($event: Event) => {
+    const input = $event.target as HTMLInputElement;
+    const rawUrl = input.value.trim();
+
+    // Reset the error-message when the input is cleared
+    if (rawUrl === '') {
+      this.formUrlIsValid.set(true);
+      return;
+    }
+
+    try {
+      const urlObj = new URL(rawUrl);
+
+      const serverUrl = urlObj.origin;
+      this.koboConfigurationFormGroup.get('url')?.setValue(serverUrl);
+
+      // Extract the asset UID from the URL hash; In the format: "https://example.net/#/forms/[project asset UID]/summary"
+      // See: https://support.kobotoolbox.org/api.html#retrieving-your-project-asset-uid
+      const assetId = decodeURIComponent(
+        urlObj.hash.split('/')[2] ?? '',
+      ).trim(); // Only use asset UID, ignore the rest
+      this.koboConfigurationFormGroup.get('assetId')?.setValue(assetId);
+
+      this.formUrlIsValid.set(!!serverUrl && !!assetId);
+    } catch {
+      // If the URL is invalid, do not set any values in the form
+      this.formUrlIsValid.set(false);
+    }
+  };
 }
