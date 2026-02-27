@@ -46,7 +46,7 @@ export class ActivityLogTransactionHistoryDialogComponent {
   readonly programId = input.required<string>();
   readonly transactionId = input.required<number>();
   readonly paymentDate = input.required<string>();
-  readonly hideButton = input<boolean>(false);
+  readonly showButton = input<boolean>(true);
 
   private readonly programApiService = inject(ProgramApiService);
 
