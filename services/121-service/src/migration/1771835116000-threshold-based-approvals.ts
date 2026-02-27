@@ -56,6 +56,12 @@ export class ThresholdBasedApprovals1771835116000 implements MigrationInterface 
       `ALTER TABLE "121-service"."payment_approval" ADD CONSTRAINT "FK_payment_approval_program_approval_threshold" FOREIGN KEY ("programApprovalThresholdId") REFERENCES "121-service"."program_approval_threshold"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
     );
 
+    // Add foreign key constraint from payment_approval to user
+    // Use SET NULL to preserve historical payment approval records even when user is deleted
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."payment_approval" ADD CONSTRAINT "FK_payment_approval_approved_by_user" FOREIGN KEY ("approvedByUserId") REFERENCES "121-service"."user"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
+    );
+
     // Add programApprovalThresholdId column to program_aidworker_assignment table
     await queryRunner.query(
       `ALTER TABLE "121-service"."program_aidworker_assignment" ADD "programApprovalThresholdId" integer NULL`,

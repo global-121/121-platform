@@ -129,6 +129,7 @@ export class PaymentsReportingService {
         programApprovalThreshold: {
           approverAssignments: { user: true },
         },
+        approvedByUser: true,
       },
       order: { rank: 'ASC' },
     });
@@ -142,6 +143,7 @@ export class PaymentsReportingService {
             ?.map((a) => a.user?.username)
             .filter((username): username is string => Boolean(username)) || [],
         rank: approval.rank,
+        approvedBy: approval.approvedByUser?.username || null,
       };
     });
   }

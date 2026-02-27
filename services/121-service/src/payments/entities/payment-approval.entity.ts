@@ -3,6 +3,7 @@ import { Column, Entity, JoinColumn, ManyToOne, Relation } from 'typeorm';
 import { Base121Entity } from '@121-service/src/base.entity';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
 @Entity('payment_approval')
 export class PaymentApprovalEntity extends Base121Entity {
@@ -33,6 +34,12 @@ export class PaymentApprovalEntity extends Base121Entity {
   @Column()
   public rank: number;
 
+  @ManyToOne(() => UserEntity, { onDelete: 'SET NULL', nullable: true })
+  @JoinColumn({
+    name: 'approvedByUserId',
+    foreignKeyConstraintName: 'FK_payment_approval_approved_by_user',
+  })
+  public approvedByUser: Relation<UserEntity> | null;
   @Column({ type: 'integer', nullable: true })
   public approvedByUserId: number | null;
 }

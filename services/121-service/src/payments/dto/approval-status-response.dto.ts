@@ -12,4 +12,7 @@ export class ApprovalStatusResponseDto {
 
   @ApiProperty({ example: 1 })
   public readonly rank: number;
+
+  @ApiProperty({ example: 'johndoe', nullable: true })
+  public readonly approvedBy: string | null;
 }
