@@ -47,7 +47,7 @@ export class RegistrationsInputValidator {
   }: {
     registrationInputArray: Record<string, InputAttributeType>[];
     programId: number;
-    userId: number;
+    userId: number | null;
     typeOfInput: RegistrationValidationInputType;
     validationConfig: ValidationRegistrationConfig;
   }): Promise<ValidatedRegistrationInput[]> {
@@ -71,10 +71,14 @@ export class RegistrationsInputValidator {
     const errors: ValidateRegistrationErrorObject[] = [];
     const phoneNumberLookupResults: Record<string, string | undefined> = {};
 
-    const userScope = await this.userService.getUserScopeForProgram(
-      userId,
-      programId,
-    );
+    // If the registration was not created by the user we assume a scope that can access anything (like on a new kobo submission) therefore a ''
+    let userScope = '';
+    if (userId) {
+      userScope = await this.userService.getUserScopeForProgram(
+        userId,
+        programId,
+      );
+    }
 
     if (validationConfig.validateUniqueReferenceId) {
       this.validateUniqueReferenceIds(registrationInputArray);
