@@ -889,30 +889,33 @@ describe('KoboValidationService', () => {
       `);
     });
 
-    it('should allow hidden type for any attribute regardless of expected type', async () => {
-      // Arrange
-      const formDefinitionWithHiddenType: KoboFormDefinition = {
-        ...baseFormDefinition,
-        survey: [
-          ...baseSurveyItems,
-          {
-            name: 'preferredLanguage', // Expects text type, but hidden is also allowed
-            type: 'hidden',
-            label: ['Preferred Language'],
-            required: false,
-            choices: [],
-          },
-        ],
-      };
+    it.each(['hidden', 'calculate'])(
+      'should allow %s type for any attribute regardless of expected type',
+      async (bypassType) => {
+        // Arrange
+        const formDefinition: KoboFormDefinition = {
+          ...baseFormDefinition,
+          survey: [
+            ...baseSurveyItems,
+            {
+              name: 'preferredLanguage', // Expects text type, but hidden/calculate are also allowed
+              type: bypassType,
+              label: ['Preferred Language'],
+              required: false,
+              choices: [],
+            },
+          ],
+        };
 
-      // Act & Assert
-      await expect(
-        service.validateKoboFormDefinition({
-          formDefinition: formDefinitionWithHiddenType,
-          programId,
-        }),
-      ).resolves.not.toThrow();
-    });
+        // Act & Assert
+        await expect(
+          service.validateKoboFormDefinition({
+            formDefinition,
+            programId,
+          }),
+        ).resolves.not.toThrow();
+      },
+    );
 
     it('should throw HttpException when kobo survey uses a forbidden registration view attribute', async () => {
       // Arrange
