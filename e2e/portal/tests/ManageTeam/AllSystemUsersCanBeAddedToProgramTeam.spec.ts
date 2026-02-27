@@ -1,5 +1,8 @@
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { removeProgramAssignment } from '@121-service/test/helpers/utility.helper';
+import {
+  getAccessToken,
+  removeProgramAssignment,
+} from '@121-service/test/helpers/utility.helper';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
@@ -17,11 +20,13 @@ const expectedAvailablesystemUsers = [
 ];
 const programId = 2;
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.testMultiple,
     skipSeedRegistrations: true,
   });
+  // Get access token after DB reset to avoid race condition
+  const accessToken = await getAccessToken();
   // remove assignments of all users except admin again, to create the context for this test
   for (let userId = 2; userId <= 10; userId++) {
     await removeProgramAssignment(programId, userId, accessToken);

@@ -5,9 +5,11 @@ import { Locator, Page } from 'playwright';
 import * as XLSX from 'xlsx';
 
 import { PrimeNGDropdown } from '@121-e2e/portal/components/PrimeNGDropdown';
+import TableComponent from '@121-e2e/portal/components/TableComponent';
 
 class BasePage {
   readonly page: Page;
+  readonly table: TableComponent;
   readonly logo: Locator;
   readonly localeDropdown: PrimeNGDropdown;
   readonly programHeader: Locator;
@@ -22,6 +24,7 @@ class BasePage {
 
   constructor(page: Page) {
     this.page = page;
+    this.table = new TableComponent(page);
 
     this.logo = this.page.getByTestId('logo');
     this.localeDropdown = new PrimeNGDropdown({
@@ -84,6 +87,19 @@ class BasePage {
 
   async openAccountDropdown() {
     await this.accountDropdown.click();
+  }
+
+  async performActionWithRightClick(action: string, row = 0) {
+    await this.table.tableRows.nth(row).click({ button: 'right' });
+    await this.page.getByLabel(action).click();
+
+    if (
+      action !== 'Message' &&
+      action !== 'Open in new tab' &&
+      action !== 'Transfer history'
+    ) {
+      await this.page.getByRole('button', { name: 'Approve' }).click();
+    }
   }
 
   async selectAccountOption(option: string) {

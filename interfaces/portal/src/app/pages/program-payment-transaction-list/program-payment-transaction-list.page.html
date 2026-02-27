@@ -41,3 +41,11 @@
   [paymentId]="paymentId()"
   [paginateQuery]="paginateQuery()"
 />
+
+<app-activity-log-transaction-history-dialog
+  #transactionHistoryDialog
+  [programId]="programId()"
+  [transactionId]="selectedTransactionId() ?? 0"
+  [paymentDate]="selectedPaymentDate()"
+  [showButton]="false"
+/>

@@ -1,12 +1,14 @@
-<p-button
-  label="View transaction history"
-  i18n-label
-  (click)="dialogVisible.set(true)"
-  outlined
-  rounded
-  size="small"
-  data-testid="view-transaction-history-button"
-/>
+@if (showButton()) {
+  <p-button
+    label="View transaction history"
+    i18n-label
+    (click)="dialogVisible.set(true)"
+    outlined
+    rounded
+    size="small"
+    data-testid="view-transaction-history-button"
+  />
+}
 <p-dialog
   [header]="dialogHeader()"
   [modal]="true"

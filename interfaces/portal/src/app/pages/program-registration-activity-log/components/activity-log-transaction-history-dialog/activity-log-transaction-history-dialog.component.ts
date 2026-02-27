@@ -46,6 +46,7 @@ export class ActivityLogTransactionHistoryDialogComponent {
   readonly programId = input.required<string>();
   readonly transactionId = input.required<number>();
   readonly paymentDate = input.required<string>();
+  readonly showButton = input<boolean>(true);
 
   private readonly programApiService = inject(ProgramApiService);
 
@@ -98,4 +99,8 @@ export class ActivityLogTransactionHistoryDialogComponent {
   ]);
 
   readonly currencyCode = computed(() => this.program.data()?.currency);
+
+  show() {
+    this.dialogVisible.set(true);
+  }
 }

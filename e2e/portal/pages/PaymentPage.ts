@@ -306,6 +306,43 @@ class PaymentPage extends BasePage {
       return await icon.isVisible();
     }
   }
+
+  async validateTransferHistoryDialogTitle({ title }: { title: string }) {
+    await this.page.waitForSelector('role=dialog');
+    await expect(this.page.getByText(/transaction history/i)).toContainText(
+      title,
+    ); // the title does not contain 'transfer history' text therefore we check for 'transaction history' text which is always present and then check if the date and rest of the string is correct
+  }
+
+  async validateTransactionHistoryTableValues({
+    expectedValues,
+  }: {
+    expectedValues: Map<string, string>;
+  }) {
+    const rows = this.page
+      .getByRole('dialog')
+      .locator('p-table')
+      .locator('tbody tr');
+
+    const actualValues = new Map<string, string>();
+    // Wait for the expected number of rows to be present
+    await expect(rows).toHaveCount(expectedValues.size); // Wait for the table to be populated
+
+    for (const row of await rows.all()) {
+      // Get only first two columns (Overview and Done by), skip Date and Time
+      const overviewColumn = await row.locator('td:nth-child(1)').textContent();
+      const doneByColumn = await row.locator('td:nth-child(2)').textContent();
+
+      if (overviewColumn && doneByColumn) {
+        actualValues.set(overviewColumn.trim(), doneByColumn.trim());
+      }
+    }
+    // Compare the maps
+    expect(actualValues.size).toBe(expectedValues.size);
+    for (const [key, value] of expectedValues.entries()) {
+      expect(actualValues.get(key)).toBe(value);
+    }
+  }
 }
 
 export default PaymentPage;
