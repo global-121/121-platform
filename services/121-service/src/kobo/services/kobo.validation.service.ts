@@ -23,6 +23,9 @@ import {
 } from '@121-service/src/shared/const';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
+// These Kobo field types are accepted for any 121 attribute type because cash-im teams use them for computed/pre-filled values
+const KOBO_TYPES_ALLOWED_FOR_ANY_ATTRIBUTE = ['hidden', 'calculate'];
+
 @Injectable()
 export class KoboValidationService {
   constructor(
@@ -384,8 +387,13 @@ export class KoboValidationService {
     surveyItemType: string;
     expected121Type: RegistrationAttributeTypes;
   }): string | undefined {
-    // Hidden fields are allowed for any attribute type as they are now used by our cash-im team for any values
-    if (surveyItemType === 'hidden') {
+    // Hidden and 'calculate' fields are allowed for any attribute type as they are now used by our cash-im team for any values
+    // They are too dificult to validate as of this moment
+    if (
+      (KOBO_TYPES_ALLOWED_FOR_ANY_ATTRIBUTE as readonly string[]).includes(
+        surveyItemType,
+      )
+    ) {
       return;
     }
 
@@ -482,7 +490,10 @@ export class KoboValidationService {
       return `Kobo form must contain a question with name "${fspQuestionName}".`;
     }
 
-    const validTypes = new Set(['hidden', 'select_one', 'calculate']);
+    const validTypes = new Set([
+      ...KOBO_TYPES_ALLOWED_FOR_ANY_ATTRIBUTE,
+      'select_one',
+    ]);
     const isValidType = validTypes.has(fspItem.type);
 
     if (!isValidType) {
