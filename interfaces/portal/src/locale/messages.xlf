@@ -2123,9 +2123,6 @@
       <trans-unit id="7617906385730294527" datatype="html">
         <source><x equiv-text="label" id="PH"/> payment (<x equiv-text="order" id="PH_1"/> of <x equiv-text="total" id="PH_2"/>)</source>
       </trans-unit>
-      <trans-unit id="approverDeleted" datatype="html">
-        <source>Approver deleted. Create new payment.</source>
-      </trans-unit>
       <trans-unit id="2993213000622028040" datatype="html">
         <source>Max amount to spend per month (in cents)</source>
       </trans-unit>
