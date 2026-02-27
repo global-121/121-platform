@@ -5,7 +5,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
 import crypto from 'node:crypto';
-import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
+import {
+  Equal,
+  FindOptionsRelations,
+  In,
+  IsNull,
+  Not,
+  Repository,
+} from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/email-constants';
@@ -18,7 +25,6 @@ import {
   InterfaceNames,
 } from '@121-service/src/shared/enum/interface-names.enum';
 import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
-import { ApproverEntity } from '@121-service/src/user/approver/entities/approver.entity';
 import {
   CreateProgramAssignmentDto,
   UpdateProgramAssignmentDto,
@@ -65,8 +71,6 @@ export class UserService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramAidworkerAssignmentEntity)
   private readonly assignmentRepository: Repository<ProgramAidworkerAssignmentEntity>;
-  @InjectRepository(ApproverEntity)
-  private readonly approverRepository: Repository<ApproverEntity>;
 
   public constructor(
     @Inject(REQUEST) private readonly request: Request,
@@ -441,12 +445,13 @@ export class UserService {
   }: {
     programAssignmentId: number;
   }): Promise<void> {
-    const existingApprover = await this.approverRepository.findOne({
+    const assignment = await this.assignmentRepository.findOne({
       where: {
-        programAidworkerAssignmentId: Equal(programAssignmentId),
+        id: Equal(programAssignmentId),
+        programApprovalThresholdId: Not(IsNull()),
       },
     });
-    if (existingApprover) {
+    if (assignment) {
       throw new HttpException(
         'Cannot add scope to assignment because user is an approver for this program. Remove approver from program first (if intended) and retry.',
         HttpStatus.BAD_REQUEST,
@@ -783,12 +788,13 @@ export class UserService {
         'user.admin AS admin',
         'user.active AS active',
         'user.lastLogin AS "lastLogin"',
+        'assignment.id AS "programAidworkerAssignmentId"',
         'ARRAY_AGG(roles.id) AS rolesId',
         'ARRAY_AGG(roles.role) AS role',
         'ARRAY_AGG(roles.label) AS label',
         'MAX(assignment.scope) AS scope',
       ])
-      .groupBy('user.id')
+      .groupBy('user.id, assignment.id')
       .getRawMany();
 
     const result = users.map((user) => {
@@ -804,6 +810,7 @@ export class UserService {
         admin: user.admin,
         active: user.active,
         lastLogin: user.lastLogin,
+        programAidworkerAssignmentId: user.programAidworkerAssignmentId,
         roles,
         scope: user.scope,
       };

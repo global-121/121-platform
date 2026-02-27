@@ -8,10 +8,12 @@ import { FspsModule } from '@121-service/src/fsp-management/fsp.module';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
+import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
 import { PaymentEventsModule } from '@121-service/src/payments/payment-events/payment-events.module';
 import { PaymentsController } from '@121-service/src/payments/payments.controller';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { PaymentRepository } from '@121-service/src/payments/repositories/payment.repository';
+import { PaymentApprovalRepository } from '@121-service/src/payments/repositories/payment-approval.repository';
 import { FspEnvVariableValidationService } from '@121-service/src/payments/services/fsp-env-variable-validation.service';
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
@@ -24,6 +26,8 @@ import { TransactionEventsModule } from '@121-service/src/payments/transactions/
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
+import { ProgramApprovalThresholdsModule } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
@@ -32,13 +36,17 @@ import { RegistrationsModule } from '@121-service/src/registration/registrations
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { RegistrationEventsModule } from '@121-service/src/registration-events/registration-events.module';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
-import { ApproverModule } from '@121-service/src/user/approver/approver.module';
 import { UserModule } from '@121-service/src/user/user.module';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ProgramEntity, PaymentEntity]),
+    TypeOrmModule.forFeature([
+      ProgramEntity,
+      PaymentEntity,
+      PaymentApprovalEntity,
+      ProgramAidworkerAssignmentEntity,
+    ]),
     UserModule,
     HttpModule,
     TransactionsModule,
@@ -54,7 +62,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     RegistrationEventsModule,
     TransactionEventsModule,
     MessageTemplateModule,
-    ApproverModule,
+    ProgramApprovalThresholdsModule,
   ],
   providers: [
     PaymentsManagementService,
@@ -69,6 +77,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     InclusionScoreService,
     AzureLogService,
     PaymentRepository,
+    PaymentApprovalRepository,
     createScopedRepositoryProvider(RegistrationAttributeDataEntity),
   ],
   controllers: [PaymentsController],
@@ -76,6 +85,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     PaymentsExecutionService,
     PaymentsReportingService,
     PaymentsProgressHelperService,
+    PaymentApprovalRepository,
   ],
 })
 export class PaymentsModule implements OnModuleInit {

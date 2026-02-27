@@ -1,6 +1,11 @@
 import { env } from '@121-service/src/env';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import {
+  getAllUsersByProgramId,
+  getProgramApprovalThresholds,
+  replaceProgramApprovalThresholds,
+} from '@121-service/test/helpers/user.helper';
 import { resetDuplicateRegistrations } from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
@@ -19,7 +24,7 @@ const pendingApprovalTransactionLabel = 'Pending approval';
 const approverBadgeLabelAdmin = env.USERCONFIG_121_SERVICE_EMAIL_ADMIN;
 const approverBadgeLabelApprover = env.USERCONFIG_121_SERVICE_EMAIL_APPROVER;
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
+test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     registrations: [registrationOCW1],
@@ -29,6 +34,57 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
   // Seed duplicate registrations to have more transactions in the payment and better validate the badges on the payment page during the test
   await resetDuplicateRegistrations(duplicateNumberOfRegistrations);
+
+  // Configure approval thresholds so both levels apply to payment amount (25)
+  // Default seed creates level 2 at amount 100, but fixedTransferValue is 25
+  const thresholdsResponse = await getProgramApprovalThresholds({
+    programId: programIdOCW,
+    accessToken,
+  });
+  const allUsersResponse = await getAllUsersByProgramId(
+    accessToken,
+    programIdOCW.toString(),
+  );
+
+  const adminApprover = thresholdsResponse.body[0].approvers[0];
+  const adminAssignment = allUsersResponse.body.find(
+    (u) => u.id === adminApprover.userId,
+  );
+
+  const approverRoleUser = allUsersResponse.body.find(
+    (u) => u.username === env.USERCONFIG_121_SERVICE_EMAIL_APPROVER,
+  );
+
+  if (!adminAssignment || !approverRoleUser) {
+    throw new Error('Required user assignments not found');
+  }
+
+  await replaceProgramApprovalThresholds({
+    programId: programIdOCW,
+    thresholds: [
+      {
+        thresholdAmount: 0,
+
+        approvers: [
+          {
+            programAidworkerAssignmentId:
+              adminAssignment.programAidworkerAssignmentId,
+          },
+        ],
+      },
+      {
+        thresholdAmount: 10, // Lower than fixedTransferValue (25) to trigger 2nd approval
+
+        approvers: [
+          {
+            programAidworkerAssignmentId:
+              approverRoleUser.programAidworkerAssignmentId,
+          },
+        ],
+      },
+    ],
+    accessToken,
+  });
 });
 
 test('Payment page should display correctly during all phases of payment with 2 approvers', async ({

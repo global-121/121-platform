@@ -22,6 +22,8 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
+import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
+import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
@@ -29,7 +31,6 @@ import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuratio
 import { SeedMessageTemplateConfig } from '@121-service/src/seed-data/message-template/interfaces/seed-message-template-config.interface';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
-import { ApproverService } from '@121-service/src/user/approver/approver.service';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
@@ -44,7 +45,7 @@ export class SeedHelperService {
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly httpService: CustomHttpService,
     private readonly axiosCallsService: AxiosCallsService,
-    private readonly approverService: ApproverService,
+    private readonly programApprovalThresholdsService: ProgramApprovalThresholdsService,
   ) {}
 
   public async seedData({
@@ -273,17 +274,38 @@ export class SeedHelperService {
     programId: number;
     approverMode: ApproverSeedMode;
   }): Promise<void> {
+    if (approverMode === ApproverSeedMode.none) {
+      return;
+    }
+
     const userRepository = this.dataSource.getRepository(UserEntity);
+    const assignmentRepository = this.dataSource.getRepository(
+      ProgramAidworkerAssignmentEntity,
+    );
+
     const adminUser = await userRepository.findOneOrFail({
       where: { username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_ADMIN) },
     });
 
+    const adminAssignment = await assignmentRepository.findOneOrFail({
+      where: {
+        programId: Equal(programId),
+        userId: Equal(adminUser.id),
+      },
+    });
+
+    const thresholds: CreateProgramApprovalThresholdDto[] = [];
+
     switch (approverMode) {
       case ApproverSeedMode.admin:
-        await this.approverService.createApprover({
-          programId,
-          userId: adminUser.id,
-          order: 1,
+        thresholds.push({
+          thresholdAmount: 0,
+
+          approvers: [
+            {
+              programAidworkerAssignmentId: adminAssignment.id,
+            },
+          ],
         });
         break;
       case ApproverSeedMode.demo:
@@ -292,22 +314,41 @@ export class SeedHelperService {
             username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_APPROVER!),
           },
         });
-        await this.approverService.createApprover({
-          programId,
-          userId: adminUser.id,
-          order: 1,
+
+        const approverAssignment = await assignmentRepository.findOneOrFail({
+          where: {
+            programId: Equal(programId),
+            userId: Equal(approverUser.id),
+          },
         });
-        await this.approverService.createApprover({
-          programId,
-          userId: approverUser.id,
-          order: 2,
-        });
-        break;
-      case ApproverSeedMode.none:
-        break;
-      default:
+
+        thresholds.push(
+          {
+            thresholdAmount: 0,
+
+            approvers: [
+              {
+                programAidworkerAssignmentId: adminAssignment.id,
+              },
+            ],
+          },
+          {
+            thresholdAmount: 100,
+
+            approvers: [
+              {
+                programAidworkerAssignmentId: approverAssignment.id,
+              },
+            ],
+          },
+        );
         break;
     }
+
+    await this.programApprovalThresholdsService.replaceProgramApprovalThresholds(
+      programId,
+      thresholds,
+    );
   }
 
   public async getOrSaveUser(userInput: {

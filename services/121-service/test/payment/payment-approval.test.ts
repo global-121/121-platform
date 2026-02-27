@@ -15,9 +15,10 @@ import {
 } from '@121-service/test/helpers/program.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
-  createApprover,
-  deleteApprover,
+  getAllUsersByProgramId,
   getCurrentUser,
+  getProgramApprovalThresholds,
+  replaceProgramApprovalThresholds,
 } from '@121-service/test/helpers/user.helper';
 import {
   getAccessToken,
@@ -49,15 +50,66 @@ describe('do payment with 2 approvers', () => {
 
     // configure 2nd approver
     accessTokenFinanceManager = await getAccessTokenFinanceManager();
-    const financeManagerUserId = (
-      await getCurrentUser({
-        accessToken: accessTokenFinanceManager,
-      })
-    ).body.user.id;
-    await createApprover({
+    const financeManagerUser = await getCurrentUser({
+      accessToken: accessTokenFinanceManager,
+    });
+
+    // Get existing thresholds
+    const thresholdsResponse = await getProgramApprovalThresholds({
       programId,
-      userId: financeManagerUserId,
-      order: 2,
+      accessToken: adminAccessToken,
+    });
+
+    // Get all user assignments for the program to find assignment IDs
+    const allUsersResponse = await getAllUsersByProgramId(
+      adminAccessToken,
+      programId.toString(),
+    );
+    const financeManagerAssignment = allUsersResponse.body.find(
+      (u: any) => u.id === financeManagerUser.body.user.id,
+    );
+
+    if (!financeManagerAssignment) {
+      throw new Error('Finance manager assignment not found');
+    }
+
+    // Create 2 sequential approval levels: admin at level 1, finance manager at level 2
+    const firstThreshold = thresholdsResponse.body[0];
+    const adminApprover = firstThreshold.approvers[0];
+    const adminAssignment = allUsersResponse.body.find(
+      (u: any) => u.id === adminApprover.userId,
+    );
+
+    if (!adminAssignment) {
+      throw new Error('Admin assignment not found');
+    }
+
+    const updatedThresholds = [
+      {
+        thresholdAmount: 0, // Covers all amounts starting from 0
+
+        approvers: [
+          {
+            programAidworkerAssignmentId:
+              adminAssignment.programAidworkerAssignmentId,
+          },
+        ],
+      },
+      {
+        thresholdAmount: 10, // Covers payments >= 10
+
+        approvers: [
+          {
+            programAidworkerAssignmentId:
+              financeManagerAssignment.programAidworkerAssignmentId,
+          },
+        ],
+      },
+    ];
+
+    await replaceProgramApprovalThresholds({
+      programId,
+      thresholds: updatedThresholds,
       accessToken: adminAccessToken,
     });
   });
@@ -336,9 +388,10 @@ describe('do payment with <2 approvers', () => {
 
   it('should throw on create payment when no approvers configured for program', async () => {
     // Arrange
-    await deleteApprover({
+    // Remove all approver thresholds
+    await replaceProgramApprovalThresholds({
       programId,
-      approverId: 1, // admin-user approver
+      thresholds: [],
       accessToken: adminAccessToken,
     });
 
@@ -353,27 +406,107 @@ describe('do payment with <2 approvers', () => {
     // Assert
     expect(createPaymentResponse.status).toBe(HttpStatus.BAD_REQUEST);
     expect(createPaymentResponse.body.message).toMatchInlineSnapshot(
-      `"No approvers found for program, cannot create payment"`,
+      `"No approval thresholds found for this payment amount, cannot create payment"`,
+    );
+  });
+
+  it('should throw when trying to create thresholds with duplicate amounts', async () => {
+    // Arrange
+    const thresholdsWithDuplicates = [
+      {
+        thresholdAmount: 100,
+
+        approvers: [
+          {
+            programAidworkerAssignmentId: 1, // Will be validated by the service
+          },
+        ],
+      },
+      {
+        thresholdAmount: 100, // Duplicate!
+
+        approvers: [
+          {
+            programAidworkerAssignmentId: 2,
+          },
+        ],
+      },
+    ];
+
+    // Act
+    const response = await replaceProgramApprovalThresholds({
+      programId,
+      thresholds: thresholdsWithDuplicates,
+      accessToken: adminAccessToken,
+    });
+
+    // Assert
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body.message).toMatchInlineSnapshot(
+      `"Threshold amounts must be unique. Cannot have multiple thresholds with the same amount."`,
     );
   });
 
   it('should return all payment approvals but without username for deleted approver(s)', async () => {
-    // Arrange
-    // add 2nd approver
     const accessTokenFinanceManager = await getAccessTokenFinanceManager();
-    const financeManagerUserId = (
-      await getCurrentUser({
-        accessToken: accessTokenFinanceManager,
-      })
-    ).body.user.id;
-    const createApproverResult = await createApprover({
+    const financeManagerUser = await getCurrentUser({
+      accessToken: accessTokenFinanceManager,
+    });
+
+    // Get existing thresholds and user assignments
+    const thresholdsResponse = await getProgramApprovalThresholds({
       programId,
-      userId: financeManagerUserId,
-      order: 2,
+      accessToken: adminAccessToken,
+    });
+    const allUsersResponse = await getAllUsersByProgramId(
+      adminAccessToken,
+      programId.toString(),
+    );
+    const financeManagerAssignment = allUsersResponse.body.find(
+      (u: any) => u.id === financeManagerUser.body.user.id,
+    );
+
+    // Create 2 sequential approval levels: admin at level 1, finance manager at level 2
+    const firstThreshold = thresholdsResponse.body[0];
+    const adminApprover = firstThreshold.approvers[0];
+    const adminAssignment = allUsersResponse.body.find(
+      (u: any) => u.id === adminApprover.userId,
+    );
+
+    if (!adminAssignment) {
+      throw new Error('Admin assignment not found');
+    }
+
+    const updatedThresholds = [
+      {
+        thresholdAmount: 0,
+
+        approvers: [
+          {
+            programAidworkerAssignmentId:
+              adminAssignment.programAidworkerAssignmentId,
+          },
+        ],
+      },
+      {
+        thresholdAmount: 10,
+
+        approvers: [
+          {
+            programAidworkerAssignmentId:
+              financeManagerAssignment.programAidworkerAssignmentId,
+          },
+        ],
+      },
+    ];
+
+    await replaceProgramApprovalThresholds({
+      programId,
+      thresholds: updatedThresholds,
       accessToken: adminAccessToken,
     });
 
-    // create payment
+    // create payment (this creates approval records)
     const createPaymentResponse = await createPayment({
       programId,
       transferValue,
@@ -381,10 +514,23 @@ describe('do payment with <2 approvers', () => {
       accessToken: adminAccessToken,
     });
 
-    // delete approver again
-    await deleteApprover({
+    // Remove the 2nd approver by replacing thresholds without finance manager
+    const thresholdsWithoutFinanceManager = [
+      {
+        thresholdAmount: 0, // Covers all amounts starting from 0
+
+        approvers: [
+          {
+            programAidworkerAssignmentId:
+              adminAssignment.programAidworkerAssignmentId,
+          },
+        ],
+      },
+    ];
+
+    await replaceProgramApprovalThresholds({
       programId,
-      approverId: createApproverResult.body.id,
+      thresholds: thresholdsWithoutFinanceManager,
       accessToken: adminAccessToken,
     });
 
@@ -398,9 +544,7 @@ describe('do payment with <2 approvers', () => {
     // Assert
     expect(getPaymentResponse.status).toBe(HttpStatus.OK);
     expect(getPaymentResponse.body.approvalStatus.length).toBe(2);
-    expect(
-      getPaymentResponse.body.approvalStatus[1].username,
-    ).not.toBeDefined(); // The missing username is in the front-end handled as 'Approver deleted. Create new payment.'
+    expect(getPaymentResponse.body.approvalStatus[1].approvers).toEqual([]); // The missing approvers are handled in the front-end as 'Approver deleted. Create new payment.'
   });
 
   it('should include note in payment approved event', async () => {
@@ -437,5 +581,176 @@ describe('do payment with <2 approvers', () => {
     );
     expect(approvedEvent).toBeDefined();
     expect(approvedEvent.attributes.note).toBe(note);
+  });
+});
+
+describe('multiple approvers per threshold', () => {
+  let accessTokenFinanceManager: string;
+  let accessTokenCvaManager: string;
+  let paymentId: number;
+
+  beforeAll(async () => {
+    await resetDB(SeedScript.nlrcMultiple, __filename);
+    adminAccessToken = await getAccessToken();
+    await seedIncludedRegistrations(
+      [registrationPV5],
+      programId,
+      adminAccessToken,
+    );
+
+    // Get tokens for both Finance and CVA managers
+    accessTokenFinanceManager = await getAccessTokenFinanceManager();
+    accessTokenCvaManager = await getAccessTokenCvaManager();
+
+    const financeManagerUser = await getCurrentUser({
+      accessToken: accessTokenFinanceManager,
+    });
+    const cvaManagerUser = await getCurrentUser({
+      accessToken: accessTokenCvaManager,
+    });
+
+    // Get existing thresholds
+    const thresholdsResponse = await getProgramApprovalThresholds({
+      programId,
+      accessToken: adminAccessToken,
+    });
+
+    // Get all user assignments for the program
+    const allUsersResponse = await getAllUsersByProgramId(
+      adminAccessToken,
+      programId.toString(),
+    );
+
+    const firstThreshold = thresholdsResponse.body[0];
+    const adminApprover = firstThreshold.approvers[0];
+    const adminAssignment = allUsersResponse.body.find(
+      (u: any) => u.id === adminApprover.userId,
+    );
+
+    const financeManagerAssignment = allUsersResponse.body.find(
+      (u: any) => u.id === financeManagerUser.body.user.id,
+    );
+
+    const cvaManagerAssignment = allUsersResponse.body.find(
+      (u: any) => u.id === cvaManagerUser.body.user.id,
+    );
+
+    if (
+      !adminAssignment ||
+      !financeManagerAssignment ||
+      !cvaManagerAssignment
+    ) {
+      throw new Error('Required user assignments not found');
+    }
+
+    // Create 1 threshold with 2 approvers (FinanceManager and CVAManager)
+    // This tests that EITHER one can approve - not both required
+    const updatedThresholds = [
+      {
+        thresholdAmount: 0,
+
+        approvers: [
+          {
+            programAidworkerAssignmentId:
+              financeManagerAssignment.programAidworkerAssignmentId,
+          },
+          {
+            programAidworkerAssignmentId:
+              cvaManagerAssignment.programAidworkerAssignmentId,
+          },
+        ],
+      },
+    ];
+
+    await replaceProgramApprovalThresholds({
+      programId,
+      thresholds: updatedThresholds,
+      accessToken: adminAccessToken,
+    });
+  });
+
+  beforeEach(async () => {
+    const createPaymentResponse = await createPayment({
+      programId,
+      transferValue,
+      referenceIds: [registrationPV5.referenceId],
+      accessToken: adminAccessToken,
+    });
+    paymentId = createPaymentResponse.body.id;
+  });
+
+  it('should allow first approver from threshold to approve payment', async () => {
+    // Arrange
+    const paymentSummaryBefore = await getPaymentSummary({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+    expect(paymentSummaryBefore.body).toMatchObject({
+      isPaymentApproved: false,
+      approvalsGiven: 0,
+      approvalsRequired: 1,
+    });
+
+    // Act - Finance Manager approves
+    const approveResponse = await approvePayment({
+      programId,
+      paymentId,
+      accessToken: accessTokenFinanceManager,
+    });
+
+    // Assert
+    expect(approveResponse.statusCode).toBe(HttpStatus.CREATED);
+
+    const paymentSummaryAfter = await getPaymentSummary({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+    expect(paymentSummaryAfter.body).toMatchObject({
+      isPaymentApproved: true,
+      approvalsGiven: 1,
+      approvalsRequired: 1,
+    });
+
+    // Payment should be ready to start now
+    const startResponse = await startPayment({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+    expect(startResponse.statusCode).toBe(HttpStatus.ACCEPTED);
+
+    // Wait for payment to complete to avoid interference with next test
+    await waitForPaymentAndTransactionsToComplete({
+      programId,
+      paymentId,
+      paymentReferenceIds: [registrationPV5.referenceId],
+      accessToken: adminAccessToken,
+      maxWaitTimeMs: 5000,
+      completeStatuses: [TransactionStatusEnum.success],
+    });
+  });
+
+  it('should prevent second approver from same threshold from approving again', async () => {
+    // Arrange - Finance Manager approves first
+    await approvePayment({
+      programId,
+      paymentId,
+      accessToken: accessTokenFinanceManager,
+    });
+
+    // Act - CVA Manager tries to approve the same threshold
+    const secondApprovalResponse = await approvePayment({
+      programId,
+      paymentId,
+      accessToken: accessTokenCvaManager,
+    });
+
+    // Assert
+    expect(secondApprovalResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
+    expect(secondApprovalResponse.body.message).toBe(
+      'This threshold has already been approved for this payment',
+    );
   });
 });

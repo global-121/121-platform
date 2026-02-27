@@ -793,35 +793,24 @@
     ]
   },
   {
-    "method": "get",
-    "path": "/api/programs/{programId}/approvers",
+    "method": "post",
+    "path": "/api/programs/{programId}/approval-thresholds",
     "params": [
       "programId"
     ]
   },
   {
-    "method": "post",
-    "path": "/api/programs/{programId}/approvers",
+    "method": "get",
+    "path": "/api/programs/{programId}/approval-thresholds",
     "params": [
       "programId"
-    ],
-    "returnType": "ApproverResponseDto"
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/approvers/{approverId}",
-    "params": [
-      "programId",
-      "approverId"
-    ],
-    "returnType": "ApproverResponseDto"
+    ]
   },
   {
     "method": "delete",
-    "path": "/api/programs/{programId}/approvers/{approverId}",
+    "path": "/api/programs/{programId}/approval-thresholds",
     "params": [
-      "programId",
-      "approverId"
+      "programId"
     ]
   },
   {
