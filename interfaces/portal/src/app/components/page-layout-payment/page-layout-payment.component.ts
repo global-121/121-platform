@@ -222,12 +222,7 @@ export class PageLayoutPaymentComponent {
       return 0;
     }
 
-    return Math.min(
-      ...this.paymentAggregate
-        .data()
-        .approvalStatus.filter((a) => !a.approved)
-        .map((a) => a.rank),
-    );
+    return this.paymentAggregate.data().approvalsGiven + 1;
   });
 
   readonly hasFspWithExportFileIntegration = computed(() =>
@@ -299,10 +294,15 @@ export class PageLayoutPaymentComponent {
       return false;
     }
 
+    const currentUser = this.authService.user?.username ?? undefined;
     const approvalStatus = this.paymentAggregate.data().approvalStatus;
-    const currentPaymentApproval = approvalStatus.find((approval) =>
-      approval.approvers.includes(this.authService.user?.username ?? ''),
-    );
+    const currentPaymentApproval = approvalStatus.find((approval) => {
+      const approvers = approval.approvers as string[];
+      if (!currentUser) {
+        return undefined;
+      }
+      return approvers.includes(currentUser);
+    });
     if (!currentPaymentApproval) {
       return false; // not approver for this payment
     }
@@ -423,10 +423,11 @@ export class PageLayoutPaymentComponent {
       : undefined,
   );
 
-  readonly getApproverLabel = (approvers: string[]) =>
-    computed(() =>
-      approvers.length > 0
-        ? approvers.join(', ')
-        : $localize`:@@approverDeleted:Approver deleted. Create new payment.`,
-    );
+  // ##TODO: discuss with Yuri
+  // readonly getApproverLabel = (approvers: string[]) =>
+  //   computed(() =>
+  //     approvers.length > 0
+  //       ? approvers.join(', ')
+  //       : $localize`:@@approverDeleted:Approver deleted. Create new payment.`,
+  //   );
 }
