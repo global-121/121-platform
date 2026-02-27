@@ -142,10 +142,6 @@ jobs:
           path: |
             ${{ env.workingDirectory }}/coverage
 
-      - name: Docker logs
-        if: always()
-        uses: jwalton/gh-docker-logs@v2
-
   upload_coverage_reports:
     runs-on: ubuntu-latest
     needs: [test-shard, test]
