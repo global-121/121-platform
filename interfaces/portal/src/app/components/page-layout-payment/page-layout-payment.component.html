@@ -120,28 +120,21 @@
                   {{ approvalStep.rank }}
                 }
               </span>
-              @if (approvalStep.approved) {
+              @for (
+                approver of approvalStep.approvers;
+                track $index;
+                let lastElement = $last
+              ) {
                 <app-colored-chip
-                  [label]="approvalStep.approvedBy!"
+                  [label]="approver"
                   variant="grey"
                 />
-              } @else {
-                @for (
-                  approver of approvalStep.approvers;
-                  track $index;
-                  let lastElement = $last
-                ) {
-                  <app-colored-chip
-                    [label]="approver"
-                    variant="grey"
-                  />
-                  @if (!lastElement) {
-                    <span
-                      i18n
-                      class="mx-2"
-                      >or</span
-                    >
-                  }
+                @if (!lastElement) {
+                  <span
+                    i18n
+                    class="mx-2"
+                    >or</span
+                  >
                 }
               }
             </div>

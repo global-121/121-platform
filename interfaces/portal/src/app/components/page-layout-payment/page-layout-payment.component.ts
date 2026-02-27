@@ -422,4 +422,12 @@ export class PageLayoutPaymentComponent {
       ? $localize`:@@inProgressChipTooltip:The payment will be in progress while the transactions in the table below are loading.`
       : undefined,
   );
+
+  // ##TODO: discuss with Yuri
+  // readonly getApproverLabel = (approvers: string[]) =>
+  //   computed(() =>
+  //     approvers.length > 0
+  //       ? approvers.join(', ')
+  //       : $localize`:@@approverDeleted:Approver deleted. Create new payment.`,
+  //   );
 }
