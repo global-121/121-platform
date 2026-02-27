@@ -340,6 +340,8 @@ describe('KoboApiService', () => {
         assetUid: mockAssetUid,
         token: mockToken,
         baseUrl: mockBaseUrl,
+        webhookAuthUsername: 'test-username',
+        webhookAuthPassword: 'test-password',
       });
 
       // Assert
@@ -354,6 +356,8 @@ describe('KoboApiService', () => {
           endpoint: expect.stringContaining('kobo/webhook'),
           active: true,
           subset_fields: ['_uuid', '_xform_id_string'],
+          auth_level: 'basic_auth',
+          settings: { username: 'test-username', password: 'test-password' },
         },
         expectedHeaders,
       );
@@ -374,6 +378,8 @@ describe('KoboApiService', () => {
         assetUid: mockAssetUid,
         token: mockToken,
         baseUrl: mockBaseUrl,
+        webhookAuthUsername: 'test-username',
+        webhookAuthPassword: 'test-password',
       });
 
       // Assert

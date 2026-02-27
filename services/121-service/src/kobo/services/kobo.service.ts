@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
 import { KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES } from '@121-service/src/kobo/consts/kobo-allowed-registration-view-attributes.const';
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
@@ -114,10 +115,15 @@ export class KoboService {
       };
     }
 
+    const webhookAuthUsername = uuid();
+    const webhookAuthPassword = uuid();
+
     await this.koboApiService.createKoboWebhook({
       assetUid,
       token,
       baseUrl: url,
+      webhookAuthUsername,
+      webhookAuthPassword,
     });
 
     await this.upsertKoboEntity({
@@ -127,6 +133,8 @@ export class KoboService {
       token,
       url,
       name: asset.name ?? null,
+      webhookAuthUsername,
+      webhookAuthPassword,
     });
     const languageIsoCodes = KoboLanguageMapper.getLanguageIsoCodes({
       koboLanguages: formDefinition.languages,
@@ -157,6 +165,8 @@ export class KoboService {
     token,
     url,
     name,
+    webhookAuthUsername,
+    webhookAuthPassword,
   }: {
     formDefinition: KoboFormDefinition;
     programId: number;
@@ -164,6 +174,8 @@ export class KoboService {
     token: string;
     url: string;
     name: string | null;
+    webhookAuthUsername: string;
+    webhookAuthPassword: string;
   }): Promise<void> {
     const existingKoboEntity = await this.koboRepository.findOne({
       where: { programId: Equal(programId) },
@@ -176,6 +188,8 @@ export class KoboService {
       token,
       url,
       name,
+      webhookAuthUsername,
+      webhookAuthPassword,
     });
 
     if (existingKoboEntity) {
