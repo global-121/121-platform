@@ -21,13 +21,13 @@
     "test:update-snapshots:specific": "npm run test -- --update-snapshots --grep"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.2",
-    "@playwright/test": "^1.57.0",
+    "@eslint/js": "^9.39.3",
+    "@playwright/test": "^1.58.2",
     "@types/express": "^4.17.25",
     "@types/jest": "^30.0.0",
     "@types/multer": "^2.0.0",
     "@types/node": "^24.x",
-    "@types/supertest": "^6.0.3",
+    "@types/supertest": "^7.2.0",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-eslint-comments": "^3.2.0",
@@ -38,12 +38,12 @@
     "globals": "^17.3.0",
     "prettier": "^3.8.1",
     "supertest": "^7.1.4",
-    "typescript-eslint": "^8.56.0"
+    "typescript-eslint": "^8.56.1"
   },
   "dependencies": {
     "date-fns": "^4.1.0",
-    "dotenv": "17.2.3",
-    "playwright": "^1.57.0",
+    "dotenv": "17.3.1",
+    "playwright": "^1.58.2",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "engines": {
