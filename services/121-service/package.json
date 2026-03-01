@@ -59,7 +59,7 @@
     "npm": ">=11"
   },
   "dependencies": {
-    "@azure/storage-blob": "^12.29.1",
+    "@azure/storage-blob": "^12.31.0",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/bull": "^11.0.4",
     "@nestjs/common": "^11.1.14",
