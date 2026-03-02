@@ -220,10 +220,9 @@ describe('IntersolveVisaService', () => {
       });
 
       // Assert
-      // The expected value is calculated as follows:
-      // For spentThisMonth = 10000 (100 euro), mockedToken.balance = 100 (1 euro), inputTransferValueInMajorUnit = 75:
-      // Math.min(150 - (10000 + 100) / 100, 75) = Math.min(150 - 101, 75) = Math.min(49, 75) = 49
-      const expected = 49;
+      // The expected value is the input amount since we only track balance (not spentThisMonth).
+      // With a max limit of 150 euro per month and requesting 75 euro, the transfer is allowed.
+      const expected = 75;
 
       expect(result).toBe(expected);
     });
