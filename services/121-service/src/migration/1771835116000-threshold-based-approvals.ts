@@ -17,7 +17,7 @@ export class ThresholdBasedApprovals1771835116000 implements MigrationInterface 
     );
 
     await queryRunner.query(
-      `CREATE INDEX "IDX_program_approval_threshold_created" ON "121-service"."program_approval_threshold" ("created")`,
+      `CREATE INDEX "IDX_a0a41b64e26afcbf569a2ca716" ON "121-service"."program_approval_threshold" ("created")`,
     );
 
     await queryRunner.query(
@@ -58,7 +58,7 @@ export class ThresholdBasedApprovals1771835116000 implements MigrationInterface 
     );
 
     await queryRunner.query(
-      `CREATE INDEX "IDX_payment_approval_aidworker_created" ON "121-service"."payment_approval_aidworker" ("created")`,
+      `CREATE INDEX "IDX_241f45e2735f2edd505c56d9ee" ON "121-service"."payment_approval_aidworker" ("created")`,
     );
 
     await queryRunner.query(
