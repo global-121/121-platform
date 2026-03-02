@@ -676,7 +676,7 @@ export class IntersolveVisaService {
     });
   }
 
-  // Calculated the amount that can be transferred based on the limits of maximum amount on a wallet and maximum amount that can be spent per month.
+  // Calculated the amount that can be transferred based on the limits of maximum amount on a wallet.
   private calculateLimitedTransferValue({
     transferValueInMajorUnit,
     balance,

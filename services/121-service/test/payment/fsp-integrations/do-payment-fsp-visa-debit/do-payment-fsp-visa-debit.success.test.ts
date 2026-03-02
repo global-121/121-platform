@@ -306,7 +306,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
       accessToken,
     });
     expect(transactionsResponse2.body.data[0].transferValue).toBe(
-      expectedCalculatedTransferValueRegistration2, // = 0 : A transaction of 0 is created
+      expectedCalculatedTransferValueRegistration2, // = 10 : A transaction of 10 is created
     );
     expect(transactionsResponse2.text).toContain(TransactionStatusEnum.success);
 
