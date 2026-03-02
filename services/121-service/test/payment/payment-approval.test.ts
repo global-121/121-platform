@@ -380,7 +380,10 @@ describe('do payment with <2 approvers', () => {
     // Cva manager can only create a payment and a finance manager can create and start a payment
     expect(createPaymentResponseCvaManager.status).toBe(HttpStatus.CREATED);
     expect(createPaymentResponseFinanceManager.status).toBe(HttpStatus.CREATED);
-    expect(approvePaymentResponseCvaManager.status).toBe(HttpStatus.FORBIDDEN);
+    // CVA manager has assignment but isn't designated as approver for this payment
+    expect(approvePaymentResponseCvaManager.status).toBe(
+      HttpStatus.BAD_REQUEST,
+    );
     expect(approvePaymentResponseAdmin.status).toBe(HttpStatus.CREATED);
     expect(startPaymentResponseCvaManager.status).toBe(HttpStatus.FORBIDDEN);
     expect(startPaymentResponseFinanceManager.status).toBe(HttpStatus.ACCEPTED);
@@ -544,7 +547,10 @@ describe('do payment with <2 approvers', () => {
     // Assert
     expect(getPaymentResponse.status).toBe(HttpStatus.OK);
     expect(getPaymentResponse.body.approvalStatus.length).toBe(2);
-    expect(getPaymentResponse.body.approvalStatus[1].approvers).toEqual([]); // The missing approvers are handled in the front-end as 'Approver deleted. Create new payment.'
+    // With junction table approach, approvers are preserved even after threshold config changes
+    expect(getPaymentResponse.body.approvalStatus[1].approvers).toEqual([
+      'finance-manager@example.org',
+    ]);
   });
 
   it('should include note in payment approved event', async () => {
