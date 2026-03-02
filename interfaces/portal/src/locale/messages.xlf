@@ -1514,9 +1514,6 @@
       <trans-unit id="page-title-program-settings-team" datatype="html">
         <source>Program team</source>
       </trans-unit>
-      <trans-unit id="page-title-program-program-settings" datatype="html">
-        <source>Program settings</source>
-      </trans-unit>
       <trans-unit id="5649335820714201159" datatype="html">
         <source>Edit team</source>
       </trans-unit>
@@ -1835,7 +1832,7 @@
       <trans-unit id="5906272961955453157" datatype="html">
         <source>Approved</source>
       </trans-unit>
-      <trans-unit id="page-title-program-program-settings|trim" datatype="html">
+      <trans-unit id="page-heading-program-settings" datatype="html">
         <source>Program settings</source>
       </trans-unit>
       <trans-unit id="payment-event-log-item-type-approved" datatype="html">

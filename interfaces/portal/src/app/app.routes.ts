@@ -204,7 +204,7 @@ export const routes: Routes = [
             title:
               $localize`:@@page-title-program-settings-fsps:FSPs` +
               ' | ' +
-              $localize`:@@page-title-program-program-settings:Program settings`,
+              $localize`:@@page-title-program-settings:Settings`,
             loadComponent: () =>
               import('~/pages/program-settings-fsps/program-settings-fsps.page').then(
                 (x) => x.ProgramSettingsFspsPageComponent,
@@ -218,7 +218,7 @@ export const routes: Routes = [
             title:
               $localize`:@@page-title-program-settings-registration-data:Registration data` +
               ' | ' +
-              $localize`:@@page-title-program-program-settings:Program settings`,
+              $localize`:@@page-title-program-settings:Settings`,
             loadComponent: () =>
               import('~/pages/program-settings-registration-data/program-settings-registration-data.page').then(
                 (x) => x.ProgramSettingsRegistrationDataPageComponent,
