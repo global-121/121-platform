@@ -14,6 +14,112 @@ describe('CustomHttpService', () => {
     service = new CustomHttpService({} as any);
   });
 
+  describe('remove sensitive values from logging', () => {
+    let trackTraceMock: jest.Mock;
+
+    beforeEach(() => {
+      trackTraceMock = jest.fn();
+      service.defaultClient = {
+        trackTrace: trackTraceMock,
+        flush: jest.fn(),
+      } as any;
+    });
+
+    const getTrackedMessage = (): string =>
+      trackTraceMock.mock.calls[0][0].message;
+
+    const getTrackedPayload = (): Record<string, any> =>
+      JSON.parse(getTrackedMessage().match(/Payload: (.*?) - Response:/)![1]);
+
+    const logWithPayload = (payload: object) =>
+      service.logMessageRequest(
+        { url: 'https://example.com', payload },
+        { status: 200, statusText: 'OK', data: {} },
+      );
+
+    it('should redact top-level password', () => {
+      // Arrange
+      const payload = { password: 'super-secret' };
+
+      // Act
+      logWithPayload(payload);
+
+      // Assert
+      expect(getTrackedPayload().password).toMatchInlineSnapshot(
+        `"**REDACTED**"`,
+      );
+    });
+
+    it('should mask top-level username', () => {
+      // Arrange
+      const payload = { username: 'john-doe' };
+
+      // Act
+      logWithPayload(payload);
+
+      // Assert
+      expect(getTrackedPayload().username).toMatchInlineSnapshot(`"joh*****"`);
+    });
+
+    it('should redact nested password inside settings object', () => {
+      // Arrange
+      const payload = {
+        settings: { username: 'john', password: 'nested-secret' },
+      };
+
+      // Act
+      logWithPayload(payload);
+
+      // Assert
+      expect(getTrackedPayload().settings.password).toMatchInlineSnapshot(
+        `"**REDACTED**"`,
+      );
+    });
+
+    it('should mask nested username inside settings object', () => {
+      // Arrange
+      const payload = { settings: { username: 'john-doe' } };
+
+      // Act
+      logWithPayload(payload);
+
+      // Assert
+      expect(getTrackedPayload().settings.username).toMatchInlineSnapshot(
+        `"joh*****"`,
+      );
+    });
+
+    it('should redact cookie names', () => {
+      // Arrange
+      const payload = {
+        [CookieNames.general]: 'cookie-value',
+        [CookieNames.portal]: 'portal-value',
+      };
+
+      // Act
+      logWithPayload(payload);
+
+      // Assert
+      expect(getTrackedPayload()[CookieNames.general]).toMatchInlineSnapshot(
+        `"**REDACTED**"`,
+      );
+      expect(getTrackedPayload()[CookieNames.portal]).toMatchInlineSnapshot(
+        `"**REDACTED**"`,
+      );
+    });
+
+    it('should leave non-sensitive properties unchanged', () => {
+      // Arrange
+      const payload = { name: 'test-webhook', active: true };
+
+      // Act
+      logWithPayload(payload);
+
+      // Assert
+      expect(getTrackedPayload().name).toMatchInlineSnapshot(`"test-webhook"`);
+    });
+  });
+
   describe('createHttpsAgentWithCertificate', () => {
     it('should create an HTTPS agent with a certificate and passphrase', () => {
       const certificatePath = 'path/to/certificate.p12';
