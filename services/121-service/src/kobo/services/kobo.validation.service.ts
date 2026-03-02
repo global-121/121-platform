@@ -10,6 +10,7 @@ import { KOBO_TO_121_TYPE_MAPPING } from '@121-service/src/kobo/consts/kobo-surv
 import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
 import { KoboLanguageMapper } from '@121-service/src/kobo/mappers/kobo-language.mapper';
+import { fspQuestionName } from '@121-service/src/kobo/services/kobo.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import {
@@ -21,6 +22,9 @@ import {
   type RegistrationViewAttributeNameWithoutPhoneNumber,
 } from '@121-service/src/shared/const';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+
+// These Kobo field types are accepted for any 121 attribute type because cash-im teams use them for computed/pre-filled values
+const KOBO_TYPES_ALLOWED_FOR_ANY_ATTRIBUTE = ['hidden', 'calculate'];
 
 @Injectable()
 export class KoboValidationService {
@@ -113,6 +117,14 @@ export class KoboValidationService {
       accumulatedErrors: errorMessages,
       error: this.validateForbiddenRegistrationViewAttributes({
         koboSurveyItems: formDefinition.survey,
+      }),
+    });
+
+    errorMessages = this.collectErrors({
+      accumulatedErrors: errorMessages,
+      error: this.validateFspQuestion({
+        koboSurveyItems: formDefinition.survey,
+        fspConfigs,
       }),
     });
 
@@ -375,8 +387,13 @@ export class KoboValidationService {
     surveyItemType: string;
     expected121Type: RegistrationAttributeTypes;
   }): string | undefined {
-    // Hidden fields are allowed for any attribute type as they are now used by our cash-im team for any values
-    if (surveyItemType === 'hidden') {
+    // Hidden and 'calculate' fields are allowed for any attribute type as they are now used by our cash-im team for any values
+    // They are too dificult to validate as of this moment
+    if (
+      (KOBO_TYPES_ALLOWED_FOR_ANY_ATTRIBUTE as readonly string[]).includes(
+        surveyItemType,
+      )
+    ) {
       return;
     }
 
@@ -457,6 +474,62 @@ export class KoboValidationService {
     name: string,
   ): name is RegistrationViewAttributeNameWithoutPhoneNumber {
     return registrationViewAttributeNames.includes(name);
+  }
+
+  private validateFspQuestion({
+    koboSurveyItems,
+    fspConfigs,
+  }: {
+    koboSurveyItems: KoboSurveyItemCleaned[];
+    fspConfigs: { fspName: Fsps; name: string }[];
+  }): string | undefined {
+    const fspItem = koboSurveyItems.find(
+      (item) => item.name === fspQuestionName,
+    );
+    if (!fspItem) {
+      return `Kobo form must contain a question with name "${fspQuestionName}".`;
+    }
+
+    const validTypes = new Set([
+      ...KOBO_TYPES_ALLOWED_FOR_ANY_ATTRIBUTE,
+      'select_one',
+    ]);
+    const isValidType = validTypes.has(fspItem.type);
+
+    if (!isValidType) {
+      const validTypesList = [...validTypes].map((t) => `"${t}"`).join(', ');
+      return `Kobo form attribute "${fspQuestionName}" must be one of the following types: ${validTypesList}, got "${fspItem.type}".`;
+    }
+
+    // If it's a select_one, validate that the choices match the FSP configuration names
+    if (fspItem.type === 'select_one' && fspItem.choices.length > 0) {
+      return this.validateFspQuestionChoices({
+        fspItem,
+        fspConfigs,
+      });
+    }
+  }
+
+  private validateFspQuestionChoices({
+    fspItem,
+    fspConfigs,
+  }: {
+    fspItem: KoboSurveyItemCleaned;
+    fspConfigs: { fspName: Fsps; name: string }[];
+  }): string | undefined {
+    const fspConfigNames = new Set(fspConfigs.map((config) => config.name));
+    const choiceNames = fspItem.choices.map((choice) => choice.name);
+
+    // Check if all choices exist in FSP configs
+    const invalidChoices = choiceNames.filter(
+      (choice) => !fspConfigNames.has(choice),
+    );
+
+    if (invalidChoices.length > 0) {
+      return `Kobo form attribute "${fspQuestionName}" has choices that don't match program FSP configuration names. Invalid choices: ${invalidChoices.join(', ')}. Expected one of: ${[...fspConfigNames].join(', ')}.`;
+    }
+    // There is no check if to see if all FSP configs from the 121 program are represented in choices from kobo
+    // Sometimes an fsp will only be set via the 121-platform and not be visible in Kobo, so we cannot enforce that all FSP configs are represented in the Kobo choices. We only check that if a choice is made in Kobo, it must be a valid FSP config.
   }
 
   private collectErrors({

@@ -18,6 +18,8 @@ import { ProgramService } from '@121-service/src/programs/programs.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
+export const fspQuestionName = 'fsp';
+
 @Injectable()
 export class KoboService {
   @InjectRepository(KoboEntity)
@@ -204,13 +206,23 @@ export class KoboService {
       });
 
     // Filter out registration view attributes as they're already part of RegistrationViewEntity
-    const filteredAttributes = programRegistrationAttributes.filter(
-      (attr) => !KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES[attr.name],
-    );
+    const isNotRegistrationViewAttribute = (attr: { name: string }) => {
+      return !KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES[attr.name];
+    };
+
+    // Filter out 'fsp' as it's a special field which we later use to determine the programFspConfigurationName of incoming Kobo submission
+    // The reason we map this is because fsp is less confusing to non-technical users than programFspConfigurationName
+    const isNotFsp = (attr: { name: string }) => {
+      return attr.name !== fspQuestionName;
+    };
+
+    const attributesToUpsert = programRegistrationAttributes
+      .filter(isNotRegistrationViewAttribute)
+      .filter(isNotFsp);
 
     await this.programService.upsertProgramRegistrationAttributes({
       programId,
-      programRegistrationAttributes: filteredAttributes,
+      programRegistrationAttributes: attributesToUpsert,
     });
   }
 
