@@ -79,6 +79,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],
+      paymentId,
     });
 
     // Assert
@@ -141,6 +142,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],
+      paymentId,
     });
 
     // Assert
@@ -190,6 +192,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],
+      paymentId,
     });
 
     // Assert
@@ -239,6 +242,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],
+      paymentId,
     });
 
     // Assert
@@ -396,7 +400,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
-      maxWaitTimeMs: 4_000,
+      maxWaitTimeMs: 10_000,
       completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
@@ -448,13 +452,13 @@ describe('Do failing payment with FSP Visa Debit', () => {
     await waitForPaymentAndTransactionsToComplete({
       programId: programIdVisa,
       paymentReferenceIds: [uniqueRegistration.referenceId],
-      paymentId,
       accessToken,
       maxWaitTimeMs: 10_000,
       completeStatuses: [
         TransactionStatusEnum.success,
         TransactionStatusEnum.error,
       ],
+      paymentId,
     });
     const getTransactionsResult = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,

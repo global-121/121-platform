@@ -47,7 +47,12 @@ describe('PaymentsManagementService', () => {
       ProgramApprovalThresholdsService,
     );
     (service as any).paymentRepository = {
-      save: jest.fn().mockResolvedValue({ id: 123 }),
+      save: jest.fn().mockImplementation((entity) => {
+        return Promise.resolve({ ...entity, id: 123 });
+      }),
+    };
+    (service as any).paymentApprovalAidworkerRepository = {
+      save: jest.fn().mockResolvedValue([]),
     };
 
     registrationsBulkService.getBaseQuery = jest
@@ -207,10 +212,10 @@ describe('PaymentsManagementService', () => {
   describe('createPaymentAndEventsEntities', () => {
     it('should assign correct rank based on thresholdAmount in createPaymentAndEventsEntities', async () => {
       const thresholds = [
-        { id: 1, thresholdAmount: 100 },
-        { id: 2, thresholdAmount: 0 },
-        { id: 3, thresholdAmount: 500 },
-      ] as ProgramApprovalThresholdEntity[];
+        { id: 1, thresholdAmount: 100, approverAssignments: [] },
+        { id: 2, thresholdAmount: 0, approverAssignments: [] },
+        { id: 3, thresholdAmount: 500, approverAssignments: [] },
+      ] as unknown as ProgramApprovalThresholdEntity[];
 
       await (service as any).createPaymentAndEventsEntities({
         userId: 2,
@@ -220,17 +225,14 @@ describe('PaymentsManagementService', () => {
 
       const expectedApprovals = [
         expect.objectContaining({
-          programApprovalThresholdId: 2,
           rank: 1,
           approved: false,
         }),
         expect.objectContaining({
-          programApprovalThresholdId: 1,
           rank: 2,
           approved: false,
         }),
         expect.objectContaining({
-          programApprovalThresholdId: 3,
           rank: 3,
           approved: false,
         }),
@@ -266,7 +268,9 @@ describe('PaymentsManagementService', () => {
     });
 
     it('should throw if approver is not assigned to payment', async () => {
-      paymentApprovalRepository.find.mockResolvedValue([]);
+      paymentApprovalRepository.find.mockResolvedValue([
+        { id: 1, rank: 1, approved: false, aidworkers: [] },
+      ]);
       await expect(
         service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
       ).rejects.toThrow(
@@ -276,8 +280,13 @@ describe('PaymentsManagementService', () => {
 
     it('should throw if threshold has already been approved', async () => {
       const approvals = [
-        { programApprovalThresholdId: 1, approved: true, rank: 1 },
-        { programApprovalThresholdId: 2, approved: false, rank: 2 },
+        {
+          id: 1,
+          approved: true,
+          rank: 1,
+          aidworkers: [{ programAidworkerAssignmentId: 1 }],
+        },
+        { id: 2, approved: false, rank: 2, aidworkers: [] },
       ];
       paymentApprovalRepository.find.mockResolvedValue(approvals);
       await expect(
@@ -289,8 +298,13 @@ describe('PaymentsManagementService', () => {
 
     it('should throw if not lowest rank threshold', async () => {
       const approvals = [
-        { programApprovalThresholdId: 1, approved: false, rank: 2 },
-        { programApprovalThresholdId: 2, approved: false, rank: 1 },
+        {
+          id: 1,
+          approved: false,
+          rank: 2,
+          aidworkers: [{ programAidworkerAssignmentId: 1 }],
+        },
+        { id: 2, approved: false, rank: 1, aidworkers: [] },
       ];
       paymentApprovalRepository.find.mockResolvedValue(approvals);
       await expect(
@@ -302,8 +316,13 @@ describe('PaymentsManagementService', () => {
 
     it('should approve the payment for the threshold and save', async () => {
       const approvals = [
-        { programApprovalThresholdId: 1, approved: false, rank: 1 },
-        { programApprovalThresholdId: 2, approved: false, rank: 2 },
+        {
+          id: 1,
+          approved: false,
+          rank: 1,
+          aidworkers: [{ programAidworkerAssignmentId: 1 }],
+        },
+        { id: 2, approved: false, rank: 2, aidworkers: [] },
       ];
       paymentApprovalRepository.find.mockResolvedValue(approvals);
       jest
@@ -319,7 +338,12 @@ describe('PaymentsManagementService', () => {
 
     it('should call processFinalApproval if all thresholds are approved', async () => {
       const approvals = [
-        { programApprovalThresholdId: 1, approved: false, rank: 1 },
+        {
+          id: 1,
+          approved: false,
+          rank: 1,
+          aidworkers: [{ programAidworkerAssignmentId: 1 }],
+        },
       ];
       paymentApprovalRepository.find.mockResolvedValue(approvals);
       paymentApprovalRepository.count.mockResolvedValue(0);

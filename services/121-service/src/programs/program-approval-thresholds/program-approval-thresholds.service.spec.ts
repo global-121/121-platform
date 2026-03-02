@@ -436,6 +436,7 @@ describe('ProgramApprovalThresholdsService', () => {
           programId: expect.anything(),
           thresholdAmount: expect.anything(), // LessThanOrEqual(100)
         },
+        relations: ['approverAssignments'],
         order: { thresholdAmount: 'ASC' },
       });
       expect(result).toEqual(thresholds);

@@ -11,7 +11,7 @@ export class ThresholdBasedApprovals1771835116000 implements MigrationInterface 
         "created" TIMESTAMP NOT NULL DEFAULT now(),
         "updated" TIMESTAMP NOT NULL DEFAULT now(),
         "programId" integer NOT NULL,
-        "thresholdAmount" integer NOT NULL,
+        "thresholdAmount" decimal(10,2) NOT NULL,
         CONSTRAINT "PK_program_approval_threshold_id" PRIMARY KEY ("id")
       )`,
     );

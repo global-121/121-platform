@@ -22,7 +22,7 @@ export class ProgramApprovalThresholdEntity extends Base121Entity {
   @Column()
   public programId: number;
 
-  @Column({ type: 'integer' })
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   public thresholdAmount: number;
 
   @OneToMany(
