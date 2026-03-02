@@ -9,6 +9,7 @@ import { LookupService } from '@121-service/src/notifications/lookup/lookup.serv
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
+import { PaymentApprovalAidworkerEntity } from '@121-service/src/payments/entities/payment-approval-aidworker.entity';
 import { PaymentEventsModule } from '@121-service/src/payments/payment-events/payment-events.module';
 import { PaymentsController } from '@121-service/src/payments/payments.controller';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
@@ -45,6 +46,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
       ProgramEntity,
       PaymentEntity,
       PaymentApprovalEntity,
+      PaymentApprovalAidworkerEntity,
       ProgramAidworkerAssignmentEntity,
     ]),
     UserModule,

@@ -1,10 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
-import { Equal, IsNull, Not, Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
+import { PaymentApprovalAidworkerEntity } from '@121-service/src/payments/entities/payment-approval-aidworker.entity';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
@@ -33,6 +34,8 @@ export class PaymentsManagementService {
   private readonly paymentRepository: Repository<PaymentEntity>;
   @InjectRepository(ProgramAidworkerAssignmentEntity)
   private readonly aidworkerAssignmentRepository: Repository<ProgramAidworkerAssignmentEntity>;
+  @InjectRepository(PaymentApprovalAidworkerEntity)
+  private readonly paymentApprovalAidworkerRepository: Repository<PaymentApprovalAidworkerEntity>;
   public constructor(
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
@@ -243,7 +246,6 @@ export class PaymentsManagementService {
       .sort((a, b) => a.thresholdAmount - b.thresholdAmount);
     const paymentApprovals = sortedThresholds.map((threshold, index) => {
       const paymentApproval = new PaymentApprovalEntity();
-      paymentApproval.programApprovalThresholdId = threshold.id;
       paymentApproval.approved = false;
       paymentApproval.rank = index + 1;
       return paymentApproval;
@@ -253,6 +255,27 @@ export class PaymentsManagementService {
     paymentEntity.programId = programId;
     paymentEntity.approvals = paymentApprovals;
     const savedPaymentEntity = await this.paymentRepository.save(paymentEntity);
+
+    // Create junction table records linking payment approvals to aidworker assignments
+    const junctionRecords: PaymentApprovalAidworkerEntity[] = [];
+    for (let i = 0; i < sortedThresholds.length; i++) {
+      const threshold = sortedThresholds[i];
+      const paymentApproval = savedPaymentEntity.approvals[i];
+      const approverAssignments = threshold.approverAssignments || [];
+
+      for (let j = 0; j < approverAssignments.length; j++) {
+        const assignment = approverAssignments[j];
+        const junctionRecord = new PaymentApprovalAidworkerEntity();
+        junctionRecord.paymentApprovalId = paymentApproval.id;
+        junctionRecord.programAidworkerAssignmentId = assignment.id;
+        junctionRecord.order = j + 1;
+        junctionRecords.push(junctionRecord);
+      }
+    }
+
+    if (junctionRecords.length > 0) {
+      await this.paymentApprovalAidworkerRepository.save(junctionRecords);
+    }
 
     await this.paymentEventsService.createEvent({
       paymentId: savedPaymentEntity.id,
@@ -331,47 +354,52 @@ export class PaymentsManagementService {
     paymentId: number;
     note?: string;
   }): Promise<void> {
-    // Get the user's aidworker assignment and verify they are an approver
+    // Get the user's aidworker assignment
     const approverAssignment = await this.aidworkerAssignmentRepository.findOne(
       {
         where: {
           userId: Equal(userId),
           programId: Equal(programId),
-          programApprovalThresholdId: Not(IsNull()),
         },
       },
     );
 
-    if (!approverAssignment || !approverAssignment.programApprovalThresholdId) {
+    if (!approverAssignment) {
       throw new HttpException(
         'User is not an approver for this program',
         HttpStatus.FORBIDDEN,
       );
     }
 
+    // Load all payment approvals with their assigned aidworkers
     const allPaymentApprovals = await this.paymentApprovalRepository.find({
       where: {
         paymentId: Equal(paymentId),
       },
-      relations: { programApprovalThreshold: true },
+      relations: { aidworkers: { programAidworkerAssignment: true } },
     });
-    const currentPaymentApproval = allPaymentApprovals.find(
-      (approval) =>
-        approval.programApprovalThresholdId ===
-        approverAssignment.programApprovalThresholdId,
+
+    // Find the approval that this user is assigned to approve
+    const currentPaymentApproval = allPaymentApprovals.find((approval) =>
+      (approval.aidworkers || []).some(
+        (aw) => aw.programAidworkerAssignmentId === approverAssignment.id,
+      ),
     );
+
     if (!currentPaymentApproval) {
       throw new HttpException(
         'Approver not assigned to any threshold for this payment',
         HttpStatus.BAD_REQUEST,
       );
     }
+
     if (currentPaymentApproval.approved) {
       throw new HttpException(
         'This threshold has already been approved for this payment',
         HttpStatus.BAD_REQUEST,
       );
     }
+
     this.checkLowestRankOrThrow({
       currentPaymentApproval,
       allPaymentApprovals,

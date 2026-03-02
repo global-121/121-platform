@@ -182,6 +182,7 @@ export class ProgramApprovalThresholdsService {
         programId: Equal(programId),
         thresholdAmount: LessThanOrEqual(paymentAmount),
       },
+      relations: ['approverAssignments'],
       order: { thresholdAmount: 'ASC' },
     });
     return thresholds;

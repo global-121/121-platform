@@ -126,22 +126,24 @@ export class PaymentsReportingService {
         paymentId: Equal(paymentId),
       },
       relations: {
-        programApprovalThreshold: {
-          approverAssignments: { user: true },
+        aidworkers: {
+          programAidworkerAssignment: { user: true },
         },
         approvedByUser: true,
       },
       order: { rank: 'ASC' },
     });
     return paymentApprovals.map((approval) => {
-      const { programApprovalThreshold } = approval;
+      // Sort aidworkers by order field to maintain approval sequence
+      const sortedAidworkers = (approval.aidworkers || []).sort(
+        (a, b) => a.order - b.order,
+      );
       return {
         id: approval.id,
         approved: approval.approved,
-        approvers:
-          programApprovalThreshold?.approverAssignments
-            ?.map((a) => a.user?.username)
-            .filter((username): username is string => Boolean(username)) || [],
+        approvers: sortedAidworkers
+          .map((a) => a.programAidworkerAssignment?.user?.username)
+          .filter((username): username is string => Boolean(username)),
         rank: approval.rank,
         approvedBy: approval.approvedByUser?.username || null,
       };
