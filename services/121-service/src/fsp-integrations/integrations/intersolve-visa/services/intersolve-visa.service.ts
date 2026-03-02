@@ -671,8 +671,6 @@ export class IntersolveVisaService {
     // Calculate the amount that should be transferred. If the registration does not have customer yet the spendThisMonth and balance will be 0.
     return this.calculateLimitedTransferValue({
       transferValueInMajorUnit: inputTransferValueInMajorUnit,
-      spentThisMonth:
-        intersolveVisaCustomer?.intersolveVisaParentWallet?.spentThisMonth ?? 0,
       balance: intersolveVisaCustomer?.intersolveVisaParentWallet?.balance ?? 0,
       maxToSpendPerMonthInCents,
     });
@@ -681,17 +679,15 @@ export class IntersolveVisaService {
   // Calculated the amount that can be transferred based on the limits of maximum amount on a wallet and maximum amount that can be spent per month.
   private calculateLimitedTransferValue({
     transferValueInMajorUnit,
-    spentThisMonth,
     balance,
     maxToSpendPerMonthInCents,
   }: {
     transferValueInMajorUnit: number;
-    spentThisMonth: number;
     balance: number;
     maxToSpendPerMonthInCents: number;
   }): number {
     const calculatedTransferValueMajorUnit =
-      (maxToSpendPerMonthInCents - spentThisMonth - balance) / 100;
+      (maxToSpendPerMonthInCents - balance) / 100;
 
     if (calculatedTransferValueMajorUnit > 0) {
       return Math.min(

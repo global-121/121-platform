@@ -267,8 +267,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     });
 
     // Assert Registration 1
-    const expectedCalculatedTransferValueRegistration1 =
-      150 - 13000 / 100 - 1000 / 100; // = 10
+    const expectedCalculatedTransferValueRegistration1 = 150 - 13000 / 100; // = 20
     const expectedBody = createEnglishMessageBodyForAmount({
       amount: expectedCalculatedTransferValueRegistration1,
     });
@@ -298,8 +297,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     expect(transactionsResponse1.text).toContain(TransactionStatusEnum.success);
 
     // Assert Registration 2
-    const expectedCalculatedTransferValueRegistration2 =
-      150 - 14000 / 100 - 1000 / 100; // = 0
+    const expectedCalculatedTransferValueRegistration2 = 150 - 14000 / 100; // = 10
 
     const transactionsResponse2 = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
