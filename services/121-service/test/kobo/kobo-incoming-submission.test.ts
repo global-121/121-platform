@@ -195,8 +195,8 @@ describe('Process incoming Kobo submission via webhook', () => {
     // This is similar of how it would behave in production, where Kobo would receive an error response if the submission processing fails
     // Kobo user would be able to see this error in the Kobo Rest service logs, which can be used for troubleshooting
     expect(triggerSubmissionResponse.status).toBe(HttpStatus.BAD_REQUEST);
-    expect(triggerSubmissionResponse.body[0].error).toBe(
-      'FspConfigurationName Invalid-FSP not found in program. Allowed values: Safaricom',
+    expect(triggerSubmissionResponse.body[0].error).toMatchInlineSnapshot(
+      `"FspConfigurationName Invalid-FSP not found in program. Allowed values: Safaricom"`,
     );
 
     //  no registration was created
@@ -208,26 +208,30 @@ describe('Process incoming Kobo submission via webhook', () => {
     expect(searchResponse.body.data).toHaveLength(0);
   });
 
-  it('should return not found when the asset UID is unknown', async () => {
+  it('should return not found when the submission UID is unknown', async () => {
     // This test simulates an external actor — e.g. someone who discovered our
-    // webhook endpoint — calling it with a made-up asset UID that does not
-    // correspond to any Kobo integration stored in the 121-service database.
+    // webhook endpoint — calling it with a made-up Submission uid that does not
+    // correspond to any Kobo submission
     // In these cases, the 121-service should reject the request with a 404
 
     // Arrange
-    const unknownAssetUid = 'made-up-asset-uid-that-does-not-exist';
-    const submissionUuid = `${KoboMockSubmissionUuids.success}-unknown-asset`;
+    const { assetUid } = await setupProgramWithKoboIntegration(
+      'success-asset-submission-not-found',
+    );
+
+    const submissionUuid = `unknown-asset`;
 
     // Act
     const triggerSubmissionResponse = await triggerKoboSubmission({
-      assetUid: unknownAssetUid,
+      assetUid,
       submissionUuid,
     });
 
     // Assert: 121-service returned a 404 and the mock service forwarded it
     expect(triggerSubmissionResponse.status).toBe(HttpStatus.NOT_FOUND);
-    expect(triggerSubmissionResponse.body.message).toBe(
-      'Kobo integration not found for this program',
+    // Not using inline snapshot for the error message, as it contains the url which can differ based on the environment
+    expect(triggerSubmissionResponse.body.message).toContain(
+      'Kobo submission not found for asset: success-asset-submission-not-found, url:',
     );
   });
 
@@ -246,8 +250,8 @@ describe('Process incoming Kobo submission via webhook', () => {
     });
 
     expect(secondResponse.status).toBe(HttpStatus.BAD_REQUEST);
-    expect(secondResponse.body[0].error).toBe(
-      'referenceId already exists in database',
+    expect(secondResponse.body[0].error).toMatchInlineSnapshot(
+      `"referenceId already exists in database"`,
     );
 
     // Verify only one registration exists

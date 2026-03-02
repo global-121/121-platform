@@ -17,6 +17,7 @@ import {
   ApiParam,
   ApiQuery,
   ApiResponse,
+  ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler/dist/throttler.decorator';
@@ -29,6 +30,7 @@ import { CreateKoboDto } from '@121-service/src/kobo/dtos/create-kobo.dto';
 import { KoboIntegrationResultDto } from '@121-service/src/kobo/dtos/kobo-integration-result.dto';
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
 import { KoboWebhookIncomingSubmission } from '@121-service/src/kobo/dtos/kobo-webhook-incoming-submission.dto';
+import { KoboWebhookBasicAuthGuard } from '@121-service/src/kobo/guards/kobo-webhook-basic-auth.guard';
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboSubmissionService } from '@121-service/src/kobo/services/kobo-submission.service';
 
@@ -162,6 +164,8 @@ export class KoboController {
   @NoUserAuthenticationEndpoint(
     'This endpoint is called by Kobo and does not require user authentication',
   )
+  @UseGuards(KoboWebhookBasicAuthGuard)
+  @ApiSecurity('basic')
   @SkipThrottle() // Skip rate limiting as this endpoint is called by Kobo and we want to avoid rejecting calls due to rate limits
   @ApiOperation({
     summary: `Post a new kobo submission [USED BY KOBO]`,
