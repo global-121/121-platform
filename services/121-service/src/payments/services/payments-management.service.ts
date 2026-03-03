@@ -169,7 +169,6 @@ export class PaymentsManagementService {
       };
     }
 
-    // Get thresholds that apply to this payment amount
     const thresholds =
       await this.programApprovalThresholdsService.getThresholdsForPaymentAmount(
         programId,
@@ -261,7 +260,7 @@ export class PaymentsManagementService {
     for (let i = 0; i < sortedThresholds.length; i++) {
       const threshold = sortedThresholds[i];
       const paymentApproval = savedPaymentEntity.approvals[i];
-      const approverAssignments = threshold.approverAssignments || [];
+      const approverAssignments = threshold.approverAssignments ?? [];
 
       for (let j = 0; j < approverAssignments.length; j++) {
         const assignment = approverAssignments[j];
@@ -354,7 +353,6 @@ export class PaymentsManagementService {
     paymentId: number;
     note?: string;
   }): Promise<void> {
-    // Get the user's aidworker assignment
     const approverAssignment = await this.aidworkerAssignmentRepository.findOne(
       {
         where: {
@@ -371,29 +369,28 @@ export class PaymentsManagementService {
       );
     }
 
-    // Load all payment approvals with their assigned aidworkers
-    const allPaymentApprovals = await this.paymentApprovalRepository.find({
+    const paymentApprovals = await this.paymentApprovalRepository.find({
       where: {
         paymentId: Equal(paymentId),
       },
       relations: { aidworkers: { programAidworkerAssignment: true } },
     });
 
-    // Find the approval that this user is assigned to approve
-    const currentPaymentApproval = allPaymentApprovals.find((approval) =>
-      (approval.aidworkers || []).some(
-        (aw) => aw.programAidworkerAssignmentId === approverAssignment.id,
+    const approvalAssignedToApprover = paymentApprovals.find((approval) =>
+      (approval.aidworkers ?? []).some(
+        (aidworker) =>
+          aidworker.programAidworkerAssignmentId === approverAssignment.id,
       ),
     );
 
-    if (!currentPaymentApproval) {
+    if (!approvalAssignedToApprover) {
       throw new HttpException(
         'Approver not assigned to any threshold for this payment',
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    if (currentPaymentApproval.approved) {
+    if (approvalAssignedToApprover.approved) {
       throw new HttpException(
         'This threshold has already been approved for this payment',
         HttpStatus.BAD_REQUEST,
@@ -401,21 +398,21 @@ export class PaymentsManagementService {
     }
 
     this.checkLowestRankOrThrow({
-      currentPaymentApproval,
-      allPaymentApprovals,
+      currentPaymentApproval: approvalAssignedToApprover,
+      allPaymentApprovals: paymentApprovals,
     });
 
     // store payment approval
-    currentPaymentApproval.approved = true;
-    currentPaymentApproval.approvedByUserId = userId;
-    await this.paymentApprovalRepository.save(currentPaymentApproval);
+    approvalAssignedToApprover.approved = true;
+    approvalAssignedToApprover.approvedByUserId = userId;
+    await this.paymentApprovalRepository.save(approvalAssignedToApprover);
 
     // store payment event
     await this.paymentEventsService.createApprovedEvent({
       paymentId,
       userId,
-      rank: currentPaymentApproval.rank,
-      total: allPaymentApprovals.length,
+      rank: approvalAssignedToApprover.rank,
+      total: paymentApprovals.length,
       note,
     });
 
