@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { AxiosRequestConfig } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { defaultClient, TelemetryClient } from 'applicationinsights';
-import { isPlainObject } from 'lodash';
+import { cloneDeepWith, isPlainObject } from 'lodash';
 import fs from 'node:fs';
 import https, { AgentOptions } from 'node:https';
 import { SecureContextOptions } from 'node:tls';
@@ -362,9 +362,9 @@ export class CustomHttpService {
   }
 
   /**
-   * Overwrite and/or mask sensitive data (only for specific properties, 1-level deep)
+   * Overwrite and/or mask sensitive data (recursively for nested plain objects)
    * @param data - Any key-value object
-   * @returns - A copy of the input-object with some specific data overwritten/redacted
+   * @returns - A deep copy of the input-object with sensitive data overwritten/redacted
    */
   private redactSensitiveDataProperties(data: any) {
     if (!isPlainObject(data)) {
@@ -378,19 +378,23 @@ export class CustomHttpService {
       CookieNames.portal,
     ];
 
-    const redactedData = { ...data }; // Shallow copy to avoid mutating the original object
+    const isSensitiveProperty = (key: string | number | undefined): boolean =>
+      typeof key === 'string' && sensitiveProperties.includes(key);
 
-    for (const property of sensitiveProperties) {
-      if (redactedData[property]) {
-        redactedData[property] = '**REDACTED**';
-      }
-    }
+    const isUsernameProperty = (key: string | number | undefined): boolean =>
+      key === 'username';
 
-    // Explicitly mask the username/email:
-    if (redactedData.username) {
-      redactedData.username = maskValueKeepStart(redactedData.username, 3);
-    }
-
-    return redactedData;
+    return cloneDeepWith(
+      data,
+      (value: unknown, key: string | number | undefined) => {
+        if (isSensitiveProperty(key)) {
+          return '**REDACTED**';
+        }
+        if (isUsernameProperty(key) && typeof value === 'string') {
+          return maskValueKeepStart(value, 3);
+        }
+        return undefined;
+      },
+    );
   }
 }
