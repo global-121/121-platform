@@ -12,12 +12,6 @@ export class GetProgramApprovalThresholdResponseDto {
   @ApiProperty({ example: 1 })
   public readonly programId: number;
 
-  @ApiProperty()
-  public readonly created: Date;
-
-  @ApiProperty()
-  public readonly updated: Date;
-
   @ApiProperty({ type: [ApproverResponseDto] })
   public readonly approvers: ApproverResponseDto[];
 }
