@@ -27,8 +27,10 @@ if (env.ENV_ICON) {
 
 export const APP_FAVICON = favIconUrl;
 export const SWAGGER_CUSTOM_CSS = `
-  .swagger-ui .topbar { background: ${headerStyle}; }
-  .swagger-ui .topbar .link { visibility: hidden; }
+  html.dark-mode .swagger-ui .topbar,
+  .swagger-ui .topbar { background: ${headerStyle};}
+  .swagger-ui .topbar .topbar-wrapper { justify-content: end; min-height: 3rem; }
+  .swagger-ui .topbar .link,
   .swagger-ui .scheme-container { display: none; }
 `;
 export const SWAGGER_CUSTOM_JS = `
