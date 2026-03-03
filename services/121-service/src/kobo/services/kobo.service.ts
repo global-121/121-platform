@@ -136,18 +136,9 @@ export class KoboService {
       webhookAuthUsername,
       webhookAuthPassword,
     });
-    const languageIsoCodes = KoboLanguageMapper.getLanguageIsoCodes({
-      koboLanguages: formDefinition.languages,
-    });
 
-    await this.upsertProgramAttributesFromKoboFormDefinition({
-      koboSurveyItems: formDefinition.survey,
-      programId,
-      languageIsoCodes,
-    });
-
-    await this.addLanguagesToProgram({
-      languageIsoCodes,
+    await this.syncProgramWithKoboForm({
+      formDefinition,
       programId,
     });
 
@@ -199,6 +190,29 @@ export class KoboService {
       const koboEntity = this.koboRepository.create(entityData);
       await this.koboRepository.save(koboEntity);
     }
+  }
+
+  public async syncProgramWithKoboForm({
+    formDefinition,
+    programId,
+  }: {
+    formDefinition: KoboFormDefinition;
+    programId: number;
+  }): Promise<void> {
+    const languageIsoCodes = KoboLanguageMapper.getLanguageIsoCodes({
+      koboLanguages: formDefinition.languages,
+    });
+
+    await this.upsertProgramAttributesFromKoboFormDefinition({
+      koboSurveyItems: formDefinition.survey,
+      programId,
+      languageIsoCodes,
+    });
+
+    await this.addLanguagesToProgram({
+      languageIsoCodes,
+      programId,
+    });
   }
 
   private async upsertProgramAttributesFromKoboFormDefinition({

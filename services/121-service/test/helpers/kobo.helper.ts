@@ -46,13 +46,15 @@ export async function getKoboFromProgram({
 export async function triggerKoboSubmission({
   assetUid,
   submissionUuid,
+  koboVersion,
 }: {
   assetUid: string;
   submissionUuid: string;
+  koboVersion: string;
 }): Promise<request.Response> {
   return await getMockServer()
     .post(`/kobo/api/v2/assets/${assetUid}/trigger-submission`)
-    .send({ submissionUuid });
+    .send({ submissionUuid, koboVersion });
 }
 
 export async function setupProgramWithKoboIntegration({

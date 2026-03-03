@@ -17,4 +17,11 @@ export class KoboWebhookIncomingSubmission {
   })
   @IsOptional()
   readonly _xform_id_string: string;
+
+  @ApiProperty({
+    description: 'Version of the Kobo form',
+    example: 'v1',
+  })
+  @IsOptional()
+  readonly __version__: string;
 }

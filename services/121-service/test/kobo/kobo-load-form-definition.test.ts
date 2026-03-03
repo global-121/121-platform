@@ -10,6 +10,7 @@ import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.d
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { KoboMockAssetUids } from '@121-service/test/fixtures/kobo-mock-asset-uids';
 import {
   getKoboFromProgram,
   postKoboToProgram,
@@ -207,7 +208,7 @@ describe('Import a Kobo form definition', () => {
     // Act - Try to link Kobo form that is missing required FSP attributes
     const koboLinkDto: CreateKoboDto = {
       token: 'mock-token',
-      assetUid: 'asset-id-body-that-triggers-errors', // This mock form is missing required FSP attributes
+      assetUid: KoboMockAssetUids.bodyThatTriggersErrors, // This mock form is missing required FSP attributes
       url: `${env.MOCK_SERVICE_URL}/api/kobo`,
     };
 
@@ -331,7 +332,7 @@ describe('Import a Kobo form definition', () => {
     // import a second Kobo definition that has some changes compared to the first one
     const koboLinkDtoSecondImport: CreateKoboDto = {
       ...koboLinkDto,
-      assetUid: 'asset-id-happy-flow-with-changes',
+      assetUid: KoboMockAssetUids.happyFlowWithChanges,
     };
 
     await postKoboToProgram({
@@ -376,7 +377,7 @@ describe('Import a Kobo form definition', () => {
   });
 
   it('should handle not found error from Kobo API', async () => {
-    const assetUid = 'asset-id-not-found';
+    const assetUid = KoboMockAssetUids.notFound;
     const program: CreateProgramDto = {
       ...baseProgram,
       titlePortal: {
@@ -409,7 +410,9 @@ describe('Import a Kobo form definition', () => {
 
     expect(linkKoboResponse.status).toBe(HttpStatus.NOT_FOUND);
     expect(linkKoboResponse.body.message).toMatch(
-      /Kobo information not found\. This form does not exist or is not \(yet\) deployed for asset: asset-id-not-found, url: .+\/api\/v2\/assets\/asset-id-not-found\/deployment\./,
+      new RegExp(
+        `Kobo information not found\\. This form does not exist or is not \\(yet\\) deployed for asset: ${KoboMockAssetUids.notFound}, url: .+\\/api\\/v2\\/assets\\/${KoboMockAssetUids.notFound}\\/deployment\\.`,
+      ),
     );
   });
 
@@ -434,7 +437,7 @@ describe('Import a Kobo form definition', () => {
 
     const koboLinkDto: CreateKoboDto = {
       token: 'mock-token',
-      assetUid: 'asset-id-with-existing-webhook', // This mock form has a webhook configured
+      assetUid: KoboMockAssetUids.withExistingWebhook, // This mock form has a webhook configured
       url: `${env.MOCK_SERVICE_URL}/api/kobo`,
     };
 
