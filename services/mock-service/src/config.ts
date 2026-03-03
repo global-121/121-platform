@@ -24,8 +24,11 @@ if (env.ENV_ICON) {
 export const APP_FAVICON = favIconUrl;
 
 export const SWAGGER_CUSTOM_CSS = `
+  html.dark-mode .swagger-ui .topbar,
   .swagger-ui .topbar { background: ${headerStyle}; }
-  .swagger-ui .topbar .link { visibility: hidden; }
+  .swagger-ui .topbar .topbar-wrapper { justify-content: end; min-height: 3rem; }
+  .swagger-ui .topbar .link,
+  .swagger-ui .scheme-container { display: none; }
 `;
 
 // Configure Internal and External API URL's
