@@ -12,8 +12,8 @@ import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import {
   KoboAssetDeployment,
   KoboMockService,
-  KoboMockSubmissionUuids,
 } from '@mock-service/src/kobo/kobo.mock.service';
+import { KoboMockSubmissionUuids } from '@mock-service/src/kobo/kobo-mock-submission-uuids';
 
 @ApiTags('kobo')
 @Controller('kobo/api/v2/assets')
@@ -98,11 +98,13 @@ export class KoboMockController {
   @HttpCode(HttpStatus.OK)
   public async triggerIncomingSubmission(
     @Param('uid_asset') uid_asset: string,
-    @Body() body: { submissionUuid: KoboMockSubmissionUuids },
+    @Body()
+    body: { submissionUuid: KoboMockSubmissionUuids; koboVersion: string },
   ): Promise<{ message: string; submissionUuid: string }> {
     return this.koboMockService.triggerIncomingSubmission({
       assetUid: uid_asset,
       submissionUuid: body.submissionUuid,
+      koboVersion: body.koboVersion,
     });
   }
 }
