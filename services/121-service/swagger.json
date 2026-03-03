@@ -793,7 +793,7 @@
     ]
   },
   {
-    "method": "post",
+    "method": "put",
     "path": "/api/programs/{programId}/approval-thresholds",
     "params": [
       "programId"
@@ -801,13 +801,6 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/approval-thresholds",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "delete",
     "path": "/api/programs/{programId}/approval-thresholds",
     "params": [
       "programId"

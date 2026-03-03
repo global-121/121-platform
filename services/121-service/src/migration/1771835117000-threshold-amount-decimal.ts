@@ -11,11 +11,7 @@ export class ThresholdAmountDecimal1771835117000 implements MigrationInterface {
     );
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
-    // Revert thresholdAmount back to integer
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."program_approval_threshold"
-       ALTER COLUMN "thresholdAmount" TYPE integer`,
-    );
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    // no no we never go dooown
   }
 }

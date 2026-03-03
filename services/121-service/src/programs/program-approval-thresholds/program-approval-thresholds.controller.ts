@@ -1,13 +1,11 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
-  HttpCode,
   HttpStatus,
   Param,
   ParseIntPipe,
-  Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -96,7 +94,7 @@ export class ProgramApprovalThresholdsController {
     description: 'Program approval thresholds replaced successfully',
     type: [GetProgramApprovalThresholdResponseDto],
   })
-  @Post('programs/:programId/approval-thresholds')
+  @Put('programs/:programId/approval-thresholds')
   public async replaceProgramApprovalThresholds(
     @Param('programId', ParseIntPipe) programId: number,
     @Body() thresholds: CreateProgramApprovalThresholdDto[],
@@ -124,27 +122,6 @@ export class ProgramApprovalThresholdsController {
     @Param('programId', ParseIntPipe) programId: number,
   ): Promise<GetProgramApprovalThresholdResponseDto[]> {
     return await this.programApprovalThresholdsService.getProgramApprovalThresholds(
-      programId,
-    );
-  }
-
-  @AuthenticatedUser({
-    permissions: [PermissionEnum.ProgramUPDATE],
-  })
-  @ApiOperation({
-    summary: 'Delete all approval thresholds for a program',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({
-    status: HttpStatus.NO_CONTENT,
-    description: 'All program approval thresholds deleted successfully',
-  })
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @Delete('programs/:programId/approval-thresholds')
-  public async deleteAllProgramApprovalThresholds(
-    @Param('programId', ParseIntPipe) programId: number,
-  ): Promise<void> {
-    return await this.programApprovalThresholdsService.deleteAllProgramApprovalThresholds(
       programId,
     );
   }

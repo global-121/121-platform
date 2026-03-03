@@ -256,7 +256,6 @@ describe('PaymentsManagementService', () => {
       };
       (service as any).paymentApprovalRepository = paymentApprovalRepository;
 
-      // Mock aidworkerAssignmentRepository to return assignment with threshold
       const aidworkerAssignmentRepository = {
         findOne: jest.fn().mockResolvedValue({
           id: 1,
