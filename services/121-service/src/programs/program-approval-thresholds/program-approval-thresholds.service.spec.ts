@@ -1,6 +1,8 @@
 import { TestBed } from '@automock/jest';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 import { ProgramApprovalThresholdRepository } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.repository';
@@ -9,6 +11,7 @@ import { ProgramApprovalThresholdsService } from '@121-service/src/programs/prog
 describe('ProgramApprovalThresholdsService', () => {
   let service: ProgramApprovalThresholdsService;
   let programApprovalThresholdRepository: jest.Mocked<ProgramApprovalThresholdRepository>;
+  let dataSource: jest.Mocked<DataSource>;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -19,6 +22,17 @@ describe('ProgramApprovalThresholdsService', () => {
     programApprovalThresholdRepository = unitRef.get(
       ProgramApprovalThresholdRepository,
     );
+    dataSource = unitRef.get(DataSource);
+
+    // Mock transaction to execute callback immediately with mock manager
+    dataSource.transaction = jest.fn().mockImplementation(async (callback) => {
+      const mockManager = {
+        withRepository: jest
+          .fn()
+          .mockReturnValue(programApprovalThresholdRepository),
+      };
+      return await callback(mockManager as any);
+    });
   });
 
   describe('replaceProgramApprovalThresholds', () => {
@@ -67,8 +81,18 @@ describe('ProgramApprovalThresholdsService', () => {
         approverAssignments: [],
       } as unknown as ProgramApprovalThresholdEntity;
 
-      programApprovalThresholdRepository.replaceProgramApprovalThresholdsTransaction =
-        jest.fn().mockResolvedValue([savedThreshold1, savedThreshold2]);
+      programApprovalThresholdRepository.clearApproverAssignmentsForProgram =
+        jest.fn().mockResolvedValue(undefined);
+      programApprovalThresholdRepository.deleteThresholdsForProgram = jest
+        .fn()
+        .mockResolvedValue(undefined);
+      programApprovalThresholdRepository.saveThreshold = jest
+        .fn()
+        .mockResolvedValueOnce(savedThreshold1)
+        .mockResolvedValueOnce(savedThreshold2);
+      programApprovalThresholdRepository.findThresholdsWithRelations = jest
+        .fn()
+        .mockResolvedValue([savedThreshold1, savedThreshold2]);
 
       // Act
       const result = await service.replaceProgramApprovalThresholds(
@@ -78,8 +102,11 @@ describe('ProgramApprovalThresholdsService', () => {
 
       // Assert
       expect(
-        programApprovalThresholdRepository.replaceProgramApprovalThresholdsTransaction,
-      ).toHaveBeenCalledWith(programId, thresholds);
+        programApprovalThresholdRepository.clearApproverAssignmentsForProgram,
+      ).toHaveBeenCalledWith(programId);
+      expect(
+        programApprovalThresholdRepository.deleteThresholdsForProgram,
+      ).toHaveBeenCalledWith(programId);
       expect(result).toHaveLength(2);
       expect(result[0]).toMatchObject({
         id: 1,
@@ -102,15 +129,23 @@ describe('ProgramApprovalThresholdsService', () => {
         },
       ];
 
-      programApprovalThresholdRepository.replaceProgramApprovalThresholdsTransaction =
-        jest
-          .fn()
-          .mockRejectedValue(
-            new HttpException(
-              `Program aidworker assignment with ID 999 not found for program ${programId}`,
-              HttpStatus.BAD_REQUEST,
-            ),
-          );
+      const savedThreshold = {
+        id: 1,
+        programId,
+        thresholdAmount: 0,
+      } as ProgramApprovalThresholdEntity;
+
+      programApprovalThresholdRepository.clearApproverAssignmentsForProgram =
+        jest.fn().mockResolvedValue(undefined);
+      programApprovalThresholdRepository.deleteThresholdsForProgram = jest
+        .fn()
+        .mockResolvedValue(undefined);
+      programApprovalThresholdRepository.saveThreshold = jest
+        .fn()
+        .mockResolvedValue(savedThreshold);
+      programApprovalThresholdRepository.findAidworkerAssignment = jest
+        .fn()
+        .mockResolvedValue(null); // Assignment not found
 
       // Act & Assert
       await expect(
@@ -118,36 +153,6 @@ describe('ProgramApprovalThresholdsService', () => {
       ).rejects.toThrow(
         new HttpException(
           `Program aidworker assignment with ID 999 not found for program ${programId}`,
-          HttpStatus.BAD_REQUEST,
-        ),
-      );
-    });
-
-    it('should throw BAD_REQUEST when aidworker assignment belongs to different program', async () => {
-      // Arrange
-      const thresholds: CreateProgramApprovalThresholdDto[] = [
-        {
-          thresholdAmount: 0,
-          approvers: [{ programAidworkerAssignmentId: 1 }],
-        },
-      ];
-
-      programApprovalThresholdRepository.replaceProgramApprovalThresholdsTransaction =
-        jest
-          .fn()
-          .mockRejectedValue(
-            new HttpException(
-              `Program aidworker assignment with ID 1 not found for program ${programId}`,
-              HttpStatus.BAD_REQUEST,
-            ),
-          );
-
-      // Act & Assert
-      await expect(
-        service.replaceProgramApprovalThresholds(programId, thresholds),
-      ).rejects.toThrow(
-        new HttpException(
-          `Program aidworker assignment with ID 1 not found for program ${programId}`,
           HttpStatus.BAD_REQUEST,
         ),
       );
@@ -162,15 +167,30 @@ describe('ProgramApprovalThresholdsService', () => {
         },
       ];
 
-      programApprovalThresholdRepository.replaceProgramApprovalThresholdsTransaction =
-        jest
-          .fn()
-          .mockRejectedValue(
-            new HttpException(
-              `Only users without scope can be made approvers. Program aidworker assignment 1 has a scope.`,
-              HttpStatus.BAD_REQUEST,
-            ),
-          );
+      const savedThreshold = {
+        id: 1,
+        programId,
+        thresholdAmount: 0,
+      } as ProgramApprovalThresholdEntity;
+
+      const assignmentWithScope = {
+        id: 1,
+        programId,
+        scope: 'some_scope', // Has scope
+        programApprovalThresholdId: null,
+      } as ProgramAidworkerAssignmentEntity;
+
+      programApprovalThresholdRepository.clearApproverAssignmentsForProgram =
+        jest.fn().mockResolvedValue(undefined);
+      programApprovalThresholdRepository.deleteThresholdsForProgram = jest
+        .fn()
+        .mockResolvedValue(undefined);
+      programApprovalThresholdRepository.saveThreshold = jest
+        .fn()
+        .mockResolvedValue(savedThreshold);
+      programApprovalThresholdRepository.findAidworkerAssignment = jest
+        .fn()
+        .mockResolvedValue(assignmentWithScope);
 
       // Act & Assert
       await expect(
@@ -195,22 +215,44 @@ describe('ProgramApprovalThresholdsService', () => {
         },
       ];
 
-      programApprovalThresholdRepository.replaceProgramApprovalThresholdsTransaction =
-        jest
-          .fn()
-          .mockRejectedValue(
-            new HttpException(
-              `Program aidworker assignment 1 is already an approver for another threshold`,
-              HttpStatus.BAD_REQUEST,
-            ),
-          );
+      const savedThreshold = {
+        id: 1,
+        programId,
+        thresholdAmount: 0,
+      } as ProgramApprovalThresholdEntity;
+
+      const assignment = {
+        id: 1,
+        programId,
+        scope: '',
+        programApprovalThresholdId: null,
+      } as ProgramAidworkerAssignmentEntity;
+
+      programApprovalThresholdRepository.clearApproverAssignmentsForProgram =
+        jest.fn().mockResolvedValue(undefined);
+      programApprovalThresholdRepository.deleteThresholdsForProgram = jest
+        .fn()
+        .mockResolvedValue(undefined);
+      programApprovalThresholdRepository.saveThreshold = jest
+        .fn()
+        .mockResolvedValue(savedThreshold);
+      programApprovalThresholdRepository.findAidworkerAssignment = jest
+        .fn()
+        .mockResolvedValue(assignment);
+      programApprovalThresholdRepository.updateAidworkerAssignment = jest
+        .fn()
+        .mockImplementation((assignment) => {
+          // After first update, set programApprovalThresholdId
+          assignment.programApprovalThresholdId = savedThreshold.id;
+          return Promise.resolve(assignment);
+        });
 
       // Act & Assert
       await expect(
         service.replaceProgramApprovalThresholds(programId, thresholds),
       ).rejects.toThrow(
         new HttpException(
-          `Program aidworker assignment 1 is already an approver for another threshold`,
+          `Program aidworker assignment 1 is already an approver for threshold with amount 0`,
           HttpStatus.BAD_REQUEST,
         ),
       );
@@ -228,6 +270,26 @@ describe('ProgramApprovalThresholdsService', () => {
         },
       ];
 
+      const savedThreshold = {
+        id: 1,
+        programId,
+        thresholdAmount: 0,
+      } as ProgramApprovalThresholdEntity;
+
+      const assignment1 = {
+        id: 1,
+        programId,
+        scope: '',
+        programApprovalThresholdId: null,
+      } as ProgramAidworkerAssignmentEntity;
+
+      const assignment2 = {
+        id: 2,
+        programId,
+        scope: '',
+        programApprovalThresholdId: null,
+      } as ProgramAidworkerAssignmentEntity;
+
       const thresholdWithRelations = {
         id: 1,
         programId,
@@ -240,8 +302,24 @@ describe('ProgramApprovalThresholdsService', () => {
         ],
       } as unknown as ProgramApprovalThresholdEntity;
 
-      programApprovalThresholdRepository.replaceProgramApprovalThresholdsTransaction =
-        jest.fn().mockResolvedValue([thresholdWithRelations]);
+      programApprovalThresholdRepository.clearApproverAssignmentsForProgram =
+        jest.fn().mockResolvedValue(undefined);
+      programApprovalThresholdRepository.deleteThresholdsForProgram = jest
+        .fn()
+        .mockResolvedValue(undefined);
+      programApprovalThresholdRepository.saveThreshold = jest
+        .fn()
+        .mockResolvedValue(savedThreshold);
+      programApprovalThresholdRepository.findAidworkerAssignment = jest
+        .fn()
+        .mockResolvedValueOnce(assignment1)
+        .mockResolvedValueOnce(assignment2);
+      programApprovalThresholdRepository.updateAidworkerAssignment = jest
+        .fn()
+        .mockResolvedValue({});
+      programApprovalThresholdRepository.findThresholdsWithRelations = jest
+        .fn()
+        .mockResolvedValue([thresholdWithRelations]);
 
       // Act
       const result = await service.replaceProgramApprovalThresholds(
@@ -251,8 +329,11 @@ describe('ProgramApprovalThresholdsService', () => {
 
       // Assert
       expect(
-        programApprovalThresholdRepository.replaceProgramApprovalThresholdsTransaction,
-      ).toHaveBeenCalledWith(programId, thresholds);
+        programApprovalThresholdRepository.clearApproverAssignmentsForProgram,
+      ).toHaveBeenCalledWith(programId);
+      expect(
+        programApprovalThresholdRepository.deleteThresholdsForProgram,
+      ).toHaveBeenCalledWith(programId);
       expect(result).toHaveLength(1);
       expect(result[0].approvers).toHaveLength(2);
       expect(result[0].approvers).toEqual([
@@ -276,16 +357,28 @@ describe('ProgramApprovalThresholdsService', () => {
         approverAssignments: [],
       } as unknown as ProgramApprovalThresholdEntity;
 
-      programApprovalThresholdRepository.replaceProgramApprovalThresholdsTransaction =
-        jest.fn().mockResolvedValue([savedThreshold]);
+      programApprovalThresholdRepository.clearApproverAssignmentsForProgram =
+        jest.fn().mockResolvedValue(undefined);
+      programApprovalThresholdRepository.deleteThresholdsForProgram = jest
+        .fn()
+        .mockResolvedValue(undefined);
+      programApprovalThresholdRepository.saveThreshold = jest
+        .fn()
+        .mockResolvedValue(savedThreshold);
+      programApprovalThresholdRepository.findThresholdsWithRelations = jest
+        .fn()
+        .mockResolvedValue([savedThreshold]);
 
       // Act
       await service.replaceProgramApprovalThresholds(programId, thresholds);
 
       // Assert
       expect(
-        programApprovalThresholdRepository.replaceProgramApprovalThresholdsTransaction,
-      ).toHaveBeenCalledWith(programId, thresholds);
+        programApprovalThresholdRepository.clearApproverAssignmentsForProgram,
+      ).toHaveBeenCalledWith(programId);
+      expect(
+        programApprovalThresholdRepository.deleteThresholdsForProgram,
+      ).toHaveBeenCalledWith(programId);
     });
   });
 
