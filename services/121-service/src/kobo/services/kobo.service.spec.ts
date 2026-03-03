@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 
 import { KoboAssetDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset.dto';
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
+import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboValidationService } from '@121-service/src/kobo/services/kobo.validation.service';
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
@@ -53,6 +54,24 @@ describe('KoboService', () => {
       version_id: 'v1',
     };
   };
+
+  const createMockFormDefinition = (
+    languages: string[] = ['English (en)', 'French (fr)'],
+  ): KoboFormDefinition => ({
+    name: 'Test Form',
+    survey: [
+      {
+        name: 'phoneNumber',
+        type: 'text',
+        label: languages.map((lang) => `Phone Number ${lang}`),
+        required: true,
+        choices: [],
+      },
+    ],
+    languages,
+    dateDeployed: new Date('2025-01-01'),
+    versionId: 'v1',
+  });
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -177,11 +196,6 @@ describe('KoboService', () => {
     const saveSpy = jest
       .spyOn(koboRepository, 'save')
       .mockResolvedValue({} as any);
-    const upsertAttributesSpy = jest.spyOn(
-      programService,
-      'upsertProgramRegistrationAttributes',
-    );
-    const updateProgramSpy = jest.spyOn(programService, 'updateProgram');
     const createWebhookSpy = jest
       .spyOn(koboApiService, 'createKoboWebhook')
       .mockResolvedValue();
@@ -195,33 +209,13 @@ describe('KoboService', () => {
       dryRun: false,
     });
 
-    // Assert - verify all update operations were called
+    // Assert
     expect(saveSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         programId,
         assetUid: 'test-asset',
         token: 'test-token',
         url: 'https://kobo.example.com',
-      }),
-    );
-
-    expect(upsertAttributesSpy).toHaveBeenCalledWith({
-      programId,
-      programRegistrationAttributes: expect.arrayContaining([
-        expect.objectContaining({
-          name: 'phoneNumber',
-          type: RegistrationAttributeTypes.text,
-        }),
-      ]),
-    });
-
-    expect(updateProgramSpy).toHaveBeenCalledWith(
-      programId,
-      expect.objectContaining({
-        languages: expect.arrayContaining([
-          RegistrationPreferredLanguage.en,
-          RegistrationPreferredLanguage.fr,
-        ]),
       }),
     );
 
@@ -262,16 +256,15 @@ describe('KoboService', () => {
   describe('integrateKobo - language addition', () => {
     it('should add new languages from Kobo form to program with no existing languages', async () => {
       // Arrange
-      const mockAsset = createMockAsset(['English (en)', 'Spanish (es)']);
+      const formDefinition = createMockFormDefinition([
+        'English (en)',
+        'Spanish (es)',
+      ]);
       const programWithNoLanguages = {
         id: programId,
         languages: [],
       } as unknown as ProgramEntity;
 
-      // Override specific mocks for this test
-      jest
-        .spyOn(koboApiService, 'getDeployedAssetOrThrow')
-        .mockResolvedValue(mockAsset);
       jest
         .spyOn(programRepository, 'findByIdOrFail')
         .mockResolvedValue(programWithNoLanguages);
@@ -281,13 +274,7 @@ describe('KoboService', () => {
         .mockResolvedValue({} as any);
 
       // Act
-      await service.integrateKobo({
-        programId,
-        assetUid: 'test-asset',
-        token: 'test-token',
-        url: 'https://kobo.example.com',
-        dryRun: false,
-      });
+      await service.syncProgramWithKoboForm({ formDefinition, programId });
 
       // Assert
       expect(updateProgramSpy).toHaveBeenCalledWith(programId, {
@@ -300,7 +287,7 @@ describe('KoboService', () => {
 
     it('should merge Kobo languages with existing program languages without duplicates', async () => {
       // Arrange
-      const mockAsset = createMockAsset([
+      const formDefinition = createMockFormDefinition([
         'English (en)',
         'French (fr)',
         'Spanish (es)',
@@ -309,14 +296,10 @@ describe('KoboService', () => {
         id: programId,
         languages: [
           RegistrationPreferredLanguage.en,
-          RegistrationPreferredLanguage.nl,
-        ], // Already has English and Dutch
+          RegistrationPreferredLanguage.nl, // Already has English and Dutch
+        ],
       } as ProgramEntity;
 
-      // Override specific mocks for this test
-      jest
-        .spyOn(koboApiService, 'getDeployedAssetOrThrow')
-        .mockResolvedValue(mockAsset);
       jest
         .spyOn(programRepository, 'findByIdOrFail')
         .mockResolvedValue(programWithExistingLanguages);
@@ -326,13 +309,7 @@ describe('KoboService', () => {
         .mockResolvedValue({} as any);
 
       // Act
-      await service.integrateKobo({
-        programId,
-        assetUid: 'test-asset',
-        token: 'test-token',
-        url: 'https://kobo.example.com',
-        dryRun: false,
-      });
+      await service.syncProgramWithKoboForm({ formDefinition, programId });
 
       // Assert
       expect(updateProgramSpy).toHaveBeenCalledWith(programId, {
@@ -343,7 +320,6 @@ describe('KoboService', () => {
           RegistrationPreferredLanguage.es, // From Kobo only
         ]),
       });
-      // Verify no duplicates
       const calledLanguages = updateProgramSpy.mock.calls[0][1].languages;
       expect(calledLanguages).toHaveLength(4);
       expect(new Set(calledLanguages).size).toBe(4); // All unique
@@ -351,14 +327,12 @@ describe('KoboService', () => {
 
     it('should filter out default properties before upserting program attributes', async () => {
       // Arrange
-      const programId = 1;
-      const mockAsset = createMockAsset(['English (en)']);
+      const formDefinition = createMockFormDefinition(['English (en)']);
       const programWithLanguages = {
         id: programId,
         languages: [RegistrationPreferredLanguage.en],
       } as ProgramEntity;
 
-      // Mock survey processor to return one regular attribute and one registration view attribute
       const mockAttributes = [
         {
           name: 'customAttribute',
@@ -378,9 +352,6 @@ describe('KoboService', () => {
       ];
 
       jest
-        .spyOn(koboApiService, 'getDeployedAssetOrThrow')
-        .mockResolvedValue(mockAsset);
-      jest
         .spyOn(programRepository, 'findByIdOrFail')
         .mockResolvedValue(programWithLanguages);
       jest
@@ -396,13 +367,7 @@ describe('KoboService', () => {
       );
 
       // Act
-      await service.integrateKobo({
-        programId,
-        assetUid: 'test-asset',
-        token: 'test-token',
-        url: 'https://kobo.example.com',
-        dryRun: false,
-      });
+      await service.syncProgramWithKoboForm({ formDefinition, programId });
 
       // Assert
       expect(upsertSpy).toHaveBeenCalledWith({
@@ -415,7 +380,6 @@ describe('KoboService', () => {
           },
         ],
       });
-      // Verify preferredLanguage was filtered out
       const calledAttributes =
         upsertSpy.mock.calls[0][0].programRegistrationAttributes;
       expect(calledAttributes).toHaveLength(1);
