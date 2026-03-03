@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   HttpStatus,
   Param,
   ParseIntPipe,
@@ -21,7 +22,6 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/get-program-approval-threshold-response.dto';
 import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs/approval-thresholds')
@@ -31,9 +31,7 @@ export class ProgramApprovalThresholdsController {
     private readonly programApprovalThresholdsService: ProgramApprovalThresholdsService,
   ) {}
 
-  @AuthenticatedUser({
-    permissions: [PermissionEnum.ProgramUPDATE],
-  })
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: 'Replace all approval thresholds for a program',
     description:
@@ -94,6 +92,7 @@ export class ProgramApprovalThresholdsController {
     description: 'Program approval thresholds replaced successfully',
     type: [GetProgramApprovalThresholdResponseDto],
   })
+  @HttpCode(HttpStatus.CREATED)
   @Put('programs/:programId/approval-thresholds')
   public async replaceProgramApprovalThresholds(
     @Param('programId', ParseIntPipe) programId: number,
@@ -105,9 +104,7 @@ export class ProgramApprovalThresholdsController {
     );
   }
 
-  @AuthenticatedUser({
-    permissions: [PermissionEnum.ProgramREAD],
-  })
+  @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: 'Get all approval thresholds for a program',
   })

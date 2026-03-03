@@ -7,15 +7,19 @@ import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/progra
 export class ProgramApprovalThresholdRepository extends Repository<ProgramApprovalThresholdEntity> {
   constructor(
     @InjectRepository(ProgramApprovalThresholdEntity)
-    private readonly repository: Repository<ProgramApprovalThresholdEntity>,
+    private readonly baseRepository: Repository<ProgramApprovalThresholdEntity>,
   ) {
-    super(repository.target, repository.manager, repository.queryRunner);
+    super(
+      baseRepository.target,
+      baseRepository.manager,
+      baseRepository.queryRunner,
+    );
   }
 
   public async clearApproverAssignmentsForProgram(
     programId: number,
   ): Promise<void> {
-    await this.manager.update(
+    await this.baseRepository.manager.update(
       ProgramAidworkerAssignmentEntity,
       {
         programId: Equal(programId),
@@ -28,7 +32,7 @@ export class ProgramApprovalThresholdRepository extends Repository<ProgramApprov
   }
 
   public async deleteThresholdsForProgram(programId: number): Promise<void> {
-    await this.manager.delete(ProgramApprovalThresholdEntity, {
+    await this.baseRepository.delete({
       programId: Equal(programId),
     });
   }
@@ -36,25 +40,28 @@ export class ProgramApprovalThresholdRepository extends Repository<ProgramApprov
   public async saveThreshold(
     threshold: ProgramApprovalThresholdEntity,
   ): Promise<ProgramApprovalThresholdEntity> {
-    return await this.manager.save(ProgramApprovalThresholdEntity, threshold);
+    return await this.baseRepository.save(threshold);
   }
 
   public async findAidworkerAssignment(
     programAidworkerAssignmentId: number,
     programId: number,
   ): Promise<ProgramAidworkerAssignmentEntity | null> {
-    return await this.manager.findOne(ProgramAidworkerAssignmentEntity, {
-      where: {
-        id: Equal(programAidworkerAssignmentId),
-        programId: Equal(programId),
+    return await this.baseRepository.manager.findOne(
+      ProgramAidworkerAssignmentEntity,
+      {
+        where: {
+          id: Equal(programAidworkerAssignmentId),
+          programId: Equal(programId),
+        },
       },
-    });
+    );
   }
 
   public async updateAidworkerAssignment(
     assignment: ProgramAidworkerAssignmentEntity,
   ): Promise<ProgramAidworkerAssignmentEntity> {
-    return await this.manager.save(
+    return await this.baseRepository.manager.save(
       ProgramAidworkerAssignmentEntity,
       assignment,
     );
@@ -71,7 +78,7 @@ export class ProgramApprovalThresholdRepository extends Repository<ProgramApprov
   public async findThresholdsWithRelations(
     programId: number,
   ): Promise<ProgramApprovalThresholdEntity[]> {
-    return await this.manager.find(ProgramApprovalThresholdEntity, {
+    return await this.baseRepository.find({
       where: { programId: Equal(programId) },
       relations: {
         approverAssignments: {
