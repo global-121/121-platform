@@ -120,6 +120,7 @@ graph LR
   ProgramModule-->IntersolveVisaModule
   ProgramModule-->KoboConnectModule
   ProgramModule-->LookupModule
+  ProgramModule-->ProgramAidworkerAssignmentsModule
   ProgramModule-->ProgramAttachmentsModule
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->ProgramFspConfigurationsModule
