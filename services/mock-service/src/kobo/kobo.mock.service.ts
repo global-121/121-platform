@@ -290,6 +290,15 @@ const happyFlowFromDefinition: KoboAssetDeployment = {
           required: false,
           $autoname: 'phoneNumber',
         },
+        {
+          name: 'photo',
+          type: 'image',
+          $kuid: 'ph7rt99',
+          label: ['Upload aa important photo', 'Upload een belangrijke foto'],
+          $xpath: 'photo',
+          required: false,
+          $autoname: 'photo',
+        },
       ],
       choices: [
         {
@@ -467,6 +476,17 @@ export class KoboMockService {
         nationalId: '123456789',
         phoneNumber: '+31612345678',
         'group_or1bl43/How_are_you_today_select_one': 'great',
+        photo:
+          'username/attachments/form-id/submission-uuid/important_photo.jpg',
+        _attachments: [
+          {
+            filename:
+              'username/attachments/form-id/submission-uuid/important_photo.jpg',
+            download_url:
+              'https://kobo.example.com/api/v2/assets/test/data/1/attachments/1',
+            mimetype: 'image/jpeg',
+          },
+        ],
         __version__: asset.version_id,
       };
     }
