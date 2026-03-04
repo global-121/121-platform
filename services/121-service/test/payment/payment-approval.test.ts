@@ -13,12 +13,14 @@ import {
   startPayment,
   waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
+import {
+  getProgramApprovalThresholds,
+  replaceProgramApprovalThresholds,
+} from '@121-service/test/helpers/program-approval-threshold.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAllUsersByProgramId,
   getCurrentUser,
-  getProgramApprovalThresholds,
-  replaceProgramApprovalThresholds,
 } from '@121-service/test/helpers/user.helper';
 import {
   getAccessToken,
@@ -61,10 +63,10 @@ describe('do payment with 2 approvers', () => {
     });
 
     // Get all user assignments for the program to find assignment IDs
-    const allUsersResponse = await getAllUsersByProgramId(
-      adminAccessToken,
-      programId.toString(),
-    );
+    const allUsersResponse = await getAllUsersByProgramId({
+      accessToken: adminAccessToken,
+      programId,
+    });
     const financeManagerAssignment = allUsersResponse.body.find(
       (u: any) => u.id === financeManagerUser.body.user.id,
     );
@@ -461,10 +463,10 @@ describe('do payment with <2 approvers', () => {
       programId,
       accessToken: adminAccessToken,
     });
-    const allUsersResponse = await getAllUsersByProgramId(
-      adminAccessToken,
-      programId.toString(),
-    );
+    const allUsersResponse = await getAllUsersByProgramId({
+      accessToken: adminAccessToken,
+      programId,
+    });
     const financeManagerAssignment = allUsersResponse.body.find(
       (u: any) => u.id === financeManagerUser.body.user.id,
     );
@@ -622,10 +624,10 @@ describe('multiple approvers per threshold', () => {
     });
 
     // Get all user assignments for the program
-    const allUsersResponse = await getAllUsersByProgramId(
-      adminAccessToken,
-      programId.toString(),
-    );
+    const allUsersResponse = await getAllUsersByProgramId({
+      accessToken: adminAccessToken,
+      programId,
+    });
 
     const firstThreshold = thresholdsResponse.body[0];
     const adminApprover = firstThreshold.approvers[0];

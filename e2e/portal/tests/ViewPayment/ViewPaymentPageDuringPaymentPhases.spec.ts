@@ -2,10 +2,10 @@ import { env } from '@121-service/src/env';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  getAllUsersByProgramId,
   getProgramApprovalThresholds,
   replaceProgramApprovalThresholds,
-} from '@121-service/test/helpers/user.helper';
+} from '@121-service/test/helpers/program-approval-threshold.helper';
+import { getAllUsersByProgramId } from '@121-service/test/helpers/user.helper';
 import { resetDuplicateRegistrations } from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
@@ -41,10 +41,10 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
     programId: programIdOCW,
     accessToken,
   });
-  const allUsersResponse = await getAllUsersByProgramId(
+  const allUsersResponse = await getAllUsersByProgramId({
     accessToken,
-    programIdOCW.toString(),
-  );
+    programId: programIdOCW,
+  });
 
   const adminApprover = thresholdsResponse.body[0].approvers[0];
   const adminAssignment = allUsersResponse.body.find(
