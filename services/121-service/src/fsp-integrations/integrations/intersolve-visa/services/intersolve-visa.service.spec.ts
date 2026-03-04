@@ -187,7 +187,7 @@ describe('IntersolveVisaService', () => {
       // Mock parent wallet before update
       const parentWallet = new IntersolveVisaParentWalletEntity();
       parentWallet.spentThisMonth = 0;
-      parentWallet.balance = 0;
+      parentWallet.balance = 8000; // 80 euro in cents
       parentWallet.tokenCode = 'parentToken';
 
       // Mock child wallet before update
@@ -210,6 +210,14 @@ describe('IntersolveVisaService', () => {
       });
       jest.spyOn(apiService, 'getToken').mockResolvedValue({
         ...mockedToken,
+        balance: 8000, // 80 euro in cents
+      });
+
+      jest.spyOn(parentWalletRepo, 'findOneOrFail').mockResolvedValue({
+        ...parentWallet,
+        lastUsedDate: newDate,
+        balance: 8000, // 80 euro in cents
+        spentThisMonth,
       });
 
       // Act
@@ -221,8 +229,8 @@ describe('IntersolveVisaService', () => {
 
       // Assert
       // The expected value is the input amount since we only track balance (not spentThisMonth).
-      // With a max limit of 150 euro per month and requesting 75 euro, the transfer is allowed.
-      const expected = 75;
+      // With a max limit of 150 euro per month and requesting 75 euro, and the 80 euro balance, the transfer is allowed only to max limit. therefore expected transfer value is 70 euro.
+      const expected = 70;
 
       expect(result).toBe(expected);
     });
