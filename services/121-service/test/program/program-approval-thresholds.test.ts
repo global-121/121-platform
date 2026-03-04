@@ -2,14 +2,12 @@ import { HttpStatus } from '@nestjs/common';
 
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { findAidworkerAssignmentIdByUserId } from '@121-service/test/helpers/program-aidworker-assignment.helper';
 import {
   getProgramApprovalThresholds,
   replaceProgramApprovalThresholds,
 } from '@121-service/test/helpers/program-approval-threshold.helper';
-import {
-  createUserProgramAssignment,
-  getAllUsersByProgramId,
-} from '@121-service/test/helpers/user.helper';
+import { createUserProgramAssignment } from '@121-service/test/helpers/user.helper';
 import {
   getAccessToken,
   resetDB,
@@ -144,15 +142,11 @@ describe('Program Approval Thresholds', () => {
       });
 
       // Get the program aidworker assignment ID for the scoped user
-      const allUsersResponse = await getAllUsersByProgramId({
-        accessToken,
+      const scopedAidworkerId = await findAidworkerAssignmentIdByUserId({
         programId,
+        userId,
+        accessToken,
       });
-      const scopedUserAssignment = allUsersResponse.body.find(
-        (u: any) => u.id === userId,
-      );
-      const scopedAidworkerId =
-        scopedUserAssignment.programAidworkerAssignmentId;
 
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {

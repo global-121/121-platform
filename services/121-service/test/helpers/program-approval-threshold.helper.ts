@@ -44,7 +44,9 @@ export async function getApprovers({
     return [];
   }
 
-  return thresholdsResponse.body.flatMap(
+  const approvers = thresholdsResponse.body.flatMap(
     (threshold: any) => threshold.approvers ?? [],
   );
+
+  return approvers;
 }
