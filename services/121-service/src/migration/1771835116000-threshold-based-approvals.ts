@@ -167,8 +167,32 @@ export class ThresholdBasedApprovals1771835116000 implements MigrationInterface 
   }
 
   private async migratePaymentApprovals(
-    _queryRunner: QueryRunner,
+    queryRunner: QueryRunner,
   ): Promise<void> {
-    // lala we never go down!
+    // Create payment_approval_aidworker entries for all existing approved payments
+    await queryRunner.query(
+      `INSERT INTO "121-service"."payment_approval_aidworker"
+       ("paymentApprovalId", "programAidworkerAssignmentId", "order", "created", "updated")
+       SELECT
+         pa.id,
+         a."programAidworkerAssignmentId",
+         1,
+         now(),
+         now()
+       FROM "121-service"."payment_approval" pa
+       INNER JOIN "121-service"."approver" a ON a.id = pa."approverId"
+       WHERE pa."approverId" IS NOT NULL`,
+    );
+
+    // Set approvedByUserId based on the aidworker assignment's user
+    await queryRunner.query(
+      `UPDATE "121-service"."payment_approval" pa
+       SET "approvedByUserId" = paa."userId"
+       FROM "121-service"."approver" a
+       INNER JOIN "121-service"."program_aidworker_assignment" paa
+         ON paa.id = a."programAidworkerAssignmentId"
+       WHERE pa."approverId" = a.id
+         AND pa."approverId" IS NOT NULL`,
+    );
   }
 }
