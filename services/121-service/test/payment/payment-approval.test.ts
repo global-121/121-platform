@@ -13,15 +13,13 @@ import {
   startPayment,
   waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
+import { findAidworkerAssignmentIdByUserId } from '@121-service/test/helpers/program-aidworker-assignment.helper';
 import {
   getProgramApprovalThresholds,
   replaceProgramApprovalThresholds,
 } from '@121-service/test/helpers/program-approval-threshold.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
-import {
-  getAllUsersByProgramId,
-  getCurrentUser,
-} from '@121-service/test/helpers/user.helper';
+import { getCurrentUser } from '@121-service/test/helpers/user.helper';
 import {
   getAccessToken,
   getAccessTokenCvaManager,
@@ -62,29 +60,20 @@ describe('do payment with 2 approvers', () => {
       accessToken: adminAccessToken,
     });
 
-    // Get all user assignments for the program to find assignment IDs
-    const allUsersResponse = await getAllUsersByProgramId({
-      accessToken: adminAccessToken,
+    // Get assignment IDs for both approvers
+    const financeManagerAssignmentId = await findAidworkerAssignmentIdByUserId({
       programId,
+      userId: financeManagerUser.body.user.id,
+      accessToken: adminAccessToken,
     });
-    const financeManagerAssignment = allUsersResponse.body.find(
-      (u: any) => u.id === financeManagerUser.body.user.id,
-    );
 
-    if (!financeManagerAssignment) {
-      throw new Error('Finance manager assignment not found');
-    }
-
-    // Create 2 sequential approval levels: admin at level 1, finance manager at level 2
     const firstThreshold = thresholdsResponse.body[0];
     const adminApprover = firstThreshold.approvers[0];
-    const adminAssignment = allUsersResponse.body.find(
-      (u: any) => u.id === adminApprover.userId,
-    );
-
-    if (!adminAssignment) {
-      throw new Error('Admin assignment not found');
-    }
+    const adminAssignmentId = await findAidworkerAssignmentIdByUserId({
+      programId,
+      userId: adminApprover.userId,
+      accessToken: adminAccessToken,
+    });
 
     const updatedThresholds = [
       {
@@ -92,8 +81,7 @@ describe('do payment with 2 approvers', () => {
 
         approvers: [
           {
-            programAidworkerAssignmentId:
-              adminAssignment.programAidworkerAssignmentId,
+            programAidworkerAssignmentId: adminAssignmentId,
           },
         ],
       },
@@ -102,8 +90,7 @@ describe('do payment with 2 approvers', () => {
 
         approvers: [
           {
-            programAidworkerAssignmentId:
-              financeManagerAssignment.programAidworkerAssignmentId,
+            programAidworkerAssignmentId: financeManagerAssignmentId,
           },
         ],
       },
@@ -463,24 +450,21 @@ describe('do payment with <2 approvers', () => {
       programId,
       accessToken: adminAccessToken,
     });
-    const allUsersResponse = await getAllUsersByProgramId({
-      accessToken: adminAccessToken,
-      programId,
-    });
-    const financeManagerAssignment = allUsersResponse.body.find(
-      (u: any) => u.id === financeManagerUser.body.user.id,
-    );
 
-    // Create 2 sequential approval levels: admin at level 1, finance manager at level 2
+    // Get assignment IDs for both approvers
+    const financeManagerAssignmentId = await findAidworkerAssignmentIdByUserId({
+      programId,
+      userId: financeManagerUser.body.user.id,
+      accessToken: adminAccessToken,
+    });
+
     const firstThreshold = thresholdsResponse.body[0];
     const adminApprover = firstThreshold.approvers[0];
-    const adminAssignment = allUsersResponse.body.find(
-      (u: any) => u.id === adminApprover.userId,
-    );
-
-    if (!adminAssignment) {
-      throw new Error('Admin assignment not found');
-    }
+    const adminAssignmentId = await findAidworkerAssignmentIdByUserId({
+      programId,
+      userId: adminApprover.userId,
+      accessToken: adminAccessToken,
+    });
 
     const updatedThresholds = [
       {
@@ -488,8 +472,7 @@ describe('do payment with <2 approvers', () => {
 
         approvers: [
           {
-            programAidworkerAssignmentId:
-              adminAssignment.programAidworkerAssignmentId,
+            programAidworkerAssignmentId: adminAssignmentId,
           },
         ],
       },
@@ -498,8 +481,7 @@ describe('do payment with <2 approvers', () => {
 
         approvers: [
           {
-            programAidworkerAssignmentId:
-              financeManagerAssignment.programAidworkerAssignmentId,
+            programAidworkerAssignmentId: financeManagerAssignmentId,
           },
         ],
       },
@@ -526,8 +508,7 @@ describe('do payment with <2 approvers', () => {
 
         approvers: [
           {
-            programAidworkerAssignmentId:
-              adminAssignment.programAidworkerAssignmentId,
+            programAidworkerAssignmentId: adminAssignmentId,
           },
         ],
       },
@@ -617,39 +598,18 @@ describe('multiple approvers per threshold', () => {
       accessToken: accessTokenCvaManager,
     });
 
-    // Get existing thresholds
-    const thresholdsResponse = await getProgramApprovalThresholds({
+    // Get assignment IDs for all three users
+    const financeManagerAssignmentId = await findAidworkerAssignmentIdByUserId({
       programId,
+      userId: financeManagerUser.body.user.id,
       accessToken: adminAccessToken,
     });
 
-    // Get all user assignments for the program
-    const allUsersResponse = await getAllUsersByProgramId({
-      accessToken: adminAccessToken,
+    const cvaManagerAssignmentId = await findAidworkerAssignmentIdByUserId({
       programId,
+      userId: cvaManagerUser.body.user.id,
+      accessToken: adminAccessToken,
     });
-
-    const firstThreshold = thresholdsResponse.body[0];
-    const adminApprover = firstThreshold.approvers[0];
-    const adminAssignment = allUsersResponse.body.find(
-      (u: any) => u.id === adminApprover.userId,
-    );
-
-    const financeManagerAssignment = allUsersResponse.body.find(
-      (u: any) => u.id === financeManagerUser.body.user.id,
-    );
-
-    const cvaManagerAssignment = allUsersResponse.body.find(
-      (u: any) => u.id === cvaManagerUser.body.user.id,
-    );
-
-    if (
-      !adminAssignment ||
-      !financeManagerAssignment ||
-      !cvaManagerAssignment
-    ) {
-      throw new Error('Required user assignments not found');
-    }
 
     // Create 1 threshold with 2 approvers (FinanceManager and CVAManager)
     // This tests that EITHER one can approve - not both required
@@ -659,12 +619,10 @@ describe('multiple approvers per threshold', () => {
 
         approvers: [
           {
-            programAidworkerAssignmentId:
-              financeManagerAssignment.programAidworkerAssignmentId,
+            programAidworkerAssignmentId: financeManagerAssignmentId,
           },
           {
-            programAidworkerAssignmentId:
-              cvaManagerAssignment.programAidworkerAssignmentId,
+            programAidworkerAssignmentId: cvaManagerAssignmentId,
           },
         ],
       },

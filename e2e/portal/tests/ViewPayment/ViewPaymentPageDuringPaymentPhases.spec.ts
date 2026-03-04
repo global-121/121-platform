@@ -1,6 +1,7 @@
 import { env } from '@121-service/src/env';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { findAidworkerAssignmentIdByUserId } from '@121-service/test/helpers/program-aidworker-assignment.helper';
 import {
   getProgramApprovalThresholds,
   replaceProgramApprovalThresholds,
@@ -47,15 +48,17 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
   });
 
   const adminApprover = thresholdsResponse.body[0].approvers[0];
-  const adminAssignment = allUsersResponse.body.find(
-    (u) => u.id === adminApprover.userId,
-  );
+  const adminAssignmentId = await findAidworkerAssignmentIdByUserId({
+    programId: programIdOCW,
+    userId: adminApprover.userId,
+    accessToken,
+  });
 
   const approverRoleUser = allUsersResponse.body.find(
     (u) => u.username === env.USERCONFIG_121_SERVICE_EMAIL_APPROVER,
   );
 
-  if (!adminAssignment || !approverRoleUser) {
+  if (!approverRoleUser) {
     throw new Error('Required user assignments not found');
   }
 
@@ -67,8 +70,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
 
         approvers: [
           {
-            programAidworkerAssignmentId:
-              adminAssignment.programAidworkerAssignmentId,
+            programAidworkerAssignmentId: adminAssignmentId,
           },
         ],
       },
