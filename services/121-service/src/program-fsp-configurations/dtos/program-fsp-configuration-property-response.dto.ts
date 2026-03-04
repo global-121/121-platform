@@ -10,7 +10,7 @@ export class ProgramFspConfigurationPropertyResponseDto {
   @ApiProperty({
     example: 'my-username',
     description:
-      'Configuration property value. Type depends on the property: string (e.g. username="my-username"), number (e.g. maxToSpendPerMonthInCents=15000), boolean (e.g. cardDistributionByMail=true), or array of strings (e.g. columnsToExport=["fullName", "phoneNumber"])',
+      'Configuration property value. Type depends on the property: string (e.g. username="my-username"), number (e.g. maxBalanceInCents=15000), boolean (e.g. cardDistributionByMail=true), or array of strings (e.g. columnsToExport=["fullName", "phoneNumber"])',
   })
   public readonly value?: FspConfigurationPropertyType;
 

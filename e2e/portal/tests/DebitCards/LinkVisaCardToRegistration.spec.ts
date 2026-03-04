@@ -45,7 +45,7 @@ const updateProgramFspConfigurationDto: UpdateProgramFspConfigurationDto = {
       value: 'test_INTERSOLVE_VISA_FUNDINGTOKEN_CODE',
     },
     {
-      name: FspConfigurationProperties.maxToSpendPerMonthInCents,
+      name: FspConfigurationProperties.maxBalanceInCents,
       value: 15000,
     },
   ],

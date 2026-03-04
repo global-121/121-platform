@@ -148,7 +148,7 @@
           "value": "true"
         },
         {
-          "name": "maxToSpendPerMonthInCents",
+          "name": "maxBalanceInCents",
           "value": "15000"
         }
       ]

@@ -341,17 +341,17 @@ describe('Do successful payment with FSP Visa Debit', () => {
     expect(transactionsResponse4.text).toContain(TransactionStatusEnum.success);
   });
 
-  it('should cap transaction amount to maxToSpendPerMonthInCents when payment exceeds it', async () => {
+  it('should cap transaction amount to maxBalanceInCents when payment exceeds it', async () => {
     // Arrange
-    const maxToSpendPerMonthInCents = 1_000;
-    const expectedMaxTransferValue = maxToSpendPerMonthInCents / 100;
+    const maxBalanceInCents = 1_000;
+    const expectedMaxTransferValue = maxBalanceInCents / 100;
 
     await patchProgramFspConfigurationProperty({
       programId: programIdVisa,
       configName: Fsps.intersolveVisa,
-      propertyName: FspConfigurationProperties.maxToSpendPerMonthInCents,
+      propertyName: FspConfigurationProperties.maxBalanceInCents,
       body: {
-        value: maxToSpendPerMonthInCents,
+        value: maxBalanceInCents,
       },
       accessToken,
     });
