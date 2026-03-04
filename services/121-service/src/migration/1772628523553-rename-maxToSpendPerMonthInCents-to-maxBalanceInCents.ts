@@ -9,7 +9,7 @@ export class RenameMaxToSpendPerMonthInCentsToMaxBalanceInCents1772628523553 imp
     `);
   }
 
-  public async down(): Promise<void> {
-    'we never do down migrations';
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    throw new Error('Down migrations are not supported.');
   }
 }
