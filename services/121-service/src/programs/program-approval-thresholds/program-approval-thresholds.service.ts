@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 
 import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
 import { CreateApproverForThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-approver-for-threshold.dto';
@@ -12,6 +13,7 @@ export class ProgramApprovalThresholdsService {
   public constructor(
     private readonly programApprovalThresholdRepository: ProgramApprovalThresholdRepository,
     private readonly aidworkerAssignmentRepository: ProgramAidworkerAssignmentRepository,
+    private readonly dataSource: DataSource,
   ) {}
 
   public async replaceProgramApprovalThresholds(
@@ -20,32 +22,34 @@ export class ProgramApprovalThresholdsService {
   ): Promise<GetProgramApprovalThresholdResponseDto[]> {
     this.throwIfDuplicateThresholdAmounts(thresholds);
 
-    await this.aidworkerAssignmentRepository.clearApproverAssignmentsForProgram(
-      programId,
-    );
-    await this.programApprovalThresholdRepository.deleteThresholdsForProgram(
-      programId,
-    );
-
-    const sortedThresholds: CreateProgramApprovalThresholdDto[] = thresholds
-      .slice()
-      .sort((a, b) => a.thresholdAmount - b.thresholdAmount);
-
-    for (const thresholdDto of sortedThresholds) {
-      await this.createThreshold({
-        thresholdDto,
+    return await this.dataSource.transaction(async () => {
+      await this.aidworkerAssignmentRepository.clearApproverAssignmentsForProgram(
         programId,
-      });
-    }
-
-    const thresholdsWithRelations =
-      await this.programApprovalThresholdRepository.findThresholdsWithRelations(
+      );
+      await this.programApprovalThresholdRepository.deleteThresholdsForProgram(
         programId,
       );
 
-    return thresholdsWithRelations.map((threshold) =>
-      this.mapEntityToDto(threshold),
-    );
+      const sortedThresholds: CreateProgramApprovalThresholdDto[] = thresholds
+        .slice()
+        .sort((a, b) => a.thresholdAmount - b.thresholdAmount);
+
+      for (const thresholdDto of sortedThresholds) {
+        await this.createThreshold({
+          thresholdDto,
+          programId,
+        });
+      }
+
+      const thresholdsWithRelations =
+        await this.programApprovalThresholdRepository.findThresholdsWithRelations(
+          programId,
+        );
+
+      return thresholdsWithRelations.map((threshold) =>
+        this.mapEntityToDto(threshold),
+      );
+    });
   }
 
   private throwIfDuplicateThresholdAmounts(
@@ -164,8 +168,8 @@ export class ProgramApprovalThresholdsService {
         .sort((a, b) => a.id - b.id) // Sort by ID for consistent ordering
         .map((assignment, index) => ({
           id: assignment.id,
-          userId: assignment.user?.id || 0,
-          username: assignment.user?.username || 'Unknown',
+          userId: assignment.user?.id ?? null,
+          username: assignment.user?.username ?? null,
           order: index + 1,
         })),
     };

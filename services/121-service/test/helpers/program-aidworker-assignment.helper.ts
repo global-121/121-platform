@@ -14,12 +14,6 @@ export async function findAidworkerAssignmentIdByUserId({
     .query({ userId })
     .set('Cookie', [accessToken]);
 
-  if (response.status !== 200) {
-    throw new Error(
-      `Failed to get aidworker assignment: ${response.status} ${response.body.message}`,
-    );
-  }
-
   return response.body.id;
 }
 
@@ -36,12 +30,6 @@ export async function findAidworkerAssignmentIdByUsername({
     .get(`/programs/${programId}/users/search`)
     .query({ username })
     .set('Cookie', [accessToken]);
-
-  if (usersResponse.status !== 200) {
-    throw new Error(
-      `Failed to search users: ${usersResponse.status} ${usersResponse.body.message}`,
-    );
-  }
 
   if (usersResponse.body.length === 0) {
     throw new Error(`User with username ${username} not found`);
