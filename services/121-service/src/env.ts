@@ -61,7 +61,7 @@ export const cooperativeBankOfOromiaEnvVariablesSchema = {
 };
 
 export const intersolveVisaEnvVariablesSchema = {
-  // Used for Intersolve Visa and Intersolve Voucher Paper+Whatsapp.
+  // Used for Intersolve Visa and Intersolve Voucher Paper+WhatsApp.
   INTERSOLVE_MODE: FspModeSchema,
 
   CRON_INTERSOLVE_VISA_UPDATE_WALLET_DETAILS: z.stringbool().default(false),
@@ -90,7 +90,7 @@ export const intersolveVisaEnvVariablesSchema = {
 // for environment variables though. So here's an exception to that.
 // See AB#10288 for more context.
 export const intersolveVoucherEnvVariablesSchema = {
-  // Used for Intersolve Visa and Intersolve Voucher Paper+Whatsapp.
+  // Used for Intersolve Visa and Intersolve Voucher Paper+WhatsApp.
   INTERSOLVE_MODE: FspModeSchema,
 
   CRON_INTERSOLVE_VOUCHER_CACHE_UNUSED_VOUCHERS: z.stringbool().default(false),
