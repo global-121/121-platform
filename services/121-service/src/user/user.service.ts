@@ -18,7 +18,7 @@ import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/email-constants';
 import { env } from '@121-service/src/env';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import {
   INTERFACE_NAME_HEADER,
@@ -788,13 +788,12 @@ export class UserService {
         'user.admin AS admin',
         'user.active AS active',
         'user.lastLogin AS "lastLogin"',
-        'assignment.id AS "programAidworkerAssignmentId"',
         'ARRAY_AGG(roles.id) AS rolesId',
         'ARRAY_AGG(roles.role) AS role',
         'ARRAY_AGG(roles.label) AS label',
         'MAX(assignment.scope) AS scope',
       ])
-      .groupBy('user.id, assignment.id')
+      .groupBy('user.id')
       .getRawMany();
 
     const result = users.map((user) => {
@@ -810,7 +809,6 @@ export class UserService {
         admin: user.admin,
         active: user.active,
         lastLogin: user.lastLogin,
-        programAidworkerAssignmentId: user.programAidworkerAssignmentId,
         roles,
         scope: user.scope,
       };

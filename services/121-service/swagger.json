@@ -394,6 +394,15 @@
     "returnType": "FspSettingsDto"
   },
   {
+    "method": "get",
+    "path": "/api/programs/{programId}/aidworker-assignments",
+    "params": [
+      "programId",
+      "userId"
+    ],
+    "returnType": "GetProgramAidworkerAssignmentResponseDto"
+  },
+  {
     "method": "post",
     "path": "/api/programs/{programId}/attachments",
     "params": [
