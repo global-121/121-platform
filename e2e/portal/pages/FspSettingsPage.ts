@@ -92,9 +92,9 @@ class FspSettingsPage extends BasePage {
     for (const fspName of fspNames) {
       const fspLocator = this.fspCard.filter({ hasText: fspName });
       if (visible) {
-        await expect(fspLocator).toBeVisible();
+        await expect(fspLocator.first()).toBeVisible();
       } else {
-        await expect(fspLocator).toBeHidden();
+        await expect(fspLocator.first()).toBeHidden();
       }
     }
   }
@@ -152,7 +152,7 @@ class FspSettingsPage extends BasePage {
           }
         }
       }
-
+      await this.integrateFspButton.waitFor({ state: 'visible' });
       await this.integrateFspButton.click();
     }
   }
