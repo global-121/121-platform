@@ -1,7 +1,9 @@
-<p-blockUI [blocked]="loading()">
-  <p-progressSpinner
-    ariaLabel="Loading..."
-    i18n-ariaLabel="@@generic-loading"
-    class="m-auto"
-  />
-</p-blockUI>
+@if (loading()) {
+  <p-blockUI [blocked]="true">
+    <p-progressSpinner
+      ariaLabel="Loading..."
+      i18n-ariaLabel="@@generic-loading"
+      class="m-auto"
+    />
+  </p-blockUI>
+}
