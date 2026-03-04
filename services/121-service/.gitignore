@@ -32,9 +32,6 @@ cert/*.pfx
 # Onafriq SFTP certificate
 cert/*.pub
 
-# Compodoc documentation
-documentation
-
 # AppMap
 tmp
 sql_warning.txt
