@@ -146,10 +146,10 @@ describe('/ Users', () => {
 
   it('should return all users assigned to a program', async () => {
     // Act
-    const fetchUsersFromPvProgram = await getAllUsersByProgramId(
+    const fetchUsersFromPvProgram = await getAllUsersByProgramId({
       accessToken,
-      programIdPV.toString(),
-    );
+      programId: programIdPV,
+    });
     // Assert
     expect(fetchUsersFromPvProgram.status).toBe(HttpStatus.OK);
     expect(fetchUsersFromPvProgram.body.length).toBe(10); // There should be 10 users assigned to the PV program

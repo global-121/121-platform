@@ -2,11 +2,10 @@ import { HttpStatus } from '@nestjs/common';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
+import { replaceProgramApprovalThresholds } from '@121-service/test/helpers/program-approval-threshold.helper';
 import {
   createUserProgramAssignment,
   getAllUsersByProgramId,
-  getProgramApprovalThresholds,
-  replaceProgramApprovalThresholds,
   updateUserProgramAssignment,
 } from '@121-service/test/helpers/user.helper';
 import {
@@ -133,48 +132,27 @@ describe('Programs / Users / Roles', () => {
 
     it('should throw when adding scope to assignment for user that is an approver in the program', async () => {
       // Arrange
-      // Add user as approver via threshold
-      const thresholdsResponse = await getProgramApprovalThresholds({
+      const allUsersResponse = await getAllUsersByProgramId({
+        accessToken,
         programId,
-        accessToken,
       });
-      const allUsersResponse = await getAllUsersByProgramId(
-        accessToken,
-        programId.toString(),
-      );
       const userAssignment = allUsersResponse.body.find(
         (u: any) => u.id === userId,
       );
 
-      // Add user to first threshold as approver
-      const updatedThresholds = thresholdsResponse.body.map(
-        (threshold: any, index: number) => {
-          const approvers = threshold.approvers.map((approver: any) => {
-            const assignment = allUsersResponse.body.find(
-              (u: any) => u.id === approver.userId,
-            );
-            return {
-              programAidworkerAssignmentId:
-                assignment?.programAidworkerAssignmentId,
-            };
-          });
-          // Add test user to first threshold
-          if (index === 0) {
-            approvers.push({
-              programAidworkerAssignmentId:
-                userAssignment.programAidworkerAssignmentId,
-            });
-          }
-          return {
-            thresholdAmount: threshold.thresholdAmount,
-            approvers,
-          };
-        },
-      );
-
       await replaceProgramApprovalThresholds({
         programId,
-        thresholds: updatedThresholds,
+        thresholds: [
+          {
+            thresholdAmount: 0,
+            approvers: [
+              {
+                programAidworkerAssignmentId:
+                  userAssignment.programAidworkerAssignmentId,
+              },
+            ],
+          },
+        ],
         accessToken,
       });
 

@@ -4,7 +4,7 @@ import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/pro
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getProgramApprovalThresholds,
-  putProgramApprovalThresholds,
+  replaceProgramApprovalThresholds,
 } from '@121-service/test/helpers/program-approval-threshold.helper';
 import {
   createUserProgramAssignment,
@@ -42,11 +42,11 @@ describe('Program Approval Thresholds', () => {
       ];
 
       // Act
-      const response = await putProgramApprovalThresholds(
+      const response = await replaceProgramApprovalThresholds({
         programId,
         thresholds,
         accessToken,
-      );
+      });
 
       // Assert
       expect(response.status).toBe(HttpStatus.CREATED);
@@ -67,11 +67,11 @@ describe('Program Approval Thresholds', () => {
         { thresholdAmount: 50, approvers: [] },
       ];
 
-      const initialResponse = await putProgramApprovalThresholds(
+      const initialResponse = await replaceProgramApprovalThresholds({
         programId,
-        initialThresholds,
+        thresholds: initialThresholds,
         accessToken,
-      );
+      });
       expect(initialResponse.status).toBe(HttpStatus.CREATED);
       expect(initialResponse.body).toHaveLength(2);
 
@@ -82,11 +82,11 @@ describe('Program Approval Thresholds', () => {
         { thresholdAmount: 200, approvers: [] },
       ];
 
-      const response = await putProgramApprovalThresholds(
+      const response = await replaceProgramApprovalThresholds({
         programId,
-        newThresholds,
+        thresholds: newThresholds,
         accessToken,
-      );
+      });
 
       // Assert: Old thresholds should be replaced
       expect(response.status).toBe(HttpStatus.CREATED);
@@ -96,10 +96,10 @@ describe('Program Approval Thresholds', () => {
       expect(response.body[2].thresholdAmount).toBe(200);
 
       // Verify via GET
-      const getResponse = await getProgramApprovalThresholds(
+      const getResponse = await getProgramApprovalThresholds({
         programId,
         accessToken,
-      );
+      });
       expect(getResponse.status).toBe(HttpStatus.OK);
       expect(getResponse.body).toHaveLength(3);
     });
@@ -115,11 +115,11 @@ describe('Program Approval Thresholds', () => {
       ];
 
       // Act
-      const response = await putProgramApprovalThresholds(
+      const response = await replaceProgramApprovalThresholds({
         programId,
         thresholds,
         accessToken,
-      );
+      });
 
       // Assert
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
@@ -144,10 +144,10 @@ describe('Program Approval Thresholds', () => {
       });
 
       // Get the program aidworker assignment ID for the scoped user
-      const allUsersResponse = await getAllUsersByProgramId(
+      const allUsersResponse = await getAllUsersByProgramId({
         accessToken,
-        programId.toString(),
-      );
+        programId,
+      });
       const scopedUserAssignment = allUsersResponse.body.find(
         (u: any) => u.id === userId,
       );
@@ -162,11 +162,11 @@ describe('Program Approval Thresholds', () => {
       ];
 
       // Act
-      const response = await putProgramApprovalThresholds(
+      const response = await replaceProgramApprovalThresholds({
         programId,
         thresholds,
         accessToken,
-      );
+      });
 
       // Assert
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
@@ -193,11 +193,11 @@ describe('Program Approval Thresholds', () => {
       ];
 
       // Act
-      const response = await putProgramApprovalThresholds(
+      const response = await replaceProgramApprovalThresholds({
         programId,
         thresholds,
         accessToken,
-      );
+      });
 
       // Assert
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
@@ -215,11 +215,11 @@ describe('Program Approval Thresholds', () => {
       ];
 
       // Act
-      const response = await putProgramApprovalThresholds(
+      const response = await replaceProgramApprovalThresholds({
         programId,
         thresholds,
         accessToken,
-      );
+      });
 
       // Assert
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
