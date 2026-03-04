@@ -61,21 +61,21 @@ describe('parseFspConfigurationPropertyValue', () => {
     it('should parse valid number values', () => {
       expect(
         parseFspConfigurationPropertyValue({
-          name: FspConfigurationProperties.maxToSpendPerMonthInCents,
+          name: FspConfigurationProperties.maxBalanceInCents,
           value: '123',
         }),
       ).toBe(123);
 
       expect(
         parseFspConfigurationPropertyValue({
-          name: FspConfigurationProperties.maxToSpendPerMonthInCents,
+          name: FspConfigurationProperties.maxBalanceInCents,
           value: '-456',
         }),
       ).toBe(-456);
 
       expect(
         parseFspConfigurationPropertyValue({
-          name: FspConfigurationProperties.maxToSpendPerMonthInCents,
+          name: FspConfigurationProperties.maxBalanceInCents,
           value: '123.45',
         }),
       ).toBe(123.45);
@@ -84,14 +84,14 @@ describe('parseFspConfigurationPropertyValue', () => {
     it('should throw for invalid number values', () => {
       expect(() =>
         parseFspConfigurationPropertyValue({
-          name: FspConfigurationProperties.maxToSpendPerMonthInCents,
+          name: FspConfigurationProperties.maxBalanceInCents,
           value: 'abc',
         }),
       ).toThrow('Cannot parse value "abc" as number');
 
       expect(() =>
         parseFspConfigurationPropertyValue({
-          name: FspConfigurationProperties.maxToSpendPerMonthInCents,
+          name: FspConfigurationProperties.maxBalanceInCents,
           value: '',
         }),
       ).toThrow('Cannot parse value "" as number');

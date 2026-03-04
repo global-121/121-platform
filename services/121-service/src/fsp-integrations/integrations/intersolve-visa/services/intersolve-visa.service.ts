@@ -123,10 +123,10 @@ export class IntersolveVisaService {
    */
   public async retrieveAndUpdateWallet({
     registrationId,
-    maxToSpendPerMonthInCents,
+    maxBalanceInCents,
   }: {
     registrationId: number;
-    maxToSpendPerMonthInCents: number;
+    maxBalanceInCents: number;
   }): Promise<IntersolveVisaWalletDto> {
     const parentWallet = await this.getParentWalletOrThrow({
       registrationId,
@@ -143,7 +143,7 @@ export class IntersolveVisaService {
 
     return IntersolveVisaDtoMapper.mapParentWalletEntityToWalletDto({
       intersolveVisaParentWalletEntity: updatedParentWallet,
-      maxToSpendPerMonthInCents,
+      maxBalanceInCents,
     });
   }
 
@@ -156,10 +156,10 @@ export class IntersolveVisaService {
    */
   public async getWalletWithCards({
     registrationId,
-    maxToSpendPerMonthInCents,
+    maxBalanceInCents,
   }: {
     registrationId: number;
-    maxToSpendPerMonthInCents: number;
+    maxBalanceInCents: number;
   }): Promise<IntersolveVisaWalletDto> {
     const parentWallet = await this.getParentWalletOrThrow({
       registrationId,
@@ -167,7 +167,7 @@ export class IntersolveVisaService {
 
     return IntersolveVisaDtoMapper.mapParentWalletEntityToWalletDto({
       intersolveVisaParentWalletEntity: parentWallet,
-      maxToSpendPerMonthInCents,
+      maxBalanceInCents,
     });
   }
 
@@ -640,11 +640,11 @@ export class IntersolveVisaService {
   public async calculateTransferValueWithWalletRetrieval({
     registrationId,
     inputTransferValueInMajorUnit,
-    maxToSpendPerMonthInCents,
+    maxBalanceInCents,
   }: {
     registrationId: number;
     inputTransferValueInMajorUnit: number;
-    maxToSpendPerMonthInCents: number;
+    maxBalanceInCents: number;
   }): Promise<number> {
     const intersolveVisaCustomer =
       await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
@@ -671,27 +671,23 @@ export class IntersolveVisaService {
     // Calculate the amount that should be transferred. If the registration does not have customer yet the spendThisMonth and balance will be 0.
     return this.calculateLimitedTransferValue({
       transferValueInMajorUnit: inputTransferValueInMajorUnit,
-      spentThisMonth:
-        intersolveVisaCustomer?.intersolveVisaParentWallet?.spentThisMonth ?? 0,
       balance: intersolveVisaCustomer?.intersolveVisaParentWallet?.balance ?? 0,
-      maxToSpendPerMonthInCents,
+      maxBalanceInCents,
     });
   }
 
-  // Calculated the amount that can be transferred based on the limits of maximum amount on a wallet and maximum amount that can be spent per month.
+  // Calculated the amount that can be transferred based on the limits of maximum amount on a wallet.
   private calculateLimitedTransferValue({
     transferValueInMajorUnit,
-    spentThisMonth,
     balance,
-    maxToSpendPerMonthInCents,
+    maxBalanceInCents,
   }: {
     transferValueInMajorUnit: number;
-    spentThisMonth: number;
     balance: number;
-    maxToSpendPerMonthInCents: number;
+    maxBalanceInCents: number;
   }): number {
     const calculatedTransferValueMajorUnit =
-      (maxToSpendPerMonthInCents - spentThisMonth - balance) / 100;
+      (maxBalanceInCents - balance) / 100;
 
     if (calculatedTransferValueMajorUnit > 0) {
       return Math.min(

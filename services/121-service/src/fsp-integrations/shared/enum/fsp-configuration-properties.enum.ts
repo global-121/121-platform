@@ -8,7 +8,7 @@ export enum FspConfigurationProperties {
   coverLetterCode = 'coverLetterCode',
   fundingTokenCode = 'fundingTokenCode',
   cardDistributionByMail = 'cardDistributionByMail',
-  maxToSpendPerMonthInCents = 'maxToSpendPerMonthInCents',
+  maxBalanceInCents = 'maxBalanceInCents',
   // Nedbank
   paymentReferencePrefix = 'paymentReferencePrefix',
   // Onafriq

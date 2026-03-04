@@ -30,7 +30,7 @@ parentWallet.intersolveVisaChildWallets = [];
 const newBalance = 150;
 const newDate = new Date('2024-02-02T00:00:00Z');
 const spentThisMonth = 50;
-const maxToSpendPerMonthInCents = 15000;
+const maxBalanceInCents = 15000;
 
 let customer = new IntersolveVisaCustomerEntity();
 customer.intersolveVisaParentWallet = parentWallet;
@@ -122,7 +122,7 @@ describe('IntersolveVisaService', () => {
 
       await service.retrieveAndUpdateWallet({
         registrationId,
-        maxToSpendPerMonthInCents,
+        maxBalanceInCents,
       });
 
       expect(parentWalletRepo.updateUnscoped).toHaveBeenCalledWith(
@@ -145,7 +145,7 @@ describe('IntersolveVisaService', () => {
 
       await service.retrieveAndUpdateWallet({
         registrationId,
-        maxToSpendPerMonthInCents,
+        maxBalanceInCents,
       });
 
       expect(parentWalletRepo.updateUnscoped).toHaveBeenCalledWith(
@@ -187,7 +187,7 @@ describe('IntersolveVisaService', () => {
       // Mock parent wallet before update
       const parentWallet = new IntersolveVisaParentWalletEntity();
       parentWallet.spentThisMonth = 0;
-      parentWallet.balance = 0;
+      parentWallet.balance = 8000; // 80 euro in cents
       parentWallet.tokenCode = 'parentToken';
 
       // Mock child wallet before update
@@ -210,20 +210,27 @@ describe('IntersolveVisaService', () => {
       });
       jest.spyOn(apiService, 'getToken').mockResolvedValue({
         ...mockedToken,
+        balance: 8000, // 80 euro in cents
+      });
+
+      jest.spyOn(parentWalletRepo, 'findOneOrFail').mockResolvedValue({
+        ...parentWallet,
+        lastUsedDate: newDate,
+        balance: 8000, // 80 euro in cents
+        spentThisMonth,
       });
 
       // Act
       const result = await service.calculateTransferValueWithWalletRetrieval({
         registrationId,
         inputTransferValueInMajorUnit,
-        maxToSpendPerMonthInCents,
+        maxBalanceInCents,
       });
 
       // Assert
-      // The expected value is calculated as follows:
-      // For spentThisMonth = 10000 (100 euro), mockedToken.balance = 100 (1 euro), inputTransferValueInMajorUnit = 75:
-      // Math.min(150 - (10000 + 100) / 100, 75) = Math.min(150 - 101, 75) = Math.min(49, 75) = 49
-      const expected = 49;
+      // The expected value is the input amount since we only track balance (not spentThisMonth).
+      // With a max limit of 150 euro per month and requesting 75 euro, and the 80 euro balance, the transfer is allowed only to max limit. therefore expected transfer value is 70 euro.
+      const expected = 70;
 
       expect(result).toBe(expected);
     });
@@ -255,7 +262,7 @@ describe('IntersolveVisaService', () => {
       const result = await service.calculateTransferValueWithWalletRetrieval({
         registrationId,
         inputTransferValueInMajorUnit,
-        maxToSpendPerMonthInCents,
+        maxBalanceInCents,
       });
 
       // Assert
@@ -276,7 +283,7 @@ describe('IntersolveVisaService', () => {
       const result = await service.calculateTransferValueWithWalletRetrieval({
         registrationId,
         inputTransferValueInMajorUnit,
-        maxToSpendPerMonthInCents,
+        maxBalanceInCents,
       });
 
       // Assert
