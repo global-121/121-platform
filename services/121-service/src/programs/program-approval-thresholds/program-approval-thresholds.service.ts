@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
+import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
 import { CreateApproverForThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-approver-for-threshold.dto';
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/get-program-approval-threshold-response.dto';
@@ -10,6 +11,7 @@ import { ProgramApprovalThresholdRepository } from '@121-service/src/programs/pr
 export class ProgramApprovalThresholdsService {
   public constructor(
     private readonly programApprovalThresholdRepository: ProgramApprovalThresholdRepository,
+    private readonly aidworkerAssignmentRepository: ProgramAidworkerAssignmentRepository,
   ) {}
 
   public async replaceProgramApprovalThresholds(
@@ -18,7 +20,7 @@ export class ProgramApprovalThresholdsService {
   ): Promise<GetProgramApprovalThresholdResponseDto[]> {
     this.throwIfDuplicateThresholdAmounts(thresholds);
 
-    await this.programApprovalThresholdRepository.clearApproverAssignmentsForProgram(
+    await this.aidworkerAssignmentRepository.clearApproverAssignmentsForProgram(
       programId,
     );
     await this.programApprovalThresholdRepository.deleteThresholdsForProgram(
@@ -93,11 +95,10 @@ export class ProgramApprovalThresholdsService {
     programId: number;
     savedThreshold: ProgramApprovalThresholdEntity;
   }): Promise<void> {
-    const aidworker =
-      await this.programApprovalThresholdRepository.findAidworkerAssignment(
-        approverDto.programAidworkerAssignmentId,
-        programId,
-      );
+    const aidworker = await this.aidworkerAssignmentRepository.findById({
+      id: approverDto.programAidworkerAssignmentId,
+      programId,
+    });
 
     if (!aidworker) {
       throw new HttpException(
@@ -128,9 +129,7 @@ export class ProgramApprovalThresholdsService {
     }
 
     aidworker.programApprovalThresholdId = savedThreshold.id;
-    await this.programApprovalThresholdRepository.updateAidworkerAssignment(
-      aidworker,
-    );
+    await this.aidworkerAssignmentRepository.save(aidworker);
   }
 
   public async getProgramApprovalThresholds(

@@ -205,6 +205,15 @@
   },
   {
     "method": "get",
+    "path": "/api/programs/{programId}/aidworker-assignments",
+    "params": [
+      "programId",
+      "userId"
+    ],
+    "returnType": "GetProgramAidworkerAssignmentResponseDto"
+  },
+  {
+    "method": "get",
     "path": "/api/programs/{programId}/fsps/intersolve-voucher/voucher/image-paper",
     "params": [
       "programId",
@@ -392,15 +401,6 @@
       "fspName"
     ],
     "returnType": "FspSettingsDto"
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/aidworker-assignments",
-    "params": [
-      "programId",
-      "userId"
-    ],
-    "returnType": "GetProgramAidworkerAssignmentResponseDto"
   },
   {
     "method": "post",

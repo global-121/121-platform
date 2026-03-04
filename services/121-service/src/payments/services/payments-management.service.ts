@@ -16,7 +16,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
+import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
@@ -32,8 +32,6 @@ import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 export class PaymentsManagementService {
   @InjectRepository(PaymentEntity)
   private readonly paymentRepository: Repository<PaymentEntity>;
-  @InjectRepository(ProgramAidworkerAssignmentEntity)
-  private readonly aidworkerAssignmentRepository: Repository<ProgramAidworkerAssignmentEntity>;
   @InjectRepository(PaymentApprovalAidworkerEntity)
   private readonly paymentApprovalAidworkerRepository: Repository<PaymentApprovalAidworkerEntity>;
   public constructor(
@@ -46,6 +44,7 @@ export class PaymentsManagementService {
     private readonly programApprovalThresholdsService: ProgramApprovalThresholdsService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentApprovalRepository: PaymentApprovalRepository,
+    private readonly aidworkerAssignmentRepository: ProgramAidworkerAssignmentRepository,
   ) {}
 
   public async createPayment({
@@ -353,14 +352,11 @@ export class PaymentsManagementService {
     paymentId: number;
     note?: string;
   }): Promise<void> {
-    const approverAssignment = await this.aidworkerAssignmentRepository.findOne(
-      {
-        where: {
-          userId: Equal(userId),
-          programId: Equal(programId),
-        },
-      },
-    );
+    const approverAssignment =
+      await this.aidworkerAssignmentRepository.findByUserId({
+        userId,
+        programId,
+      });
 
     if (!approverAssignment) {
       throw new HttpException(

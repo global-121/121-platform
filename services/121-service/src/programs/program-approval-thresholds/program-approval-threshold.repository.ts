@@ -1,7 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, IsNull, LessThanOrEqual, Not, Repository } from 'typeorm';
+import { Equal, LessThanOrEqual, Repository } from 'typeorm';
 
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 
 export class ProgramApprovalThresholdRepository extends Repository<ProgramApprovalThresholdEntity> {
@@ -16,21 +15,6 @@ export class ProgramApprovalThresholdRepository extends Repository<ProgramApprov
     );
   }
 
-  public async clearApproverAssignmentsForProgram(
-    programId: number,
-  ): Promise<void> {
-    await this.baseRepository.manager.update(
-      ProgramAidworkerAssignmentEntity,
-      {
-        programId: Equal(programId),
-        programApprovalThresholdId: Not(IsNull()),
-      },
-      {
-        programApprovalThresholdId: null,
-      },
-    );
-  }
-
   public async deleteThresholdsForProgram(programId: number): Promise<void> {
     await this.baseRepository.delete({
       programId: Equal(programId),
@@ -41,30 +25,6 @@ export class ProgramApprovalThresholdRepository extends Repository<ProgramApprov
     threshold: ProgramApprovalThresholdEntity,
   ): Promise<ProgramApprovalThresholdEntity> {
     return await this.baseRepository.save(threshold);
-  }
-
-  public async findAidworkerAssignment(
-    programAidworkerAssignmentId: number,
-    programId: number,
-  ): Promise<ProgramAidworkerAssignmentEntity | null> {
-    return await this.baseRepository.manager.findOne(
-      ProgramAidworkerAssignmentEntity,
-      {
-        where: {
-          id: Equal(programAidworkerAssignmentId),
-          programId: Equal(programId),
-        },
-      },
-    );
-  }
-
-  public async updateAidworkerAssignment(
-    assignment: ProgramAidworkerAssignmentEntity,
-  ): Promise<ProgramAidworkerAssignmentEntity> {
-    return await this.baseRepository.manager.save(
-      ProgramAidworkerAssignmentEntity,
-      assignment,
-    );
   }
 
   public async getThresholdAmount(thresholdId: number): Promise<number | null> {

@@ -257,7 +257,7 @@ describe('PaymentsManagementService', () => {
       (service as any).paymentApprovalRepository = paymentApprovalRepository;
 
       const aidworkerAssignmentRepository = {
-        findOne: jest.fn().mockResolvedValue({
+        findByUserId: jest.fn().mockResolvedValue({
           id: 1,
           programApprovalThresholdId: 1,
         }),
