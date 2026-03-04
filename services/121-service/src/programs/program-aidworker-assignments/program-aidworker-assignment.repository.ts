@@ -39,33 +39,4 @@ export class ProgramAidworkerAssignmentRepository extends Repository<ProgramAidw
     });
     return assignment !== null;
   }
-
-  public async clearApproverAssignmentsForProgram(
-    programId: number,
-  ): Promise<void> {
-    await this.update(
-      {
-        programId: Equal(programId),
-        programApprovalThresholdId: Not(IsNull()),
-      },
-      {
-        programApprovalThresholdId: null,
-      },
-    );
-  }
-
-  public async findById({
-    id,
-    programId,
-  }: {
-    id: number;
-    programId: number;
-  }): Promise<ProgramAidworkerAssignmentEntity | null> {
-    return await this.findOne({
-      where: {
-        id: Equal(id),
-        programId: Equal(programId),
-      },
-    });
-  }
 }

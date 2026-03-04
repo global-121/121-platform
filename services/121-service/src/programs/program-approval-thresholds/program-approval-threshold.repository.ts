@@ -15,40 +15,6 @@ export class ProgramApprovalThresholdRepository extends Repository<ProgramApprov
     );
   }
 
-  public async deleteThresholdsForProgram(programId: number): Promise<void> {
-    await this.baseRepository.delete({
-      programId: Equal(programId),
-    });
-  }
-
-  public async saveThreshold(
-    threshold: ProgramApprovalThresholdEntity,
-  ): Promise<ProgramApprovalThresholdEntity> {
-    return await this.baseRepository.save(threshold);
-  }
-
-  public async getThresholdAmount(thresholdId: number): Promise<number | null> {
-    const threshold = await this.findOne({
-      where: { id: Equal(thresholdId) },
-      select: ['thresholdAmount'],
-    });
-    return threshold?.thresholdAmount ?? null;
-  }
-
-  public async findThresholdsWithRelations(
-    programId: number,
-  ): Promise<ProgramApprovalThresholdEntity[]> {
-    return await this.baseRepository.find({
-      where: { programId: Equal(programId) },
-      relations: {
-        approverAssignments: {
-          user: true,
-        },
-      },
-      order: { thresholdAmount: 'ASC' },
-    });
-  }
-
   public async getThresholdsForPaymentAmount(
     programId: number,
     paymentAmount: number,
