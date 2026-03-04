@@ -10,5 +10,5 @@ export const isKoboIntegrated = (
   }
   const data = integration.data();
 
-  return data.versionId ? true : false;
+  return data.versionId && data.versionId !== '' ? true : false;
 };
