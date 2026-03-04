@@ -44,7 +44,7 @@ export class ProgramApprovalThresholdsController {
       type: 'array',
       items: {
         type: 'object',
-        required: ['thresholdAmount', 'approvers'],
+        required: ['thresholdAmount'],
         properties: {
           thresholdAmount: {
             type: 'number',

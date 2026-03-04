@@ -1,5 +1,6 @@
 import * as request from 'supertest';
 
+import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { getServer } from '@121-service/test/helpers/utility.helper';
 
 export async function replaceProgramApprovalThresholds({
@@ -8,7 +9,7 @@ export async function replaceProgramApprovalThresholds({
   accessToken,
 }: {
   programId: number;
-  thresholds: any[];
+  thresholds: CreateProgramApprovalThresholdDto[];
   accessToken: string;
 }): Promise<request.Response> {
   return await getServer()
@@ -39,10 +40,6 @@ export async function getApprovers({
   const thresholdsResponse = await getServer()
     .get(`/programs/${programId}/approval-thresholds`)
     .set('Cookie', [accessToken]);
-
-  if (thresholdsResponse.status !== 200) {
-    return [];
-  }
 
   const approvers = thresholdsResponse.body.flatMap(
     (threshold: any) => threshold.approvers ?? [],

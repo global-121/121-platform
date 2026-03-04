@@ -70,6 +70,12 @@ export class ProgramAidworkerAssignmentsController {
       );
     }
 
-    return assignment;
+    return {
+      id: assignment.id,
+      userId: assignment.userId,
+      programId: assignment.programId,
+      scope: assignment.scope,
+      programApprovalThresholdId: assignment.programApprovalThresholdId,
+    };
   }
 }
