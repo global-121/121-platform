@@ -32,25 +32,23 @@ export async function findAidworkerAssignmentIdByUsername({
   username: string;
   accessToken: string;
 }): Promise<number> {
-  // First get all users to find the userId
   const usersResponse = await getServer()
-    .get(`/programs/${programId}/users`)
+    .get(`/programs/${programId}/users/search`)
+    .query({ username })
     .set('Cookie', [accessToken]);
 
   if (usersResponse.status !== 200) {
     throw new Error(
-      `Failed to get users: ${usersResponse.status} ${usersResponse.body.message}`,
+      `Failed to search users: ${usersResponse.status} ${usersResponse.body.message}`,
     );
   }
 
-  const user = usersResponse.body.find((u: any) => u.username === username);
-  if (!user) {
-    throw new Error(
-      `User with username ${username} not found in program ${programId}`,
-    );
+  if (usersResponse.body.length === 0) {
+    throw new Error(`User with username ${username} not found`);
   }
 
-  // Then get the assignment
+  const user = usersResponse.body[0];
+
   return findAidworkerAssignmentIdByUserId({
     programId,
     userId: user.id,

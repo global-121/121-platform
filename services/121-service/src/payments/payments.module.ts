@@ -27,7 +27,7 @@ import { TransactionEventsModule } from '@121-service/src/payments/transactions/
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
+import { ProgramAidworkerAssignmentsModule } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignments.module';
 import { ProgramApprovalThresholdsModule } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
@@ -47,7 +47,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
       PaymentEntity,
       PaymentApprovalEntity,
       PaymentApprovalAidworkerEntity,
-      ProgramAidworkerAssignmentEntity,
     ]),
     UserModule,
     HttpModule,
@@ -65,6 +64,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     TransactionEventsModule,
     MessageTemplateModule,
     ProgramApprovalThresholdsModule,
+    ProgramAidworkerAssignmentsModule,
   ],
   providers: [
     PaymentsManagementService,

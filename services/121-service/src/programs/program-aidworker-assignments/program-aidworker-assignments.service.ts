@@ -9,26 +9,16 @@ export class ProgramAidworkerAssignmentsService {
     private readonly programAidworkerAssignmentRepository: ProgramAidworkerAssignmentRepository,
   ) {}
 
-  public async getAssignmentByUserIdAndProgramId({
+  public async getAssignmentByUserId({
     userId,
     programId,
   }: {
     userId: number;
     programId: number;
   }): Promise<ProgramAidworkerAssignmentEntity | null> {
-    return await this.programAidworkerAssignmentRepository.findByUserIdAndProgramId(
-      {
-        userId,
-        programId,
-      },
-    );
-  }
-
-  public async getAssignmentsByProgramId(
-    programId: number,
-  ): Promise<ProgramAidworkerAssignmentEntity[]> {
-    return await this.programAidworkerAssignmentRepository.findByProgramId(
+    return await this.programAidworkerAssignmentRepository.findByUserId({
+      userId,
       programId,
-    );
+    });
   }
 }

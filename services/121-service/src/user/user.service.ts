@@ -5,20 +5,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
 import crypto from 'node:crypto';
-import {
-  Equal,
-  FindOptionsRelations,
-  In,
-  IsNull,
-  Not,
-  Repository,
-} from 'typeorm';
+import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/email-constants';
 import { env } from '@121-service/src/env';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
+import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import {
   INTERFACE_NAME_HEADER,
@@ -69,12 +62,11 @@ export class UserService {
   private readonly userRoleRepository: Repository<UserRoleEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramAidworkerAssignmentEntity)
-  private readonly assignmentRepository: Repository<ProgramAidworkerAssignmentEntity>;
 
   public constructor(
     @Inject(REQUEST) private readonly request: Request,
     private readonly userEmailsService: UserEmailsService,
+    private readonly assignmentRepository: ProgramAidworkerAssignmentRepository,
   ) {}
 
   public async login(loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
@@ -445,13 +437,9 @@ export class UserService {
   }: {
     programAssignmentId: number;
   }): Promise<void> {
-    const assignment = await this.assignmentRepository.findOne({
-      where: {
-        id: Equal(programAssignmentId),
-        programApprovalThresholdId: Not(IsNull()),
-      },
-    });
-    if (assignment) {
+    const isApprover =
+      await this.assignmentRepository.isApprover(programAssignmentId);
+    if (isApprover) {
       throw new HttpException(
         'Cannot add scope to assignment because user is an approver for this program. Remove approver from program first (if intended) and retry.',
         HttpStatus.BAD_REQUEST,

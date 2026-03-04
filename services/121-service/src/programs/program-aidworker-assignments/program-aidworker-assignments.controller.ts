@@ -30,7 +30,7 @@ export class ProgramAidworkerAssignmentsController {
   ) {}
 
   @ApiOperation({
-    summary: 'Get aidworker assignment by user ID and program ID',
+    summary: 'Get aidworker assignment by user ID',
   })
   @ApiParam({
     name: 'programId',
@@ -59,12 +59,10 @@ export class ProgramAidworkerAssignmentsController {
     @Query('userId', ParseIntPipe) userId: number,
   ): Promise<GetProgramAidworkerAssignmentResponseDto> {
     const assignment =
-      await this.programAidworkerAssignmentsService.getAssignmentByUserIdAndProgramId(
-        {
-          userId,
-          programId,
-        },
-      );
+      await this.programAidworkerAssignmentsService.getAssignmentByUserId({
+        userId,
+        programId,
+      });
 
     if (!assignment) {
       throw new NotFoundException(
@@ -72,12 +70,6 @@ export class ProgramAidworkerAssignmentsController {
       );
     }
 
-    return {
-      id: assignment.id,
-      userId: assignment.userId,
-      programId: assignment.programId,
-      scope: assignment.scope,
-      programApprovalThresholdId: assignment.programApprovalThresholdId,
-    };
+    return assignment;
   }
 }

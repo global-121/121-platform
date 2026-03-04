@@ -103,6 +103,7 @@ graph LR
   PaymentsModule-->FspsModule
   PaymentsModule-->MessageTemplateModule
   PaymentsModule-->PaymentEventsModule
+  PaymentsModule-->ProgramAidworkerAssignmentsModule
   PaymentsModule-->ProgramApprovalThresholdsModule
   PaymentsModule-->ProgramFspConfigurationsModule
   PaymentsModule-->ProgramModule
@@ -115,6 +116,7 @@ graph LR
   PaymentsModule-->TransactionQueuesModule
   PaymentsModule-->TransactionsModule
   PaymentsModule-->UserModule
+  ProgramApprovalThresholdsModule-->ProgramAidworkerAssignmentsModule
   ProgramModule-->FspsModule
   ProgramModule-->IntersolveVisaModule
   ProgramModule-->KoboConnectModule
@@ -176,6 +178,7 @@ graph LR
   TransactionsModule-->TransactionEventsModule
   TransactionsModule-->UserModule
   UserEmailsModule-->EmailsModule
+  UserModule-->ProgramAidworkerAssignmentsModule
   UserModule-->UserEmailsModule
   WhatsappModule-->ImageCodeModule
   WhatsappModule-->MessageTemplateModule
