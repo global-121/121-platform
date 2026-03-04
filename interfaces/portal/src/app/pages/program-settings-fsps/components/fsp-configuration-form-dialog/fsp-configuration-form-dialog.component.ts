@@ -25,6 +25,8 @@ import { FormDialogComponent } from '~/components/form-dialog/form-dialog.compon
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
+import { isKoboIntegrated } from '~/domains/kobo/kobo.helpers';
+import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { FspConfigurationPropertyFormFieldComponent } from '~/pages/program-settings-fsps/components/fsp-configuration-property-form-field/fsp-configuration-property-form-field.component';
 import {
@@ -52,8 +54,10 @@ export class FspConfigurationFormDialogComponent {
 
   readonly fspConfigurationService = inject(FspConfigurationService);
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
-  readonly programApiService = inject(ProgramApiService);
   readonly translatableStringService = inject(TranslatableStringService);
+
+  readonly programApiService = inject(ProgramApiService);
+  readonly koboApiService = inject(KoboApiService);
 
   programAttributes = injectQuery(
     this.programApiService.getProgramAttributes({
@@ -67,6 +71,15 @@ export class FspConfigurationFormDialogComponent {
   );
   readonly integrationErrorDialog = viewChild.required<FormDialogComponent>(
     'integrationErrorDialog',
+  );
+
+  readonly koboIntegration = injectQuery(() => ({
+    ...this.koboApiService.getKoboIntegration(this.programId)(),
+    enabled: !!this.programId(),
+  }));
+
+  readonly isKoboIntegrated = computed<boolean>(() =>
+    isKoboIntegrated(this.koboIntegration),
   );
 
   // This is defaulted to Excel to avoid undefined errors before show() is called

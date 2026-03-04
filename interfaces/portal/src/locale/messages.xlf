@@ -1724,9 +1724,6 @@
       <trans-unit id="7313006626571837182" datatype="html">
         <source>There are no specific fields needed for this integration</source>
       </trans-unit>
-      <trans-unit id="7381452168881549852" datatype="html">
-        <source>We couldn&apos;t configure this FSP due to missing fields in your Kobo form. Please add the following fields to your Kobo form. Save the form, redeploy it, and refresh the integration to try again.</source>
-      </trans-unit>
       <trans-unit id="7799902377740606724" datatype="html">
         <source>Select 1</source>
       </trans-unit>
@@ -2197,6 +2194,15 @@
       </trans-unit>
       <trans-unit id="8809702678611776373" datatype="html">
         <source>Link with KoboToolbox</source>
+      </trans-unit>
+      <trans-unit id="1047385497229330740" datatype="html">
+        <source>Please add these fields to your Kobo form. Save the form, redeploy it, and reconfigure the integration to try again.</source>
+      </trans-unit>
+      <trans-unit id="2473040432725924287" datatype="html">
+        <source>Please add the following fields:</source>
+      </trans-unit>
+      <trans-unit id="274004434910655724" datatype="html">
+        <source>We couldn&apos;t configure this FSP due to missing fields in your program.</source>
       </trans-unit>
     </body>
   </file>

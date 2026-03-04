@@ -36,10 +36,19 @@
   i18n-proceedLabel
 >
   <p i18n>
-    We couldn't configure this FSP due to missing fields in your Kobo form.
-    Please add the following fields to your Kobo form. Save the form, redeploy
-    it, and refresh the integration to try again.
+    We couldn't configure this FSP due to missing fields in your program.
   </p>
+  @if (isKoboIntegrated()) {
+    <p i18n>
+      Please add these fields to your Kobo form. Save the form, redeploy it, and
+      reconfigure the integration to try again.
+    </p>
+    <p i18n>
+      Learn more about how to integrate Kobo forms in the <app-manual-link />.
+    </p>
+  } @else {
+    <p i18n>Please add the following fields:</p>
+  }
   <ol class="my-4 list-inside list-decimal ps-4">
     @for (attribute of missingIntegrationAttributes(); track attribute.name) {
       <li i18n>
@@ -48,7 +57,4 @@
       </li>
     }
   </ol>
-  <p i18n>
-    Learn more about how to integrate Kobo forms in the <app-manual-link />.
-  </p>
 </app-form-dialog>
