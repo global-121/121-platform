@@ -3,6 +3,7 @@ import { expect } from '@playwright/test';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { updateRegistration } from '@121-service/test/helpers/registration.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
   registrationOCW4,
@@ -49,13 +50,14 @@ const dataUpdate = {
   addressPostalCode: '5678ZY',
 };
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     registrations: [registrationOCW4],
     programId: programIdOCW,
   });
 
+  const accessToken = await getAccessToken();
   // Make data changes
   const response = await updateRegistration(
     programIdOCW,

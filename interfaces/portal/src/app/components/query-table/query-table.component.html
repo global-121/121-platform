@@ -97,7 +97,7 @@
           />
         </th>
       }
-      @for (column of visibleColumns(); track $index) {
+      @for (column of visibleColumns(); track column.header) {
         @let columnSortField = getColumnSortField(column);
         @let columnFilterField = getColumnFilterField(column);
         @let columnMatchMode = getColumnMatchMode(column).toString();
@@ -237,7 +237,7 @@
           />
         </td>
       }
-      @for (column of visibleColumns(); track $index) {
+      @for (column of visibleColumns(); track column.header) {
         <td>
           @if (column.component) {
             <ng-container
