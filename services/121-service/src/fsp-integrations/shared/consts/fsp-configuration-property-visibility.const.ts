@@ -33,7 +33,7 @@ export const FspConfigurationPropertyVisibilityMap: Record<
     FspConfigurationPropertyVisibility.default,
   [FspConfigurationProperties.fundingTokenCode]:
     FspConfigurationPropertyVisibility.default,
-  [FspConfigurationProperties.maxToSpendPerMonthInCents]:
+  [FspConfigurationProperties.maxBalanceInCents]:
     FspConfigurationPropertyVisibility.default,
   [FspConfigurationProperties.paymentReferencePrefix]:
     FspConfigurationPropertyVisibility.default,

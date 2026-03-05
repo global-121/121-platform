@@ -260,10 +260,10 @@ describe('FspConfigurationService', () => {
         ),
       ).toBe(FspConfigurationPropertyInputType.toggleSwitch);
     });
-    it('should return number-input for maxToSpendPerMonthInCents', () => {
+    it('should return number-input for maxBalanceInCents', () => {
       expect(
         service.getPropertyFieldType(
-          FspConfigurationProperties.maxToSpendPerMonthInCents,
+          FspConfigurationProperties.maxBalanceInCents,
         ),
       ).toBe(FspConfigurationPropertyInputType.numberInput);
     });

@@ -209,19 +209,6 @@ Steps to rename a database table:
 
 ---
 
-### Analyzing code structure and behavior
-
-#### Compodoc
-
-Compodoc can generate static code diagrams and documentation and serve that as a website locally:
-
-1. From the 121-service folder run this command: `npx @compodoc/compodoc -p tsconfig.json -s`
-2. This creates a folder called 'documentation' and starts a website that is typically available under: <http://localhost:8080/>
-3. Most useful is the per-module diagram and documentation available under: <http://localhost:8080/modules.html>
-4. For more information, see: <https://docs.nestjs.com/recipes/documentation>
-
----
-
 ## License
 
 Released under the Apache 2.0 License. See [LICENSE](LICENSE).

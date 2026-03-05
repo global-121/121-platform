@@ -272,7 +272,7 @@ describe('ProgramFspConfigurationsService', () => {
         ...createDto,
         properties: [
           {
-            name: FspConfigurationProperties.maxToSpendPerMonthInCents,
+            name: FspConfigurationProperties.maxBalanceInCents,
             value: '25000',
           },
         ],
@@ -335,7 +335,7 @@ describe('ProgramFspConfigurationsService', () => {
         label: { en: 'Updated Label' },
         properties: [
           {
-            name: FspConfigurationProperties.maxToSpendPerMonthInCents,
+            name: FspConfigurationProperties.maxBalanceInCents,
             value: '25000',
           },
         ],

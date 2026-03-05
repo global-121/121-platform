@@ -1,7 +1,7 @@
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 
 export const fspConfigurationPropertyTypes = {
-  [FspConfigurationProperties.maxToSpendPerMonthInCents]: 'number',
+  [FspConfigurationProperties.maxBalanceInCents]: 'number',
   [FspConfigurationProperties.cardDistributionByMail]: 'boolean',
   [FspConfigurationProperties.columnsToExport]: 'array',
   [FspConfigurationProperties.columnToMatch]: 'string',

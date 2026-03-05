@@ -31,7 +31,3 @@ cert/DigiCertGlobalRootG2.crt.pem
 cert/*.pfx
 # Onafriq SFTP certificate
 cert/*.pub
-
-# Compodoc documentation
-documentation
-
