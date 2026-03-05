@@ -209,23 +209,6 @@ Steps to rename a database table:
 
 ---
 
-### Analyzing code structure and behavior
-
-#### AppMap
-
-AppMap is a very extensive static and dynamic code analysis tool which can be run as a Visual Studio Extension. It has many features, options, and comes with an AI chat bot to converse with:
-
-1. Install the AppMap Extension in Visual Studio Code. Reference: <https://marketplace.visualstudio.com/items?itemName=appland.appmap>
-2. Start the 121 Service node process under the `appmap-node` npx script by using: `npm run start:services:appmap` on your development environment.
-3. Create recordings by calling an API endpoint, or running test suites, or interacting via the 121 Portal. These recordings are stored in the `tmp/appmap` folder under the 121-service.
-4. Open these recordings from the `APPMAPS`-pane in the AppMap Extension in VS Code.
-5. Note: Docker creates new files as root. At least on Linux you need to run `sudo chown -R <your-username> .` in the 121-service folder so that the AppMap Extension can access the files of the recordings.
-6. AppMap creates Dependency Diagrams, Sequence Diagrams, Flame Graphs and more to get insight of the code's behavior.
-7. AppMap also as an AI bot called Navie AI to ask questions to.
-8. For more information: <https://appmap.io/docs/appmap-overview.html> or access the Slack channel: <https://appmap.io/community>
-
----
-
 ## License
 
 Released under the Apache 2.0 License. See [LICENSE](LICENSE).

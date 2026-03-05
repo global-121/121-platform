@@ -1,7 +1,0 @@
-name: 121-service
-appmap_dir: tmp/appmap
-packages:
-  - path: .
-    exclude:
-      - node_modules
-      - .yarn

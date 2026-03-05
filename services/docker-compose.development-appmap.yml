@@ -1,3 +1,0 @@
-services:
-  121-service:
-    command: 'npx -y appmap-node npm run start:dev'
