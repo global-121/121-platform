@@ -40,29 +40,20 @@ The documentation of the 121 platform can be found on the Wiki of this repositor
 
 ### Set up a local development-environment
 
+> **Note:** These instructions target macOS and Linux. Windows is not officially supported, but may work with minor adjustments.
+
 - Install Git: <https://git-scm.com/download/>
 - Install Node.js: <https://nodejs.org/en/download/>
   - Install the version specified in the [`.node-version`](.node-version)-file.
 
   - To prevent conflicts between projects or components using other versions of Node.js it is recommended to use a 'version manager'.
-    - [FNM](https://nodejs.org/en/download/package-manager/#fnm) (for Windows/macOS/Linux
+    - [FNM](https://nodejs.org/en/download/package-manager/#fnm) (for macOS/Linux)
 
     - [NVM - Node Version Manager](http://nvm.sh/) (for macOS/Linux).
-
-    - [NVM for Windows](https://github.com/coreybutler/nvm-windows) (for Windows))
 
 - Install Docker
   - On Linux, install Docker Engine + Compose plugin: <https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository>
   - On macOS, install Docker Desktop: <https://docs.docker.com/docker-for-mac/install/>
-
-  - On Windows, install Docker Desktop: <https://docs.docker.com/docker-for-windows/install/>
-
-    If there are issues running Docker on Windows, you _might_ need to do the following:
-    - Install WSL2 Linux kernel package.  
-      Check step 4 on <https://learn.microsoft.com/en-us/windows/wsl/install-manual>
-    - Set WSL2 as default version in PowerShell
-      - `wsl --set-default-version 2`
-      - Check step 5 on <https://learn.microsoft.com/en-us/windows/wsl/install-manual>
 
 ### Set up repository and code
 
@@ -78,10 +69,7 @@ Then install the required version of Node.js and `npm`:
 
 - If you use FNM: `fnm use` (And follow the prompts)
 
-- If you use NVM
-  - On macOS/Linux: `nvm install`
-
-  - On Windows: `nvm install <version in .node-version-file>`
+- If you use NVM: `nvm install`
 
 ---
 
