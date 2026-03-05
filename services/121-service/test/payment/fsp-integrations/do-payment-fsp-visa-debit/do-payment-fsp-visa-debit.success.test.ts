@@ -187,7 +187,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     registrationVisa.fullName = 'mock-current-balance-13000-mock-spent-1000';
     registrationVisa.paymentAmountMultiplier = 3;
 
-    registrationOCW2.fullName = 'mock-current-balance-14000-mock-spent-1000';
+    registrationOCW2.fullName = 'mock-current-balance-15000-mock-spent-0';
     registrationOCW2.paymentAmountMultiplier = 3;
 
     registrationOCW3.fullName = 'success';
@@ -267,8 +267,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     });
 
     // Assert Registration 1
-    const expectedCalculatedTransferValueRegistration1 =
-      150 - 13000 / 100 - 1000 / 100; // = 10
+    const expectedCalculatedTransferValueRegistration1 = 150 - 13000 / 100; // = 20
     const expectedBody = createEnglishMessageBodyForAmount({
       amount: expectedCalculatedTransferValueRegistration1,
     });
@@ -298,8 +297,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     expect(transactionsResponse1.text).toContain(TransactionStatusEnum.success);
 
     // Assert Registration 2
-    const expectedCalculatedTransferValueRegistration2 =
-      150 - 14000 / 100 - 1000 / 100; // = 0
+    const expectedCalculatedTransferValueRegistration2 = 150 - 15000 / 100; // = 0
 
     const transactionsResponse2 = await getTransactionsByPaymentIdPaginated({
       programId: programIdVisa,
@@ -307,10 +305,11 @@ describe('Do successful payment with FSP Visa Debit', () => {
       registrationReferenceId: registrationOCW2.referenceId,
       accessToken,
     });
+    console.log('transactionsResponse2: ', transactionsResponse2.body);
     expect(transactionsResponse2.body.data[0].transferValue).toBe(
       expectedCalculatedTransferValueRegistration2, // = 0 : A transaction of 0 is created
     );
-    expect(transactionsResponse2.text).toContain(TransactionStatusEnum.success);
+    expect(transactionsResponse2.text).toContain(TransactionStatusEnum.success); // Even though the transfer value is 0, the transaction is still successful as the payment is approved.
 
     // Assert Registration 3
     const transactionsResponse3 = await getTransactionsByPaymentIdPaginated({
@@ -342,17 +341,17 @@ describe('Do successful payment with FSP Visa Debit', () => {
     expect(transactionsResponse4.text).toContain(TransactionStatusEnum.success);
   });
 
-  it('should cap transaction amount to maxToSpendPerMonthInCents when payment exceeds it', async () => {
+  it('should cap transaction amount to maxBalanceInCents when payment exceeds it', async () => {
     // Arrange
-    const maxToSpendPerMonthInCents = 1_000;
-    const expectedMaxTransferValue = maxToSpendPerMonthInCents / 100;
+    const maxBalanceInCents = 1_000;
+    const expectedMaxTransferValue = maxBalanceInCents / 100;
 
     await patchProgramFspConfigurationProperty({
       programId: programIdVisa,
       configName: Fsps.intersolveVisa,
-      propertyName: FspConfigurationProperties.maxToSpendPerMonthInCents,
+      propertyName: FspConfigurationProperties.maxBalanceInCents,
       body: {
-        value: maxToSpendPerMonthInCents,
+        value: maxBalanceInCents,
       },
       accessToken,
     });

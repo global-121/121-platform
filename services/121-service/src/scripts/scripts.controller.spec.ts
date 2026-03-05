@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { env } from '@121-service/src/env';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { ScriptsController } from '@121-service/src/scripts/scripts.controller';
@@ -51,7 +52,7 @@ describe('ScriptsController - resetDb approverMode logic', () => {
     isApiTests?: boolean;
   }) {
     const res = { status: jest.fn().mockReturnThis(), send: jest.fn() };
-    const baseBody = { secret: 'fill_in_secret' };
+    const baseBody = { secret: env.RESET_SECRET };
     return controller.resetDb(
       baseBody,
       script,

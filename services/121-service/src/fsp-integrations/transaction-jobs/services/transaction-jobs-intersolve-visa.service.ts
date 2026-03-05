@@ -47,17 +47,16 @@ export class TransactionJobsIntersolveVisaService {
 
     let transferValueInMajorUnit: number;
     try {
-      const { maxToSpendPerMonthInCents } =
-        await this.getIntersolveVisaFspConfig(
-          transactionJob.programFspConfigurationId,
-        );
+      const { maxBalanceInCents } = await this.getIntersolveVisaFspConfig(
+        transactionJob.programFspConfigurationId,
+      );
 
       transferValueInMajorUnit =
         await this.intersolveVisaService.calculateTransferValueWithWalletRetrieval(
           {
             registrationId: registration.id,
             inputTransferValueInMajorUnit: transactionJob.transferValue,
-            maxToSpendPerMonthInCents,
+            maxBalanceInCents,
           },
         );
     } catch (error) {
@@ -164,7 +163,7 @@ export class TransactionJobsIntersolveVisaService {
     coverLetterCode: string;
     fundingTokenCode: string;
     cardDistributionByMail: boolean;
-    maxToSpendPerMonthInCents: number;
+    maxBalanceInCents: number;
   }> {
     const intersolveVisaConfig =
       await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
@@ -174,7 +173,7 @@ export class TransactionJobsIntersolveVisaService {
           FspConfigurationProperties.coverLetterCode,
           FspConfigurationProperties.fundingTokenCode,
           FspConfigurationProperties.cardDistributionByMail,
-          FspConfigurationProperties.maxToSpendPerMonthInCents,
+          FspConfigurationProperties.maxBalanceInCents,
         ],
       });
     return {
@@ -190,8 +189,8 @@ export class TransactionJobsIntersolveVisaService {
       cardDistributionByMail: intersolveVisaConfig.find(
         (c) => c.name === FspConfigurationProperties.cardDistributionByMail,
       )?.value as boolean,
-      maxToSpendPerMonthInCents: intersolveVisaConfig.find(
-        (c) => c.name === FspConfigurationProperties.maxToSpendPerMonthInCents,
+      maxBalanceInCents: intersolveVisaConfig.find(
+        (c) => c.name === FspConfigurationProperties.maxBalanceInCents,
       )?.value as number,
     };
   }
