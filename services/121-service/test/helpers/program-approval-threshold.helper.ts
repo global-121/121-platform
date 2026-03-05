@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import * as request from 'supertest';
 
 import { ApproverResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/approver-in-threshold-response.dto';
@@ -42,6 +43,12 @@ export async function getApprovers({
   const thresholdsResponse = await getServer()
     .get(`/programs/${programId}/approval-thresholds`)
     .set('Cookie', [accessToken]);
+
+  if (thresholdsResponse.status !== HttpStatus.OK) {
+    throw new Error(
+      `Failed to get program approval thresholds for programId ${programId}`,
+    );
+  }
 
   const thresholds: GetProgramApprovalThresholdResponseDto[] =
     thresholdsResponse.body;

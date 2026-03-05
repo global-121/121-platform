@@ -408,7 +408,7 @@ describe('do payment with <2 approvers', () => {
 
         approvers: [
           {
-            programAidworkerAssignmentId: 1, // Will be validated by the service
+            programAidworkerAssignmentId: 1,
           },
         ],
       },
@@ -502,7 +502,7 @@ describe('do payment with <2 approvers', () => {
     // Remove the 2nd approver by replacing thresholds without finance manager
     const thresholdsWithoutFinanceManager = [
       {
-        thresholdAmount: 0, // Covers all amounts starting from 0
+        thresholdAmount: 0,
 
         approvers: [
           {
@@ -585,7 +585,6 @@ describe('multiple approvers per threshold', () => {
       adminAccessToken,
     );
 
-    // Get tokens for both Finance and CVA managers
     accessTokenFinanceManager = await getAccessTokenFinanceManager();
     accessTokenCvaManager = await getAccessTokenCvaManager();
 
@@ -596,13 +595,11 @@ describe('multiple approvers per threshold', () => {
       accessToken: accessTokenCvaManager,
     });
 
-    // Get assignment IDs for all three users
     const financeManagerAssignmentId = await findAidworkerAssignmentIdByUserId({
       programId,
       userId: financeManagerUser.body.user.id,
       accessToken: adminAccessToken,
     });
-
     const cvaManagerAssignmentId = await findAidworkerAssignmentIdByUserId({
       programId,
       userId: cvaManagerUser.body.user.id,
@@ -610,7 +607,6 @@ describe('multiple approvers per threshold', () => {
     });
 
     // Create 1 threshold with 2 approvers (FinanceManager and CVAManager)
-    // This tests that EITHER one can approve - not both required
     const updatedThresholds = [
       {
         thresholdAmount: 0,
@@ -677,7 +673,6 @@ describe('multiple approvers per threshold', () => {
       approvalsRequired: 1,
     });
 
-    // Payment should be ready to start now
     const startResponse = await startPayment({
       programId,
       paymentId,

@@ -27,7 +27,6 @@ describe('Program Approval Thresholds', () => {
 
   describe('replaceProgramApprovalThresholds', () => {
     it('should successfully create thresholds with approvers', async () => {
-      // Get admin user and their assignment ID dynamically
       const adminUser = await getCurrentUser({ accessToken });
       const adminAssignmentId = await findAidworkerAssignmentIdByUserId({
         programId,
@@ -148,7 +147,6 @@ describe('Program Approval Thresholds', () => {
         accessToken,
       });
 
-      // Get the program aidworker assignment ID for the scoped user
       const scopedAidworkerId = await findAidworkerAssignmentIdByUserId({
         programId,
         userId,
@@ -180,7 +178,6 @@ describe('Program Approval Thresholds', () => {
     });
 
     it('should throw BAD_REQUEST when duplicate approver in same threshold', async () => {
-      // Get admin user and their assignment ID dynamically
       const adminUser = await getCurrentUser({ accessToken });
       const aidworkerId = await findAidworkerAssignmentIdByUserId({
         programId,
