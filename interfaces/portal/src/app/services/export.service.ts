@@ -6,6 +6,7 @@ import {
   FetchQueryOptions,
   QueryClient,
 } from '@tanstack/angular-query-experimental';
+import { addDays } from 'date-fns';
 
 import { CooperativeBankOfOromiaAccountValidationReportDto } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia/dtos/cooperative-bank-of-oromia-account-validation-report.dto';
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/fsp-integrations/integrations/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
@@ -21,7 +22,7 @@ import {
   PaginateQueryService,
 } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
-import { addDaysToDate, dateToIsoString } from '~/utils/date';
+import { dateToIsoString } from '~/utils/date';
 import { Dto } from '~/utils/dto-type';
 import { isErrorWithStatusCode } from '~/utils/is-error-with-status-code.helper';
 
@@ -66,7 +67,7 @@ export class ExportService {
 
     if (toDate) {
       // Add one day to include the selected date as the time is otherwise set to 00:00:00
-      const toDateAdjusted = addDaysToDate(toDate, 1);
+      const toDateAdjusted = addDays(toDate, 1);
       exportParams.toDate = dateToIsoString(toDateAdjusted);
     }
 

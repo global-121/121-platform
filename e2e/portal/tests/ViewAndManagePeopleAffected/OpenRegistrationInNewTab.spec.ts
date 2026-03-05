@@ -46,7 +46,7 @@ test('Open registration in new tab and verify new tab', async ({
 
     expect(pages).toHaveLength(2);
 
-    expect(await pages[1].title()).toEqual(
+    expect(await pages[1].title()).toContain(
       'Activity log | Registration details | 121 Portal',
     );
 

@@ -85,10 +85,6 @@ class FspSettingsPage extends BasePage {
     fspNames: string[];
     visible?: boolean;
   }) {
-    // There is no explicit count for checking if an FSP is available more than once
-    // Because playwright does it implicitly when checking visibility of an element
-    // (e.g. if there are 2 elements with the same text and we check for visibility,
-    // it will fail because it doesn't know which one to check)
     for (const fspName of fspNames) {
       const fspLocator = this.fspCard.filter({ hasText: fspName });
       if (visible) {
@@ -96,6 +92,19 @@ class FspSettingsPage extends BasePage {
       } else {
         await expect(fspLocator).toBeHidden();
       }
+    }
+  }
+
+  async validateVisibilityOfOnlyConfiguredFsps({
+    fspNames,
+  }: {
+    fspNames: string[];
+  }) {
+    for (const fspName of fspNames) {
+      const fspLocator = this.fspCard
+        .filter({ hasText: fspName })
+        .getByText('Click to reconfigure');
+      await expect(fspLocator).toBeVisible();
     }
   }
 
@@ -152,7 +161,7 @@ class FspSettingsPage extends BasePage {
           }
         }
       }
-
+      await this.integrateFspButton.waitFor({ state: 'visible' });
       await this.integrateFspButton.click();
     }
   }

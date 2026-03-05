@@ -79,7 +79,7 @@ test('Add all available FSPs', async ({
   });
 
   await test.step('Validate that only selected FSPs were configured', async () => {
-    await fspSettingsPage.validateFspVisibility({
+    await fspSettingsPage.validateVisibilityOfOnlyConfiguredFsps({
       fspNames: fspsConfiguredInKobo,
     });
   });
