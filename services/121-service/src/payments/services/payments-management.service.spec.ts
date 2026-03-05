@@ -273,7 +273,7 @@ describe('PaymentsManagementService', () => {
       await expect(
         service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
       ).rejects.toThrow(
-        'Approver not assigned to any threshold for this payment',
+        'Aidworker is not assigned as approver for this payment',
       );
     });
 

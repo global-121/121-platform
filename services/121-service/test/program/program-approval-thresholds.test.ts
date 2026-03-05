@@ -7,7 +7,10 @@ import {
   getProgramApprovalThresholds,
   replaceProgramApprovalThresholds,
 } from '@121-service/test/helpers/program-approval-threshold.helper';
-import { createUserProgramAssignment } from '@121-service/test/helpers/user.helper';
+import {
+  createUserProgramAssignment,
+  getCurrentUser,
+} from '@121-service/test/helpers/user.helper';
 import {
   getAccessToken,
   resetDB,
@@ -24,9 +27,13 @@ describe('Program Approval Thresholds', () => {
 
   describe('replaceProgramApprovalThresholds', () => {
     it('should successfully create thresholds with approvers', async () => {
-      // Note: Using assignment ID from seed data (admin assignment for program 2)
-      // The seed creates an admin assignment which we can use for testing
-      const adminAssignmentId = 16;
+      // Get admin user and their assignment ID dynamically
+      const adminUser = await getCurrentUser({ accessToken });
+      const adminAssignmentId = await findAidworkerAssignmentIdByUserId({
+        programId,
+        userId: adminUser.body.user.id,
+        accessToken,
+      });
 
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {
@@ -173,8 +180,13 @@ describe('Program Approval Thresholds', () => {
     });
 
     it('should throw BAD_REQUEST when duplicate approver in same threshold', async () => {
-      // Using admin assignment from seed data
-      const aidworkerId = 16;
+      // Get admin user and their assignment ID dynamically
+      const adminUser = await getCurrentUser({ accessToken });
+      const aidworkerId = await findAidworkerAssignmentIdByUserId({
+        programId,
+        userId: adminUser.body.user.id,
+        accessToken,
+      });
 
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {
