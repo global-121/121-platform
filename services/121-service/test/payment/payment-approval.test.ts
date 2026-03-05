@@ -370,9 +370,7 @@ describe('do payment with <2 approvers', () => {
     expect(createPaymentResponseCvaManager.status).toBe(HttpStatus.CREATED);
     expect(createPaymentResponseFinanceManager.status).toBe(HttpStatus.CREATED);
     // CVA manager has assignment but isn't designated as approver for this payment
-    expect(approvePaymentResponseCvaManager.status).toBe(
-      HttpStatus.BAD_REQUEST,
-    );
+    expect(approvePaymentResponseCvaManager.status).toBe(HttpStatus.FORBIDDEN);
     expect(approvePaymentResponseAdmin.status).toBe(HttpStatus.CREATED);
     expect(startPaymentResponseCvaManager.status).toBe(HttpStatus.FORBIDDEN);
     expect(startPaymentResponseFinanceManager.status).toBe(HttpStatus.ACCEPTED);
