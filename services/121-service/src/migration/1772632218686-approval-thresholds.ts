@@ -37,9 +37,7 @@ export class ApprovalThresholds1772632218686 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "121-service"."payment_approval_aidworker" ADD CONSTRAINT "FK_payment_approval_aidworker_program_aidworker_assignment" FOREIGN KEY ("programAidworkerAssignmentId") REFERENCES "121-service"."program_aidworker_assignment"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."payment_approval" ADD CONSTRAINT "FK_payment_approval_approved_by_user" FOREIGN KEY ("approvedByUserId") REFERENCES "121-service"."user"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
-    );
+    // Note: FK from payment_approval.approvedByUserId to user(id) will be added after data migration
   }
 
   public async down(_queryRunner: QueryRunner): Promise<void> {

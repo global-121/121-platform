@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DataSource, EntityManager, Equal, IsNull, Not } from 'typeorm';
 
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
-import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
 import { CreateApproverForThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-approver-for-threshold.dto';
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/get-program-approval-threshold-response.dto';
@@ -13,7 +12,6 @@ import { ProgramApprovalThresholdRepository } from '@121-service/src/programs/pr
 export class ProgramApprovalThresholdsService {
   public constructor(
     private readonly programApprovalThresholdRepository: ProgramApprovalThresholdRepository,
-    private readonly aidworkerAssignmentRepository: ProgramAidworkerAssignmentRepository,
     private readonly dataSource: DataSource,
   ) {}
 

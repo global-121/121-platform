@@ -12,6 +12,9 @@ export class MigrateApproversToThresholds1772632482000 implements MigrationInter
 
     // Step 3: Drop old approver table
     await this.dropApproverTable(queryRunner);
+
+    // Step 4: Add FK constraint now that data is migrated
+    await this.addApprovedByUserConstraint(queryRunner);
   }
 
   public async down(_queryRunner: QueryRunner): Promise<void> {
@@ -61,7 +64,8 @@ export class MigrateApproversToThresholds1772632482000 implements MigrationInter
   private async migratePaymentApprovals(
     queryRunner: QueryRunner,
   ): Promise<void> {
-    // Create payment_approval_aidworker entries for all existing approved payments
+    // Create payment_approval_aidworker entries for APPROVED payments only
+    // approvedByUserId currently contains old approver.id values
     await queryRunner.query(
       `INSERT INTO "121-service"."payment_approval_aidworker"
        ("paymentApprovalId", "programAidworkerAssignmentId", "order", "created", "updated")
@@ -73,10 +77,11 @@ export class MigrateApproversToThresholds1772632482000 implements MigrationInter
          now()
        FROM "121-service"."payment_approval" pa
        INNER JOIN "121-service"."approver" a ON a.id = pa."approvedByUserId"
-       WHERE pa."approvedByUserId" IS NOT NULL`,
+       WHERE pa."approved" = true
+         AND pa."approvedByUserId" IS NOT NULL`,
     );
 
-    // Fix approvedByUserId to point to actual user instead of approver
+    // Convert approvedByUserId to actual user.id for APPROVED payments only
     // (currently it points to approver.id because it was renamed from approverId)
     await queryRunner.query(
       `UPDATE "121-service"."payment_approval" pa
@@ -85,7 +90,15 @@ export class MigrateApproversToThresholds1772632482000 implements MigrationInter
        INNER JOIN "121-service"."program_aidworker_assignment" paa
          ON paa.id = a."programAidworkerAssignmentId"
        WHERE pa."approvedByUserId" = a.id
-         AND pa."approvedByUserId" IS NOT NULL`,
+         AND pa."approved" = true`,
+    );
+
+    // Set approvedByUserId to NULL for unapproved payments
+    // (they still contain old approver.id values that don't reference users)
+    await queryRunner.query(
+      `UPDATE "121-service"."payment_approval"
+       SET "approvedByUserId" = NULL
+       WHERE "approved" = false`,
     );
   }
 
@@ -101,5 +114,18 @@ export class MigrateApproversToThresholds1772632482000 implements MigrationInter
     );
 
     await queryRunner.query(`DROP TABLE IF EXISTS "121-service"."approver"`);
+  }
+
+  private async addApprovedByUserConstraint(
+    queryRunner: QueryRunner,
+  ): Promise<void> {
+    // Add FK constraint now that approvedByUserId has been properly migrated
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."payment_approval"
+       ADD CONSTRAINT "FK_payment_approval_approved_by_user"
+       FOREIGN KEY ("approvedByUserId")
+       REFERENCES "121-service"."user"("id")
+       ON DELETE SET NULL ON UPDATE NO ACTION`,
+    );
   }
 }
