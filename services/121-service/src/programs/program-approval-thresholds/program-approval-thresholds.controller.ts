@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseArrayPipe,
   ParseIntPipe,
   Put,
   UseGuards,
@@ -96,7 +97,8 @@ export class ProgramApprovalThresholdsController {
   @Put('programs/:programId/approval-thresholds')
   public async replaceProgramApprovalThresholds(
     @Param('programId', ParseIntPipe) programId: number,
-    @Body() thresholds: CreateProgramApprovalThresholdDto[],
+    @Body(new ParseArrayPipe({ items: CreateProgramApprovalThresholdDto }))
+    thresholds: CreateProgramApprovalThresholdDto[],
   ): Promise<GetProgramApprovalThresholdResponseDto[]> {
     return await this.programApprovalThresholdsService.replaceProgramApprovalThresholds(
       programId,

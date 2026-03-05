@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { getServer } from '@121-service/test/helpers/utility.helper';
 
 export async function findAidworkerAssignmentIdByUserId({
@@ -13,6 +15,12 @@ export async function findAidworkerAssignmentIdByUserId({
     .get(`/programs/${programId}/aidworker-assignments`)
     .query({ userId })
     .set('Cookie', [accessToken]);
+
+  if (response.status !== HttpStatus.OK) {
+    throw new Error(
+      `Failed to find aidworker assignment for userId ${userId} in program ${programId}. Status: ${response.status}, Message: ${response.body.message || 'No error message'}`,
+    );
+  }
 
   return response.body.id;
 }

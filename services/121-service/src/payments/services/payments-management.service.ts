@@ -259,7 +259,9 @@ export class PaymentsManagementService {
     for (let i = 0; i < sortedThresholds.length; i++) {
       const threshold = sortedThresholds[i];
       const paymentApproval = savedPaymentEntity.approvals[i];
-      const approverAssignments = threshold.approverAssignments ?? [];
+      const approverAssignments = (threshold.approverAssignments ?? [])
+        .slice()
+        .sort((a, b) => a.id - b.id);
 
       for (let j = 0; j < approverAssignments.length; j++) {
         const assignment = approverAssignments[j];

@@ -64,8 +64,8 @@ export class MigrateApproversToThresholds1772632482000 implements MigrationInter
   private async migratePaymentApprovals(
     queryRunner: QueryRunner,
   ): Promise<void> {
-    // Create payment_approval_aidworker entries for APPROVED payments only
-    // approvedByUserId currently contains old approver.id values
+    // Create payment_approval_aidworker entries for payment approvals
+    // approvedByUserId currently contains old approver.id values (before the rename)
     await queryRunner.query(
       `INSERT INTO "121-service"."payment_approval_aidworker"
        ("paymentApprovalId", "programAidworkerAssignmentId", "order", "created", "updated")
@@ -77,12 +77,11 @@ export class MigrateApproversToThresholds1772632482000 implements MigrationInter
          now()
        FROM "121-service"."payment_approval" pa
        INNER JOIN "121-service"."approver" a ON a.id = pa."approvedByUserId"
-       WHERE pa."approved" = true
-         AND pa."approvedByUserId" IS NOT NULL`,
+       WHERE pa."approvedByUserId" IS NOT NULL`,
     );
 
     // Convert approvedByUserId to actual user.id for APPROVED payments only
-    // (currently it points to approver.id because it was renamed from approverId)
+    // (currently it points to approver.id because column was renamed from approverId)
     await queryRunner.query(
       `UPDATE "121-service"."payment_approval" pa
        SET "approvedByUserId" = paa."userId"
