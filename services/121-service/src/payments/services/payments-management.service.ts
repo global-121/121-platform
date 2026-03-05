@@ -359,8 +359,12 @@ export class PaymentsManagementService {
       });
 
     if (!approverAssignment) {
+      throw new HttpException('User is not an aidworker', HttpStatus.FORBIDDEN);
+    }
+
+    if (!approverAssignment.programApprovalThresholdId) {
       throw new HttpException(
-        'User is not an approver for this program',
+        'Aidworker is not an approver for this program',
         HttpStatus.FORBIDDEN,
       );
     }
@@ -381,8 +385,8 @@ export class PaymentsManagementService {
 
     if (!approvalAssignedToApprover) {
       throw new HttpException(
-        'Approver not assigned to any threshold for this payment',
-        HttpStatus.BAD_REQUEST,
+        'Aidworker is not assigned as approver for this payment',
+        HttpStatus.FORBIDDEN,
       );
     }
 

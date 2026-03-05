@@ -117,7 +117,6 @@ graph LR
   PaymentsModule-->TransactionQueuesModule
   PaymentsModule-->TransactionsModule
   PaymentsModule-->UserModule
-  ProgramApprovalThresholdsModule-->ProgramAidworkerAssignmentsModule
   ProgramModule-->FspsModule
   ProgramModule-->IntersolveVisaModule
   ProgramModule-->KoboConnectModule
