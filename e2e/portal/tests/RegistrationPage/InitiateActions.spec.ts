@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { getRegistrationIdByReferenceId } from '@121-service/test/helpers/registration.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
   registrationPV5,
@@ -12,12 +13,14 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 const programId = 2;
 let registrationId: number;
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     registrations: [registrationPV5],
     programId: programIdPV,
   });
+
+  const accessToken = await getAccessToken();
 
   registrationId = await getRegistrationIdByReferenceId({
     programId: programIdPV,

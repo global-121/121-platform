@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { searchRegistrationByReferenceId } from '@121-service/test/helpers/registration.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import { registrationPvScoped } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
@@ -13,7 +14,6 @@ let registrationProgramId: number;
 test('User should see a summary of a registration', async ({
   registrationActivityLogPage,
   resetDBAndSeedRegistrations,
-  accessToken,
 }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
@@ -21,6 +21,8 @@ test('User should see a summary of a registration', async ({
     registrations: [registrationPvScoped],
     programId,
   });
+
+  const accessToken = await getAccessToken();
 
   const searchRegistrationResponse = await searchRegistrationByReferenceId(
     registrationPvScoped.referenceId,

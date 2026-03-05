@@ -2,6 +2,7 @@ import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/sh
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { deleteProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
   registrationsPvExcel,
@@ -9,13 +10,15 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     registrations: registrationsPvExcel,
     programId: programIdPV,
     navigateToPage: `/program/${programIdPV}/payments`,
   });
+
+  const accessToken = await getAccessToken();
 
   await deleteProgramFspConfigurationProperty({
     programId: programIdPV,

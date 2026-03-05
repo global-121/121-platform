@@ -2,6 +2,7 @@ import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { doPaymentAndWaitForCompletion } from '@121-service/test/helpers/registration.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
   registrationsVisa,
@@ -11,7 +12,7 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const transferValueForSecondPayment = 10;
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     seedPaidRegistrations: true,
@@ -20,6 +21,8 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
     programId: programIdOCW,
     navigateToPage: `/program/${programIdOCW}/registrations`,
   });
+
+  const accessToken = await getAccessToken();
 
   // do 2nd payment
   await doPaymentAndWaitForCompletion({

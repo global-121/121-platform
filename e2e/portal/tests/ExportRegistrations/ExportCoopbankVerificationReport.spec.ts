@@ -1,18 +1,20 @@
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import CoopBank from '@121-service/src/seed-data/program/program-cooperative-bank-of-oromia.json';
 import { startCooperativeBankOfOromiaValidationProcess } from '@121-service/test/helpers/program.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import { registrationsCooperativeBankOfOromia } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 const coopBankProgramId = 1;
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.cooperativeBankOfOromiaProgram,
     registrations: registrationsCooperativeBankOfOromia,
     programId: coopBankProgramId,
   });
+  const accessToken = await getAccessToken();
   await startCooperativeBankOfOromiaValidationProcess(
     coopBankProgramId,
     accessToken,

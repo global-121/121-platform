@@ -1,6 +1,7 @@
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 import { deleteRegistrations } from '@121-service/test/helpers/registration.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
   registrationPvMaxPayment,
@@ -18,8 +19,9 @@ test.describe('Export registrations with different formats and configurations', 
     });
   });
 
-  test.beforeEach(async ({ login, accessToken }) => {
+  test.beforeEach(async ({ login }) => {
     await login();
+    const accessToken = await getAccessToken();
     await deleteRegistrations({
       programId: programIdPV,
       referenceIds: [registrationPvMaxPayment.referenceId],

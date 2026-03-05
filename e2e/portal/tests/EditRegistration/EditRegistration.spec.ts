@@ -1,5 +1,6 @@
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { getRegistrationIdByReferenceId } from '@121-service/test/helpers/registration.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
   registrationPV5,
@@ -23,21 +24,20 @@ test.describe('Edit all the fields in registration Personal Information', () => 
     });
   });
 
-  test.beforeEach(
-    async ({ login, registrationPersonalInformationPage, accessToken }) => {
-      await login();
-      registrationId = await getRegistrationIdByReferenceId({
-        programId: programIdPV,
-        referenceId: registrationPV5.referenceId,
-        accessToken,
-      });
+  test.beforeEach(async ({ login, registrationPersonalInformationPage }) => {
+    await login();
+    const accessToken = await getAccessToken();
+    registrationId = await getRegistrationIdByReferenceId({
+      programId: programIdPV,
+      referenceId: registrationPV5.referenceId,
+      accessToken,
+    });
 
-      await registrationPersonalInformationPage.goto(
-        `/program/${programIdPV}/registrations/${registrationId}/personal-information`,
-      );
-      await registrationPersonalInformationPage.clickEditInformationButton();
-    },
-  );
+    await registrationPersonalInformationPage.goto(
+      `/program/${programIdPV}/registrations/${registrationId}/personal-information`,
+    );
+    await registrationPersonalInformationPage.clickEditInformationButton();
+  });
 
   test('Edit: Dropdown Selection fields', async ({
     registrationPersonalInformationPage,

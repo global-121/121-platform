@@ -1,5 +1,6 @@
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { triggerUnusedVouchersCache } from '@121-service/test/helpers/fsp-specific.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
   registrationPV5,
@@ -7,7 +8,7 @@ import {
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     seedPaidRegistrations: true,
@@ -16,6 +17,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
     programId: programIdPV,
     navigateToPage: `/program/${programIdPV}/payments`,
   });
+  const accessToken = await getAccessToken();
   // Run cronJob to process unused vouchers
   await triggerUnusedVouchersCache(accessToken);
 });
