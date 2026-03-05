@@ -2,6 +2,7 @@ import path from 'node:path';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { uploadAttachment } from '@121-service/test/helpers/program-attachments.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
@@ -14,12 +15,14 @@ const fileName = 'Test TEST-DOCUMENT file upload.pdf';
 
 // Arrange
 test.describe('Attachments on Program Level', () => {
-  test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
+  test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     await resetDBAndSeedRegistrations({
       seedScript: SeedScript.nlrcMultiple,
       skipSeedRegistrations: true,
       navigateToPage: `/program/${programIdOCW}/monitoring/files`,
     });
+
+    const accessToken = await getAccessToken();
 
     await uploadAttachment({
       programId: programIdOCW,

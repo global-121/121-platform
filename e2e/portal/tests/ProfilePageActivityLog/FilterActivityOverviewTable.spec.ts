@@ -4,6 +4,7 @@ import {
   getRegistrationIdByReferenceId,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
   registrationPV5,
@@ -22,9 +23,11 @@ test.beforeAll(async ({ onlyResetAndSeedRegistrations }) => {
   });
 });
 
-test.beforeEach(async ({ page, login, accessToken }) => {
+test.beforeEach(async ({ page, login }) => {
   // Arrange once because tests don't mutate backend state.
   await login();
+
+  const accessToken = await getAccessToken();
 
   registrationId = await getRegistrationIdByReferenceId({
     programId: programIdPV,

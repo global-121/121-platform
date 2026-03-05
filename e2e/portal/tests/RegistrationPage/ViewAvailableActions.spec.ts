@@ -6,7 +6,10 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { getRegistrationIdByReferenceId } from '@121-service/test/helpers/registration.helper';
-import { addPermissionToRole } from '@121-service/test/helpers/utility.helper';
+import {
+  addPermissionToRole,
+  getAccessToken,
+} from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
   registrationPV5,
@@ -18,13 +21,14 @@ let registrationId: number;
 let registrationUrl: string;
 
 test.describe('User actions', () => {
-  test.beforeEach(async ({ onlyResetAndSeedRegistrations, accessToken }) => {
+  test.beforeEach(async ({ onlyResetAndSeedRegistrations }) => {
     await onlyResetAndSeedRegistrations({
       seedScript: SeedScript.nlrcMultiple,
       seedWithStatus: RegistrationStatusEnum.included,
       registrations: [registrationPV5],
       programId: programIdPV,
     });
+    const accessToken = await getAccessToken();
     registrationId = await getRegistrationIdByReferenceId({
       programId: programIdPV,
       referenceId: registrationPV5.referenceId,

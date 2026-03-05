@@ -58,7 +58,6 @@ type Fixtures = {
   }) => Promise<void>;
   login: (params?: { username?: string; password?: string }) => Promise<void>;
   onlyResetAndSeedRegistrations: (params) => Promise<void>;
-  accessToken: string;
   exportDataComponent: ExportData;
   tableComponent: TableComponent;
   fspSettingsPage: FspSettingsPage;
@@ -243,11 +242,6 @@ export const customSharedFixture = base.extend<Fixtures>({
       });
     };
     await use(fn);
-  },
-
-  accessToken: async ({}, use) => {
-    const accessToken = await getAccessToken();
-    await use(accessToken);
   },
 
   exportDataComponent: async ({ page }, use) => {

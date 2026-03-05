@@ -7,6 +7,7 @@ import {
   getProgram,
   patchProgram,
 } from '@121-service/test/helpers/program.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
@@ -15,11 +16,13 @@ const todaysDate = new Date();
 const futureDate = new Date();
 futureDate.setDate(futureDate.getDate() + 1);
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     skipSeedRegistrations: true,
   });
+
+  const accessToken = await getAccessToken();
 
   await patchProgram(
     programIdOCW,
@@ -33,10 +36,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
   );
 });
 
-test('Edit Program Information', async ({
-  programSettingsPage,
-  accessToken,
-}) => {
+test('Edit Program Information', async ({ programSettingsPage }) => {
   const programInfo = {
     name: 'TUiR Warta',
     description: 'TUiR Warta description',
@@ -109,6 +109,7 @@ test('Edit Program Information', async ({
 
     // Also validate the API still returns other language translations for a translatable field
     // It is suboptimal to do this check via the API, but this is for covering a bug that occurred before, by using a combination of the UI and API
+    const accessToken = await getAccessToken();
     const program = await getProgram(programIdOCW, accessToken);
     expect(program.body.titlePortal?.nl).toBeDefined();
   });

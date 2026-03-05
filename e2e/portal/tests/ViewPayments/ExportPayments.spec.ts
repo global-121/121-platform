@@ -3,6 +3,7 @@ import { expect } from '@playwright/test';
 import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { doPaymentAndWaitForCompletion } from '@121-service/test/helpers/registration.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
   registrationsOCW,
@@ -20,11 +21,8 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('ExportPayments', async ({
-  paymentsPage,
-  exportDataComponent,
-  accessToken,
-}) => {
+test('ExportPayments', async ({ paymentsPage, exportDataComponent }) => {
+  const accessToken = await getAccessToken();
   await test.step('Do payments', async () => {
     for (let i = 0; i < 4; i++) {
       await doPaymentAndWaitForCompletion({

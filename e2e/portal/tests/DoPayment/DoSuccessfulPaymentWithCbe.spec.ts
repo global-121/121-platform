@@ -4,6 +4,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import CbeProgram from '@121-service/src/seed-data/program/program-cbe.json';
 import { waitForPaymentAndTransactionsToComplete } from '@121-service/test/helpers/program.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import {
   programIdCbe,
   registrationsCbe,
@@ -24,8 +25,8 @@ test('Do successful payment for Cbe fsp', async ({
   page,
   paymentPage,
   paymentsPage,
-  accessToken,
 }) => {
+  const accessToken = await getAccessToken();
   const numberOfPas = registrationsCbe.length;
   const defaultTransferValue = CbeProgram.fixedTransferValue;
   const defaultMaxTransferValue = registrationsCbe.reduce((output, pa) => {

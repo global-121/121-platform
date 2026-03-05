@@ -5,6 +5,7 @@ import {
   getRegistrationIdByReferenceId,
   seedIncludedRegistrations,
 } from '@121-service/test/helpers/registration.helper';
+import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 import { registrationWesteros4 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
@@ -21,8 +22,8 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
 
 test('User can view the registration data of registration that has all data types', async ({
   registrationPersonalInformationPage,
-  accessToken,
 }) => {
+  const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
     [registrationWesteros4],
     programId,
@@ -67,8 +68,8 @@ test('User can view the registration data of registration that has all data type
 
 test('User can view the registration data of registration that has only the required data', async ({
   registrationPersonalInformationPage,
-  accessToken,
 }) => {
+  const accessToken = await getAccessToken();
   const registrationWithOnlyRequiredData = {
     referenceId: registrationWesteros4.referenceId,
     programFspConfigurationName:

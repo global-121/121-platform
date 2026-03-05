@@ -58,6 +58,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 
   const accessToken = await getAccessToken();
+
   // Make data changes
   const response = await updateRegistration(
     programIdOCW,
