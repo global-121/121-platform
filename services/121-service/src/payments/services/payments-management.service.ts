@@ -408,7 +408,6 @@ export class PaymentsManagementService {
   }): Promise<void> {
     const payment = await this.paymentRepository.findOne({
       where: { id: Equal(paymentId), programId: Equal(programId) },
-      relations: ['transactions'],
     });
 
     if (!payment) {
@@ -418,7 +417,7 @@ export class PaymentsManagementService {
       );
     }
 
-    if (payment.transactions.length > 0) {
+    if (await this.paymentEventsService.hasBeenStarted(paymentId)) {
       throw new HttpException(
         'Cannot delete a payment that has already been started',
         HttpStatus.BAD_REQUEST,
