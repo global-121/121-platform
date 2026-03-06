@@ -185,43 +185,6 @@ describe('KoboSurveyProcessorService', () => {
       expect(result[0].name).toBe(supportedField.name);
     });
 
-    it('should split type based on space and use primary type', () => {
-      // Arrange
-      const fieldName = 'region';
-      const fieldType = 'select_one text';
-      const labels = {
-        en: 'Select your region',
-      };
-
-      const koboSurveyItems: KoboSurveyItemCleaned[] = [
-        {
-          name: fieldName,
-          type: fieldType,
-          label: Object.values(labels),
-          required: false,
-          choices: [
-            {
-              name: 'north',
-              label: ['North'],
-              list_name: 'region_options',
-            },
-          ],
-        },
-      ];
-
-      const languageIsoCodes = [RegistrationPreferredLanguage.en];
-
-      // Act
-      const result = service.surveyToProgramRegistrationAttributes({
-        surveyItems: koboSurveyItems,
-        languageIsoCodes,
-      });
-
-      // Assert
-      expect(result).toHaveLength(1);
-      expect(result[0].type).toBe(RegistrationAttributeTypes.dropdown);
-    });
-
     it('should skip items with empty string type', () => {
       // Arrange
       const fieldName = 'emptyTypeField';
@@ -254,7 +217,7 @@ describe('KoboSurveyProcessorService', () => {
     it('should process a dropdown field with choices into a program registration attribute', () => {
       // Arrange
       const fieldName = 'gender';
-      const fieldType = 'select_one gender_options';
+      const fieldType = 'select_one';
       const listName = 'gender_options';
       const labels = {
         en: 'What is your gender?',
@@ -329,7 +292,7 @@ describe('KoboSurveyProcessorService', () => {
       // Arrange
       const genderField = {
         name: 'gender',
-        type: 'select_one gender_options',
+        type: 'select_one',
         kuid: 'gender123',
         listName: 'gender_options',
         labels: { en: 'What is your gender?', nl: 'Wat is je geslacht?' },
@@ -337,7 +300,7 @@ describe('KoboSurveyProcessorService', () => {
 
       const educationField = {
         name: 'education_level',
-        type: 'select_one education_options',
+        type: 'select_one',
         kuid: 'edu456',
         listName: 'education_options',
         labels: {

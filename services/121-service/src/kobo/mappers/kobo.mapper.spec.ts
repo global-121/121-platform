@@ -230,6 +230,29 @@ describe('KoboMapper', () => {
       expect(result.survey).toEqual([]);
     });
 
+    it('should normalize select_one type by stripping list name', () => {
+      // Arrange
+      const asset = createAsset({
+        content: {
+          survey: [
+            createSurveyItem({
+              name: 'gender',
+              type: 'select_one gender_options',
+            }),
+          ],
+          choices: [],
+        },
+      });
+
+      // Act
+      const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
+        asset,
+      });
+
+      // Assert
+      expect(result.survey[0].type).toBe('select_one');
+    });
+
     describe('choices', () => {
       it('should map choices to survey items with matching select_from_list_name', () => {
         // Arrange

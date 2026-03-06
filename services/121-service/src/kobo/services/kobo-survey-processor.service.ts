@@ -43,9 +43,7 @@ export class KoboSurveyProcessorService {
     koboSurveyItem: KoboSurveyItemCleaned;
     languageIsoCodes: RegistrationPreferredLanguage[];
   }): ProgramRegistrationAttributeDto | undefined {
-    const koboSeperaterIndex = 0; // We only consider the primary type before any spaces
-    const primaryKoboType = koboSurveyItem.type.split(' ')[koboSeperaterIndex];
-    const attributeType = KOBO_TO_121_TYPE_MAPPING[primaryKoboType];
+    const attributeType = KOBO_TO_121_TYPE_MAPPING[koboSurveyItem.type];
 
     if (!attributeType) {
       // Only create program registration attributes for Kobo survey items with supported types

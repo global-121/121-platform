@@ -347,7 +347,7 @@ describe('KoboService', () => {
       expect(new Set(calledLanguages).size).toBe(4); // All unique
     });
 
-    it('should filter out registration view attributes before upserting program attributes', async () => {
+    it('should filter out default properties before upserting program attributes', async () => {
       // Arrange
       const programId = 1;
       const mockAsset = createMockAsset(['English (en)']);
@@ -367,6 +367,11 @@ describe('KoboService', () => {
           name: 'preferredLanguage', // This is in KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES
           type: RegistrationAttributeTypes.text,
           label: { en: 'Preferred Language' },
+        },
+        {
+          name: 'fsp', // This should be filtered out
+          type: RegistrationAttributeTypes.text,
+          label: { en: 'Financial Service Provider' },
         },
       ];
 

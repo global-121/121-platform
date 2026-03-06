@@ -75,6 +75,13 @@ const bodyThatTriggersErrors: KoboAssetDeployment = {
           $autoname: 'end',
         },
         {
+          name: 'fsp',
+          type: 'hidden',
+          $kuid: 'fspkuid123',
+          $xpath: 'fsp',
+          $autoname: 'fsp',
+        },
+        {
           name: 'group_or1bl43',
           type: 'begin_group',
           $kuid: 'xs0uz53',
@@ -209,6 +216,13 @@ const happyFlowFromDefinition: KoboAssetDeployment = {
           $kuid: 'gHDXZWdPn',
           $xpath: 'end',
           $autoname: 'end',
+        },
+        {
+          name: 'fsp',
+          type: 'hidden',
+          $kuid: 'fspkuid123',
+          $xpath: 'fsp',
+          $autoname: 'fsp',
         },
         {
           name: 'group_or1bl43',
