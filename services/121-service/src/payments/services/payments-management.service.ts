@@ -4,15 +4,21 @@ import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, Repository } from 'typeorm';
 
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
+import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
+import { PaymentApprovalAidworkerEntity } from '@121-service/src/payments/entities/payment-approval-aidworker.entity';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
+import { PaymentApprovalRepository } from '@121-service/src/payments/repositories/payment-approval.repository';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
+import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
+import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
+import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
@@ -21,15 +27,13 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
-import { ApproverService } from '@121-service/src/user/approver/approver.service';
-import { ApproverResponseDto } from '@121-service/src/user/approver/dto/approver-response.dto';
-import { PaymentApprovalEntity } from '@121-service/src/user/approver/entities/payment-approval.entity';
-import { PaymentApprovalRepository } from '@121-service/src/user/approver/repositories/payment-approval.repository';
 
 @Injectable()
 export class PaymentsManagementService {
   @InjectRepository(PaymentEntity)
   private readonly paymentRepository: Repository<PaymentEntity>;
+  @InjectRepository(PaymentApprovalAidworkerEntity)
+  private readonly paymentApprovalAidworkerRepository: Repository<PaymentApprovalAidworkerEntity>;
   public constructor(
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
@@ -37,9 +41,10 @@ export class PaymentsManagementService {
     private readonly paymentEventsService: PaymentEventsService,
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
     private readonly transactionsService: TransactionsService,
-    private readonly approverService: ApproverService,
+    private readonly programApprovalThresholdsService: ProgramApprovalThresholdsService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentApprovalRepository: PaymentApprovalRepository,
+    private readonly aidworkerAssignmentRepository: ProgramAidworkerAssignmentRepository,
   ) {}
 
   public async createPayment({
@@ -71,12 +76,15 @@ export class PaymentsManagementService {
     // put all operations in try, to be able to always end with an unlock-payments action, also in case of failure
     try {
       // First run the logic that is needed in both dryRun and real payment scenario
-      const { bulkActionResultPaymentDto, registrationsForPayment, approvers } =
-        await this.getPaymentDryRunDetailsOrThrow({
-          programId,
-          transferValue,
-          query,
-        });
+      const {
+        bulkActionResultPaymentDto,
+        registrationsForPayment,
+        thresholds,
+      } = await this.getPaymentDryRunDetailsOrThrow({
+        programId,
+        transferValue,
+        query,
+      });
 
       if (dryRun || !transferValue) {
         return bulkActionResultPaymentDto;
@@ -86,7 +94,7 @@ export class PaymentsManagementService {
         userId,
         programId,
         note,
-        approvers,
+        thresholds,
       });
       bulkActionResultPaymentDto.id = paymentId;
 
@@ -128,17 +136,8 @@ export class PaymentsManagementService {
   }): Promise<{
     bulkActionResultPaymentDto: BulkActionResultPaymentDto;
     registrationsForPayment: MappedPaginatedRegistrationDto[];
-    approvers: ApproverResponseDto[];
+    thresholds: ProgramApprovalThresholdEntity[];
   }> {
-    const approvers = await this.approverService.getApprovers({
-      programId,
-    });
-    if (approvers.length < 1) {
-      throw new HttpException(
-        'No approvers found for program, cannot create payment',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     // TODO: REFACTOR: Move what happens in setQueryPropertiesBulkAction into this function, and call a refactored version of getBulkActionResult/getPaymentBaseQuery (create solution design first)
     const paginateQuery =
       this.registrationsBulkService.setQueryPropertiesBulkAction({
@@ -165,8 +164,20 @@ export class PaymentsManagementService {
           programFspConfigurationNames: [],
         },
         registrationsForPayment: [],
-        approvers,
+        thresholds: [],
       };
+    }
+
+    const thresholds =
+      await this.programApprovalThresholdsService.getThresholdsForPaymentAmount(
+        programId,
+        transferValue,
+      );
+    if (thresholds.length < 1) {
+      throw new HttpException(
+        'No approval thresholds found for this payment amount, cannot create payment',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     // Get array of RegistrationViewEntity objects to be paid
@@ -213,7 +224,7 @@ export class PaymentsManagementService {
     return {
       bulkActionResultPaymentDto,
       registrationsForPayment,
-      approvers,
+      thresholds,
     };
   }
 
@@ -221,17 +232,18 @@ export class PaymentsManagementService {
     userId,
     programId,
     note,
-    approvers,
+    thresholds,
   }: {
     userId: number;
     programId: number;
     note?: string;
-    approvers: ApproverResponseDto[];
+    thresholds: ProgramApprovalThresholdEntity[];
   }): Promise<number> {
-    const sortedApprovers = approvers.slice().sort((a, b) => a.order - b.order);
-    const paymentApprovals = sortedApprovers.map((approver, index) => {
+    const sortedThresholds = thresholds
+      .slice()
+      .sort((a, b) => a.thresholdAmount - b.thresholdAmount);
+    const paymentApprovals = sortedThresholds.map((threshold, index) => {
       const paymentApproval = new PaymentApprovalEntity();
-      paymentApproval.approverId = approver.id;
       paymentApproval.approved = false;
       paymentApproval.rank = index + 1;
       return paymentApproval;
@@ -241,6 +253,29 @@ export class PaymentsManagementService {
     paymentEntity.programId = programId;
     paymentEntity.approvals = paymentApprovals;
     const savedPaymentEntity = await this.paymentRepository.save(paymentEntity);
+
+    // Create junction table records linking payment approvals to aidworker assignments
+    const junctionRecords: PaymentApprovalAidworkerEntity[] = [];
+    for (let i = 0; i < sortedThresholds.length; i++) {
+      const threshold = sortedThresholds[i];
+      const paymentApproval = savedPaymentEntity.approvals[i];
+      const approverAssignments = (threshold.approverAssignments ?? [])
+        .slice()
+        .sort((a, b) => a.id - b.id);
+
+      for (let j = 0; j < approverAssignments.length; j++) {
+        const assignment = approverAssignments[j];
+        const junctionRecord = new PaymentApprovalAidworkerEntity();
+        junctionRecord.paymentApprovalId = paymentApproval.id;
+        junctionRecord.programAidworkerAssignmentId = assignment.id;
+        junctionRecord.order = j + 1;
+        junctionRecords.push(junctionRecord);
+      }
+    }
+
+    if (junctionRecords.length > 0) {
+      await this.paymentApprovalAidworkerRepository.save(junctionRecords);
+    }
 
     await this.paymentEventsService.createEvent({
       paymentId: savedPaymentEntity.id,
@@ -319,46 +354,67 @@ export class PaymentsManagementService {
     paymentId: number;
     note?: string;
   }): Promise<void> {
-    const approver = await this.approverService.getApproverByUserIdOrThrow({
-      userId,
-      programId,
-    });
+    const approverAssignment =
+      await this.aidworkerAssignmentRepository.findByUserId({
+        userId,
+        programId,
+      });
 
-    const allPaymentApprovals = await this.paymentApprovalRepository.find({
+    if (!approverAssignment) {
+      throw new HttpException('User is not an aidworker', HttpStatus.FORBIDDEN);
+    }
+
+    if (!approverAssignment.programApprovalThresholdId) {
+      throw new HttpException(
+        'Aidworker is not an approver for this program',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    const paymentApprovals = await this.paymentApprovalRepository.find({
       where: {
         paymentId: Equal(paymentId),
       },
+      relations: { aidworkers: { programAidworkerAssignment: true } },
     });
-    const currentPaymentApproval = allPaymentApprovals.find(
-      (approval) => approval.approverId === approver.id,
+
+    const approvalAssignedToApprover = paymentApprovals.find((approval) =>
+      (approval.aidworkers ?? []).some(
+        (aidworker) =>
+          aidworker.programAidworkerAssignmentId === approverAssignment.id,
+      ),
     );
-    if (!currentPaymentApproval) {
+
+    if (!approvalAssignedToApprover) {
       throw new HttpException(
-        'Approver not assigned to this payment',
+        'Aidworker is not assigned as approver for this payment',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    if (approvalAssignedToApprover.approved) {
+      throw new HttpException(
+        'This threshold has already been approved for this payment',
         HttpStatus.BAD_REQUEST,
       );
     }
-    if (currentPaymentApproval.approved) {
-      throw new HttpException(
-        'Approver has already approved this payment',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+
     this.checkLowestRankOrThrow({
-      currentPaymentApproval,
-      allPaymentApprovals,
+      currentPaymentApproval: approvalAssignedToApprover,
+      allPaymentApprovals: paymentApprovals,
     });
 
     // store payment approval
-    currentPaymentApproval.approved = true;
-    await this.paymentApprovalRepository.save(currentPaymentApproval);
+    approvalAssignedToApprover.approved = true;
+    approvalAssignedToApprover.approvedByUserId = userId;
+    await this.paymentApprovalRepository.save(approvalAssignedToApprover);
 
     // store payment event
     await this.paymentEventsService.createApprovedEvent({
       paymentId,
       userId,
-      rank: currentPaymentApproval.rank,
-      total: allPaymentApprovals.length,
+      rank: approvalAssignedToApprover.rank,
+      total: paymentApprovals.length,
       note,
     });
 

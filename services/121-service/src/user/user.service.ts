@@ -11,14 +11,13 @@ import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/email-constants';
 import { env } from '@121-service/src/env';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
+import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import {
   INTERFACE_NAME_HEADER,
   InterfaceNames,
 } from '@121-service/src/shared/enum/interface-names.enum';
 import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
-import { ApproverEntity } from '@121-service/src/user/approver/entities/approver.entity';
 import {
   CreateProgramAssignmentDto,
   UpdateProgramAssignmentDto,
@@ -63,14 +62,11 @@ export class UserService {
   private readonly userRoleRepository: Repository<UserRoleEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramAidworkerAssignmentEntity)
-  private readonly assignmentRepository: Repository<ProgramAidworkerAssignmentEntity>;
-  @InjectRepository(ApproverEntity)
-  private readonly approverRepository: Repository<ApproverEntity>;
 
   public constructor(
     @Inject(REQUEST) private readonly request: Request,
     private readonly userEmailsService: UserEmailsService,
+    private readonly assignmentRepository: ProgramAidworkerAssignmentRepository,
   ) {}
 
   public async login(loginUserDto: LoginUserDto): Promise<LoginResponseDto> {
@@ -441,12 +437,9 @@ export class UserService {
   }: {
     programAssignmentId: number;
   }): Promise<void> {
-    const existingApprover = await this.approverRepository.findOne({
-      where: {
-        programAidworkerAssignmentId: Equal(programAssignmentId),
-      },
-    });
-    if (existingApprover) {
+    const isApprover =
+      await this.assignmentRepository.isApprover(programAssignmentId);
+    if (isApprover) {
       throw new HttpException(
         'Cannot add scope to assignment because user is an approver for this program. Remove approver from program first (if intended) and retry.',
         HttpStatus.BAD_REQUEST,
