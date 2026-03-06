@@ -27,6 +27,7 @@ import { EllipsisMenuComponent } from '~/components/ellipsis-menu/ellipsis-menu.
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
+import { isKoboIntegrated } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
@@ -148,13 +149,9 @@ export class IntegrateKoboButtonComponent {
     enabled: !!this.programId(),
   }));
 
-  readonly isKoboIntegrated = computed<boolean>(() => {
-    if (!this.koboIntegration.isSuccess()) {
-      return false;
-    }
-    const data = this.koboIntegration.data();
-    return data.versionId ? true : false;
-  });
+  readonly isKoboIntegrated = computed<boolean>(() =>
+    isKoboIntegrated(this.koboIntegration),
+  );
 
   readonly titleColoredChipLabel = computed(() =>
     this.isKoboIntegrated() ? $localize`Linked` : undefined,
@@ -165,10 +162,13 @@ export class IntegrateKoboButtonComponent {
   );
 
   readonly externalFormUrl = computed<null | string>(() => {
-    if (!this.isKoboIntegrated() || !this.koboIntegration.isSuccess()) {
+    if (!this.isKoboIntegrated()) {
       return null;
     }
     const koboIntegrationData = this.koboIntegration.data();
+    if (!koboIntegrationData) {
+      return null;
+    }
     return `${koboIntegrationData.url}/#forms/${koboIntegrationData.assetUid}/summary`;
   });
 
