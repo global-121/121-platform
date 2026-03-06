@@ -27,7 +27,7 @@ export class SmsService {
 
   public async sendSms(
     message: string,
-    userId: number,
+    userId: number | null,
     recipientPhoneNr?: string,
     registrationId?: number,
     messageContentType?: MessageContentType,
@@ -99,7 +99,7 @@ export class SmsService {
       | 'errorMessage'
       | 'dateCreated'
     >;
-    userId: number;
+    userId: number | null;
     registrationId?: number;
     messageContentType?: MessageContentType;
     messageProcessType?: MessageProcessType;

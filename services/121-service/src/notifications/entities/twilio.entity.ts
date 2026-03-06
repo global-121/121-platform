@@ -92,6 +92,6 @@ export class TwilioMessageEntity extends Base121Entity {
   })
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;
-  @Column()
-  public userId: number;
+  @Column({ type: 'int', nullable: true })
+  public userId: number | null; // UserId can be null for system generated messages (e.g. a messsage send on new kobo submission )
 }

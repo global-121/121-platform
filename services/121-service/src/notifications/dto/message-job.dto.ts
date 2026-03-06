@@ -16,7 +16,7 @@ export class MessageJobDto {
   messageContentType?: MessageContentType;
   mediaUrl?: string;
   customData?: MessageJobCustomDataDto;
-  userId: number;
+  userId: number | null;
 }
 
 export class MessageJobCustomDataDto {
