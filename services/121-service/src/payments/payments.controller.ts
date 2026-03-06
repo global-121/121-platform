@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpException,
@@ -214,6 +215,36 @@ export class PaymentsController {
       throw new HttpException(result, HttpStatus.OK);
     }
     return result;
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentCREATE] })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'Successfully deleted the payment',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Payment not found for this program',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Cannot delete a payment that has already been started',
+  })
+  @ApiOperation({
+    summary: 'Delete a payment that has not yet been started',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete('programs/:programId/payments/:paymentId')
+  public async deletePayment(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('paymentId', ParseIntPipe) paymentId: number,
+  ): Promise<void> {
+    return await this.paymentsManagementService.deletePayment({
+      programId,
+      paymentId,
+    });
   }
 
   @AuthenticatedUser() // No permission-check, as this is handled by checking if the request userId is an approver for this payment's program
