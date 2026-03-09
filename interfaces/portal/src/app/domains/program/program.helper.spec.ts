@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { UILanguage } from '@121-service/src/shared/enum/ui-language.enum';
 
 import { mergeUILanguageForProgramLanguageAttributes } from '~/domains/program/program.helper';
