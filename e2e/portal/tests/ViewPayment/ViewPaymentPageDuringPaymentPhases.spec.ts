@@ -1,9 +1,12 @@
 import { env } from '@121-service/src/env';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { findAidworkerAssignmentIdByUsername } from '@121-service/test/helpers/program-aidworker-assignment.helper';
 import { replaceProgramApprovalThresholds } from '@121-service/test/helpers/program-approval-threshold.helper';
-import { resetDuplicateRegistrations } from '@121-service/test/helpers/utility.helper';
+import { getAllUsersByProgramId } from '@121-service/test/helpers/user.helper';
+import {
+  getAccessToken,
+  resetDuplicateRegistrations,
+} from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
   registrationOCW1,
@@ -21,7 +24,7 @@ const pendingApprovalTransactionLabel = 'Pending approval';
 const approverBadgeLabelAdmin = env.USERCONFIG_121_SERVICE_EMAIL_ADMIN;
 const approverBadgeLabelApprover = env.USERCONFIG_121_SERVICE_EMAIL_APPROVER;
 
-test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
+test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
     seedScript: SeedScript.nlrcMultiple,
     registrations: [registrationOCW1],
@@ -34,17 +37,22 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
 
   // Configure approval thresholds so both levels apply to payment amount (25)
   // Default seed creates level 2 at amount 100, but fixedTransferValue is 25
-  const adminAssignmentId = await findAidworkerAssignmentIdByUsername({
-    programId: programIdOCW,
-    username: env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+  const accessToken = await getAccessToken();
+  const allUsersResponse = await getAllUsersByProgramId({
     accessToken,
+    programId: programIdOCW,
   });
 
-  const approverAssignmentId = await findAidworkerAssignmentIdByUsername({
-    programId: programIdOCW,
-    username: env.USERCONFIG_121_SERVICE_EMAIL_APPROVER!,
-    accessToken,
-  });
+  const adminUser = allUsersResponse.body.find(
+    (u) => u.username === env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+  );
+  const approverUser = allUsersResponse.body.find(
+    (u) => u.username === env.USERCONFIG_121_SERVICE_EMAIL_APPROVER,
+  );
+
+  if (!adminUser || !approverUser) {
+    throw new Error('Required user assignments not found');
+  }
 
   await replaceProgramApprovalThresholds({
     programId: programIdOCW,
@@ -53,7 +61,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
         thresholdAmount: 0,
         approvers: [
           {
-            programAidworkerAssignmentId: adminAssignmentId,
+            userId: adminUser.userId,
           },
         ],
       },
@@ -61,7 +69,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations, accessToken }) => {
         thresholdAmount: 10,
         approvers: [
           {
-            programAidworkerAssignmentId: approverAssignmentId,
+            userId: approverUser.userId,
           },
         ],
       },

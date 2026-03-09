@@ -2,7 +2,6 @@ import { HttpStatus } from '@nestjs/common';
 
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { findAidworkerAssignmentIdByUserId } from '@121-service/test/helpers/program-aidworker-assignment.helper';
 import {
   getProgramApprovalThresholds,
   replaceProgramApprovalThresholds,
@@ -28,16 +27,11 @@ describe('Program Approval Thresholds', () => {
   describe('replaceProgramApprovalThresholds', () => {
     it('should successfully create thresholds with approvers', async () => {
       const adminUser = await getCurrentUser({ accessToken });
-      const adminAssignmentId = await findAidworkerAssignmentIdByUserId({
-        programId,
-        userId: adminUser.body.user.id,
-        accessToken,
-      });
 
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {
           thresholdAmount: 50,
-          approvers: [{ programAidworkerAssignmentId: adminAssignmentId }],
+          approvers: [{ userId: adminUser.body.user.id }],
         },
         {
           thresholdAmount: 100,
@@ -108,13 +102,13 @@ describe('Program Approval Thresholds', () => {
       expect(getResponse.body).toHaveLength(3);
     });
 
-    it('should throw BAD_REQUEST when aidworker assignment not found', async () => {
+    it('should throw BAD_REQUEST when user has no program assignment', async () => {
       // Arrange
-      const nonExistentId = 999999;
+      const nonExistentUserId = 999999;
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {
           thresholdAmount: 0,
-          approvers: [{ programAidworkerAssignmentId: nonExistentId }],
+          approvers: [{ userId: nonExistentUserId }],
         },
       ];
 
@@ -128,7 +122,7 @@ describe('Program Approval Thresholds', () => {
       // Assert
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
       expect(response.body.message).toContain(
-        `Program aidworker assignment with ID ${nonExistentId} not found`,
+        `No program assignment found for user ${nonExistentUserId}`,
       );
     });
 
@@ -147,16 +141,10 @@ describe('Program Approval Thresholds', () => {
         accessToken,
       });
 
-      const scopedAidworkerId = await findAidworkerAssignmentIdByUserId({
-        programId,
-        userId,
-        accessToken,
-      });
-
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {
           thresholdAmount: 0,
-          approvers: [{ programAidworkerAssignmentId: scopedAidworkerId }],
+          approvers: [{ userId }],
         },
       ];
 
@@ -173,25 +161,18 @@ describe('Program Approval Thresholds', () => {
         `Only users without scope can be made approvers`,
       );
       expect(response.body.message).toContain(
-        `Program aidworker assignment ${scopedAidworkerId} has a scope`,
+        `User ${userId} has a scoped assignment`,
       );
     });
 
     it('should throw BAD_REQUEST when duplicate approver in same threshold', async () => {
       const adminUser = await getCurrentUser({ accessToken });
-      const aidworkerId = await findAidworkerAssignmentIdByUserId({
-        programId,
-        userId: adminUser.body.user.id,
-        accessToken,
-      });
+      const userId = adminUser.body.user.id;
 
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {
           thresholdAmount: 0,
-          approvers: [
-            { programAidworkerAssignmentId: aidworkerId },
-            { programAidworkerAssignmentId: aidworkerId },
-          ],
+          approvers: [{ userId }, { userId }],
         },
       ];
 
@@ -205,7 +186,7 @@ describe('Program Approval Thresholds', () => {
       // Assert
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
       expect(response.body.message).toContain(
-        `Program aidworker assignment ${aidworkerId} is already an approver`,
+        `User ${userId} is already an approver`,
       );
       expect(response.body.message).toContain('threshold with amount 0');
     });

@@ -58,11 +58,11 @@ export class ProgramApprovalThresholdsController {
             description: 'Array of approvers for this threshold level',
             items: {
               type: 'object',
-              required: ['programAidworkerAssignmentId'],
+              required: ['userId'],
               properties: {
-                programAidworkerAssignmentId: {
+                userId: {
                   type: 'integer',
-                  description: 'ID of the program aidworker assignment',
+                  description: 'ID of the user to be made an approver',
                   example: 2,
                 },
               },
@@ -73,17 +73,11 @@ export class ProgramApprovalThresholdsController {
       example: [
         {
           thresholdAmount: 3000,
-          approvers: [
-            { programAidworkerAssignmentId: 2 },
-            { programAidworkerAssignmentId: 7 },
-          ],
+          approvers: [{ userId: 2 }, { userId: 7 }],
         },
         {
           thresholdAmount: 5000,
-          approvers: [
-            { programAidworkerAssignmentId: 3 },
-            { programAidworkerAssignmentId: 5 },
-          ],
+          approvers: [{ userId: 3 }, { userId: 5 }],
         },
       ],
     },

@@ -279,19 +279,9 @@ export class SeedHelperService {
     }
 
     const userRepository = this.dataSource.getRepository(UserEntity);
-    const assignmentRepository = this.dataSource.getRepository(
-      ProgramAidworkerAssignmentEntity,
-    );
 
     const adminUser = await userRepository.findOneOrFail({
       where: { username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_ADMIN) },
-    });
-
-    const adminAssignment = await assignmentRepository.findOneOrFail({
-      where: {
-        programId: Equal(programId),
-        userId: Equal(adminUser.id),
-      },
     });
 
     const thresholds: CreateProgramApprovalThresholdDto[] = [];
@@ -303,7 +293,7 @@ export class SeedHelperService {
 
           approvers: [
             {
-              programAidworkerAssignmentId: adminAssignment.id,
+              userId: adminUser.id,
             },
           ],
         });
@@ -315,20 +305,13 @@ export class SeedHelperService {
           },
         });
 
-        const approverAssignment = await assignmentRepository.findOneOrFail({
-          where: {
-            programId: Equal(programId),
-            userId: Equal(approverUser.id),
-          },
-        });
-
         thresholds.push(
           {
             thresholdAmount: 0,
 
             approvers: [
               {
-                programAidworkerAssignmentId: adminAssignment.id,
+                userId: adminUser.id,
               },
             ],
           },
@@ -337,7 +320,7 @@ export class SeedHelperService {
 
             approvers: [
               {
-                programAidworkerAssignmentId: approverAssignment.id,
+                userId: approverUser.id,
               },
             ],
           },

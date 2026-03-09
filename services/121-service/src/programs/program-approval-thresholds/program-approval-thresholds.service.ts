@@ -127,21 +127,21 @@ export class ProgramApprovalThresholdsService {
   }): Promise<void> {
     const aidworker = await manager.findOne(ProgramAidworkerAssignmentEntity, {
       where: {
-        id: Equal(approverDto.programAidworkerAssignmentId),
+        userId: Equal(approverDto.userId),
         programId: Equal(programId),
       },
     });
 
     if (!aidworker) {
       throw new HttpException(
-        `Program aidworker assignment with ID ${approverDto.programAidworkerAssignmentId} not found for program ${programId}`,
+        `No program assignment found for user ${approverDto.userId} in program ${programId}`,
         HttpStatus.BAD_REQUEST,
       );
     }
 
     if (aidworker.scope) {
       throw new HttpException(
-        `Only users without scope can be made approvers. Program aidworker assignment ${approverDto.programAidworkerAssignmentId} has a scope.`,
+        `Only users without scope can be made approvers. User ${approverDto.userId} has a scoped assignment.`,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -161,7 +161,7 @@ export class ProgramApprovalThresholdsService {
           : (existingThreshold?.thresholdAmount ?? null);
 
       throw new HttpException(
-        `Program aidworker assignment ${approverDto.programAidworkerAssignmentId} is already an approver for threshold with amount ${thresholdAmount}`,
+        `User ${approverDto.userId} is already an approver for threshold with amount ${thresholdAmount}`,
         HttpStatus.BAD_REQUEST,
       );
     }

@@ -13,11 +13,7 @@ import {
   startPayment,
   waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
-import { findAidworkerAssignmentIdByUserId } from '@121-service/test/helpers/program-aidworker-assignment.helper';
-import {
-  getProgramApprovalThresholds,
-  replaceProgramApprovalThresholds,
-} from '@121-service/test/helpers/program-approval-threshold.helper';
+import { replaceProgramApprovalThresholds } from '@121-service/test/helpers/program-approval-threshold.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import { getCurrentUser } from '@121-service/test/helpers/user.helper';
 import {
@@ -54,24 +50,8 @@ describe('do payment with 2 approvers', () => {
       accessToken: accessTokenFinanceManager,
     });
 
-    // Get existing thresholds
-    const thresholdsResponse = await getProgramApprovalThresholds({
-      programId,
-      accessToken: adminAccessToken,
-    });
-
-    // Get assignment IDs for both approvers
-    const financeManagerAssignmentId = await findAidworkerAssignmentIdByUserId({
-      programId,
-      userId: financeManagerUser.body.user.id,
-      accessToken: adminAccessToken,
-    });
-
-    const firstThreshold = thresholdsResponse.body[0];
-    const adminApprover = firstThreshold.approvers[0];
-    const adminAssignmentId = await findAidworkerAssignmentIdByUserId({
-      programId,
-      userId: adminApprover.userId,
+    // Get admin user ID
+    const adminUser = await getCurrentUser({
       accessToken: adminAccessToken,
     });
 
@@ -81,7 +61,7 @@ describe('do payment with 2 approvers', () => {
 
         approvers: [
           {
-            programAidworkerAssignmentId: adminAssignmentId,
+            userId: adminUser.body.user.id,
           },
         ],
       },
@@ -90,7 +70,7 @@ describe('do payment with 2 approvers', () => {
 
         approvers: [
           {
-            programAidworkerAssignmentId: financeManagerAssignmentId,
+            userId: financeManagerUser.body.user.id,
           },
         ],
       },
@@ -315,6 +295,19 @@ describe('do payment with <2 approvers', () => {
     const accessTokenCvaManager = await getAccessTokenCvaManager();
     const accessTokenFinanceManager = await getAccessTokenFinanceManager();
 
+    // Set up admin user as approver
+    const adminUser = await getCurrentUser({ accessToken: adminAccessToken });
+    await replaceProgramApprovalThresholds({
+      programId,
+      thresholds: [
+        {
+          thresholdAmount: 0,
+          approvers: [{ userId: adminUser.body.user.id }],
+        },
+      ],
+      accessToken: adminAccessToken,
+    });
+
     // Act
     // create (both cva & finance can)
     const createPaymentResponseFinanceManager = await createPayment({
@@ -408,7 +401,7 @@ describe('do payment with <2 approvers', () => {
 
         approvers: [
           {
-            programAidworkerAssignmentId: 1,
+            userId: 1,
           },
         ],
       },
@@ -417,7 +410,7 @@ describe('do payment with <2 approvers', () => {
 
         approvers: [
           {
-            programAidworkerAssignmentId: 2,
+            userId: 2,
           },
         ],
       },
@@ -443,24 +436,8 @@ describe('do payment with <2 approvers', () => {
       accessToken: accessTokenFinanceManager,
     });
 
-    // Get existing thresholds and user assignments
-    const thresholdsResponse = await getProgramApprovalThresholds({
-      programId,
-      accessToken: adminAccessToken,
-    });
-
-    // Get assignment IDs for both approvers
-    const financeManagerAssignmentId = await findAidworkerAssignmentIdByUserId({
-      programId,
-      userId: financeManagerUser.body.user.id,
-      accessToken: adminAccessToken,
-    });
-
-    const firstThreshold = thresholdsResponse.body[0];
-    const adminApprover = firstThreshold.approvers[0];
-    const adminAssignmentId = await findAidworkerAssignmentIdByUserId({
-      programId,
-      userId: adminApprover.userId,
+    // Get admin user ID
+    const adminUser = await getCurrentUser({
       accessToken: adminAccessToken,
     });
 
@@ -470,7 +447,7 @@ describe('do payment with <2 approvers', () => {
 
         approvers: [
           {
-            programAidworkerAssignmentId: adminAssignmentId,
+            userId: adminUser.body.user.id,
           },
         ],
       },
@@ -479,7 +456,7 @@ describe('do payment with <2 approvers', () => {
 
         approvers: [
           {
-            programAidworkerAssignmentId: financeManagerAssignmentId,
+            userId: financeManagerUser.body.user.id,
           },
         ],
       },
@@ -506,7 +483,7 @@ describe('do payment with <2 approvers', () => {
 
         approvers: [
           {
-            programAidworkerAssignmentId: adminAssignmentId,
+            userId: adminUser.body.user.id,
           },
         ],
       },
@@ -537,6 +514,20 @@ describe('do payment with <2 approvers', () => {
   it('should include note in payment approved event', async () => {
     // Arrange
     const note = 'Payment approved for testing purposes only.';
+
+    // Set up admin user as approver
+    const adminUser = await getCurrentUser({ accessToken: adminAccessToken });
+    await replaceProgramApprovalThresholds({
+      programId,
+      thresholds: [
+        {
+          thresholdAmount: 0,
+          approvers: [{ userId: adminUser.body.user.id }],
+        },
+      ],
+      accessToken: adminAccessToken,
+    });
+
     const createPaymentResponse = await createPayment({
       programId,
       transferValue,
@@ -595,17 +586,6 @@ describe('multiple approvers per threshold', () => {
       accessToken: accessTokenCvaManager,
     });
 
-    const financeManagerAssignmentId = await findAidworkerAssignmentIdByUserId({
-      programId,
-      userId: financeManagerUser.body.user.id,
-      accessToken: adminAccessToken,
-    });
-    const cvaManagerAssignmentId = await findAidworkerAssignmentIdByUserId({
-      programId,
-      userId: cvaManagerUser.body.user.id,
-      accessToken: adminAccessToken,
-    });
-
     // Create 1 threshold with 2 approvers (FinanceManager and CVAManager)
     const updatedThresholds = [
       {
@@ -613,10 +593,10 @@ describe('multiple approvers per threshold', () => {
 
         approvers: [
           {
-            programAidworkerAssignmentId: financeManagerAssignmentId,
+            userId: financeManagerUser.body.user.id,
           },
           {
-            programAidworkerAssignmentId: cvaManagerAssignmentId,
+            userId: cvaManagerUser.body.user.id,
           },
         ],
       },

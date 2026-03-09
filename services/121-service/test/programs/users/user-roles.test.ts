@@ -2,7 +2,6 @@ import { HttpStatus } from '@nestjs/common';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
-import { findAidworkerAssignmentIdByUserId } from '@121-service/test/helpers/program-aidworker-assignment.helper';
 import { replaceProgramApprovalThresholds } from '@121-service/test/helpers/program-approval-threshold.helper';
 import {
   createUserProgramAssignment,
@@ -132,12 +131,6 @@ describe('Programs / Users / Roles', () => {
 
     it('should throw when adding scope to assignment for user that is an approver in the program', async () => {
       // Arrange
-      const aidworkerAssignmentId = await findAidworkerAssignmentIdByUserId({
-        programId,
-        userId,
-        accessToken,
-      });
-
       await replaceProgramApprovalThresholds({
         programId,
         thresholds: [
@@ -145,7 +138,7 @@ describe('Programs / Users / Roles', () => {
             thresholdAmount: 0,
             approvers: [
               {
-                programAidworkerAssignmentId: aidworkerAssignmentId,
+                userId,
               },
             ],
           },
