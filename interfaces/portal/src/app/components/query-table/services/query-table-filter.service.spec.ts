@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { QueryTableCellService } from '~/components/query-table/services/query-table-cell.service';
 import { QueryTableFilterService } from '~/components/query-table/services/query-table-filter.service';
-import { createLocalStorageMock } from '~/test-utils';
 
 describe('QueryTableFilterService', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for test-setup
@@ -33,9 +34,8 @@ describe('QueryTableFilterService', () => {
   });
 
   it('should clear all filters', () => {
-    const clearTableSpy = jasmine.createSpy('clearTable');
-    const resetSelectionSpy = jasmine.createSpy('resetSelection');
-    const mockLocalStorage = createLocalStorageMock();
+    const clearTableSpy = vi.fn();
+    const resetSelectionSpy = vi.fn();
 
     service.globalFilterVisible.set(true);
 
@@ -46,7 +46,7 @@ describe('QueryTableFilterService', () => {
     });
 
     expect(clearTableSpy).toHaveBeenCalled();
-    expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('test-key');
+    expect(localStorage.removeItem).toHaveBeenCalledWith('test-key');
     expect(service.globalFilterVisible()).toBe(false);
     expect(resetSelectionSpy).toHaveBeenCalled();
   });

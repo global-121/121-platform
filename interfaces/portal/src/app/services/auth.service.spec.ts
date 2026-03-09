@@ -3,28 +3,36 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 import { QueryClient } from '@tanstack/angular-query-experimental';
+import {
+  beforeEach,
+  describe,
+  expect,
+  it,
+  type Mock,
+  type MockedObject,
+  vi,
+} from 'vitest';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { UserApiService } from '~/domains/user/user.api.service';
 import { AuthService } from '~/services/auth.service';
 import { LogService } from '~/services/log.service';
-import { createLocalStorageMock } from '~/test-utils';
 import { LocalStorageUser } from '~/utils/local-storage';
 
 interface MockAuthStrategy {
-  isUserExpired: jasmine.Spy<() => boolean>;
-  logout: jasmine.Spy<() => Promise<void>>;
+  isUserExpired: Mock;
+  logout: Mock;
 }
 
 describe('AuthService - hasDeprecatedPermissions', () => {
   let service: AuthService;
-  let mockRouter: jasmine.SpyObj<Router>;
-  let mockLogService: jasmine.SpyObj<LogService>;
+  let mockRouter: MockedObject<Router>;
+  let mockLogService: MockedObject<LogService>;
   let mockAuthStrategy: MockAuthStrategy;
-  let mockInjector: jasmine.SpyObj<Injector>;
-  let mockUserApiService: jasmine.SpyObj<UserApiService>;
-  let mockQueryClient: jasmine.SpyObj<QueryClient>;
+  let mockInjector: MockedObject<Injector>;
+  let mockUserApiService: MockedObject<UserApiService>;
+  let mockQueryClient: MockedObject<QueryClient>;
 
   const createMockUser = (
     permissions: Record<number, PermissionEnum[]>,
@@ -36,25 +44,35 @@ describe('AuthService - hasDeprecatedPermissions', () => {
   });
 
   beforeEach(() => {
-    mockRouter = jasmine.createSpyObj<Router>('Router', ['navigate']);
-    mockLogService = jasmine.createSpyObj<LogService>('LogService', [
-      'logEvent',
-    ]);
-    mockInjector = jasmine.createSpyObj<Injector>('Injector', ['get']);
+    mockRouter = vi.mocked({
+      navigate: vi.fn().mockName('Router.navigate'),
+    } as unknown as Router);
+    mockLogService = vi.mocked({
+      logEvent: vi.fn().mockName('LogService.logEvent'),
+    } as unknown as LogService);
+    mockInjector = vi.mocked({
+      get: vi.fn().mockName('Injector.get'),
+    } as unknown as Injector);
     mockAuthStrategy = {
-      logout: jasmine.createSpy<() => Promise<void>>('logout'),
-      isUserExpired: jasmine.createSpy<() => boolean>('isUserExpired'),
+      logout: vi.fn(),
+      isUserExpired: vi.fn(),
     };
-    mockUserApiService = jasmine.createSpyObj<UserApiService>(
-      'UserApiService',
-      ['getCurrent'],
-    );
-    mockQueryClient = jasmine.createSpyObj<QueryClient>('QueryClient', [
-      'fetchQuery',
-    ]);
+    mockUserApiService = vi.mocked({
+      getCurrent: vi.fn().mockName('UserApiService.getCurrent'),
+    } as unknown as UserApiService);
+    mockQueryClient = vi.mocked({
+      fetchQuery: vi.fn().mockName('QueryClient.fetchQuery'),
+    } as unknown as QueryClient);
 
     // eslint-disable-next-line @typescript-eslint/no-deprecated -- Did not manage to get test working otherwise
-    mockInjector.get.and.returnValue(mockAuthStrategy);
+    mockInjector.get.mockReturnValue(mockAuthStrategy);
+
+    vi.stubGlobal('localStorage', {
+      getItem: vi.fn(),
+      setItem: vi.fn(),
+      removeItem: vi.fn(),
+      clear: vi.fn(),
+    });
 
     TestBed.configureTestingModule({
       providers: [
@@ -72,9 +90,9 @@ describe('AuthService - hasDeprecatedPermissions', () => {
 
   describe('user getter with deprecated permissions', () => {
     beforeEach(() => {
-      mockAuthStrategy.isUserExpired.and.returnValue(false);
-      mockAuthStrategy.logout.and.returnValue(Promise.resolve());
-      mockRouter.navigate.and.returnValue(Promise.resolve(true));
+      mockAuthStrategy.isUserExpired.mockReturnValue(false);
+      mockAuthStrategy.logout.mockReturnValue(Promise.resolve());
+      mockRouter.navigate.mockReturnValue(Promise.resolve(true));
     });
 
     it('should trigger logout when user has deprecated permissions', () => {
@@ -85,12 +103,12 @@ describe('AuthService - hasDeprecatedPermissions', () => {
           'DEPRECATED_PERMISSION' as PermissionEnum,
         ],
       });
-      createLocalStorageMock().getItem.and.returnValue(
+      vi.mocked(localStorage.getItem).mockReturnValue(
         JSON.stringify(userWithDeprecatedPermissions),
       );
-      const logoutSpy = spyOn(service, 'logout').and.returnValue(
-        Promise.resolve(),
-      );
+      const logoutSpy = vi
+        .spyOn(service, 'logout')
+        .mockReturnValue(Promise.resolve());
 
       // Act - the user getter is called
       const result = service.user;
@@ -108,7 +126,7 @@ describe('AuthService - hasDeprecatedPermissions', () => {
           PermissionEnum.RegistrationBulkUPDATE,
         ],
       });
-      createLocalStorageMock().getItem.and.returnValue(
+      vi.mocked(localStorage.getItem).mockReturnValue(
         JSON.stringify(userWithValidPermissions),
       );
 

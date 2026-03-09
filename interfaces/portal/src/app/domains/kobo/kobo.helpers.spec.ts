@@ -1,4 +1,5 @@
 import { CreateQueryResult } from '@tanstack/angular-query-experimental';
+import { describe, expect, it, vi } from 'vitest';
 
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
 
@@ -50,7 +51,7 @@ describe('isKoboIntegrated', () => {
   });
 
   it('should not call data() when integration is not successful', () => {
-    const dataSpy = jasmine.createSpy();
+    const dataSpy = vi.fn();
     const mockIntegration = {
       isSuccess: () => false,
       data: dataSpy,

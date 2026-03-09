@@ -1,6 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 
 import { TableLazyLoadEvent } from 'primeng/table';
+import {
+  beforeEach,
+  describe,
+  expect,
+  it,
+  type MockedObject,
+  vi,
+} from 'vitest';
 
 import { QueryTablePaginationService } from '~/components/query-table/services/query-table-pagination.service';
 import {
@@ -12,8 +20,8 @@ describe('QueryTablePaginationService', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for test-setup
   let service: QueryTablePaginationService<any>;
 
-  let paginateQueryService: jasmine.SpyObj<PaginateQueryService>;
-  const convertPrimeNGLazyLoadEventToPaginateQuerySpy = jasmine.createSpy();
+  let paginateQueryService: MockedObject<PaginateQueryService>;
+  const convertPrimeNGLazyLoadEventToPaginateQuerySpy = vi.fn();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -21,14 +29,10 @@ describe('QueryTablePaginationService', () => {
         QueryTablePaginationService,
         {
           provide: PaginateQueryService,
-          useValue: jasmine.createSpyObj(
-            'PaginateQueryService',
-            {},
-            {
-              convertPrimeNGLazyLoadEventToPaginateQuery:
-                convertPrimeNGLazyLoadEventToPaginateQuerySpy,
-            },
-          ) as jasmine.SpyObj<PaginateQueryService>,
+          useValue: {
+            convertPrimeNGLazyLoadEventToPaginateQuery:
+              convertPrimeNGLazyLoadEventToPaginateQuerySpy,
+          } as MockedObject<PaginateQueryService>,
         },
       ],
     });
@@ -36,7 +40,7 @@ describe('QueryTablePaginationService', () => {
     service = TestBed.inject(QueryTablePaginationService);
     paginateQueryService = TestBed.inject(
       PaginateQueryService,
-    ) as jasmine.SpyObj<PaginateQueryService>;
+    ) as MockedObject<PaginateQueryService>;
   });
 
   it('should be created', () => {
@@ -103,10 +107,10 @@ describe('QueryTablePaginationService', () => {
       sortBy: [['name', 'ASC']],
     };
 
-    paginateQueryService.convertPrimeNGLazyLoadEventToPaginateQuery.and.returnValue(
+    paginateQueryService.convertPrimeNGLazyLoadEventToPaginateQuery.mockReturnValue(
       mockPaginateQuery,
     );
-    const updateCallback = jasmine.createSpy('updateCallback');
+    const updateCallback = vi.fn();
 
     service.onLazyLoadEvent(mockLazyLoadEvent, updateCallback);
 
@@ -118,10 +122,10 @@ describe('QueryTablePaginationService', () => {
 
   it('should not call update callback when conversion returns undefined', () => {
     const mockLazyLoadEvent: TableLazyLoadEvent = { first: 0, rows: 10 };
-    paginateQueryService.convertPrimeNGLazyLoadEventToPaginateQuery.and.returnValue(
+    paginateQueryService.convertPrimeNGLazyLoadEventToPaginateQuery.mockReturnValue(
       undefined,
     );
-    const updateCallback = jasmine.createSpy('updateCallback');
+    const updateCallback = vi.fn();
 
     service.onLazyLoadEvent(mockLazyLoadEvent, updateCallback);
 
