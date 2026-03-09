@@ -109,7 +109,21 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.development.ts"
                 }
-              ]
+              ],
+              "polyfills": [
+                "zone.js",
+                "zone.js/testing",
+                "@angular/localize/init"
+              ],
+              "inlineStyleLanguage": "css",
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "src/assets/",
+                  "output": "/assets/"
+                }
+              ],
+              "styles": ["src/styles.css"]
             },
             "ar": {
               "localize": ["ar"]
@@ -175,28 +189,12 @@
           }
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing",
-              "@angular/localize/init"
-            ],
             "tsConfig": "tsconfig.spec.json",
             "include": ["src/**/*.spec.ts", "./*.spec.ts"],
-            "inlineStyleLanguage": "css",
-            "codeCoverage": true,
             "progress": true,
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "src/assets/",
-                "output": "/assets/"
-              }
-            ],
-            "styles": ["src/styles.css"],
-            "scripts": [],
-            "karmaConfig": "karma.conf.js"
+            "runnerConfig": true
           }
         },
         "lint": {
