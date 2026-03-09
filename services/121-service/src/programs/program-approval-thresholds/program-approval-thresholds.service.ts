@@ -200,11 +200,10 @@ export class ProgramApprovalThresholdsService {
       programId: entity.programId,
       approvers: (entity.approverAssignments || [])
         .sort((a, b) => a.id - b.id) // Sort by ID for consistent ordering
-        .map((assignment, index) => ({
+        .map((assignment) => ({
           id: assignment.id,
           userId: assignment.user?.id ?? null,
           username: assignment.user?.username ?? null,
-          order: index + 1,
         })),
     };
   }

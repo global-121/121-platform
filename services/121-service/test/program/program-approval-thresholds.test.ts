@@ -52,7 +52,6 @@ describe('Program Approval Thresholds', () => {
 
       expect(response.body[0].thresholdAmount).toBe(50);
       expect(response.body[0].approvers).toHaveLength(1);
-      expect(response.body[0].approvers[0].order).toBe(1);
 
       expect(response.body[1].thresholdAmount).toBe(100);
       expect(response.body[1].approvers).toHaveLength(0);

@@ -7,12 +7,15 @@ export class ApprovalStatusResponseDto {
   @ApiProperty({ example: true })
   public readonly approved: boolean;
 
-  @ApiProperty({ example: ['johndoe', 'janedoe'], type: [String] })
+  @ApiProperty({
+    example: ['johndoe@email.com', 'janedoe@email.com'],
+    type: [String],
+  })
   public readonly approvers: string[];
 
   @ApiProperty({ example: 1 })
   public readonly rank: number;
 
-  @ApiProperty({ example: 'johndoe', nullable: true })
+  @ApiProperty({ example: 'johndoe@email.com', nullable: true })
   public readonly approvedBy: string | null;
 }

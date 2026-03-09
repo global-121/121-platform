@@ -5,7 +5,6 @@ import { Equal, Repository } from 'typeorm';
 
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
-import { PaymentApprovalAidworkerEntity } from '@121-service/src/payments/entities/payment-approval-aidworker.entity';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
@@ -32,8 +31,6 @@ import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 export class PaymentsManagementService {
   @InjectRepository(PaymentEntity)
   private readonly paymentRepository: Repository<PaymentEntity>;
-  @InjectRepository(PaymentApprovalAidworkerEntity)
-  private readonly paymentApprovalAidworkerRepository: Repository<PaymentApprovalAidworkerEntity>;
   public constructor(
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
@@ -254,27 +251,12 @@ export class PaymentsManagementService {
     paymentEntity.approvals = paymentApprovals;
     const savedPaymentEntity = await this.paymentRepository.save(paymentEntity);
 
-    // Create junction table records linking payment approvals to aidworker assignments
-    const junctionRecords: PaymentApprovalAidworkerEntity[] = [];
+    // Link approver assignments to payment approvals via ManyToMany
     for (let i = 0; i < sortedThresholds.length; i++) {
       const threshold = sortedThresholds[i];
       const paymentApproval = savedPaymentEntity.approvals[i];
-      const approverAssignments = (threshold.approverAssignments ?? [])
-        .slice()
-        .sort((a, b) => a.id - b.id);
-
-      for (let j = 0; j < approverAssignments.length; j++) {
-        const assignment = approverAssignments[j];
-        const junctionRecord = new PaymentApprovalAidworkerEntity();
-        junctionRecord.paymentApprovalId = paymentApproval.id;
-        junctionRecord.programAidworkerAssignmentId = assignment.id;
-        junctionRecord.order = j + 1;
-        junctionRecords.push(junctionRecord);
-      }
-    }
-
-    if (junctionRecords.length > 0) {
-      await this.paymentApprovalAidworkerRepository.save(junctionRecords);
+      paymentApproval.approverAssignments = threshold.approverAssignments ?? [];
+      await this.paymentApprovalRepository.save(paymentApproval);
     }
 
     await this.paymentEventsService.createEvent({
@@ -375,13 +357,12 @@ export class PaymentsManagementService {
       where: {
         paymentId: Equal(paymentId),
       },
-      relations: { aidworkers: { programAidworkerAssignment: true } },
+      relations: { approverAssignments: true },
     });
 
     const approvalAssignedToApprover = paymentApprovals.find((approval) =>
-      (approval.aidworkers ?? []).some(
-        (aidworker) =>
-          aidworker.programAidworkerAssignmentId === approverAssignment.id,
+      (approval.approverAssignments ?? []).some(
+        (assignment) => assignment.id === approverAssignment.id,
       ),
     );
 

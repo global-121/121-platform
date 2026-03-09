@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import * as request from 'supertest';
 
-import { ApproverResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/approver-in-threshold-response.dto';
+import { ApproverInThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/approver-in-threshold-response.dto';
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/get-program-approval-threshold-response.dto';
 import { getServer } from '@121-service/test/helpers/utility.helper';
@@ -39,7 +39,7 @@ export async function getApprovers({
 }: {
   programId: number;
   accessToken: string;
-}): Promise<ApproverResponseDto[]> {
+}): Promise<ApproverInThresholdResponseDto[]> {
   const thresholdsResponse = await getServer()
     .get(`/programs/${programId}/approval-thresholds`)
     .set('Cookie', [accessToken]);

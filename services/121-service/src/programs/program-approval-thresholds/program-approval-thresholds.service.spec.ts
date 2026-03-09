@@ -79,18 +79,16 @@ describe('ProgramApprovalThresholdsService', () => {
       // Assert
       expect(result).toHaveLength(1);
       expect(result[0].approvers).toHaveLength(2);
-      // Approvers should be sorted by ID with order assigned
+      // Approvers should be sorted by ID
       expect(result[0].approvers[0]).toEqual({
         id: 1,
         userId: 1,
         username: 'user1',
-        order: 1,
       });
       expect(result[0].approvers[1]).toEqual({
         id: 2,
         userId: 2,
         username: 'user2',
-        order: 2,
       });
     });
   });

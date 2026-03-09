@@ -268,7 +268,7 @@ describe('PaymentsManagementService', () => {
 
     it('should throw if approver is not assigned to payment', async () => {
       paymentApprovalRepository.find.mockResolvedValue([
-        { id: 1, rank: 1, approved: false, aidworkers: [] },
+        { id: 1, rank: 1, approved: false, approverAssignments: [] },
       ]);
       await expect(
         service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
@@ -283,9 +283,9 @@ describe('PaymentsManagementService', () => {
           id: 1,
           approved: true,
           rank: 1,
-          aidworkers: [{ programAidworkerAssignmentId: 1 }],
+          approverAssignments: [{ id: 1 }],
         },
-        { id: 2, approved: false, rank: 2, aidworkers: [] },
+        { id: 2, approved: false, rank: 2, approverAssignments: [] },
       ];
       paymentApprovalRepository.find.mockResolvedValue(approvals);
       await expect(
@@ -301,9 +301,9 @@ describe('PaymentsManagementService', () => {
           id: 1,
           approved: false,
           rank: 2,
-          aidworkers: [{ programAidworkerAssignmentId: 1 }],
+          approverAssignments: [{ id: 1 }],
         },
-        { id: 2, approved: false, rank: 1, aidworkers: [] },
+        { id: 2, approved: false, rank: 1, approverAssignments: [] },
       ];
       paymentApprovalRepository.find.mockResolvedValue(approvals);
       await expect(
@@ -319,9 +319,9 @@ describe('PaymentsManagementService', () => {
           id: 1,
           approved: false,
           rank: 1,
-          aidworkers: [{ programAidworkerAssignmentId: 1 }],
+          approverAssignments: [{ id: 1 }],
         },
-        { id: 2, approved: false, rank: 2, aidworkers: [] },
+        { id: 2, approved: false, rank: 2, approverAssignments: [] },
       ];
       paymentApprovalRepository.find.mockResolvedValue(approvals);
       jest
@@ -341,7 +341,7 @@ describe('PaymentsManagementService', () => {
           id: 1,
           approved: false,
           rank: 1,
-          aidworkers: [{ programAidworkerAssignmentId: 1 }],
+          approverAssignments: [{ id: 1 }],
         },
       ];
       paymentApprovalRepository.find.mockResolvedValue(approvals);
