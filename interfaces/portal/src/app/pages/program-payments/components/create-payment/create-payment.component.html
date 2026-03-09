@@ -87,7 +87,9 @@
           </form>
         </div>
         @if (paymentHasIntegratedFsp()) {
-          <app-ellipsis-menu [menuItems]="paymentSummaryMenuItems()" />
+          <div class="absolute inset-e-4 top-2">
+            <app-ellipsis-menu [menuItems]="paymentSummaryMenuItems()" />
+          </div>
         }
       </p-card>
     </div>
