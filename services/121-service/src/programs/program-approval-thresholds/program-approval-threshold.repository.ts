@@ -28,18 +28,4 @@ export class ProgramApprovalThresholdRepository extends Repository<ProgramApprov
       order: { thresholdAmount: 'ASC' },
     });
   }
-
-  public async getProgramApprovalThresholds(
-    programId: number,
-  ): Promise<ProgramApprovalThresholdEntity[]> {
-    return await this.find({
-      where: { programId: Equal(programId) },
-      order: { thresholdAmount: 'ASC' },
-      relations: {
-        approverAssignments: {
-          user: true,
-        },
-      },
-    });
-  }
 }

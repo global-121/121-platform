@@ -291,11 +291,7 @@ export class SeedHelperService {
         thresholds.push({
           thresholdAmount: 0,
 
-          approvers: [
-            {
-              userId: adminUser.id,
-            },
-          ],
+          userIds: [adminUser.id],
         });
         break;
       case ApproverSeedMode.demo:
@@ -309,20 +305,12 @@ export class SeedHelperService {
           {
             thresholdAmount: 0,
 
-            approvers: [
-              {
-                userId: adminUser.id,
-              },
-            ],
+            userIds: [adminUser.id],
           },
           {
             thresholdAmount: 100,
 
-            approvers: [
-              {
-                userId: approverUser.id,
-              },
-            ],
+            userIds: [approverUser.id],
           },
         );
         break;

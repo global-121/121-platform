@@ -59,19 +59,11 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     thresholds: [
       {
         thresholdAmount: 0,
-        approvers: [
-          {
-            userId: adminUser.userId,
-          },
-        ],
+        userIds: [adminUser.userId],
       },
       {
         thresholdAmount: 10,
-        approvers: [
-          {
-            userId: approverUser.userId,
-          },
-        ],
+        userIds: [approverUser.userId],
       },
     ],
     accessToken,

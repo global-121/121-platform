@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ApprovalStatusResponseDto {
+export class PaymentApprovalStatusResponseDto {
   @ApiProperty({ example: 1 })
   public readonly id: number;
 

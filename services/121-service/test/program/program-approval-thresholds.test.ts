@@ -31,11 +31,11 @@ describe('Program Approval Thresholds', () => {
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {
           thresholdAmount: 50,
-          approvers: [{ userId: adminUser.body.user.id }],
+          userIds: [adminUser.body.user.id],
         },
         {
           thresholdAmount: 100,
-          approvers: [],
+          userIds: [],
         },
       ];
 
@@ -60,8 +60,8 @@ describe('Program Approval Thresholds', () => {
     it('should replace existing thresholds', async () => {
       // Arrange: Create initial thresholds
       const initialThresholds: CreateProgramApprovalThresholdDto[] = [
-        { thresholdAmount: 0, approvers: [] },
-        { thresholdAmount: 50, approvers: [] },
+        { thresholdAmount: 0, userIds: [] },
+        { thresholdAmount: 50, userIds: [] },
       ];
 
       const initialResponse = await replaceProgramApprovalThresholds({
@@ -74,9 +74,9 @@ describe('Program Approval Thresholds', () => {
 
       // Act: Replace with new thresholds
       const newThresholds: CreateProgramApprovalThresholdDto[] = [
-        { thresholdAmount: 0, approvers: [] },
-        { thresholdAmount: 100, approvers: [] },
-        { thresholdAmount: 200, approvers: [] },
+        { thresholdAmount: 0, userIds: [] },
+        { thresholdAmount: 100, userIds: [] },
+        { thresholdAmount: 200, userIds: [] },
       ];
 
       const response = await replaceProgramApprovalThresholds({
@@ -107,7 +107,7 @@ describe('Program Approval Thresholds', () => {
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {
           thresholdAmount: 0,
-          approvers: [{ userId: nonExistentUserId }],
+          userIds: [nonExistentUserId],
         },
       ];
 
@@ -143,7 +143,7 @@ describe('Program Approval Thresholds', () => {
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {
           thresholdAmount: 0,
-          approvers: [{ userId }],
+          userIds: [userId],
         },
       ];
 
@@ -171,7 +171,7 @@ describe('Program Approval Thresholds', () => {
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {
           thresholdAmount: 0,
-          approvers: [{ userId }, { userId }],
+          userIds: [userId, userId],
         },
       ];
 
@@ -193,8 +193,8 @@ describe('Program Approval Thresholds', () => {
     it('should throw BAD_REQUEST for duplicate threshold amounts', async () => {
       // Arrange
       const thresholds: CreateProgramApprovalThresholdDto[] = [
-        { thresholdAmount: 100, approvers: [] },
-        { thresholdAmount: 100, approvers: [] },
+        { thresholdAmount: 100, userIds: [] },
+        { thresholdAmount: 100, userIds: [] },
       ];
 
       // Act

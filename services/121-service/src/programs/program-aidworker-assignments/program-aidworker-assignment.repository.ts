@@ -15,21 +15,6 @@ export class ProgramAidworkerAssignmentRepository extends Repository<ProgramAidw
     );
   }
 
-  public async findByUserId({
-    userId,
-    programId,
-  }: {
-    userId: number;
-    programId: number;
-  }): Promise<ProgramAidworkerAssignmentEntity | null> {
-    return await this.findOne({
-      where: {
-        userId: Equal(userId),
-        programId: Equal(programId),
-      },
-    });
-  }
-
   public async isApprover(assignmentId: number): Promise<boolean> {
     const assignment = await this.findOne({
       where: {

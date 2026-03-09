@@ -1,5 +1,5 @@
 import { TestBed } from '@automock/jest';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
@@ -39,19 +39,14 @@ describe('ProgramApprovalThresholdsService', () => {
     it('should throw when duplicate threshold amounts provided', async () => {
       // Arrange
       const thresholds: CreateProgramApprovalThresholdDto[] = [
-        { thresholdAmount: 100, approvers: [] },
-        { thresholdAmount: 100, approvers: [] },
+        { thresholdAmount: 100, userIds: [] },
+        { thresholdAmount: 100, userIds: [] },
       ];
 
       // Act & Assert
       await expect(
         service.replaceProgramApprovalThresholds(programId, thresholds),
-      ).rejects.toThrow(
-        new HttpException(
-          'Threshold amounts must be unique. Cannot have multiple thresholds with the same amount.',
-          HttpStatus.BAD_REQUEST,
-        ),
-      );
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
     });
   });
 
@@ -69,7 +64,7 @@ describe('ProgramApprovalThresholdsService', () => {
         }),
       ];
 
-      programApprovalThresholdRepository.getProgramApprovalThresholds = jest
+      programApprovalThresholdRepository.find = jest
         .fn()
         .mockResolvedValue(thresholds);
 

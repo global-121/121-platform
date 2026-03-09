@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DataSource, EntityManager, Equal, IsNull, Not } from 'typeorm';
 
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
-import { CreateApproverForThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-approver-for-threshold.dto';
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/get-program-approval-threshold-response.dto';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
@@ -21,54 +20,20 @@ export class ProgramApprovalThresholdsService {
   ): Promise<GetProgramApprovalThresholdResponseDto[]> {
     this.throwIfDuplicateThresholdAmounts(thresholds);
 
-    return await this.dataSource.transaction(async (manager) => {
-      // Clear existing approver assignments
-      await manager.update(
-        ProgramAidworkerAssignmentEntity,
-        {
-          programId: Equal(programId),
-          programApprovalThresholdId: Not(IsNull()),
-        },
-        {
-          programApprovalThresholdId: null,
-        },
-      );
-
-      // Delete existing thresholds
-      await manager.delete(ProgramApprovalThresholdEntity, {
-        programId: Equal(programId),
+    await this.dataSource.transaction(async (manager) => {
+      await this.removeProgramApprovalThresholdConfiguration({
+        manager,
+        programId,
       });
 
-      const sortedThresholds: CreateProgramApprovalThresholdDto[] = thresholds
-        .slice()
-        .sort((a, b) => a.thresholdAmount - b.thresholdAmount);
-
-      for (const thresholdDto of sortedThresholds) {
-        await this.createThresholdInTransaction({
-          thresholdDto,
-          programId,
-          manager,
-        });
-      }
-
-      // Fetch results with relations
-      const thresholdsWithRelations = await manager.find(
-        ProgramApprovalThresholdEntity,
-        {
-          where: { programId: Equal(programId) },
-          relations: {
-            approverAssignments: {
-              user: true,
-            },
-          },
-          order: { thresholdAmount: 'ASC' },
-        },
-      );
-
-      return thresholdsWithRelations.map((threshold) =>
-        this.mapEntityToDto(threshold),
-      );
+      await this.createProgramApprovalThresholdConfiguration({
+        manager,
+        programId,
+        thresholds,
+      });
     });
+
+    return await this.getProgramApprovalThresholds(programId);
   }
 
   private throwIfDuplicateThresholdAmounts(
@@ -81,6 +46,51 @@ export class ProgramApprovalThresholdsService {
         'Threshold amounts must be unique. Cannot have multiple thresholds with the same amount.',
         HttpStatus.BAD_REQUEST,
       );
+    }
+  }
+
+  private async removeProgramApprovalThresholdConfiguration({
+    manager,
+    programId,
+  }: {
+    manager: EntityManager;
+    programId: number;
+  }): Promise<void> {
+    await manager.update(
+      ProgramAidworkerAssignmentEntity,
+      {
+        programId: Equal(programId),
+        programApprovalThresholdId: Not(IsNull()),
+      },
+      {
+        programApprovalThresholdId: null,
+      },
+    );
+
+    await manager.delete(ProgramApprovalThresholdEntity, {
+      programId: Equal(programId),
+    });
+  }
+
+  private async createProgramApprovalThresholdConfiguration({
+    manager,
+    programId,
+    thresholds,
+  }: {
+    manager: EntityManager;
+    programId: number;
+    thresholds: CreateProgramApprovalThresholdDto[];
+  }): Promise<void> {
+    const sortedThresholds: CreateProgramApprovalThresholdDto[] = thresholds
+      .slice()
+      .sort((a, b) => a.thresholdAmount - b.thresholdAmount);
+
+    for (const thresholdDto of sortedThresholds) {
+      await this.createThresholdInTransaction({
+        thresholdDto,
+        programId,
+        manager,
+      });
     }
   }
 
@@ -102,10 +112,10 @@ export class ProgramApprovalThresholdsService {
       threshold,
     );
 
-    if (thresholdDto.approvers && thresholdDto.approvers.length > 0) {
-      for (const approverDto of thresholdDto.approvers) {
+    if (thresholdDto.userIds && thresholdDto.userIds.length > 0) {
+      for (const userId of thresholdDto.userIds) {
         await this.assignApproversToThresholdInTransaction({
-          approverDto,
+          userId,
           programId,
           savedThreshold,
           manager,
@@ -115,33 +125,33 @@ export class ProgramApprovalThresholdsService {
   }
 
   private async assignApproversToThresholdInTransaction({
-    approverDto,
+    userId,
     programId,
     savedThreshold,
     manager,
   }: {
-    approverDto: CreateApproverForThresholdDto;
+    userId: number;
     programId: number;
     savedThreshold: ProgramApprovalThresholdEntity;
     manager: EntityManager;
   }): Promise<void> {
     const aidworker = await manager.findOne(ProgramAidworkerAssignmentEntity, {
       where: {
-        userId: Equal(approverDto.userId),
+        userId: Equal(userId),
         programId: Equal(programId),
       },
     });
 
     if (!aidworker) {
       throw new HttpException(
-        `No program assignment found for user ${approverDto.userId} in program ${programId}`,
+        `No program assignment found for user ${userId} in program ${programId}`,
         HttpStatus.BAD_REQUEST,
       );
     }
 
     if (aidworker.scope) {
       throw new HttpException(
-        `Only users without scope can be made approvers. User ${approverDto.userId} has a scoped assignment.`,
+        `Only users without scope can be made approvers. User ${userId} has a scoped assignment.`,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -161,7 +171,7 @@ export class ProgramApprovalThresholdsService {
           : (existingThreshold?.thresholdAmount ?? null);
 
       throw new HttpException(
-        `User ${approverDto.userId} is already an approver for threshold with amount ${thresholdAmount}`,
+        `User ${userId} is already an approver for threshold with amount ${thresholdAmount}`,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -173,10 +183,15 @@ export class ProgramApprovalThresholdsService {
   public async getProgramApprovalThresholds(
     programId: number,
   ): Promise<GetProgramApprovalThresholdResponseDto[]> {
-    const thresholds =
-      await this.programApprovalThresholdRepository.getProgramApprovalThresholds(
-        programId,
-      );
+    const thresholds = await this.programApprovalThresholdRepository.find({
+      where: { programId: Equal(programId) },
+      order: { thresholdAmount: 'ASC' },
+      relations: {
+        approverAssignments: {
+          user: true,
+        },
+      },
+    });
 
     return thresholds.map((threshold) => this.mapEntityToDto(threshold));
   }
@@ -197,7 +212,6 @@ export class ProgramApprovalThresholdsService {
     return {
       id: entity.id,
       thresholdAmount: entity.thresholdAmount,
-      programId: entity.programId,
       approvers: (entity.approverAssignments || [])
         .sort((a, b) => a.id - b.id) // Sort by ID for consistent ordering
         .map((assignment) => ({

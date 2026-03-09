@@ -136,11 +136,7 @@ describe('Programs / Users / Roles', () => {
         thresholds: [
           {
             thresholdAmount: 0,
-            approvers: [
-              {
-                userId,
-              },
-            ],
+            userIds: [userId],
           },
         ],
         accessToken,

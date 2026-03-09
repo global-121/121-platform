@@ -32,7 +32,7 @@ export class ProgramApprovalThresholdsController {
     private readonly programApprovalThresholdsService: ProgramApprovalThresholdsService,
   ) {}
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({ isOrganizationAdmin: true })
   @ApiOperation({
     summary: 'Replace all approval thresholds for a program',
     description:
@@ -45,7 +45,7 @@ export class ProgramApprovalThresholdsController {
       type: 'array',
       items: {
         type: 'object',
-        required: ['thresholdAmount'],
+        required: ['thresholdAmount', 'userIds'],
         properties: {
           thresholdAmount: {
             type: 'number',
@@ -53,19 +53,13 @@ export class ProgramApprovalThresholdsController {
               'Payment amount threshold in program currency. Approval levels are computed by sorting these amounts ascending.',
             example: 3000,
           },
-          approvers: {
+          userIds: {
             type: 'array',
-            description: 'Array of approvers for this threshold level',
+            description:
+              'Array of user IDs to be made approvers for this threshold level',
             items: {
-              type: 'object',
-              required: ['userId'],
-              properties: {
-                userId: {
-                  type: 'integer',
-                  description: 'ID of the user to be made an approver',
-                  example: 2,
-                },
-              },
+              type: 'integer',
+              example: 2,
             },
           },
         },
@@ -73,11 +67,11 @@ export class ProgramApprovalThresholdsController {
       example: [
         {
           thresholdAmount: 3000,
-          approvers: [{ userId: 2 }, { userId: 7 }],
+          userIds: [2, 7],
         },
         {
           thresholdAmount: 5000,
-          approvers: [{ userId: 3 }, { userId: 5 }],
+          userIds: [3, 5],
         },
       ],
     },

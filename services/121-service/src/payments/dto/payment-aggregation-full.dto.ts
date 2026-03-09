@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { ApprovalStatusResponseDto } from '@121-service/src/payments/dto/approval-status-response.dto';
 import { PaymentAggregationSummaryDto } from '@121-service/src/payments/dto/payment-aggregation-summary.dto';
+import { PaymentApprovalStatusResponseDto } from '@121-service/src/payments/dto/payment-approval-status-response.dto';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
 export class PaymentAggregationFullDto extends PaymentAggregationSummaryDto {
@@ -24,7 +24,7 @@ export class PaymentAggregationFullDto extends PaymentAggregationSummaryDto {
 
   @ApiProperty({
     isArray: true,
-    type: ApprovalStatusResponseDto,
+    type: PaymentApprovalStatusResponseDto,
   })
-  approvalStatus: ApprovalStatusResponseDto[];
+  approvalStatus: PaymentApprovalStatusResponseDto[];
 }

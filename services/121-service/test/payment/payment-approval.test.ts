@@ -59,20 +59,12 @@ describe('do payment with 2 approvers', () => {
       {
         thresholdAmount: 0, // Covers all amounts starting from 0
 
-        approvers: [
-          {
-            userId: adminUser.body.user.id,
-          },
-        ],
+        userIds: [adminUser.body.user.id],
       },
       {
         thresholdAmount: 10, // Covers payments >= 10
 
-        approvers: [
-          {
-            userId: financeManagerUser.body.user.id,
-          },
-        ],
+        userIds: [financeManagerUser.body.user.id],
       },
     ];
 
@@ -302,7 +294,7 @@ describe('do payment with <2 approvers', () => {
       thresholds: [
         {
           thresholdAmount: 0,
-          approvers: [{ userId: adminUser.body.user.id }],
+          userIds: [adminUser.body.user.id],
         },
       ],
       accessToken: adminAccessToken,
@@ -399,20 +391,12 @@ describe('do payment with <2 approvers', () => {
       {
         thresholdAmount: 100,
 
-        approvers: [
-          {
-            userId: 1,
-          },
-        ],
+        userIds: [1],
       },
       {
         thresholdAmount: 100, // Duplicate!
 
-        approvers: [
-          {
-            userId: 2,
-          },
-        ],
+        userIds: [2],
       },
     ];
 
@@ -445,20 +429,12 @@ describe('do payment with <2 approvers', () => {
       {
         thresholdAmount: 0,
 
-        approvers: [
-          {
-            userId: adminUser.body.user.id,
-          },
-        ],
+        userIds: [adminUser.body.user.id],
       },
       {
         thresholdAmount: 10,
 
-        approvers: [
-          {
-            userId: financeManagerUser.body.user.id,
-          },
-        ],
+        userIds: [financeManagerUser.body.user.id],
       },
     ];
 
@@ -481,11 +457,7 @@ describe('do payment with <2 approvers', () => {
       {
         thresholdAmount: 0,
 
-        approvers: [
-          {
-            userId: adminUser.body.user.id,
-          },
-        ],
+        userIds: [adminUser.body.user.id],
       },
     ];
 
@@ -522,7 +494,7 @@ describe('do payment with <2 approvers', () => {
       thresholds: [
         {
           thresholdAmount: 0,
-          approvers: [{ userId: adminUser.body.user.id }],
+          userIds: [adminUser.body.user.id],
         },
       ],
       accessToken: adminAccessToken,
@@ -591,14 +563,7 @@ describe('multiple approvers per threshold', () => {
       {
         thresholdAmount: 0,
 
-        approvers: [
-          {
-            userId: financeManagerUser.body.user.id,
-          },
-          {
-            userId: cvaManagerUser.body.user.id,
-          },
-        ],
+        userIds: [financeManagerUser.body.user.id, cvaManagerUser.body.user.id],
       },
     ];
 

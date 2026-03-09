@@ -6,11 +6,11 @@ import { Equal, Repository } from 'typeorm';
 import { DEFAULT_PAGINATION_LIMIT } from '@121-service/src/config';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { PaginateConfigTransactionView } from '@121-service/src/payments/consts/paginate-config-transaction-view.const';
-import { ApprovalStatusResponseDto } from '@121-service/src/payments/dto/approval-status-response.dto';
 import { ExportTransactionResponseDto } from '@121-service/src/payments/dto/export-transaction-response.dto';
 import { PaginatedTransactionDto } from '@121-service/src/payments/dto/paginated-transaction.dto';
 import { PaymentAggregationFullDto } from '@121-service/src/payments/dto/payment-aggregation-full.dto';
 import { PaymentAggregationSummaryDto } from '@121-service/src/payments/dto/payment-aggregation-summary.dto';
+import { PaymentApprovalStatusResponseDto } from '@121-service/src/payments/dto/payment-approval-status-response.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
 import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
@@ -21,6 +21,7 @@ import { PaymentsReportingHelperService } from '@121-service/src/payments/servic
 import { FindAllTransactionsResultDto } from '@121-service/src/payments/transactions/dto/find-all-transactions-result.dto';
 import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
@@ -120,7 +121,7 @@ export class PaymentsReportingService {
     paymentId,
   }: {
     paymentId: number;
-  }): Promise<ApprovalStatusResponseDto[]> {
+  }): Promise<PaymentApprovalStatusResponseDto[]> {
     const paymentApprovals = await this.paymentApprovalRepository.find({
       where: {
         paymentId: Equal(paymentId),
@@ -131,21 +132,30 @@ export class PaymentsReportingService {
       },
       order: { rank: 'ASC' },
     });
-    return paymentApprovals.map((approval) => {
-      // Sort approver assignments by ID to maintain consistent ordering
-      const sortedApprovers = (approval.approverAssignments || []).sort(
-        (a, b) => a.id - b.id,
-      );
-      return {
-        id: approval.id,
-        approved: approval.approved,
-        approvers: sortedApprovers
-          .map((a) => a.user?.username)
-          .filter((username): username is string => Boolean(username)),
-        rank: approval.rank,
-        approvedBy: approval.approvedByUser?.username || null,
-      };
-    });
+    return this.mapPaymentApprovalToResponseDto(paymentApprovals);
+  }
+
+  private mapPaymentApprovalToResponseDto(
+    approvals: PaymentApprovalEntity[],
+  ): PaymentApprovalStatusResponseDto[] {
+    return approvals.map((approval) => ({
+      id: approval.id,
+      approved: approval.approved,
+      approvers: this.getPaymentApproverUsernames(approval.approverAssignments),
+      rank: approval.rank,
+      approvedBy: approval.approvedByUser?.username || null,
+    }));
+  }
+
+  private getPaymentApproverUsernames(
+    approverAssignments: ProgramAidworkerAssignmentEntity[],
+  ): string[] {
+    const sortedApprovers = (approverAssignments ?? []).sort(
+      (a, b) => a.id - b.id,
+    );
+    return sortedApprovers
+      .map((assignment) => assignment.user?.username)
+      .filter((username): username is string => Boolean(username));
   }
 
   public async exportTransactionsUsingDateFilter({

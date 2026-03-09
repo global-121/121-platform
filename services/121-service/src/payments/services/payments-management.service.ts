@@ -87,6 +87,13 @@ export class PaymentsManagementService {
         return bulkActionResultPaymentDto;
       }
 
+      if (!thresholds || thresholds.length === 0) {
+        throw new HttpException(
+          'No approval thresholds found for this payment amount, cannot create payment',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       const paymentId = await this.createPaymentAndEventsEntities({
         userId,
         programId,
@@ -133,7 +140,7 @@ export class PaymentsManagementService {
   }): Promise<{
     bulkActionResultPaymentDto: BulkActionResultPaymentDto;
     registrationsForPayment: MappedPaginatedRegistrationDto[];
-    thresholds: ProgramApprovalThresholdEntity[];
+    thresholds?: ProgramApprovalThresholdEntity[];
   }> {
     // TODO: REFACTOR: Move what happens in setQueryPropertiesBulkAction into this function, and call a refactored version of getBulkActionResult/getPaymentBaseQuery (create solution design first)
     const paginateQuery =
@@ -161,7 +168,6 @@ export class PaymentsManagementService {
           programFspConfigurationNames: [],
         },
         registrationsForPayment: [],
-        thresholds: [],
       };
     }
 
@@ -170,12 +176,6 @@ export class PaymentsManagementService {
         programId,
         transferValue,
       );
-    if (thresholds.length < 1) {
-      throw new HttpException(
-        'No approval thresholds found for this payment amount, cannot create payment',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
 
     // Get array of RegistrationViewEntity objects to be paid
     const registrationsForPayment =
@@ -236,28 +236,21 @@ export class PaymentsManagementService {
     note?: string;
     thresholds: ProgramApprovalThresholdEntity[];
   }): Promise<number> {
-    const sortedThresholds = thresholds
+    const sortedThresholds: ProgramApprovalThresholdEntity[] = thresholds
       .slice()
       .sort((a, b) => a.thresholdAmount - b.thresholdAmount);
-    const paymentApprovals = sortedThresholds.map((threshold, index) => {
-      const paymentApproval = new PaymentApprovalEntity();
-      paymentApproval.approved = false;
-      paymentApproval.rank = index + 1;
-      return paymentApproval;
-    });
 
     const paymentEntity = new PaymentEntity();
     paymentEntity.programId = programId;
-    paymentEntity.approvals = paymentApprovals;
+    paymentEntity.approvals = this.createPaymentApprovals({
+      thresholds: sortedThresholds,
+    });
     const savedPaymentEntity = await this.paymentRepository.save(paymentEntity);
 
-    // Link approver assignments to payment approvals via ManyToMany
-    for (let i = 0; i < sortedThresholds.length; i++) {
-      const threshold = sortedThresholds[i];
-      const paymentApproval = savedPaymentEntity.approvals[i];
-      paymentApproval.approverAssignments = threshold.approverAssignments ?? [];
-      await this.paymentApprovalRepository.save(paymentApproval);
-    }
+    await this.linkApproverAssignmentsToPaymentApprovals({
+      thresholds: sortedThresholds,
+      payment: savedPaymentEntity,
+    });
 
     await this.paymentEventsService.createEvent({
       paymentId: savedPaymentEntity.id,
@@ -274,6 +267,35 @@ export class PaymentsManagementService {
     }
 
     return savedPaymentEntity.id;
+  }
+
+  private createPaymentApprovals({
+    thresholds,
+  }: {
+    thresholds: ProgramApprovalThresholdEntity[];
+  }): PaymentApprovalEntity[] {
+    const paymentApprovals = thresholds.map((threshold, index) => {
+      const paymentApproval = new PaymentApprovalEntity();
+      paymentApproval.approved = false;
+      paymentApproval.rank = index + 1;
+      return paymentApproval;
+    });
+    return paymentApprovals;
+  }
+
+  private async linkApproverAssignmentsToPaymentApprovals({
+    thresholds,
+    payment,
+  }: {
+    thresholds: ProgramApprovalThresholdEntity[];
+    payment: PaymentEntity;
+  }): Promise<void> {
+    for (let i = 0; i < thresholds.length; i++) {
+      const threshold = thresholds[i];
+      const paymentApproval = payment.approvals[i];
+      paymentApproval.approverAssignments = threshold.approverAssignments ?? [];
+      await this.paymentApprovalRepository.save(paymentApproval);
+    }
   }
 
   private async getRegistrationsForPaymentChunked(
@@ -336,19 +358,18 @@ export class PaymentsManagementService {
     paymentId: number;
     note?: string;
   }): Promise<void> {
-    const approverAssignment =
-      await this.aidworkerAssignmentRepository.findByUserId({
-        userId,
-        programId,
-      });
+    const approverAssignment = await this.aidworkerAssignmentRepository.findOne(
+      {
+        where: {
+          userId: Equal(userId),
+          programId: Equal(programId),
+        },
+      },
+    );
 
     if (!approverAssignment) {
-      throw new HttpException('User is not an aidworker', HttpStatus.FORBIDDEN);
-    }
-
-    if (!approverAssignment.programApprovalThresholdId) {
       throw new HttpException(
-        'Aidworker is not an approver for this program',
+        'User is not assigned as an approver',
         HttpStatus.FORBIDDEN,
       );
     }
