@@ -121,7 +121,7 @@ describe('Program Approval Thresholds', () => {
       // Assert
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
       expect(response.body.message).toContain(
-        `No program assignment found for user ${nonExistentUserId}`,
+        `The following user IDs are not assigned to the program and cannot be approvers: ${nonExistentUserId}`,
       );
     });
 
@@ -160,7 +160,7 @@ describe('Program Approval Thresholds', () => {
         `Only users without scope can be made approvers`,
       );
       expect(response.body.message).toContain(
-        `User ${userId} has a scoped assignment`,
+        `The following user IDs have scoped assignments and cannot be approvers: ${userId}`,
       );
     });
 
@@ -185,9 +185,8 @@ describe('Program Approval Thresholds', () => {
       // Assert
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
       expect(response.body.message).toContain(
-        `User ${userId} is already an approver`,
+        `Approver user IDs must be unique across all thresholds`,
       );
-      expect(response.body.message).toContain('threshold with amount 0');
     });
 
     it('should throw BAD_REQUEST for duplicate threshold amounts', async () => {
