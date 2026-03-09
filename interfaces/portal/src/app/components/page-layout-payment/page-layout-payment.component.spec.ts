@@ -99,7 +99,9 @@ describe('PageLayoutPaymentComponent - canDeletePayment', () => {
         { provide: LOCALE_ID, useValue: 'en' },
       ],
     })
-      .overrideTemplate(PageLayoutPaymentComponent, '<div></div>')
+      .overrideComponent(PageLayoutPaymentComponent, {
+        set: { imports: [], template: '<div></div>' },
+      })
       .compileComponents();
   });
 
