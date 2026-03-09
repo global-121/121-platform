@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -2210,6 +2210,12 @@
       </trans-unit>
       <trans-unit id="6627551976444260400" datatype="html">
         <source>or</source>
+      </trans-unit>
+      <trans-unit id="1735181896395609415" datatype="html">
+        <source>Remove payment</source>
+      </trans-unit>
+      <trans-unit id="6691718574433101641" datatype="html">
+        <source>Are you sure you want to remove this payment? This action cannot be undone.</source>
       </trans-unit>
     </body>
   </file>

@@ -76,6 +76,16 @@ class PaymentPage extends BasePage {
     await this.formDialogProceedButton.click();
   }
 
+  async deletePayment() {
+    await this.page.getByTestId('ellipsis-menu-button').click();
+    await this.page.getByRole('menuitem', { name: 'Remove payment' }).click();
+    await this.formDialogProceedButton.click();
+  }
+
+  async isEllipsisMenuVisible(): Promise<boolean> {
+    return this.page.getByTestId('ellipsis-menu-button').isVisible();
+  }
+
   async validateButtonVisibility({
     isVisible,
     button,
