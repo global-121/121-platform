@@ -8,7 +8,6 @@ module.exports = {
     'autoprefixer',
     // Known issues with "Unlisted dependencies":
     '@angular-eslint/builder',
-    '@angular-devkit/build-angular',
   ],
   includeEntryExports: true,
   project: [
@@ -29,5 +28,15 @@ module.exports = {
   // Plugin-specific:
   typescript: {
     config: ['tsconfig.json', 'tsconfig.app.json', 'tsconfig.spec.json'],
+  },
+  vitest: {
+    config: [
+      'vitest.config.{js,mjs,ts,cjs,mts,cts}',
+      'vitest.{workspace,projects}.{js,mjs,ts,cjs,mts,cts,json}',
+    ],
+    entry: [
+      '**/*.{bench,test,test-d,spec,spec-d}.?(c|m)[jt]s?(x)',
+      '**/__mocks__/**/*.[jt]s?(x)',
+    ],
   },
 };
