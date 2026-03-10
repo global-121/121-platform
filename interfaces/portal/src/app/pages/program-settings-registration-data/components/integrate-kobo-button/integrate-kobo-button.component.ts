@@ -198,29 +198,29 @@ export class IntegrateKoboButtonComponent {
   extractServerAndAssetIdFromUrl = (
     rawUrl: string,
   ): { serverUrl?: string; assetId?: string } => {
+    let urlObj: URL;
     try {
-      const urlObj = new URL(rawUrl);
-
-      // NOTE: We're NOT using only `urlObj.origin` as the Kobo server may require a path-segment. (i.e our Mock-Service!)
-      const serverUrl = urlObj.origin + urlObj.pathname;
-
-      // Extract the asset UID from the URL hash; In the format: "https://example.net/#/forms/[project asset UID]/summary"
-      // See: https://support.kobotoolbox.org/api.html#retrieving-your-project-asset-uid
-      const hashParts = urlObj.hash.split('/');
-      const partFormPrefix = hashParts[1] ?? '';
-      const partFormAssetId = hashParts[2] ?? '';
-
-      const assetId = decodeURIComponent(partFormAssetId).trim();
-
-      if (partFormPrefix === KOBO_URL_FORMS_PREFIX && assetId) {
-        return { serverUrl, assetId };
-      }
-
-      throw new Error(`URL cannot be processed.`);
+      urlObj = new URL(rawUrl);
     } catch {
-      // URL cannot be processed.
       return {};
     }
+
+    // NOTE: We're NOT using only `urlObj.origin` as the Kobo server may require a path-segment. (i.e our Mock-Service!)
+    const serverUrl = urlObj.origin + urlObj.pathname;
+
+    // Extract the asset UID from the URL hash; In the format: "https://example.net/#/forms/[project asset UID]/summary"
+    // See: https://support.kobotoolbox.org/api.html#retrieving-your-project-asset-uid
+    const hashParts = urlObj.hash.split('/');
+    const partFormPrefix = hashParts[1] ?? '';
+    const partFormAssetId = hashParts[2] ?? '';
+
+    const assetId = decodeURIComponent(partFormAssetId).trim();
+
+    if (partFormPrefix === KOBO_URL_FORMS_PREFIX && assetId) {
+      return { serverUrl, assetId };
+    }
+
+    return {};
   };
 
   onFormUrlUpdate = ($event: Event) => {
