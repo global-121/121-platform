@@ -14,9 +14,6 @@ import {
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-
 import { QueryTableComponent } from '~/components/query-table/query-table.component';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
@@ -49,12 +46,9 @@ export class RegistrationsTableComponent {
     RegistrationsTableColumnService,
   );
 
-  PermissionEnum = PermissionEnum;
-
   readonly table =
     viewChild.required<QueryTableComponent<Registration, never>>('table');
 
-  protected RegistrationStatusEnum = RegistrationStatusEnum;
   protected readonly paginateQuery = signal<PaginateQuery | undefined>(
     undefined,
   );
