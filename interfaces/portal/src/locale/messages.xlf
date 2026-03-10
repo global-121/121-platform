@@ -2198,6 +2198,12 @@
       <trans-unit id="8809702678611776373" datatype="html">
         <source>Link with KoboToolbox</source>
       </trans-unit>
+      <trans-unit id="1735181896395609415" datatype="html">
+        <source>Remove payment</source>
+      </trans-unit>
+      <trans-unit id="6691718574433101641" datatype="html">
+        <source>Are you sure you want to remove this payment? This action cannot be undone.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
