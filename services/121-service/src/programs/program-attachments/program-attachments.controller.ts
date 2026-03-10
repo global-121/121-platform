@@ -10,6 +10,7 @@ import {
   Param,
   ParseFilePipe,
   ParseIntPipe,
+  Patch,
   Post,
   Req,
   Res,
@@ -34,7 +35,10 @@ import { CreateProgramAttachmentDto } from '@121-service/src/programs/program-at
 import { CreateProgramAttachmentResponseDto } from '@121-service/src/programs/program-attachments/dtos/create-program-attachment-response.dto';
 import { GetProgramAttachmentResponseDto } from '@121-service/src/programs/program-attachments/dtos/get-program-attachment-response.dto';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
-import { FILE_UPLOAD_WITH_FILENAME_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
+import {
+  FILE_UPLOAD_WITH_FILENAME_API_FORMAT,
+  RENAME_FILE_API_FORMAT,
+} from '@121-service/src/shared/file-upload-api-format';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
@@ -93,6 +97,34 @@ export class ProgramAttachmentsController {
     return await this.programAttachmentsService.createProgramAttachment({
       programId,
       file,
+      filename: body.filename,
+      userId,
+    });
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramAttachmentsCREATE] })
+  @ApiOperation({
+    summary: 'Rename an attachment in a program',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'attachmentId', required: true, type: 'integer' })
+  @ApiBody(RENAME_FILE_API_FORMAT)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Rename an attachment in a program',
+  })
+  @Patch('programs/:programId/attachments/:attachmentId')
+  public async renameProgramAttachment(
+    @Body() body: CreateProgramAttachmentDto,
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('attachmentId', ParseIntPipe) attachmentId: number,
+    @Req() req: ScopedUserRequest,
+  ): Promise<CreateProgramAttachmentResponseDto> {
+    const userId = RequestHelper.getUserId(req);
+
+    return await this.programAttachmentsService.renameProgramAttachment({
+      programId,
+      attachmentId,
       filename: body.filename,
       userId,
     });
