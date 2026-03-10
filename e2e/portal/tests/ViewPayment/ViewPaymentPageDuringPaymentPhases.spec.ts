@@ -22,7 +22,10 @@ const approvedBadgeLabel = 'Approved';
 const successfulBadgeLabel = 'Successful';
 const pendingApprovalTransactionLabel = 'Pending approval';
 const approverBadgeLabelAdmin = env.USERCONFIG_121_SERVICE_EMAIL_ADMIN;
+const approverBadgeLabelSubAdmin = env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER;
 const approverBadgeLabelApprover = env.USERCONFIG_121_SERVICE_EMAIL_APPROVER;
+const approverBadgeLabelSubApprover =
+  env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO_VALIDATION;
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
@@ -34,10 +37,10 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
   // Seed duplicate registrations to have more transactions in the payment and better validate the badges on the payment page during the test
   await resetDuplicateRegistrations(duplicateNumberOfRegistrations);
-
   // Configure approval thresholds so both levels apply to payment amount (25)
   // Default seed creates level 2 at amount 100, but fixedTransferValue is 25
   const accessToken = await getAccessToken();
+
   const allUsersResponse = await getAllUsersByProgramId({
     accessToken,
     programId: programIdOCW,
@@ -46,11 +49,23 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   const adminUser = allUsersResponse.body.find(
     (u) => u.username === env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
   );
-  const approverUser = allUsersResponse.body.find(
-    (u) => u.username === env.USERCONFIG_121_SERVICE_EMAIL_APPROVER,
+  const subAdminApprover = allUsersResponse.body.find(
+    (u) => u.username === approverBadgeLabelSubAdmin,
   );
 
-  if (!adminUser || !approverUser) {
+  const approverRoleUser = allUsersResponse.body.find(
+    (u) => u.username === approverBadgeLabelApprover,
+  );
+  const subApproverRoleUser = allUsersResponse.body.find(
+    (u) => u.username === approverBadgeLabelSubApprover,
+  );
+
+  if (
+    !adminUser ||
+    !approverRoleUser ||
+    !subApproverRoleUser ||
+    !subAdminApprover
+  ) {
     throw new Error('Required user assignments not found');
   }
 
@@ -59,11 +74,11 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     thresholds: [
       {
         thresholdAmount: 0,
-        userIds: [adminUser.userId],
+        userIds: [adminUser.id, subAdminApprover.id],
       },
       {
         thresholdAmount: 10,
-        userIds: [approverUser.userId],
+        userIds: [approverRoleUser.id, subApproverRoleUser.id],
       },
     ],
     accessToken,
@@ -104,7 +119,17 @@ test('Payment page should display correctly during all phases of payment with 2 
       approved: false,
     });
     await paymentPage.validateApprovalFlowStep({
+      approverName: approverBadgeLabelSubAdmin!,
+      rank: 1,
+      approved: false,
+    });
+    await paymentPage.validateApprovalFlowStep({
       approverName: approverBadgeLabelApprover!,
+      rank: 2,
+      approved: false,
+    });
+    await paymentPage.validateApprovalFlowStep({
+      approverName: approverBadgeLabelSubApprover!,
       rank: 2,
       approved: false,
     });
