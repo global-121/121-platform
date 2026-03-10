@@ -408,6 +408,14 @@
     ]
   },
   {
+    "method": "patch",
+    "path": "/api/programs/{programId}/attachments/{attachmentId}",
+    "params": [
+      "programId",
+      "attachmentId"
+    ]
+  },
+  {
     "method": "get",
     "path": "/api/programs/{programId}/attachments/{attachmentId}",
     "params": [
