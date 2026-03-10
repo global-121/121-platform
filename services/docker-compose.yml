@@ -71,9 +71,9 @@ services:
 
   azurite:
     container_name: azurite
-    image: mcr.microsoft.com/azure-storage/azurite:3.35.0
+    image: mcr.microsoft.com/azure-storage/azurite:latest
     ports:
       - '10000:10000' # Blob service
     volumes:
       - ./azurite_data:/data
-    command: 'azurite --blobHost 0.0.0.0 --blobPort 10000 --queueHost 0.0.0.0 --queuePort 10001'
+    command: 'azurite --blobHost 0.0.0.0 --blobPort 10000 --queueHost 0.0.0.0 --queuePort 10001 --skipApiVersionCheck'
