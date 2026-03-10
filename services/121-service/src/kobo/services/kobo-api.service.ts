@@ -107,10 +107,14 @@ export class KoboApiService {
     assetUid,
     token,
     baseUrl,
+    webhookAuthUsername,
+    webhookAuthPassword,
   }: {
     assetUid: string;
     token: string;
     baseUrl: string;
+    webhookAuthUsername: string;
+    webhookAuthPassword: string;
   }): Promise<void> {
     // Trailing slash is required: without it the API returns a 301 redirect,
     // which Axios follows by downgrading POST → GET (returning a list response instead of creating)
@@ -128,6 +132,11 @@ export class KoboApiService {
       endpoint: webhookUrl,
       active: true,
       subset_fields: webhookSubsetFields,
+      auth_level: 'basic_auth',
+      settings: {
+        username: webhookAuthUsername,
+        password: webhookAuthPassword,
+      },
     };
 
     const response = await this.httpService.post<AxiosResponse>(
@@ -217,7 +226,8 @@ export class KoboApiService {
       );
     }
 
-    const errorDetail = (response.data as any)?.detail || 'Unknown error';
+    const errorDetail =
+      (response.data as Record<string, unknown>)?.detail ?? 'Unknown error';
     throw new HttpException(
       `Failed to ${operationDescription} for asset: ${assetUid}, url: ${apiUrl}: ${errorDetail}`,
       HttpStatus.BAD_REQUEST,

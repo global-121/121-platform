@@ -1,10 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { env } from '@121-service/src/env';
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
-import { CreateKoboDto } from '@121-service/src/kobo/dtos/create-kobo.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
@@ -13,15 +11,13 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { KoboMockSubmissionUuids } from '@121-service/test/fixtures/kobo-mock-submissions';
 import {
-  postKoboToProgram,
+  setupProgramWithKoboIntegration,
   triggerKoboSubmission,
 } from '@121-service/test/helpers/kobo.helper';
 import {
   postMessageTemplate,
-  postProgram,
   waitForMessagesToComplete,
 } from '@121-service/test/helpers/program.helper';
-import { postProgramFspConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   getMessageHistory,
   searchRegistrationByReferenceId,
@@ -68,7 +64,7 @@ describe('Process incoming Kobo submission via webhook', () => {
     accessToken = await getAccessToken();
   });
 
-  async function setupProgramWithKoboIntegration(assetUid: string): Promise<{
+  async function setup(assetUid: string): Promise<{
     programId: number;
     assetUid: string;
   }> {
@@ -83,26 +79,11 @@ describe('Process incoming Kobo submission via webhook', () => {
       ],
     } as CreateProgramDto;
 
-    const createProgramResponse = await postProgram(program, accessToken);
-    const programId = createProgramResponse.body.id;
-
-    await postProgramFspConfiguration({
-      programId,
-      body: createProgramFspConfigurationSafaricomDto,
-      accessToken,
-    });
-
-    const koboLinkDto: CreateKoboDto = {
-      token: 'mock-token',
+    const { programId, assetUid: uid } = await setupProgramWithKoboIntegration({
       assetUid,
-      url: `${env.MOCK_SERVICE_URL}/api/kobo`,
-    };
-
-    await postKoboToProgram({
-      programId,
-      body: koboLinkDto,
+      program,
+      fspConfiguration: createProgramFspConfigurationSafaricomDto,
       accessToken,
-      dryRun: false,
     });
 
     await postMessageTemplate(
@@ -117,15 +98,13 @@ describe('Process incoming Kobo submission via webhook', () => {
       accessToken,
     );
 
-    return { programId, assetUid };
+    return { programId, assetUid: uid };
   }
 
   it('should successfully process an incoming Kobo submission and create a registration', async () => {
     // Arrange
     const submissionUuid = `${KoboMockSubmissionUuids.success}-happy-flow`;
-    const { programId, assetUid } = await setupProgramWithKoboIntegration(
-      'success-asset-happy-flow',
-    );
+    const { programId, assetUid } = await setup('success-asset-happy-flow');
 
     // Act
     const triggerSubmissionResponse = await triggerKoboSubmission({
@@ -179,9 +158,7 @@ describe('Process incoming Kobo submission via webhook', () => {
   it('should fail to process an incoming Kobo submission when the submission is invalid', async () => {
     // Arrange
     const submissionUuid = `${KoboMockSubmissionUuids.failure}-invalid-fsp`;
-    const { programId, assetUid } = await setupProgramWithKoboIntegration(
-      'success-asset-invalid-fsp',
-    );
+    const { programId, assetUid } = await setup('success-asset-invalid-fsp');
 
     // Act
     const triggerSubmissionResponse = await triggerKoboSubmission({
@@ -194,8 +171,8 @@ describe('Process incoming Kobo submission via webhook', () => {
     // Kobo user would be able to see this error in the Kobo Rest service logs, which can be used for troubleshooting
     // The mock service returns the error it receives from 121-service, so we can test that the 121-service returns the correct error
     expect(triggerSubmissionResponse.status).toBe(HttpStatus.BAD_REQUEST);
-    expect(triggerSubmissionResponse.body[0].error).toBe(
-      'FspConfigurationName Invalid-FSP not found in program. Allowed values: Safaricom',
+    expect(triggerSubmissionResponse.body[0].error).toMatchInlineSnapshot(
+      `"FspConfigurationName Invalid-FSP not found in program. Allowed values: Safaricom"`,
     );
 
     //  no registration was created
@@ -207,35 +184,35 @@ describe('Process incoming Kobo submission via webhook', () => {
     expect(searchResponse.body.data).toBeArrayOfSize(0);
   });
 
-  it('should return not found when the asset UID is unknown', async () => {
+  it('should return not found when the submission UID is unknown', async () => {
     // This test simulates an external actor — e.g. someone who discovered our
-    // webhook endpoint — calling it with a made-up asset UID that does not
-    // correspond to any Kobo integration stored in the 121-service database.
+    // webhook endpoint — calling it with a made-up Submission uid that does not
+    // correspond to any Kobo submission
     // In these cases, the 121-service should reject the request with a 404
 
     // Arrange
-    const unknownAssetUid = 'made-up-asset-uid-that-does-not-exist';
-    const submissionUuid = `${KoboMockSubmissionUuids.success}-unknown-asset`;
+    const { assetUid } = await setup('success-asset-submission-not-found');
+
+    const submissionUuid = `unknown-asset`;
 
     // Act
     const triggerSubmissionResponse = await triggerKoboSubmission({
-      assetUid: unknownAssetUid,
+      assetUid,
       submissionUuid,
     });
 
     // Assert: 121-service returned a 404 and the mock service forwarded it
     expect(triggerSubmissionResponse.status).toBe(HttpStatus.NOT_FOUND);
-    expect(triggerSubmissionResponse.body.message).toBe(
-      'Kobo integration not found for this program',
+    // Not using inline snapshot for the error message, as it contains the url which can differ based on the environment
+    expect(triggerSubmissionResponse.body.message).toContain(
+      'Kobo submission not found for asset: success-asset-submission-not-found, url:',
     );
   });
 
   it('should reject a duplicate submission with the same referenceId', async () => {
     // Arrange
     const submissionUuid = `${KoboMockSubmissionUuids.success}-duplicate`;
-    const { programId, assetUid } = await setupProgramWithKoboIntegration(
-      'success-asset-duplicate',
-    );
+    const { programId, assetUid } = await setup('success-asset-duplicate');
 
     // Act: submit the same submission twice
     await triggerKoboSubmission({ assetUid, submissionUuid });
@@ -245,8 +222,8 @@ describe('Process incoming Kobo submission via webhook', () => {
     });
 
     expect(secondResponse.status).toBe(HttpStatus.BAD_REQUEST);
-    expect(secondResponse.body[0].error).toBe(
-      'referenceId already exists in database',
+    expect(secondResponse.body[0].error).toMatchInlineSnapshot(
+      `"referenceId already exists in database"`,
     );
 
     // Verify only one registration exists

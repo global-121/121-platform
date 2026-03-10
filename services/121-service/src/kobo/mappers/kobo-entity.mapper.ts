@@ -26,6 +26,8 @@ export class KoboEntityMapper {
     token,
     url,
     name,
+    webhookAuthUsername,
+    webhookAuthPassword,
   }: {
     formDefinition: KoboFormDefinition;
     programId: number;
@@ -33,6 +35,8 @@ export class KoboEntityMapper {
     token: string;
     url: string;
     name: string | null;
+    webhookAuthUsername: string;
+    webhookAuthPassword: string;
   }): Omit<KoboEntity, 'id' | 'created' | 'updated' | 'program'> {
     return {
       programId,
@@ -42,6 +46,8 @@ export class KoboEntityMapper {
       dateDeployed: formDefinition.dateDeployed,
       versionId: formDefinition.versionId,
       name,
+      webhookAuthUsername,
+      webhookAuthPassword,
     };
   }
 }

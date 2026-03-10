@@ -521,9 +521,14 @@ export class KoboMockService {
     };
 
     const url = joinURL(env.EXTERNAL_121_SERVICE_URL, 'api', 'kobo', 'webhook');
+    const basicAuthHeader = `Basic ${Buffer.from('success:success').toString('base64')}`;
 
     try {
-      await lastValueFrom(this.httpService.post(url, webhookPayload));
+      await lastValueFrom(
+        this.httpService.post(url, webhookPayload, {
+          headers: { Authorization: basicAuthHeader },
+        }),
+      );
     } catch (error) {
       // Forward the HTTP status and body from 121-service back to the caller
       // to allow our test to see the actual error (e.g. validation failures)
