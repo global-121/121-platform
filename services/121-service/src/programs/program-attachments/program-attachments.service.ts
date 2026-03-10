@@ -96,6 +96,50 @@ export class ProgramAttachmentsService {
     };
   }
 
+  public async renameProgramAttachment({
+    programId,
+    attachmentId,
+    filename,
+    userId,
+  }: {
+    programId: number;
+    attachmentId: number;
+    filename: string;
+    userId: number;
+  }): Promise<CreateProgramAttachmentResponseDto> {
+    const { programAttachment, blockBlobClient } =
+      await this.getProgramAttachmentAndBlockBlobClient({
+        programId,
+        attachmentId,
+      });
+
+    // get extension from original file name
+    const extension = programAttachment.filename.split('.').pop();
+    const filenameWithExtension = `${filename}.${extension}`;
+
+    // Rename in Blob Storage by copying to new blob and deleting old blob
+    const newBlobName = `${programId}/${Date.now()}-${filenameWithExtension}`;
+    const newBlockBlobClient =
+      this.containerClient.getBlockBlobClient(newBlobName);
+    const copyPoller = await newBlockBlobClient.beginCopyFromURL(
+      blockBlobClient.url,
+    );
+    await copyPoller.pollUntilDone();
+    await blockBlobClient.deleteIfExists();
+
+    // Update DB record
+    programAttachment.filename = filenameWithExtension;
+    programAttachment.blobName = newBlobName;
+    programAttachment.userId = userId; // Update userId to the one who renamed the file
+
+    const savedAttachment =
+      await this.programAttachmentRepository.save(programAttachment);
+
+    return {
+      id: savedAttachment.id,
+    };
+  }
+
   public async deleteProgramAttachmentById(
     programId: number,
     attachmentId: number,
