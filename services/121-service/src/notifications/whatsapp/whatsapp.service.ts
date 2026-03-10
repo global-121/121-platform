@@ -21,6 +21,7 @@ import { MessageTemplateEntity } from '@121-service/src/notifications/message-te
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { LastMessageStatusService } from '@121-service/src/notifications/services/last-message-status.service';
 import { twilioClient } from '@121-service/src/notifications/twilio.client';
+import { MessageSenderUserId } from '@121-service/src/notifications/types/message-sender-user-id.type';
 import { WhatsappTemplateTestEntity } from '@121-service/src/notifications/whatsapp/whatsapp-template-test.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
@@ -60,7 +61,7 @@ export class WhatsappService {
     messageContentType?: MessageContentType;
     messageProcessType?: MessageProcessType;
     existingSidToUpdate?: string;
-    userId: number | null;
+    userId: MessageSenderUserId;
     firstAttempt?: boolean; // Controls retry logic for Twilio media errors (63021)
   }): Promise<string | undefined> {
     const payload = {
@@ -184,7 +185,7 @@ export class WhatsappService {
       | 'errorMessage'
       | 'dateCreated'
     >;
-    userId: number | null;
+    userId: MessageSenderUserId;
     registrationId?: number;
     mediaUrl?: string | null;
     messageContentType?: MessageContentType;

@@ -1,4 +1,5 @@
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { MessageSenderUserId } from '@121-service/src/notifications/types/message-sender-user-id.type';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
@@ -16,7 +17,7 @@ export class MessageJobDto {
   messageContentType?: MessageContentType;
   mediaUrl?: string;
   customData?: MessageJobCustomDataDto;
-  userId: number | null;
+  userId: MessageSenderUserId;
 }
 
 export class MessageJobCustomDataDto {

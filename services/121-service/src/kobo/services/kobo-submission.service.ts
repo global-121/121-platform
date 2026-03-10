@@ -4,7 +4,7 @@ import { Equal, Repository } from 'typeorm';
 
 import { KoboWebhookIncomingSubmission } from '@121-service/src/kobo/dtos/kobo-webhook-incoming-submission.dto';
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
-import { KoboMapper } from '@121-service/src/kobo/mappers/kobo.mapper';
+import { KoboSubmissionMapper } from '@121-service/src/kobo/mappers/kobo-submission.mapper';
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
 
@@ -21,7 +21,7 @@ export class KoboSubmissionService {
   public async processKoboWebhookCall(
     koboWebhookIncomingSubmission: KoboWebhookIncomingSubmission,
   ): Promise<void> {
-    const koboEntity = await this.koboRepository.findOne({
+    const koboIntegration = await this.koboRepository.findOne({
       where: {
         assetUid: Equal(koboWebhookIncomingSubmission._xform_id_string),
       },
@@ -34,7 +34,7 @@ export class KoboSubmissionService {
       },
       relations: { program: true },
     });
-    if (!koboEntity) {
+    if (!koboIntegration) {
       throw new HttpException(
         'Kobo integration not found for this program',
         HttpStatus.NOT_FOUND,
@@ -42,18 +42,19 @@ export class KoboSubmissionService {
     }
 
     const submission = await this.koboApiService.getSubmission({
-      token: koboEntity.token,
-      assetId: koboEntity.assetUid,
-      baseUrl: koboEntity.url,
+      token: koboIntegration.token,
+      assetId: koboIntegration.assetUid,
+      baseUrl: koboIntegration.url,
       submissionUuid: koboWebhookIncomingSubmission._uuid,
     });
-    const registrationData = KoboMapper.mapSubmissionToRegistrationData({
-      koboSubmission: submission,
-    });
+    const registrationData =
+      KoboSubmissionMapper.mapSubmissionToRegistrationData({
+        koboSubmission: submission,
+      });
 
     await this.registrationsImportService.importRegistrations({
       inputRegistrations: [registrationData],
-      program: koboEntity.program,
+      program: koboIntegration.program,
       userId: null,
     });
   }

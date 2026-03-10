@@ -12,6 +12,7 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { SmsService } from '@121-service/src/notifications/sms/sms.service';
+import { MessageSenderUserId } from '@121-service/src/notifications/types/message-sender-user-id.type';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
@@ -303,7 +304,7 @@ export class MessageService {
     registrationId: number;
     messageContentType?: MessageContentType;
     tryWhatsapp?: boolean;
-    userId: number | null;
+    userId: MessageSenderUserId;
   }): Promise<void> {
     const pendingMesssage = new WhatsappPendingMessageEntity();
     pendingMesssage.body = message;

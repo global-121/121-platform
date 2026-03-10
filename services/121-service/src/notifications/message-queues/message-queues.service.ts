@@ -18,6 +18,7 @@ import {
   MessageQueueMap,
 } from '@121-service/src/notifications/message-queue-mapping.const';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
+import { MessageSenderUserId } from '@121-service/src/notifications/types/message-sender-user-id.type';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
@@ -73,7 +74,7 @@ export class MessageQueuesService {
     mediaUrl?: string | null;
     customData?: MessageJobCustomDataDto;
     bulksize?: number;
-    userId: number | null;
+    userId: MessageSenderUserId;
   }): Promise<void> {
     let whatsappPhoneNumber =
       registration[DefaultRegistrationDataAttributeNames.whatsappPhoneNumber];

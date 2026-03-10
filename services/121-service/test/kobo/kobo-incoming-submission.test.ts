@@ -146,7 +146,7 @@ describe('Process incoming Kobo submission via webhook', () => {
       programId,
       accessToken,
     );
-    expect(searchResponse.body.data).toHaveLength(1);
+    expect(searchResponse.body.data).toBeArrayOfSize(1);
     const registration = searchResponse.body.data[0];
     expect(registration).toMatchObject({
       referenceId: submissionUuid,
@@ -170,11 +170,10 @@ describe('Process incoming Kobo submission via webhook', () => {
       await getMessageHistory(programId, submissionUuid, accessToken)
     ).body;
     expect(messageHistory).toHaveLength(1);
-    expect(messageHistory[0].attributes.contentType).toBe(
-      MessageContentType.new,
-    );
-    expect(messageHistory[0].user.id).toBeUndefined();
-    expect(messageHistory[0].user.username).toBeUndefined();
+    const { attributes, user } = messageHistory[0];
+    expect(attributes.contentType).toBe(MessageContentType.new);
+    expect(user.id).toBeUndefined();
+    expect(user.username).toBeUndefined();
   });
 
   it('should fail to process an incoming Kobo submission when the submission is invalid', async () => {
@@ -191,9 +190,9 @@ describe('Process incoming Kobo submission via webhook', () => {
     });
 
     // Assert
-    // The mock service forwarded the error it received from 121-service
     // This is similar of how it would behave in production, where Kobo would receive an error response if the submission processing fails
     // Kobo user would be able to see this error in the Kobo Rest service logs, which can be used for troubleshooting
+    // The mock service returns the error it receives from 121-service, so we can test that the 121-service returns the correct error
     expect(triggerSubmissionResponse.status).toBe(HttpStatus.BAD_REQUEST);
     expect(triggerSubmissionResponse.body[0].error).toBe(
       'FspConfigurationName Invalid-FSP not found in program. Allowed values: Safaricom',
@@ -205,7 +204,7 @@ describe('Process incoming Kobo submission via webhook', () => {
       programId,
       accessToken,
     );
-    expect(searchResponse.body.data).toHaveLength(0);
+    expect(searchResponse.body.data).toBeArrayOfSize(0);
   });
 
   it('should return not found when the asset UID is unknown', async () => {
@@ -256,6 +255,6 @@ describe('Process incoming Kobo submission via webhook', () => {
       programId,
       accessToken,
     );
-    expect(searchResponse.body.data).toHaveLength(1);
+    expect(searchResponse.body.data).toBeArrayOfSize(1);
   });
 });

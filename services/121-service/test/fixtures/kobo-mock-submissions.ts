@@ -2,7 +2,7 @@
  * Test submission UUIDs for Kobo integration tests.
  * These UUIDs are used in both integration and unit tests to simulate
  * Kobo webhook submissions.
- * A similair files is stored in the mock service, but code between the 2 cannot be shared in a practical way, so we duplicate the constants here.
+ * A similar files is stored in the mock service, but code between the 2 cannot be shared in a practical way, so we duplicate the constants here.
  *
  * The mock service matches submissions using `includes()` on these values,
  * so any UUID containing 'success' routes to the happy-flow data, and any

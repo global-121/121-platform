@@ -84,8 +84,6 @@ describe('KoboSubmissionService', () => {
     koboRepository = module.get(getRepositoryToken(KoboEntity));
     koboApiService = module.get(KoboApiService);
     registrationsImportService = module.get(RegistrationsImportService);
-
-    jest.clearAllMocks();
   });
 
   describe('processKoboWebhookCall', () => {

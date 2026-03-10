@@ -101,21 +101,19 @@ describe('KoboApiService', () => {
       });
 
       // Act
-      let error: any;
-      try {
-        await service.getDeployedAssetOrThrow({
-          assetUid: mockAssetUid,
-          token: mockToken,
-          baseUrl: mockBaseUrl,
-        });
-      } catch (e) {
-        error = e;
-      }
+      const promise = service.getDeployedAssetOrThrow({
+        assetUid: mockAssetUid,
+        token: mockToken,
+        baseUrl: mockBaseUrl,
+      });
 
       // Assert
-      expect(error).toBeHttpExceptionWithStatus(HttpStatus.UNAUTHORIZED);
-      expect(error.message).toMatchInlineSnapshot(
-        `"Unauthorized access to Kobo API for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment. Please check if the provided token is valid."`,
+      await expect(promise).rejects.toBeHttpExceptionWithStatus(
+        HttpStatus.UNAUTHORIZED,
+      );
+      await expect(promise).rejects.toHaveProperty(
+        'message',
+        'Unauthorized access to Kobo API for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment. Please check if the provided token is valid.',
       );
     });
 
@@ -129,21 +127,19 @@ describe('KoboApiService', () => {
       });
 
       // Act
-      let error: any;
-      try {
-        await service.getDeployedAssetOrThrow({
-          assetUid: mockAssetUid,
-          token: mockToken,
-          baseUrl: mockBaseUrl,
-        });
-      } catch (e) {
-        error = e;
-      }
+      const promise = service.getDeployedAssetOrThrow({
+        assetUid: mockAssetUid,
+        token: mockToken,
+        baseUrl: mockBaseUrl,
+      });
 
       // Assert
-      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
-      expect(error.message).toMatchInlineSnapshot(
-        `"Failed to fetch Kobo information for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment: Server error occurred"`,
+      await expect(promise).rejects.toBeHttpExceptionWithStatus(
+        HttpStatus.BAD_REQUEST,
+      );
+      await expect(promise).rejects.toHaveProperty(
+        'message',
+        'Failed to fetch Kobo information for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment: Server error occurred',
       );
     });
 
@@ -160,21 +156,17 @@ describe('KoboApiService', () => {
       });
 
       // Act
-      let error: any;
-      try {
-        await service.getDeployedAssetOrThrow({
-          assetUid: mockAssetUid,
-          token: mockToken,
-          baseUrl: mockBaseUrl,
-        });
-      } catch (e) {
-        error = e;
-      }
+      const promise = service.getDeployedAssetOrThrow({
+        assetUid: mockAssetUid,
+        token: mockToken,
+        baseUrl: mockBaseUrl,
+      });
 
       // Assert
-      expect(error).toBeInstanceOf(Error);
-      expect(error.message).toMatchInlineSnapshot(
-        `"Kobo information is missing version_id or asset"`,
+      await expect(promise).rejects.toBeInstanceOf(Error);
+      await expect(promise).rejects.toHaveProperty(
+        'message',
+        'Kobo information is missing version_id or asset',
       );
     });
 
@@ -191,21 +183,17 @@ describe('KoboApiService', () => {
       });
 
       // Act
-      let error: any;
-      try {
-        await service.getDeployedAssetOrThrow({
-          assetUid: mockAssetUid,
-          token: mockToken,
-          baseUrl: mockBaseUrl,
-        });
-      } catch (e) {
-        error = e;
-      }
+      const promise = service.getDeployedAssetOrThrow({
+        assetUid: mockAssetUid,
+        token: mockToken,
+        baseUrl: mockBaseUrl,
+      });
 
       // Assert
-      expect(error).toBeInstanceOf(Error);
-      expect(error.message).toMatchInlineSnapshot(
-        `"Kobo information is missing version_id or asset"`,
+      await expect(promise).rejects.toBeInstanceOf(Error);
+      await expect(promise).rejects.toHaveProperty(
+        'message',
+        'Kobo information is missing version_id or asset',
       );
     });
 
@@ -219,21 +207,19 @@ describe('KoboApiService', () => {
       });
 
       // Act
-      let error: any;
-      try {
-        await service.getDeployedAssetOrThrow({
-          assetUid: mockAssetUid,
-          token: mockToken,
-          baseUrl: mockBaseUrl,
-        });
-      } catch (e) {
-        error = e;
-      }
+      const promise = service.getDeployedAssetOrThrow({
+        assetUid: mockAssetUid,
+        token: mockToken,
+        baseUrl: mockBaseUrl,
+      });
 
       // Assert
-      expect(error).toBeHttpExceptionWithStatus(HttpStatus.UNAUTHORIZED);
-      expect(error.message).toMatchInlineSnapshot(
-        `"Unauthorized access to Kobo API for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment. Please check if the provided token is valid."`,
+      await expect(promise).rejects.toBeHttpExceptionWithStatus(
+        HttpStatus.UNAUTHORIZED,
+      );
+      await expect(promise).rejects.toHaveProperty(
+        'message',
+        'Unauthorized access to Kobo API for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment. Please check if the provided token is valid.',
       );
     });
 
@@ -245,21 +231,19 @@ describe('KoboApiService', () => {
       });
 
       // Act
-      let error: any;
-      try {
-        await service.getDeployedAssetOrThrow({
-          assetUid: mockAssetUid,
-          token: mockToken,
-          baseUrl: mockBaseUrl,
-        });
-      } catch (e) {
-        error = e;
-      }
+      const promise = service.getDeployedAssetOrThrow({
+        assetUid: mockAssetUid,
+        token: mockToken,
+        baseUrl: mockBaseUrl,
+      });
 
       // Assert
-      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
-      expect(error.message).toMatchInlineSnapshot(
-        `"Failed to fetch Kobo information for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment: Unknown error"`,
+      await expect(promise).rejects.toBeHttpExceptionWithStatus(
+        HttpStatus.BAD_REQUEST,
+      );
+      await expect(promise).rejects.toHaveProperty(
+        'message',
+        'Failed to fetch Kobo information for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/deployment: Unknown error',
       );
     });
   });
@@ -326,21 +310,19 @@ describe('KoboApiService', () => {
       });
 
       // Act
-      let error: any;
-      try {
-        await service.getExistingKoboWebhooks({
-          assetUid: mockAssetUid,
-          token: mockToken,
-          baseUrl: mockBaseUrl,
-        });
-      } catch (e) {
-        error = e;
-      }
+      const promise = service.getExistingKoboWebhooks({
+        assetUid: mockAssetUid,
+        token: mockToken,
+        baseUrl: mockBaseUrl,
+      });
 
       // Assert
-      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
-      expect(error.message).toMatchInlineSnapshot(
-        `"Failed to fetch Kobo webhooks for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/hooks: Server error occurred"`,
+      await expect(promise).rejects.toBeHttpExceptionWithStatus(
+        HttpStatus.BAD_REQUEST,
+      );
+      await expect(promise).rejects.toHaveProperty(
+        'message',
+        'Failed to fetch Kobo webhooks for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/hooks: Server error occurred',
       );
     });
   });
@@ -361,8 +343,9 @@ describe('KoboApiService', () => {
       });
 
       // Assert
-      const expectedHeaders = new Headers();
-      expectedHeaders.append('Authorization', `Token ${mockToken}`);
+      const expectedHeaders = new Headers({
+        Authorization: `Token ${mockToken}`,
+      });
 
       expect(httpService.post).toHaveBeenCalledWith(
         'https://kobo.example.com/api/v2/assets/test-asset-id/hooks/',
@@ -387,21 +370,19 @@ describe('KoboApiService', () => {
       });
 
       // Act
-      let error: any;
-      try {
-        await service.createKoboWebhook({
-          assetUid: mockAssetUid,
-          token: mockToken,
-          baseUrl: mockBaseUrl,
-        });
-      } catch (e) {
-        error = e;
-      }
+      const promise = service.createKoboWebhook({
+        assetUid: mockAssetUid,
+        token: mockToken,
+        baseUrl: mockBaseUrl,
+      });
 
       // Assert
-      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
-      expect(error.message).toMatchInlineSnapshot(
-        `"Failed to create Kobo webhook for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/hooks/: Server error occurred"`,
+      await expect(promise).rejects.toBeHttpExceptionWithStatus(
+        HttpStatus.BAD_REQUEST,
+      );
+      await expect(promise).rejects.toHaveProperty(
+        'message',
+        'Failed to create Kobo webhook for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/hooks/: Server error occurred',
       );
     });
   });
@@ -433,8 +414,9 @@ describe('KoboApiService', () => {
       });
 
       // Assert
-      const expectedHeaders = new Headers();
-      expectedHeaders.append('Authorization', `Token ${mockToken}`);
+      const expectedHeaders = new Headers({
+        Authorization: `Token ${mockToken}`,
+      });
 
       expect(httpService.get).toHaveBeenCalledWith(
         'https://kobo.example.com/api/v2/assets/test-asset-id/data/test-submission-uuid-123',
@@ -454,22 +436,20 @@ describe('KoboApiService', () => {
       });
 
       // Act
-      let error: any;
-      try {
-        await service.getSubmission({
-          token: mockToken,
-          assetId: mockAssetUid,
-          baseUrl: mockBaseUrl,
-          submissionUuid: mockSubmissionUuid,
-        });
-      } catch (e) {
-        error = e;
-      }
+      const promise = service.getSubmission({
+        token: mockToken,
+        assetId: mockAssetUid,
+        baseUrl: mockBaseUrl,
+        submissionUuid: mockSubmissionUuid,
+      });
 
       // Assert
-      expect(error).toBeHttpExceptionWithStatus(HttpStatus.NOT_FOUND);
-      expect(error.message).toMatchInlineSnapshot(
-        `"Kobo submission not found for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/data/test-submission-uuid-123."`,
+      await expect(promise).rejects.toBeHttpExceptionWithStatus(
+        HttpStatus.NOT_FOUND,
+      );
+      await expect(promise).rejects.toHaveProperty(
+        'message',
+        'Kobo submission not found for asset: test-asset-id, url: https://kobo.example.com/api/v2/assets/test-asset-id/data/test-submission-uuid-123.',
       );
     });
   });

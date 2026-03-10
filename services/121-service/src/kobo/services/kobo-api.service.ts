@@ -24,8 +24,7 @@ export class KoboApiService {
     // Use joinURL instead of new URL as the baseUrl may have a path component and new URL would ignore it
     const apiUrl = joinURL(baseUrl, 'api/v2/assets', assetUid, 'deployment');
 
-    const headers = new Headers();
-    headers.append('Authorization', `Token ${token}`);
+    const headers = new Headers({ Authorization: `Token ${token}` });
 
     const response = await this.httpService.get<
       AxiosResponse<KoboAssetResponseDto | unknown>
@@ -61,8 +60,7 @@ export class KoboApiService {
     // Use joinURL instead of new URL as the baseUrl may have a path component and new URL would ignore it
     const apiUrl = joinURL(baseUrl, 'api/v2/assets', assetUid, 'hooks');
 
-    const headers = new Headers();
-    headers.append('Authorization', `Token ${token}`);
+    const headers = new Headers({ Authorization: `Token ${token}` });
 
     const response = await this.httpService.get<
       AxiosResponse<
@@ -118,8 +116,7 @@ export class KoboApiService {
     // which Axios follows by downgrading POST → GET (returning a list response instead of creating)
     const apiUrl = joinURL(baseUrl, 'api/v2/assets', assetUid, 'hooks/');
 
-    const headers = new Headers();
-    headers.append('Authorization', `Token ${token}`);
+    const headers = new Headers({ Authorization: `Token ${token}` });
 
     const webhookName =
       'Create a registration in the 121 Platform when a submission is received';
@@ -171,8 +168,7 @@ export class KoboApiService {
       submissionUuid,
     );
 
-    const headers = new Headers();
-    headers.append('Authorization', `Token ${token}`);
+    const headers = new Headers({ Authorization: `Token ${token}` });
 
     const response = await this.httpService.get<
       AxiosResponse<KoboSubmissionDto>

@@ -7,7 +7,8 @@ import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
 import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
-import { KoboMapper } from '@121-service/src/kobo/mappers/kobo.mapper';
+import { KoboEntityMapper } from '@121-service/src/kobo/mappers/kobo-entity.mapper';
+import { KoboFormDefinitionMapper } from '@121-service/src/kobo/mappers/kobo-form-definition.mapper';
 import { KoboLanguageMapper } from '@121-service/src/kobo/mappers/kobo-language.mapper';
 import { KoboValidationService } from '@121-service/src/kobo/services/kobo.validation.service';
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
@@ -44,7 +45,7 @@ export class KoboService {
     if (!koboEntity) {
       throw new HttpException('Kobo data not found', HttpStatus.NOT_FOUND);
     }
-    return KoboMapper.mapEntityToDto(koboEntity);
+    return KoboEntityMapper.mapEntityToDto(koboEntity);
   }
 
   public async integrateKobo({
@@ -95,9 +96,10 @@ export class KoboService {
       );
     }
 
-    const formDefinition = KoboMapper.koboAssetDtoToKoboFormDefinition({
-      asset,
-    });
+    const formDefinition =
+      KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
+        asset,
+      });
 
     await this.koboValidationService.validateKoboFormDefinition({
       formDefinition,
@@ -167,7 +169,7 @@ export class KoboService {
       where: { programId: Equal(programId) },
     });
 
-    const entityData = KoboMapper.formDefinitionToEntity({
+    const entityData = KoboEntityMapper.formDefinitionToEntity({
       formDefinition,
       programId,
       assetUid,

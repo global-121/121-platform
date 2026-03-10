@@ -15,6 +15,7 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
 import { LastMessageStatusService } from '@121-service/src/notifications/services/last-message-status.service';
 import { twilioClient } from '@121-service/src/notifications/twilio.client';
+import { MessageSenderUserId } from '@121-service/src/notifications/types/message-sender-user-id.type';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
 
@@ -27,7 +28,7 @@ export class SmsService {
 
   public async sendSms(
     message: string,
-    userId: number | null,
+    userId: MessageSenderUserId,
     recipientPhoneNr?: string,
     registrationId?: number,
     messageContentType?: MessageContentType,
@@ -99,7 +100,7 @@ export class SmsService {
       | 'errorMessage'
       | 'dateCreated'
     >;
-    userId: number | null;
+    userId: MessageSenderUserId;
     registrationId?: number;
     messageContentType?: MessageContentType;
     messageProcessType?: MessageProcessType;

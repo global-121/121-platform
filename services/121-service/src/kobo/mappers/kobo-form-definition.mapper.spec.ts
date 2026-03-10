@@ -1,11 +1,10 @@
 import { KoboAssetDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset.dto';
 import { KoboChoiceDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-choice.dto';
 import { KoboSurveyItemDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-survey-item.dto';
-import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
-import { KoboMapper } from '@121-service/src/kobo/mappers/kobo.mapper';
+import { KoboFormDefinitionMapper } from '@121-service/src/kobo/mappers/kobo-form-definition.mapper';
 
-describe('KoboMapper', () => {
+describe('KoboFormDefinitionMapper', () => {
   const createSurveyItem = (
     overrides: Partial<KoboSurveyItemDto> = {},
   ): KoboSurveyItemDto => {
@@ -50,56 +49,6 @@ describe('KoboMapper', () => {
     };
   };
 
-  const createFormDefinition = (
-    overrides: Partial<KoboFormDefinition> = {},
-  ): KoboFormDefinition => {
-    return {
-      name: 'Test Form',
-      survey: [],
-      languages: [],
-      dateDeployed: new Date('2025-01-01'),
-      versionId: 'v1',
-      ...overrides,
-    };
-  };
-
-  describe('form definition to entity', () => {
-    it('should map form definition and parameters to entity data', () => {
-      // Arrange
-      const deployDate = new Date('2025-06-15T10:30:00Z');
-      const formDefinition = createFormDefinition({
-        dateDeployed: deployDate,
-        versionId: 'v2.3.1',
-      });
-      const programId = 123;
-      const assetUid = 'test-asset-uid';
-      const token = 'test-token';
-      const url = 'https://kobo.example.com';
-      const name = '25042025 Prototype Sprint';
-
-      // Act
-      const result = KoboMapper.formDefinitionToEntity({
-        formDefinition,
-        programId,
-        assetUid,
-        token,
-        url,
-        name,
-      });
-
-      // Assert
-      expect(result).toEqual({
-        programId,
-        assetUid,
-        token,
-        url,
-        dateDeployed: deployDate,
-        versionId: formDefinition.versionId,
-        name,
-      });
-    });
-  });
-
   describe('survey', () => {
     it('should transform survey items', () => {
       // Arrange
@@ -122,7 +71,7 @@ describe('KoboMapper', () => {
       });
 
       // Act
-      const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
+      const result = KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
         asset,
       });
 
@@ -164,7 +113,7 @@ describe('KoboMapper', () => {
       });
 
       // Act
-      const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
+      const result = KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
         asset,
       });
 
@@ -191,7 +140,7 @@ describe('KoboMapper', () => {
       });
 
       // Act
-      const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
+      const result = KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
         asset,
       });
 
@@ -205,7 +154,7 @@ describe('KoboMapper', () => {
       const asset = createAsset();
 
       // Act
-      const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
+      const result = KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
         asset,
       });
 
@@ -222,7 +171,7 @@ describe('KoboMapper', () => {
       });
 
       // Act
-      const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
+      const result = KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
         asset,
       });
 
@@ -245,7 +194,7 @@ describe('KoboMapper', () => {
       });
 
       // Act
-      const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
+      const result = KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
         asset,
       });
 
@@ -289,9 +238,10 @@ describe('KoboMapper', () => {
         });
 
         // Act
-        const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
-          asset,
-        });
+        const result =
+          KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
+            asset,
+          });
 
         // Assert
         expect(result.survey[0].choices).toEqual([
@@ -333,9 +283,10 @@ describe('KoboMapper', () => {
         });
 
         // Act
-        const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
-          asset,
-        });
+        const result =
+          KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
+            asset,
+          });
 
         // Assert
         expect(result.survey[0].choices[0].name).toBe('kuid-123');
@@ -362,9 +313,10 @@ describe('KoboMapper', () => {
         });
 
         // Act
-        const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
-          asset,
-        });
+        const result =
+          KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
+            asset,
+          });
 
         // Assert
         expect(result.survey[0].choices).toEqual([]);
@@ -385,9 +337,10 @@ describe('KoboMapper', () => {
         });
 
         // Act
-        const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
-          asset,
-        });
+        const result =
+          KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
+            asset,
+          });
 
         // Assert
         expect(result.survey[0].choices).toEqual([]);
@@ -413,7 +366,7 @@ describe('KoboMapper', () => {
       });
 
       // Act
-      const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
+      const result = KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
         asset,
       });
 
@@ -434,140 +387,13 @@ describe('KoboMapper', () => {
       });
 
       // Act
-      const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
+      const result = KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
         asset,
       });
 
       // Assert
       expect(result.name).toBe('');
       expect(result.languages).toEqual([]);
-    });
-  });
-
-  describe('submission to registration data', () => {
-    const baseSubmission = {
-      _id: 1,
-      _xform_id_string: 'form-uuid',
-      _submission_time: '2025-04-30T15:30:00.000Z',
-      _status: 'submitted_via_web',
-      __version__: 'v1',
-    };
-
-    it('should map submission with string, number, boolean values and special fields (happy flow)', () => {
-      // Arrange
-      const phoneNumber = '+31612345678';
-      const age = 42;
-      const isActive = true;
-      const fspValue = 'Safaricom';
-      const uuidValue = 'unique-submission-id';
-      const groupField = 'some-value';
-
-      const submission = {
-        ...baseSubmission,
-        _uuid: uuidValue,
-        phoneNumber,
-        age,
-        isActive,
-        fsp: fspValue,
-        group_demographics: groupField,
-      };
-
-      // Act
-      const result = KoboMapper.mapSubmissionToRegistrationData({
-        koboSubmission: submission,
-      });
-
-      // Assert
-      expect(result).toEqual({
-        phoneNumber,
-        age,
-        isActive,
-        programFspConfigurationName: fspValue,
-        referenceId: uuidValue,
-        group_demographics: groupField,
-      });
-    });
-
-    it('should exclude all metadata fields', () => {
-      // Arrange
-      const refId = 'ref-id';
-      const name = 'John Doe';
-
-      const submission = {
-        _id: 123,
-        _uuid: refId,
-        _xform_id_string: 'form-id',
-        _submission_time: '2025-04-30T15:30:00.000Z',
-        _status: 'submitted_via_web',
-        __version__: 'v1',
-        'formhub/uuid': 'formhub-id',
-        start: '2025-04-30T15:29:00.000Z',
-        end: '2025-04-30T15:30:00.000Z',
-        'meta/instanceID': 'instance-id',
-        _attachments: [],
-        _geolocation: ['1.0', '2.0'],
-        _tags: [],
-        _notes: [],
-        _validation_status: 'approved',
-        _submitted_by: 'user123',
-        name,
-      };
-
-      // Act
-      const result = KoboMapper.mapSubmissionToRegistrationData({
-        koboSubmission: submission,
-      });
-
-      // Assert
-      expect(result).toEqual({
-        referenceId: refId,
-        name,
-      });
-    });
-
-    it('should map fsp and _uuid fields to special attribute names', () => {
-      // Arrange
-      const fspValue = 'Iron Bank';
-      const uuidValue = 'submission-uuid-12345';
-
-      const submission = {
-        ...baseSubmission,
-        _uuid: uuidValue,
-        fsp: fspValue,
-      };
-
-      // Act
-      const result = KoboMapper.mapSubmissionToRegistrationData({
-        koboSubmission: submission,
-      });
-
-      // Assert
-      expect(result).toEqual({
-        referenceId: uuidValue,
-        programFspConfigurationName: fspValue,
-      });
-    });
-
-    it('should throw error when submission contains unsupported type (array)', () => {
-      // Arrange
-      const unsupportedKey = 'attachmentList';
-      const unsupportedValue = ['file1.pdf', 'file2.pdf'];
-
-      const submission = {
-        ...baseSubmission,
-        _uuid: 'ref',
-        phoneNumber: '+31612345678',
-        [unsupportedKey]: unsupportedValue,
-      };
-
-      // Act & Assert
-      expect(() =>
-        KoboMapper.mapSubmissionToRegistrationData({
-          koboSubmission: submission,
-        }),
-      ).toThrowErrorMatchingInlineSnapshot(
-        `"Unsupported Kobo submission value type for key "attachmentList". Only string, number, and boolean values are allowed."`,
-      );
     });
   });
 });

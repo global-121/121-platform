@@ -6,6 +6,7 @@ import { v4 as uuid } from 'uuid';
 
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
+import { MessageSenderUserId } from '@121-service/src/notifications/types/message-sender-user-id.type';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
@@ -141,7 +142,7 @@ export class RegistrationsImportService {
   }: {
     inputRegistrations: Record<string, string | boolean | number | undefined>[];
     program: ProgramEntity;
-    userId: number | null;
+    userId: MessageSenderUserId;
   }): Promise<ImportResult> {
     const validatedImportRecords = await this.validateImportRegistrationsInput(
       inputRegistrations,
@@ -183,7 +184,7 @@ export class RegistrationsImportService {
   }: {
     validatedImportRecords: ValidatedRegistrationInput[];
     program: ProgramEntity;
-    userId: number | null;
+    userId: MessageSenderUserId;
   }): Promise<ImportResult> {
     let countImported = 0;
     const dynamicAttributes = await this.getDynamicAttributes(program.id);
@@ -410,7 +411,7 @@ export class RegistrationsImportService {
       string | boolean | number | undefined
     >[],
     programId: number,
-    userId: number | null,
+    userId: MessageSenderUserId,
   ): Promise<ValidatedRegistrationInput[]> {
     const validationConfig: ValidationRegistrationConfig = {
       validateUniqueReferenceId: true,

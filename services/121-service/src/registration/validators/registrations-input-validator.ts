@@ -5,6 +5,7 @@ import { Equal, Repository } from 'typeorm';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
+import { MessageSenderUserId } from '@121-service/src/notifications/types/message-sender-user-id.type';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
@@ -47,7 +48,7 @@ export class RegistrationsInputValidator {
   }: {
     registrationInputArray: Record<string, InputAttributeType>[];
     programId: number;
-    userId: number | null;
+    userId: MessageSenderUserId;
     typeOfInput: RegistrationValidationInputType;
     validationConfig: ValidationRegistrationConfig;
   }): Promise<ValidatedRegistrationInput[]> {
