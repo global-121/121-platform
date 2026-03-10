@@ -36,7 +36,10 @@ import { CreateProgramAttachmentResponseDto } from '@121-service/src/programs/pr
 import { GetProgramAttachmentResponseDto } from '@121-service/src/programs/program-attachments/dtos/get-program-attachment-response.dto';
 import { RenameProgramAttachmentDto } from '@121-service/src/programs/program-attachments/dtos/rename-program-attachment.dto';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
-import { FILE_UPLOAD_WITH_FILENAME_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
+import {
+  FILE_UPLOAD_WITH_FILENAME_API_FORMAT,
+  RENAME_FILE_API_FORMAT,
+} from '@121-service/src/shared/file-upload-api-format';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
