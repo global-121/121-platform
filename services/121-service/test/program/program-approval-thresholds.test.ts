@@ -1,16 +1,19 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
+import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
+  createOrReplaceProgramApprovalThresholds,
   getProgramApprovalThresholds,
-  replaceProgramApprovalThresholds,
 } from '@121-service/test/helpers/program-approval-threshold.helper';
 import {
   createUserProgramAssignment,
   getCurrentUser,
 } from '@121-service/test/helpers/user.helper';
 import {
+  createUser,
+  findUserByUsername,
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
@@ -23,7 +26,12 @@ describe('Program Approval Thresholds', () => {
   const userId3 = 3;
 
   beforeAll(async () => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB(
+      SeedScript.nlrcMultiple,
+      __filename,
+      false,
+      ApproverSeedMode.none,
+    );
     accessToken = await getAccessToken();
 
     // Get admin user ID
@@ -45,7 +53,7 @@ describe('Program Approval Thresholds', () => {
     });
   });
 
-  describe('replaceProgramApprovalThresholds', () => {
+  describe('createOrReplaceProgramApprovalThresholds', () => {
     it('should successfully create thresholds with approvers', async () => {
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {
@@ -59,7 +67,7 @@ describe('Program Approval Thresholds', () => {
       ];
 
       // Act
-      const response = await replaceProgramApprovalThresholds({
+      const response = await createOrReplaceProgramApprovalThresholds({
         programId,
         thresholds,
         accessToken,
@@ -82,7 +90,7 @@ describe('Program Approval Thresholds', () => {
         { thresholdAmount: 0, userIds: [adminUserId] },
         { thresholdAmount: 50, userIds: [userId2] },
       ];
-      const initialResponse = await replaceProgramApprovalThresholds({
+      const initialResponse = await createOrReplaceProgramApprovalThresholds({
         programId,
         thresholds: initialThresholds,
         accessToken,
@@ -96,7 +104,7 @@ describe('Program Approval Thresholds', () => {
         { thresholdAmount: 200, userIds: [userId3] },
       ];
 
-      const replaceResponse = await replaceProgramApprovalThresholds({
+      const replaceResponse = await createOrReplaceProgramApprovalThresholds({
         programId,
         thresholds: newThresholds,
         accessToken,
@@ -129,7 +137,7 @@ describe('Program Approval Thresholds', () => {
       ];
 
       // Act
-      const response = await replaceProgramApprovalThresholds({
+      const response = await createOrReplaceProgramApprovalThresholds({
         programId,
         thresholds,
         accessToken,
@@ -143,91 +151,37 @@ describe('Program Approval Thresholds', () => {
     });
 
     it('should throw BAD_REQUEST when an assigned aidworker has scope', async () => {
-      // Arrange
-      const userId = 2; // User ID that exists in seed data
-      const testScope = 'test-scope';
-      const testRoles = ['view'];
-
-      // Create the user assignment with scope
+      // Arrange: use a fresh user to avoid polluting shared test state
+      const username = `scoped-approver-test@example.org`;
+      await createUser({
+        username,
+        displayName: 'Scoped Approver Test User',
+        adminAccessToken: accessToken,
+      });
+      const userId = await findUserByUsername({
+        programId,
+        username,
+        adminAccessToken: accessToken,
+      });
       await createUserProgramAssignment({
         programId,
         userId,
-        roles: testRoles,
-        scope: testScope,
+        roles: ['view'],
+        scope: 'test-scope',
         accessToken,
       });
 
-      const thresholds: CreateProgramApprovalThresholdDto[] = [
-        {
-          thresholdAmount: 0,
-          userIds: [userId],
-        },
-      ];
-
       // Act
-      const response = await replaceProgramApprovalThresholds({
+      const response = await createOrReplaceProgramApprovalThresholds({
         programId,
-        thresholds,
+        thresholds: [{ thresholdAmount: 0, userIds: [userId] }],
         accessToken,
       });
 
       // Assert
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toMatchInlineSnapshot(
-        `"Only users without scope can be made approvers. The following user IDs have scoped assignments and cannot be approvers: 2"`,
-      );
-    });
-
-    it('should throw BAD_REQUEST when duplicate approvers in threshold configuration', async () => {
-      const thresholds: CreateProgramApprovalThresholdDto[] = [
-        {
-          thresholdAmount: 0,
-          userIds: [adminUserId],
-        },
-        {
-          thresholdAmount: 50,
-          userIds: [adminUserId],
-        },
-      ];
-
-      // Act
-      const response = await replaceProgramApprovalThresholds({
-        programId,
-        thresholds,
-        accessToken,
-      });
-
-      // Assert
-      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toMatchInlineSnapshot(
-        `"Approver user IDs must be unique across all thresholds. A user cannot be an approver for multiple thresholds."`,
-      );
-    });
-
-    it('should throw BAD_REQUEST when threshold has no approvers', async () => {
-      // Arrange
-      const thresholds: CreateProgramApprovalThresholdDto[] = [
-        {
-          thresholdAmount: 0,
-          userIds: [],
-        },
-        {
-          thresholdAmount: 100,
-          userIds: [],
-        },
-      ];
-
-      // Act
-      const response = await replaceProgramApprovalThresholds({
-        programId,
-        thresholds,
-        accessToken,
-      });
-
-      // Assert
-      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toMatchInlineSnapshot(
-        `"All thresholds must have at least one approver. The following threshold amounts have no approvers: 0, 100"`,
+      expect(response.body.message).toBe(
+        `Only users without scope can be made approvers. The following user IDs have scoped assignments and cannot be approvers: ${userId}`,
       );
     });
   });

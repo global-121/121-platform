@@ -6,7 +6,7 @@ import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/pro
 import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/get-program-approval-threshold-response.dto';
 import { getServer } from '@121-service/test/helpers/utility.helper';
 
-export async function replaceProgramApprovalThresholds({
+export async function createOrReplaceProgramApprovalThresholds({
   programId,
   thresholds,
   accessToken,

@@ -396,7 +396,7 @@ export class PaymentsManagementService {
 
     if (approvalAssignedToApprover.approved) {
       throw new HttpException(
-        'This threshold has already been approved for this payment',
+        'This approval step has already been approved for this payment',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -451,7 +451,7 @@ export class PaymentsManagementService {
     );
     if (!isLowestRank) {
       throw new HttpException(
-        'Cannot approve payment before lower-order approvers have approved',
+        'Cannot approve payment before lower-order approval steps have been approved',
         HttpStatus.BAD_REQUEST,
       );
     }

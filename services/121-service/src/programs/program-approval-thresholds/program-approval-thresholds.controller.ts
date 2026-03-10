@@ -38,45 +38,7 @@ export class ProgramApprovalThresholdsController {
     description:
       'Replaces the entire threshold configuration. Deletes existing thresholds and creates new ones with their approvers.',
   })
-  @ApiBody({
-    description:
-      'Array of approval thresholds with their approvers. Approval levels are automatically derived from thresholdAmount (sorted ascending).',
-    schema: {
-      type: 'array',
-      items: {
-        type: 'object',
-        required: ['thresholdAmount', 'userIds'],
-        properties: {
-          thresholdAmount: {
-            type: 'number',
-            description:
-              'Payment amount threshold in program currency. Approval levels are computed by sorting these amounts ascending.',
-            example: 3000,
-          },
-          userIds: {
-            type: 'array',
-            description:
-              'Array of user IDs to be made approvers for this threshold level. Must contain at least one user ID.',
-            minItems: 1,
-            items: {
-              type: 'integer',
-              example: 2,
-            },
-          },
-        },
-      },
-      example: [
-        {
-          thresholdAmount: 5,
-          userIds: [2, 7],
-        },
-        {
-          thresholdAmount: 10,
-          userIds: [3, 5],
-        },
-      ],
-    },
-  })
+  @ApiBody({ type: [CreateProgramApprovalThresholdDto] })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Program approval thresholds replaced successfully',
@@ -84,18 +46,18 @@ export class ProgramApprovalThresholdsController {
   })
   @HttpCode(HttpStatus.CREATED)
   @Put('programs/:programId/approval-thresholds')
-  public async replaceProgramApprovalThresholds(
+  public async createOrReplaceProgramApprovalThresholds(
     @Param('programId', ParseIntPipe) programId: number,
     @Body(new ParseArrayPipe({ items: CreateProgramApprovalThresholdDto }))
     thresholds: CreateProgramApprovalThresholdDto[],
   ): Promise<GetProgramApprovalThresholdResponseDto[]> {
-    return await this.programApprovalThresholdsService.replaceProgramApprovalThresholds(
+    return await this.programApprovalThresholdsService.createOrReplaceProgramApprovalThresholds(
       programId,
       thresholds,
     );
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({ isOrganizationAdmin: true })
   @ApiOperation({
     summary: 'Get all approval thresholds for a program',
   })

@@ -16,7 +16,7 @@ export class ProgramApprovalThresholdsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  public async replaceProgramApprovalThresholds(
+  public async createOrReplaceProgramApprovalThresholds(
     programId: number,
     thresholds: CreateProgramApprovalThresholdDto[],
   ): Promise<GetProgramApprovalThresholdResponseDto[]> {

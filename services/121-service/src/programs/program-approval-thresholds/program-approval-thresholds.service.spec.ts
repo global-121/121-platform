@@ -35,7 +35,7 @@ describe('ProgramApprovalThresholdsService', () => {
     );
   });
 
-  describe('replaceProgramApprovalThresholds', () => {
+  describe('createOrReplaceProgramApprovalThresholds', () => {
     it('should throw when duplicate threshold amounts provided', async () => {
       // Arrange
       const thresholds: CreateProgramApprovalThresholdDto[] = [
@@ -45,7 +45,33 @@ describe('ProgramApprovalThresholdsService', () => {
 
       // Act & Assert
       await expect(
-        service.replaceProgramApprovalThresholds(programId, thresholds),
+        service.createOrReplaceProgramApprovalThresholds(programId, thresholds),
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+    });
+
+    it('should throw when a threshold has no approvers', async () => {
+      // Arrange
+      const thresholds: CreateProgramApprovalThresholdDto[] = [
+        { thresholdAmount: 0, userIds: [] },
+        { thresholdAmount: 100, userIds: [] },
+      ];
+
+      // Act & Assert
+      await expect(
+        service.createOrReplaceProgramApprovalThresholds(programId, thresholds),
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+    });
+
+    it('should throw when the same user ID appears in multiple thresholds', async () => {
+      // Arrange
+      const thresholds: CreateProgramApprovalThresholdDto[] = [
+        { thresholdAmount: 0, userIds: [1] },
+        { thresholdAmount: 50, userIds: [1] },
+      ];
+
+      // Act & Assert
+      await expect(
+        service.createOrReplaceProgramApprovalThresholds(programId, thresholds),
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
     });
   });

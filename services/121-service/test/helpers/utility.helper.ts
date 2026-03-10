@@ -124,13 +124,13 @@ export async function getAccessTokenFinanceManager(): Promise<string> {
 export async function getAccessTokenByUsername(
   username: string,
 ): Promise<string> {
-  if (username === 'admin') {
+  if (username === env.USERCONFIG_121_SERVICE_EMAIL_ADMIN) {
     return await getAccessToken();
   }
-  if (username === 'cvaManager') {
+  if (username === env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER) {
     return await getAccessTokenCvaManager();
   }
-  if (username === 'financeManager') {
+  if (username === env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER) {
     return await getAccessTokenFinanceManager();
   }
   throw new Error(`No access token getter defined for username: ${username}`);

@@ -1,8 +1,10 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { env } from '@121-service/src/env';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventAttributeKey } from '@121-service/src/payments/payment-events/enums/payment-event-attribute-key.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   approvePayment,
@@ -13,7 +15,7 @@ import {
   startPayment,
   waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
-import { replaceProgramApprovalThresholds } from '@121-service/test/helpers/program-approval-threshold.helper';
+import { createOrReplaceProgramApprovalThresholds } from '@121-service/test/helpers/program-approval-threshold.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -39,7 +41,12 @@ async function setupPaymentApprovalTest(
     approverUsernames: string[];
   }[],
 ): Promise<void> {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
+  await resetDB(
+    SeedScript.nlrcMultiple,
+    __filename,
+    false,
+    ApproverSeedMode.none,
+  );
 
   [adminAccessToken, accessTokenFinanceManager, accessTokenCvaManager] =
     await Promise.all([
@@ -77,25 +84,25 @@ async function setupThresholds(
     }),
   );
 
-  await replaceProgramApprovalThresholds({
+  await createOrReplaceProgramApprovalThresholds({
     programId,
     thresholds: thresholdDtos,
     accessToken: adminAccessToken,
   });
 }
 
-describe('do payment with 2 approvers', () => {
+describe('do payment with 2 approval steps', () => {
   let paymentId: number;
 
   beforeAll(async () => {
     await setupPaymentApprovalTest([
       {
         thresholdAmount: 0,
-        approverUsernames: ['admin'],
+        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_ADMIN],
       },
       {
         thresholdAmount: 10,
-        approverUsernames: ['financeManager'],
+        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!],
       },
     ]);
   });
@@ -243,7 +250,7 @@ describe('do payment with 2 approvers', () => {
     });
   });
 
-  it('should throw on 2nd approve when 1st approver has not yet approved', async () => {
+  it('should throw on 2nd approval step when 1st approval step has not yet been approved', async () => {
     // Act
     // 2nd approve without 1st approve
     const approvePaymentResponseFinanceManager = await approvePayment({
@@ -259,11 +266,11 @@ describe('do payment with 2 approvers', () => {
     expect(
       approvePaymentResponseFinanceManager.body.message,
     ).toMatchInlineSnapshot(
-      `"Cannot approve payment before lower-order approvers have approved"`,
+      `"Cannot approve payment before lower-order approval steps have been approved"`,
     );
   });
 
-  it('should not allow starting payment before all approvers have approved', async () => {
+  it('should not allow starting payment before all approval steps have been approved', async () => {
     // Act
     // 1st approve
     await approvePayment({
@@ -287,7 +294,7 @@ describe('do payment with 2 approvers', () => {
   });
 });
 
-describe('do payment with <2 approvers', () => {
+describe('do payment with <2 approval steps', () => {
   beforeEach(async () => {
     await setupPaymentApprovalTest([]);
   });
@@ -300,7 +307,10 @@ describe('do payment with <2 approvers', () => {
     const accessTokenFinanceManager = await getAccessTokenFinanceManager();
 
     await setupThresholds([
-      { thresholdAmount: 0, approverUsernames: ['admin'] },
+      {
+        thresholdAmount: 0,
+        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_ADMIN],
+      },
     ]);
 
     // Act
@@ -379,37 +389,12 @@ describe('do payment with <2 approvers', () => {
     );
   });
 
-  it('should throw when trying to create thresholds with duplicate amounts', async () => {
-    // Arrange
-    const thresholdsWithDuplicates = [
-      {
-        thresholdAmount: 100,
-        userIds: [1],
-      },
-      {
-        thresholdAmount: 100,
-        userIds: [2],
-      },
-    ];
-
-    // Act
-    const response = await replaceProgramApprovalThresholds({
-      programId,
-      thresholds: thresholdsWithDuplicates,
-      accessToken: adminAccessToken,
-    });
-
-    // Assert
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-    expect(response.body.message).toMatchInlineSnapshot(
-      `"Threshold amounts must be unique. Cannot have multiple thresholds with the same amount."`,
-    );
-  });
-
-  it('should return all payment approvals but without username for deleted approver(s)', async () => {
+  it('Approver can still approve a payment if this user has been removed from the program threshold configuration', async () => {
     await setupThresholds([
-      { thresholdAmount: 0, approverUsernames: ['admin'] },
-      { thresholdAmount: 10, approverUsernames: ['financeManager'] },
+      {
+        thresholdAmount: 0,
+        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!],
+      },
     ]);
 
     const createPaymentResponse = await createPayment({
@@ -418,25 +403,25 @@ describe('do payment with <2 approvers', () => {
       referenceIds: [registrationPV5.referenceId],
       accessToken: adminAccessToken,
     });
+    const paymentId = createPaymentResponse.body.id;
 
-    // Remove the 2nd approver
+    // Remove financeManager from threshold config
     await setupThresholds([
-      { thresholdAmount: 0, approverUsernames: ['admin'] },
+      {
+        thresholdAmount: 0,
+        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_ADMIN],
+      },
     ]);
 
     // Act
-    const getPaymentResponse = await getPaymentSummary({
+    const approveResponse = await approvePayment({
       programId,
-      paymentId: createPaymentResponse.body.id,
-      accessToken: adminAccessToken,
+      paymentId,
+      accessToken: accessTokenFinanceManager,
     });
 
     // Assert
-    expect(getPaymentResponse.status).toBe(HttpStatus.OK);
-    expect(getPaymentResponse.body.approvalStatus.length).toBe(2);
-    expect(getPaymentResponse.body.approvalStatus[1].approvers).toEqual([
-      'finance-manager@example.org',
-    ]);
+    expect(approveResponse.status).toBe(HttpStatus.CREATED);
   });
 
   it('should include note in payment approved event', async () => {
@@ -444,7 +429,10 @@ describe('do payment with <2 approvers', () => {
     const note = 'Payment approved for testing purposes only.';
 
     await setupThresholds([
-      { thresholdAmount: 0, approverUsernames: ['admin'] },
+      {
+        thresholdAmount: 0,
+        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_ADMIN],
+      },
     ]);
 
     const createPaymentResponse = await createPayment({
@@ -481,14 +469,17 @@ describe('do payment with <2 approvers', () => {
   });
 });
 
-describe('multiple approvers per threshold', () => {
+describe('multiple approvers per approval step', () => {
   let paymentId: number;
 
   beforeAll(async () => {
     await setupPaymentApprovalTest([
       {
         thresholdAmount: 0,
-        approverUsernames: ['financeManager', 'cvaManager'],
+        approverUsernames: [
+          env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!,
+          env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER!,
+        ],
       },
     ]);
   });
@@ -573,7 +564,7 @@ describe('multiple approvers per threshold', () => {
     // Assert
     expect(secondApprovalResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(secondApprovalResponse.body.message).toBe(
-      'This threshold has already been approved for this payment',
+      'This approval step has already been approved for this payment',
     );
   });
 });

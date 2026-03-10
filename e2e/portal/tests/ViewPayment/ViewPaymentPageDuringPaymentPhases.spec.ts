@@ -1,7 +1,7 @@
 import { env } from '@121-service/src/env';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { replaceProgramApprovalThresholds } from '@121-service/test/helpers/program-approval-threshold.helper';
+import { createOrReplaceProgramApprovalThresholds } from '@121-service/test/helpers/program-approval-threshold.helper';
 import { getAllUsersByProgramId } from '@121-service/test/helpers/user.helper';
 import {
   getAccessToken,
@@ -54,7 +54,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     throw new Error('Required user assignments not found');
   }
 
-  await replaceProgramApprovalThresholds({
+  await createOrReplaceProgramApprovalThresholds({
     programId: programIdOCW,
     thresholds: [
       {

@@ -291,7 +291,7 @@ describe('PaymentsManagementService', () => {
       await expect(
         service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
       ).rejects.toThrow(
-        'This threshold has already been approved for this payment',
+        'This approval step has already been approved for this payment',
       );
     });
 
@@ -309,7 +309,7 @@ describe('PaymentsManagementService', () => {
       await expect(
         service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
       ).rejects.toThrow(
-        'Cannot approve payment before lower-order approvers have approved',
+        'Cannot approve payment before lower-order approval steps have been approved',
       );
     });
 

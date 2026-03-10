@@ -300,23 +300,31 @@ export class SeedHelperService {
             username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_APPROVER!),
           },
         });
+        const financeManagerUser = await userRepository.findOneOrFail({
+          where: {
+            username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!),
+          },
+        });
+        const cvaManagerUser = await userRepository.findOneOrFail({
+          where: {
+            username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER!),
+          },
+        });
 
         thresholds.push(
           {
             thresholdAmount: 0,
-
-            userIds: [adminUser.id],
+            userIds: [adminUser.id, approverUser.id],
           },
           {
             thresholdAmount: 100,
-
-            userIds: [approverUser.id],
+            userIds: [financeManagerUser.id, cvaManagerUser.id],
           },
         );
         break;
     }
 
-    await this.programApprovalThresholdsService.replaceProgramApprovalThresholds(
+    await this.programApprovalThresholdsService.createOrReplaceProgramApprovalThresholds(
       programId,
       thresholds,
     );
