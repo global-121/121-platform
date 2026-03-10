@@ -1,11 +1,10 @@
 import { KoboAssetDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset.dto';
 import { KoboChoiceDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-choice.dto';
 import { KoboSurveyItemDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-survey-item.dto';
-import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
-import { KoboMapper } from '@121-service/src/kobo/mappers/kobo.mapper';
+import { KoboFormDefinitionMapper } from '@121-service/src/kobo/mappers/kobo-form-definition.mapper';
 
-describe('KoboMapper', () => {
+describe('KoboFormDefinitionMapper', () => {
   const createSurveyItem = (
     overrides: Partial<KoboSurveyItemDto> = {},
   ): KoboSurveyItemDto => {
@@ -50,56 +49,6 @@ describe('KoboMapper', () => {
     };
   };
 
-  const createFormDefinition = (
-    overrides: Partial<KoboFormDefinition> = {},
-  ): KoboFormDefinition => {
-    return {
-      name: 'Test Form',
-      survey: [],
-      languages: [],
-      dateDeployed: new Date('2025-01-01'),
-      versionId: 'v1',
-      ...overrides,
-    };
-  };
-
-  describe('form definition to entity', () => {
-    it('should map form definition and parameters to entity data', () => {
-      // Arrange
-      const deployDate = new Date('2025-06-15T10:30:00Z');
-      const formDefinition = createFormDefinition({
-        dateDeployed: deployDate,
-        versionId: 'v2.3.1',
-      });
-      const programId = 123;
-      const assetUid = 'test-asset-uid';
-      const token = 'test-token';
-      const url = 'https://kobo.example.com';
-      const name = '25042025 Prototype Sprint';
-
-      // Act
-      const result = KoboMapper.formDefinitionToEntity({
-        formDefinition,
-        programId,
-        assetUid,
-        token,
-        url,
-        name,
-      });
-
-      // Assert
-      expect(result).toEqual({
-        programId,
-        assetUid,
-        token,
-        url,
-        dateDeployed: deployDate,
-        versionId: formDefinition.versionId,
-        name,
-      });
-    });
-  });
-
   describe('survey', () => {
     it('should transform survey items', () => {
       // Arrange
@@ -122,7 +71,7 @@ describe('KoboMapper', () => {
       });
 
       // Act
-      const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
+      const result = KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
         asset,
       });
 
@@ -164,7 +113,7 @@ describe('KoboMapper', () => {
       });
 
       // Act
-      const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
+      const result = KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
         asset,
       });
 
@@ -191,7 +140,7 @@ describe('KoboMapper', () => {
       });
 
       // Act
-      const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
+      const result = KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
         asset,
       });
 
@@ -205,7 +154,7 @@ describe('KoboMapper', () => {
       const asset = createAsset();
 
       // Act
-      const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
+      const result = KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
         asset,
       });
 
@@ -222,7 +171,7 @@ describe('KoboMapper', () => {
       });
 
       // Act
-      const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
+      const result = KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
         asset,
       });
 
@@ -245,7 +194,7 @@ describe('KoboMapper', () => {
       });
 
       // Act
-      const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
+      const result = KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
         asset,
       });
 
@@ -289,9 +238,10 @@ describe('KoboMapper', () => {
         });
 
         // Act
-        const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
-          asset,
-        });
+        const result =
+          KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
+            asset,
+          });
 
         // Assert
         expect(result.survey[0].choices).toEqual([
@@ -333,9 +283,10 @@ describe('KoboMapper', () => {
         });
 
         // Act
-        const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
-          asset,
-        });
+        const result =
+          KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
+            asset,
+          });
 
         // Assert
         expect(result.survey[0].choices[0].name).toBe('kuid-123');
@@ -362,9 +313,10 @@ describe('KoboMapper', () => {
         });
 
         // Act
-        const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
-          asset,
-        });
+        const result =
+          KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
+            asset,
+          });
 
         // Assert
         expect(result.survey[0].choices).toEqual([]);
@@ -385,9 +337,10 @@ describe('KoboMapper', () => {
         });
 
         // Act
-        const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
-          asset,
-        });
+        const result =
+          KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
+            asset,
+          });
 
         // Assert
         expect(result.survey[0].choices).toEqual([]);
@@ -413,7 +366,7 @@ describe('KoboMapper', () => {
       });
 
       // Act
-      const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
+      const result = KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
         asset,
       });
 
@@ -434,7 +387,7 @@ describe('KoboMapper', () => {
       });
 
       // Act
-      const result = KoboMapper.koboAssetDtoToKoboFormDefinition({
+      const result = KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
         asset,
       });
 

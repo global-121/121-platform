@@ -58,6 +58,7 @@ graph LR
   IntersolveVoucherReconciliationModule-->ProgramModule
   KoboModule-->ProgramFspConfigurationsModule
   KoboModule-->ProgramModule
+  KoboModule-->RegistrationsModule
   MessageIncomingModule-->ImageCodeModule
   MessageIncomingModule-->IntersolveVoucherModule
   MessageIncomingModule-->MessageQueuesModule

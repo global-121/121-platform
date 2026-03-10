@@ -431,4 +431,37 @@ describe('RegistrationsInputValidator', () => {
     };
     expect(result[0]).toEqual(expectedResult);
   });
+
+  it.each([
+    { scope: '', description: 'empty scope' },
+    { scope: 'random.scope.value', description: 'random scope value' },
+  ])(
+    'should not error when userId is null (e.g. system-triggered import like Kobo webhook) with scope "$description"',
+    async ({ scope }) => {
+      // Arrange
+      const csvArray = [
+        {
+          referenceId: '00dc9451-1273-484c-b2e8-ae21b51a96ab',
+          preferredLanguage: RegistrationPreferredLanguage.en,
+          phoneNumber: '14155238880',
+          programFspConfigurationName: Fsps.excel,
+          scope,
+        },
+      ];
+
+      // Act & Assert
+      await expect(
+        validator.validateAndCleanInput({
+          registrationInputArray: csvArray,
+          programId,
+          userId: null,
+          typeOfInput: RegistrationValidationInputType.create,
+          validationConfig: {
+            validateUniqueReferenceId: true,
+            validateExistingReferenceId: true,
+          },
+        }),
+      ).resolves.not.toThrow();
+    },
+  );
 });

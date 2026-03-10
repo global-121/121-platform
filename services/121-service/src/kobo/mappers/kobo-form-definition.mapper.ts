@@ -1,55 +1,11 @@
 import { KoboAssetDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset.dto';
 import { KoboChoiceDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-choice.dto';
 import { KoboSurveyItemDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-survey-item.dto';
-import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
-import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
 import { KoboChoiceCleaned } from '@121-service/src/kobo/interfaces/kobo-choice-cleaned.interface';
 import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
 
-export class KoboMapper {
-  public static mapEntityToDto(entity: KoboEntity): KoboResponseDto {
-    const dto: KoboResponseDto = {
-      assetUid: entity.assetUid,
-      versionId: entity.versionId,
-      dateDeployed: entity.dateDeployed,
-      url: entity.url,
-      programId: entity.programId,
-      name: entity.name,
-    };
-    return dto;
-  }
-
-  public static mapEntitiesToDtos(entities: KoboEntity[]): KoboResponseDto[] {
-    return entities.map(KoboMapper.mapEntityToDto);
-  }
-
-  public static formDefinitionToEntity({
-    formDefinition,
-    programId,
-    assetUid,
-    token,
-    url,
-    name,
-  }: {
-    formDefinition: KoboFormDefinition;
-    programId: number;
-    assetUid: string;
-    token: string;
-    url: string;
-    name: string | null;
-  }): Omit<KoboEntity, 'id' | 'created' | 'updated' | 'program'> {
-    return {
-      programId,
-      assetUid,
-      token,
-      url,
-      dateDeployed: formDefinition.dateDeployed,
-      versionId: formDefinition.versionId,
-      name,
-    };
-  }
-
+export class KoboFormDefinitionMapper {
   public static koboAssetDtoToKoboFormDefinition({
     asset,
   }: {
@@ -69,6 +25,20 @@ export class KoboMapper {
       dateDeployed: asset.date_deployed,
       versionId: asset.version_id,
     };
+  }
+
+  // Public so it can be reused by KoboSubmissionMapper
+  public static parseAttributeNameFromKoboSurveyItemName({
+    name,
+  }: {
+    name: string;
+  }): string {
+    if (!name.includes('/')) {
+      return name;
+    }
+
+    const parts = name.split('/');
+    return parts[parts.length - 1];
   }
 
   private static surveyItemsDtosToSurveyItemsCleaned({
@@ -107,19 +77,6 @@ export class KoboMapper {
     return this.parseAttributeNameFromKoboSurveyItemName({
       name,
     });
-  }
-
-  private static parseAttributeNameFromKoboSurveyItemName({
-    name,
-  }: {
-    name: string;
-  }): string {
-    if (!name.includes('/')) {
-      return name;
-    }
-
-    const parts = name.split('/');
-    return parts[parts.length - 1];
   }
 
   private static choicesDtosToChoicesCleaned({

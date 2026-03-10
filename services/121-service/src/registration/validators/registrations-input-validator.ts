@@ -5,6 +5,7 @@ import { Equal, Repository } from 'typeorm';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
+import { MessageSenderUserId } from '@121-service/src/notifications/types/message-sender-user-id.type';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
@@ -47,7 +48,7 @@ export class RegistrationsInputValidator {
   }: {
     registrationInputArray: Record<string, InputAttributeType>[];
     programId: number;
-    userId: number;
+    userId: MessageSenderUserId;
     typeOfInput: RegistrationValidationInputType;
     validationConfig: ValidationRegistrationConfig;
   }): Promise<ValidatedRegistrationInput[]> {
@@ -71,10 +72,14 @@ export class RegistrationsInputValidator {
     const errors: ValidateRegistrationErrorObject[] = [];
     const phoneNumberLookupResults: Record<string, string | undefined> = {};
 
-    const userScope = await this.userService.getUserScopeForProgram(
-      userId,
-      programId,
-    );
+    // If the registration was not created by the user we assume a scope that can access anything (like on a new kobo submission) therefore a ''
+    let userScope = '';
+    if (userId) {
+      userScope = await this.userService.getUserScopeForProgram(
+        userId,
+        programId,
+      );
+    }
 
     if (validationConfig.validateUniqueReferenceId) {
       this.validateUniqueReferenceIds(registrationInputArray);

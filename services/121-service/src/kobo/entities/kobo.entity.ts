@@ -31,4 +31,10 @@ export class KoboEntity extends Base121Entity {
 
   @Column({ type: 'character varying', nullable: true })
   public name: string | null;
+
+  @Column({ type: 'character varying' })
+  public webhookAuthUsername: string;
+
+  @Column({ type: 'character varying' })
+  public webhookAuthPassword: string;
 }

@@ -1,14 +1,15 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
-import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES } from '@121-service/src/kobo/consts/kobo-allowed-registration-view-attributes.const';
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
 import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
 import { KoboSurveyItemCleaned } from '@121-service/src/kobo/interfaces/kobo-survey-item-cleaned.interface';
-import { KoboMapper } from '@121-service/src/kobo/mappers/kobo.mapper';
+import { KoboEntityMapper } from '@121-service/src/kobo/mappers/kobo-entity.mapper';
+import { KoboFormDefinitionMapper } from '@121-service/src/kobo/mappers/kobo-form-definition.mapper';
 import { KoboLanguageMapper } from '@121-service/src/kobo/mappers/kobo-language.mapper';
 import { KoboValidationService } from '@121-service/src/kobo/services/kobo.validation.service';
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
@@ -45,7 +46,7 @@ export class KoboService {
     if (!koboEntity) {
       throw new HttpException('Kobo data not found', HttpStatus.NOT_FOUND);
     }
-    return KoboMapper.mapEntityToDto(koboEntity);
+    return KoboEntityMapper.mapEntityToDto(koboEntity);
   }
 
   public async integrateKobo({
@@ -96,9 +97,10 @@ export class KoboService {
       );
     }
 
-    const formDefinition = KoboMapper.koboAssetDtoToKoboFormDefinition({
-      asset,
-    });
+    const formDefinition =
+      KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
+        asset,
+      });
 
     await this.koboValidationService.validateKoboFormDefinition({
       formDefinition,
@@ -113,15 +115,16 @@ export class KoboService {
       };
     }
 
-    // Functionality is hidden behind development flag as for it to be used in production we need follow up work where we handle incoming kobo webhook calls, which is not yet implemented.
-    // This way we can split up functionality in smaller PRs
-    if (IS_DEVELOPMENT) {
-      await this.koboApiService.createKoboWebhook({
-        assetUid,
-        token,
-        baseUrl: url,
-      });
-    }
+    const webhookAuthUsername = uuid();
+    const webhookAuthPassword = uuid();
+
+    await this.koboApiService.createKoboWebhook({
+      assetUid,
+      token,
+      baseUrl: url,
+      webhookAuthUsername,
+      webhookAuthPassword,
+    });
 
     await this.upsertKoboEntity({
       formDefinition,
@@ -130,6 +133,8 @@ export class KoboService {
       token,
       url,
       name: asset.name ?? null,
+      webhookAuthUsername,
+      webhookAuthPassword,
     });
     const languageIsoCodes = KoboLanguageMapper.getLanguageIsoCodes({
       koboLanguages: formDefinition.languages,
@@ -160,6 +165,8 @@ export class KoboService {
     token,
     url,
     name,
+    webhookAuthUsername,
+    webhookAuthPassword,
   }: {
     formDefinition: KoboFormDefinition;
     programId: number;
@@ -167,18 +174,22 @@ export class KoboService {
     token: string;
     url: string;
     name: string | null;
+    webhookAuthUsername: string;
+    webhookAuthPassword: string;
   }): Promise<void> {
     const existingKoboEntity = await this.koboRepository.findOne({
       where: { programId: Equal(programId) },
     });
 
-    const entityData = KoboMapper.formDefinitionToEntity({
+    const entityData = KoboEntityMapper.formDefinitionToEntity({
       formDefinition,
       programId,
       assetUid,
       token,
       url,
       name,
+      webhookAuthUsername,
+      webhookAuthPassword,
     });
 
     if (existingKoboEntity) {

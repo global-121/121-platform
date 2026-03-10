@@ -162,7 +162,7 @@ describe('KoboValidationService', () => {
       const formDefinitionWithMissingAttributes: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          ...baseSurveyItems,
           {
             name: FspAttributes.phoneNumber,
             type: 'text',
@@ -211,7 +211,7 @@ describe('KoboValidationService', () => {
       const formDefinitionWithWrongType: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          ...baseSurveyItems,
           {
             name: FspAttributes.nationalId,
             type: 'integer', // Wrong type nationalId is text
@@ -261,7 +261,7 @@ describe('KoboValidationService', () => {
       const formDefinitionWithAllFullNameAttributes: KoboFormDefinition = {
         ...baseFormDefinition,
         survey: [
-          ...baseSurveyItems.map((item) => ({ ...item, choices: [] })),
+          ...baseSurveyItems,
           {
             name: 'firstName',
             type: 'text',

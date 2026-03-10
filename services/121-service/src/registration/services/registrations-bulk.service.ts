@@ -13,6 +13,7 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { MessageContentDetails } from '@121-service/src/notifications/interfaces/message-content-details.interface';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
+import { MessageSenderUserId } from '@121-service/src/notifications/types/message-sender-user-id.type';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
@@ -375,7 +376,7 @@ export class RegistrationsBulkService {
     referenceIds: string[];
     programId: number;
     registrationStatus: RegistrationStatusEnum;
-    userId: number;
+    userId: MessageSenderUserId;
     messageContentDetails: MessageContentDetails;
     reason?: string;
   }): Promise<void> {
@@ -441,7 +442,7 @@ export class RegistrationsBulkService {
   }: {
     referenceIds: string[];
     programId: number;
-    userId: number;
+    userId: MessageSenderUserId;
     messageContentDetails: MessageContentDetails;
   }): Promise<void> {
     const usedPlaceholders =
@@ -656,7 +657,7 @@ export class RegistrationsBulkService {
     messageContentDetails: MessageContentDetails;
     bulksize: number;
     usedPlaceholders: string[];
-    userId: number;
+    userId: MessageSenderUserId;
   }): Promise<void> {
     for (const registration of registrations) {
       const placeholderData = {};

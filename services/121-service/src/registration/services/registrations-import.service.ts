@@ -6,6 +6,7 @@ import { v4 as uuid } from 'uuid';
 
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
+import { MessageSenderUserId } from '@121-service/src/notifications/types/message-sender-user-id.type';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
@@ -134,21 +135,25 @@ export class RegistrationsImportService {
     return [...new Set(attributes)]; // Deduplicates attributes
   }
 
-  public async importRegistrations(
-    inputRegistrations: Record<string, string | boolean | number | undefined>[],
-    program: ProgramEntity,
-    userId: number,
-  ): Promise<ImportResult> {
+  public async importRegistrations({
+    inputRegistrations,
+    program,
+    userId,
+  }: {
+    inputRegistrations: Record<string, string | boolean | number | undefined>[];
+    program: ProgramEntity;
+    userId: MessageSenderUserId;
+  }): Promise<ImportResult> {
     const validatedImportRecords = await this.validateImportRegistrationsInput(
       inputRegistrations,
       program.id,
       userId,
     );
-    return await this.importValidatedRegistrations(
+    return await this.importValidatedRegistrations({
       validatedImportRecords,
       program,
       userId,
-    );
+    });
   }
 
   public async importRegistrationsFromCsv(
@@ -162,18 +167,25 @@ export class RegistrationsImportService {
       maxRecords,
     );
     // TODO: Improve the typing of what comes out validateCsv function to avoid this cast
-    return this.importRegistrations(
-      importRecords as Record<string, string | boolean | number | undefined>[],
+    return this.importRegistrations({
+      inputRegistrations: importRecords as Record<
+        string,
+        string | boolean | number | undefined
+      >[],
       program,
       userId,
-    );
+    });
   }
 
-  public async importValidatedRegistrations(
-    validatedImportRecords: ValidatedRegistrationInput[],
-    program: ProgramEntity,
-    userId: number,
-  ): Promise<ImportResult> {
+  public async importValidatedRegistrations({
+    validatedImportRecords,
+    program,
+    userId,
+  }: {
+    validatedImportRecords: ValidatedRegistrationInput[];
+    program: ProgramEntity;
+    userId: MessageSenderUserId;
+  }): Promise<ImportResult> {
     let countImported = 0;
     const dynamicAttributes = await this.getDynamicAttributes(program.id);
     const registrations: RegistrationEntity[] = [];
@@ -399,7 +411,7 @@ export class RegistrationsImportService {
       string | boolean | number | undefined
     >[],
     programId: number,
-    userId: number,
+    userId: MessageSenderUserId,
   ): Promise<ValidatedRegistrationInput[]> {
     const validationConfig: ValidationRegistrationConfig = {
       validateUniqueReferenceId: true,
