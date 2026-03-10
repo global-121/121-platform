@@ -54,6 +54,7 @@ export class ProgramApprovalThresholdsService {
     aidworkerAssignments: ProgramAidworkerAssignmentEntity[];
   }): Promise<void> {
     this.validateUniqueThresholdAmounts(thresholds);
+    this.validateThresholdsHaveApprovers(thresholds);
     this.validateUniqueApproverUserIds(thresholds);
     this.validateApproverUserIdsExist(thresholds, aidworkerAssignments);
     this.validateApproversHaveNoScope(thresholds, aidworkerAssignments);
@@ -67,6 +68,23 @@ export class ProgramApprovalThresholdsService {
     if (thresholdAmounts.length !== uniqueAmounts.size) {
       throw new HttpException(
         'Threshold amounts must be unique. Cannot have multiple thresholds with the same amount.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  private validateThresholdsHaveApprovers(
+    thresholds: CreateProgramApprovalThresholdDto[],
+  ): void {
+    const thresholdsWithoutApprovers = thresholds.filter(
+      (t) => !t.userIds || t.userIds.length === 0,
+    );
+    if (thresholdsWithoutApprovers.length > 0) {
+      const amounts = thresholdsWithoutApprovers
+        .map((t) => t.thresholdAmount)
+        .join(', ');
+      throw new HttpException(
+        `All thresholds must have at least one approver. The following threshold amounts have no approvers: ${amounts}`,
         HttpStatus.BAD_REQUEST,
       );
     }

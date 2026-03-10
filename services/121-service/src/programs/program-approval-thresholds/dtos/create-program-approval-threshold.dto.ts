@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  ArrayMinSize,
   IsArray,
   IsInt,
   IsNotEmpty,
@@ -17,10 +18,12 @@ export class CreateProgramApprovalThresholdDto {
 
   @ApiProperty({
     type: [Number],
-    required: false,
-    description: 'User IDs for approvers of this threshold',
+    description:
+      'User IDs for approvers of this threshold. Must contain at least one user ID.',
+    example: [1, 2],
   })
   @IsArray()
+  @ArrayMinSize(1)
   @IsInt({ each: true })
   @IsPositive({ each: true })
   public readonly userIds: number[];

@@ -56,7 +56,8 @@ export class ProgramApprovalThresholdsController {
           userIds: {
             type: 'array',
             description:
-              'Array of user IDs to be made approvers for this threshold level',
+              'Array of user IDs to be made approvers for this threshold level. Must contain at least one user ID.',
+            minItems: 1,
             items: {
               type: 'integer',
               example: 2,
@@ -66,11 +67,11 @@ export class ProgramApprovalThresholdsController {
       },
       example: [
         {
-          thresholdAmount: 3000,
+          thresholdAmount: 5,
           userIds: [2, 7],
         },
         {
-          thresholdAmount: 5000,
+          thresholdAmount: 10,
           userIds: [3, 5],
         },
       ],

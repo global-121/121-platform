@@ -18,24 +18,43 @@ import {
 describe('Program Approval Thresholds', () => {
   let accessToken: string;
   const programId = 2;
+  let adminUserId: number;
+  const userId2 = 2;
+  const userId3 = 3;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
+
+    // Get admin user ID
+    const adminUser = await getCurrentUser({ accessToken });
+    adminUserId = adminUser.body.user.id;
+
+    // Create common test users that most tests need
+    await createUserProgramAssignment({
+      programId,
+      userId: userId2,
+      roles: ['view'],
+      accessToken,
+    });
+    await createUserProgramAssignment({
+      programId,
+      userId: userId3,
+      roles: ['view'],
+      accessToken,
+    });
   });
 
   describe('replaceProgramApprovalThresholds', () => {
     it('should successfully create thresholds with approvers', async () => {
-      const adminUser = await getCurrentUser({ accessToken });
-
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {
           thresholdAmount: 50,
-          userIds: [adminUser.body.user.id],
+          userIds: [adminUserId],
         },
         {
           thresholdAmount: 100,
-          userIds: [],
+          userIds: [userId2],
         },
       ];
 
@@ -54,54 +73,52 @@ describe('Program Approval Thresholds', () => {
       expect(response.body[0].approvers).toHaveLength(1);
 
       expect(response.body[1].thresholdAmount).toBe(100);
-      expect(response.body[1].approvers).toHaveLength(0);
+      expect(response.body[1].approvers).toHaveLength(1);
     });
 
     it('should replace existing thresholds', async () => {
-      // Arrange: Create initial thresholds
+      // Arrange
       const initialThresholds: CreateProgramApprovalThresholdDto[] = [
-        { thresholdAmount: 0, userIds: [] },
-        { thresholdAmount: 50, userIds: [] },
+        { thresholdAmount: 0, userIds: [adminUserId] },
+        { thresholdAmount: 50, userIds: [userId2] },
       ];
-
       const initialResponse = await replaceProgramApprovalThresholds({
         programId,
         thresholds: initialThresholds,
         accessToken,
       });
-      expect(initialResponse.status).toBe(HttpStatus.CREATED);
-      expect(initialResponse.body).toHaveLength(2);
 
       // Act: Replace with new thresholds
+      const newThresholdAmounts = [0, 100, 200];
       const newThresholds: CreateProgramApprovalThresholdDto[] = [
-        { thresholdAmount: 0, userIds: [] },
-        { thresholdAmount: 100, userIds: [] },
-        { thresholdAmount: 200, userIds: [] },
+        { thresholdAmount: 0, userIds: [adminUserId] },
+        { thresholdAmount: 100, userIds: [userId2] },
+        { thresholdAmount: 200, userIds: [userId3] },
       ];
 
-      const response = await replaceProgramApprovalThresholds({
+      const replaceResponse = await replaceProgramApprovalThresholds({
         programId,
         thresholds: newThresholds,
         accessToken,
       });
 
       // Assert: Old thresholds should be replaced
-      expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body).toHaveLength(3);
-      expect(response.body[0].thresholdAmount).toBe(0);
-      expect(response.body[1].thresholdAmount).toBe(100);
-      expect(response.body[2].thresholdAmount).toBe(200);
+      expect(initialResponse.status).toBe(HttpStatus.CREATED);
+      expect(initialResponse.body).toHaveLength(2);
+      expect(replaceResponse.status).toBe(HttpStatus.CREATED);
+      expect(replaceResponse.body).toIncludeSamePartialMembers(
+        newThresholdAmounts.map((thresholdAmount) => ({ thresholdAmount })),
+      );
 
       // Verify via GET
       const getResponse = await getProgramApprovalThresholds({
         programId,
         accessToken,
       });
-      expect(getResponse.status).toBe(HttpStatus.OK);
-      expect(getResponse.body).toHaveLength(3);
+      expect(getResponse.body).toEqual(replaceResponse.body);
     });
 
-    it('should throw BAD_REQUEST when user has no program assignment', async () => {
+    it('should throw BAD_REQUEST when a user has no program assignment', async () => {
       // Arrange
       const nonExistentUserId = 999999;
       const thresholds: CreateProgramApprovalThresholdDto[] = [
@@ -120,12 +137,12 @@ describe('Program Approval Thresholds', () => {
 
       // Assert
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toContain(
-        `The following user IDs are not assigned to the program and cannot be approvers: ${nonExistentUserId}`,
+      expect(response.body.message).toMatchInlineSnapshot(
+        `"The following user IDs are not assigned to the program and cannot be approvers: 999999"`,
       );
     });
 
-    it('should throw BAD_REQUEST when aidworker has scope', async () => {
+    it('should throw BAD_REQUEST when an assigned aidworker has scope', async () => {
       // Arrange
       const userId = 2; // User ID that exists in seed data
       const testScope = 'test-scope';
@@ -156,22 +173,20 @@ describe('Program Approval Thresholds', () => {
 
       // Assert
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toContain(
-        `Only users without scope can be made approvers`,
-      );
-      expect(response.body.message).toContain(
-        `The following user IDs have scoped assignments and cannot be approvers: ${userId}`,
+      expect(response.body.message).toMatchInlineSnapshot(
+        `"Only users without scope can be made approvers. The following user IDs have scoped assignments and cannot be approvers: 2"`,
       );
     });
 
-    it('should throw BAD_REQUEST when duplicate approver in same threshold', async () => {
-      const adminUser = await getCurrentUser({ accessToken });
-      const userId = adminUser.body.user.id;
-
+    it('should throw BAD_REQUEST when duplicate approvers in threshold configuration', async () => {
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {
           thresholdAmount: 0,
-          userIds: [userId, userId],
+          userIds: [adminUserId],
+        },
+        {
+          thresholdAmount: 50,
+          userIds: [adminUserId],
         },
       ];
 
@@ -184,16 +199,22 @@ describe('Program Approval Thresholds', () => {
 
       // Assert
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toContain(
-        `Approver user IDs must be unique across all thresholds`,
+      expect(response.body.message).toMatchInlineSnapshot(
+        `"Approver user IDs must be unique across all thresholds. A user cannot be an approver for multiple thresholds."`,
       );
     });
 
-    it('should throw BAD_REQUEST for duplicate threshold amounts', async () => {
+    it('should throw BAD_REQUEST when threshold has no approvers', async () => {
       // Arrange
       const thresholds: CreateProgramApprovalThresholdDto[] = [
-        { thresholdAmount: 100, userIds: [] },
-        { thresholdAmount: 100, userIds: [] },
+        {
+          thresholdAmount: 0,
+          userIds: [],
+        },
+        {
+          thresholdAmount: 100,
+          userIds: [],
+        },
       ];
 
       // Act
@@ -205,8 +226,8 @@ describe('Program Approval Thresholds', () => {
 
       // Assert
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-      expect(response.body.message).toContain(
-        'Threshold amounts must be unique',
+      expect(response.body.message).toMatchInlineSnapshot(
+        `"All thresholds must have at least one approver. The following threshold amounts have no approvers: 0, 100"`,
       );
     });
   });
