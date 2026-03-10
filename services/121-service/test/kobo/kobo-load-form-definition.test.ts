@@ -364,8 +364,8 @@ describe('Import a Kobo form definition', () => {
     );
     expect(updatedAttribute?.label).toEqual({
       en: 'new label',
-      nl: 'new label',
-      fr: 'new label',
+      nl: 'nieuw label',
+      fr: 'nouvelle étiquette',
     });
 
     // Test that How_are_you_today_select_one attribute still exists in the program even though it was removed in the second Kobo form

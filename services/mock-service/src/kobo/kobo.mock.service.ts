@@ -359,7 +359,7 @@ const getHappyFlowWithChanges = (): KoboAssetDeployment => {
     (item) => item.name === 'fullName',
   );
 
-  fullNameAttribute.label = ['new label', 'new label', 'new label'];
+  fullNameAttribute.label = ['new label', 'nieuw label', 'nouvelle étiquette'];
 
   // remove an attribute from the survey that existed before
   withChanges.asset.content.survey = withChanges.asset.content.survey.filter(

@@ -10,8 +10,7 @@ import RegistrationDataPage from '@121-e2e/portal/pages/RegistrationDataPage';
 
 // KOBO INTEGRATION DETAILS
 const koboIntegrationDetails = {
-  url: `${env.MOCK_SERVICE_URL}/api/kobo`,
-  unsuccessfulAssetId: 'asset-id-body-that-triggers-errors',
+  url: `${env.MOCK_SERVICE_URL}/api/kobo/#/forms/asset-id-body-that-triggers-errors/summary`,
   apiKey: 'mock-token',
 };
 
@@ -34,7 +33,6 @@ test('Add Kobo integration with invalid details and validate error message', asy
   await test.step('Add Kobo integration un-successfully', async () => {
     await registrationData.addKoboToolboxIntegration({
       url: koboIntegrationDetails.url,
-      assetId: koboIntegrationDetails.unsuccessfulAssetId,
       apiKey: koboIntegrationDetails.apiKey,
     });
     // Validate error message after adding Kobo integration with details that trigger errors in the mock service
