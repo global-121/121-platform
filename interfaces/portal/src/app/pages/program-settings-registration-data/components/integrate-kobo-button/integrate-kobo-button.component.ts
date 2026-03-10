@@ -182,7 +182,7 @@ export class IntegrateKoboButtonComponent {
       return null;
     }
     // See: https://support.kobotoolbox.org/api.html#retrieving-your-project-asset-uid
-    return `${koboIntegrationData.url}/#${KOBO_URL_FORMS_PREFIX}/${koboIntegrationData.assetUid}/summary`;
+    return `${koboIntegrationData.url}/#/${KOBO_URL_FORMS_PREFIX}/${koboIntegrationData.assetUid}/summary`;
   });
 
   readonly menuItems = computed<MenuItem[]>(() => [
@@ -195,7 +195,7 @@ export class IntegrateKoboButtonComponent {
     },
   ]);
 
-  extractServerUrlAndAssetIdFromUrl = (
+  extractServerAndAssetIdFromUrl = (
     rawUrl: string,
   ): { serverUrl?: string; assetId?: string } => {
     try {
@@ -206,13 +206,13 @@ export class IntegrateKoboButtonComponent {
 
       // Extract the asset UID from the URL hash; In the format: "https://example.net/#/forms/[project asset UID]/summary"
       // See: https://support.kobotoolbox.org/api.html#retrieving-your-project-asset-uid
-      const urllHashParts = urlObj.hash.split('/');
-      const urllHashPartFormPrefix = urllHashParts[1] ?? '';
-      const urllHashPartForAssetId = urllHashParts[2] ?? '';
+      const hashParts = urlObj.hash.split('/');
+      const partFormPrefix = hashParts[1] ?? '';
+      const partFormAssetId = hashParts[2] ?? '';
 
-      const assetId = decodeURIComponent(urllHashPartForAssetId).trim();
+      const assetId = decodeURIComponent(partFormAssetId).trim();
 
-      if (urllHashPartFormPrefix === KOBO_URL_FORMS_PREFIX && assetId) {
+      if (partFormPrefix === KOBO_URL_FORMS_PREFIX && assetId) {
         return { serverUrl, assetId };
       }
 
@@ -227,8 +227,7 @@ export class IntegrateKoboButtonComponent {
     const input = $event.target as HTMLInputElement;
     const rawUrl = input.value.trim();
 
-    const { serverUrl, assetId } =
-      this.extractServerUrlAndAssetIdFromUrl(rawUrl);
+    const { serverUrl, assetId } = this.extractServerAndAssetIdFromUrl(rawUrl);
 
     const isValidUrl = !!serverUrl && !!assetId;
 
