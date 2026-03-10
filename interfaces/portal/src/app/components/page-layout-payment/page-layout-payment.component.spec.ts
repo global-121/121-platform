@@ -1,4 +1,4 @@
-import { LOCALE_ID } from '@angular/core';
+import { LOCALE_ID, NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
@@ -7,6 +7,7 @@ import {
   QueryClient,
   queryOptions,
 } from '@tanstack/angular-query-experimental';
+import { MessageService } from 'primeng/api';
 
 import { PageLayoutPaymentComponent } from '~/components/page-layout-payment/page-layout-payment.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
@@ -97,19 +98,16 @@ describe('PageLayoutPaymentComponent - canDeletePayment', () => {
 
         { provide: ProgramApiService, useValue: mockProgramApiService },
         { provide: LOCALE_ID, useValue: 'en' },
+        MessageService,
       ],
-    })
-      .overrideComponent(PageLayoutPaymentComponent, {
-        set: { imports: [], template: '<div></div>' },
-      })
-      .compileComponents();
+      schemas: [NO_ERRORS_SCHEMA],
+    }).compileComponents();
   });
 
   const createFixture = () => {
     const fixture = TestBed.createComponent(PageLayoutPaymentComponent);
     fixture.componentRef.setInput('programId', '1');
     fixture.componentRef.setInput('paymentId', '1');
-    fixture.detectChanges();
     return fixture;
   };
 
