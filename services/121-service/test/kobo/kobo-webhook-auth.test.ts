@@ -1,19 +1,15 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { env } from '@121-service/src/env';
 import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
-import { CreateKoboDto } from '@121-service/src/kobo/dtos/create-kobo.dto';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { KoboMockSubmissionUuids } from '@121-service/test/fixtures/kobo-mock-submissions';
-import { postKoboToProgram } from '@121-service/test/helpers/kobo.helper';
-import { postProgram } from '@121-service/test/helpers/program.helper';
-import { postProgramFspConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
+import { setupProgramWithKoboIntegration } from '@121-service/test/helpers/kobo.helper';
 import {
   getAccessToken,
   getServer,
@@ -52,7 +48,7 @@ describe('Kobo webhook Basic auth guard', () => {
     accessToken = await getAccessToken();
   });
 
-  async function setupProgramWithKoboIntegration(assetUid: string): Promise<{
+  async function setup(assetUid: string): Promise<{
     programId: number;
     assetUid: string;
   }> {
@@ -62,29 +58,12 @@ describe('Kobo webhook Basic auth guard', () => {
       languages: [RegistrationPreferredLanguage.en],
     } as CreateProgramDto;
 
-    const createProgramResponse = await postProgram(program, accessToken);
-    const programId = createProgramResponse.body.id;
-
-    await postProgramFspConfiguration({
-      programId,
-      body: createProgramFspConfigurationSafaricomDto,
-      accessToken,
-    });
-
-    const koboLinkDto: CreateKoboDto = {
-      token: 'mock-token',
+    return setupProgramWithKoboIntegration({
       assetUid,
-      url: `${env.MOCK_SERVICE_URL}/api/kobo`,
-    };
-
-    await postKoboToProgram({
-      programId,
-      body: koboLinkDto,
+      program,
+      fspConfiguration: createProgramFspConfigurationSafaricomDto,
       accessToken,
-      dryRun: false,
     });
-
-    return { programId, assetUid };
   }
 
   function basicAuthHeader(username: string, password: string): string {
@@ -93,9 +72,7 @@ describe('Kobo webhook Basic auth guard', () => {
 
   it('should accept a webhook request with valid Basic auth credentials', async () => {
     // Arrange
-    const { assetUid } = await setupProgramWithKoboIntegration(
-      'auth-test-asset-valid',
-    );
+    const { assetUid } = await setup('auth-test-asset-valid');
     const submissionUuid = `${KoboMockSubmissionUuids.success}-auth-valid`;
 
     // Act – call the webhook endpoint directly with the dev dummy credentials
@@ -118,9 +95,7 @@ describe('Kobo webhook Basic auth guard', () => {
 
   it('should reject a webhook request with invalid Basic auth credentials', async () => {
     // Arrange
-    const { assetUid } = await setupProgramWithKoboIntegration(
-      'auth-test-asset-invalid',
-    );
+    const { assetUid } = await setup('auth-test-asset-invalid');
     const submissionUuid = `${KoboMockSubmissionUuids.success}-auth-invalid`;
 
     // Act – call the webhook endpoint directly with wrong credentials.

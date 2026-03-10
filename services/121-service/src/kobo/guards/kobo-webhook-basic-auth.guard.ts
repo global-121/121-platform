@@ -48,7 +48,29 @@ export class KoboWebhookBasicAuthGuard implements CanActivate {
     }
 
     const authHeader = request.headers['authorization'];
+    const { username, password } = this.extractCredentialsOrThrow(authHeader);
 
+    // This exception is needed in testing as the mock service is stateless and cannot store the generated credentials, so we use fixed dummy credentials in development environment to allow the tests to pass
+    if (IS_DEVELOPMENT) {
+      if (username === 'success' && password === 'success') {
+        return true;
+      }
+    }
+
+    if (
+      username === koboEntity.webhookAuthUsername &&
+      password === koboEntity.webhookAuthPassword
+    ) {
+      return true;
+    } else {
+      throw new HttpException(unauthorizedMessage, HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  private extractCredentialsOrThrow(authHeader: string | undefined): {
+    username: string;
+    password: string;
+  } {
     const basicPrefix = 'Basic ';
     if (!authHeader?.startsWith(basicPrefix)) {
       throw new HttpException(unauthorizedMessage, HttpStatus.UNAUTHORIZED);
@@ -62,23 +84,9 @@ export class KoboWebhookBasicAuthGuard implements CanActivate {
       throw new HttpException(unauthorizedMessage, HttpStatus.UNAUTHORIZED);
     }
 
-    const username = decoded.slice(0, colonIndex);
-    const password = decoded.slice(colonIndex + 1);
-
-    // This exception is needed in testing as the mock service is stateless and cannot store the generated credentials, so we use fixed dummy credentials in development environment to allow the tests to pass
-    if (IS_DEVELOPMENT) {
-      if (username === 'success' && password === 'success') {
-        return true;
-      }
-    }
-
-    if (
-      username !== koboEntity.webhookAuthUsername ||
-      password !== koboEntity.webhookAuthPassword
-    ) {
-      throw new HttpException(unauthorizedMessage, HttpStatus.UNAUTHORIZED);
-    }
-
-    return true;
+    return {
+      username: decoded.slice(0, colonIndex),
+      password: decoded.slice(colonIndex + 1),
+    };
   }
 }

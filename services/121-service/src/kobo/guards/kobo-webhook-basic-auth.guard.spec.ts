@@ -68,128 +68,112 @@ describe('KoboWebhookBasicAuthGuard', () => {
       expect(result).toBe(true);
     });
 
-    it('should deny access when assetUid is missing from request body', async () => {
-      // Arrange
-      const mockRequest = createMockRequest();
-      const context = createContext(mockRequest);
+    describe('should deny access', () => {
+      it('when assetUid is missing from request body', async () => {
+        // Arrange
+        const mockRequest = createMockRequest();
+        const context = createContext(mockRequest);
 
-      // Act
-      let error: any;
-      try {
-        await guard.canActivate(context);
-      } catch (e) {
-        error = e;
-      }
+        // Act
+        const promise = guard.canActivate(context);
 
-      // Assert
-      expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
-    });
+        // Assert
+        await expect(promise).rejects.toBeHttpExceptionWithStatus(
+          HttpStatus.BAD_REQUEST,
+        );
+      });
 
-    it('should deny access when kobo entity is not found', async () => {
-      // Arrange
-      const mockRequest = createMockRequest(mockAssetUid);
-      const context = createContext(mockRequest);
+      it('when kobo entity is not found', async () => {
+        // Arrange
+        const mockRequest = createMockRequest(mockAssetUid);
+        const context = createContext(mockRequest);
 
-      koboRepository.findOne.mockResolvedValue(null);
+        koboRepository.findOne.mockResolvedValue(null);
 
-      // Act
-      let error: any;
-      try {
-        await guard.canActivate(context);
-      } catch (e) {
-        error = e;
-      }
+        // Act
+        const promise = guard.canActivate(context);
 
-      // Assert
-      expect(error).toBeHttpExceptionWithStatus(HttpStatus.UNAUTHORIZED);
-    });
+        // Assert
+        await expect(promise).rejects.toBeHttpExceptionWithStatus(
+          HttpStatus.UNAUTHORIZED,
+        );
+      });
 
-    it('should deny access when Authorization header is missing', async () => {
-      // Arrange
-      const mockRequest = createMockRequest(mockAssetUid);
-      const context = createContext(mockRequest);
+      it('when Authorization header is missing', async () => {
+        // Arrange
+        const mockRequest = createMockRequest(mockAssetUid);
+        const context = createContext(mockRequest);
 
-      koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
+        koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
 
-      // Act
-      let error: any;
-      try {
-        await guard.canActivate(context);
-      } catch (e) {
-        error = e;
-      }
+        // Act
+        const promise = guard.canActivate(context);
 
-      // Assert
-      expect(error).toBeHttpExceptionWithStatus(HttpStatus.UNAUTHORIZED);
-    });
+        // Assert
+        await expect(promise).rejects.toBeHttpExceptionWithStatus(
+          HttpStatus.UNAUTHORIZED,
+        );
+      });
 
-    it('should deny access when Basic auth header format is invalid', async () => {
-      // Arrange
-      const mockRequest = createMockRequest(
-        mockAssetUid,
-        'Bearer invalid-token',
-      );
-      const context = createContext(mockRequest);
+      it('when Basic auth header format is invalid', async () => {
+        // Arrange
+        const mockRequest = createMockRequest(
+          mockAssetUid,
+          'Bearer invalid-token',
+        );
+        const context = createContext(mockRequest);
 
-      koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
+        koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
 
-      // Act
-      let error: any;
-      try {
-        await guard.canActivate(context);
-      } catch (e) {
-        error = e;
-      }
+        // Act
+        const promise = guard.canActivate(context);
 
-      // Assert
-      expect(error).toBeHttpExceptionWithStatus(HttpStatus.UNAUTHORIZED);
-    });
+        // Assert
+        await expect(promise).rejects.toBeHttpExceptionWithStatus(
+          HttpStatus.UNAUTHORIZED,
+        );
+      });
 
-    it('should deny access when Basic auth credentials do not contain colon separator', async () => {
-      // Arrange
-      const noColonCredentials = 'testuser'; // Missing colon and password
-      const base64Credentials =
-        Buffer.from(noColonCredentials).toString('base64');
-      const authHeader = `Basic ${base64Credentials}`;
+      it('when Basic auth credentials do not contain colon separator', async () => {
+        // Arrange
+        const noColonCredentials = 'testuser'; // Missing colon and password
+        const base64Credentials =
+          Buffer.from(noColonCredentials).toString('base64');
+        const authHeader = `Basic ${base64Credentials}`;
 
-      const mockRequest = createMockRequest(mockAssetUid, authHeader);
-      const context = createContext(mockRequest);
+        const mockRequest = createMockRequest(mockAssetUid, authHeader);
+        const context = createContext(mockRequest);
 
-      koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
+        koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
 
-      // Act
-      let error: any;
-      try {
-        await guard.canActivate(context);
-      } catch (e) {
-        error = e;
-      }
+        // Act
+        const promise = guard.canActivate(context);
 
-      // Assert
-      expect(error).toBeHttpExceptionWithStatus(HttpStatus.UNAUTHORIZED);
-    });
+        // Assert
+        await expect(promise).rejects.toBeHttpExceptionWithStatus(
+          HttpStatus.UNAUTHORIZED,
+        );
+      });
 
-    it('should deny access when credentials do not match stored credentials', async () => {
-      // Arrange
-      const credentials = `wronguser:wrongpassword`;
-      const base64Credentials = Buffer.from(credentials).toString('base64');
-      const authHeader = `Basic ${base64Credentials}`;
+      it('when credentials do not match stored credentials', async () => {
+        // Arrange
+        const credentials = `wronguser:wrongpassword`;
+        const base64Credentials = Buffer.from(credentials).toString('base64');
+        const authHeader = `Basic ${base64Credentials}`;
 
-      const mockRequest = createMockRequest(mockAssetUid, authHeader);
-      const context = createContext(mockRequest);
+        const mockRequest = createMockRequest(mockAssetUid, authHeader);
+        const context = createContext(mockRequest);
 
-      koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
+        koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
 
-      // Act
-      let error: any;
-      try {
-        await guard.canActivate(context);
-      } catch (e) {
-        error = e;
-      }
+        // Act
+        const promise = guard.canActivate(context);
 
-      // Assert
-      expect(error).toBeHttpExceptionWithStatus(HttpStatus.UNAUTHORIZED);
+        // Assert
+        await expect(promise).rejects.toBeHttpExceptionWithStatus(
+          HttpStatus.UNAUTHORIZED,
+        );
+      });
     });
   });
 });
