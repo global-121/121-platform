@@ -51,10 +51,6 @@ describe('PaymentsManagementService', () => {
         return Promise.resolve({ ...entity, id: 123 });
       }),
     };
-    (service as any).paymentApprovalAidworkerRepository = {
-      save: jest.fn().mockResolvedValue([]),
-    };
-
     registrationsBulkService.getBaseQuery = jest
       .fn()
       .mockReturnValue({ andWhere: jest.fn().mockReturnThis() });
@@ -257,7 +253,7 @@ describe('PaymentsManagementService', () => {
       (service as any).paymentApprovalRepository = paymentApprovalRepository;
 
       const aidworkerAssignmentRepository = {
-        findByUserId: jest.fn().mockResolvedValue({
+        findOne: jest.fn().mockResolvedValue({
           id: 1,
           programApprovalThresholdId: 1,
         }),

@@ -20,12 +20,15 @@ export class ApprovalThresholds1772632218686 implements MigrationInterface {
       `CREATE INDEX "IDX_a0a41b64e26afcbf569a2ca716" ON "121-service"."program_approval_threshold" ("created") `,
     );
 
-    // --- Schema: create payment_approval_aidworker table ---
+    // --- Schema: create payment_approval_aidworker join table ---
     await queryRunner.query(
-      `CREATE TABLE "121-service"."payment_approval_aidworker" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "paymentApprovalId" integer NOT NULL, "programAidworkerAssignmentId" integer NOT NULL, CONSTRAINT "PK_7d2cd5b8c1e2abd68fdf4395cd5" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "121-service"."payment_approval_aidworker" ("paymentApprovalId" integer NOT NULL, "programAidworkerAssignmentId" integer NOT NULL, CONSTRAINT "PK_4ecd9126a71981c4d3b927aa14c" PRIMARY KEY ("paymentApprovalId", "programAidworkerAssignmentId"))`,
     );
     await queryRunner.query(
-      `CREATE INDEX "IDX_241f45e2735f2edd505c56d9ee" ON "121-service"."payment_approval_aidworker" ("created") `,
+      `CREATE INDEX "IDX_ea88dd2929921f140628c1a704" ON "121-service"."payment_approval_aidworker" ("paymentApprovalId") `,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_e6f75e3bba97219126c875ea9a" ON "121-service"."payment_approval_aidworker" ("programAidworkerAssignmentId") `,
     );
 
     // --- Schema: add programApprovalThresholdId to program_aidworker_assignment ---
@@ -41,10 +44,10 @@ export class ApprovalThresholds1772632218686 implements MigrationInterface {
       `ALTER TABLE "121-service"."program_aidworker_assignment" ADD CONSTRAINT "FK_program_aidworker_assignment_approval_threshold" FOREIGN KEY ("programApprovalThresholdId") REFERENCES "121-service"."program_approval_threshold"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."payment_approval_aidworker" ADD CONSTRAINT "FK_payment_approval_aidworker_payment_approval" FOREIGN KEY ("paymentApprovalId") REFERENCES "121-service"."payment_approval"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+      `ALTER TABLE "121-service"."payment_approval_aidworker" ADD CONSTRAINT "FK_payment_approval_aidworker_payment_approval" FOREIGN KEY ("paymentApprovalId") REFERENCES "121-service"."payment_approval"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."payment_approval_aidworker" ADD CONSTRAINT "FK_payment_approval_aidworker_program_aidworker_assignment" FOREIGN KEY ("programAidworkerAssignmentId") REFERENCES "121-service"."program_aidworker_assignment"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+      `ALTER TABLE "121-service"."payment_approval_aidworker" ADD CONSTRAINT "FK_payment_approval_aidworker_program_aidworker_assignment" FOREIGN KEY ("programAidworkerAssignmentId") REFERENCES "121-service"."program_aidworker_assignment"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
 
     // --- Data: create one threshold per program and link existing approvers to it ---
@@ -85,12 +88,10 @@ export class ApprovalThresholds1772632218686 implements MigrationInterface {
     // approverId still holds the original approver.id values at this point
     await queryRunner.query(
       `INSERT INTO "121-service"."payment_approval_aidworker"
-       ("paymentApprovalId", "programAidworkerAssignmentId", "created", "updated")
+       ("paymentApprovalId", "programAidworkerAssignmentId")
        SELECT
          pa.id,
-         a."programAidworkerAssignmentId",
-         now(),
-         now()
+         a."programAidworkerAssignmentId"
        FROM "121-service"."payment_approval" pa
        INNER JOIN "121-service"."approver" a ON a.id = pa."approverId"
        WHERE pa."approverId" IS NOT NULL`,
