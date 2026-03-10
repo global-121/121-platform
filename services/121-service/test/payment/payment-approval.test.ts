@@ -1,6 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { env } from '@121-service/src/env';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventAttributeKey } from '@121-service/src/payments/payment-events/enums/payment-event-attribute-key.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -18,7 +17,6 @@ import { replaceProgramApprovalThresholds } from '@121-service/test/helpers/prog
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
-  getAccessTokenByUsername,
   getAccessTokenCvaManager,
   getAccessTokenFinanceManager,
   getUserIdsByUsernames,
@@ -42,15 +40,19 @@ async function setupPaymentApprovalTest(
   }[],
 ): Promise<void> {
   await resetDB(SeedScript.nlrcMultiple, __filename);
-  adminAccessToken = await getAccessToken();
+
+  [adminAccessToken, accessTokenFinanceManager, accessTokenCvaManager] =
+    await Promise.all([
+      getAccessToken(),
+      getAccessTokenFinanceManager(),
+      getAccessTokenCvaManager(),
+    ]);
+
   await seedIncludedRegistrations(
     [registrationPV5],
     programId,
     adminAccessToken,
   );
-
-  const approverUsernames = thresholds.flatMap((t) => t.approverUsernames);
-  await setUserAccessTokensForUsernames(approverUsernames);
 
   await setupThresholds(thresholds);
 }
@@ -80,19 +82,6 @@ async function setupThresholds(
     thresholds: thresholdDtos,
     accessToken: adminAccessToken,
   });
-}
-
-async function setUserAccessTokensForUsernames(
-  usernames: string[],
-): Promise<void> {
-  for (const username of usernames) {
-    if (username === env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER) {
-      accessTokenFinanceManager = await getAccessTokenByUsername(username);
-    }
-    if (username === env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER) {
-      accessTokenCvaManager = await getAccessTokenByUsername(username);
-    }
-  }
 }
 
 describe('do payment with 2 approvers', () => {
@@ -354,7 +343,6 @@ describe('do payment with <2 approvers', () => {
       accessToken: accessTokenFinanceManager,
     });
 
-    // Wait for payment transactions to complete to cleanup in progress stuff
     await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentId,
@@ -376,14 +364,6 @@ describe('do payment with <2 approvers', () => {
   });
 
   it('should throw on create payment when no approvers configured for program', async () => {
-    // Arrange
-    // Remove all approver thresholds
-    await replaceProgramApprovalThresholds({
-      programId,
-      thresholds: [],
-      accessToken: adminAccessToken,
-    });
-
     // Act
     const createPaymentResponse = await createPayment({
       programId,
@@ -427,13 +407,11 @@ describe('do payment with <2 approvers', () => {
   });
 
   it('should return all payment approvals but without username for deleted approver(s)', async () => {
-    // Set up two thresholds
     await setupThresholds([
       { thresholdAmount: 0, approverUsernames: ['admin'] },
       { thresholdAmount: 10, approverUsernames: ['financeManager'] },
     ]);
 
-    // create payment (this creates approval records)
     const createPaymentResponse = await createPayment({
       programId,
       transferValue,
@@ -441,7 +419,7 @@ describe('do payment with <2 approvers', () => {
       accessToken: adminAccessToken,
     });
 
-    // Remove the 2nd approver by replacing thresholds without finance manager
+    // Remove the 2nd approver
     await setupThresholds([
       { thresholdAmount: 0, approverUsernames: ['admin'] },
     ]);
@@ -456,7 +434,6 @@ describe('do payment with <2 approvers', () => {
     // Assert
     expect(getPaymentResponse.status).toBe(HttpStatus.OK);
     expect(getPaymentResponse.body.approvalStatus.length).toBe(2);
-    // With junction table approach, approvers are preserved even after threshold config changes
     expect(getPaymentResponse.body.approvalStatus[1].approvers).toEqual([
       'finance-manager@example.org',
     ]);
