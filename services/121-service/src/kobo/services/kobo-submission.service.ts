@@ -5,10 +5,8 @@ import { Equal, Repository } from 'typeorm';
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { KoboWebhookIncomingSubmission } from '@121-service/src/kobo/dtos/kobo-webhook-incoming-submission.dto';
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
-import { KoboFormDefinitionMapper } from '@121-service/src/kobo/mappers/kobo-form-definition.mapper';
 import { KoboSubmissionMapper } from '@121-service/src/kobo/mappers/kobo-submission.mapper';
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
-import { KoboValidationService } from '@121-service/src/kobo/services/kobo.validation.service';
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
 
@@ -20,7 +18,6 @@ export class KoboSubmissionService {
   constructor(
     private readonly koboApiService: KoboApiService,
     private readonly koboService: KoboService,
-    private readonly koboValidationService: KoboValidationService,
     private readonly registrationsImportService: RegistrationsImportService,
   ) {}
 
@@ -107,16 +104,11 @@ export class KoboSubmissionService {
       }
     }
 
-    const asset = await this.koboApiService.getDeployedAssetOrThrow({
+    const formDefinition = await this.koboService.getFormDefinitionOrThrow({
       assetUid,
       token,
-      baseUrl: url,
+      url,
     });
-
-    const formDefinition =
-      KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
-        asset,
-      });
 
     // We would expect that most of the time, the incoming submission will be for the same version as the current one, or for a newer version.
     // But in case we receive a submission for an older version (e.g. because Kobo is retrying to send us a submission that previously failed),
@@ -130,12 +122,7 @@ export class KoboSubmissionService {
       return;
     }
 
-    await this.koboValidationService.validateKoboFormDefinition({
-      formDefinition,
-      programId,
-    });
-
-    await this.koboService.syncProgramWithKoboForm({
+    await this.koboService.validateFormAndUpdateProgram({
       formDefinition,
       programId,
     });

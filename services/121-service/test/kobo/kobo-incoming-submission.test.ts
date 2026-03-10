@@ -247,73 +247,79 @@ describe('Process incoming Kobo submission via webhook', () => {
     expect(searchResponse.body.data).toBeArrayOfSize(1);
   });
 
-  it('should update the program when a submission arrives with a newer form version', async () => {
-    // Arrange
-    // The mock asset KoboMockAssetUids.happyFlowWithChanges defines a different form
-    // In development mode, passing it as koboVersion tells the 121-service to
-    // fetch the deployment for that asset UID instead of the original one,
-    // simulating a submission created after a redeployment.
-    const submissionUuid = `${KoboMockSubmissionUuids.success}-version-update`;
-    const { programId, assetUid } = await setup('success-asset-version-update');
+  describe('when a submission arrives with a newer form version', () => {
+    it('should update the program', async () => {
+      // Arrange
+      // The mock asset KoboMockAssetUids.happyFlowWithChanges defines a different form
+      // In development mode, passing it as koboVersion tells the 121-service to
+      // fetch the deployment for that asset UID instead of the original one,
+      // simulating a submission created after a redeployment.
+      const submissionUuid = `${KoboMockSubmissionUuids.success}-version-update`;
+      const { programId, assetUid } = await setup(
+        'success-asset-version-update',
+      );
 
-    await patchProgram(
-      programId,
-      { languages: [RegistrationPreferredLanguage.en] },
-      accessToken,
-    );
+      await patchProgram(
+        programId,
+        { languages: [RegistrationPreferredLanguage.en] },
+        accessToken,
+      );
 
-    // Act
-    const triggerResponse = await triggerKoboSubmission({
-      assetUid,
-      submissionUuid,
-      koboVersion: KoboMockAssetUids.happyFlowWithChanges,
+      // Act
+      const triggerResponse = await triggerKoboSubmission({
+        assetUid,
+        submissionUuid,
+        koboVersion: KoboMockAssetUids.happyFlowWithChanges,
+      });
+
+      // Assert
+      expect(triggerResponse.status).toBe(HttpStatus.OK);
+
+      const programAfter = (await getProgram(programId, accessToken)).body;
+      expect(programAfter.languages).toContain(
+        RegistrationPreferredLanguage.fr,
+      );
+
+      // Assert – registration was created from the submission
+      const searchResponse = await searchRegistrationByReferenceId(
+        submissionUuid,
+        programId,
+        accessToken,
+      );
+      expect(searchResponse.body.data).toBeArrayOfSize(1);
+      expect(searchResponse.body.data[0]).toMatchObject({
+        referenceId: submissionUuid,
+        fullName: 'John Doe',
+        nationalId: '123456789',
+      });
+
+      // Assert – versionId on the kobo entity was updated to the new version
+      const koboAfter = (await getKoboFromProgram({ programId, accessToken }))
+        .body;
+      expect(koboAfter.versionId).toBe(KoboMockAssetUids.happyFlowWithChanges);
     });
 
-    // Assert
-    expect(triggerResponse.status).toBe(HttpStatus.OK);
+    it('should return a validation error when the new form version is invalid', async () => {
+      // Arrange
+      // The mock asset KoboMockAssetUids.bodyThatTriggersErrors is used as
+      // koboVersion so `__version__` differs from the stored version, triggering
+      // the update path. The deployed form fetched during the update causes
+      // validateKoboFormDefinition to throw.
+      const submissionUuid = `${KoboMockSubmissionUuids.success}-invalid-version`;
+      const { assetUid } = await setup('success-asset-invalid-version');
 
-    const programAfter = (await getProgram(programId, accessToken)).body;
-    expect(programAfter.languages).toContain(RegistrationPreferredLanguage.fr);
+      // Act
+      const triggerResponse = await triggerKoboSubmission({
+        assetUid,
+        submissionUuid,
+        koboVersion: KoboMockAssetUids.bodyThatTriggersErrors,
+      });
 
-    // Assert – registration was created from the submission
-    const searchResponse = await searchRegistrationByReferenceId(
-      submissionUuid,
-      programId,
-      accessToken,
-    );
-    expect(searchResponse.body.data).toHaveLength(1);
-    expect(searchResponse.body.data[0]).toMatchObject({
-      referenceId: submissionUuid,
-      fullName: 'John Doe',
-      nationalId: '123456789',
+      // Assert – the mock service forwards the validation error from 121-service
+      expect(triggerResponse.status).toBe(HttpStatus.BAD_REQUEST);
+      expect(triggerResponse.body.message).toContain(
+        'Kobo form definition validation failed',
+      );
     });
-
-    // Assert – versionId on the kobo entity was updated to the new version
-    const koboAfter = (await getKoboFromProgram({ programId, accessToken }))
-      .body;
-    expect(koboAfter.versionId).toBe(KoboMockAssetUids.happyFlowWithChanges);
-  });
-
-  it('should return a validation error when a submission arrives with a newer but invalid form version', async () => {
-    // Arrange
-    // The mock asset KoboMockAssetUids.bodyThatTriggersErrors is used as
-    // koboVersion so `__version__` differs from the stored version, triggering
-    // the update path. The deployed form fetched during the update causes
-    // validateKoboFormDefinition to throw.
-    const submissionUuid = `${KoboMockSubmissionUuids.success}-invalid-version`;
-    const { assetUid } = await setup('success-asset-invalid-version');
-
-    // Act
-    const triggerResponse = await triggerKoboSubmission({
-      assetUid,
-      submissionUuid,
-      koboVersion: KoboMockAssetUids.bodyThatTriggersErrors,
-    });
-
-    // Assert – the mock service forwards the validation error from 121-service
-    expect(triggerResponse.status).toBe(HttpStatus.BAD_REQUEST);
-    expect(triggerResponse.body.message).toContain(
-      'Kobo form definition validation failed',
-    );
   });
 });

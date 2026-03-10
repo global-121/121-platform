@@ -77,10 +77,10 @@ export class KoboService {
       );
     }
 
-    const asset = await this.koboApiService.getDeployedAssetOrThrow({
+    const formDefinition = await this.getFormDefinitionOrThrow({
       assetUid,
       token,
-      baseUrl: url,
+      url,
     });
 
     const existingWebhookEndpoints =
@@ -97,12 +97,7 @@ export class KoboService {
       );
     }
 
-    const formDefinition =
-      KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
-        asset,
-      });
-
-    await this.koboValidationService.validateKoboFormDefinition({
+    await this.validateFormAndUpdateProgram({
       formDefinition,
       programId,
     });
@@ -110,7 +105,7 @@ export class KoboService {
     if (dryRun) {
       return {
         message: 'Dry run successful - validation passed',
-        name: asset.name ?? null,
+        name: formDefinition.name,
         dryRun: true,
       };
     }
@@ -132,21 +127,57 @@ export class KoboService {
       assetUid,
       token,
       url,
-      name: asset.name ?? null,
+      name: formDefinition.name,
       webhookAuthUsername,
       webhookAuthPassword,
     });
 
-    await this.syncProgramWithKoboForm({
+    await this.validateFormAndUpdateProgram({
       formDefinition,
       programId,
     });
 
     return {
       message: 'Kobo form integrated successfully',
-      name: asset.name ?? null,
+      name: formDefinition.name,
       dryRun: false,
     };
+  }
+
+  public async validateFormAndUpdateProgram({
+    formDefinition,
+    programId,
+  }: {
+    formDefinition: KoboFormDefinition;
+    programId: number;
+  }): Promise<void> {
+    await this.koboValidationService.validateKoboFormDefinition({
+      formDefinition,
+      programId,
+    });
+    await this.updateProgramWithKoboForm({
+      formDefinition,
+      programId,
+    });
+  }
+
+  public async getFormDefinitionOrThrow({
+    assetUid,
+    token,
+    url,
+  }: {
+    assetUid: string;
+    token: string;
+    url: string;
+  }): Promise<KoboFormDefinition> {
+    const asset = await this.koboApiService.getDeployedAssetOrThrow({
+      assetUid,
+      token,
+      baseUrl: url,
+    });
+    return KoboFormDefinitionMapper.koboAssetDtoToKoboFormDefinition({
+      asset,
+    });
   }
 
   private async upsertKoboEntity({
@@ -192,7 +223,7 @@ export class KoboService {
     }
   }
 
-  public async syncProgramWithKoboForm({
+  public async updateProgramWithKoboForm({
     formDefinition,
     programId,
   }: {

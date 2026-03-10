@@ -176,7 +176,7 @@ describe('KoboService', () => {
       .mockResolvedValue(undefined);
   });
 
-  it('should call all update operations (save, upsert, create) in successful integration', async () => {
+  it('should call all update operations in a successful integration', async () => {
     // Arrange
     const programId = 1;
     const mockAsset = createMockAsset(['English (en)', 'French (fr)']);
@@ -274,7 +274,7 @@ describe('KoboService', () => {
         .mockResolvedValue({} as any);
 
       // Act
-      await service.syncProgramWithKoboForm({ formDefinition, programId });
+      await service.updateProgramWithKoboForm({ formDefinition, programId });
 
       // Assert
       expect(updateProgramSpy).toHaveBeenCalledWith(programId, {
@@ -309,7 +309,7 @@ describe('KoboService', () => {
         .mockResolvedValue({} as any);
 
       // Act
-      await service.syncProgramWithKoboForm({ formDefinition, programId });
+      await service.updateProgramWithKoboForm({ formDefinition, programId });
 
       // Assert
       expect(updateProgramSpy).toHaveBeenCalledWith(programId, {
@@ -367,7 +367,7 @@ describe('KoboService', () => {
       );
 
       // Act
-      await service.syncProgramWithKoboForm({ formDefinition, programId });
+      await service.updateProgramWithKoboForm({ formDefinition, programId });
 
       // Assert
       expect(upsertSpy).toHaveBeenCalledWith({
