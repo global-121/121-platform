@@ -32,8 +32,7 @@ import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
-type KoboConfigurationFormGroup =
-  (typeof IntegrateKoboButtonComponent)['prototype']['koboConfigurationFormGroup'];
+const KOBO_URL_FORMS_PREFIX = 'forms';
 
 @Component({
   selector: 'app-integrate-kobo-button',
@@ -67,8 +66,15 @@ export class IntegrateKoboButtonComponent {
     viewChild.required<FormDialogComponent>('linkKoboDialog');
 
   readonly koboConfigurationFormGroup = new FormGroup({
-    // dryRun: new FormControl<boolean>(true, { nonNullable: true }),
-    url: new FormControl<string>('', {
+    fullKoboFormUrl: new FormControl<string>('', {
+      nonNullable: true,
+      validators: [
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+        Validators.required,
+        Validators.minLength(25),
+      ],
+    }),
+    serverUrl: new FormControl<string>('', {
       nonNullable: true,
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
@@ -87,28 +93,33 @@ export class IntegrateKoboButtonComponent {
 
   koboConfigurationFormFieldErrors = generateFieldErrors(
     this.koboConfigurationFormGroup,
+    {
+      fullKoboFormUrl: (control) =>
+        control.valid
+          ? undefined
+          : $localize`We couldn't process this URL. Please verify in KoboToolbox.`,
+    },
   );
 
   readonly koboConfigurationMutation = injectMutation(() => ({
-    mutationFn: ({
-      url,
-      assetId,
-      token,
-    }: ReturnType<KoboConfigurationFormGroup['getRawValue']>) =>
-      this.koboApiService.createKoboIntegration({
+    mutationFn: () => {
+      const formRawValue = this.koboConfigurationFormGroup.getRawValue();
+
+      return this.koboApiService.createKoboIntegration({
         programId: this.programId,
         integration: {
-          url,
-          assetUid: assetId,
-          token,
+          url: formRawValue.serverUrl,
+          assetUid: formRawValue.assetId,
+          token: formRawValue.token,
         },
         dryRun: true,
-      }),
+      });
+    },
     onSuccess: (koboFormResponse) => {
       this.koboFormName.set(koboFormResponse.name);
       this.koboConfigurationDialog().hide({
-        resetMutation: false,
-        resetFormGroup: false,
+        resetMutation: false, // Retain form values for the `linkKoboMutation`
+        resetFormGroup: false, // Retain form values for the `linkKoboMutation`
       });
       this.linkKoboDialog().show();
     },
@@ -117,10 +128,11 @@ export class IntegrateKoboButtonComponent {
   readonly linkKoboMutation = injectMutation(() => ({
     mutationFn: () => {
       const formRawValue = this.koboConfigurationFormGroup.getRawValue();
+
       return this.koboApiService.createKoboIntegration({
         programId: this.programId,
         integration: {
-          url: formRawValue.url,
+          url: formRawValue.serverUrl,
           assetUid: formRawValue.assetId,
           token: formRawValue.token,
         },
@@ -169,7 +181,8 @@ export class IntegrateKoboButtonComponent {
     if (!koboIntegrationData) {
       return null;
     }
-    return `${koboIntegrationData.url}/#forms/${koboIntegrationData.assetUid}/summary`;
+    // See: https://support.kobotoolbox.org/api.html#retrieving-your-project-asset-uid
+    return `${koboIntegrationData.url}/#/${KOBO_URL_FORMS_PREFIX}/${koboIntegrationData.assetUid}/summary`;
   });
 
   readonly menuItems = computed<MenuItem[]>(() => [
@@ -181,4 +194,53 @@ export class IntegrateKoboButtonComponent {
       },
     },
   ]);
+
+  extractServerAndAssetIdFromUrl = (
+    rawUrl: string,
+  ): { serverUrl?: string; assetId?: string } => {
+    let urlObj: URL;
+    try {
+      urlObj = new URL(rawUrl);
+    } catch {
+      return {};
+    }
+
+    // NOTE: We're NOT using only `urlObj.origin` as the Kobo server may require a path-segment. (i.e our Mock-Service!)
+    const serverUrl = urlObj.origin + urlObj.pathname;
+
+    // Extract the asset UID from the URL hash; In the format: "https://example.net/#/forms/[project asset UID]/summary"
+    // See: https://support.kobotoolbox.org/api.html#retrieving-your-project-asset-uid
+    const hashParts = urlObj.hash.split('/');
+    const partFormPrefix = hashParts[1] ?? '';
+    const partFormAssetId = hashParts[2] ?? '';
+
+    const assetId = decodeURIComponent(partFormAssetId).trim();
+
+    if (partFormPrefix === KOBO_URL_FORMS_PREFIX && assetId) {
+      return { serverUrl, assetId };
+    }
+
+    return {};
+  };
+
+  onFormUrlUpdate = ($event: Event) => {
+    const input = $event.target as HTMLInputElement;
+    const rawUrl = input.value.trim();
+
+    const { serverUrl, assetId } = this.extractServerAndAssetIdFromUrl(rawUrl);
+
+    const isValidUrl = !!serverUrl && !!assetId;
+
+    if (isValidUrl) {
+      this.koboConfigurationFormGroup.get('serverUrl')?.setValue(serverUrl);
+      this.koboConfigurationFormGroup.get('assetId')?.setValue(assetId);
+      this.koboConfigurationFormGroup.get('fullKoboFormUrl')?.setErrors(null);
+    } else {
+      this.koboConfigurationFormGroup.get('serverUrl')?.reset();
+      this.koboConfigurationFormGroup.get('assetId')?.reset();
+      this.koboConfigurationFormGroup
+        .get('fullKoboFormUrl')
+        ?.setErrors({ invalid: true });
+    }
+  };
 }

@@ -24,22 +24,18 @@ class RegistrationDataPage extends BasePage {
 
   async addKoboToolboxIntegration({
     url,
-    assetId,
     apiKey,
   }: {
     url: string;
-    assetId: string;
     apiKey: string;
   }) {
-    const urlInput = this.page.getByLabel('Kobo server URL');
-    const assetIdInput = this.page.getByLabel('Kobo asset ID');
+    const urlInput = this.page.getByLabel('Kobo form URL');
     const apiKeyInput = this.page.getByLabel('API key');
 
     await this.addKoboToolboxButton.click();
 
     // Fill in the form
     await urlInput.fill(url);
-    await assetIdInput.fill(assetId);
     await apiKeyInput.fill(apiKey);
 
     await this.clickContinueButton();

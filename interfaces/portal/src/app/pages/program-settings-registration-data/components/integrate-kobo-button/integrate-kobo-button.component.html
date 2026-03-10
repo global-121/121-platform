@@ -46,36 +46,36 @@
   headerIcon="pi pi-link"
   [formGroup]="koboConfigurationFormGroup"
   [mutation]="koboConfigurationMutation"
-  [mutationData]="koboConfigurationFormGroup.getRawValue()"
+  [mutationData]="undefined"
   proceedLabel="Continue"
   i18n-proceedLabel
 >
-  <p i18n>
+  <p
+    i18n
+    class="mb-3"
+  >
     For more information about how to integrate Kobo see <app-manual-link />
   </p>
+
   <app-form-field-wrapper
-    label="Kobo server URL"
+    label="Kobo form URL"
     i18n-label
-    [errorMessage]="koboConfigurationFormFieldErrors()('url')"
+    [errorMessage]="koboConfigurationFormFieldErrors()('fullKoboFormUrl')"
   >
+    <small
+      i18n="Do NOT translate the URL!@@integrate-kobo-form-url-explanation"
+      class="text-grey-700 mb-2 block text-sm"
+    >
+      The full URL from the form's page in KoboToolbox, i.e:
+      https://kobo.ifrc.org/#/forms/XXXXXX/summary
+    </small>
+
     <input
       pInputText
       type="url"
       inputmode="url"
-      formControlName="url"
-    />
-  </app-form-field-wrapper>
-  <app-form-field-wrapper
-    label="Kobo asset ID"
-    i18n-label
-    [errorMessage]="koboConfigurationFormFieldErrors()('assetId')"
-  >
-    <input
-      autocomplete="off"
-      pInputText
-      type="text"
-      formControlName="assetId"
-      class="font-mono"
+      formControlName="fullKoboFormUrl"
+      (input)="onFormUrlUpdate($event)"
     />
   </app-form-field-wrapper>
   <app-form-field-wrapper
@@ -83,6 +83,15 @@
     i18n-label
     [errorMessage]="koboConfigurationFormFieldErrors()('token')"
   >
+    <small
+      i18n="@@integrate-kobo-form-api-key-explanation"
+      class="text-grey-700 mb-2 block text-sm"
+    >
+      In KoboToolbox, go to "Account Settings" (top-right menu), sub-page
+      "Security".<br />
+      Make sure to click "Display" next to the API Key before copying.
+    </small>
+
     <input
       autocomplete="off"
       pInputText

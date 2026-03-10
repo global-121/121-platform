@@ -9,8 +9,7 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 
 // KOBO INTEGRATION DETAILS
 const koboIntegrationDetails = {
-  url: `${env.MOCK_SERVICE_URL}/api/kobo`,
-  successfulAssetId: 'success-asset',
+  url: `${env.MOCK_SERVICE_URL}/api/kobo/#/forms/success-asset/summary`,
   apiKey: 'mock-token',
 };
 
@@ -51,7 +50,6 @@ test('Add Kobo integration successfully', async ({
     await registrationDataPage.clickRegistrationDataSection();
     await registrationDataPage.addKoboToolboxIntegration({
       url: koboIntegrationDetails.url,
-      assetId: koboIntegrationDetails.successfulAssetId,
       apiKey: koboIntegrationDetails.apiKey,
     });
     // Validate success message after adding Kobo integration with correct details
