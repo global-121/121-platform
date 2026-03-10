@@ -97,7 +97,7 @@ export class KoboService {
       );
     }
 
-    await this.validateFormAndUpdateProgram({
+    await this.koboValidationService.validateKoboFormDefinition({
       formDefinition,
       programId,
     });
@@ -132,7 +132,7 @@ export class KoboService {
       webhookAuthPassword,
     });
 
-    await this.validateFormAndUpdateProgram({
+    await this.updateProgramWithKoboForm({
       formDefinition,
       programId,
     });
