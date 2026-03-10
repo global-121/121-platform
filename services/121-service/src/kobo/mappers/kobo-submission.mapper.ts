@@ -3,10 +3,6 @@ import { KoboFormDefinitionMapper } from '@121-service/src/kobo/mappers/kobo-for
 import { fspQuestionName } from '@121-service/src/kobo/services/kobo.service';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 
-// ============================================================================
-// Submission Data Mapping
-// ============================================================================
-
 export class KoboSubmissionMapper {
   public static mapSubmissionToRegistrationData({
     koboSubmission,

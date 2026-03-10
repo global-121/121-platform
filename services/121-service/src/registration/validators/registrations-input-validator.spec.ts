@@ -438,6 +438,7 @@ describe('RegistrationsInputValidator', () => {
   ])(
     'should not error when userId is null (e.g. system-triggered import like Kobo webhook) with scope "$description"',
     async ({ scope }) => {
+      // Arrange
       const csvArray = [
         {
           referenceId: '00dc9451-1273-484c-b2e8-ae21b51a96ab',
@@ -448,6 +449,7 @@ describe('RegistrationsInputValidator', () => {
         },
       ];
 
+      // Act & Assert
       await expect(
         validator.validateAndCleanInput({
           registrationInputArray: csvArray,
