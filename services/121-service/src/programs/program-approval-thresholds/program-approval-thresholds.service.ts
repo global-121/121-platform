@@ -6,6 +6,7 @@ import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/get-program-approval-threshold-response.dto';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
+import { ProgramApprovalThresholdMapper } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.mapper';
 import { ProgramApprovalThresholdRepository } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.repository';
 
 @Injectable()
@@ -233,7 +234,9 @@ export class ProgramApprovalThresholdsService {
       },
     });
 
-    return thresholds.map((threshold) => this.mapEntityToDto(threshold));
+    return thresholds.map((threshold) =>
+      ProgramApprovalThresholdMapper.mapEntityToDto(threshold),
+    );
   }
 
   public async getThresholdsForPaymentAmount(
@@ -244,21 +247,5 @@ export class ProgramApprovalThresholdsService {
       programId,
       paymentAmount,
     );
-  }
-
-  private mapEntityToDto(
-    entity: ProgramApprovalThresholdEntity,
-  ): GetProgramApprovalThresholdResponseDto {
-    return {
-      id: entity.id,
-      thresholdAmount: entity.thresholdAmount,
-      approvers: (entity.approverAssignments || [])
-        .sort((a, b) => a.id - b.id) // Sort by ID for consistent ordering
-        .map((assignment) => ({
-          id: assignment.id,
-          userId: assignment.user?.id ?? null,
-          username: assignment.user?.username ?? null,
-        })),
-    };
   }
 }
