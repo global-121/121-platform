@@ -121,6 +121,21 @@ export async function getAccessTokenFinanceManager(): Promise<string> {
   );
 }
 
+export async function getAccessTokenByUsername(
+  username: string,
+): Promise<string> {
+  if (username === 'admin') {
+    return await getAccessToken();
+  }
+  if (username === 'cvaManager') {
+    return await getAccessTokenCvaManager();
+  }
+  if (username === 'financeManager') {
+    return await getAccessTokenFinanceManager();
+  }
+  throw new Error(`No access token getter defined for username: ${username}`);
+}
+
 export async function removeProgramAssignment(
   programId: number,
   userId: number,
@@ -265,6 +280,22 @@ export async function findUserByUsername({
   }
 
   return searchUserResponse.body[0].id;
+}
+
+export async function getUserIdsByUsernames({
+  usernames,
+  programId,
+  adminAccessToken,
+}: {
+  usernames: string[];
+  programId: number;
+  adminAccessToken: string;
+}): Promise<number[]> {
+  return Promise.all(
+    usernames.map((username) =>
+      findUserByUsername({ programId, username, adminAccessToken }),
+    ),
+  );
 }
 
 export async function assignUserToProgram({

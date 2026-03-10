@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { env } from '@121-service/src/env';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventAttributeKey } from '@121-service/src/payments/payment-events/enums/payment-event-attribute-key.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -15,11 +16,12 @@ import {
 } from '@121-service/test/helpers/program.helper';
 import { replaceProgramApprovalThresholds } from '@121-service/test/helpers/program-approval-threshold.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
-import { getCurrentUser } from '@121-service/test/helpers/user.helper';
 import {
   getAccessToken,
+  getAccessTokenByUsername,
   getAccessTokenCvaManager,
   getAccessTokenFinanceManager,
+  getUserIdsByUsernames,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
@@ -28,51 +30,85 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 let adminAccessToken: string;
+let accessTokenFinanceManager: string;
+let accessTokenCvaManager: string;
 const programId = programIdPV;
 const transferValue = 25;
 
+async function setupPaymentApprovalTest(
+  thresholds: {
+    thresholdAmount: number;
+    approverUsernames: string[];
+  }[],
+): Promise<void> {
+  await resetDB(SeedScript.nlrcMultiple, __filename);
+  adminAccessToken = await getAccessToken();
+  await seedIncludedRegistrations(
+    [registrationPV5],
+    programId,
+    adminAccessToken,
+  );
+
+  const approverUsernames = thresholds.flatMap((t) => t.approverUsernames);
+  await setUserAccessTokensForUsernames(approverUsernames);
+
+  await setupThresholds(thresholds);
+}
+
+async function setupThresholds(
+  thresholds: {
+    thresholdAmount: number;
+    approverUsernames: string[];
+  }[],
+): Promise<void> {
+  const thresholdDtos = await Promise.all(
+    thresholds.map(async (threshold) => {
+      const userIds = await getUserIdsByUsernames({
+        usernames: threshold.approverUsernames,
+        programId,
+        adminAccessToken,
+      });
+      return {
+        thresholdAmount: threshold.thresholdAmount,
+        userIds,
+      };
+    }),
+  );
+
+  await replaceProgramApprovalThresholds({
+    programId,
+    thresholds: thresholdDtos,
+    accessToken: adminAccessToken,
+  });
+}
+
+async function setUserAccessTokensForUsernames(
+  usernames: string[],
+): Promise<void> {
+  for (const username of usernames) {
+    if (username === env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER) {
+      accessTokenFinanceManager = await getAccessTokenByUsername(username);
+    }
+    if (username === env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER) {
+      accessTokenCvaManager = await getAccessTokenByUsername(username);
+    }
+  }
+}
+
 describe('do payment with 2 approvers', () => {
-  let accessTokenFinanceManager: string;
   let paymentId: number;
 
   beforeAll(async () => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
-    adminAccessToken = await getAccessToken();
-    await seedIncludedRegistrations(
-      [registrationPV5],
-      programId,
-      adminAccessToken,
-    );
-
-    // configure 2nd approver
-    accessTokenFinanceManager = await getAccessTokenFinanceManager();
-    const financeManagerUser = await getCurrentUser({
-      accessToken: accessTokenFinanceManager,
-    });
-
-    // Get admin user ID
-    const adminUser = await getCurrentUser({
-      accessToken: adminAccessToken,
-    });
-
-    const updatedThresholds = [
+    await setupPaymentApprovalTest([
       {
-        thresholdAmount: 0, // Covers all amounts starting from 0
-
-        userIds: [adminUser.body.user.id],
+        thresholdAmount: 0,
+        approverUsernames: ['admin'],
       },
       {
-        thresholdAmount: 10, // Covers payments >= 10
-
-        userIds: [financeManagerUser.body.user.id],
+        thresholdAmount: 10,
+        approverUsernames: ['financeManager'],
       },
-    ];
-
-    await replaceProgramApprovalThresholds({
-      programId,
-      thresholds: updatedThresholds,
-      accessToken: adminAccessToken,
-    });
+    ]);
   });
 
   beforeEach(async () => {
@@ -264,41 +300,19 @@ describe('do payment with 2 approvers', () => {
 
 describe('do payment with <2 approvers', () => {
   beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
-    adminAccessToken = await getAccessToken();
-    await seedIncludedRegistrations(
-      [registrationPV5],
-      programId,
-      adminAccessToken,
-    );
+    await setupPaymentApprovalTest([]);
   });
 
   it('user who can create a payment is different from user approving payment and different from user starting payment', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultiple, __filename);
-    adminAccessToken = await getAccessToken();
-    await seedIncludedRegistrations(
-      [registrationPV5],
-      programId,
-      adminAccessToken,
-    );
     const registrationAh = { ...registrationPV5, maxPayments: 1 };
 
     const accessTokenCvaManager = await getAccessTokenCvaManager();
     const accessTokenFinanceManager = await getAccessTokenFinanceManager();
 
-    // Set up admin user as approver
-    const adminUser = await getCurrentUser({ accessToken: adminAccessToken });
-    await replaceProgramApprovalThresholds({
-      programId,
-      thresholds: [
-        {
-          thresholdAmount: 0,
-          userIds: [adminUser.body.user.id],
-        },
-      ],
-      accessToken: adminAccessToken,
-    });
+    await setupThresholds([
+      { thresholdAmount: 0, approverUsernames: ['admin'] },
+    ]);
 
     // Act
     // create (both cva & finance can)
@@ -390,12 +404,10 @@ describe('do payment with <2 approvers', () => {
     const thresholdsWithDuplicates = [
       {
         thresholdAmount: 100,
-
         userIds: [1],
       },
       {
-        thresholdAmount: 100, // Duplicate!
-
+        thresholdAmount: 100,
         userIds: [2],
       },
     ];
@@ -415,34 +427,11 @@ describe('do payment with <2 approvers', () => {
   });
 
   it('should return all payment approvals but without username for deleted approver(s)', async () => {
-    const accessTokenFinanceManager = await getAccessTokenFinanceManager();
-    const financeManagerUser = await getCurrentUser({
-      accessToken: accessTokenFinanceManager,
-    });
-
-    // Get admin user ID
-    const adminUser = await getCurrentUser({
-      accessToken: adminAccessToken,
-    });
-
-    const updatedThresholds = [
-      {
-        thresholdAmount: 0,
-
-        userIds: [adminUser.body.user.id],
-      },
-      {
-        thresholdAmount: 10,
-
-        userIds: [financeManagerUser.body.user.id],
-      },
-    ];
-
-    await replaceProgramApprovalThresholds({
-      programId,
-      thresholds: updatedThresholds,
-      accessToken: adminAccessToken,
-    });
+    // Set up two thresholds
+    await setupThresholds([
+      { thresholdAmount: 0, approverUsernames: ['admin'] },
+      { thresholdAmount: 10, approverUsernames: ['financeManager'] },
+    ]);
 
     // create payment (this creates approval records)
     const createPaymentResponse = await createPayment({
@@ -453,19 +442,9 @@ describe('do payment with <2 approvers', () => {
     });
 
     // Remove the 2nd approver by replacing thresholds without finance manager
-    const thresholdsWithoutFinanceManager = [
-      {
-        thresholdAmount: 0,
-
-        userIds: [adminUser.body.user.id],
-      },
-    ];
-
-    await replaceProgramApprovalThresholds({
-      programId,
-      thresholds: thresholdsWithoutFinanceManager,
-      accessToken: adminAccessToken,
-    });
+    await setupThresholds([
+      { thresholdAmount: 0, approverUsernames: ['admin'] },
+    ]);
 
     // Act
     const getPaymentResponse = await getPaymentSummary({
@@ -487,18 +466,9 @@ describe('do payment with <2 approvers', () => {
     // Arrange
     const note = 'Payment approved for testing purposes only.';
 
-    // Set up admin user as approver
-    const adminUser = await getCurrentUser({ accessToken: adminAccessToken });
-    await replaceProgramApprovalThresholds({
-      programId,
-      thresholds: [
-        {
-          thresholdAmount: 0,
-          userIds: [adminUser.body.user.id],
-        },
-      ],
-      accessToken: adminAccessToken,
-    });
+    await setupThresholds([
+      { thresholdAmount: 0, approverUsernames: ['admin'] },
+    ]);
 
     const createPaymentResponse = await createPayment({
       programId,
@@ -535,43 +505,15 @@ describe('do payment with <2 approvers', () => {
 });
 
 describe('multiple approvers per threshold', () => {
-  let accessTokenFinanceManager: string;
-  let accessTokenCvaManager: string;
   let paymentId: number;
 
   beforeAll(async () => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
-    adminAccessToken = await getAccessToken();
-    await seedIncludedRegistrations(
-      [registrationPV5],
-      programId,
-      adminAccessToken,
-    );
-
-    accessTokenFinanceManager = await getAccessTokenFinanceManager();
-    accessTokenCvaManager = await getAccessTokenCvaManager();
-
-    const financeManagerUser = await getCurrentUser({
-      accessToken: accessTokenFinanceManager,
-    });
-    const cvaManagerUser = await getCurrentUser({
-      accessToken: accessTokenCvaManager,
-    });
-
-    // Create 1 threshold with 2 approvers (FinanceManager and CVAManager)
-    const updatedThresholds = [
+    await setupPaymentApprovalTest([
       {
         thresholdAmount: 0,
-
-        userIds: [financeManagerUser.body.user.id, cvaManagerUser.body.user.id],
+        approverUsernames: ['financeManager', 'cvaManager'],
       },
-    ];
-
-    await replaceProgramApprovalThresholds({
-      programId,
-      thresholds: updatedThresholds,
-      accessToken: adminAccessToken,
-    });
+    ]);
   });
 
   beforeEach(async () => {
