@@ -1,4 +1,5 @@
 import eslint from '@eslint/js';
+import { defineConfig } from 'eslint/config';
 import eslintPluginComments from 'eslint-plugin-eslint-comments';
 import eslintPluginJest from 'eslint-plugin-jest';
 import eslintPluginN from 'eslint-plugin-n';
@@ -12,7 +13,7 @@ import tsEslint from 'typescript-eslint';
 // Import custom rules plugin
 import customRulesPlugin from './eslint-plugin-custom-rules/index.js';
 
-export default tsEslint.config(
+export default defineConfig(
   {
     ignores: ['dist/**', 'tmp/**', 'documentation/**', 'coverage/**'],
   },

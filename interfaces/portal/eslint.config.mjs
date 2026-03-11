@@ -9,6 +9,7 @@ import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 import eslintPluginRegexp from 'eslint-plugin-regexp';
 import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
 import eslintSortClassMembers from 'eslint-plugin-sort-class-members';
+import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import tsEslint from 'typescript-eslint';
 
@@ -24,7 +25,7 @@ const customRulesPlugin = {
   },
 };
 
-export default tsEslint.config(
+export default defineConfig(
   {
     languageOptions: {
       globals: globals.browser,
