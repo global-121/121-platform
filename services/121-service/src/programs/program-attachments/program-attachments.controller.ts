@@ -102,7 +102,7 @@ export class ProgramAttachmentsController {
     });
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramAttachmentsCREATE] })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramAttachmentsUPDATE] })
   @ApiOperation({
     summary: 'Rename an attachment in a program',
   })

@@ -125,14 +125,23 @@ export class ProgramAttachmentsService {
       blockBlobClient.url,
     );
     await copyPoller.pollUntilDone();
-    await blockBlobClient.deleteIfExists();
 
-    // Update DB record
+    // Update DB record before deleting the old blob to avoid data loss if save fails
     programAttachment.filename = filenameWithExtension;
     programAttachment.blobName = newBlobName;
 
-    const savedAttachment =
-      await this.programAttachmentRepository.save(programAttachment);
+    let savedAttachment: ProgramAttachmentEntity;
+    try {
+      savedAttachment =
+        await this.programAttachmentRepository.save(programAttachment);
+    } catch (error) {
+      // DB save failed: clean up the new blob to avoid orphaned blobs
+      await newBlockBlobClient.deleteIfExists();
+      throw error;
+    }
+
+    // Delete old blob only after DB record is successfully updated
+    await blockBlobClient.deleteIfExists();
 
     return {
       id: savedAttachment.id,
