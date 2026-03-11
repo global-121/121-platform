@@ -54,11 +54,24 @@ export class ProgramApprovalThresholdsService {
     thresholds: CreateProgramApprovalThresholdDto[];
     aidworkerAssignments: ProgramAidworkerAssignmentEntity[];
   }): Promise<void> {
+    this.validateFirstThresholdIsZero(thresholds);
     this.validateUniqueThresholdAmounts(thresholds);
     this.validateThresholdsHaveApprovers(thresholds);
     this.validateUniqueApproverUserIds(thresholds);
     this.validateApproverUserIdsExist(thresholds, aidworkerAssignments);
     this.validateApproversHaveNoScope(thresholds, aidworkerAssignments);
+  }
+
+  private validateFirstThresholdIsZero(
+    thresholds: CreateProgramApprovalThresholdDto[],
+  ): void {
+    const hasZeroThreshold = thresholds.some((t) => t.thresholdAmount === 0);
+    if (!hasZeroThreshold) {
+      throw new HttpException(
+        'The first threshold must have a threshold amount of 0 to cover all payments below the first non-zero threshold.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   private validateUniqueThresholdAmounts(

@@ -36,6 +36,19 @@ describe('ProgramApprovalThresholdsService', () => {
   });
 
   describe('createOrReplaceProgramApprovalThresholds', () => {
+    it('should throw when no threshold with amount 0 is provided', async () => {
+      // Arrange
+      const thresholds: CreateProgramApprovalThresholdDto[] = [
+        { thresholdAmount: 100, userIds: [1] },
+        { thresholdAmount: 200, userIds: [2] },
+      ];
+
+      // Act & Assert
+      await expect(
+        service.createOrReplaceProgramApprovalThresholds(programId, thresholds),
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+    });
+
     it('should throw when duplicate threshold amounts provided', async () => {
       // Arrange
       const thresholds: CreateProgramApprovalThresholdDto[] = [
