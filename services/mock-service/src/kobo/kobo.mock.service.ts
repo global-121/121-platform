@@ -4,6 +4,8 @@ import { lastValueFrom } from 'rxjs';
 import { joinURL } from 'ufo';
 
 import { env } from '@mock-service/src/env';
+import { KoboMockAssetUids } from '@mock-service/src/kobo/kobo-mock-asset-uids';
+import { KoboMockSubmissionUuids } from '@mock-service/src/kobo/kobo-mock-submission-uuids';
 
 interface KoboSurveyItem {
   name?: string;
@@ -45,18 +47,6 @@ interface KoboAsset {
 export interface KoboAssetDeployment {
   asset: KoboAsset;
   version_id: string;
-}
-
-export enum KoboMockAssetUids {
-  bodyThatTriggersErrors = 'asset-id-body-that-triggers-errors',
-  notFound = 'asset-id-not-found',
-  happyFlowWithChanges = 'asset-id-happy-flow-with-changes',
-  withExistingWebhook = 'asset-id-with-existing-webhook',
-}
-
-export enum KoboMockSubmissionUuids {
-  success = 'success',
-  failure = 'failure',
 }
 
 const bodyThatTriggersErrors: KoboAssetDeployment = {
@@ -203,11 +193,11 @@ const bodyThatTriggersErrors: KoboAssetDeployment = {
 };
 
 const happyFlowFromDefinition: KoboAssetDeployment = {
-  version_id: 'version-succes',
+  version_id: KoboMockAssetUids.happyFlow,
   asset: {
     name: '25042025 Prototype Sprint',
     date_deployed: '2025-04-30T14:49:53.989148Z',
-    version_id: 'version-succes',
+    version_id: KoboMockAssetUids.happyFlow,
     summary: {
       languages: ['English (en)', 'Dutch (nl)'],
     },
@@ -511,13 +501,16 @@ export class KoboMockService {
   public async triggerIncomingSubmission({
     assetUid,
     submissionUuid,
+    koboVersion,
   }: {
     assetUid: string;
     submissionUuid: string;
+    koboVersion: string;
   }): Promise<{ message: string; submissionUuid: string }> {
     const webhookPayload = {
       _uuid: submissionUuid,
       _xform_id_string: assetUid,
+      __version__: koboVersion,
     };
 
     const url = joinURL(env.EXTERNAL_121_SERVICE_URL, 'api', 'kobo', 'webhook');

@@ -1,10 +1,12 @@
-import { HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { KoboWebhookIncomingSubmission } from '@121-service/src/kobo/dtos/kobo-webhook-incoming-submission.dto';
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
+import { KoboFormDefinition } from '@121-service/src/kobo/interfaces/kobo-form-definition.interface';
+import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
 import { KoboSubmissionService } from '@121-service/src/kobo/services/kobo-submission.service';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -16,6 +18,7 @@ describe('KoboSubmissionService', () => {
   let service: KoboSubmissionService;
   let koboRepository: jest.Mocked<Repository<KoboEntity>>;
   let koboApiService: jest.Mocked<KoboApiService>;
+  let koboService: jest.Mocked<KoboService>;
   let registrationsImportService: jest.Mocked<RegistrationsImportService>;
 
   const successSubmissionUuid = 'success-submission-uuid';
@@ -63,12 +66,20 @@ describe('KoboSubmissionService', () => {
           provide: getRepositoryToken(KoboEntity),
           useValue: {
             findOne: jest.fn(),
+            update: jest.fn(),
           },
         },
         {
           provide: KoboApiService,
           useValue: {
             getSubmission: jest.fn(),
+          },
+        },
+        {
+          provide: KoboService,
+          useValue: {
+            getFormDefinitionOrThrow: jest.fn(),
+            validateFormAndUpdateProgram: jest.fn(),
           },
         },
         {
@@ -83,6 +94,7 @@ describe('KoboSubmissionService', () => {
     service = module.get<KoboSubmissionService>(KoboSubmissionService);
     koboRepository = module.get(getRepositoryToken(KoboEntity));
     koboApiService = module.get(KoboApiService);
+    koboService = module.get(KoboService);
     registrationsImportService = module.get(RegistrationsImportService);
   });
 
@@ -90,6 +102,7 @@ describe('KoboSubmissionService', () => {
     const incomingWebhook: KoboWebhookIncomingSubmission = {
       _uuid: successSubmissionUuid,
       _xform_id_string: assetUid,
+      __version__: mockKoboEntity.versionId!, // Same version → skips program update
     };
 
     it('should successfully process a Kobo webhook and import registration (happy flow)', async () => {
@@ -140,6 +153,122 @@ describe('KoboSubmissionService', () => {
       expect(error.message).toMatchInlineSnapshot(
         `"Kobo integration not found for this program"`,
       );
+    });
+  });
+
+  describe('handle form version in incoming submission', () => {
+    function buildMockFormDefinition(
+      overrides: Partial<KoboFormDefinition>,
+    ): KoboFormDefinition {
+      return {
+        name: 'Test Form',
+        survey: [],
+        languages: ['English (en)'],
+        dateDeployed: new Date('2025-06-01'),
+        versionId: 'mock-version-id',
+        ...overrides,
+      };
+    }
+
+    beforeEach(() => {
+      koboApiService.getSubmission.mockResolvedValue(mockSubmission);
+      registrationsImportService.importRegistrations.mockResolvedValue({
+        aggregateImportResult: { countImported: 1 },
+      });
+    });
+
+    it('should update program when incoming submission has a newer form version', async () => {
+      // Arrange
+      const newerVersionId = 'mock-id-newer-version';
+      const newerDateDeployed = new Date('2025-06-01');
+      const koboEntityWithOlderVersion = {
+        ...mockKoboEntity,
+        dateDeployed: new Date('2024-01-01'),
+      } as KoboEntity;
+
+      koboRepository.findOne.mockResolvedValue(koboEntityWithOlderVersion);
+      koboService.getFormDefinitionOrThrow.mockResolvedValue(
+        buildMockFormDefinition({
+          dateDeployed: newerDateDeployed,
+          versionId: newerVersionId,
+        }),
+      );
+      koboService.validateFormAndUpdateProgram.mockResolvedValue(undefined);
+
+      // Act
+      await service.processKoboWebhookCall({
+        _uuid: successSubmissionUuid,
+        _xform_id_string: assetUid,
+        __version__: newerVersionId,
+      });
+
+      // Assert
+      expect(koboService.validateFormAndUpdateProgram).toHaveBeenCalledWith({
+        formDefinition: expect.objectContaining({ versionId: newerVersionId }),
+        programId: mockProgram.id,
+      });
+      expect(koboRepository.update).toHaveBeenCalledWith(
+        { versionId: mockKoboEntity.versionId },
+        {
+          versionId: newerVersionId,
+          dateDeployed: newerDateDeployed,
+        },
+      );
+    });
+
+    it('should not update program when incoming submission has an older form version', async () => {
+      // Arrange
+      const olderVersionId = 'mock-id-older-version';
+      koboRepository.findOne.mockResolvedValue({
+        ...mockKoboEntity,
+        dateDeployed: new Date('2025-06-01'), // Current version is newer
+      } as KoboEntity);
+      koboService.getFormDefinitionOrThrow.mockResolvedValue(
+        buildMockFormDefinition({
+          dateDeployed: new Date('2024-01-01'), // Older than current
+          versionId: olderVersionId,
+        }),
+      );
+
+      // Act
+      await service.processKoboWebhookCall({
+        _uuid: successSubmissionUuid,
+        _xform_id_string: assetUid,
+        __version__: olderVersionId,
+      });
+
+      // Assert
+      expect(koboService.validateFormAndUpdateProgram).not.toHaveBeenCalled();
+    });
+
+    it('should throw and not update program when form validation fails', async () => {
+      // Arrange
+      const newerVersionId = 'mock-id-newer-version';
+      const validationError = new HttpException(
+        'Kobo form definition validation failed:\n- phoneNumber is missing a label for language English (en)',
+        HttpStatus.BAD_REQUEST,
+      );
+
+      koboRepository.findOne.mockResolvedValue({
+        ...mockKoboEntity,
+        dateDeployed: new Date('2024-01-01'),
+      } as KoboEntity);
+      koboService.getFormDefinitionOrThrow.mockResolvedValue(
+        buildMockFormDefinition({ versionId: newerVersionId }),
+      );
+      koboService.validateFormAndUpdateProgram.mockRejectedValue(
+        validationError,
+      );
+
+      // Act & Assert
+      await expect(
+        service.processKoboWebhookCall({
+          _uuid: successSubmissionUuid,
+          _xform_id_string: assetUid,
+          __version__: newerVersionId,
+        }),
+      ).rejects.toThrow(validationError);
+      expect(koboService.validateFormAndUpdateProgram).toHaveBeenCalled();
     });
   });
 });

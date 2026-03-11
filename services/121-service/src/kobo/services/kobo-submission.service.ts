@@ -2,9 +2,11 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
+import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { KoboWebhookIncomingSubmission } from '@121-service/src/kobo/dtos/kobo-webhook-incoming-submission.dto';
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
 import { KoboSubmissionMapper } from '@121-service/src/kobo/mappers/kobo-submission.mapper';
+import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
 
@@ -15,6 +17,7 @@ export class KoboSubmissionService {
 
   constructor(
     private readonly koboApiService: KoboApiService,
+    private readonly koboService: KoboService,
     private readonly registrationsImportService: RegistrationsImportService,
   ) {}
 
@@ -31,6 +34,7 @@ export class KoboSubmissionService {
         versionId: true,
         token: true,
         url: true,
+        dateDeployed: true,
       },
       relations: { program: true },
     });
@@ -40,6 +44,17 @@ export class KoboSubmissionService {
         HttpStatus.NOT_FOUND,
       );
     }
+
+    await this.updateProgramToNewVersionIfApplicable({
+      currentVersion: koboIntegration.versionId,
+      currentVersionDateDeployed: koboIntegration.dateDeployed,
+      formVersionFromIncomingSubmission:
+        koboWebhookIncomingSubmission.__version__,
+      assetUid: koboIntegration.assetUid,
+      token: koboIntegration.token,
+      url: koboIntegration.url,
+      programId: koboIntegration.program.id,
+    });
 
     const submission = await this.koboApiService.getSubmission({
       token: koboIntegration.token,
@@ -57,5 +72,67 @@ export class KoboSubmissionService {
       program: koboIntegration.program,
       userId: null,
     });
+  }
+
+  private async updateProgramToNewVersionIfApplicable({
+    currentVersion,
+    currentVersionDateDeployed,
+    formVersionFromIncomingSubmission,
+    assetUid,
+    token,
+    url,
+    programId,
+  }: {
+    currentVersion: string;
+    currentVersionDateDeployed: Date;
+    formVersionFromIncomingSubmission: string;
+    assetUid: string;
+    token: string;
+    url: string;
+    programId: number;
+  }): Promise<void> {
+    if (currentVersion === formVersionFromIncomingSubmission) {
+      return;
+    }
+
+    if (IS_DEVELOPMENT) {
+      // The mock service is stateless and cannot serve multiple real Kobo form versions.
+      // Integration tests encode the target mock asset UID in __version__ so this service
+      // fetches the correct mock asset instead of the original one.
+      if (formVersionFromIncomingSubmission.includes('asset-')) {
+        assetUid = `asset-${formVersionFromIncomingSubmission.split('asset-')[1]}`;
+      }
+    }
+
+    const formDefinition = await this.koboService.getFormDefinitionOrThrow({
+      assetUid,
+      token,
+      url,
+    });
+
+    // We would expect that most of the time, the incoming submission will be for the same version as the current one, or for a newer version.
+    // But in case we receive a submission for an older version (e.g. because Kobo is retrying to send us a submission that previously failed),
+    // We do not update the program to the older version to prevent for example removing the program languages that were added
+    // We allow the submission to proceed as normal, in case there any required attributes in the older version that are not in the program
+    // an error will be thrown during the registration creation which show up in the kobo rest api service and it has to be resolved by a human
+    const formDeployedDateOfIncomingSubmission = new Date(
+      formDefinition.dateDeployed,
+    );
+    if (formDeployedDateOfIncomingSubmission < currentVersionDateDeployed) {
+      return;
+    }
+
+    await this.koboService.validateFormAndUpdateProgram({
+      formDefinition,
+      programId,
+    });
+
+    await this.koboRepository.update(
+      { versionId: currentVersion },
+      {
+        versionId: formVersionFromIncomingSubmission,
+        dateDeployed: formDeployedDateOfIncomingSubmission,
+      },
+    );
   }
 }

@@ -8,7 +8,8 @@ import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.d
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
-import { KoboMockSubmissionUuids } from '@121-service/test/fixtures/kobo-mock-submissions';
+import { KoboMockAssetUids } from '@121-service/test/fixtures/kobo-mock-asset-uids';
+import { KoboMockSubmissionUuids } from '@121-service/test/fixtures/kobo-mock-submission-uuids';
 import { setupProgramWithKoboIntegration } from '@121-service/test/helpers/kobo.helper';
 import {
   getAccessToken,
@@ -87,6 +88,7 @@ describe('Kobo webhook Basic auth guard', () => {
       .send({
         _uuid: submissionUuid,
         _xform_id_string: assetUid,
+        __version__: KoboMockAssetUids.happyFlow,
       });
 
     // Assert
