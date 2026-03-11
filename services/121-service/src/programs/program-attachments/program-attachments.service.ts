@@ -116,14 +116,25 @@ export class ProgramAttachmentsService {
     const extension = programAttachment.filename.split('.').pop();
     const filenameWithExtension = `${filename}.${extension}`;
 
-    // Rename in Blob Storage by copying to new blob and deleting old blob
+    // Rename in Blob Storage by downloading and re-uploading to new blob name.
+    // beginCopyFromURL would 403 on private containers without a SAS token.
     const newBlobName = `${programId}/${Date.now()}-${filenameWithExtension}`;
     const newBlockBlobClient =
       this.containerClient.getBlockBlobClient(newBlobName);
-    const copyPoller = await newBlockBlobClient.beginCopyFromURL(
-      blockBlobClient.url,
-    );
-    await copyPoller.pollUntilDone();
+    const [sourceBuffer, sourceProperties] = await Promise.all([
+      blockBlobClient.downloadToBuffer(),
+      blockBlobClient.getProperties(),
+    ]);
+    await newBlockBlobClient.uploadData(sourceBuffer, {
+      blobHTTPHeaders: {
+        blobContentType: sourceProperties.contentType,
+        blobContentEncoding: sourceProperties.contentEncoding,
+        blobCacheControl: sourceProperties.cacheControl,
+        blobContentDisposition: sourceProperties.contentDisposition,
+        blobContentLanguage: sourceProperties.contentLanguage,
+      },
+      metadata: sourceProperties.metadata,
+    });
 
     // Update DB record before deleting the old blob to avoid data loss if save fails
     programAttachment.filename = filenameWithExtension;
