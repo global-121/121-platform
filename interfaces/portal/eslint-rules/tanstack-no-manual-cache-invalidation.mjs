@@ -8,7 +8,7 @@
  *
  * Reference: https://tkdodo.eu/blog/automatic-query-invalidation-after-mutations
  */
-module.exports = {
+export default {
   create(context) {
     return {
       CallExpression(node) {
