@@ -13,11 +13,9 @@ import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import tsEslint from 'typescript-eslint';
 
-// Import custom rule
 import noFormControlUndefinedValue from './eslint-rules/no-form-control-undefined-value.mjs';
 import tanstackNoManualCacheInvalidation from './eslint-rules/tanstack-no-manual-cache-invalidation.mjs';
 
-// Custom rules plugin
 /** @type {import('eslint').ESLint.Plugin} */
 const customRulesPlugin = {
   rules: {
