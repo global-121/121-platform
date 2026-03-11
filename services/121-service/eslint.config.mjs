@@ -11,7 +11,7 @@ import globals from 'globals';
 import tsEslint from 'typescript-eslint';
 
 // Import custom rules plugin
-import customRulesPlugin from './eslint-plugin-custom-rules/index.js';
+import customRulesPlugin from './eslint-plugin-custom-rules/index.mjs';
 
 export default defineConfig(
   {

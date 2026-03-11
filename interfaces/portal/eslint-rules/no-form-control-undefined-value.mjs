@@ -18,8 +18,7 @@
  *
  * Reference: https://github.com/angular/angular/issues/40608
  */
-
-module.exports = {
+export default {
   create(context) {
     return {
       NewExpression(node) {
