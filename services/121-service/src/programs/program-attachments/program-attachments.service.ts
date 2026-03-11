@@ -130,7 +130,6 @@ export class ProgramAttachmentsService {
     // Update DB record
     programAttachment.filename = filenameWithExtension;
     programAttachment.blobName = newBlobName;
-    programAttachment.userId = userId; // Update userId to the one who renamed the file
 
     const savedAttachment =
       await this.programAttachmentRepository.save(programAttachment);
