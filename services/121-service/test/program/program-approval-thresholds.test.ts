@@ -57,7 +57,7 @@ describe('Program Approval Thresholds', () => {
     it('should successfully create thresholds with approvers', async () => {
       const thresholds: CreateProgramApprovalThresholdDto[] = [
         {
-          thresholdAmount: 50,
+          thresholdAmount: 0,
           userIds: [adminUserId],
         },
         {
@@ -77,7 +77,7 @@ describe('Program Approval Thresholds', () => {
       expect(response.status).toBe(HttpStatus.CREATED);
       expect(response.body).toHaveLength(2);
 
-      expect(response.body[0].thresholdAmount).toBe(50);
+      expect(response.body[0].thresholdAmount).toBe(0);
       expect(response.body[0].approvers).toHaveLength(1);
 
       expect(response.body[1].thresholdAmount).toBe(100);
