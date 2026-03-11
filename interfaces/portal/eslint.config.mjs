@@ -18,6 +18,7 @@ import noFormControlUndefinedValue from './eslint-rules/no-form-control-undefine
 import tanstackNoManualCacheInvalidation from './eslint-rules/tanstack-no-manual-cache-invalidation.mjs';
 
 // Custom rules plugin
+/** @type {import('eslint').ESLint.Plugin} */
 const customRulesPlugin = {
   rules: {
     'no-form-control-undefined-value': noFormControlUndefinedValue,
