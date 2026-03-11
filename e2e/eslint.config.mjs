@@ -1,4 +1,5 @@
 import eslint from '@eslint/js';
+import { defineConfig } from 'eslint/config';
 import eslintPluginComments from 'eslint-plugin-eslint-comments';
 import eslintPluginN from 'eslint-plugin-n';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
@@ -7,7 +8,7 @@ import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 import tsEslint from 'typescript-eslint';
 
-export default tsEslint.config(
+export default defineConfig(
   {
     languageOptions: {
       globals: globals.node,
