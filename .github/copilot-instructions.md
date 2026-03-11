@@ -1,5 +1,64 @@
 # GitHub Copilot Instructions - 121 Platform
 
+- [Repository Overview](#repository-overview)
+- [Architecture \& Technology Stack](#architecture--technology-stack)
+  - [Backend Services (Node.js/TypeScript)](#backend-services-nodejstypescript)
+  - [Frontend (Angular)](#frontend-angular)
+  - [Development Tools](#development-tools)
+- [Code Style \& Standards](#code-style--standards)
+  - [General Principles](#general-principles)
+    - [Use modern datastructures](#use-modern-datastructures)
+    - [Use modern looping and array manipulation constructs](#use-modern-looping-and-array-manipulation-constructs)
+  - [Formatting \& Linting](#formatting--linting)
+  - [TypeScript Guidelines](#typescript-guidelines)
+- [Development Workflow](#development-workflow)
+  - [Commit Conventions](#commit-conventions)
+  - [Domain Terminology](#domain-terminology)
+  - [Naming Conventions](#naming-conventions)
+  - [Branch Naming](#branch-naming)
+  - [Pull Request Guidelines](#pull-request-guidelines)
+  - [Pull Request Checklist](#pull-request-checklist)
+- [Backend Service Patterns (NestJS)](#backend-service-patterns-nestjs)
+  - [Module Architecture \& Dependencies](#module-architecture--dependencies)
+  - [Controller Structure](#controller-structure)
+  - [Function Signatures \& Naming](#function-signatures--naming)
+  - [DTO Conventions](#dto-conventions)
+  - [Entity \& Data Model](#entity--data-model)
+  - [API Design](#api-design)
+  - [Database Operations](#database-operations)
+  - [Exception Handling](#exception-handling)
+  - [Testing Patterns](#testing-patterns)
+- [Frontend Patterns (Angular)](#frontend-patterns-angular)
+  - [File \& Folder Structure](#file--folder-structure)
+  - [Component Guidelines](#component-guidelines)
+  - [Component Structure](#component-structure)
+  - [Styling \& Templates](#styling--templates)
+  - [State Management](#state-management)
+  - [Internationalization (i18n)](#internationalization-i18n)
+- [Testing Approach](#testing-approach)
+  - [Backend Testing](#backend-testing)
+  - [Frontend Testing](#frontend-testing)
+  - [Testing Commands](#testing-commands)
+- [Common Patterns \& Utilities](#common-patterns--utilities)
+  - [Authentication \& Authorization](#authentication--authorization)
+  - [Error Handling](#error-handling)
+  - [API Design](#api-design-1)
+  - [URL and Header Construction](#url-and-header-construction)
+  - [Database Migrations](#database-migrations)
+- [Environment \& Configuration](#environment--configuration)
+  - [Local Development](#local-development)
+  - [Environment Variables](#environment-variables)
+- [Things to Avoid](#things-to-avoid)
+  - [Security Anti-Patterns](#security-anti-patterns)
+  - [Code Quality Issues](#code-quality-issues)
+  - [Angular Specific](#angular-specific)
+  - [Backend Specific](#backend-specific)
+- [Additional Resources](#additional-resources)
+- [Instructions for Copilot Agents](#instructions-for-copilot-agents)
+  - [Self-Improvement Protocol](#self-improvement-protocol)
+  - [For PR Review Agents](#for-pr-review-agents)
+  - [For Code Generation Agents](#for-code-generation-agents)
+
 ## Repository Overview
 
 The 121 Platform is an open-source humanitarian aid platform built by the Netherlands Red Cross for managing Cash Based Assistance programs. It consists of multiple TypeScript services and an Angular frontend, designed for scalability and humanitarian use cases.
@@ -11,22 +70,6 @@ The 121 Platform is an open-source humanitarian aid platform built by the Nether
 - `interfaces/portal`: Angular frontend application
 - `e2e/`: End-to-end testing suite
 - `tools/`: Utility scripts and tools
-
-## VSCode Integration
-
-This file (`.github/copilot-instructions.md`) is automatically recognized by GitHub Copilot in both GitHub and VSCode environments. The repository includes VSCode-specific configurations:
-
-### VSCode Settings
-
-- **Prettier**: Default formatter with automatic formatting on save
-- **ESLint**: Enabled with auto-fix on save and unused import removal
-- **Azure DevOps Integration**: AB# links are automatically detected and made clickable
-- **Tailwind CSS**: Enhanced IntelliSense with pixel equivalents and custom class attributes
-- **TypeScript**: Uses workspace TypeScript version for consistency
-
-### Recommended Extensions
-
-Check `.vscode/extensions.json` for the complete list of recommended extensions that enhance the development experience.
 
 ## Architecture & Technology Stack
 
@@ -63,6 +106,21 @@ Check `.vscode/extensions.json` for the complete list of recommended extensions 
 - Prioritize readability and maintainability over clever solutions
 - Use TypeScript strictly - avoid `any` types
 - Write self-documenting code with clear naming conventions
+- Prefer using already-installed utility libraries over custom implementations.
+- Prefer built-in language features over custom implementations.
+
+#### Use modern datastructures
+
+- By default use Maps instead of objects unless you have a write-once read-heavy workload with string keys.
+- By default use Sets instead of arrays unless:
+  - you want to allow for duplicates
+  - you need to maintain order
+  - you need to use array-specific methods like `map`, `filter`, `reduce`, etc.
+
+#### Use modern looping and array manipulation constructs
+
+- Use `for...of` loops for iterating over arrays, sets, maps and other iterables.
+- Use `Array.filter`, `Array.map`, `Array.reduce` and other array methods for data transformation instead of manual loops when it improves readability.
 
 ### Formatting & Linting
 
@@ -174,16 +232,7 @@ Use pattern: `username/description-of-change` (strongly encouraged)
 
 ### Pull Request Checklist
 
-Before requesting review, ensure:
-
-- [ ] Self-review completed
-- [ ] Tests added or justification for no tests provided
-- [ ] Design team review requested for UI/UX changes
-- [ ] All automated checks pass
-- [ ] No deviation from PR guidelines needed
-- [ ] Azure DevOps task reference included (AB#XXXXX)
-- [ ] Appropriate release notes label added (enhancement, bugfix, other, chore)
-- [ ] Branch is up-to-date with target branch
+Before requesting a review, check all points in the checklist in `pull_request_template.md`.
 
 ## Backend Service Patterns (NestJS)
 
@@ -542,10 +591,10 @@ npm run test:all           # Run all tests
 - ❌ Direct SQL query construction without parameterization
 - ❌ Exposing sensitive data in API responses
 - ❌ Missing authentication/authorization checks
-- ❌ Using `any` type
 
 ### Code Quality Issues
 
+- ❌ Using `any` type
 - ❌ Mixing unrelated changes in single PR
 - ❌ Breaking changes without proper versioning
 - ❌ Skipping tests for new functionality
