@@ -14,8 +14,8 @@ import globals from 'globals';
 import tsEslint from 'typescript-eslint';
 
 // Import custom rule
-import noFormControlUndefinedValue from './eslint-rules/no-form-control-undefined-value.js';
-import tanstackNoManualCacheInvalidation from './eslint-rules/tanstack-no-manual-cache-invalidation.js';
+import noFormControlUndefinedValue from './eslint-rules/no-form-control-undefined-value.mjs';
+import tanstackNoManualCacheInvalidation from './eslint-rules/tanstack-no-manual-cache-invalidation.mjs';
 
 // Custom rules plugin
 const customRulesPlugin = {
