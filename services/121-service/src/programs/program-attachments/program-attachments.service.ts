@@ -117,7 +117,7 @@ export class ProgramAttachmentsService {
     const extension = programAttachment.filename.split('.').pop();
     const filenameWithExtension = `${filename}.${extension}`;
 
-    // Rename in Blob Storage by copying to new blob and deleting old blob
+    // Copy to new blob in Blob Storage
     const newBlobName = `${programId}/${Date.now()}-${filenameWithExtension}`;
     const newBlockBlobClient =
       this.containerClient.getBlockBlobClient(newBlobName);
@@ -125,15 +125,24 @@ export class ProgramAttachmentsService {
       blockBlobClient.url,
     );
     await copyPoller.pollUntilDone();
-    await blockBlobClient.deleteIfExists();
 
-    // Update DB record
+    // Update DB record before deleting old blob to avoid data loss if save fails
     programAttachment.filename = filenameWithExtension;
     programAttachment.blobName = newBlobName;
     programAttachment.userId = userId; // Update userId to the one who renamed the file
 
-    const savedAttachment =
-      await this.programAttachmentRepository.save(programAttachment);
+    let savedAttachment: ProgramAttachmentEntity;
+    try {
+      savedAttachment =
+        await this.programAttachmentRepository.save(programAttachment);
+    } catch (error) {
+      // Clean up newly created blob if DB save fails
+      await newBlockBlobClient.deleteIfExists();
+      throw error;
+    }
+
+    // Only delete old blob after DB record is successfully updated
+    await blockBlobClient.deleteIfExists();
 
     return {
       id: savedAttachment.id,
