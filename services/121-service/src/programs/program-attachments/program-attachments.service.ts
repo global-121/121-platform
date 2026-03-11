@@ -100,7 +100,6 @@ export class ProgramAttachmentsService {
     programId,
     attachmentId,
     filename,
-    userId,
   }: {
     programId: number;
     attachmentId: number;
