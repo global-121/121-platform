@@ -359,58 +359,32 @@ export class PaymentsManagementService {
     paymentId: number;
     note?: string;
   }): Promise<void> {
-    const approverAssignment = await this.aidworkerAssignmentRepository.findOne(
-      {
-        where: {
-          userId: Equal(userId),
-          programId: Equal(programId),
-        },
-      },
-    );
+    const lowestRankUnapprovedApproval =
+      await this.getLowestRankUnapprovedApprovalOrThrow({
+        paymentId,
+      });
 
-    if (!approverAssignment) {
-      throw new HttpException(
-        'User is not assigned as an approver',
-        HttpStatus.FORBIDDEN,
-      );
-    }
-
-    const paymentApprovals = await this.paymentApprovalRepository.find({
-      where: {
-        paymentId: Equal(paymentId),
-      },
-      relations: { approverAssignments: true },
+    await this.isUserAssignedToApprovalOrThrow({
+      userId,
+      programId,
+      approval: lowestRankUnapprovedApproval,
     });
 
-    const approvalAssignedToApprover = paymentApprovals.find((approval) =>
-      (approval.approverAssignments ?? []).some(
-        (assignment) => assignment.id === approverAssignment.id,
-      ),
-    );
-
-    if (!approvalAssignedToApprover) {
-      throw new HttpException(
-        'Aidworker is not assigned as approver for this payment',
-        HttpStatus.FORBIDDEN,
-      );
-    }
-
-    this.validateApprovalEligibilityOrThrow({
-      approval: approvalAssignedToApprover,
-      allApprovals: paymentApprovals,
+    const totalApprovals = await this.paymentApprovalRepository.count({
+      where: { paymentId: Equal(paymentId) },
     });
 
     // store payment approval
-    approvalAssignedToApprover.approved = true;
-    approvalAssignedToApprover.approvedByUserId = userId;
-    await this.paymentApprovalRepository.save(approvalAssignedToApprover);
+    lowestRankUnapprovedApproval.approved = true;
+    lowestRankUnapprovedApproval.approvedByUserId = userId;
+    await this.paymentApprovalRepository.save(lowestRankUnapprovedApproval);
 
     // store payment event
     await this.paymentEventsService.createApprovedEvent({
       paymentId,
       userId,
-      rank: approvalAssignedToApprover.rank,
-      total: paymentApprovals.length,
+      rank: lowestRankUnapprovedApproval.rank,
+      total: totalApprovals,
       note,
     });
 
@@ -430,91 +404,84 @@ export class PaymentsManagementService {
     }
   }
 
-  public async canUserApprovePaymentApproval({
+  public async getCanUserApprove({
     userId,
     programId,
     paymentId,
-    approvalId,
   }: {
     userId: number;
     programId: number;
     paymentId: number;
-    approvalId: number;
   }): Promise<CanApprovePaymentApprovalResponseDto> {
-    const userAssignment = await this.aidworkerAssignmentRepository.findOne({
-      where: { userId: Equal(userId), programId: Equal(programId) },
-    });
-    if (!userAssignment) {
-      return { canApprove: false };
-    }
+    const lowestRankUnapprovedApproval =
+      await this.getLowestRankUnapprovedApprovalOrThrow({
+        paymentId,
+      });
 
-    const allApprovals = await this.paymentApprovalRepository.find({
+    await this.isUserAssignedToApprovalOrThrow({
+      userId,
+      programId,
+      approval: lowestRankUnapprovedApproval,
+    });
+
+    return { canApprovePaymentApproval: true };
+  }
+
+  private async getLowestRankUnapprovedApprovalOrThrow({
+    paymentId,
+  }: {
+    paymentId: number;
+  }): Promise<PaymentApprovalEntity> {
+    const paymentApprovals = await this.paymentApprovalRepository.find({
       where: { paymentId: Equal(paymentId) },
       relations: { approverAssignments: true },
     });
 
-    const approval = allApprovals.find((a) => a.id === approvalId);
-    if (!approval) {
+    const lowestRankUnapprovedApproval = paymentApprovals
+      .filter((approval) => !approval.approved)
+      .sort((a, b) => a.rank - b.rank)[0];
+
+    if (!lowestRankUnapprovedApproval) {
       throw new HttpException(
-        `Payment approval with id ${approvalId} not found for payment ${paymentId} in program ${programId}`,
-        HttpStatus.NOT_FOUND,
+        'Payment has already been fully approved',
+        HttpStatus.BAD_REQUEST,
       );
     }
 
-    const isAssigned = approval.approverAssignments.some(
-      (a) => a.id === userAssignment.id,
-    );
-    if (!isAssigned) {
-      return { canApprove: false };
-    }
-
-    try {
-      this.validateApprovalEligibilityOrThrow({ approval, allApprovals });
-    } catch {
-      return { canApprove: false };
-    }
-
-    return { canApprove: true };
+    return lowestRankUnapprovedApproval;
   }
 
-  private validateApprovalEligibilityOrThrow({
+  private async isUserAssignedToApprovalOrThrow({
     approval,
-    allApprovals,
+    userId,
+    programId,
   }: {
     approval: PaymentApprovalEntity;
-    allApprovals: PaymentApprovalEntity[];
-  }): void {
-    if (approval.approved) {
+    userId: number;
+    programId: number;
+  }): Promise<boolean> {
+    const aidworkerAssignment =
+      await this.aidworkerAssignmentRepository.findOne({
+        where: { userId: Equal(userId), programId: Equal(programId) },
+      });
+    if (!aidworkerAssignment) {
       throw new HttpException(
-        'This approval step has already been approved for this payment',
-        HttpStatus.BAD_REQUEST,
+        'User is not assigned to this program and cannot approve payments',
+        HttpStatus.FORBIDDEN,
       );
     }
-    this.checkLowestRankOrThrow({
-      currentPaymentApproval: approval,
-      allPaymentApprovals: allApprovals,
-    });
-  }
 
-  private checkLowestRankOrThrow({
-    currentPaymentApproval,
-    allPaymentApprovals,
-  }: {
-    currentPaymentApproval: PaymentApprovalEntity;
-    allPaymentApprovals: PaymentApprovalEntity[];
-  }) {
-    const openApprovals = allPaymentApprovals.filter(
-      (approval) => !approval.approved,
+    const isUserAssignedToApproval = approval.approverAssignments.some(
+      (approverAssignments) =>
+        approverAssignments.id === aidworkerAssignment.id,
     );
-    const isLowestRank = openApprovals.every(
-      (approval) => currentPaymentApproval.rank <= approval.rank,
-    );
-    if (!isLowestRank) {
+    if (!isUserAssignedToApproval) {
       throw new HttpException(
-        'Cannot approve payment before lower-order approval steps have been approved',
-        HttpStatus.BAD_REQUEST,
+        'User is not assigned to the lowest rank unapproved approval and cannot approve this payment',
+        HttpStatus.FORBIDDEN,
       );
     }
+    return isUserAssignedToApproval;
   }
 
   public async deletePayment({

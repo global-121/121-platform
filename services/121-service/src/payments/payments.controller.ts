@@ -282,7 +282,6 @@ export class PaymentsController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
-  @ApiParam({ name: 'approvalId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Whether the current user is eligible to approve this step',
@@ -294,15 +293,13 @@ export class PaymentsController {
   public async canUserApprovePaymentApproval(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('paymentId', ParseIntPipe) paymentId: number,
-    @Param('approvalId', ParseIntPipe) approvalId: number,
     @Req() req: ScopedUserRequest,
   ): Promise<CanApprovePaymentApprovalResponseDto> {
     const userId = RequestHelper.getUserId(req);
-    return await this.paymentsManagementService.canUserApprovePaymentApproval({
+    return await this.paymentsManagementService.getCanUserApprove({
       userId,
       programId,
       paymentId,
-      approvalId,
     });
   }
 

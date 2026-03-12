@@ -972,8 +972,7 @@
     "path": "/api/programs/{programId}/payments/{paymentId}/approvals/{approvalId}/can-approve",
     "params": [
       "programId",
-      "paymentId",
-      "approvalId"
+      "paymentId"
     ],
     "returnType": "CanApprovePaymentApprovalResponseDto"
   },
