@@ -32,6 +32,7 @@ import {
   PaginateConfigTransactionView,
   PaginateConfigTransactionViewRetry,
 } from '@121-service/src/payments/consts/paginate-config-transaction-view.const';
+import { CanApprovePaymentApprovalResponseDto } from '@121-service/src/payments/dto/can-approve-payment-approval-response.dto';
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
 import { ExportTransactionResponseDto } from '@121-service/src/payments/dto/export-transaction-response.dto';
 import { PaymentAggregationFullDto } from '@121-service/src/payments/dto/payment-aggregation-full.dto';
@@ -241,6 +242,36 @@ export class PaymentsController {
       programId,
       paymentId,
       note,
+    });
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentREAD] })
+  @ApiOperation({
+    summary: 'Check if the current user can approve a payment approval step',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
+  @ApiParam({ name: 'approvalId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Whether the current user is eligible to approve this step',
+    type: CanApprovePaymentApprovalResponseDto,
+  })
+  @Get(
+    'programs/:programId/payments/:paymentId/approvals/:approvalId/can-approve',
+  )
+  public async canUserApprovePaymentApproval(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('paymentId', ParseIntPipe) paymentId: number,
+    @Param('approvalId', ParseIntPipe) approvalId: number,
+    @Req() req: ScopedUserRequest,
+  ): Promise<CanApprovePaymentApprovalResponseDto> {
+    const userId = RequestHelper.getUserId(req);
+    return await this.paymentsManagementService.canUserApprovePaymentApproval({
+      userId,
+      programId,
+      paymentId,
+      approvalId,
     });
   }
 

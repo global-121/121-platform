@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, Repository } from 'typeorm';
 
+import { CanApprovePaymentApprovalResponseDto } from '@121-service/src/payments/dto/can-approve-payment-approval-response.dto';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
@@ -394,16 +395,9 @@ export class PaymentsManagementService {
       );
     }
 
-    if (approvalAssignedToApprover.approved) {
-      throw new HttpException(
-        'This approval step has already been approved for this payment',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    this.checkLowestRankOrThrow({
-      currentPaymentApproval: approvalAssignedToApprover,
-      allPaymentApprovals: paymentApprovals,
+    this.validateApprovalEligibilityOrThrow({
+      approval: approvalAssignedToApprover,
+      allApprovals: paymentApprovals,
     });
 
     // store payment approval
@@ -434,6 +428,72 @@ export class PaymentsManagementService {
         programId,
       });
     }
+  }
+
+  public async canUserApprovePaymentApproval({
+    userId,
+    programId,
+    paymentId,
+    approvalId,
+  }: {
+    userId: number;
+    programId: number;
+    paymentId: number;
+    approvalId: number;
+  }): Promise<CanApprovePaymentApprovalResponseDto> {
+    const userAssignment = await this.aidworkerAssignmentRepository.findOne({
+      where: { userId: Equal(userId), programId: Equal(programId) },
+    });
+    if (!userAssignment) {
+      return { canApprove: false };
+    }
+
+    const allApprovals = await this.paymentApprovalRepository.find({
+      where: { paymentId: Equal(paymentId) },
+      relations: { approverAssignments: true },
+    });
+
+    const approval = allApprovals.find((a) => a.id === approvalId);
+    if (!approval) {
+      throw new HttpException(
+        `Payment approval with id ${approvalId} not found for payment ${paymentId} in program ${programId}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const isAssigned = approval.approverAssignments.some(
+      (a) => a.id === userAssignment.id,
+    );
+    if (!isAssigned) {
+      return { canApprove: false };
+    }
+
+    try {
+      this.validateApprovalEligibilityOrThrow({ approval, allApprovals });
+    } catch {
+      return { canApprove: false };
+    }
+
+    return { canApprove: true };
+  }
+
+  private validateApprovalEligibilityOrThrow({
+    approval,
+    allApprovals,
+  }: {
+    approval: PaymentApprovalEntity;
+    allApprovals: PaymentApprovalEntity[];
+  }): void {
+    if (approval.approved) {
+      throw new HttpException(
+        'This approval step has already been approved for this payment',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    this.checkLowestRankOrThrow({
+      currentPaymentApproval: approval,
+      allPaymentApprovals: allApprovals,
+    });
   }
 
   private checkLowestRankOrThrow({
