@@ -2198,18 +2198,26 @@
       <trans-unit id="274004434910655724" datatype="html">
         <source>We couldn&apos;t configure this FSP due to missing fields in your program.</source>
       </trans-unit>
-      <trans-unit id="3978034238801036238" datatype="html">
-        <source>Kobo form URL</source>
+      <trans-unit id="5785603167347646403" datatype="html">
+        <source>File name change successful</source>
       </trans-unit>
-      <trans-unit id="1383533176932798822" datatype="html">
-        <source>We couldn&apos;t process this URL. Please verify in KoboToolbox.</source>
+      <trans-unit id="5969374450397102287" datatype="html">
+        <source>Please enter file name.</source>
       </trans-unit>
-      <trans-unit id="integrate-kobo-form-url-explanation" datatype="html">
-        <source>The full URL from the form&apos;s page in KoboToolbox, i.e: https://kobo.ifrc.org/#/forms/XXXXXX/summary</source>
-        <note priority="1" from="description">Do NOT translate the URL!</note>
+      <trans-unit id="732965913930858930" datatype="html">
+        <source>Edit file details</source>
       </trans-unit>
-      <trans-unit id="integrate-kobo-form-api-key-explanation" datatype="html">
-        <source>In KoboToolbox, go to &quot;Account Settings&quot; (top-right menu), sub-page &quot;Security&quot;.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Make sure to click &quot;Display&quot; next to the API Key before copying.</source>
+      <trans-unit id="7500958067353650400" datatype="html">
+        <source>Apply change</source>
+      </trans-unit>
+      <trans-unit id="8430432279551054277" datatype="html">
+        <source>Enter new name</source>
+      </trans-unit>
+      <trans-unit id="8982988099694218478" datatype="html">
+        <source>You are about to change the name of the <x equiv-text="{{ selectedFile()?.mimetype }}" id="INTERPOLATION"/> file: <x equiv-text="{{ selectedFilenameWithoutExtension() }}" id="INTERPOLATION_1"/></source>
+      </trans-unit>
+      <trans-unit id="generic-change-name" datatype="html">
+        <source>Change name</source>
       </trans-unit>
     </body>
   </file>
