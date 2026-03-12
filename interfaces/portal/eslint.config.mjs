@@ -42,6 +42,36 @@ export default defineConfig(
     },
   },
   {
+    name: 'JavaScript files',
+    files: ['**/*.js', '**/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
+      globals: {
+        module: 'readonly',
+        process: 'readonly',
+        require: 'readonly',
+      },
+    },
+    extends: [
+      eslint.configs.recommended,
+      eslintPluginRegexp.configs['flat/recommended'],
+      eslintPluginPerfectionist.configs['recommended-natural'],
+      eslintPluginPrettierRecommended,
+    ],
+    plugins: {
+      'eslint-comments': eslintPluginComments,
+      regexp: eslintPluginRegexp,
+    },
+    rules: {
+      'arrow-body-style': 'error',
+      'eslint-comments/require-description': 'error',
+      'func-style': 'error',
+      'no-inner-declarations': 'error',
+      'object-shorthand': 'error',
+      'prefer-arrow-callback': 'error',
+    },
+  },
+  {
     name: 'TypeScript files',
     files: ['**/*.ts'],
     extends: [
@@ -242,36 +272,6 @@ export default defineConfig(
       'better-tailwindcss': {
         entryPoint: 'src/styles.css',
       },
-    },
-  },
-  {
-    name: 'JavaScript files',
-    files: ['**/*.js', '**/*.mjs'],
-    languageOptions: {
-      ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
-      globals: {
-        module: 'readonly',
-        process: 'readonly',
-        require: 'readonly',
-      },
-    },
-    extends: [
-      eslint.configs.recommended,
-      eslintPluginRegexp.configs['flat/recommended'],
-      eslintPluginPerfectionist.configs['recommended-natural'],
-      eslintPluginPrettierRecommended,
-    ],
-    plugins: {
-      'eslint-comments': eslintPluginComments,
-      regexp: eslintPluginRegexp,
-    },
-    rules: {
-      'arrow-body-style': 'error',
-      'eslint-comments/require-description': 'error',
-      'func-style': 'error',
-      'no-inner-declarations': 'error',
-      'object-shorthand': 'error',
-      'prefer-arrow-callback': 'error',
     },
   },
 );
