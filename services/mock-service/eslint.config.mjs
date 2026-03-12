@@ -1,5 +1,5 @@
 import eslint from '@eslint/js';
-import { defineConfig } from 'eslint/config';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import eslintPluginComments from 'eslint-plugin-eslint-comments';
 import eslintPluginN from 'eslint-plugin-n';
 import eslintPluginNoRelativePaths from 'eslint-plugin-no-relative-import-paths';
@@ -10,6 +10,7 @@ import globals from 'globals';
 import tsEslint from 'typescript-eslint';
 
 export default defineConfig(
+  globalIgnores(['dist/**', 'tmp/**', 'coverage/**']),
   {
     name: 'Root config',
     languageOptions: {
