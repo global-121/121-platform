@@ -1,5 +1,5 @@
 import eslint from '@eslint/js';
-import { defineConfig } from 'eslint/config';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import eslintPluginComments from 'eslint-plugin-eslint-comments';
 import eslintPluginJest from 'eslint-plugin-jest';
 import eslintPluginN from 'eslint-plugin-n';
@@ -24,9 +24,15 @@ const customRulesPlugin = {
 };
 
 export default defineConfig(
+  globalIgnores([
+    'dist/**',
+    'tmp/**',
+    '.nyc_output/**',
+    'documentation/**',
+    'coverage/**',
+  ]),
   {
     name: 'Root config',
-    ignores: ['dist/**', 'tmp/**', 'documentation/**', 'coverage/**'],
     languageOptions: {
       globals: globals.node,
       parserOptions: {
