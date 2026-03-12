@@ -7,12 +7,10 @@ module.exports = {
   includeEntryExports: true,
   ignoreBinaries: [
     'open', // Default available on macOS
-    'retry-failed-jobs-on-startup-during-queue-processing.test.ts', // Weird false positive?
   ],
   ignoreDependencies: [
     // Known issues with devDependencies:
     '@automock/adapters.nestjs', // Auto-loaded by @automock/jest
-    'eslint-plugin-custom-rules', // Local plugin imported via file path in eslint.config.mjs, not detected by Knip
   ],
   rules: {
     binaries: 'error',

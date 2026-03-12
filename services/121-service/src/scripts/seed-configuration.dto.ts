@@ -24,7 +24,7 @@ export class SeedConfigurationDto {
   readonly firstProgramId?: number;
 }
 
-export class SeedConfigurationProgramDto {
+class SeedConfigurationProgramDto {
   @ApiProperty({ example: 'program-safaricom.json' })
   readonly program: string;
 
