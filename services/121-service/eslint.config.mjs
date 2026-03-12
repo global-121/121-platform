@@ -40,6 +40,10 @@ export default defineConfig(
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    linterOptions: {
+      reportUnusedInlineConfigs: 'error',
+      reportUnusedDisableDirectives: 'error',
+    },
   },
   {
     name: 'JavaScript files (ESM)',
