@@ -33,6 +33,7 @@
     "test:deployment-configuration": "node --env-file-if-exists=.env ./_test-deployment-configuration.mjs",
     "test:ci": "npm test -- --no-watch --no-progress",
     "test:coverage": "npm run test:ci -- --coverage",
+    "pretest": "npm run set-env-variables -- --env=development",
     "test": "ng test",
     "upgrade:angular": "ng update @angular/core @angular/cli --create-commits",
     "verify:deployment-configuration": "node --env-file-if-exists=.env ./_verify-deployment-configuration.mjs",
