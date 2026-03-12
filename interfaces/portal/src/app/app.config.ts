@@ -48,6 +48,7 @@ const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     // eslint-disable-next-line max-params -- we don't control this function signature
     onSuccess: async (_data, _variables, _context, mutation) => {
+      // eslint-disable-next-line custom-rules/tanstack-no-manual-cache-invalidation -- We do the cache invalidation manually here; So we don't have to do it in every use-case throughout the code.
       await queryClient.invalidateQueries();
 
       if (!mutation.options.meta?.invalidateCacheAgainAfterDelay) {
@@ -59,6 +60,7 @@ const queryClient = new QueryClient({
       // To accommodate for this, we invalidate queries a second time after
       // a short delay.
       setTimeout(() => {
+        // eslint-disable-next-line custom-rules/tanstack-no-manual-cache-invalidation -- We do the cache invalidation manually here; So we don't have to do it in every use-case throughout the code.
         void queryClient.invalidateQueries();
       }, mutation.options.meta.invalidateCacheAgainAfterDelay);
     },
