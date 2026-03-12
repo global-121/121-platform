@@ -2219,6 +2219,9 @@
       <trans-unit id="generic-change-name" datatype="html">
         <source>Change name</source>
       </trans-unit>
+      <trans-unit id="8995474184079201011" datatype="html">
+        <source>Use a clear name so users can easily recognize the file.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
