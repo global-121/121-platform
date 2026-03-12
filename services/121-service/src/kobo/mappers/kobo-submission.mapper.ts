@@ -51,11 +51,7 @@ export class KoboSubmissionMapper {
     // to the attachment's download URL so the link is stored in 121 instead of
     // the raw filename.
     const attachmentUrl = this.resolveAttachmentUrl({ value, attachments });
-    if (attachmentUrl !== null) {
-      return { attributeName, value: attachmentUrl };
-    }
-
-    return { attributeName, value };
+    return { attributeName, value: attachmentUrl ?? value };
   }
 
   private static resolveAttachmentUrl({
@@ -64,14 +60,14 @@ export class KoboSubmissionMapper {
   }: {
     value: unknown;
     attachments: KoboAttachmentDto[];
-  }): string | null {
+  }): string | undefined {
     if (typeof value !== 'string') {
-      return null;
+      return;
     }
 
     const expectedFilename = this.extractNormalizedFilename(value);
     if (!expectedFilename) {
-      return null;
+      return;
     }
 
     const matchingAttachment = attachments.find(
@@ -79,12 +75,13 @@ export class KoboSubmissionMapper {
         this.extractNormalizedFilename(attachment.filename) ===
         expectedFilename,
     );
-    return matchingAttachment?.download_url ?? null;
+    return matchingAttachment?.download_url;
   }
 
   private static extractNormalizedFilename(path: string): string | null {
     // Normalize filename by replacing spaces with underscores and removing special characters
     const normalized = path.replace(/ /g, '_').replace(/[(,)']/g, '');
+    // This is needed because kobo passes filname a a path here /path/to/my file (1).jpg but in the attachments the filename is just my_file_1.jpg so we need to extract the filename from the path
     return normalized.split('/').pop() ?? null;
   }
 
