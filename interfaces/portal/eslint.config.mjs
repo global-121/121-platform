@@ -1,3 +1,4 @@
+/* eslint-disable perfectionist/sort-objects -- Keep the config readable, by NOT sorting alphabetically automatically. */
 import eslint from '@eslint/js';
 import pluginQuery from '@tanstack/eslint-plugin-query';
 import angularEslint from 'angular-eslint';
@@ -26,6 +27,7 @@ const customRulesPlugin = {
 
 export default defineConfig(
   {
+    name: 'Root config',
     languageOptions: {
       globals: globals.browser,
       parserOptions: {
@@ -33,9 +35,10 @@ export default defineConfig(
         tsconfigRootDir: import.meta.dirname,
       },
     },
-    name: 'Root config',
   },
   {
+    name: 'TypeScript files',
+    files: ['**/*.ts'],
     extends: [
       eslint.configs.recommended,
       ...tsEslint.configs.strictTypeChecked,
@@ -46,8 +49,6 @@ export default defineConfig(
       eslintSortClassMembers.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
-    files: ['**/*.ts'],
-    name: 'TypeScript files',
     plugins: {
       'custom-rules': customRulesPlugin,
       'eslint-comments': eslintPluginComments,
@@ -135,8 +136,8 @@ export default defineConfig(
     },
   },
   {
-    files: ['**/*.spec.ts'],
     name: '(Unit-)test files',
+    files: ['**/*.spec.ts'],
     rules: {
       // This rule triggers for spy objects where the spied-upon method uses
       // `this`. In that case the underlying method is just not called so the
@@ -145,13 +146,13 @@ export default defineConfig(
     },
   },
   {
+    name: 'Component templates (HTML)',
+    files: ['src/app/**/*.html'],
     extends: [
       ...angularEslint.configs.templateRecommended,
       ...angularEslint.configs.templateAccessibility,
       eslintPluginPrettierRecommended,
     ],
-    files: ['src/app/**/*.html'],
-    name: 'Component templates (HTML)',
     plugins: {
       'better-tailwindcss': eslintPluginBetterTailwindcss,
     },
@@ -240,12 +241,7 @@ export default defineConfig(
     },
   },
   {
-    extends: [
-      eslint.configs.recommended,
-      eslintPluginRegexp.configs['flat/recommended'],
-      eslintPluginPerfectionist.configs['recommended-natural'],
-      eslintPluginPrettierRecommended,
-    ],
+    name: 'JavaScript files',
     files: ['**/*.js', '**/*.mjs'],
     languageOptions: {
       ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
@@ -255,7 +251,12 @@ export default defineConfig(
         require: 'readonly',
       },
     },
-    name: 'JavaScript files',
+    extends: [
+      eslint.configs.recommended,
+      eslintPluginRegexp.configs['flat/recommended'],
+      eslintPluginPerfectionist.configs['recommended-natural'],
+      eslintPluginPrettierRecommended,
+    ],
     plugins: {
       'eslint-comments': eslintPluginComments,
       regexp: eslintPluginRegexp,

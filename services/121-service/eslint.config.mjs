@@ -25,9 +25,8 @@ const customRulesPlugin = {
 
 export default defineConfig(
   {
+    name: 'Root config',
     ignores: ['dist/**', 'tmp/**', 'documentation/**', 'coverage/**'],
-  },
-  {
     languageOptions: {
       globals: globals.node,
       parserOptions: {
@@ -35,20 +34,19 @@ export default defineConfig(
         tsconfigRootDir: import.meta.dirname,
       },
     },
-    name: 'Root config',
   },
   {
-    extends: [
-      eslint.configs.recommended,
-      eslintPluginN.configs['flat/recommended'],
-      eslintPluginPrettierRecommended,
-    ],
+    name: 'JavaScript files (ESM)',
     files: ['**/*.js', '**/*.mjs'],
     languageOptions: {
       ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
       sourceType: 'module',
     },
-    name: 'JavaScript files (ESM)',
+    extends: [
+      eslint.configs.recommended,
+      eslintPluginN.configs['flat/recommended'],
+      eslintPluginPrettierRecommended,
+    ],
     plugins: {
       'eslint-comments': eslintPluginComments,
     },
@@ -65,6 +63,8 @@ export default defineConfig(
     },
   },
   {
+    name: 'TypeScript files',
+    files: ['**/*.ts'],
     extends: [
       ...tsEslint.configs.recommended,
       ...tsEslint.configs.stylistic,
@@ -72,8 +72,6 @@ export default defineConfig(
       eslintPluginPromise.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
-    files: ['**/*.ts'],
-    name: 'TypeScript files',
     plugins: {
       'eslint-comments': eslintPluginComments,
       'no-relative-import-paths': eslintPluginNoRelativePaths,
@@ -169,8 +167,8 @@ export default defineConfig(
     },
   },
   {
-    files: ['**/*.entity.ts'],
     name: 'Entity files',
+    files: ['**/*.entity.ts'],
     plugins: {
       'custom-rules': customRulesPlugin,
     },
@@ -179,8 +177,8 @@ export default defineConfig(
     },
   },
   {
-    files: ['**/*.controller.ts'],
     name: 'Controller files',
+    files: ['**/*.controller.ts'],
     plugins: {
       'custom-rules': customRulesPlugin,
     },
@@ -190,8 +188,8 @@ export default defineConfig(
     },
   },
   {
-    extends: [eslintPluginJest.configs['flat/recommended']],
-    files: ['**/*.spec.ts', '**/*.test.ts'],
     name: 'Test files',
+    files: ['**/*.spec.ts', '**/*.test.ts'],
+    extends: [eslintPluginJest.configs['flat/recommended']],
   },
 );
