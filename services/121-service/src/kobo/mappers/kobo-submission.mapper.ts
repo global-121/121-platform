@@ -1,3 +1,4 @@
+import { KoboAttachmentDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-attachment.dto';
 import { KoboSubmissionDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-submission.dto';
 import { KoboFormDefinitionMapper } from '@121-service/src/kobo/mappers/kobo-form-definition.mapper';
 import { fspQuestionName } from '@121-service/src/kobo/services/kobo.service';
@@ -10,9 +11,10 @@ export class KoboSubmissionMapper {
     koboSubmission: KoboSubmissionDto;
   }): Record<string, string | boolean | number> {
     const registrationData: Record<string, string | boolean | number> = {};
+    const attachments = koboSubmission._attachments ?? [];
 
     Object.entries(koboSubmission).forEach(([key, value]) => {
-      const entry = this.mapSubmissionEntry({ key, value });
+      const entry = this.mapSubmissionEntry({ key, value, attachments });
       if (entry) {
         registrationData[entry.attributeName] = entry.value;
       }
@@ -24,9 +26,11 @@ export class KoboSubmissionMapper {
   private static mapSubmissionEntry({
     key,
     value,
+    attachments,
   }: {
     key: string;
     value: unknown;
+    attachments: KoboAttachmentDto[];
   }): { attributeName: string; value: string | boolean | number } | null {
     // Skip metadata fields
     if (!this.isMetadataField({ key })) {
@@ -42,7 +46,43 @@ export class KoboSubmissionMapper {
     }
 
     const attributeName = this.mapSubmissionKeyToAttributeName({ key });
-    return { attributeName, value };
+
+    // If the value is a filename path matching a known attachment, resolve it
+    // to the attachment's download URL so the link is stored in 121 instead of
+    // the raw filename.
+    const attachmentUrl = this.resolveAttachmentUrl({ value, attachments });
+    return { attributeName, value: attachmentUrl ?? value };
+  }
+
+  private static resolveAttachmentUrl({
+    value,
+    attachments,
+  }: {
+    value: unknown;
+    attachments: KoboAttachmentDto[];
+  }): string | undefined {
+    if (typeof value !== 'string') {
+      return;
+    }
+
+    const expectedFilename = this.extractNormalizedFilename(value);
+    if (!expectedFilename) {
+      return;
+    }
+
+    const matchingAttachment = attachments.find(
+      (attachment) =>
+        this.extractNormalizedFilename(attachment.filename) ===
+        expectedFilename,
+    );
+    return matchingAttachment?.download_url;
+  }
+
+  private static extractNormalizedFilename(path: string): string | null {
+    // Normalize filename by replacing spaces with underscores and removing special characters
+    const normalized = path.replace(/ /g, '_').replace(/[(,)']/g, '');
+    // This is needed because kobo passes filname a a path here /path/to/my file (1).jpg but in the attachments the filename is just my_file_1.jpg so we need to extract the filename from the path
+    return normalized.split('/').pop() ?? null;
   }
 
   private static isSupportedValue(

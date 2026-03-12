@@ -126,5 +126,89 @@ describe('KoboSubmissionMapper', () => {
         `"Unsupported Kobo submission value type for key "attachmentList". Only string, number, and boolean values are supported."`,
       );
     });
+
+    describe('attachment resolution', () => {
+      const attachmentSubmissionBase = {
+        ...baseSubmission,
+        _uuid: 'ref-id',
+      };
+
+      it('should resolve attachment filename to download URL when value matches a known attachment', () => {
+        // Arrange
+        const downloadUrl =
+          'https://kobo.example.com/api/v2/assets/test/data/1/attachments/1';
+        const submission = {
+          ...attachmentSubmissionBase,
+          photo:
+            'username/attachments/form-id/submission-uuid/important_photo.jpg',
+          _attachments: [
+            {
+              filename:
+                'username/attachments/form-id/submission-uuid/important_photo.jpg',
+              download_url: downloadUrl,
+              mimetype: 'image/jpeg',
+            },
+          ],
+        };
+
+        // Act
+        const result = KoboSubmissionMapper.mapSubmissionToRegistrationData({
+          koboSubmission: submission,
+        });
+
+        // Assert
+        expect(result.photo).toBe(downloadUrl);
+      });
+
+      it('should normalize value before matching attachment (spaces to underscores, strip punctuation)', () => {
+        // Arrange
+        const downloadUrl =
+          'https://kobo.example.com/api/v2/assets/test/data/1/attachments/2';
+        const submission = {
+          ...attachmentSubmissionBase,
+          // value has spaces and parentheses which get normalized: "my file (1).jpg" → "my_file_1.jpg"
+          photo: 'path/to/my file (1).jpg',
+          _attachments: [
+            {
+              filename: 'path/to/my_file_1.jpg',
+              download_url: downloadUrl,
+              mimetype: 'image/jpeg',
+            },
+          ],
+        };
+
+        // Act
+        const result = KoboSubmissionMapper.mapSubmissionToRegistrationData({
+          koboSubmission: submission,
+        });
+
+        // Assert
+        expect(result.photo).toBe(downloadUrl);
+      });
+
+      it('should keep original string value when it does not match any attachment', () => {
+        // Arrange
+        const rawFilename = 'some-text-value-not-an-attachment.jpg';
+        const submission = {
+          ...attachmentSubmissionBase,
+          photo: rawFilename,
+          _attachments: [
+            {
+              filename: 'username/attachments/form-id/other_file.jpg',
+              download_url: 'https://kobo.example.com/other',
+              mimetype: 'image/jpeg',
+            },
+          ],
+        };
+
+        // Act
+        const result = KoboSubmissionMapper.mapSubmissionToRegistrationData({
+          koboSubmission: submission,
+        });
+
+        // Assert
+        expect(result.photo).toBe(rawFilename);
+      });
+    });
   });
 });

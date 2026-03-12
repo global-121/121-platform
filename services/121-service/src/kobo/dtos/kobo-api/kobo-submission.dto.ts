@@ -1,3 +1,5 @@
+import { KoboAttachmentDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-attachment.dto';
+
 /**
  * Represents a Kobo submission response.
  * Kobo submissions contain both fixed metadata fields and dynamic form fields
@@ -14,7 +16,7 @@ export interface KoboSubmissionDto extends Record<string, unknown> {
   start?: string;
   end?: string;
   'meta/instanceID'?: string;
-  _attachments?: unknown[];
+  _attachments?: KoboAttachmentDto[];
   _geolocation?: string[];
   _tags?: string[];
   _notes?: string[];

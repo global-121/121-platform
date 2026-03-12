@@ -27,6 +27,8 @@ describe('KoboSubmissionService', () => {
   const fullName = 'John Doe';
   const nationalId = '123456789';
   const phoneNumber = '+31612345678';
+  const photoDownloadUrl =
+    'https://kobo.example.com/api/v2/assets/test/data/1/attachments/1';
 
   const mockProgram = {
     id: 1,
@@ -56,6 +58,15 @@ describe('KoboSubmissionService', () => {
     fullName,
     nationalId,
     phoneNumber,
+    photo: 'username/attachments/form-id/submission-uuid/important_photo.jpg',
+    _attachments: [
+      {
+        filename:
+          'username/attachments/form-id/submission-uuid/important_photo.jpg',
+        download_url: photoDownloadUrl,
+        mimetype: 'image/jpeg',
+      },
+    ],
   };
 
   beforeEach(async () => {
@@ -129,6 +140,7 @@ describe('KoboSubmissionService', () => {
             fullName,
             nationalId,
             phoneNumber,
+            photo: photoDownloadUrl,
           },
         ],
         program: mockProgram,
