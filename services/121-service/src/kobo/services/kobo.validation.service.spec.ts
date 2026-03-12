@@ -1165,4 +1165,46 @@ describe('KoboValidationService', () => {
       `);
     });
   });
+
+  it('should throw HttpException when a select_one item has no choices', async () => {
+    // Arrange
+    (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
+      fullnameNamingConvention: [],
+      allowEmptyPhoneNumber: true,
+      enableScope: false,
+    });
+    (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue([]);
+
+    const formDefinitionWithEmptySelectOne: KoboFormDefinition = {
+      ...baseFormDefinition,
+      survey: [
+        ...baseSurveyItems,
+        {
+          name: 'gender',
+          type: 'select_one',
+          label: ['What is your gender?'],
+          required: false,
+          choices: [],
+        },
+      ],
+    };
+
+    // Act
+    let error: HttpException | any;
+    try {
+      await service.validateKoboFormDefinition({
+        formDefinition: formDefinitionWithEmptySelectOne,
+        programId,
+      });
+    } catch (e) {
+      error = e;
+    }
+
+    // Assert
+    expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+    expect(error.message).toMatchInlineSnapshot(`
+     "Kobo form definition validation failed:
+     - Kobo form attribute "gender" is of type select_one but has no choices defined. Note that choices defined in a separate CSV file are not supported."
+    `);
+  });
 });
