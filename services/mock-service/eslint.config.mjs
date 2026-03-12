@@ -11,6 +11,7 @@ import tsEslint from 'typescript-eslint';
 
 export default defineConfig(
   {
+    name: 'Root config',
     languageOptions: {
       globals: globals.node,
       parserOptions: {
@@ -18,21 +19,20 @@ export default defineConfig(
         tsconfigRootDir: import.meta.dirname,
       },
     },
-    name: 'Root config',
   },
   {
+    name: 'JavaScript files (ESM)',
+    files: ['**/*.js', '**/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
+      sourceType: 'module',
+    },
     extends: [
       eslint.configs.recommended,
       eslintPluginN.configs['flat/recommended'],
       eslintPluginRegexp.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
-    files: ['**/*.js', '**/*.mjs'],
-    name: 'JavaScript files (ESM)',
-    languageOptions: {
-      ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
-      sourceType: 'module',
-    },
     plugins: {
       'eslint-comments': eslintPluginComments,
     },
@@ -49,6 +49,8 @@ export default defineConfig(
     },
   },
   {
+    name: 'TypeScript files',
+    files: ['**/*.ts'],
     extends: [
       ...tsEslint.configs.recommended,
       ...tsEslint.configs.stylistic,
@@ -56,8 +58,6 @@ export default defineConfig(
       eslintPluginRegexp.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
-    files: ['**/*.ts'],
-    name: 'TypeScript files',
     plugins: {
       'eslint-comments': eslintPluginComments,
       'no-relative-import-paths': eslintPluginNoRelativePaths,
