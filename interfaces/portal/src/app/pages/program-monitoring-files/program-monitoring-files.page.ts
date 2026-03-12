@@ -140,16 +140,13 @@ export class ProgramMonitoringFilesPageComponent {
   });
 
   editFileMutation = injectMutation(() => ({
-    mutationFn: (data: {
-      id: number;
-      mimetype: string | undefined;
-      updateFileName: string;
-    }) =>
+    mutationFn: (data: { id: number; updateFileName: string }) =>
       this.programApiService.updateProgramAttachment({
         programId: this.programId,
         attachmentId: data.id,
-        filename: data.updateFileName,
-        mimetype: data.mimetype,
+        filename: data.updateFileName.includes('.')
+          ? data.updateFileName.slice(0, data.updateFileName.lastIndexOf('.'))
+          : data.updateFileName,
       }),
     onSuccess: () => {
       this.toastService.showToast({
@@ -214,6 +211,10 @@ export class ProgramMonitoringFilesPageComponent {
           resetMutation: true,
         });
       },
+      visible: this.authService.hasPermission({
+        programId: this.programId(),
+        requiredPermission: PermissionEnum.ProgramAttachmentsCREATE,
+      }),
     },
     {
       label: $localize`:@@generic-download:Download`,
