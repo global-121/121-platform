@@ -61,7 +61,7 @@ export class KoboFormDefinitionMapper {
         name: parsedName,
         type: item.type.split(' ')[0], // Normalize e.g. 'select_one list_name' to 'select_one'
         label: item.label,
-        required: item.required,
+        required: false, // We do not use the 'required' property from Kobo because in Kobo a question can be conditionally required based on skip logic while still haveing the 'required' property on true
         choices: itemChoices,
       };
     });

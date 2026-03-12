@@ -82,7 +82,7 @@ describe('KoboFormDefinitionMapper', () => {
           name: 'fullName',
           type: 'text',
           label: ['What is your full name?'],
-          required: true,
+          required: false,
           choices: [],
         },
         {
