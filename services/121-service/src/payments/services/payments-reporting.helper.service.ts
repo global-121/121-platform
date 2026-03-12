@@ -175,32 +175,34 @@ export class PaymentsReportingHelperService {
       isPaymentApproved: payment.isPaymentApproved,
       approvalsRequired: payment.approvalsRequired,
       approvalsGiven: payment.approvalsGiven,
-      [TransactionStatusEnum.success]: this.getAggregateForPaymentAndStatus({
-        aggregationResults,
-        paymentId: payment.id,
-        status: TransactionStatusEnum.success,
-      }),
-      [TransactionStatusEnum.waiting]: this.getAggregateForPaymentAndStatus({
-        aggregationResults,
-        paymentId: payment.id,
-        status: TransactionStatusEnum.waiting,
-      }),
-      failed: this.getAggregateForPaymentAndStatus({
-        aggregationResults,
-        paymentId: payment.id,
-        status: TransactionStatusEnum.error,
-      }),
-      [TransactionStatusEnum.pendingApproval]:
-        this.getAggregateForPaymentAndStatus({
+      aggregationsPerStatus: {
+        [TransactionStatusEnum.success]: this.getAggregateForPaymentAndStatus({
           aggregationResults,
           paymentId: payment.id,
-          status: TransactionStatusEnum.pendingApproval,
+          status: TransactionStatusEnum.success,
         }),
-      [TransactionStatusEnum.approved]: this.getAggregateForPaymentAndStatus({
-        aggregationResults,
-        paymentId: payment.id,
-        status: TransactionStatusEnum.approved,
-      }),
+        [TransactionStatusEnum.waiting]: this.getAggregateForPaymentAndStatus({
+          aggregationResults,
+          paymentId: payment.id,
+          status: TransactionStatusEnum.waiting,
+        }),
+        failed: this.getAggregateForPaymentAndStatus({
+          aggregationResults,
+          paymentId: payment.id,
+          status: TransactionStatusEnum.error,
+        }),
+        [TransactionStatusEnum.pendingApproval]:
+          this.getAggregateForPaymentAndStatus({
+            aggregationResults,
+            paymentId: payment.id,
+            status: TransactionStatusEnum.pendingApproval,
+          }),
+        [TransactionStatusEnum.approved]: this.getAggregateForPaymentAndStatus({
+          aggregationResults,
+          paymentId: payment.id,
+          status: TransactionStatusEnum.approved,
+        }),
+      },
     }));
   }
 

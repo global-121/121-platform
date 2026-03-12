@@ -73,31 +73,31 @@ export class PaymentSummaryCardComponent {
   });
 
   readonly includedRegistrations = computed(() => {
-    const data = this.currentPaymentData();
-    return (
-      data.success.count +
-      data.waiting.count +
-      data.failed.count +
-      data.pendingApproval.count
-    );
+    let total = 0;
+    const statuses: Record<string, { count: number; transferValue: number }> =
+      this.currentPaymentData().aggregationsPerStatus;
+    for (const status of Object.values(statuses)) {
+      total += status.count;
+    }
+    return total;
   });
 
   readonly expectedAmount = computed(() => {
-    const data = this.currentPaymentData();
-    return (
-      data.success.transferValue +
-      data.waiting.transferValue +
-      data.failed.transferValue +
-      data.pendingApproval.transferValue
-    );
+    let total = 0;
+    const statuses: Record<string, { count: number; transferValue: number }> =
+      this.currentPaymentData().aggregationsPerStatus;
+    for (const status of Object.values(statuses)) {
+      total += status.transferValue;
+    }
+    return total;
   });
 
   readonly showFailedAlert = computed(
-    () => this.currentPaymentData().failed.count > 0,
+    () => this.currentPaymentData().aggregationsPerStatus.failed.count > 0,
   );
 
   readonly successAmount = computed(
-    () => this.currentPaymentData().success.transferValue,
+    () => this.currentPaymentData().aggregationsPerStatus.success.transferValue,
   );
 
   readonly paymentLink = computed(() =>
@@ -131,7 +131,9 @@ export class PaymentSummaryCardComponent {
       label: $localize`Expected total amount`,
     },
     {
-      value: this.decimalPipe.transform(this.currentPaymentData().failed.count),
+      value: this.decimalPipe.transform(
+        this.currentPaymentData().aggregationsPerStatus.failed.count,
+      ),
       label: $localize`Failed transactions`,
       showAlert: this.showFailedAlert(),
     },

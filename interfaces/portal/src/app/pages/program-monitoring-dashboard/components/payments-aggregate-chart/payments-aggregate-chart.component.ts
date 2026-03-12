@@ -75,7 +75,9 @@ export class PaymentsAggregateChartComponent {
   });
 
   readonly data = computed(() =>
-    this.queryData().map((payment) => payment.aggregatedStatuses),
+    this.queryData().map(
+      (payment) => payment.aggregatedStatuses.aggregationsPerStatus,
+    ),
   );
 
   readonly chartOptions = computed(() =>

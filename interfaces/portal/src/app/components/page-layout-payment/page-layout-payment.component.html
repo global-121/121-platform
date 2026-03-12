@@ -71,7 +71,10 @@
         class="[grid-area:chart]"
         height="100%"
       ></p-skeleton>
-    } @else if (paymentAggregateData()?.pendingApproval?.count === 0) {
+    } @else if (
+      paymentAggregateData()?.aggregationsPerStatus?.pendingApproval?.count ===
+      0
+    ) {
       <p-card
         class="[grid-area:chart] [&_.p-card]:h-full [&_.p-card-body]:h-full"
       >
