@@ -80,7 +80,6 @@ export default defineConfig(
         },
       ],
       '@angular-eslint/no-async-lifecycle-method': ['error'],
-      '@angular-eslint/no-conflicting-lifecycle': ['error'],
       '@angular-eslint/prefer-on-push-component-change-detection': ['error'],
       '@angular-eslint/prefer-output-readonly': ['error'],
       '@angular-eslint/prefer-signals': ['error'],
