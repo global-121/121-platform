@@ -48,7 +48,7 @@
     />
 
     @let latestPaymentAmount =
-      this.latestPayment.data()?.success?.transferValue;
+      this.latestPayment.data()?.aggregationsPerStatus?.success?.transferValue;
     <app-metric-tile
       class="[grid-area:metric4]"
       [pending]="metrics.isPending()"

@@ -94,12 +94,15 @@ export class PageLayoutPaymentComponent {
         return 1000;
       }
 
+      const statuses = data.aggregationsPerStatus;
+
       const isPaymentWaitingToStart =
-        data.approved.count + data.pendingApproval.count ===
+        statuses.approved.count + statuses.pendingApproval.count ===
         this.totalTransactions();
 
       const isPaymentFinished =
-        data.success.count + data.failed.count === this.totalTransactions();
+        statuses.success.count + statuses.failed.count ===
+        this.totalTransactions();
 
       if (isPaymentWaitingToStart || isPaymentFinished) {
         return false;
@@ -170,13 +173,11 @@ export class PageLayoutPaymentComponent {
       return '-';
     }
 
-    const totalRegistrations =
-      this.paymentAggregate.data().failed.count +
-      this.paymentAggregate.data().success.count +
-      this.paymentAggregate.data().waiting.count +
-      this.paymentAggregate.data().pendingApproval.count +
-      this.paymentAggregate.data().approved.count;
-
+    const statuses = this.paymentAggregate.data().aggregationsPerStatus;
+    let totalRegistrations = 0;
+    for (const status of Object.values(statuses)) {
+      totalRegistrations += status.count;
+    }
     return totalRegistrations.toString();
   });
 
@@ -185,12 +186,11 @@ export class PageLayoutPaymentComponent {
       return '-';
     }
 
-    const totalTransferValue =
-      this.paymentAggregate.data().failed.transferValue +
-      this.paymentAggregate.data().success.transferValue +
-      this.paymentAggregate.data().waiting.transferValue +
-      this.paymentAggregate.data().pendingApproval.transferValue +
-      this.paymentAggregate.data().approved.transferValue;
+    let totalTransferValue = 0;
+    const statuses = this.paymentAggregate.data().aggregationsPerStatus;
+    for (const status of Object.values(statuses)) {
+      totalTransferValue += status.transferValue;
+    }
 
     return (
       this.currencyPipe.transform(
@@ -209,7 +209,8 @@ export class PageLayoutPaymentComponent {
 
     return (
       this.currencyPipe.transform(
-        this.paymentAggregate.data().success.transferValue,
+        this.paymentAggregate.data().aggregationsPerStatus.success
+          .transferValue,
         this.program.data()?.currency,
         'symbol-narrow',
         '1.0-0',
@@ -259,7 +260,9 @@ export class PageLayoutPaymentComponent {
       if (!this.paymentAggregate.isSuccess()) {
         return '';
       }
-      const count = this.paymentAggregate.data()[transactionStatus].count;
+      const count =
+        this.paymentAggregate.data().aggregationsPerStatus[transactionStatus]
+          .count;
       return count.toString() + ' ' + $localize`registrations`;
     });
 
@@ -273,7 +276,8 @@ export class PageLayoutPaymentComponent {
         return '';
       }
       const totalPaymentAmount =
-        this.paymentAggregate.data()[status].transferValue;
+        this.paymentAggregate.data().aggregationsPerStatus[status]
+          .transferValue;
 
       return (
         this.currencyPipe.transform(
@@ -337,7 +341,9 @@ export class PageLayoutPaymentComponent {
     }
 
     // hide after starting, unless approved transactions left
-    if (this.paymentAggregate.data().approved.count === 0) {
+    if (
+      this.paymentAggregate.data().aggregationsPerStatus.approved.count === 0
+    ) {
       return false;
     }
 
@@ -360,12 +366,12 @@ export class PageLayoutPaymentComponent {
       return false;
     }
 
-    const data = this.paymentAggregate.data();
+    const statuses = this.paymentAggregate.data().aggregationsPerStatus;
 
-    const failed = data.failed.count;
-    const success = data.success.count;
-    const waiting = data.waiting.count;
-    const approved = data.approved.count;
+    const failed = statuses.failed.count;
+    const success = statuses.success.count;
+    const waiting = statuses.waiting.count;
+    const approved = statuses.approved.count;
 
     return failed + success + waiting + approved > 0;
   });

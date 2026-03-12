@@ -1,6 +1,9 @@
+import { format } from 'date-fns';
+
 import { env } from '@121-service/src/env';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { createOrReplaceProgramApprovalThresholds } from '@121-service/test/helpers/program-approval-threshold.helper';
 import { getAllUsersByProgramId } from '@121-service/test/helpers/user.helper';
 import {
@@ -17,6 +20,10 @@ import { customSharedFixture as test } from '@121-e2e/portal/fixtures/fixture';
 const duplicateNumberOfRegistrations = 3;
 const registrationsCount = Math.pow(2, duplicateNumberOfRegistrations);
 const paymentId = 1;
+const paymentAmount =
+  registrationsCount *
+  registrationOCW1.paymentAmountMultiplier *
+  NLRCProgram.fixedTransferValue;
 
 const approvedBadgeLabel = 'Approved';
 const successfulBadgeLabel = 'Successful';
@@ -140,6 +147,22 @@ test('Payment page should display correctly during all phases of payment with 2 
     });
   });
 
+  await test.step('Validate payment card in "Pending approval" state', async () => {
+    const lastPaymentDate = format(new Date(), 'dd/MM/yyyy');
+    await paymentPage.navigateToProgramPage('Payments');
+    await paymentsPage.validatePaymentCard({
+      date: lastPaymentDate,
+      paymentAmount,
+      registrationsNumber: registrationsCount,
+      successfulPaymentAmount: 0,
+      failedTransactions: 0,
+      programId: programIdOCW,
+      paymentId,
+    });
+    await page.goto(`/en-GB/program/${programIdOCW}/payments/${paymentId}`);
+    await paymentPage.waitForPageLoad();
+  });
+
   await test.step('1st Approve payment by admin', async () => {
     await paymentPage.approvePayment();
     await paymentPage.validateToastMessage('Payment approved successfully.');
@@ -204,6 +227,22 @@ test('Payment page should display correctly during all phases of payment with 2 
       isVisible: false,
       button: 'start',
     });
+  });
+
+  await test.step('Validate payment card in "Approved" state', async () => {
+    const lastPaymentDate = format(new Date(), 'dd/MM/yyyy');
+    await paymentPage.navigateToProgramPage('Payments');
+    await paymentsPage.validatePaymentCard({
+      date: lastPaymentDate,
+      paymentAmount,
+      registrationsNumber: registrationsCount,
+      successfulPaymentAmount: 0,
+      failedTransactions: 0,
+      programId: programIdOCW,
+      paymentId,
+    });
+    await page.goto(`/en-GB/program/${programIdOCW}/payments/${paymentId}`);
+    await paymentPage.waitForPageLoad();
   });
 
   await test.step('Start payment', async () => {

@@ -1,46 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-class CountAndTransferValueDto {
-  @ApiProperty({ example: 0 })
-  count: number;
-
-  @ApiProperty({ example: 0 })
-  transferValue: number;
-}
+import { AggregationsPerStatusDto } from '@121-service/src/payments/dto/aggregations-per-status.dto';
 
 export class PaymentAggregationSummaryDto {
   @ApiProperty({ example: 1 })
   paymentId: number;
 
-  @ApiProperty({
-    example: { count: 0, transferValue: 0 },
-    type: CountAndTransferValueDto,
-  })
-  success: CountAndTransferValueDto;
-
-  @ApiProperty({
-    example: { count: 0, transferValue: 0 },
-    type: CountAndTransferValueDto,
-  })
-  waiting: CountAndTransferValueDto;
-
-  @ApiProperty({
-    example: { count: 3, transferValue: 75 },
-    type: CountAndTransferValueDto,
-  })
-  failed: CountAndTransferValueDto;
-
-  @ApiProperty({
-    example: { count: 0, transferValue: 0 },
-    type: CountAndTransferValueDto,
-  })
-  pendingApproval: CountAndTransferValueDto;
-
-  @ApiProperty({
-    example: { count: 0, transferValue: 0 },
-    type: CountAndTransferValueDto,
-  })
-  approved: CountAndTransferValueDto;
+  @ApiProperty({ type: AggregationsPerStatusDto })
+  aggregationsPerStatus: AggregationsPerStatusDto;
 
   @ApiProperty({ example: true })
   isPaymentApproved: boolean;

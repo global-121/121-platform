@@ -87,22 +87,13 @@ describe('Get all payments aggregates', () => {
         'aggregate.aggregatedStatuses: ',
         aggregate.aggregatedStatuses,
       );
-      expect(aggregate.aggregatedStatuses).toEqual(
-        expect.objectContaining({
-          success: expect.objectContaining({
-            count: 1,
-            transferValue,
-          }),
-          waiting: expect.objectContaining({
-            count: 1,
-            transferValue,
-          }),
-          failed: expect.objectContaining({
-            count: 1,
-            transferValue,
-          }),
-        }),
-      );
+      expect(aggregate.aggregatedStatuses.aggregationsPerStatus).toEqual({
+        success: { count: 1, transferValue },
+        waiting: { count: 1, transferValue },
+        failed: { count: 1, transferValue },
+        pendingApproval: { count: 0, transferValue: 0 },
+        approved: { count: 0, transferValue: 0 },
+      });
     });
 
     it('should successfully aggregate results for the latest payment', async () => {
@@ -121,22 +112,13 @@ describe('Get all payments aggregates', () => {
       const today = new Date().toISOString().split('T')[0];
       expect(aggregate.id).toEqual(2);
       expect(aggregate.date).toContain(today);
-      expect(aggregate.aggregatedStatuses).toEqual(
-        expect.objectContaining({
-          success: expect.objectContaining({
-            count: 1,
-            transferValue,
-          }),
-          waiting: expect.objectContaining({
-            count: 1,
-            transferValue,
-          }),
-          failed: expect.objectContaining({
-            count: 1,
-            transferValue,
-          }),
-        }),
-      );
+      expect(aggregate.aggregatedStatuses.aggregationsPerStatus).toEqual({
+        success: { count: 1, transferValue },
+        waiting: { count: 1, transferValue },
+        failed: { count: 1, transferValue },
+        pendingApproval: { count: 0, transferValue: 0 },
+        approved: { count: 0, transferValue: 0 },
+      });
     });
   });
 

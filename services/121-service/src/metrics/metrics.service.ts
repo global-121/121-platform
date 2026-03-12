@@ -501,13 +501,14 @@ export class MetricsService {
         };
       }
 
-      res[month].success += Number(payment.success.transferValue);
-      res[month].waiting += Number(payment.waiting.transferValue);
-      res[month].failed += Number(payment.failed.transferValue);
+      const statuses = payment.aggregationsPerStatus;
+      res[month].success += Number(statuses.success.transferValue);
+      res[month].waiting += Number(statuses.waiting.transferValue);
+      res[month].failed += Number(statuses.failed.transferValue);
       res[month].pendingApproval += Number(
-        payment.pendingApproval.transferValue,
+        statuses.pendingApproval.transferValue,
       );
-      res[month].approved += Number(payment.approved.transferValue);
+      res[month].approved += Number(statuses.approved.transferValue);
     }
     return res;
   }
