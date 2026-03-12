@@ -193,9 +193,6 @@ class ProgramMonitoring extends BasePage {
       .getByRole('row', { name: fileName })
       .locator('button')
       .click();
-    await this.page
-      .getByRole('row', { name: 'Test TEST-DOCUMENT file upload' })
-      .locator('button');
     await this.changeNameOption.click();
     const nameInput = this.page.getByRole('textbox');
     await nameInput.fill(newFileName);
