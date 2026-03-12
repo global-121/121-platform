@@ -7,7 +7,7 @@
   - [Development Tools](#development-tools)
 - [Code Style \& Standards](#code-style--standards)
   - [General Principles](#general-principles)
-    - [Use modern datastructures](#use-modern-datastructures)
+    - [Use modern data structures](#use-modern-data-structures)
     - [Use modern looping and array manipulation constructs](#use-modern-looping-and-array-manipulation-constructs)
   - [Formatting \& Linting](#formatting--linting)
   - [TypeScript Guidelines](#typescript-guidelines)
@@ -109,7 +109,7 @@ The 121 Platform is an open-source humanitarian aid platform built by the Nether
 - Prefer using already-installed utility libraries over custom implementations.
 - Prefer built-in language features over custom implementations.
 
-#### Use modern datastructures
+#### Use modern data structures
 
 - By default use Maps instead of objects unless you have a write-once read-heavy workload with string keys.
 - By default use Sets instead of arrays unless:
