@@ -135,12 +135,6 @@ export default defineConfig(
     },
   },
   {
-    files: ['**/app.config.ts'],
-    rules: {
-      'custom-rules/tanstack-no-manual-cache-invalidation': 'off',
-    },
-  },
-  {
     files: ['**/*.spec.ts'],
     name: '(Unit-)test files',
     rules: {
