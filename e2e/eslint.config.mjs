@@ -1,5 +1,5 @@
 import eslint from '@eslint/js';
-import { defineConfig } from 'eslint/config';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import eslintPluginComments from 'eslint-plugin-eslint-comments';
 import eslintPluginN from 'eslint-plugin-n';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
@@ -9,6 +9,7 @@ import globals from 'globals';
 import tsEslint from 'typescript-eslint';
 
 export default defineConfig(
+  globalIgnores(['test-results/**', 'playwright-report/**']),
   {
     name: 'Root config',
     languageOptions: {
