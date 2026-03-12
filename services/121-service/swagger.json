@@ -968,6 +968,16 @@
     ]
   },
   {
+    "method": "get",
+    "path": "/api/programs/{programId}/payments/{paymentId}/approvals/{approvalId}/can-approve",
+    "params": [
+      "programId",
+      "paymentId",
+      "approvalId"
+    ],
+    "returnType": "CanApprovePaymentApprovalResponseDto"
+  },
+  {
     "method": "post",
     "path": "/api/programs/{programId}/payments/{paymentId}/start",
     "params": [
