@@ -10,6 +10,7 @@ import tsEslint from 'typescript-eslint';
 
 export default defineConfig(
   {
+    name: 'Root config',
     languageOptions: {
       globals: globals.node,
       parserOptions: {
@@ -17,20 +18,19 @@ export default defineConfig(
         tsconfigRootDir: import.meta.dirname,
       },
     },
-    name: 'Root config',
   },
   {
     name: 'JavaScript (config) files',
-    extends: [
-      eslint.configs.recommended,
-      eslintPluginN.configs['flat/recommended'],
-      eslintPluginPrettierRecommended,
-    ],
     files: ['**/*.mjs'],
     languageOptions: {
       ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
       sourceType: 'module',
     },
+    extends: [
+      eslint.configs.recommended,
+      eslintPluginN.configs['flat/recommended'],
+      eslintPluginPrettierRecommended,
+    ],
     plugins: {
       'eslint-comments': eslintPluginComments,
     },
@@ -41,6 +41,7 @@ export default defineConfig(
   },
   {
     name: 'TypeScript files',
+    files: ['**/*.ts'],
     extends: [
       ...tsEslint.configs.recommended,
       ...tsEslint.configs.stylisticTypeChecked,
@@ -48,7 +49,6 @@ export default defineConfig(
       eslintPluginPromise.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
-    files: ['**/*.ts'],
     plugins: {
       'eslint-comments': eslintPluginComments,
       'simple-import-sort': eslintPluginSimpleSort,
