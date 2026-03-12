@@ -20,6 +20,8 @@ class ProgramMonitoring extends BasePage {
   readonly deleteOption: Locator;
   readonly deleteConfirmationCheckbox: Locator;
   readonly deleteFileButton: Locator;
+  readonly changeNameOption: Locator;
+  readonly applyFileChangeButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -49,6 +51,12 @@ class ProgramMonitoring extends BasePage {
     });
     this.deleteFileButton = this.page.getByRole('button', {
       name: 'Delete file',
+    });
+    this.changeNameOption = this.page.getByRole('menuitem', {
+      name: 'Change name',
+    });
+    this.applyFileChangeButton = this.page.getByRole('button', {
+      name: 'Apply change',
     });
   }
 
@@ -172,6 +180,26 @@ class ProgramMonitoring extends BasePage {
     const errorString = await this.formError.textContent();
     expect(await this.formError.isVisible()).toBe(true);
     expect(errorString).toContain(errorText);
+  }
+
+  async updateAttachmentName({
+    fileName,
+    newFileName,
+  }: {
+    fileName: string;
+    newFileName: string;
+  }) {
+    await this.page
+      .getByRole('row', { name: fileName })
+      .locator('button')
+      .click();
+    await this.page
+      .getByRole('row', { name: 'Test TEST-DOCUMENT file upload' })
+      .locator('button');
+    await this.changeNameOption.click();
+    const nameInput = this.page.getByRole('textbox');
+    await nameInput.fill(newFileName);
+    await this.applyFileChangeButton.click();
   }
 
   async downloadAttachmentByName({

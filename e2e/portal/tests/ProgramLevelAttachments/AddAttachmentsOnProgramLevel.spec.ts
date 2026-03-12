@@ -10,7 +10,7 @@ import { generateLargeTestFile } from '@121-e2e/portal/helpers/largeFileGenerato
 
 const pdfFilePath = path.resolve(
   __dirname,
-  '../../../test-file-upload-data/test-document.pdf',
+  '../../../test-file-upload-data/test-pdf-document.pdf',
 );
 const docxFilePath = path.resolve(
   __dirname,
