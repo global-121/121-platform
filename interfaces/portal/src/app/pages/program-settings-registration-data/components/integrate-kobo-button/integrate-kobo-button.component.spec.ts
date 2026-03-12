@@ -5,6 +5,7 @@ import {
   QueryClient,
 } from '@tanstack/angular-query-experimental';
 import { MessageService } from 'primeng/api';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { IntegrateKoboButtonComponent } from '~/pages/program-settings-registration-data/components/integrate-kobo-button/integrate-kobo-button.component';
@@ -126,7 +127,7 @@ describe('IntegrateKoboButtonComponent', () => {
     it('should update Kobo integration when a valid URL is provided', () => {
       // Arrange
       const testInput = 'https://kobo.example.org/#/forms/asset-id-123/summary';
-      spyOn(component, 'extractServerAndAssetIdFromUrl').and.returnValue({
+      vi.spyOn(component, 'extractServerAndAssetIdFromUrl').mockReturnValue({
         serverUrl: 'https://kobo.example.org/',
         assetId: 'asset-id-123',
       });
@@ -140,15 +141,15 @@ describe('IntegrateKoboButtonComponent', () => {
       expect(component.extractServerAndAssetIdFromUrl).toHaveBeenCalledWith(
         testInput,
       );
-      expect(
-        component.koboConfigurationFormGroup.get('serverUrl')?.valid,
-      ).toBeTrue();
+      expect(component.koboConfigurationFormGroup.get('serverUrl')?.valid).toBe(
+        true,
+      );
       expect(component.koboConfigurationFormGroup.get('serverUrl')?.value).toBe(
         'https://kobo.example.org/',
       );
-      expect(
-        component.koboConfigurationFormGroup.get('assetId')?.valid,
-      ).toBeTrue();
+      expect(component.koboConfigurationFormGroup.get('assetId')?.valid).toBe(
+        true,
+      );
       expect(component.koboConfigurationFormGroup.get('assetId')?.value).toBe(
         'asset-id-123',
       );
@@ -157,7 +158,7 @@ describe('IntegrateKoboButtonComponent', () => {
     it('should NOT update Kobo integration when an invalid URL is provided', () => {
       // Arrange
       const testInput = 'not-a-valid-url';
-      spyOn(component, 'extractServerAndAssetIdFromUrl').and.returnValue({});
+      vi.spyOn(component, 'extractServerAndAssetIdFromUrl').mockReturnValue({});
 
       // Act
       component.onFormUrlUpdate({
@@ -168,7 +169,7 @@ describe('IntegrateKoboButtonComponent', () => {
       expect(component.extractServerAndAssetIdFromUrl).toHaveBeenCalledWith(
         testInput,
       );
-      expect(component.koboConfigurationFormGroup.valid).toBeFalse();
+      expect(component.koboConfigurationFormGroup.valid).toBe(false);
     });
   });
 });
