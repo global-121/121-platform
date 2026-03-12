@@ -9,7 +9,6 @@ export const KOBO_TO_121_TYPE_MAPPING: TypeMapping = {
   range: numeric,
   // dropdown
   select_one: dropdown,
-  select_one_from_file: dropdown,
   // text
   'background-audio': text,
   'xml-external': text,

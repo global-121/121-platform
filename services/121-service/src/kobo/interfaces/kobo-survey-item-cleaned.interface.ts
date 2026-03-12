@@ -4,6 +4,5 @@ export interface KoboSurveyItemCleaned {
   name: string;
   type: string;
   label?: string[];
-  required?: boolean;
   choices: KoboChoiceCleaned[];
 }

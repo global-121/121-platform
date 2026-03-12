@@ -355,7 +355,7 @@ describe('KoboApiService', () => {
           name: 'Create a registration in the 121 Platform when a submission is received',
           endpoint: expect.stringContaining('kobo/webhook'),
           active: true,
-          subset_fields: ['_uuid', '_xform_id_string'],
+          subset_fields: ['_uuid', '_xform_id_string', '__version__'],
           auth_level: 'basic_auth',
           settings: { username: 'test-username', password: 'test-password' },
         },

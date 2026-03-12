@@ -128,6 +128,13 @@ export class KoboValidationService {
       }),
     });
 
+    errorMessages = this.collectErrors({
+      accumulatedErrors: errorMessages,
+      error: this.validateSelectOneHasChoices({
+        koboSurveyItems: formDefinition.survey,
+      }),
+    });
+
     this.throwErrorsIfAny(errorMessages);
   }
 
@@ -530,6 +537,19 @@ export class KoboValidationService {
     }
     // There is no check if to see if all FSP configs from the 121 program are represented in choices from kobo
     // Sometimes an fsp will only be set via the 121-platform and not be visible in Kobo, so we cannot enforce that all FSP configs are represented in the Kobo choices. We only check that if a choice is made in Kobo, it must be a valid FSP config.
+  }
+
+  private validateSelectOneHasChoices({
+    koboSurveyItems,
+  }: {
+    koboSurveyItems: KoboSurveyItemCleaned[];
+  }): string[] {
+    return koboSurveyItems
+      .filter((item) => item.type === 'select_one' && item.choices.length === 0)
+      .map(
+        (item) =>
+          `Kobo form attribute "${item.name}" is of type select_one or select_one_from_file but has no choices defined. Note that choices defined in a separate CSV file are not supported.`,
+      );
   }
 
   private collectErrors({

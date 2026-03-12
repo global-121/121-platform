@@ -13,7 +13,6 @@ describe('KoboFormDefinitionMapper', () => {
       name: 'defaultName',
       type: 'text',
       label: ['Default label'],
-      required: false,
       $kuid: 'default-kuid',
       $xpath: 'defaultName',
       $autoname: 'defaultName',
@@ -59,7 +58,6 @@ describe('KoboFormDefinitionMapper', () => {
             createSurveyItem({
               name: 'fullName',
               label: ['What is your full name?'],
-              required: true,
             }),
             createSurveyItem({
               name: 'phoneNumber',
@@ -82,14 +80,12 @@ describe('KoboFormDefinitionMapper', () => {
           name: 'fullName',
           type: 'text',
           label: ['What is your full name?'],
-          required: true,
           choices: [],
         },
         {
           name: 'phoneNumber',
           type: 'text',
           label: ['Phone number'],
-          required: false,
           choices: [],
         },
       ];
