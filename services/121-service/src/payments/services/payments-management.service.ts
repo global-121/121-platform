@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, Repository } from 'typeorm';
 
-import { CanApprovePaymentApprovalResponseDto } from '@121-service/src/payments/dto/can-approve-payment-approval-response.dto';
+import { PaymentAggregationFullDto } from '@121-service/src/payments/dto/payment-aggregation-full.dto';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
@@ -359,9 +359,18 @@ export class PaymentsManagementService {
     paymentId: number;
     note?: string;
   }): Promise<void> {
-    const userApprovalStep = await this.getUserApprovalStepOrThrow({
+    const currentApprovalStep = await this.getCurrentApprovalStep({
+      paymentId,
+    });
+    if (!currentApprovalStep) {
+      throw new HttpException(
+        'Payment is already fully approved, cannot approve it',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    await this.canUserApproveCurrentApprovalStepOrThrow({
       userId,
-      programId,
       paymentId,
     });
 
@@ -370,15 +379,15 @@ export class PaymentsManagementService {
     });
 
     // store payment approval
-    userApprovalStep.approved = true;
-    userApprovalStep.approvedByUserId = userId;
-    await this.paymentApprovalRepository.save(userApprovalStep);
+    currentApprovalStep.approved = true;
+    currentApprovalStep.approvedByUserId = userId;
+    await this.paymentApprovalRepository.save(currentApprovalStep);
 
     // store payment event
     await this.paymentEventsService.createApprovedEvent({
       paymentId,
       userId,
-      rank: userApprovalStep.rank,
+      rank: currentApprovalStep.rank,
       total: totalApprovals,
       note,
     });
@@ -399,40 +408,37 @@ export class PaymentsManagementService {
     }
   }
 
-  public async getCanUserApprove({
+  private async canUserApproveCurrentApprovalStepOrThrow({
     userId,
-    programId,
     paymentId,
   }: {
     userId: number;
-    programId: number;
     paymentId: number;
-  }): Promise<CanApprovePaymentApprovalResponseDto> {
-    await this.getUserApprovalStepOrThrow({
-      userId,
-      programId,
-      paymentId,
-    });
+  }): Promise<void> {
+    const approversForCurrentApprtovalStep =
+      await this.getApproversForCurrentApprovalStep({ paymentId });
 
-    return { canApprovePaymentApproval: true };
+    if (!approversForCurrentApprtovalStep.some((a) => a.userId === userId)) {
+      throw new HttpException(
+        'User is not assigned to the current approval step and cannot approve it',
+        HttpStatus.FORBIDDEN,
+      );
+    }
   }
 
   private async getUserApprovalStepOrThrow({
     userId,
-    programId,
     paymentId,
   }: {
     userId: number;
-    programId: number;
     paymentId: number;
   }): Promise<PaymentApprovalEntity> {
-    const aidworkerAssignment =
-      await this.aidworkerAssignmentRepository.findOne({
-        where: { userId: Equal(userId), programId: Equal(programId) },
-      });
-    if (!aidworkerAssignment) {
+    const approversForCurrentApprtovalStep =
+      await this.getApproversForCurrentApprovalStep({ paymentId });
+
+    if (!approversForCurrentApprtovalStep.some((a) => a.userId === userId)) {
       throw new HttpException(
-        'User is not assigned to this program and cannot approve payments',
+        'User is not assigned to the current approval step and cannot approve it',
         HttpStatus.FORBIDDEN,
       );
     }
@@ -443,7 +449,7 @@ export class PaymentsManagementService {
     });
 
     const userApprovalStep = paymentApprovals.find((approval) =>
-      approval.approverAssignments.some((a) => a.id === aidworkerAssignment.id),
+      approval.approverAssignments.some((a) => a.userId === userId),
     );
     if (!userApprovalStep) {
       throw new HttpException(
@@ -511,6 +517,39 @@ export class PaymentsManagementService {
     }
 
     await this.paymentRepository.remove(payment);
+  }
+
+  public async getApproversForCurrentApprovalStep({
+    paymentId,
+  }: {
+    paymentId: number;
+  }): Promise<PaymentAggregationFullDto['approversForCurrentApprovalStep']> {
+    const currentApprovalStep = await this.getCurrentApprovalStep({
+      paymentId,
+    });
+    if (!currentApprovalStep) {
+      return [];
+    }
+
+    return currentApprovalStep.approverAssignments.map((assignment) => ({
+      userId: assignment.userId,
+    }));
+  }
+
+  private async getCurrentApprovalStep({
+    paymentId,
+  }: {
+    paymentId: number;
+  }): Promise<PaymentApprovalEntity | null> {
+    const paymentApprovals = await this.paymentApprovalRepository.find({
+      where: { paymentId: Equal(paymentId) },
+    });
+
+    const lowestUnapprovedApproval = paymentApprovals
+      .filter((approval) => !approval.approved)
+      .sort((a, b) => a.rank - b.rank)[0];
+
+    return lowestUnapprovedApproval ?? null;
   }
 
   private async processFinalApproval({

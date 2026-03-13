@@ -16,6 +16,7 @@ import { PaymentApprovalEntity } from '@121-service/src/payments/entities/paymen
 import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentRepository } from '@121-service/src/payments/repositories/payment.repository';
+import { PaymentsManagementService } from '@121-service/src/payments/services/payments-management.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
 import { FindAllTransactionsResultDto } from '@121-service/src/payments/transactions/dto/find-all-transactions-result.dto';
@@ -43,6 +44,7 @@ export class PaymentsReportingService {
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentEventsService: PaymentEventsService,
     private readonly programRepository: ProgramRepository,
+    private readonly paymentsManagementService: PaymentsManagementService,
   ) {}
 
   public async getPaymentAggregationsSummaries({
@@ -105,7 +107,17 @@ export class PaymentsReportingService {
       paymentId,
     });
 
-    return { ...getPaymentAggregationSummary[0], fsps, approvalStatus };
+    const approversForCurrentApprovalStep =
+      await this.paymentsManagementService.getApproversForCurrentApprovalStep({
+        paymentId,
+      });
+
+    return {
+      ...getPaymentAggregationSummary[0],
+      fsps,
+      approvalStatus,
+      approversForCurrentApprovalStep,
+    };
   }
 
   public async getProgramPaymentsStatus(
