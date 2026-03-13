@@ -27,4 +27,10 @@ export class PaymentAggregationFullDto extends PaymentAggregationSummaryDto {
     type: PaymentApprovalStatusResponseDto,
   })
   approvalStatus: PaymentApprovalStatusResponseDto[];
+
+  @ApiProperty({
+    example: [{ username: 'field-officer@organization.org' }],
+    isArray: true,
+  })
+  approversForCurrentApprovalStep: { username: string }[];
 }

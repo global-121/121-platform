@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, Repository } from 'typeorm';
 
+import { PaymentAggregationFullDto } from '@121-service/src/payments/dto/payment-aggregation-full.dto';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
@@ -15,7 +16,6 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 import { ProgramApprovalThresholdRepository } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.repository';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
@@ -40,7 +40,6 @@ export class PaymentsManagementService {
     private readonly transactionsService: TransactionsService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentApprovalRepository: PaymentApprovalRepository,
-    private readonly aidworkerAssignmentRepository: ProgramAidworkerAssignmentRepository,
     private readonly programApprovalThresholdRepository: ProgramApprovalThresholdRepository,
   ) {}
 
@@ -358,65 +357,30 @@ export class PaymentsManagementService {
     paymentId: number;
     note?: string;
   }): Promise<void> {
-    const approverAssignment = await this.aidworkerAssignmentRepository.findOne(
-      {
-        where: {
-          userId: Equal(userId),
-          programId: Equal(programId),
-        },
-      },
-    );
-
-    if (!approverAssignment) {
-      throw new HttpException(
-        'User is not assigned as an approver',
-        HttpStatus.FORBIDDEN,
-      );
-    }
-
-    const paymentApprovals = await this.paymentApprovalRepository.find({
-      where: {
-        paymentId: Equal(paymentId),
-      },
-      relations: { approverAssignments: true },
+    const currentApprovalStep = await this.getCurrentApprovalStepOrThrow({
+      paymentId,
     });
 
-    const approvalAssignedToApprover = paymentApprovals.find((approval) =>
-      (approval.approverAssignments ?? []).some(
-        (assignment) => assignment.id === approverAssignment.id,
-      ),
-    );
+    this.assertUserCanApproveCurrentApprovalStepOrThrow({
+      userId,
+      currentApprovalStep,
+    });
 
-    if (!approvalAssignedToApprover) {
-      throw new HttpException(
-        'Aidworker is not assigned as approver for this payment',
-        HttpStatus.FORBIDDEN,
-      );
-    }
-
-    if (approvalAssignedToApprover.approved) {
-      throw new HttpException(
-        'This approval step has already been approved for this payment',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    this.checkLowestRankOrThrow({
-      currentPaymentApproval: approvalAssignedToApprover,
-      allPaymentApprovals: paymentApprovals,
+    const totalApprovals = await this.paymentApprovalRepository.count({
+      where: { paymentId: Equal(paymentId) },
     });
 
     // store payment approval
-    approvalAssignedToApprover.approved = true;
-    approvalAssignedToApprover.approvedByUserId = userId;
-    await this.paymentApprovalRepository.save(approvalAssignedToApprover);
+    currentApprovalStep.approved = true;
+    currentApprovalStep.approvedByUserId = userId;
+    await this.paymentApprovalRepository.save(currentApprovalStep);
 
     // store payment event
     await this.paymentEventsService.createApprovedEvent({
       paymentId,
       userId,
-      rank: approvalAssignedToApprover.rank,
-      total: paymentApprovals.length,
+      rank: currentApprovalStep.rank,
+      total: totalApprovals,
       note,
     });
 
@@ -436,25 +400,75 @@ export class PaymentsManagementService {
     }
   }
 
-  private checkLowestRankOrThrow({
-    currentPaymentApproval,
-    allPaymentApprovals,
+  private async getCurrentApprovalStepOrThrow({
+    paymentId,
   }: {
-    currentPaymentApproval: PaymentApprovalEntity;
-    allPaymentApprovals: PaymentApprovalEntity[];
-  }) {
-    const openApprovals = allPaymentApprovals.filter(
-      (approval) => !approval.approved,
-    );
-    const isLowestRank = openApprovals.every(
-      (approval) => currentPaymentApproval.rank <= approval.rank,
-    );
-    if (!isLowestRank) {
+    paymentId: number;
+  }): Promise<PaymentApprovalEntity> {
+    const currentApprovalStep = await this.getCurrentApprovalStep({
+      paymentId,
+    });
+    if (!currentApprovalStep) {
       throw new HttpException(
-        'Cannot approve payment before lower-order approval steps have been approved',
+        'Payment is already fully approved, cannot approve it',
         HttpStatus.BAD_REQUEST,
       );
     }
+    return currentApprovalStep;
+  }
+
+  private async getCurrentApprovalStep({
+    paymentId,
+  }: {
+    paymentId: number;
+  }): Promise<PaymentApprovalEntity | null> {
+    const paymentApprovals = await this.paymentApprovalRepository.find({
+      where: { paymentId: Equal(paymentId) },
+      relations: { approverAssignments: { user: true } },
+    });
+
+    const lowestUnapprovedApproval = paymentApprovals
+      .filter((approval) => !approval.approved)
+      .sort((a, b) => a.rank - b.rank)[0];
+
+    return lowestUnapprovedApproval ?? null;
+  }
+
+  private assertUserCanApproveCurrentApprovalStepOrThrow({
+    userId,
+    currentApprovalStep,
+  }: {
+    userId: number;
+    currentApprovalStep: PaymentApprovalEntity;
+  }): void {
+    const isApprover = currentApprovalStep.approverAssignments.some(
+      (a) => a.userId === userId,
+    );
+    if (!isApprover) {
+      throw new HttpException(
+        'User is not assigned to the current approval step and cannot approve it',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+  }
+
+  public async getApproversForCurrentApprovalStep({
+    paymentId,
+  }: {
+    paymentId: number;
+  }): Promise<PaymentAggregationFullDto['approversForCurrentApprovalStep']> {
+    const currentApprovalStep = await this.getCurrentApprovalStep({
+      paymentId,
+    });
+    if (!currentApprovalStep) {
+      return [];
+    }
+
+    const usernames = currentApprovalStep.approverAssignments
+      .map((assignment) => ({ username: assignment.user?.username }))
+      .filter((obj): obj is { username: string } => obj.username !== undefined);
+
+    return usernames;
   }
 
   private async processFinalApproval({

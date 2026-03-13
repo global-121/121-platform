@@ -251,71 +251,40 @@ describe('PaymentsManagementService', () => {
         count: jest.fn(),
       };
       (service as any).paymentApprovalRepository = paymentApprovalRepository;
-
-      const aidworkerAssignmentRepository = {
-        findOne: jest.fn().mockResolvedValue({
-          id: 1,
-          programApprovalThresholdId: 1,
-        }),
-      };
-      (service as any).aidworkerAssignmentRepository =
-        aidworkerAssignmentRepository;
     });
 
-    it('should throw if approver is not assigned to payment', async () => {
+    it('should throw if payment is already fully approved', async () => {
+      paymentApprovalRepository.find.mockResolvedValue([
+        { id: 1, rank: 1, approved: true, approverAssignments: [] },
+      ]);
+      await expect(
+        service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
+      ).rejects.toMatchObject({
+        message: 'Payment is already fully approved, cannot approve it',
+        status: 400,
+      });
+    });
+
+    it('should throw if user is not assigned to the current approval step', async () => {
       paymentApprovalRepository.find.mockResolvedValue([
         { id: 1, rank: 1, approved: false, approverAssignments: [] },
       ]);
       await expect(
         service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
-      ).rejects.toThrow(
-        'Aidworker is not assigned as approver for this payment',
-      );
+      ).rejects.toMatchObject({
+        message:
+          'User is not assigned to the current approval step and cannot approve it',
+        status: 403,
+      });
     });
 
-    it('should throw if threshold has already been approved', async () => {
-      const approvals = [
-        {
-          id: 1,
-          approved: true,
-          rank: 1,
-          approverAssignments: [{ id: 1 }],
-        },
-        { id: 2, approved: false, rank: 2, approverAssignments: [] },
-      ];
-      paymentApprovalRepository.find.mockResolvedValue(approvals);
-      await expect(
-        service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
-      ).rejects.toThrow(
-        'This approval step has already been approved for this payment',
-      );
-    });
-
-    it('should throw if not lowest rank threshold', async () => {
-      const approvals = [
-        {
-          id: 1,
-          approved: false,
-          rank: 2,
-          approverAssignments: [{ id: 1 }],
-        },
-        { id: 2, approved: false, rank: 1, approverAssignments: [] },
-      ];
-      paymentApprovalRepository.find.mockResolvedValue(approvals);
-      await expect(
-        service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
-      ).rejects.toThrow(
-        'Cannot approve payment before lower-order approval steps have been approved',
-      );
-    });
-
-    it('should approve the payment for the threshold and save', async () => {
+    it('should approve the current step and save', async () => {
       const approvals = [
         {
           id: 1,
           approved: false,
           rank: 1,
-          approverAssignments: [{ id: 1 }],
+          approverAssignments: [{ userId: 1 }],
         },
         { id: 2, approved: false, rank: 2, approverAssignments: [] },
       ];
@@ -331,13 +300,13 @@ describe('PaymentsManagementService', () => {
       expect(paymentEventsService.createApprovedEvent).toHaveBeenCalled();
     });
 
-    it('should call processFinalApproval if all thresholds are approved', async () => {
+    it('should call processFinalApproval if all steps are approved', async () => {
       const approvals = [
         {
           id: 1,
           approved: false,
           rank: 1,
-          approverAssignments: [{ id: 1 }],
+          approverAssignments: [{ userId: 1 }],
         },
       ];
       paymentApprovalRepository.find.mockResolvedValue(approvals);
@@ -352,6 +321,47 @@ describe('PaymentsManagementService', () => {
       await service.approvePayment({ userId: 1, programId: 2, paymentId: 3 });
 
       expect(processFinalApprovalSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('getApproversForCurrentApprovalStep', () => {
+    let paymentApprovalRepository: any;
+
+    beforeEach(() => {
+      paymentApprovalRepository = { find: jest.fn() };
+      (service as any).paymentApprovalRepository = paymentApprovalRepository;
+    });
+
+    it('should return empty array when all approvals are already approved', async () => {
+      paymentApprovalRepository.find.mockResolvedValue([
+        { id: 1, rank: 1, approved: true, approverAssignments: [] },
+      ]);
+
+      const result = await service.getApproversForCurrentApprovalStep({
+        paymentId: 1,
+      });
+
+      expect(result).toEqual([]);
+    });
+
+    it('should return usernames for the current approval step', async () => {
+      paymentApprovalRepository.find.mockResolvedValue([
+        {
+          id: 1,
+          rank: 1,
+          approved: false,
+          approverAssignments: [
+            { userId: 1, user: { username: 'alice' } },
+            { userId: 2, user: { username: 'bob' } },
+          ],
+        },
+      ]);
+
+      const result = await service.getApproversForCurrentApprovalStep({
+        paymentId: 1,
+      });
+
+      expect(result).toEqual([{ username: 'alice' }, { username: 'bob' }]);
     });
   });
 });

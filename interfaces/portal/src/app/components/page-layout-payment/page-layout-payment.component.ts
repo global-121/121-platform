@@ -299,15 +299,12 @@ export class PageLayoutPaymentComponent {
       return false;
     }
 
-    const approvalStatus = this.paymentAggregate.data().approvalStatus;
-    const currentPaymentApproval = approvalStatus.find((approval) =>
-      approval.approvers.includes(currentUser),
-    );
-    if (!currentPaymentApproval) {
-      return false; // not approver for this payment
-    }
-    if (currentPaymentApproval.approved) {
-      return false; // already approved
+    const approversForCurrentApprovalStep =
+      this.paymentAggregate.data().approversForCurrentApprovalStep;
+    if (
+      !approversForCurrentApprovalStep.some((a) => a.username === currentUser)
+    ) {
+      return false;
     }
 
     // NOTE 1: we do not hide the button if previous approvers have not yet approved, to avoid confusion. Instead, the backend will block the approval action.
