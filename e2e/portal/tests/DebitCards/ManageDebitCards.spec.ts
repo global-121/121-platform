@@ -22,7 +22,7 @@ import RegistrationDebitCardPage from '@121-e2e/portal/pages/RegistrationDebitCa
 const programId = 3;
 let registrationId: number;
 let accessToken: string;
-test.beforeEach(async ({}) => {
+test.beforeEach(async () => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
 
   accessToken = await getAccessToken();
