@@ -1,4 +1,5 @@
 import { shouldBeEnabled } from '_env.utils.mjs';
+import { describe, expect, it } from 'vitest';
 
 describe('Utils: shouldBeEnabled', () => {
   it('should return a boolean true for select ENV-variable values', () => {

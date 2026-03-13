@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+
 import { QueryTableColumnVisibilityService } from '~/components/query-table/services/query-table-column-visibility.service';
 
 describe('QueryTableColumnVisibilityService', () => {

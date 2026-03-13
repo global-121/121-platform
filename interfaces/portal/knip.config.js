@@ -8,7 +8,6 @@ module.exports = {
     'autoprefixer',
     // Known issues with "Unlisted dependencies":
     '@angular-eslint/builder',
-    '@angular-devkit/build-angular',
   ],
   includeEntryExports: true,
   project: [
