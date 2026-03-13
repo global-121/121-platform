@@ -2222,9 +2222,6 @@
       <trans-unit id="8995474184079201011" datatype="html">
         <source>Use a clear name so users can easily recognize the file.</source>
       </trans-unit>
-      <trans-unit id="5969374450397102287" datatype="html">
-        <source>Please enter file name.</source>
-      </trans-unit>
       <trans-unit id="3978034238801036238" datatype="html">
         <source>Kobo form URL</source>
       </trans-unit>
@@ -2234,6 +2231,9 @@
       <trans-unit id="integrate-kobo-form-url-explanation" datatype="html">
         <source>The full URL from the form&apos;s page in KoboToolbox, i.e: https://kobo.ifrc.org/#/forms/XXXXXX/summary</source>
         <note priority="1" from="description">Do NOT translate the URL!</note>
+      </trans-unit>
+      <trans-unit id="1383533176932798822" datatype="html">
+        <source>We couldn&apos;t process this URL. Please verify in KoboToolbox.</source>
       </trans-unit>
     </body>
   </file>
