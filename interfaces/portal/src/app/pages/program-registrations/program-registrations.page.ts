@@ -64,9 +64,12 @@ import { getOriginUrl } from '~/utils/url-helper';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProgramRegistrationsPageComponent {
+  readonly RegistrationStatusEnum = RegistrationStatusEnum;
+  readonly REGISTRATION_STATUS_ICON = REGISTRATION_STATUS_ICON;
+  readonly REGISTRATION_STATUS_VERB = REGISTRATION_STATUS_VERB;
+
   readonly rtlHelper = inject(RtlHelperService);
-  // this is injected by the router
-  readonly programId = input.required<string>();
+  readonly programId = input.required<string>(); // this is injected by the router
 
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -81,10 +84,6 @@ export class ProgramRegistrationsPageComponent {
     viewChild.required<SendMessageDialogComponent>('sendMessageDialog');
   readonly changeStatusDialog =
     viewChild.required<ChangeStatusDialogComponent>('changeStatusDialog');
-
-  RegistrationStatusEnum = RegistrationStatusEnum;
-  REGISTRATION_STATUS_ICON = REGISTRATION_STATUS_ICON;
-  REGISTRATION_STATUS_VERB = REGISTRATION_STATUS_VERB;
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
 

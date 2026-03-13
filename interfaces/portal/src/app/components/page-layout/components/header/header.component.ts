@@ -47,7 +47,8 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
-  AppRoutes = AppRoutes;
+  readonly AppRoutes = AppRoutes;
+
   private authService = inject(AuthService);
   readonly rtlHelper = inject(RtlHelperService);
 
