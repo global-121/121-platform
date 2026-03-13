@@ -960,15 +960,6 @@
     ]
   },
   {
-    "method": "get",
-    "path": "/api/programs/{programId}/payments/{paymentId}/approvals/can-approve",
-    "params": [
-      "programId",
-      "paymentId"
-    ],
-    "returnType": "CanApprovePaymentApprovalResponseDto"
-  },
-  {
     "method": "post",
     "path": "/api/programs/{programId}/payments/{paymentId}/start",
     "params": [
