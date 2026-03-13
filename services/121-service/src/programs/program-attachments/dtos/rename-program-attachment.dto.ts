@@ -4,5 +4,5 @@ export class RenameProgramAttachmentDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
-  public readonly newFileName: string;
+  public readonly newFilename: string;
 }

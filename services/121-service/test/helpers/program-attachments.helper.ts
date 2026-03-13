@@ -32,7 +32,7 @@ export async function renameAttachment({
   return await getServer()
     .patch(`/programs/${programId}/attachments/${attachmentId}`)
     .set('Cookie', [accessToken])
-    .send({ newFileName: newFilename });
+    .send({ newFilename });
 }
 
 export async function getAttachments({

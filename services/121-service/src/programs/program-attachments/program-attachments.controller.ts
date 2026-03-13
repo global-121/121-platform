@@ -122,7 +122,7 @@ export class ProgramAttachmentsController {
     return await this.programAttachmentsService.renameProgramAttachment({
       programId,
       attachmentId,
-      filename: body.newFileName,
+      filename: body.newFilename,
       userId,
     });
   }
