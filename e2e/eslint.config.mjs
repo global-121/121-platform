@@ -1,61 +1,25 @@
-import eslint from '@eslint/js';
 import { defineConfig, globalIgnores } from 'eslint/config';
-import eslintPluginComments from 'eslint-plugin-eslint-comments';
-import eslintPluginN from 'eslint-plugin-n';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import eslintPluginPromise from 'eslint-plugin-promise';
 import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
-import globals from 'globals';
 import tsEslint from 'typescript-eslint';
+import eslintConfig121Platform from 'eslint-config-121-platform';
 
 export default defineConfig(
   globalIgnores(['test-results/**', 'playwright-report/**']),
-  {
-    name: 'Root config',
-    languageOptions: {
-      globals: globals.node,
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-    linterOptions: {
-      reportUnusedInlineConfigs: 'error',
-      reportUnusedDisableDirectives: 'error',
-    },
-  },
-  {
-    name: 'JavaScript (config) files',
-    files: ['**/*.mjs'],
-    languageOptions: {
-      ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
-      sourceType: 'module',
-    },
-    extends: [
-      eslint.configs.recommended,
-      eslintPluginN.configs['flat/recommended'],
-      eslintPluginPrettierRecommended,
-    ],
-    plugins: {
-      'eslint-comments': eslintPluginComments,
-    },
-    rules: {
-      'eslint-comments/no-unused-disable': 'error',
-      'eslint-comments/require-description': 'error',
-    },
-  },
+  eslintConfig121Platform.configs.base,
+  eslintConfig121Platform.configs.node,
+  eslintConfig121Platform.configs.javascript,
+  eslintConfig121Platform.configs.typescript,
+  eslintConfig121Platform.configs.services,
   {
     name: 'TypeScript files',
     files: ['**/*.ts'],
     extends: [
       ...tsEslint.configs.recommended,
       ...tsEslint.configs.stylisticTypeChecked,
-      eslintPluginN.configs['flat/recommended'],
       eslintPluginPromise.configs['flat/recommended'],
-      eslintPluginPrettierRecommended,
     ],
     plugins: {
-      'eslint-comments': eslintPluginComments,
       'simple-import-sort': eslintPluginSimpleSort,
     },
     rules: {
@@ -68,24 +32,6 @@ export default defineConfig(
           argsIgnorePattern: '^_',
           caughtErrors: 'none',
           varsIgnorePattern: '^_',
-        },
-      ],
-      'eslint-comments/no-unused-disable': 'error',
-      'eslint-comments/require-description': 'error',
-      'n/no-extraneous-import': 'off', // Managed by TypeScript
-      'n/no-missing-import': 'off', // Disabled to allow for path-aliases via tsconfig.json
-      'n/no-process-env': 'error',
-      'n/prefer-node-protocol': 'error',
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: [
-            {
-              group: ['process', 'node:process'],
-              importNames: ['env'],
-              message: 'Import ENV-variables from env.ts only.',
-            },
-          ],
         },
       ],
       'object-shorthand': 'error',
@@ -118,4 +64,5 @@ export default defineConfig(
       ],
     },
   },
+  eslintConfig121Platform.configs.final, // NOTE: This needs to be last! It configures Prettier, to make sure auto-formatting works.
 );

@@ -224,7 +224,7 @@ export const customSharedFixture = base.extend<Fixtures>({
    *
    * Can be used in beforeAll and beforeEach as it does not use page.
    */
-  onlyResetAndSeedRegistrations: async ({}, use, testInfo: TestInfo) => {
+  onlyResetAndSeedRegistrations: async (_, use, testInfo: TestInfo) => {
     const fn = async (params) => {
       await resetDatabase({
         approverMode: params.approverMode,
