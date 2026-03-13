@@ -2222,8 +2222,8 @@
       <trans-unit id="8995474184079201011" datatype="html">
         <source>Use a clear name so users can easily recognize the file.</source>
       </trans-unit>
-      <trans-unit id="1383533176932798822" datatype="html">
-        <source>We couldn&apos;t process this URL. Please verify in KoboToolbox.</source>
+      <trans-unit id="5969374450397102287" datatype="html">
+        <source>Please enter file name.</source>
       </trans-unit>
       <trans-unit id="3978034238801036238" datatype="html">
         <source>Kobo form URL</source>
