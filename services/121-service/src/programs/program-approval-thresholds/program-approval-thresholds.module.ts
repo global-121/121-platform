@@ -17,6 +17,9 @@ import { ProgramApprovalThresholdsService } from '@121-service/src/programs/prog
     ProgramApprovalThresholdRepository,
   ],
   controllers: [ProgramApprovalThresholdsController],
-  exports: [ProgramApprovalThresholdsService],
+  exports: [
+    ProgramApprovalThresholdsService,
+    ProgramApprovalThresholdRepository,
+  ],
 })
 export class ProgramApprovalThresholdsModule {}

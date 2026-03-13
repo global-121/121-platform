@@ -17,7 +17,7 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
-import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
+import { ProgramApprovalThresholdRepository } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.repository';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
@@ -38,10 +38,10 @@ export class PaymentsManagementService {
     private readonly paymentEventsService: PaymentEventsService,
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
     private readonly transactionsService: TransactionsService,
-    private readonly programApprovalThresholdsService: ProgramApprovalThresholdsService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentApprovalRepository: PaymentApprovalRepository,
     private readonly aidworkerAssignmentRepository: ProgramAidworkerAssignmentRepository,
+    private readonly programApprovalThresholdRepository: ProgramApprovalThresholdRepository,
   ) {}
 
   public async createPayment({
@@ -172,7 +172,7 @@ export class PaymentsManagementService {
     }
 
     const thresholds =
-      await this.programApprovalThresholdsService.getThresholdsForPaymentAmount(
+      await this.programApprovalThresholdRepository.getThresholdsForPaymentAmount(
         programId,
         transferValue,
       );

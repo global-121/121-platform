@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { DataSource, EntityManager, Equal, IsNull, Not } from 'typeorm';
+import { DataSource, EntityManager, Equal, In, IsNull, Not } from 'typeorm';
 
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
 import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
@@ -40,7 +40,6 @@ export class ProgramApprovalThresholdsService {
         manager,
         programId,
         thresholds,
-        aidworkerAssignments,
       });
     });
 
@@ -182,23 +181,16 @@ export class ProgramApprovalThresholdsService {
     manager,
     programId,
     thresholds,
-    aidworkerAssignments,
   }: {
     manager: EntityManager;
     programId: number;
     thresholds: CreateProgramApprovalThresholdDto[];
-    aidworkerAssignments: ProgramAidworkerAssignmentEntity[];
   }): Promise<void> {
-    const sortedThresholds: CreateProgramApprovalThresholdDto[] = thresholds
-      .slice()
-      .sort((a, b) => a.thresholdAmount - b.thresholdAmount);
-
-    for (const thresholdDto of sortedThresholds) {
+    for (const thresholdDto of thresholds) {
       await this.createThresholdInTransaction({
         thresholdDto,
         programId,
         manager,
-        aidworkerAssignments,
       });
     }
   }
@@ -207,12 +199,10 @@ export class ProgramApprovalThresholdsService {
     thresholdDto,
     programId,
     manager,
-    aidworkerAssignments,
   }: {
     thresholdDto: CreateProgramApprovalThresholdDto;
     programId: number;
     manager: EntityManager;
-    aidworkerAssignments: ProgramAidworkerAssignmentEntity[];
   }): Promise<void> {
     const threshold = new ProgramApprovalThresholdEntity();
     threshold.thresholdAmount = thresholdDto.thresholdAmount;
@@ -223,14 +213,16 @@ export class ProgramApprovalThresholdsService {
       threshold,
     );
 
-    if (thresholdDto.userIds && thresholdDto.userIds.length > 0) {
-      for (const userId of thresholdDto.userIds) {
-        const aidworker = aidworkerAssignments.find((a) => a.userId === userId);
-        if (aidworker) {
-          aidworker.programApprovalThresholdId = savedThreshold.id;
-          await manager.save(ProgramAidworkerAssignmentEntity, aidworker);
-        }
-      }
+    const userIds = thresholdDto.userIds;
+    if (userIds.length > 0) {
+      await manager.update(
+        ProgramAidworkerAssignmentEntity,
+        {
+          programId: Equal(programId),
+          userId: In(userIds),
+        },
+        { programApprovalThresholdId: savedThreshold.id },
+      );
     }
   }
 
@@ -249,16 +241,6 @@ export class ProgramApprovalThresholdsService {
 
     return thresholds.map((threshold) =>
       ProgramApprovalThresholdMapper.mapEntityToDto(threshold),
-    );
-  }
-
-  public async getThresholdsForPaymentAmount(
-    programId: number,
-    paymentAmount: number,
-  ): Promise<ProgramApprovalThresholdEntity[]> {
-    return await this.programApprovalThresholdRepository.getThresholdsForPaymentAmount(
-      programId,
-      paymentAmount,
     );
   }
 }

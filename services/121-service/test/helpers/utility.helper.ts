@@ -121,21 +121,6 @@ export async function getAccessTokenFinanceManager(): Promise<string> {
   );
 }
 
-export async function getAccessTokenByUsername(
-  username: string,
-): Promise<string> {
-  if (username === env.USERCONFIG_121_SERVICE_EMAIL_ADMIN) {
-    return await getAccessToken();
-  }
-  if (username === env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER) {
-    return await getAccessTokenCvaManager();
-  }
-  if (username === env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER) {
-    return await getAccessTokenFinanceManager();
-  }
-  throw new Error(`No access token getter defined for username: ${username}`);
-}
-
 export async function removeProgramAssignment(
   programId: number,
   userId: number,

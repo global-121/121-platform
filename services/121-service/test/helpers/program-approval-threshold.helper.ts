@@ -40,9 +40,10 @@ export async function getApprovers({
   programId: number;
   accessToken: string;
 }): Promise<ApproverInThresholdResponseDto[]> {
-  const thresholdsResponse = await getServer()
-    .get(`/programs/${programId}/approval-thresholds`)
-    .set('Cookie', [accessToken]);
+  const thresholdsResponse = await getProgramApprovalThresholds({
+    programId,
+    accessToken,
+  });
 
   if (thresholdsResponse.status !== HttpStatus.OK) {
     throw new Error(
