@@ -251,32 +251,21 @@ describe('PaymentsManagementService', () => {
         count: jest.fn(),
       };
       (service as any).paymentApprovalRepository = paymentApprovalRepository;
-
-      const aidworkerAssignmentRepository = {
-        findOne: jest.fn().mockResolvedValue({
-          id: 1,
-          programApprovalThresholdId: 1,
-        }),
-      };
-      (service as any).aidworkerAssignmentRepository =
-        aidworkerAssignmentRepository;
     });
 
-    it('should throw 403 if user is not assigned to the program', async () => {
-      (service as any).aidworkerAssignmentRepository.findOne.mockResolvedValue(
-        null,
-      );
-      paymentApprovalRepository.find.mockResolvedValue([]);
+    it('should throw if payment is already fully approved', async () => {
+      paymentApprovalRepository.find.mockResolvedValue([
+        { id: 1, rank: 1, approved: true, approverAssignments: [] },
+      ]);
       await expect(
         service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
       ).rejects.toMatchObject({
-        message:
-          'User is not assigned to this program and cannot approve payments',
-        status: 403,
+        message: 'Payment is already fully approved, cannot approve it',
+        status: 400,
       });
     });
 
-    it('should throw 403 if user is not assigned to any approval step', async () => {
+    it('should throw if user is not assigned to the current approval step', async () => {
       paymentApprovalRepository.find.mockResolvedValue([
         { id: 1, rank: 1, approved: false, approverAssignments: [] },
       ]);
@@ -284,58 +273,18 @@ describe('PaymentsManagementService', () => {
         service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
       ).rejects.toMatchObject({
         message:
-          'User is not assigned to any approval step for this payment and cannot approve it',
+          'User is not assigned to the current approval step and cannot approve it',
         status: 403,
       });
     });
 
-    it("should throw 400 if the user's approval step has already been approved", async () => {
-      const approvals = [
-        {
-          id: 1,
-          approved: true,
-          rank: 1,
-          approverAssignments: [{ id: 1 }],
-        },
-        { id: 2, approved: false, rank: 2, approverAssignments: [] },
-      ];
-      paymentApprovalRepository.find.mockResolvedValue(approvals);
-      await expect(
-        service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
-      ).rejects.toMatchObject({
-        message:
-          'The approval step this user has been assigned to has already been approved',
-        status: 400,
-      });
-    });
-
-    it('should throw 400 if a lower-rank step is still unapproved', async () => {
-      const approvals = [
-        {
-          id: 1,
-          approved: false,
-          rank: 2,
-          approverAssignments: [{ id: 1 }],
-        },
-        { id: 2, approved: false, rank: 1, approverAssignments: [] },
-      ];
-      paymentApprovalRepository.find.mockResolvedValue(approvals);
-      await expect(
-        service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
-      ).rejects.toMatchObject({
-        message:
-          'Cannot approve payment before lower-order approval steps are approved',
-        status: 400,
-      });
-    });
-
-    it('should approve the payment for the threshold and save', async () => {
+    it('should approve the current step and save', async () => {
       const approvals = [
         {
           id: 1,
           approved: false,
           rank: 1,
-          approverAssignments: [{ id: 1 }],
+          approverAssignments: [{ userId: 1 }],
         },
         { id: 2, approved: false, rank: 2, approverAssignments: [] },
       ];
@@ -351,13 +300,13 @@ describe('PaymentsManagementService', () => {
       expect(paymentEventsService.createApprovedEvent).toHaveBeenCalled();
     });
 
-    it('should call processFinalApproval if all thresholds are approved', async () => {
+    it('should call processFinalApproval if all steps are approved', async () => {
       const approvals = [
         {
           id: 1,
           approved: false,
           rank: 1,
-          approverAssignments: [{ id: 1 }],
+          approverAssignments: [{ userId: 1 }],
         },
       ];
       paymentApprovalRepository.find.mockResolvedValue(approvals);

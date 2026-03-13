@@ -16,7 +16,6 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 import { ProgramApprovalThresholdRepository } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.repository';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
@@ -41,7 +40,6 @@ export class PaymentsManagementService {
     private readonly transactionsService: TransactionsService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentApprovalRepository: PaymentApprovalRepository,
-    private readonly aidworkerAssignmentRepository: ProgramAidworkerAssignmentRepository,
     private readonly programApprovalThresholdRepository: ProgramApprovalThresholdRepository,
   ) {}
 
@@ -359,19 +357,13 @@ export class PaymentsManagementService {
     paymentId: number;
     note?: string;
   }): Promise<void> {
-    const currentApprovalStep = await this.getCurrentApprovalStep({
+    const currentApprovalStep = await this.getCurrentApprovalStepOrThrow({
       paymentId,
     });
-    if (!currentApprovalStep) {
-      throw new HttpException(
-        'Payment is already fully approved, cannot approve it',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
 
-    await this.canUserApproveCurrentApprovalStepOrThrow({
+    this.assertUserCanApproveCurrentApprovalStepOrThrow({
       userId,
-      paymentId,
+      currentApprovalStep,
     });
 
     const totalApprovals = await this.paymentApprovalRepository.count({
@@ -408,75 +400,56 @@ export class PaymentsManagementService {
     }
   }
 
-  private async canUserApproveCurrentApprovalStepOrThrow({
-    userId,
+  private async getCurrentApprovalStepOrThrow({
     paymentId,
   }: {
-    userId: number;
-    paymentId: number;
-  }): Promise<void> {
-    const approversForCurrentApprtovalStep =
-      await this.getApproversForCurrentApprovalStep({ paymentId });
-
-    if (!approversForCurrentApprtovalStep.some((a) => a.userId === userId)) {
-      throw new HttpException(
-        'User is not assigned to the current approval step and cannot approve it',
-        HttpStatus.FORBIDDEN,
-      );
-    }
-  }
-
-  private async getUserApprovalStepOrThrow({
-    userId,
-    paymentId,
-  }: {
-    userId: number;
     paymentId: number;
   }): Promise<PaymentApprovalEntity> {
-    const approversForCurrentApprtovalStep =
-      await this.getApproversForCurrentApprovalStep({ paymentId });
-
-    if (!approversForCurrentApprtovalStep.some((a) => a.userId === userId)) {
+    const currentApprovalStep = await this.getCurrentApprovalStep({
+      paymentId,
+    });
+    if (!currentApprovalStep) {
       throw new HttpException(
-        'User is not assigned to the current approval step and cannot approve it',
-        HttpStatus.FORBIDDEN,
+        'Payment is already fully approved, cannot approve it',
+        HttpStatus.BAD_REQUEST,
       );
     }
+    return currentApprovalStep;
+  }
 
+  private async getCurrentApprovalStep({
+    paymentId,
+  }: {
+    paymentId: number;
+  }): Promise<PaymentApprovalEntity | null> {
     const paymentApprovals = await this.paymentApprovalRepository.find({
       where: { paymentId: Equal(paymentId) },
       relations: { approverAssignments: true },
     });
 
-    const userApprovalStep = paymentApprovals.find((approval) =>
-      approval.approverAssignments.some((a) => a.userId === userId),
+    const lowestUnapprovedApproval = paymentApprovals
+      .filter((approval) => !approval.approved)
+      .sort((a, b) => a.rank - b.rank)[0];
+
+    return lowestUnapprovedApproval ?? null;
+  }
+
+  private assertUserCanApproveCurrentApprovalStepOrThrow({
+    userId,
+    currentApprovalStep,
+  }: {
+    userId: number;
+    currentApprovalStep: PaymentApprovalEntity;
+  }): void {
+    const isApprover = currentApprovalStep.approverAssignments.some(
+      (a) => a.userId === userId,
     );
-    if (!userApprovalStep) {
+    if (!isApprover) {
       throw new HttpException(
-        'User is not assigned to any approval step for this payment and cannot approve it',
+        'User is not assigned to the current approval step and cannot approve it',
         HttpStatus.FORBIDDEN,
       );
     }
-
-    if (userApprovalStep.approved) {
-      throw new HttpException(
-        'The approval step this user has been assigned to has already been approved',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const lowestUnapprovedRank = paymentApprovals
-      .filter((a) => !a.approved)
-      .sort((a, b) => a.rank - b.rank)[0].rank;
-
-    if (userApprovalStep.rank > lowestUnapprovedRank) {
-      throw new HttpException(
-        'Cannot approve payment before lower-order approval steps are approved',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    return userApprovalStep;
   }
 
   public async getApproversForCurrentApprovalStep({
@@ -494,22 +467,6 @@ export class PaymentsManagementService {
     return currentApprovalStep.approverAssignments.map((assignment) => ({
       userId: assignment.userId,
     }));
-  }
-
-  private async getCurrentApprovalStep({
-    paymentId,
-  }: {
-    paymentId: number;
-  }): Promise<PaymentApprovalEntity | null> {
-    const paymentApprovals = await this.paymentApprovalRepository.find({
-      where: { paymentId: Equal(paymentId) },
-    });
-
-    const lowestUnapprovedApproval = paymentApprovals
-      .filter((approval) => !approval.approved)
-      .sort((a, b) => a.rank - b.rank)[0];
-
-    return lowestUnapprovedApproval ?? null;
   }
 
   private async processFinalApproval({
