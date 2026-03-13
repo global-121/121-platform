@@ -7,7 +7,7 @@ import { PaymentsManagementService } from '@121-service/src/payments/services/pa
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
-import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
+import { ProgramApprovalThresholdRepository } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 
@@ -19,7 +19,7 @@ describe('PaymentsManagementService', () => {
   let transactionsService: TransactionsService;
   let registrationsBulkService: RegistrationsBulkService;
   let registrationsPaginationService: RegistrationsPaginationService;
-  let programApprovalThresholdsService: ProgramApprovalThresholdsService;
+  let programApprovalThresholdRepository: ProgramApprovalThresholdRepository;
 
   const basePaymentParams = {
     userId: 1,
@@ -43,8 +43,8 @@ describe('PaymentsManagementService', () => {
     registrationsPaginationService = unitRef.get(
       RegistrationsPaginationService,
     );
-    programApprovalThresholdsService = unitRef.get(
-      ProgramApprovalThresholdsService,
+    programApprovalThresholdRepository = unitRef.get(
+      ProgramApprovalThresholdRepository,
     );
     (service as any).paymentRepository = {
       save: jest.fn().mockImplementation((entity) => {
@@ -59,7 +59,7 @@ describe('PaymentsManagementService', () => {
   it('should handle dryRun scenario and not call write function', async () => {
     jest
       .spyOn(
-        programApprovalThresholdsService as any,
+        programApprovalThresholdRepository as any,
         'getThresholdsForPaymentAmount',
       )
       .mockResolvedValue([{ id: 1, thresholdAmount: 0 }]);
