@@ -261,12 +261,12 @@ describe('do payment with 2 approval steps', () => {
 
     // Assert
     expect(approvePaymentResponseFinanceManager.status).toBe(
-      HttpStatus.BAD_REQUEST,
+      HttpStatus.FORBIDDEN,
     );
     expect(
       approvePaymentResponseFinanceManager.body.message,
     ).toMatchInlineSnapshot(
-      `"Cannot approve payment before lower-order approval steps have been approved"`,
+      `"User is not assigned to the current approval step and cannot approve it"`,
     );
   });
 
@@ -547,7 +547,7 @@ describe('multiple approvers per approval step', () => {
     // Assert
     expect(secondApprovalResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(secondApprovalResponse.body.message).toBe(
-      'This approval step has already been approved for this payment',
+      'Payment is already fully approved, cannot approve it',
     );
   });
 });

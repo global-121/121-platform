@@ -323,4 +323,45 @@ describe('PaymentsManagementService', () => {
       expect(processFinalApprovalSpy).toHaveBeenCalled();
     });
   });
+
+  describe('getApproversForCurrentApprovalStep', () => {
+    let paymentApprovalRepository: any;
+
+    beforeEach(() => {
+      paymentApprovalRepository = { find: jest.fn() };
+      (service as any).paymentApprovalRepository = paymentApprovalRepository;
+    });
+
+    it('should return empty array when all approvals are already approved', async () => {
+      paymentApprovalRepository.find.mockResolvedValue([
+        { id: 1, rank: 1, approved: true, approverAssignments: [] },
+      ]);
+
+      const result = await service.getApproversForCurrentApprovalStep({
+        paymentId: 1,
+      });
+
+      expect(result).toEqual([]);
+    });
+
+    it('should return usernames for the current approval step', async () => {
+      paymentApprovalRepository.find.mockResolvedValue([
+        {
+          id: 1,
+          rank: 1,
+          approved: false,
+          approverAssignments: [
+            { userId: 1, user: { username: 'alice' } },
+            { userId: 2, user: { username: 'bob' } },
+          ],
+        },
+      ]);
+
+      const result = await service.getApproversForCurrentApprovalStep({
+        paymentId: 1,
+      });
+
+      expect(result).toEqual([{ username: 'alice' }, { username: 'bob' }]);
+    });
+  });
 });
