@@ -265,11 +265,13 @@ describe('PaymentsReportingService - getTransactions', () => {
           isPaymentApproved: true,
           approvalsRequired: 2,
           approvalsGiven: 2,
-          success: { count: 10, transferValue: 1000 },
-          waiting: { count: 0, transferValue: 0 },
-          failed: { count: 0, transferValue: 0 },
-          pendingApproval: { count: 0, transferValue: 0 },
-          approved: { count: 0, transferValue: 0 },
+          aggregationsPerStatus: {
+            success: { count: 10, transferValue: 1000 },
+            waiting: { count: 0, transferValue: 0 },
+            failed: { count: 0, transferValue: 0 },
+            pendingApproval: { count: 0, transferValue: 0 },
+            approved: { count: 0, transferValue: 0 },
+          },
         },
         {
           paymentId: 2,
@@ -277,11 +279,13 @@ describe('PaymentsReportingService - getTransactions', () => {
           isPaymentApproved: false,
           approvalsRequired: 2,
           approvalsGiven: 1,
-          success: { count: 0, transferValue: 0 },
-          waiting: { count: 5, transferValue: 500 },
-          failed: { count: 0, transferValue: 0 },
-          pendingApproval: { count: 0, transferValue: 0 },
-          approved: { count: 0, transferValue: 0 },
+          aggregationsPerStatus: {
+            success: { count: 0, transferValue: 0 },
+            waiting: { count: 5, transferValue: 500 },
+            failed: { count: 0, transferValue: 0 },
+            pendingApproval: { count: 0, transferValue: 0 },
+            approved: { count: 0, transferValue: 0 },
+          },
         },
         {
           paymentId: 3,
@@ -289,11 +293,13 @@ describe('PaymentsReportingService - getTransactions', () => {
           isPaymentApproved: false,
           approvalsRequired: 1,
           approvalsGiven: 0,
-          success: { count: 0, transferValue: 0 },
-          waiting: { count: 0, transferValue: 0 },
-          failed: { count: 2, transferValue: 200 },
-          pendingApproval: { count: 0, transferValue: 0 },
-          approved: { count: 0, transferValue: 0 },
+          aggregationsPerStatus: {
+            success: { count: 0, transferValue: 0 },
+            waiting: { count: 0, transferValue: 0 },
+            failed: { count: 2, transferValue: 200 },
+            pendingApproval: { count: 0, transferValue: 0 },
+            approved: { count: 0, transferValue: 0 },
+          },
         },
       ];
 
@@ -337,11 +343,13 @@ describe('PaymentsReportingService - getTransactions', () => {
         isPaymentApproved: true,
         approvalsRequired: 2,
         approvalsGiven: 2,
-        success: { count: 10, transferValue: 1000 },
-        waiting: { count: 0, transferValue: 0 },
-        failed: { count: 0, transferValue: 0 },
-        pendingApproval: { count: 0, transferValue: 0 },
-        approved: { count: 0, transferValue: 0 },
+        aggregationsPerStatus: {
+          success: { count: 10, transferValue: 1000 },
+          waiting: { count: 0, transferValue: 0 },
+          failed: { count: 0, transferValue: 0 },
+          pendingApproval: { count: 0, transferValue: 0 },
+          approved: { count: 0, transferValue: 0 },
+        },
       };
 
       const mockFsps = [

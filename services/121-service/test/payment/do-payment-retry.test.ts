@@ -157,14 +157,18 @@ describe('Do payment retry', () => {
 
     // Verify that only the failed transaction is retried and now succeeded
     expect(paymentAggregatesBeforeRetry.body).toMatchObject({
-      success: { count: 1, transferValue },
-      failed: { count: 1, transferValue },
-      waiting: { count: 1, transferValue },
+      aggregationsPerStatus: {
+        success: { count: 1, transferValue },
+        failed: { count: 1, transferValue },
+        waiting: { count: 1, transferValue },
+      },
     });
     expect(paymentAggregatesAfterRetry.body).toMatchObject({
-      success: { count: 2, transferValue: transferValue * 2 },
-      failed: { count: 0, transferValue: 0 },
-      waiting: { count: 1, transferValue },
+      aggregationsPerStatus: {
+        success: { count: 2, transferValue: transferValue * 2 },
+        failed: { count: 0, transferValue: 0 },
+        waiting: { count: 1, transferValue },
+      },
     });
   });
 
@@ -238,12 +242,16 @@ describe('Do payment retry', () => {
 
     // Verify that only the failed transaction for registrationError1 is retried and now succeeded, while registrationError2 is still failed
     expect(paymentAggregatesBeforeRetry.body).toMatchObject({
-      success: { count: 1, transferValue },
-      failed: { count: 2, transferValue: transferValue * 2 },
+      aggregationsPerStatus: {
+        success: { count: 1, transferValue },
+        failed: { count: 2, transferValue: transferValue * 2 },
+      },
     });
     expect(paymentAggregatesAfterRetry.body).toMatchObject({
-      success: { count: 2, transferValue: transferValue * 2 },
-      failed: { count: 1, transferValue },
+      aggregationsPerStatus: {
+        success: { count: 2, transferValue: transferValue * 2 },
+        failed: { count: 1, transferValue },
+      },
     });
   });
 
@@ -337,12 +345,16 @@ describe('Do payment retry', () => {
 
     // Verify that only the failed transaction for registrationError2 is retried and now succeeded, while registrationError1 is still failed
     expect(paymentAggregatesBeforeRetry.body).toMatchObject({
-      success: { count: 1, transferValue },
-      failed: { count: 2, transferValue: transferValue * 2 },
+      aggregationsPerStatus: {
+        success: { count: 1, transferValue },
+        failed: { count: 2, transferValue: transferValue * 2 },
+      },
     });
     expect(paymentAggregatesAfterRetry.body).toMatchObject({
-      success: { count: 2, transferValue: transferValue * 2 },
-      failed: { count: 1, transferValue },
+      aggregationsPerStatus: {
+        success: { count: 2, transferValue: transferValue * 2 },
+        failed: { count: 1, transferValue },
+      },
     });
   });
 });
