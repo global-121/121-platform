@@ -10,6 +10,7 @@ import {
   Param,
   ParseFilePipe,
   ParseIntPipe,
+  Patch,
   Post,
   Req,
   Res,
@@ -33,6 +34,7 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 import { CreateProgramAttachmentDto } from '@121-service/src/programs/program-attachments/dtos/create-program-attachment.dto';
 import { CreateProgramAttachmentResponseDto } from '@121-service/src/programs/program-attachments/dtos/create-program-attachment-response.dto';
 import { GetProgramAttachmentResponseDto } from '@121-service/src/programs/program-attachments/dtos/get-program-attachment-response.dto';
+import { RenameProgramAttachmentDto } from '@121-service/src/programs/program-attachments/dtos/rename-program-attachment.dto';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
 import { FILE_UPLOAD_WITH_FILENAME_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
@@ -94,6 +96,33 @@ export class ProgramAttachmentsController {
       programId,
       file,
       filename: body.filename,
+      userId,
+    });
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramAttachmentsUPDATE] })
+  @ApiOperation({
+    summary: 'Rename an attachment in a program',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'attachmentId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Rename an attachment in a program',
+  })
+  @Patch('programs/:programId/attachments/:attachmentId')
+  public async renameProgramAttachment(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('attachmentId', ParseIntPipe) attachmentId: number,
+    @Body() body: RenameProgramAttachmentDto,
+    @Req() req: ScopedUserRequest,
+  ): Promise<CreateProgramAttachmentResponseDto> {
+    const userId = RequestHelper.getUserId(req);
+
+    return await this.programAttachmentsService.renameProgramAttachment({
+      programId,
+      attachmentId,
+      filename: body.newFilename,
       userId,
     });
   }

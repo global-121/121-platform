@@ -96,6 +96,39 @@ export class ProgramAttachmentsService {
     };
   }
 
+  public async renameProgramAttachment({
+    programId,
+    attachmentId,
+    filename,
+  }: {
+    programId: number;
+    attachmentId: number;
+    filename: string;
+    userId: number;
+  }): Promise<CreateProgramAttachmentResponseDto> {
+    const { programAttachment } =
+      await this.getProgramAttachmentAndBlockBlobClient({
+        programId,
+        attachmentId,
+      });
+
+    // Keep existing extension
+    const currentFilenameParts = programAttachment.filename.split('.');
+    const currentExtension =
+      currentFilenameParts.length > 1 ? currentFilenameParts.pop() : undefined;
+
+    programAttachment.filename = currentExtension
+      ? `${filename}.${currentExtension}`
+      : filename;
+
+    const savedAttachment =
+      await this.programAttachmentRepository.save(programAttachment);
+
+    return {
+      id: savedAttachment.id,
+    };
+  }
+
   public async deleteProgramAttachmentById(
     programId: number,
     attachmentId: number,
