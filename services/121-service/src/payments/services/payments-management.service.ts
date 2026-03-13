@@ -424,7 +424,7 @@ export class PaymentsManagementService {
   }): Promise<PaymentApprovalEntity | null> {
     const paymentApprovals = await this.paymentApprovalRepository.find({
       where: { paymentId: Equal(paymentId) },
-      relations: { approverAssignments: true },
+      relations: { approverAssignments: { user: true } },
     });
 
     const lowestUnapprovedApproval = paymentApprovals
@@ -504,9 +504,11 @@ export class PaymentsManagementService {
       return [];
     }
 
-    return currentApprovalStep.approverAssignments.map((assignment) => ({
-      userId: assignment.userId,
-    }));
+    const usernames = currentApprovalStep.approverAssignments
+      .map((assignment) => ({ username: assignment.user?.username }))
+      .filter((obj): obj is { username: string } => obj.username !== undefined);
+
+    return usernames;
   }
 
   private async processFinalApproval({
