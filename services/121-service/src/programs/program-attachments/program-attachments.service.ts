@@ -121,18 +121,8 @@ export class ProgramAttachmentsService {
       ? `${filename}.${currentExtension}`
       : filename;
 
-    let savedAttachment: ProgramAttachmentEntity;
-    try {
-      savedAttachment =
-        await this.programAttachmentRepository.save(programAttachment);
-    } catch (error) {
-      // DB save failed: clean up the new blob to avoid orphaned blobs
-      await newBlockBlobClient.deleteIfExists();
-      throw error;
-    }
-
-    // Delete old blob only after DB record is successfully updated
-    await blockBlobClient.deleteIfExists();
+    const savedAttachment =
+      await this.programAttachmentRepository.save(programAttachment);
 
     return {
       id: savedAttachment.id,
