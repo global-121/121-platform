@@ -67,7 +67,7 @@ export class ProgramApprovalThresholdsService {
     const hasZeroThreshold = thresholds.some((t) => t.thresholdAmount === 0);
     if (!hasZeroThreshold) {
       throw new HttpException(
-        'The first threshold must have a threshold amount of 0 to cover all payments below the first non-zero threshold.',
+        'At least one threshold must have a threshold amount of 0 to cover all payments below the first non-zero threshold.',
         HttpStatus.BAD_REQUEST,
       );
     }

@@ -150,9 +150,9 @@ export class PaymentsReportingService {
   private getPaymentApproverUsernames(
     approverAssignments: ProgramAidworkerAssignmentEntity[],
   ): string[] {
-    const sortedApprovers = (approverAssignments ?? []).sort(
-      (a, b) => a.id - b.id,
-    );
+    const sortedApprovers = (approverAssignments ?? [])
+      .slice()
+      .sort((a, b) => a.id - b.id);
     return sortedApprovers
       .map((assignment) => assignment.user?.username)
       .filter((username): username is string => Boolean(username));

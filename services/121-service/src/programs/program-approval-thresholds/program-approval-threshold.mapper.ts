@@ -9,6 +9,7 @@ export class ProgramApprovalThresholdMapper {
       id: entity.id,
       thresholdAmount: entity.thresholdAmount,
       approvers: entity.approverAssignments
+        .slice()
         .sort((a, b) => a.id - b.id)
         .map((assignment) => ({
           id: assignment.id,

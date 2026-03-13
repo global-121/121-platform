@@ -285,7 +285,7 @@ export class PageLayoutPaymentComponent {
       );
     });
 
-  readonly showApprovePaymentButton = computed<boolean | undefined>(() => {
+  readonly showApprovePaymentButton = computed<boolean>(() => {
     if (!this.paymentAggregate.isSuccess()) {
       return false;
     }
@@ -295,14 +295,14 @@ export class PageLayoutPaymentComponent {
     }
 
     const currentUser = this.authService.user?.username ?? undefined;
+    if (!currentUser) {
+      return false;
+    }
+
     const approvalStatus = this.paymentAggregate.data().approvalStatus;
-    const currentPaymentApproval = approvalStatus.find((approval) => {
-      const approvers = approval.approvers as string[];
-      if (!currentUser) {
-        return undefined;
-      }
-      return approvers.includes(currentUser);
-    });
+    const currentPaymentApproval = approvalStatus.find((approval) =>
+      approval.approvers.includes(currentUser),
+    );
     if (!currentPaymentApproval) {
       return false; // not approver for this payment
     }
