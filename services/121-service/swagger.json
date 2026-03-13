@@ -961,7 +961,7 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/payments/{paymentId}/approvals/{approvalId}/can-approve",
+    "path": "/api/programs/{programId}/payments/{paymentId}/approvals/can-approve",
     "params": [
       "programId",
       "paymentId"

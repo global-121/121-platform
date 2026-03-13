@@ -256,9 +256,7 @@ export class PaymentsController {
     description: 'Whether the current user is eligible to approve this step',
     type: CanApprovePaymentApprovalResponseDto,
   })
-  @Get(
-    'programs/:programId/payments/:paymentId/approvals/:approvalId/can-approve',
-  )
+  @Get('programs/:programId/payments/:paymentId/approvals/can-approve')
   public async canUserApprovePaymentApproval(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('paymentId', ParseIntPipe) paymentId: number,
