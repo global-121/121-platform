@@ -144,7 +144,7 @@ export class ProgramMonitoringFilesPageComponent {
       this.programApiService.updateProgramAttachment({
         programId: this.programId,
         attachmentId: data.id,
-        filename: data.updateFileName.includes('.')
+        newFilename: data.updateFileName.includes('.')
           ? data.updateFileName.slice(0, data.updateFileName.lastIndexOf('.'))
           : data.updateFileName,
       }),
