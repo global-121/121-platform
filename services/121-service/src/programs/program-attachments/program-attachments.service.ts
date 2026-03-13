@@ -106,52 +106,23 @@ export class ProgramAttachmentsService {
     filename: string;
     userId: number;
   }): Promise<CreateProgramAttachmentResponseDto> {
-    const { programAttachment, blockBlobClient } =
+    const { programAttachment } =
       await this.getProgramAttachmentAndBlockBlobClient({
         programId,
         attachmentId,
       });
 
-    // get extension from original file name
-    const extension = programAttachment.filename.split('.').pop();
-    const filenameWithExtension = `${filename}.${extension}`;
+    // Keep existing extension
+    const currentFilenameParts = programAttachment.filename.split('.');
+    const currentExtension =
+      currentFilenameParts.length > 1 ? currentFilenameParts.pop() : undefined;
 
-    // Rename in Blob Storage by downloading and re-uploading to new blob name.
-    // beginCopyFromURL would 403 on private containers without a SAS token.
-    const newBlobName = `${programId}/${Date.now()}-${filenameWithExtension}`;
-    const newBlockBlobClient =
-      this.containerClient.getBlockBlobClient(newBlobName);
-    const [sourceBuffer, sourceProperties] = await Promise.all([
-      blockBlobClient.downloadToBuffer(),
-      blockBlobClient.getProperties(),
-    ]);
-    await newBlockBlobClient.uploadData(sourceBuffer, {
-      blobHTTPHeaders: {
-        blobContentType: sourceProperties.contentType,
-        blobContentEncoding: sourceProperties.contentEncoding,
-        blobCacheControl: sourceProperties.cacheControl,
-        blobContentDisposition: sourceProperties.contentDisposition,
-        blobContentLanguage: sourceProperties.contentLanguage,
-      },
-      metadata: sourceProperties.metadata,
-    });
+    programAttachment.filename = currentExtension
+      ? `${filename}.${currentExtension}`
+      : filename;
 
-    // Update DB record before deleting the old blob to avoid data loss if save fails
-    programAttachment.filename = filenameWithExtension;
-    programAttachment.blobName = newBlobName;
-
-    let savedAttachment: ProgramAttachmentEntity;
-    try {
-      savedAttachment =
-        await this.programAttachmentRepository.save(programAttachment);
-    } catch (error) {
-      // DB save failed: clean up the new blob to avoid orphaned blobs
-      await newBlockBlobClient.deleteIfExists();
-      throw error;
-    }
-
-    // Delete old blob only after DB record is successfully updated
-    await blockBlobClient.deleteIfExists();
+    const savedAttachment =
+      await this.programAttachmentRepository.save(programAttachment);
 
     return {
       id: savedAttachment.id,
