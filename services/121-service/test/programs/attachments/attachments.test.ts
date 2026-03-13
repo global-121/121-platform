@@ -66,17 +66,18 @@ describe('Program Attachments', () => {
     // Assert
     expect(renameResponse.status).toBe(HttpStatus.OK);
 
-    const getAttachmentsResponse = await getAttachments({
+    const getAttachmentResponse = await getAttachment({
       programId: programIdPV,
+      attachmentId,
       accessToken,
     });
 
-    const attachmentFilenames = getAttachmentsResponse.body.map(
-      (attachment: any) => attachment.filename,
-    );
-    expect(attachmentFilenames).toContain(
-      `${newFilename}.${testImageExtension}`,
-    );
+    const attachmentFilename = getAttachmentResponse.header[
+      'content-disposition'
+    ]
+      .split('filename=')[1]
+      .replaceAll('"', '');
+    expect(attachmentFilename).toBe(`${newFilename}.${testImageExtension}`);
   });
 
   it('should list all attachments for a program', async () => {
