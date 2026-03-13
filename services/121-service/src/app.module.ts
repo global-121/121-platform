@@ -31,7 +31,8 @@ import { MetricsModule } from '@121-service/src/metrics/metrics.module';
 import { NoteModule } from '@121-service/src/notes/notes.module';
 import { MessageModule } from '@121-service/src/notifications/message.module';
 import { MessageIncomingModule } from '@121-service/src/notifications/message-incoming/message-incoming.module';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
+import { ProgramApprovalThresholdsModule } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.module';
 import { ProgramAttachmentsModule } from '@121-service/src/programs/program-attachments/program-attachments.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
@@ -59,6 +60,7 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
     ExchangeRatesModule,
     ScriptsModule,
     ProgramModule,
+    ProgramApprovalThresholdsModule,
     MessageModule,
     MetricsModule,
     MessageIncomingModule,

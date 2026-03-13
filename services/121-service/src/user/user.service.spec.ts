@@ -6,8 +6,8 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
-import { ApproverEntity } from '@121-service/src/user/approver/entities/approver.entity';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
+import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
 import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
@@ -47,12 +47,11 @@ describe('UserService', () => {
           useClass: Repository,
         },
         {
-          provide: getRepositoryToken(ProgramAidworkerAssignmentEntity),
-          useClass: Repository,
-        },
-        {
-          provide: getRepositoryToken(ApproverEntity),
-          useClass: Repository,
+          provide: ProgramAidworkerAssignmentRepository,
+          useValue: {
+            isApprover: jest.fn(),
+            findByUserId: jest.fn(),
+          },
         },
         {
           provide: REQUEST,

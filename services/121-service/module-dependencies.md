@@ -101,10 +101,11 @@ graph LR
   OnafriqReconciliationModule-->QueuesRegistryModule
   OnafriqReconciliationModule-->RedisModule
   OnafriqReconciliationModule-->TransactionsModule
-  PaymentsModule-->ApproverModule
   PaymentsModule-->FspsModule
   PaymentsModule-->MessageTemplateModule
   PaymentsModule-->PaymentEventsModule
+  PaymentsModule-->ProgramAidworkerAssignmentsModule
+  PaymentsModule-->ProgramApprovalThresholdsModule
   PaymentsModule-->ProgramFspConfigurationsModule
   PaymentsModule-->ProgramModule
   PaymentsModule-->RedisModule
@@ -116,10 +117,12 @@ graph LR
   PaymentsModule-->TransactionQueuesModule
   PaymentsModule-->TransactionsModule
   PaymentsModule-->UserModule
+  ProgramApprovalThresholdsModule-->ProgramAidworkerAssignmentsModule
   ProgramModule-->FspsModule
   ProgramModule-->IntersolveVisaModule
   ProgramModule-->KoboConnectModule
   ProgramModule-->LookupModule
+  ProgramModule-->ProgramAidworkerAssignmentsModule
   ProgramModule-->ProgramAttachmentsModule
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->ProgramFspConfigurationsModule
@@ -176,6 +179,7 @@ graph LR
   TransactionsModule-->TransactionEventsModule
   TransactionsModule-->UserModule
   UserEmailsModule-->EmailsModule
+  UserModule-->ProgramAidworkerAssignmentsModule
   UserModule-->UserEmailsModule
   WhatsappModule-->ImageCodeModule
   WhatsappModule-->MessageTemplateModule

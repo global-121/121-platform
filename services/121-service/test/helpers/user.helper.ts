@@ -14,10 +14,13 @@ export async function getAllUsers(
   return getServer().get('/users').set('Cookie', [accessToken]).send();
 }
 
-export async function getAllUsersByProgramId(
-  accessToken: string,
-  programId: string,
-): Promise<request.Response> {
+export async function getAllUsersByProgramId({
+  accessToken,
+  programId,
+}: {
+  accessToken: string;
+  programId: number;
+}): Promise<request.Response> {
   return getServer()
     .get(`/programs/${programId}/users`)
     .set('Cookie', [accessToken])
@@ -74,69 +77,4 @@ export async function getCurrentUser({
   accessToken: string;
 }): Promise<request.Response> {
   return await getServer().get('/users/current').set('Cookie', [accessToken]);
-}
-
-export async function getApprovers({
-  programId,
-  accessToken,
-}: {
-  programId: number;
-  accessToken: string;
-}): Promise<request.Response> {
-  return await getServer()
-    .get(`/programs/${programId}/approvers`)
-    .set('Cookie', [accessToken]);
-}
-
-export async function createApprover({
-  programId,
-  userId,
-  order,
-  accessToken,
-}: {
-  programId: number;
-  userId: number;
-  order: number;
-  accessToken: string;
-}): Promise<request.Response> {
-  return await getServer()
-    .post(`/programs/${programId}/approvers`)
-    .set('Cookie', [accessToken])
-    .send({
-      userId,
-      order,
-    });
-}
-
-export async function updateApprover({
-  programId,
-  approverId,
-  order,
-  accessToken,
-}: {
-  programId: number;
-  approverId: number;
-  order: number;
-  accessToken: string;
-}): Promise<request.Response> {
-  return await getServer()
-    .patch(`/programs/${programId}/approvers/${approverId}`)
-    .set('Cookie', [accessToken])
-    .send({
-      order,
-    });
-}
-
-export async function deleteApprover({
-  programId,
-  approverId,
-  accessToken,
-}: {
-  programId: number;
-  approverId: number;
-  accessToken: string;
-}): Promise<request.Response> {
-  return await getServer()
-    .delete(`/programs/${programId}/approvers/${approverId}`)
-    .set('Cookie', [accessToken]);
 }

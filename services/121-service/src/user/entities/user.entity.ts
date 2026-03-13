@@ -11,7 +11,7 @@ import {
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
 import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attachments/program-attachment.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';

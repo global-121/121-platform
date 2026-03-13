@@ -11,6 +11,7 @@ import {
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 
@@ -39,4 +40,18 @@ export class ProgramAidworkerAssignmentEntity extends Base121Entity {
 
   @Column({ nullable: false, default: '' })
   public scope: string;
+
+  @ManyToOne(
+    () => ProgramApprovalThresholdEntity,
+    (threshold) => threshold.approverAssignments,
+    { onDelete: 'SET NULL', nullable: true },
+  )
+  @JoinColumn({
+    name: 'programApprovalThresholdId',
+    foreignKeyConstraintName:
+      'FK_program_aidworker_assignment_approval_threshold',
+  })
+  public programApprovalThreshold: Relation<ProgramApprovalThresholdEntity> | null;
+  @Column({ type: 'integer', nullable: true })
+  public programApprovalThresholdId: number | null;
 }

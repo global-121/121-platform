@@ -1,7 +1,7 @@
 import { env } from '@121-service/src/env';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { getApprovers } from '@121-service/test/helpers/user.helper';
+import { getApprovers } from '@121-service/test/helpers/program-approval-threshold.helper';
 import {
   getAccessToken,
   resetDB,
@@ -29,12 +29,12 @@ describe('Seed with different approverMode options', () => {
 
     // Assert
     for (const programId of [programIdOCW, programIdPV]) {
-      const getResponse = await getApprovers({
+      const approvers = await getApprovers({
         programId,
         accessToken,
       });
-      expect(getResponse.body).toHaveLength(1);
-      expect(getResponse.body[0].username).toBe(
+      expect(approvers).toHaveLength(1);
+      expect(approvers[0].username).toBe(
         env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
       );
     }
@@ -51,11 +51,11 @@ describe('Seed with different approverMode options', () => {
 
     // Assert
     for (const programId of [programIdOCW, programIdPV]) {
-      const getResponse = await getApprovers({
+      const approvers = await getApprovers({
         programId,
         accessToken,
       });
-      expect(getResponse.body).toHaveLength(0);
+      expect(approvers).toHaveLength(0);
     }
   });
 
@@ -70,14 +70,18 @@ describe('Seed with different approverMode options', () => {
 
     // Assert
     for (const programId of [programIdOCW, programIdPV]) {
-      const getResponse = await getApprovers({
+      const approvers = await getApprovers({
         programId,
         accessToken,
       });
-      expect(getResponse.body).toHaveLength(2);
-      const usernames = getResponse.body.map((u) => u.username);
+      expect(approvers).toHaveLength(4);
+      const usernames = approvers.map((u) => u.username);
       expect(usernames).toContain(env.USERCONFIG_121_SERVICE_EMAIL_ADMIN);
       expect(usernames).toContain(env.USERCONFIG_121_SERVICE_EMAIL_APPROVER);
+      expect(usernames).toContain(
+        env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER,
+      );
+      expect(usernames).toContain(env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER);
     }
   });
 
@@ -87,12 +91,12 @@ describe('Seed with different approverMode options', () => {
 
     // Assert
     for (const programId of [programIdOCW, programIdPV]) {
-      const getResponse = await getApprovers({
+      const approvers = await getApprovers({
         programId,
         accessToken,
       });
-      expect(getResponse.body).toHaveLength(1);
-      expect(getResponse.body[0].username).toBe(
+      expect(approvers).toHaveLength(1);
+      expect(approvers[0].username).toBe(
         env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
       );
     }

@@ -222,12 +222,7 @@ export class PageLayoutPaymentComponent {
       return 0;
     }
 
-    return Math.min(
-      ...this.paymentAggregate
-        .data()
-        .approvalStatus.filter((a) => !a.approved)
-        .map((a) => a.rank),
-    );
+    return this.paymentAggregate.data().approvalsGiven + 1;
   });
 
   readonly hasFspWithExportFileIntegration = computed(() =>
@@ -290,7 +285,7 @@ export class PageLayoutPaymentComponent {
       );
     });
 
-  readonly showApprovePaymentButton = computed<boolean | undefined>(() => {
+  readonly showApprovePaymentButton = computed<boolean>(() => {
     if (!this.paymentAggregate.isSuccess()) {
       return false;
     }
@@ -299,9 +294,14 @@ export class PageLayoutPaymentComponent {
       return false;
     }
 
+    const currentUser = this.authService.user?.username ?? undefined;
+    if (!currentUser) {
+      return false;
+    }
+
     const approvalStatus = this.paymentAggregate.data().approvalStatus;
-    const currentPaymentApproval = approvalStatus.find(
-      (approval) => approval.username === this.authService.user?.username,
+    const currentPaymentApproval = approvalStatus.find((approval) =>
+      approval.approvers.includes(currentUser),
     );
     if (!currentPaymentApproval) {
       return false; // not approver for this payment
@@ -422,11 +422,4 @@ export class PageLayoutPaymentComponent {
       ? $localize`:@@inProgressChipTooltip:The payment will be in progress while the transactions in the table below are loading.`
       : undefined,
   );
-
-  readonly getApproverLabel = (username: string | undefined) =>
-    computed(
-      () =>
-        username ??
-        $localize`:@@approverDeleted:Approver deleted. Create new payment.`,
-    );
 }

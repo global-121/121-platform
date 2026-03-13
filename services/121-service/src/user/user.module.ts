@@ -2,8 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
-import { ApproverEntity } from '@121-service/src/user/approver/entities/approver.entity';
+import { ProgramAidworkerAssignmentsModule } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignments.module';
 import { RolesController } from '@121-service/src/user/controllers/roles.controller';
 import { UserController } from '@121-service/src/user/controllers/user.controller';
 import { UserAssignmentsController } from '@121-service/src/user/controllers/user-assignments.controller';
@@ -19,10 +18,9 @@ import { UserEmailsModule } from '@121-service/src/user/user-emails/user-emails.
       UserEntity,
       UserRoleEntity,
       ProgramEntity,
-      ProgramAidworkerAssignmentEntity,
       PermissionEntity,
-      ApproverEntity,
     ]),
+    ProgramAidworkerAssignmentsModule,
     UserEmailsModule,
   ],
   providers: [UserService],
