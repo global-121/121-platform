@@ -1,3 +1,4 @@
+/* eslint-disable perfectionist/sort-objects -- Keep the config readable, by NOT sorting alphabetically automatically. */
 import eslint from '@eslint/js';
 import pluginQuery from '@tanstack/eslint-plugin-query';
 import angularEslint from 'angular-eslint';
@@ -9,14 +10,14 @@ import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 import eslintPluginRegexp from 'eslint-plugin-regexp';
 import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
 import eslintSortClassMembers from 'eslint-plugin-sort-class-members';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
 import tsEslint from 'typescript-eslint';
 
-// Import custom rule
-import noFormControlUndefinedValue from './eslint-rules/no-form-control-undefined-value.js';
-import tanstackNoManualCacheInvalidation from './eslint-rules/tanstack-no-manual-cache-invalidation.js';
+import noFormControlUndefinedValue from './eslint-rules/no-form-control-undefined-value.mjs';
+import tanstackNoManualCacheInvalidation from './eslint-rules/tanstack-no-manual-cache-invalidation.mjs';
 
-// Custom rules plugin
+/** @type {import('eslint').ESLint.Plugin} */
 const customRulesPlugin = {
   rules: {
     'no-form-control-undefined-value': noFormControlUndefinedValue,
@@ -24,8 +25,10 @@ const customRulesPlugin = {
   },
 };
 
-export default tsEslint.config(
+export default defineConfig(
+  globalIgnores(['dist/**', 'www/**', '.angular/**', 'coverage/**']),
   {
+    name: 'Root config',
     languageOptions: {
       globals: globals.browser,
       parserOptions: {
@@ -33,9 +36,44 @@ export default tsEslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
-    name: 'Root config',
+    linterOptions: {
+      reportUnusedInlineConfigs: 'error',
+      reportUnusedDisableDirectives: 'error',
+    },
   },
   {
+    name: 'JavaScript files',
+    files: ['**/*.js', '**/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
+      globals: {
+        module: 'readonly',
+        process: 'readonly',
+        require: 'readonly',
+      },
+    },
+    extends: [
+      eslint.configs.recommended,
+      eslintPluginRegexp.configs['flat/recommended'],
+      eslintPluginPerfectionist.configs['recommended-natural'],
+      eslintPluginPrettierRecommended,
+    ],
+    plugins: {
+      'eslint-comments': eslintPluginComments,
+      regexp: eslintPluginRegexp,
+    },
+    rules: {
+      'arrow-body-style': 'error',
+      'eslint-comments/require-description': 'error',
+      'func-style': 'error',
+      'no-inner-declarations': 'error',
+      'object-shorthand': 'error',
+      'prefer-arrow-callback': 'error',
+    },
+  },
+  {
+    name: 'TypeScript files',
+    files: ['**/*.ts'],
     extends: [
       eslint.configs.recommended,
       ...tsEslint.configs.strictTypeChecked,
@@ -46,8 +84,6 @@ export default tsEslint.config(
       eslintSortClassMembers.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
-    files: ['**/*.ts'],
-    name: 'TypeScript files',
     plugins: {
       'custom-rules': customRulesPlugin,
       'eslint-comments': eslintPluginComments,
@@ -79,7 +115,6 @@ export default tsEslint.config(
         },
       ],
       '@angular-eslint/no-async-lifecycle-method': ['error'],
-      '@angular-eslint/no-conflicting-lifecycle': ['error'],
       '@angular-eslint/prefer-on-push-component-change-detection': ['error'],
       '@angular-eslint/prefer-output-readonly': ['error'],
       '@angular-eslint/prefer-signals': ['error'],
@@ -135,14 +170,8 @@ export default tsEslint.config(
     },
   },
   {
-    files: ['**/app.config.ts'],
-    rules: {
-      'custom-rules/tanstack-no-manual-cache-invalidation': 'off',
-    },
-  },
-  {
-    files: ['**/*.spec.ts'],
     name: '(Unit-)test files',
+    files: ['**/*.spec.ts'],
     rules: {
       // This rule triggers for spy objects where the spied-upon method uses
       // `this`. In that case the underlying method is just not called so the
@@ -151,13 +180,13 @@ export default tsEslint.config(
     },
   },
   {
+    name: 'Component templates (HTML)',
+    files: ['src/app/**/*.html'],
     extends: [
       ...angularEslint.configs.templateRecommended,
       ...angularEslint.configs.templateAccessibility,
       eslintPluginPrettierRecommended,
     ],
-    files: ['src/app/**/*.html'],
-    name: 'Component templates (HTML)',
     plugins: {
       'better-tailwindcss': eslintPluginBetterTailwindcss,
     },
@@ -243,36 +272,6 @@ export default tsEslint.config(
       'better-tailwindcss': {
         entryPoint: 'src/styles.css',
       },
-    },
-  },
-  {
-    extends: [
-      eslint.configs.recommended,
-      eslintPluginRegexp.configs['flat/recommended'],
-      eslintPluginPerfectionist.configs['recommended-natural'],
-      eslintPluginPrettierRecommended,
-    ],
-    files: ['**/*.js', '**/*.mjs'],
-    languageOptions: {
-      ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
-      globals: {
-        module: 'readonly',
-        process: 'readonly',
-        require: 'readonly',
-      },
-    },
-    name: 'JavaScript files',
-    plugins: {
-      'eslint-comments': eslintPluginComments,
-      regexp: eslintPluginRegexp,
-    },
-    rules: {
-      'arrow-body-style': 'error',
-      'eslint-comments/require-description': 'error',
-      'func-style': 'error',
-      'no-inner-declarations': 'error',
-      'object-shorthand': 'error',
-      'prefer-arrow-callback': 'error',
     },
   },
 );

@@ -1,4 +1,5 @@
 import eslint from '@eslint/js';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import eslintPluginComments from 'eslint-plugin-eslint-comments';
 import eslintPluginJest from 'eslint-plugin-jest';
 import eslintPluginN from 'eslint-plugin-n';
@@ -9,14 +10,29 @@ import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 import tsEslint from 'typescript-eslint';
 
-// Import custom rules plugin
-import customRulesPlugin from './eslint-plugin-custom-rules/index.js';
+import controllerAuthenticatedUser from './eslint-custom-rules/controller-authenticated-user.mjs';
+import noMethodApiTags from './eslint-custom-rules/no-method-api-tags.mjs';
+import typeormCascadeOndelete from './eslint-custom-rules/typeorm-cascade-ondelete.mjs';
 
-export default tsEslint.config(
-  {
-    ignores: ['dist/**', 'tmp/**', 'documentation/**', 'coverage/**'],
+/** @type {import('eslint').ESLint.Plugin} */
+const customRulesPlugin = {
+  rules: {
+    'typeorm-cascade-ondelete': typeormCascadeOndelete,
+    'no-method-api-tags': noMethodApiTags,
+    'controller-authenticated-user': controllerAuthenticatedUser,
   },
+};
+
+export default defineConfig(
+  globalIgnores([
+    'dist/**',
+    'tmp/**',
+    '.nyc_output/**',
+    'documentation/**',
+    'coverage/**',
+  ]),
   {
+    name: 'Root config',
     languageOptions: {
       globals: globals.node,
       parserOptions: {
@@ -24,20 +40,23 @@ export default tsEslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
-    name: 'Root config',
+    linterOptions: {
+      reportUnusedInlineConfigs: 'error',
+      reportUnusedDisableDirectives: 'error',
+    },
   },
   {
-    extends: [
-      eslint.configs.recommended,
-      eslintPluginN.configs['flat/recommended'],
-      eslintPluginPrettierRecommended,
-    ],
+    name: 'JavaScript files (ESM)',
     files: ['**/*.js', '**/*.mjs'],
     languageOptions: {
       ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
       sourceType: 'module',
     },
-    name: 'JavaScript files (ESM)',
+    extends: [
+      eslint.configs.recommended,
+      eslintPluginN.configs['flat/recommended'],
+      eslintPluginPrettierRecommended,
+    ],
     plugins: {
       'eslint-comments': eslintPluginComments,
     },
@@ -54,6 +73,8 @@ export default tsEslint.config(
     },
   },
   {
+    name: 'TypeScript files',
+    files: ['**/*.ts'],
     extends: [
       ...tsEslint.configs.recommended,
       ...tsEslint.configs.stylistic,
@@ -61,8 +82,6 @@ export default tsEslint.config(
       eslintPluginPromise.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
-    files: ['**/*.ts'],
-    name: 'TypeScript files',
     plugins: {
       'eslint-comments': eslintPluginComments,
       'no-relative-import-paths': eslintPluginNoRelativePaths,
@@ -158,8 +177,8 @@ export default tsEslint.config(
     },
   },
   {
-    files: ['**/*.entity.ts'],
     name: 'Entity files',
+    files: ['**/*.entity.ts'],
     plugins: {
       'custom-rules': customRulesPlugin,
     },
@@ -168,8 +187,8 @@ export default tsEslint.config(
     },
   },
   {
-    files: ['**/*.controller.ts'],
     name: 'Controller files',
+    files: ['**/*.controller.ts'],
     plugins: {
       'custom-rules': customRulesPlugin,
     },
@@ -179,8 +198,8 @@ export default tsEslint.config(
     },
   },
   {
-    extends: [eslintPluginJest.configs['flat/recommended']],
-    files: ['**/*.spec.ts', '**/*.test.ts'],
     name: 'Test files',
+    files: ['**/*.spec.ts', '**/*.test.ts'],
+    extends: [eslintPluginJest.configs['flat/recommended']],
   },
 );

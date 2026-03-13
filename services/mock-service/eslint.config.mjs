@@ -1,4 +1,5 @@
 import eslint from '@eslint/js';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import eslintPluginComments from 'eslint-plugin-eslint-comments';
 import eslintPluginN from 'eslint-plugin-n';
 import eslintPluginNoRelativePaths from 'eslint-plugin-no-relative-import-paths';
@@ -8,8 +9,10 @@ import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 import tsEslint from 'typescript-eslint';
 
-export default tsEslint.config(
+export default defineConfig(
+  globalIgnores(['dist/**', 'tmp/**', 'coverage/**']),
   {
+    name: 'Root config',
     languageOptions: {
       globals: globals.node,
       parserOptions: {
@@ -17,21 +20,24 @@ export default tsEslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
-    name: 'Root config',
+    linterOptions: {
+      reportUnusedInlineConfigs: 'error',
+      reportUnusedDisableDirectives: 'error',
+    },
   },
   {
+    name: 'JavaScript files (ESM)',
+    files: ['**/*.js', '**/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
+      sourceType: 'module',
+    },
     extends: [
       eslint.configs.recommended,
       eslintPluginN.configs['flat/recommended'],
       eslintPluginRegexp.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
-    files: ['**/*.js', '**/*.mjs'],
-    name: 'JavaScript files (ESM)',
-    languageOptions: {
-      ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
-      sourceType: 'module',
-    },
     plugins: {
       'eslint-comments': eslintPluginComments,
     },
@@ -48,6 +54,8 @@ export default tsEslint.config(
     },
   },
   {
+    name: 'TypeScript files',
+    files: ['**/*.ts'],
     extends: [
       ...tsEslint.configs.recommended,
       ...tsEslint.configs.stylistic,
@@ -55,8 +63,6 @@ export default tsEslint.config(
       eslintPluginRegexp.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
-    files: ['**/*.ts'],
-    name: 'TypeScript files',
     plugins: {
       'eslint-comments': eslintPluginComments,
       'no-relative-import-paths': eslintPluginNoRelativePaths,
