@@ -138,6 +138,8 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.ProgramMetricsREAD,
           PermissionEnum.ProgramAttachmentsREAD,
           PermissionEnum.ProgramAttachmentsCREATE,
+          PermissionEnum.ProgramAttachmentsDELETE,
+          PermissionEnum.ProgramAttachmentsUPDATE,
           PermissionEnum.PaymentCREATE,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
