@@ -359,15 +359,10 @@ export class PaymentsManagementService {
     paymentId: number;
     note?: string;
   }): Promise<void> {
-    const lowestRankUnapprovedApproval =
-      await this.getLowestRankUnapprovedApprovalOrThrow({
-        paymentId,
-      });
-
-    await this.isUserAssignedToApprovalOrThrow({
+    const userApprovalStep = await this.getUserApprovalStepOrThrow({
       userId,
       programId,
-      approval: lowestRankUnapprovedApproval,
+      paymentId,
     });
 
     const totalApprovals = await this.paymentApprovalRepository.count({
@@ -375,15 +370,15 @@ export class PaymentsManagementService {
     });
 
     // store payment approval
-    lowestRankUnapprovedApproval.approved = true;
-    lowestRankUnapprovedApproval.approvedByUserId = userId;
-    await this.paymentApprovalRepository.save(lowestRankUnapprovedApproval);
+    userApprovalStep.approved = true;
+    userApprovalStep.approvedByUserId = userId;
+    await this.paymentApprovalRepository.save(userApprovalStep);
 
     // store payment event
     await this.paymentEventsService.createApprovedEvent({
       paymentId,
       userId,
-      rank: lowestRankUnapprovedApproval.rank,
+      rank: userApprovalStep.rank,
       total: totalApprovals,
       note,
     });
@@ -413,53 +408,24 @@ export class PaymentsManagementService {
     programId: number;
     paymentId: number;
   }): Promise<CanApprovePaymentApprovalResponseDto> {
-    const lowestRankUnapprovedApproval =
-      await this.getLowestRankUnapprovedApprovalOrThrow({
-        paymentId,
-      });
-
-    await this.isUserAssignedToApprovalOrThrow({
+    await this.getUserApprovalStepOrThrow({
       userId,
       programId,
-      approval: lowestRankUnapprovedApproval,
+      paymentId,
     });
 
     return { canApprovePaymentApproval: true };
   }
 
-  private async getLowestRankUnapprovedApprovalOrThrow({
-    paymentId,
-  }: {
-    paymentId: number;
-  }): Promise<PaymentApprovalEntity> {
-    const paymentApprovals = await this.paymentApprovalRepository.find({
-      where: { paymentId: Equal(paymentId) },
-      relations: { approverAssignments: true },
-    });
-
-    const lowestRankUnapprovedApproval = paymentApprovals
-      .filter((approval) => !approval.approved)
-      .sort((a, b) => a.rank - b.rank)[0];
-
-    if (!lowestRankUnapprovedApproval) {
-      throw new HttpException(
-        'Payment has already been fully approved',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    return lowestRankUnapprovedApproval;
-  }
-
-  private async isUserAssignedToApprovalOrThrow({
-    approval,
+  private async getUserApprovalStepOrThrow({
     userId,
     programId,
+    paymentId,
   }: {
-    approval: PaymentApprovalEntity;
     userId: number;
     programId: number;
-  }): Promise<boolean> {
+    paymentId: number;
+  }): Promise<PaymentApprovalEntity> {
     const aidworkerAssignment =
       await this.aidworkerAssignmentRepository.findOne({
         where: { userId: Equal(userId), programId: Equal(programId) },
@@ -471,17 +437,40 @@ export class PaymentsManagementService {
       );
     }
 
-    const isUserAssignedToApproval = approval.approverAssignments.some(
-      (approverAssignments) =>
-        approverAssignments.id === aidworkerAssignment.id,
+    const paymentApprovals = await this.paymentApprovalRepository.find({
+      where: { paymentId: Equal(paymentId) },
+      relations: { approverAssignments: true },
+    });
+
+    const userApprovalStep = paymentApprovals.find((approval) =>
+      approval.approverAssignments.some((a) => a.id === aidworkerAssignment.id),
     );
-    if (!isUserAssignedToApproval) {
+    if (!userApprovalStep) {
       throw new HttpException(
-        'User is not assigned to the lowest rank unapproved approval and cannot approve this payment',
+        'User is not assigned to any approval step for this payment and cannot approve it',
         HttpStatus.FORBIDDEN,
       );
     }
-    return isUserAssignedToApproval;
+
+    if (userApprovalStep.approved) {
+      throw new HttpException(
+        'The approval step this user has been assigned to has already been approved',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const lowestUnapprovedRank = paymentApprovals
+      .filter((a) => !a.approved)
+      .sort((a, b) => a.rank - b.rank)[0].rank;
+
+    if (userApprovalStep.rank > lowestUnapprovedRank) {
+      throw new HttpException(
+        'Cannot approve payment before lower-order approval steps are approved',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return userApprovalStep;
   }
 
   public async deletePayment({

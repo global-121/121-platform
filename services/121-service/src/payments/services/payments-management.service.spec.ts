@@ -262,18 +262,34 @@ describe('PaymentsManagementService', () => {
         aidworkerAssignmentRepository;
     });
 
-    it('should throw if approver is not assigned to payment', async () => {
+    it('should throw 403 if user is not assigned to the program', async () => {
+      (service as any).aidworkerAssignmentRepository.findOne.mockResolvedValue(
+        null,
+      );
+      paymentApprovalRepository.find.mockResolvedValue([]);
+      await expect(
+        service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
+      ).rejects.toMatchObject({
+        message:
+          'User is not assigned to this program and cannot approve payments',
+        status: 403,
+      });
+    });
+
+    it('should throw 403 if user is not assigned to any approval step', async () => {
       paymentApprovalRepository.find.mockResolvedValue([
         { id: 1, rank: 1, approved: false, approverAssignments: [] },
       ]);
       await expect(
         service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
-      ).rejects.toThrow(
-        'Aidworker is not assigned as approver for this payment',
-      );
+      ).rejects.toMatchObject({
+        message:
+          'User is not assigned to any approval step for this payment and cannot approve it',
+        status: 403,
+      });
     });
 
-    it('should throw if threshold has already been approved', async () => {
+    it("should throw 400 if the user's approval step has already been approved", async () => {
       const approvals = [
         {
           id: 1,
@@ -286,12 +302,14 @@ describe('PaymentsManagementService', () => {
       paymentApprovalRepository.find.mockResolvedValue(approvals);
       await expect(
         service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
-      ).rejects.toThrow(
-        'This approval step has already been approved for this payment',
-      );
+      ).rejects.toMatchObject({
+        message:
+          'The approval step this user has been assigned to has already been approved',
+        status: 400,
+      });
     });
 
-    it('should throw if not lowest rank threshold', async () => {
+    it('should throw 400 if a lower-rank step is still unapproved', async () => {
       const approvals = [
         {
           id: 1,
@@ -304,9 +322,11 @@ describe('PaymentsManagementService', () => {
       paymentApprovalRepository.find.mockResolvedValue(approvals);
       await expect(
         service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
-      ).rejects.toThrow(
-        'Cannot approve payment before lower-order approval steps have been approved',
-      );
+      ).rejects.toMatchObject({
+        message:
+          'Cannot approve payment before lower-order approval steps are approved',
+        status: 400,
+      });
     });
 
     it('should approve the payment for the threshold and save', async () => {
