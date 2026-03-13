@@ -39,6 +39,7 @@ export class AddProgramAttachmentsUpdatePermission1773406855334 implements Migra
   }
 
   public async down(): Promise<void> {
-    "not going to drop permissions, ain't nobody got time for that";
+    // Intentionally left empty: we do not remove permissions in down migrations.
+    return;
   }
 }
