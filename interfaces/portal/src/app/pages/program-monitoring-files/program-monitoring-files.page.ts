@@ -21,11 +21,13 @@ import {
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
+import { InputTextModule } from 'primeng/inputtext';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
+import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { PageLayoutMonitoringComponent } from '~/components/page-layout-monitoring/page-layout-monitoring.component';
 import {
   QueryTableColumn,
@@ -59,6 +61,8 @@ import { getUniqueUserOptions } from '~/utils/unique-users';
     ReactiveFormsModule,
     MonitoringUploadFileDialogComponent,
     PageLayoutMonitoringComponent,
+    FormFieldWrapperComponent,
+    InputTextModule,
   ],
   templateUrl: './program-monitoring-files.page.html',
   styles: ``,
@@ -78,6 +82,16 @@ export class ProgramMonitoringFilesPageComponent {
   );
 
   readonly selectedFile = signal<null | ProgramAttachment>(null);
+
+  readonly selectedFilenameWithoutExtension = computed(() => {
+    const filename = this.selectedFile()?.filename;
+    if (!filename) {
+      return undefined;
+    }
+    return filename.includes('.')
+      ? filename.slice(0, filename.lastIndexOf('.'))
+      : filename;
+  });
 
   readonly deleteFileConfirmationDialog =
     viewChild.required<FormDialogComponent>('deleteFileConfirmationDialog');
@@ -101,6 +115,42 @@ export class ProgramMonitoringFilesPageComponent {
     onSuccess: () => {
       this.toastService.showToast({
         detail: $localize`File deleted successfully`,
+      });
+    },
+  }));
+
+  readonly editFileDialog =
+    viewChild.required<FormDialogComponent>('editFileDialog');
+
+  editFileFormGroup = new FormGroup({
+    updateFileName: new FormControl<string>('', {
+      nonNullable: true,
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+      validators: [Validators.required],
+    }),
+  });
+
+  dialogFormFieldErrors = generateFieldErrors(this.editFileFormGroup, {
+    updateFileName: (control) => {
+      if (control.errors?.required) {
+        return $localize`Please enter file name.`;
+      }
+      return undefined;
+    },
+  });
+
+  editFileMutation = injectMutation(() => ({
+    mutationFn: (data: { id: number; updateFileName: string }) =>
+      this.programApiService.updateProgramAttachment({
+        programId: this.programId,
+        attachmentId: data.id,
+        newFilename: data.updateFileName.includes('.')
+          ? data.updateFileName.slice(0, data.updateFileName.lastIndexOf('.'))
+          : data.updateFileName,
+      }),
+    onSuccess: () => {
+      this.toastService.showToast({
+        detail: $localize`File name change successful`,
       });
     },
   }));
@@ -146,6 +196,26 @@ export class ProgramMonitoringFilesPageComponent {
   }));
 
   readonly contextMenuItems = computed<MenuItem[]>(() => [
+    {
+      label: $localize`:@@generic-change-name:Change name`,
+      icon: 'pi pi-pencil',
+      command: () => {
+        const selectedFile = this.selectedFile();
+        if (!selectedFile) {
+          // Should never happen, but keeps TS happy
+          return;
+        }
+
+        this.editFileFormGroup.reset();
+        this.editFileDialog().show({
+          resetMutation: true,
+        });
+      },
+      visible: this.authService.hasPermission({
+        programId: this.programId(),
+        requiredPermission: PermissionEnum.ProgramAttachmentsUPDATE,
+      }),
+    },
     {
       label: $localize`:@@generic-download:Download`,
       icon: 'pi pi-download',
