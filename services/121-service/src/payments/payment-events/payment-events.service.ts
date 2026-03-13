@@ -82,16 +82,6 @@ export class PaymentEventsService {
     });
   }
 
-  public async hasBeenStarted(paymentId: number): Promise<boolean> {
-    const count = await this.paymentEventRepository.count({
-      where: [
-        { paymentId: Equal(paymentId), type: Equal(PaymentEvent.started) },
-        { paymentId: Equal(paymentId), type: Equal(PaymentEvent.retry) },
-      ],
-    });
-    return count > 0;
-  }
-
   public async createNoteEvent({
     paymentId,
     userId,

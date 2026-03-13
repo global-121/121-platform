@@ -417,7 +417,19 @@ export class PaymentsManagementService {
       );
     }
 
-    if (await this.paymentEventsService.hasBeenStarted(paymentId)) {
+    const transactionStatuses =
+      await this.transactionViewScopedRepository.aggregateTransactionsByStatus({
+        programId,
+        paymentId,
+      });
+    const approvalOnlyStatuses = [
+      TransactionStatusEnum.pendingApproval,
+      TransactionStatusEnum.approved,
+    ];
+    const hasBeenStarted = transactionStatuses.some(
+      (t) => !approvalOnlyStatuses.includes(t.status),
+    );
+    if (hasBeenStarted) {
       throw new HttpException(
         'Cannot delete a payment that has already been started',
         HttpStatus.BAD_REQUEST,
