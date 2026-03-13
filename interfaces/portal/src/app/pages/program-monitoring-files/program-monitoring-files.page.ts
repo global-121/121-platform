@@ -213,7 +213,7 @@ export class ProgramMonitoringFilesPageComponent {
       },
       visible: this.authService.hasPermission({
         programId: this.programId(),
-        requiredPermission: PermissionEnum.ProgramAttachmentsCREATE,
+        requiredPermission: PermissionEnum.ProgramAttachmentsUPDATE,
       }),
     },
     {
