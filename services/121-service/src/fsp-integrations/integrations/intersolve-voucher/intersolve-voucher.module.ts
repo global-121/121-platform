@@ -21,7 +21,7 @@ import { TransactionsModule } from '@121-service/src/payments/transactions/trans
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';

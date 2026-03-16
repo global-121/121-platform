@@ -1,8 +1,10 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { env } from '@121-service/src/env';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventAttributeKey } from '@121-service/src/payments/payment-events/enums/payment-event-attribute-key.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   approvePayment,
@@ -13,16 +15,13 @@ import {
   startPayment,
   waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
+import { createOrReplaceProgramApprovalThresholds } from '@121-service/test/helpers/program-approval-threshold.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
-import {
-  createApprover,
-  deleteApprover,
-  getCurrentUser,
-} from '@121-service/test/helpers/user.helper';
 import {
   getAccessToken,
   getAccessTokenCvaManager,
   getAccessTokenFinanceManager,
+  getUserIdsByUsernames,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
@@ -31,35 +30,81 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 let adminAccessToken: string;
+let accessTokenFinanceManager: string;
+let accessTokenCvaManager: string;
 const programId = programIdPV;
 const transferValue = 25;
 
-describe('do payment with 2 approvers', () => {
-  let accessTokenFinanceManager: string;
+async function setupPaymentApprovalTest(
+  thresholds: {
+    thresholdAmount: number;
+    approverUsernames: string[];
+  }[],
+): Promise<void> {
+  await resetDB(
+    SeedScript.nlrcMultiple,
+    __filename,
+    false,
+    ApproverSeedMode.none,
+  );
+
+  [adminAccessToken, accessTokenFinanceManager, accessTokenCvaManager] =
+    await Promise.all([
+      getAccessToken(),
+      getAccessTokenFinanceManager(),
+      getAccessTokenCvaManager(),
+    ]);
+
+  await seedIncludedRegistrations(
+    [registrationPV5],
+    programId,
+    adminAccessToken,
+  );
+
+  await setupThresholds(thresholds);
+}
+
+async function setupThresholds(
+  thresholds: {
+    thresholdAmount: number;
+    approverUsernames: string[];
+  }[],
+): Promise<void> {
+  const thresholdDtos = await Promise.all(
+    thresholds.map(async (threshold) => {
+      const userIds = await getUserIdsByUsernames({
+        usernames: threshold.approverUsernames,
+        programId,
+        adminAccessToken,
+      });
+      return {
+        thresholdAmount: threshold.thresholdAmount,
+        userIds,
+      };
+    }),
+  );
+
+  await createOrReplaceProgramApprovalThresholds({
+    programId,
+    thresholds: thresholdDtos,
+    accessToken: adminAccessToken,
+  });
+}
+
+describe('do payment with 2 approval steps', () => {
   let paymentId: number;
 
   beforeAll(async () => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
-    adminAccessToken = await getAccessToken();
-    await seedIncludedRegistrations(
-      [registrationPV5],
-      programId,
-      adminAccessToken,
-    );
-
-    // configure 2nd approver
-    accessTokenFinanceManager = await getAccessTokenFinanceManager();
-    const financeManagerUserId = (
-      await getCurrentUser({
-        accessToken: accessTokenFinanceManager,
-      })
-    ).body.user.id;
-    await createApprover({
-      programId,
-      userId: financeManagerUserId,
-      order: 2,
-      accessToken: adminAccessToken,
-    });
+    await setupPaymentApprovalTest([
+      {
+        thresholdAmount: 0,
+        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_ADMIN],
+      },
+      {
+        thresholdAmount: 10,
+        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!],
+      },
+    ]);
   });
 
   beforeEach(async () => {
@@ -205,7 +250,7 @@ describe('do payment with 2 approvers', () => {
     });
   });
 
-  it('should throw on 2nd approve when 1st approver has not yet approved', async () => {
+  it('should throw on 2nd approval step when 1st approval step has not yet been approved', async () => {
     // Act
     // 2nd approve without 1st approve
     const approvePaymentResponseFinanceManager = await approvePayment({
@@ -221,11 +266,11 @@ describe('do payment with 2 approvers', () => {
     expect(
       approvePaymentResponseFinanceManager.body.message,
     ).toMatchInlineSnapshot(
-      `"Cannot approve payment before lower-order approvers have approved"`,
+      `"Cannot approve payment before lower-order approval steps have been approved"`,
     );
   });
 
-  it('should not allow starting payment before all approvers have approved', async () => {
+  it('should not allow starting payment before all approval steps have been approved', async () => {
     // Act
     // 1st approve
     await approvePayment({
@@ -249,30 +294,24 @@ describe('do payment with 2 approvers', () => {
   });
 });
 
-describe('do payment with <2 approvers', () => {
+describe('do payment with <2 approval steps', () => {
   beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
-    adminAccessToken = await getAccessToken();
-    await seedIncludedRegistrations(
-      [registrationPV5],
-      programId,
-      adminAccessToken,
-    );
+    await setupPaymentApprovalTest([]);
   });
 
   it('user who can create a payment is different from user approving payment and different from user starting payment', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultiple, __filename);
-    adminAccessToken = await getAccessToken();
-    await seedIncludedRegistrations(
-      [registrationPV5],
-      programId,
-      adminAccessToken,
-    );
     const registrationAh = { ...registrationPV5, maxPayments: 1 };
 
     const accessTokenCvaManager = await getAccessTokenCvaManager();
     const accessTokenFinanceManager = await getAccessTokenFinanceManager();
+
+    await setupThresholds([
+      {
+        thresholdAmount: 0,
+        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_ADMIN],
+      },
+    ]);
 
     // Act
     // create (both cva & finance can)
@@ -314,7 +353,6 @@ describe('do payment with <2 approvers', () => {
       accessToken: accessTokenFinanceManager,
     });
 
-    // Wait for payment transactions to complete to cleanup in progress stuff
     await waitForPaymentAndTransactionsToComplete({
       programId,
       paymentId,
@@ -328,6 +366,7 @@ describe('do payment with <2 approvers', () => {
     // Cva manager can only create a payment and a finance manager can create and start a payment
     expect(createPaymentResponseCvaManager.status).toBe(HttpStatus.CREATED);
     expect(createPaymentResponseFinanceManager.status).toBe(HttpStatus.CREATED);
+    // CVA manager has assignment but isn't designated as approver for this payment
     expect(approvePaymentResponseCvaManager.status).toBe(HttpStatus.FORBIDDEN);
     expect(approvePaymentResponseAdmin.status).toBe(HttpStatus.CREATED);
     expect(startPaymentResponseCvaManager.status).toBe(HttpStatus.FORBIDDEN);
@@ -335,13 +374,6 @@ describe('do payment with <2 approvers', () => {
   });
 
   it('should throw on create payment when no approvers configured for program', async () => {
-    // Arrange
-    await deleteApprover({
-      programId,
-      approverId: 1, // admin-user approver
-      accessToken: adminAccessToken,
-    });
-
     // Act
     const createPaymentResponse = await createPayment({
       programId,
@@ -353,59 +385,56 @@ describe('do payment with <2 approvers', () => {
     // Assert
     expect(createPaymentResponse.status).toBe(HttpStatus.BAD_REQUEST);
     expect(createPaymentResponse.body.message).toMatchInlineSnapshot(
-      `"No approvers found for program, cannot create payment"`,
+      `"No approval thresholds found for this payment amount, cannot create payment"`,
     );
   });
 
-  it('should return all payment approvals but without username for deleted approver(s)', async () => {
-    // Arrange
-    // add 2nd approver
-    const accessTokenFinanceManager = await getAccessTokenFinanceManager();
-    const financeManagerUserId = (
-      await getCurrentUser({
-        accessToken: accessTokenFinanceManager,
-      })
-    ).body.user.id;
-    const createApproverResult = await createApprover({
-      programId,
-      userId: financeManagerUserId,
-      order: 2,
-      accessToken: adminAccessToken,
-    });
+  it('Approver can still approve a payment if this user has been removed from the program threshold configuration', async () => {
+    await setupThresholds([
+      {
+        thresholdAmount: 0,
+        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!],
+      },
+    ]);
 
-    // create payment
     const createPaymentResponse = await createPayment({
       programId,
       transferValue,
       referenceIds: [registrationPV5.referenceId],
       accessToken: adminAccessToken,
     });
+    const paymentId = createPaymentResponse.body.id;
 
-    // delete approver again
-    await deleteApprover({
-      programId,
-      approverId: createApproverResult.body.id,
-      accessToken: adminAccessToken,
-    });
+    // Remove financeManager from threshold config
+    await setupThresholds([
+      {
+        thresholdAmount: 0,
+        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_ADMIN],
+      },
+    ]);
 
     // Act
-    const getPaymentResponse = await getPaymentSummary({
+    const approveResponse = await approvePayment({
       programId,
-      paymentId: createPaymentResponse.body.id,
-      accessToken: adminAccessToken,
+      paymentId,
+      accessToken: accessTokenFinanceManager,
     });
 
     // Assert
-    expect(getPaymentResponse.status).toBe(HttpStatus.OK);
-    expect(getPaymentResponse.body.approvalStatus.length).toBe(2);
-    expect(
-      getPaymentResponse.body.approvalStatus[1].username,
-    ).not.toBeDefined(); // The missing username is in the front-end handled as 'Approver deleted. Create new payment.'
+    expect(approveResponse.status).toBe(HttpStatus.CREATED);
   });
 
   it('should include note in payment approved event', async () => {
     // Arrange
     const note = 'Payment approved for testing purposes only.';
+
+    await setupThresholds([
+      {
+        thresholdAmount: 0,
+        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_ADMIN],
+      },
+    ]);
+
     const createPaymentResponse = await createPayment({
       programId,
       transferValue,
@@ -437,5 +466,88 @@ describe('do payment with <2 approvers', () => {
     );
     expect(approvedEvent).toBeDefined();
     expect(approvedEvent.attributes.note).toBe(note);
+  });
+});
+
+describe('multiple approvers per approval step', () => {
+  let paymentId: number;
+
+  beforeAll(async () => {
+    await setupPaymentApprovalTest([
+      {
+        thresholdAmount: 0,
+        approverUsernames: [
+          env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!,
+          env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER!,
+        ],
+      },
+    ]);
+  });
+
+  beforeEach(async () => {
+    const createPaymentResponse = await createPayment({
+      programId,
+      transferValue,
+      referenceIds: [registrationPV5.referenceId],
+      accessToken: adminAccessToken,
+    });
+    paymentId = createPaymentResponse.body.id;
+  });
+
+  it('should allow first approver from threshold to approve payment', async () => {
+    // Arrange
+    const paymentSummaryBefore = await getPaymentSummary({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+    expect(paymentSummaryBefore.body).toMatchObject({
+      isPaymentApproved: false,
+      approvalsGiven: 0,
+      approvalsRequired: 1,
+    });
+
+    // Act - Finance Manager approves
+    const approveResponse = await approvePayment({
+      programId,
+      paymentId,
+      accessToken: accessTokenFinanceManager,
+    });
+
+    // Assert
+    expect(approveResponse.statusCode).toBe(HttpStatus.CREATED);
+
+    const paymentSummaryAfter = await getPaymentSummary({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+    expect(paymentSummaryAfter.body).toMatchObject({
+      isPaymentApproved: true,
+      approvalsGiven: 1,
+      approvalsRequired: 1,
+    });
+  });
+
+  it('should prevent second approver from same threshold from approving again', async () => {
+    // Arrange - Finance Manager approves first
+    await approvePayment({
+      programId,
+      paymentId,
+      accessToken: accessTokenFinanceManager,
+    });
+
+    // Act - CVA Manager tries to approve the same threshold
+    const secondApprovalResponse = await approvePayment({
+      programId,
+      paymentId,
+      accessToken: accessTokenCvaManager,
+    });
+
+    // Assert
+    expect(secondApprovalResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
+    expect(secondApprovalResponse.body.message).toBe(
+      'This approval step has already been approved for this payment',
+    );
   });
 });

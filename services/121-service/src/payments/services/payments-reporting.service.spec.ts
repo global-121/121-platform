@@ -11,7 +11,6 @@ import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dt
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import { ApproverService } from '@121-service/src/user/approver/approver.service';
 
 function createMockTransaction(
   referenceId: string,
@@ -70,7 +69,6 @@ describe('PaymentsReportingService - getTransactions', () => {
   let paymentsHelperService: PaymentsReportingHelperService;
   let paymentRepository: PaymentRepository;
   let programRepository: ProgramRepository;
-  let approverService: ApproverService;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -95,7 +93,6 @@ describe('PaymentsReportingService - getTransactions', () => {
     paymentsHelperService = unitRef.get(PaymentsReportingHelperService);
     paymentRepository = unitRef.get(PaymentRepository);
     programRepository = unitRef.get(ProgramRepository);
-    approverService = unitRef.get(ApproverService);
 
     jest.spyOn<any, any>(service, 'getTransactions');
     jest.spyOn(paymentsHelperService, 'getSelectForExport');
@@ -363,7 +360,7 @@ describe('PaymentsReportingService - getTransactions', () => {
         .spyOn(transactionScopedRepository, 'getAllFspsInPayment')
         .mockResolvedValue(mockFsps);
       jest
-        .spyOn(approverService, 'getPaymentApprovalStatus')
+        .spyOn(service, 'getPaymentApprovalStatus')
         .mockResolvedValue(mockApprovalStatus);
 
       // Act

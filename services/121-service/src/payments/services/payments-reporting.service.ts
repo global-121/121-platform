@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
-import { Equal } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { DEFAULT_PAGINATION_LIMIT } from '@121-service/src/config';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
@@ -9,7 +10,9 @@ import { ExportTransactionResponseDto } from '@121-service/src/payments/dto/expo
 import { PaginatedTransactionDto } from '@121-service/src/payments/dto/paginated-transaction.dto';
 import { PaymentAggregationFullDto } from '@121-service/src/payments/dto/payment-aggregation-full.dto';
 import { PaymentAggregationSummaryDto } from '@121-service/src/payments/dto/payment-aggregation-summary.dto';
+import { PaymentApprovalStatusResponseDto } from '@121-service/src/payments/dto/payment-approval-status-response.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
+import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
 import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentRepository } from '@121-service/src/payments/repositories/payment.repository';
@@ -18,6 +21,7 @@ import { PaymentsReportingHelperService } from '@121-service/src/payments/servic
 import { FindAllTransactionsResultDto } from '@121-service/src/payments/transactions/dto/find-all-transactions-result.dto';
 import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
@@ -25,9 +29,11 @@ import { GenericRegistrationAttributes } from '@121-service/src/registration/enu
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { PaginateQueryLimitRequired } from '@121-service/src/shared/types/paginate-query-limit-required.type';
-import { ApproverService } from '@121-service/src/user/approver/approver.service';
 @Injectable()
 export class PaymentsReportingService {
+  @InjectRepository(PaymentApprovalEntity)
+  private readonly paymentApprovalRepository: Repository<PaymentApprovalEntity>;
+
   public constructor(
     private readonly paymentRepository: PaymentRepository,
     private readonly paymentsReportingHelperService: PaymentsReportingHelperService,
@@ -37,7 +43,6 @@ export class PaymentsReportingService {
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentEventsService: PaymentEventsService,
     private readonly programRepository: ProgramRepository,
-    private readonly approverService: ApproverService,
   ) {}
 
   public async getPaymentAggregationsSummaries({
@@ -96,7 +101,7 @@ export class PaymentsReportingService {
       },
     );
 
-    const approvalStatus = await this.approverService.getPaymentApprovalStatus({
+    const approvalStatus = await this.getPaymentApprovalStatus({
       paymentId,
     });
 
@@ -110,6 +115,47 @@ export class PaymentsReportingService {
       inProgress:
         await this.paymentsProgressHelperService.isPaymentInProgress(programId),
     };
+  }
+
+  public async getPaymentApprovalStatus({
+    paymentId,
+  }: {
+    paymentId: number;
+  }): Promise<PaymentApprovalStatusResponseDto[]> {
+    const paymentApprovals = await this.paymentApprovalRepository.find({
+      where: {
+        paymentId: Equal(paymentId),
+      },
+      relations: {
+        approverAssignments: { user: true },
+        approvedByUser: true,
+      },
+      order: { rank: 'ASC' },
+    });
+    return this.mapPaymentApprovalToResponseDto(paymentApprovals);
+  }
+
+  private mapPaymentApprovalToResponseDto(
+    approvals: PaymentApprovalEntity[],
+  ): PaymentApprovalStatusResponseDto[] {
+    return approvals.map((approval) => ({
+      id: approval.id,
+      approved: approval.approved,
+      approvers: this.getPaymentApproverUsernames(approval.approverAssignments),
+      rank: approval.rank,
+      approvedBy: approval.approvedByUser?.username || null,
+    }));
+  }
+
+  private getPaymentApproverUsernames(
+    approverAssignments: ProgramAidworkerAssignmentEntity[],
+  ): string[] {
+    const sortedApprovers = (approverAssignments ?? [])
+      .slice()
+      .sort((a, b) => a.id - b.id);
+    return sortedApprovers
+      .map((assignment) => assignment.user?.username)
+      .filter((username): username is string => Boolean(username));
   }
 
   public async exportTransactionsUsingDateFilter({

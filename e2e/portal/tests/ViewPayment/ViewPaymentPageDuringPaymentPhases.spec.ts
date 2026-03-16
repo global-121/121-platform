@@ -1,7 +1,12 @@
 import { env } from '@121-service/src/env';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { resetDuplicateRegistrations } from '@121-service/test/helpers/utility.helper';
+import { createOrReplaceProgramApprovalThresholds } from '@121-service/test/helpers/program-approval-threshold.helper';
+import { getAllUsersByProgramId } from '@121-service/test/helpers/user.helper';
+import {
+  getAccessToken,
+  resetDuplicateRegistrations,
+} from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
   registrationOCW1,
@@ -17,7 +22,10 @@ const approvedBadgeLabel = 'Approved';
 const successfulBadgeLabel = 'Successful';
 const pendingApprovalTransactionLabel = 'Pending approval';
 const approverBadgeLabelAdmin = env.USERCONFIG_121_SERVICE_EMAIL_ADMIN;
+const approverBadgeLabelSubAdmin = env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER;
 const approverBadgeLabelApprover = env.USERCONFIG_121_SERVICE_EMAIL_APPROVER;
+const approverBadgeLabelSubApprover =
+  env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO_VALIDATION;
 
 test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   await resetDBAndSeedRegistrations({
@@ -29,6 +37,52 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
   // Seed duplicate registrations to have more transactions in the payment and better validate the badges on the payment page during the test
   await resetDuplicateRegistrations(duplicateNumberOfRegistrations);
+  // Configure approval thresholds so both levels apply to payment amount (25)
+  // Default seed creates level 2 at amount 100, but fixedTransferValue is 25
+  const accessToken = await getAccessToken();
+
+  const allUsersResponse = await getAllUsersByProgramId({
+    accessToken,
+    programId: programIdOCW,
+  });
+
+  const adminUser = allUsersResponse.body.find(
+    (u) => u.username === env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+  );
+  const subAdminApprover = allUsersResponse.body.find(
+    (u) => u.username === approverBadgeLabelSubAdmin,
+  );
+
+  const approverRoleUser = allUsersResponse.body.find(
+    (u) => u.username === approverBadgeLabelApprover,
+  );
+  const subApproverRoleUser = allUsersResponse.body.find(
+    (u) => u.username === approverBadgeLabelSubApprover,
+  );
+
+  if (
+    !adminUser ||
+    !approverRoleUser ||
+    !subApproverRoleUser ||
+    !subAdminApprover
+  ) {
+    throw new Error('Required user assignments not found');
+  }
+
+  await createOrReplaceProgramApprovalThresholds({
+    programId: programIdOCW,
+    thresholds: [
+      {
+        thresholdAmount: 0,
+        userIds: [adminUser.id, subAdminApprover.id],
+      },
+      {
+        thresholdAmount: 10,
+        userIds: [approverRoleUser.id, subApproverRoleUser.id],
+      },
+    ],
+    accessToken,
+  });
 });
 
 test('Payment page should display correctly during all phases of payment with 2 approvers', async ({
@@ -65,7 +119,17 @@ test('Payment page should display correctly during all phases of payment with 2 
       approved: false,
     });
     await paymentPage.validateApprovalFlowStep({
+      approverName: approverBadgeLabelSubAdmin!,
+      rank: 1,
+      approved: false,
+    });
+    await paymentPage.validateApprovalFlowStep({
       approverName: approverBadgeLabelApprover!,
+      rank: 2,
+      approved: false,
+    });
+    await paymentPage.validateApprovalFlowStep({
+      approverName: approverBadgeLabelSubApprover!,
       rank: 2,
       approved: false,
     });

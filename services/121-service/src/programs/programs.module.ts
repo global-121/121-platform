@@ -11,6 +11,7 @@ import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-conf
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
+import { ProgramAidworkerAssignmentsModule } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignments.module';
 import { ProgramAttachmentsModule } from '@121-service/src/programs/program-attachments/program-attachments.module';
 import { ProgramController } from '@121-service/src/programs/programs.controller';
 import { ProgramService } from '@121-service/src/programs/programs.service';
@@ -31,6 +32,7 @@ import { UserModule } from '@121-service/src/user/user.module';
     HttpModule,
     LookupModule,
     UserModule,
+    ProgramAidworkerAssignmentsModule,
     ProgramAttachmentsModule,
     ProgramAttributesModule,
     KoboConnectModule,

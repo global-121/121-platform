@@ -267,6 +267,22 @@ export async function findUserByUsername({
   return searchUserResponse.body[0].id;
 }
 
+export async function getUserIdsByUsernames({
+  usernames,
+  programId,
+  adminAccessToken,
+}: {
+  usernames: string[];
+  programId: number;
+  adminAccessToken: string;
+}): Promise<number[]> {
+  return Promise.all(
+    usernames.map((username) =>
+      findUserByUsername({ programId, username, adminAccessToken }),
+    ),
+  );
+}
+
 export async function assignUserToProgram({
   programId,
   userId,
