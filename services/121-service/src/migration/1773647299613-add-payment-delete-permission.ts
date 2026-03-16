@@ -2,7 +2,6 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class AddPaymentDeletePermission1773647299613 implements MigrationInterface {
   name = 'AddPaymentDeletePermission1773647299613';
-  closestPermissionName = 'payment.create';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Add the new permission if it doesn't exist
