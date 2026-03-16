@@ -144,6 +144,24 @@ describe('QueryTableComponent', () => {
 
   let fixture: ComponentFixture<QueryTableComponent<TestRow, TestContext>>;
 
+  // https://rebeccamdeprey.com/blog/mock-windowmatchmedia-in-vitest
+  vi.hoisted(() => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      enumerable: true,
+      value: vi.fn().mockImplementation((query: unknown) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(), // deprecated
+        removeListener: vi.fn(), // deprecated
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+  });
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [

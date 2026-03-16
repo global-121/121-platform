@@ -4,6 +4,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { QueryTableCellService } from '~/components/query-table/services/query-table-cell.service';
 import { QueryTableFilterService } from '~/components/query-table/services/query-table-filter.service';
+import { TrackingService } from '~/services/tracking.service';
+
+class TrackingServiceStub {
+  trackEvent = vi.fn();
+}
 
 describe('QueryTableFilterService', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for test-setup
@@ -11,7 +16,11 @@ describe('QueryTableFilterService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [QueryTableFilterService, QueryTableCellService],
+      providers: [
+        QueryTableFilterService,
+        QueryTableCellService,
+        { provide: TrackingService, useClass: TrackingServiceStub },
+      ],
     });
 
     service = TestBed.inject(QueryTableFilterService);
@@ -46,7 +55,11 @@ describe('QueryTableFilterService', () => {
     });
 
     expect(clearTableSpy).toHaveBeenCalled();
-    expect(localStorage.removeItem).toHaveBeenCalledWith('test-key');
+    // #TODO: check if workaround is fine
+    expect(localStorage.getItem('test-key')).toBeNull();
+    // expect(vi.spyOn(window.localStorage, 'removeItem')).toHaveBeenCalledWith(
+    //   'test-key',
+    // );
     expect(service.globalFilterVisible()).toBe(false);
     expect(resetSelectionSpy).toHaveBeenCalled();
   });

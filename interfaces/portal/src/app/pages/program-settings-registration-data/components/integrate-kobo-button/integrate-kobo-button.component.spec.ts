@@ -10,6 +10,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { IntegrateKoboButtonComponent } from '~/pages/program-settings-registration-data/components/integrate-kobo-button/integrate-kobo-button.component';
 import { ToastService } from '~/services/toast.service';
+import { TrackingService } from '~/services/tracking.service';
+
+class TrackingServiceStub {
+  trackEvent = vi.fn();
+}
 
 describe('IntegrateKoboButtonComponent', () => {
   let component: IntegrateKoboButtonComponent;
@@ -38,6 +43,7 @@ describe('IntegrateKoboButtonComponent', () => {
             },
           }),
         ),
+        { provide: TrackingService, useClass: TrackingServiceStub },
       ],
     }).compileComponents();
 
