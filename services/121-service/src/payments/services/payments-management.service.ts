@@ -475,25 +475,6 @@ export class PaymentsManagementService {
     await this.paymentRepository.remove(payment);
   }
 
-  public async getApproversForCurrentApprovalStep({
-    paymentId,
-  }: {
-    paymentId: number;
-  }): Promise<PaymentAggregationFullDto['approversForCurrentApprovalStep']> {
-    const currentApprovalStep = await this.getCurrentApprovalStep({
-      paymentId,
-    });
-    if (!currentApprovalStep) {
-      return [];
-    }
-
-    const usernames = currentApprovalStep.approverAssignments
-      .map((assignment) => ({ username: assignment.user?.username }))
-      .filter((obj): obj is { username: string } => obj.username !== undefined);
-
-    return usernames;
-  }
-
   private async processFinalApproval({
     userId,
     paymentId,
