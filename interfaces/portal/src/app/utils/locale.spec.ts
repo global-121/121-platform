@@ -39,13 +39,7 @@ describe('getLocaleForInitialization', () => {
       urlLocale: UILanguage.nl,
     });
 
-    // #TODO: check getLocaleForInitialization
-    // expect(localeInfo).toEqual({ locale: Locale.nl });
-
-    expect(localeInfo).toEqual({
-      localStorageLocale: Locale.en,
-      localeIsOutOfSyncWithUrl: true,
-    });
+    expect(localeInfo).toEqual({ locale: Locale.nl });
   });
 
   it('should use the default locale when there is nothing saved in local storage', () => {
@@ -76,14 +70,9 @@ describe('getLocaleForInitialization', () => {
       urlLocale: 'en-GB',
     });
 
-    // #TODO: check getLocaleForInitialization
-    // expect(localeInfo).toEqual({
-    //   localStorageLocale: Locale.nl,
-    //   localeIsOutOfSyncWithUrl: true,
-    // });
-
     expect(localeInfo).toEqual({
-      locale: Locale.en,
+      localStorageLocale: Locale.nl,
+      localeIsOutOfSyncWithUrl: true,
     });
   });
 
