@@ -217,7 +217,7 @@ export class PaymentsController {
     return result;
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentCREATE] })
+  @AuthenticatedUser({ permissions: [PermissionEnum.paymentDELETE] })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
     description: 'Successfully deleted the payment',
