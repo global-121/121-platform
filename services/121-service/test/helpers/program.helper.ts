@@ -165,6 +165,20 @@ export async function startPayment({
     .send();
 }
 
+export async function deletePayment({
+  programId,
+  paymentId,
+  accessToken,
+}: {
+  programId: number;
+  paymentId: number;
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .delete(`/programs/${programId}/payments/${paymentId}`)
+    .set('Cookie', [accessToken]);
+}
+
 export async function doPayment({
   programId,
   transferValue,

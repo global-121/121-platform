@@ -952,6 +952,14 @@
     "returnType": "PaymentAggregationFullDto"
   },
   {
+    "method": "delete",
+    "path": "/api/programs/{programId}/payments/{paymentId}",
+    "params": [
+      "programId",
+      "paymentId"
+    ]
+  },
+  {
     "method": "post",
     "path": "/api/programs/{programId}/payments/{paymentId}/approve",
     "params": [

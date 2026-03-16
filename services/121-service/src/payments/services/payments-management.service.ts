@@ -457,6 +457,46 @@ export class PaymentsManagementService {
     }
   }
 
+  public async deletePayment({
+    programId,
+    paymentId,
+  }: {
+    programId: number;
+    paymentId: number;
+  }): Promise<void> {
+    const payment = await this.paymentRepository.findOne({
+      where: { id: Equal(paymentId), programId: Equal(programId) },
+    });
+
+    if (!payment) {
+      throw new HttpException(
+        'Payment not found for this program',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const transactionStatuses =
+      await this.transactionViewScopedRepository.aggregateTransactionsByStatus({
+        programId,
+        paymentId,
+      });
+    const approvalOnlyStatuses = [
+      TransactionStatusEnum.pendingApproval,
+      TransactionStatusEnum.approved,
+    ];
+    const hasBeenStarted = transactionStatuses.some(
+      (t) => !approvalOnlyStatuses.includes(t.status),
+    );
+    if (hasBeenStarted) {
+      throw new HttpException(
+        'Cannot delete a payment that has already been started',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    await this.paymentRepository.remove(payment);
+  }
+
   private async processFinalApproval({
     userId,
     paymentId,
