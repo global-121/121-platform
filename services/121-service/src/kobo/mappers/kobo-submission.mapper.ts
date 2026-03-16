@@ -81,7 +81,7 @@ export class KoboSubmissionMapper {
   private static extractNormalizedFilename(path: string): string | null {
     // Normalize filename by replacing spaces with underscores and removing special characters
     const normalized = path.replace(/ /g, '_').replace(/[(,)']/g, '');
-    // This is needed because kobo passes filname a a path here /path/to/my file (1).jpg but in the attachments the filename is just my_file_1.jpg so we need to extract the filename from the path
+    // This is needed because kobo passes filename as a path here: `/path/to/my file (1).jpg` but in the attachments the filename is just `my_file_1.jpg` so we need to extract the filename from the path.
     return normalized.split('/').pop() ?? null;
   }
 
