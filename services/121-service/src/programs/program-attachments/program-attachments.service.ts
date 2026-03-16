@@ -104,13 +104,11 @@ export class ProgramAttachmentsService {
     programId: number;
     attachmentId: number;
     filename: string;
-    userId: number;
-  }): Promise<CreateProgramAttachmentResponseDto> {
-    const { programAttachment } =
-      await this.getProgramAttachmentAndBlockBlobClient({
-        programId,
-        attachmentId,
-      });
+  }): Promise<void> {
+    const programAttachment = await this.getProgramAttachmentOrThrow({
+      programId,
+      attachmentId,
+    });
 
     // Keep existing extension
     const currentFilenameParts = programAttachment.filename.split('.');
@@ -121,12 +119,7 @@ export class ProgramAttachmentsService {
       ? `${filename}.${currentExtension}`
       : filename;
 
-    const savedAttachment =
-      await this.programAttachmentRepository.save(programAttachment);
-
-    return {
-      id: savedAttachment.id,
-    };
+    await this.programAttachmentRepository.save(programAttachment);
   }
 
   public async deleteProgramAttachmentById(
@@ -162,16 +155,13 @@ export class ProgramAttachmentsService {
     await this.programAttachmentRepository.remove(programAttachments);
   }
 
-  private async getProgramAttachmentAndBlockBlobClient({
+  private async getProgramAttachmentOrThrow({
     programId,
     attachmentId,
   }: {
     programId: number;
     attachmentId: number;
-  }): Promise<{
-    programAttachment: ProgramAttachmentEntity;
-    blockBlobClient: BlockBlobClient;
-  }> {
+  }): Promise<ProgramAttachmentEntity> {
     const programAttachment = await this.programAttachmentRepository.findOne({
       where: {
         programId: Equal(programId),
@@ -185,6 +175,24 @@ export class ProgramAttachmentsService {
         HttpStatus.NOT_FOUND,
       );
     }
+
+    return programAttachment;
+  }
+
+  private async getProgramAttachmentAndBlockBlobClient({
+    programId,
+    attachmentId,
+  }: {
+    programId: number;
+    attachmentId: number;
+  }): Promise<{
+    programAttachment: ProgramAttachmentEntity;
+    blockBlobClient: BlockBlobClient;
+  }> {
+    const programAttachment = await this.getProgramAttachmentOrThrow({
+      programId,
+      attachmentId,
+    });
 
     const blockBlobClient = this.containerClient.getBlockBlobClient(
       `${programAttachment.blobName}`,
