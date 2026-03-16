@@ -246,7 +246,7 @@ describe('PaymentsManagementService', () => {
 
     beforeEach(() => {
       paymentApprovalRepository = {
-        find: jest.fn(),
+        getCurrentApprovalStep: jest.fn(),
         save: jest.fn(),
         count: jest.fn(),
       };
@@ -254,9 +254,7 @@ describe('PaymentsManagementService', () => {
     });
 
     it('should throw if payment is already fully approved', async () => {
-      paymentApprovalRepository.find.mockResolvedValue([
-        { id: 1, rank: 1, approved: true, approverAssignments: [] },
-      ]);
+      paymentApprovalRepository.getCurrentApprovalStep.mockResolvedValue(null);
       await expect(
         service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
       ).rejects.toMatchObject({
@@ -266,9 +264,12 @@ describe('PaymentsManagementService', () => {
     });
 
     it('should throw if user is not assigned to the current approval step', async () => {
-      paymentApprovalRepository.find.mockResolvedValue([
-        { id: 1, rank: 1, approved: false, approverAssignments: [] },
-      ]);
+      paymentApprovalRepository.getCurrentApprovalStep.mockResolvedValue({
+        id: 1,
+        rank: 1,
+        approved: false,
+        approverAssignments: [],
+      });
       await expect(
         service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
       ).rejects.toMatchObject({
@@ -279,38 +280,42 @@ describe('PaymentsManagementService', () => {
     });
 
     it('should approve the current step and save', async () => {
-      const approvals = [
-        {
-          id: 1,
-          approved: false,
-          rank: 1,
-          approverAssignments: [{ userId: 1 }],
-        },
-        { id: 2, approved: false, rank: 2, approverAssignments: [] },
-      ];
-      paymentApprovalRepository.find.mockResolvedValue(approvals);
+      const currentStep = {
+        id: 1,
+        approved: false,
+        rank: 1,
+        approverAssignments: [{ userId: 1 }],
+      };
+      paymentApprovalRepository.getCurrentApprovalStep.mockResolvedValue(
+        currentStep,
+      );
+      paymentApprovalRepository.count
+        .mockResolvedValueOnce(2) // totalApprovals
+        .mockResolvedValueOnce(1); // notCompletedApprovals > 0, no final approval
       jest
         .spyOn(paymentEventsService, 'createApprovedEvent')
         .mockResolvedValue(undefined);
 
       await service.approvePayment({ userId: 1, programId: 2, paymentId: 3 });
 
-      expect(approvals[0].approved).toBe(true);
-      expect(paymentApprovalRepository.save).toHaveBeenCalledWith(approvals[0]);
+      expect(currentStep.approved).toBe(true);
+      expect(paymentApprovalRepository.save).toHaveBeenCalledWith(currentStep);
       expect(paymentEventsService.createApprovedEvent).toHaveBeenCalled();
     });
 
     it('should call processFinalApproval if all steps are approved', async () => {
-      const approvals = [
-        {
-          id: 1,
-          approved: false,
-          rank: 1,
-          approverAssignments: [{ userId: 1 }],
-        },
-      ];
-      paymentApprovalRepository.find.mockResolvedValue(approvals);
-      paymentApprovalRepository.count.mockResolvedValue(0);
+      const currentStep = {
+        id: 1,
+        approved: false,
+        rank: 1,
+        approverAssignments: [{ userId: 1 }],
+      };
+      paymentApprovalRepository.getCurrentApprovalStep.mockResolvedValue(
+        currentStep,
+      );
+      paymentApprovalRepository.count
+        .mockResolvedValueOnce(1) // totalApprovals
+        .mockResolvedValueOnce(0); // notCompletedApprovals = 0, triggers final approval
       jest
         .spyOn(paymentEventsService, 'createApprovedEvent')
         .mockResolvedValue(undefined);
