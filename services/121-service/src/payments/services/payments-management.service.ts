@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, Repository } from 'typeorm';
 
-import { PaymentAggregationFullDto } from '@121-service/src/payments/dto/payment-aggregation-full.dto';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
@@ -405,9 +404,10 @@ export class PaymentsManagementService {
   }: {
     paymentId: number;
   }): Promise<PaymentApprovalEntity> {
-    const currentApprovalStep = await this.getCurrentApprovalStep({
-      paymentId,
-    });
+    const currentApprovalStep =
+      await this.paymentApprovalRepository.getCurrentApprovalStep({
+        paymentId,
+      });
     if (!currentApprovalStep) {
       throw new HttpException(
         'Payment is already fully approved, cannot approve it',
@@ -415,23 +415,6 @@ export class PaymentsManagementService {
       );
     }
     return currentApprovalStep;
-  }
-
-  private async getCurrentApprovalStep({
-    paymentId,
-  }: {
-    paymentId: number;
-  }): Promise<PaymentApprovalEntity | null> {
-    const paymentApprovals = await this.paymentApprovalRepository.find({
-      where: { paymentId: Equal(paymentId) },
-      relations: { approverAssignments: { user: true } },
-    });
-
-    const lowestUnapprovedApproval = paymentApprovals
-      .filter((approval) => !approval.approved)
-      .sort((a, b) => a.rank - b.rank)[0];
-
-    return lowestUnapprovedApproval ?? null;
   }
 
   private assertUserCanApproveCurrentApprovalStepOrThrow({

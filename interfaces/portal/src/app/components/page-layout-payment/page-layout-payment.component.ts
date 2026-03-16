@@ -301,16 +301,13 @@ export class PageLayoutPaymentComponent {
 
     const approversForCurrentApprovalStep =
       this.paymentAggregate.data().approversForCurrentApprovalStep;
-    if (
-      !approversForCurrentApprovalStep.some((a) => a.username === currentUser)
-    ) {
-      return false;
-    }
+
+    return approversForCurrentApprovalStep.some(
+      (a) => a.username === currentUser,
+    );
 
     // NOTE 1: we do not hide the button if previous approvers have not yet approved, to avoid confusion. Instead, the backend will block the approval action.
     // NOTE 2: there is no permission-check here, as there is no approve permission.
-
-    return true;
   });
 
   readonly showStartPaymentButton = computed<boolean | undefined>(() => {

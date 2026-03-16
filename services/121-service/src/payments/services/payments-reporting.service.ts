@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
-import { Equal, Repository } from 'typeorm';
+import { Equal } from 'typeorm';
 
 import { DEFAULT_PAGINATION_LIMIT } from '@121-service/src/config';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
@@ -16,7 +15,7 @@ import { PaymentApprovalEntity } from '@121-service/src/payments/entities/paymen
 import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentRepository } from '@121-service/src/payments/repositories/payment.repository';
-import { PaymentsManagementService } from '@121-service/src/payments/services/payments-management.service';
+import { PaymentApprovalRepository } from '@121-service/src/payments/repositories/payment-approval.repository';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
 import { FindAllTransactionsResultDto } from '@121-service/src/payments/transactions/dto/find-all-transactions-result.dto';
@@ -32,9 +31,6 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 import { PaginateQueryLimitRequired } from '@121-service/src/shared/types/paginate-query-limit-required.type';
 @Injectable()
 export class PaymentsReportingService {
-  @InjectRepository(PaymentApprovalEntity)
-  private readonly paymentApprovalRepository: Repository<PaymentApprovalEntity>;
-
   public constructor(
     private readonly paymentRepository: PaymentRepository,
     private readonly paymentsReportingHelperService: PaymentsReportingHelperService,
@@ -44,7 +40,7 @@ export class PaymentsReportingService {
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentEventsService: PaymentEventsService,
     private readonly programRepository: ProgramRepository,
-    private readonly paymentsManagementService: PaymentsManagementService,
+    private readonly paymentApprovalRepository: PaymentApprovalRepository,
   ) {}
 
   public async getPaymentAggregationsSummaries({
@@ -108,7 +104,7 @@ export class PaymentsReportingService {
     });
 
     const approversForCurrentApprovalStep =
-      await this.paymentsManagementService.getApproversForCurrentApprovalStep({
+      await this.getApproversForCurrentApprovalStep({
         paymentId,
       });
 
@@ -168,6 +164,26 @@ export class PaymentsReportingService {
     return sortedApprovers
       .map((assignment) => assignment.user?.username)
       .filter((username): username is string => Boolean(username));
+  }
+
+  private async getApproversForCurrentApprovalStep({
+    paymentId,
+  }: {
+    paymentId: number;
+  }): Promise<PaymentAggregationFullDto['approversForCurrentApprovalStep']> {
+    const currentApprovalStep =
+      await this.paymentApprovalRepository.getCurrentApprovalStep({
+        paymentId,
+      });
+    if (!currentApprovalStep) {
+      return [];
+    }
+
+    const usernames = currentApprovalStep.approverAssignments
+      .map((assignment) => ({ username: assignment.user?.username }))
+      .filter((obj): obj is { username: string } => obj.username !== undefined);
+
+    return usernames;
   }
 
   public async exportTransactionsUsingDateFilter({

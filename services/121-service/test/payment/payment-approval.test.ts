@@ -250,6 +250,52 @@ describe('do payment with 2 approval steps', () => {
     });
   });
 
+  it('should return correct approversForCurrentApprovalStep at each stage', async () => {
+    // Assert before any approvals: step 1 approver (admin) is current
+    const summaryBeforeApprovals = await getPaymentSummary({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+    expect(summaryBeforeApprovals.body.approversForCurrentApprovalStep).toEqual(
+      [{ username: env.USERCONFIG_121_SERVICE_EMAIL_ADMIN }],
+    );
+
+    // Act - 1st approve (admin)
+    await approvePayment({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+
+    // Assert after 1st approval: step 2 approver (finance manager) is now current
+    const summaryAfter1stApproval = await getPaymentSummary({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+    expect(
+      summaryAfter1stApproval.body.approversForCurrentApprovalStep,
+    ).toEqual([{ username: env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER }]);
+
+    // Act - 2nd approve (finance manager)
+    await approvePayment({
+      programId,
+      paymentId,
+      accessToken: accessTokenFinanceManager,
+    });
+
+    // Assert after all approvals: empty array
+    const summaryAfterAllApprovals = await getPaymentSummary({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+    expect(
+      summaryAfterAllApprovals.body.approversForCurrentApprovalStep,
+    ).toEqual([]);
+  });
+
   it('should throw on 2nd approval step when 1st approval step has not yet been approved', async () => {
     // Act
     // 2nd approve without 1st approve
