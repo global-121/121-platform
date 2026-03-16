@@ -137,6 +137,7 @@ describe('Process incoming Kobo submission via webhook', () => {
       fullName: 'John Doe',
       nationalId: '123456789',
       phoneNumber: '+31612345678',
+      photo: 'https://kobo.example.com/api/v2/assets/test/data/1/attachments/1',
     });
 
     // Verify the system sent a 'new registration' message (rather than a user)
