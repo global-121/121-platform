@@ -13,28 +13,23 @@ export class AddPaymentDeletePermission1773647299613 implements MigrationInterfa
       );
     `);
 
-    // Get role ids that have the payment.create permission
-    const rolesWithClosestPermission: { userRoleId: number }[] =
-      await queryRunner.query(`
-      SELECT urp."userRoleId"
-      FROM "121-service".user_role_permissions_permission urp
-      JOIN "121-service".permission p ON urp."permissionId" = p.id
-      WHERE p.name = 'payment.create';
-    `);
-
-    // Assign the new permission to those roles
-    for (const role of rolesWithClosestPermission) {
-      await queryRunner.query(`
+    // Assign the new permission to all roles that have the payment.create permission
+    await queryRunner.query(`
       INSERT INTO "121-service".user_role_permissions_permission ("userRoleId", "permissionId")
-      SELECT ${role.userRoleId}, p.id
-      FROM "121-service".permission p
-      WHERE p.name = 'payment.delete'
+      SELECT DISTINCT urp."userRoleId", p_delete.id
+      FROM "121-service".user_role_permissions_permission urp
+      JOIN "121-service".permission p_create
+        ON urp."permissionId" = p_create.id
+      JOIN "121-service".permission p_delete
+        ON p_delete.name = 'payment.delete'
+      WHERE p_create.name = 'payment.create'
         AND NOT EXISTS (
-          SELECT 1 FROM "121-service".user_role_permissions_permission urp
-          WHERE urp."userRoleId" = ${role.userRoleId} AND urp."permissionId" = p.id
+          SELECT 1
+          FROM "121-service".user_role_permissions_permission urp_existing
+          WHERE urp_existing."userRoleId" = urp."userRoleId"
+            AND urp_existing."permissionId" = p_delete.id
         );
     `);
-    }
   }
 
   public async down(_queryRunner: QueryRunner): Promise<void> {
