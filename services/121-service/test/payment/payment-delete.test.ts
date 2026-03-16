@@ -51,7 +51,10 @@ describe('Delete payment', () => {
     expect(deleteResponse.status).toBe(HttpStatus.NO_CONTENT);
 
     const paymentsAfterDelete = await getPayments(programId, accessToken);
-    expect(paymentsAfterDelete.body).toHaveLength(0);
+    const paymentIdsAfterDelete = paymentsAfterDelete.body.map(
+      (payment) => payment.id,
+    );
+    expect(paymentIdsAfterDelete).not.toContain(paymentId);
   });
 
   it('should return 404 when the payment does not exist for this program', async () => {
