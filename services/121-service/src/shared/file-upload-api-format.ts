@@ -53,15 +53,3 @@ export const FILE_UPLOAD_WITH_FILENAME_API_FORMAT = {
     required: ['file', 'filename'],
   },
 };
-
-export const RENAME_FILE_API_FORMAT = {
-  schema: {
-    type: 'object',
-    properties: {
-      filename: {
-        type: 'string',
-      },
-    },
-    required: ['filename'],
-  },
-};
