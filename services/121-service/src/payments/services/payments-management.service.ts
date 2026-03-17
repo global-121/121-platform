@@ -120,7 +120,7 @@ export class PaymentsManagementService {
         userId,
       });
 
-      await this.sendPendingApprovalEmails({ paymentId });
+      await this.sendPendingApprovalEmails({ paymentId, programId });
 
       return bulkActionResultPaymentDto;
     } finally {
@@ -410,7 +410,7 @@ export class PaymentsManagementService {
         programId,
       });
     } else {
-      await this.sendPendingApprovalEmails({ paymentId });
+      await this.sendPendingApprovalEmails({ paymentId, programId });
     }
   }
 
@@ -540,8 +540,10 @@ export class PaymentsManagementService {
 
   private async sendPendingApprovalEmails({
     paymentId,
+    programId,
   }: {
     paymentId: number;
+    programId: number;
   }): Promise<void> {
     const currentApprovalStep =
       await this.paymentApprovalRepository.getCurrentApprovalStep({
@@ -552,6 +554,8 @@ export class PaymentsManagementService {
       return;
     }
 
+    const paymentUrl = `${env.REDIRECT_PORTAL_URL_HOST}/program/${programId}/payments/${paymentId}`;
+
     for (const assignment of currentApprovalStep.approverAssignments) {
       if (!assignment.user?.username) {
         continue;
@@ -560,6 +564,7 @@ export class PaymentsManagementService {
         paymentEmailInput: {
           email: assignment.user.username,
           displayName: assignment.user.displayName,
+          paymentUrl,
         },
         paymentEmailType: PaymentEmailType.pendingApproval,
       });
