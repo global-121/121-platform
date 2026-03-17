@@ -470,6 +470,12 @@ export class MetricsService {
     }));
   }
 
+  /**
+   * Retrieves the total transfer values aggregated by month and status.
+   *
+   * Groups payment data by month (YYYY-MM format) and sums the transfer values
+   * for each transaction status.
+   **/
   public async getAmountSentByMonth({
     programId,
     limitNumberOfPayments,

@@ -8,6 +8,12 @@ class CountAndTransferValueDto {
   transferValue: number;
 }
 
+/**
+ * Aggregated payment statistics grouped by payment status.
+ *
+ * Provides a summary view of payment distributions across different states
+ * in a program's payment cycle.
+ */
 export class AggregationsPerStatusDto {
   @ApiProperty({
     example: { count: 0, transferValue: 0 },

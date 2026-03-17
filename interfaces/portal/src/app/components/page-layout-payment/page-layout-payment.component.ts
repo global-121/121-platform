@@ -366,12 +366,12 @@ export class PageLayoutPaymentComponent {
       return false;
     }
 
-    const statuses = this.paymentAggregate.data().aggregationsPerStatus;
-
-    const failed = statuses.failed.count;
-    const success = statuses.success.count;
-    const waiting = statuses.waiting.count;
-    const approved = statuses.approved.count;
+    const {
+      failed: { count: failed },
+      success: { count: success },
+      waiting: { count: waiting },
+      approved: { count: approved },
+    } = this.paymentAggregate.data().aggregationsPerStatus;
 
     return failed + success + waiting + approved > 0;
   });

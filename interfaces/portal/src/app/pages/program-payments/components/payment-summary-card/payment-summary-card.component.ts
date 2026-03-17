@@ -74,9 +74,9 @@ export class PaymentSummaryCardComponent {
 
   readonly includedRegistrations = computed(() => {
     let total = 0;
-    const statuses: Record<string, { count: number; transferValue: number }> =
-      this.currentPaymentData().aggregationsPerStatus;
-    for (const status of Object.values(statuses)) {
+    for (const status of Object.values(
+      this.currentPaymentData().aggregationsPerStatus,
+    )) {
       total += status.count;
     }
     return total;
@@ -84,9 +84,9 @@ export class PaymentSummaryCardComponent {
 
   readonly expectedAmount = computed(() => {
     let total = 0;
-    const statuses: Record<string, { count: number; transferValue: number }> =
-      this.currentPaymentData().aggregationsPerStatus;
-    for (const status of Object.values(statuses)) {
+    for (const status of Object.values(
+      this.currentPaymentData().aggregationsPerStatus,
+    )) {
       total += status.transferValue;
     }
     return total;
