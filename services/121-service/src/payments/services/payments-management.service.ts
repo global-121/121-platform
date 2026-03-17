@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, Repository } from 'typeorm';
@@ -31,6 +31,8 @@ import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 
 @Injectable()
 export class PaymentsManagementService {
+  private readonly logger = new Logger(PaymentsManagementService.name);
+
   @InjectRepository(PaymentEntity)
   private readonly paymentRepository: Repository<PaymentEntity>;
   public constructor(
@@ -120,7 +122,9 @@ export class PaymentsManagementService {
         userId,
       });
 
-      await this.sendPendingApprovalEmails({ paymentId, programId });
+      await this.trySendingEmail(() =>
+        this.sendPendingApprovalEmails({ paymentId, programId }),
+      );
 
       return bulkActionResultPaymentDto;
     } finally {
@@ -405,12 +409,13 @@ export class PaymentsManagementService {
         paymentId,
         programId,
       });
-      await this.sendPaymentApprovedEmail({
-        paymentId,
-        programId,
-      });
+      await this.trySendingEmail(() =>
+        this.sendPaymentApprovedEmail({ paymentId, programId }),
+      );
     } else {
-      await this.sendPendingApprovalEmails({ paymentId, programId });
+      await this.trySendingEmail(() =>
+        this.sendPendingApprovalEmails({ paymentId, programId }),
+      );
     }
   }
 
@@ -535,6 +540,14 @@ export class PaymentsManagementService {
         userId,
         programFspConfigurationId,
       });
+    }
+  }
+
+  private async trySendingEmail(sendFn: () => Promise<void>): Promise<void> {
+    try {
+      await sendFn();
+    } catch (error) {
+      this.logger.warn('Failed to send payment email notification', error);
     }
   }
 

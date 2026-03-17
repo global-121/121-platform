@@ -9,13 +9,13 @@ export const buildTemplatePaymentApproved = (
   const { displayName, paymentUrl, paymentCreatedAt } = paymentEmailInput;
 
   const formattedDate = paymentCreatedAt
-    ? paymentCreatedAt.toLocaleString('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      })
+    ? `
+      ${String(paymentCreatedAt.getUTCDate()).padStart(2, '0')}/\
+      ${String(paymentCreatedAt.getUTCMonth() + 1).padStart(2, '0')}/\
+      ${paymentCreatedAt.getUTCFullYear()}, \
+      ${String(paymentCreatedAt.getUTCHours()).padStart(2, '0')}:\
+      ${String(paymentCreatedAt.getUTCMinutes()).padStart(2, '0')}
+      `
     : '';
 
   const subject = '121 portal: Payment approved';
