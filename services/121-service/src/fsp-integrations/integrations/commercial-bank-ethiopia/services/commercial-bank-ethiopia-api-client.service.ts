@@ -20,6 +20,18 @@ export class CommercialBankEthiopiaApiClientService implements OnModuleDestroy {
     this.httpsAgent.destroy();
   }
 
+  private redactSensitiveXmlElements(xml: string): string {
+    return xml
+      .replace(
+        /<password>[^<]*<\/password>/gi,
+        '<password>**REDACTED**</password>',
+      )
+      .replace(
+        /<userName>[^<]*<\/userName>/gi,
+        '<userName>**REDACTED**</userName>',
+      );
+  }
+
   private createHttpsAgent(): https.Agent {
     const cbeConnectionConfig: https.AgentOptions = {
       // The connection with CBE can be unstable/unpredictable;
@@ -77,7 +89,10 @@ export class CommercialBankEthiopiaApiClientService implements OnModuleDestroy {
         }) => {
           const response = rawResponse.response;
           this.httpService.logMessageRequest(
-            { url: apiUrl, payload: soapRequestXml },
+            {
+              url: apiUrl,
+              payload: this.redactSensitiveXmlElements(soapRequestXml),
+            },
             {
               status: response.statusCode,
               statusText: '',
@@ -120,7 +135,10 @@ export class CommercialBankEthiopiaApiClientService implements OnModuleDestroy {
       )
       .catch((err: any | AxiosError) => {
         this.httpService.logErrorRequest(
-          { url: apiUrl, payload: soapRequestXml },
+          {
+            url: apiUrl,
+            payload: this.redactSensitiveXmlElements(soapRequestXml),
+          },
           {
             status: err.response?.code ?? err.code ?? undefined,
             statusText: err.response?.status ?? err.status ?? undefined,
