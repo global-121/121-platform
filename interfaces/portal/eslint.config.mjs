@@ -1,12 +1,10 @@
-/* eslint-disable perfectionist/sort-objects -- Keep the config readable, by NOT sorting alphabetically automatically. */
 import eslint from '@eslint/js';
 import pluginQuery from '@tanstack/eslint-plugin-query';
 import angularEslint from 'angular-eslint';
+import eslintConfig121Platform from 'eslint-config-121-platform';
 import eslintPluginBetterTailwindcss from 'eslint-plugin-better-tailwindcss';
-import eslintPluginComments from 'eslint-plugin-eslint-comments';
 import eslintPluginNoRelativePaths from 'eslint-plugin-no-relative-import-paths';
 import eslintPluginPerfectionist from 'eslint-plugin-perfectionist';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import eslintPluginRegexp from 'eslint-plugin-regexp';
 import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
 import eslintSortClassMembers from 'eslint-plugin-sort-class-members';
@@ -24,47 +22,54 @@ const customRulesPlugin = {
     'tanstack-no-manual-cache-invalidation': tanstackNoManualCacheInvalidation,
   },
 };
+const customRulesConfig = defineConfig({
+  plugins: {
+    'custom-rules': customRulesPlugin,
+  },
+  rules: {
+    'custom-rules/no-form-control-undefined-value': 'error',
+    'custom-rules/tanstack-no-manual-cache-invalidation': 'error',
+  },
+});
 
+/* eslint-disable perfectionist/sort-objects -- Keep the config readable, by NOT sorting alphabetically automatically. */
 export default defineConfig(
   globalIgnores(['dist/**', 'www/**', '.angular/**', 'coverage/**']),
   {
-    name: 'Root config',
+    name: 'Browser-only JavaScript files',
+    files: ['src/**/*.js', 'src/**/*.mjs'],
     languageOptions: {
       globals: globals.browser,
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
     },
-    linterOptions: {
-      reportUnusedInlineConfigs: 'error',
-      reportUnusedDisableDirectives: 'error',
-    },
+    extends: [eslint.configs.recommended],
   },
   {
-    name: 'JavaScript files',
-    files: ['**/*.js', '**/*.mjs'],
+    name: 'Specific Config file exceptions ONLY',
+    files: ['karma.conf.js', 'knip.config.js'],
+    // These exceptions should be minimal, until all these config-files can be converted to be ESM.
     languageOptions: {
-      ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
-      globals: {
-        module: 'readonly',
-        process: 'readonly',
-        require: 'readonly',
-      },
+      globals: globals.node,
+    },
+  },
+  eslintConfig121Platform.configs.base,
+  eslintConfig121Platform.configs.recommended,
+  eslintConfig121Platform.configs.javascript,
+  eslintConfig121Platform.configs.typescript,
+  {
+    name: 'Build-only/Config JavaScript files',
+    files: ['**/*.mjs'],
+    languageOptions: {
+      globals: globals.nodeBuiltin,
     },
     extends: [
-      eslint.configs.recommended,
       eslintPluginRegexp.configs['flat/recommended'],
       eslintPluginPerfectionist.configs['recommended-natural'],
-      eslintPluginPrettierRecommended,
     ],
     plugins: {
-      'eslint-comments': eslintPluginComments,
       regexp: eslintPluginRegexp,
     },
     rules: {
       'arrow-body-style': 'error',
-      'eslint-comments/require-description': 'error',
       'func-style': 'error',
       'no-inner-declarations': 'error',
       'object-shorthand': 'error',
@@ -74,19 +79,19 @@ export default defineConfig(
   {
     name: 'TypeScript files',
     files: ['**/*.ts'],
+    languageOptions: {
+      globals: globals.browser,
+    },
     extends: [
-      eslint.configs.recommended,
+      ...customRulesConfig,
       ...tsEslint.configs.strictTypeChecked,
       ...tsEslint.configs.stylisticTypeChecked,
       ...angularEslint.configs.tsRecommended,
       ...pluginQuery.configs['flat/recommended'],
       eslintPluginRegexp.configs['flat/recommended'],
       eslintSortClassMembers.configs['flat/recommended'],
-      eslintPluginPrettierRecommended,
     ],
     plugins: {
-      'custom-rules': customRulesPlugin,
-      'eslint-comments': eslintPluginComments,
       'no-relative-import-paths': eslintPluginNoRelativePaths,
       perfectionist: eslintPluginPerfectionist,
       regexp: eslintPluginRegexp,
@@ -130,9 +135,6 @@ export default defineConfig(
         },
       ],
       'arrow-body-style': 'error',
-      'custom-rules/no-form-control-undefined-value': 'error',
-      'custom-rules/tanstack-no-manual-cache-invalidation': 'error',
-      'eslint-comments/require-description': 'error',
       'func-style': 'error',
       'max-params': ['error', 2],
       'no-inner-declarations': 'error',
@@ -185,7 +187,6 @@ export default defineConfig(
     extends: [
       ...angularEslint.configs.templateRecommended,
       ...angularEslint.configs.templateAccessibility,
-      eslintPluginPrettierRecommended,
     ],
     plugins: {
       'better-tailwindcss': eslintPluginBetterTailwindcss,
@@ -241,6 +242,31 @@ export default defineConfig(
           ],
         },
       ],
+      '@angular-eslint/template/label-has-associated-control': [
+        'error',
+        {
+          controlComponents: [
+            'p-toggleSwitch',
+            'p-checkbox',
+            'p-radioButton',
+            'ng-content',
+            'app-form-error',
+          ],
+          labelComponents: [
+            {
+              inputs: [
+                'for',
+                'htmlFor',
+                'id',
+                'inputId',
+                'input-id',
+                'formControlName',
+              ],
+              selector: 'label',
+            },
+          ],
+        },
+      ],
       'better-tailwindcss/enforce-consistent-class-order': 'off', // handled by Prettier
       'better-tailwindcss/enforce-consistent-important-position': 'error',
       'better-tailwindcss/enforce-consistent-line-wrapping': 'off', // handled by Prettier
@@ -274,4 +300,6 @@ export default defineConfig(
       },
     },
   },
+  eslintConfig121Platform.configs.final, // NOTE: This needs to be last! It configures Prettier, to make sure auto-formatting works.
 );
+/* eslint-enable perfectionist/sort-objects -- Only the configs-collection needs manual sorting. */

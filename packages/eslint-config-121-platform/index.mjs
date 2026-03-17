@@ -56,7 +56,7 @@ export default {
     node: {
       name: '121-platform/node',
       languageOptions: {
-        globals: globals.node,
+        globals: globals.nodeBuiltin,
       },
       extends: [eslintPluginN.configs['flat/recommended-module']],
       rules: {
@@ -64,20 +64,20 @@ export default {
         'n/no-path-concat': 'error',
       },
     },
-    commonjs: {
-      name: '121-platform/commonjs',
-      files: ['**/*.js'],
+    recommended: {
+      name: '121-platform/recommended',
+      files: ['**/*.mjs', '**/*.ts'],
       languageOptions: {
-        sourceType: 'script',
+        ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
+        sourceType: 'module',
+        globals: globals.nodeBuiltin,
+      },
+      rules: {
       },
     },
     javascript: {
       name: '121-platform/javascript',
       files: ['**/*.mjs'],
-      languageOptions: {
-        ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
-        sourceType: 'module',
-      },
     },
     typescript: {
       name: '121-platform/typescript',
@@ -107,6 +107,7 @@ export default {
     },
     final: {
       name: '121-platform/final',
+      files: ['**/*.js', '**/*.mjs', '**/*.ts', 'src/app/**/*.html'],
       extends: [eslintPluginPrettierRecommended],
     },
   },
