@@ -1,6 +1,7 @@
 import { TestBed } from '@automock/jest';
 
 import { PaymentRepository } from '@121-service/src/payments/repositories/payment.repository';
+import { PaymentApprovalRepository } from '@121-service/src/payments/repositories/payment-approval.repository';
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -69,6 +70,7 @@ describe('PaymentsReportingService - getTransactions', () => {
   let paymentsHelperService: PaymentsReportingHelperService;
   let paymentRepository: PaymentRepository;
   let programRepository: ProgramRepository;
+  let paymentApprovalRepository: PaymentApprovalRepository;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -76,6 +78,7 @@ describe('PaymentsReportingService - getTransactions', () => {
     ).compile();
 
     transactionScopedRepository = unitRef.get(TransactionViewScopedRepository);
+    paymentApprovalRepository = unitRef.get(PaymentApprovalRepository);
 
     service = unit;
     registrationPaginationService = unitRef.get(RegistrationsPaginationService);
@@ -362,6 +365,14 @@ describe('PaymentsReportingService - getTransactions', () => {
       jest
         .spyOn(service, 'getPaymentApprovalStatus')
         .mockResolvedValue(mockApprovalStatus);
+      jest
+        .spyOn(paymentApprovalRepository, 'getCurrentApprovalStep')
+        .mockResolvedValue({
+          approverAssignments: [
+            { user: { username: 'alice' } },
+            { user: { username: 'bob' } },
+          ],
+        } as any);
 
       // Act
       const result = await service.getPaymentAggregationFull({
@@ -374,6 +385,10 @@ describe('PaymentsReportingService - getTransactions', () => {
         ...mockSummary,
         fsps: mockFsps,
         approvalStatus: mockApprovalStatus,
+        approversForCurrentApprovalStep: [
+          { username: 'alice' },
+          { username: 'bob' },
+        ],
       });
     });
 

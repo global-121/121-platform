@@ -299,21 +299,15 @@ export class PageLayoutPaymentComponent {
       return false;
     }
 
-    const approvalStatus = this.paymentAggregate.data().approvalStatus;
-    const currentPaymentApproval = approvalStatus.find((approval) =>
-      approval.approvers.includes(currentUser),
+    const approversForCurrentApprovalStep =
+      this.paymentAggregate.data().approversForCurrentApprovalStep;
+
+    return approversForCurrentApprovalStep.some(
+      (a) => a.username === currentUser,
     );
-    if (!currentPaymentApproval) {
-      return false; // not approver for this payment
-    }
-    if (currentPaymentApproval.approved) {
-      return false; // already approved
-    }
 
     // NOTE 1: we do not hide the button if previous approvers have not yet approved, to avoid confusion. Instead, the backend will block the approval action.
     // NOTE 2: there is no permission-check here, as there is no approve permission.
-
-    return true;
   });
 
   readonly showStartPaymentButton = computed<boolean | undefined>(() => {

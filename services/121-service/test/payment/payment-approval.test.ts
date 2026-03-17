@@ -250,6 +250,52 @@ describe('do payment with 2 approval steps', () => {
     });
   });
 
+  it('should return correct approversForCurrentApprovalStep at each stage', async () => {
+    // Assert before any approvals: step 1 approver (admin) is current
+    const summaryBeforeApprovals = await getPaymentSummary({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+    expect(summaryBeforeApprovals.body.approversForCurrentApprovalStep).toEqual(
+      [{ username: env.USERCONFIG_121_SERVICE_EMAIL_ADMIN }],
+    );
+
+    // Act - 1st approve (admin)
+    await approvePayment({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+
+    // Assert after 1st approval: step 2 approver (finance manager) is now current
+    const summaryAfter1stApproval = await getPaymentSummary({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+    expect(
+      summaryAfter1stApproval.body.approversForCurrentApprovalStep,
+    ).toEqual([{ username: env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER }]);
+
+    // Act - 2nd approve (finance manager)
+    await approvePayment({
+      programId,
+      paymentId,
+      accessToken: accessTokenFinanceManager,
+    });
+
+    // Assert after all approvals: empty array
+    const summaryAfterAllApprovals = await getPaymentSummary({
+      programId,
+      paymentId,
+      accessToken: adminAccessToken,
+    });
+    expect(
+      summaryAfterAllApprovals.body.approversForCurrentApprovalStep,
+    ).toEqual([]);
+  });
+
   it('should throw on 2nd approval step when 1st approval step has not yet been approved', async () => {
     // Act
     // 2nd approve without 1st approve
@@ -261,12 +307,12 @@ describe('do payment with 2 approval steps', () => {
 
     // Assert
     expect(approvePaymentResponseFinanceManager.status).toBe(
-      HttpStatus.BAD_REQUEST,
+      HttpStatus.FORBIDDEN,
     );
     expect(
       approvePaymentResponseFinanceManager.body.message,
     ).toMatchInlineSnapshot(
-      `"Cannot approve payment before lower-order approval steps have been approved"`,
+      `"User is not assigned to the current approval step and cannot approve it"`,
     );
   });
 
@@ -547,7 +593,7 @@ describe('multiple approvers per approval step', () => {
     // Assert
     expect(secondApprovalResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(secondApprovalResponse.body.message).toBe(
-      'This approval step has already been approved for this payment',
+      'Payment is already fully approved, cannot approve it',
     );
   });
 });
