@@ -1,15 +1,19 @@
 import { TestBed } from '@automock/jest';
+import { HttpStatus } from '@nestjs/common';
 
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsManagementService } from '@121-service/src/payments/services/payments-management.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
+import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 import { ProgramApprovalThresholdRepository } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+
+import '@121-service/src/utils/test-helpers/matchers/httpExceptionMatcher';
 
 describe('PaymentsManagementService', () => {
   let service: PaymentsManagementService;
@@ -20,6 +24,7 @@ describe('PaymentsManagementService', () => {
   let registrationsBulkService: RegistrationsBulkService;
   let registrationsPaginationService: RegistrationsPaginationService;
   let programApprovalThresholdRepository: ProgramApprovalThresholdRepository;
+  let transactionViewScopedRepository: TransactionViewScopedRepository;
 
   const basePaymentParams = {
     userId: 1,
@@ -45,6 +50,9 @@ describe('PaymentsManagementService', () => {
     );
     programApprovalThresholdRepository = unitRef.get(
       ProgramApprovalThresholdRepository,
+    );
+    transactionViewScopedRepository = unitRef.get(
+      TransactionViewScopedRepository,
     );
     (service as any).paymentRepository = {
       save: jest.fn().mockImplementation((entity) => {
@@ -326,6 +334,64 @@ describe('PaymentsManagementService', () => {
       await service.approvePayment({ userId: 1, programId: 2, paymentId: 3 });
 
       expect(processFinalApprovalSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('deletePayment', () => {
+    const deleteParams = { programId: 2, paymentId: 5 };
+
+    beforeEach(() => {
+      (service as any).paymentRepository.findOne = jest
+        .fn()
+        .mockResolvedValue({ id: 5, programId: 2 });
+      (service as any).paymentRepository.remove = jest
+        .fn()
+        .mockResolvedValue(undefined);
+      (
+        paymentsProgressHelperService.isPaymentInProgress as jest.Mock
+      ).mockResolvedValue(false);
+      (
+        transactionViewScopedRepository.hasBeenStarted as jest.Mock
+      ).mockResolvedValue(false);
+    });
+
+    it('should throw NOT_FOUND if payment does not exist', async () => {
+      (service as any).paymentRepository.findOne = jest
+        .fn()
+        .mockResolvedValue(null);
+
+      await expect(
+        service.deletePayment(deleteParams),
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.NOT_FOUND);
+    });
+
+    it('should throw if payment is in progress', async () => {
+      (
+        paymentsProgressHelperService.isPaymentInProgress as jest.Mock
+      ).mockResolvedValue(true);
+
+      await expect(
+        service.deletePayment(deleteParams),
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+    });
+
+    it('should throw if payment has already been started', async () => {
+      (
+        transactionViewScopedRepository.hasBeenStarted as jest.Mock
+      ).mockResolvedValue(true);
+
+      await expect(
+        service.deletePayment(deleteParams),
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+    });
+
+    it('should remove the payment when it has not been started', async () => {
+      await service.deletePayment(deleteParams);
+
+      expect((service as any).paymentRepository.remove).toHaveBeenCalledWith({
+        id: 5,
+        programId: 2,
+      });
     });
   });
 });

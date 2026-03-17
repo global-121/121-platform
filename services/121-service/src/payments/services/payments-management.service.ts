@@ -453,18 +453,18 @@ export class PaymentsManagementService {
       );
     }
 
-    const transactionStatuses =
-      await this.transactionViewScopedRepository.aggregateTransactionsByStatus({
-        programId,
-        paymentId,
-      });
-    const approvalOnlyStatuses = [
-      TransactionStatusEnum.pendingApproval,
-      TransactionStatusEnum.approved,
-    ];
-    const hasBeenStarted = transactionStatuses.some(
-      (t) => !approvalOnlyStatuses.includes(t.status),
-    );
+    // Throw if payment is in progress
+    const isInProgress =
+      await this.paymentsProgressHelperService.isPaymentInProgress(programId);
+    if (isInProgress) {
+      throw new HttpException(
+        'Cannot delete a payment when a payment is already in progress',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const hasBeenStarted =
+      await this.transactionViewScopedRepository.hasBeenStarted(paymentId);
     if (hasBeenStarted) {
       throw new HttpException(
         'Cannot delete a payment that has already been started',

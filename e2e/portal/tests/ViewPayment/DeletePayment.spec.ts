@@ -29,12 +29,10 @@ test('Remove payment button is not visible when payment has started', async ({
     );
     await paymentPage.approvePayment();
     await paymentPage.startPayment();
-    await paymentPage.waitForPaymentToComplete();
   });
 
   await test.step('Verify remove payment button is not visible', async () => {
-    const isVisible = await paymentPage.isEllipsisMenuVisible();
-    expect(isVisible).toBe(false);
+    await expect(page.getByTestId('ellipsis-menu-button')).toBeHidden();
   });
 });
 

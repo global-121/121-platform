@@ -67,6 +67,9 @@ describe('Delete payment', () => {
 
     // Assert
     expect(deleteResponse.status).toBe(HttpStatus.NOT_FOUND);
+    expect(deleteResponse.body.message).toMatchInlineSnapshot(
+      `"Payment not found for this program"`,
+    );
   });
 
   it('should return 400 when the payment has already been started', async () => {
@@ -95,5 +98,8 @@ describe('Delete payment', () => {
 
     // Assert
     expect(deleteResponse.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(deleteResponse.body.message).toMatchInlineSnapshot(
+      `"Cannot delete a payment that has already been started"`,
+    );
   });
 });

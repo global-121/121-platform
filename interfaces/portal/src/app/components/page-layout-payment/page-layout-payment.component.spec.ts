@@ -11,28 +11,8 @@ import { MessageService } from 'primeng/api';
 
 import { PageLayoutPaymentComponent } from '~/components/page-layout-payment/page-layout-payment.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
-import { PaymentAggregationFull } from '~/domains/payment/payment.model';
 import { ProgramApiService } from '~/domains/program/program.api.service';
-import { FindAllTransactionsResult } from '~/domains/transaction/transaction.model';
 import { AuthService } from '~/services/auth.service';
-
-const createMockAggregateData = (
-  partial: Partial<PaymentAggregationFull> = {},
-): PaymentAggregationFull => ({
-  paymentId: 1,
-  success: { count: 0, transferValue: 0 },
-  waiting: { count: 0, transferValue: 0 },
-  failed: { count: 0, transferValue: 0 },
-  pendingApproval: { count: 0, transferValue: 0 },
-  approved: { count: 0, transferValue: 0 },
-  isPaymentApproved: false,
-  approvalsRequired: 1,
-  approvalsGiven: 0,
-  paymentDate: '2024-01-01T00:00:00.000Z',
-  fsps: [],
-  approvalStatus: [],
-  ...partial,
-});
 
 // Returns a query factory (matching the shape returned by generateQueryOptions)
 // that immediately resolves with the provided data (success state via initialData).
@@ -71,20 +51,17 @@ describe('PageLayoutPaymentComponent - canDeletePayment', () => {
 
     mockAuthService.hasAllPermissions.and.returnValue(true);
     mockPaymentApiService.getPaymentAggregationFull.and.returnValue(
-      mockQueryFactory(createMockAggregateData()),
+      mockQueryFactory({ hasBeenStarted: false }),
     );
     mockProgramApiService.getProgram.and.returnValue(mockQueryFactory(null));
     mockPaymentApiService.getPaymentAggregationsSummaries.and.returnValue(
       mockQueryFactory([]),
     );
     mockPaymentApiService.getPaymentStatus.and.returnValue(
-      mockQueryFactory({ inProgress: false }),
+      mockQueryFactory({}),
     );
     mockPaymentApiService.getPaymentTransactions.and.returnValue(
-      mockQueryFactory({
-        data: [] as FindAllTransactionsResult['data'],
-        meta: { totalItems: 0 },
-      } as FindAllTransactionsResult),
+      mockQueryFactory({ data: [], meta: { totalItems: 0 } }),
     );
 
     await TestBed.configureTestingModule({
@@ -111,7 +88,7 @@ describe('PageLayoutPaymentComponent - canDeletePayment', () => {
     return fixture;
   };
 
-  it('should return true when user has permission and no transactions are processed', () => {
+  it('should return true when user has permission and payment has not started', () => {
     // Arrange
     const fixture = createFixture();
 
@@ -134,12 +111,24 @@ describe('PageLayoutPaymentComponent - canDeletePayment', () => {
     expect(result).toBe(false);
   });
 
-  it('should return false when there are processed transactions', () => {
+  it('should return false when payment is in progress', () => {
+    // Arrange
+    mockPaymentApiService.getPaymentStatus.and.returnValue(
+      mockQueryFactory({ inProgress: true }),
+    );
+    const fixture = createFixture();
+
+    // Act
+    const result = fixture.componentInstance.canDeletePayment();
+
+    // Assert
+    expect(result).toBe(false);
+  });
+
+  it('should return false when payment has already started', () => {
     // Arrange
     mockPaymentApiService.getPaymentAggregationFull.and.returnValue(
-      mockQueryFactory(
-        createMockAggregateData({ success: { count: 3, transferValue: 75 } }),
-      ),
+      mockQueryFactory({ hasBeenStarted: true }),
     );
     const fixture = createFixture();
 

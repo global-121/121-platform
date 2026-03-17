@@ -433,9 +433,6 @@ export class PageLayoutPaymentComponent {
   );
 
   readonly canDeletePayment = computed(() => {
-    if (!this.paymentAggregate.isSuccess()) {
-      return false;
-    }
     if (
       !this.authService.hasAllPermissions({
         programId: this.programId(),
@@ -444,8 +441,16 @@ export class PageLayoutPaymentComponent {
     ) {
       return false;
     }
-    const data = this.paymentAggregate.data();
-    return data.waiting.count + data.success.count + data.failed.count === 0;
+
+    if (this.isPaymentInProgress()) {
+      return false;
+    }
+
+    if (this.paymentAggregateData()?.hasBeenStarted) {
+      return false;
+    }
+
+    return true;
   });
 
   readonly menuItems = computed<MenuItem[]>(() => [

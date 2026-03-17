@@ -241,7 +241,7 @@ export class PaymentsController {
     @Param('programId', ParseIntPipe) programId: number,
     @Param('paymentId', ParseIntPipe) paymentId: number,
   ): Promise<void> {
-    return await this.paymentsManagementService.deletePayment({
+    await this.paymentsManagementService.deletePayment({
       programId,
       paymentId,
     });
