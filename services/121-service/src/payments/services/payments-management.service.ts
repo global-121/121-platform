@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, Repository } from 'typeorm';
 
+import { env } from '@121-service/src/env';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
@@ -404,7 +405,10 @@ export class PaymentsManagementService {
         paymentId,
         programId,
       });
-      await this.sendPaymentApprovedEmail({ paymentId });
+      await this.sendPaymentApprovedEmail({
+        paymentId,
+        programId,
+      });
     } else {
       await this.sendPendingApprovalEmails({ paymentId });
     }
@@ -564,8 +568,10 @@ export class PaymentsManagementService {
 
   private async sendPaymentApprovedEmail({
     paymentId,
+    programId,
   }: {
     paymentId: number;
+    programId: number;
   }): Promise<void> {
     const creatorUser =
       await this.paymentEventsService.getCreatorOrThrow(paymentId);
@@ -574,10 +580,18 @@ export class PaymentsManagementService {
       return;
     }
 
+    const payment = await this.paymentRepository.findOneOrFail({
+      where: { id: Equal(paymentId) },
+    });
+
+    const paymentUrl = `${env.REDIRECT_PORTAL_URL_HOST}/program/${programId}/payments/${paymentId}`;
+
     await this.paymentEmailsService.send({
       paymentEmailInput: {
         email: creatorUser.username,
         displayName: creatorUser.displayName,
+        paymentUrl,
+        paymentCreatedAt: payment.created,
       },
       paymentEmailType: PaymentEmailType.paymentApproved,
     });
