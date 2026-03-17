@@ -54,7 +54,7 @@ describe('QueryTableColumnVisibilityService', () => {
 
     const visibleColumns = service.visibleColumns();
     expect(visibleColumns.length).toBe(2);
-    expect(visibleColumns.map((c) => c.header)).toEqual(['ID', 'Value']);
+    expect(visibleColumns.map((c) => c.header)).toEqual(['ID', 'Name']);
   });
 
   it('should revert to default columns when requested', () => {
