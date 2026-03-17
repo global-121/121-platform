@@ -11,7 +11,8 @@
   "private": true,
   "scripts": {
     "ng": "ng",
-    "postinstall": "cd ../../services/121-service && npm run install:dependencies-for-portal",
+    "preinstall": "npm install --prefix=../../packages/eslint-config-121-platform",
+    "postinstall": "npm run install:dependencies-for-portal --prefix=../../services/121-service",
     "set-env-variables": "node --env-file-if-exists=.env ./_set-env-variables.mjs",
     "build:deployment-configuration": "node --env-file-if-exists=.env ./_build-deployment-configuration.mjs",
     "build:download-translations": "node --env-file-if-exists=.env ./_build-download-translations.mjs",
@@ -82,7 +83,7 @@
     "@angular/compiler-cli": "^21.2.1",
     "@angular/localize": "^21.2.1",
     "@azure/static-web-apps-cli": "^2.0.8",
-    "@eslint/js": "^9.39.2",
+    "@eslint/js": "^9.39.4",
     "@prettier/plugin-xml": "^3.4.2",
     "@tailwindcss/postcss": "^4.2.1",
     "@tanstack/eslint-plugin-query": "^5.91.4",
