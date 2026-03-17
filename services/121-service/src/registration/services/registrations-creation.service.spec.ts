@@ -5,20 +5,20 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
+import { RegistrationsCreationService } from '@121-service/src/registration/services/registrations-creation.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
-describe('RegistrationsImportService', () => {
-  let registrationsImportService: RegistrationsImportService;
+describe('RegistrationsCreationService', () => {
+  let registrationsCreationService: RegistrationsCreationService;
 
   const language = RegistrationPreferredLanguage.en;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
-      RegistrationsImportService,
+      RegistrationsCreationService,
     ).compile();
-    registrationsImportService = unit;
+    registrationsCreationService = unit;
 
     // Mock programService.findProgramOrThrow
     const programService = unitRef.get(ProgramService);
@@ -53,7 +53,7 @@ describe('RegistrationsImportService', () => {
 
     // Mock getDynamicAttributes
     jest
-      .spyOn(registrationsImportService as any, 'getDynamicAttributes')
+      .spyOn(registrationsCreationService as any, 'getDynamicAttributes')
       .mockImplementation(() => []);
 
     // Mock programRepository.findOneBy
@@ -69,6 +69,6 @@ describe('RegistrationsImportService', () => {
   });
 
   it('should be defined', () => {
-    expect(registrationsImportService).toBeDefined();
+    expect(registrationsCreationService).toBeDefined();
   });
 });

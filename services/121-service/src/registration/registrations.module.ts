@@ -35,7 +35,7 @@ import { InclusionScoreService } from '@121-service/src/registration/services/in
 import { QueueRegistrationUpdateService } from '@121-service/src/registration/services/queue-registrations-update.service';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
-import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
+import { RegistrationsCreationService } from '@121-service/src/registration/services/registrations-creation.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
@@ -75,7 +75,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
   ],
   providers: [
     RegistrationsService,
-    RegistrationsImportService,
+    RegistrationsCreationService,
     InclusionScoreService,
     AzureLogService,
     RegistrationsPaginationService,
@@ -99,7 +99,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     RegistrationsService,
     RegistrationsBulkService,
     RegistrationsPaginationService,
-    RegistrationsImportService,
+    RegistrationsCreationService,
     RegistrationScopedRepository,
     RegistrationViewScopedRepository,
   ],

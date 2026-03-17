@@ -19,7 +19,7 @@ import { RegistrationViewScopedRepository } from '@121-service/src/registration/
 import { UniqueRegistrationPairRepository } from '@121-service/src/registration/repositories/unique-registration-pair.repository';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
-import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
+import { RegistrationsCreationService } from '@121-service/src/registration/services/registrations-creation.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
@@ -112,7 +112,7 @@ describe('RegistrationsService', () => {
           },
         },
         {
-          provide: RegistrationsImportService,
+          provide: RegistrationsCreationService,
           useValue: {
             importRegistrationsFromCsv: jest.fn(),
             importRegistrations: jest.fn(),
