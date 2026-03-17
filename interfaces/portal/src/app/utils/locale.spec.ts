@@ -26,9 +26,7 @@ describe('getLocaleForInitialization', () => {
         defaultLocale: 'en-GB',
         urlLocale: 'nonsense',
       });
-      // #TODO: check this
     }).toThrowError('Invalid locale "nonsense" found in URL: /');
-    // }).toThrowError('Invalid locale "nonsense" found in URL: /context.html');
   });
 
   it('should default to the urlLocale whenever there is weirdness saved in local storage', () => {

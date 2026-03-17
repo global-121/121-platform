@@ -55,11 +55,7 @@ describe('QueryTableFilterService', () => {
     });
 
     expect(clearTableSpy).toHaveBeenCalled();
-    // #TODO: check if workaround is fine
     expect(localStorage.getItem('test-key')).toBeNull();
-    // expect(vi.spyOn(window.localStorage, 'removeItem')).toHaveBeenCalledWith(
-    //   'test-key',
-    // );
     expect(service.globalFilterVisible()).toBe(false);
     expect(resetSelectionSpy).toHaveBeenCalled();
   });
