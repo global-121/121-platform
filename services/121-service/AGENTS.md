@@ -121,12 +121,57 @@ export class ProgramsController {
 - Handle transactions properly for complex operations
 - Encapsulate data access functionality in Custom Repositories
 
+### HTTP Response Guidelines
+
+- 404 Not Found: For GET calls to non-existent resource endpoints
+- 200 OK with empty array: For GET calls to collection endpoints with no resources
+
 ### Exception Handling
 
-- Use NestJS `HTTPException` for control flow and HTTP responses
+- Use NestJS `HttpException` for control flow and HTTP responses
 - First argument should be a descriptive string
 - Only use arrays/objects for error messages with very good reason
 - Exceptions can be used for control flow in the 121 Platform
+
+### Authentication & Authorization
+
+- Use `@AuthenticatedUser()` decorator to access current user
+- Implement role-based access control with guards
+
+### Error Handling
+
+- Use NestJS HTTP exceptions with proper status codes
+- Log errors appropriately for debugging
+
+### Database Migrations
+
+- Use TypeORM migrations for schema changes
+- Test migrations thoroughly before deployment
+- Keep migration files minimal and focused
+- Always include "121-service" schema in raw SQL queries when referencing tables of the 121-service
+
+### Things to Avoid
+
+Also see [Things to Avoid#Things to Avoid](../../AGENTS.md#things-to-avoid)
+
+- Direct SQL query construction without parameterization
+- Exposing sensitive data in API responses
+- Missing authentication/authorization checks
+- Direct database access from controllers
+- Missing error handling in async operations
+- Circular dependencies between NestJS modules
+- Unsafe TypeORM where conditions
+- Using TypeORM's `queryBuilder` without using table aliases
+- Using TypeORM's `queryBuilder` when `.find`, `.save` or any of the other repository methods would suffice
+
+## Testing
+
+- **Unit Tests**: Jest configuration in `jest.unit.config.js`
+- **Integration Tests**: Jest configuration in `jest.integration.config.js`
+- **Coverage**: Separate reports for unit and integration tests
+- **Patterns**: Use helper functions, clean test data, mock external dependencies
+- **Guidelines**
+  - Do not test private methods directly
 
 ### Testing Patterns
 
@@ -143,7 +188,7 @@ export class ProgramsController {
 - Test real API interactions and component integration
 - Use SuperAgent for API testing
 - Place in `/test` folder
-- Run with: `npm run test:e2e:all`
+- Run with: `npm run test:integration:all`
 
 **Testing Strategy:**
 
@@ -153,63 +198,7 @@ export class ProgramsController {
 - Integration tests provide depth (real-world behavior)
 - Refactor complex units into smaller, testable functions
 
-## Testing
-
-- **Unit Tests**: Jest configuration in `jest.unit.config.js`
-- **Integration Tests**: Jest configuration in `jest.integration.config.js`
-- **Coverage**: Separate reports for unit and integration tests
-- **Patterns**: Use helper functions, clean test data, mock external dependencies
-- **Guidelines**
-  - Do not test private methods directly
-
-### Authentication & Authorization
-
-- Use `@AuthenticatedUser()` decorator to access current user
-- Implement role-based access control with guards
-
-### Error Handling
-
-- Use NestJS HTTP exceptions with proper status codes
-- Log errors appropriately for debugging
-
-### API Design
-
-**API Structure:**
-
-- Organize APIs around entities, not use cases
-- Use proper HTTP methods (GET/POST/DELETE/PUT/PATCH)
-- Apply correct status codes and document them
-- Use nouns, not verbs in URLs (exceptions for actions like /retry, /approve)
-- Limit nesting to 2 levels (`/noun/id/noun/id`)
-- Limit response depth to 2 levels (relation of relation is OK)
-
-**HTTP Response Guidelines:**
-
-- 404 Not Found: For GET calls to non-existent resource endpoints
-- 200 OK with empty array: For GET calls to collection endpoints with no resources
-
-### Database Migrations
-
-- Use TypeORM migrations for schema changes
-- Test migrations thoroughly before deployment
-- Keep migration files minimal and focused
-- Always include "121-service" schema in raw SQL queries when referencing tables of the 121-service
-
-### Things to Avoid
-
-Also see [Things to Avoid#Things to Avoid](../../AGENTS.md)
-
-- Direct SQL query construction without parameterization
-- Exposing sensitive data in API responses
-- Missing authentication/authorization checks
-- Direct database access from controllers
-- Missing error handling in async operations
-- Circular dependencies between NestJS modules
-- Unsafe TypeORM where conditions
-- Using TypeORM's `queryBuilder` without using table aliases
-- Using TypeORM's `queryBuilder` when `.find`, `.save` or any of the other repository methods would suffice
-
-### Commands
+## Commands
 
 See the [Commands for linting and formatting section in root AGENTS.md](../../AGENTS.md)
 
@@ -222,7 +211,7 @@ npm run typecheck # type checking
 npm run fix # Fix linting issues
 ```
 
-#### Test commands
+### Test commands
 
 ```bash
 cd services/121-service

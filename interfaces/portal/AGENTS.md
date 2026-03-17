@@ -12,7 +12,7 @@ Based Assistance programs. Another name for this frontend is "the portal".
 - **UI Library**: PrimeNG components
 - **Styling**: Tailwind CSS utility classes
 - **State Management**: angular services and tanstack-query
-- **Testing**: Jest and Karma
+- **Testing**: Angular CLI `ng test` with Jasmine/Karma for unit and component tests; Playwright for E2E
 - **Build**: Angular CLI with production optimizations
 
 ## Code Style & Standards
@@ -116,7 +116,7 @@ export class UserProfileComponent implements OnInit {
 
 ## Testing
 
-- **Unit Tests**: Jest with Angular testing utilities
+- **Unit Tests**: Angular CLI `ng test` with Jasmine/Karma for unit and component tests; Playwright for E2E
 - **Component Tests**: Test component behavior and rendering
 - **Service Tests**: Mock HTTP calls and test business logic
 - **E2E Tests**: Playwright tests in `e2e/` directory
@@ -152,7 +152,7 @@ npm run fix # Fix linting issues
 
 ## Things to Avoid
 
-Also see [Things to Avoid#Things to Avoid](../../AGENTS.md)
+Also see [Things to Avoid#Things to Avoid](../../AGENTS.md#things-to-avoid)
 
 - Using deprecated lifecycle methods
 - Not implementing OnPush change detection
