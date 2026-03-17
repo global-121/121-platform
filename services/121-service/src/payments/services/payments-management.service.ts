@@ -119,6 +119,8 @@ export class PaymentsManagementService {
         userId,
       });
 
+      await this.sendPendingApprovalEmails({ paymentId });
+
       return bulkActionResultPaymentDto;
     } finally {
       if (!dryRun) {
@@ -403,6 +405,8 @@ export class PaymentsManagementService {
         programId,
       });
       await this.sendPaymentApprovedEmail({ paymentId });
+    } else {
+      await this.sendPendingApprovalEmails({ paymentId });
     }
   }
 
@@ -526,6 +530,34 @@ export class PaymentsManagementService {
         description: TransactionEventDescription.approval,
         userId,
         programFspConfigurationId,
+      });
+    }
+  }
+
+  private async sendPendingApprovalEmails({
+    paymentId,
+  }: {
+    paymentId: number;
+  }): Promise<void> {
+    const currentApprovalStep =
+      await this.paymentApprovalRepository.getCurrentApprovalStep({
+        paymentId,
+      });
+
+    if (!currentApprovalStep) {
+      return;
+    }
+
+    for (const assignment of currentApprovalStep.approverAssignments) {
+      if (!assignment.user?.username) {
+        continue;
+      }
+      await this.paymentEmailsService.send({
+        paymentEmailInput: {
+          email: assignment.user.username,
+          displayName: assignment.user.displayName,
+        },
+        paymentEmailType: PaymentEmailType.pendingApproval,
       });
     }
   }
