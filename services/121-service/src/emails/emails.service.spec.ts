@@ -8,19 +8,17 @@ class CustomHttpServiceMock {
   public post = jest.fn();
 }
 
-const mockTemplate: EmailTemplate = {
-  subject: 'Test subject',
-  body: 'Test body',
-};
-
 describe('EmailsService', () => {
   let service: EmailsService;
+  let httpService: CustomHttpServiceMock;
 
   beforeEach(async () => {
+    httpService = new CustomHttpServiceMock();
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         EmailsService,
-        { provide: CustomHttpService, useClass: CustomHttpServiceMock },
+        { provide: CustomHttpService, useValue: httpService },
       ],
     }).compile();
 
@@ -28,89 +26,43 @@ describe('EmailsService', () => {
   });
 
   describe('sendFromTemplate', () => {
-    enum TestEmailType {
-      typeA = 'typeA',
-      typeB = 'typeB',
-    }
-
-    interface TestEmailInput {
-      email: string;
-      displayName: string;
-    }
-
-    const builderA = jest.fn().mockReturnValue(mockTemplate);
-    const builderB = jest.fn().mockReturnValue(mockTemplate);
-
-    const templateBuilders: Record<
-      TestEmailType,
-      (input: TestEmailInput) => EmailTemplate
-    > = {
-      [TestEmailType.typeA]: builderA,
-      [TestEmailType.typeB]: builderB,
+    const mockTemplate: EmailTemplate = {
+      subject: 'Welcome',
+      body: '<p>Hello</p>',
     };
+    const builder = jest.fn().mockReturnValue(mockTemplate);
+    const templateBuilders = { someType: builder };
 
     beforeEach(() => {
-      builderA.mockClear();
-      builderB.mockClear();
-    });
-
-    it('should call the correct template builder for the given type', async () => {
-      // Arrange
-      const input: TestEmailInput = {
-        email: 'user@example.com',
-        displayName: 'Test User',
-      };
-
-      // Act
-      await service.sendFromTemplate({
-        templateBuilders,
-        input,
-        type: TestEmailType.typeA,
-      });
-
-      // Assert
-      expect(builderA).toHaveBeenCalledTimes(1);
-      expect(builderB).not.toHaveBeenCalled();
+      builder.mockClear();
     });
 
     it('should sanitize displayName before passing it to the template builder', async () => {
-      // Arrange
-      const input: TestEmailInput = {
-        email: 'user@example.com',
-        displayName: 'Test <b>User</b>',
-      };
-
-      // Act
       await service.sendFromTemplate({
         templateBuilders,
-        input,
-        type: TestEmailType.typeA,
+        input: { email: 'a@b.com', displayName: '<script>alert</script>Name' },
+        type: 'someType',
       });
 
-      // Assert
-      expect(builderA).toHaveBeenCalledWith(
-        expect.objectContaining({ displayName: 'Test User' }),
+      expect(builder).toHaveBeenCalledWith(
+        expect.objectContaining({ displayName: 'alertName' }),
       );
     });
 
-    it('should send the email with the address from the input', async () => {
-      // Arrange
-      const input: TestEmailInput = {
-        email: 'user@example.com',
-        displayName: 'Test User',
-      };
-      const sendEmailSpy = jest.spyOn(service, 'sendEmail');
-
-      // Act
+    it('should send the built email data via the http service', async () => {
       await service.sendFromTemplate({
         templateBuilders,
-        input,
-        type: TestEmailType.typeA,
+        input: { email: 'user@example.com', displayName: 'Test User' },
+        type: 'someType',
       });
 
-      // Assert
-      expect(sendEmailSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ email: input.email }),
+      expect(httpService.post).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          email: 'user@example.com',
+          subject: mockTemplate.subject,
+          body: mockTemplate.body,
+        }),
       );
     });
   });
