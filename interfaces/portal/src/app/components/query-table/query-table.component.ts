@@ -1,5 +1,3 @@
-/* eslint-disable sort-class-members/sort-class-members -- Disabling this rule in this file because the class members are grouped logically */
-
 import { NgClass, NgComponentOutlet, NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -95,6 +93,7 @@ export type QueryTableColumn<TData, TField = Leaves<TData> & string> = {
 
 export type QueryTableSelectionEvent<TData> = { selectAll: true } | TData[];
 
+/* eslint-disable sort-class-members/sort-class-members -- Disabling this rule in this file because the class members are grouped logically */
 @Component({
   selector: 'app-query-table',
   imports: [
@@ -409,3 +408,4 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     });
   }
 }
+/* eslint-enable sort-class-members/sort-class-members -- Re-enabling the rule for the rest of the codebase */
