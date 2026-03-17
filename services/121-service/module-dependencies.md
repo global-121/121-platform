@@ -101,8 +101,10 @@ graph LR
   OnafriqReconciliationModule-->QueuesRegistryModule
   OnafriqReconciliationModule-->RedisModule
   OnafriqReconciliationModule-->TransactionsModule
+  PaymentEmailsModule-->EmailsModule
   PaymentsModule-->FspsModule
   PaymentsModule-->MessageTemplateModule
+  PaymentsModule-->PaymentEmailsModule
   PaymentsModule-->PaymentEventsModule
   PaymentsModule-->ProgramAidworkerAssignmentsModule
   PaymentsModule-->ProgramApprovalThresholdsModule

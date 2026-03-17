@@ -6,6 +6,8 @@ import { Equal, Repository } from 'typeorm';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
+import { PaymentEmailType } from '@121-service/src/payments/payment-emails/enum/payment-email-type.enum';
+import { PaymentEmailsService } from '@121-service/src/payments/payment-emails/payment-emails.service';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentApprovalRepository } from '@121-service/src/payments/repositories/payment-approval.repository';
@@ -40,6 +42,7 @@ export class PaymentsManagementService {
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentApprovalRepository: PaymentApprovalRepository,
     private readonly programApprovalThresholdRepository: ProgramApprovalThresholdRepository,
+    private readonly paymentEmailsService: PaymentEmailsService,
   ) {}
 
   public async createPayment({
@@ -399,6 +402,7 @@ export class PaymentsManagementService {
         paymentId,
         programId,
       });
+      await this.sendPaymentApprovedEmail({ paymentId });
     }
   }
 
@@ -524,5 +528,26 @@ export class PaymentsManagementService {
         programFspConfigurationId,
       });
     }
+  }
+
+  private async sendPaymentApprovedEmail({
+    paymentId,
+  }: {
+    paymentId: number;
+  }): Promise<void> {
+    const creatorUser =
+      await this.paymentEventsService.getCreatorOrThrow(paymentId);
+
+    if (!creatorUser.username) {
+      return;
+    }
+
+    await this.paymentEmailsService.send({
+      paymentEmailInput: {
+        email: creatorUser.username,
+        displayName: creatorUser.displayName,
+      },
+      paymentEmailType: PaymentEmailType.paymentApproved,
+    });
   }
 }
