@@ -8,21 +8,11 @@ export const buildTemplatePaymentApproved = (
 ): EmailTemplate => {
   const { displayName, paymentUrl, paymentCreatedAt } = paymentEmailInput;
 
-  const formattedDate = paymentCreatedAt
-    ? `
-      ${String(paymentCreatedAt.getUTCDate()).padStart(2, '0')}/\
-      ${String(paymentCreatedAt.getUTCMonth() + 1).padStart(2, '0')}/\
-      ${paymentCreatedAt.getUTCFullYear()}, \
-      ${String(paymentCreatedAt.getUTCHours()).padStart(2, '0')}:\
-      ${String(paymentCreatedAt.getUTCMinutes()).padStart(2, '0')}
-      `
-    : '';
-
   const subject = '121 portal: Payment approved';
   const body = wrapWithEmailLayout(`
     <p>Dear ${displayName},</p>
     <p>
-      The payment you created ${formattedDate} has been approved and is now ready to be initiated.
+      The payment you created ${paymentCreatedAt} has been approved and is now ready to be initiated.
     </p>
     <p>Please follow the link below or log into the 121 portal to start the payment.</p>
     ${paymentUrl ? `<p><a href="${paymentUrl}">${paymentUrl}</a></p>` : ''}

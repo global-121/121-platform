@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { format } from 'date-fns';
 import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, Repository } from 'typeorm';
 
@@ -602,6 +603,8 @@ export class PaymentsManagementService {
       where: { id: Equal(paymentId) },
     });
 
+    const formattedCreationDate = format(payment.created, 'dd/MM/yyyy, HH:mm');
+
     const paymentUrl = `${env.REDIRECT_PORTAL_URL_HOST}/program/${programId}/payments/${paymentId}`;
 
     await this.paymentEmailsService.send({
@@ -609,7 +612,7 @@ export class PaymentsManagementService {
         email: creatorUser.username,
         displayName: creatorUser.displayName,
         paymentUrl,
-        paymentCreatedAt: payment.created,
+        paymentCreatedAt: formattedCreationDate,
       },
       paymentEmailType: PaymentEmailType.paymentApproved,
     });
