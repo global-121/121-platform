@@ -61,6 +61,7 @@ export default {
       extends: [eslintPluginN.configs['flat/recommended-module']],
       rules: {
         'n/prefer-node-protocol': 'error',
+        'n/no-path-concat': 'error',
       },
     },
     commonjs: {
