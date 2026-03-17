@@ -33,7 +33,7 @@ import globals from 'globals';
  * });
  * ```
  *
- * @type {import('eslint-config-121-platform').EslintConfig121Platform} */
+ * @type {import('./index.d.ts').EslintConfig121Platform} */
 export default {
   configs: {
     base: {
