@@ -1,4 +1,4 @@
-# GitHub Copilot Instructions - 121 Platform
+# AGENTS instructions
 
 ## Repository Overview
 
@@ -559,11 +559,11 @@ npm run test:all           # Run all tests
 
 ## Additional Resources
 
-- [Contributing Guidelines](../docs/CONTRIBUTING.md)
-- [Component Guidelines](../interfaces/portal/src/app/components/component-guidelines.md)
-- [Service README](../services/121-service/README.md)
-- [Portal README](../interfaces/portal/README.md)
-- [Testing Guide](../guide-Writing-Tests.md)
+- [Contributing Guidelines](./docs/CONTRIBUTING.md)
+- [Component Guidelines](./interfaces/portal/src/app/components/component-guidelines.md)
+- [Service README](./services/121-service/README.md)
+- [Portal README](./interfaces/portal/README.md)
+- [Testing Guide](./guide-Writing-Tests.md)
 
 ## Instructions for Copilot Agents
 
