@@ -61,7 +61,6 @@ export class KoboFormDefinitionMapper {
         name: parsedName,
         type: item.type.split(' ')[0], // Normalize e.g. 'select_one list_name' to 'select_one'
         label: item.label,
-        required: item.required,
         choices: itemChoices,
       };
     });

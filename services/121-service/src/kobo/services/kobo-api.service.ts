@@ -125,7 +125,7 @@ export class KoboApiService {
     const webhookName =
       'Create a registration in the 121 Platform when a submission is received';
     const webhookUrl = joinURL(EXTERNAL_API.rootApi, 'kobo/webhook');
-    const webhookSubsetFields = ['_uuid', '_xform_id_string'];
+    const webhookSubsetFields = ['_uuid', '_xform_id_string', '__version__'];
 
     const body = {
       name: webhookName,

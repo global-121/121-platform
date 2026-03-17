@@ -8,8 +8,6 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 describe('KoboSurveyProcessorService', () => {
   let service: KoboSurveyProcessorService;
 
-  const isRequired = true;
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [KoboSurveyProcessorService],
@@ -35,7 +33,6 @@ describe('KoboSurveyProcessorService', () => {
           name: fieldName,
           type: fieldType,
           label: Object.values(labels),
-          required: isRequired,
           choices: [],
         },
       ];
@@ -58,7 +55,7 @@ describe('KoboSurveyProcessorService', () => {
         label: labels,
         type: RegistrationAttributeTypes.text,
         // Also validate the defeault values in this test
-        isRequired,
+        isRequired: false,
         showInPeopleAffectedTable: true,
         editableInPortal: true,
         options: [],
@@ -73,14 +70,12 @@ describe('KoboSurveyProcessorService', () => {
         en: 'What is your age?',
         nl: 'Wat is je leeftijd?',
       };
-      const isRequired = true;
 
       const koboSurveyItems: KoboSurveyItemCleaned[] = [
         {
           name: fieldName,
           type: fieldType,
           label: Object.values(labels),
-          required: isRequired,
           choices: [],
         },
       ];
@@ -108,14 +103,12 @@ describe('KoboSurveyProcessorService', () => {
       // Arrange
       const fieldName = 'phoneNumber';
       const fieldType = 'text';
-      const isRequired = false;
 
       const koboSurveyItems: KoboSurveyItemCleaned[] = [
         {
           name: fieldName,
           type: fieldType,
           // No label provided
-          required: isRequired,
           choices: [],
         },
       ];
@@ -153,21 +146,18 @@ describe('KoboSurveyProcessorService', () => {
         kuid: 'pqr678',
         label: 'Unsupported field',
       };
-      const isRequired = false;
 
       const koboSurveyItems: KoboSurveyItemCleaned[] = [
         {
           name: supportedField.name,
           type: supportedField.type,
           label: [supportedField.label],
-          required: isRequired,
           choices: [],
         },
         {
           name: unsupportedField.name,
           type: unsupportedField.type,
           label: [unsupportedField.label],
-          required: isRequired,
           choices: [],
         },
       ];
@@ -195,7 +185,6 @@ describe('KoboSurveyProcessorService', () => {
           name: fieldName,
           type: fieldType,
           label: ['Empty type field'],
-          required: false,
           choices: [],
         },
       ];
@@ -235,14 +224,12 @@ describe('KoboSurveyProcessorService', () => {
           labels: { en: 'Female', nl: 'Vrouw' },
         },
       };
-      const isRequired = false;
 
       const koboSurveyItems: KoboSurveyItemCleaned[] = [
         {
           name: fieldName,
           type: fieldType,
           label: Object.values(labels),
-          required: isRequired,
           choices: [
             {
               name: choices.male.name,
@@ -335,7 +322,6 @@ describe('KoboSurveyProcessorService', () => {
           name: genderField.name,
           type: genderField.type,
           label: Object.values(genderField.labels),
-          required: false,
           choices: [
             {
               name: genderChoices.male.name,
@@ -353,7 +339,6 @@ describe('KoboSurveyProcessorService', () => {
           name: educationField.name,
           type: educationField.type,
           label: Object.values(educationField.labels),
-          required: true,
           choices: [
             {
               name: educationChoices.primary.name,

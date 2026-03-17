@@ -70,8 +70,8 @@ export class KoboSurveyProcessorService {
       label,
       type: attributeType,
       options,
-      isRequired:
-        koboSurveyItem.required || DEFAULT_ATTRIBUTE_CONFIG.isRequired,
+      // We do not use the 'required' property from Kobo because in Kobo a question can be conditionally required based on skip logic while still having the 'required' property set to true
+      isRequired: DEFAULT_ATTRIBUTE_CONFIG.isRequired,
       showInPeopleAffectedTable:
         DEFAULT_ATTRIBUTE_CONFIG.showInPeopleAffectedTable,
       editableInPortal: DEFAULT_ATTRIBUTE_CONFIG.editableInPortal,

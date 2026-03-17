@@ -39,7 +39,6 @@ describe('KoboValidationService', () => {
       name: 'fsp',
       type: 'hidden',
       label: ['Financial Service Provider', 'Financiële dienstverlener'],
-      required: false,
       choices: [],
     },
   ];
@@ -61,28 +60,24 @@ describe('KoboValidationService', () => {
         name: FspAttributes.phoneNumber,
         type: 'text',
         label: ['What is your phone number?', 'Wat is je telefoonnummer?'],
-        required: true,
         choices: [],
       },
       {
         name: FspAttributes.fullName,
         type: 'text',
         label: ['What is your full name?', 'Wat is je volledige naam?'],
-        required: true,
         choices: [],
       },
       {
         name: FspAttributes.whatsappPhoneNumber,
         type: 'text',
         label: ['WhatsApp phone number', 'WhatsApp telefoonnummer'],
-        required: false,
         choices: [],
       },
       {
         name: FspAttributes.nationalId,
         type: 'text',
         label: ['National ID number', 'Nationale ID nummer'],
-        required: false,
         choices: [],
       },
     ],
@@ -167,7 +162,6 @@ describe('KoboValidationService', () => {
             name: FspAttributes.phoneNumber,
             type: 'text',
             label: ['What is your phone number?', 'Wat is je telefoonnummer?'],
-            required: true,
             choices: [],
           },
           // Missing bankAccountNumber that is required for Commercial Bank Ethiopia
@@ -216,14 +210,12 @@ describe('KoboValidationService', () => {
             name: FspAttributes.nationalId,
             type: 'integer', // Wrong type nationalId is text
             label: ['National ID number', 'Nationale ID nummer'],
-            required: false,
             choices: [],
           },
           {
             name: FspAttributes.phoneNumber,
             type: 'text', // correct type
             label: ['What is your phone number?', 'Wat is je telefoonnummer?'],
-            required: true,
             choices: [],
           },
         ],
@@ -266,21 +258,18 @@ describe('KoboValidationService', () => {
             name: 'firstName',
             type: 'text',
             label: ['First name'],
-            required: true,
             choices: [],
           },
           {
             name: 'lastName',
             type: 'text',
             label: ['Last name'],
-            required: true,
             choices: [],
           },
           {
             name: FspAttributes.phoneNumber,
             type: 'text',
             label: ['Phone number'],
-            required: true,
             choices: [],
           },
         ],
@@ -314,7 +303,6 @@ describe('KoboValidationService', () => {
             name: 'firstName',
             type: 'text',
             label: ['First name'],
-            required: true,
             choices: [],
           },
           // Missing lastName and middleName from fullnameNamingConvention
@@ -322,7 +310,6 @@ describe('KoboValidationService', () => {
             name: FspAttributes.phoneNumber,
             type: 'text',
             label: ['Phone number'],
-            required: true,
             choices: [],
           },
         ],
@@ -369,7 +356,6 @@ describe('KoboValidationService', () => {
             name: FspAttributes.phoneNumber,
             type: 'text',
             label: ['Phone number'],
-            required: true,
             choices: [],
           },
         ],
@@ -472,7 +458,6 @@ describe('KoboValidationService', () => {
             name: FspAttributes.phoneNumber,
             type: 'integer', // Wrong type - should be text
             label: ['Phone number'],
-            required: true,
             choices: [],
           },
         ],
@@ -549,7 +534,6 @@ describe('KoboValidationService', () => {
             name: GenericRegistrationAttributes.scope,
             type: 'text',
             label: ['Scope'],
-            required: true,
             choices: [],
           },
         ],
@@ -625,7 +609,6 @@ describe('KoboValidationService', () => {
             name: GenericRegistrationAttributes.scope,
             type: 'integer', // Wrong type - should be text
             label: ['Scope'],
-            required: true,
             choices: [],
           },
         ],
@@ -673,7 +656,6 @@ describe('KoboValidationService', () => {
             name: 'matrix_question',
             type: 'begin_kobomatrix',
             label: ['Matrix question group'],
-            required: false,
             choices: [],
           },
         ],
@@ -839,7 +821,6 @@ describe('KoboValidationService', () => {
             name: 'preferredLanguage', // Constrained attribute
             type: 'text', // Correct type - should be text
             label: ['Preferred Language'],
-            required: true,
             choices: [],
           },
         ],
@@ -864,7 +845,6 @@ describe('KoboValidationService', () => {
             name: 'preferredLanguage', // Constrained attribute
             type: 'integer', // Wrong type - should be text
             label: ['Preferred Language'],
-            required: true,
             choices: [],
           },
         ],
@@ -901,7 +881,6 @@ describe('KoboValidationService', () => {
               name: 'preferredLanguage', // Expects text type, but hidden/calculate are also allowed
               type: bypassType,
               label: ['Preferred Language'],
-              required: false,
               choices: [],
             },
           ],
@@ -927,7 +906,6 @@ describe('KoboValidationService', () => {
             name: 'paymentCount', // Auto-generated registration view attribute, not in KOBO_ALLOWED_REGISTRATION_VIEW_ATTRIBUTES
             type: 'integer',
             label: ['Payment Count'],
-            required: false,
             choices: [],
           },
         ],
@@ -959,28 +937,24 @@ describe('KoboValidationService', () => {
         name: FspAttributes.phoneNumber,
         type: 'text',
         label: ['What is your phone number?'],
-        required: true,
         choices: [],
       },
       {
         name: FspAttributes.fullName,
         type: 'text',
         label: ['What is your full name?'],
-        required: true,
         choices: [],
       },
       {
         name: FspAttributes.whatsappPhoneNumber,
         type: 'text',
         label: ['WhatsApp phone number'],
-        required: false,
         choices: [],
       },
       {
         name: FspAttributes.nationalId,
         type: 'text',
         label: ['National ID number'],
-        required: false,
         choices: [],
       },
     ];
@@ -1027,7 +1001,6 @@ describe('KoboValidationService', () => {
             name: 'fsp',
             type: 'select_one',
             label: ['Financial Service Provider'],
-            required: false,
             choices: [
               {
                 name: 'Safaricom Kenya',
@@ -1064,7 +1037,6 @@ describe('KoboValidationService', () => {
             name: 'fsp',
             type: 'select_one',
             label: ['Financial Service Provider'],
-            required: false,
             choices: [
               {
                 name: 'Invalid FSP Name',
@@ -1113,7 +1085,6 @@ describe('KoboValidationService', () => {
               name: 'fsp',
               type: fspType,
               label: ['Financial Service Provider'],
-              required: false,
               choices: [],
             },
             ...commonFspAttributeFields,
@@ -1139,7 +1110,6 @@ describe('KoboValidationService', () => {
             name: 'fsp',
             type: 'text',
             label: ['Financial Service Provider'],
-            required: false,
             choices: [],
           },
           ...commonFspAttributeFields,
@@ -1164,5 +1134,46 @@ describe('KoboValidationService', () => {
        - Kobo form attribute "fsp" must be one of the following types: "hidden", "calculate", "select_one", got "text"."
       `);
     });
+  });
+
+  it('should throw HttpException when a select_one item has no choices', async () => {
+    // Arrange
+    (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
+      fullnameNamingConvention: [],
+      allowEmptyPhoneNumber: true,
+      enableScope: false,
+    });
+    (programFspConfigurationRepository.find as jest.Mock).mockResolvedValue([]);
+
+    const formDefinitionWithEmptySelectOne: KoboFormDefinition = {
+      ...baseFormDefinition,
+      survey: [
+        ...baseSurveyItems,
+        {
+          name: 'gender',
+          type: 'select_one',
+          label: ['What is your gender?'],
+          choices: [],
+        },
+      ],
+    };
+
+    // Act
+    let error: HttpException | any;
+    try {
+      await service.validateKoboFormDefinition({
+        formDefinition: formDefinitionWithEmptySelectOne,
+        programId,
+      });
+    } catch (e) {
+      error = e;
+    }
+
+    // Assert
+    expect(error).toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+    expect(error.message).toMatchInlineSnapshot(`
+     "Kobo form definition validation failed:
+     - Kobo form attribute "gender" is of type select_one or select_one_from_file but has no choices defined. Note that choices defined in a separate CSV file are not supported."
+    `);
   });
 });

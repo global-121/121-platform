@@ -64,7 +64,6 @@ describe('KoboService', () => {
         name: 'phoneNumber',
         type: 'text',
         label: languages.map((lang) => `Phone Number ${lang}`),
-        required: true,
         choices: [],
       },
     ],
