@@ -8,7 +8,7 @@ import crypto from 'node:crypto';
 import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
-import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/email-constants';
+import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/emails.const';
 import { env } from '@121-service/src/env';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';

@@ -20,6 +20,13 @@ jest.mock(
 
 class EmailsServiceMock {
   public sendEmail = jest.fn();
+  public buildEmailData = jest
+    .fn()
+    .mockImplementation(({ email, template }) => ({
+      email,
+      subject: template.subject,
+      body: template.body,
+    }));
 }
 
 const mockReturnAccountCreated = {

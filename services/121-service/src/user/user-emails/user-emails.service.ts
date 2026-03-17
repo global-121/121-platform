@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
 import { EmailsService } from '@121-service/src/emails/emails.service';
-import { EmailData } from '@121-service/src/emails/interfaces/email-data.interface';
 import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
 import { UserEmailType } from '@121-service/src/user/user-emails/enum/user-email-type.enum';
 import { UserEmailInput } from '@121-service/src/user/user-emails/interfaces/user-email-input.interface';
@@ -9,6 +8,15 @@ import { buildTemplateAccountCreated } from '@121-service/src/user/user-emails/t
 import { buildTemplateAccountCreatedSSO } from '@121-service/src/user/user-emails/templates/account-created-sso.template';
 import { buildTemplatePasswordReset } from '@121-service/src/user/user-emails/templates/password-reset.template';
 import { stripHtmlTags } from '@121-service/src/utils/strip-html-tags.helper';
+
+const templateBuilders: Record<
+  UserEmailType,
+  (input: UserEmailInput) => EmailTemplate
+> = {
+  [UserEmailType.accountCreated]: buildTemplateAccountCreated,
+  [UserEmailType.accountCreatedForSSO]: buildTemplateAccountCreatedSSO,
+  [UserEmailType.passwordReset]: buildTemplatePasswordReset,
+};
 
 @Injectable()
 export class UserEmailsService {
@@ -21,62 +29,15 @@ export class UserEmailsService {
     userEmailInput: UserEmailInput;
     userEmailType: UserEmailType;
   }): Promise<void> {
-    const emailData: EmailData = this.buildUserEmailData({
-      userEmailType,
-      userEmailInput,
-    });
-
-    await this.emailsService.sendEmail(emailData);
-  }
-
-  private buildUserEmailData({
-    userEmailType,
-    userEmailInput,
-  }: {
-    userEmailType: UserEmailType;
-    userEmailInput: UserEmailInput;
-  }): EmailData {
-    const { email } = userEmailInput;
-
-    const template: EmailTemplate = this.buildUserEmailTemplate({
-      userEmailType,
-      userEmailInput,
-    });
-
-    const userEmailData: EmailData = {
-      email,
-      subject: template.subject,
-      body: template.body,
-    };
-
-    return userEmailData;
-  }
-
-  private buildUserEmailTemplate({
-    userEmailType,
-    userEmailInput,
-  }: {
-    userEmailType: UserEmailType;
-    userEmailInput: UserEmailInput;
-  }): EmailTemplate {
-    let emailTemplate: EmailTemplate;
     const sanitizedUserEmailInput = {
       ...userEmailInput,
       displayName: stripHtmlTags(userEmailInput.displayName),
     };
-
-    switch (userEmailType) {
-      case UserEmailType.accountCreated:
-        emailTemplate = buildTemplateAccountCreated(sanitizedUserEmailInput);
-        break;
-      case UserEmailType.accountCreatedForSSO:
-        emailTemplate = buildTemplateAccountCreatedSSO(sanitizedUserEmailInput);
-        break;
-      case UserEmailType.passwordReset:
-        emailTemplate = buildTemplatePasswordReset(sanitizedUserEmailInput);
-        break;
-    }
-
-    return emailTemplate;
+    const template = templateBuilders[userEmailType](sanitizedUserEmailInput);
+    const emailData = this.emailsService.buildEmailData({
+      email: sanitizedUserEmailInput.email,
+      template,
+    });
+    await this.emailsService.sendEmail(emailData);
   }
 }

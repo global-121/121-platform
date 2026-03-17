@@ -1,5 +1,5 @@
-import { SUPPORT_EMAIL } from '@121-service/src/emails/email-constants';
 import { wrapWithEmailLayout } from '@121-service/src/emails/email-layout';
+import { SUPPORT_EMAIL } from '@121-service/src/emails/emails.const';
 import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
 import { UpdateJobEmailInput } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/interfaces/update-job-email-input.interface';
 

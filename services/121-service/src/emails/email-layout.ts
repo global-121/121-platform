@@ -1,4 +1,4 @@
-import { SUPPORT_EMAIL } from '@121-service/src/emails/email-constants';
+import { SUPPORT_EMAIL } from '@121-service/src/emails/emails.const';
 
 /**
  * Wrap the email content with the default email layout.
