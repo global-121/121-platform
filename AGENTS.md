@@ -23,10 +23,7 @@ The 121 Platform is an open-source humanitarian aid platform built by the Nether
 ### Install dependencies
 
 ```bash
-# Setup
-npm run install:all         # Install all dependencies
-npm run start:services      # Start backend services
-npm run start:portal        # Start Angular dev server
+npm run install:all
 ```
 
 ### Run application
@@ -55,7 +52,7 @@ npm run start:portal        # Start frontend (Angular dev server)
 
 ### Things to Avoid
 
-- Hardcoded values instead of configuration, no "magic" numbers or strings.
+- Avoid hardcoded values; prefer configuration. Avoid "magic" numbers or strings.
 
 ### Use modern data structures
 

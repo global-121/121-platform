@@ -130,7 +130,7 @@ npm run test:all # run all tests
 
 ### Commands
 
-See the [Commands for linting and formatting section in root AGENTS.md](../../AGENTS.md)
+See the [Commands for linting and formatting section in root AGENTS.md](../../AGENTS.md#commands-for-linting-and-formatting)
 
 ```bash
 cd interfaces/portal
@@ -152,7 +152,7 @@ npm run fix # Fix linting issues
 
 ## Things to Avoid
 
-Also see [Things to Avoid#Things to Avoid](../../AGENTS.md#things-to-avoid)
+Also see [Things to Avoid](../../AGENTS.md#things-to-avoid)
 
 - Using deprecated lifecycle methods
 - Not implementing OnPush change detection

@@ -152,7 +152,7 @@ export class ProgramsController {
 
 ### Things to Avoid
 
-Also see [Things to Avoid#Things to Avoid](../../AGENTS.md#things-to-avoid)
+Also see [Things to Avoid](../../AGENTS.md#things-to-avoid)
 
 - Direct SQL query construction without parameterization
 - Exposing sensitive data in API responses
@@ -200,7 +200,7 @@ Also see [Things to Avoid#Things to Avoid](../../AGENTS.md#things-to-avoid)
 
 ## Commands
 
-See the [Commands for linting and formatting section in root AGENTS.md](../../AGENTS.md)
+See the [Commands for linting and formatting section in root AGENTS.md](../../AGENTS.md#commands-for-linting-and-formatting)
 
 ### Commands for linting and typechecking
 
