@@ -130,17 +130,14 @@ All functions should use destructured objects as parameters, never use "naked" p
   - Relative imports last
   - Use simple-import-sort for consistent ordering
 
-### Commands for linting, typechecking and formatting
+### Commands for linting and formatting
 
 ```bash
-npm run typecheck # type checking
-npm run lint # linting
 npm run fix:all # Fix linting issues
 npm run test:prettier # Check formatting for the whole repository
 ```
 
-All linting, typechecking and formatting issues should be resolved before
-committing.
+All linting and typechecking issues should be resolved before committing.
 
 ## Testing Approach
 

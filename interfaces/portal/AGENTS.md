@@ -121,15 +121,22 @@ export class UserProfileComponent implements OnInit {
 - **Service Tests**: Mock HTTP calls and test business logic
 - **E2E Tests**: Playwright tests in `e2e/` directory
 
-### Commands
-
-See the [Commands for linting, typechecking and formatting section in root AGENTS.md](../../AGENTS.md)
-
-#### Test commands
+### Test commands
 
 ```bash
 cd interfaces/portal
 npm run test:all # run all tests
+```
+
+### Commands
+
+See the [Commands for linting and formatting section in root AGENTS.md](../../AGENTS.md)
+
+```bash
+cd interfaces/portal
+npm run lint # linting
+npm run typecheck # type checking
+npm run fix # Fix linting issues
 ```
 
 ## Common Patterns & Utilities

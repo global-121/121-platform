@@ -211,7 +211,16 @@ Also see [Things to Avoid#Things to Avoid](../../AGENTS.md)
 
 ### Commands
 
-See the [Commands for linting, typechecking and formatting section in root AGENTS.md](../../AGENTS.md)
+See the [Commands for linting and formatting section in root AGENTS.md](../../AGENTS.md)
+
+### Commands for linting and typechecking
+
+```bash
+cd services/121-service
+npm run lint # linting
+npm run typecheck # type checking
+npm run fix # Fix linting issues
+```
 
 #### Test commands
 
