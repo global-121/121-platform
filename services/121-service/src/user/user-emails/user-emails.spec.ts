@@ -19,28 +19,8 @@ jest.mock(
 );
 
 class EmailsServiceMock {
-  public sendEmail = jest.fn();
-  public buildEmailData = jest
-    .fn()
-    .mockImplementation(({ email, template }) => ({
-      email,
-      subject: template.subject,
-      body: template.body,
-    }));
+  public sendFromTemplate = jest.fn();
 }
-
-const mockReturnAccountCreated = {
-  subject: 'Account Created',
-  body: 'mock-return-account-created',
-};
-const mockReturnAccountCreatedSSO = {
-  subject: 'Account Created SSO',
-  body: 'mock-return-account-created-sso',
-};
-const mockReturnPasswordReset = {
-  subject: 'Password Reset',
-  body: 'mock-return-password-reset',
-};
 
 describe('UserEmailsService', () => {
   let service: UserEmailsService;
@@ -66,12 +46,6 @@ describe('UserEmailsService', () => {
     buildTemplateAccountCreatedSSOMock.mockReset();
     buildTemplatePasswordResetMock.mockReset();
 
-    buildTemplateAccountCreatedMock.mockReturnValue(mockReturnAccountCreated);
-    buildTemplateAccountCreatedSSOMock.mockReturnValue(
-      mockReturnAccountCreatedSSO,
-    );
-    buildTemplatePasswordResetMock.mockReturnValue(mockReturnPasswordReset);
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserEmailsService,
@@ -85,49 +59,52 @@ describe('UserEmailsService', () => {
   interface Scenario {
     readonly description: string;
     readonly userEmailType: UserEmailType;
-    readonly expectedTemplate: { subject: string; body: string };
+    readonly expectedBuilder: jest.MockedFunction<
+      (input: UserEmailInput) => { subject: string; body: string }
+    >;
   }
 
   const scenarios: Scenario[] = [
     {
       description: 'account created email',
       userEmailType: UserEmailType.accountCreated,
-      expectedTemplate: mockReturnAccountCreated,
+      expectedBuilder: buildTemplateAccountCreated as jest.MockedFunction<
+        typeof buildTemplateAccountCreated
+      >,
     },
     {
       description: 'account created for SSO email',
       userEmailType: UserEmailType.accountCreatedForSSO,
-      expectedTemplate: mockReturnAccountCreatedSSO,
+      expectedBuilder: buildTemplateAccountCreatedSSO as jest.MockedFunction<
+        typeof buildTemplateAccountCreatedSSO
+      >,
     },
     {
       description: 'password reset email',
       userEmailType: UserEmailType.passwordReset,
-      expectedTemplate: mockReturnPasswordReset,
+      expectedBuilder: buildTemplatePasswordReset as jest.MockedFunction<
+        typeof buildTemplatePasswordReset
+      >,
     },
   ];
 
   it.each(scenarios)(
-    'should send $description using sanitized input and template output',
-    async ({ expectedTemplate, userEmailType }) => {
+    'should call the correct template builder for $description',
+    async ({ expectedBuilder, userEmailType }) => {
       // Arrange
       const userEmailInput: UserEmailInput = {
         email: 'user@example.com',
-        displayName: 'Test <b>User</b>',
+        displayName: 'Test User',
         password: 'Secret123',
       };
 
       // Act
-      await service.send({
-        userEmailInput,
-        userEmailType,
-      });
+      await service.send({ userEmailInput, userEmailType });
 
       // Assert
-      expect(emailsService.sendEmail).toHaveBeenCalledWith({
-        email: userEmailInput.email,
-        subject: expectedTemplate.subject,
-        body: expectedTemplate.body,
-      });
+      const { templateBuilders } =
+        emailsService.sendFromTemplate.mock.calls[0][0];
+      expect(templateBuilders[userEmailType]).toBe(expectedBuilder);
     },
   );
 });

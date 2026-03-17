@@ -6,7 +6,6 @@ import { PaymentEmailType } from '@121-service/src/payments/payment-emails/enum/
 import { PaymentEmailInput } from '@121-service/src/payments/payment-emails/interfaces/payment-email-input.interface';
 import { buildTemplatePaymentApproved } from '@121-service/src/payments/payment-emails/templates/payment-approved.template';
 import { buildTemplatePendingApproval } from '@121-service/src/payments/payment-emails/templates/pending-approval.template';
-import { stripHtmlTags } from '@121-service/src/utils/strip-html-tags.helper';
 
 const templateBuilders: Record<
   PaymentEmailType,
@@ -27,17 +26,10 @@ export class PaymentEmailsService {
     paymentEmailInput: PaymentEmailInput;
     paymentEmailType: PaymentEmailType;
   }): Promise<void> {
-    const sanitizedPaymentEmailInput = {
-      ...paymentEmailInput,
-      displayName: stripHtmlTags(paymentEmailInput.displayName),
-    };
-    const template = templateBuilders[paymentEmailType](
-      sanitizedPaymentEmailInput,
-    );
-    const emailData = this.emailsService.buildEmailData({
-      email: sanitizedPaymentEmailInput.email,
-      template,
+    await this.emailsService.sendFromTemplate({
+      templateBuilders,
+      input: paymentEmailInput,
+      type: paymentEmailType,
     });
-    await this.emailsService.sendEmail(emailData);
   }
 }

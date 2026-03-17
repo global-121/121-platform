@@ -7,7 +7,6 @@ import { UserEmailInput } from '@121-service/src/user/user-emails/interfaces/use
 import { buildTemplateAccountCreated } from '@121-service/src/user/user-emails/templates/account-created.template';
 import { buildTemplateAccountCreatedSSO } from '@121-service/src/user/user-emails/templates/account-created-sso.template';
 import { buildTemplatePasswordReset } from '@121-service/src/user/user-emails/templates/password-reset.template';
-import { stripHtmlTags } from '@121-service/src/utils/strip-html-tags.helper';
 
 const templateBuilders: Record<
   UserEmailType,
@@ -29,15 +28,10 @@ export class UserEmailsService {
     userEmailInput: UserEmailInput;
     userEmailType: UserEmailType;
   }): Promise<void> {
-    const sanitizedUserEmailInput = {
-      ...userEmailInput,
-      displayName: stripHtmlTags(userEmailInput.displayName),
-    };
-    const template = templateBuilders[userEmailType](sanitizedUserEmailInput);
-    const emailData = this.emailsService.buildEmailData({
-      email: sanitizedUserEmailInput.email,
-      template,
+    await this.emailsService.sendFromTemplate({
+      templateBuilders,
+      input: userEmailInput,
+      type: userEmailType,
     });
-    await this.emailsService.sendEmail(emailData);
   }
 }
