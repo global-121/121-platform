@@ -1,4 +1,4 @@
-import { parseMatomoConnectionString } from '_matomo.utils.mjs';
+import { parseMatomoConnectionString } from 'scripts/lib/matomo.utils.mjs';
 import { describe, expect, it } from 'vitest';
 
 describe('Matomo-Util: parseMatomoConnectionString', () => {

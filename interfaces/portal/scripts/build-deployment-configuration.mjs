@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /**
  * See the "Deployment"-section of the interfaces/README.md-file for more information.
  */
@@ -7,12 +5,12 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { EOL } from 'node:os';
 
-import { shouldBeEnabled } from './_env.utils.mjs';
-import { parseMatomoConnectionString } from './_matomo.utils.mjs';
+import { shouldBeEnabled } from './lib/env.utils.mjs';
+import { parseMatomoConnectionString } from './lib/matomo.utils.mjs';
 
 // Set up specifics
-const sourcePath = './staticwebapp.config.base.json';
-const targetPath = './staticwebapp.config.json';
+const sourcePath = '../staticwebapp.config.base.json';
+const targetPath = '../staticwebapp.config.json';
 
 let swaConfig = JSON.parse(readFileSync(sourcePath, 'utf8'));
 
