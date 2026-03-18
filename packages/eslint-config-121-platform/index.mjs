@@ -55,8 +55,12 @@ export default {
     },
     node: {
       name: '121-platform/node',
+      files: ['**/*.mjs', '**/*.ts'],
       languageOptions: {
         globals: globals.nodeBuiltin,
+      },
+      plugins: {
+        n: eslintPluginN,
       },
       extends: [eslintPluginN.configs['flat/recommended-module']],
       rules: {
@@ -81,6 +85,10 @@ export default {
     },
     typescript: {
       name: '121-platform/typescript',
+      files: ['**/*.ts'],
+      plugins: {
+        n: eslintPluginN,
+      },
       rules: {
         'n/no-extraneous-import': 'off', // Managed by TypeScript
         'n/no-missing-import': 'off', // Disabled to allow for path-aliases via tsconfig.json
@@ -88,7 +96,9 @@ export default {
     },
     services: {
       name: '121-platform/services',
-      extends: [],
+      plugins: {
+        n: eslintPluginN,
+      },
       rules: {
         'n/no-process-env': 'error',
         'no-restricted-imports': [

@@ -36,14 +36,6 @@ const customRulesConfig = defineConfig({
 export default defineConfig(
   globalIgnores(['dist/**', 'www/**', '.angular/**', 'coverage/**']),
   {
-    name: 'Browser-only JavaScript files',
-    files: ['src/**/*.js', 'src/**/*.mjs'],
-    languageOptions: {
-      globals: globals.browser,
-    },
-    extends: [eslint.configs.recommended],
-  },
-  {
     name: 'Specific Config file exceptions ONLY',
     files: ['karma.conf.js', 'knip.config.js'],
     // These exceptions should be minimal, until all these config-files can be converted to be ESM.
@@ -56,11 +48,8 @@ export default defineConfig(
   eslintConfig121Platform.configs.javascript,
   eslintConfig121Platform.configs.typescript,
   {
-    name: 'Build-only/Config JavaScript files',
+    name: 'Build- or Config JavaScript files',
     files: ['**/*.mjs'],
-    languageOptions: {
-      globals: globals.nodeBuiltin,
-    },
     extends: [
       eslintPluginRegexp.configs['flat/recommended'],
       eslintPluginPerfectionist.configs['recommended-natural'],
@@ -134,6 +123,7 @@ export default defineConfig(
           allowWithDecorator: true,
         },
       ],
+      'n/no-unsupported-features/node-builtins': ['off'], // These files are for browsers, we don't want false-positives on not-yet-supported-in-Node.js features already covered by `globals.browser`.
       'arrow-body-style': 'error',
       'func-style': 'error',
       'max-params': ['error', 2],
@@ -300,6 +290,15 @@ export default defineConfig(
       },
     },
   },
+  {
+    name: 'Browser-only JavaScript files',
+    files: ['src/**/*.js', 'src/**/*.mjs'],
+    languageOptions: {
+      globals: globals.browser,
+    },
+    extends: [eslint.configs.recommended],
+  },
+
   eslintConfig121Platform.configs.final, // NOTE: This needs to be last! It configures Prettier, to make sure auto-formatting works.
 );
 /* eslint-enable perfectionist/sort-objects -- Only the configs-collection needs manual sorting. */
