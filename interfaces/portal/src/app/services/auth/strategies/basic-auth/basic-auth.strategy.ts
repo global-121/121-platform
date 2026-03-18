@@ -5,7 +5,10 @@ import { UserApiService } from '~/domains/user/user.api.service';
 import { IAuthStrategy } from '~/services/auth/auth-strategy.interface';
 import { BasicAuthChangePasswordComponent } from '~/services/auth/strategies/basic-auth/basic-auth.change-password.component';
 import { BasicAuthLoginComponent } from '~/services/auth/strategies/basic-auth/basic-auth.login.component';
-import { LocalStorageUser } from '~/utils/local-storage';
+import {
+  getUserFromLocalStorage,
+  LocalStorageUser,
+} from '~/utils/local-storage';
 
 @Injectable({
   providedIn: 'root',
@@ -68,6 +71,18 @@ export class BasicAuthStrategy implements IAuthStrategy {
 
   public isUserExpired(user: LocalStorageUser | null): boolean {
     return !user?.expires || Date.parse(user.expires) < Date.now();
+  }
+
+  public getTimeUntilExpiration(): number {
+    const user = getUserFromLocalStorage();
+
+    if (!user?.expires) {
+      return Infinity; // No user or expiration, don't trigger logout
+    }
+
+    const expiresAt = Date.parse(user.expires);
+    const now = Date.now();
+    return expiresAt - now; // Returns milliseconds until expiration
   }
 
   public handleAuthCallback(nextPageUrl: string): void {
