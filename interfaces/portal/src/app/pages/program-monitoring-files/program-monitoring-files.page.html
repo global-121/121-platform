@@ -56,3 +56,37 @@
   </div>
   <app-form-error [error]="deleteFileFormFieldErrors()('confirmAction')" />
 </app-form-dialog>
+<app-form-dialog
+  #editFileDialog
+  header="Edit file details"
+  i18n-header
+  headerIcon="pi pi-pencil"
+  proceedLabel="Apply change"
+  i18n-proceedLabel
+  [mutation]="editFileMutation"
+  [mutationData]="{
+    id: selectedFile()?.id!,
+    updateFileName: editFileFormGroup.getRawValue().updateFileName,
+  }"
+  [formGroup]="editFileFormGroup"
+>
+  <p i18n>
+    You are about to change the name of the {{ selectedFile()?.mimetype }} file:
+    {{ selectedFilenameWithoutExtension() }}
+  </p>
+
+  <p i18n>Use a clear name so users can easily recognize the file.</p>
+
+  <app-form-field-wrapper
+    label="Enter new name"
+    i18n-label
+    [errorMessage]="dialogFormFieldErrors()('updateFileName')"
+  >
+    <input
+      pInputText
+      formControlName="updateFileName"
+      type="text"
+      autocomplete="off"
+    />
+  </app-form-field-wrapper>
+</app-form-dialog>
