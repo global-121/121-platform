@@ -2220,6 +2220,9 @@
       <trans-unit id="session-expired-go-to-login" datatype="html">
         <source>Go to login page</source>
       </trans-unit>
+      <trans-unit id="session-expired-login-toast" datatype="html">
+        <source>For security reasons, you&apos;ve been logged out. After logging in, you&apos;ll return to where you left off.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

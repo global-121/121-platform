@@ -27,6 +27,7 @@ const AuthStrategy = environment.use_sso_azure_entra
   : BasicAuthStrategy;
 
 export const AUTH_ERROR_IN_STATE_KEY = 'AUTH_ERROR';
+export const SESSION_EXPIRED_IN_STATE_KEY = 'SESSION_EXPIRED';
 const VALID_PERMISSIONS = new Set(Object.values(PermissionEnum));
 
 @Injectable({
@@ -43,7 +44,7 @@ export class AuthService {
   private readonly authStrategy: IAuthStrategy;
   private tokenExpirationMonitor?: Subscription;
   private readonly CHECK_INTERVAL_MS = 3_000; // Check every 3 seconds
-  private readonly FORCE_LOGOUT_WHEN_EXP_IN_MS = 120_000; // Logout 2 minutes before expiry
+  private readonly FORCE_LOGOUT_WHEN_EXP_IN_MS = 5_000; // Logout 5 seconds before expiry
 
   public readonly showSessionExpiredDialog = signal(false);
   public readonly sessionExpiredReturnUrl = signal<string | undefined>(

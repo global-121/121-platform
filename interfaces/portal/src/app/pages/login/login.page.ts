@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { MessageModule } from 'primeng/message';
 import { ToolbarModule } from 'primeng/toolbar';
 
 import { AppRoutes } from '~/app.routes';
@@ -14,7 +15,11 @@ import { FormErrorComponent } from '~/components/form-error/form-error.component
 import { LocaleSwitcherComponent } from '~/components/locale-switcher/locale-switcher.component';
 import { LogoComponent } from '~/components/logo/logo.component';
 import { CookieBannerComponent } from '~/pages/login/components/cookie-banner/cookie-banner.component';
-import { AUTH_ERROR_IN_STATE_KEY, AuthService } from '~/services/auth.service';
+import {
+  AUTH_ERROR_IN_STATE_KEY,
+  AuthService,
+  SESSION_EXPIRED_IN_STATE_KEY,
+} from '~/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -27,6 +32,7 @@ import { AUTH_ERROR_IN_STATE_KEY, AuthService } from '~/services/auth.service';
     NgComponentOutlet,
     FormErrorComponent,
     RouterLink,
+    MessageModule,
   ],
   templateUrl: './login.page.html',
   styles: ``,
@@ -36,7 +42,6 @@ export class LoginPageComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-
   AppRoutes = AppRoutes;
   LoginComponent = this.authService.LoginComponent;
 
@@ -57,6 +62,14 @@ export class LoginPageComponent {
       return authError;
     }
 
+    return undefined;
+  });
+
+  readonly sessionExpiredMessage = computed(() => {
+    const state = history.state as Record<string, unknown> | undefined;
+    if (state?.[SESSION_EXPIRED_IN_STATE_KEY]) {
+      return $localize`:@@session-expired-login-toast:For security reasons, you've been logged out. After logging in, you'll return to where you left off.`;
+    }
     return undefined;
   });
 }
