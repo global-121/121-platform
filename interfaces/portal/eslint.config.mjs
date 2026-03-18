@@ -9,7 +9,6 @@ import eslintPluginRegexp from 'eslint-plugin-regexp';
 import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
 import eslintSortClassMembers from 'eslint-plugin-sort-class-members';
 import { defineConfig, globalIgnores } from 'eslint/config';
-import globals from 'globals';
 import tsEslint from 'typescript-eslint';
 
 import noFormControlUndefinedValue from './eslint-rules/no-form-control-undefined-value.mjs';
@@ -39,9 +38,7 @@ export default defineConfig(
     name: 'Specific Config file exceptions ONLY',
     files: ['karma.conf.js', 'knip.config.js'],
     // These exceptions should be minimal, until all these config-files can be converted to be ESM.
-    languageOptions: {
-      globals: globals.node,
-    },
+    extends: [eslintConfig121Platform.configs.legacyNode],
   },
   eslintConfig121Platform.configs.base,
   eslintConfig121Platform.configs.recommended,
@@ -68,10 +65,8 @@ export default defineConfig(
   {
     name: 'TypeScript files',
     files: ['**/*.ts'],
-    languageOptions: {
-      globals: globals.browser,
-    },
     extends: [
+      eslintConfig121Platform.configs.browser,
       ...customRulesConfig,
       ...tsEslint.configs.strictTypeChecked,
       ...tsEslint.configs.stylisticTypeChecked,
@@ -123,7 +118,7 @@ export default defineConfig(
           allowWithDecorator: true,
         },
       ],
-      'n/no-unsupported-features/node-builtins': ['off'], // These files are for browsers, we don't want false-positives on not-yet-supported-in-Node.js features already covered by `globals.browser`.
+      'n/no-unsupported-features/node-builtins': ['off'], // These files are for browsers, we don't want false-positives on not-yet-supported-in-Node.js features already covered by `configs.browser`.
       'arrow-body-style': 'error',
       'func-style': 'error',
       'max-params': ['error', 2],
@@ -293,10 +288,10 @@ export default defineConfig(
   {
     name: 'Browser-only JavaScript files',
     files: ['src/**/*.js', 'src/**/*.mjs'],
-    languageOptions: {
-      globals: globals.browser,
-    },
-    extends: [eslint.configs.recommended],
+    extends: [
+      eslintConfig121Platform.configs.browser,
+      eslint.configs.recommended,
+    ],
   },
 
   eslintConfig121Platform.configs.final, // NOTE: This needs to be last! It configures Prettier, to make sure auto-formatting works.

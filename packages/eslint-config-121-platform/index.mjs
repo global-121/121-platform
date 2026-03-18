@@ -53,6 +53,18 @@ export default {
         '@eslint-community/eslint-comments/require-description': 'error',
       },
     },
+    legacyNode: {
+      name: '121-platform/legacy-node',
+      languageOptions: {
+        globals: globals.node,
+      },
+    },
+    browser: {
+      name: '121-platform/browser',
+      languageOptions: {
+        globals: globals.browser,
+      },
+    },
     node: {
       name: '121-platform/node',
       files: ['**/*.mjs', '**/*.ts'],
