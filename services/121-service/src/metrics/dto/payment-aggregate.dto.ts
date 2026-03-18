@@ -1,3 +1,4 @@
+import { AggregationsPerStatusDto } from '@121-service/src/payments/dto/aggregations-per-status.dto';
 import { PaymentAggregationSummaryDto } from '@121-service/src/payments/dto/payment-aggregation-summary.dto';
 
 export class AggregatePerPayment {
@@ -6,12 +7,8 @@ export class AggregatePerPayment {
   aggregatedStatuses: PaymentAggregationSummaryDto;
 }
 
+type MonthlyTransferValues = Record<keyof AggregationsPerStatusDto, number>;
+
 export class AggregatePerMonth {
-  [month: string]: {
-    success: number;
-    waiting: number;
-    failed: number;
-    pendingApproval: number;
-    approved: number;
-  };
+  [month: string]: MonthlyTransferValues;
 }

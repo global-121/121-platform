@@ -276,7 +276,7 @@ async function processPaymentSummaryResponse(
     }
 
     const successCount = parseInt(
-      paymentSummaryResponse.body?.success?.count || '0',
+      paymentSummaryResponse.body?.aggregationsPerStatus?.success?.count || '0',
       10,
     );
     return {

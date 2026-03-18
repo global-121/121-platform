@@ -29,7 +29,8 @@ export class ProgramPaymentChartComponent {
   readonly translatableStringService = inject(TranslatableStringService);
 
   readonly chartData = computed(() => {
-    const { approved, waiting, success, failed } = this.paymentDetails();
+    const { approved, waiting, success, failed } =
+      this.paymentDetails().aggregationsPerStatus;
     const data = {
       labels: [
         TRANSACTION_STATUS_LABELS[TransactionStatusEnum.approved],
@@ -54,10 +55,8 @@ export class ProgramPaymentChartComponent {
   });
 
   private readonly total = computed(() => {
-    const paymentDetails = this.paymentDetails();
-
     const { pendingApproval, approved, waiting, success, failed } =
-      paymentDetails;
+      this.paymentDetails().aggregationsPerStatus;
 
     return (
       pendingApproval.count +

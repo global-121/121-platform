@@ -270,11 +270,13 @@ describe('PaymentsReportingHelperService', () => {
 
   describe('buildPaymentAggregationSummaries', () => {
     const expectZeroStatusValues = () => ({
-      success: { count: 0, transferValue: 0 },
-      waiting: { count: 0, transferValue: 0 },
-      failed: { count: 0, transferValue: 0 },
-      pendingApproval: { count: 0, transferValue: 0 },
-      approved: { count: 0, transferValue: 0 },
+      aggregationsPerStatus: {
+        success: { count: 0, transferValue: 0 },
+        waiting: { count: 0, transferValue: 0 },
+        failed: { count: 0, transferValue: 0 },
+        pendingApproval: { count: 0, transferValue: 0 },
+        approved: { count: 0, transferValue: 0 },
+      },
     });
 
     it('should correctly map payment and aggregation data to PaymentAggregationSummaryDto', () => {
@@ -350,11 +352,13 @@ describe('PaymentsReportingHelperService', () => {
         isPaymentApproved: true,
         approvalsRequired: 2,
         approvalsGiven: 2,
-        success: { count: 10, transferValue: 1000.5 },
-        waiting: { count: 5, transferValue: 500.25 },
-        failed: { count: 2, transferValue: 200 },
-        pendingApproval: { count: 0, transferValue: 0 },
-        approved: { count: 0, transferValue: 0 },
+        aggregationsPerStatus: {
+          success: { count: 10, transferValue: 1000.5 },
+          waiting: { count: 5, transferValue: 500.25 },
+          failed: { count: 2, transferValue: 200 },
+          pendingApproval: { count: 0, transferValue: 0 },
+          approved: { count: 0, transferValue: 0 },
+        },
       });
 
       // Check second payment
@@ -364,11 +368,13 @@ describe('PaymentsReportingHelperService', () => {
         isPaymentApproved: true,
         approvalsRequired: 1,
         approvalsGiven: 1,
-        success: { count: 0, transferValue: 0 },
-        waiting: { count: 0, transferValue: 0 },
-        failed: { count: 0, transferValue: 0 },
-        pendingApproval: { count: 8, transferValue: 800 },
-        approved: { count: 3, transferValue: 300 },
+        aggregationsPerStatus: {
+          success: { count: 0, transferValue: 0 },
+          waiting: { count: 0, transferValue: 0 },
+          failed: { count: 0, transferValue: 0 },
+          pendingApproval: { count: 8, transferValue: 800 },
+          approved: { count: 3, transferValue: 300 },
+        },
       });
     });
 
