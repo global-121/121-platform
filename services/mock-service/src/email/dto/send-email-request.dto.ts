@@ -8,17 +8,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-export class EmailAttachmentDto {
-  @ApiProperty({ example: 'report.pdf' })
-  @IsString()
-  @IsNotEmpty()
-  public readonly name: string;
-
-  @ApiProperty({ example: 'base64encodedcontent' })
-  @IsString()
-  @IsNotEmpty()
-  public readonly contentBytes: string;
-}
+import { EmailAttachmentDto } from '@mock-service/src/email/dto/email-attachment.dto';
 
 export class SendEmailRequestDto {
   @ApiProperty({ example: 'user@example.org' })
