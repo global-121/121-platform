@@ -10,6 +10,7 @@ module.exports = {
   ],
   ignoreDependencies: [
     // Known issues with devDependencies:
+    'eslint-config-121-platform', // Shared config, used in eslint.config.mjs
     '@automock/adapters.nestjs', // Auto-loaded by @automock/jest
   ],
   rules: {

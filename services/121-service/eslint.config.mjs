@@ -1,13 +1,9 @@
-import eslint from '@eslint/js';
 import { defineConfig, globalIgnores } from 'eslint/config';
-import eslintPluginComments from 'eslint-plugin-eslint-comments';
+import eslintConfig121Platform from 'eslint-config-121-platform';
 import eslintPluginJest from 'eslint-plugin-jest';
-import eslintPluginN from 'eslint-plugin-n';
 import eslintPluginNoRelativePaths from 'eslint-plugin-no-relative-import-paths';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import eslintPluginPromise from 'eslint-plugin-promise';
 import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
-import globals from 'globals';
 import tsEslint from 'typescript-eslint';
 
 import controllerAuthenticatedUser from './eslint-custom-rules/controller-authenticated-user.mjs';
@@ -31,46 +27,23 @@ export default defineConfig(
     'documentation/**',
     'coverage/**',
   ]),
+  eslintConfig121Platform.configs.base,
+  eslintConfig121Platform.configs.recommended,
+  eslintConfig121Platform.configs.node,
+  eslintConfig121Platform.configs.javascript,
+  eslintConfig121Platform.configs.typescript, // Needs to be AFTER `*.configs.node`; It needs to override some rules!
+  eslintConfig121Platform.configs.services,
   {
-    name: 'Root config',
-    languageOptions: {
-      globals: globals.node,
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-    linterOptions: {
-      reportUnusedInlineConfigs: 'error',
-      reportUnusedDisableDirectives: 'error',
-    },
+    name: 'Specific Config file exceptions ONLY',
+    files: ['*.config.js'],
+    // These exceptions should be minimal, until all these config-files can be converted to be ESM.
+    extends: [eslintConfig121Platform.configs.legacyNode],
   },
   {
-    name: 'JavaScript files (ESM)',
-    files: ['**/*.js', '**/*.mjs'],
-    languageOptions: {
-      ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
-      sourceType: 'module',
-    },
-    extends: [
-      eslint.configs.recommended,
-      eslintPluginN.configs['flat/recommended'],
-      eslintPluginPrettierRecommended,
-    ],
-    plugins: {
-      'eslint-comments': eslintPluginComments,
-    },
-    rules: {
-      'eslint-comments/no-unused-disable': 'error',
-      'eslint-comments/require-description': 'error',
-    },
-  },
-  {
-    name: 'JavaScript files (old, pre-ESM)',
-    files: ['**/*.js'],
-    languageOptions: {
-      sourceType: 'script',
-    },
+    name: 'Nest.js entry point (CommonJS) file',
+    files: ['index.js'],
+    // This file is the entry point for the service, and needs to be CommonJS for now, to be able to load ts-node/register.
+    extends: [eslintConfig121Platform.configs.legacyNode],
   },
   {
     name: 'TypeScript files',
@@ -78,12 +51,9 @@ export default defineConfig(
     extends: [
       ...tsEslint.configs.recommended,
       ...tsEslint.configs.stylistic,
-      eslintPluginN.configs['flat/recommended'],
       eslintPluginPromise.configs['flat/recommended'],
-      eslintPluginPrettierRecommended,
     ],
     plugins: {
-      'eslint-comments': eslintPluginComments,
       'no-relative-import-paths': eslintPluginNoRelativePaths,
       'simple-import-sort': eslintPluginSimpleSort,
     },
@@ -102,18 +72,12 @@ export default defineConfig(
           varsIgnorePattern: '^_',
         },
       ],
-      'eslint-comments/no-unused-disable': 'error',
-      'eslint-comments/require-description': 'error',
-      'n/no-extraneous-import': 'off', // Managed by TypeScript
-      'n/no-missing-import': 'off', // Disabled to allow for path-aliases via tsconfig.json
-      'n/no-process-env': 'error',
       'n/no-unsupported-features/node-builtins': [
         'error',
         {
           ignores: ['Headers'],
         },
       ],
-      'n/prefer-node-protocol': 'error',
       'no-relative-import-paths/no-relative-import-paths': [
         'warn',
         {
@@ -149,7 +113,6 @@ export default defineConfig(
         },
       ],
       'object-shorthand': 'error',
-      'prettier/prettier': ['error', { endOfLine: 'auto' }],
       // 'promise/prefer-await-to-callbacks': 'warn', // TODO: Enable (locally only) to see if there is something to refactor.
       // 'promise/prefer-await-to-then': 'warn', // TODO: Enable (locally only) to see if there is something to refactor.
       'promise/no-callback-in-promise': 'error',
