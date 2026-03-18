@@ -98,7 +98,7 @@ export class AirtelMockController {
   // it's in production.
   @ApiHeader({
     name: 'Authorization_',
-    description: `Oauth Bearer token, needs to be exactly: "Bearer ${AirtelAuthToken}". <br/> In the production API the header is called "Authorization", for technical reasons it\'s called "Authorization_" here.`,
+    description: `Oauth Bearer token, needs to be exactly: "Bearer ${AirtelAuthToken}". <br/> In the production API the header is called "Authorization", for technical reasons it's called "Authorization_" here.`,
     required: true,
   })
   public async disburseV2(
