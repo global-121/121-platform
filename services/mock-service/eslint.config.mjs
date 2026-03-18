@@ -1,57 +1,22 @@
-import eslint from '@eslint/js';
 import { defineConfig, globalIgnores } from 'eslint/config';
-import eslintPluginComments from 'eslint-plugin-eslint-comments';
-import eslintPluginN from 'eslint-plugin-n';
+import eslintConfig121Platform from 'eslint-config-121-platform';
 import eslintPluginNoRelativePaths from 'eslint-plugin-no-relative-import-paths';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import eslintPluginRegexp from 'eslint-plugin-regexp';
 import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
-import globals from 'globals';
 import tsEslint from 'typescript-eslint';
 
 export default defineConfig(
   globalIgnores(['dist/**', 'tmp/**', 'coverage/**']),
-  {
-    name: 'Root config',
-    languageOptions: {
-      globals: globals.node,
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-    linterOptions: {
-      reportUnusedInlineConfigs: 'error',
-      reportUnusedDisableDirectives: 'error',
-    },
-  },
+  eslintConfig121Platform.configs.base,
+  eslintConfig121Platform.configs.recommended,
+  eslintConfig121Platform.configs.node,
+  eslintConfig121Platform.configs.javascript,
+  eslintConfig121Platform.configs.typescript, // Needs to be AFTER `*.configs.node`; It needs to override some rules!
+  eslintConfig121Platform.configs.services,
   {
     name: 'JavaScript files (ESM)',
     files: ['**/*.js', '**/*.mjs'],
-    languageOptions: {
-      ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
-      sourceType: 'module',
-    },
-    extends: [
-      eslint.configs.recommended,
-      eslintPluginN.configs['flat/recommended'],
-      eslintPluginRegexp.configs['flat/recommended'],
-      eslintPluginPrettierRecommended,
-    ],
-    plugins: {
-      'eslint-comments': eslintPluginComments,
-    },
-    rules: {
-      'eslint-comments/no-unused-disable': 'error',
-      'eslint-comments/require-description': 'error',
-    },
-  },
-  {
-    name: 'JavaScript files (old, pre-ESM)',
-    files: ['**/*.js'],
-    languageOptions: {
-      sourceType: 'script',
-    },
+    extends: [eslintPluginRegexp.configs['flat/recommended']],
   },
   {
     name: 'TypeScript files',
@@ -59,12 +24,9 @@ export default defineConfig(
     extends: [
       ...tsEslint.configs.recommended,
       ...tsEslint.configs.stylistic,
-      eslintPluginN.configs['flat/recommended'],
       eslintPluginRegexp.configs['flat/recommended'],
-      eslintPluginPrettierRecommended,
     ],
     plugins: {
-      'eslint-comments': eslintPluginComments,
       'no-relative-import-paths': eslintPluginNoRelativePaths,
       regexp: eslintPluginRegexp,
       'simple-import-sort': eslintPluginSimpleSort,
@@ -89,12 +51,6 @@ export default defineConfig(
           varsIgnorePattern: '^_',
         },
       ],
-      'eslint-comments/no-unused-disable': 'error',
-      'eslint-comments/require-description': 'error',
-      'n/no-extraneous-import': 'off', // Managed by TS
-      'n/no-missing-import': 'off', // Disabled to allow for path-aliases via tsconfig.json
-      'n/no-process-env': 'error',
-      'n/prefer-node-protocol': 'error',
       'no-relative-import-paths/no-relative-import-paths': [
         'warn',
         {
@@ -115,7 +71,6 @@ export default defineConfig(
         },
       ],
       'object-shorthand': 'error',
-      'prettier/prettier': ['error', { endOfLine: 'auto' }],
       'simple-import-sort/exports': 'error',
       'simple-import-sort/imports': [
         'error',
