@@ -1,31 +1,43 @@
-#!/usr/bin/env node
-
 /**
  * See the "Deployment"-section of the interfaces/README.md-file for more information.
  */
 
 import { doesNotMatch, match, ok } from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import test from 'node:test';
+import { test } from 'node:test';
+import { parseArgs } from 'node:util';
 
-import { shouldBeEnabled } from './_env.utils.mjs';
-import { parseMatomoConnectionString } from './_matomo.utils.mjs';
+import { shouldBeEnabled } from './lib/env.utils.mjs';
+import { parseMatomoConnectionString } from './lib/matomo.utils.mjs';
 
-const swaConfig = JSON.parse(
-  readFileSync('./staticwebapp.config.json', 'utf8'),
-);
+const config = parseArgs({
+  options: {
+    url: {
+      short: 'u',
+      type: 'string',
+    },
+  },
+});
+const url = config.values.url;
 
-const csp = swaConfig.globalHeaders['Content-Security-Policy'];
-
-test('Deployment-configuration contains a Content-Security-Policy', () => {
-  ok(swaConfig.globalHeaders, 'Contains configuration for global HTTP Headers');
-  ok(
-    swaConfig.globalHeaders['Content-Security-Policy'],
-    'Contains configuration of a Content-Security-Policy',
+if (!url || !url.startsWith('https')) {
+  console.error('Invalid URL argument.');
+  console.info(
+    'Provide a valid URL as argument using: ` --url=https://example.org` or ` -u https://example.org`',
   );
+  process.exit(1);
+}
+
+console.info('Verifying deployment configuration for URL:', url);
+const response = await fetch(url);
+
+const csp = response.headers.get('Content-Security-Policy') ?? '';
+console.info('Content-Security-Policy in use:', csp);
+
+test('Response-Headers contain a Content-Security-Policy', () => {
+  ok(csp, 'Contain a Content-Security-Policy');
 });
 
-test('Deployment-configuration contains the defaults of the Content-Security-Policy', () => {
+test('Content-Security-Policy contains defaults', () => {
   const defaults = [
     `default-src 'self'`,
     `connect-src 'self'`,
@@ -39,7 +51,7 @@ test('Deployment-configuration contains the defaults of the Content-Security-Pol
   );
 });
 
-test('Content-Security-Policy configuration whether to allow tracking with ApplicationInsights', () => {
+test('Content-Security-Policy set for tracking with ApplicationInsights', () => {
   const connectSrcCondition =
     /connect-src[^;]* https:\/\/\*\.in\.applicationinsights\.azure\.com/;
 
@@ -50,7 +62,7 @@ test('Content-Security-Policy configuration whether to allow tracking with Appli
   }
 });
 
-test('Content-Security-Policy configuration for Azure Entra SSO', () => {
+test('Content-Security-Policy set for Azure Entra SSO', () => {
   const connectSrcCondition =
     /connect-src[^;]* https:\/\/login\.microsoftonline\.com/;
   const frameSrcCondition =
@@ -65,7 +77,7 @@ test('Content-Security-Policy configuration for Azure Entra SSO', () => {
   }
 });
 
-test('Content-Security-Policy configuration for loading as iframe in Twilio Flex', () => {
+test('Content-Security-Policy set for loading as iframe in Twilio Flex', () => {
   const frameAncestorsCondition =
     /frame-ancestors[^;]* https:\/\/flex\.twilio\.com/;
 
@@ -76,7 +88,7 @@ test('Content-Security-Policy configuration for loading as iframe in Twilio Flex
   }
 });
 
-test('Content-Security-Policy configuration for loading as iframe in AWS Connect', () => {
+test('Content-Security-Policy set for loading as iframe in AWS Connect', () => {
   const frameAncestorsCondition =
     /frame-ancestors[^;]* https:\/\/nlrc-poc\.my\.connect\.aws/;
 
@@ -87,8 +99,8 @@ test('Content-Security-Policy configuration for loading as iframe in AWS Connect
   }
 });
 
-test('Configuration to control pop-ups for SSO when the Portal is in an iframe on Twilio Flex', () => {
-  const openerPolicy = swaConfig.globalHeaders['Cross-Origin-Opener-Policy'];
+test('Configuration set to control pop-ups for SSO when the Portal is in an iframe on Twilio Flex', () => {
+  const openerPolicy = response.headers.get('Cross-Origin-Opener-Policy') ?? '';
 
   if (
     shouldBeEnabled(process.env.USE_SSO_AZURE_ENTRA) &&
@@ -101,7 +113,7 @@ test('Configuration to control pop-ups for SSO when the Portal is in an iframe o
   }
 });
 
-test('Content-Security-Policy configuration to load PowerBI dashboard(s) in iframe', () => {
+test('Content-Security-Policy set to load PowerBI dashboard(s) in iframe', () => {
   const frameSrcCondition = /frame-src[^;]* https:\/\/app\.powerbi\.com/;
 
   if (shouldBeEnabled(process.env.USE_POWERBI_DASHBOARDS)) {
@@ -112,7 +124,7 @@ test('Content-Security-Policy configuration to load PowerBI dashboard(s) in ifra
 });
 
 test(
-  'Content-Security-Policy configuration whether to allow tracking with Matomo',
+  'Content-Security-Policy set for tracking with Matomo',
   { skip: !process.env.MATOMO_CONNECTION_STRING },
   () => {
     const matomoConnectionInfo = parseMatomoConnectionString(
