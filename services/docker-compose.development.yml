@@ -20,6 +20,7 @@ services:
       - '${PORT_MOCK_SERVICE}:${PORT_MOCK_SERVICE}'
       - '9230:9230'
     volumes:
+      - '../packages/:/home/packages'
       - './mock-service:/home/node/app'
     restart: unless-stopped
 
@@ -31,6 +32,7 @@ services:
       - '9229:9229'
       - '9231:9231'
     volumes:
+      - '../packages/:/home/packages'
       - './121-service:/home/node/app'
     command: 'npm run start:dev${COVERAGE_DEV_STARTUP_SUFFIX}'
     restart: unless-stopped

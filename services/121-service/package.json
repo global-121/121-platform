@@ -10,6 +10,8 @@
   },
   "main": "index.js",
   "scripts": {
+    "preinstall": "npm install --legacy-peer-deps=false --prefix=../../packages/eslint-config-121-platform",
+    "install:dependencies-for-portal": "npm install",
     "lint": "eslint \"**/*.{ts,js,mjs}\"",
     "fix": "npm run lint -- --fix",
     "build": "nest build --path=tsconfig.json",
@@ -47,8 +49,7 @@
     "knip": "knip",
     "knip:fix": "knip --fix-type files,exports,types",
     "typecheck": "tsc --noEmit",
-    "typecheck:dev": "tsc --noEmit --watch",
-    "install:dependencies-for-portal": "npm install"
+    "typecheck:dev": "tsc --noEmit --watch"
   },
   "private": true,
   "engines": {
