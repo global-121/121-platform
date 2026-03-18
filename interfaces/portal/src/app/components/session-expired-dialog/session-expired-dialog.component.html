@@ -1,0 +1,36 @@
+<p-dialog
+  [modal]="true"
+  [(visible)]="dialogVisible"
+  [closable]="false"
+  [closeOnEscape]="false"
+  styleClass="max-w-[32rem]"
+  maskStyleClass="backdrop-blur-sm"
+>
+  <ng-template pTemplate="header">
+    <h3>
+      <i class="pi pi-exclamation-triangle me-2"></i>
+      <ng-container i18n="@@session-expired-title"
+        >Session expired</ng-container
+      >
+    </h3>
+  </ng-template>
+  <div class="flex flex-col gap-4">
+    <p
+      class="text-base"
+      i18n="@@session-expired-body"
+    >
+      For security reasons, you've been logged out. After logging in, you'll
+      return to where you left off.
+    </p>
+    <div class="flex justify-end">
+      <p-button
+        label="Go to login page"
+        i18n-label="@@session-expired-go-to-login"
+        (click)="goToLogin()"
+        rounded
+        severity="primary"
+        data-testid="session-expired-go-to-login-button"
+      />
+    </div>
+  </div>
+</p-dialog>

@@ -2241,6 +2241,15 @@
       <trans-unit id="641865702986102945" datatype="html">
         <source>Are you sure you want to delete this payment? This action cannot be undone.</source>
       </trans-unit>
+      <trans-unit id="session-expired-title" datatype="html">
+        <source>Session expired</source>
+      </trans-unit>
+      <trans-unit id="session-expired-body" datatype="html">
+        <source>For security reasons, you&apos;ve been logged out. After logging in, you&apos;ll return to where you left off.</source>
+      </trans-unit>
+      <trans-unit id="session-expired-go-to-login" datatype="html">
+        <source>Go to login page</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
