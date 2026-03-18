@@ -24,4 +24,6 @@ export abstract class IAuthStrategy {
   }): Promise<unknown>;
   public abstract isUserExpired(user: LocalStorageUser | null): boolean;
   public abstract handleAuthCallback(nextPageUrl: string): void;
+  /** @returns milliseconds until expiration, or `Infinity` if not applicable */
+  public abstract getTimeUntilExpiration(): number;
 }

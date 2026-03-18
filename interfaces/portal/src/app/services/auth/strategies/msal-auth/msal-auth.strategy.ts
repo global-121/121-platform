@@ -126,6 +126,11 @@ export class MsalAuthStrategy implements IAuthStrategy {
     return false;
   }
 
+  public getTimeUntilExpiration(): number {
+    // MSAL handles token refresh automatically, so we never need to force logout
+    return Infinity;
+  }
+
   public handleAuthCallback(nextPageUrl: string) {
     if (isIframed()) {
       void this.refreshUserAndNavigate(nextPageUrl);
