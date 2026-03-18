@@ -88,9 +88,7 @@ export class ProgramMonitoringFilesPageComponent {
     if (!filename) {
       return undefined;
     }
-    return filename.includes('.')
-      ? filename.slice(0, filename.lastIndexOf('.'))
-      : filename;
+    return filename.split('.')[0];
   });
 
   readonly deleteFileConfirmationDialog =
