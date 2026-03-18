@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /**
  * See the README.md-file in `./src/logout/` for more information.
  */
@@ -10,11 +8,12 @@ import {
   mkdirSync,
   readFileSync,
   writeFileSync,
-} from 'fs';
+} from 'node:fs';
+import { join } from 'node:path';
 
 // Set up specifics
-const sourcePath = `./src/logout/`;
-const targetPath = `./www/logout/`;
+const sourcePath = `../src/logout/`;
+const targetPath = `../www/logout/`;
 
 // Create target
 if (!existsSync(targetPath)) {
@@ -24,15 +23,15 @@ if (!existsSync(targetPath)) {
 }
 
 // Set current API-URL from "NG_URL_121_SERVICE_API"
-const logoutJs = readFileSync(`${sourcePath}logout.js`, 'utf8');
+const logoutJs = readFileSync(join(sourcePath, 'logout.js'), 'utf8');
 const updatedLogoutJs = logoutJs.replace(
   /NG_URL_121_SERVICE_API/g,
   process.env.NG_URL_121_SERVICE_API ?? '',
 );
-writeFileSync(`${targetPath}logout.js`, updatedLogoutJs);
+writeFileSync(join(targetPath, 'logout.js'), updatedLogoutJs);
 console.info(`Logout API set at: ${process.env.NG_URL_121_SERVICE_API}`);
 
 // Copy HTML
-copyFileSync(`${sourcePath}index.html`, `${targetPath}index.html`);
+copyFileSync(join(sourcePath, 'index.html'), join(targetPath, 'index.html'));
 
 console.info(`Manual Logout generated at: ${targetPath}`);

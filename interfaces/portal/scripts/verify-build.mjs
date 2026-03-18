@@ -1,15 +1,13 @@
-#!/usr/bin/env node
-
 import { notEqual, ok } from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
-import { shouldBeEnabled } from './_env.utils.mjs';
+import { shouldBeEnabled } from './lib/env.utils.mjs';
 import {
   createMockTranslations,
   getRequiredTranslations,
   getTranslationFilePath,
-} from './_translations.utils.mjs';
+} from './lib/translations.utils.mjs';
 
 /////////////////////////////////////////////////////////////////////////////
 

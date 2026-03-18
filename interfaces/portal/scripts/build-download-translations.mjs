@@ -1,14 +1,12 @@
-#!/usr/bin/env node
-
 import { LokaliseDownload } from 'lokalise-file-exchange';
 import { accessSync, constants, existsSync, writeFileSync } from 'node:fs';
 
-import { shouldBeEnabled } from './_env.utils.mjs';
+import { shouldBeEnabled } from './lib/env.utils.mjs';
 import {
   createMockTranslations,
   getRequiredTranslations,
   getTranslationFilePath,
-} from './_translations.utils.mjs';
+} from './lib/translations.utils.mjs';
 
 /**
  * See the README.md-file for more information.

@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { execSync } from 'node:child_process';
 
 const I18N_TOKENS_REGEX = /\$localize\b|\bi18n\b/;
