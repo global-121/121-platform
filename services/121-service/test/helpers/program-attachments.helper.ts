@@ -18,6 +18,23 @@ export async function uploadAttachment({
     .field('filename', filename);
 }
 
+export async function renameAttachment({
+  programId,
+  attachmentId,
+  newFilename,
+  accessToken,
+}: {
+  programId: number;
+  attachmentId: number;
+  newFilename: string;
+  accessToken: string;
+}) {
+  return await getServer()
+    .patch(`/programs/${programId}/attachments/${attachmentId}`)
+    .set('Cookie', [accessToken])
+    .send({ newFilename });
+}
+
 export async function getAttachments({
   programId,
   accessToken,

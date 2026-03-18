@@ -217,6 +217,29 @@ export class ProgramApiService extends DomainApiService {
     });
   }
 
+  updateProgramAttachment({
+    programId,
+    attachmentId,
+    newFilename,
+  }: {
+    programId: Signal<number | string>;
+    attachmentId: number;
+    newFilename: string;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<{ id: number }>({
+      method: 'PATCH',
+      endpoint: this.pathToQueryKey([
+        BASE_ENDPOINT,
+        programId,
+        'attachments',
+        attachmentId,
+      ]).join('/'),
+      body: {
+        newFilename,
+      },
+    });
+  }
+
   getProgramAttributes({
     programId,
     includeProgramRegistrationAttributes = false,

@@ -5,6 +5,7 @@ import {
   deleteAttachment,
   getAttachment,
   getAttachments,
+  renameAttachment,
   uploadAttachment,
 } from '@121-service/test/helpers/program-attachments.helper';
 import {
@@ -42,6 +43,41 @@ describe('Program Attachments', () => {
     // Assert
     expect(response.status).toBe(HttpStatus.CREATED);
     expect(response.body).toHaveProperty('id');
+  });
+
+  it('should rename an attachment in a program', async () => {
+    // Arrange - Upload a test attachment first
+    const uploadResponse = await uploadAttachment({
+      programId: programIdPV,
+      filePath: testImagePath,
+      filename: testImageFilename,
+      accessToken,
+    });
+
+    const attachmentId = uploadResponse.body.id;
+    const newFilename = 'Renamed Test Image';
+    // Act
+    const renameResponse = await renameAttachment({
+      programId: programIdPV,
+      attachmentId,
+      newFilename,
+      accessToken,
+    });
+    // Assert
+    expect(renameResponse.status).toBe(HttpStatus.OK);
+
+    const getAttachmentResponse = await getAttachment({
+      programId: programIdPV,
+      attachmentId,
+      accessToken,
+    });
+
+    const attachmentFilename = getAttachmentResponse.header[
+      'content-disposition'
+    ]
+      .split('filename=')[1]
+      .replaceAll('"', '');
+    expect(attachmentFilename).toBe(`${newFilename}.${testImageExtension}`);
   });
 
   it('should list all attachments for a program', async () => {
