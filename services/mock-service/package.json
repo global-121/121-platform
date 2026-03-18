@@ -11,6 +11,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
+    "preinstall": "npm install --prefix=../../packages/eslint-config-121-platform",
     "lint": "eslint \"src/**/*.{ts,js,mjs}\"",
     "fix": "npm run lint -- --fix",
     "test": "npm run lint && npm run typecheck && echo 'No tests available' && exit 0",
