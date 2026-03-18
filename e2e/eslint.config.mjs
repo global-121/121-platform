@@ -35,7 +35,6 @@ export default defineConfig(
         },
       ],
       'object-shorthand': 'error',
-      'prettier/prettier': ['error', { endOfLine: 'auto' }],
       'promise/no-callback-in-promise': 'error',
       'promise/no-multiple-resolved': 'error',
       'promise/no-nesting': 'error',
