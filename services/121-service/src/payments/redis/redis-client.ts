@@ -13,7 +13,7 @@ export const createRedisClient = (): Redis => {
     host: env.REDIS_HOST,
     port: env.REDIS_PORT,
     password: env.REDIS_PASSWORD,
-    tls: !!env.REDIS_PASSWORD ? {} : undefined,
+    tls: env.REDIS_PASSWORD ? {} : undefined,
     keyPrefix: `${env.REDIS_PREFIX}:`,
   });
 };
