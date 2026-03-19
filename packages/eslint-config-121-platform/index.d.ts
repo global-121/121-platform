@@ -1,10 +1,8 @@
 import type { ESLint, Linter } from 'eslint';
 
-type FlatConfig = Linter.Config;
-
 interface EslintConfig121Platform extends ESLint.Plugin {
   configs: {
-    [key: string]: FlatConfig;
+    [key: string]: Linter.Config;
   };
 }
 
