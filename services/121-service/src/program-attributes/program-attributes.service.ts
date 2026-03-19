@@ -46,6 +46,9 @@ export class ProgramAttributesService {
       paymentGroup.filters.push('maxPayments');
       paymentGroup.filters.push('paymentCountRemaining');
     }
+    if (program.fixedTransferValue !== null) {
+      paymentGroup.filters.push('transferValue');
+    }
 
     const filterableAttributeNames = [
       paymentGroup,

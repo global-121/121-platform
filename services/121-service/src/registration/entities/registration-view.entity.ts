@@ -51,6 +51,10 @@ import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language
         'paymentCountRemaining',
       )
       .addSelect(
+        'program.fixedTransferValue * registration.paymentAmountMultiplier',
+        'transferValue',
+      )
+      .addSelect(
         'registration.paymentAmountMultiplier',
         'paymentAmountMultiplier',
       )
@@ -58,6 +62,7 @@ import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language
       .addSelect('registration.phoneNumber', 'phoneNumber')
       .addSelect('registration.scope', 'scope')
       .leftJoin('registration.programFspConfiguration', 'fspconfig')
+      .leftJoin('registration.program', 'program')
       .leftJoin('registration.latestMessage', 'latestMessage')
       .leftJoin('latestMessage.message', 'message')
       .addSelect(
@@ -175,6 +180,9 @@ export class RegistrationViewEntity {
 
   @ViewColumn()
   public paymentCountRemaining: number;
+
+  @ViewColumn()
+  public transferValue: number | null;
 
   @ViewColumn()
   public scope: string;

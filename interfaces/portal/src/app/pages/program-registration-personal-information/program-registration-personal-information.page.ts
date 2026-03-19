@@ -22,6 +22,7 @@ import {
 } from '~/components/data-list/data-list.component';
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
+import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { ComponentCanDeactivate } from '~/guards/pending-changes.guard';
 import { EditPersonalInformationComponent } from '~/pages/program-registration-personal-information/components/edit-personal-information/edit-personal-information.component';
@@ -50,8 +51,20 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
 
   readonly authService = inject(AuthService);
   readonly registrationApiService = inject(RegistrationApiService);
+  readonly programApiService = inject(ProgramApiService);
   readonly metricApiService = inject(MetricApiService);
   readonly registrationAttributeService = inject(RegistrationAttributeService);
+
+  readonly program = injectQuery(
+    this.programApiService.getProgram(this.programId),
+  );
+
+  readonly registration = injectQuery(
+    this.registrationApiService.getRegistrationById(
+      this.programId,
+      this.registrationId,
+    ),
+  );
 
   registrationAttributes = injectQuery(
     this.registrationAttributeService.getRegistrationAttributes(
@@ -75,8 +88,24 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
     }),
   );
 
-  readonly dataList = computed<DataListItem[]>(() =>
-    (this.registrationAttributes.data() ?? []).map(
+  readonly transferValueItem = computed<DataListItem | null>(() => {
+    const program = this.program.data();
+    const registration = this.registration.data();
+
+    if (program?.fixedTransferValue == null) {
+      return null;
+    }
+
+    return {
+      label: $localize`:@@transfer-value:Transfer value`,
+      tooltip: $localize`The base transfer value multiplied by the payment amount multiplier.`,
+      type: 'number',
+      value: registration?.transferValue ?? null,
+    };
+  });
+
+  readonly dataList = computed<DataListItem[]>(() => {
+    const attributeItems = (this.registrationAttributes.data() ?? []).map(
       ({ type, value, ...attribute }) => {
         switch (type) {
           case RegistrationAttributeTypes.multiSelect:
@@ -120,8 +149,15 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
             };
         }
       },
-    ),
-  );
+    );
+
+    const transferValueItem = this.transferValueItem();
+    if (transferValueItem) {
+      return [...attributeItems, transferValueItem];
+    }
+
+    return attributeItems;
+  });
 
   onRegistrationUpdated() {
     this.isEditing.set(false);

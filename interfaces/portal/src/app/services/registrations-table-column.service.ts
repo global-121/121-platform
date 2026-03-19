@@ -35,6 +35,7 @@ const FILTERABLE_ATTRIBUTES_LABELS: Record<string, string> = {
   paymentCount: $localize`:@@payment-count:Number of payments`,
   paymentCountRemaining: $localize`:@@payment-count-remaining:Remaining payments`,
   maxPayments: $localize`:@@max-payments:Max payments`,
+  transferValue: $localize`:@@transfer-value:Transfer value`,
   lastMessageStatus: $localize`:@@last-message-status:Last message status`,
   duplicateStatus: $localize`:@@duplicate-status:Duplicates`,
 };
