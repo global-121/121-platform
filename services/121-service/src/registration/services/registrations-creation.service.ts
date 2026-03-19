@@ -38,7 +38,7 @@ const BATCH_SIZE = 500;
 const MASS_UPDATE_ROW_LIMIT = 50_000;
 
 @Injectable()
-export class RegistrationsImportService {
+export class RegistrationsCreationService {
   @InjectRepository(ProgramRegistrationAttributeEntity)
   private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
   @InjectRepository(ProgramEntity)

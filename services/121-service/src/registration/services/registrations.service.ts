@@ -36,7 +36,7 @@ import { RegistrationScopedRepository } from '@121-service/src/registration/repo
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { UniqueRegistrationPairRepository } from '@121-service/src/registration/repositories/unique-registration-pair.repository';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
-import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
+import { RegistrationsCreationService } from '@121-service/src/registration/services/registrations-creation.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
@@ -57,7 +57,7 @@ export class RegistrationsService {
   public constructor(
     private readonly lookupService: LookupService,
     private readonly inclusionScoreService: InclusionScoreService,
-    private readonly registrationsImportService: RegistrationsImportService,
+    private readonly registrationsCreationService: RegistrationsCreationService,
     private readonly registrationDataService: RegistrationDataService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly userService: UserService,
@@ -247,7 +247,7 @@ export class RegistrationsService {
   public async getImportRegistrationsTemplate(
     programId: number,
   ): Promise<string[]> {
-    return await this.registrationsImportService.getImportRegistrationsTemplate(
+    return await this.registrationsCreationService.getImportRegistrationsTemplate(
       programId,
     );
   }
@@ -258,7 +258,7 @@ export class RegistrationsService {
     userId: number,
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
-    return await this.registrationsImportService.importRegistrationsFromCsv(
+    return await this.registrationsCreationService.importRegistrationsFromCsv(
       csvFile,
       program,
       userId,
@@ -271,7 +271,7 @@ export class RegistrationsService {
     userId: number,
     reason: string,
   ): Promise<void> {
-    return await this.registrationsImportService.patchBulk(
+    return await this.registrationsCreationService.patchBulk(
       csvFile,
       programId,
       userId,
@@ -285,7 +285,7 @@ export class RegistrationsService {
     userId: number,
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
-    return await this.registrationsImportService.importRegistrations({
+    return await this.registrationsCreationService.importRegistrations({
       inputRegistrations: jsonData,
       program,
       userId,

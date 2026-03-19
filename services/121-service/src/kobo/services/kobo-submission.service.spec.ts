@@ -10,7 +10,7 @@ import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
 import { KoboSubmissionService } from '@121-service/src/kobo/services/kobo-submission.service';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
+import { RegistrationsCreationService } from '@121-service/src/registration/services/registrations-creation.service';
 
 import '@121-service/src/utils/test-helpers/matchers/httpExceptionMatcher';
 
@@ -19,7 +19,7 @@ describe('KoboSubmissionService', () => {
   let koboRepository: jest.Mocked<Repository<KoboEntity>>;
   let koboApiService: jest.Mocked<KoboApiService>;
   let koboService: jest.Mocked<KoboService>;
-  let registrationsImportService: jest.Mocked<RegistrationsImportService>;
+  let registrationsCreationService: jest.Mocked<RegistrationsCreationService>;
 
   const successSubmissionUuid = 'success-submission-uuid';
   const assetUid = 'test-asset-uid';
@@ -94,7 +94,7 @@ describe('KoboSubmissionService', () => {
           },
         },
         {
-          provide: RegistrationsImportService,
+          provide: RegistrationsCreationService,
           useValue: {
             importRegistrations: jest.fn(),
           },
@@ -106,7 +106,7 @@ describe('KoboSubmissionService', () => {
     koboRepository = module.get(getRepositoryToken(KoboEntity));
     koboApiService = module.get(KoboApiService);
     koboService = module.get(KoboService);
-    registrationsImportService = module.get(RegistrationsImportService);
+    registrationsCreationService = module.get(RegistrationsCreationService);
   });
 
   describe('processKoboWebhookCall', () => {
@@ -120,7 +120,7 @@ describe('KoboSubmissionService', () => {
       // Arrange
       koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
       koboApiService.getSubmission.mockResolvedValue(mockSubmission);
-      registrationsImportService.importRegistrations.mockResolvedValue({
+      registrationsCreationService.importRegistrations.mockResolvedValue({
         aggregateImportResult: {
           countImported: 1,
         },
@@ -131,7 +131,7 @@ describe('KoboSubmissionService', () => {
 
       // Assert
       expect(
-        registrationsImportService.importRegistrations,
+        registrationsCreationService.importRegistrations,
       ).toHaveBeenCalledWith({
         inputRegistrations: [
           {
@@ -184,7 +184,7 @@ describe('KoboSubmissionService', () => {
 
     beforeEach(() => {
       koboApiService.getSubmission.mockResolvedValue(mockSubmission);
-      registrationsImportService.importRegistrations.mockResolvedValue({
+      registrationsCreationService.importRegistrations.mockResolvedValue({
         aggregateImportResult: { countImported: 1 },
       });
     });

@@ -8,7 +8,7 @@ import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
 import { KoboSubmissionMapper } from '@121-service/src/kobo/mappers/kobo-submission.mapper';
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
-import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
+import { RegistrationsCreationService } from '@121-service/src/registration/services/registrations-creation.service';
 
 @Injectable()
 export class KoboSubmissionService {
@@ -18,7 +18,7 @@ export class KoboSubmissionService {
   constructor(
     private readonly koboApiService: KoboApiService,
     private readonly koboService: KoboService,
-    private readonly registrationsImportService: RegistrationsImportService,
+    private readonly registrationsCreationService: RegistrationsCreationService,
   ) {}
 
   public async processKoboWebhookCall(
@@ -67,7 +67,7 @@ export class KoboSubmissionService {
         koboSubmission: submission,
       });
 
-    await this.registrationsImportService.importRegistrations({
+    await this.registrationsCreationService.importRegistrations({
       inputRegistrations: [registrationData],
       program: koboIntegration.program,
       userId: null,
