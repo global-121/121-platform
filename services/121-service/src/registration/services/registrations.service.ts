@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, FindOneOptions, In, Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
 import { IntersolveVisaDataSynchronizationService } from '@121-service/src/fsp-integrations/data-synchronization/intersolve-visa/intersolve-visa-data-synchronization.service';
 import { ContactInformation } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/partials/contact-information.interface';
@@ -72,29 +73,31 @@ export class RegistrationsService {
     private readonly intersolveVisaDataSynchronizationService: IntersolveVisaDataSynchronizationService,
   ) {}
 
-  public async getRegistrationOrThrow({
-    referenceId,
+  public async getRegistrationByIdOrThrow({
+    registrationId,
     relations = [],
     programId,
   }: {
-    referenceId: string;
+    registrationId: number;
     relations?: (keyof RegistrationEntity)[];
     programId?: number;
   }): Promise<RegistrationEntity> {
-    if (!referenceId) {
-      const errors = `ReferenceId is not set`;
+    if (!registrationId) {
+      const errors = `RegistrationId is not set`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    const registration =
-      await this.registrationScopedRepository.getWithRelationsByReferenceIdAndProgramId(
-        {
-          referenceId,
-          relations,
+    const registration = programId
+      ? await this.registrationScopedRepository.getByIdAndProgramId({
+          registrationId,
           programId,
-        },
-      );
+          relations: relations as string[],
+        })
+      : await this.registrationScopedRepository.findOne({
+          where: { id: Equal(registrationId) },
+          relations: relations as string[],
+        });
     if (!registration) {
-      const errors = `ReferenceId ${referenceId} is not known in this program (within your scope).`;
+      const errors = `RegistrationId ${registrationId} is not known in this program (within your scope).`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return registration;
@@ -118,7 +121,7 @@ export class RegistrationsService {
     return paginateResult.data[0];
   }
 
-  // This methods can be used to get the same formatted data as the pagination query using referenceId
+  // This methods can be used to get the same formatted data as the pagination query using id
   public async getPaginateRegistrationById({
     id,
     programId,
@@ -159,34 +162,35 @@ export class RegistrationsService {
   ) {
     const user = await this.findUserOrThrow(userId);
     const registration = new RegistrationEntity();
-    registration.referenceId = postData.referenceId;
+    registration.referenceId = uuid();
     registration.user = user;
     registration.program = await this.programRepository.findOneByOrFail({
       id: programId,
     });
-    await this.registrationUtilsService.save(registration);
+    const savedRegistration =
+      await this.registrationUtilsService.save(registration);
     return this.setRegistrationStatus(
-      postData.referenceId,
+      savedRegistration.id,
       RegistrationStatusEnum.new,
     );
   }
 
   private async setRegistrationStatus(
-    referenceId: string,
+    registrationId: number,
     status: RegistrationStatusEnum,
   ) {
     const registrationBeforeUpdate =
       await this.registrationViewScopedRepository.findOneOrFail({
-        where: { referenceId: Equal(referenceId) },
+        where: { id: Equal(registrationId) },
         select: ['id', 'status'],
       });
     await this.registrationScopedRepository.updateUnscoped(
-      { referenceId },
+      { id: registrationId },
       { registrationStatus: status },
     );
     const registrationAfterUpdate =
       await this.registrationViewScopedRepository.findOneOrFail({
-        where: { referenceId: Equal(referenceId) },
+        where: { id: Equal(registrationId) },
         select: ['id', 'status'],
       });
     await this.registrationEventsService.createFromRegistrationViews(
@@ -326,12 +330,12 @@ export class RegistrationsService {
 
   public async validateInputAndUpdateRegistration({
     programId,
-    referenceId,
+    registrationId,
     updateRegistrationDto,
     userId,
   }: {
     programId: number;
-    referenceId: string;
+    registrationId: number;
     updateRegistrationDto: UpdateRegistrationDto;
     userId: number;
   }): Promise<MappedPaginatedRegistrationDto | undefined> {
@@ -339,16 +343,12 @@ export class RegistrationsService {
       validateUniqueReferenceId: false,
       validateExistingReferenceId: false,
     };
-    const updateDataWithReferenceId = {
-      referenceId,
-      ...updateRegistrationDto.data,
-    };
 
     let validateRegistrationPatchData;
     try {
       validateRegistrationPatchData =
         await this.registrationsInputValidator.validateAndCleanInput({
-          registrationInputArray: [updateDataWithReferenceId],
+          registrationInputArray: [updateRegistrationDto.data],
           programId,
           userId,
           typeOfInput: RegistrationValidationInputType.update,
@@ -365,7 +365,7 @@ export class RegistrationsService {
     // if all valid, process update
     return await this.updateRegistration({
       programId,
-      referenceId,
+      registrationId,
       validatedRegistrationInput: validateRegistrationPatchData[0],
       reason: updateRegistrationDto.reason,
     });
@@ -394,12 +394,12 @@ export class RegistrationsService {
 
   public async updateRegistration({
     programId,
-    referenceId,
+    registrationId,
     validatedRegistrationInput,
     reason,
   }: {
     programId: number;
-    referenceId: string;
+    registrationId: number;
     validatedRegistrationInput: ValidatedRegistrationInput;
     reason: string | undefined;
   }) {
@@ -407,15 +407,17 @@ export class RegistrationsService {
     const { data: registrationDataInput, ...partialRegistrationInput } =
       validatedRegistrationInput;
 
-    let registrationToUpdate = await this.getRegistrationOrThrow({
-      referenceId,
+    let registrationToUpdate = await this.getRegistrationByIdOrThrow({
+      registrationId,
       relations: ['program'],
       programId,
     });
     const program = registrationToUpdate.program;
 
-    const oldViewRegistration =
-      await this.getPaginateRegistrationForReferenceId(referenceId, programId);
+    const oldViewRegistration = await this.getPaginateRegistrationById({
+      id: registrationId,
+      programId,
+    });
 
     // Track whether maxPayments has been updated to match paymentCount
     let maxPaymentsMatchesPaymentCount = false;
@@ -472,13 +474,13 @@ export class RegistrationsService {
       nrAttributesUpdated++;
     }
 
-    const newRegistration = await this.getPaginateRegistrationForReferenceId(
-      referenceId,
+    const newRegistration = await this.getPaginateRegistrationById({
+      id: registrationId,
       programId,
-    );
+    });
 
     if (nrAttributesUpdated > 0) {
-      await this.inclusionScoreService.calculateInclusionScore(referenceId);
+      await this.inclusionScoreService.calculateInclusionScore(registrationId);
       await this.registrationEventsService.createFromRegistrationViews(
         { ...oldViewRegistration },
         { ...newRegistration },
@@ -552,17 +554,17 @@ export class RegistrationsService {
     const calculatedRegistration =
       await this.inclusionScoreService.calculatePaymentAmountMultiplier(
         program,
-        registration.referenceId,
+        registration.id,
       );
     if (calculatedRegistration) {
-      return this.getRegistrationOrThrow({
-        referenceId: calculatedRegistration.referenceId,
+      return this.getRegistrationByIdOrThrow({
+        registrationId: calculatedRegistration.id,
       });
     }
 
     const contactInformation: ContactInformation =
       await this.getContactInformation({
-        referenceId: savedRegistration.referenceId,
+        registrationId: savedRegistration.id,
         programId: savedRegistration.programId,
       });
     await this.intersolveVisaDataSynchronizationService.syncData({
@@ -571,8 +573,8 @@ export class RegistrationsService {
       contactInformation,
     });
 
-    return this.getRegistrationOrThrow({
-      referenceId: savedRegistration.referenceId,
+    return this.getRegistrationByIdOrThrow({
+      registrationId: savedRegistration.id,
       relations: ['program'],
     });
   }
@@ -598,7 +600,7 @@ export class RegistrationsService {
     ).map((r) => {
       return {
         programId: r.programId,
-        referenceId: r.referenceId,
+        id: r.id,
         scope: r.scope,
       };
     });
@@ -618,7 +620,7 @@ export class RegistrationsService {
       ) {
         matchingRegistrations.push({
           programId: d.registration.programId,
-          referenceId: d.registration.referenceId,
+          id: d.registration.id,
           scope: d.registration.scope,
         });
       }
@@ -626,7 +628,7 @@ export class RegistrationsService {
 
     const uniqueRegistrations = matchingRegistrations.filter(
       (value, index, self) =>
-        index === self.findIndex((t) => t.referenceId === value.referenceId),
+        index === self.findIndex((t) => t.id === value.id),
     );
 
     const filteredRegistrations = await this.filterRegistrationsByProgramScope(
@@ -636,10 +638,10 @@ export class RegistrationsService {
 
     return await Promise.all(
       filteredRegistrations.map(async (uniqueRegistration) => {
-        return await this.getPaginateRegistrationForReferenceId(
-          uniqueRegistration.referenceId,
-          uniqueRegistration.programId,
-        );
+        return await this.getPaginateRegistrationById({
+          id: uniqueRegistration.id,
+          programId: uniqueRegistration.programId,
+        });
       }),
     );
   }
@@ -665,7 +667,7 @@ export class RegistrationsService {
         const findProgramOption = {
           where: {
             programId: Equal(registration.programId),
-            referenceId: Equal(registration.referenceId),
+            id: Equal(registration.id),
           },
         };
         const findOption = convertToScopedOptions<
@@ -705,11 +707,11 @@ export class RegistrationsService {
   }
 
   public async getDuplicates(
-    referenceId: string,
+    registrationId: number,
     programId: number,
   ): Promise<DuplicateReponseDto[]> {
-    const registration = await this.getRegistrationOrThrow({
-      referenceId,
+    const registration = await this.getRegistrationByIdOrThrow({
+      registrationId,
       programId,
     });
     const duplicates = await this.registrationScopedRepository.getDuplicates({
@@ -719,15 +721,15 @@ export class RegistrationsService {
     if (duplicates.length === 0) {
       return [];
     }
-    const referenceIds = duplicates.map((d) => d.referenceId);
+    const duplicateRegistrationIds = duplicates.map((d) => d.registrationId);
     // Get the full names of the duplicates using the pagination functionality
     // This is done to avoid duplicating the complex logic of retrieving full names, which is already implemented in the pagination service
     // TODO: In the future, this logic should be refactored to reside in the registration repository
     const registrationViews =
-      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
+      await this.registrationsPaginationService.getRegistrationViewsByRegistrationIds(
         {
           programId,
-          referenceIds,
+          registrationIds: duplicateRegistrationIds,
         },
       );
 
@@ -853,10 +855,10 @@ export class RegistrationsService {
   }
 
   public async getContactInformation({
-    referenceId,
+    registrationId,
     programId,
   }: {
-    referenceId: string;
+    registrationId: number;
     programId: number;
   }): Promise<ContactInformation> {
     const dataFieldNames = [
@@ -870,9 +872,9 @@ export class RegistrationsService {
     ];
 
     const registrationData = (
-      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
+      await this.registrationsPaginationService.getRegistrationViewsByRegistrationIds(
         {
-          referenceIds: [referenceId],
+          registrationIds: [registrationId],
           programId,
           select: dataFieldNames,
         },
@@ -881,7 +883,7 @@ export class RegistrationsService {
 
     if (!registrationData) {
       throw new HttpException(
-        `No registration data found for referenceId: ${referenceId}`,
+        `No registration data found for registrationId: ${registrationId}`,
         HttpStatus.NOT_FOUND,
       );
     }
