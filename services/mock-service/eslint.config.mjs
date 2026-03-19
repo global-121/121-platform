@@ -71,7 +71,6 @@ export default defineConfig(
           ],
         },
       ],
-      'object-shorthand': 'error',
       'simple-import-sort/exports': 'error',
       'simple-import-sort/imports': [
         'error',

@@ -36,7 +36,6 @@ export default defineConfig(
           varsIgnorePattern: '^_',
         },
       ],
-      'object-shorthand': 'error',
       'promise/no-callback-in-promise': 'error',
       'promise/no-multiple-resolved': 'error',
       'promise/no-nesting': 'error',
