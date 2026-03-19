@@ -3,6 +3,7 @@ import { Equal, In } from 'typeorm';
 
 import { ExcelService } from '@121-service/src/fsp-integrations/integrations/excel/excel.service';
 import { ExcelReconciliationInstructions } from '@121-service/src/fsp-integrations/reconciliation/excel/dtos/excel-reconciliation-instructions.dto';
+import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
@@ -10,10 +11,9 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/entiti
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-
-// The functionality in this service was meant a generic implementation of FSPs that work by importing and exporting files like vodacash
-// but in the end we converged to using it only for a generically configurable excel based FSP integration
-// TODO: REFACTOR: This should be refactored to be only for the excel FSP and it should be evaluated if code can be moved to the ExcelModule
+import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 
 @Injectable()
 export class ExcelReconciliationInstructionsService {
@@ -23,6 +23,8 @@ export class ExcelReconciliationInstructionsService {
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
     private readonly paymentsReportingService: PaymentsReportingService,
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
+    private readonly registrationsPaginationService: RegistrationsPaginationService,
+    private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
   ) {}
 
   public async getFspInstructions(
@@ -119,13 +121,53 @@ export class ExcelReconciliationInstructionsService {
     programFspConfigurationName: string;
     programFspConfigurationId: number;
   }): Promise<ExcelReconciliationInstructions> {
+    const exportColumns = await this.getExportColumnsForProgramFspConfig(
+      programFspConfigurationId,
+      programId,
+    );
+    const referenceIds = transactions.map((t) => t.registration.referenceId);
+
+    const registrations =
+      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
+        {
+          programId,
+          select: [
+            ...new Set(
+              exportColumns.concat([GenericRegistrationAttributes.referenceId]),
+            ),
+          ], // add referenceId (and deduplicate) to join transfer value later
+          referenceIds,
+        },
+      );
+
     return {
-      data: await this.excelService.getFspInstructions({
+      data: this.excelService.joinRegistrationsAndTransactions(
+        registrations,
         transactions,
-        programId,
-        programFspConfigurationId,
-      }),
+        exportColumns,
+      ),
       fileNamePrefix: programFspConfigurationName,
     };
+  }
+
+  private async getExportColumnsForProgramFspConfig(
+    programFspConfigurationId: number,
+    programId: number,
+  ): Promise<string[]> {
+    const columnsToExportConfig =
+      await this.programFspConfigurationRepository.getPropertyValueByName({
+        programFspConfigurationId,
+        name: FspConfigurationProperties.columnsToExport,
+      });
+
+    if (columnsToExportConfig) {
+      return columnsToExportConfig;
+    }
+
+    // Default to using all program registration attributes names if columnsToExport is not specified
+    // So generic fields must be specified in the programFspConfiguration
+    return this.programRegistrationAttributeRepository.getNamesByProgramId(
+      programId,
+    );
   }
 }

@@ -50,4 +50,12 @@ export class ProgramRegistrationAttributeRepository extends Repository<ProgramRe
 
     return result.id;
   }
+
+  public async getNamesByProgramId(programId: number): Promise<string[]> {
+    const attributes = await this.find({
+      where: { programId: Equal(programId) },
+      select: { name: true },
+    });
+    return attributes.map((attr) => attr.name);
+  }
 }

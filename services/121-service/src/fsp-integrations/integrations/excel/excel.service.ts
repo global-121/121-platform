@@ -1,93 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, Repository } from 'typeorm';
 
 import { ExcelFspInstructions } from '@121-service/src/fsp-integrations/integrations/excel/dto/excel-fsp-instructions.dto';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 
 @Injectable()
 export class ExcelService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
-
   public constructor(
-    //TODO: This should be refactored to not use the registrationPaginationService, maybe this entire service/module should be deleted and moved to the PaymentsExcelFspService
-    private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
-
-  public async getFspInstructions({
-    transactions,
-    programId,
-    programFspConfigurationId,
-  }: {
-    transactions: TransactionEntity[];
-    programId: number;
-    programFspConfigurationId: number;
-  }): Promise<ExcelFspInstructions[]> {
-    const exportColumns = await this.getExportColumnsForProgramFspConfig(
-      programFspConfigurationId,
-      programId,
-    );
-    const referenceIds = transactions.map((t) => t.registration.referenceId);
-
-    const registrations =
-      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
-        {
-          programId,
-          select: [
-            ...new Set(
-              exportColumns.concat([GenericRegistrationAttributes.referenceId]),
-            ),
-          ], // add referenceId (and deduplicate) to join transfer value later
-          referenceIds,
-        },
-      );
-
-    return this.joinRegistrationsAndTransactions(
-      registrations,
-      transactions,
-      exportColumns,
-    );
-  }
-
-  private async getExportColumnsForProgramFspConfig(
-    programFspConfigurationId: number,
-    programId: number,
-  ): Promise<string[]> {
-    const columnsToExportConfig =
-      await this.programFspConfigurationRepository.getPropertyValueByName({
-        programFspConfigurationId,
-        name: FspConfigurationProperties.columnsToExport,
-      });
-
-    if (columnsToExportConfig) {
-      return columnsToExportConfig;
-    }
-
-    const programWithAttributes = await this.programRepository.findOneOrFail({
-      where: { id: Equal(programId) },
-      relations: ['programRegistrationAttributes'],
-    });
-    // Default to using all program registration attributes names if columnsToExport is not specified
-    // So generic fields must be specified in the programFspConfiguration
-    return programWithAttributes.programRegistrationAttributes.map(
-      (q) => q.name,
-    );
-  }
 
   /**
    * A pure function.
    */
   public joinRegistrationsAndTransactions(
-    registrations: Awaited<
-      ReturnType<RegistrationsPaginationService['getRegistrationViewsNoLimit']>
-    >,
+    registrations: MappedPaginatedRegistrationDto[],
     transactions: TransactionEntity[],
     exportColumns: string[],
   ): ExcelFspInstructions[] {
