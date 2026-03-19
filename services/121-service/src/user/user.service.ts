@@ -27,7 +27,10 @@ import { CookieSettingsDto } from '@121-service/src/user/dto/cookie-settings.dto
 import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
 import { CreateUserRoleDto } from '@121-service/src/user/dto/create-user-role.dto';
 import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response.dto';
-import { GetUserReponseDto } from '@121-service/src/user/dto/get-user-response.dto';
+import {
+  GetAllUsersResponseDto,
+  GetUserReponseDto,
+} from '@121-service/src/user/dto/get-user-response.dto';
 import { LoginResponseDto } from '@121-service/src/user/dto/login-response.dto';
 import { LoginUserDto } from '@121-service/src/user/dto/login-user.dto';
 import {
@@ -518,7 +521,7 @@ export class UserService {
     throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
   }
 
-  public async delete(userId: number): Promise<UserEntity> {
+  public async delete(userId: number): Promise<GetAllUsersResponseDto> {
     const user = await this.userRepository.findOneOrFail({
       where: { id: Equal(userId) },
       relations: ['programAssignments', 'programAssignments.roles'],
@@ -527,7 +530,16 @@ export class UserService {
     await this.assignmentRepository.remove(user.programAssignments);
 
     try {
-      return await this.userRepository.remove(user);
+      await this.userRepository.remove(user);
+      return {
+        id: userId,
+        username: user.username,
+        admin: user.admin,
+        active: user.active,
+        lastLogin: user.lastLogin,
+        displayName: user.displayName,
+        isOrganizationAdmin: user.isOrganizationAdmin,
+      };
     } catch (e) {
       if (isSameAsString(e.code, PostgresStatusCodes.FOREIGN_KEY_VIOLATION)) {
         throw new HttpException(
@@ -744,7 +756,7 @@ export class UserService {
     return userEntity;
   }
 
-  public async getUsers() {
+  public async getUsers(): Promise<GetAllUsersResponseDto[]> {
     return await this.userRepository.find({
       select: {
         id: true,

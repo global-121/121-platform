@@ -23,6 +23,7 @@ import { LastMessageStatusService } from '@121-service/src/notifications/service
 import { twilioClient } from '@121-service/src/notifications/twilio.client';
 import { MessageSenderUserId } from '@121-service/src/notifications/types/message-sender-user-id.type';
 import { WhatsappTemplateTestEntity } from '@121-service/src/notifications/whatsapp/whatsapp-template-test.entity';
+import { TestTemplatesResponseDto } from '@121-service/src/notifications/whatsapp/dto/test-templates-response.dto';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 import { formatWhatsAppNumber } from '@121-service/src/utils/phone-number.helpers';
@@ -232,7 +233,7 @@ export class WhatsappService {
     }
   }
 
-  public async testTemplates(): Promise<object> {
+  public async testTemplates(): Promise<TestTemplatesResponseDto> {
     const sessionId = uuid();
     const programs = await this.programRepository.find();
     for (const program of programs) {

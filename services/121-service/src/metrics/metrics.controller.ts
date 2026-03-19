@@ -30,6 +30,7 @@ import {
   AggregatePerPayment,
 } from '@121-service/src/metrics/dto/payment-aggregate.dto';
 import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
+import { RegistrationCountByDate } from '@121-service/src/metrics/dto/registration-count-by-date.dto';
 import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
@@ -195,7 +196,7 @@ export class MetricsController {
       new AssertDatePipe({ optional: true, allowFuture: false }),
     )
     startDate: Date,
-  ): Promise<Record<string, number>> {
+  ): Promise<RegistrationCountByDate> {
     return await this.metricsService.getRegistrationCountByDate({
       programId,
       startDate,

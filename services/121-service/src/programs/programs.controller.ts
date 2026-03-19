@@ -32,14 +32,14 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 import { KoboConnectService } from '@121-service/src/kobo-connect/kobo-connect.service';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
+import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
+import { FundingWalletResponseDto } from '@121-service/src/programs/dto/funding-wallet-response.dto';
 import {
   ProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributeDto,
 } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
-import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SecretDto } from '@121-service/src/scripts/scripts.controller';
@@ -84,7 +84,7 @@ export class ProgramController {
     @Query('formatProgramReturnDto', new ParseBoolPipe({ optional: true }))
     formatProgramReturnDto: boolean,
     @Req() req: ScopedUserRequest,
-  ) {
+  ): Promise<FoundProgramDto | ProgramReturnDto> {
     const userId = RequestHelper.getUserId(req);
 
     if (formatProgramReturnDto) {
@@ -101,7 +101,7 @@ export class ProgramController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'The program has been successfully created.',
-    type: ProgramEntity,
+    type: ProgramReturnDto,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -152,7 +152,7 @@ You can also leave the body empty.`,
     koboAssetId: string,
 
     @Req() req: ScopedUserRequest,
-  ): Promise<ProgramEntity> {
+  ): Promise<ProgramReturnDto> {
     const userId = RequestHelper.getUserId(req);
 
     if (importFromKobo) {
@@ -250,7 +250,7 @@ You can also leave the body empty.`,
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Return program registration attribute',
-    type: ProgramRegistrationAttributeEntity,
+    type: ProgramRegistrationAttributeDto,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -270,7 +270,7 @@ You can also leave the body empty.`,
     programId: number,
     @Param('programRegistrationAttributeName')
     programRegistrationAttributeName: string,
-  ): Promise<ProgramRegistrationAttributeEntity> {
+  ): Promise<ProgramRegistrationAttributeDto> {
     return await this.programService.updateProgramRegistrationAttribute({
       programId,
       programRegistrationAttributeName,
@@ -297,7 +297,7 @@ You can also leave the body empty.`,
     programId: number,
     @Param('programRegistrationAttributeId', ParseIntPipe)
     programRegistrationAttributeId: number,
-  ): Promise<ProgramRegistrationAttributeEntity> {
+  ): Promise<ProgramRegistrationAttributeDto> {
     return await this.programService.deleteProgramRegistrationAttribute(
       programId,
       programRegistrationAttributeId,
@@ -370,14 +370,18 @@ You can also leave the body empty.`,
     return attr;
   }
 
-  // TODO: REFACTOR: This endpoint's return is not typed as a DTO, so it is not clear what the response structure is in Swagger UI. See guidelines.
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({ summary: 'Get information about the funding wallet' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Funding wallet information',
+    type: [FundingWalletResponseDto],
+  })
   @Get(':programId/fsps/intersolve-visa/funding-wallet')
   public async getFundingWallet(
     @Param('programId', ParseIntPipe)
     programId: number,
-  ) {
+  ): Promise<FundingWalletResponseDto[]> {
     return await this.programService.getFundingWallet(programId);
   }
 }

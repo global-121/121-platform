@@ -32,12 +32,12 @@ import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
 import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
 import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response.dto';
+import { GetAllUsersResponseDto } from '@121-service/src/user/dto/get-user-response.dto';
 import { LoginUserDto } from '@121-service/src/user/dto/login-user.dto';
 import {
   UpdateUserDto,
   UpdateUserPasswordDto,
 } from '@121-service/src/user/dto/update-user.dto';
-import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserRO } from '@121-service/src/user/user.interface';
 import { UserService } from '@121-service/src/user/user.service';
@@ -56,10 +56,10 @@ export class UserController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Returns all users',
-    type: [UserEntity],
+    type: [GetAllUsersResponseDto],
   })
   @Get('users')
-  public async getUsers() {
+  public async getUsers(): Promise<GetAllUsersResponseDto[]> {
     return await this.userService.getUsers();
   }
 
@@ -154,7 +154,7 @@ export class UserController {
   })
   public async update(
     @Body() userPasswordData: UpdateUserPasswordDto,
-  ): Promise<any> {
+  ): Promise<UserRO> {
     return this.userService.updatePassword(userPasswordData);
   }
 
@@ -163,14 +163,14 @@ export class UserController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'User deleted',
-    type: UserEntity,
+    type: GetAllUsersResponseDto,
   })
   @ApiParam({ name: 'userId', required: true, type: 'integer' })
   @Delete('users/:userId')
   public async delete(
     @Param('userId', ParseIntPipe)
     userId: number,
-  ): Promise<UserEntity> {
+  ): Promise<GetAllUsersResponseDto> {
     return await this.userService.delete(userId);
   }
 

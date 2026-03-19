@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Equal, QueryFailedError, Repository } from 'typeorm';
 
-import { GetTokenResult } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/interfaces/get-token-result.interface';
 import { IntersolveVisaService } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/services/intersolve-visa.service';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
@@ -12,6 +11,7 @@ import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-conf
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
+import { FundingWalletResponseDto } from '@121-service/src/programs/dto/funding-wallet-response.dto';
 import {
   ProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributeDto,
@@ -139,7 +139,7 @@ export class ProgramService {
   public async create(
     programData: CreateProgramDto,
     userId: number,
-  ): Promise<ProgramEntity> {
+  ): Promise<ProgramReturnDto> {
     let newProgram;
 
     await this.validateProgram(programData);
@@ -228,7 +228,7 @@ export class ProgramService {
       roles: [DefaultUserRole.Admin],
       scope: undefined,
     });
-    return newProgram;
+    return this.fillProgramReturnDto(newProgram);
   }
 
   public async deleteProgram(programId: number): Promise<void> {
@@ -289,7 +289,7 @@ export class ProgramService {
       paymentAmountMultiplierFormula:
         program.paymentAmountMultiplierFormula ?? undefined,
       fspConfigurations: ProgramFspConfigurationMapper.mapEntitiesToDtos(
-        program.programFspConfigurations,
+        program.programFspConfigurations ?? [],
       ),
       targetNrRegistrations: program.targetNrRegistrations ?? undefined,
       tryWhatsAppFirst: program.tryWhatsAppFirst,
@@ -459,7 +459,7 @@ export class ProgramService {
     programId: number;
     programRegistrationAttributeName: string;
     updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto;
-  }): Promise<ProgramRegistrationAttributeEntity> {
+  }): Promise<ProgramRegistrationAttributeDto> {
     const programRegistrationAttribute =
       await this.programRegistrationAttributeRepository.findOne({
         where: {
@@ -480,13 +480,15 @@ export class ProgramService {
     await this.programRegistrationAttributeRepository.save(
       programRegistrationAttribute,
     );
-    return programRegistrationAttribute;
+    return ProgramRegistrationAttributeMapper.entityToDto(
+      programRegistrationAttribute,
+    );
   }
 
   public async deleteProgramRegistrationAttribute(
     programId: number,
     programRegistrationAttributeId: number,
-  ): Promise<ProgramRegistrationAttributeEntity> {
+  ): Promise<ProgramRegistrationAttributeDto> {
     await this.findProgramOrThrow(programId);
 
     const programRegistrationAttribute =
@@ -497,9 +499,10 @@ export class ProgramService {
       const errors = `Program registration attribute with id: '${programRegistrationAttributeId}' not found.'`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    return await this.programRegistrationAttributeRepository.remove(
+    const deleted = await this.programRegistrationAttributeRepository.remove(
       programRegistrationAttribute,
     );
+    return ProgramRegistrationAttributeMapper.entityToDto(deleted);
   }
 
   public async getAllRelationProgram(
@@ -535,7 +538,9 @@ export class ProgramService {
     );
   }
 
-  public async getFundingWallet(programId: number) {
+  public async getFundingWallet(
+    programId: number,
+  ): Promise<FundingWalletResponseDto[]> {
     // TODO: Refactor ensure this works with the new structure of FSP configuration properties
     const programFspConfigurations =
       await this.programFspConfigurationRepository.getByProgramIdAndFspName({
@@ -569,7 +574,7 @@ export class ProgramService {
     }
 
     // loop over all properties and return all wallets as an array
-    const wallets: GetTokenResult[] = [];
+    const wallets: FundingWalletResponseDto[] = [];
     for (const property of properties) {
       if (property.name === FspConfigurationProperties.fundingTokenCode) {
         const wallet = await this.intersolveVisaService.getWallet(
