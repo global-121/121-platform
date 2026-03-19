@@ -37,7 +37,7 @@
     "lint:mock-service": "npm run lint --prefix=services/mock-service",
     "test": "echo 'See README.md#testing \\n\\n' && npm run test:all",
     "test:all": "npx npm-run-all --npm-path npm --print-label --parallel test:prettier test:portal test:services",
-    "test:prettier": "npx prettier --config=./.prettierrc.yml --check \"**/*.{md,json,yml,scss}\"",
+    "test:prettier": "npx prettier --config=./.prettierrc.yml --check \"**/*.{md,json,yml,scss,css}\"",
     "test:services": "npx npm-run-all --npm-path npm --print-label --parallel test:121-service test:mock-service",
     "test:121-service": "cd services/ && docker compose exec 121-service npm test",
     "test:mock-service": "cd services/ && docker compose exec mock-service npm test",
