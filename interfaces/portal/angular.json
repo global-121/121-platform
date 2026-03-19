@@ -109,7 +109,9 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.development.ts"
                 }
-              ],
+              ]
+            },
+            "unit-test": {
               "polyfills": [
                 "zone.js",
                 "zone.js/testing",
@@ -194,7 +196,8 @@
             "tsConfig": "tsconfig.spec.json",
             "include": ["src/**/*.spec.ts", "./*.spec.ts"],
             "progress": true,
-            "runnerConfig": true
+            "runnerConfig": "vitest.config.ts",
+            "buildTarget": "::unit-test"
           }
         },
         "lint": {
