@@ -1,3 +1,4 @@
+import { defineConfig } from 'eslint/config';
 import eslint from '@eslint/js';
 import eslintPluginComments from '@eslint-community/eslint-plugin-eslint-comments/configs';
 import eslintPluginN from 'eslint-plugin-n';
@@ -36,7 +37,7 @@ import globals from 'globals';
  * @type {import('./index.d.ts').EslintConfig121Platform} */
 export default {
   configs: {
-    base: {
+    base: defineConfig({
       name: '121-platform/base',
       languageOptions: {
         parserOptions: {
@@ -52,20 +53,20 @@ export default {
       rules: {
         '@eslint-community/eslint-comments/require-description': 'error',
       },
-    },
-    legacyNode: {
+    }),
+    legacyNode: defineConfig({
       name: '121-platform/legacy-node',
       languageOptions: {
         globals: globals.node,
       },
-    },
-    browser: {
+    }),
+    browser: defineConfig({
       name: '121-platform/browser',
       languageOptions: {
         globals: globals.browser,
       },
-    },
-    node: {
+    }),
+    node: defineConfig({
       name: '121-platform/node',
       files: ['**/*.mjs', '**/*.ts'],
       languageOptions: {
@@ -79,8 +80,8 @@ export default {
         'n/prefer-node-protocol': 'error',
         'n/no-path-concat': 'error',
       },
-    },
-    recommended: {
+    }),
+    recommended: defineConfig({
       name: '121-platform/recommended',
       files: ['**/*.mjs', '**/*.ts'],
       languageOptions: {
@@ -93,20 +94,20 @@ export default {
         'prefer-arrow-callback': 'error',
         'no-inner-declarations': 'error',
       },
-    },
-    recommendedNext: {
+    }),
+    recommendedNext: defineConfig({
       name: '121-platform/recommended-next',
       files: ['**/*.mjs', '**/*.ts'],
       rules: {
         'arrow-body-style': 'error',
         'func-style': 'error',
       },
-    },
-    javascript: {
+    }),
+    javascript: defineConfig({
       name: '121-platform/javascript',
       files: ['**/*.mjs'],
-    },
-    typescript: {
+    }),
+    typescript: defineConfig({
       name: '121-platform/typescript',
       files: ['**/*.ts'],
       plugins: {
@@ -116,8 +117,8 @@ export default {
         'n/no-extraneous-import': 'off', // Managed by TypeScript
         'n/no-missing-import': 'off', // Disabled to allow for path-aliases via tsconfig.json
       },
-    },
-    services: {
+    }),
+    services: defineConfig({
       name: '121-platform/services',
       plugins: {
         n: eslintPluginN,
@@ -137,11 +138,11 @@ export default {
           },
         ],
       },
-    },
-    final: {
+    }),
+    final: defineConfig({
       name: '121-platform/final',
       files: ['**/*.js', '**/*.mjs', '**/*.ts', 'src/app/**/*.html'],
       extends: [eslintPluginPrettierRecommended],
-    },
+    }),
   },
 };
