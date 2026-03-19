@@ -1,0 +1,116 @@
+<div class="flex items-start justify-between rounded-lg border border-gray-200 p-4">
+  <div class="flex-1">
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="font-medium">{{ translatedLabel() }}</span>
+      <span class="text-grey-500 text-sm">({{ attribute().name }})</span>
+      <span
+        class="rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-600"
+        >{{ attribute().type }}</span
+      >
+    </div>
+    <div class="mt-2 flex flex-wrap gap-3 text-sm text-gray-600">
+      @if (attribute().duplicateCheck) {
+        <span class="flex items-center gap-1">
+          <i class="pi pi-copy text-green-600"></i>
+          <span i18n>Duplicate check</span>
+        </span>
+      }
+      @if (attribute().showInPeopleAffectedTable) {
+        <span class="flex items-center gap-1">
+          <i class="pi pi-table text-blue-600"></i>
+          <span i18n>Shown in registrations table</span>
+        </span>
+      }
+      @if (!attribute().editableInPortal) {
+        <span class="flex items-center gap-1">
+          <i class="pi pi-lock text-orange-600"></i>
+          <span i18n>Not editable in portal</span>
+        </span>
+      }
+      @if (attribute().includeInTransactionExport) {
+        <span class="flex items-center gap-1">
+          <i class="pi pi-download text-purple-600"></i>
+          <span i18n>Include in transaction export</span>
+        </span>
+      }
+    </div>
+  </div>
+  <p-button
+    icon="pi pi-pencil"
+    text
+    plain
+    rounded
+    (click)="openEditDialog()"
+    title="Edit"
+    i18n-title
+    ariaLabel="Edit"
+    i18n-ariaLabel
+  />
+</div>
+
+<p-dialog
+  [visible]="isDialogVisible()"
+  (visibleChange)="isDialogVisible.set($event)"
+  [header]="editDialogHeader()"
+  [modal]="true"
+  styleClass="md:min-w-[40rem]"
+>
+  @if (editFormGroup()) {
+    <ng-container [formGroup]="editFormGroup()!">
+      @for (lang of programLanguages(); track lang) {
+        <app-form-field-wrapper [label]="getLabelFieldLabel(lang)">
+          <input
+            pInputText
+            class="w-full"
+            [formControlName]="'label_' + lang"
+          />
+        </app-form-field-wrapper>
+      }
+      <div class="mt-4 space-y-3">
+        <div class="flex items-center gap-3">
+          <p-toggleswitch formControlName="duplicateCheck" />
+          <label i18n>Use for duplicate detection</label>
+        </div>
+        <div class="flex items-center gap-3">
+          <p-toggleswitch formControlName="showInPeopleAffectedTable" />
+          <label i18n>Show in registrations table</label>
+        </div>
+        <div class="flex items-center gap-3">
+          <p-toggleswitch formControlName="editableInPortal" />
+          <label i18n>Editable in portal</label>
+        </div>
+        <div class="flex items-center gap-3">
+          <p-toggleswitch formControlName="includeInTransactionExport" />
+          <label i18n>Include in transaction export</label>
+        </div>
+      </div>
+    </ng-container>
+
+    @if (updateMutation.isError()) {
+      <div class="mt-4">
+        <app-form-error
+          [error]="updateMutation.failureReason()?.message"
+        />
+      </div>
+    }
+  }
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Cancel"
+      i18n-label="@@generic-cancel"
+      outlined
+      rounded
+      severity="contrast"
+      [disabled]="updateMutation.isPending()"
+      (click)="isDialogVisible.set(false)"
+    />
+    <p-button
+      label="Save changes"
+      i18n-label
+      rounded
+      [loading]="updateMutation.isPending()"
+      (click)="saveChanges()"
+    />
+  </ng-template>
+</p-dialog>

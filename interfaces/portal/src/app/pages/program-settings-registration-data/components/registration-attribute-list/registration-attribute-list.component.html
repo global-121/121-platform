@@ -1,0 +1,44 @@
+<p-card class="[&_.p-card]:border-grey-300 mb-4 [&_.p-card]:border">
+  <h2
+    i18n
+    class="mb-4"
+  >
+    Registration attributes
+  </h2>
+  <p
+    i18n
+    class="mb-6"
+  >
+    Configure the registration attributes for this program. You can edit
+    labels, set up duplicate detection, and control visibility in the portal.
+  </p>
+
+  @if (program.isPending()) {
+    <p-skeleton height="4rem" />
+  } @else if (program.isSuccess()) {
+    @let registrationAttributes = program.data().programRegistrationAttributes;
+    @let programLanguages = program.data().languages;
+
+    @if (registrationAttributes.length === 0) {
+      <p
+        i18n
+        class="text-grey-500"
+      >
+        No custom registration attributes configured for this program.
+      </p>
+    } @else {
+      <div class="space-y-2">
+        @for (
+          attribute of registrationAttributes;
+          track attribute.name
+        ) {
+          <app-registration-attribute-card
+            [programId]="programId()"
+            [attribute]="attribute"
+            [programLanguages]="programLanguages"
+          />
+        }
+      </div>
+    }
+  }
+</p-card>

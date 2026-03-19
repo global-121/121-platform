@@ -31,3 +31,6 @@ export type AttributeWithTranslatedLabel = { label: string } & Omit<
   Attribute,
   'label'
 >;
+
+export type ProgramRegistrationAttribute =
+  Program['programRegistrationAttributes'][number];
