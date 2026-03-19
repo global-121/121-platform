@@ -28,6 +28,7 @@ export enum AppRoutes {
   programRegistrations = 'registrations',
   programs = 'programs',
   programSettings = 'settings',
+  programSettingsApprovers = 'approvers',
   programSettingsFsps = 'fsps',
   programSettingsInformation = 'information',
   programSettingsRegistrationData = 'registration-data',
@@ -225,6 +226,22 @@ export const routes: Routes = [
               ),
             canActivate: [
               authCapabilitiesGuard((authService) => authService.isAdmin),
+            ],
+          },
+          {
+            path: AppRoutes.programSettingsApprovers,
+            title:
+              $localize`:@@page-title-program-settings-approvers:Approvers` +
+              ' | ' +
+              $localize`:@@page-title-program-settings:Settings`,
+            loadComponent: () =>
+              import('~/pages/program-settings-approvers/program-settings-approvers.page').then(
+                (x) => x.ProgramSettingsApproversPageComponent,
+              ),
+            canActivate: [
+              authCapabilitiesGuard(
+                (authService) => authService.isOrganizationAdmin,
+              ),
             ],
           },
           {

@@ -82,5 +82,17 @@ export class PageLayoutProgramSettingsComponent {
         requiredPermission: PermissionEnum.AidWorkerProgramREAD,
       }),
     },
+    {
+      label: $localize`:@@page-title-program-settings-approvers:Approvers`,
+      icon: 'pi pi-check-circle',
+      routerLink: [
+        '/',
+        AppRoutes.program,
+        this.programId(),
+        AppRoutes.programSettings,
+        AppRoutes.programSettingsApprovers,
+      ],
+      visible: this.authService.isOrganizationAdmin,
+    },
   ]);
 }

@@ -1,0 +1,101 @@
+<app-page-layout-program-settings [programId]="programId()">
+  <app-card-editable
+    header="Approvers"
+    i18n-header="@@card-title-program-settings-approvers"
+    editPencilTitle="Edit approvers"
+    i18n-editPencilTitle="@@edit-approvers"
+    [canEdit]="canEdit()"
+    [(isEditing)]="isEditing"
+    [mutation]="saveThresholdsMutation"
+    [mutationData]="formThresholds()"
+  >
+    <p
+      i18n
+      class="mb-4"
+    >
+      Configure approval thresholds for payments. Users without a scope can be
+      assigned as approvers, and each user can only be assigned to one
+      threshold.
+    </p>
+    @if (!isEditing()) {
+      @if (approvalThresholds.isPending()) {
+        @for (_ of [1, 2]; track $index) {
+          <p-skeleton
+            height="2rem"
+            styleClass="mb-3"
+          />
+        }
+      } @else if (!approvalThresholds.data()?.length) {
+        <p i18n>No approval thresholds configured.</p>
+      } @else {
+        <div class="divide-y">
+          @for (threshold of approvalThresholds.data(); track threshold.id) {
+            <div class="flex gap-8 py-3">
+              <div class="w-48 font-semibold">
+                {{ thresholdAmountLabel(threshold.thresholdAmount) }}
+              </div>
+              <div>
+                {{ formatApproverNames(threshold.approvers) }}
+              </div>
+            </div>
+          }
+        </div>
+      }
+    } @else {
+      <div class="space-y-6">
+        @for (threshold of formThresholds(); track $index; let i = $index) {
+          <div class="flex flex-wrap items-end gap-4">
+            <app-form-field-wrapper
+              label="Threshold amount"
+              i18n-label="@@threshold-amount-label"
+              class="min-w-40"
+            >
+              <p-inputNumber
+                [ngModel]="threshold.thresholdAmount"
+                (ngModelChange)="updateThresholdAmount(i, $event)"
+                [min]="0"
+              />
+            </app-form-field-wrapper>
+            <app-form-field-wrapper
+              label="Approvers"
+              i18n-label="@@approvers-label"
+              class="min-w-60 flex-1"
+            >
+              <p-multiSelect
+                [ngModel]="threshold.userIds"
+                (ngModelChange)="updateThresholdUserIds(i, $event)"
+                [options]="thresholdApproverOptions()[i]"
+                [optionLabel]="'username'"
+                [optionValue]="'id'"
+                placeholder="Select approvers"
+                i18n-placeholder="@@generic-type-or-select"
+                styleClass="w-full"
+                [showToggleAll]="false"
+              />
+            </app-form-field-wrapper>
+            @if (formThresholds().length > 1) {
+              <p-button
+                icon="pi pi-trash"
+                [text]="true"
+                severity="danger"
+                (click)="removeThreshold(i)"
+                title="Remove threshold"
+                i18n-title="@@remove-threshold"
+                class="mb-4"
+              />
+            }
+          </div>
+        }
+        <p-button
+          label="Add threshold"
+          i18n-label="@@add-threshold"
+          icon="pi pi-plus"
+          outlined
+          rounded
+          severity="secondary"
+          (click)="addThreshold()"
+        />
+      </div>
+    }
+  </app-card-editable>
+</app-page-layout-program-settings>
