@@ -15,6 +15,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { Response } from 'express';
 import {
   ApiOperation,
   ApiParam,
@@ -29,6 +30,7 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { NoUserAuthenticationEndpoint } from '@121-service/src/guards/no-user-authentication.decorator';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
 import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
 import { FindUserReponseDto } from '@121-service/src/user/dto/find-user-response.dto';
@@ -92,7 +94,7 @@ export class UserController {
   @Post('users/login')
   public async login(
     @Body() loginUserDto: LoginUserDto,
-    @Res() res,
+    @Res() res: Response,
   ): Promise<UserRO> {
     try {
       const loginResponse = await this.userService.login(loginUserDto);
@@ -101,7 +103,12 @@ export class UserController {
         loginResponse.cookieSettings.tokenKey,
         loginResponse.cookieSettings.tokenValue,
         {
-          sameSite: loginResponse.cookieSettings.sameSite,
+          sameSite: loginResponse.cookieSettings.sameSite as
+            | boolean
+            | 'lax'
+            | 'strict'
+            | 'none'
+            | undefined,
           secure: loginResponse.cookieSettings.secure,
           expires: loginResponse.cookieSettings.expires,
           httpOnly: loginResponse.cookieSettings.httpOnly,
@@ -115,7 +122,7 @@ export class UserController {
         isAdmin: loginResponse.userRo.user.isAdmin,
         isEntraUser: loginResponse.userRo.user.isEntraUser,
         isOrganizationAdmin: loginResponse.userRo.user.isOrganizationAdmin,
-      });
+      }) as unknown as UserRO;
     } catch (error) {
       throw error;
     }
@@ -124,19 +131,19 @@ export class UserController {
   @AuthenticatedUser()
   @ApiOperation({ summary: 'Log out existing user' })
   @Post('users/logout')
-  public async logout(@Res() res): Promise<UserRO> {
+  public async logout(@Res() res: Response): Promise<UserRO> {
     try {
       const key = this.userService.getInterfaceKeyByHeader();
       const { sameSite, secure, httpOnly } =
         this.userService.getCookieSecuritySettings();
 
       res.cookie(key, '', {
-        sameSite,
+        sameSite: sameSite as boolean | 'lax' | 'strict' | 'none' | undefined,
         secure,
         httpOnly,
         expires: new Date(Date.now() - 1),
       });
-      return res.send();
+      return res.send() as unknown as UserRO;
     } catch (error) {
       throw error;
     }
@@ -181,8 +188,8 @@ export class UserController {
     status: HttpStatus.OK,
     description: 'User returned',
   })
-  public async findMe(@Req() req): Promise<UserRO> {
-    if (!req.user || !req.user.username) {
+  public async findMe(@Req() req: ScopedUserRequest): Promise<UserRO> {
+    if (!req.user?.username) {
       const errors = `No user detectable from cookie or no cookie present'`;
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }

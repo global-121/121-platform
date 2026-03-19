@@ -15,6 +15,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { Response } from 'express';
 import {
   ApiBody,
   ApiOperation,
@@ -200,13 +201,14 @@ You can also leave the body empty.`,
     @Param('programId', ParseIntPipe)
     programId: number,
     @Body() body: SecretDto,
-    @Res() res,
+    @Res() res: Response,
   ): Promise<void> {
     if (body.secret !== env.RESET_SECRET) {
-      return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
+      res.status(HttpStatus.FORBIDDEN).send('Not allowed');
+      return;
     }
     await this.programService.deleteProgram(programId);
-    return res
+    res
       .status(HttpStatus.NO_CONTENT)
       .send('The program has been successfully deleted.');
   }

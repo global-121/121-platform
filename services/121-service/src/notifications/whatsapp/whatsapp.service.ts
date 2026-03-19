@@ -64,7 +64,16 @@ export class WhatsappService {
     userId: MessageSenderUserId;
     firstAttempt?: boolean; // Controls retry logic for Twilio media errors (63021)
   }): Promise<string | undefined> {
-    const payload = {
+    const payload: {
+      body: string | undefined;
+      contentSid: string | undefined;
+      messagingServiceSid: string;
+      from: string;
+      statusCallback: string;
+      to: string;
+      mediaUrl?: string;
+      messageContentType?: MessageContentType;
+    } = {
       body: contentSid ? undefined : message,
       contentSid,
       messagingServiceSid: env.TWILIO_MESSAGING_SID,
@@ -75,14 +84,16 @@ export class WhatsappService {
       to: formatWhatsAppNumber(recipientPhoneNr),
     };
     if (mediaUrl) {
-      payload['mediaUrl'] = mediaUrl;
+      payload.mediaUrl = mediaUrl;
     }
     if (env.MOCK_TWILIO) {
-      payload['messageContentType'] = messageContentType;
+      payload.messageContentType = messageContentType;
     }
 
     try {
-      const messageToStore = await twilioClient.messages.create(payload);
+      const messageToStore = await twilioClient.messages.create(
+        payload as Parameters<typeof twilioClient.messages.create>[0],
+      );
       // If the message is a template, we need to fetch the body from Twilio due to what we think is a bug in Twilio Node library
       // I opened an issue for it here: https://github.com/twilio/twilio-node/issues/1081
       if (contentSid && !messageToStore.body) {
@@ -316,7 +327,7 @@ export class WhatsappService {
       };
     }
     const programs = await this.programRepository.find();
-    const result = {};
+    const result: Record<string, unknown> = {};
     for (const program of programs) {
       result[`program-${program.id}`] = await this.getProgramTemplateResult(
         program,
@@ -343,7 +354,7 @@ export class WhatsappService {
     messagesTemplates: MessageTemplateEntity[],
     sessionId: string,
   ): Promise<object> {
-    const resultsLanguage = {};
+    const resultsLanguage: Record<string, Record<string, unknown>> = {};
 
     for (const messageTemplate of messagesTemplates) {
       // Initialize the language property if it doesn't exist

@@ -68,7 +68,7 @@ export class RolesController {
   })
   @Put('roles/:userRoleId')
   public async updateUserRole(
-    @Param() params,
+    @Param() params: { userRoleId: number },
     @Body() userRoleData: UpdateUserRoleDto,
   ): Promise<UserRoleResponseDTO> {
     return await this.userService.updateUserRole(

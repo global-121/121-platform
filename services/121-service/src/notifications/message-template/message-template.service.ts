@@ -139,7 +139,9 @@ export class MessageTemplateService {
     }
 
     for (const key in updateMessageTemplateDto) {
-      template[key] = updateMessageTemplateDto[key];
+      (template as unknown as Record<string, unknown>)[key] = (
+        updateMessageTemplateDto as Record<string, unknown>
+      )[key];
     }
 
     return await this.messageTemplateRepository.save(template);

@@ -352,7 +352,9 @@ export class UserService {
       throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
     }
     for (const key of Object.keys(userData)) {
-      userEntity[key] = userData[key];
+      (userEntity as unknown as Record<string, unknown>)[key] = (
+        userData as unknown as Record<string, unknown>
+      )[key];
     }
 
     return await this.userRepository.save(userEntity);
@@ -599,7 +601,7 @@ export class UserService {
     const exp = new Date(today);
     exp.setDate(today.getDate() + tokenExpirationDays);
 
-    const roles = {};
+    const roles: Record<string, string[]> = {};
     if (user.programAssignments && user.programAssignments[0]) {
       for (const programAssignment of user.programAssignments) {
         const programRoles = programAssignment.roles.map((role) => role.role);
@@ -679,7 +681,7 @@ export class UserService {
       ],
     });
 
-    const permissionsObject = {};
+    const permissionsObject: Record<number, PermissionEnum[]> = {};
     if (user.programAssignments && user.programAssignments[0]) {
       for (const programAssignment of user.programAssignments) {
         let permissions: PermissionEnum[] = [];
@@ -785,7 +787,7 @@ export class UserService {
       .getRawMany();
 
     const result = users.map((user) => {
-      const roles = user.rolesid.map((id, index) => ({
+      const roles = user.rolesid.map((id: number, index: number) => ({
         id,
         role: user.role[index],
         label: user.label[index],

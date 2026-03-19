@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, IsNull, Like, Not, Repository } from 'typeorm';
+import { MessageStatus } from 'twilio/lib/rest/api/v2010/account/message';
 
 import {
   API_PATHS,
@@ -118,10 +119,12 @@ export class MessageIncomingService {
     );
   }
 
-  public async processSmsStatusCallback(callbackData): Promise<void> {
+  public async processSmsStatusCallback(
+    callbackData: TwilioStatusCallbackDto,
+  ): Promise<void> {
     await this.twilioMessageRepository.update(
       { sid: callbackData.MessageSid },
-      { status: callbackData.SmsStatus || callbackData.MessageStatus },
+      { status: (callbackData.SmsStatus || callbackData.MessageStatus) as MessageStatus },
     );
   }
 
@@ -354,7 +357,7 @@ export class MessageIncomingService {
   }
 
   private async getRegistrationsWithPhoneNumber(
-    phoneNumber,
+    phoneNumber: string,
   ): Promise<RegistrationEntity[]> {
     const registrationsWithPhoneNumber = await this.registrationRepository
       .createQueryBuilder('registration')

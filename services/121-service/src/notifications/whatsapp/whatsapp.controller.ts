@@ -50,7 +50,9 @@ export class WhatsappController {
   @ApiParam({ name: 'sessionId', required: true, type: 'string' })
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
   @Get('templates/:sessionId')
-  public async getWhatsappTemplateResult(@Param() param): Promise<object> {
+  public async getWhatsappTemplateResult(
+    @Param() param: { sessionId: string },
+  ): Promise<object> {
     return await this.whatsappService.getWhatsappTemplateResult(
       param.sessionId,
     );

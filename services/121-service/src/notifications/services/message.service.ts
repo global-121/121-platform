@@ -450,7 +450,9 @@ export class MessageService {
           placeHolderValue === null || placeHolderValue === undefined
             ? ''
             : typeof placeHolderValue === 'object'
-              ? (placeHolderValue[language] ?? '')
+              ? ((placeHolderValue as Partial<Record<string, string>>)[
+                  language
+                ] ?? '')
               : placeHolderValue,
         );
       }

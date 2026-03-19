@@ -77,7 +77,7 @@ export class ProgramService {
 
     program.editableAttributes =
       await this.programAttributesService.getPaEditableAttributes(program.id);
-    program['paTableAttributes'] =
+    (program as unknown as Record<string, unknown>)['paTableAttributes'] =
       await this.programAttributesService.getAttributes({
         programId: program.id,
         includeProgramRegistrationAttributes: true,
@@ -85,10 +85,10 @@ export class ProgramService {
       });
 
     // TODO: Get these attributes from some enum or something
-    program['filterableAttributes'] =
+    (program as unknown as Record<string, unknown>)['filterableAttributes'] =
       this.programAttributesService.getFilterableAttributes(program);
 
-    program['fspConfigurations'] =
+    (program as unknown as Record<string, unknown>)['fspConfigurations'] =
       ProgramFspConfigurationMapper.mapEntitiesToDtos(
         program.programFspConfigurations,
       );
@@ -252,7 +252,9 @@ export class ProgramService {
     }
 
     for (const key in updateProgramDto) {
-      program[key] = updateProgramDto[key];
+      (program as unknown as Record<string, unknown>)[key] = (
+        updateProgramDto as Record<string, unknown>
+      )[key];
     }
 
     let savedProgram: ProgramEntity;
@@ -363,7 +365,9 @@ export class ProgramService {
       if (existingAttribute) {
         // Update existing attribute
         for (const key in attribute) {
-          existingAttribute[key] = attribute[key];
+          (existingAttribute as unknown as Record<string, unknown>)[key] = (
+            attribute as unknown as Record<string, unknown>
+          )[key];
         }
         entitiesToSave.push(existingAttribute);
       } else {
@@ -473,8 +477,11 @@ export class ProgramService {
     }
 
     for (const attribute in updateProgramRegistrationAttribute) {
-      programRegistrationAttribute[attribute] =
-        updateProgramRegistrationAttribute[attribute];
+      (programRegistrationAttribute as unknown as Record<string, unknown>)[
+        attribute
+      ] = (updateProgramRegistrationAttribute as Record<string, unknown>)[
+        attribute
+      ];
     }
 
     await this.programRegistrationAttributeRepository.save(

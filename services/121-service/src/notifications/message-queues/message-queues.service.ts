@@ -77,13 +77,15 @@ export class MessageQueuesService {
     userId: MessageSenderUserId;
   }): Promise<void> {
     let whatsappPhoneNumber =
-      registration[DefaultRegistrationDataAttributeNames.whatsappPhoneNumber];
+      (registration as unknown as Record<string, unknown>)[
+        DefaultRegistrationDataAttributeNames.whatsappPhoneNumber
+      ] as string | undefined;
     if (registration instanceof RegistrationEntity) {
       whatsappPhoneNumber =
-        await this.registrationDataService.getRegistrationDataValueByName(
+        (await this.registrationDataService.getRegistrationDataValueByName(
           registration,
           DefaultRegistrationDataAttributeNames.whatsappPhoneNumber,
-        );
+        )) ?? undefined;
     }
 
     // If messageProcessType is smsOrWhatsappTemplateGeneric, check if registration has whatsappPhoneNumber
