@@ -20,7 +20,11 @@ test(
   { skip: !shouldBeEnabled(process.env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD) },
   () => {
     requiredTranslations.forEach((lang) => {
-      const filePath = join(import.meta.dirname, getTranslationFilePath(lang));
+      const filePath = join(
+        import.meta.dirname,
+        '..',
+        getTranslationFilePath(lang),
+      );
       const contents = readFileSync(filePath, 'utf-8');
       const mockValue = createMockTranslations(lang);
 
@@ -42,7 +46,11 @@ test(
   { skip: !shouldBeEnabled(process.env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD) },
   () => {
     requiredTranslations.forEach((lang) => {
-      const filePath = join(import.meta.dirname, getTranslationFilePath(lang));
+      const filePath = join(
+        import.meta.dirname,
+        '..',
+        getTranslationFilePath(lang),
+      );
       const contents = readFileSync(filePath, 'utf-8');
 
       // Count the number of trans-unit elements in the translation file
