@@ -3,4 +3,4 @@ import { RegistrationViewEntity } from '@121-service/src/registration/entities/r
 export type MappedPaginatedRegistrationDto = Omit<
   RegistrationViewEntity,
   'data'
-> & { name?: string };
+> & { name?: string } & { [key: string]: unknown };
