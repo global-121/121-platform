@@ -15,21 +15,20 @@ HEALTHCHECK \
   --timeout=300s \
   CMD curl --fail http://0.0.0.0:${PORT_MOCK_SERVICE}/api/instance/version || exit 1
 
+# Include source-code of shared packages
+COPY packages /home/packages
+
+# Include source-code of the service itself
+COPY services/mock-service /home/node/app
+
 FROM base AS production
 
-COPY ./package*.json ./
-COPY ./.npmrc ./
-
 RUN npm ci
-
-COPY . .
 
 RUN npm run build
 
 CMD ["npm", "start"]
 
 FROM base AS development
-
-COPY . .
 
 CMD ["npm", "run", "start:dev"]
