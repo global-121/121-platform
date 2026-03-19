@@ -11,5 +11,8 @@ export default defineConfig({
     coverage: {
       reporter: [['lcov'], ['text-summary']],
     },
+    sequence: {
+      shuffle: true,
+    },
   },
 });
