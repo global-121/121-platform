@@ -89,6 +89,7 @@ export default {
         globals: globals.nodeBuiltin,
       },
       rules: {
+        'prefer-arrow-callback': 'error',
       },
     },
     javascript: {
