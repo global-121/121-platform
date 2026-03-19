@@ -68,6 +68,18 @@ export class PageLayoutProgramSettingsComponent {
       visible: this.authService.isAdmin,
     },
     {
+      label: $localize`:@@page-title-program-settings-messages:Messages`,
+      icon: 'pi pi-envelope',
+      routerLink: [
+        '/',
+        AppRoutes.program,
+        this.programId(),
+        AppRoutes.programSettings,
+        AppRoutes.programSettingsMessages,
+      ],
+      visible: this.authService.isAdmin,
+    },
+    {
       label: $localize`:@@page-title-program-settings-team:Program team`,
       icon: 'pi pi-users',
       routerLink: [

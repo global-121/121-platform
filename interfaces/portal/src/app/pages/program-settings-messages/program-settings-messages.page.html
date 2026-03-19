@@ -1,0 +1,41 @@
+<app-page-layout-program-settings [programId]="programId()">
+  <p-card class="[&_.p-card]:border-grey-300 mb-4 [&_.p-card]:border">
+    <h2
+      i18n
+      class="mb-4"
+    >
+      Message templates
+    </h2>
+    <p
+      i18n
+      class="mb-6"
+    >
+      Edit the message templates for this program. All program languages must
+      have a corresponding translation.
+    </p>
+
+    @if (messageTemplates.isPending() || program.isPending()) {
+      <div class="space-y-4">
+        @for (_ of [1, 2, 3]; track $index) {
+          <p-skeleton
+            height="8rem"
+            styleClass="w-full"
+          />
+        }
+      </div>
+    } @else if (messageTemplates.isSuccess() && templatesByType().size > 0) {
+      <div class="space-y-4">
+        @for (entry of templatesByType() | keyvalue; track entry.key) {
+          <app-message-template-card
+            [programId]="programId()"
+            [templateType]="entry.key"
+            [templates]="entry.value"
+            [programLanguages]="programLanguages()"
+          />
+        }
+      </div>
+    } @else if (messageTemplates.isSuccess()) {
+      <p i18n>No message templates found for this program.</p>
+    }
+  </p-card>
+</app-page-layout-program-settings>

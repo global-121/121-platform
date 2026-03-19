@@ -49,4 +49,37 @@ export class NotificationApiService extends DomainApiService {
       enabled: () => !!programId(),
     });
   }
+
+  getAllMessageTemplates(programId: Signal<number | string | undefined>) {
+    return this.generateQueryOptions<MessageTemplate[]>({
+      path: [
+        ...BASE_ENDPOINT(programId as Signal<number | string>),
+        'message-templates',
+      ],
+      enabled: () => !!programId(),
+    });
+  }
+
+  updateMessageTemplate({
+    programId,
+    type,
+    language,
+    body,
+  }: {
+    programId: Signal<number | string>;
+    type: string;
+    language: string;
+    body: { message?: string };
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<MessageTemplate>({
+      method: 'PATCH',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(programId),
+        'message-templates',
+        type,
+        language,
+      ]).join('/'),
+      body,
+    });
+  }
 }

@@ -30,6 +30,7 @@ export enum AppRoutes {
   programSettings = 'settings',
   programSettingsFsps = 'fsps',
   programSettingsInformation = 'information',
+  programSettingsMessages = 'messages',
   programSettingsRegistrationData = 'registration-data',
   programSettingsTeam = 'team',
   registrationByReferenceId = 'registration-by-reference-id',
@@ -208,6 +209,20 @@ export const routes: Routes = [
             loadComponent: () =>
               import('~/pages/program-settings-fsps/program-settings-fsps.page').then(
                 (x) => x.ProgramSettingsFspsPageComponent,
+              ),
+            canActivate: [
+              authCapabilitiesGuard((authService) => authService.isAdmin),
+            ],
+          },
+          {
+            path: AppRoutes.programSettingsMessages,
+            title:
+              $localize`:@@page-title-program-settings-messages:Messages` +
+              ' | ' +
+              $localize`:@@page-title-program-settings:Settings`,
+            loadComponent: () =>
+              import('~/pages/program-settings-messages/program-settings-messages.page').then(
+                (x) => x.ProgramSettingsMessagesPageComponent,
               ),
             canActivate: [
               authCapabilitiesGuard((authService) => authService.isAdmin),
