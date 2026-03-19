@@ -30,6 +30,7 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
       .createQueryBuilder()
       .select('t.id', 'id')
       .addSelect('t.transferValue', 'transferValue')
+      .addSelect('t.paymentAmountMultiplier', 'paymentAmountMultiplier')
       .addSelect('t.userId', 'userId')
       .addSelect('t.created', 'created')
       .addSelect('t.updated', 'updated')
@@ -74,6 +75,9 @@ export class TransactionViewEntity {
 
   @ViewColumn()
   public transferValue: number | null;
+
+  @ViewColumn()
+  public paymentAmountMultiplier: number | null;
 
   @ViewColumn()
   public userId: number;

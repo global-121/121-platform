@@ -30,6 +30,9 @@ export class ExportTransactionResponseDto {
   @ApiProperty({ example: 25, type: 'number' })
   public amount: number;
 
+  @ApiProperty({ example: 2, type: 'number', nullable: true })
+  public paymentAmountMultiplier: number | null;
+
   @ApiProperty({ example: 'Something went wrong', type: 'string' })
   public errorMessage: string | null;
 

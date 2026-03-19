@@ -38,6 +38,7 @@ export class TransactionsService {
       const transactionToSave = new TransactionEntity();
       transactionToSave.registrationId = item.registrationId;
       transactionToSave.transferValue = item.transferValue;
+      transactionToSave.paymentAmountMultiplier = item.paymentAmountMultiplier;
       transactionToSave.paymentId = paymentId;
       transactionToSave.status = TransactionStatusEnum.pendingApproval;
       transactionToSave.userId = userId;

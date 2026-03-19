@@ -294,11 +294,19 @@ export class PaymentsReportingService {
       if (!registrationView) {
         return { ...transaction };
       }
-      // De-structure 'name' as 'registrationName', and spread the rest
-      const { name, referenceId: _referenceId, ...rest } = registrationView;
+      // Destructure 'name' as 'registrationName', and spread the rest
+      // Destructure 'paymentAmountMultiplier' to use the transaction's stored value (at time of payment) with fallback to the registration's current value for historical transactions
+      const {
+        name,
+        referenceId: _referenceId,
+        paymentAmountMultiplier: currentRegistrationMultiplier,
+        ...rest
+      } = registrationView;
       return {
         ...transaction,
         registrationName: name,
+        paymentAmountMultiplier:
+          transaction.paymentAmountMultiplier ?? currentRegistrationMultiplier,
         ...rest,
       };
     });

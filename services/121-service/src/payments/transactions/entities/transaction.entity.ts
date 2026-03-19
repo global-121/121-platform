@@ -27,6 +27,9 @@ export class TransactionEntity extends Base121AuditedEntity {
   @Column({ nullable: true, type: 'real' })
   public transferValue: number | null;
 
+  @Column({ nullable: true, type: 'real' })
+  public paymentAmountMultiplier: number | null;
+
   @Column()
   @Index()
   public status: string;

@@ -26,6 +26,7 @@ function createMockTransaction(
     paymentDate: new Date(),
     status,
     amount,
+    paymentAmountMultiplier: 1,
     errorMessage: null,
     programFspConfigurationName: 'someFsp',
     registrationProgramId: 2,

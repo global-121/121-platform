@@ -119,6 +119,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
       registrationStatus: RegistrationStatusEnum;
       registrationScope: string;
       amount: number;
+      paymentAmountMultiplier: number | null;
       errorMessage: string | null;
       programFspConfigurationName: string;
     } & Record<string, unknown>)[]
@@ -136,6 +137,7 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
         'r.registrationStatus AS "registrationStatus"',
         'transaction.status AS "status"',
         'transaction.transferValue AS "amount"',
+        'transaction.paymentAmountMultiplier AS "paymentAmountMultiplier"',
         'transaction.errorMessage AS "errorMessage"',
         'transaction.programFspConfigurationName AS "programFspConfigurationName"',
       ])

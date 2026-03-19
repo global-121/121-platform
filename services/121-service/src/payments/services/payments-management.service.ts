@@ -341,6 +341,7 @@ export class PaymentsManagementService {
     return registrations.map((row) => ({
       registrationId: row.id,
       transferValue: transferValue * row.paymentAmountMultiplier,
+      paymentAmountMultiplier: row.paymentAmountMultiplier,
       programFspConfigurationId: row.programFspConfigurationId,
     }));
   }
