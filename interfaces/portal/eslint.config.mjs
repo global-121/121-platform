@@ -56,9 +56,7 @@ export default defineConfig(
       regexp: eslintPluginRegexp,
     },
     rules: {
-      'arrow-body-style': 'error',
       'func-style': 'error',
-      'no-inner-declarations': 'error',
     },
   },
   {
@@ -118,10 +116,8 @@ export default defineConfig(
         },
       ],
       'n/no-unsupported-features/node-builtins': ['off'], // These files are for browsers, we don't want false-positives on not-yet-supported-in-Node.js features already covered by `configs.browser`.
-      'arrow-body-style': 'error',
       'func-style': 'error',
       'max-params': ['error', 2],
-      'no-inner-declarations': 'error',
       'no-relative-import-paths/no-relative-import-paths': [
         'error',
         {
@@ -129,7 +125,6 @@ export default defineConfig(
           rootDir: './src/app',
         },
       ],
-      'object-shorthand': 'error',
       'perfectionist/sort-array-includes': ['error'],
       'perfectionist/sort-enums': ['error'],
       'perfectionist/sort-intersection-types': ['error'],
