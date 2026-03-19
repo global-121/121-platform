@@ -2235,6 +2235,51 @@
       <trans-unit id="8995474184079201011" datatype="html">
         <source>Use a clear name so users can easily recognize the file.</source>
       </trans-unit>
+      <trans-unit id="1857891005725220249" datatype="html">
+        <source>Approver(s)</source>
+      </trans-unit>
+      <trans-unit id="1995280298340672717" datatype="html">
+        <source>Edit approvers</source>
+      </trans-unit>
+      <trans-unit id="2056678224020044163" datatype="html">
+        <source>Threshold amount</source>
+      </trans-unit>
+      <trans-unit id="3032741312493394072" datatype="html">
+        <source>Configure which users must approve payments above certain thresholds. Each approver can only be assigned to one threshold. Approvers must be program team members without a scope.</source>
+      </trans-unit>
+      <trans-unit id="3467689249509148228" datatype="html">
+        <source>Add threshold</source>
+      </trans-unit>
+      <trans-unit id="3765818303667161631" datatype="html">
+        <source>Select approver(s)</source>
+      </trans-unit>
+      <trans-unit id="3937051059616761983" datatype="html">
+        <source>At least one threshold must have an amount of 0 to cover all payments.</source>
+      </trans-unit>
+      <trans-unit id="4554830206613184089" datatype="html">
+        <source>Amount must be 0 or greater.</source>
+      </trans-unit>
+      <trans-unit id="5471385783810401043" datatype="html">
+        <source>No approval thresholds configured.</source>
+      </trans-unit>
+      <trans-unit id="5635442642781679186" datatype="html">
+        <source>Remove threshold</source>
+      </trans-unit>
+      <trans-unit id="6788052149978359880" datatype="html">
+        <source>At least one approver is required.</source>
+      </trans-unit>
+      <trans-unit id="8181410181518647436" datatype="html">
+        <source>0</source>
+      </trans-unit>
+      <trans-unit id="8895503090251614722" datatype="html">
+        <source>Threshold amounts must be unique.</source>
+      </trans-unit>
+      <trans-unit id="904607869949490192" datatype="html">
+        <source>Approvers saved</source>
+      </trans-unit>
+      <trans-unit id="page-title-program-settings-approvers" datatype="html">
+        <source>Approvers</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

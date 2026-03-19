@@ -68,6 +68,18 @@ export class PageLayoutProgramSettingsComponent {
       visible: this.authService.isAdmin,
     },
     {
+      label: $localize`:@@page-title-program-settings-approvers:Approvers`,
+      icon: 'pi pi-shield',
+      routerLink: [
+        '/',
+        AppRoutes.program,
+        this.programId(),
+        AppRoutes.programSettings,
+        AppRoutes.programSettingsApprovers,
+      ],
+      visible: this.authService.isAdmin,
+    },
+    {
       label: $localize`:@@page-title-program-settings-team:Program team`,
       icon: 'pi pi-users',
       routerLink: [

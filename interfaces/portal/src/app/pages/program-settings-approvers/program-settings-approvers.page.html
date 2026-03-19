@@ -1,0 +1,160 @@
+<app-page-layout-program-settings [programId]="programId()">
+  <p-card>
+    <div class="flex min-h-12 items-center gap-x-2">
+      <h2 i18n="@@page-title-program-settings-approvers">Approvers</h2>
+      <div class="ms-auto space-x-2">
+        @if (!isEditing()) {
+          <p-button
+            text
+            plain
+            icon="pi pi-pencil"
+            [iconPos]="rtlHelper.createPosition('start')()"
+            (click)="startEditing()"
+            title="Edit approvers"
+            i18n-title
+            ariaLabel="Edit approvers"
+            i18n-ariaLabel
+          />
+        } @else {
+          <p-button
+            label="Cancel"
+            i18n-label="@@generic-cancel"
+            (click)="cancelEditing()"
+            icon="pi pi-times"
+            [iconPos]="rtlHelper.createPosition('start')()"
+            outlined
+            rounded
+            severity="contrast"
+            [disabled]="saveThresholdsMutation.isPending()"
+          />
+          <p-button
+            label="Save"
+            i18n-label
+            icon="pi pi-check"
+            [iconPos]="rtlHelper.createPosition('start')()"
+            rounded
+            [loading]="saveThresholdsMutation.isPending()"
+            (click)="onSave()"
+          />
+        }
+      </div>
+    </div>
+
+    @if (saveThresholdsMutation.isError()) {
+      <div class="my-4">
+        <app-form-error
+          [error]="saveThresholdsMutation.failureReason()?.message"
+        />
+      </div>
+    }
+
+    @if (validationResult()?.formError) {
+      <div class="my-4">
+        <app-form-error [error]="validationResult()?.formError" />
+      </div>
+    }
+
+    <p
+      i18n
+      class="mb-4"
+    >
+      Configure which users must approve payments above certain thresholds. Each
+      approver can only be assigned to one threshold. Approvers must be program
+      team members without a scope.
+    </p>
+
+    <div class="space-y-4">
+      @for (threshold of draftThresholds(); track $index) {
+        @let index = $index;
+        @let rowErrors = validationResult()?.rowErrors?.[index];
+        @let availableUsers = getAvailableUsersForThreshold(index);
+
+        <div class="border-grey-300 rounded-sm border p-4">
+          <div class="flex items-start gap-4">
+            <app-form-field-wrapper
+              label="Threshold amount"
+              i18n-label
+              class="flex-1"
+              [errorMessage]="rowErrors?.thresholdAmount ?? false"
+            >
+              <input
+                pInputText
+                type="number"
+                min="0"
+                class="w-full"
+                [value]="threshold.thresholdAmount ?? ''"
+                (change)="
+                  updateThresholdAmount(index, $any($event.target).value)
+                "
+                (blur)="sortThresholdsByAmount()"
+                [disabled]="!isEditing()"
+                placeholder="0"
+                i18n-placeholder
+              />
+            </app-form-field-wrapper>
+
+            <app-form-field-wrapper
+              label="Approver(s)"
+              i18n-label
+              class="flex-1"
+              [errorMessage]="rowErrors?.userIds ?? false"
+            >
+              <p-multiSelect
+                class="w-full"
+                [options]="availableUsers"
+                [optionLabel]="'username'"
+                [optionValue]="'id'"
+                [ngModel]="threshold.userIds"
+                (ngModelChange)="updateThresholdUserIds(index, $event)"
+                placeholder="Select approver(s)"
+                i18n-placeholder
+                [disabled]="!isEditing()"
+                [loading]="programUsers.isPending()"
+                [overlayOptions]="{ target: '@parent' }"
+                [showToggleAll]="false"
+              />
+            </app-form-field-wrapper>
+
+            @if (isEditing()) {
+              <div class="mt-7">
+                <p-button
+                  icon="pi pi-trash"
+                  severity="danger"
+                  text
+                  (click)="removeThreshold(index)"
+                  title="Remove threshold"
+                  i18n-title
+                  ariaLabel="Remove threshold"
+                  i18n-ariaLabel
+                />
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      @if (draftThresholds().length === 0) {
+        <p
+          i18n
+          class="text-grey-500"
+        >
+          No approval thresholds configured.
+        </p>
+      }
+    </div>
+
+    @if (isEditing()) {
+      <div class="mt-4">
+        <p-button
+          label="Add threshold"
+          i18n-label
+          icon="pi pi-plus"
+          [iconPos]="rtlHelper.createPosition('start')()"
+          outlined
+          rounded
+          (click)="addThreshold()"
+        />
+      </div>
+    }
+  </p-card>
+</app-page-layout-program-settings>
