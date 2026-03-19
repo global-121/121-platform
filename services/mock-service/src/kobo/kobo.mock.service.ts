@@ -452,6 +452,27 @@ export class KoboMockService {
     };
   }
 
+  public getSubmissions(uid_asset: string): {
+    count: number;
+    next: string | null;
+    results: Record<string, any>[];
+  } {
+    return {
+      count: 2,
+      next: null,
+      results: [
+        this.getSubmission({
+          uid_asset,
+          submissionId: KoboMockSubmissionUuids.success,
+        }),
+        this.getSubmission({
+          uid_asset,
+          submissionId: KoboMockSubmissionUuids.failure,
+        }),
+      ],
+    };
+  }
+
   public getSubmission({
     uid_asset,
     submissionId,

@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Post,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -33,6 +34,9 @@ import { KoboWebhookIncomingSubmission } from '@121-service/src/kobo/dtos/kobo-w
 import { KoboWebhookBasicAuthGuard } from '@121-service/src/kobo/guards/kobo-webhook-basic-auth.guard';
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboSubmissionService } from '@121-service/src/kobo/services/kobo-submission.service';
+import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
+import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs/kobo')
@@ -159,6 +163,47 @@ export class KoboController {
     programId: number,
   ): Promise<KoboResponseDto> {
     return this.koboService.getKoboData({ programId });
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary: 'Import existing Kobo submissions for a Program',
+    description:
+      'Fetches all existing submissions from the linked Kobo form and imports those whose reference IDs do not already exist in the program. Limited to 1000 submissions.',
+  })
+  @ApiParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+    description: 'The unique identifier of the program',
+    example: 1,
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Existing Kobo submissions imported successfully',
+    type: ImportResult,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description:
+      'Program does not exist or no Kobo integration found for this program',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description:
+      'Too many submissions to import. Use CSV import instead or split the import.',
+  })
+  @Post('programs/:programId/kobo/import-existing-submissions')
+  public async importExistingSubmissions(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Req() req: ScopedUserRequest,
+  ): Promise<ImportResult> {
+    const userId = RequestHelper.getUserId(req);
+    return this.koboSubmissionService.importExistingSubmissions({
+      programId,
+      userId,
+    });
   }
 
   @NoUserAuthenticationEndpoint(

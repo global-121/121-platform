@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, Repository } from 'typeorm';
+import { Equal, In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { KoboWebhookIncomingSubmission } from '@121-service/src/kobo/dtos/kobo-webhook-incoming-submission.dto';
@@ -8,18 +8,96 @@ import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
 import { KoboSubmissionMapper } from '@121-service/src/kobo/mappers/kobo-submission.mapper';
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
+import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationsCreationService } from '@121-service/src/registration/services/registrations-creation.service';
+
+const MAX_SUBMISSIONS_TO_IMPORT = 1000;
 
 @Injectable()
 export class KoboSubmissionService {
   @InjectRepository(KoboEntity)
   private readonly koboRepository: Repository<KoboEntity>;
 
+  @InjectRepository(RegistrationEntity)
+  private readonly registrationRepository: Repository<RegistrationEntity>;
+
   constructor(
     private readonly koboApiService: KoboApiService,
     private readonly koboService: KoboService,
     private readonly registrationsCreationService: RegistrationsCreationService,
   ) {}
+
+  public async importExistingSubmissions({
+    programId,
+    userId,
+  }: {
+    programId: number;
+    userId: number;
+  }): Promise<ImportResult> {
+    const koboIntegration = await this.koboRepository.findOne({
+      where: {
+        programId: Equal(programId),
+      },
+      select: {
+        id: true,
+        assetUid: true,
+        token: true,
+        url: true,
+      },
+      relations: { program: true },
+    });
+    if (!koboIntegration) {
+      throw new HttpException(
+        'No Kobo integration found for this program',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const allSubmissions = await this.koboApiService.getSubmissions({
+      token: koboIntegration.token,
+      assetId: koboIntegration.assetUid,
+      baseUrl: koboIntegration.url,
+      maxCount: MAX_SUBMISSIONS_TO_IMPORT,
+    });
+
+    const submissionUuids = allSubmissions.map((s) => s._uuid);
+
+    const existingRegistrations = await this.registrationRepository.find({
+      where: {
+        referenceId: In(submissionUuids),
+        programId: Equal(programId),
+      },
+      select: { referenceId: true },
+    });
+    const existingReferenceIds = new Set(
+      existingRegistrations.map((r) => r.referenceId),
+    );
+
+    const newSubmissions = allSubmissions.filter(
+      (s) => !existingReferenceIds.has(s._uuid),
+    );
+
+    if (newSubmissions.length === 0) {
+      return {
+        aggregateImportResult: {
+          countImported: 0,
+        },
+      };
+    }
+
+    const inputRegistrations = newSubmissions.map((submission) =>
+      KoboSubmissionMapper.mapSubmissionToRegistrationData({
+        koboSubmission: submission,
+      }),
+    );
+
+    return this.registrationsCreationService.importRegistrations({
+      inputRegistrations,
+      program: koboIntegration.program,
+      userId,
+    });
+  }
 
   public async processKoboWebhookCall(
     koboWebhookIncomingSubmission: KoboWebhookIncomingSubmission,

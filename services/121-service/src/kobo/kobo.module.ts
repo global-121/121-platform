@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { KoboWebhookBasicAuthGuard } from '@121-service/src/kobo/guards/kobo-webhook-basic-auth.guard';
 import { KoboController } from '@121-service/src/kobo/kobo.controller';
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
@@ -17,7 +18,7 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([KoboEntity]),
+    TypeOrmModule.forFeature([KoboEntity, RegistrationEntity]),
     ProgramModule,
     ProgramFspConfigurationsModule,
     HttpModule,

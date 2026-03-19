@@ -158,6 +158,70 @@ export class KoboApiService {
     });
   }
 
+  public async getSubmissions({
+    token,
+    assetId,
+    baseUrl,
+    maxCount,
+  }: {
+    token: string;
+    assetId: string;
+    baseUrl: string;
+    maxCount?: number;
+  }): Promise<KoboSubmissionDto[]> {
+    const allSubmissions: KoboSubmissionDto[] = [];
+    let nextUrl: string | null = joinURL(
+      baseUrl,
+      'api/v2/assets',
+      assetId,
+      'data',
+    );
+    const headers = new Headers({ Authorization: `Token ${token}` });
+    let isFirstPage = true;
+
+    while (nextUrl) {
+      const response = await this.httpService.get<
+        AxiosResponse<
+          | {
+              count: number;
+              next: string | null;
+              results: KoboSubmissionDto[];
+            }
+          | unknown
+        >
+      >(nextUrl, headers);
+
+      if (
+        !this.isValidKoboResponse<{
+          count: number;
+          next: string | null;
+          results: KoboSubmissionDto[];
+        }>(response)
+      ) {
+        this.throwKoboApiError({
+          response,
+          assetUid: assetId,
+          apiUrl: nextUrl,
+          notFoundMessage: 'Kobo asset not found. This asset does not exist',
+          operationDescription: 'fetch Kobo submissions',
+        });
+      }
+
+      if (isFirstPage && maxCount && response.data.count > maxCount) {
+        throw new HttpException(
+          `Too many submissions to import. The maximum number of submissions that can be imported is ${maxCount}. There are ${response.data.count} submissions. Please use the CSV import instead.`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      isFirstPage = false;
+
+      allSubmissions.push(...response.data.results);
+      nextUrl = response.data.next;
+    }
+
+    return allSubmissions;
+  }
+
   public async getSubmission({
     token,
     assetId,

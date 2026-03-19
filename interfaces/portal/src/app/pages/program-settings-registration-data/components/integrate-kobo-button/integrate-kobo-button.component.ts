@@ -156,6 +156,31 @@ export class IntegrateKoboButtonComponent {
     },
   }));
 
+  readonly importExistingSubmissionsMutation = injectMutation(() => ({
+    mutationFn: () => {
+      return this.koboApiService.importExistingKoboSubmissions({
+        programId: this.programId,
+      });
+    },
+    onMutate: () => {
+      this.toastService.showToast({
+        severity: 'info',
+        detail: $localize`Importing existing registrations from Kobo...`,
+      });
+    },
+    onSuccess: (result) => {
+      this.toastService.showToast({
+        detail: $localize`Successfully imported ${result.aggregateImportResult.countImported} registration(s) from Kobo.`,
+      });
+    },
+    onError: () => {
+      this.toastService.showToast({
+        severity: 'error',
+        detail: $localize`Failed to import existing registrations from Kobo.`,
+      });
+    },
+  }));
+
   readonly koboIntegration = injectQuery(() => ({
     ...this.koboApiService.getKoboIntegration(this.programId)(),
     enabled: !!this.programId(),
@@ -191,6 +216,13 @@ export class IntegrateKoboButtonComponent {
       icon: 'pi pi-pencil',
       command: () => {
         this.koboConfigurationDialog().show();
+      },
+    },
+    {
+      label: $localize`Import existing registrations`,
+      icon: 'pi pi-download',
+      command: () => {
+        this.importExistingSubmissionsMutation.mutate(undefined);
       },
     },
   ]);
