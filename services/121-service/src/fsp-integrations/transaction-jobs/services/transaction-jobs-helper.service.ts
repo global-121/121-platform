@@ -49,16 +49,19 @@ export class TransactionJobsHelperService {
     registration,
     userId,
     message,
+    messageTemplateKey,
     bulksize,
   }: {
     registration: RegistrationEntity | Omit<RegistrationViewEntity, 'data'>;
     userId: number;
     message?: string;
+    messageTemplateKey?: string;
     bulksize?: number;
   }): Promise<void> {
     await this.queueMessageService.addMessageJob({
       registration,
       message,
+      messageTemplateKey,
       messageContentType: MessageContentType.payment,
       messageProcessType:
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
@@ -113,6 +116,7 @@ export class TransactionJobsHelperService {
     await this.addMessageJobToQueue({
       registration,
       message: messageContent ?? undefined,
+      messageTemplateKey: type,
       bulksize: bulkSize,
       userId,
     });

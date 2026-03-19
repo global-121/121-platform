@@ -75,14 +75,10 @@ export class MessageService {
               `No whatsappPhoneNumber provided for ${processtype}`,
             );
           }
-          await this.storePendingMessageAndSendWhatsappTemplate({
-            message: messageText,
-            recipientPhoneNr: messageJobDto.whatsappPhoneNumber,
-            registrationId: messageJobDto.registrationId,
-            messageContentType: messageJobDto.messageContentType,
-            tryWhatsapp: false,
-            userId: messageJobDto.userId,
-          });
+          await this.sendWhatsappTemplateGenericMessage(
+            messageJobDto,
+            messageText,
+          );
           break;
         case MessageProcessType.whatsappPendingMessage:
           await this.processWhatsappPendingMessage(messageJobDto);
@@ -289,6 +285,63 @@ export class MessageService {
         },
       );
     }
+  }
+
+  /**
+   * Sends a WhatsApp template message directly if a contentSid is available,
+   * otherwise falls back to the legacy flow: store as pending message and send
+   * the generic "there is a message waiting for you" template.
+   */
+  private async sendWhatsappTemplateGenericMessage(
+    messageJobDto: MessageJobDto,
+    messageText: string,
+  ): Promise<void> {
+    const contentSid = await this.getContentSidFromTemplateKey(
+      messageJobDto.programId,
+      messageJobDto.messageTemplateKey,
+      messageJobDto.preferredLanguage,
+      messageJobDto.contentSid,
+    );
+
+    if (contentSid) {
+      await this.whatsappService.sendWhatsapp({
+        contentSid,
+        recipientPhoneNr: messageJobDto.whatsappPhoneNumber,
+        registrationId: messageJobDto.registrationId,
+        messageContentType: MessageContentType.genericTemplated,
+        messageProcessType: MessageProcessType.whatsappTemplateGeneric,
+        userId: messageJobDto.userId,
+      });
+    } else {
+      await this.storePendingMessageAndSendWhatsappTemplate({
+        message: messageText,
+        recipientPhoneNr: messageJobDto.whatsappPhoneNumber!,
+        registrationId: messageJobDto.registrationId,
+        messageContentType: messageJobDto.messageContentType,
+        tryWhatsapp: false,
+        userId: messageJobDto.userId,
+      });
+    }
+  }
+
+  private async getContentSidFromTemplateKey(
+    programId: number,
+    messageTemplateKey: string | undefined,
+    preferredLanguage: string,
+    existingContentSid?: string,
+  ): Promise<string | undefined> {
+    if (existingContentSid) {
+      return existingContentSid;
+    }
+    if (!messageTemplateKey) {
+      return undefined;
+    }
+    const template = await this.getMessageTemplateForLanguageOrFallback(
+      programId,
+      messageTemplateKey,
+      preferredLanguage,
+    );
+    return template.contentSid ?? undefined;
   }
 
   private async storePendingMessageAndSendWhatsappTemplate({

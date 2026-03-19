@@ -157,7 +157,7 @@ describe('MessageService', () => {
       expect(smsService.sendSms).toHaveBeenCalledTimes(0);
     });
 
-    it('should call whatsappService when processType = whatsappTemplateGeneric', async () => {
+    it('should call whatsappService directly when contentSid is available for processType = whatsappTemplateGeneric', async () => {
       // Arrange
       const testMessageJob = {
         ...defaultMessageJob,
@@ -181,6 +181,39 @@ describe('MessageService', () => {
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith({
         message: undefined,
         contentSid: messageTemplateObject.contentSid,
+        userId: testMessageJob.userId,
+        recipientPhoneNr: testMessageJob.whatsappPhoneNumber,
+        registrationId: testMessageJob.registrationId,
+        messageContentType: MessageContentType.genericTemplated,
+        messageProcessType: testMessageJob.messageProcessType,
+      });
+    });
+
+    it('should fall back to pending message and generic template when no contentSid is available for processType = whatsappTemplateGeneric', async () => {
+      // Arrange
+      const genericContentSid = 'generic-sid';
+      const testMessageJob = {
+        ...defaultMessageJob,
+        messageProcessType: MessageProcessType.whatsappTemplateGeneric,
+        messageContentType: MessageContentType.custom,
+        whatsappPhoneNumber: '012343210',
+      };
+      getMessageTemplateForLanguageOrFallback = jest
+        .spyOn(messageService as any, 'getMessageTemplateForLanguageOrFallback')
+        // First call: for the actual message template (no contentSid)
+        .mockResolvedValueOnce({ contentSid: null, message: 'some message text' })
+        // Second call: for the generic 'waiting' template (has contentSid)
+        .mockResolvedValue({ contentSid: genericContentSid });
+
+      // Act
+      await messageService.sendTextMessage(testMessageJob);
+
+      // Assert
+      expect(getMessageTemplateForLanguageOrFallback).toHaveBeenCalledTimes(2);
+      expect(whatsappService.sendWhatsapp).toHaveBeenCalledTimes(1);
+      expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith({
+        message: undefined,
+        contentSid: genericContentSid,
         userId: testMessageJob.userId,
         recipientPhoneNr: testMessageJob.whatsappPhoneNumber,
         registrationId: testMessageJob.registrationId,
