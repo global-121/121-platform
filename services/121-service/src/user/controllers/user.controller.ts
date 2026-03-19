@@ -94,52 +94,44 @@ export class UserController {
     @Body() loginUserDto: LoginUserDto,
     @Res() res,
   ): Promise<UserRO> {
-    try {
-      const loginResponse = await this.userService.login(loginUserDto);
+    const loginResponse = await this.userService.login(loginUserDto);
 
-      res.cookie(
-        loginResponse.cookieSettings.tokenKey,
-        loginResponse.cookieSettings.tokenValue,
-        {
-          sameSite: loginResponse.cookieSettings.sameSite,
-          secure: loginResponse.cookieSettings.secure,
-          expires: loginResponse.cookieSettings.expires,
-          httpOnly: loginResponse.cookieSettings.httpOnly,
-        },
-      );
-      return res.send({
-        username: loginResponse.userRo.user.username,
-        permissions: loginResponse.userRo.user.permissions,
-        [CookieNames.general]: loginResponse.token,
+    res.cookie(
+      loginResponse.cookieSettings.tokenKey,
+      loginResponse.cookieSettings.tokenValue,
+      {
+        sameSite: loginResponse.cookieSettings.sameSite,
+        secure: loginResponse.cookieSettings.secure,
         expires: loginResponse.cookieSettings.expires,
-        isAdmin: loginResponse.userRo.user.isAdmin,
-        isEntraUser: loginResponse.userRo.user.isEntraUser,
-        isOrganizationAdmin: loginResponse.userRo.user.isOrganizationAdmin,
-      });
-    } catch (error) {
-      throw error;
-    }
+        httpOnly: loginResponse.cookieSettings.httpOnly,
+      },
+    );
+    return res.send({
+      username: loginResponse.userRo.user.username,
+      permissions: loginResponse.userRo.user.permissions,
+      [CookieNames.general]: loginResponse.token,
+      expires: loginResponse.cookieSettings.expires,
+      isAdmin: loginResponse.userRo.user.isAdmin,
+      isEntraUser: loginResponse.userRo.user.isEntraUser,
+      isOrganizationAdmin: loginResponse.userRo.user.isOrganizationAdmin,
+    });
   }
 
   @AuthenticatedUser()
   @ApiOperation({ summary: 'Log out existing user' })
   @Post('users/logout')
   public async logout(@Res() res): Promise<UserRO> {
-    try {
-      const key = this.userService.getInterfaceKeyByHeader();
-      const { sameSite, secure, httpOnly } =
-        this.userService.getCookieSecuritySettings();
+    const key = this.userService.getInterfaceKeyByHeader();
+    const { sameSite, secure, httpOnly } =
+      this.userService.getCookieSecuritySettings();
 
-      res.cookie(key, '', {
-        sameSite,
-        secure,
-        httpOnly,
-        expires: new Date(Date.now() - 1),
-      });
-      return res.send();
-    } catch (error) {
-      throw error;
-    }
+    res.cookie(key, '', {
+      sameSite,
+      secure,
+      httpOnly,
+      expires: new Date(Date.now() - 1),
+    });
+    return res.send();
   }
 
   @Throttle(THROTTLING_LIMIT_HIGH)
