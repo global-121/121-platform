@@ -68,7 +68,12 @@ export class LoginPageComponent {
   readonly sessionExpiredMessage = computed(() => {
     const state = history.state as Record<string, unknown> | undefined;
     if (state?.[SESSION_EXPIRED_IN_STATE_KEY]) {
-      return $localize`:@@session-expired-login-toast:For security reasons, you've been logged out. After logging in, you'll return to where you left off.`;
+      // Clear the flag so it doesn't reappear on refresh/back-nav
+      history.replaceState(
+        { ...state, [SESSION_EXPIRED_IN_STATE_KEY]: undefined },
+        '',
+      );
+      return $localize`:@@session-expired-body:For security reasons, you've been logged out. After logging in, you'll return to where you left off.`;
     }
     return undefined;
   });
