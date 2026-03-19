@@ -91,6 +91,7 @@ export default {
       rules: {
         'object-shorthand': 'error',
         'prefer-arrow-callback': 'error',
+        'no-inner-declarations': 'error',
       },
     },
     recommendedNext: {
@@ -98,7 +99,6 @@ export default {
       files: ['**/*.mjs', '**/*.ts'],
       rules: {
         'arrow-body-style': 'error',
-        'no-inner-declarations': 'error',
       },
     },
     javascript: {
