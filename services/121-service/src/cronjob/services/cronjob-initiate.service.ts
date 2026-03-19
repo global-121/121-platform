@@ -39,6 +39,17 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'post', headers);
   }
 
+  @Cron(CronExpression.EVERY_DAY_AT_1AM, {
+    disabled: !env.CRON_AIRTEL_MATCH_USERS,
+  })
+  public async cronMatchAirtelUsers(cronJobMethodName): cronReturn {
+    const { baseCronUrl, headers } =
+      await this.prepareCronJobRun(cronJobMethodName);
+    // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
+    const url = `${baseCronUrl}/fsps/airtel/users`;
+    return await this.callEndpoint(url, 'put', headers);
+  }
+
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {
     disabled: !env.CRON_CBE_ACCOUNT_ENQUIRIES_VALIDATION,
   })

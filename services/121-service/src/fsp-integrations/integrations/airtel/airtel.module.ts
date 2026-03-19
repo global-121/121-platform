@@ -20,6 +20,6 @@ import { TokenValidationService } from '@121-service/src/utils/token/token-valid
     TokenValidationService,
     CustomHttpService,
   ],
-  exports: [AirtelService],
+  exports: [AirtelService, AirtelApiService],
 })
 export class AirtelModule {}

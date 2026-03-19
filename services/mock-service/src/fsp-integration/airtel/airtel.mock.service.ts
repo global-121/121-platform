@@ -11,6 +11,7 @@ enum AirtelMockPhoneNumber {
   failDuplicateTransactionId = '000000001',
   failInvalidMobileNumber = '000000002',
   failAmbiguousError = '000000003',
+  notAirtelUser = '000000004',
 }
 
 export const AirtelAuthToken = 'FjE953LG40P0hdehYEiSkUd0hGWshyFf';
@@ -291,6 +292,73 @@ export class AirtelMockService {
       phoneNumber: '000000001',
       amount: 1000.0,
     });
+  }
+
+  public async getUserInformation({
+    msisdn,
+    headers,
+  }: {
+    msisdn: string;
+    headers: AirtelAuthenticatedRequestHeadersDto;
+  }): Promise<[HttpStatus, object]> {
+    // We accept Authorization headers under "Authorization" and
+    // "Authorization_", but not both. See controller for why.
+    if ('authorization' in headers && 'authorization_' in headers) {
+      throw new Error(
+        'Both "Authorization" and "Authorization_" headers are present.',
+      );
+    }
+    if ('authorization_' in headers) {
+      headers['authorization'] = headers['authorization_'];
+      delete headers['authorization_'];
+    }
+
+    const authError: [HttpStatus, object] = [
+      403,
+      {
+        error_description: 'The access token is invalid or has expired',
+        error: 'invalid_token',
+      },
+    ];
+    if (!headers['authorization']) return authError;
+    if (headers['authorization'] !== `Bearer ${AirtelAuthToken}`)
+      return authError;
+
+    if (msisdn === AirtelMockPhoneNumber.notAirtelUser) {
+      return [
+        200,
+        {
+          data: {
+            user_name: '',
+            msisdn,
+            is_airtel_money_user: false,
+          },
+          status: {
+            response_code: 'DP00800001001',
+            code: '200',
+            success: true,
+            message: 'User not found',
+          },
+        },
+      ];
+    }
+
+    return [
+      200,
+      {
+        data: {
+          user_name: 'Mock FirstName Mock LastName',
+          msisdn,
+          is_airtel_money_user: true,
+        },
+        status: {
+          response_code: 'DP00800001000',
+          code: '200',
+          success: true,
+          message: 'Success',
+        },
+      },
+    ];
   }
 
   private generateSuccesResponseEnquiryV2DisbursementV2({

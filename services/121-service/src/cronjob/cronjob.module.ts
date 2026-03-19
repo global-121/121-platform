@@ -5,6 +5,7 @@ import { CronjobExecutionService } from '@121-service/src/cronjob/services/cronj
 import { CronjobExecutionHelperService } from '@121-service/src/cronjob/services/cronjob-execution-helper.service';
 import { CronjobInitiateService } from '@121-service/src/cronjob/services/cronjob-initiate.service';
 import { ExchangeRatesModule } from '@121-service/src/exchange-rates/exchange-rates.module';
+import { AirtelAccountManagementModule } from '@121-service/src/fsp-integrations/account-management/airtel/airtel-account-management.module';
 import { CommercialBankEthiopiaAccountManagementModule } from '@121-service/src/fsp-integrations/account-management/commercial-bank-ethiopia/commercial-bank-ethiopia-account-management.module';
 import { CooperativeBankOfOromiaAccountManagementModule } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia/cooperative-bank-of-oromia-account-management.module';
 import { IntersolveVoucherModule } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/intersolve-voucher.module';
@@ -19,6 +20,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
     IntersolveVisaReconciliationModule,
     IntersolveVoucherModule,
     IntersolveVoucherReconciliationModule,
+    AirtelAccountManagementModule,
     CommercialBankEthiopiaAccountManagementModule,
     CooperativeBankOfOromiaAccountManagementModule,
     NedbankReconciliationModule,

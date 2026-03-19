@@ -19,6 +19,8 @@ const FspModeSchema = z.enum(FspMode).default(FspMode.disabled);
 export const airtelEnvVariablesSchema = {
   AIRTEL_MODE: FspModeSchema,
 
+  CRON_AIRTEL_MATCH_USERS: z.stringbool().default(false),
+
   AIRTEL_API_URL: z
     .url()
     .pipe(z.transform((url) => withoutTrailingSlash(url)))

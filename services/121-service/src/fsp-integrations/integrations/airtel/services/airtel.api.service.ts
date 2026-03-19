@@ -6,6 +6,7 @@ import { env } from '@121-service/src/env';
 import { AirtelApiAuthenticationRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/airtel/dtos/airtel-api-authentication-request-body.dto';
 import { AirtelApiAuthenticationResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/airtel/dtos/airtel-api-authentication-response-body.dto';
 import { AirtelApiDisbursementRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/airtel/dtos/airtel-api-disbursement-request-body.dto';
+import { AirtelApiUserLookupResponseBodyDto } from '@121-service/src/fsp-integrations/integrations/airtel/dtos/airtel-api-user-lookup-response-body.dto';
 import { AirtelApiRequestTypeEnum } from '@121-service/src/fsp-integrations/integrations/airtel/enums/airtel-api-request-type.enum';
 import { AirtelDisbursementResultEnum } from '@121-service/src/fsp-integrations/integrations/airtel/enums/airtel-disbursement-result.enum';
 import { AirtelApiError } from '@121-service/src/fsp-integrations/integrations/airtel/errors/airtel-api.error';
@@ -59,6 +60,10 @@ export class AirtelApiService {
 
   private getAirtelDisbursementAndEnquiryV2URL(): URL {
     return new URL('standard/v2/disbursements/', this.getAirtelApiBaseUrl());
+  }
+
+  private getAirtelUserLookupV2URL(): URL {
+    return new URL('standard/v2/kyc/users/', this.getAirtelApiBaseUrl());
   }
 
   private getAirtelAuthenticateURL(): URL {
@@ -150,6 +155,67 @@ export class AirtelApiService {
         | AirtelDisbursementResultEnum.fail
         | AirtelDisbursementResultEnum.success,
       message: parsedResponse.message,
+    };
+  }
+
+  public async getUserInformation({
+    phoneNumberWithoutCountryCode,
+  }: {
+    phoneNumberWithoutCountryCode: string;
+  }): Promise<{
+    isAirtelUser: boolean;
+    airtelName: string | null;
+    errorMessage: string | null;
+  }> {
+    await this.authenticate();
+    const url = new URL(
+      phoneNumberWithoutCountryCode,
+      this.getAirtelUserLookupV2URL(),
+    );
+    const headers = this.addAuthHeaders(
+      new Headers({
+        Accept: '*/*',
+        'Content-Type': 'application/json',
+        'X-Country': this.countryCode,
+        'X-Currency': this.currencyCode,
+      }),
+    );
+
+    let response!: AxiosResponse<unknown>;
+    try {
+      response = await this.httpService.get<AxiosResponse<unknown>>(
+        url.href,
+        headers,
+      );
+    } catch (error) {
+      console.error('Airtel user lookup API call failed', error);
+      return {
+        isAirtelUser: false,
+        airtelName: null,
+        errorMessage: `User lookup failed: ${error.message}`,
+      };
+    }
+
+    const responseData =
+      response.data as Partial<AirtelApiUserLookupResponseBodyDto>;
+
+    if (!responseData?.status?.success) {
+      return {
+        isAirtelUser: false,
+        airtelName: null,
+        errorMessage:
+          responseData?.status?.message ??
+          `User lookup failed with response code: ${responseData?.status?.response_code}`,
+      };
+    }
+
+    const isAirtelUser = responseData.data?.is_airtel_money_user ?? false;
+    const airtelName = responseData.data?.user_name || null;
+
+    return {
+      isAirtelUser,
+      airtelName: isAirtelUser ? airtelName : null,
+      errorMessage: null,
     };
   }
 

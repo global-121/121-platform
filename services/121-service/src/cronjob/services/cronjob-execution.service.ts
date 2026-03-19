@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { CronjobExecutionHelperService } from '@121-service/src/cronjob/services/cronjob-execution-helper.service';
 import { ExchangeRatesService } from '@121-service/src/exchange-rates/services/exchange-rates.service';
+import { AirtelAccountManagementService } from '@121-service/src/fsp-integrations/account-management/airtel/airtel-account-management.service';
 import { CommercialBankEthiopiaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/commercial-bank-ethiopia/commercial-bank-ethiopia-account-management.service';
 import { CooperativeBankOfOromiaAccountManagementService } from '@121-service/src/fsp-integrations/account-management/cooperative-bank-of-oromia/cooperative-bank-of-oromia-account-management.service';
 import { IntersolveVoucherService } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/services/intersolve-voucher.service';
@@ -18,6 +19,7 @@ export class CronjobExecutionService {
     private readonly intersolveVoucherCronService: IntersolveVoucherCronService,
     private readonly intersolveVoucherReconciliationService: IntersolveVoucherReconciliationService,
     private readonly intersolveVisaReconciliationService: IntersolveVisaReconciliationService,
+    private readonly airtelAccountManagementService: AirtelAccountManagementService,
     private readonly commercialBankEthiopiaAccountManagementService: CommercialBankEthiopiaAccountManagementService,
     private readonly cooperativeBankOfOromiaAccountManagementService: CooperativeBankOfOromiaAccountManagementService,
     private readonly nedbankReconciliationService: NedbankReconciliationService,
@@ -30,6 +32,13 @@ export class CronjobExecutionService {
     await this.cronjobExecutionHelperService.executeWithLogging(
       'cronCancelByRefposIntersolve',
       () => this.intersolveVoucherCronService.cancelByRefposIntersolve(),
+    );
+  }
+
+  public async cronMatchAirtelUsers(): Promise<void> {
+    await this.cronjobExecutionHelperService.executeWithLogging(
+      'cronMatchAirtelUsers',
+      () => this.airtelAccountManagementService.retrieveAndUpsertUserLookups(),
     );
   }
 

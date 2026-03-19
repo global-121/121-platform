@@ -49,6 +49,21 @@ export class CronjobController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
+      '[CRON] Get and store user lookup data from Airtel for all registrations in all programs.',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'Done retrieving and updating/inserting user lookup data for all registrations in all programs.',
+  })
+  @Put('fsps/airtel/users')
+  public async cronMatchAirtelUsers(): Promise<void> {
+    await this.cronjobExecutionService.cronMatchAirtelUsers();
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary:
       '[CRON] Get and store account enquiry data from Commercial Bank of Ethiopia for all registrations in all programs.',
   })
   @ApiResponse({

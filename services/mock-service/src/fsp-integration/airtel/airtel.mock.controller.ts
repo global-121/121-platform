@@ -30,6 +30,7 @@ import { AirtelAuthenticateResponseSuccessDto } from '@mock-service/src/fsp-inte
 import { AirtelAuthenticatedRequestHeadersDto } from '@mock-service/src/fsp-integration/airtel/dto/airtel-authenticated-request-headers.dto';
 import { AirtelDisbursementV2RequestDto } from '@mock-service/src/fsp-integration/airtel/dto/airtel-disbursementv2-request.dto';
 import { AirtelDisbursementV2ResponseSuccessDto } from '@mock-service/src/fsp-integration/airtel/dto/airtel-disbursementv2-response-success.dto';
+import { AirtelUserLookupResponseDto } from '@mock-service/src/fsp-integration/airtel/dto/airtel-user-lookup-response.dto';
 
 @ApiTags('fsp/airtel')
 @Controller('fsp/airtel')
@@ -166,6 +167,53 @@ export class AirtelMockController {
 
     if (http === HttpStatus.FORBIDDEN) throw new ForbiddenException(body);
     if (http === HttpStatus.BAD_REQUEST) throw new BadRequestException(body);
+
+    return body;
+  }
+
+  @ApiOperation({ summary: 'User Lookup API v2' })
+  @Get('standard/v2/kyc/users/:msisdn')
+  @HttpCode(200)
+  @ApiHeader({
+    name: 'X-Country',
+    description:
+      'Country code in "ISO 3166-1 alpha-2" format, for example: "ZM" for Zambia.',
+    required: true,
+  })
+  @ApiHeader({
+    name: 'X-Currency',
+    description:
+      'Currency code in "ISO 4217" format, for example: "ZMW" for Zambian Kwacha.',
+    required: true,
+  })
+  // Using @ApiHeader with "Authorization" does not work. Actually using Having
+  // "Authorization" headers is possible but then we'd have to create full auth
+  // for the whole mock-service. So we use "Authorization_" instead and accept
+  // both in the service. In the Swagger UI we can just fill in the value for
+  // "Authorization_". But integration tests can then use "Authorization" as
+  // it's in production.
+  @ApiHeader({
+    name: 'Authorization_',
+    description: `Oauth Bearer token, needs to be exactly: "Bearer ${AirtelAuthToken}". <br/> In the production API the header is called "Authorization", for technical reasons it\'s called "Authorization_" here.`,
+    required: true,
+  })
+  @ApiParam({ name: 'msisdn', required: true, type: 'string' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User information for the given MSISDN.',
+    type: AirtelUserLookupResponseDto,
+  })
+  public async getUserInformation(
+    @Headers() headers: AirtelAuthenticatedRequestHeadersDto,
+    @Param('msisdn') msisdn: string,
+    // We use type "object" here because we have a bunch of different response bodies.
+  ): Promise<AirtelUserLookupResponseDto | object> {
+    const [http, body] = await this.airtelMockService.getUserInformation({
+      msisdn,
+      headers,
+    });
+
+    if (http === HttpStatus.FORBIDDEN) throw new ForbiddenException(body);
 
     return body;
   }
