@@ -7,6 +7,8 @@ import eslintConfig121Platform from 'eslint-config-121-platform';
 export default defineConfig(
   globalIgnores(['test-results/**', 'playwright-report/**']),
   eslintConfig121Platform.configs.base,
+  eslintConfig121Platform.configs.recommended,
+  eslintConfig121Platform.configs.recommendedNext,
   eslintConfig121Platform.configs.node,
   eslintConfig121Platform.configs.javascript,
   eslintConfig121Platform.configs.typescript,

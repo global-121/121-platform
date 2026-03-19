@@ -9,7 +9,7 @@ export default {
     },
     schema: [], // no options
   },
-  create: function (context) {
+  create(context) {
     return {
       MethodDefinition(node) {
         if (node.decorators) {

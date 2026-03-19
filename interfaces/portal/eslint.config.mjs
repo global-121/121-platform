@@ -42,6 +42,7 @@ export default defineConfig(
   },
   eslintConfig121Platform.configs.base,
   eslintConfig121Platform.configs.recommended,
+  eslintConfig121Platform.configs.recommendedNext,
   eslintConfig121Platform.configs.javascript,
   eslintConfig121Platform.configs.typescript,
   {
@@ -58,7 +59,6 @@ export default defineConfig(
       'arrow-body-style': 'error',
       'func-style': 'error',
       'no-inner-declarations': 'error',
-      'object-shorthand': 'error',
     },
   },
   {
