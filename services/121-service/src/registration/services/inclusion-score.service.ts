@@ -77,12 +77,12 @@ export class InclusionScoreService {
 
   private async createQuestionAnswerListPrefilled(
     referenceId: string,
-  ): Promise<object> {
+  ): Promise<Record<string, string | string[]>> {
     const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { referenceId: Equal(referenceId) },
       relations: ['data', 'data.programRegistrationAttribute'],
     });
-    const scoreList = {};
+    const scoreList: Record<string, string | string[]> = {};
     for (const entry of registration.data) {
       if (entry.programRegistrationAttribute) {
         const attrValue = entry.value;
@@ -92,7 +92,7 @@ export class InclusionScoreService {
           RegistrationAttributeTypes.multiSelect
         ) {
           if (scoreList[newKeyName] !== undefined) {
-            scoreList[newKeyName].push(attrValue);
+            (scoreList[newKeyName] as string[]).push(attrValue);
           } else {
             scoreList[newKeyName] = [attrValue];
           }
@@ -106,7 +106,7 @@ export class InclusionScoreService {
 
   private calculateScoreAllProgramAttributes(
     programRegistrationAttributes: ProgramRegistrationAttributeEntity[],
-    scoreList: object,
+    scoreList: Record<string, string | string[]>,
   ): number {
     let totalScore = 0;
     for (const attribute of programRegistrationAttributes) {
@@ -134,7 +134,7 @@ export class InclusionScoreService {
 
   private getScoreForDropDown(
     programRegistrationAttribute: ProgramRegistrationAttributeEntity,
-    answerPA: object,
+    answerPA: string | string[],
   ): number {
     // If attribute has no scoring system return 0;
     if (Object.keys(programRegistrationAttribute.scoring).length === 0) {
@@ -157,7 +157,7 @@ export class InclusionScoreService {
 
   private getScoreForMultiSelect(
     programRegistrationAttribute: ProgramRegistrationAttributeEntity,
-    answerPA: object[],
+    answerPA: string | string[],
   ): number {
     // If attribute has no scoring system return 0;
     if (Object.keys(programRegistrationAttribute.scoring).length === 0) {
@@ -183,15 +183,17 @@ export class InclusionScoreService {
 
   private getScoreForNumeric(
     programRegistrationAttribute: ProgramRegistrationAttributeEntity,
-    answerPA: number,
+    answerPA: string | string[],
   ): number {
     let score = 0;
     if (programRegistrationAttribute.scoring['multiplier']) {
-      if (isNaN(answerPA)) {
-        answerPA = 0;
+      const numericAnswer = Number(answerPA);
+      if (isNaN(numericAnswer)) {
+        return 0;
       }
       score =
-        Number(programRegistrationAttribute.scoring['multiplier']) * answerPA;
+        Number(programRegistrationAttribute.scoring['multiplier']) *
+        numericAnswer;
     }
     return score;
   }

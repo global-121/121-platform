@@ -26,8 +26,14 @@ export class RegistrationViewsMapper {
     if (select && select.length > 0) {
       mappedRegistration = new RegistrationViewEntity();
       for (const selectKey of select) {
-        if (selectKey !== 'data' && registration[selectKey] !== undefined) {
-          mappedRegistration[selectKey] = registration[selectKey];
+        if (
+          selectKey !== 'data' &&
+          (registration as unknown as Record<string, unknown>)[selectKey] !==
+            undefined
+        ) {
+          (mappedRegistration as unknown as Record<string, unknown>)[
+            selectKey
+          ] = (registration as unknown as Record<string, unknown>)[selectKey];
         }
       }
     }
@@ -55,8 +61,9 @@ export class RegistrationViewsMapper {
       const propertiesToCheck = ['programRegistrationAttributeId'];
       for (const property of propertiesToCheck) {
         if (
-          dataRelation[property] === data[property] &&
-          data[property] !== null
+          (dataRelation as unknown as Record<string, unknown>)[property] ===
+            (data as unknown as Record<string, unknown>)[property] &&
+          (data as unknown as Record<string, unknown>)[property] !== null
         ) {
           return true;
         }
@@ -69,9 +76,13 @@ export class RegistrationViewsMapper {
         findRelation(dataRelation.relation, x),
       );
       if (registrationData) {
-        mappedRegistration[dataRelation.name] = registrationData.value;
+        (mappedRegistration as unknown as Record<string, unknown>)[
+          dataRelation.name
+        ] = registrationData.value;
       } else {
-        mappedRegistration[dataRelation.name] = null;
+        (mappedRegistration as unknown as Record<string, unknown>)[
+          dataRelation.name
+        ] = null;
       }
     }
 
@@ -100,7 +111,7 @@ export class RegistrationViewsMapper {
         (x) => !orignalSelect.includes(x),
       );
       for (const key of differenceOrignalSelect) {
-        delete registration[key];
+        delete (registration as Record<string, unknown>)[key];
       }
     }
     return {
@@ -116,7 +127,9 @@ export class RegistrationViewsMapper {
     const fullnameConcat: string[] = [];
     const nameColumns = JSON.parse(JSON.stringify(fullnameNamingConvention));
     for (const nameColumn of nameColumns) {
-      fullnameConcat.push(registrationRow[nameColumn]);
+      fullnameConcat.push(
+        (registrationRow as Record<string, unknown>)[nameColumn] as string,
+      );
     }
     return fullnameConcat.join(' ');
   }

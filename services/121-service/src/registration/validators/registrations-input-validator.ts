@@ -419,7 +419,7 @@ export class RegistrationsInputValidator {
     );
     // This will no longer be necessary when we validate program languages to be
     // only valid ISO language codes from Set1 (so 2 letters).
-    const mapping = {};
+    const mapping: Record<string, string> = {};
     for (const languageAbbr of programLanguages) {
       const fullNameLanguage = languageNamesApi.of(
         languageAbbr.substring(0, 2),
@@ -551,13 +551,15 @@ export class RegistrationsInputValidator {
 
   private updateLanguage(
     preferredLanguage: string | undefined,
-    programLanguageMapping: object,
+    programLanguageMapping: Record<string, string>,
   ): RegistrationPreferredLanguage | undefined {
     if (!preferredLanguage) {
       return RegistrationPreferredLanguage.en;
     }
     if (Object.keys(programLanguageMapping).includes(preferredLanguage)) {
-      return programLanguageMapping[preferredLanguage];
+      return programLanguageMapping[
+        preferredLanguage
+      ] as RegistrationPreferredLanguage;
     } else if (
       Object.values(programLanguageMapping).some(
         (x) => x.toLowerCase() == preferredLanguage.toLowerCase(),
@@ -565,7 +567,7 @@ export class RegistrationsInputValidator {
     ) {
       for (const value of Object.values(programLanguageMapping)) {
         if (value.toLowerCase() === preferredLanguage) {
-          return value;
+          return value as RegistrationPreferredLanguage;
         }
       }
     }
@@ -766,7 +768,7 @@ export class RegistrationsInputValidator {
     programFspConfigurations: programFspConfigurations,
     i,
   }: {
-    row: object;
+    row: Record<string, unknown>;
     originalRegistration: MappedPaginatedRegistrationDto | undefined;
     programFspConfigurations: ProgramFspConfigurationEntity[];
     i: number;
@@ -776,8 +778,9 @@ export class RegistrationsInputValidator {
     // Otherwise, check the required attributes for the original registration that is in the database
 
     const relevantFspConfigName =
-      row[GenericRegistrationAttributes.programFspConfigurationName] ??
-      originalRegistration?.programFspConfigurationName;
+      (row[GenericRegistrationAttributes.programFspConfigurationName] as
+        | string
+        | undefined) ?? originalRegistration?.programFspConfigurationName;
     if (!relevantFspConfigName) {
       // If the programFspConfigurationName is neither in the row nor in the original registration, we cannot check the required attributes
       // Errors will be thrown in a different validation step
@@ -825,7 +828,7 @@ export class RegistrationsInputValidator {
 
   private isRequiredAttributeInObject(
     attribute: string,
-    body: object | undefined,
+    body: Record<string, unknown> | undefined,
   ): boolean {
     if (!body) {
       return false;
@@ -856,12 +859,12 @@ export class RegistrationsInputValidator {
   }
 
   private async getOriginalRegistrationsOrThrow(
-    csvArray: object[],
+    csvArray: Record<string, unknown>[],
     programId: number,
   ): Promise<Map<string, MappedPaginatedRegistrationDto>> {
     const referenceIds = csvArray
       .filter((row) => row[GenericRegistrationAttributes.referenceId])
-      .map((row) => row[GenericRegistrationAttributes.referenceId]);
+      .map((row) => row[GenericRegistrationAttributes.referenceId] as string);
     const originalRegistrations =
       await this.registrationPaginationService.getRegistrationViewsByReferenceIds(
         { programId, referenceIds },

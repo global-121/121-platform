@@ -7,6 +7,7 @@ import { v4 as uuid } from 'uuid';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { MessageSenderUserId } from '@121-service/src/notifications/types/message-sender-user-id.type';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
@@ -204,7 +205,7 @@ export class RegistrationsCreationService {
       registration.program = program;
       registration.inclusionScore = 0;
       registration.registrationStatus = null;
-      const customData = {};
+      const customData: Record<string, unknown> = {};
       if (!program.paymentAmountMultiplierFormula) {
         registration.paymentAmountMultiplier =
           record.paymentAmountMultiplier || 1;
@@ -312,7 +313,10 @@ export class RegistrationsCreationService {
     validatedImportRecords: ValidatedRegistrationInput[],
     program: ProgramEntity,
   ) {
-    const programFspConfigurations = {};
+    const programFspConfigurations: Record<
+      string,
+      ProgramFspConfigurationEntity
+    > = {};
     const uniqueConfigNames = Array.from(
       new Set(
         validatedImportRecords
@@ -352,7 +356,7 @@ export class RegistrationsCreationService {
 
   private prepareRegistrationData(
     registration: RegistrationEntity,
-    customData: object,
+    customData: Record<string, unknown>,
     dynamicAttributeRelations: RegistrationDataInfo[],
   ): RegistrationAttributeDataEntity[] {
     const registrationDataArray: RegistrationAttributeDataEntity[] = [];
@@ -361,13 +365,18 @@ export class RegistrationsCreationService {
       if (att.type === RegistrationAttributeTypes.boolean) {
         values.push(
           RegistrationsInputValidatorHelpers.inputToBoolean(
-            customData[att.name],
+            customData[att.name] as
+              | string
+              | null
+              | undefined
+              | number
+              | boolean,
           ),
         );
       } else if (att.type === RegistrationAttributeTypes.text) {
         values.push(customData[att.name] ? customData[att.name] : '');
       } else if (att.type === RegistrationAttributeTypes.multiSelect) {
-        values = customData[att.name].split('|');
+        values = (customData[att.name] as string).split('|');
       } else {
         values.push(customData[att.name]);
       }

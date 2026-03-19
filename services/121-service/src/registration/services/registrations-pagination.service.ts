@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   FilterOperator,
+  FilterSuffix,
   paginate,
   Paginated,
   PaginateQuery,
@@ -322,8 +323,11 @@ export class RegistrationsPaginationService {
 
   private createFilterObjects(
     attributeRelations: RegistrationDataInfo[],
-  ): Record<string, FilterOperator[] | true> {
-    const filterObject = {};
+  ): Record<string, (FilterOperator | FilterSuffix)[] | true> {
+    const filterObject: Record<
+      string,
+      (FilterOperator | FilterSuffix)[] | true
+    > = {};
     for (const r of attributeRelations) {
       if (r.type === RegistrationAttributeTypes.numeric) {
         filterObject[r.name] = [...AllowedFiltersNumber];

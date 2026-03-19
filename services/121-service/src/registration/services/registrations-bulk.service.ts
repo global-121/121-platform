@@ -660,9 +660,11 @@ export class RegistrationsBulkService {
     userId: MessageSenderUserId;
   }): Promise<void> {
     for (const registration of registrations) {
-      const placeholderData = {};
+      const placeholderData: Record<string, string | null> = {};
       for (const placeholder of usedPlaceholders) {
-        placeholderData[placeholder] = registration[placeholder];
+        placeholderData[placeholder] = (
+          registration as unknown as Record<string, string | null>
+        )[placeholder];
       }
       await this.queueMessageService.addMessageJob({
         registration,

@@ -35,9 +35,11 @@ export class RegistrationDataService {
     if (registrationDataResult) {
       return registrationDataResult;
     } else {
-      const registrationResult = registration[name];
+      const registrationResult = (
+        registration as unknown as Record<string, unknown>
+      )[name];
       if (registrationResult) {
-        return registrationResult;
+        return registrationResult as string;
       }
     }
   }

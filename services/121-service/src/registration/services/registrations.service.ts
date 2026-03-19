@@ -312,9 +312,11 @@ export class RegistrationsService {
 
     // Loop through nameColumns and access properties dynamically
     for (const nameColumn of nameColumns) {
-      if (registrationObject[nameColumn]) {
-        fullnameConcat.push(registrationObject[nameColumn]);
-        delete registrationObject[nameColumn]; // Remove original properties
+      if ((registrationObject as Record<string, unknown>)[nameColumn]) {
+        fullnameConcat.push(
+          (registrationObject as Record<string, unknown>)[nameColumn] as string,
+        );
+        delete (registrationObject as Record<string, unknown>)[nameColumn]; // Remove original properties
       }
     }
 
@@ -421,10 +423,13 @@ export class RegistrationsService {
     let maxPaymentsMatchesPaymentCount = false;
 
     for (const attributeKey of Object.keys(partialRegistrationInput)) {
-      const attributeValue: string | number | string[] | boolean =
-        partialRegistrationInput[attributeKey];
+      const attributeValue: string | number | string[] | boolean = (
+        partialRegistrationInput as Record<string, unknown>
+      )[attributeKey] as string | number | string[] | boolean;
 
-      const oldValue = oldViewRegistration[attributeKey];
+      const oldValue = (oldViewRegistration as Record<string, unknown>)[
+        attributeKey
+      ];
 
       if (String(oldValue) !== String(attributeValue)) {
         if (
@@ -449,7 +454,9 @@ export class RegistrationsService {
           ? String(registrationDataInput[attributeKey])
           : registrationDataInput[attributeKey];
 
-      const oldValue = oldViewRegistration[attributeKey];
+      const oldValue = (oldViewRegistration as Record<string, unknown>)[
+        attributeKey
+      ];
 
       if (String(oldValue) !== String(attributeValue)) {
         registrationToUpdate = await this.updateAttribute({
@@ -505,8 +512,11 @@ export class RegistrationsService {
       registration.programId,
     );
 
-    if (typeof registration[attribute] !== 'undefined') {
-      registration[attribute] = value;
+    if (
+      typeof (registration as unknown as Record<string, unknown>)[attribute] !==
+      'undefined'
+    ) {
+      (registration as unknown as Record<string, unknown>)[attribute] = value;
     }
 
     if (
@@ -886,15 +896,23 @@ export class RegistrationsService {
       );
     }
 
+    const registrationDataRecord = registrationData as Record<string, unknown>;
     return {
-      name: registrationData[FspAttributes.fullName],
-      addressStreet: registrationData[FspAttributes.addressStreet],
-      addressHouseNumber: registrationData[FspAttributes.addressHouseNumber],
-      addressHouseNumberAddition:
-        registrationData[FspAttributes.addressHouseNumberAddition],
-      addressPostalCode: registrationData[FspAttributes.addressPostalCode],
-      addressCity: registrationData[FspAttributes.addressCity],
-      phoneNumber: registrationData[FspAttributes.phoneNumber]!,
+      name: registrationDataRecord[FspAttributes.fullName] as string,
+      addressStreet: registrationDataRecord[
+        FspAttributes.addressStreet
+      ] as string,
+      addressHouseNumber: registrationDataRecord[
+        FspAttributes.addressHouseNumber
+      ] as string,
+      addressHouseNumberAddition: registrationDataRecord[
+        FspAttributes.addressHouseNumberAddition
+      ] as string,
+      addressPostalCode: registrationDataRecord[
+        FspAttributes.addressPostalCode
+      ] as string,
+      addressCity: registrationDataRecord[FspAttributes.addressCity] as string,
+      phoneNumber: registrationDataRecord[FspAttributes.phoneNumber] as string,
     };
   }
 }
