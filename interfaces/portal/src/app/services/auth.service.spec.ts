@@ -73,13 +73,6 @@ describe('AuthService - hasDeprecatedPermissions', () => {
     // eslint-disable-next-line @typescript-eslint/no-deprecated -- Did not manage to get test working otherwise
     mockInjector.get.mockReturnValue(mockAuthStrategy);
 
-    vi.stubGlobal('localStorage', {
-      getItem: vi.fn(),
-      setItem: vi.fn(),
-      removeItem: vi.fn(),
-      clear: vi.fn(),
-    });
-
     TestBed.configureTestingModule({
       providers: [
         AuthService,
@@ -114,9 +107,7 @@ describe('AuthService - hasDeprecatedPermissions', () => {
           'DEPRECATED_PERMISSION' as PermissionEnum,
         ],
       });
-      vi.mocked(localStorage.getItem).mockReturnValue(
-        JSON.stringify(userWithDeprecatedPermissions),
-      );
+      getItemSpy.mockReturnValue(JSON.stringify(userWithDeprecatedPermissions));
       const logoutSpy = vi
         .spyOn(service, 'logout')
         .mockReturnValue(Promise.resolve());
@@ -137,9 +128,7 @@ describe('AuthService - hasDeprecatedPermissions', () => {
           PermissionEnum.RegistrationBulkUPDATE,
         ],
       });
-      vi.mocked(localStorage.getItem).mockReturnValue(
-        JSON.stringify(userWithValidPermissions),
-      );
+      getItemSpy.mockReturnValue(JSON.stringify(userWithValidPermissions));
 
       // Act - the user getter is called
       const result = service.user;
