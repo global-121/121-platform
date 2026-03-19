@@ -526,7 +526,7 @@ export class RegistrationsInputValidator {
         RegistrationValidationInputType.update,
         RegistrationValidationInputType.bulkUpdate,
       ].includes(typeOfInput) &&
-      !preferredLanguage === undefined
+      typeof preferredLanguage === 'undefined'
     ) {
       return;
     }
