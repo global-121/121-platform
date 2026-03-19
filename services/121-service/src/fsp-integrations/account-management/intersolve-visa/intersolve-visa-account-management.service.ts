@@ -160,7 +160,10 @@ export class IntersolveVisaAccountManagementService {
       );
     }
 
-    await this.throwIfCardDoesNotExistOrIsAlreadyLinked(tokenCode);
+    await this.throwIfCardDoesNotExistOrIsAlreadyLinked(
+      tokenCode,
+      registration.programFspConfigurationId,
+    );
 
     const isChildWalletLinkedToRegistration =
       await this.intersolveVisaChildWalletScopedRepository.hasLinkedChildWalletForRegistrationId(
@@ -250,8 +253,6 @@ export class IntersolveVisaAccountManagementService {
     programId: number;
     tokenCode: string;
   }): Promise<void> {
-    await this.throwIfCardDoesNotExistOrIsAlreadyLinked(tokenCode);
-
     const registration: RegistrationEntity =
       await this.registrationsService.getRegistrationOrThrow({
         referenceId,
@@ -268,6 +269,11 @@ export class IntersolveVisaAccountManagementService {
         HttpStatus.BAD_REQUEST,
       );
     }
+
+    await this.throwIfCardDoesNotExistOrIsAlreadyLinked(
+      tokenCode,
+      registration.programFspConfigurationId,
+    );
 
     const contactInformation =
       await this.registrationsService.getContactInformation({
@@ -361,7 +367,24 @@ export class IntersolveVisaAccountManagementService {
 
   private async throwIfCardDoesNotExistOrIsAlreadyLinked(
     tokenCode: string,
+    programFspConfigurationId: number,
   ): Promise<void> {
+    const tokenCodePrefix =
+      await this.programFspConfigurationRepository.getPropertyValueByName({
+        programFspConfigurationId,
+        name: FspConfigurationProperties.tokenCodePrefix,
+      });
+
+    if (
+      tokenCodePrefix !== undefined &&
+      !tokenCode.startsWith(tokenCodePrefix)
+    ) {
+      throw new HttpException(
+        `Card with code ${tokenCode} is not found.`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     // TODO:
     // Throws if tokenCode (card) does not exist
     // We opened a ticket at Intersoleve to improve their error codes/messages

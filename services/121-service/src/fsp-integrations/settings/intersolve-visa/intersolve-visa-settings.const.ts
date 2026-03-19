@@ -61,5 +61,9 @@ export const INTERSOLVE_VISA_SETTINGS: FspSettingsDto = {
       name: FspConfigurationProperties.maxBalanceInCents,
       isRequired: true,
     },
+    {
+      name: FspConfigurationProperties.tokenCodePrefix,
+      isRequired: false,
+    },
   ],
 };

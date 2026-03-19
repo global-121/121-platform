@@ -35,6 +35,8 @@ export const FspConfigurationPropertyVisibilityMap: Record<
     FspConfigurationPropertyVisibility.default,
   [FspConfigurationProperties.maxBalanceInCents]:
     FspConfigurationPropertyVisibility.default,
+  [FspConfigurationProperties.tokenCodePrefix]:
+    FspConfigurationPropertyVisibility.default,
   [FspConfigurationProperties.paymentReferencePrefix]:
     FspConfigurationPropertyVisibility.default,
   [FspConfigurationProperties.corporateCodeOnafriq]:

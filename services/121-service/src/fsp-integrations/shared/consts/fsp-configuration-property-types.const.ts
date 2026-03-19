@@ -3,6 +3,7 @@ import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/sh
 export const fspConfigurationPropertyTypes = {
   [FspConfigurationProperties.maxBalanceInCents]: 'number',
   [FspConfigurationProperties.cardDistributionByMail]: 'boolean',
+  [FspConfigurationProperties.tokenCodePrefix]: 'string',
   [FspConfigurationProperties.columnsToExport]: 'array',
   [FspConfigurationProperties.columnToMatch]: 'string',
   [FspConfigurationProperties.brandCode]: 'string',

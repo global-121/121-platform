@@ -23,6 +23,7 @@ describe('IntersolveVisaAccountManagementService', () => {
   let intersolveVisaService: jest.Mocked<IntersolveVisaService>;
   let queueMessageService: jest.Mocked<MessageQueuesService>;
   let registrationsService: jest.Mocked<RegistrationsService>;
+  let programFspConfigurationRepository: jest.Mocked<ProgramFspConfigurationRepository>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -71,6 +72,7 @@ describe('IntersolveVisaAccountManagementService', () => {
         {
           provide: ProgramFspConfigurationRepository,
           useValue: {
+            getPropertyValueByName: jest.fn().mockResolvedValue(undefined),
             getPropertyValueByNameOrThrow: jest
               .fn()
               .mockImplementation(async ({ name }) => {
@@ -97,6 +99,9 @@ describe('IntersolveVisaAccountManagementService', () => {
     registrationsService = module.get(
       RegistrationsService,
     ) as jest.Mocked<RegistrationsService>;
+    programFspConfigurationRepository = module.get(
+      ProgramFspConfigurationRepository,
+    ) as jest.Mocked<ProgramFspConfigurationRepository>;
   });
 
   describe('linkDebitCardToRegistration', () => {
@@ -107,6 +112,7 @@ describe('IntersolveVisaAccountManagementService', () => {
     } as unknown as RegistrationEntity;
 
     it('throws when wallet is already linked', async () => {
+      mockGetRegistrationOrThrow(registration);
       intersolveVisaService.getWallet.mockResolvedValue({ holderId: 1 } as any);
 
       await expect(
@@ -147,6 +153,61 @@ describe('IntersolveVisaAccountManagementService', () => {
         tokenCode: 'child-token',
         brandCode: 'BRAND',
       });
+    });
+
+    it('throws NOT_FOUND when token code does not start with configured prefix', async () => {
+      mockGetRegistrationOrThrow(registration);
+      programFspConfigurationRepository.getPropertyValueByName.mockResolvedValue(
+        '1234',
+      );
+
+      await expect(
+        service.linkCardOnSiteToRegistration({
+          referenceId: 'ref-1',
+          programId: 1,
+          tokenCode: '9999000011112222333',
+        }),
+      ).rejects.toMatchObject({ status: 404 });
+
+      expect(intersolveVisaService.getWallet).not.toHaveBeenCalled();
+    });
+
+    it('proceeds to Intersolve check when token code starts with configured prefix', async () => {
+      mockGetRegistrationOrThrow(registration);
+      programFspConfigurationRepository.getPropertyValueByName.mockResolvedValue(
+        '1234',
+      );
+      intersolveVisaService.getWallet.mockResolvedValue({
+        holderId: null,
+      } as any);
+
+      await service.linkCardOnSiteToRegistration({
+        referenceId: 'ref-1',
+        programId: 1,
+        tokenCode: '1234000011112222333',
+      });
+
+      expect(intersolveVisaService.getWallet).toHaveBeenCalledWith(
+        '1234000011112222333',
+      );
+    });
+
+    it('skips prefix validation when tokenCodePrefix is not configured', async () => {
+      mockGetRegistrationOrThrow(registration);
+      // getPropertyValueByName already returns undefined by default
+      intersolveVisaService.getWallet.mockResolvedValue({
+        holderId: null,
+      } as any);
+
+      await service.linkCardOnSiteToRegistration({
+        referenceId: 'ref-1',
+        programId: 1,
+        tokenCode: 'any-token-code-19c',
+      });
+
+      expect(intersolveVisaService.getWallet).toHaveBeenCalledWith(
+        'any-token-code-19c',
+      );
     });
   });
 

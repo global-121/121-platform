@@ -9,6 +9,7 @@ export enum FspConfigurationProperties {
   fundingTokenCode = 'fundingTokenCode',
   cardDistributionByMail = 'cardDistributionByMail',
   maxBalanceInCents = 'maxBalanceInCents',
+  tokenCodePrefix = 'tokenCodePrefix',
   // Nedbank
   paymentReferencePrefix = 'paymentReferencePrefix',
   // Onafriq
