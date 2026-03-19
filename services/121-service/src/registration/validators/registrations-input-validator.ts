@@ -10,7 +10,6 @@ import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-conf
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { AdditionalAttributes } from '@121-service/src/registration/dto/update-registration.dto';
-import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import {
   GenericRegistrationAttributes,
   RegistrationAttributeTypes,
@@ -30,8 +29,6 @@ type InputAttributeType = string | boolean | number | undefined | null;
 export class RegistrationsInputValidator {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
 
   constructor(
     private readonly userService: UserService,
@@ -54,7 +51,7 @@ export class RegistrationsInputValidator {
   }): Promise<ValidatedRegistrationInput[]> {
     // empty map
     let originalRegistrationsMap = new Map<
-      string,
+      number,
       MappedPaginatedRegistrationDto
     >();
     if (
@@ -81,10 +78,6 @@ export class RegistrationsInputValidator {
       );
     }
 
-    if (validationConfig.validateUniqueReferenceId) {
-      this.validateUniqueReferenceIds(registrationInputArray);
-    }
-
     const program = await this.programRepository.findOneOrFail({
       where: { id: Equal(programId) },
       relations: ['programFspConfigurations', 'programRegistrationAttributes'],
@@ -101,7 +94,7 @@ export class RegistrationsInputValidator {
         RegistrationValidationInputType.update,
         RegistrationValidationInputType.bulkUpdate,
       ].includes(typeOfInput)
-        ? originalRegistrationsMap.get(row.referenceId as string)
+        ? originalRegistrationsMap.get(Number(row['id']))
         : undefined;
 
       const validatedRegistrationInput: ValidatedRegistrationInput = {
@@ -180,17 +173,6 @@ export class RegistrationsInputValidator {
       }
       if (preferredLanguage) {
         validatedRegistrationInput.preferredLanguage = preferredLanguage;
-      }
-
-      const errorObjReferenceId = await this.validateReferenceId({
-        row,
-        i,
-        validationConfig,
-      });
-      if (errorObjReferenceId) {
-        errors.push(errorObjReferenceId);
-      } else if (row.referenceId != null) {
-        validatedRegistrationInput.referenceId = row.referenceId as string;
       }
 
       const errorObjValidatePhoneNr = this.validatePhoneNumberEmpty({
@@ -391,21 +373,6 @@ export class RegistrationsInputValidator {
     }
 
     return validatedArray;
-  }
-
-  private validateUniqueReferenceIds(
-    csvArray: Record<string, InputAttributeType>[],
-  ): void {
-    const allReferenceIds = csvArray
-      .filter((row) => row[AdditionalAttributes.referenceId])
-      .map((row) => row[AdditionalAttributes.referenceId]);
-    const uniqueReferenceIds = [...new Set(allReferenceIds)];
-    if (uniqueReferenceIds.length < allReferenceIds.length) {
-      throw new HttpException(
-        'Duplicate referenceIds in import set',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
   }
 
   private createLanguageMapping(
@@ -632,59 +599,6 @@ export class RegistrationsInputValidator {
     return scopeOfInput.startsWith(userScope);
   }
 
-  private async validateReferenceId({
-    row,
-    i,
-    validationConfig,
-  }: {
-    row: Record<string, InputAttributeType>;
-    i: number;
-    validationConfig: ValidationRegistrationConfig;
-  }): Promise<ValidateRegistrationErrorObject | undefined> {
-    if (!row.referenceId) {
-      return;
-    }
-    if (typeof row.referenceId !== 'string') {
-      return {
-        lineNumber: i + 1,
-        column: GenericRegistrationAttributes.referenceId,
-        value: row.referenceId,
-        error: 'referenceId must be a string',
-      };
-    }
-
-    if (row.referenceId.includes('$')) {
-      return {
-        lineNumber: i + 1,
-        column: GenericRegistrationAttributes.referenceId,
-        value: row.referenceId,
-        error: `${GenericRegistrationAttributes.referenceId} contains a $ character`,
-      };
-    }
-
-    if (row.referenceId.length < 5 || row.referenceId.length > 200) {
-      return {
-        lineNumber: i + 1,
-        column: GenericRegistrationAttributes.referenceId,
-        value: row.referenceId,
-        error: 'referenceId must be between 5 and 200 characters',
-      };
-    }
-    if (validationConfig.validateExistingReferenceId) {
-      const registration = await this.registrationRepository.findOne({
-        where: { referenceId: Equal(row.referenceId) },
-      });
-      if (registration) {
-        return {
-          lineNumber: i + 1,
-          column: GenericRegistrationAttributes.referenceId,
-          value: row.referenceId,
-          error: 'referenceId already exists in database',
-        };
-      }
-    }
-  }
-
   private validatePhoneNumberEmpty({
     row,
     i,
@@ -858,23 +772,23 @@ export class RegistrationsInputValidator {
   private async getOriginalRegistrationsOrThrow(
     csvArray: object[],
     programId: number,
-  ): Promise<Map<string, MappedPaginatedRegistrationDto>> {
-    const referenceIds = csvArray
-      .filter((row) => row[GenericRegistrationAttributes.referenceId])
-      .map((row) => row[GenericRegistrationAttributes.referenceId]);
+  ): Promise<Map<number, MappedPaginatedRegistrationDto>> {
+    const registrationIds = csvArray
+      .filter((row) => row['id'])
+      .map((row) => Number(row['id']));
     const originalRegistrations =
-      await this.registrationPaginationService.getRegistrationViewsByReferenceIds(
-        { programId, referenceIds },
+      await this.registrationPaginationService.getRegistrationViewsByRegistrationIds(
+        { programId, registrationIds },
       );
     const originalRegistrationsMap = new Map(
-      originalRegistrations.map((reg) => [reg.referenceId, reg]),
+      originalRegistrations.map((reg) => [reg.id, reg]),
     );
-    const notFoundIds = referenceIds.filter(
+    const notFoundIds = registrationIds.filter(
       (id) => !originalRegistrationsMap.has(id),
     );
     if (notFoundIds.length > 0) {
       throw new HttpException(
-        `The following referenceIds were not found in the database: ${notFoundIds.join(', ')}`,
+        `The following registration ids were not found in the database: ${notFoundIds.join(', ')}`,
         HttpStatus.NOT_FOUND,
       );
     }

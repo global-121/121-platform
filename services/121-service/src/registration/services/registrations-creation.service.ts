@@ -106,7 +106,6 @@ export class RegistrationsCreationService {
     programId: number,
   ): Promise<string[]> {
     const genericAttributes: string[] = [
-      GenericRegistrationAttributes.referenceId,
       GenericRegistrationAttributes.programFspConfigurationName,
       GenericRegistrationAttributes.phoneNumber,
       GenericRegistrationAttributes.preferredLanguage,
@@ -198,7 +197,7 @@ export class RegistrationsCreationService {
 
     for await (const record of validatedImportRecords) {
       const registration = new RegistrationEntity();
-      registration.referenceId = record.referenceId || uuid();
+      registration.referenceId = uuid();
       registration.phoneNumber = record.phoneNumber ?? null;
       registration.preferredLanguage = record.preferredLanguage ?? null;
       registration.program = program;
@@ -269,8 +268,8 @@ export class RegistrationsCreationService {
         RegistrationStatusEnum.new,
       );
 
-    const referenceIds = savedRegistrations.map(
-      (registration) => registration.referenceId,
+    const registrationIds = savedRegistrations.map(
+      (registration) => registration.id,
     );
     const messageContentDetails = isTemplateAvailable
       ? {
@@ -279,9 +278,9 @@ export class RegistrationsCreationService {
           message: '',
         }
       : {};
-    await this.registrationBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds(
+    await this.registrationBulkService.applyRegistrationStatusChangeAndSendMessageByRegistrationIds(
       {
-        referenceIds,
+        registrationIds,
         programId: program.id,
         registrationStatus: RegistrationStatusEnum.new,
         userId,
@@ -294,13 +293,13 @@ export class RegistrationsCreationService {
     for await (const registration of savedRegistrations) {
       if (programHasScore) {
         await this.inclusionScoreService.calculateInclusionScore(
-          registration.referenceId,
+          registration.id,
         );
       }
       if (program.paymentAmountMultiplierFormula) {
         await this.inclusionScoreService.calculatePaymentAmountMultiplier(
           program,
-          registration.referenceId,
+          registration.id,
         );
       }
     }
@@ -413,10 +412,7 @@ export class RegistrationsCreationService {
     programId: number,
     userId: MessageSenderUserId,
   ): Promise<ValidatedRegistrationInput[]> {
-    const validationConfig: ValidationRegistrationConfig = {
-      validateUniqueReferenceId: true,
-      validateExistingReferenceId: true,
-    };
+    const validationConfig: ValidationRegistrationConfig = {};
     const data = await this.registrationsInputValidator.validateAndCleanInput({
       registrationInputArray: registrationInputToValidate,
       programId,
@@ -432,10 +428,7 @@ export class RegistrationsCreationService {
     programId: number,
     userId: number,
   ): Promise<ValidatedRegistrationInput[]> {
-    const validationConfig: ValidationRegistrationConfig = {
-      validateExistingReferenceId: false,
-      validateUniqueReferenceId: false,
-    };
+    const validationConfig: ValidationRegistrationConfig = {};
     const result = await this.registrationsInputValidator.validateAndCleanInput(
       {
         registrationInputArray: csvArray,
