@@ -99,6 +99,7 @@ export default {
       files: ['**/*.mjs', '**/*.ts'],
       rules: {
         'arrow-body-style': 'error',
+        'func-style': 'error',
       },
     },
     javascript: {
