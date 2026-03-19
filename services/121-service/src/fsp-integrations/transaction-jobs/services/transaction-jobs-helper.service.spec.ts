@@ -135,7 +135,7 @@ describe('TransactionJobsHelperService', () => {
       });
 
       expect(
-        registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
+        registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByRegistrationIds,
       ).not.toHaveBeenCalled();
     });
 
@@ -158,7 +158,7 @@ describe('TransactionJobsHelperService', () => {
       });
 
       expect(
-        registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
+        registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByRegistrationIds,
       ).not.toHaveBeenCalled();
     });
 
@@ -185,7 +185,7 @@ describe('TransactionJobsHelperService', () => {
       });
 
       expect(
-        registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
+        registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByRegistrationIds,
       ).toHaveBeenCalledWith(
         expect.objectContaining({
           referenceIds: [ref1],
@@ -224,7 +224,7 @@ describe('TransactionJobsHelperService', () => {
       });
 
       expect(
-        registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
+        registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByRegistrationIds,
       ).toHaveBeenCalledWith(
         expect.objectContaining({
           referenceIds: [ref2],

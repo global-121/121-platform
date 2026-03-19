@@ -225,7 +225,7 @@ export class TransactionJobsHelperService {
         }
       : {};
 
-    await this.registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds(
+    await this.registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByRegistrationIds(
       {
         registrationIds: [registrationWithProgram.id],
         programId: program.id,
