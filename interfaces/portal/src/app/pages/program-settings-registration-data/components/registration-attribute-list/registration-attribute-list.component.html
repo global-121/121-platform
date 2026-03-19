@@ -1,0 +1,97 @@
+@if (program.isPending()) {
+  <p-skeleton height="12rem" />
+} @else if (program.isSuccess()) {
+  @if (attributes().length === 0) {
+    <p i18n>No custom registration attributes configured.</p>
+  } @else {
+    <p-table [value]="attributes()">
+      <ng-template #header>
+        <tr>
+          <th
+            i18n
+            class="txt-body-s text-grey-700 font-semibold uppercase"
+          >
+            Name
+          </th>
+          <th
+            i18n
+            class="txt-body-s text-grey-700 font-semibold uppercase"
+          >
+            Label
+          </th>
+          <th
+            i18n
+            class="txt-body-s text-grey-700 font-semibold uppercase"
+          >
+            De-duplication
+          </th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template
+        #body
+        let-attribute
+      >
+        <tr>
+          <td>{{ attribute.name }}</td>
+          <td>{{ getTranslatedLabel(attribute) }}</td>
+          <td>
+            @if (attribute.duplicateCheck) {
+              <i
+                class="pi pi-check text-green-600"
+                aria-label="Enabled"
+                i18n-aria-label
+              ></i>
+            } @else {
+              <i
+                class="pi pi-times text-grey-500"
+                aria-label="Disabled"
+                i18n-aria-label
+              ></i>
+            }
+          </td>
+          <td class="text-end">
+            <p-button
+              icon="pi pi-pencil"
+              text
+              rounded
+              ariaLabel="Edit attribute"
+              i18n-ariaLabel
+              (click)="openEditDialog(attribute)"
+            />
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  }
+}
+
+<app-form-dialog
+  #editDialog
+  [header]="editingAttribute()?.name ?? ''"
+  headerIcon="pi pi-pencil"
+  [formGroup]="editFormGroup()"
+  [mutation]="updateAttributeMutation"
+  [mutationData]="editFormGroup().getRawValue()"
+  proceedLabel="Save"
+  i18n-proceedLabel="@@generic-save"
+>
+  @for (lang of programLanguages(); track lang) {
+    <app-form-field-wrapper [label]="lang">
+      <input
+        pInputText
+        type="text"
+        [formControl]="getFormControl(lang)"
+      />
+    </app-form-field-wrapper>
+  }
+  <app-form-field-wrapper
+    label="Use for de-duplication"
+    i18n-label
+  >
+    <p-checkbox
+      [formControl]="getFormControl('duplicateCheck')"
+      [binary]="true"
+    />
+  </app-form-field-wrapper>
+</app-form-dialog>
