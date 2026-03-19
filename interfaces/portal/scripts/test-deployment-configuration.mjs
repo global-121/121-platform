@@ -4,13 +4,17 @@
 
 import { doesNotMatch, match, ok } from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import test from 'node:test';
 
 import { shouldBeEnabled } from './lib/env.utils.mjs';
 import { parseMatomoConnectionString } from './lib/matomo.utils.mjs';
 
 const swaConfig = JSON.parse(
-  readFileSync('./staticwebapp.config.json', 'utf8'),
+  readFileSync(
+    join(import.meta.dirname, '../staticwebapp.config.json'),
+    'utf8',
+  ),
 );
 
 const csp = swaConfig.globalHeaders['Content-Security-Policy'];
