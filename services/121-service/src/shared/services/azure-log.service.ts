@@ -9,7 +9,7 @@ export class AzureLogService {
   defaultClient: TelemetryClient;
 
   public constructor() {
-    if (!!env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+    if (env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
       this.defaultClient = defaultClient;
     }
   }
