@@ -185,12 +185,37 @@ export class IntegrateKoboButtonComponent {
     return `${koboIntegrationData.url}/#/${KOBO_URL_FORMS_PREFIX}/${koboIntegrationData.assetUid}/summary`;
   });
 
+  readonly importSubmissionsMutation = injectMutation(() => ({
+    mutationFn: () =>
+      this.koboApiService.importExistingSubmissions({
+        programId: this.programId,
+      }),
+    onSuccess: (result) => {
+      this.toastService.showToast({
+        detail: $localize`Successfully imported ${result.countImported} registrations from Kobo.`,
+      });
+    },
+    onError: () => {
+      this.toastService.showToast({
+        severity: 'error',
+        detail: $localize`Error while importing Kobo submissions`,
+      });
+    },
+  }));
+
   readonly menuItems = computed<MenuItem[]>(() => [
     {
       label: $localize`Reconfigure`,
       icon: 'pi pi-pencil',
       command: () => {
         this.koboConfigurationDialog().show();
+      },
+    },
+    {
+      label: $localize`Import existing submissions`,
+      icon: 'pi pi-download',
+      command: () => {
+        this.importSubmissionsMutation.mutate();
       },
     },
   ]);

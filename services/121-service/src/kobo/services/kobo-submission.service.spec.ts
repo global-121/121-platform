@@ -84,6 +84,7 @@ describe('KoboSubmissionService', () => {
           provide: KoboApiService,
           useValue: {
             getSubmission: jest.fn(),
+            getSubmissions: jest.fn(),
           },
         },
         {
@@ -107,6 +108,82 @@ describe('KoboSubmissionService', () => {
     koboApiService = module.get(KoboApiService);
     koboService = module.get(KoboService);
     registrationsCreationService = module.get(RegistrationsCreationService);
+  });
+
+  describe('importExistingSubmissions', () => {
+    it('should successfully import existing submissions and return count', async () => {
+      // Arrange
+      koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
+      koboApiService.getSubmissions.mockResolvedValue([mockSubmission]);
+      registrationsCreationService.importRegistrations.mockResolvedValue({
+        aggregateImportResult: {
+          countImported: 1,
+        },
+      });
+
+      // Act
+      const result = await service.importExistingSubmissions({
+        programId: mockProgram.id,
+        userId: 1,
+      });
+
+      // Assert
+      expect(result).toEqual({ countImported: 1 });
+      expect(koboApiService.getSubmissions).toHaveBeenCalledWith({
+        token: mockKoboEntity.token,
+        assetId: mockKoboEntity.assetUid,
+        baseUrl: mockKoboEntity.url,
+      });
+      expect(
+        registrationsCreationService.importRegistrations,
+      ).toHaveBeenCalledWith({
+        inputRegistrations: [
+          {
+            referenceId: successSubmissionUuid,
+            programFspConfigurationName: fspName,
+            fullName,
+            nationalId,
+            phoneNumber,
+            photo: photoDownloadUrl,
+          },
+        ],
+        program: mockProgram,
+        userId: 1,
+      });
+    });
+
+    it('should throw HttpException when Kobo integration is not found', async () => {
+      // Arrange
+      koboRepository.findOne.mockResolvedValue(null);
+
+      // Act & Assert
+      await expect(
+        service.importExistingSubmissions({
+          programId: mockProgram.id,
+          userId: 1,
+        }),
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.NOT_FOUND);
+    });
+
+    it('should handle empty submissions list and return 0 count', async () => {
+      // Arrange
+      koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
+      koboApiService.getSubmissions.mockResolvedValue([]);
+      registrationsCreationService.importRegistrations.mockResolvedValue({
+        aggregateImportResult: {
+          countImported: 0,
+        },
+      });
+
+      // Act
+      const result = await service.importExistingSubmissions({
+        programId: mockProgram.id,
+        userId: 1,
+      });
+
+      // Assert
+      expect(result).toEqual({ countImported: 0 });
+    });
   });
 
   describe('processKoboWebhookCall', () => {

@@ -6,6 +6,7 @@ import { EXTERNAL_API } from '@121-service/src/config';
 import { KoboAssetDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset.dto';
 import { KoboAssetResponseDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset-response.dto';
 import { KoboSubmissionDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-submission.dto';
+import { KoboSubmissionsListDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-submissions-list.dto';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
@@ -156,6 +157,47 @@ export class KoboApiService {
       notFoundMessage: 'Kobo asset not found. This asset does not exist',
       operationDescription: 'create Kobo webhook',
     });
+  }
+
+  public async getSubmissions({
+    token,
+    assetId,
+    baseUrl,
+  }: {
+    token: string;
+    assetId: string;
+    baseUrl: string;
+  }): Promise<KoboSubmissionDto[]> {
+    const allSubmissions: KoboSubmissionDto[] = [];
+    let nextUrl: string | null = joinURL(
+      baseUrl,
+      'api/v2/assets',
+      assetId,
+      'data',
+    );
+
+    while (nextUrl) {
+      const headers = new Headers({ Authorization: `Token ${token}` });
+
+      const response = await this.httpService.get<
+        AxiosResponse<KoboSubmissionsListDto>
+      >(nextUrl, headers);
+
+      if (this.isValidKoboResponse<KoboSubmissionsListDto>(response)) {
+        allSubmissions.push(...response.data.results);
+        nextUrl = response.data.next;
+      } else {
+        this.throwKoboApiError({
+          response,
+          assetUid: assetId,
+          apiUrl: nextUrl,
+          notFoundMessage: 'Kobo submissions not found',
+          operationDescription: 'fetch Kobo submissions',
+        });
+      }
+    }
+
+    return allSubmissions;
   }
 
   public async getSubmission({

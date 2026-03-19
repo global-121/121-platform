@@ -2,6 +2,7 @@ import { HttpStatusCode } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 
 import { CreateKoboDto } from '@121-service/src/kobo/dtos/create-kobo.dto';
+import { KoboImportSubmissionsResultDto } from '@121-service/src/kobo/dtos/kobo-import-submissions-result.dto';
 import { KoboIntegrationResultDto } from '@121-service/src/kobo/dtos/kobo-integration-result.dto';
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
 
@@ -53,6 +54,22 @@ export class KoboApiService extends DomainApiService {
       httpParams: {
         dryRun,
       },
+    });
+  }
+
+  importExistingSubmissions({
+    programId,
+  }: {
+    programId: Signal<number | string>;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<
+      Dto<KoboImportSubmissionsResultDto>
+    >({
+      method: 'POST',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(programId),
+        'import',
+      ]).join('/'),
     });
   }
 }

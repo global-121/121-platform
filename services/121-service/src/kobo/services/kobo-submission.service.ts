@@ -21,6 +21,51 @@ export class KoboSubmissionService {
     private readonly registrationsCreationService: RegistrationsCreationService,
   ) {}
 
+  public async importExistingSubmissions({
+    programId,
+    userId,
+  }: {
+    programId: number;
+    userId: number;
+  }): Promise<{ countImported: number }> {
+    const koboIntegration = await this.koboRepository.findOne({
+      where: { programId: Equal(programId) },
+      select: {
+        id: true,
+        assetUid: true,
+        token: true,
+        url: true,
+      },
+      relations: { program: true },
+    });
+    if (!koboIntegration) {
+      throw new HttpException(
+        'Kobo integration not found for this program',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const submissions = await this.koboApiService.getSubmissions({
+      token: koboIntegration.token,
+      assetId: koboIntegration.assetUid,
+      baseUrl: koboIntegration.url,
+    });
+
+    const inputRegistrations = submissions.map((submission) =>
+      KoboSubmissionMapper.mapSubmissionToRegistrationData({
+        koboSubmission: submission,
+      }),
+    );
+
+    const result = await this.registrationsCreationService.importRegistrations({
+      inputRegistrations,
+      program: koboIntegration.program,
+      userId,
+    });
+
+    return { countImported: result.aggregateImportResult.countImported };
+  }
+
   public async processKoboWebhookCall(
     koboWebhookIncomingSubmission: KoboWebhookIncomingSubmission,
   ): Promise<void> {

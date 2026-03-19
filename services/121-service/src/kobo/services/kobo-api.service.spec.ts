@@ -459,4 +459,97 @@ describe('KoboApiService', () => {
       );
     });
   });
+
+  describe('getSubmissions', () => {
+    const mockSubmission = {
+      _id: 1,
+      _uuid: 'submission-uuid-1',
+      fullName: 'John Doe',
+    };
+
+    it('should return all submissions from a single page (happy flow)', async () => {
+      // Arrange
+      httpService.get.mockResolvedValue({
+        status: HttpStatus.OK,
+        data: {
+          count: 1,
+          next: null,
+          previous: null,
+          results: [mockSubmission],
+        },
+      });
+
+      // Act
+      const result = await service.getSubmissions({
+        token: mockToken,
+        assetId: mockAssetUid,
+        baseUrl: mockBaseUrl,
+      });
+
+      // Assert
+      const expectedHeaders = new Headers({
+        Authorization: `Token ${mockToken}`,
+      });
+      expect(httpService.get).toHaveBeenCalledWith(
+        'https://kobo.example.com/api/v2/assets/test-asset-id/data',
+        expectedHeaders,
+      );
+      expect(result).toEqual([mockSubmission]);
+    });
+
+    it('should paginate through all pages and return all submissions', async () => {
+      // Arrange
+      const mockSubmission2 = { _id: 2, _uuid: 'submission-uuid-2' };
+      httpService.get
+        .mockResolvedValueOnce({
+          status: HttpStatus.OK,
+          data: {
+            count: 2,
+            next: 'https://kobo.example.com/api/v2/assets/test-asset-id/data?offset=1',
+            previous: null,
+            results: [mockSubmission],
+          },
+        })
+        .mockResolvedValueOnce({
+          status: HttpStatus.OK,
+          data: {
+            count: 2,
+            next: null,
+            previous: 'https://kobo.example.com/api/v2/assets/test-asset-id/data',
+            results: [mockSubmission2],
+          },
+        });
+
+      // Act
+      const result = await service.getSubmissions({
+        token: mockToken,
+        assetId: mockAssetUid,
+        baseUrl: mockBaseUrl,
+      });
+
+      // Assert
+      expect(httpService.get).toHaveBeenCalledTimes(2);
+      expect(result).toEqual([mockSubmission, mockSubmission2]);
+    });
+
+    it('should properly handle error responses', async () => {
+      // Arrange
+      httpService.get.mockResolvedValue({
+        status: HttpStatus.UNAUTHORIZED,
+        data: {},
+      });
+
+      // Act
+      const promise = service.getSubmissions({
+        token: mockToken,
+        assetId: mockAssetUid,
+        baseUrl: mockBaseUrl,
+      });
+
+      // Assert
+      await expect(promise).rejects.toBeHttpExceptionWithStatus(
+        HttpStatus.UNAUTHORIZED,
+      );
+    });
+  });
 });

@@ -31,6 +31,18 @@ export async function postKoboToProgram({
     .send(body);
 }
 
+export async function importKoboSubmissionsForProgram({
+  programId,
+  accessToken,
+}: {
+  programId: number;
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .post(`/programs/${programId}/kobo/import`)
+    .set('Cookie', [accessToken]);
+}
+
 export async function getKoboFromProgram({
   programId,
   accessToken,

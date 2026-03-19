@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Post,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -27,12 +28,15 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { NoUserAuthenticationEndpoint } from '@121-service/src/guards/no-user-authentication.decorator';
 import { CreateKoboDto } from '@121-service/src/kobo/dtos/create-kobo.dto';
+import { KoboImportSubmissionsResultDto } from '@121-service/src/kobo/dtos/kobo-import-submissions-result.dto';
 import { KoboIntegrationResultDto } from '@121-service/src/kobo/dtos/kobo-integration-result.dto';
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
 import { KoboWebhookIncomingSubmission } from '@121-service/src/kobo/dtos/kobo-webhook-incoming-submission.dto';
 import { KoboWebhookBasicAuthGuard } from '@121-service/src/kobo/guards/kobo-webhook-basic-auth.guard';
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboSubmissionService } from '@121-service/src/kobo/services/kobo-submission.service';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs/kobo')
@@ -159,6 +163,46 @@ export class KoboController {
     programId: number,
   ): Promise<KoboResponseDto> {
     return this.koboService.getKoboData({ programId });
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary: 'Import existing Kobo submissions for a Program',
+    description:
+      'Fetches all existing submissions from the linked Kobo form and imports them as registrations in the 121 Platform.',
+  })
+  @ApiParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+    description: 'The unique identifier of the program',
+    example: 1,
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Successfully imported existing Kobo submissions',
+    type: KoboImportSubmissionsResultDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description:
+      'Program does not exist or no Kobo integration found for this program',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'User is not authenticated or lacks admin privileges',
+  })
+  @Post('programs/:programId/kobo/import')
+  public async importExistingSubmissions(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Req() req: ScopedUserRequest,
+  ): Promise<KoboImportSubmissionsResultDto> {
+    const userId = RequestHelper.getUserId(req);
+    return this.koboSubmissionService.importExistingSubmissions({
+      programId,
+      userId,
+    });
   }
 
   @NoUserAuthenticationEndpoint(
