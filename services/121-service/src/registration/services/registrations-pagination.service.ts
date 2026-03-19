@@ -210,23 +210,23 @@ export class RegistrationsPaginationService {
   }
 
   /**
-   * Get a large amount of registration views by their reference IDs. This method works around query length limitations by using ANY().
+   * Get a large amount of registration views by their registration IDs. This method works around query length limitations by using ANY().
    * @param programId - The ID of the program.
-   * @param referenceIds - The reference IDs of the registrations.
+   * @param registrationIds - The registration IDs of the registrations.
    * @param select - The fields to select.
    */
-  public async getRegistrationViewsByReferenceIds({
+  public async getRegistrationViewsByRegistrationIds({
     programId,
-    referenceIds,
+    registrationIds,
     select,
   }: {
     programId: number;
-    referenceIds: string[];
+    registrationIds: number[];
     select?: string[];
   }): Promise<MappedPaginatedRegistrationDto[]> {
     const querybuilder =
-      this.registrationViewScopedRepository.createQueryBuilderToGetRegistrationViewsByReferenceIds(
-        referenceIds,
+      this.registrationViewScopedRepository.createQueryBuilderToGetRegistrationViewsByRegistrationIds(
+        registrationIds,
       );
 
     const result = await this.getRegistrationViewsNoLimit({

@@ -1,5 +1,5 @@
 export class ReferenceProgramIdScopeDto {
   programId: number;
-  referenceId: string;
+  id: number;
   scope: string;
 }

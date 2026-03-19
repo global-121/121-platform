@@ -23,14 +23,14 @@ export class InclusionScoreService {
 
   public async calculatePaymentAmountMultiplier(
     program: ProgramEntity,
-    referenceId: string,
+    registrationId: number,
   ): Promise<RegistrationEntity | undefined> {
     if (!program.paymentAmountMultiplierFormula) {
       return;
     }
 
     const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: Equal(referenceId) },
+      where: { id: Equal(registrationId) },
       relations: ['data'],
     });
     const formulaParts = program.paymentAmountMultiplierFormula
@@ -53,13 +53,13 @@ export class InclusionScoreService {
     return await this.registrationUtilsService.save(registration);
   }
 
-  public async calculateInclusionScore(referenceId: string): Promise<void> {
+  public async calculateInclusionScore(registrationId: number): Promise<void> {
     const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: Equal(referenceId) },
+      where: { id: Equal(registrationId) },
       relations: ['program'],
     });
 
-    const scoreList = await this.createQuestionAnswerListPrefilled(referenceId);
+    const scoreList = await this.createQuestionAnswerListPrefilled(registrationId);
 
     const program = await this.programRepository.findOneOrFail({
       where: { id: Equal(registration.program.id) },
@@ -76,10 +76,10 @@ export class InclusionScoreService {
   }
 
   private async createQuestionAnswerListPrefilled(
-    referenceId: string,
+    registrationId: number,
   ): Promise<object> {
     const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: Equal(referenceId) },
+      where: { id: Equal(registrationId) },
       relations: ['data', 'data.programRegistrationAttribute'],
     });
     const scoreList = {};

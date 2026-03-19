@@ -36,7 +36,6 @@ import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language
       )
       .orderBy(`registration.registrationProgramId`, 'ASC')
       .addSelect('registration.created', 'created')
-      .addSelect('registration.referenceId', 'referenceId')
       .addSelect('registration.registrationStatus', 'status')
       .addSelect('registration.programId', 'programId')
       .addSelect('registration.preferredLanguage', 'preferredLanguage')
@@ -129,9 +128,6 @@ export class RegistrationViewEntity {
 
   @ViewColumn()
   public created: Date;
-
-  @ViewColumn()
-  public referenceId: string;
 
   @ViewColumn()
   public phoneNumber?: string;

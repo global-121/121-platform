@@ -6,7 +6,6 @@ import {
   IsOptional,
   IsPositive,
   IsString,
-  Length,
 } from 'class-validator';
 
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
@@ -79,12 +78,6 @@ export class ImportRegistrationsDto extends BulkImportDto {
   // It could also be programFspConfigurationName (which is a good name for us programmers)
   // However this name is also used by users in the csv file, so it should be a name that is understandable for them
   public programFspConfigurationName: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  @Length(5, 200)
-  public referenceId?: string;
 
   @ApiProperty()
   @IsOptional()

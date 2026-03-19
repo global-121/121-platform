@@ -48,7 +48,7 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
       .innerJoin('registration.transactions', 'transaction')
       .andWhere('registration.programId = :programId', { programId })
       .andWhere('transaction.paymentId = :paymentId', { paymentId })
-      .orderBy('registration.referenceId', 'ASC');
+      .orderBy('registration.registrationProgramId', 'ASC');
     if (status) {
       query.andWhere('transaction.status = :status', { status });
     }
@@ -69,16 +69,16 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
     return query;
   }
 
-  public createQueryBuilderToGetRegistrationViewsByReferenceIds(
-    referenceIds: string[],
+  public createQueryBuilderToGetRegistrationViewsByRegistrationIds(
+    registrationIds: number[],
   ): ScopedQueryBuilder<RegistrationViewEntity> {
-    if (referenceIds.length === 0) {
+    if (registrationIds.length === 0) {
       // Always false condition to return no results
       return this.createQueryBuilder('registration').andWhere('1=0');
     }
     return this.queryBuilderFilterOutDeleted().andWhere(
-      'registration.referenceId = ANY(:referenceIds)', // Use = ANY(...) to prevent query being too long
-      { referenceIds },
+      'registration.id = ANY(:registrationIds)', // Use = ANY(...) to prevent query being too long
+      { registrationIds },
     );
   }
 

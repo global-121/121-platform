@@ -162,12 +162,19 @@ export class TransactionJobsHelperService {
       await this.transactionRepository.getReferenceIdByTransactionIdOrThrow(
         transactionId,
       );
+    const registration =
+      await this.registrationScopedRepository.getByReferenceId({ referenceId });
+    if (!registration) {
+      throw new Error(
+        `Registration not found for referenceId ${referenceId}`,
+      );
+    }
     const newPaymentCount =
       await this.transactionRepository.countTransactionsByReferenceId(
         referenceId,
       );
     await this.registrationScopedRepository.updatePaymentCount({
-      referenceId,
+      registrationId: registration.id,
       paymentCount: newPaymentCount,
     });
 
@@ -199,7 +206,7 @@ export class TransactionJobsHelperService {
 
     const shouldChangeStatusToCompleted =
       await this.registrationScopedRepository.shouldChangeStatusToCompleted({
-        referenceId,
+        registrationId: registrationWithProgram.id,
       });
     if (!shouldChangeStatusToCompleted) {
       return;
@@ -220,7 +227,7 @@ export class TransactionJobsHelperService {
 
     await this.registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds(
       {
-        referenceIds: [referenceId],
+        registrationIds: [registrationWithProgram.id],
         programId: program.id,
         registrationStatus: RegistrationStatusEnum.completed,
         userId,

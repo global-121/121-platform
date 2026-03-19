@@ -11,7 +11,6 @@ type RegistrationEntityProperties = Partial<
     InstanceType<typeof RegistrationEntity>,
     | 'programId'
     | 'registrationStatus'
-    | 'referenceId'
     | 'phoneNumber'
     | 'preferredLanguage'
     | 'inclusionScore'

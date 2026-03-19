@@ -7,7 +7,6 @@ export enum AdditionalAttributes {
   paymentAmountMultiplier = 'paymentAmountMultiplier',
   preferredLanguage = 'preferredLanguage',
   maxPayments = 'maxPayments',
-  referenceId = 'referenceId',
   scope = 'scope',
   programFspConfigurationName = 'programFspConfigurationName',
 }

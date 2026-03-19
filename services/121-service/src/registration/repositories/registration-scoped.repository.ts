@@ -150,6 +150,24 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     });
   }
 
+  public async getByIdAndProgramId({
+    registrationId,
+    programId,
+    relations = [],
+  }: {
+    registrationId: number;
+    programId: number;
+    relations?: string[];
+  }) {
+    return await this.repository.findOne({
+      where: {
+        id: Equal(registrationId),
+        programId: Equal(programId),
+      },
+      relations,
+    });
+  }
+
   public async getWithRelationsByReferenceIdAndProgramId({
     referenceId,
     programId,
@@ -345,24 +363,24 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
   }
 
   public async updatePaymentCount({
-    referenceId,
+    registrationId,
     paymentCount,
   }: {
-    referenceId: string;
+    registrationId: number;
     paymentCount: number;
   }): Promise<void> {
     await this.repository
       .createQueryBuilder('registration')
       .update()
       .set({ paymentCount })
-      .andWhere({ referenceId: Equal(referenceId) })
+      .andWhere({ id: Equal(registrationId) })
       .execute();
   }
 
   public async shouldChangeStatusToCompleted({
-    referenceId,
+    registrationId,
   }: {
-    referenceId: string;
+    registrationId: number;
   }): Promise<boolean> {
     const registrationToComplete = await this.repository
       .createQueryBuilder('registration')
@@ -370,7 +388,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
       .andWhere('registration."registrationStatus" != :completedStatus', {
         completedStatus: RegistrationStatusEnum.completed,
       })
-      .andWhere('registration."referenceId" = :referenceId', { referenceId })
+      .andWhere('registration."id" = :registrationId', { registrationId })
       .getOne();
     if (!registrationToComplete) {
       return false;
