@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
-import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
+import {
+  MessageJobCustomDataDto,
+  MessageProcessTypeExtension,
+} from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageContentDetails } from '@121-service/src/notifications/interfaces/message-content-details.interface';
@@ -17,7 +20,7 @@ import { RegistrationViewEntity } from '@121-service/src/registration/entities/r
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
-import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 
 @Injectable()
 export class TransactionJobsHelperService {
@@ -28,6 +31,7 @@ export class TransactionJobsHelperService {
     private readonly transactionsService: TransactionsService,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly transactionRepository: TransactionRepository,
+    private readonly registrationsPaginationService: RegistrationsPaginationService,
   ) {}
 
   public async getRegistrationOrThrow(
@@ -49,19 +53,25 @@ export class TransactionJobsHelperService {
     registration,
     userId,
     message,
+    messageTemplateKey,
+    customData,
     bulksize,
   }: {
     registration: RegistrationEntity | Omit<RegistrationViewEntity, 'data'>;
     userId: number;
     message?: string;
+    messageTemplateKey?: string;
+    customData?: MessageJobCustomDataDto;
     bulksize?: number;
   }): Promise<void> {
     await this.queueMessageService.addMessageJob({
       registration,
       message,
+      messageTemplateKey,
       messageContentType: MessageContentType.payment,
       messageProcessType:
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
+      customData,
       bulksize,
       userId,
     });
@@ -82,37 +92,49 @@ export class TransactionJobsHelperService {
     bulkSize: number;
     userId: number;
   }) {
-    const templates =
-      await this.messageTemplateService.getMessageTemplatesByProgramId(
-        programId,
-        type,
-      );
-    let messageContent = templates.find(
-      (template) => template.language === registration.preferredLanguage,
-    )?.message;
-    if (!messageContent) {
-      messageContent = templates.find(
-        (template) => template.language === RegistrationPreferredLanguage.en,
-      )?.message;
+    let usedPlaceholders: string[] = [];
+    try {
+      usedPlaceholders =
+        await this.queueMessageService.getPlaceholdersInMessageText(
+          programId,
+          undefined,
+          type,
+        );
+    } catch {
+      // If no template exists for this program/type, there are no placeholders to resolve
     }
-    // Note: messageContent is possible undefined/null here, so we're assuming here that the message processor will handle this properly.
 
-    if (messageContent) {
-      const dynamicContents = [String(amountTransferred)];
-      for (const [i, dynamicContent] of dynamicContents.entries()) {
-        const replaceString = `[[${i + 1}]]`;
-        if (messageContent!.includes(replaceString)) {
-          messageContent = messageContent!.replace(
-            replaceString,
-            dynamicContent,
-          );
+    // amountTransferred is not a registration view attribute; handle it separately
+    const registrationAttributePlaceholders = usedPlaceholders.filter(
+      (p) => p !== 'amountTransferred',
+    );
+
+    const placeholderData: NonNullable<MessageJobCustomDataDto['placeholderData']> =
+      {
+        amountTransferred: String(amountTransferred),
+      };
+
+    if (registrationAttributePlaceholders.length > 0) {
+      const registrationViews =
+        await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
+          {
+            programId,
+            referenceIds: [registration.referenceId],
+            select: registrationAttributePlaceholders,
+          },
+        );
+      const registrationView = registrationViews[0];
+      if (registrationView) {
+        for (const placeholder of registrationAttributePlaceholders) {
+          placeholderData[placeholder] = registrationView[placeholder] ?? '';
         }
       }
     }
 
     await this.addMessageJobToQueue({
       registration,
-      message: messageContent ?? undefined,
+      messageTemplateKey: type,
+      customData: { placeholderData },
       bulksize: bulkSize,
       userId,
     });

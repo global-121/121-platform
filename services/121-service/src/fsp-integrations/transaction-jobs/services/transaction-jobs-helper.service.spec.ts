@@ -3,6 +3,8 @@ import { UpdateResult } from 'typeorm';
 
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
@@ -11,6 +13,7 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 
 const mockedRegistration: RegistrationEntity = {
@@ -27,6 +30,8 @@ describe('TransactionJobsHelperService', () => {
   let transactionsService: TransactionsService;
   let messageTemplateService: MessageTemplateService;
   let registrationsBulkService: RegistrationsBulkService;
+  let queueMessageService: MessageQueuesService;
+  let registrationsPaginationService: RegistrationsPaginationService;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -44,6 +49,9 @@ describe('TransactionJobsHelperService', () => {
     registrationsBulkService = unitRef.get<RegistrationsBulkService>(
       RegistrationsBulkService,
     );
+    queueMessageService = unitRef.get<MessageQueuesService>(MessageQueuesService);
+    registrationsPaginationService =
+      unitRef.get<RegistrationsPaginationService>(RegistrationsPaginationService);
 
     jest
       .spyOn(registrationScopedRepository, 'getByReferenceId')
@@ -232,6 +240,112 @@ describe('TransactionJobsHelperService', () => {
           registrationStatus: RegistrationStatusEnum.completed,
           userId: userIdD,
           messageContentDetails: {},
+        }),
+      );
+    });
+  });
+
+  describe('createMessageAndAddToQueue', () => {
+    const programId = 1;
+    const amountTransferred = 50;
+    const userId = 42;
+    const templateType = ProgramNotificationEnum.visaLoad;
+
+    it('should queue a message with amountTransferred in placeholderData when no other placeholders are used', async () => {
+      jest
+        .spyOn(queueMessageService, 'getPlaceholdersInMessageText')
+        .mockResolvedValue(['amountTransferred']);
+      jest
+        .spyOn(queueMessageService, 'addMessageJob')
+        .mockResolvedValue(undefined);
+
+      await service.createMessageAndAddToQueue({
+        type: templateType,
+        programId,
+        registration: mockedRegistration,
+        amountTransferred,
+        bulkSize: 1,
+        userId,
+      });
+
+      expect(queueMessageService.addMessageJob).toHaveBeenCalledWith(
+        expect.objectContaining({
+          messageTemplateKey: templateType,
+          customData: {
+            placeholderData: { amountTransferred: String(amountTransferred) },
+          },
+        }),
+      );
+    });
+
+    it('should fetch registration view and include registration attributes when other placeholders are used', async () => {
+      jest
+        .spyOn(queueMessageService, 'getPlaceholdersInMessageText')
+        .mockResolvedValue(['amountTransferred', 'fullName']);
+      jest
+        .spyOn(registrationsPaginationService, 'getRegistrationViewsByReferenceIds')
+        .mockResolvedValue([{ fullName: 'John Doe' } as any]);
+      jest
+        .spyOn(queueMessageService, 'addMessageJob')
+        .mockResolvedValue(undefined);
+
+      await service.createMessageAndAddToQueue({
+        type: templateType,
+        programId,
+        registration: mockedRegistration,
+        amountTransferred,
+        bulkSize: 1,
+        userId,
+      });
+
+      expect(
+        registrationsPaginationService.getRegistrationViewsByReferenceIds,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({
+          programId,
+          referenceIds: [mockedRegistration.referenceId],
+          select: ['fullName'],
+        }),
+      );
+
+      expect(queueMessageService.addMessageJob).toHaveBeenCalledWith(
+        expect.objectContaining({
+          messageTemplateKey: templateType,
+          customData: {
+            placeholderData: {
+              amountTransferred: String(amountTransferred),
+              fullName: 'John Doe',
+            },
+          },
+        }),
+      );
+    });
+
+    it('should still queue a message with amountTransferred when the template does not exist', async () => {
+      jest
+        .spyOn(queueMessageService, 'getPlaceholdersInMessageText')
+        .mockRejectedValue(
+          new Error('Message template with key visaLoad not found or has no message'),
+        );
+      jest
+        .spyOn(queueMessageService, 'addMessageJob')
+        .mockResolvedValue(undefined);
+
+      await service.createMessageAndAddToQueue({
+        type: templateType,
+        programId,
+        registration: mockedRegistration,
+        amountTransferred,
+        bulkSize: 1,
+        userId,
+      });
+
+      expect(queueMessageService.addMessageJob).toHaveBeenCalledWith(
+        expect.objectContaining({
+          messageTemplateKey: templateType,
+          customData: {
+            placeholderData: { amountTransferred: String(amountTransferred) },
+          },
         }),
       );
     });

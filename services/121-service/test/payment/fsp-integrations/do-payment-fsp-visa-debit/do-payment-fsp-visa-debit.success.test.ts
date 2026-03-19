@@ -43,7 +43,7 @@ const createEnglishMessageBodyForAmount = ({
   amount: number;
 }): string => {
   const originalBody = messageTemplateNlrcOcw.visaLoad.message?.en;
-  const replaceString = '[[1]]';
+  const replaceString = '{{amountTransferred}}';
 
   return originalBody?.replace(replaceString, `${amount}`) ?? '';
 };

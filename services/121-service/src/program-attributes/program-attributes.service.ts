@@ -143,6 +143,11 @@ export class ProgramAttributesService {
         type: RegistrationAttributeTypes.text,
         label: null,
       },
+      {
+        name: 'amountTransferred',
+        type: RegistrationAttributeTypes.numeric,
+        label: null,
+      },
     ];
     if (hasMaxPayments?.enableMaxPayments) {
       defaultAttributes.push({
