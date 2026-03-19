@@ -9,6 +9,7 @@ export default defineConfig(
   globalIgnores(['dist/**', 'tmp/**', 'coverage/**']),
   eslintConfig121Platform.configs.base,
   eslintConfig121Platform.configs.recommended,
+  eslintConfig121Platform.configs.recommendedNext,
   eslintConfig121Platform.configs.node,
   eslintConfig121Platform.configs.javascript,
   eslintConfig121Platform.configs.typescript, // Needs to be AFTER `*.configs.node`; It needs to override some rules!

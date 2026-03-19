@@ -89,7 +89,16 @@ export default {
         globals: globals.nodeBuiltin,
       },
       rules: {
+        'object-shorthand': 'error',
         'prefer-arrow-callback': 'error',
+      },
+    },
+    recommendedNext: {
+      name: '121-platform/recommended-next',
+      files: ['**/*.mjs', '**/*.ts'],
+      rules: {
+        'arrow-body-style': 'error',
+        'no-inner-declarations': 'error',
       },
     },
     javascript: {
