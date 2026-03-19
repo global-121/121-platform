@@ -83,7 +83,7 @@ jobs:
       - name: Generate Coverage-report from 121-service
         working-directory: ${{ env.workingDirectory }}
         run: |
-          curl -d '{"secret":"${{ env.RESET_SECRET }}"}' -H "Content-Type: application/json" -X POST '${{ env.EXTERNAL_121_SERVICE_URL }}/api/test/kill-service' || true
+          curl --data '{"secret":"${{ env.RESET_SECRET }}"}' --header "Content-Type: application/json" --request POST '${{ env.EXTERNAL_121_SERVICE_URL }}/api/test/kill-service' || true
           docker compose exec 121-service npm run coverage:report:integration
 
       - uses: actions/upload-artifact@v7
