@@ -42,19 +42,19 @@ export class NoteController {
       'ReferenceId is not known - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
-  @Post(':programId/registrations/:referenceId/notes')
+  @ApiParam({ name: 'registrationId', required: true, type: 'integer' })
+  @Post(':programId/registrations/:registrationId/notes')
   public async createNote(
     @Req() req: ScopedUserRequest,
     @Param('programId', ParseIntPipe) programId: number,
-    @Param('referenceId') referenceId: string,
+    @Param('registrationId', ParseIntPipe) registrationId: number,
     @Body() createNote: CreateNoteDto,
   ): Promise<void> {
     // TODO: REFACTOR: Should return a representation of the created note in the response
     const userId = RequestHelper.getUserId(req);
 
     await this.notesService.createNote(
-      referenceId,
+      registrationId,
       createNote.text,
       userId,
       programId,

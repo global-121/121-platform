@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { NoteScopedRepository } from '@121-service/src/notes/note.repository';
@@ -13,23 +13,17 @@ export class NotesService {
 
   public async createNote(
     // TODO: REFACTOR: Should be an object as there are 4 parameters
-    referenceId: string,
+    registrationId: number,
     text: string,
     userId: number,
     programId: number,
   ): Promise<void> {
-    const registration = await this.registrationsService.getRegistrationOrThrow(
-      {
-        referenceId,
+    const registration =
+      await this.registrationsService.getRegistrationByIdOrThrow({
+        registrationId,
         relations: undefined,
         programId,
-      },
-    );
-
-    if (!registration) {
-      const errors = `ReferenceId ${referenceId} is not known.`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
+      });
 
     const note = new NoteEntity();
     note.registrationId = registration.id;

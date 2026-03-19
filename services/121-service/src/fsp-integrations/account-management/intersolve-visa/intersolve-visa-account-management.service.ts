@@ -29,16 +29,15 @@ export class IntersolveVisaAccountManagementService {
   ) {}
 
   public async retrieveAndUpdateIntersolveVisaWalletAndCards(
-    referenceId: string,
+    registrationId: number,
     programId: number,
   ): Promise<IntersolveVisaWalletDto> {
-    const registration = await this.registrationsService.getRegistrationOrThrow(
-      {
-        referenceId,
+    const registration =
+      await this.registrationsService.getRegistrationByIdOrThrow({
+        registrationId,
         relations: [],
         programId,
-      },
-    );
+      });
     const maxBalanceInCents =
       await this.programFspConfigurationRepository.getPropertyValueByNameOrThrow(
         {
@@ -54,16 +53,15 @@ export class IntersolveVisaAccountManagementService {
   }
 
   public async getIntersolveVisaWalletAndCards(
-    referenceId: string,
+    registrationId: number,
     programId: number,
   ): Promise<IntersolveVisaWalletDto> {
-    const registration = await this.registrationsService.getRegistrationOrThrow(
-      {
-        referenceId,
+    const registration =
+      await this.registrationsService.getRegistrationByIdOrThrow({
+        registrationId,
         relations: [],
         programId,
-      },
-    );
+      });
     const maxBalanceInCents =
       await this.programFspConfigurationRepository.getPropertyValueByNameOrThrow(
         {
@@ -79,20 +77,19 @@ export class IntersolveVisaAccountManagementService {
   }
 
   public async replaceCardByMail({
-    referenceId,
+    registrationId,
     programId,
     userId,
   }: {
-    referenceId: string;
+    registrationId: number;
     programId: number;
     userId: number;
   }) {
-    const registration = await this.registrationsService.getRegistrationOrThrow(
-      {
-        referenceId,
+    const registration =
+      await this.registrationsService.getRegistrationByIdOrThrow({
+        registrationId,
         programId,
-      },
-    );
+      });
 
     const cardDistributionByMailEnabled =
       await this.cardDistributionByMailEnabled(
@@ -117,7 +114,6 @@ export class IntersolveVisaAccountManagementService {
     }
 
     await this.replaceCard({
-      referenceId,
       programId,
       registrationId: registration.id,
       programFspConfigurationId: registration.programFspConfigurationId,
@@ -134,20 +130,19 @@ export class IntersolveVisaAccountManagementService {
   }
 
   public async replaceCardOnSite({
-    referenceId,
+    registrationId,
     programId,
     tokenCode,
   }: {
-    referenceId: string;
+    registrationId: number;
     programId: number;
     tokenCode: string;
   }): Promise<void> {
-    const registration = await this.registrationsService.getRegistrationOrThrow(
-      {
-        referenceId,
+    const registration =
+      await this.registrationsService.getRegistrationByIdOrThrow({
+        registrationId,
         programId,
-      },
-    );
+      });
 
     const cardDistributionByMailEnabled =
       await this.cardDistributionByMailEnabled(
@@ -174,7 +169,6 @@ export class IntersolveVisaAccountManagementService {
     }
 
     await this.replaceCard({
-      referenceId,
       registrationId: registration.id,
       programFspConfigurationId: registration.programFspConfigurationId,
       programId,
@@ -183,13 +177,11 @@ export class IntersolveVisaAccountManagementService {
   }
 
   public async replaceCard({
-    referenceId,
     programId,
     tokenCode,
     registrationId,
     programFspConfigurationId,
   }: {
-    referenceId: string;
     programId: number;
     tokenCode?: string;
     registrationId: number;
@@ -197,7 +189,7 @@ export class IntersolveVisaAccountManagementService {
   }): Promise<void> {
     const contactInformation: ContactInformation =
       await this.registrationsService.getContactInformation({
-        referenceId,
+        registrationId,
         programId,
       });
 
@@ -242,19 +234,19 @@ export class IntersolveVisaAccountManagementService {
   }
 
   public async linkCardOnSiteToRegistration({
-    referenceId,
+    registrationId,
     programId,
     tokenCode,
   }: {
-    referenceId: string;
+    registrationId: number;
     programId: number;
     tokenCode: string;
   }): Promise<void> {
     await this.throwIfCardDoesNotExistOrIsAlreadyLinked(tokenCode);
 
     const registration: RegistrationEntity =
-      await this.registrationsService.getRegistrationOrThrow({
-        referenceId,
+      await this.registrationsService.getRegistrationByIdOrThrow({
+        registrationId,
         programId,
       });
 
@@ -271,7 +263,7 @@ export class IntersolveVisaAccountManagementService {
 
     const contactInformation =
       await this.registrationsService.getContactInformation({
-        referenceId,
+        registrationId,
         programId,
       });
 
@@ -285,7 +277,7 @@ export class IntersolveVisaAccountManagementService {
 
     await this.intersolveVisaService.linkPhysicalCardToRegistration({
       contactInformation,
-      referenceId,
+      referenceId: registration.referenceId,
       registrationId: registration.id,
       tokenCode,
       brandCode,
@@ -307,18 +299,17 @@ export class IntersolveVisaAccountManagementService {
   }
 
   public async pauseCardAndSendMessage(
-    referenceId: string,
+    registrationId: number,
     programId: number,
     tokenCode: string,
     pause: boolean,
     userId: number,
   ): Promise<IntersolveVisaChildWalletEntity> {
-    const registration = await this.registrationsService.getRegistrationOrThrow(
-      {
-        referenceId,
+    const registration =
+      await this.registrationsService.getRegistrationByIdOrThrow({
+        registrationId,
         programId,
-      },
-    );
+      });
     const updatedWallet = await this.intersolveVisaService.pauseCardOrThrow(
       tokenCode,
       pause,
@@ -337,19 +328,18 @@ export class IntersolveVisaAccountManagementService {
   }
 
   public async getRegistrationAndSendContactInformationToIntersolve(
-    referenceId: string,
+    registrationId: number,
     programId: number,
   ): Promise<void> {
-    const registration = await this.registrationsService.getRegistrationOrThrow(
-      {
-        referenceId,
+    const registration =
+      await this.registrationsService.getRegistrationByIdOrThrow({
+        registrationId,
         programId,
-      },
-    );
+      });
 
     const contactInformation: ContactInformation =
       await this.registrationsService.getContactInformation({
-        referenceId,
+        registrationId,
         programId,
       });
 

@@ -102,7 +102,7 @@ export class RegistrationsBulkService {
         this.azureLogService.logError(error, true);
       });
     }
-    // Get the referenceIds for the update separately as running a query with no limit is slower
+    // Get the registrationIds for the update separately as running a query with no limit is slower
     // so you show the result of the applicable registrations earlier
     return resultDto;
   }
@@ -281,7 +281,7 @@ export class RegistrationsBulkService {
     selectColumns?: string[];
   }): PaginateQuery {
     query.select = [
-      GenericRegistrationAttributes.referenceId,
+      'id',
       'programId',
       ...selectColumns,
     ];
@@ -347,16 +347,16 @@ export class RegistrationsBulkService {
     messageContentDetails: MessageContentDetails;
     reason?: string;
   }): Promise<void> {
-    const referenceIdsForWhichStatusChangeIsApllicable =
-      await this.getReferenceIdsForWhichStatusChangeIsApplicable(
+    const registrationIdsForWhichStatusChangeIsApplicable =
+      await this.getRegistrationIdsForWhichStatusChangeIsApplicable(
         programId,
         allowedCurrentStatuses,
         registrationStatus,
         paginateQuery,
       );
 
-    await this.applyRegistrationStatusChangeAndSendMessageByReferenceIds({
-      referenceIds: referenceIdsForWhichStatusChangeIsApllicable,
+    await this.applyRegistrationStatusChangeAndSendMessageByRegistrationIds({
+      registrationIds: registrationIdsForWhichStatusChangeIsApplicable,
       programId,
       registrationStatus,
       userId,
@@ -365,23 +365,23 @@ export class RegistrationsBulkService {
     });
   }
 
-  public async applyRegistrationStatusChangeAndSendMessageByReferenceIds({
-    referenceIds,
+  public async applyRegistrationStatusChangeAndSendMessageByRegistrationIds({
+    registrationIds,
     programId,
     registrationStatus,
     userId,
     messageContentDetails,
     reason,
   }: {
-    referenceIds: string[];
+    registrationIds: number[];
     programId: number;
     registrationStatus: RegistrationStatusEnum;
     userId: MessageSenderUserId;
     messageContentDetails: MessageContentDetails;
     reason?: string;
   }): Promise<void> {
-    await this.applyRegistrationStatusChangeByReferenceIds({
-      referenceIds,
+    await this.applyRegistrationStatusChangeByRegistrationIds({
+      registrationIds,
       programId,
       registrationStatus,
       reason,
@@ -392,8 +392,8 @@ export class RegistrationsBulkService {
       !!messageContentDetails.messageTemplateKey;
 
     if (includeSendingMessage) {
-      await this.sendMessagesByReferenceIds({
-        referenceIds,
+      await this.sendMessagesByRegistrationIds({
+        registrationIds,
         programId,
         userId,
         messageContentDetails,
@@ -401,26 +401,25 @@ export class RegistrationsBulkService {
     }
   }
 
-  private async applyRegistrationStatusChangeByReferenceIds({
-    referenceIds,
+  private async applyRegistrationStatusChangeByRegistrationIds({
+    registrationIds,
     programId,
     registrationStatus,
     reason,
   }: {
-    referenceIds: string[];
+    registrationIds: number[];
     programId: number;
     registrationStatus: RegistrationStatusEnum;
     reason?: string;
   }): Promise<void> {
     const idColumn: keyof RegistrationViewEntity = 'id';
     const selectedColumns = [
-      GenericRegistrationAttributes.referenceId,
       idColumn,
       GenericRegistrationAttributes.status,
     ];
     const registrationsForUpdate =
-      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
-        { programId, referenceIds, select: selectedColumns },
+      await this.registrationsPaginationService.getRegistrationViewsByRegistrationIds(
+        { programId, registrationIds, select: selectedColumns },
       );
 
     const chunks = chunk(registrationsForUpdate, 10000);
@@ -434,13 +433,13 @@ export class RegistrationsBulkService {
     }
   }
 
-  private async sendMessagesByReferenceIds({
-    referenceIds,
+  private async sendMessagesByRegistrationIds({
+    registrationIds,
     programId,
     userId,
     messageContentDetails,
   }: {
-    referenceIds: string[];
+    registrationIds: number[];
     programId: number;
     userId: MessageSenderUserId;
     messageContentDetails: MessageContentDetails;
@@ -455,7 +454,6 @@ export class RegistrationsBulkService {
     const idColumn: keyof RegistrationViewEntity = 'id';
     const selectedColumns = [
       ...usedPlaceholders,
-      GenericRegistrationAttributes.referenceId,
       idColumn,
     ];
 
@@ -466,8 +464,8 @@ export class RegistrationsBulkService {
     selectedColumns.push(GenericRegistrationAttributes.phoneNumber);
 
     const registrationsToSendMessageTo =
-      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
-        { programId, referenceIds, select: selectedColumns },
+      await this.registrationsPaginationService.getRegistrationViewsByRegistrationIds(
+        { programId, registrationIds, select: selectedColumns },
       );
 
     const chunks = chunk(registrationsToSendMessageTo, 10000);
@@ -483,13 +481,13 @@ export class RegistrationsBulkService {
     }
   }
 
-  private async getReferenceIdsForWhichStatusChangeIsApplicable(
+  private async getRegistrationIdsForWhichStatusChangeIsApplicable(
     programId: number,
     allowedCurrentStatuses: RegistrationStatusEnum[],
     newStatus: RegistrationStatusEnum,
     paginateQuery: PaginateQuery,
-  ): Promise<string[]> {
-    paginateQuery.select = [GenericRegistrationAttributes.referenceId];
+  ): Promise<number[]> {
+    paginateQuery.select = ['id'];
 
     const queryBuilder = this.getStatusUpdateBaseQuery(
       allowedCurrentStatuses,
@@ -502,7 +500,7 @@ export class RegistrationsBulkService {
         queryBuilder,
       });
 
-    return data.map((r) => r.referenceId);
+    return data.map((r) => r.id);
   }
 
   private async updateRegistrationStatusPerChunk({

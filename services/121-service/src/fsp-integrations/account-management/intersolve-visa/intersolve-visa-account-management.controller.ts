@@ -46,24 +46,24 @@ export class IntersolveVisaAccountManagementController {
       '[SCOPED] Replace card: replace existing card with a new card and send it to the registration by mail',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiParam({ name: 'registrationId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
       'Card replaced - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Post(
-    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/wallet/cards/by-mail/replace',
+    'programs/:programId/registrations/:registrationId/fsps/intersolve-visa/wallet/cards/by-mail/replace',
   )
   @HttpCode(HttpStatus.NO_CONTENT)
   public async replaceCardByMail(
     @Param('programId', ParseIntPipe) programId: number,
-    @Param('referenceId') referenceId: string,
+    @Param('registrationId', ParseIntPipe) registrationId: number,
     @Req() req,
   ): Promise<void> {
     const userId = req.user.id;
     await this.intersolveVisaAccountManagementService.replaceCardByMail({
-      referenceId,
+      registrationId,
       programId,
       userId,
     });
@@ -74,7 +74,7 @@ export class IntersolveVisaAccountManagementController {
     summary: '[SCOPED] [EXTERNALLY USED] Pause Intersolve Visa Card',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiParam({ name: 'registrationId', required: true, type: 'integer' })
   @ApiParam({ name: 'tokenCode', required: true, type: 'string' })
   @ApiQuery({ name: 'pause', type: 'boolean' })
   @ApiResponse({
@@ -83,11 +83,11 @@ export class IntersolveVisaAccountManagementController {
       'Body.status 204: Paused card, stored in 121 db and sent notification to registration. - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Patch(
-    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/wallet/cards/:tokenCode',
+    'programs/:programId/registrations/:registrationId/fsps/intersolve-visa/wallet/cards/:tokenCode',
   )
   public async pauseCardAndSendMessage(
     @Param('programId', ParseIntPipe) programId: number,
-    @Param('referenceId') referenceId: string,
+    @Param('registrationId', ParseIntPipe) registrationId: number,
     @Param('tokenCode') tokenCode: string,
     @Query('pause', ParseBoolPipe) pause: boolean,
     @Req() req,
@@ -115,7 +115,7 @@ export class IntersolveVisaAccountManagementController {
     }
 
     return await this.intersolveVisaAccountManagementService.pauseCardAndSendMessage(
-      referenceId,
+      registrationId,
       programId,
       tokenCode,
       pause,
@@ -129,7 +129,7 @@ export class IntersolveVisaAccountManagementController {
       '[SCOPED] [EXTERNALLY USED] Retrieves and updates latest wallet and cards data for a Registration from Intersolve and returns it',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiParam({ name: 'registrationId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description:
@@ -137,15 +137,15 @@ export class IntersolveVisaAccountManagementController {
     type: IntersolveVisaWalletDto,
   })
   @Patch(
-    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/wallet',
+    'programs/:programId/registrations/:registrationId/fsps/intersolve-visa/wallet',
   )
   public async retrieveAndUpdateIntersolveVisaWalletAndCards(
-    @Param('referenceId') referenceId: string,
+    @Param('registrationId', ParseIntPipe) registrationId: number,
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<IntersolveVisaWalletDto> {
     return await this.intersolveVisaAccountManagementService.retrieveAndUpdateIntersolveVisaWalletAndCards(
-      referenceId,
+      registrationId,
       programId,
     );
   }
@@ -156,7 +156,7 @@ export class IntersolveVisaAccountManagementController {
       '[SCOPED] Gets wallet and cards data for a Registration and returns it',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiParam({ name: 'registrationId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description:
@@ -164,15 +164,15 @@ export class IntersolveVisaAccountManagementController {
     type: IntersolveVisaWalletDto,
   })
   @Get(
-    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/wallet',
+    'programs/:programId/registrations/:registrationId/fsps/intersolve-visa/wallet',
   )
   public async getIntersolveVisaWalletAndCards(
-    @Param('referenceId') referenceId: string,
+    @Param('registrationId', ParseIntPipe) registrationId: number,
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<IntersolveVisaWalletDto> {
     return await this.intersolveVisaAccountManagementService.getIntersolveVisaWalletAndCards(
-      referenceId,
+      registrationId,
       programId,
     );
   }
@@ -182,20 +182,20 @@ export class IntersolveVisaAccountManagementController {
     summary: 'Send Visa Customer Information of a registration to Intersolve',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiParam({ name: 'registrationId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Customer data sent',
   })
   @Post(
-    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/contact-information',
+    'programs/:programId/registrations/:registrationId/fsps/intersolve-visa/contact-information',
   )
   public async getRegistrationAndSendContactInformationToIntersolve(
     @Param('programId', ParseIntPipe) programId: number,
-    @Param('referenceId') referenceId: string,
+    @Param('registrationId', ParseIntPipe) registrationId: number,
   ): Promise<void> {
     return await this.intersolveVisaAccountManagementService.getRegistrationAndSendContactInformationToIntersolve(
-      referenceId,
+      registrationId,
       programId,
     );
   }
@@ -205,23 +205,23 @@ export class IntersolveVisaAccountManagementController {
     summary: 'Link a physical debit card to a registration',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiParam({ name: 'registrationId', required: true, type: 'integer' })
   @ApiBody({ type: TokenCodeDto })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Card linked',
   })
   @Post(
-    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/wallet/cards/on-site/link',
+    'programs/:programId/registrations/:registrationId/fsps/intersolve-visa/wallet/cards/on-site/link',
   )
   public async linkCardOnSiteToRegistration(
     @Body() body: TokenCodeDto,
     @Param('programId', ParseIntPipe) programId: number,
-    @Param('referenceId') referenceId: string,
+    @Param('registrationId', ParseIntPipe) registrationId: number,
   ): Promise<void> {
     const tokenCode = body.tokenCode;
     return await this.intersolveVisaAccountManagementService.linkCardOnSiteToRegistration(
-      { referenceId, programId, tokenCode },
+      { registrationId, programId, tokenCode },
     );
   }
 
@@ -230,23 +230,23 @@ export class IntersolveVisaAccountManagementController {
     summary: 'Replace a physical debit card for a registration',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiParam({ name: 'registrationId', required: true, type: 'integer' })
   @ApiBody({ type: TokenCodeDto })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Card replaced',
   })
   @Post(
-    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/wallet/cards/on-site/replace',
+    'programs/:programId/registrations/:registrationId/fsps/intersolve-visa/wallet/cards/on-site/replace',
   )
   public async replaceCardOnSite(
     @Body() body: TokenCodeDto,
     @Param('programId', ParseIntPipe) programId: number,
-    @Param('referenceId') referenceId: string,
+    @Param('registrationId', ParseIntPipe) registrationId: number,
   ): Promise<void> {
     const tokenCode = body.tokenCode;
     await this.intersolveVisaAccountManagementService.replaceCardOnSite({
-      referenceId,
+      registrationId,
       programId,
       tokenCode,
     });
