@@ -1,5 +1,6 @@
 import { LokaliseDownload } from 'lokalise-file-exchange';
 import { accessSync, constants, existsSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 import { shouldBeEnabled } from './lib/env.utils.mjs';
 import {
@@ -21,7 +22,7 @@ if (!shouldBeEnabled(process.env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD)) {
   console.info('Skipping download of translations.');
 
   for (const lang of requiredTranslations) {
-    const filePath = getTranslationFilePath(lang);
+    const filePath = join(import.meta.dirname, getTranslationFilePath(lang));
 
     if (existsSync(filePath)) {
       console.info(`✅ Translations already available: ${filePath}`);
@@ -75,7 +76,7 @@ try {
 
 console.info(`Verify required translations have been downloaded...`);
 for (const lang of requiredTranslations) {
-  const filePath = getTranslationFilePath(lang);
+  const filePath = join(import.meta.dirname, getTranslationFilePath(lang));
 
   accessSync(filePath, constants.R_OK);
 
