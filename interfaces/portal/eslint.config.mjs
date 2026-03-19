@@ -55,9 +55,6 @@ export default defineConfig(
     plugins: {
       regexp: eslintPluginRegexp,
     },
-    rules: {
-      'func-style': 'error',
-    },
   },
   {
     name: 'TypeScript files',
@@ -116,7 +113,6 @@ export default defineConfig(
         },
       ],
       'n/no-unsupported-features/node-builtins': ['off'], // These files are for browsers, we don't want false-positives on not-yet-supported-in-Node.js features already covered by `configs.browser`.
-      'func-style': 'error',
       'max-params': ['error', 2],
       'no-relative-import-paths/no-relative-import-paths': [
         'error',

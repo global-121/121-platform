@@ -1,10 +1,10 @@
 import fs from 'node:fs';
 import { finished } from 'node:stream/promises';
 
-export async function generateLargeTestFile(
+export const generateLargeTestFile = async (
   filePath: string,
   sizeInBytes: number,
-): Promise<void> {
+): Promise<void> => {
   const chunkSize = 1024 * 1024;
   const buffer = Buffer.alloc(chunkSize, 'A');
   const writeStream = fs.createWriteStream(filePath);
@@ -21,4 +21,4 @@ export async function generateLargeTestFile(
   }
   writeStream.end();
   await finished(writeStream);
-}
+};
