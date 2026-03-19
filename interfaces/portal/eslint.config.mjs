@@ -59,7 +59,6 @@ export default defineConfig(
       'func-style': 'error',
       'no-inner-declarations': 'error',
       'object-shorthand': 'error',
-      'prefer-arrow-callback': 'error',
     },
   },
   {
@@ -135,7 +134,6 @@ export default defineConfig(
       'perfectionist/sort-enums': ['error'],
       'perfectionist/sort-intersection-types': ['error'],
       'perfectionist/sort-union-types': ['error'],
-      'prefer-arrow-callback': 'error',
       'simple-import-sort/exports': 'error',
       'simple-import-sort/imports': [
         'error',
