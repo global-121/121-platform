@@ -9,9 +9,9 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 @Injectable()
 export class PermissionMaintenanceService {
   @InjectRepository(PermissionEntity)
-  private readonly permissionRepository: Repository<PermissionEntity>;
+  private readonly permissionRepository!: Repository<PermissionEntity>;
   @InjectRepository(UserRoleEntity)
-  private readonly userRoleRepository: Repository<UserRoleEntity>;
+  private readonly userRoleRepository!: Repository<UserRoleEntity>;
 
   /**
    * To prevent future issues with unknown/outdated/extraneous permissions on User(-Role)s,

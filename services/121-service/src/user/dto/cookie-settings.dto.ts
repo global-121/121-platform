@@ -7,17 +7,17 @@ export class CookieSettingsDto {
   @ApiProperty({ example: CookieNames.portal })
   @IsNotEmpty()
   @IsString()
-  public readonly tokenKey: string;
+  public readonly tokenKey!: string;
 
   @ApiProperty({ example: 'TODO: Add example JWT token' })
   @IsNotEmpty()
   @IsString()
-  public readonly tokenValue: string;
+  public readonly tokenValue!: string;
 
   @ApiProperty({ example: 'Lax' })
   @IsNotEmpty()
   @IsString()
-  public readonly sameSite: string;
+  public readonly sameSite!: string;
 
   @ApiProperty({ example: '' })
   @IsNotEmpty()
@@ -32,15 +32,15 @@ export class CookieSettingsDto {
   @ApiProperty({ example: false })
   @IsNotEmpty()
   @IsBoolean()
-  public readonly secure: boolean;
+  public readonly secure!: boolean;
 
   @ApiProperty({ example: '2022-04-17T12:02:39.280Z' })
   @IsNotEmpty()
   @IsDate()
-  public readonly expires: Date;
+  public readonly expires!: Date;
 
   @ApiProperty({ example: true })
   @IsNotEmpty()
   @IsBoolean()
-  public readonly httpOnly: boolean;
+  public readonly httpOnly!: boolean;
 }

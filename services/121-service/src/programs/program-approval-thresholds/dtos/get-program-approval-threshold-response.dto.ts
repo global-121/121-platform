@@ -4,11 +4,11 @@ import { ApproverInThresholdResponseDto } from '@121-service/src/programs/progra
 
 export class GetProgramApprovalThresholdResponseDto {
   @ApiProperty({ example: 1 })
-  public readonly id: number;
+  public readonly id!: number;
 
   @ApiProperty({ example: 1000 })
-  public readonly thresholdAmount: number;
+  public readonly thresholdAmount!: number;
 
   @ApiProperty({ type: [ApproverInThresholdResponseDto] })
-  public readonly approvers: ApproverInThresholdResponseDto[];
+  public readonly approvers!: ApproverInThresholdResponseDto[];
 }

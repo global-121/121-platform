@@ -72,7 +72,7 @@ export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttr
   @ApiProperty({})
   @IsNotEmpty()
   @IsString()
-  public readonly name: string;
+  public readonly name!: string;
 
   @ApiProperty({
     example: {
@@ -81,7 +81,7 @@ export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttr
     },
   })
   @IsNotEmpty()
-  public readonly label: RegistrationPreferredLanguageTranslation;
+  public readonly label!: RegistrationPreferredLanguageTranslation;
 
   @ApiProperty({
     example: RegistrationAttributeTypes.text,
@@ -94,7 +94,7 @@ export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttr
     RegistrationAttributeTypes.text,
     RegistrationAttributeTypes.date,
   ])
-  public readonly type: WrapperType<RegistrationAttributeTypes>;
+  public readonly type!: WrapperType<RegistrationAttributeTypes>;
 
   @ApiProperty({
     example: false,

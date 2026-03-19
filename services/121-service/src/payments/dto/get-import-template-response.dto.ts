@@ -1,4 +1,4 @@
 export class GetImportTemplateResponseDto {
-  public name: string;
-  public template: string[];
+  public name!: string;
+  public template!: string[];
 }

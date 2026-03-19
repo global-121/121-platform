@@ -32,7 +32,7 @@ import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/cr
 
 @Injectable()
 export class OnafriqReconciliationService {
-  private sftp: SftpClient;
+  private sftp!: SftpClient;
 
   public constructor(
     @Inject(getScopedRepositoryProviderName(OnafriqTransactionEntity))

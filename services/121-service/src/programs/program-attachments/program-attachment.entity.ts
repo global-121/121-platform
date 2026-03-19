@@ -10,24 +10,24 @@ export class ProgramAttachmentEntity extends Base121Entity {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'programId' })
-  public program: Relation<ProgramEntity>;
+  public program!: Relation<ProgramEntity>;
   @Column()
-  public programId: number;
+  public programId!: number;
 
   @ManyToOne(() => UserEntity, (user) => user.uploadedAttachments, {
     onDelete: 'NO ACTION', // Do not delete on deleting users, instead see catch in userService.delete()
   })
   @JoinColumn({ name: 'userId' })
-  public user: Relation<UserEntity>;
+  public user!: Relation<UserEntity>;
   @Column()
-  public userId: number;
+  public userId!: number;
 
   @Column()
-  public filename: string;
+  public filename!: string;
 
   @Column()
-  public mimetype: string;
+  public mimetype!: string;
 
   @Column()
-  public blobName: string;
+  public blobName!: string;
 }

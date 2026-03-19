@@ -11,13 +11,13 @@ export class SendCustomTextDto {
   @IsNotBothPresent<SendCustomTextDto>('messageTemplateKey')
   @IsNotBothEmpty<SendCustomTextDto>('messageTemplateKey')
   @ValidateIf((o) => !o.skipMessageValidation)
-  public readonly message: string;
+  public readonly message!: string;
 
   @ApiProperty({
     example: 'voucher-pickup-location',
   })
   @ValidateIf((o) => !o.skipMessageValidation)
-  public readonly messageTemplateKey: string;
+  public readonly messageTemplateKey!: string;
 
   @ApiProperty({
     example: 'false',

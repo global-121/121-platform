@@ -10,7 +10,7 @@ export class CreateProgramAssignmentDto {
   })
   @IsArray()
   @ArrayMinSize(0)
-  public readonly roles: DefaultUserRole[];
+  public readonly roles!: DefaultUserRole[];
 
   @ApiProperty()
   @IsString()

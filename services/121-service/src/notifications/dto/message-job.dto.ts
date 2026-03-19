@@ -4,20 +4,20 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
 export class MessageJobDto {
-  messageProcessType: MessageProcessType;
-  registrationId: number;
-  referenceId: string;
-  preferredLanguage: RegistrationPreferredLanguage;
+  messageProcessType!: MessageProcessType;
+  registrationId!: number;
+  referenceId!: string;
+  preferredLanguage!: RegistrationPreferredLanguage;
   whatsappPhoneNumber?: string;
   phoneNumber?: string;
-  programId: number;
+  programId!: number;
   message?: string;
   contentSid?: string;
   messageTemplateKey?: string;
   messageContentType?: MessageContentType;
   mediaUrl?: string;
   customData?: MessageJobCustomDataDto;
-  userId: MessageSenderUserId;
+  userId!: MessageSenderUserId;
 }
 
 export class MessageJobCustomDataDto {

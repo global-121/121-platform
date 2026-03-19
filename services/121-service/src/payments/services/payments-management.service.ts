@@ -29,7 +29,7 @@ import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 @Injectable()
 export class PaymentsManagementService {
   @InjectRepository(PaymentEntity)
-  private readonly paymentRepository: Repository<PaymentEntity>;
+  private readonly paymentRepository!: Repository<PaymentEntity>;
   public constructor(
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,

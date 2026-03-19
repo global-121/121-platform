@@ -92,12 +92,12 @@ const exampleAttributes: ProgramRegistrationAttributeDto[] = [
 export class CreateProgramDto extends BaseProgramDto {
   @ApiProperty({ example: { en: 'title' } })
   @IsNotEmpty()
-  public readonly titlePortal: UILanguageTranslation;
+  public readonly titlePortal!: UILanguageTranslation;
 
   @ApiProperty({ example: 'MWK' })
   @IsNotEmpty()
   @IsEnum(CurrencyCode)
-  public readonly currency: WrapperType<CurrencyCode>;
+  public readonly currency!: WrapperType<CurrencyCode>;
 
   @ApiProperty({
     example: exampleAttributes,

@@ -8,11 +8,11 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 @Entity('try_whatsapp')
 export class TryWhatsappEntity extends Base121Entity {
   @Column()
-  public sid: string;
+  public sid!: string;
 
   @OneToOne((_type) => RegistrationEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'registrationId' })
-  public registration: Relation<RegistrationEntity>;
+  public registration!: Relation<RegistrationEntity>;
   @Column({ type: 'int', nullable: false })
-  public registrationId: number;
+  public registrationId!: number;
 }

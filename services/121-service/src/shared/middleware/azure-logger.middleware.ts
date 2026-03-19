@@ -6,7 +6,7 @@ import { env } from '@121-service/src/env';
 
 @Injectable()
 export class AzureLoggerMiddleware implements NestMiddleware {
-  defaultClient: TelemetryClient;
+  defaultClient!: TelemetryClient;
 
   constructor() {
     if (!!env.APPLICATIONINSIGHTS_CONNECTION_STRING) {

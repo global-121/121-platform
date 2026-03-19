@@ -13,7 +13,7 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 @Injectable()
 export class ExcelService {
   @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  private readonly programRepository!: Repository<ProgramEntity>;
 
   public constructor(
     //TODO: This should be refactored to not use the registrationPaginationService, maybe this entire service/module should be deleted and moved to the PaymentsExcelFspService

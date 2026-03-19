@@ -5,16 +5,16 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 export class UserRoleResponseDTO {
   @ApiProperty({ example: 5 })
-  public id: number;
+  public id!: number;
 
   @ApiProperty({ example: 'field-validation' })
-  public role: string;
+  public role!: string;
 
   @ApiProperty({ example: 'Do Field Validation' })
-  public label: string | null;
+  public label!: string | null;
 
   @ApiProperty({ example: 'This role allows you to do field validation' })
-  public description: string | null;
+  public description!: string | null;
 
   @ApiProperty({
     example: ['registration:attribute.update', 'registration:fsp.read'],
@@ -25,13 +25,13 @@ export class UserRoleResponseDTO {
 
 export class AssignmentResponseDTO {
   @ApiProperty({ example: 1 })
-  public programId: number;
+  public programId!: number;
 
   @ApiProperty({ example: 1 })
-  public userId: number;
+  public userId!: number;
 
   @ApiProperty({ example: [] })
-  public roles: UserRoleResponseDTO[];
+  public roles!: UserRoleResponseDTO[];
 
   @ApiProperty({
     example: 'scope',

@@ -7,11 +7,11 @@ import { UserRO } from '@121-service/src/user/user.interface';
 export class LoginResponseDto {
   @ApiProperty({ example: '' })
   @IsNotEmpty()
-  public readonly userRo: UserRO;
+  public readonly userRo!: UserRO;
 
   @ApiProperty({ example: '' })
   @IsNotEmpty()
-  public readonly cookieSettings: CookieSettingsDto;
+  public readonly cookieSettings!: CookieSettingsDto;
 
-  public readonly token: string;
+  public readonly token!: string;
 }

@@ -29,9 +29,9 @@ type InputAttributeType = string | boolean | number | undefined | null;
 @Injectable()
 export class RegistrationsInputValidator {
   @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  private readonly programRepository!: Repository<ProgramEntity>;
   @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
+  private readonly registrationRepository!: Repository<RegistrationEntity>;
 
   constructor(
     private readonly userService: UserService,

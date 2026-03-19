@@ -5,5 +5,5 @@ export class CreateProgramAttachmentDto {
   @ApiProperty({ example: 'MyDocument' })
   @IsString()
   @IsNotEmpty()
-  public readonly filename: string;
+  public readonly filename!: string;
 }

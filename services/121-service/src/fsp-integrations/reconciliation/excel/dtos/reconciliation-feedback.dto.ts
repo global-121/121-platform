@@ -18,7 +18,7 @@ export class ReconciliationFeedbackDto {
     example: ImportStatus.imported,
     enum: ImportStatus,
   })
-  importStatus: ImportStatus;
+  importStatus!: ImportStatus;
 
   [key: string]: string | undefined | null | ImportStatus;
 }

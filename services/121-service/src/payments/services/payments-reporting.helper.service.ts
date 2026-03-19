@@ -20,7 +20,7 @@ import { EntityClass } from '@121-service/src/shared/types/entity-class.type';
 @Injectable()
 export class PaymentsReportingHelperService {
   @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  private readonly programRepository!: Repository<ProgramEntity>;
 
   public constructor(
     private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,

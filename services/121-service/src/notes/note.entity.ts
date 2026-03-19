@@ -10,14 +10,14 @@ export class NoteEntity extends Base121AuditedEntity {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'registrationId' })
-  public registration: Relation<RegistrationEntity>;
+  public registration!: Relation<RegistrationEntity>;
   @Column()
-  public registrationId: number;
+  public registrationId!: number;
 
   @ManyToOne(() => UserEntity, (user) => user.notes, { onDelete: 'NO ACTION' }) // Do not delete on deleting users, instead see catch in userService.delete()
   @JoinColumn({ name: 'userId' })
-  public user: Relation<UserEntity>;
+  public user!: Relation<UserEntity>;
 
   @Column({ nullable: false })
-  public text: string;
+  public text!: string;
 }

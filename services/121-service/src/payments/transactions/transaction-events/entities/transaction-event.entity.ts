@@ -20,13 +20,13 @@ export class TransactionEventEntity extends Base121OptionalAuditedEntity {
   public user?: Relation<UserEntity>;
 
   @Column({ type: 'character varying' })
-  public description: TransactionEventDescription;
+  public description!: TransactionEventDescription;
 
   @Column({ type: 'boolean' })
-  public isSuccessfullyCompleted: boolean;
+  public isSuccessfullyCompleted!: boolean;
 
   @Column({ type: 'character varying', nullable: true })
-  public errorMessage: string | null;
+  public errorMessage!: string | null;
 
   @ManyToOne(
     (_type) => TransactionEntity,
@@ -34,10 +34,10 @@ export class TransactionEventEntity extends Base121OptionalAuditedEntity {
     { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'transactionId' })
-  public transaction: Relation<TransactionEntity>;
+  public transaction!: Relation<TransactionEntity>;
   @Index()
   @Column({ type: 'int' })
-  public transactionId: number;
+  public transactionId!: number;
 
   @ManyToOne(
     (_type) => ProgramFspConfigurationEntity,
@@ -47,8 +47,8 @@ export class TransactionEventEntity extends Base121OptionalAuditedEntity {
   @JoinColumn({
     name: 'programFspConfigurationId',
   })
-  public programFspConfiguration: Relation<ProgramFspConfigurationEntity>;
+  public programFspConfiguration!: Relation<ProgramFspConfigurationEntity>;
   @Index()
   @Column({ type: 'int', nullable: true }) // Is nullable for when you delete a programFspConfiguration
-  public programFspConfigurationId: number;
+  public programFspConfigurationId!: number;
 }

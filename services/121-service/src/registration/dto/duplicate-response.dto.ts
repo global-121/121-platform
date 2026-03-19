@@ -5,17 +5,17 @@ export class DuplicateReponseDto {
   public readonly name?: string;
 
   @ApiProperty({ example: 1 })
-  public readonly registrationId: number;
+  public readonly registrationId!: number;
 
   @ApiProperty({ example: 1 })
-  public readonly registrationProgramId: number;
+  public readonly registrationProgramId!: number;
 
   @ApiProperty({ example: 'zeeland' })
-  public readonly scope: string;
+  public readonly scope!: string;
 
   @ApiProperty({ example: ['phoneNumber'] })
-  public readonly attributeNames: string[];
+  public readonly attributeNames!: string[];
 
   @ApiProperty({ example: true })
-  public readonly isInScope: boolean;
+  public readonly isInScope!: boolean;
 }

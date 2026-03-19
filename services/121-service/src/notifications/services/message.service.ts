@@ -24,13 +24,13 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
 @Injectable()
 export class MessageService {
   @InjectRepository(TryWhatsappEntity)
-  private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
+  private readonly tryWhatsappRepository!: Repository<TryWhatsappEntity>;
   @InjectRepository(RegistrationEntity)
-  public readonly registrationRepository: Repository<RegistrationEntity>;
+  public readonly registrationRepository!: Repository<RegistrationEntity>;
   @InjectRepository(WhatsappPendingMessageEntity)
-  private readonly whatsappPendingMessageRepo: Repository<WhatsappPendingMessageEntity>;
+  private readonly whatsappPendingMessageRepo!: Repository<WhatsappPendingMessageEntity>;
   @InjectRepository(MessageTemplateEntity)
-  private readonly messageTemplateRepo: Repository<MessageTemplateEntity>;
+  private readonly messageTemplateRepo!: Repository<MessageTemplateEntity>;
 
   private readonly fallbackLanguage = RegistrationPreferredLanguage.en;
 

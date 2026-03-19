@@ -9,13 +9,13 @@ import { WrapperType } from '@121-service/src/wrapper.type';
 
 export class FspSettingsDto {
   @ApiProperty({ example: 'fspName' })
-  readonly name: WrapperType<Fsps>;
+  readonly name!: WrapperType<Fsps>;
 
   @ApiProperty({ example: FspIntegrationType.api })
-  readonly integrationType: WrapperType<FspIntegrationType>;
+  readonly integrationType!: WrapperType<FspIntegrationType>;
 
   @ApiProperty({ example: { en: 'default label' } })
-  readonly defaultLabel: UILanguageTranslation;
+  readonly defaultLabel!: UILanguageTranslation;
 
   @ApiProperty({
     example: [
@@ -23,7 +23,7 @@ export class FspSettingsDto {
       { name: 'houseNumberAddition', isRequired: false },
     ],
   })
-  readonly attributes: {
+  readonly attributes!: {
     name: FspAttributes;
     isRequired: boolean;
   }[];
@@ -34,7 +34,7 @@ export class FspSettingsDto {
       { name: 'columnToMatch', isRequired: true },
     ],
   })
-  readonly configurationProperties: {
+  readonly configurationProperties!: {
     name: FspConfigurationProperties;
     isRequired: boolean;
   }[];

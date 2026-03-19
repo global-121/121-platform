@@ -16,50 +16,50 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
 export class IntersolveVoucherEntity extends Base121Entity {
   @ManyToOne(() => PaymentEntity, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'paymentId' })
-  public payment: Relation<PaymentEntity>;
+  public payment!: Relation<PaymentEntity>;
   @Index()
   @Column({ type: 'integer', nullable: true })
-  public paymentId: number | null;
+  public paymentId!: number | null;
 
   @Column({ type: 'character varying', nullable: true })
-  public whatsappPhoneNumber: string | null;
+  public whatsappPhoneNumber!: string | null;
 
   @Column()
-  public pin: string;
+  public pin!: string;
 
   @Column()
-  public barcode: string;
+  public barcode!: string;
 
   // The transfer value with which the voucher was originally created
   @Column({ nullable: true, type: 'real' })
-  public transferValue: number | null;
+  public transferValue!: number | null;
 
   @Index()
   @Column({ type: 'boolean', nullable: true })
-  public send: boolean | null;
+  public send!: boolean | null;
 
   @Index()
   @Column({ default: false })
-  public balanceUsed: boolean;
+  public balanceUsed!: boolean;
 
   // The last known balance we got from intersolve
   @Index()
   @Column({ nullable: true, default: null, type: 'real' })
-  public lastRequestedBalance: number | null;
+  public lastRequestedBalance!: number | null;
 
   @Column({ nullable: true, default: null, type: 'timestamp' })
-  public updatedLastRequestedBalance: Date | null;
+  public updatedLastRequestedBalance!: Date | null;
 
   @Index()
   @Column({ nullable: true, default: 0, type: 'integer' })
-  public reminderCount: number | null;
+  public reminderCount!: number | null;
 
   @OneToMany((_type) => ImageCodeExportVouchersEntity, (image) => image.voucher)
-  public image: Relation<ImageCodeExportVouchersEntity[]>;
+  public image!: Relation<ImageCodeExportVouchersEntity[]>;
 
   @ManyToOne(() => UserEntity, { onDelete: 'NO ACTION' }) // Do not delete on deleting users, instead see catch in userService.delete()
   @JoinColumn({ name: 'userId' })
-  public user: Relation<UserEntity>;
+  public user!: Relation<UserEntity>;
   @Column()
-  public userId: number;
+  public userId!: number;
 }

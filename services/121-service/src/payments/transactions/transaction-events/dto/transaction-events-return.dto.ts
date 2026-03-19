@@ -12,22 +12,22 @@ class TransactionEventsMetaObject {
     },
     description: 'The count of the available transaction event descriptions.',
   })
-  count: Partial<Record<TransactionEventDescription, number>>;
+  count!: Partial<Record<TransactionEventDescription, number>>;
 
   @ApiProperty({
     example: 3,
     description: 'The total number of transaction events.',
   })
-  total: number;
+  total!: number;
 }
 
 export class TransactionEventsReturnDto {
   @ApiProperty()
-  meta: TransactionEventsMetaObject;
+  meta!: TransactionEventsMetaObject;
 
   @ApiProperty({
     type: [Object],
     description: 'The transaction events data.',
   })
-  data: TransactionEventInterface[];
+  data!: TransactionEventInterface[];
 }

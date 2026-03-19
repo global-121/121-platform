@@ -12,15 +12,15 @@ export class LastTransactionEventEntity extends Base121Entity {
     { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'transactionId' })
-  public transaction: Relation<TransactionEntity>;
+  public transaction!: Relation<TransactionEntity>;
   @Index()
   @Column({ type: 'int' })
-  public transactionId: number;
+  public transactionId!: number;
 
   @OneToOne(() => TransactionEventEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'transactionEventId' })
-  public transactionEvent: Relation<TransactionEventEntity>;
+  public transactionEvent!: Relation<TransactionEventEntity>;
   @Index()
   @Column({ type: 'int', nullable: false })
-  public transactionEventId: number;
+  public transactionEventId!: number;
 }

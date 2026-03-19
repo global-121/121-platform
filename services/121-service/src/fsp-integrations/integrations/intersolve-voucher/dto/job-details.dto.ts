@@ -9,5 +9,5 @@ export enum IntersolveVoucherJobName {
 export class IntersolveVoucherJobDetails {
   @ApiProperty({ example: IntersolveVoucherJobName.getLatestVoucherBalance })
   @IsEnum(IntersolveVoucherJobName)
-  public readonly name: WrapperType<IntersolveVoucherJobName>;
+  public readonly name!: WrapperType<IntersolveVoucherJobName>;
 }

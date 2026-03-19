@@ -92,11 +92,11 @@ const exampleAttributesReturn: ProgramRegistrationAttributeDto[] = [
 ];
 export class ProgramReturnDto {
   @ApiProperty({ example: 1, type: 'number' })
-  id: number;
+  id!: number;
 
   @ApiProperty({ example: false })
   @IsBoolean()
-  public readonly validation: boolean;
+  public readonly validation!: boolean;
 
   @ApiProperty({ example: 'Nederland' })
   @IsNotEmpty()
@@ -166,7 +166,7 @@ export class ProgramReturnDto {
 
   @ApiProperty({ example: true })
   @IsBoolean()
-  public readonly tryWhatsAppFirst: boolean;
+  public readonly tryWhatsAppFirst!: boolean;
 
   @ApiProperty({
     example: exampleAttributesReturn,
@@ -175,7 +175,7 @@ export class ProgramReturnDto {
   @ValidateNested()
   @IsDefined()
   @Type(() => ProgramRegistrationAttributeDto)
-  public readonly programRegistrationAttributes: ProgramRegistrationAttributeDto[];
+  public readonly programRegistrationAttributes!: ProgramRegistrationAttributeDto[];
 
   @ApiProperty({
     example: ['nameFirst', 'nameLast'],
@@ -193,23 +193,23 @@ export class ProgramReturnDto {
     ],
   })
   @IsArray()
-  public readonly languages: WrapperType<RegistrationPreferredLanguage[]>;
+  public readonly languages!: WrapperType<RegistrationPreferredLanguage[]>;
 
   @ApiProperty({ example: false })
   @IsBoolean()
-  public readonly enableMaxPayments: boolean;
+  public readonly enableMaxPayments!: boolean;
 
   @ApiProperty({ example: false })
   @IsBoolean()
-  public readonly enableScope: boolean;
+  public readonly enableScope!: boolean;
 
   @ApiProperty({ example: false })
   @IsBoolean()
-  public readonly allowEmptyPhoneNumber: boolean;
+  public readonly allowEmptyPhoneNumber!: boolean;
 
   @ApiProperty()
   @IsArray()
-  public readonly fspConfigurations: ProgramFspConfigurationResponseDto[];
+  public readonly fspConfigurations!: ProgramFspConfigurationResponseDto[];
 
   @ApiProperty({ example: 'example.org' })
   @IsOptional()

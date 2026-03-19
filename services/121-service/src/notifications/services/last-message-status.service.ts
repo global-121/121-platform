@@ -9,7 +9,7 @@ import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twi
 @Injectable()
 export class LastMessageStatusService {
   @InjectRepository(LatestMessageEntity)
-  private readonly latestMessageRepository: Repository<LatestMessageEntity>;
+  private readonly latestMessageRepository!: Repository<LatestMessageEntity>;
 
   public async updateLatestMessage(
     message: TwilioMessageEntity,

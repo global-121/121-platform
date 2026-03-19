@@ -23,11 +23,11 @@ export enum TwilioStatus {
 export class TwilioStatusCallbackDto {
   @ApiProperty({ example: 'SMb677b6846ec347cf80b8a5fd948efb53' })
   @IsString()
-  public MessageSid: string;
+  public MessageSid!: string;
 
   @ApiProperty({ example: TwilioStatus.delivered })
   @IsString()
-  public MessageStatus: TwilioStatus;
+  public MessageStatus!: TwilioStatus;
 
   @ApiProperty({ example: 'Twilio Error: []' })
   @IsString()
@@ -57,7 +57,7 @@ export class TwilioIncomingCallbackDto {
 
   @ApiProperty({ example: formatWhatsAppNumber('31600000000') })
   @IsString()
-  public From: string;
+  public From!: string;
 
   @ApiProperty({ example: '31600000000' })
   @IsString()

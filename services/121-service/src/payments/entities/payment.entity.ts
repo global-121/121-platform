@@ -15,18 +15,18 @@ import { ProgramEntity } from '@121-service/src/programs/entities/program.entity
 @Entity('payment')
 export class PaymentEntity extends Base121Entity {
   @OneToMany(() => TransactionEntity, (transactions) => transactions.payment)
-  public transactions: Relation<TransactionEntity[]>;
+  public transactions!: Relation<TransactionEntity[]>;
 
   @ManyToOne((_type) => ProgramEntity, (program) => program.payments, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'programId' })
-  public program: Relation<ProgramEntity>;
+  public program!: Relation<ProgramEntity>;
   @Column()
-  public programId: number;
+  public programId!: number;
 
   @OneToMany(() => PaymentApprovalEntity, (approval) => approval.payment, {
     cascade: true,
   })
-  public approvals: PaymentApprovalEntity[];
+  public approvals!: PaymentApprovalEntity[];
 }

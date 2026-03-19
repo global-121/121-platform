@@ -6,9 +6,9 @@ import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language
 export class CreateOptionsDto {
   @ApiProperty()
   @IsString()
-  public readonly option: string;
+  public readonly option!: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  public readonly label: UILanguageTranslation;
+  public readonly label!: UILanguageTranslation;
 }

@@ -4,17 +4,17 @@ import { IntersolveVisaCardDto } from '@121-service/src/fsp-integrations/integra
 
 export class IntersolveVisaWalletDto {
   @ApiProperty()
-  public tokenCode: string;
+  public tokenCode!: string;
   @ApiProperty()
-  public balance: number;
+  public balance!: number;
   @ApiProperty()
-  public spentThisMonth: number;
+  public spentThisMonth!: number;
   @ApiProperty()
-  public maxToSpendPerMonth: number;
+  public maxToSpendPerMonth!: number;
   @ApiProperty({ type: Date, nullable: true })
-  public lastUsedDate: Date | null;
+  public lastUsedDate!: Date | null;
   @ApiProperty({ type: Date, nullable: true })
-  public lastExternalUpdate: string | null;
+  public lastExternalUpdate!: string | null;
   @ApiProperty({ type: [IntersolveVisaCardDto] })
-  public cards: IntersolveVisaCardDto[];
+  public cards!: IntersolveVisaCardDto[];
 }

@@ -17,14 +17,14 @@ export class PaymentEventAttributeEntity extends Base121Entity {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'eventId' })
-  public event: Relation<PaymentEventEntity>;
+  public event!: Relation<PaymentEventEntity>;
   @Column()
-  public eventId: number;
+  public eventId!: number;
 
   @Index()
   @Column({ type: 'character varying' })
-  public key: PaymentEventAttributeKey;
+  public key!: PaymentEventAttributeKey;
 
   @Column({ type: 'character varying', nullable: true })
-  public value: string | null;
+  public value!: string | null;
 }

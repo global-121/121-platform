@@ -21,7 +21,7 @@ export class CommercialBankEthiopiaService {
       CommercialBankEthiopiaAccountEnquiriesEntity,
     ),
   )
-  private readonly commercialBankEthiopiaAccountEnquiriesScopedRepo: ScopedRepository<CommercialBankEthiopiaAccountEnquiriesEntity>;
+  private readonly commercialBankEthiopiaAccountEnquiriesScopedRepo!: ScopedRepository<CommercialBankEthiopiaAccountEnquiriesEntity>;
 
   public constructor(
     private readonly commercialBankEthiopiaApiService: CommercialBankEthiopiaApiService,

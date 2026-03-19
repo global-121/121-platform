@@ -11,9 +11,9 @@ import { ProgramEntity } from '@121-service/src/programs/entities/program.entity
 @Injectable()
 export class ExchangeRatesService {
   @InjectRepository(ExchangeRateEntity)
-  private exchangeRateRepository: Repository<ExchangeRateEntity>;
+  private exchangeRateRepository!: Repository<ExchangeRateEntity>;
   @InjectRepository(ProgramEntity)
-  public programRepository: Repository<ProgramEntity>;
+  public programRepository!: Repository<ProgramEntity>;
 
   public constructor(
     private readonly exchangeRateApiService: ExchangeRatesApiService,

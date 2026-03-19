@@ -2,19 +2,19 @@ import { ApiProperty } from '@nestjs/swagger';
 
 class CommercialBankEthiopiaValidationReportData {
   @ApiProperty()
-  registrationProgramId: number;
+  registrationProgramId!: number;
   @ApiProperty()
-  fullNameUsedForTheMatch: string;
+  fullNameUsedForTheMatch!: string;
   @ApiProperty()
-  bankAccountNumberUsedForCall: string;
+  bankAccountNumberUsedForCall!: string;
   @ApiProperty()
-  cbeName: string;
+  cbeName!: string;
   @ApiProperty()
-  cbeStatus: string;
+  cbeStatus!: string;
   @ApiProperty()
-  errorMessage: string;
+  errorMessage!: string;
   @ApiProperty()
-  updated: string;
+  updated!: string;
 }
 
 export class CommercialBankEthiopiaValidationReportDto {
@@ -22,7 +22,7 @@ export class CommercialBankEthiopiaValidationReportDto {
     isArray: true,
     type: CommercialBankEthiopiaValidationReportData,
   })
-  data: CommercialBankEthiopiaValidationReportData[];
+  data!: CommercialBankEthiopiaValidationReportData[];
   @ApiProperty()
-  fileName: string;
+  fileName!: string;
 }

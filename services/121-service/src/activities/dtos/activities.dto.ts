@@ -10,7 +10,7 @@ class ActivitiesMetaObject {
     enum: activityTypesStrings,
     description: 'The available activity types. Can be 0 or more.',
   })
-  availableTypes: ActivityTypeEnum[];
+  availableTypes!: ActivityTypeEnum[];
   @ApiProperty({
     type: Object,
     example: {
@@ -20,15 +20,15 @@ class ActivitiesMetaObject {
     },
     description: 'The count of the available activity types.',
   })
-  count: Partial<Record<ActivityTypeEnum, number>>;
+  count!: Partial<Record<ActivityTypeEnum, number>>;
 }
 
 export class ActivitiesDto {
   @ApiProperty()
-  meta: ActivitiesMetaObject;
+  meta!: ActivitiesMetaObject;
   @ApiProperty({
     type: [Object],
     description: 'The data of the activities.',
   })
-  data: Activity[];
+  data!: Activity[];
 }

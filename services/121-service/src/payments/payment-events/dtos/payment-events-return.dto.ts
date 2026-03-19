@@ -12,22 +12,22 @@ class PaymentEventsMetaObject {
     },
     description: 'The count of the available payment event types.',
   })
-  count: Partial<Record<PaymentEvent, number>>;
+  count!: Partial<Record<PaymentEvent, number>>;
 
   @ApiProperty({
     example: 3,
     description: 'The total number of payment events.',
   })
-  total: number;
+  total!: number;
 }
 
 export class PaymentEventsReturnDto {
   @ApiProperty()
-  meta: PaymentEventsMetaObject;
+  meta!: PaymentEventsMetaObject;
 
   @ApiProperty({
     type: [Object],
     description: 'The payment events data.',
   })
-  data: PaymentEventInterface[];
+  data!: PaymentEventInterface[];
 }

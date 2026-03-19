@@ -17,7 +17,7 @@ export class RegistrationStatusPatchDto {
     example: RegistrationStatusEnum.included,
   })
   @IsEnum(RegistrationStatusEnum)
-  public readonly status: WrapperType<RegistrationStatusEnum>;
+  public readonly status!: WrapperType<RegistrationStatusEnum>;
 
   @ApiProperty({ example: 'Long enough rejection message', required: false })
   @IsNotBothPresent<RegistrationStatusPatchDto>('messageTemplateKey')

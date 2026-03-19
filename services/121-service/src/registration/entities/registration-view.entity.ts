@@ -115,84 +115,84 @@ import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language
 export class RegistrationViewEntity {
   @ViewColumn()
   @PrimaryColumn()
-  public id: number;
+  public id!: number;
 
   @ViewColumn()
-  public status: RegistrationStatusEnum;
+  public status!: RegistrationStatusEnum;
 
   // eslint-disable-next-line custom-rules/typeorm-cascade-ondelete -- as cascade delete is not applicable for views
   @ManyToOne((_type) => ProgramEntity, (program) => program.registrations)
   @JoinColumn({ name: 'programId' })
-  public program: ProgramEntity;
+  public program!: ProgramEntity;
   @Column()
-  public programId: number;
+  public programId!: number;
 
   @ViewColumn()
-  public created: Date;
+  public created!: Date;
 
   @ViewColumn()
-  public referenceId: string;
+  public referenceId!: string;
 
   @ViewColumn()
   public phoneNumber?: string;
 
   @ViewColumn()
-  public preferredLanguage: RegistrationPreferredLanguage;
+  public preferredLanguage!: RegistrationPreferredLanguage;
 
   @ViewColumn()
-  public inclusionScore: number;
+  public inclusionScore!: number;
 
   @ViewColumn()
-  public paymentAmountMultiplier: number;
+  public paymentAmountMultiplier!: number;
 
   @ViewColumn()
-  public fspName: Fsps;
+  public fspName!: Fsps;
 
   @ViewColumn()
-  public programFspConfigurationId: number;
+  public programFspConfigurationId!: number;
 
   @ViewColumn()
-  public programFspConfigurationName: string;
+  public programFspConfigurationName!: string;
 
   @ViewColumn()
-  public programFspConfigurationLabel: UILanguageTranslation;
+  public programFspConfigurationLabel!: UILanguageTranslation;
 
   /** This is an "auto" incrementing field with a registration ID per program. */
   @ViewColumn()
-  public registrationProgramId: number;
+  public registrationProgramId!: number;
 
   @ViewColumn()
-  public personAffectedSequence: string;
+  public personAffectedSequence!: string;
 
   @ViewColumn()
-  public maxPayments: number;
+  public maxPayments!: number;
 
   @ViewColumn()
-  public lastMessageStatus: string;
+  public lastMessageStatus!: string;
 
   @ViewColumn()
-  public paymentCount: number;
+  public paymentCount!: number;
 
   @ViewColumn()
-  public paymentCountRemaining: number;
+  public paymentCountRemaining!: number;
 
   @ViewColumn()
-  public scope: string;
+  public scope!: string;
 
   @ViewColumn()
-  public duplicateStatus: DuplicateStatus;
+  public duplicateStatus!: DuplicateStatus;
 
   @OneToMany(
     () => RegistrationAttributeDataEntity,
     (registrationData) => registrationData.registration,
   )
-  public data: RegistrationAttributeDataEntity[];
+  public data!: RegistrationAttributeDataEntity[];
 
   @OneToMany(
     () => RegistrationAttributeDataEntity,
     (registrationData) => registrationData.registration,
   )
-  public dataSearchBy: RegistrationAttributeDataEntity[];
+  public dataSearchBy!: RegistrationAttributeDataEntity[];
 
   @OneToMany(
     () => TransactionEntity,
@@ -201,5 +201,5 @@ export class RegistrationViewEntity {
       eager: true,
     },
   )
-  public transactions: TransactionEntity[];
+  public transactions!: TransactionEntity[];
 }

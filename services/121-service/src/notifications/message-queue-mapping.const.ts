@@ -2,8 +2,8 @@ import { MessageProcessType } from '@121-service/src/notifications/dto/message-j
 import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 
 export class MessageQueueMap {
-  types: MessageProcessType[];
-  queueName: QueueNames;
+  types!: MessageProcessType[];
+  queueName!: QueueNames;
   bulkSizeQueueName?: BulkSizePriority[];
 }
 
@@ -15,8 +15,8 @@ enum BulkSize {
 }
 
 class BulkSizePriority {
-  bulkSize: BulkSize;
-  queueName: QueueNames;
+  bulkSize!: BulkSize;
+  queueName!: QueueNames;
 }
 
 // Fallback priority if no mapping is found

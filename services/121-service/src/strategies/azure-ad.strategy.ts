@@ -41,7 +41,7 @@ export class AzureAdStrategy
   extends PassportStrategy(BearerStrategy, 'azure-ad')
   implements OnModuleInit
 {
-  private userService: UserService;
+  private userService!: UserService;
   constructor(private moduleRef: ModuleRef) {
     super({
       identityMetadata: `https://${config.metadata.authority}/common/${config.metadata.version}/${config.metadata.discovery}`,

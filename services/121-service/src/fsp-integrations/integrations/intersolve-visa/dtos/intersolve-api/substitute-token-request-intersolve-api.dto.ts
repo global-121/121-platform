@@ -1,3 +1,3 @@
 export class SubstituteTokenRequestIntersolveApiDto {
-  public readonly tokenCode: string;
+  public readonly tokenCode!: string;
 }

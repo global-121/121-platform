@@ -5,15 +5,15 @@ export class CreateKoboDto {
   @ApiProperty({ example: 'your-asset-id-here' })
   @IsNotEmpty()
   @IsString()
-  public readonly assetUid: string;
+  public readonly assetUid!: string;
 
   @ApiProperty({ example: 'your-kobo-token-here' })
   @IsNotEmpty()
   @IsString()
-  public readonly token: string;
+  public readonly token!: string;
 
   @ApiProperty({ example: 'https://kobo.ifrc.org' })
   @IsNotEmpty()
   @IsString()
-  public readonly url: string;
+  public readonly url!: string;
 }

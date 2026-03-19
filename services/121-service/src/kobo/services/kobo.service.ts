@@ -24,7 +24,7 @@ export const fspQuestionName = 'fsp';
 @Injectable()
 export class KoboService {
   @InjectRepository(KoboEntity)
-  private readonly koboRepository: Repository<KoboEntity>;
+  private readonly koboRepository!: Repository<KoboEntity>;
 
   constructor(
     private readonly koboApiService: KoboApiService,

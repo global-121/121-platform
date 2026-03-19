@@ -6,7 +6,7 @@ import { env } from '@121-service/src/env';
 
 @Injectable()
 export class AzureLogService {
-  defaultClient: TelemetryClient;
+  defaultClient!: TelemetryClient;
 
   public constructor() {
     if (!!env.APPLICATIONINSIGHTS_CONNECTION_STRING) {

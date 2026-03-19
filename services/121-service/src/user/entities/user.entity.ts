@@ -22,11 +22,11 @@ export class UserEntity extends Base121Entity {
   @Index({ unique: true })
   @Column({ type: 'character varying', nullable: true })
   @ApiProperty({ example: 'username' })
-  public username: string | null;
+  public username!: string | null;
 
   @Column({ select: false })
   @ApiProperty()
-  public password: string;
+  public password!: string;
 
   @BeforeInsert()
   public hashPassword(): any {
@@ -40,45 +40,45 @@ export class UserEntity extends Base121Entity {
     () => ProgramAidworkerAssignmentEntity,
     (assignment) => assignment.user,
   )
-  public programAssignments: Relation<ProgramAidworkerAssignmentEntity[]>;
+  public programAssignments!: Relation<ProgramAidworkerAssignmentEntity[]>;
 
   @OneToMany(() => RegistrationEntity, (registration) => registration.user)
-  public registrations: Relation<RegistrationEntity[]>;
+  public registrations!: Relation<RegistrationEntity[]>;
 
   @OneToMany(() => NoteEntity, (notes) => notes.user)
-  public notes: Relation<NoteEntity[]>;
+  public notes!: Relation<NoteEntity[]>;
 
   @Column({ type: 'character varying' })
   @ApiProperty({ example: UserType.aidWorker })
-  public userType: WrapperType<UserType>;
+  public userType!: WrapperType<UserType>;
 
   @Column({ default: false })
   @ApiProperty({ example: false })
-  public admin: boolean;
+  public admin!: boolean;
 
   @Column({ default: false })
   @ApiProperty({ example: false })
-  public isEntraUser: boolean;
+  public isEntraUser!: boolean;
 
   @Column({ nullable: true, select: false, type: 'character varying' })
   @ApiProperty()
-  public salt: string | null;
+  public salt!: string | null;
 
   @Column({ default: true })
   @ApiProperty({ example: true })
-  public active: boolean;
+  public active!: boolean;
 
   @Column({ type: 'timestamp', nullable: true })
   @ApiProperty({ example: new Date() })
-  public lastLogin: Date | null;
+  public lastLogin!: Date | null;
 
   @Column({ default: false })
   @ApiProperty({ example: false })
-  public isOrganizationAdmin: boolean;
+  public isOrganizationAdmin!: boolean;
 
   @Column({ type: 'character varying', nullable: false })
-  public displayName: string;
+  public displayName!: string;
 
   @OneToMany(() => ProgramAttachmentEntity, (attachments) => attachments.user)
-  public uploadedAttachments: Relation<ProgramAttachmentEntity[]>;
+  public uploadedAttachments!: Relation<ProgramAttachmentEntity[]>;
 }

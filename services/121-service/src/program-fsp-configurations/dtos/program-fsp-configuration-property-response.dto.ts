@@ -5,7 +5,7 @@ import { FspConfigurationPropertyType } from '@121-service/src/fsp-integrations/
 
 export class ProgramFspConfigurationPropertyResponseDto {
   @ApiProperty({ example: 'username' })
-  public readonly name: FspConfigurationProperties;
+  public readonly name!: FspConfigurationProperties;
 
   @ApiProperty({
     example: 'my-username',
@@ -15,5 +15,5 @@ export class ProgramFspConfigurationPropertyResponseDto {
   public readonly value?: FspConfigurationPropertyType;
 
   @ApiProperty({ example: new Date() })
-  public updated: Date;
+  public updated!: Date;
 }

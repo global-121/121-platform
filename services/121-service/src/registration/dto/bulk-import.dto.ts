@@ -59,12 +59,12 @@ class BulkImportDto {
 }
 
 class BulkImportResult extends BulkImportDto {
-  public importStatus: ImportStatus;
-  public registrationStatus: RegistrationStatusEnum | string;
+  public importStatus!: ImportStatus;
+  public registrationStatus!: RegistrationStatusEnum | string;
 }
 
 export class ImportResult {
-  public aggregateImportResult: {
+  public aggregateImportResult!: {
     countImported: number;
   };
   public importResult?: BulkImportResult[];
@@ -78,7 +78,7 @@ export class ImportRegistrationsDto extends BulkImportDto {
   // Should we change this to a more specific name?
   // It could also be programFspConfigurationName (which is a good name for us programmers)
   // However this name is also used by users in the csv file, so it should be a name that is understandable for them
-  public programFspConfigurationName: string;
+  public programFspConfigurationName!: string;
 
   @ApiProperty()
   @IsOptional()

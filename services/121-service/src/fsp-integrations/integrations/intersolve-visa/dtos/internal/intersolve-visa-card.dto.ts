@@ -8,32 +8,32 @@ import { WrapperType } from '@121-service/src/wrapper.type';
 
 export class IntersolveVisaCardDto {
   @ApiProperty({ example: '123456' })
-  public tokenCode: string;
+  public tokenCode!: string;
 
   @ApiProperty({
     enum: VisaCard121Status,
     example: VisaCard121Status.Issued,
   })
-  public status: WrapperType<VisaCard121Status>;
+  public status!: WrapperType<VisaCard121Status>;
 
   @ApiProperty({ example: 'Card issued' })
-  public explanation: string;
+  public explanation!: string;
 
   @ApiProperty({ example: '2022-01-01T00:00:00Z' })
-  public issuedDate: Date;
+  public issuedDate!: Date;
 
   @ApiProperty()
-  public actions: WrapperType<VisaCardAction[]>;
+  public actions!: WrapperType<VisaCardAction[]>;
 
   @ApiProperty()
-  public debugInformation: WrapperType<IntersolveVisaCardDebugInformation>;
+  public debugInformation!: WrapperType<IntersolveVisaCardDebugInformation>;
 }
 
 class IntersolveVisaCardDebugInformation {
   @ApiProperty({ example: IntersolveVisaCardStatus.CardOk })
-  public intersolveVisaCardStatus: WrapperType<IntersolveVisaCardStatus | null>;
+  public intersolveVisaCardStatus!: WrapperType<IntersolveVisaCardStatus | null>;
   @ApiProperty({ example: IntersolveVisaTokenStatus.Active })
-  public intersolveVisaTokenStatus: WrapperType<IntersolveVisaTokenStatus>;
+  public intersolveVisaTokenStatus!: WrapperType<IntersolveVisaTokenStatus>;
   @ApiProperty({ example: true })
-  public isTokenBlocked: boolean;
+  public isTokenBlocked!: boolean;
 }

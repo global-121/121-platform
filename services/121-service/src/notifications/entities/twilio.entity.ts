@@ -25,46 +25,46 @@ export enum NotificationType {
 @Entity('twilio_message')
 export class TwilioMessageEntity extends Base121Entity {
   @Column({ select: false })
-  public accountSid: string;
+  public accountSid!: string;
 
   @Column()
-  public body: string;
+  public body!: string;
 
   @Column({ type: 'varchar', nullable: true })
-  public mediaUrl: string | null;
+  public mediaUrl!: string | null;
 
   @Column()
-  public to: string;
+  public to!: string;
 
   @Column({ select: false })
-  public from: string;
+  public from!: string;
 
   @Column()
   @Index()
-  public sid: string;
+  public sid!: string;
 
   @Column()
   @Index()
   @Column({ type: 'character varying' })
-  public status: MessageStatus;
+  public status!: MessageStatus;
 
   @Column({ type: 'character varying' })
-  public type: NotificationType;
+  public type!: NotificationType;
 
   @Column({ type: 'timestamp' })
-  public dateCreated: Date;
+  public dateCreated!: Date;
 
   @Column({ default: MessageContentType.custom, type: 'character varying' })
-  public contentType: MessageContentType;
+  public contentType!: MessageContentType;
 
   @Column({ type: 'character varying', nullable: true })
-  public processType: MessageProcessType | null;
+  public processType!: MessageProcessType | null;
 
   @Column({ type: 'character varying', nullable: true })
-  public errorCode: string | null;
+  public errorCode!: string | null;
 
   @Column({ type: 'character varying', nullable: true })
-  public errorMessage: string | null;
+  public errorMessage!: string | null;
 
   @ManyToOne(
     (_type) => RegistrationEntity,
@@ -72,27 +72,27 @@ export class TwilioMessageEntity extends Base121Entity {
     { onDelete: 'CASCADE' }, // Delete instead of 'SET NULL' even though this is nullable
   )
   @JoinColumn({ name: 'registrationId' })
-  public registration: Relation<RegistrationEntity>;
+  public registration!: Relation<RegistrationEntity>;
   @Index()
   @Column({ type: 'int', nullable: true }) // Keep this FK nullable, as e.g. for default reply there is no registrationId
-  public registrationId: number | null;
+  public registrationId!: number | null;
 
   @Column({ type: 'int', default: 0 })
-  public retryCount: number;
+  public retryCount!: number;
 
   @ManyToOne(() => TransactionEntity, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'transactionId' })
-  public transaction: Relation<TransactionEntity>;
+  public transaction!: Relation<TransactionEntity>;
   @Column({ type: 'int', nullable: true })
-  public transactionId: number | null;
+  public transactionId!: number | null;
 
   @ManyToOne(() => UserEntity, {
     onDelete: 'NO ACTION', // Do not delete on deleting users, instead see catch in userService.delete()
   })
   @JoinColumn({ name: 'userId' })
-  public user: Relation<UserEntity>;
+  public user!: Relation<UserEntity>;
   @Column({ type: 'int', nullable: true })
-  public userId: MessageSenderUserId;
+  public userId!: MessageSenderUserId;
 }

@@ -7,21 +7,21 @@ import { PermissionEntity } from '@121-service/src/user/entities/permissions.ent
 @Entity('user_role')
 export class UserRoleEntity extends Base121Entity {
   @Column({ unique: true })
-  public role: string;
+  public role!: string;
 
   @Column({ type: 'character varying', nullable: true })
-  public label: string | null;
+  public label!: string | null;
 
   @Column({ type: 'character varying', nullable: true })
-  public description: string | null;
+  public description!: string | null;
 
   @ManyToMany(
     () => ProgramAidworkerAssignmentEntity,
     (assignment) => assignment.roles,
   )
-  public assignments: ProgramAidworkerAssignmentEntity[];
+  public assignments!: ProgramAidworkerAssignmentEntity[];
 
   @ManyToMany(() => PermissionEntity, (permission) => permission.roles)
   @JoinTable()
-  public permissions: PermissionEntity[];
+  public permissions!: PermissionEntity[];
 }

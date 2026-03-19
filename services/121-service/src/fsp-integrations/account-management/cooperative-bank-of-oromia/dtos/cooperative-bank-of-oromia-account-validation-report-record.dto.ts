@@ -2,23 +2,23 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CooperativeBankOfOromiaAccountValidationReportRecordDto {
   @ApiProperty({ type: String, nullable: true })
-  public nameUsedForTheMatch: string | null;
+  public nameUsedForTheMatch!: string | null;
 
   @ApiProperty({ type: String, nullable: true })
-  public bankAccountNumberUsedForCall: string | null;
+  public bankAccountNumberUsedForCall!: string | null;
 
   @ApiProperty({ type: String, nullable: true })
-  public cooperativeBankOfOromiaName: string | null;
+  public cooperativeBankOfOromiaName!: string | null;
 
   @ApiProperty({ type: String, nullable: true })
-  public errorMessage: string | null;
+  public errorMessage!: string | null;
 
   @ApiProperty({ type: Number })
-  public registrationProgramId: number;
+  public registrationProgramId!: number;
 
   @ApiProperty({ type: String })
-  public referenceId: string;
+  public referenceId!: string;
 
   @ApiProperty({ type: String })
-  public updated: string;
+  public updated!: string;
 }

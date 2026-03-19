@@ -33,9 +33,9 @@ import { UserService } from '@121-service/src/user/user.service';
 @Injectable()
 export class ProgramService {
   @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  private readonly programRepository!: Repository<ProgramEntity>;
   @InjectRepository(ProgramRegistrationAttributeEntity)
-  private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
+  private readonly programRegistrationAttributeRepository!: Repository<ProgramRegistrationAttributeEntity>;
 
   public constructor(
     private readonly dataSource: DataSource,

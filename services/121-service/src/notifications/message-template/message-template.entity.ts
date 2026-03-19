@@ -21,22 +21,22 @@ import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language
 @Entity('message_template')
 export class MessageTemplateEntity extends Base121Entity {
   @Column()
-  public type: string;
+  public type!: string;
 
   @Column('json', { nullable: true })
-  public label: UILanguageTranslation | null;
+  public label!: UILanguageTranslation | null;
 
   @Column()
-  public language: string;
+  public language!: string;
 
   @Column({ type: 'character varying', default: null, nullable: true })
-  public message: string | null;
+  public message!: string | null;
 
   @Column({ type: 'character varying', default: null, nullable: true })
-  public contentSid: string | null;
+  public contentSid!: string | null;
 
   @Column({ default: false })
-  public isSendMessageTemplate: boolean;
+  public isSendMessageTemplate!: boolean;
 
   @ManyToOne((_type) => ProgramEntity, (program) => program.messageTemplates, {
     onDelete: 'CASCADE',
@@ -44,5 +44,5 @@ export class MessageTemplateEntity extends Base121Entity {
   @JoinColumn({ name: 'programId' })
   public program?: Relation<ProgramEntity>;
   @Column()
-  public programId: number;
+  public programId!: number;
 }

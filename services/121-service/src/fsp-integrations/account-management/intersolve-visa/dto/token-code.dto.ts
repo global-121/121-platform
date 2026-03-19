@@ -6,5 +6,5 @@ export class TokenCodeDto {
   @IsNotEmpty()
   @IsString()
   @Length(19, 19, { message: 'tokenCode must be 19 characters long' })
-  public readonly tokenCode: string;
+  public readonly tokenCode!: string;
 }

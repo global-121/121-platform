@@ -6,14 +6,14 @@ export class KoboResponseDto {
     type: 'string',
     description: 'Kobo asset ID',
   })
-  public readonly assetUid: string;
+  public readonly assetUid!: string;
 
   @ApiProperty({
     example: 'vAbBcCdDeEfF987654321',
     type: 'string',
     description: 'Kobo form version ID',
   })
-  public readonly versionId: string;
+  public readonly versionId!: string;
 
   @ApiProperty({
     example: '2024-12-19T10:30:00Z',
@@ -21,21 +21,21 @@ export class KoboResponseDto {
     format: 'date-time',
     description: 'Date when the Kobo form was deployed',
   })
-  public readonly dateDeployed: Date;
+  public readonly dateDeployed!: Date;
 
   @ApiProperty({
     example: 'https://kobo.example.com',
     type: 'string',
     description: 'Kobo server URL',
   })
-  public readonly url: string;
+  public readonly url!: string;
 
   @ApiProperty({
     example: 1,
     type: 'number',
     description: 'ID of the associated program',
   })
-  public readonly programId: number;
+  public readonly programId!: number;
 
   @ApiProperty({
     example: 'Kobo form',
@@ -43,5 +43,5 @@ export class KoboResponseDto {
     description: 'Name of the Kobo form',
     nullable: true,
   })
-  public readonly name: string | null;
+  public readonly name!: string | null;
 }

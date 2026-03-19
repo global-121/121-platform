@@ -13,13 +13,13 @@ import { maskValueKeepStart } from '@121-service/src/utils/mask-value.helper';
 
 class Request {
   public headers?: Headers;
-  public url: string;
+  public url!: string;
   public payload: any;
 }
 
 class Response {
-  public status: number;
-  public statusText: string;
+  public status!: number;
+  public statusText!: string;
   public data: any;
 }
 

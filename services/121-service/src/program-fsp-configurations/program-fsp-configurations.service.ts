@@ -25,9 +25,9 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 @Injectable()
 export class ProgramFspConfigurationsService {
   @InjectRepository(ProgramFspConfigurationEntity)
-  private readonly programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
+  private readonly programFspConfigurationRepository!: Repository<ProgramFspConfigurationEntity>;
   @InjectRepository(ProgramFspConfigurationPropertyEntity)
-  private readonly programFspConfigurationPropertyRepository: Repository<ProgramFspConfigurationPropertyEntity>;
+  private readonly programFspConfigurationPropertyRepository!: Repository<ProgramFspConfigurationPropertyEntity>;
 
   public async getByProgramId(
     programId: number,

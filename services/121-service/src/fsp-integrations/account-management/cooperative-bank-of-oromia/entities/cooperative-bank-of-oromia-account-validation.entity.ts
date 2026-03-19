@@ -9,19 +9,19 @@ export class CooperativeBankOfOromiaAccountValidationEntity extends Base121Entit
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'registrationId' })
-  public registration: Relation<RegistrationEntity>;
+  public registration!: Relation<RegistrationEntity>;
   @Column({ type: 'int', nullable: false })
-  public registrationId: number;
+  public registrationId!: number;
 
   @Column({ type: 'character varying', nullable: true })
-  public nameUsedForTheMatch: string | null;
+  public nameUsedForTheMatch!: string | null;
 
   @Column({ type: 'character varying', nullable: true })
-  public bankAccountNumberUsedForCall: string | null;
+  public bankAccountNumberUsedForCall!: string | null;
 
   @Column({ type: 'character varying', nullable: true })
-  public cooperativeBankOfOromiaName: string | null;
+  public cooperativeBankOfOromiaName!: string | null;
 
   @Column({ type: 'character varying', nullable: true })
-  public errorMessage: string | null;
+  public errorMessage!: string | null;
 }

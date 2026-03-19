@@ -1,4 +1,4 @@
 export class DoTransferOrIssueCardResult {
-  isNewCardCreated: boolean;
-  amountTransferredInMajorUnit: number;
+  isNewCardCreated!: boolean;
+  amountTransferredInMajorUnit!: number;
 }

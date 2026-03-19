@@ -21,7 +21,7 @@ export class SecretDto {
   @ApiProperty({ example: 'fill_in_secret' })
   @IsNotEmpty()
   @IsString()
-  public readonly secret: string;
+  public readonly secret!: string;
 }
 
 @NoUserAuthenticationController('Protected by using the `RESET_SECRET`.')

@@ -45,17 +45,17 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 @Injectable()
 export class MessageIncomingService {
   @InjectRepository(TwilioMessageEntity)
-  private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
+  private readonly twilioMessageRepository!: Repository<TwilioMessageEntity>;
   @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
+  private readonly registrationRepository!: Repository<RegistrationEntity>;
   @InjectRepository(ProgramEntity)
-  private programRepository: Repository<ProgramEntity>;
+  private programRepository!: Repository<ProgramEntity>;
   @InjectRepository(TryWhatsappEntity)
-  private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
+  private readonly tryWhatsappRepository!: Repository<TryWhatsappEntity>;
   @InjectRepository(WhatsappPendingMessageEntity)
-  private readonly whatsappPendingMessageRepo: Repository<WhatsappPendingMessageEntity>;
+  private readonly whatsappPendingMessageRepo!: Repository<WhatsappPendingMessageEntity>;
   @InjectRepository(UserEntity)
-  private readonly userRepository: Repository<UserEntity>;
+  private readonly userRepository!: Repository<UserEntity>;
 
   private readonly fallbackLanguage = RegistrationPreferredLanguage.en;
   private readonly genericDefaultReplies = {

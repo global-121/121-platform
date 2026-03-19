@@ -39,14 +39,14 @@ import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/cr
 @Injectable()
 export class RegistrationsBulkService {
   @InjectRepository(MessageTemplateEntity)
-  private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
+  private readonly messageTemplateRepository!: Repository<MessageTemplateEntity>;
   @InjectRepository(TryWhatsappEntity)
-  private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
+  private readonly tryWhatsappRepository!: Repository<TryWhatsappEntity>;
   @InjectRepository(LatestMessageEntity)
-  private readonly latestMessageRepository: Repository<LatestMessageEntity>;
+  private readonly latestMessageRepository!: Repository<LatestMessageEntity>;
   // Even though this is related to the registration entity, it is not scoped since we never get/update this in a direct call
   @InjectRepository(WhatsappPendingMessageEntity)
-  private readonly whatsappPendingMessageRepository: Repository<WhatsappPendingMessageEntity>;
+  private readonly whatsappPendingMessageRepository!: Repository<WhatsappPendingMessageEntity>;
 
   public constructor(
     private readonly registrationsPaginationService: RegistrationsPaginationService,

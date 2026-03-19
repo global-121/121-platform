@@ -11,7 +11,7 @@ import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-statu
 @Injectable()
 export class RegistrationUtilsService {
   @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  private readonly programRepository!: Repository<ProgramEntity>;
 
   constructor(
     private registrationScopedRepository: RegistrationScopedRepository,

@@ -66,37 +66,37 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
 export class TransactionViewEntity {
   @ViewColumn()
   @PrimaryColumn()
-  public id: number;
+  public id!: number;
 
   @ManyToOne(() => UserEntity, { onDelete: 'NO ACTION' })
   @JoinColumn({ name: 'userId' })
-  public user: Relation<UserEntity>;
+  public user!: Relation<UserEntity>;
 
   @ViewColumn()
-  public transferValue: number | null;
+  public transferValue!: number | null;
 
   @ViewColumn()
-  public userId: number;
+  public userId!: number;
 
   @ViewColumn()
-  public created: Date;
+  public created!: Date;
 
   @ViewColumn()
-  public updated: Date;
+  public updated!: Date;
 
   @ViewColumn()
   @Index()
-  public status: TransactionStatusEnum;
+  public status!: TransactionStatusEnum;
 
   @ManyToOne((_type) => PaymentEntity, (payment) => payment.transactions, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'paymentId' })
-  public payment: Relation<PaymentEntity>;
+  public payment!: Relation<PaymentEntity>;
 
   @Index()
   @ViewColumn()
-  public paymentId: number;
+  public paymentId!: number;
 
   @ManyToOne(
     (_type) => RegistrationEntity,
@@ -104,50 +104,50 @@ export class TransactionViewEntity {
     { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'registrationId' })
-  public registration: Relation<RegistrationEntity>;
+  public registration!: Relation<RegistrationEntity>;
 
   @Index()
   @ViewColumn()
-  public registrationId: number;
+  public registrationId!: number;
 
   @OneToMany(
     () => TransactionEventEntity,
     (transactionEvent) => transactionEvent.transaction,
     { cascade: true },
   )
-  public transactionEvents: Relation<TransactionEventEntity[]>;
+  public transactionEvents!: Relation<TransactionEventEntity[]>;
 
   @OneToOne(
     () => LastTransactionEventEntity,
     (lastTransactionEvent) => lastTransactionEvent.transaction,
     { onDelete: 'NO ACTION' },
   )
-  public lastTransactionEvent: Relation<LastTransactionEventEntity>;
+  public lastTransactionEvent!: Relation<LastTransactionEventEntity>;
 
   @ViewColumn()
-  public errorMessage: string | null;
+  public errorMessage!: string | null;
 
   @ViewColumn()
-  public programFspConfigurationId: number | null; // can be null if program fsp config was deleted
+  public programFspConfigurationId!: number | null; // can be null if program fsp config was deleted
 
   @ViewColumn()
-  public programFspConfigurationLabel: UILanguageTranslation | null; // can be null if program fsp config was deleted
+  public programFspConfigurationLabel!: UILanguageTranslation | null; // can be null if program fsp config was deleted
 
   @ViewColumn()
-  public programFspConfigurationName: string | null; // can be null if program fsp config was deleted
+  public programFspConfigurationName!: string | null; // can be null if program fsp config was deleted
 
   @ViewColumn()
-  public fspName: Fsps | null; // can be null if program fsp config was deleted
+  public fspName!: Fsps | null; // can be null if program fsp config was deleted
 
   @ViewColumn()
-  public registrationStatus: RegistrationStatusEnum | null;
+  public registrationStatus!: RegistrationStatusEnum | null;
 
   @ViewColumn()
-  public registrationProgramId: number | null;
+  public registrationProgramId!: number | null;
 
   @ViewColumn()
-  public registrationReferenceId: string | null;
+  public registrationReferenceId!: string | null;
 
   @ViewColumn()
-  public registrationScope: string | null;
+  public registrationScope!: string | null;
 }

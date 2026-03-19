@@ -22,7 +22,7 @@ import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-conf
 @Entity('program_fsp_configuration_property')
 export class ProgramFspConfigurationPropertyEntity extends Base121Entity {
   @Column({ type: 'character varying' })
-  public name: FspConfigurationProperties;
+  public name!: FspConfigurationProperties;
 
   @Column({
     type: 'varchar',
@@ -36,7 +36,7 @@ export class ProgramFspConfigurationPropertyEntity extends Base121Entity {
       },
     },
   })
-  public value: FspConfigurationPropertyType;
+  public value!: FspConfigurationPropertyType;
 
   @AfterLoad()
   parseValue(): void {
@@ -52,7 +52,7 @@ export class ProgramFspConfigurationPropertyEntity extends Base121Entity {
     { cascade: true, onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'programFspConfigurationId' })
-  public programFspConfiguration: Relation<ProgramFspConfigurationEntity>;
+  public programFspConfiguration!: Relation<ProgramFspConfigurationEntity>;
   @Column()
-  public programFspConfigurationId: number;
+  public programFspConfigurationId!: number;
 }

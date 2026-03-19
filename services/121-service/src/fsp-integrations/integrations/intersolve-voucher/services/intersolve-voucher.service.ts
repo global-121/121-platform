@@ -42,15 +42,15 @@ import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/cr
 @Injectable()
 export class IntersolveVoucherService {
   @InjectRepository(IntersolveVoucherInstructionsEntity)
-  private readonly intersolveInstructionsRepository: Repository<IntersolveVoucherInstructionsEntity>;
+  private readonly intersolveInstructionsRepository!: Repository<IntersolveVoucherInstructionsEntity>;
   @InjectRepository(IntersolveIssueVoucherRequestEntity)
-  private readonly intersolveVoucherRequestRepository: Repository<IntersolveIssueVoucherRequestEntity>;
+  private readonly intersolveVoucherRequestRepository!: Repository<IntersolveIssueVoucherRequestEntity>;
   @InjectRepository(TransactionEntity)
-  public readonly transactionRepository: Repository<TransactionEntity>;
+  public readonly transactionRepository!: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
-  public readonly programRepository: Repository<ProgramEntity>;
+  public readonly programRepository!: Repository<ProgramEntity>;
   @InjectRepository(TwilioMessageEntity)
-  private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
+  private readonly twilioMessageRepository!: Repository<TwilioMessageEntity>;
 
   private readonly fallbackRegistrationPreferredLanguage =
     RegistrationPreferredLanguage.en;

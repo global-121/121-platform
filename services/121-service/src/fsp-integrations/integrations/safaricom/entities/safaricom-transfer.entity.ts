@@ -6,19 +6,19 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/entiti
 @Entity('safaricom_transfer')
 export class SafaricomTransferEntity extends Base121Entity {
   @Column({ unique: true })
-  public originatorConversationId: string;
+  public originatorConversationId!: string;
 
   @Column({ nullable: true })
-  public mpesaConversationId: string;
+  public mpesaConversationId!: string;
 
   @Column({ nullable: true })
-  public mpesaTransactionId: string;
+  public mpesaTransactionId!: string;
 
   @OneToOne(() => TransactionEntity, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'transactionId' })
-  transaction: TransactionEntity;
+  transaction!: TransactionEntity;
   @Column({ type: 'int', nullable: false })
-  public transactionId: number;
+  public transactionId!: number;
 }

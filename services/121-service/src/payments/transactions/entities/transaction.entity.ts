@@ -22,23 +22,23 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
 export class TransactionEntity extends Base121AuditedEntity {
   @ManyToOne(() => UserEntity, { onDelete: 'NO ACTION' }) // Do not delete on deleting users, instead see catch in userService.delete()
   @JoinColumn({ name: 'userId' })
-  public user: Relation<UserEntity>;
+  public user!: Relation<UserEntity>;
 
   @Column({ nullable: true, type: 'real' })
-  public transferValue: number | null;
+  public transferValue!: number | null;
 
   @Column()
   @Index()
-  public status: string;
+  public status!: string;
 
   @ManyToOne((_type) => PaymentEntity, (payment) => payment.transactions, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'paymentId' })
-  public payment: Relation<PaymentEntity>;
+  public payment!: Relation<PaymentEntity>;
   @Index()
   @Column({ type: 'int' })
-  public paymentId: number;
+  public paymentId!: number;
 
   @ManyToOne(
     (_type) => RegistrationEntity,
@@ -46,22 +46,22 @@ export class TransactionEntity extends Base121AuditedEntity {
     { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'registrationId' })
-  public registration: Relation<RegistrationEntity>;
+  public registration!: Relation<RegistrationEntity>;
   @Index()
   @Column({ type: 'int', nullable: false })
-  public registrationId: number;
+  public registrationId!: number;
 
   @OneToMany(
     () => TransactionEventEntity,
     (transactionEvent) => transactionEvent.transaction,
     { cascade: true },
   )
-  public transactionEvents: Relation<TransactionEventEntity[]>;
+  public transactionEvents!: Relation<TransactionEventEntity[]>;
 
   @OneToOne(
     () => LastTransactionEventEntity,
     (lastTransactionEvent) => lastTransactionEvent.transaction,
     { onDelete: 'NO ACTION' },
   )
-  public lastTransactionEvent: Relation<LastTransactionEventEntity>;
+  public lastTransactionEvent!: Relation<LastTransactionEventEntity>;
 }

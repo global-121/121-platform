@@ -2,11 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class ApproverInThresholdResponseDto {
   @ApiProperty({ example: 1 })
-  public readonly id: number;
+  public readonly id!: number;
 
   @ApiProperty({ example: 4, nullable: true })
-  public readonly userId: number | null;
+  public readonly userId!: number | null;
 
   @ApiProperty({ example: 'johndoe', nullable: true })
-  public readonly username: string | null;
+  public readonly username!: string | null;
 }

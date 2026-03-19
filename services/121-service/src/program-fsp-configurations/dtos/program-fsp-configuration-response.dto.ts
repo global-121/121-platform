@@ -12,16 +12,16 @@ type FspWithoutConfigProps = Omit<
 
 export class ProgramFspConfigurationResponseDto {
   @ApiProperty({ example: 1, type: 'number' })
-  public readonly programId: number;
+  public readonly programId!: number;
 
   @ApiProperty({ enum: Fsps })
-  public fspName: Fsps;
+  public fspName!: Fsps;
 
   @ApiProperty({ example: 'FSP Name', type: 'string' })
-  public readonly name: string;
+  public readonly name!: string;
 
   @ApiProperty({ example: { en: 'FSP display name' } })
-  public readonly label: UILanguageTranslation;
+  public readonly label!: UILanguageTranslation;
 
   /// Can sometimes be undefined if the Fsp has been removed from the codebase
   @ApiProperty()
@@ -35,5 +35,5 @@ export class ProgramFspConfigurationResponseDto {
     type: 'array',
     description: 'Only property names are returned for security reasons',
   })
-  public readonly properties: ProgramFspConfigurationPropertyResponseDto[];
+  public readonly properties!: ProgramFspConfigurationPropertyResponseDto[];
 }

@@ -22,24 +22,24 @@ export class ProgramAidworkerAssignmentEntity extends Base121Entity {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'userId' })
-  public user: Relation<UserEntity>;
+  public user!: Relation<UserEntity>;
   @Column()
-  public userId: number;
+  public userId!: number;
 
   @ManyToOne(() => ProgramEntity, (program) => program.aidworkerAssignments, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'programId' })
-  public program: Relation<ProgramEntity>;
+  public program!: Relation<ProgramEntity>;
   @Column()
-  public programId: number;
+  public programId!: number;
 
   @ManyToMany(() => UserRoleEntity, (role) => role.assignments)
   @JoinTable()
-  public roles: Relation<UserRoleEntity[]>;
+  public roles!: Relation<UserRoleEntity[]>;
 
   @Column({ nullable: false, default: '' })
-  public scope: string;
+  public scope!: string;
 
   @ManyToOne(
     () => ProgramApprovalThresholdEntity,
@@ -51,7 +51,7 @@ export class ProgramAidworkerAssignmentEntity extends Base121Entity {
     foreignKeyConstraintName:
       'FK_program_aidworker_assignment_approval_threshold',
   })
-  public programApprovalThreshold: Relation<ProgramApprovalThresholdEntity> | null;
+  public programApprovalThreshold!: Relation<ProgramApprovalThresholdEntity> | null;
   @Column({ type: 'integer', nullable: true })
-  public programApprovalThresholdId: number | null;
+  public programApprovalThresholdId!: number | null;
 }

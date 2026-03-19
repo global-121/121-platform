@@ -14,7 +14,7 @@ class UserEmailDto {
   @ApiProperty({ example: 'admin@example.org' })
   @IsNotEmpty()
   @IsEmail()
-  public readonly username: string;
+  public readonly username!: string;
 
   @ApiProperty({
     example: 'admin',
@@ -23,7 +23,7 @@ class UserEmailDto {
   })
   @IsOptional()
   @IsString()
-  public readonly displayName: string;
+  public readonly displayName!: string;
 }
 
 export class CreateUsersDto {
@@ -32,5 +32,5 @@ export class CreateUsersDto {
   @ArrayNotEmpty()
   @ValidateNested({ each: true })
   @Type(() => UserEmailDto)
-  public readonly users: UserEmailDto[];
+  public readonly users!: UserEmailDto[];
 }

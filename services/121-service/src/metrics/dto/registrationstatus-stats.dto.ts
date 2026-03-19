@@ -2,7 +2,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 export class RegistrationStatusStats {
-  status: WrapperType<RegistrationStatusEnum>;
+  status!: WrapperType<RegistrationStatusEnum>;
 
-  statusCount: number;
+  statusCount!: number;
 }

@@ -17,7 +17,7 @@ import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindW
 
 export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
   public readonly repository: Repository<T>;
-  public request: ScopedUserRequest;
+  public request!: ScopedUserRequest;
 
   constructor(target: EntityTarget<T>, dataSource: DataSource) {
     this.repository = dataSource.createEntityManager().getRepository(target);

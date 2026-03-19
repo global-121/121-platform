@@ -13,7 +13,7 @@ import { ProgramEntity } from '@121-service/src/programs/entities/program.entity
 @Injectable()
 export class PaymentsProgressHelperService {
   @InjectRepository(ProgramEntity)
-  private programRepository: Repository<ProgramEntity>;
+  private programRepository!: Repository<ProgramEntity>;
   public constructor(
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,

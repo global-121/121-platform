@@ -17,7 +17,7 @@ export class PaymentAggregationFullDto extends PaymentAggregationSummaryDto {
     ],
     isArray: true,
   })
-  fsps: {
+  fsps!: {
     programFspConfigurationName: string | null;
     programFspConfigurationLabel: UILanguageTranslation | null;
   }[];
@@ -26,11 +26,11 @@ export class PaymentAggregationFullDto extends PaymentAggregationSummaryDto {
     isArray: true,
     type: PaymentApprovalStatusResponseDto,
   })
-  approvalStatus: PaymentApprovalStatusResponseDto[];
+  approvalStatus!: PaymentApprovalStatusResponseDto[];
 
   @ApiProperty({
     example: [{ username: 'field-officer@organization.org' }],
     isArray: true,
   })
-  approversForCurrentApprovalStep: { username: string }[];
+  approversForCurrentApprovalStep!: { username: string }[];
 }

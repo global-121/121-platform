@@ -13,7 +13,7 @@ import { RegistrationsCreationService } from '@121-service/src/registration/serv
 @Injectable()
 export class KoboSubmissionService {
   @InjectRepository(KoboEntity)
-  private readonly koboRepository: Repository<KoboEntity>;
+  private readonly koboRepository!: Repository<KoboEntity>;
 
   constructor(
     private readonly koboApiService: KoboApiService,

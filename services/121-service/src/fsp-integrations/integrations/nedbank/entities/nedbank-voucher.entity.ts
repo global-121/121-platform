@@ -9,19 +9,19 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/entiti
 export class NedbankVoucherEntity extends Base121Entity {
   @Index()
   @Column({ unique: true })
-  public orderCreateReference: string;
+  public orderCreateReference!: string;
 
   @Column({ nullable: true, type: 'character varying' })
-  public status: NedbankVoucherStatus | null;
+  public status!: NedbankVoucherStatus | null;
 
   @Column({ type: 'character varying' })
-  public paymentReference: string;
+  public paymentReference!: string;
 
   @OneToOne(() => TransactionEntity, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'transactionId' })
-  transaction: TransactionEntity;
+  transaction!: TransactionEntity;
   @Column({ type: 'int', nullable: false })
-  public transactionId: number;
+  public transactionId!: number;
 }

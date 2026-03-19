@@ -18,38 +18,38 @@ export class IntersolveVisaParentWalletEntity extends Base121Entity {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'intersolveVisaCustomerId' })
-  public intersolveVisaCustomer: Relation<IntersolveVisaCustomerEntity>;
+  public intersolveVisaCustomer!: Relation<IntersolveVisaCustomerEntity>;
   @Column({ type: 'int' })
-  public intersolveVisaCustomerId: number;
+  public intersolveVisaCustomerId!: number;
 
   @OneToMany(
     (_type) => IntersolveVisaChildWalletEntity,
     (intersolveVisaChildWallets) =>
       intersolveVisaChildWallets.intersolveVisaParentWallet,
   )
-  public intersolveVisaChildWallets: Relation<
+  public intersolveVisaChildWallets!: Relation<
     IntersolveVisaChildWalletEntity[]
   >;
 
   @Index()
   @Column({ unique: true })
-  public tokenCode: string;
+  public tokenCode!: string;
 
   @Column({ default: false })
-  public isLinkedToVisaCustomer: boolean;
+  public isLinkedToVisaCustomer!: boolean;
 
   @Column({ default: 0 }) // This is euro cents
-  public balance: number;
+  public balance!: number;
 
   // Last time we got an update from Intersolve about the wallet status or balance or when it was last used
   @Column({ type: 'timestamp', nullable: true })
-  public lastExternalUpdate: Date;
+  public lastExternalUpdate!: Date;
 
   // This is euro cents
   @Column({ default: 0 })
-  public spentThisMonth: number;
+  public spentThisMonth!: number;
 
   // This is the date of the latest transaction
   @Column({ type: 'date', nullable: true })
-  public lastUsedDate: Date | null;
+  public lastUsedDate!: Date | null;
 }

@@ -31,7 +31,7 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 @Injectable()
 export class MessageQueuesService {
   @InjectRepository(MessageTemplateEntity)
-  private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
+  private readonly messageTemplateRepository!: Repository<MessageTemplateEntity>;
   private readonly queueNameToQueueMap: Partial<Record<QueueNames, Queue>>;
 
   public constructor(

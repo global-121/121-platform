@@ -4,20 +4,20 @@ import { AggregationsPerStatusDto } from '@121-service/src/payments/dto/aggregat
 
 export class PaymentAggregationSummaryDto {
   @ApiProperty({ example: 1 })
-  paymentId: number;
+  paymentId!: number;
 
   @ApiProperty({ type: AggregationsPerStatusDto })
-  aggregationsPerStatus: AggregationsPerStatusDto;
+  aggregationsPerStatus!: AggregationsPerStatusDto;
 
   @ApiProperty({ example: true })
-  isPaymentApproved: boolean;
+  isPaymentApproved!: boolean;
 
   @ApiProperty({ example: 2 })
-  approvalsRequired: number;
+  approvalsRequired!: number;
 
   @ApiProperty({ example: 1 })
-  approvalsGiven: number;
+  approvalsGiven!: number;
 
   @ApiProperty({ example: '2024-01-01T00:00:00.000Z' })
-  paymentDate: Date;
+  paymentDate!: Date;
 }

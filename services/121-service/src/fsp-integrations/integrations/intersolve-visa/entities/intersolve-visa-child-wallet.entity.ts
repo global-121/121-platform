@@ -13,31 +13,31 @@ export class IntersolveVisaChildWalletEntity extends Base121Entity {
       intersolveVisaParentWallet.intersolveVisaChildWallets,
     { onDelete: 'CASCADE' },
   )
-  public intersolveVisaParentWallet: Relation<IntersolveVisaParentWalletEntity>;
+  public intersolveVisaParentWallet!: Relation<IntersolveVisaParentWalletEntity>;
   @Index()
   @Column()
-  public intersolveVisaParentWalletId: number;
+  public intersolveVisaParentWalletId!: number;
 
   @Index()
   @Column({ unique: true })
-  public tokenCode: string;
+  public tokenCode!: string;
 
   @Column({ default: false })
-  public isLinkedToParentWallet: boolean;
+  public isLinkedToParentWallet!: boolean;
 
   @Column({ default: false })
-  public isTokenBlocked: boolean;
+  public isTokenBlocked!: boolean;
 
   @Column({ default: false })
-  public isDebitCardCreated: boolean;
+  public isDebitCardCreated!: boolean;
 
   @Column({ type: 'character varying' })
-  public walletStatus: IntersolveVisaTokenStatus;
+  public walletStatus!: IntersolveVisaTokenStatus;
 
   @Column({ type: 'character varying', nullable: true })
-  public cardStatus: IntersolveVisaCardStatus | null;
+  public cardStatus!: IntersolveVisaCardStatus | null;
 
   // Last time we got an update from Intersolve about the wallet status or when it was last used
   @Column({ type: 'timestamp', nullable: true })
-  public lastExternalUpdate: Date | null;
+  public lastExternalUpdate!: Date | null;
 }

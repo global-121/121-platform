@@ -12,12 +12,12 @@ export class ImageCodeExportVouchersEntity extends Base121Entity {
     { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'registrationId' })
-  public registration: Relation<RegistrationEntity>;
+  public registration!: Relation<RegistrationEntity>;
   @Column({ type: 'int', nullable: false })
-  public registrationId: number;
+  public registrationId!: number;
 
   @ManyToOne((_type) => IntersolveVoucherEntity, (voucher) => voucher.image, {
     onDelete: 'CASCADE',
   })
-  public voucher: Relation<IntersolveVoucherEntity>;
+  public voucher!: Relation<IntersolveVoucherEntity>;
 }

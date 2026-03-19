@@ -34,9 +34,9 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 @Injectable()
 export class RegistrationsPaginationService {
   @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  private readonly programRepository!: Repository<ProgramEntity>;
   @InjectRepository(UserEntity)
-  private readonly userRepository: Repository<UserEntity>;
+  private readonly userRepository!: Repository<UserEntity>;
 
   public constructor(
     private readonly programService: ProgramService,

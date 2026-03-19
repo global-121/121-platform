@@ -17,14 +17,14 @@ export class RegistrationEventAttributeEntity extends Base121Entity {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'eventId' })
-  public event: Relation<RegistrationEventEntity>;
+  public event!: Relation<RegistrationEventEntity>;
   @Column()
-  public eventId: number;
+  public eventId!: number;
 
   @Index()
   @Column({ type: 'character varying' })
-  public key: RegistrationEventAttributeKeyEnum;
+  public key!: RegistrationEventAttributeKeyEnum;
 
   @Column({ type: 'character varying', nullable: true })
-  public value: string | null;
+  public value!: string | null;
 }

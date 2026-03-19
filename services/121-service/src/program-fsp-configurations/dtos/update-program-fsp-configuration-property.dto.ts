@@ -10,5 +10,5 @@ export class UpdateProgramFspConfigurationPropertyDto {
       'Should be string (for e.g. name=username), boolean (for e.g. name=cardDistributionByMail), number (for e.g. name=maxBalanceInCents) or array of strings (for e.g. name=columnsToExport)',
   })
   @IsNotEmpty()
-  value: FspConfigurationPropertyType;
+  value!: FspConfigurationPropertyType;
 }

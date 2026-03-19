@@ -40,9 +40,9 @@ const MASS_UPDATE_ROW_LIMIT = 50_000;
 @Injectable()
 export class RegistrationsCreationService {
   @InjectRepository(ProgramRegistrationAttributeEntity)
-  private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
+  private readonly programRegistrationAttributeRepository!: Repository<ProgramRegistrationAttributeEntity>;
   @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  private readonly programRepository!: Repository<ProgramEntity>;
 
   public constructor(
     private readonly inclusionScoreService: InclusionScoreService,

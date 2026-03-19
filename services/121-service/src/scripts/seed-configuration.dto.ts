@@ -6,13 +6,13 @@ import { WrapperType } from '@121-service/src/wrapper.type';
 
 export class SeedConfigurationDto {
   @ApiProperty({ example: SeedScript.nlrcMultiple })
-  readonly name: WrapperType<SeedScript>;
+  readonly name!: WrapperType<SeedScript>;
 
   @ApiProperty({ default: false })
   readonly seedAdminOnly?: boolean;
 
   @ApiProperty()
-  readonly programs: SeedConfigurationProgramDto[];
+  readonly programs!: SeedConfigurationProgramDto[];
 
   @ApiProperty({ default: false })
   readonly includeMockData?: boolean;
@@ -26,10 +26,10 @@ export class SeedConfigurationDto {
 
 export class SeedConfigurationProgramDto {
   @ApiProperty({ example: 'program-safaricom.json' })
-  readonly program: string;
+  readonly program!: string;
 
   @ApiProperty({ example: 'message-template-generic.json' })
-  readonly messageTemplate: SeedMessageTemplateConfig;
+  readonly messageTemplate!: SeedMessageTemplateConfig;
 
   @ApiProperty({ example: 'mobile-money-999.csv' })
   readonly registrations?: string;

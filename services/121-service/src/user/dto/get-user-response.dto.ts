@@ -2,25 +2,25 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class GetUserReponseDto {
   @ApiProperty()
-  id: number;
+  id!: number;
 
   @ApiProperty()
-  username: string;
+  username!: string;
 
   @ApiProperty({ example: false })
-  admin: boolean;
+  admin!: boolean;
 
   @ApiProperty({ example: true })
-  active: boolean;
+  active!: boolean;
 
   @ApiProperty({ nullable: true })
-  lastLogin: Date | null;
+  lastLogin!: Date | null;
 
   @ApiProperty()
-  scope: string;
+  scope!: string;
 
   @ApiProperty()
-  roles: {
+  roles!: {
     id: number;
     role: string;
     label: string;

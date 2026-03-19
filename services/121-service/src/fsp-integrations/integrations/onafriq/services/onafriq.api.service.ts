@@ -21,7 +21,7 @@ const onafriqApiUrl =
 
 @Injectable()
 export class OnafriqApiService {
-  private readonly httpsAgent: https.Agent;
+  private readonly httpsAgent!: https.Agent;
 
   public constructor(
     private readonly httpService: CustomHttpService,

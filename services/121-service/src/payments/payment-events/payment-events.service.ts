@@ -11,7 +11,7 @@ import { PaymentEventsMapper } from '@121-service/src/payments/payment-events/ma
 @Injectable()
 export class PaymentEventsService {
   @InjectRepository(PaymentEventEntity)
-  private readonly paymentEventRepository: Repository<PaymentEventEntity>;
+  private readonly paymentEventRepository!: Repository<PaymentEventEntity>;
 
   // TODO: move some of these methods to repository
   public async getPaymentEvents(

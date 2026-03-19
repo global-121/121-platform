@@ -18,9 +18,9 @@ export class ProgramApprovalThresholdEntity extends Base121Entity {
     name: 'programId',
     foreignKeyConstraintName: 'FK_program_approval_threshold_program',
   })
-  public program: Relation<ProgramEntity>;
+  public program!: Relation<ProgramEntity>;
   @Column()
-  public programId: number;
+  public programId!: number;
 
   @Column({
     type: 'decimal',
@@ -31,11 +31,11 @@ export class ProgramApprovalThresholdEntity extends Base121Entity {
       from: (value: string) => parseFloat(value),
     },
   })
-  public thresholdAmount: number;
+  public thresholdAmount!: number;
 
   @OneToMany(
     () => ProgramAidworkerAssignmentEntity,
     (assignment) => assignment.programApprovalThreshold,
   )
-  public approverAssignments: Relation<ProgramAidworkerAssignmentEntity[]>;
+  public approverAssignments!: Relation<ProgramAidworkerAssignmentEntity[]>;
 }

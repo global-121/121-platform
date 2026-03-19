@@ -48,11 +48,11 @@ import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindW
 @Injectable()
 export class RegistrationsService {
   @InjectRepository(UserEntity)
-  private readonly userRepository: Repository<UserEntity>;
+  private readonly userRepository!: Repository<UserEntity>;
   @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  private readonly programRepository!: Repository<ProgramEntity>;
   @InjectRepository(ProgramRegistrationAttributeEntity)
-  private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
+  private readonly programRegistrationAttributeRepository!: Repository<ProgramRegistrationAttributeEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,

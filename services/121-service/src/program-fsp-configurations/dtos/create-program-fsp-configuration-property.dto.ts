@@ -12,7 +12,7 @@ export class CreateProgramFspConfigurationPropertyDto {
   })
   @IsNotEmpty()
   @IsEnum(FspConfigurationProperties)
-  public readonly name: WrapperType<FspConfigurationProperties>;
+  public readonly name!: WrapperType<FspConfigurationProperties>;
 
   @ApiProperty({
     example: `password-${uuid()}`,
@@ -20,5 +20,5 @@ export class CreateProgramFspConfigurationPropertyDto {
       'Should be string (for e.g. name=username), boolean (for e.g. name=cardDistributionByMail), number (for e.g. name=maxBalanceInCents) or array of strings (for e.g. name=columnsToExport)',
   })
   @IsNotEmpty()
-  public readonly value: FspConfigurationPropertyType;
+  public readonly value!: FspConfigurationPropertyType;
 }

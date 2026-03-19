@@ -28,10 +28,10 @@ export class RegistrationAttributeDataEntity extends Base121Entity {
     },
   )
   @JoinColumn({ name: 'registrationId' })
-  public registration: Relation<RegistrationEntity>;
+  public registration!: Relation<RegistrationEntity>;
   @Index()
   @Column()
-  public registrationId: number;
+  public registrationId!: number;
 
   @ManyToOne(
     (_type) => ProgramRegistrationAttributeEntity,
@@ -42,13 +42,13 @@ export class RegistrationAttributeDataEntity extends Base121Entity {
     },
   )
   @JoinColumn({ name: 'programRegistrationAttributeId' })
-  public programRegistrationAttribute: Relation<ProgramRegistrationAttributeEntity>;
+  public programRegistrationAttribute!: Relation<ProgramRegistrationAttributeEntity>;
   @Column({ type: 'integer' })
-  public programRegistrationAttributeId: number;
+  public programRegistrationAttributeId!: number;
 
   @Index()
   @Column()
-  public value: string;
+  public value!: string;
 
   public async getDataName(): Promise<string | void> {
     const repo = AppDataSource.getRepository(RegistrationAttributeDataEntity);

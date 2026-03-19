@@ -7,12 +7,12 @@ import {
 
 export class Base121Entity {
   @PrimaryGeneratedColumn()
-  public id: number;
+  public id!: number;
 
   @Index()
   @CreateDateColumn()
-  public created: Date;
+  public created!: Date;
 
   @UpdateDateColumn()
-  public updated: Date;
+  public updated!: Date;
 }

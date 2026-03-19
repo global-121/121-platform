@@ -4,20 +4,20 @@ import { IsNotEmpty } from 'class-validator';
 class SafaricomTransferCallbackResult {
   @ApiProperty()
   @IsNotEmpty()
-  readonly OriginatorConversationID: string;
+  readonly OriginatorConversationID!: string;
   @ApiProperty()
-  readonly ConversationID: string;
+  readonly ConversationID!: string;
   @ApiProperty()
-  readonly TransactionID: string;
+  readonly TransactionID!: string;
   @ApiProperty()
-  readonly ResultCode: number;
+  readonly ResultCode!: number;
   @ApiProperty()
-  readonly ResultDesc: string;
+  readonly ResultDesc!: string;
 }
 
 // Does not need validation decorators on all properties, because we want to accept any payload structure from Safaricom, as we cannot control it.
 export class SafaricomTransferCallbackDto {
   @ApiProperty()
   @IsNotEmpty()
-  readonly Result: SafaricomTransferCallbackResult;
+  readonly Result!: SafaricomTransferCallbackResult;
 }

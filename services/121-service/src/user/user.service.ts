@@ -55,13 +55,13 @@ const tokenExpirationDays = 14;
 @Injectable({ scope: Scope.REQUEST })
 export class UserService {
   @InjectRepository(UserEntity)
-  private readonly userRepository: Repository<UserEntity>;
+  private readonly userRepository!: Repository<UserEntity>;
   @InjectRepository(PermissionEntity)
-  private readonly permissionRepository: Repository<PermissionEntity>;
+  private readonly permissionRepository!: Repository<PermissionEntity>;
   @InjectRepository(UserRoleEntity)
-  private readonly userRoleRepository: Repository<UserRoleEntity>;
+  private readonly userRoleRepository!: Repository<UserRoleEntity>;
   @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  private readonly programRepository!: Repository<ProgramEntity>;
 
   public constructor(
     @Inject(REQUEST) private readonly request: Request,

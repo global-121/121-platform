@@ -10,22 +10,22 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
 @Entity('whatsapp_pending_message')
 export class WhatsappPendingMessageEntity extends Base121Entity {
   @Column()
-  public body: string;
+  public body!: string;
 
   @Column({ type: 'character varying', nullable: true })
-  public mediaUrl: string | null;
+  public mediaUrl!: string | null;
 
   @Column({ type: 'character varying', nullable: true })
-  public messageType: string | null;
+  public messageType!: string | null;
 
   @Column()
-  public to: string;
+  public to!: string;
 
   @Column({ type: 'int', nullable: true })
-  public registrationId: number | null;
+  public registrationId!: number | null;
 
   @Column({ default: MessageContentType.custom, type: 'character varying' })
-  public contentType: MessageContentType;
+  public contentType!: MessageContentType;
 
   @ManyToOne(
     (_type) => RegistrationEntity,
@@ -33,11 +33,11 @@ export class WhatsappPendingMessageEntity extends Base121Entity {
     { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'registrationId' })
-  public registration: Relation<RegistrationEntity>;
+  public registration!: Relation<RegistrationEntity>;
 
   @ManyToOne(() => UserEntity, { onDelete: 'NO ACTION' }) // Do not delete on deleting users, instead see catch in userService.delete()
   @JoinColumn({ name: 'userId' })
-  public user: Relation<UserEntity>;
+  public user!: Relation<UserEntity>;
   @Column({ nullable: true })
-  public userId: number | null;
+  public userId!: number | null;
 }

@@ -5,5 +5,5 @@ export class changePasswordWithoutCurrentPasswordDto {
   @ApiProperty({ example: 'user@example.org' })
   @IsNotEmpty()
   @IsEmail()
-  public readonly username: string;
+  public readonly username!: string;
 }

@@ -45,35 +45,35 @@ export class RegistrationEntity extends Base121Entity {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'programId' })
-  public program: Relation<ProgramEntity>;
+  public program!: Relation<ProgramEntity>;
   @Column()
-  public programId: number;
+  public programId!: number;
 
   // Refactor: remove this relationship as it is PA-app legacy
   @ManyToOne(() => UserEntity, { onDelete: 'NO ACTION' }) // Do not delete on deleting users, instead see catch in userService.delete()
-  public user: Relation<UserEntity>;
+  public user!: Relation<UserEntity>;
 
   @Index()
   @Column({ type: 'character varying', nullable: true })
-  public registrationStatus: RegistrationStatusEnum | null;
+  public registrationStatus!: RegistrationStatusEnum | null;
 
   @Index({ unique: true })
   @Column()
-  public referenceId: string;
+  public referenceId!: string;
 
   @OneToMany(() => RegistrationAttributeDataEntity, (data) => data.registration)
-  public data: Relation<RegistrationAttributeDataEntity[]>;
+  public data!: Relation<RegistrationAttributeDataEntity[]>;
 
   @Column({ type: 'character varying', nullable: true })
-  public phoneNumber: string | null;
+  public phoneNumber!: string | null;
 
   @Column({ type: 'character varying', nullable: true })
   @IsEnum(RegistrationPreferredLanguage)
-  public preferredLanguage: WrapperType<RegistrationPreferredLanguage | null>;
+  public preferredLanguage!: WrapperType<RegistrationPreferredLanguage | null>;
 
   @Index({ unique: false })
   @Column({ type: 'integer', nullable: true })
-  public inclusionScore: number | null;
+  public inclusionScore!: number | null;
 
   @ManyToOne((_type) => ProgramFspConfigurationEntity, {
     onDelete: 'SET NULL',
@@ -81,20 +81,20 @@ export class RegistrationEntity extends Base121Entity {
   @JoinColumn({
     name: 'programFspConfigurationId',
   })
-  public programFspConfiguration: Relation<ProgramFspConfigurationEntity>;
+  public programFspConfiguration!: Relation<ProgramFspConfigurationEntity>;
   @Column({ type: 'integer', nullable: true })
-  public programFspConfigurationId: number;
+  public programFspConfigurationId!: number;
 
   @Column({ type: 'float', nullable: false, default: 1 })
   @IsPositive()
   @IsNotEmpty()
-  public paymentAmountMultiplier: number;
+  public paymentAmountMultiplier!: number;
 
   /** This is an "auto" incrementing field with a registration ID per program. */
   // NOTE: REFACTOR: rename to sequenceInProgram for better intuitive understanding of this field
   @Column()
   @Index()
-  public registrationProgramId: number;
+  public registrationProgramId!: number;
 
   @Column({ nullable: true, type: 'integer' })
   @IsInt()
@@ -114,49 +114,49 @@ export class RegistrationEntity extends Base121Entity {
     (_type) => TransactionEntity,
     (transactions) => transactions.registration,
   )
-  public transactions: Relation<TransactionEntity[]>;
+  public transactions!: Relation<TransactionEntity[]>;
 
   @OneToMany(
     (_type) => ImageCodeExportVouchersEntity,
     (image) => image.registration,
   )
-  public images: Relation<ImageCodeExportVouchersEntity[]>;
+  public images!: Relation<ImageCodeExportVouchersEntity[]>;
 
   @OneToMany(
     (_type) => TwilioMessageEntity,
     (twilioMessages) => twilioMessages.registration,
   )
-  public twilioMessages: Relation<TwilioMessageEntity[]>;
+  public twilioMessages!: Relation<TwilioMessageEntity[]>;
 
   @OneToMany(
     (_type) => WhatsappPendingMessageEntity,
     (whatsappPendingMessages) => whatsappPendingMessages.registration,
   )
-  public whatsappPendingMessages: Relation<WhatsappPendingMessageEntity[]>;
+  public whatsappPendingMessages!: Relation<WhatsappPendingMessageEntity[]>;
 
   @OneToOne(
     () => LatestMessageEntity,
     (latestMessage) => latestMessage.registration,
     { onDelete: 'NO ACTION' },
   )
-  public latestMessage: Relation<LatestMessageEntity>;
+  public latestMessage!: Relation<LatestMessageEntity>;
 
   @OneToMany(() => NoteEntity, (notes) => notes.registration)
-  public notes: Relation<NoteEntity[]>;
+  public notes!: Relation<NoteEntity[]>;
 
   @OneToMany(() => RegistrationEventEntity, (events) => events.registration)
-  public events: Relation<RegistrationEventEntity[]>;
+  public events!: Relation<RegistrationEventEntity[]>;
 
   // TODO: add some database constraints to make sure that scope is always lowercase
   // TODO: DO not make this nullable but set everything to empty string in migration
   @Index()
   @Column({ nullable: false, default: '' })
-  public scope: string;
+  public scope!: string;
 
   @OneToOne(
     () => IntersolveVisaCustomerEntity,
     (intersolveVisaCustomer) => intersolveVisaCustomer.registration,
     { onDelete: 'NO ACTION' },
   )
-  public intersolveVisaCustomer: Relation<IntersolveVisaCustomerEntity>;
+  public intersolveVisaCustomer!: Relation<IntersolveVisaCustomerEntity>;
 }

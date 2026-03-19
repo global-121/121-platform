@@ -19,25 +19,25 @@ import { RegistrationPreferredLanguageTranslation } from '@121-service/src/share
 @Entity('program_registration_attribute')
 export class ProgramRegistrationAttributeEntity extends Base121Entity {
   @Column()
-  public name: string;
+  public name!: string;
 
   @Column('json')
-  public label: RegistrationPreferredLanguageTranslation;
+  public label!: RegistrationPreferredLanguageTranslation;
 
   @Column({ type: 'character varying' })
-  public type: RegistrationAttributeTypes;
+  public type!: RegistrationAttributeTypes;
 
   @Column()
-  public isRequired: boolean;
+  public isRequired!: boolean;
 
   @Column('json', { nullable: true })
-  public placeholder: RegistrationPreferredLanguageTranslation | null;
+  public placeholder!: RegistrationPreferredLanguageTranslation | null;
 
   @Column('json', { nullable: true })
-  public options: QuestionOption[] | null;
+  public options!: QuestionOption[] | null;
 
   @Column('json', { default: {} })
-  public scoring: Record<string, unknown>;
+  public scoring!: Record<string, unknown>;
 
   @ManyToOne(
     (_type) => ProgramEntity,
@@ -45,29 +45,31 @@ export class ProgramRegistrationAttributeEntity extends Base121Entity {
     { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'programId' })
-  public program: Relation<ProgramEntity>;
+  public program!: Relation<ProgramEntity>;
   @Column()
-  public programId: number;
+  public programId!: number;
 
   @Column({ default: false })
-  public includeInTransactionExport: boolean;
+  public includeInTransactionExport!: boolean;
 
   @Column({ type: 'character varying', nullable: true })
-  public pattern: string | null;
+  public pattern!: string | null;
 
   @Column({ default: false })
-  public duplicateCheck: boolean;
+  public duplicateCheck!: boolean;
 
   @Column({ default: false })
-  public showInPeopleAffectedTable: boolean;
+  public showInPeopleAffectedTable!: boolean;
 
   @OneToMany(
     () => RegistrationAttributeDataEntity,
     (registrationAttributeData) =>
       registrationAttributeData.programRegistrationAttribute,
   )
-  public registrationAttributeData: Relation<RegistrationAttributeDataEntity[]>;
+  public registrationAttributeData!: Relation<
+    RegistrationAttributeDataEntity[]
+  >;
 
   @Column({ default: true })
-  public editableInPortal: boolean;
+  public editableInPortal!: boolean;
 }

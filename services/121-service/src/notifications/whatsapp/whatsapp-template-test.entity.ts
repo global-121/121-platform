@@ -7,24 +7,24 @@ import { Base121Entity } from '@121-service/src/base.entity';
 @Entity('whatsapp_template_test')
 export class WhatsappTemplateTestEntity extends Base121Entity {
   @Column()
-  public sid: string;
+  public sid!: string;
 
   @Column()
-  public programId: number;
+  public programId!: number;
 
   @Column()
-  public language: string;
+  public language!: string;
 
   @Column()
-  public messageKey: string;
+  public messageKey!: string;
 
   @Column({ type: 'boolean', nullable: true })
-  public succes: boolean | null;
+  public succes!: boolean | null;
 
   @Column({ type: 'character varying', nullable: true })
-  public callback: string | null;
+  public callback!: string | null;
 
   @Index()
   @Column()
-  public sessionId: string;
+  public sessionId!: string;
 }

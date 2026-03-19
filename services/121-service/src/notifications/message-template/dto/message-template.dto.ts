@@ -22,19 +22,19 @@ export class CreateMessageTemplateDto {
   })
   @IsString()
   @Length(1, 255)
-  public readonly type: string;
+  public readonly type!: string;
 
   @ApiProperty()
   @IsString()
   @IsEnum(RegistrationPreferredLanguage)
-  public readonly language: WrapperType<RegistrationPreferredLanguage>;
+  public readonly language!: WrapperType<RegistrationPreferredLanguage>;
 
   @ApiProperty({
     example: { en: 'Template label' },
   })
   @IsNotEmpty()
   @ValidateIf((o) => o.isSendMessageTemplate)
-  public readonly label: UILanguageTranslation;
+  public readonly label!: UILanguageTranslation;
 
   @ApiProperty({
     example: 'Hello {{fullName}}, welcome to 121!',
@@ -60,18 +60,18 @@ export class CreateMessageTemplateDto {
       'Set to true if you want the template to be selectable through Send Message action in portal',
   })
   @IsBoolean()
-  public readonly isSendMessageTemplate: boolean;
+  public readonly isSendMessageTemplate!: boolean;
 }
 
 export class UpdateTemplateParamDto {
   @IsNumber()
   @Transform(({ value }) => parseInt(value, 10))
-  public readonly programId: number;
+  public readonly programId!: number;
   @IsString()
   @Length(1, 255)
-  public readonly type: string;
+  public readonly type!: string;
   @IsEnum(RegistrationPreferredLanguage)
-  public readonly language: WrapperType<RegistrationPreferredLanguage>;
+  public readonly language!: WrapperType<RegistrationPreferredLanguage>;
 }
 
 export class UpdateTemplateBodyDto {
@@ -113,10 +113,10 @@ export class UpdateTemplateBodyDto {
 export class DeleteTemplateParamDto {
   @IsNumber()
   @Transform(({ value }) => parseInt(value, 10))
-  public readonly programId: number;
+  public readonly programId!: number;
   @IsString()
   @Length(1, 255)
-  public readonly type: string;
+  public readonly type!: string;
 }
 
 export class DeleteTemplateQueryDto {

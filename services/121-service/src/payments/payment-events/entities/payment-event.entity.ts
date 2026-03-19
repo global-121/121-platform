@@ -25,15 +25,15 @@ export class PaymentEventEntity extends Base121OptionalAuditedEntity {
     (eventAttribute) => eventAttribute.event,
     { cascade: true },
   )
-  public attributes: PaymentEventAttributeEntity[];
+  public attributes!: PaymentEventAttributeEntity[];
 
   @Index()
   @Column({ type: 'character varying' })
-  public type: PaymentEvent;
+  public type!: PaymentEvent;
 
   @ManyToOne(() => PaymentEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'paymentId' })
-  public payment: Relation<PaymentEntity>;
+  public payment!: Relation<PaymentEntity>;
   @Column()
-  public paymentId: number;
+  public paymentId!: number;
 }

@@ -16,8 +16,8 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
 
 @Injectable()
 export class AirtelApiService {
-  private readonly encryptedPin: string;
-  private tokenSet: TokenSet;
+  private readonly encryptedPin!: string;
+  private tokenSet!: TokenSet;
   private readonly airtelClientId: string | undefined;
   private readonly airtelClientSecret: string | undefined;
   private readonly countryCode: string;

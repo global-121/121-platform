@@ -2,11 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class FindUserReponseDto {
   @ApiProperty({ example: 1 })
-  id: number;
+  id!: number;
 
   @ApiProperty({ example: 'test@example.org' })
-  username: string;
+  username!: string;
 
   @ApiProperty({ example: [1, 2] })
-  assignedProgramIds: number[];
+  assignedProgramIds!: number[];
 }

@@ -18,7 +18,7 @@ import { RegistrationScopedRepository } from '@121-service/src/registration/repo
 @Injectable()
 export class RegistrationDataService {
   @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  private readonly programRepository!: Repository<ProgramEntity>;
   public constructor(
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationScopedRepository: RegistrationScopedRepository,

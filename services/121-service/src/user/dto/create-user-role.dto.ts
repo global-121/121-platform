@@ -7,20 +7,20 @@ export class CreateUserRoleDto {
   @ApiProperty({ example: 'new_user_role' })
   @IsNotEmpty()
   @IsString()
-  public readonly role: string;
+  public readonly role!: string;
 
   @ApiProperty({ example: 'New user role label' })
   @IsString()
-  public readonly label: string;
+  public readonly label!: string;
 
   @ApiProperty({ example: 'New user role description' })
   @IsString()
-  public readonly description: string;
+  public readonly description!: string;
 
   @ApiProperty({
     enum: PermissionEnum,
     example: Object.values(PermissionEnum),
   })
   @IsNotEmpty()
-  public readonly permissions: PermissionEnum[];
+  public readonly permissions!: PermissionEnum[];
 }

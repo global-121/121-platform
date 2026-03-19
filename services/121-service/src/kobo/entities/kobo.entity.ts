@@ -6,35 +6,35 @@ import { ProgramEntity } from '@121-service/src/programs/entities/program.entity
 @Entity('kobo')
 export class KoboEntity extends Base121Entity {
   @Column({ nullable: false, type: 'varchar' })
-  public assetUid: string;
+  public assetUid!: string;
 
   @Column({ type: 'character varying' })
-  public token: string;
+  public token!: string;
 
   @Column({ type: 'character varying' })
-  public versionId: string;
+  public versionId!: string;
 
   @Column({ type: 'date' })
-  public dateDeployed: Date;
+  public dateDeployed!: Date;
 
   @Column({ type: 'character varying' })
-  public url: string;
+  public url!: string;
 
   @OneToOne(() => ProgramEntity, (program) => program.kobo, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'programId' })
-  public program: Relation<ProgramEntity>;
+  public program!: Relation<ProgramEntity>;
   @Index()
   @Column({ type: 'int' })
-  public programId: number;
+  public programId!: number;
 
   @Column({ type: 'character varying', nullable: true })
-  public name: string | null;
+  public name!: string | null;
 
   @Column({ type: 'character varying' })
-  public webhookAuthUsername: string;
+  public webhookAuthUsername!: string;
 
   @Column({ type: 'character varying' })
-  public webhookAuthPassword: string;
+  public webhookAuthPassword!: string;
 }

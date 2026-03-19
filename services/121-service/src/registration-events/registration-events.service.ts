@@ -41,7 +41,7 @@ const paginationLimitForMethodsNotUsingPagination = 500_000;
 @Injectable()
 export class RegistrationEventsService {
   @Inject(getScopedRepositoryProviderName(RegistrationEventEntity))
-  private registrationEventRepository: ScopedRepository<RegistrationEventEntity>;
+  private registrationEventRepository!: ScopedRepository<RegistrationEventEntity>;
   constructor(
     @Inject(REQUEST) private request: ScopedUserRequest,
     @Inject(JOB_REF) private readonly jobRef: Job,

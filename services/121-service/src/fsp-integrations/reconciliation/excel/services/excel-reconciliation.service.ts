@@ -25,7 +25,7 @@ import {
 @Injectable()
 export class ExcelReconciliationService {
   @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  private readonly programRepository!: Repository<ProgramEntity>;
 
   public constructor(
     private readonly excelService: ExcelService,

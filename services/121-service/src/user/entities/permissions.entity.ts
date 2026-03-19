@@ -8,8 +8,8 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 export class PermissionEntity extends Base121Entity {
   @Column({ type: 'character varying' })
   @Index({ unique: true })
-  public name: PermissionEnum;
+  public name!: PermissionEnum;
 
   @ManyToMany(() => UserRoleEntity, (roles) => roles.permissions)
-  public roles: UserRoleEntity[];
+  public roles!: UserRoleEntity[];
 }

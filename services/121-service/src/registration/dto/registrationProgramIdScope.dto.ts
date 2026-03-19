@@ -1,5 +1,5 @@
 export class ReferenceProgramIdScopeDto {
-  programId: number;
-  referenceId: string;
-  scope: string;
+  programId!: number;
+  referenceId!: string;
+  scope!: string;
 }

@@ -7,7 +7,7 @@ export class CooperativeBankOfOromiaAccountValidationReportDto {
     isArray: true,
     type: CooperativeBankOfOromiaAccountValidationReportRecordDto,
   })
-  readonly data: CooperativeBankOfOromiaAccountValidationReportRecordDto[];
+  readonly data!: CooperativeBankOfOromiaAccountValidationReportRecordDto[];
   @ApiProperty()
-  readonly fileName: string;
+  readonly fileName!: string;
 }

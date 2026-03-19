@@ -14,7 +14,7 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 @Injectable()
 export class MessageTemplateService {
   @InjectRepository(MessageTemplateEntity)
-  private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
+  private readonly messageTemplateRepository!: Repository<MessageTemplateEntity>;
 
   constructor(
     private readonly programAttributesService: ProgramAttributesService,

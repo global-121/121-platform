@@ -24,15 +24,15 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 @Injectable()
 export class IntersolveVoucherCronService {
   @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
+  private readonly registrationRepository!: Repository<RegistrationEntity>;
   @InjectRepository(IntersolveIssueVoucherRequestEntity)
-  private readonly intersolveVoucherRequestRepository: Repository<IntersolveIssueVoucherRequestEntity>;
+  private readonly intersolveVoucherRequestRepository!: Repository<IntersolveIssueVoucherRequestEntity>;
   @InjectRepository(IntersolveVoucherEntity)
-  private readonly intersolveVoucherRepository: Repository<IntersolveVoucherEntity>;
+  private readonly intersolveVoucherRepository!: Repository<IntersolveVoucherEntity>;
   @InjectRepository(TransactionEntity)
-  public transactionRepository: Repository<TransactionEntity>;
+  public transactionRepository!: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
-  public programRepository: Repository<ProgramEntity>;
+  public programRepository!: Repository<ProgramEntity>;
 
   private readonly fallbackRegistrationPreferredLanguage =
     RegistrationPreferredLanguage.en;

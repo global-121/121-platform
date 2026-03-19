@@ -26,10 +26,10 @@ export enum GenericRegistrationAttributes {
 
 export class Attribute {
   public id?: number;
-  public name: string;
-  public type: RegistrationAttributeTypes;
+  public name!: string;
+  public type!: RegistrationAttributeTypes;
   public isRequired?: boolean;
-  public label: UILanguageTranslation | null;
+  public label!: UILanguageTranslation | null;
   public options?: QuestionOption[] | null;
   public pattern?: string | null;
 }

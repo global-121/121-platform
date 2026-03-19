@@ -25,7 +25,7 @@ call 121 Platform endpoints that then do the actual work.
 export class CronjobInitiateService {
   private httpService = new CustomHttpService(new HttpService());
   private axiosCallsService = new AxiosCallsService();
-  private currentlyRunningCronjobName: string;
+  private currentlyRunningCronjobName = '';
 
   @Cron(CronExpression.EVERY_10_MINUTES, {
     disabled: !env.CRON_INTERSOLVE_VOUCHER_CANCEL_FAILED_CARDS,

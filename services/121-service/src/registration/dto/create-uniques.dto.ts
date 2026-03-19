@@ -17,7 +17,7 @@ export class CreateUniquesDto {
   @ArrayMinSize(2)
   @ArrayMaxSize(10)
   @IsNumber({}, { each: true })
-  public readonly registrationIds: number[];
+  public readonly registrationIds!: number[];
 
   @IsString()
   @IsNotEmpty()
@@ -25,5 +25,5 @@ export class CreateUniquesDto {
     description: `Reason why these registrations should be marked as unique`,
     example: 'Phone number is shared between families',
   })
-  public readonly reason: string;
+  public readonly reason!: string;
 }

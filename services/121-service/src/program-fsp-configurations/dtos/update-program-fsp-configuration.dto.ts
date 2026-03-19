@@ -14,7 +14,7 @@ import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language
 export class UpdateProgramFspConfigurationDto {
   @ApiProperty({ example: { en: 'FSP display name' } })
   @IsNotEmpty()
-  public readonly label: UILanguageTranslation;
+  public readonly label!: UILanguageTranslation;
 
   @IsArray()
   @ValidateNested()

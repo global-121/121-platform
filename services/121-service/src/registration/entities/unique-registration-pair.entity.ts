@@ -22,10 +22,10 @@ export class UniqueRegistrationPairEntity extends Base121Entity {
     },
   )
   @JoinColumn({ name: 'smallerRegistrationId' })
-  public registrationWithSmallerId: Relation<RegistrationEntity>;
+  public registrationWithSmallerId!: Relation<RegistrationEntity>;
   @Index()
   @Column({ type: 'int', nullable: false })
-  public smallerRegistrationId: number;
+  public smallerRegistrationId!: number;
 
   @ManyToOne(
     (_type) => RegistrationEntity,
@@ -35,8 +35,8 @@ export class UniqueRegistrationPairEntity extends Base121Entity {
     },
   )
   @JoinColumn({ name: 'largerRegistrationId' })
-  public registrationWithLargerId: Relation<RegistrationEntity>;
+  public registrationWithLargerId!: Relation<RegistrationEntity>;
   @Index()
   @Column({ type: 'int', nullable: false })
-  public largerRegistrationId: number;
+  public largerRegistrationId!: number;
 }

@@ -9,7 +9,7 @@ class TestDto {
   @IsString()
   reason?: string;
 
-  status: string;
+  status!: string;
 }
 
 describe('IsOptionalIf', () => {

@@ -82,7 +82,7 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
 })
 export class RegistrationEventViewEntity extends Base121Entity {
   @ViewColumn()
-  public programId: number;
+  public programId!: number;
 
   @ManyToOne(
     (_type) => RegistrationEntity,
@@ -90,37 +90,37 @@ export class RegistrationEventViewEntity extends Base121Entity {
     { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'registrationId' })
-  public registration: Relation<RegistrationEntity>;
+  public registration!: Relation<RegistrationEntity>;
   @ViewColumn()
-  public registrationId: number;
+  public registrationId!: number;
 
   @ViewColumn()
-  public registrationProgramId: number;
+  public registrationProgramId!: number;
 
   @ViewColumn()
-  public type: RegistrationEventEnum;
+  public type!: RegistrationEventEnum;
 
   @ViewColumn()
-  public fieldChanged: string;
+  public fieldChanged!: string;
 
   @ViewColumn()
-  public oldValue: string | null;
+  public oldValue!: string | null;
 
   @ViewColumn()
-  public newValue: string;
+  public newValue!: string;
 
   @ViewColumn()
-  public reason: string | null;
+  public reason!: string | null;
 
   @ViewColumn()
-  public duplicateWithRegistrationId: number | null;
+  public duplicateWithRegistrationId!: number | null;
 
   @ViewColumn()
-  public duplicateWithRegistrationProgramId: number | null;
+  public duplicateWithRegistrationProgramId!: number | null;
 
   @ViewColumn()
-  public username: string;
+  public username!: string;
 
   @ViewColumn()
-  public userId: number;
+  public userId!: number;
 }

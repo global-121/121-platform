@@ -55,7 +55,7 @@ const estimatedAnnualPaymentVolumeMajorUnit =
 */
 @Injectable()
 export class IntersolveVisaApiService {
-  public tokenSet: TokenSet;
+  public tokenSet!: TokenSet;
   public constructor(
     private readonly httpService: CustomHttpService,
     private readonly tokenValidationService: TokenValidationService,

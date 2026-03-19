@@ -19,24 +19,24 @@ export class PaymentApprovalEntity extends Base121Entity {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'paymentId' })
-  public payment: Relation<PaymentEntity>;
+  public payment!: Relation<PaymentEntity>;
   @Column()
-  public paymentId: number;
+  public paymentId!: number;
 
   @Column()
-  public approved: boolean;
+  public approved!: boolean;
 
   @Column()
-  public rank: number;
+  public rank!: number;
 
   @ManyToOne(() => UserEntity, { onDelete: 'SET NULL', nullable: true })
   @JoinColumn({
     name: 'approvedByUserId',
     foreignKeyConstraintName: 'FK_payment_approval_approved_by_user',
   })
-  public approvedByUser: Relation<UserEntity> | null;
+  public approvedByUser!: Relation<UserEntity> | null;
   @Column({ type: 'integer', nullable: true })
-  public approvedByUserId: number | null;
+  public approvedByUserId!: number | null;
 
   @ManyToMany(() => ProgramAidworkerAssignmentEntity)
   @JoinTable({
@@ -52,5 +52,5 @@ export class PaymentApprovalEntity extends Base121Entity {
         'FK_payment_approval_aidworker_program_aidworker_assignment',
     },
   })
-  public approverAssignments: Relation<ProgramAidworkerAssignmentEntity[]>;
+  public approverAssignments!: Relation<ProgramAidworkerAssignmentEntity[]>;
 }

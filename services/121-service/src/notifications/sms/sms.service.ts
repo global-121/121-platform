@@ -22,7 +22,7 @@ import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
 @Injectable()
 export class SmsService {
   @InjectRepository(TwilioMessageEntity)
-  private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
+  private readonly twilioMessageRepository!: Repository<TwilioMessageEntity>;
 
   constructor(private readonly lastMessageService: LastMessageStatusService) {}
 

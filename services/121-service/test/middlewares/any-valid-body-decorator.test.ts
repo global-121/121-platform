@@ -14,7 +14,7 @@ import { ValidationPipeOptions } from '@121-service/src/validation-options/valid
 
 class TestDto {
   @IsString()
-  known: string;
+  known!: string;
 }
 
 @Controller('test')

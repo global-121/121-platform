@@ -14,7 +14,7 @@ export class CreateProgramApprovalThresholdDto {
   @IsNumber()
   @Min(0)
   @IsNotEmpty()
-  public readonly thresholdAmount: number;
+  public readonly thresholdAmount!: number;
 
   @ApiProperty({
     type: [Number],
@@ -26,5 +26,5 @@ export class CreateProgramApprovalThresholdDto {
   @ArrayMinSize(1)
   @IsInt({ each: true })
   @IsPositive({ each: true })
-  public readonly userIds: number[];
+  public readonly userIds!: number[];
 }

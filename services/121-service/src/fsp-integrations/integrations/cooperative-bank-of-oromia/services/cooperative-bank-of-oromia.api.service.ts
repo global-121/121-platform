@@ -17,7 +17,7 @@ import { TokenValidationService } from '@121-service/src/utils/token/token-valid
 
 @Injectable()
 export class CooperativeBankOfOromiaApiService {
-  private tokenSet: TokenSet;
+  private tokenSet!: TokenSet;
 
   public constructor(
     private readonly httpService: CustomHttpService,

@@ -9,22 +9,22 @@ export class CommercialBankEthiopiaAccountEnquiriesEntity extends Base121Entity 
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'registrationId' })
-  public registration: Relation<RegistrationEntity>;
+  public registration!: Relation<RegistrationEntity>;
   @Column({ type: 'int', nullable: false })
-  public registrationId: number;
+  public registrationId!: number;
 
   @Column({ type: 'character varying', nullable: true })
-  public fullNameUsedForTheMatch: string | null;
+  public fullNameUsedForTheMatch!: string | null;
 
   @Column({ type: 'character varying', nullable: true })
-  public bankAccountNumberUsedForCall: string | null;
+  public bankAccountNumberUsedForCall!: string | null;
 
   @Column({ type: 'character varying', nullable: true })
-  public cbeName: string | null;
+  public cbeName!: string | null;
 
   @Column({ type: 'character varying', nullable: true })
-  public cbeStatus: string | null;
+  public cbeStatus!: string | null;
 
   @Column({ type: 'character varying', nullable: true })
-  public errorMessage: string | null;
+  public errorMessage!: string | null;
 }

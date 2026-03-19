@@ -14,11 +14,11 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 @Injectable()
 export class ImageCodeService {
   @InjectRepository(ImageCodeEntity)
-  private readonly imageRepository: Repository<ImageCodeEntity>;
+  private readonly imageRepository!: Repository<ImageCodeEntity>;
   @InjectRepository(ImageCodeExportVouchersEntity)
-  private readonly imageExportVouchersRepository: Repository<ImageCodeExportVouchersEntity>;
+  private readonly imageExportVouchersRepository!: Repository<ImageCodeExportVouchersEntity>;
   @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
+  private readonly registrationRepository!: Repository<RegistrationEntity>;
 
   public async createVoucherUrl(
     voucherData: IntersolveVoucherEntity,

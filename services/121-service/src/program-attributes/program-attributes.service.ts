@@ -20,9 +20,9 @@ import {
 @Injectable()
 export class ProgramAttributesService {
   @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  private readonly programRepository!: Repository<ProgramEntity>;
   @InjectRepository(ProgramRegistrationAttributeEntity)
-  private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
+  private readonly programRegistrationAttributeRepository!: Repository<ProgramRegistrationAttributeEntity>;
 
   public getFilterableAttributes(program: ProgramEntity) {
     const genericPaAttributeFilters = [

@@ -25,7 +25,7 @@ export class UpdateRegistrationDto {
     example: `{ "phoneNumber" : "1234567890" }`,
   })
   @IsNotEmpty()
-  public data: Record<string, string | number | boolean | null | undefined>;
+  public data!: Record<string, string | number | boolean | null | undefined>;
 
   @ApiProperty({
     description: `Reason is the same for all provided attributes in one API-call`,

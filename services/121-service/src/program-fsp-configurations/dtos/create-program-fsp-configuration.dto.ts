@@ -19,7 +19,7 @@ export class CreateProgramFspConfigurationDto {
   @ApiProperty({ example: 'VisaDebitCards' })
   @IsNotEmpty()
   @IsString()
-  public readonly name: string;
+  public readonly name!: string;
 
   @ApiProperty({
     example: {
@@ -28,7 +28,7 @@ export class CreateProgramFspConfigurationDto {
     },
   })
   @IsNotEmpty()
-  public readonly label: UILanguageTranslation;
+  public readonly label!: UILanguageTranslation;
 
   @ApiProperty({
     enum: Fsps,
@@ -36,7 +36,7 @@ export class CreateProgramFspConfigurationDto {
   })
   @IsNotEmpty()
   @IsEnum(Fsps)
-  public readonly fspName: Fsps;
+  public readonly fspName!: Fsps;
 
   @IsArray()
   @ValidateNested()

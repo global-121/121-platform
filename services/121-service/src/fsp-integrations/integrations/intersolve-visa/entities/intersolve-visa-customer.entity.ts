@@ -8,15 +8,15 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 export class IntersolveVisaCustomerEntity extends Base121Entity {
   @Index()
   @Column({ type: 'character varying' })
-  public holderId: string;
+  public holderId!: string;
 
   @OneToOne(() => RegistrationEntity, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'registrationId' })
-  public registration: Relation<RegistrationEntity>;
+  public registration!: Relation<RegistrationEntity>;
   @Column({ type: 'int' })
-  public registrationId: number;
+  public registrationId!: number;
 
   @OneToOne(
     (_type) => IntersolveVisaParentWalletEntity,

@@ -18,7 +18,7 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
 @Injectable()
 export class IntersolveVoucherApiService {
   @InjectRepository(IntersolveIssueVoucherRequestEntity)
-  private readonly intersolveVoucherRequestRepo: Repository<IntersolveIssueVoucherRequestEntity>;
+  private readonly intersolveVoucherRequestRepo!: Repository<IntersolveIssueVoucherRequestEntity>;
 
   public constructor(
     private readonly soapService: SoapService,

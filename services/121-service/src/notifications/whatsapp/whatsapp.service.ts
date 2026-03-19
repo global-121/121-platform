@@ -30,11 +30,11 @@ import { formatWhatsAppNumber } from '@121-service/src/utils/phone-number.helper
 @Injectable()
 export class WhatsappService {
   @InjectRepository(TwilioMessageEntity)
-  private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
+  private readonly twilioMessageRepository!: Repository<TwilioMessageEntity>;
   @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  private readonly programRepository!: Repository<ProgramEntity>;
   @InjectRepository(WhatsappTemplateTestEntity)
-  private readonly whatsappTemplateTestRepository: Repository<WhatsappTemplateTestEntity>;
+  private readonly whatsappTemplateTestRepository!: Repository<WhatsappTemplateTestEntity>;
 
   constructor(
     private readonly lastMessageService: LastMessageStatusService,

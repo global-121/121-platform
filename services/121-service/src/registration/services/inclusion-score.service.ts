@@ -13,7 +13,7 @@ import { RegistrationScopedRepository } from '@121-service/src/registration/repo
 @Injectable()
 export class InclusionScoreService {
   @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  private readonly programRepository!: Repository<ProgramEntity>;
 
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,

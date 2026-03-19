@@ -9,15 +9,15 @@ class AttributesDto {
 
 export class GetRegistrationEventDto {
   @ApiProperty({ example: 1 })
-  public readonly id: number;
+  public readonly id!: number;
   @ApiProperty({ example: RegistrationEventEnum.registrationDataChange })
-  public readonly type: WrapperType<RegistrationEventEnum>;
+  public readonly type!: WrapperType<RegistrationEventEnum>;
   @ApiProperty({ example: { id: 1, username: 'admin@example.org' } })
-  public readonly user: { id: number; username: string } | null;
+  public readonly user!: { id: number; username: string } | null;
   @ApiProperty({ example: new Date() })
-  public readonly created: Date;
+  public readonly created!: Date;
   @ApiProperty({ example: { exampleKey: 'exampleValue' } })
-  public readonly attributes: AttributesDto;
+  public readonly attributes!: AttributesDto;
   @ApiProperty({ example: 1 })
-  public readonly registrationId: number;
+  public readonly registrationId!: number;
 }

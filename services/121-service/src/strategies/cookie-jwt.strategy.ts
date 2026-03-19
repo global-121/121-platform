@@ -23,7 +23,7 @@ export class CookieJwtStrategy
   extends PassportStrategy(Strategy, 'cookie-jwt')
   implements OnModuleInit
 {
-  private userService: UserService;
+  private userService!: UserService;
 
   constructor(private moduleRef: ModuleRef) {
     super({

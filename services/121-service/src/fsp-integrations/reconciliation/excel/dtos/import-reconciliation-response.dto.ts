@@ -8,11 +8,11 @@ export class ImportReconciliationResponseDto {
     type: [ReconciliationFeedbackDto],
     description: 'The import result',
   })
-  readonly importResult: ReconciliationFeedbackDto[];
+  readonly importResult!: ReconciliationFeedbackDto[];
 
   @ApiProperty({
     type: ExcelAggregateImportResultDto,
     description: 'The aggregate import result',
   })
-  readonly aggregateImportResult: ExcelAggregateImportResultDto;
+  readonly aggregateImportResult!: ExcelAggregateImportResultDto;
 }

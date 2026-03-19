@@ -26,16 +26,16 @@ export class ProgramFspConfigurationEntity extends Base121Entity {
   )
   @JoinColumn({ name: 'programId' })
   @Column()
-  public programId: number;
+  public programId!: number;
 
   @Column({ type: 'character varying' })
-  public fspName: Fsps;
+  public fspName!: Fsps;
 
   @Column({ type: 'character varying' })
-  public name: string;
+  public name!: string;
 
   @Column('json')
-  public label: UILanguageTranslation;
+  public label!: UILanguageTranslation;
 
   @OneToMany(
     (_type) => ProgramFspConfigurationPropertyEntity,
@@ -43,17 +43,17 @@ export class ProgramFspConfigurationEntity extends Base121Entity {
       programFspConfigurationProperty.programFspConfiguration,
     { cascade: ['insert'] },
   )
-  public properties: Relation<ProgramFspConfigurationPropertyEntity[]>;
+  public properties!: Relation<ProgramFspConfigurationPropertyEntity[]>;
 
   @OneToMany(
     (_type) => TransactionEventEntity,
     (transactionEvent) => transactionEvent.programFspConfiguration,
   )
-  public transactionEvents: Relation<TransactionEventEntity[]>;
+  public transactionEvents!: Relation<TransactionEventEntity[]>;
 
   @OneToMany(
     (_type) => RegistrationEntity,
     (registrations) => registrations.programFspConfiguration,
   )
-  public registrations: Relation<RegistrationEntity[]>;
+  public registrations!: Relation<RegistrationEntity[]>;
 }
