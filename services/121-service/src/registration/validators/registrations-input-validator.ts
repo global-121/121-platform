@@ -791,7 +791,7 @@ export class RegistrationsInputValidator {
     const errors: ValidateRegistrationErrorObject[] = [];
     for (const attribute of requiredAttributes) {
       // Check if required attributes are not being deleted or set to nullable in the PATCH / POST request
-      if (row.hasOwnProperty(attribute)) {
+      if (Object.prototype.hasOwnProperty.call(row, attribute)) {
         if (row[attribute] == null || row[attribute] === '') {
           errors.push({
             lineNumber: i + 1,
@@ -831,7 +831,7 @@ export class RegistrationsInputValidator {
       return false;
     }
     return (
-      body.hasOwnProperty(attribute) &&
+      Object.prototype.hasOwnProperty.call(body, attribute) &&
       body[attribute] != null &&
       body[attribute] !== ''
     );
