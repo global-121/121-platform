@@ -105,6 +105,8 @@ class TrackingServiceStub {
 }
 
 describe('QueryTableComponent', () => {
+  const getItemSpy = vi.spyOn(Storage.prototype, 'getItem');
+  const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
   const DEFAULT_ITEMS: TestRow[] = [
     {
       id: 1,
@@ -163,6 +165,9 @@ describe('QueryTableComponent', () => {
   });
 
   beforeEach(async () => {
+    getItemSpy.mockClear();
+    setItemSpy.mockClear();
+    localStorage.clear();
     await TestBed.configureTestingModule({
       imports: [
         QueryTableComponent,
@@ -228,6 +233,8 @@ describe('QueryTableComponent', () => {
   };
 
   afterEach(() => {
+    getItemSpy.mockClear();
+    setItemSpy.mockClear();
     localStorage.clear();
   });
 

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 import { QueryClient } from '@tanstack/angular-query-experimental';
 import {
+  afterEach,
   beforeEach,
   describe,
   expect,
@@ -26,6 +27,8 @@ interface MockAuthStrategy {
 }
 
 describe('AuthService - hasDeprecatedPermissions', () => {
+  const getItemSpy = vi.spyOn(Storage.prototype, 'getItem');
+
   let service: AuthService;
   let mockRouter: MockedObject<Router>;
   let mockLogService: MockedObject<LogService>;
@@ -44,6 +47,9 @@ describe('AuthService - hasDeprecatedPermissions', () => {
   });
 
   beforeEach(() => {
+    getItemSpy.mockClear();
+    localStorage.clear();
+
     mockRouter = vi.mocked({
       navigate: vi.fn().mockName('Router.navigate'),
     } as unknown as Router);
@@ -86,6 +92,11 @@ describe('AuthService - hasDeprecatedPermissions', () => {
     });
 
     service = TestBed.inject(AuthService);
+  });
+
+  afterEach(() => {
+    getItemSpy.mockClear();
+    localStorage.clear();
   });
 
   describe('user getter with deprecated permissions', () => {

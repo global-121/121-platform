@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { QueryTableCellService } from '~/components/query-table/services/query-table-cell.service';
 import { QueryTableFilterService } from '~/components/query-table/services/query-table-filter.service';
@@ -14,7 +14,11 @@ describe('QueryTableFilterService', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for test-setup
   let service: QueryTableFilterService<any>;
 
+  const getItemSpy = vi.spyOn(Storage.prototype, 'getItem');
+
   beforeEach(() => {
+    getItemSpy.mockClear();
+    localStorage.clear();
     TestBed.configureTestingModule({
       providers: [
         QueryTableFilterService,
@@ -24,6 +28,11 @@ describe('QueryTableFilterService', () => {
     });
 
     service = TestBed.inject(QueryTableFilterService);
+  });
+
+  afterEach(() => {
+    getItemSpy.mockClear();
+    localStorage.clear();
   });
 
   it('should be created and initialize with correct default state', () => {
