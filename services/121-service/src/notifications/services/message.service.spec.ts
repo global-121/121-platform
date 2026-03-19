@@ -204,12 +204,17 @@ describe('MessageService', () => {
         .mockResolvedValueOnce({ contentSid: null, message: 'some message text' })
         // Second call: for the generic 'waiting' template (has contentSid)
         .mockResolvedValue({ contentSid: genericContentSid });
+      const pendingMessageSaveSpy = jest.spyOn(
+        (messageService as any).whatsappPendingMessageRepo,
+        'save',
+      );
 
       // Act
       await messageService.sendTextMessage(testMessageJob);
 
       // Assert
       expect(getMessageTemplateForLanguageOrFallback).toHaveBeenCalledTimes(2);
+      expect(pendingMessageSaveSpy).toHaveBeenCalledTimes(1);
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledTimes(1);
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith({
         message: undefined,

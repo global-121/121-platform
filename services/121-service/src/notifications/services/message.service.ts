@@ -77,6 +77,7 @@ export class MessageService {
           }
           await this.sendWhatsappTemplateGenericMessage(
             messageJobDto,
+            messageJobDto.whatsappPhoneNumber,
             messageText,
           );
           break;
@@ -294,6 +295,7 @@ export class MessageService {
    */
   private async sendWhatsappTemplateGenericMessage(
     messageJobDto: MessageJobDto,
+    whatsappPhoneNumber: string,
     messageText: string,
   ): Promise<void> {
     const contentSid = await this.getContentSidFromTemplateKey(
@@ -306,7 +308,7 @@ export class MessageService {
     if (contentSid) {
       await this.whatsappService.sendWhatsapp({
         contentSid,
-        recipientPhoneNr: messageJobDto.whatsappPhoneNumber,
+        recipientPhoneNr: whatsappPhoneNumber,
         registrationId: messageJobDto.registrationId,
         messageContentType: MessageContentType.genericTemplated,
         messageProcessType: MessageProcessType.whatsappTemplateGeneric,
@@ -315,7 +317,7 @@ export class MessageService {
     } else {
       await this.storePendingMessageAndSendWhatsappTemplate({
         message: messageText,
-        recipientPhoneNr: messageJobDto.whatsappPhoneNumber!,
+        recipientPhoneNr: whatsappPhoneNumber,
         registrationId: messageJobDto.registrationId,
         messageContentType: messageJobDto.messageContentType,
         tryWhatsapp: false,
