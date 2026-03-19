@@ -114,7 +114,6 @@
   "devDependencies": {
     "@automock/adapters.nestjs": "^2.1.0",
     "@automock/jest": "^2.1.2",
-    "@eslint/js": "^9.39.4",
     "@nestjs/cli": "^11.0.16",
     "@swc/cli": "^0.8.0",
     "@swc/core": "^1.15.18",
