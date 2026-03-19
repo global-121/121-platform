@@ -207,9 +207,9 @@ export class IntersolveVisaApiService {
       holderId = tokenData.holderId;
     }
     const getTokenResult: GetTokenResult = {
-      blocked,
-      status,
-      balance,
+      blocked: blocked!,
+      status: status!,
+      balance: balance!,
       holderId,
     };
 

@@ -25,7 +25,13 @@ export class CooperativeBankOfOromiaApiService {
     private readonly cooperativeBankOfOromiaApiHelperService: CooperativeBankOfOromiaApiHelperService,
   ) {}
 
-  private buildApiUrl({ urlPart, envUrl }): URL {
+  private buildApiUrl({
+    urlPart,
+    envUrl,
+  }: {
+    urlPart: string;
+    envUrl: string | undefined;
+  }): URL {
     const mockPathPrefix = 'api/fsp/cooperative-bank-of-oromia/';
     const mockServiceUrl = env.MOCK_SERVICE_URL;
     const useMock = env.COOPERATIVE_BANK_OF_OROMIA_MODE === FspMode.mock;

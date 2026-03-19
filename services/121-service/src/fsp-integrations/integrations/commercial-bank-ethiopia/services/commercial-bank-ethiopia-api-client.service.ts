@@ -103,7 +103,7 @@ export class CommercialBankEthiopiaApiClientService implements OnModuleDestroy {
           // Parse the SOAP response if needed
           const parsedResponse = convert.xml2js(response.body, {
             compact: true,
-          });
+          }) as Record<string, Record<string, Record<string, unknown>>>;
 
           if (
             parsedResponse['S:Envelope']['S:Body'][

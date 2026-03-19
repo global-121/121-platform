@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { EXTERNAL_API } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
+import { DoTransferParams } from '@121-service/src/fsp-integrations/integrations/safaricom/interfaces/do-transfer-params.interface';
 import { TransferRequestSafaricomApiDto } from '@121-service/src/fsp-integrations/integrations/safaricom/dtos/safaricom-api/transfer-request-safaricom-api.dto';
 import { TransferResponseSafaricomApiDto } from '@121-service/src/fsp-integrations/integrations/safaricom/dtos/safaricom-api/transfer-response-safaricom-api.dto';
 import { DuplicateOriginatorConversationIdError } from '@121-service/src/fsp-integrations/integrations/safaricom/errors/duplicate-originator-conversation-id.error';
@@ -13,7 +14,7 @@ export class SafaricomApiHelperService {
     phoneNumber,
     idNumber,
     originatorConversationId,
-  }): TransferRequestSafaricomApiDto {
+  }: DoTransferParams): TransferRequestSafaricomApiDto {
     const callbackBaseUrl = EXTERNAL_API.rootApi;
     const safaricomTimeoutCallbackUrl = `${callbackBaseUrl}/fsps/safaricom/timeout-callback`;
     const safaricomTransferCallbacktUrl = `${callbackBaseUrl}/fsps/safaricom/transfer-callback`;

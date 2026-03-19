@@ -8,6 +8,7 @@ import { OnafriqApiCallServiceResponseBody } from '@121-service/src/fsp-integrat
 import { OnafriqApiCallServiceResponseTransactionStatusCode } from '@121-service/src/fsp-integrations/integrations/onafriq/enum/onafriq-api-call-service-response-transaction-status-code.enum';
 import { OnafriqApiResponseStatusType } from '@121-service/src/fsp-integrations/integrations/onafriq/enum/onafriq-api-response-status-type.enum';
 import { CallServiceResult } from '@121-service/src/fsp-integrations/integrations/onafriq/interfaces/call-service-result.interface.';
+import { CreateTransactionParams } from '@121-service/src/fsp-integrations/integrations/onafriq/interfaces/create-transaction-params.interface';
 
 @Injectable()
 export class OnafriqApiHelperService {
@@ -18,7 +19,7 @@ export class OnafriqApiHelperService {
     lastName,
     thirdPartyTransId,
     requestIdentity,
-  }): OnafriqApiCallServiceRequestBody {
+  }: CreateTransactionParams): OnafriqApiCallServiceRequestBody {
     const batchId = uuid(); // Generate a new batch ID for each request
     const mfsSign = this.generateMfsSign(
       requestIdentity.password,

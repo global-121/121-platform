@@ -540,7 +540,7 @@ export class IntersolveVoucherService {
 
   public async postInstruction(
     programId: number,
-    instructionsFileBlob,
+    instructionsFileBlob: Express.Multer.File,
   ): Promise<any> {
     let intersolveInstructionsEntity =
       await this.intersolveInstructionsRepository.findOne({

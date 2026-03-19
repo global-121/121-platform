@@ -28,6 +28,7 @@ import { IntersolveVisaAccountManagementService } from '@121-service/src/fsp-int
 import { IntersolveVisaWalletDto } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { ScopedUserRequestWithUser } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
 
@@ -59,7 +60,7 @@ export class IntersolveVisaAccountManagementController {
   public async replaceCardByMail(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('referenceId') referenceId: string,
-    @Req() req,
+    @Req() req: ScopedUserRequestWithUser,
   ): Promise<void> {
     const userId = req.user.id;
     await this.intersolveVisaAccountManagementService.replaceCardByMail({
@@ -90,7 +91,7 @@ export class IntersolveVisaAccountManagementController {
     @Param('referenceId') referenceId: string,
     @Param('tokenCode') tokenCode: string,
     @Query('pause', ParseBoolPipe) pause: boolean,
-    @Req() req,
+    @Req() req: ScopedUserRequestWithUser,
   ) {
     const userId = req.user.id;
     const permission = pause
