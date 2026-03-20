@@ -2211,11 +2211,11 @@
       <trans-unit id="6627551976444260400" datatype="html">
         <source>or</source>
       </trans-unit>
-      <trans-unit id="1735181896395609415" datatype="html">
-        <source>Remove payment</source>
+      <trans-unit id="4803523554231687262" datatype="html">
+        <source>Delete payment</source>
       </trans-unit>
-      <trans-unit id="6691718574433101641" datatype="html">
-        <source>Are you sure you want to remove this payment? This action cannot be undone.</source>
+      <trans-unit id="641865702986102945" datatype="html">
+        <source>Are you sure you want to delete this payment? This action cannot be undone.</source>
       </trans-unit>
     </body>
   </file>

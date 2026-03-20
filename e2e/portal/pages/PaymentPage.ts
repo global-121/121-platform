@@ -78,7 +78,7 @@ class PaymentPage extends BasePage {
 
   async deletePayment() {
     await this.page.getByTestId('ellipsis-menu-button').click();
-    await this.page.getByRole('menuitem', { name: 'Remove payment' }).click();
+    await this.page.getByRole('menuitem', { name: 'Delete payment' }).click();
     await this.formDialogProceedButton.click();
   }
 

@@ -455,7 +455,7 @@ export class PageLayoutPaymentComponent {
 
   readonly menuItems = computed<MenuItem[]>(() => [
     {
-      label: $localize`Remove payment`,
+      label: $localize`Delete payment`,
       icon: 'pi pi-trash',
       command: () => {
         this.deletePaymentDialog().show();

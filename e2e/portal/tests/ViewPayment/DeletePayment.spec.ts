@@ -17,7 +17,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
   });
 });
 
-test('Remove payment button is not visible when payment has started', async ({
+test('Delete payment button is not visible when payment has started', async ({
   page,
   paymentPage,
   paymentsPage,
@@ -31,12 +31,12 @@ test('Remove payment button is not visible when payment has started', async ({
     await paymentPage.startPayment();
   });
 
-  await test.step('Verify remove payment button is not visible', async () => {
+  await test.step('Verify delete payment button is not visible', async () => {
     await expect(page.getByTestId('ellipsis-menu-button')).toBeHidden();
   });
 });
 
-test('Remove payment navigates back to payments overview and shows empty state', async ({
+test('Delete payment navigates back to payments overview and shows empty state', async ({
   page,
   paymentPage,
   paymentsPage,
@@ -48,7 +48,7 @@ test('Remove payment navigates back to payments overview and shows empty state',
     );
   });
 
-  await test.step('Remove payment', async () => {
+  await test.step('Delete payment', async () => {
     await paymentPage.deletePayment();
   });
 
