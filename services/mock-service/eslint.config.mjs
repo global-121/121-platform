@@ -12,19 +12,19 @@ export default defineConfig(
   eslintConfig121Platform.configs.recommendedNext,
   eslintConfig121Platform.configs.node,
   eslintConfig121Platform.configs.javascript,
-  eslintConfig121Platform.configs.typescript, // Needs to be AFTER `*.configs.node`; It needs to override some rules!
-  eslintConfig121Platform.configs.services,
   {
     name: 'JavaScript files (ESM)',
     files: ['**/*.js', '**/*.mjs'],
     extends: [eslintPluginRegexp.configs['flat/recommended']],
   },
+  eslintConfig121Platform.configs.services,
+  eslintConfig121Platform.configs.typescript, // Needs to be AFTER `*.configs.node`; It needs to override some rules!
   {
     name: 'TypeScript files',
     files: ['**/*.ts'],
     extends: [
-      ...tsEslint.configs.recommended,
-      ...tsEslint.configs.stylistic,
+      tsEslint.configs.recommended,
+      tsEslint.configs.stylistic,
       eslintPluginRegexp.configs['flat/recommended'],
     ],
     plugins: {
