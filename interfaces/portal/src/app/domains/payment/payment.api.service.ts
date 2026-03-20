@@ -159,6 +159,22 @@ export class PaymentApiService extends DomainApiService {
     });
   }
 
+  deletePayment({
+    programId,
+    paymentId,
+  }: {
+    programId: Signal<number | string>;
+    paymentId: Signal<string>;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'DELETE',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(programId),
+        paymentId,
+      ]).join('/'),
+    });
+  }
+
   retryFailedTransactions({
     programId,
     paymentId,

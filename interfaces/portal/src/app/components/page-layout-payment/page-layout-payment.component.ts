@@ -27,6 +27,7 @@ import { ColoredChipPaymentApprovalStatusComponent } from '~/components/colored-
 import { MetricTileComponent } from '~/components/metric-tile/metric-tile.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { ApprovePaymentComponent } from '~/components/page-layout-payment/components/approve-payment/approve-payment.component';
+import { DeletePaymentComponent } from '~/components/page-layout-payment/components/delete-payment/delete-payment.component';
 import { ImportReconciliationDataComponent } from '~/components/page-layout-payment/components/import-reconciliation-data/import-reconciliation-data.component';
 import { PaymentMenuComponent } from '~/components/page-layout-payment/components/payment-menu/payment-menu.component';
 import { ProgramPaymentChartComponent } from '~/components/page-layout-payment/components/program-payment-chart/program-payment-chart.component';
@@ -40,6 +41,7 @@ import { PaginateQuery } from '~/services/paginate-query.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Locale } from '~/utils/locale';
+
 @Component({
   selector: 'app-page-layout-payment',
   imports: [
@@ -53,6 +55,7 @@ import { Locale } from '~/utils/locale';
     ImportReconciliationDataComponent,
     PaymentMenuComponent,
     StartPaymentComponent,
+    DeletePaymentComponent,
     ApprovePaymentComponent,
     ColoredChipComponent,
     ColoredChipPaymentApprovalStatusComponent,
@@ -359,6 +362,28 @@ export class PageLayoutPaymentComponent {
         PermissionEnum.PaymentTransactionREAD,
       ],
     }),
+  );
+
+  readonly hasDeletePaymentPermissions = computed(() =>
+    this.authService.hasAllPermissions({
+      programId: this.programId(),
+      requiredPermissions: [PermissionEnum.PaymentDELETE],
+    }),
+  );
+
+  readonly paymentHasBeenStarted = computed(() => {
+    if (!this.paymentAggregate.isSuccess()) {
+      return true;
+    }
+
+    const { success, failed, waiting } =
+      this.paymentAggregate.data().aggregationsPerStatus;
+
+    return success.count > 0 || failed.count > 0 || waiting.count > 0;
+  });
+
+  readonly showDeletePaymentButton = computed<boolean>(
+    () => this.hasDeletePaymentPermissions() && !this.paymentHasBeenStarted(),
   );
 
   readonly isPaymentApproved = computed(() => {

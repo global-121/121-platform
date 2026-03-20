@@ -49,6 +49,12 @@
           "
         ></app-start-payment>
       }
+      @if (showDeletePaymentButton()) {
+        <app-delete-payment
+          [programId]="programId()"
+          [paymentId]="paymentId()"
+        />
+      }
 
       @if (hasFspWithExportFileIntegration()) {
         <app-import-reconciliation-data

@@ -1,0 +1,25 @@
+<p-button
+  label="Delete payment"
+  i18n-label
+  (click)="openDeletePaymentDialog()"
+  icon="pi pi-trash"
+  [iconPos]="rtlHelper.createPosition('start')()"
+  severity="danger"
+  rounded
+></p-button>
+
+<app-form-dialog
+  #deletePaymentDialog
+  header="Delete payment"
+  i18n-header
+  headerIcon="pi pi-trash"
+  [mutation]="deletePaymentMutation"
+  [mutationData]="undefined"
+  proceedLabel="Delete payment"
+  i18n-proceedLabel
+>
+  <p i18n>
+    You're about to delete this payment. This action cannot be undone. All
+    associated transactions will be deleted.
+  </p>
+</app-form-dialog>
