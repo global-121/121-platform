@@ -15,4 +15,8 @@ export class RequestHelper {
 
     return userId;
   }
+
+  static getUserScope(req: ScopedUserRequest): string {
+    return req.user?.scope ?? '';
+  }
 }
