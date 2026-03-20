@@ -31,8 +31,6 @@ export default defineConfig(
   eslintConfig121Platform.configs.recommended,
   eslintConfig121Platform.configs.node,
   eslintConfig121Platform.configs.javascript,
-  eslintConfig121Platform.configs.typescript, // Needs to be AFTER `*.configs.node`; It needs to override some rules!
-  eslintConfig121Platform.configs.services,
   {
     name: 'Specific Config file exceptions ONLY',
     files: ['*.config.js'],
@@ -45,12 +43,14 @@ export default defineConfig(
     // This file is the entry point for the service, and needs to be CommonJS for now, to be able to load ts-node/register.
     extends: [eslintConfig121Platform.configs.legacyNode],
   },
+  eslintConfig121Platform.configs.services,
+  eslintConfig121Platform.configs.typescript, // Needs to be AFTER `*.configs.node`; It needs to override some rules!
   {
     name: 'TypeScript files',
     files: ['**/*.ts'],
     extends: [
-      ...tsEslint.configs.recommended,
-      ...tsEslint.configs.stylistic,
+      tsEslint.configs.recommended,
+      tsEslint.configs.stylistic,
       eslintPluginPromise.configs['flat/recommended'],
     ],
     plugins: {

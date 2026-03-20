@@ -17,8 +17,8 @@ export default defineConfig(
     name: 'TypeScript files',
     files: ['**/*.ts'],
     extends: [
-      ...tsEslint.configs.recommended,
-      ...tsEslint.configs.stylisticTypeChecked,
+      tsEslint.configs.recommended,
+      tsEslint.configs.stylisticTypeChecked,
       eslintPluginPromise.configs['flat/recommended'],
     ],
     plugins: {
