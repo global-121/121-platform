@@ -30,4 +30,7 @@ export class ProgramAttachmentEntity extends Base121Entity {
 
   @Column()
   public blobName: string;
+
+  @Column({ default: '' })
+  public scope: string;
 }

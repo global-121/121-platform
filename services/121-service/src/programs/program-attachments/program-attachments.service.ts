@@ -21,11 +21,13 @@ export class ProgramAttachmentsService {
     file,
     filename,
     userId,
+    scope,
   }: {
     programId: number;
     file: Express.Multer.File;
     filename: string;
     userId: number;
+    scope: string;
   }): Promise<CreateProgramAttachmentResponseDto> {
     // get extension from original file name
     const extension = file.originalname.split('.').pop();
@@ -45,6 +47,7 @@ export class ProgramAttachmentsService {
     attachment.blobName = blobName;
     attachment.programId = programId;
     attachment.userId = userId;
+    attachment.scope = scope;
 
     const savedAttachment =
       await this.programAttachmentRepository.save(attachment);
@@ -56,9 +59,11 @@ export class ProgramAttachmentsService {
 
   public async getProgramAttachments(
     programId: number,
+    scope: string,
   ): Promise<GetProgramAttachmentResponseDto[]> {
-    const attachments = await this.programAttachmentRepository.find({
-      where: { programId: Equal(programId) },
+    const attachments = await this.programAttachmentRepository.findManyScoped({
+      programId,
+      scope,
       relations: {
         user: true,
       },
@@ -70,6 +75,7 @@ export class ProgramAttachmentsService {
   public async getProgramAttachmentById(
     programId: number,
     attachmentId: number,
+    scope: string,
   ): Promise<{
     stream: NodeJS.ReadableStream;
     mimetype: string;
@@ -79,6 +85,7 @@ export class ProgramAttachmentsService {
       await this.getProgramAttachmentAndBlockBlobClient({
         programId,
         attachmentId,
+        scope,
       });
 
     const downloadBlockBlobResponse = await blockBlobClient.download(0);
@@ -125,11 +132,13 @@ export class ProgramAttachmentsService {
   public async deleteProgramAttachmentById(
     programId: number,
     attachmentId: number,
+    scope: string,
   ): Promise<void> {
     const { programAttachment, blockBlobClient } =
       await this.getProgramAttachmentAndBlockBlobClient({
         programId,
         attachmentId,
+        scope,
       });
 
     await blockBlobClient.deleteIfExists();
@@ -158,16 +167,18 @@ export class ProgramAttachmentsService {
   private async getProgramAttachmentOrThrow({
     programId,
     attachmentId,
+    scope,
   }: {
     programId: number;
     attachmentId: number;
+    scope: string;
   }): Promise<ProgramAttachmentEntity> {
-    const programAttachment = await this.programAttachmentRepository.findOne({
-      where: {
-        programId: Equal(programId),
-        id: Equal(attachmentId),
-      },
-    });
+    const programAttachment =
+      await this.programAttachmentRepository.findOneScoped({
+        programId,
+        attachmentId,
+        scope,
+      });
 
     if (!programAttachment) {
       throw new HttpException(
