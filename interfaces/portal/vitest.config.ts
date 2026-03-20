@@ -9,7 +9,7 @@ export default defineConfig({
       instances: [{ browser: 'chromium' }],
     },
     coverage: {
-      reporter: [['lcov'], ['text-summary']],
+      reporter: ['lcov', 'text-summary'],
     },
     sequence: {
       shuffle: true,

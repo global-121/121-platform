@@ -15,9 +15,11 @@ describe('QueryTableFilterService', () => {
   let service: QueryTableFilterService<any>;
 
   const getItemSpy = vi.spyOn(Storage.prototype, 'getItem');
+  const removeItemSpy = vi.spyOn(Storage.prototype, 'removeItem');
 
   beforeEach(() => {
     getItemSpy.mockClear();
+    removeItemSpy.mockClear();
     localStorage.clear();
     TestBed.configureTestingModule({
       providers: [
@@ -32,6 +34,7 @@ describe('QueryTableFilterService', () => {
 
   afterEach(() => {
     getItemSpy.mockClear();
+    removeItemSpy.mockClear();
     localStorage.clear();
   });
 
@@ -64,7 +67,7 @@ describe('QueryTableFilterService', () => {
     });
 
     expect(clearTableSpy).toHaveBeenCalled();
-    expect(localStorage.getItem('test-key')).toBeNull();
+    expect(removeItemSpy).toHaveBeenCalledWith('test-key');
     expect(service.globalFilterVisible()).toBe(false);
     expect(resetSelectionSpy).toHaveBeenCalled();
   });
