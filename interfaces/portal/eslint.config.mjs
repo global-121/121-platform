@@ -192,6 +192,7 @@ export default tsEslint.config(
             'appendTo',
             'inputId',
             'input[inputmode]',
+            'maskStyleClass',
             'queryParamsHandling',
             'styleClass',
             'severity',
