@@ -8,7 +8,7 @@ Based Assistance programs. Another name for this frontend is "the portal".
 
 ## Technology stack
 
-- **Framework**: Angular 20+ with TypeScript
+- **Framework**: Angular with TypeScript
 - **UI Library**: PrimeNG components
 - **Styling**: Tailwind CSS utility classes
 - **State Management**: angular services and tanstack-query
@@ -54,10 +54,9 @@ app
 
 - **Standalone Components**: All components must be standalone (enforced)
 - **Change Detection**: Use OnPush strategy for performance (enforced)
-- **Lifecycle**: Implement proper lifecycle interfaces
 - **Selectors**: Use `app-` prefix with kebab-case
 - Delete auto-generated spec files unless meaningful
-- Do not create (S)CSS files per component
+- All styling is done in the HTML using Tailwind classes, so: do not create any(S)CSS files for a component.
 
 **Component Best Practices:**
 
@@ -143,7 +142,7 @@ npm run fix # Fix linting issues
 
 ### Authentication & Authorization
 
-- Handle JWT tokens properly in frontend services
+- Only store JWT tokens inside HTTPOnly cookies.
 
 ### Error Handling
 

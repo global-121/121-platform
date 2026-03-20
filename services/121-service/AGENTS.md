@@ -107,8 +107,13 @@ export class ProgramsController {
 **API Structure:**
 
 - Organize APIs around entities, not use cases
-- Use proper HTTP methods (GET/POST/DELETE/PUT/PATCH)
-- Apply correct status codes and document them
+- Use existing HTTP methods only (GET/POST/DELETE/PUT/PATCH).
+  - Use GET for idempotent reading operations without a body.
+  - Use POST for creating a new resource and non-idempotent operations.
+  - Use PUT for replacing a resource and idempotent operations.
+  - Use PATCH for partially updating a resource and non-idempotent operations.
+  - Use DELETE for deleting resources.
+- Apply fitting status codes and document them
 - Use nouns, not verbs in URLs (exceptions for actions like /retry, /approve)
 - Limit nesting to 2 levels (`/noun/id/noun/id`)
 - Limit response depth to 2 levels (relation of relation is OK)
@@ -141,7 +146,6 @@ export class ProgramsController {
 ### Error Handling
 
 - Use NestJS HTTP exceptions with proper status codes
-- Log errors appropriately for debugging
 
 ### Database Migrations
 
@@ -216,7 +220,7 @@ npm run fix # Fix linting issues
 ```bash
 cd services/121-service
 docker exec 121-service  npm run test:unit:all # unit tests
-docker exec 121-service  npm run test:integration:all # integration tests
+docker exec 121-service  npm run test:integration:base # integration tests
 docker exec 121-service npm run test:integration:all -t delete-program.test.ts # specific test file
 ```
 

@@ -117,24 +117,20 @@ All functions should use destructured objects as parameters, never use "naked" p
 
 ### Formatting & Linting
 
-- **Prettier**: Enforced via pre-commit hooks
-  - Single quotes, trailing commas, arrow parentheses always
-  - Single attribute per line in templates
-- **ESLint**: Strict TypeScript configuration with custom rules
-- **Import Organization**:
-  - External packages first
-  - Alias imports (`@121-service`, `~` for Angular)
-  - Relative imports last
-  - Use simple-import-sort for consistent ordering
+Before committing or asking a human to review code: format all new code using one of the `npm run fix:*` commands.
+
+Fix any problems the linter signals from the pre-commit hook.
 
 ### Commands for linting and formatting
 
-```bash
-npm run fix:all # Fix linting issues
-npm run test:prettier # Check formatting for the whole repository
-```
+Formatting
 
-All linting and typechecking issues should be resolved before committing.
+```bash
+npm run fix:121-service # the backend
+npm run fix:mock-service # the mock service
+npm run fix:portal # the frontend
+npm run fix:all # backend, frontend and mock service
+```
 
 ## Testing Approach
 
@@ -196,16 +192,10 @@ Use pattern: `username/description-of-change` (strongly encouraged)
 
 - Keep PRs small and focused on single responsibility
 - Separate frontend and backend changes when possible
-- Follow the PR template for consistency
 - **Draft PRs**: Use draft status until ready for review
-- **Ownership**: Each branch has one owner/maintainer (the PR author)
-- **Review Process**:
-  - Author merges after approval unless stated otherwise
-  - PRs must be up-to-date with target branch before merging
 - **Content Guidelines**:
-  - Avoid mixing responsibilities in single PR
   - Prefer non-breaking changes when possible
-  - Add appropriate labels for auto-generating release notes (enhancement, bugfix, other, chore)
+  - Every PR should have a label: enhancement, bugfix, other, chore
 
 ### Pull Request Checklist
 
