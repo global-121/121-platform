@@ -35,7 +35,7 @@ export class KoboApiService extends DomainApiService {
     });
   }
 
-  createKoboIntegration({
+  upsertKoboIntegration({
     programId,
     integration,
     dryRun,

@@ -11,7 +11,7 @@ import {
   getServer,
 } from '@121-service/test/helpers/utility.helper';
 
-export async function postKoboToProgram({
+export async function upsertKoboToProgram({
   programId,
   body,
   accessToken,
@@ -83,7 +83,7 @@ export async function setupProgramWithKoboIntegration({
     url: `${env.MOCK_SERVICE_URL}/api/kobo`,
   };
 
-  await postKoboToProgram({
+  await upsertKoboToProgram({
     programId,
     body: koboLinkDto,
     accessToken,
