@@ -25,7 +25,7 @@ export async function postKoboToProgram({
   const queryParams = { dryRun };
 
   return await getServer()
-    .post(`/programs/${programId}/kobo`)
+    .put(`/programs/${programId}/kobo`)
     .set('Cookie', [accessToken])
     .query(queryParams)
     .send(body);
