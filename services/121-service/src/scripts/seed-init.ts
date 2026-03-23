@@ -310,45 +310,31 @@ export class SeedInit implements InterfaceScript {
   }
 
   public async truncateAll(): Promise<void> {
-    const tablesToTruncate = await this.dataSource.manager.query(`
-    SELECT tablename
-    FROM pg_tables
-    WHERE schemaname = '121-service'
-      AND tablename NOT IN ('custom_migration_table');
-  `);
-
-    for (const table of tablesToTruncate) {
-      const tableName = table.tablename;
-      try {
-        await this.dataSource.manager.query(`
-        TRUNCATE TABLE "121-service"."${tableName}" CASCADE;
+    const tablesToTruncate: { tablename: string }[] = await this.dataSource
+      .manager.query(`
+        SELECT tablename
+        FROM pg_tables
+        WHERE schemaname = '121-service'
+          AND tablename NOT IN ('custom_migration_table');
       `);
 
-        const sequenceName = `${tableName}_id_seq`;
-        const sequenceExists = await this.sequenceExists(sequenceName);
-
-        if (sequenceExists) {
-          await this.dataSource.manager.query(`
-          ALTER SEQUENCE "121-service"."${sequenceName}" RESTART WITH 1;
-        `);
-        }
-      } catch (error) {
-        console.error(`Error truncating table "${tableName}":`, error);
-      }
+    if (tablesToTruncate.length === 0) {
+      return;
     }
-  }
 
-  private async sequenceExists(sequenceName: string): Promise<boolean> {
-    const result = await this.dataSource.manager.query(`
-    SELECT EXISTS (
-      SELECT 1
-      FROM pg_sequences
-      WHERE schemaname = '121-service'
-        AND sequencename = '${sequenceName}'
-    );
-  `);
+    const tableNames = tablesToTruncate
+      .map((t) => `"121-service"."${t.tablename}"`)
+      .join(', ');
 
-    return result[0].exists;
+    try {
+      // Truncate all tables in a single statement
+      // RESTART IDENTITY automatically resets all associated sequences
+      await this.dataSource.manager.query(
+        `TRUNCATE TABLE ${tableNames} RESTART IDENTITY CASCADE;`,
+      );
+    } catch (error) {
+      console.error('Error truncating tables:', error);
+    }
   }
 
   private async runAllMigrations(): Promise<void> {
