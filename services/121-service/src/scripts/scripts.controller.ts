@@ -165,8 +165,8 @@ export class ScriptsController {
       }
       await this.scriptsService.loadSeedScenario({
         resetIdentifier,
-        isApiTests,
         seedScript: script,
+        isApiTests,
         approverMode: approverModeToUse,
       });
     }
