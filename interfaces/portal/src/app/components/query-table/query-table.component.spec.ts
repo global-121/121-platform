@@ -147,6 +147,7 @@ describe('QueryTableComponent', () => {
   let fixture: ComponentFixture<QueryTableComponent<TestRow, TestContext>>;
 
   // https://rebeccamdeprey.com/blog/mock-windowmatchmedia-in-vitest
+  //this is needed in order to make tests concerning PrimeNG ContextMenu work
   vi.hoisted(() => {
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
