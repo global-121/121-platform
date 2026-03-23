@@ -1,10 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { format } from 'date-fns';
 import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, Repository } from 'typeorm';
 
-import { env } from '@121-service/src/env';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
@@ -552,18 +550,18 @@ export class PaymentsManagementService {
       return;
     }
 
-    const paymentUrl = `${env.REDIRECT_PORTAL_URL_HOST}/program/${programId}/payments/${paymentId}`;
-
-    for (const assignment of currentApprovalStep.approverAssignments) {
-      if (!assignment.user?.username) {
-        continue;
-      }
-      await this.paymentEmailsService.sendApprovalRequestToNextApprovers({
-        email: assignment.user.username,
+    const approvers = currentApprovalStep.approverAssignments
+      .filter((assignment) => !!assignment.user.username)
+      .map((assignment) => ({
+        emailAddress: assignment.user.username!,
         recipientName: assignment.user.displayName,
-        paymentUrl,
-      });
-    }
+      }));
+
+    await this.paymentEmailsService.sendApprovalRequestToNextApprovers({
+      paymentId,
+      programId,
+      approvers,
+    });
   }
 
   //TODO: on last approve
@@ -574,10 +572,10 @@ export class PaymentsManagementService {
     paymentId: number;
     programId: number;
   }): Promise<void> {
-    const creatorUser =
+    const paymentCreator =
       await this.paymentEventsService.getCreatorOrThrow(paymentId);
 
-    if (!creatorUser.username) {
+    if (!paymentCreator.username) {
       return;
     }
 
@@ -585,15 +583,14 @@ export class PaymentsManagementService {
       where: { id: Equal(paymentId) },
     });
 
-    const formattedCreationDate = format(payment.created, 'dd/MM/yyyy, HH:mm');
-
-    const paymentUrl = `${env.REDIRECT_PORTAL_URL_HOST}/program/${programId}/payments/${paymentId}`;
-
     await this.paymentEmailsService.sendApprovalConfirmationToCreator({
-      email: creatorUser.username,
-      recipientName: creatorUser.displayName,
-      paymentUrl,
-      paymentCreatedAt: formattedCreationDate,
+      programId,
+      paymentId,
+      paymentCreator: {
+        emailAddress: paymentCreator.username,
+        recipientName: paymentCreator.displayName,
+      },
+      paymentCreatedAt: payment.created,
     });
   }
 }
