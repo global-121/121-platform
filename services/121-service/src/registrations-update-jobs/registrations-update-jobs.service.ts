@@ -82,7 +82,7 @@ export class RegistrationsUpdateJobsService {
 
     const templateInput: ImportValidationFailedEmailInput = {
       email: user.username,
-      displayName: user.displayName,
+      recipientName: user.displayName,
       attachment: { name: 'failed-validations.csv', contentBytes },
     };
 

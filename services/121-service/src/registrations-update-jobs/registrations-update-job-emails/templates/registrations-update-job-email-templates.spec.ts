@@ -5,7 +5,7 @@ describe('Registration update job email templates', () => {
     expect(
       buildTemplateImportValidationFailed({
         email: 'owner@example.com',
-        displayName: 'Owner User',
+        recipientName: 'Owner User',
         attachment: {
           name: 'failed-validations.csv',
           contentBytes: 'dGVzdC1kYXRh',

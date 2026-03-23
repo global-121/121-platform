@@ -5,11 +5,11 @@ import { ApprovalRequestEmailInput } from '@121-service/src/payments/payment-ema
 export const buildTemplateApprovalRequest = (
   paymentEmailInput: ApprovalRequestEmailInput,
 ): EmailTemplate => {
-  const { displayName, paymentUrl } = paymentEmailInput;
+  const { recipientName, paymentUrl } = paymentEmailInput;
 
   const subject = '121 portal: Payment approval';
   const body = `
-    <p>Dear ${displayName},</p>
+    <p>Dear ${recipientName},</p>
     <p>A new payment was created that requires your financial approval.</p>
     <p>Please follow the link below or log into the 121 portal, review the payment and approve.</p>
     ${paymentUrl ? `<p><a href="${paymentUrl}">${paymentUrl}</a></p>` : ''}

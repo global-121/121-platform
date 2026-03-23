@@ -6,11 +6,11 @@ import { PasswordResetEmailInput } from '@121-service/src/user/user-emails/inter
 export const buildTemplatePasswordReset = (
   userEmailInput: PasswordResetEmailInput,
 ): EmailTemplate => {
-  const { displayName, email, password } = userEmailInput;
+  const { recipientName, email, password } = userEmailInput;
 
   const subject = '121 Portal password reset';
   const body = `
-    <p>Dear ${displayName},</p>
+    <p>Dear ${recipientName},</p>
     <p>
       Your password for the 121 Portal has been reset.<br>
       To log in again, go to: <a href="${env.REDIRECT_PORTAL_URL_HOST}">${env.REDIRECT_PORTAL_URL_HOST}</a>

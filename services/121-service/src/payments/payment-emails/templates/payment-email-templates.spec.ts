@@ -4,7 +4,7 @@ import { buildTemplateApprovalRequest } from '@121-service/src/payments/payment-
 describe('Payment email templates', () => {
   const baseInput = {
     email: 'approver@example.org',
-    displayName: 'John Approver',
+    recipientName: 'John Approver',
     paymentUrl: 'https://portal.example.org/program/1/payments/42',
   };
 

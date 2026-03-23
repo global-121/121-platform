@@ -13,7 +13,7 @@ export class EmailsService {
 
   public async sendFromTemplate<
     TType extends string,
-    TInput extends { email: string; displayName: string },
+    TInput extends { email: string; recipientName: string },
   >({
     templateBuilders,
     input,
@@ -27,7 +27,7 @@ export class EmailsService {
   }): Promise<void> {
     const sanitizedInput = {
       ...input,
-      displayName: stripHtmlTags(input.displayName),
+      recipientName: stripHtmlTags(input.recipientName),
     };
 
     const template = templateBuilders[type](sanitizedInput);

@@ -11,7 +11,7 @@ export const buildTemplateImportValidationFailed = (
   const subject = 'Registration Import - Validation Failed';
 
   const body = `
-    <p>Dear ${updateJobEmailInput.displayName},</p>
+    <p>Dear ${updateJobEmailInput.recipientName},</p>
     <p>
       During your recent registration import, some registrations could not be validated.
     </p>

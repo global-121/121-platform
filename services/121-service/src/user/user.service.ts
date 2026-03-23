@@ -280,12 +280,12 @@ export class UserService {
       if (env.USE_SSO_AZURE_ENTRA) {
         await this.userEmailsService.sendAccountCreatedForSSO({
           email: userEntity.username,
-          displayName: userEntity.displayName ?? DEFAULT_DISPLAY_NAME,
+          recipientName: userEntity.displayName ?? DEFAULT_DISPLAY_NAME,
         });
       } else {
         await this.userEmailsService.sendAccountCreated({
           email: userEntity.username,
-          displayName: userEntity.displayName ?? DEFAULT_DISPLAY_NAME,
+          recipientName: userEntity.displayName ?? DEFAULT_DISPLAY_NAME,
           password,
         });
       }
@@ -963,7 +963,7 @@ export class UserService {
 
     await this.userEmailsService.sendPasswordReset({
       email: user.username,
-      displayName: user.displayName ?? DEFAULT_DISPLAY_NAME,
+      recipientName: user.displayName ?? DEFAULT_DISPLAY_NAME,
       password,
     });
   }

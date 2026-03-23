@@ -1,5 +1,5 @@
 export interface AccountCreatedEmailInput {
   readonly email: string;
-  readonly displayName: string;
+  readonly recipientName: string;
   readonly password: string;
 }

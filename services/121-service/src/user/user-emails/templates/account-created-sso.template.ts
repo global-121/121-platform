@@ -6,11 +6,11 @@ import { AccountCreatedSsoEmailInput } from '@121-service/src/user/user-emails/i
 export const buildTemplateAccountCreatedSSO = (
   userEmailInput: AccountCreatedSsoEmailInput,
 ): EmailTemplate => {
-  const { displayName, email } = userEmailInput;
+  const { recipientName, email } = userEmailInput;
 
   const subject = '121 Portal account created';
   const body = `
-    <p>Dear ${displayName},</p>
+    <p>Dear ${recipientName},</p>
     <p>
       You have been added to the 121 Portal by the platform admin.<br>
       To log in, go to: <a href="${env.REDIRECT_PORTAL_URL_HOST}">${env.REDIRECT_PORTAL_URL_HOST}</a>

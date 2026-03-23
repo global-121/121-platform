@@ -871,7 +871,7 @@ describe('UserService', () => {
       // Assert
       expect(userEmailsService.sendPasswordReset).toHaveBeenCalledWith({
         email: 'test@example.com',
-        displayName: 'Test User',
+        recipientName: 'Test User',
         password: expect.any(String),
       });
     });
@@ -893,7 +893,7 @@ describe('UserService', () => {
       // Assert
       expect(userEmailsService.sendPasswordReset).toHaveBeenCalledWith({
         email: 'test@example.com',
-        displayName: 'Madam/Sir',
+        recipientName: 'Madam/Sir',
         password: expect.any(String),
       });
     });

@@ -5,11 +5,11 @@ import { ApprovalConfirmationEmailInput } from '@121-service/src/payments/paymen
 export const buildTemplateApprovalConfirmation = (
   paymentEmailInput: ApprovalConfirmationEmailInput,
 ): EmailTemplate => {
-  const { displayName, paymentUrl, paymentCreatedAt } = paymentEmailInput;
+  const { recipientName, paymentUrl, paymentCreatedAt } = paymentEmailInput;
 
   const subject = '121 portal: Payment approved';
   const body = `
-    <p>Dear ${displayName},</p>
+    <p>Dear ${recipientName},</p>
     <p>
       The payment you created ${paymentCreatedAt} has been approved and is now ready to be initiated.
     </p>

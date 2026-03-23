@@ -5,7 +5,7 @@ import { buildTemplatePasswordReset } from '@121-service/src/user/user-emails/te
 describe('User email templates', () => {
   const baseInput = {
     email: 'user@example.org',
-    displayName: 'Jane Doe',
+    recipientName: 'Jane Doe',
     password: 'temp-pass-123',
   };
 

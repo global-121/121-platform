@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { format } from 'date-fns';
 import { PaginateQuery } from 'nestjs-paginate';
@@ -31,8 +31,6 @@ import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 
 @Injectable()
 export class PaymentsManagementService {
-  private readonly logger = new Logger(PaymentsManagementService.name);
-
   @InjectRepository(PaymentEntity)
   private readonly paymentRepository: Repository<PaymentEntity>;
   public constructor(
@@ -122,9 +120,7 @@ export class PaymentsManagementService {
         userId,
       });
 
-      await this.trySendingEmail(() =>
-        this.sendPendingApprovalEmails({ paymentId, programId }),
-      );
+      await this.sendPendingApprovalEmails({ paymentId, programId });
 
       return bulkActionResultPaymentDto;
     } finally {
@@ -409,13 +405,9 @@ export class PaymentsManagementService {
         paymentId,
         programId,
       });
-      await this.trySendingEmail(() =>
-        this.sendPaymentApprovedEmail({ paymentId, programId }),
-      );
+      await this.sendApprovalConfirmationToCreator({ paymentId, programId });
     } else {
-      await this.trySendingEmail(() =>
-        this.sendPendingApprovalEmails({ paymentId, programId }),
-      );
+      await this.sendPendingApprovalEmails({ paymentId, programId });
     }
   }
 
@@ -543,14 +535,7 @@ export class PaymentsManagementService {
     }
   }
 
-  private async trySendingEmail(sendFn: () => Promise<void>): Promise<void> {
-    try {
-      await sendFn();
-    } catch (error) {
-      this.logger.warn('Failed to send payment email notification', error);
-    }
-  }
-
+  //TODO: on approve and on create payment
   private async sendPendingApprovalEmails({
     paymentId,
     programId,
@@ -575,13 +560,14 @@ export class PaymentsManagementService {
       }
       await this.paymentEmailsService.sendApprovalRequestToNextApprovers({
         email: assignment.user.username,
-        displayName: assignment.user.displayName,
+        recipientName: assignment.user.displayName,
         paymentUrl,
       });
     }
   }
 
-  private async sendPaymentApprovedEmail({
+  //TODO: on last approve
+  private async sendApprovalConfirmationToCreator({
     paymentId,
     programId,
   }: {
@@ -605,7 +591,7 @@ export class PaymentsManagementService {
 
     await this.paymentEmailsService.sendApprovalConfirmationToCreator({
       email: creatorUser.username,
-      displayName: creatorUser.displayName,
+      recipientName: creatorUser.displayName,
       paymentUrl,
       paymentCreatedAt: formattedCreationDate,
     });
