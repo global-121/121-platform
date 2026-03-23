@@ -326,15 +326,11 @@ export class SeedInit implements InterfaceScript {
       .map((t) => `"121-service"."${t.tablename}"`)
       .join(', ');
 
-    try {
-      // Truncate all tables in a single statement
-      // RESTART IDENTITY automatically resets all associated sequences
-      await this.dataSource.manager.query(
-        `TRUNCATE TABLE ${tableNames} RESTART IDENTITY CASCADE;`,
-      );
-    } catch (error) {
-      console.error('Error truncating tables:', error);
-    }
+    // Truncate all tables in a single statement
+    // RESTART IDENTITY automatically resets all associated sequences
+    await this.dataSource.manager.query(
+      `TRUNCATE TABLE ${tableNames} RESTART IDENTITY CASCADE;`,
+    );
   }
 
   private async runAllMigrations(): Promise<void> {
