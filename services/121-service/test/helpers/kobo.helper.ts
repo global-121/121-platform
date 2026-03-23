@@ -43,6 +43,18 @@ export async function getKoboFromProgram({
     .set('Cookie', [accessToken]);
 }
 
+export async function patchKoboSubmissions({
+  programId,
+  accessToken,
+}: {
+  programId: number;
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .patch(`/programs/${programId}/kobo/submissions`)
+    .set('Cookie', [accessToken]);
+}
+
 export async function triggerKoboSubmission({
   assetUid,
   submissionUuid,

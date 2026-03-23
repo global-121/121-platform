@@ -452,6 +452,46 @@ export class KoboMockService {
     };
   }
 
+  public getAllSubmissions(uid_asset: string): {
+    count: number;
+    next: null;
+    previous: null;
+    results: Record<string, any>[];
+  } {
+    const asset = this.getAssetDeployment(uid_asset);
+    const submissionUuid = `${KoboMockSubmissionUuids.success}-${uid_asset}`;
+    const results = [
+      {
+        _id: 1,
+        _uuid: submissionUuid,
+        _xform_id_string: uid_asset,
+        _submission_time: '2025-04-30T15:30:00.000Z',
+        _status: 'submitted_via_web',
+        start: '2025-04-30T15:29:00.000Z',
+        end: '2025-04-30T15:30:00.000Z',
+        fsp: 'Safaricom',
+        'group_ad8jk55/fullName': 'John Doe',
+        'group_ad8jk55/group_gz24g15/What_is_2_2_number': 4,
+        nationalId: '123456789',
+        phoneNumber: '+31612345678',
+        'group_or1bl43/How_are_you_today_select_one': 'great',
+        photo:
+          'username/attachments/form-id/submission-uuid/important_photo.jpg',
+        _attachments: [
+          {
+            filename:
+              'username/attachments/form-id/submission-uuid/important_photo.jpg',
+            download_url:
+              'https://kobo.example.com/api/v2/assets/test/data/1/attachments/1',
+            mimetype: 'image/jpeg',
+          },
+        ],
+        __version__: asset.version_id,
+      },
+    ];
+    return { count: results.length, next: null, previous: null, results };
+  }
+
   public getSubmission({
     uid_asset,
     submissionId,

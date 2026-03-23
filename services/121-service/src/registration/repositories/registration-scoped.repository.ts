@@ -168,6 +168,18 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     });
   }
 
+  public async getReferenceIdsByProgramId({
+    programId,
+  }: {
+    programId: number;
+  }): Promise<Set<string>> {
+    const registrations = await this.repository.find({
+      where: { programId: Equal(programId) },
+      select: { referenceId: true },
+    });
+    return new Set(registrations.map((r) => r.referenceId));
+  }
+
   public async getDuplicates({
     registrationId,
     programId,

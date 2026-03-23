@@ -459,4 +459,136 @@ describe('KoboApiService', () => {
       );
     });
   });
+
+  describe('getAllSubmissions', () => {
+    const mockSubmissionsData = [
+      {
+        _id: 1,
+        _uuid: 'uuid-1',
+        fullName: 'John Doe',
+        phoneNumber: '+1234567890',
+      },
+      {
+        _id: 2,
+        _uuid: 'uuid-2',
+        fullName: 'Jane Doe',
+        phoneNumber: '+0987654321',
+      },
+    ];
+
+    it('should successfully retrieve all submissions for successful request (happy flow)', async () => {
+      // Arrange
+      httpService.get.mockResolvedValue({
+        status: HttpStatus.OK,
+        data: {
+          count: 2,
+          next: null,
+          previous: null,
+          results: mockSubmissionsData,
+        },
+      });
+
+      // Act
+      const result = await service.getAllSubmissions({
+        token: mockToken,
+        assetUid: mockAssetUid,
+        baseUrl: mockBaseUrl,
+      });
+
+      // Assert
+      const expectedHeaders = new Headers({
+        Authorization: `Token ${mockToken}`,
+      });
+
+      expect(httpService.get).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'https://kobo.example.com/api/v2/assets/test-asset-id/data/',
+        ),
+        expectedHeaders,
+      );
+      expect(result).toEqual({
+        count: 2,
+        submissions: mockSubmissionsData,
+      });
+    });
+
+    it('should return empty results when no submissions exist', async () => {
+      // Arrange
+      httpService.get.mockResolvedValue({
+        status: HttpStatus.OK,
+        data: {
+          count: 0,
+          next: null,
+          previous: null,
+          results: [],
+        },
+      });
+
+      // Act
+      const result = await service.getAllSubmissions({
+        token: mockToken,
+        assetUid: mockAssetUid,
+        baseUrl: mockBaseUrl,
+      });
+
+      // Assert
+      expect(result).toEqual({
+        count: 0,
+        submissions: [],
+      });
+    });
+
+    it('should include limit query parameter in the request URL', async () => {
+      // Arrange
+      httpService.get.mockResolvedValue({
+        status: HttpStatus.OK,
+        data: {
+          count: 0,
+          next: null,
+          previous: null,
+          results: [],
+        },
+      });
+
+      // Act
+      await service.getAllSubmissions({
+        token: mockToken,
+        assetUid: mockAssetUid,
+        baseUrl: mockBaseUrl,
+      });
+
+      // Assert
+      const calledUrl = httpService.get.mock.calls[0]![0] as string;
+      expect(calledUrl).toContain('limit=');
+    });
+
+    // Not all error scenarios are covered here as most of the error handling is delegated in a private function which is tested via other public methods
+    it('should properly handle error responses', async () => {
+      // Arrange - test that error handling is properly delegated to handleKoboApiError
+      httpService.get.mockResolvedValue({
+        status: HttpStatus.NOT_FOUND,
+        data: {
+          detail: 'Submissions not found',
+        },
+      });
+
+      // Act
+      const promise = service.getAllSubmissions({
+        token: mockToken,
+        assetUid: mockAssetUid,
+        baseUrl: mockBaseUrl,
+      });
+
+      // Assert
+      await expect(promise).rejects.toBeHttpExceptionWithStatus(
+        HttpStatus.NOT_FOUND,
+      );
+      await expect(promise).rejects.toHaveProperty(
+        'message',
+        expect.stringContaining(
+          'Kobo submissions not found for asset: test-asset-id',
+        ),
+      );
+    });
+  });
 });

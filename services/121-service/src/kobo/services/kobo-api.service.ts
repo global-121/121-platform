@@ -6,6 +6,8 @@ import { EXTERNAL_API } from '@121-service/src/config';
 import { KoboAssetDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset.dto';
 import { KoboAssetResponseDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset-response.dto';
 import { KoboSubmissionDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-submission.dto';
+import { KoboSubmissionsResponseDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-submissions-response.dto';
+import { MAX_IMPORT_RECORDS } from '@121-service/src/registration/services/registrations-creation.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
@@ -193,6 +195,42 @@ export class KoboApiService {
       apiUrl,
       notFoundMessage: 'Kobo submission not found',
       operationDescription: 'fetch Kobo submission',
+    });
+  }
+
+  public async getAllSubmissions({
+    token,
+    assetUid,
+    baseUrl,
+  }: {
+    token: string;
+    assetUid: string;
+    baseUrl: string;
+  }): Promise<{ count: number; submissions: KoboSubmissionDto[] }> {
+    const apiUrl = new URL(
+      joinURL(baseUrl, 'api/v2/assets', assetUid, 'data/'),
+    );
+    apiUrl.searchParams.set('limit', String(MAX_IMPORT_RECORDS));
+
+    const headers = new Headers({ Authorization: `Token ${token}` });
+
+    const response = await this.httpService.get<
+      AxiosResponse<KoboSubmissionsResponseDto>
+    >(apiUrl.toString(), headers);
+
+    if (this.isValidKoboResponse<KoboSubmissionsResponseDto>(response)) {
+      return {
+        count: response.data.count,
+        submissions: response.data.results,
+      };
+    }
+
+    this.throwKoboApiError({
+      response,
+      assetUid,
+      apiUrl: apiUrl.toString(),
+      notFoundMessage: 'Kobo submissions not found',
+      operationDescription: 'fetch Kobo submissions',
     });
   }
 
