@@ -94,14 +94,14 @@
                 @if (!isEditing()) {
                   {{ attribute.label | translatableString }}
                 } @else {
-                  @let control = formGroup().get(attribute.name + '.label');
+                  @let control = getLabelControl(attribute.name);
                   <input
                     pInputText
                     class="w-full"
-                    [formControl]="$any(control)"
+                    [formControl]="control"
                     [attr.aria-label]="attribute.name"
                   />
-                  @if (control?.invalid && control?.touched) {
+                  @if (control.invalid && control.touched) {
                     <small
                       class="text-red-500"
                       i18n

@@ -157,4 +157,11 @@ export class RegistrationAttributeListComponent {
 
     this.saveLabelsMutation.mutate();
   }
+
+  getLabelControl(attributeName: string): FormControl<string> {
+    return this.formGroup().get([
+      attributeName,
+      'label',
+    ]) as FormControl<string>;
+  }
 }
