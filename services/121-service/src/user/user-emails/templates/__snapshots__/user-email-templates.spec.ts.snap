@@ -3,36 +3,6 @@
 exports[`User email templates should render account created SSO template 1`] = `
 {
   "body": "
-    <style>
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Open Sans, ui-sans-serif, system-ui, sans-serif;
-    }
-    .header,
-    .footer {
-      padding: 1.2em;
-      color: #fff;
-      background-color: #0A2C5E;
-    }
-    .content {
-      padding: 1.2em;
-      margin: 1.2em;
-      margin-bottom: 2em;
-      color: #000;
-      background-color: #fff;
-      border-radius: 0.5em;
-      box-shadow: 0 0 0.75em rgba(0, 0, 0, 0.1);
-    }
-    </style>
-
-    <div class="header">
-      <h1>121 Portal</h1>
-    </div>
-
-    <div class="content">
-      
     <p>Dear Jane Doe,</p>
     <p>
       You have been added to the 121 Portal by the platform admin.<br>
@@ -49,12 +19,6 @@ exports[`User email templates should render account created SSO template 1`] = `
       Best regards,<br>
       121 Support Team
     </p>
-  
-    </div>
-
-    <div class="footer">
-      121 Support: <a href="mailto:support@121.global" style="color:#fff">support@121.global</a>
-    </div>
   ",
   "subject": "121 Portal account created",
 }
@@ -63,36 +27,6 @@ exports[`User email templates should render account created SSO template 1`] = `
 exports[`User email templates should render account created template 1`] = `
 {
   "body": "
-    <style>
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Open Sans, ui-sans-serif, system-ui, sans-serif;
-    }
-    .header,
-    .footer {
-      padding: 1.2em;
-      color: #fff;
-      background-color: #0A2C5E;
-    }
-    .content {
-      padding: 1.2em;
-      margin: 1.2em;
-      margin-bottom: 2em;
-      color: #000;
-      background-color: #fff;
-      border-radius: 0.5em;
-      box-shadow: 0 0 0.75em rgba(0, 0, 0, 0.1);
-    }
-    </style>
-
-    <div class="header">
-      <h1>121 Portal</h1>
-    </div>
-
-    <div class="content">
-      
     <p>Dear Jane Doe,</p>
     <p>
       You have been added to the 121 Portal by the platform admin.<br>
@@ -113,12 +47,6 @@ exports[`User email templates should render account created template 1`] = `
       Best regards,<br>
       121 Support Team
     </p>
-  
-    </div>
-
-    <div class="footer">
-      121 Support: <a href="mailto:support@121.global" style="color:#fff">support@121.global</a>
-    </div>
   ",
   "subject": "121 Portal account created",
 }
@@ -127,36 +55,6 @@ exports[`User email templates should render account created template 1`] = `
 exports[`User email templates should render password reset template 1`] = `
 {
   "body": "
-    <style>
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Open Sans, ui-sans-serif, system-ui, sans-serif;
-    }
-    .header,
-    .footer {
-      padding: 1.2em;
-      color: #fff;
-      background-color: #0A2C5E;
-    }
-    .content {
-      padding: 1.2em;
-      margin: 1.2em;
-      margin-bottom: 2em;
-      color: #000;
-      background-color: #fff;
-      border-radius: 0.5em;
-      box-shadow: 0 0 0.75em rgba(0, 0, 0, 0.1);
-    }
-    </style>
-
-    <div class="header">
-      <h1>121 Portal</h1>
-    </div>
-
-    <div class="content">
-      
     <p>Dear Jane Doe,</p>
     <p>
       Your password for the 121 Portal has been reset.<br>
@@ -177,12 +75,6 @@ exports[`User email templates should render password reset template 1`] = `
       Best regards,<br>
       121 Support Team
     </p>
-  
-    </div>
-
-    <div class="footer">
-      121 Support: <a href="mailto:support@121.global" style="color:#fff">support@121.global</a>
-    </div>
   ",
   "subject": "121 Portal password reset",
 }

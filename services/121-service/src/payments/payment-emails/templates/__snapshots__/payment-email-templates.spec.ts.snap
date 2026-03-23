@@ -3,36 +3,6 @@
 exports[`Payment email templates should render payment approved template 1`] = `
 {
   "body": "
-    <style>
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Open Sans, ui-sans-serif, system-ui, sans-serif;
-    }
-    .header,
-    .footer {
-      padding: 1.2em;
-      color: #fff;
-      background-color: #0A2C5E;
-    }
-    .content {
-      padding: 1.2em;
-      margin: 1.2em;
-      margin-bottom: 2em;
-      color: #000;
-      background-color: #fff;
-      border-radius: 0.5em;
-      box-shadow: 0 0 0.75em rgba(0, 0, 0, 0.1);
-    }
-    </style>
-
-    <div class="header">
-      <h1>121 Portal</h1>
-    </div>
-
-    <div class="content">
-      
     <p>Dear John Approver,</p>
     <p>
       The payment you created 15/03/2026, 14:30 has been approved and is now ready to be initiated.
@@ -47,12 +17,6 @@ exports[`Payment email templates should render payment approved template 1`] = `
       Best regards,<br>
       121 Support Team
     </p>
-  
-    </div>
-
-    <div class="footer">
-      121 Support: <a href="mailto:support@121.global" style="color:#fff">support@121.global</a>
-    </div>
   ",
   "subject": "121 portal: Payment approved",
 }
@@ -61,36 +25,6 @@ exports[`Payment email templates should render payment approved template 1`] = `
 exports[`Payment email templates should render pending approval template 1`] = `
 {
   "body": "
-    <style>
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Open Sans, ui-sans-serif, system-ui, sans-serif;
-    }
-    .header,
-    .footer {
-      padding: 1.2em;
-      color: #fff;
-      background-color: #0A2C5E;
-    }
-    .content {
-      padding: 1.2em;
-      margin: 1.2em;
-      margin-bottom: 2em;
-      color: #000;
-      background-color: #fff;
-      border-radius: 0.5em;
-      box-shadow: 0 0 0.75em rgba(0, 0, 0, 0.1);
-    }
-    </style>
-
-    <div class="header">
-      <h1>121 Portal</h1>
-    </div>
-
-    <div class="content">
-      
     <p>Dear John Approver,</p>
     <p>A new payment was created that requires your financial approval.</p>
     <p>Please follow the link below or log into the 121 portal, review the payment and approve.</p>
@@ -103,12 +37,6 @@ exports[`Payment email templates should render pending approval template 1`] = `
       Best regards,<br>
       121 Support Team
     </p>
-  
-    </div>
-
-    <div class="footer">
-      121 Support: <a href="mailto:support@121.global" style="color:#fff">support@121.global</a>
-    </div>
   ",
   "subject": "121 portal: Payment approval",
 }

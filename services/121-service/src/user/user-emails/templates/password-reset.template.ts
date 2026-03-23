@@ -1,4 +1,3 @@
-import { wrapWithEmailLayout } from '@121-service/src/emails/email-layout';
 import { SUPPORT_EMAIL } from '@121-service/src/emails/emails.const';
 import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
 import { env } from '@121-service/src/env';
@@ -10,7 +9,7 @@ export const buildTemplatePasswordReset = (
   const { displayName, email, password } = userEmailInput;
 
   const subject = '121 Portal password reset';
-  const body = wrapWithEmailLayout(`
+  const body = `
     <p>Dear ${displayName},</p>
     <p>
       Your password for the 121 Portal has been reset.<br>
@@ -31,7 +30,7 @@ export const buildTemplatePasswordReset = (
       Best regards,<br>
       121 Support Team
     </p>
-  `);
+  `;
 
   return { subject, body };
 };

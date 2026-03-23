@@ -1,4 +1,3 @@
-import { wrapWithEmailLayout } from '@121-service/src/emails/email-layout';
 import { SUPPORT_EMAIL } from '@121-service/src/emails/emails.const';
 import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
 import { PaymentEmailInput } from '@121-service/src/payments/payment-emails/interfaces/payment-email-input.interface';
@@ -9,7 +8,7 @@ export const buildTemplatePendingApproval = (
   const { displayName, paymentUrl } = paymentEmailInput;
 
   const subject = '121 portal: Payment approval';
-  const body = wrapWithEmailLayout(`
+  const body = `
     <p>Dear ${displayName},</p>
     <p>A new payment was created that requires your financial approval.</p>
     <p>Please follow the link below or log into the 121 portal, review the payment and approve.</p>
@@ -22,7 +21,7 @@ export const buildTemplatePendingApproval = (
       Best regards,<br>
       121 Support Team
     </p>
-  `);
+  `;
 
   return { subject, body };
 };

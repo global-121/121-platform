@@ -1,4 +1,3 @@
-import { wrapWithEmailLayout } from '@121-service/src/emails/email-layout';
 import { SUPPORT_EMAIL } from '@121-service/src/emails/emails.const';
 import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
 import { env } from '@121-service/src/env';
@@ -10,7 +9,7 @@ export const buildTemplateAccountCreatedSSO = (
   const { displayName, email } = userEmailInput;
 
   const subject = '121 Portal account created';
-  const body = wrapWithEmailLayout(`
+  const body = `
     <p>Dear ${displayName},</p>
     <p>
       You have been added to the 121 Portal by the platform admin.<br>
@@ -27,7 +26,7 @@ export const buildTemplateAccountCreatedSSO = (
       Best regards,<br>
       121 Support Team
     </p>
-  `);
+  `;
 
   return { subject, body };
 };
