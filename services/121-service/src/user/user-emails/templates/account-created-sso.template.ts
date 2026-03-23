@@ -1,10 +1,10 @@
 import { SUPPORT_EMAIL } from '@121-service/src/emails/emails.const';
 import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
 import { env } from '@121-service/src/env';
-import { UserEmailInput } from '@121-service/src/user/user-emails/interfaces/user-email-input.interface';
+import { AccountCreatedSsoEmailInput } from '@121-service/src/user/user-emails/interfaces/account-created-sso-email-input.interface';
 
 export const buildTemplateAccountCreatedSSO = (
-  userEmailInput: UserEmailInput,
+  userEmailInput: AccountCreatedSsoEmailInput,
 ): EmailTemplate => {
   const { displayName, email } = userEmailInput;
 

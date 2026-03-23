@@ -1,5 +1,5 @@
-import { buildTemplatePaymentApproved } from '@121-service/src/payments/payment-emails/templates/payment-approved.template';
-import { buildTemplatePendingApproval } from '@121-service/src/payments/payment-emails/templates/pending-approval.template';
+import { buildTemplateApprovalConfirmation } from '@121-service/src/payments/payment-emails/templates/approval-confirmation.template';
+import { buildTemplateApprovalRequest } from '@121-service/src/payments/payment-emails/templates/approval-request.template';
 
 describe('Payment email templates', () => {
   const baseInput = {
@@ -8,13 +8,13 @@ describe('Payment email templates', () => {
     paymentUrl: 'https://portal.example.org/program/1/payments/42',
   };
 
-  it('should render pending approval template', () => {
-    expect(buildTemplatePendingApproval(baseInput)).toMatchSnapshot();
+  it('should render approval request template', () => {
+    expect(buildTemplateApprovalRequest(baseInput)).toMatchSnapshot();
   });
 
-  it('should render payment approved template', () => {
+  it('should render approval confirmation template', () => {
     expect(
-      buildTemplatePaymentApproved({
+      buildTemplateApprovalConfirmation({
         ...baseInput,
         paymentCreatedAt: '15/03/2026, 14:30',
       }),

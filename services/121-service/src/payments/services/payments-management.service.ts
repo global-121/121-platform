@@ -8,7 +8,6 @@ import { env } from '@121-service/src/env';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
-import { PaymentEmailType } from '@121-service/src/payments/payment-emails/enum/payment-email-type.enum';
 import { PaymentEmailsService } from '@121-service/src/payments/payment-emails/payment-emails.service';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
@@ -574,13 +573,10 @@ export class PaymentsManagementService {
       if (!assignment.user?.username) {
         continue;
       }
-      await this.paymentEmailsService.send({
-        paymentEmailInput: {
-          email: assignment.user.username,
-          displayName: assignment.user.displayName,
-          paymentUrl,
-        },
-        paymentEmailType: PaymentEmailType.pendingApproval,
+      await this.paymentEmailsService.sendApprovalRequestToNextApprovers({
+        email: assignment.user.username,
+        displayName: assignment.user.displayName,
+        paymentUrl,
       });
     }
   }
@@ -607,14 +603,11 @@ export class PaymentsManagementService {
 
     const paymentUrl = `${env.REDIRECT_PORTAL_URL_HOST}/program/${programId}/payments/${paymentId}`;
 
-    await this.paymentEmailsService.send({
-      paymentEmailInput: {
-        email: creatorUser.username,
-        displayName: creatorUser.displayName,
-        paymentUrl,
-        paymentCreatedAt: formattedCreationDate,
-      },
-      paymentEmailType: PaymentEmailType.paymentApproved,
+    await this.paymentEmailsService.sendApprovalConfirmationToCreator({
+      email: creatorUser.username,
+      displayName: creatorUser.displayName,
+      paymentUrl,
+      paymentCreatedAt: formattedCreationDate,
     });
   }
 }

@@ -1,35 +1,39 @@
 import { Injectable } from '@nestjs/common';
 
 import { EmailsService } from '@121-service/src/emails/emails.service';
-import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
 import { PaymentEmailType } from '@121-service/src/payments/payment-emails/enum/payment-email-type.enum';
-import { PaymentEmailInput } from '@121-service/src/payments/payment-emails/interfaces/payment-email-input.interface';
-import { buildTemplatePaymentApproved } from '@121-service/src/payments/payment-emails/templates/payment-approved.template';
-import { buildTemplatePendingApproval } from '@121-service/src/payments/payment-emails/templates/pending-approval.template';
-
-const templateBuilders: Record<
-  PaymentEmailType,
-  (input: PaymentEmailInput) => EmailTemplate
-> = {
-  [PaymentEmailType.pendingApproval]: buildTemplatePendingApproval,
-  [PaymentEmailType.paymentApproved]: buildTemplatePaymentApproved,
-};
+import { ApprovalConfirmationEmailInput } from '@121-service/src/payments/payment-emails/interfaces/approval-confirmation-email-input.interface';
+import { ApprovalRequestEmailInput } from '@121-service/src/payments/payment-emails/interfaces/approval-request-email-input.interface';
+import { buildTemplateApprovalConfirmation } from '@121-service/src/payments/payment-emails/templates/approval-confirmation.template';
+import { buildTemplateApprovalRequest } from '@121-service/src/payments/payment-emails/templates/approval-request.template';
 
 @Injectable()
 export class PaymentEmailsService {
   constructor(private readonly emailsService: EmailsService) {}
 
-  public async send({
-    paymentEmailInput,
-    paymentEmailType,
-  }: {
-    paymentEmailInput: PaymentEmailInput;
-    paymentEmailType: PaymentEmailType;
-  }): Promise<void> {
+  public async sendApprovalRequestToNextApprovers(
+    input: ApprovalRequestEmailInput,
+  ): Promise<void> {
     await this.emailsService.sendFromTemplate({
-      templateBuilders,
-      input: paymentEmailInput,
-      type: paymentEmailType,
+      templateBuilders: {
+        [PaymentEmailType.approvalRequestToNextApprovers]:
+          buildTemplateApprovalRequest,
+      },
+      input,
+      type: PaymentEmailType.approvalRequestToNextApprovers,
+    });
+  }
+
+  public async sendApprovalConfirmationToCreator(
+    input: ApprovalConfirmationEmailInput,
+  ): Promise<void> {
+    await this.emailsService.sendFromTemplate({
+      templateBuilders: {
+        [PaymentEmailType.approvalConfirmationToCreator]:
+          buildTemplateApprovalConfirmation,
+      },
+      input,
+      type: PaymentEmailType.approvalConfirmationToCreator,
     });
   }
 }

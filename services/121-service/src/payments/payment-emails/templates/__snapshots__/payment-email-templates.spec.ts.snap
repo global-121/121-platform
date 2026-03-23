@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`Payment email templates should render payment approved template 1`] = `
+exports[`Payment email templates should render approval confirmation template 1`] = `
 {
   "body": "
     <p>Dear John Approver,</p>
@@ -22,7 +22,7 @@ exports[`Payment email templates should render payment approved template 1`] = `
 }
 `;
 
-exports[`Payment email templates should render pending approval template 1`] = `
+exports[`Payment email templates should render approval request template 1`] = `
 {
   "body": "
     <p>Dear John Approver,</p>

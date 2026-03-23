@@ -13,7 +13,7 @@ class RegistrationsServiceMock {
 }
 
 class RegistrationsUpdateJobEmailsServiceMock {
-  send = jest.fn();
+  sendImportValidationFailed = jest.fn();
 }
 
 class UserServiceMock {
@@ -67,7 +67,9 @@ describe('RegistrationsUpdateJobsService', () => {
     await service.processRegistrationsUpdateJob(job);
 
     // Assert
-    expect(registrationsUpdateJobEmailsService.send).not.toHaveBeenCalled();
+    expect(
+      registrationsUpdateJobEmailsService.sendImportValidationFailed,
+    ).not.toHaveBeenCalled();
   });
 
   it('should process registrations update job with some failures and send email', async () => {
@@ -97,10 +99,14 @@ describe('RegistrationsUpdateJobsService', () => {
     await service.processRegistrationsUpdateJob(job);
 
     // Assert
-    expect(registrationsUpdateJobEmailsService.send).toHaveBeenCalledTimes(1);
+    expect(
+      registrationsUpdateJobEmailsService.sendImportValidationFailed,
+    ).toHaveBeenCalledTimes(1);
 
     // Extract the attachment and decode the XLSX
-    const callArg = registrationsUpdateJobEmailsService.send.mock.calls[0][0];
+    const callArg =
+      registrationsUpdateJobEmailsService.sendImportValidationFailed.mock
+        .calls[0][0];
     const { contentBytes } = callArg.attachment;
     const buffer = Buffer.from(contentBytes, 'base64');
     const workbook = XLSX.read(buffer, { type: 'buffer' });

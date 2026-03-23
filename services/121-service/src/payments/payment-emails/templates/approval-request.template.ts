@@ -1,9 +1,9 @@
 import { SUPPORT_EMAIL } from '@121-service/src/emails/emails.const';
 import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
-import { PaymentEmailInput } from '@121-service/src/payments/payment-emails/interfaces/payment-email-input.interface';
+import { ApprovalRequestEmailInput } from '@121-service/src/payments/payment-emails/interfaces/approval-request-email-input.interface';
 
-export const buildTemplatePendingApproval = (
-  paymentEmailInput: PaymentEmailInput,
+export const buildTemplateApprovalRequest = (
+  paymentEmailInput: ApprovalRequestEmailInput,
 ): EmailTemplate => {
   const { displayName, paymentUrl } = paymentEmailInput;
 

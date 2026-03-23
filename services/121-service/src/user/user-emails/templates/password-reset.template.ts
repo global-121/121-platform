@@ -1,10 +1,10 @@
 import { SUPPORT_EMAIL } from '@121-service/src/emails/emails.const';
 import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
 import { env } from '@121-service/src/env';
-import { UserEmailInput } from '@121-service/src/user/user-emails/interfaces/user-email-input.interface';
+import { PasswordResetEmailInput } from '@121-service/src/user/user-emails/interfaces/password-reset-email-input.interface';
 
 export const buildTemplatePasswordReset = (
-  userEmailInput: UserEmailInput,
+  userEmailInput: PasswordResetEmailInput,
 ): EmailTemplate => {
   const { displayName, email, password } = userEmailInput;
 

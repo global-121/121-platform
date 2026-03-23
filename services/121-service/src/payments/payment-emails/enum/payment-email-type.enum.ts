@@ -1,4 +1,4 @@
 export enum PaymentEmailType {
-  pendingApproval = 'pendingApproval',
-  paymentApproved = 'paymentApproved',
+  approvalRequestToNextApprovers = 'approvalRequestToNextApprovers',
+  approvalConfirmationToCreator = 'approvalConfirmationToCreator',
 }
