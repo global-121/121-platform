@@ -151,7 +151,7 @@ export class RegistrationViewsMapper {
     if (!selectedOption?.label) {
       return value;
     }
-    if (language && selectedOption.label[language]) {
+    if (language && selectedOption.label[language] != null) {
       return selectedOption.label[language];
     }
     return selectedOption.label[RegistrationPreferredLanguage.en] ?? value;

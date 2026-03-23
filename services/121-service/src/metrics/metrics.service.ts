@@ -174,7 +174,7 @@ export class MetricsService {
           | Record<string, string>
           | undefined;
         row['programFspConfigurationLabel'] =
-          (language && label?.[language]) ||
+          (language ? label?.[language] : undefined) ??
           label?.[RegistrationPreferredLanguage.en];
       }
     }
