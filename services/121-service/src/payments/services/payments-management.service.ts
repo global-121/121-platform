@@ -26,6 +26,8 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
 @Injectable()
 export class PaymentsManagementService {
@@ -42,6 +44,7 @@ export class PaymentsManagementService {
     private readonly paymentApprovalRepository: PaymentApprovalRepository,
     private readonly programApprovalThresholdRepository: ProgramApprovalThresholdRepository,
     private readonly paymentEmailsService: PaymentEmailsService,
+    private readonly azureLogService: AzureLogService,
   ) {}
 
   public async createPayment({
@@ -533,7 +536,6 @@ export class PaymentsManagementService {
     }
   }
 
-  //TODO: on approve and on create payment
   private async sendPendingApprovalEmails({
     paymentId,
     programId,
@@ -564,7 +566,6 @@ export class PaymentsManagementService {
     });
   }
 
-  //TODO: on last approve
   private async sendApprovalConfirmationToCreator({
     paymentId,
     programId,
@@ -572,10 +573,22 @@ export class PaymentsManagementService {
     paymentId: number;
     programId: number;
   }): Promise<void> {
-    const paymentCreator =
-      await this.paymentEventsService.getCreatorOrThrow(paymentId);
+    let paymentCreator: UserEntity;
 
-    if (!paymentCreator.username) {
+    try {
+      paymentCreator =
+        await this.paymentEventsService.getCreatorOrThrow(paymentId);
+
+      if (!paymentCreator.username) {
+        throw new Error('Payment creator does not have an email address');
+      }
+    } catch (error) {
+      this.azureLogService.logError(
+        new Error('Failed to send approval confirmmation email', {
+          cause: error,
+        }),
+        true,
+      );
       return;
     }
 

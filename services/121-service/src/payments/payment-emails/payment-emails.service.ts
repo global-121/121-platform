@@ -7,10 +7,14 @@ import { env } from '@121-service/src/env';
 import { PaymentEmailType } from '@121-service/src/payments/payment-emails/enum/payment-email-type.enum';
 import { buildTemplateApprovalConfirmation } from '@121-service/src/payments/payment-emails/templates/approval-confirmation.template';
 import { buildTemplateApprovalRequest } from '@121-service/src/payments/payment-emails/templates/approval-request.template';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Injectable()
 export class PaymentEmailsService {
-  constructor(private readonly emailsService: EmailsService) {}
+  constructor(
+    private readonly emailsService: EmailsService,
+    private readonly azureLogService: AzureLogService,
+  ) {}
 
   public async sendApprovalRequestToNextApprovers({
     paymentId,
@@ -24,18 +28,25 @@ export class PaymentEmailsService {
     const paymentUrl = this.getPaymentUrl(programId, paymentId);
 
     for (const approver of approvers) {
-      await this.emailsService.sendFromTemplate({
-        templateBuilders: {
-          [PaymentEmailType.approvalRequestToNextApprovers]:
-            buildTemplateApprovalRequest,
-        },
-        input: {
-          email: approver.emailAddress,
-          recipientName: approver.recipientName ?? DEFAULT_DISPLAY_NAME,
-          paymentUrl,
-        },
-        type: PaymentEmailType.approvalRequestToNextApprovers,
-      });
+      try {
+        await this.emailsService.sendFromTemplate({
+          templateBuilders: {
+            [PaymentEmailType.approvalRequestToNextApprovers]:
+              buildTemplateApprovalRequest,
+          },
+          input: {
+            email: approver.emailAddress,
+            recipientName: approver.recipientName ?? DEFAULT_DISPLAY_NAME,
+            paymentUrl,
+          },
+          type: PaymentEmailType.approvalRequestToNextApprovers,
+        });
+      } catch (error) {
+        this.azureLogService.logError(
+          new Error('Failed to send approval request email', { cause: error }),
+          true,
+        );
+      }
     }
   }
 
@@ -54,19 +65,28 @@ export class PaymentEmailsService {
 
     const paymentUrl = this.getPaymentUrl(programId, paymentId);
 
-    await this.emailsService.sendFromTemplate({
-      templateBuilders: {
-        [PaymentEmailType.approvalConfirmationToCreator]:
-          buildTemplateApprovalConfirmation,
-      },
-      input: {
-        email: paymentCreator.emailAddress,
-        recipientName: paymentCreator.recipientName ?? DEFAULT_DISPLAY_NAME,
-        paymentUrl,
-        paymentCreatedAt: formattedCreationDate,
-      },
-      type: PaymentEmailType.approvalConfirmationToCreator,
-    });
+    try {
+      await this.emailsService.sendFromTemplate({
+        templateBuilders: {
+          [PaymentEmailType.approvalConfirmationToCreator]:
+            buildTemplateApprovalConfirmation,
+        },
+        input: {
+          email: paymentCreator.emailAddress,
+          recipientName: paymentCreator.recipientName ?? DEFAULT_DISPLAY_NAME,
+          paymentUrl,
+          paymentCreatedAt: formattedCreationDate,
+        },
+        type: PaymentEmailType.approvalConfirmationToCreator,
+      });
+    } catch (error) {
+      this.azureLogService.logError(
+        new Error('Failed to send approval confirmation email', {
+          cause: error,
+        }),
+        true,
+      );
+    }
   }
 
   private getPaymentUrl = (programId: number, paymentId: number): string => {
