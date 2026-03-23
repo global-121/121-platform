@@ -36,6 +36,7 @@ import { KoboWebhookBasicAuthGuard } from '@121-service/src/kobo/guards/kobo-web
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboSubmissionService } from '@121-service/src/kobo/services/kobo-submission.service';
 import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
+import { MAX_IMPORT_RECORDS } from '@121-service/src/registration/services/registrations-creation.service';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
@@ -169,7 +170,7 @@ export class KoboController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary: 'Import new Kobo submissions as registrations',
-    description: `Fetches all submissions from the linked Kobo form, filters out submissions that have already been imported (by matching Kobo submission UUID against registration referenceId), and imports the remaining new submissions as registrations. Returns an error if the number of new submissions exceeds the maximum import limit (1000).`,
+    description: `Fetches all submissions from the linked Kobo form, filters out submissions that have already been imported (by matching Kobo submission UUID against registration referenceId), and imports the remaining new submissions as registrations. Returns an error if the total number of submissions on the form exceeds the maximum fetch limit (${MAX_IMPORT_RECORDS}).`,
   })
   @ApiParam({
     name: 'programId',

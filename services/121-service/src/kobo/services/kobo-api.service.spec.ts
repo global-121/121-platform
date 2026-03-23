@@ -489,7 +489,7 @@ describe('KoboApiService', () => {
       });
 
       // Act
-      const result = await service.getAllSubmissions({
+      const result = await service.getSubmissionsUpToLimit({
         token: mockToken,
         assetUid: mockAssetUid,
         baseUrl: mockBaseUrl,
@@ -525,7 +525,7 @@ describe('KoboApiService', () => {
       });
 
       // Act
-      const result = await service.getAllSubmissions({
+      const result = await service.getSubmissionsUpToLimit({
         token: mockToken,
         assetUid: mockAssetUid,
         baseUrl: mockBaseUrl,
@@ -551,7 +551,7 @@ describe('KoboApiService', () => {
       });
 
       // Act
-      await service.getAllSubmissions({
+      await service.getSubmissionsUpToLimit({
         token: mockToken,
         assetUid: mockAssetUid,
         baseUrl: mockBaseUrl,
@@ -573,7 +573,7 @@ describe('KoboApiService', () => {
       });
 
       // Act
-      const promise = service.getAllSubmissions({
+      const promise = service.getSubmissionsUpToLimit({
         token: mockToken,
         assetUid: mockAssetUid,
         baseUrl: mockBaseUrl,

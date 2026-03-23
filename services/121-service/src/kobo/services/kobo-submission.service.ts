@@ -104,15 +104,19 @@ export class KoboSubmissionService {
       );
     }
 
-    const { submissions, count } = await this.koboApiService.getAllSubmissions({
-      token: koboIntegration.token,
-      assetUid: koboIntegration.assetUid,
-      baseUrl: koboIntegration.url,
-    });
+    const { submissions, count } =
+      await this.koboApiService.getSubmissionsUpToLimit({
+        token: koboIntegration.token,
+        assetUid: koboIntegration.assetUid,
+        baseUrl: koboIntegration.url,
+      });
+
+    const submissionUuids = submissions.map((s) => s._uuid);
 
     const existingReferenceIds =
-      await this.registrationScopedRepository.getReferenceIdsByProgramId({
+      await this.registrationScopedRepository.getExistingReferenceIds({
         programId,
+        referenceIds: submissionUuids,
       });
 
     const newSubmissions = submissions.filter(
@@ -121,7 +125,7 @@ export class KoboSubmissionService {
 
     if (count > MAX_IMPORT_RECORDS) {
       throw new HttpException(
-        `Too many new submissions to import. Maximum number of records is ${MAX_IMPORT_RECORDS}. There are ${count} new submissions. Please use the CSV import instead and split the data into smaller batches.`,
+        `The Kobo form has ${count} total submissions, which exceeds the maximum of ${MAX_IMPORT_RECORDS} that can be fetched at once. Not all submissions could be retrieved, so some new ones may be missing. Please use the CSV import instead and split the data into smaller batches.`,
         HttpStatus.BAD_REQUEST,
       );
     }

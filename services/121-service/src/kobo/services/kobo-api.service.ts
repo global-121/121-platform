@@ -198,7 +198,7 @@ export class KoboApiService {
     });
   }
 
-  public async getAllSubmissions({
+  public async getSubmissionsUpToLimit({
     token,
     assetUid,
     baseUrl,

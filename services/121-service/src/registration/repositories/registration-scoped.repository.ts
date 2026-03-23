@@ -5,6 +5,7 @@ import {
   DeleteResult,
   Equal,
   FindOptionsWhere,
+  In,
   InsertResult,
   ObjectId,
   RemoveOptions,
@@ -168,13 +169,18 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     });
   }
 
-  public async getReferenceIdsByProgramId({
+  public async getExistingReferenceIds({
     programId,
+    referenceIds,
   }: {
     programId: number;
+    referenceIds: string[];
   }): Promise<Set<string>> {
+    if (referenceIds.length === 0) {
+      return new Set();
+    }
     const registrations = await this.repository.find({
-      where: { programId: Equal(programId) },
+      where: { programId: Equal(programId), referenceId: In(referenceIds) },
       select: { referenceId: true },
     });
     return new Set(registrations.map((r) => r.referenceId));

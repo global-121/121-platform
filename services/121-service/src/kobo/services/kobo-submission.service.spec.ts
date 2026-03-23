@@ -86,7 +86,7 @@ describe('KoboSubmissionService', () => {
           provide: KoboApiService,
           useValue: {
             getSubmission: jest.fn(),
-            getAllSubmissions: jest.fn(),
+            getSubmissionsUpToLimit: jest.fn(),
           },
         },
         {
@@ -105,7 +105,7 @@ describe('KoboSubmissionService', () => {
         {
           provide: RegistrationScopedRepository,
           useValue: {
-            getReferenceIdsByProgramId: jest.fn(),
+            getExistingReferenceIds: jest.fn(),
           },
         },
       ],
@@ -307,11 +307,11 @@ describe('KoboSubmissionService', () => {
     it('should successfully import new submissions (happy flow)', async () => {
       // Arrange
       koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
-      koboApiService.getAllSubmissions.mockResolvedValue({
+      koboApiService.getSubmissionsUpToLimit.mockResolvedValue({
         count: 2,
         submissions: [mockSubmission, mockSubmission2],
       });
-      registrationScopedRepository.getReferenceIdsByProgramId.mockResolvedValue(
+      registrationScopedRepository.getExistingReferenceIds.mockResolvedValue(
         new Set([successSubmissionUuid]), // First submission already exists
       );
       registrationsCreationService.importRegistrations.mockResolvedValue({
@@ -325,6 +325,12 @@ describe('KoboSubmissionService', () => {
       });
 
       // Assert
+      expect(
+        registrationScopedRepository.getExistingReferenceIds,
+      ).toHaveBeenCalledWith({
+        programId: 1,
+        referenceIds: [successSubmissionUuid, 'new-submission-uuid'],
+      });
       expect(
         registrationsCreationService.importRegistrations,
       ).toHaveBeenCalledWith({
@@ -364,11 +370,11 @@ describe('KoboSubmissionService', () => {
     it('should throw HttpException when there are too many submissions to import', async () => {
       // Arrange
       koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
-      koboApiService.getAllSubmissions.mockResolvedValue({
+      koboApiService.getSubmissionsUpToLimit.mockResolvedValue({
         count: 1001,
         submissions: [],
       });
-      registrationScopedRepository.getReferenceIdsByProgramId.mockResolvedValue(
+      registrationScopedRepository.getExistingReferenceIds.mockResolvedValue(
         new Set(),
       );
 
@@ -384,19 +390,19 @@ describe('KoboSubmissionService', () => {
       );
       await expect(promise).rejects.toHaveProperty(
         'message',
-        expect.stringContaining('Too many new submissions to import'),
+        expect.stringContaining('which exceeds the maximum of'),
       );
     });
 
     it('should filter out already existing registrations', async () => {
       // Arrange
       koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
-      koboApiService.getAllSubmissions.mockResolvedValue({
+      koboApiService.getSubmissionsUpToLimit.mockResolvedValue({
         count: 2,
         submissions: [mockSubmission, mockSubmission2],
       });
       // Both submissions already exist
-      registrationScopedRepository.getReferenceIdsByProgramId.mockResolvedValue(
+      registrationScopedRepository.getExistingReferenceIds.mockResolvedValue(
         new Set([successSubmissionUuid, 'new-submission-uuid']),
       );
       registrationsCreationService.importRegistrations.mockResolvedValue({
