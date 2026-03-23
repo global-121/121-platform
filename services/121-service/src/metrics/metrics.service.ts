@@ -60,11 +60,13 @@ export class MetricsService {
     type,
     userId,
     paginationQuery,
+    language,
   }: {
     programId: number;
     userId: number;
     type: ExportType;
     paginationQuery?: PaginateQuery;
+    language?: string;
   }): Promise<FileDto> {
     const validExportType = [
       ExportType.registrations,
@@ -107,6 +109,7 @@ export class MetricsService {
         return this.getRegistrationsExport({
           programId,
           paginationQuery,
+          language,
         });
       }
       case ExportType.unusedVouchers: {
@@ -126,13 +129,16 @@ export class MetricsService {
   private async getRegistrationsExport({
     programId,
     paginationQuery,
+    language,
   }: {
     programId: number;
     paginationQuery: PaginateQuery;
+    language?: string;
   }): Promise<FileDto> {
     const data = await this.getRegistrationsData({
       programId,
       paginationQuery,
+      language,
     });
     const response = {
       fileName: ExportType.registrations,
@@ -144,9 +150,11 @@ export class MetricsService {
   private async getRegistrationsData({
     programId,
     paginationQuery,
+    language,
   }: {
     programId: number;
     paginationQuery: PaginateQuery;
+    language?: string;
   }): Promise<object[]> {
     let rows: Record<string, unknown>[] =
       await this.getRegistrationsGenericFields({
@@ -160,18 +168,21 @@ export class MetricsService {
         delete row['registrationProgramId'];
       }
 
-      // If the label is multilingual, use the English string as the label.
+      // If the label is multilingual, use the requested language (or English as fallback).
       if (typeof row['programFspConfigurationLabel'] === 'object') {
-        const preferredLanguage = RegistrationPreferredLanguage.en;
-        row['programFspConfigurationLabel'] = row[
-          'programFspConfigurationLabel'
-        ]?.[preferredLanguage] as string | undefined;
+        const label = row['programFspConfigurationLabel'] as
+          | Record<string, string>
+          | undefined;
+        row['programFspConfigurationLabel'] =
+          (language && label?.[language]) ||
+          label?.[RegistrationPreferredLanguage.en];
       }
     }
     rows = await this.replaceValueWithDropdownLabel({
       rows,
       select: paginationQuery.select,
       programId,
+      language,
     });
 
     const orderedObjects = rows.map((row) => {
@@ -281,10 +292,12 @@ export class MetricsService {
     programId,
     rows,
     select,
+    language,
   }: {
     programId: number;
     rows: Record<string, unknown>[];
     select?: string[];
+    language?: string;
   }): Promise<Record<string, unknown>[]> {
     const dropdownAttributes =
       await this.programRegistrationAttributeRepository.getDropdownAttributes({
@@ -293,9 +306,10 @@ export class MetricsService {
       });
 
     // Converts values of dropdown questions to the labels of the list of registrations
-    return RegistrationViewsMapper.replaceDropdownValuesWithEnglishLabel({
+    return RegistrationViewsMapper.replaceDropdownValuesWithLabel({
       rows,
       attributes: dropdownAttributes,
+      language,
     });
   }
 

@@ -380,6 +380,13 @@ export class PaymentsController {
     description:
       'Format to return the data in. Options are "json" and "xlsx". Defaults to "json" if not specified.',
   })
+  @ApiQuery({
+    name: 'language',
+    required: false,
+    type: 'string',
+    description:
+      'Language for translating export column values (e.g. dropdown labels). Uses ISO 639-1 two-letter code. Defaults to English if the language is not available.',
+  })
   @UsePipes(new ValidationPipe({ transform: true }))
   // This transaction export controller is located in the payments controller because the transaction modules have no knowledge of programs and registrations
   // We tried to name this controller first 'programs/:programId/payments/transactions but than it conflicted with the getTransactions route
@@ -395,6 +402,7 @@ export class PaymentsController {
         fromDateString: query.fromDate,
         toDateString: query.toDate,
         paymentId: query.paymentId ? Number(query.paymentId) : undefined,
+        language: query.language,
       });
     switch (query.format) {
       case ExportFileFormat.xlsx:

@@ -121,31 +121,39 @@ export class RegistrationViewsMapper {
     return fullnameConcat.join(' ');
   }
 
-  static replaceDropdownValuesWithEnglishLabel({
+  static replaceDropdownValuesWithLabel({
     rows,
     attributes,
+    language,
   }: {
     rows: Record<string, unknown>[];
     attributes: ProgramRegistrationAttributeEntity[];
+    language?: string;
   }): Record<string, unknown>[] {
     for (const attribute of attributes) {
       for (const row of rows) {
-        row[attribute.name] = this.getDropdownEnglishLabel(
+        row[attribute.name] = this.getDropdownLabel(
           attribute,
           row[attribute.name],
+          language,
         );
       }
     }
     return rows;
   }
 
-  private static getDropdownEnglishLabel(
+  private static getDropdownLabel(
     attribute: ProgramRegistrationAttributeEntity,
     value: unknown,
+    language?: string,
   ): unknown {
-    const english = RegistrationPreferredLanguage.en;
     const selectedOption = attribute.options?.find((o) => o.option === value);
-
-    return selectedOption?.label?.[english] ?? value;
+    if (!selectedOption?.label) {
+      return value;
+    }
+    if (language && selectedOption.label[language]) {
+      return selectedOption.label[language];
+    }
+    return selectedOption.label[RegistrationPreferredLanguage.en] ?? value;
   }
 }
