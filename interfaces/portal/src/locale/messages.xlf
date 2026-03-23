@@ -2235,6 +2235,12 @@
       <trans-unit id="8995474184079201011" datatype="html">
         <source>Use a clear name so users can easily recognize the file.</source>
       </trans-unit>
+      <trans-unit id="4803523554231687262" datatype="html">
+        <source>Delete payment</source>
+      </trans-unit>
+      <trans-unit id="641865702986102945" datatype="html">
+        <source>Are you sure you want to delete this payment? This action cannot be undone.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

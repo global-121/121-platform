@@ -1,15 +1,19 @@
 import { TestBed } from '@automock/jest';
+import { HttpStatus } from '@nestjs/common';
 
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments-helper.service';
 import { PaymentsManagementService } from '@121-service/src/payments/services/payments-management.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
+import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.entity';
 import { ProgramApprovalThresholdRepository } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+
+import '@121-service/src/utils/test-helpers/matchers/httpExceptionMatcher';
 
 describe('PaymentsManagementService', () => {
   let service: PaymentsManagementService;
@@ -20,6 +24,7 @@ describe('PaymentsManagementService', () => {
   let registrationsBulkService: RegistrationsBulkService;
   let registrationsPaginationService: RegistrationsPaginationService;
   let programApprovalThresholdRepository: ProgramApprovalThresholdRepository;
+  let transactionViewScopedRepository: TransactionViewScopedRepository;
 
   const basePaymentParams = {
     userId: 1,
@@ -46,6 +51,9 @@ describe('PaymentsManagementService', () => {
     programApprovalThresholdRepository = unitRef.get(
       ProgramApprovalThresholdRepository,
     );
+    transactionViewScopedRepository = unitRef.get(
+      TransactionViewScopedRepository,
+    );
     (service as any).paymentRepository = {
       save: jest.fn().mockImplementation((entity) => {
         return Promise.resolve({ ...entity, id: 123 });
@@ -57,6 +65,7 @@ describe('PaymentsManagementService', () => {
   });
 
   it('should handle dryRun scenario and not call write function', async () => {
+    // Arrange
     jest
       .spyOn(
         programApprovalThresholdRepository as any,
@@ -75,10 +84,12 @@ describe('PaymentsManagementService', () => {
           programFspConfigurationName: 'fspA',
         },
       ]);
-
     const params = { ...basePaymentParams, dryRun: true };
+
+    // Act
     const result = await service.createPayment(params);
 
+    // Assert
     expect(
       paymentsProgressHelperService.checkAndLockPaymentProgressOrThrow,
     ).not.toHaveBeenCalled();
@@ -154,6 +165,7 @@ describe('PaymentsManagementService', () => {
   });
 
   it('should call finally block even if error is thrown in try', async () => {
+    // Arrange
     (
       registrationsBulkService.getBulkActionResult as jest.Mock
     ).mockResolvedValue({});
@@ -162,6 +174,8 @@ describe('PaymentsManagementService', () => {
       .mockImplementation(() => {
         throw new Error('Simulated error');
       });
+
+    // Act & Assert
     await expect(service.createPayment(basePaymentParams)).rejects.toThrow(
       'Simulated error',
     );
@@ -171,6 +185,7 @@ describe('PaymentsManagementService', () => {
   });
 
   it('should return early if no transferValue', async () => {
+    // Arrange
     (
       registrationsBulkService.getBulkActionResult as jest.Mock
     ).mockResolvedValue({
@@ -195,7 +210,11 @@ describe('PaymentsManagementService', () => {
         thresholds: [],
       });
     const params = { ...basePaymentParams, transferValue: undefined };
+
+    // Act
     const result = await service.createPayment(params);
+
+    // Assert
     expect(result).toEqual({
       sumPaymentAmountMultiplier: 0,
       programFspConfigurationNames: [],
@@ -207,18 +226,21 @@ describe('PaymentsManagementService', () => {
 
   describe('createPaymentAndEventsEntities', () => {
     it('should assign correct rank based on thresholdAmount in createPaymentAndEventsEntities', async () => {
+      // Arrange
       const thresholds = [
         { id: 1, thresholdAmount: 100, approverAssignments: [] },
         { id: 2, thresholdAmount: 0, approverAssignments: [] },
         { id: 3, thresholdAmount: 500, approverAssignments: [] },
       ] as unknown as ProgramApprovalThresholdEntity[];
 
+      // Act
       await (service as any).createPaymentAndEventsEntities({
         userId: 2,
         programId: 3,
         thresholds,
       });
 
+      // Assert
       const expectedApprovals = [
         expect.objectContaining({
           rank: 1,
@@ -254,7 +276,10 @@ describe('PaymentsManagementService', () => {
     });
 
     it('should throw if payment is already fully approved', async () => {
+      // Arrange
       paymentApprovalRepository.getCurrentApprovalStep.mockResolvedValue(null);
+
+      // Act & Assert
       await expect(
         service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
       ).rejects.toMatchObject({
@@ -264,12 +289,15 @@ describe('PaymentsManagementService', () => {
     });
 
     it('should throw if user is not assigned to the current approval step', async () => {
+      // Arrange
       paymentApprovalRepository.getCurrentApprovalStep.mockResolvedValue({
         id: 1,
         rank: 1,
         approved: false,
         approverAssignments: [],
       });
+
+      // Act & Assert
       await expect(
         service.approvePayment({ userId: 1, programId: 2, paymentId: 3 }),
       ).rejects.toMatchObject({
@@ -280,6 +308,7 @@ describe('PaymentsManagementService', () => {
     });
 
     it('should approve the current step and save', async () => {
+      // Arrange
       const currentStep = {
         id: 1,
         approved: false,
@@ -296,14 +325,17 @@ describe('PaymentsManagementService', () => {
         .spyOn(paymentEventsService, 'createApprovedEvent')
         .mockResolvedValue(undefined);
 
+      // Act
       await service.approvePayment({ userId: 1, programId: 2, paymentId: 3 });
 
+      // Assert
       expect(currentStep.approved).toBe(true);
       expect(paymentApprovalRepository.save).toHaveBeenCalledWith(currentStep);
       expect(paymentEventsService.createApprovedEvent).toHaveBeenCalled();
     });
 
     it('should call processFinalApproval if all steps are approved', async () => {
+      // Arrange
       const currentStep = {
         id: 1,
         approved: false,
@@ -323,9 +355,77 @@ describe('PaymentsManagementService', () => {
         .spyOn(service as any, 'processFinalApproval')
         .mockResolvedValue(undefined);
 
+      // Act
       await service.approvePayment({ userId: 1, programId: 2, paymentId: 3 });
 
+      // Assert
       expect(processFinalApprovalSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('deletePayment', () => {
+    const deleteParams = { programId: 2, paymentId: 5 };
+
+    beforeEach(() => {
+      (service as any).paymentRepository.findOne = jest
+        .fn()
+        .mockResolvedValue({ id: 5, programId: 2 });
+      (service as any).paymentRepository.remove = jest
+        .fn()
+        .mockResolvedValue(undefined);
+      (
+        paymentsProgressHelperService.isPaymentInProgress as jest.Mock
+      ).mockResolvedValue(false);
+      (
+        transactionViewScopedRepository.hasBeenStarted as jest.Mock
+      ).mockResolvedValue(false);
+    });
+
+    it('should throw NOT_FOUND if payment does not exist', async () => {
+      // Arrange
+      (service as any).paymentRepository.findOne = jest
+        .fn()
+        .mockResolvedValue(null);
+
+      // Act & Assert
+      await expect(
+        service.deletePayment(deleteParams),
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.NOT_FOUND);
+    });
+
+    it('should throw if payment is in progress', async () => {
+      // Arrange
+      (
+        paymentsProgressHelperService.isPaymentInProgress as jest.Mock
+      ).mockResolvedValue(true);
+
+      // Act & Assert
+      await expect(
+        service.deletePayment(deleteParams),
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+    });
+
+    it('should throw if payment has already been started', async () => {
+      // Arrange
+      (
+        transactionViewScopedRepository.hasBeenStarted as jest.Mock
+      ).mockResolvedValue(true);
+
+      // Act & Assert
+      await expect(
+        service.deletePayment(deleteParams),
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
+    });
+
+    it('should remove the payment when it has not been started', async () => {
+      // Act
+      await service.deletePayment(deleteParams);
+
+      // Assert
+      expect((service as any).paymentRepository.remove).toHaveBeenCalledWith({
+        id: 5,
+        programId: 2,
+      });
     });
   });
 });

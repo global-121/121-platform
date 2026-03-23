@@ -10,6 +10,7 @@ import {
   approvePayment,
   createPayment,
   getPaymentEvents,
+  getPaymentSummary,
   getTransactionsByPaymentIdPaginated,
   retryPayment,
   startPayment,
@@ -95,6 +96,13 @@ describe('Payment start', () => {
     );
     expect(registrationBeforeStart!.paymentCount).toBe(0);
 
+    const summaryBeforeStart = await getPaymentSummary({
+      programId,
+      paymentId,
+      accessToken,
+    });
+    expect(summaryBeforeStart.body.hasBeenStarted).toBe(false);
+
     // Act 2 - start payment
     const startPaymentResponse = await startPayment({
       programId,
@@ -136,6 +144,13 @@ describe('Payment start', () => {
     );
     expect(registrationAfterStart!.paymentCountRemaining).toBe(0);
     expect(registrationAfterStart!.paymentCount).toBe(1);
+
+    const summaryAfterStart = await getPaymentSummary({
+      programId,
+      paymentId,
+      accessToken,
+    });
+    expect(summaryAfterStart.body.hasBeenStarted).toBe(true);
   });
 
   describe('with included and non-included registrations', () => {

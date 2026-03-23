@@ -61,6 +61,9 @@
         [paymentId]="paymentId()"
         [hasExportFileIntegration]="hasFspWithExportFileIntegration()"
       />
+      @if (canDeletePayment()) {
+        <app-ellipsis-menu [menuItems]="menuItems()" />
+      }
     </div>
   </p-card>
   <div
@@ -193,3 +196,17 @@
     </p-card>
   </div>
 </app-page-layout>
+
+<app-form-dialog
+  #deletePaymentDialog
+  header="Delete payment"
+  i18n-header
+  headerIcon="pi pi-trash"
+  proceedLabel="Delete payment"
+  i18n-proceedLabel
+  [mutation]="deletePaymentMutation"
+  [mutationData]="undefined"
+  i18n
+>
+  Are you sure you want to delete this payment? This action cannot be undone.
+</app-form-dialog>

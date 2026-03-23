@@ -7,9 +7,15 @@ import {
   input,
   LOCALE_ID,
   signal,
+  viewChild,
 } from '@angular/core';
+import { Router } from '@angular/router';
 
-import { injectQuery } from '@tanstack/angular-query-experimental';
+import {
+  injectMutation,
+  injectQuery,
+} from '@tanstack/angular-query-experimental';
+import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -24,6 +30,8 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { AppRoutes } from '~/app.routes';
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { ColoredChipPaymentApprovalStatusComponent } from '~/components/colored-chip-payment-approval-status/colored-chip-payment-approval-status.component';
+import { EllipsisMenuComponent } from '~/components/ellipsis-menu/ellipsis-menu.component';
+import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { MetricTileComponent } from '~/components/metric-tile/metric-tile.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { ApprovePaymentComponent } from '~/components/page-layout-payment/components/approve-payment/approve-payment.component';
@@ -58,6 +66,8 @@ import { Locale } from '~/utils/locale';
     ColoredChipPaymentApprovalStatusComponent,
     CommonModule,
     TimelineModule,
+    EllipsisMenuComponent,
+    FormDialogComponent,
   ],
   templateUrl: './page-layout-payment.component.html',
   styles: ``,
@@ -75,9 +85,14 @@ export class PageLayoutPaymentComponent {
   readonly programApiService = inject(ProgramApiService);
   readonly translatableStringService = inject(TranslatableStringService);
   readonly TransactionStatusEnum = TransactionStatusEnum;
+  private readonly router = inject(Router);
 
   readonly fspSettings = signal<Record<Fsps, FspSettingsDto>>(FSP_SETTINGS);
   private authService = inject(AuthService);
+
+  readonly deletePaymentDialog = viewChild.required<FormDialogComponent>(
+    'deletePaymentDialog',
+  );
 
   program = injectQuery(this.programApiService.getProgram(this.programId));
   paymentStatus = injectQuery(
@@ -422,4 +437,46 @@ export class PageLayoutPaymentComponent {
       ? $localize`:@@inProgressChipTooltip:The payment will be in progress while the transactions in the table below are loading.`
       : undefined,
   );
+
+  readonly canDeletePayment = computed(() => {
+    if (
+      !this.authService.hasAllPermissions({
+        programId: this.programId(),
+        requiredPermissions: [PermissionEnum.PaymentCREATE],
+      })
+    ) {
+      return false;
+    }
+
+    if (this.isPaymentInProgress()) {
+      return false;
+    }
+
+    if (this.paymentAggregateData()?.hasBeenStarted) {
+      return false;
+    }
+
+    return true;
+  });
+
+  readonly menuItems = computed<MenuItem[]>(() => [
+    {
+      label: $localize`Delete payment`,
+      icon: 'pi pi-trash',
+      command: () => {
+        this.deletePaymentDialog().show();
+      },
+    },
+  ]);
+
+  readonly deletePaymentMutation = injectMutation(() => ({
+    mutationFn: () =>
+      this.paymentApiService.deletePayment({
+        programId: this.programId,
+        paymentId: this.paymentId,
+      }),
+    onSuccess: async () => {
+      await this.router.navigate(this.allPaymentsLink());
+    },
+  }));
 }

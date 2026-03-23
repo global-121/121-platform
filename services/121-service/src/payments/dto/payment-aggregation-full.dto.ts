@@ -5,6 +5,9 @@ import { PaymentApprovalStatusResponseDto } from '@121-service/src/payments/dto/
 import { UILanguageTranslation } from '@121-service/src/shared/types/ui-language-translation.type';
 
 export class PaymentAggregationFullDto extends PaymentAggregationSummaryDto {
+  @ApiProperty({ example: false })
+  hasBeenStarted: boolean;
+
   @ApiProperty({
     example: [
       {

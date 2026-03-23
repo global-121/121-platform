@@ -108,8 +108,13 @@ export class PaymentsReportingService {
         paymentId,
       });
 
+    const summary = getPaymentAggregationSummary[0];
+    const hasBeenStarted =
+      await this.transactionViewScopedRepository.hasBeenStarted(paymentId);
+
     return {
-      ...getPaymentAggregationSummary[0],
+      ...summary,
+      hasBeenStarted,
       fsps,
       approvalStatus,
       approversForCurrentApprovalStep,

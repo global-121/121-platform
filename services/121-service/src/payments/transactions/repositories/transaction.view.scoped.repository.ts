@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, FindOperator, Not, Repository } from 'typeorm';
+import { Equal, FindOperator, In, Not, Repository } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
@@ -235,35 +235,19 @@ export class TransactionViewScopedRepository extends ScopedRepository<Transactio
     return transaction.id;
   }
 
-  public async aggregateTransactionsByStatus({
-    programId,
-    paymentId,
-  }: {
-    programId: number;
-    paymentId: number;
-  }): Promise<
-    {
-      status: TransactionStatusEnum;
-      count: string;
-      totalTransferValue: string;
-    }[]
-  > {
-    return await this.createQueryBuilder('transaction')
-      .select('transaction.status', 'status')
-      .leftJoin('transaction.payment', 'p')
-      .addSelect('COUNT(*)', 'count')
-      .addSelect(
-        'SUM(ROUND(transaction."transferValue"::numeric, 2))',
-        'totalTransferValue',
-      )
-      .andWhere('p."programId" = :programId', {
-        programId,
-      })
-      .andWhere('transaction."paymentId" = :paymentId', {
-        paymentId,
-      })
-      .groupBy('transaction.status')
-      .getRawMany();
+  public async hasBeenStarted(paymentId: number): Promise<boolean> {
+    const count = await this.count({
+      where: {
+        paymentId: Equal(paymentId),
+        status: Not(
+          In([
+            TransactionStatusEnum.pendingApproval,
+            TransactionStatusEnum.approved,
+          ]),
+        ),
+      },
+    });
+    return count > 0;
   }
 
   public async aggregateTransactionsByStatusForAllPayments({
