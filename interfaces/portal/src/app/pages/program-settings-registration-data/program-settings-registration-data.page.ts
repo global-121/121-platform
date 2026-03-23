@@ -4,6 +4,7 @@ import { CardModule } from 'primeng/card';
 
 import { PageLayoutProgramSettingsComponent } from '~/components/page-layout-program-settings/page-layout-program-settings.component';
 import { IntegrateKoboButtonComponent } from '~/pages/program-settings-registration-data/components/integrate-kobo-button/integrate-kobo-button.component';
+import { RegistrationAttributeListComponent } from '~/pages/program-settings-registration-data/components/registration-attribute-list/registration-attribute-list.component';
 
 @Component({
   selector: 'app-program-settings-registration-data',
@@ -11,6 +12,7 @@ import { IntegrateKoboButtonComponent } from '~/pages/program-settings-registrat
     CardModule,
     PageLayoutProgramSettingsComponent,
     IntegrateKoboButtonComponent,
+    RegistrationAttributeListComponent,
   ],
   templateUrl: './program-settings-registration-data.page.html',
   styles: ``,

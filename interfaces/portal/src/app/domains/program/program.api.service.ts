@@ -17,6 +17,7 @@ import {
   Program,
   ProgramAttachment,
   ProgramAttachmentFileType,
+  ProgramRegistrationAttribute,
   ProgramUser,
   ProgramUserAssignment,
   ProgramUserWithRolesLabel,
@@ -238,6 +239,27 @@ export class ProgramApiService extends DomainApiService {
         newFilename,
       },
     });
+  }
+
+  updateProgramRegistrationAttribute({
+    programId,
+    attributeName,
+    body,
+  }: {
+    programId: Signal<number | string>;
+    attributeName: string;
+    body: {
+      label?: Record<string, string>;
+      duplicateCheck?: boolean;
+    };
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<ProgramRegistrationAttribute>(
+      {
+        method: 'PATCH',
+        endpoint: `${BASE_ENDPOINT}/${programId().toString()}/registration-attributes/${attributeName}`,
+        body,
+      },
+    );
   }
 
   getProgramAttributes({

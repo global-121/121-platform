@@ -1,0 +1,13 @@
+@if (program.isPending()) {
+  <p-skeleton height="8rem" />
+} @else if (program.isSuccess()) {
+  <div class="space-y-4">
+    @for (attribute of registrationAttributes(); track attribute.name) {
+      <app-registration-attribute-card
+        [programId]="programId()"
+        [attribute]="attribute"
+        class="block"
+      />
+    }
+  </div>
+}

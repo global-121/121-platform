@@ -1,0 +1,45 @@
+<app-card-editable
+  [header]="attribute().name"
+  editPencilTitle="Edit registration attribute"
+  i18n-editPencilTitle
+  [canEdit]="canEdit()"
+  [(isEditing)]="isEditing"
+  [formGroup]="formGroup"
+  [mutation]="updateAttributeMutation"
+  [mutationData]="getMutationData()"
+>
+  @if (!isEditing()) {
+    <app-data-list [data]="attributeDataList()" />
+  } @else {
+    <div class="space-y-4 pt-2">
+      @for (language of getFormLanguages(); track language) {
+        <app-form-field-wrapper
+          [label]="getLanguageName(language) + ' label'"
+          [isRequired]="true"
+          [errorMessage]="
+            getLabelControl(language).touched &&
+            getLabelControl(language).invalid
+              ? 'Label is required'
+              : false
+          "
+        >
+          <input
+            pInputText
+            [formControl]="getLabelControl(language)"
+            class="w-full"
+          />
+        </app-form-field-wrapper>
+      }
+      <div class="flex items-center gap-2">
+        <p-checkbox
+          [formControl]="formGroup.controls.duplicateCheck"
+          [binary]="true"
+          inputId="duplicateCheck-{{ attribute().name }}"
+        />
+        <label for="duplicateCheck-{{ attribute().name }}">
+          <ng-container i18n>Use for de-duplication</ng-container>
+        </label>
+      </div>
+    </div>
+  }
+</app-card-editable>

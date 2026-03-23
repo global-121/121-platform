@@ -17,4 +17,21 @@
       class="w-1/2"
     ></app-integrate-kobo-button>
   </p-card>
+
+  <p-card class="[&_.p-card]:border-grey-300 [&_.p-card]:border">
+    <h2
+      i18n
+      class="mb-4"
+    >
+      Registration attributes
+    </h2>
+    <p
+      i18n
+      class="mb-6"
+    >
+      Manage the registration attributes for this program. You can edit labels
+      and configure de-duplication settings for each attribute.
+    </p>
+    <app-registration-attribute-list [programId]="programId()" />
+  </p-card>
 </app-page-layout-program-settings>

@@ -1,4 +1,5 @@
 import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
+import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { GetProgramAttachmentResponseDto } from '@121-service/src/programs/program-attachments/dtos/get-program-attachment-response.dto';
 import { Attribute as AttributeFrom121Service } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { GetUserReponseDto } from '@121-service/src/user/dto/get-user-response.dto';
@@ -20,6 +21,8 @@ export type ProgramAttachment = {
 } & Dto<GetProgramAttachmentResponseDto>;
 
 export type ProgramUserAssignment = Dto<AssignmentResponseDTO>;
+
+export type ProgramRegistrationAttribute = Dto<ProgramRegistrationAttributeDto>;
 
 export type ProgramUserWithRolesLabel = {
   allRolesLabel: string;
