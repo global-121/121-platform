@@ -60,6 +60,7 @@ describe('UserService', () => {
           provide: UserEmailsService,
           useValue: {
             send: jest.fn(),
+            sendPasswordReset: jest.fn(),
           },
         },
       ],

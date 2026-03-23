@@ -388,7 +388,15 @@ describe('PaymentsManagementService', () => {
         id: 1,
         approved: false,
         rank: 1,
-        approverAssignments: [{ userId: 1 }],
+        approverAssignments: [
+          {
+            userId: 1,
+            user: {
+              username: 'approver@example.org',
+              displayName: 'Test Approver',
+            },
+          },
+        ],
       };
       paymentApprovalRepository.getCurrentApprovalStep.mockResolvedValue(
         currentStep,
