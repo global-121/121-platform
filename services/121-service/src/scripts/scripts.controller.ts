@@ -140,6 +140,7 @@ export class ScriptsController {
         : true;
       await this.scriptsService.loadSeedScenario({
         seedScript: SeedScript.nlrcMultipleMock,
+        resetIdentifier,
         isApiTests,
         powerNrRegistrationsString: mockPowerNumberRegistrations,
         includeRegistrationEvents,
@@ -163,8 +164,9 @@ export class ScriptsController {
         );
       }
       await this.scriptsService.loadSeedScenario({
-        seedScript: script,
+        resetIdentifier,
         isApiTests,
+        seedScript: script,
         approverMode: approverModeToUse,
       });
     }
