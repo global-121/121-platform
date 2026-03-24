@@ -77,7 +77,6 @@ export class CommercialBankEthiopiaAccountManagementService {
       await this.retrieveAndUpsertAccountEnqueryPerRegistration({
         registration,
         credentials,
-        programId,
       });
     }
     console.timeEnd(logMessageProgram);
@@ -87,14 +86,10 @@ export class CommercialBankEthiopiaAccountManagementService {
   private async retrieveAndUpsertAccountEnqueryPerRegistration({
     registration,
     credentials,
-    programId,
   }: {
     registration: CommercialBankEthiopiaValidationData;
     credentials: RequiredUsernamePasswordInterface;
-    programId: number;
   }) {
-    const logMessageRegistration = `CBE Reconciliation - Program: ${programId} - getValidationStatus for Registration: ${registration.id}`;
-    console.time(logMessageRegistration);
     let validationResult;
     try {
       validationResult =
@@ -108,10 +103,8 @@ export class CommercialBankEthiopiaAccountManagementService {
         `Error fetching validation status for Registration ID ${registration.id} with account number ${registration.bankAccountNumber}:`,
         error,
       );
-      console.timeEnd(logMessageRegistration);
       return;
     }
-    console.timeEnd(logMessageRegistration);
 
     const result = new CommercialBankEthiopiaAccountEnquiriesEntity();
     result.registrationId = registration?.id;
@@ -180,9 +173,13 @@ export class CommercialBankEthiopiaAccountManagementService {
       });
     const queryBuilderReportRegistrations =
       queryBuilderCbeRegistrations.andWhere(
-        'registration.status IS DISTINCT FROM :pausedStatus',
+        '(registration.status NOT IN (:...excludedStatuses) OR registration.status IS NULL)',
         {
-          pausedStatus: RegistrationStatusEnum.paused, // The NOT-operator does not work with null values so we use IS DISTINCT FROM
+          excludedStatuses: [
+            RegistrationStatusEnum.paused,
+            RegistrationStatusEnum.completed,
+            RegistrationStatusEnum.declined,
+          ],
         },
       );
     const registrationsWithCBE =
