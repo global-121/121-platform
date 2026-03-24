@@ -12,6 +12,7 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "chat.useNestedAgentsMdFiles": true,
   "eslint.enable": true,
   "eslint.format.enable": true,
   "eslint.rules.customizations": [

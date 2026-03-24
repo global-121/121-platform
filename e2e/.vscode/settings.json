@@ -12,6 +12,7 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "chat.useNestedAgentsMdFiles": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
     "source.removeUnusedImports": "explicit"
