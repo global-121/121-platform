@@ -15,7 +15,7 @@ import { ButtonModule } from 'primeng/button';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangeStatusSubmitButtonsComponent {
-  readonly isMutating = input<boolean>(false);
+  readonly isMutating = input(false);
   readonly cancelClick = output();
   readonly approveClick = output<MouseEvent>();
 }

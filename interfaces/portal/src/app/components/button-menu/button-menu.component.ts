@@ -26,9 +26,9 @@ export class ButtonMenuComponent {
   readonly label = input.required<string>();
   readonly menuItems = input.required<MenuItem[]>();
   readonly icon = input<string>();
-  readonly outlined = input<boolean>(false);
-  readonly plain = input<boolean>(false);
-  readonly text = input<boolean>(false);
+  readonly outlined = input(false);
+  readonly plain = input(false);
+  readonly text = input(false);
   readonly size = input<'large' | 'small'>();
 
   readonly menuOpen = model(false);

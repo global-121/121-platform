@@ -66,7 +66,7 @@ export class IntegrateKoboButtonComponent {
     viewChild.required<FormDialogComponent>('linkKoboDialog');
 
   readonly koboConfigurationFormGroup = new FormGroup({
-    fullKoboFormUrl: new FormControl<string>('', {
+    fullKoboFormUrl: new FormControl('', {
       nonNullable: true,
       validators: [
         // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
@@ -74,17 +74,17 @@ export class IntegrateKoboButtonComponent {
         Validators.minLength(25),
       ],
     }),
-    serverUrl: new FormControl<string>('', {
+    serverUrl: new FormControl('', {
       nonNullable: true,
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
     }),
-    assetId: new FormControl<string>('', {
+    assetId: new FormControl('', {
       nonNullable: true,
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
     }),
-    token: new FormControl<string>('', {
+    token: new FormControl('', {
       nonNullable: true,
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],

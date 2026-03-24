@@ -38,7 +38,7 @@ export class RegistrationsTableComponent {
   readonly overrideFilters = input<Exclude<PaginateQuery['filter'], undefined>>(
     {},
   );
-  readonly showSelectionInHeader = input<boolean>(false);
+  readonly showSelectionInHeader = input(false);
 
   readonly emptyMessage =
     contentChild<TemplateRef<unknown>>('tableEmptyMessage');

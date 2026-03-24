@@ -42,7 +42,7 @@ export class FormDialogComponent<TMutationData = unknown> {
     $localize`:@@confirmation-dialog-header:Are you sure?`,
   );
   readonly headerClass = input('');
-  readonly headerIcon = input<string>('pi pi-question');
+  readonly headerIcon = input('pi pi-question');
   readonly proceedLabel = input($localize`:@@generic-proceed:Proceed`);
   readonly formGroup = input<FormGroup>();
 

@@ -95,7 +95,7 @@ export class ProgramMonitoringFilesPageComponent {
     viewChild.required<FormDialogComponent>('deleteFileConfirmationDialog');
 
   deleteFileFormGroup = new FormGroup({
-    confirmAction: new FormControl<boolean>(false, {
+    confirmAction: new FormControl(false, {
       nonNullable: true,
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.requiredTrue],
@@ -121,7 +121,7 @@ export class ProgramMonitoringFilesPageComponent {
     viewChild.required<FormDialogComponent>('editFileDialog');
 
   editFileFormGroup = new FormGroup({
-    updateFileName: new FormControl<string>('', {
+    updateFileName: new FormControl('', {
       nonNullable: true,
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
