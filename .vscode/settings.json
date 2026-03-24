@@ -12,6 +12,7 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "chat.useNestedAgentsMdFiles": true,
   "eslint.enable": true,
   "eslint.format.enable": true,
   "eslint.rules.customizations": [
@@ -49,6 +50,5 @@
     "ngClass",
     "class:list"
   ],
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "chat.useNestedAgentsMdFiles": true
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
