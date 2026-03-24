@@ -2,7 +2,6 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import eslintConfig121Platform from 'eslint-config-121-platform';
 import eslintPluginJest from 'eslint-plugin-jest';
 import eslintPluginNoRelativePaths from 'eslint-plugin-no-relative-import-paths';
-import eslintPluginPromise from 'eslint-plugin-promise';
 import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
 import tsEslint from 'typescript-eslint';
 
@@ -48,11 +47,7 @@ export default defineConfig(
   {
     name: 'TypeScript files',
     files: ['**/*.ts'],
-    extends: [
-      tsEslint.configs.recommended,
-      tsEslint.configs.stylistic,
-      eslintPluginPromise.configs['flat/recommended'],
-    ],
+    extends: [tsEslint.configs.recommended, tsEslint.configs.stylistic],
     plugins: {
       'no-relative-import-paths': eslintPluginNoRelativePaths,
       'simple-import-sort': eslintPluginSimpleSort,
@@ -104,12 +99,6 @@ export default defineConfig(
       ],
       // 'promise/prefer-await-to-callbacks': 'warn', // TODO: Enable (locally only) to see if there is something to refactor.
       // 'promise/prefer-await-to-then': 'warn', // TODO: Enable (locally only) to see if there is something to refactor.
-      'promise/no-callback-in-promise': 'error',
-      'promise/no-multiple-resolved': 'error',
-      'promise/no-nesting': 'error',
-      'promise/no-promise-in-callback': 'error',
-      'promise/no-return-in-finally': 'error',
-      'promise/valid-params': 'error',
       'simple-import-sort/exports': 'error',
       'simple-import-sort/imports': [
         'error',

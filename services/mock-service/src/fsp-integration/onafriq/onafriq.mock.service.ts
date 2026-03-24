@@ -55,6 +55,7 @@ export class OnafriqMockService {
     this.sendStatusCallback(
       callServiceDto.requestBody[0].thirdPartyTransId,
       mockScenario,
+      // eslint-disable-next-line promise/prefer-await-to-callbacks, promise/prefer-await-to-then -- We want to log errors from the callback but not fail the main request
     ).catch((error) => console.log(error));
 
     return callServiceResponse;

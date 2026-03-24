@@ -38,6 +38,8 @@ export enum AppRoutes {
   userRoles = 'user-roles',
   users = 'users',
 }
+
+/* eslint-disable promise/prefer-await-to-then -- We use the auto-generated pattern by Angular CLI, so no rewrite necessary */
 export const routes: Routes = [
   {
     path: AppRoutes.login,
@@ -384,3 +386,4 @@ export const routes: Routes = [
     redirectTo: AppRoutes.programs,
   },
 ];
+/* eslint-enable promise/prefer-await-to-then -- Only necessary for the Routes-configuration */

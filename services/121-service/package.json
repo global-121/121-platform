@@ -131,7 +131,6 @@
     "eslint-config-121-platform": "file:../../packages/eslint-config-121-platform/",
     "eslint-plugin-jest": "^29.15.0",
     "eslint-plugin-no-relative-import-paths": "^1.6.1",
-    "eslint-plugin-promise": "^7.2.1",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "istanbul-merge": "^2.0.0",
     "jest": "^30.2.0",

@@ -19,6 +19,7 @@ export default defineConfig(
   },
   eslintConfig121Platform.configs.services,
   eslintConfig121Platform.configs.typescript, // Needs to be AFTER `*.configs.node`; It needs to override some rules!
+  eslintConfig121Platform.configs.typescriptNext,
   {
     name: 'TypeScript files',
     files: ['**/*.ts'],

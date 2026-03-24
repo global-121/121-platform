@@ -71,8 +71,9 @@ export class MsalAuthStrategy implements IAuthStrategy {
                   'MSAL Strategy: an error occurred while logging in with popup',
                 ),
               );
+            } else {
+              resolve(null);
             }
-            resolve(null);
           });
       });
     }
