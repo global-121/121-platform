@@ -26,7 +26,7 @@ describe('getLocaleForInitialization', () => {
         defaultLocale: 'nonsense',
         urlLocale: 'en-GB',
       });
-    }).toThrowError('Invalid default locale "nonsense" found in environment.');
+    }).toThrow('Invalid default locale "nonsense" found in environment.');
   });
 
   it('should throw an error when an invalid url locale is passed in', () => {
