@@ -78,7 +78,7 @@ export class SendMessageDialogComponent
   readonly actionData = signal<
     ActionDataWithPaginateQuery<Registration> | undefined
   >(undefined);
-  readonly dialogVisible = model<boolean>(false);
+  readonly dialogVisible = model(false);
   readonly previewData = signal<Partial<MessageInputData> | undefined>(
     undefined,
   );

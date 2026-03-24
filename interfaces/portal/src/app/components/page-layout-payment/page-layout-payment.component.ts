@@ -22,8 +22,6 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { TimelineModule } from 'primeng/timeline';
 
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
-import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
-import { FspSettingsDto } from '@121-service/src/fsp-management/fsp-settings.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
@@ -87,7 +85,7 @@ export class PageLayoutPaymentComponent {
   readonly TransactionStatusEnum = TransactionStatusEnum;
   private readonly router = inject(Router);
 
-  readonly fspSettings = signal<Record<Fsps, FspSettingsDto>>(FSP_SETTINGS);
+  readonly fspSettings = signal(FSP_SETTINGS);
   private authService = inject(AuthService);
 
   readonly deletePaymentDialog = viewChild.required<FormDialogComponent>(

@@ -66,7 +66,7 @@ export class FspConfigurationService {
     existingFspConfiguration?: FspConfiguration;
   }): FspConfigurationFormGroup {
     return new FormGroup({
-      displayName: new FormControl<string>(
+      displayName: new FormControl(
         this.getDisplayNameValue({ fspSetting, existingFspConfiguration }),
         {
           nonNullable: true,
@@ -77,7 +77,7 @@ export class FspConfigurationService {
       ...Object.fromEntries(
         fspSetting.configurationProperties.map((property) => [
           property.name,
-          new FormControl<FspConfigurationPropertyType>(
+          new FormControl(
             this.getPropertyValue({
               propertyName: property.name,
               existingFspConfiguration,
