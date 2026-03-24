@@ -44,10 +44,6 @@ export class IntersolveVoucherMockService {
         (e) => e.name === 'Value',
       ).elements[0].text;
 
-      console.log('IntersolveMock: post(): ', 'payload:', {
-        name,
-        amount,
-      });
       const cardId =
         7000000000000000000 + this.getRandomInt(1000000000000, 9999999999999);
       const transactionId = this.getRandomInt(100000000, 999999999);

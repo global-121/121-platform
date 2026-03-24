@@ -305,7 +305,6 @@ describe('Do successful payment with FSP Visa Debit', () => {
       registrationReferenceId: registrationOCW2.referenceId,
       accessToken,
     });
-    console.log('transactionsResponse2: ', transactionsResponse2.body);
     expect(transactionsResponse2.body.data[0].transferValue).toBe(
       expectedCalculatedTransferValueRegistration2, // = 0 : A transaction of 0 is created
     );
