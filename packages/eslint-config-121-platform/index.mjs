@@ -126,6 +126,11 @@ export default {
       rules: {
         'n/no-extraneous-import': 'off', // Managed by TypeScript
         'n/no-missing-import': 'off', // Disabled to allow for path-aliases via tsconfig.json
+        '@typescript-eslint/consistent-type-definitions': [
+          'error',
+          'interface',
+        ],
+        '@typescript-eslint/method-signature-style': 'error',
         '@typescript-eslint/no-floating-promises': 'error',
         '@typescript-eslint/no-misused-promises': 'error',
         '@typescript-eslint/no-unused-vars': [
