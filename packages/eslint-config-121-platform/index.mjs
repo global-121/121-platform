@@ -3,6 +3,7 @@ import eslint from '@eslint/js';
 import eslintPluginComments from '@eslint-community/eslint-plugin-eslint-comments/configs';
 import eslintPluginN from 'eslint-plugin-n';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import eslintPluginPromise from 'eslint-plugin-promise';
 import globals from 'globals';
 
 /**
@@ -110,6 +111,7 @@ export default {
     typescript: defineConfig({
       name: '121-platform/typescript',
       files: ['**/*.ts'],
+      extends: [eslintPluginPromise.configs['flat/recommended']],
       plugins: {
         n: eslintPluginN,
       },
@@ -126,6 +128,20 @@ export default {
             varsIgnorePattern: '^_',
           },
         ],
+        'promise/no-callback-in-promise': 'error',
+        'promise/no-multiple-resolved': 'error',
+        'promise/no-nesting': 'error',
+        'promise/no-promise-in-callback': 'error',
+        'promise/no-return-in-finally': 'error',
+        'promise/valid-params': 'error',
+      },
+    }),
+    typescriptNext: defineConfig({
+      name: '121-platform/typescript-next',
+      files: ['**/*.ts'],
+      rules: {
+        'promise/prefer-await-to-callbacks': 'error',
+        'promise/prefer-await-to-then': 'error',
       },
     }),
     services: defineConfig({
