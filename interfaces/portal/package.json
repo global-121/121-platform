@@ -88,10 +88,10 @@
     "@tailwindcss/postcss": "^4.2.2",
     "@tanstack/eslint-plugin-query": "^5.95.2",
     "@types/konami-code-js": "^0.8.3",
-    "@types/node": "^24.x",
+    "@types/node": "^24.12.0",
     "@types/papaparse": "^5.5.2",
-    "@vitest/browser-playwright": "^4.0.18",
-    "@vitest/coverage-v8": "^4.0.18",
+    "@vitest/browser-playwright": "^4.1.1",
+    "@vitest/coverage-v8": "^4.1.1",
     "angular-eslint": "^21.3.0",
     "autoprefixer": "^10.4.27",
     "eslint": "^9.39.4",
@@ -112,7 +112,7 @@
     "tailwindcss": "^4.1.13",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.57.0",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.1"
   },
   "engines": {
     "node": ">=24",
