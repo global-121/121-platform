@@ -26,16 +26,6 @@ export default defineConfig(
     },
     rules: {
       '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
-      '@typescript-eslint/no-floating-promises': 'error',
-      '@typescript-eslint/no-misused-promises': 'error',
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        {
-          argsIgnorePattern: '^_',
-          caughtErrors: 'none',
-          varsIgnorePattern: '^_',
-        },
-      ],
       'promise/no-callback-in-promise': 'error',
       'promise/no-multiple-resolved': 'error',
       'promise/no-nesting': 'error',
