@@ -115,22 +115,13 @@ All functions should use destructured objects as parameters, never use "naked" p
 - Avoid `@typescript-eslint/no-explicit-any` - use proper typing
 - Use object shorthand syntax where applicable
 
-### Formatting & Linting
+### Code Quality Verification
 
-Before committing or asking a human to review code: format all new code using one of the `npm run fix:*` commands.
+Before finalizing any code change, agents must auto-fix and verify steps.
 
-Fix any problems the linter signals from the pre-commit hook.
+Auto-fix: Run `npm run fix` from `services/121-service/` or `interfaces/portal/`, or `npm run fix:prettier` from the repo root for all files outside of those directories.
 
-### Commands for linting and formatting
-
-Formatting
-
-```bash
-npm run fix:121-service # the backend
-npm run fix:mock-service # the mock service
-npm run fix:portal # the frontend
-npm run fix:all # backend, frontend and mock service
-```
+Verify: Run `npm run typecheck` and `npm run lint` in the different subdirectories. Fix all remaining errors manually.
 
 ## Testing Approach
 
