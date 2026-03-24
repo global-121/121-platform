@@ -1,10 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { QueryTableColumnVisibilityService } from '~/components/query-table/services/query-table-column-visibility.service';
 
 describe('QueryTableColumnVisibilityService', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for test-setup
   let service: QueryTableColumnVisibilityService<any>;
+
+  const getItemSpy = vi.spyOn(Storage.prototype, 'getItem');
+  const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
 
   const testColumns = [
     { header: 'ID', field: 'id' },
@@ -13,15 +18,19 @@ describe('QueryTableColumnVisibilityService', () => {
   ];
 
   beforeEach(() => {
+    getItemSpy.mockClear();
+    setItemSpy.mockClear();
+    localStorage.clear();
     TestBed.configureTestingModule({
       providers: [QueryTableColumnVisibilityService],
     });
 
     service = TestBed.inject(QueryTableColumnVisibilityService);
-    localStorage.clear();
   });
 
   afterEach(() => {
+    getItemSpy.mockClear();
+    setItemSpy.mockClear();
     localStorage.clear();
   });
 

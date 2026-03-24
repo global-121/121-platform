@@ -1,4 +1,5 @@
 import { parseMatomoConnectionString } from '_matomo.utils.mjs';
+import { describe, expect, it } from 'vitest';
 
 describe('Matomo-Util: parseMatomoConnectionString', () => {
   it('should return an empty object when input is false-y', () => {

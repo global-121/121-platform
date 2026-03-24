@@ -1,19 +1,41 @@
 import { TestBed } from '@angular/core/testing';
 
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { QueryTableCellService } from '~/components/query-table/services/query-table-cell.service';
 import { QueryTableFilterService } from '~/components/query-table/services/query-table-filter.service';
-import { createLocalStorageMock } from '~/test-utils';
+import { TrackingService } from '~/services/tracking.service';
+
+class TrackingServiceStub {
+  trackEvent = vi.fn();
+}
 
 describe('QueryTableFilterService', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for test-setup
   let service: QueryTableFilterService<any>;
 
+  const getItemSpy = vi.spyOn(Storage.prototype, 'getItem');
+  const removeItemSpy = vi.spyOn(Storage.prototype, 'removeItem');
+
   beforeEach(() => {
+    getItemSpy.mockClear();
+    removeItemSpy.mockClear();
+    localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [QueryTableFilterService, QueryTableCellService],
+      providers: [
+        QueryTableFilterService,
+        QueryTableCellService,
+        { provide: TrackingService, useClass: TrackingServiceStub },
+      ],
     });
 
     service = TestBed.inject(QueryTableFilterService);
+  });
+
+  afterEach(() => {
+    getItemSpy.mockClear();
+    removeItemSpy.mockClear();
+    localStorage.clear();
   });
 
   it('should be created and initialize with correct default state', () => {
@@ -33,9 +55,8 @@ describe('QueryTableFilterService', () => {
   });
 
   it('should clear all filters', () => {
-    const clearTableSpy = jasmine.createSpy('clearTable');
-    const resetSelectionSpy = jasmine.createSpy('resetSelection');
-    const mockLocalStorage = createLocalStorageMock();
+    const clearTableSpy = vi.fn();
+    const resetSelectionSpy = vi.fn();
 
     service.globalFilterVisible.set(true);
 
@@ -46,7 +67,7 @@ describe('QueryTableFilterService', () => {
     });
 
     expect(clearTableSpy).toHaveBeenCalled();
-    expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('test-key');
+    expect(removeItemSpy).toHaveBeenCalledWith('test-key');
     expect(service.globalFilterVisible()).toBe(false);
     expect(resetSelectionSpy).toHaveBeenCalled();
   });

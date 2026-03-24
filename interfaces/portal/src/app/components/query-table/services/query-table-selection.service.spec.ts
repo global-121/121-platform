@@ -1,5 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 
+import {
+  beforeEach,
+  describe,
+  expect,
+  it,
+  type MockedObject,
+  vi,
+} from 'vitest';
+
 import { QueryTableSelectionService } from '~/components/query-table/services/query-table-selection.service';
 import {
   ActionDataWithPaginateQuery,
@@ -10,9 +19,9 @@ import { ToastService } from '~/services/toast.service';
 describe('QueryTableSelectionService', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary for test-setup
   let service: QueryTableSelectionService<any>;
-  let paginateQueryService: jasmine.SpyObj<PaginateQueryService>;
+  let paginateQueryService: MockedObject<PaginateQueryService>;
 
-  const showToastSpy = jasmine.createSpy();
+  const showToastSpy = vi.fn();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -20,17 +29,17 @@ describe('QueryTableSelectionService', () => {
         QueryTableSelectionService,
         {
           provide: PaginateQueryService,
-          useValue: jasmine.createSpyObj('PaginateQueryService', [
-            'selectionEventToActionData',
-          ]) as jasmine.SpyObj<PaginateQueryService>,
+          useValue: {
+            selectionEventToActionData: vi
+              .fn()
+              .mockName('PaginateQueryService.selectionEventToActionData'),
+          } as MockedObject<PaginateQueryService>,
         },
         {
           provide: ToastService,
-          useValue: jasmine.createSpyObj<ToastService>(
-            'ToastService',
-            {},
-            { showToast: showToastSpy },
-          ),
+          useValue: {
+            showToast: showToastSpy,
+          },
         },
       ],
     });
@@ -38,7 +47,7 @@ describe('QueryTableSelectionService', () => {
     service = TestBed.inject(QueryTableSelectionService);
     paginateQueryService = TestBed.inject(
       PaginateQueryService,
-    ) as jasmine.SpyObj<PaginateQueryService>;
+    ) as MockedObject<PaginateQueryService>;
   });
 
   it('should be created and initialize with empty selection state', () => {
@@ -85,7 +94,7 @@ describe('QueryTableSelectionService', () => {
   });
 
   it('should show toast when no items are selected', () => {
-    paginateQueryService.selectionEventToActionData.and.returnValue(
+    paginateQueryService.selectionEventToActionData.mockReturnValue(
       {} as ActionDataWithPaginateQuery<unknown>,
     );
 

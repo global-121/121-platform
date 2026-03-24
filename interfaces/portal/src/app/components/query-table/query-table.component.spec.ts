@@ -9,6 +9,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
 import { MenuItem, MessageService } from 'primeng/api';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
 import {
@@ -100,10 +101,12 @@ class RtlHelperServiceStub {
 }
 
 class TrackingServiceStub {
-  trackEvent = jasmine.createSpy('trackEvent');
+  trackEvent = vi.fn();
 }
 
 describe('QueryTableComponent', () => {
+  const getItemSpy = vi.spyOn(Storage.prototype, 'getItem');
+  const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
   const DEFAULT_ITEMS: TestRow[] = [
     {
       id: 1,
@@ -143,7 +146,29 @@ describe('QueryTableComponent', () => {
 
   let fixture: ComponentFixture<QueryTableComponent<TestRow, TestContext>>;
 
+  // https://rebeccamdeprey.com/blog/mock-windowmatchmedia-in-vitest
+  //this is needed in order to make tests concerning PrimeNG ContextMenu work
+  vi.hoisted(() => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      enumerable: true,
+      value: vi.fn().mockImplementation((query: unknown) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(), // deprecated
+        removeListener: vi.fn(), // deprecated
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+  });
+
   beforeEach(async () => {
+    getItemSpy.mockClear();
+    setItemSpy.mockClear();
+    localStorage.clear();
     await TestBed.configureTestingModule({
       imports: [
         QueryTableComponent,
@@ -209,6 +234,8 @@ describe('QueryTableComponent', () => {
   };
 
   afterEach(() => {
+    getItemSpy.mockClear();
+    setItemSpy.mockClear();
     localStorage.clear();
   });
 
@@ -349,7 +376,7 @@ describe('QueryTableComponent', () => {
 
   describe('behaviour', () => {
     it('emits updatePaginateQuery when PrimeNG emits a lazy load event', () => {
-      const updateSpy = spyOn(
+      const updateSpy = vi.spyOn(
         fixture.componentInstance.updatePaginateQuery,
         'emit',
       );
@@ -374,7 +401,7 @@ describe('QueryTableComponent', () => {
       const trackingService = TestBed.inject(
         TrackingService,
       ) as unknown as TrackingServiceStub;
-      const toggleSpy = spyOn(
+      const toggleSpy = vi.spyOn(
         fixture.componentInstance.updateContextMenuItem,
         'emit',
       );
@@ -384,7 +411,7 @@ describe('QueryTableComponent', () => {
 
       const extraOptionsMenu = fixture.componentInstance.extraOptionsMenu();
       if (extraOptionsMenu) {
-        spyOn(extraOptionsMenu, 'toggle');
+        vi.spyOn(extraOptionsMenu, 'toggle');
       }
 
       const item = DEFAULT_ITEMS[0];
@@ -392,7 +419,7 @@ describe('QueryTableComponent', () => {
 
       expect(toggleSpy).toHaveBeenCalledWith(item);
       expect(trackingService.trackEvent).toHaveBeenCalledWith(
-        jasmine.objectContaining({
+        expect.objectContaining({
           action: 'click: More-Actions-menu Button',
         }),
       );
@@ -412,12 +439,9 @@ describe('QueryTableComponent', () => {
       localStorage.setItem('query-table-test', 'cached-columns');
 
       const table = fixture.componentInstance.table();
-      const clearTableSpy = spyOn(table, 'clear');
-      const resetSelectionSpy = spyOn(selectionService, 'resetSelection');
-      const clearAllFiltersSpy = spyOn(
-        filterService,
-        'clearAllFilters',
-      ).and.callThrough();
+      const clearTableSpy = vi.spyOn(table, 'clear');
+      const resetSelectionSpy = vi.spyOn(selectionService, 'resetSelection');
+      const clearAllFiltersSpy = vi.spyOn(filterService, 'clearAllFilters');
 
       fixture.componentInstance.clearAllFilters();
 
@@ -433,10 +457,9 @@ describe('QueryTableComponent', () => {
       ) as unknown as QueryTableSelectionService<TestRow>;
 
       const expectedResult = {} as ActionDataWithPaginateQuery<TestRow>;
-      const getActionDataSpy = spyOn(
-        selectionService,
-        'getActionData',
-      ).and.returnValue(expectedResult);
+      const getActionDataSpy = vi
+        .spyOn(selectionService, 'getActionData')
+        .mockReturnValue(expectedResult);
 
       const result = fixture.componentInstance.getActionData({
         fieldForFilter: 'status',

@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 
+import { beforeEach, describe, expect, it } from 'vitest';
+
 import { FSP_SETTINGS } from '@121-service/src/fsp-integrations/settings/fsp-settings.const';
 import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
@@ -102,7 +104,7 @@ describe('FspConfigurationService', () => {
       const fspSetting = FSP_SETTINGS[Fsps.intersolveVisa];
       const formGroup = service.fspSettingToFormGroup({ fspSetting });
 
-      expect(formGroup instanceof FormGroup).toBeTrue();
+      expect(formGroup instanceof FormGroup).toBe(true);
       expect(formGroup.get('displayName')?.value).toBe(
         fspSetting.defaultLabel.en,
       );
@@ -235,8 +237,8 @@ describe('FspConfigurationService', () => {
       const usernameField = fields.find(
         (f) => f.name === FspConfigurationProperties.username,
       );
-      expect(passwordField?.isSensitive).toBeTrue();
-      expect(usernameField?.isSensitive).toBeFalse();
+      expect(passwordField?.isSensitive).toBe(true);
+      expect(usernameField?.isSensitive).toBe(false);
     });
   });
 

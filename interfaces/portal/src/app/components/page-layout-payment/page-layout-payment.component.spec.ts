@@ -8,6 +8,8 @@ import {
   queryOptions,
 } from '@tanstack/angular-query-experimental';
 import { MessageService } from 'primeng/api';
+import type { Mock } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { PageLayoutPaymentComponent } from '~/components/page-layout-payment/page-layout-payment.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
@@ -28,39 +30,48 @@ const mockQueryFactory =
     });
 
 describe('PageLayoutPaymentComponent - canDeletePayment', () => {
-  let mockAuthService: { hasAllPermissions: jasmine.Spy; user: null };
+  let mockAuthService: {
+    hasAllPermissions: Mock;
+    user: null;
+  };
 
-  let mockPaymentApiService: Record<string, jasmine.Spy>;
+  let mockPaymentApiService: Record<string, Mock>;
 
-  let mockProgramApiService: Record<string, jasmine.Spy>;
+  let mockProgramApiService: Record<string, Mock>;
 
   beforeEach(async () => {
     mockAuthService = {
-      hasAllPermissions: jasmine.createSpy('hasAllPermissions'),
+      hasAllPermissions: vi.fn(),
       user: null,
     };
-    mockPaymentApiService = jasmine.createSpyObj('PaymentApiService', [
-      'getPaymentAggregationFull',
-      'getPaymentAggregationsSummaries',
-      'getPaymentStatus',
-      'getPaymentTransactions',
-    ]) as Record<string, jasmine.Spy>;
-    mockProgramApiService = jasmine.createSpyObj('ProgramApiService', [
-      'getProgram',
-    ]) as Record<string, jasmine.Spy>;
+    mockPaymentApiService = {
+      getPaymentAggregationFull: vi
+        .fn()
+        .mockName('PaymentApiService.getPaymentAggregationFull'),
+      getPaymentAggregationsSummaries: vi
+        .fn()
+        .mockName('PaymentApiService.getPaymentAggregationsSummaries'),
+      getPaymentStatus: vi.fn().mockName('PaymentApiService.getPaymentStatus'),
+      getPaymentTransactions: vi
+        .fn()
+        .mockName('PaymentApiService.getPaymentTransactions'),
+    } as Record<string, Mock>;
+    mockProgramApiService = {
+      getProgram: vi.fn().mockName('ProgramApiService.getProgram'),
+    } as Record<string, Mock>;
 
-    mockAuthService.hasAllPermissions.and.returnValue(true);
-    mockPaymentApiService.getPaymentAggregationFull.and.returnValue(
+    mockAuthService.hasAllPermissions.mockReturnValue(true);
+    mockPaymentApiService.getPaymentAggregationFull.mockReturnValue(
       mockQueryFactory({ hasBeenStarted: false }),
     );
-    mockProgramApiService.getProgram.and.returnValue(mockQueryFactory(null));
-    mockPaymentApiService.getPaymentAggregationsSummaries.and.returnValue(
+    mockProgramApiService.getProgram.mockReturnValue(mockQueryFactory(null));
+    mockPaymentApiService.getPaymentAggregationsSummaries.mockReturnValue(
       mockQueryFactory([]),
     );
-    mockPaymentApiService.getPaymentStatus.and.returnValue(
+    mockPaymentApiService.getPaymentStatus.mockReturnValue(
       mockQueryFactory({}),
     );
-    mockPaymentApiService.getPaymentTransactions.and.returnValue(
+    mockPaymentApiService.getPaymentTransactions.mockReturnValue(
       mockQueryFactory({ data: [], meta: { totalItems: 0 } }),
     );
 
@@ -101,7 +112,7 @@ describe('PageLayoutPaymentComponent - canDeletePayment', () => {
 
   it('should return false when user lacks PaymentCREATE permission', () => {
     // Arrange
-    mockAuthService.hasAllPermissions.and.returnValue(false);
+    mockAuthService.hasAllPermissions.mockReturnValue(false);
     const fixture = createFixture();
 
     // Act
@@ -113,7 +124,7 @@ describe('PageLayoutPaymentComponent - canDeletePayment', () => {
 
   it('should return false when payment is in progress', () => {
     // Arrange
-    mockPaymentApiService.getPaymentStatus.and.returnValue(
+    mockPaymentApiService.getPaymentStatus.mockReturnValue(
       mockQueryFactory({ inProgress: true }),
     );
     const fixture = createFixture();
@@ -127,7 +138,7 @@ describe('PageLayoutPaymentComponent - canDeletePayment', () => {
 
   it('should return false when payment has already started', () => {
     // Arrange
-    mockPaymentApiService.getPaymentAggregationFull.and.returnValue(
+    mockPaymentApiService.getPaymentAggregationFull.mockReturnValue(
       mockQueryFactory({ hasBeenStarted: true }),
     );
     const fixture = createFixture();
