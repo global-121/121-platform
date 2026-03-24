@@ -1,5 +1,4 @@
 import { defineConfig, globalIgnores } from 'eslint/config';
-import eslintPluginPromise from 'eslint-plugin-promise';
 import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
 import tsEslint from 'typescript-eslint';
 import eslintConfig121Platform from 'eslint-config-121-platform';
@@ -12,6 +11,7 @@ export default defineConfig(
   eslintConfig121Platform.configs.node,
   eslintConfig121Platform.configs.javascript,
   eslintConfig121Platform.configs.typescript,
+  eslintConfig121Platform.configs.typescriptNext,
   eslintConfig121Platform.configs.services,
   {
     name: 'TypeScript files',
@@ -19,21 +19,12 @@ export default defineConfig(
     extends: [
       tsEslint.configs.recommended,
       tsEslint.configs.stylisticTypeChecked,
-      eslintPluginPromise.configs['flat/recommended'],
     ],
     plugins: {
       'simple-import-sort': eslintPluginSimpleSort,
     },
     rules: {
       '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
-      'promise/no-callback-in-promise': 'error',
-      'promise/no-multiple-resolved': 'error',
-      'promise/no-nesting': 'error',
-      'promise/no-promise-in-callback': 'error',
-      'promise/no-return-in-finally': 'error',
-      'promise/prefer-await-to-callbacks': 'error',
-      'promise/prefer-await-to-then': 'error',
-      'promise/valid-params': 'error',
       'simple-import-sort/exports': 'error',
       'simple-import-sort/imports': [
         'error',
