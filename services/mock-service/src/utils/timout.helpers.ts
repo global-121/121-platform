@@ -8,6 +8,6 @@ export const createCancelableTimeout = async (ms: number): Promise<void> => {
     delete global.queueCallbacks[randomString];
     return;
   } else {
-    throw new Error(`This queue has been cancelled. {${randomString}`);
+    throw new Error(`This queue has been cancelled: ${randomString}`);
   }
 };
