@@ -24,7 +24,6 @@ export default defineConfig(
       'simple-import-sort': eslintPluginSimpleSort,
     },
     rules: {
-      '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
       'simple-import-sort/exports': 'error',
       'simple-import-sort/imports': [
         'error',

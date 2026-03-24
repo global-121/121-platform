@@ -41,7 +41,6 @@ export default defineConfig(
         },
       ],
       '@typescript-eslint/interface-name-prefix': 'off',
-      '@typescript-eslint/method-signature-style': 'error',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-parameter-properties': 'off',
       'no-relative-import-paths/no-relative-import-paths': [

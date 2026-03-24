@@ -106,7 +106,6 @@ export default defineConfig(
       '@angular-eslint/sort-lifecycle-methods': ['error'],
       '@angular-eslint/use-component-selector': ['error'],
       '@angular-eslint/use-lifecycle-interface': ['error'],
-      '@typescript-eslint/method-signature-style': 'error',
       '@typescript-eslint/no-extraneous-class': [
         'error',
         {
