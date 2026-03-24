@@ -176,7 +176,6 @@ export class CommercialBankEthiopiaAccountManagementService {
         '(registration.status NOT IN (:...excludedStatuses) OR registration.status IS NULL)',
         {
           excludedStatuses: [
-            RegistrationStatusEnum.paused,
             RegistrationStatusEnum.completed,
             RegistrationStatusEnum.declined,
           ],
