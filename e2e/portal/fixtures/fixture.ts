@@ -41,7 +41,7 @@ type TestRegistration = Partial<RegistrationEntity> & {
   testProperties?: Record<string, string | number | boolean>;
 };
 
-type Fixtures = {
+interface Fixtures {
   resetDBAndSeedRegistrations: (params: {
     seedScript: SeedScript;
     skipSeedRegistrations?: boolean;
@@ -74,7 +74,7 @@ type Fixtures = {
   registrationPersonalInformationPage: RegistrationPersonalInformationPage;
   registrationsPage: RegistrationsPage;
   usersPage: UsersPage;
-};
+}
 
 /**
  * Resets the database to some known state.

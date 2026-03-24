@@ -2,7 +2,7 @@
 declare global {
   namespace Express {
     namespace Multer {
-      type File = {
+      interface File {
         fieldname: string;
         originalname: string;
         encoding: string;
@@ -12,7 +12,7 @@ declare global {
         filename: string;
         path: string;
         buffer: Buffer;
-      };
+      }
     }
   }
 }

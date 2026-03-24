@@ -4,9 +4,7 @@ import { env } from '@121-service/src/env';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
-import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
 import { SeedHelperService } from '@121-service/src/scripts/services/seed-helper.service';
 import { SeedMockHelperService } from '@121-service/src/scripts/services/seed-mock-helper.service';
 import { registrationAHWhatsapp } from '@121-service/src/seed-data/mock/registration-pv.data';
@@ -35,16 +33,6 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     mockOcw = true,
     seedConfig,
     approverMode,
-  }: {
-    isApiTests?: boolean;
-    powerNrRegistrationsString?: string;
-    nrPaymentsString?: string;
-    powerNrMessagesString?: string;
-    includeRegistrationEvents?: boolean;
-    mockPv?: boolean;
-    mockOcw?: boolean;
-    seedConfig?: SeedConfigurationDto;
-    approverMode: ApproverSeedMode;
   }): Promise<void> {
     if (env.INTERSOLVE_MODE !== FspMode.mock || !env.MOCK_TWILIO) {
       throw new HttpException(
