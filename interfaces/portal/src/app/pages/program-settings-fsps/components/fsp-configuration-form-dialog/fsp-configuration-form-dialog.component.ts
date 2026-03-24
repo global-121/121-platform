@@ -84,7 +84,7 @@ export class FspConfigurationFormDialogComponent {
 
   // This is defaulted to Excel to avoid undefined errors before show() is called
   // It could default to anything really, as show() will always be called first
-  readonly fspSetting = signal<FspSettingsDto>(FSP_SETTINGS[Fsps.excel]);
+  readonly fspSetting = signal(FSP_SETTINGS[Fsps.excel]);
   // If this is undefined, it is because we are adding a new FSP configuration
   // (not reconfiguring one)
   readonly existingFspConfiguration = signal<FspConfiguration | undefined>(

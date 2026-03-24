@@ -21,7 +21,7 @@ export class QueryTableFilterService<TData> {
   readonly tableFilters = signal<
     Record<string, FilterMetadata | FilterMetadata[] | undefined>
   >({});
-  readonly globalFilterVisible = signal<boolean>(false);
+  readonly globalFilterVisible = signal(false);
 
   readonly globalFilterValue = computed(() => {
     const tableFilters = this.tableFilters();

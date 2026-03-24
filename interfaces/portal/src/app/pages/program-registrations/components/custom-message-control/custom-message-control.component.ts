@@ -51,8 +51,8 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
 
   private messagingService = inject(MessagingService);
 
-  readonly customMessageInternalModel = model<string>('');
-  readonly customMessageDisabled = model<boolean>(false);
+  readonly customMessageInternalModel = model('');
+  readonly customMessageDisabled = model(false);
 
   placeholders = injectQuery(
     this.messagingService.getMessagePlaceholders(this.programId),

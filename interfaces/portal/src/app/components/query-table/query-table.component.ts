@@ -154,12 +154,12 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   readonly expandableRowTemplate =
     input<Type<TableCellComponent<TData, TContext>>>();
   readonly tableCellContext = input<TContext>();
-  readonly serverSideFiltering = input<boolean>(false);
+  readonly serverSideFiltering = input(false);
   readonly serverSideTotalRecords = input<number>();
   readonly initialSortField = input<keyof TData & string>();
   readonly initialSortOrder = input<-1 | 1>(1);
-  readonly enableSelection = input<boolean>(false);
-  readonly enableColumnManagement = input<boolean>(false);
+  readonly enableSelection = input(false);
+  readonly enableColumnManagement = input(false);
   readonly updateContextMenuItem = output<TData>();
   readonly updatePaginateQuery = output<PaginateQuery>();
 
@@ -298,7 +298,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
    * ROW SELECTION
    */
   readonly selectedItems = model<TData[]>([]);
-  readonly selectAll = model<boolean>(false);
+  readonly selectAll = model(false);
   readonly tableSelection = this.selectionService.tableSelection;
   readonly selectedItemsCount = this.selectionService.selectedItemsCount;
 

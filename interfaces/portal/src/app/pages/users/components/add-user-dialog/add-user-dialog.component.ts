@@ -56,12 +56,12 @@ export class AddUserDialogComponent {
   readonly isEditing = computed(() => !!this.userToEdit());
 
   formGroup = new FormGroup({
-    displayNameValue: new FormControl<string>('', {
+    displayNameValue: new FormControl('', {
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
       nonNullable: true,
     }),
-    usernameValue: new FormControl<string>('', {
+    usernameValue: new FormControl('', {
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required, Validators.email],
       nonNullable: true,

@@ -77,7 +77,7 @@ export class AddProgramTeamUserDialogComponent {
   );
 
   formGroup = new FormGroup({
-    userValue: new FormControl<number>(-1, {
+    userValue: new FormControl(-1, {
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required, Validators.min(0)],
       nonNullable: true,
@@ -87,7 +87,7 @@ export class AddProgramTeamUserDialogComponent {
       validators: [Validators.required, Validators.minLength(1)],
       nonNullable: true,
     }),
-    scopeValue: new FormControl<string>('', {
+    scopeValue: new FormControl('', {
       validators: [Validators.pattern(/^\S*$/)],
       nonNullable: true,
     }),

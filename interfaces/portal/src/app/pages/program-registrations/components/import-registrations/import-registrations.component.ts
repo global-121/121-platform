@@ -34,7 +34,7 @@ import { ToastService } from '~/services/toast.service';
 })
 export class ImportRegistrationsComponent {
   readonly programId = input.required<string>();
-  readonly dialogVisible = model<boolean>(false);
+  readonly dialogVisible = model(false);
 
   private queryClient = inject(QueryClient);
   private downloadService = inject(DownloadService);

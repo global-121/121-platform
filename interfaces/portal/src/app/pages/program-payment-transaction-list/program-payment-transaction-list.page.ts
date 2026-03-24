@@ -96,7 +96,7 @@ export class ProgramPaymentTransactionListPageComponent {
 
   readonly contextMenuSelection = signal<Transaction | undefined>(undefined);
   readonly selectedTransactionId = signal<number | undefined>(undefined);
-  readonly selectedPaymentDate = signal<string>('');
+  readonly selectedPaymentDate = signal('');
 
   protected readonly paginateQuery = signal<PaginateQuery | undefined>(
     undefined,

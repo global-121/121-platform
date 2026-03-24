@@ -69,7 +69,7 @@ export class UpdateRegistrationsComponent {
   readonly programId = input.required<string>();
   readonly updateSuccess = output();
 
-  readonly dialogVisible = model<boolean>(false);
+  readonly dialogVisible = model(false);
   readonly actionData = input<ActionDataWithPaginateQuery<Registration>>();
 
   readonly downloadService = inject(DownloadService);
@@ -116,12 +116,12 @@ export class UpdateRegistrationsComponent {
   );
 
   updateRegistrationsFormGroup = new FormGroup({
-    reason: new FormControl<string>('', {
+    reason: new FormControl('', {
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
       nonNullable: true,
     }),
-    confirmAction: new FormControl<boolean>(false, {
+    confirmAction: new FormControl(false, {
       nonNullable: true,
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.requiredTrue],

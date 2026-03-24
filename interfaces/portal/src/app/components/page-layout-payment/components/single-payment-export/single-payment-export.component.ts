@@ -34,7 +34,7 @@ import {
 export class SinglePaymentExportComponent {
   readonly programId = input.required<string>();
   readonly paymentId = input.required<string>();
-  readonly hasExportFileIntegration = input<boolean>(false);
+  readonly hasExportFileIntegration = input(false);
 
   private authService = inject(AuthService);
   private exportService = inject(ExportService);
