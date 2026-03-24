@@ -105,7 +105,7 @@ export abstract class DomainApiService {
           endpoint,
           deSignalizedParams,
           responseAsBlob,
-          paginateQuery && paginateQuery(),
+          paginateQuery?.(),
           processResponse,
         ],
         queryFn: async () => {

@@ -277,7 +277,7 @@ export class RegistrationAttributeService {
         queryKey: [
           'registrationAttributes',
           programId(),
-          registrationId && registrationId(),
+          registrationId?.(),
           $localize,
           RegistrationAttributeTypes.text,
         ],
