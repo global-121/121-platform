@@ -116,6 +116,16 @@ export default {
       rules: {
         'n/no-extraneous-import': 'off', // Managed by TypeScript
         'n/no-missing-import': 'off', // Disabled to allow for path-aliases via tsconfig.json
+        '@typescript-eslint/no-floating-promises': 'error',
+        '@typescript-eslint/no-misused-promises': 'error',
+        '@typescript-eslint/no-unused-vars': [
+          'error',
+          {
+            argsIgnorePattern: '^_',
+            caughtErrors: 'none',
+            varsIgnorePattern: '^_',
+          },
+        ],
       },
     }),
     services: defineConfig({

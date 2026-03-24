@@ -40,18 +40,9 @@ export default defineConfig(
         },
       ],
       '@typescript-eslint/interface-name-prefix': 'off',
+      '@typescript-eslint/method-signature-style': 'error',
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-floating-promises': 'error',
-      '@typescript-eslint/no-misused-promises': 'error',
       '@typescript-eslint/no-parameter-properties': 'off',
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        {
-          argsIgnorePattern: '^_',
-          caughtErrors: 'none',
-          varsIgnorePattern: '^_',
-        },
-      ],
       'no-relative-import-paths/no-relative-import-paths': [
         'warn',
         {
