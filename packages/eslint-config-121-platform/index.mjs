@@ -90,10 +90,17 @@ export default {
         sourceType: 'module',
         globals: globals.nodeBuiltin,
       },
+      extends: [eslintPluginPromise.configs['flat/recommended']],
       rules: {
         'object-shorthand': 'error',
         'prefer-arrow-callback': 'error',
         'no-inner-declarations': 'error',
+        'promise/no-callback-in-promise': 'error',
+        'promise/no-multiple-resolved': 'error',
+        'promise/no-nesting': 'error',
+        'promise/no-promise-in-callback': 'error',
+        'promise/no-return-in-finally': 'error',
+        'promise/valid-params': 'error',
       },
     }),
     recommendedNext: defineConfig({
@@ -102,6 +109,8 @@ export default {
       rules: {
         'arrow-body-style': 'error',
         'func-style': 'error',
+        'promise/prefer-await-to-callbacks': 'error',
+        'promise/prefer-await-to-then': 'error',
       },
     }),
     javascript: defineConfig({
@@ -111,7 +120,6 @@ export default {
     typescript: defineConfig({
       name: '121-platform/typescript',
       files: ['**/*.ts'],
-      extends: [eslintPluginPromise.configs['flat/recommended']],
       plugins: {
         n: eslintPluginN,
       },
@@ -128,21 +136,11 @@ export default {
             varsIgnorePattern: '^_',
           },
         ],
-        'promise/no-callback-in-promise': 'error',
-        'promise/no-multiple-resolved': 'error',
-        'promise/no-nesting': 'error',
-        'promise/no-promise-in-callback': 'error',
-        'promise/no-return-in-finally': 'error',
-        'promise/valid-params': 'error',
       },
     }),
     typescriptNext: defineConfig({
       name: '121-platform/typescript-next',
       files: ['**/*.ts'],
-      rules: {
-        'promise/prefer-await-to-callbacks': 'error',
-        'promise/prefer-await-to-then': 'error',
-      },
     }),
     services: defineConfig({
       name: '121-platform/services',
