@@ -123,6 +123,8 @@ Auto-fix: Run `npm run fix` from `services/121-service/` or `interfaces/portal/`
 
 Verify: Run `npm run typecheck` and `npm run lint` in the different subdirectories. Fix all remaining errors manually.
 
+Do not use `--no-verify`, `eslint-disable`, `@ts-ignore`, or `@ts-expect-error` to suppress errors unless explicitly told to do so.
+
 ## Testing Approach
 
 ### All code branches should be covered by tests
