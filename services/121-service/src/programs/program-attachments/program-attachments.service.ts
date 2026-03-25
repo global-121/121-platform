@@ -107,14 +107,17 @@ export class ProgramAttachmentsService {
     programId,
     attachmentId,
     filename,
+    scope,
   }: {
     programId: number;
     attachmentId: number;
     filename: string;
+    scope: string;
   }): Promise<void> {
     const programAttachment = await this.getProgramAttachmentOrThrow({
       programId,
       attachmentId,
+      scope,
     });
 
     // Keep existing extension
@@ -193,9 +196,11 @@ export class ProgramAttachmentsService {
   private async getProgramAttachmentAndBlockBlobClient({
     programId,
     attachmentId,
+    scope,
   }: {
     programId: number;
     attachmentId: number;
+    scope: string;
   }): Promise<{
     programAttachment: ProgramAttachmentEntity;
     blockBlobClient: BlockBlobClient;
@@ -203,6 +208,7 @@ export class ProgramAttachmentsService {
     const programAttachment = await this.getProgramAttachmentOrThrow({
       programId,
       attachmentId,
+      scope,
     });
 
     const blockBlobClient = this.containerClient.getBlockBlobClient(
