@@ -224,7 +224,7 @@ describe('PaymentsManagementService', () => {
     ).toHaveBeenCalledWith(basePaymentParams.programId);
   });
 
-  describe('private getPaymentDryRunDetailsOrThrow', () => {
+  describe('create payment', () => {
     it('should correctly calculate thresholds based on total payment amount', async () => {
       // This is done inside of a private function, so we call createPayment and
       // see if _it_ calls another function with the correct thresholds based on
@@ -260,7 +260,7 @@ describe('PaymentsManagementService', () => {
       jest
         .spyOn(paymentsHelperService as any, 'checkFspConfigurationsOrThrow')
         .mockResolvedValue(undefined);
-      const getThresholdsSpy = jest
+      const getThresholdsForPaymentAmountSpy = jest
         .spyOn(
           programApprovalThresholdRepository as any,
           'getThresholdsForPaymentAmount',
@@ -292,7 +292,7 @@ describe('PaymentsManagementService', () => {
       });
 
       // Assert
-      expect(getThresholdsSpy).toHaveBeenCalledWith({
+      expect(getThresholdsForPaymentAmountSpy).toHaveBeenCalledWith({
         programId: basePaymentParams.programId,
         totalPaymentAmount: expectedTotalPaymentAmount,
       });
