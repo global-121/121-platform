@@ -117,11 +117,14 @@ export class ProgramAttachmentsController {
     @Param('programId', ParseIntPipe) programId: number,
     @Param('attachmentId', ParseIntPipe) attachmentId: number,
     @Body() body: RenameProgramAttachmentDto,
+    @Req() req: ScopedUserRequest,
   ): Promise<void> {
+    const scope = RequestHelper.getUserScope(req);
     await this.programAttachmentsService.renameProgramAttachment({
       programId,
       attachmentId,
       filename: body.newFilename,
+      scope,
     });
   }
 
