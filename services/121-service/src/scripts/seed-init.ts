@@ -319,7 +319,8 @@ export class SeedInit implements InterfaceScript {
       `);
 
     if (tablesToTruncate.length === 0) {
-      return;
+      // This should not happen, so let's be defensive.
+      throw new Error('No tables found to truncate.');
     }
 
     const tableNames = tablesToTruncate
