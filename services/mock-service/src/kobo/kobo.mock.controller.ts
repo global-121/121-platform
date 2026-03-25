@@ -48,6 +48,20 @@ export class KoboMockController {
 
   @ApiOperation({
     description:
+      'Returns a paginated list of all submissions for a specific Kobo asset. Matches Kobo API endpoint /api/v2/assets/{uid}/data/',
+  })
+  @Get(':uid_asset/data')
+  public getAllSubmissions(@Param('uid_asset') uid_asset: string): {
+    count: number;
+    next: null;
+    previous: null;
+    results: Record<string, any>[];
+  } {
+    return this.koboMockService.getAllSubmissions(uid_asset);
+  }
+
+  @ApiOperation({
+    description:
       'Returns a specific submission by its ID or UUID. Matches Kobo API endpoint /api/v2/assets/{uid}/data/{id}/',
   })
   @ApiParam({

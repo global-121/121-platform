@@ -6,8 +6,10 @@ import {
   Param,
   ParseBoolPipe,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -33,6 +35,10 @@ import { KoboWebhookIncomingSubmission } from '@121-service/src/kobo/dtos/kobo-w
 import { KoboWebhookBasicAuthGuard } from '@121-service/src/kobo/guards/kobo-webhook-basic-auth.guard';
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboSubmissionService } from '@121-service/src/kobo/services/kobo-submission.service';
+import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
+import { MAX_IMPORT_RECORDS } from '@121-service/src/registration/services/registrations-creation.service';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs/kobo')
@@ -159,6 +165,46 @@ export class KoboController {
     programId: number,
   ): Promise<KoboResponseDto> {
     return this.koboService.getKoboData({ programId });
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary: 'Import new Kobo submissions as registrations',
+    description: `Fetches all submissions from the linked Kobo form, filters out submissions that have already been imported (by matching Kobo submission UUID against registration referenceId), and imports the remaining new submissions as registrations. Returns an error if the total number of submissions on the form exceeds the maximum fetch limit (${MAX_IMPORT_RECORDS}).`,
+  })
+  @ApiParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+    description: 'The unique identifier of the program',
+    example: 1,
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'New submissions have been successfully imported as registrations',
+    type: ImportResult,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'No Kobo integration found for this program',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description:
+      'Too many new submissions to import. Use CSV import and split the data into smaller batches.',
+  })
+  @Patch('programs/:programId/kobo/submissions')
+  public async importNewKoboSubmissions(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Req() req: ScopedUserRequest,
+  ): Promise<ImportResult> {
+    const userId = RequestHelper.getUserId(req);
+    return this.koboSubmissionService.importNewSubmissions({
+      programId,
+      userId,
+    });
   }
 
   @NoUserAuthenticationEndpoint(

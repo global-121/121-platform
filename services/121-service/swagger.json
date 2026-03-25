@@ -1204,6 +1204,14 @@
     "returnType": "KoboResponseDto"
   },
   {
+    "method": "patch",
+    "path": "/api/programs/{programId}/kobo/submissions",
+    "params": [
+      "programId"
+    ],
+    "returnType": "ImportResult"
+  },
+  {
     "method": "post",
     "path": "/api/kobo/webhook",
     "params": []

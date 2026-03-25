@@ -36,6 +36,7 @@ import { FileImportService } from '@121-service/src/utils/file-import/file-impor
 
 const BATCH_SIZE = 500;
 const MASS_UPDATE_ROW_LIMIT = 50_000;
+export const MAX_IMPORT_RECORDS = 1000;
 
 @Injectable()
 export class RegistrationsCreationService {
@@ -161,10 +162,9 @@ export class RegistrationsCreationService {
     program: ProgramEntity,
     userId: number,
   ): Promise<ImportResult> {
-    const maxRecords = 1000;
     const importRecords = await this.fileImportService.validateCsv(
       csvFile,
-      maxRecords,
+      MAX_IMPORT_RECORDS,
     );
     // TODO: Improve the typing of what comes out validateCsv function to avoid this cast
     return this.importRegistrations({
