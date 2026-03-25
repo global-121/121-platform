@@ -169,12 +169,6 @@ export class PaymentsManagementService {
       };
     }
 
-    const thresholds =
-      await this.programApprovalThresholdRepository.getThresholdsForPaymentAmount(
-        programId,
-        transferValue,
-      );
-
     // Get array of RegistrationViewEntity objects to be paid
     const registrationsForPayment =
       await this.getRegistrationsForPaymentChunked(programId, paginateQuery);
@@ -193,6 +187,16 @@ export class PaymentsManagementService {
       totalMultiplierSum =
         totalMultiplierSum + registration.paymentAmountMultiplier;
     }
+
+    let totalPaymentAmount = totalMultiplierSum * transferValue;
+    // Round to 2 decimals, thresholds are stored with 2 decimals, we want to
+    // hit the thresholds correctly.
+    totalPaymentAmount = Math.round(totalPaymentAmount * 100) / 100;
+
+    const thresholds =
+      await this.programApprovalThresholdRepository.getThresholdsForPaymentAmount(
+        { programId, totalPaymentAmount },
+      );
 
     // Get unique programFspConfigurationNames in payment
     // Getting unique programFspConfigurationNames is relatively: with 131k registrations it takes ~36ms locally
@@ -237,7 +241,6 @@ export class PaymentsManagementService {
     const sortedThresholds: ProgramApprovalThresholdEntity[] = thresholds
       .slice()
       .sort((a, b) => a.thresholdAmount - b.thresholdAmount);
-
     const paymentEntity = new PaymentEntity();
     paymentEntity.programId = programId;
     paymentEntity.approvals = this.createPaymentApprovals({
