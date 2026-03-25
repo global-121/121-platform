@@ -36,12 +36,16 @@ let accessTokenCvaManager: string;
 const programId = programIdPV;
 const transferValue = 25;
 
-async function setupPaymentApprovalTest(
+async function setupPaymentApprovalTest({
+  thresholds,
+  registrations = [registrationPV5],
+}: {
   thresholds: {
     thresholdAmount: number;
     approverUsernames: string[];
-  }[],
-): Promise<void> {
+  }[];
+  registrations?: typeof registrationsPV;
+}): Promise<void> {
   await resetDB(
     SeedScript.nlrcMultiple,
     __filename,
@@ -56,11 +60,7 @@ async function setupPaymentApprovalTest(
       getAccessTokenCvaManager(),
     ]);
 
-  await seedIncludedRegistrations(
-    [registrationPV5],
-    programId,
-    adminAccessToken,
-  );
+  await seedIncludedRegistrations(registrations, programId, adminAccessToken);
 
   await setupThresholds(thresholds);
 }
@@ -96,16 +96,20 @@ describe('do payment with 2 approval steps', () => {
   let paymentId: number;
 
   beforeAll(async () => {
-    await setupPaymentApprovalTest([
-      {
-        thresholdAmount: 0,
-        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_ADMIN],
-      },
-      {
-        thresholdAmount: 10,
-        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!],
-      },
-    ]);
+    await setupPaymentApprovalTest({
+      thresholds: [
+        {
+          thresholdAmount: 0,
+          approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_ADMIN],
+        },
+        {
+          thresholdAmount: 10,
+          approverUsernames: [
+            env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!,
+          ],
+        },
+      ],
+    });
   });
 
   beforeEach(async () => {
@@ -347,14 +351,8 @@ describe('payments with different total amounts should hit different thresholds'
   const referenceIds = registrationsPV.map(
     (registration) => registration.referenceId,
   );
-
   // Helper function to make tests cleaner.
-  async function seedRegistrationsCreatePaymentAndGetSummary() {
-    await seedIncludedRegistrations(
-      registrationsPV,
-      programId,
-      adminAccessToken,
-    );
+  async function createPaymentAndGetSummary() {
     const createPaymentResponse = await createPayment({
       programId,
       transferValue: aggregatedTransferValue,
@@ -371,15 +369,20 @@ describe('payments with different total amounts should hit different thresholds'
 
   it('if 1 threshold is set that should be the only hit', async () => {
     // Arrange
-    await setupPaymentApprovalTest([
-      {
-        thresholdAmount: 0,
-        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!],
-      },
-    ]);
+    await setupPaymentApprovalTest({
+      registrations: registrationsPV,
+      thresholds: [
+        {
+          thresholdAmount: 0,
+          approverUsernames: [
+            env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!,
+          ],
+        },
+      ],
+    });
 
     // Act
-    const paymentSummary = await seedRegistrationsCreatePaymentAndGetSummary();
+    const paymentSummary = await createPaymentAndGetSummary();
 
     // Assert
     expect(paymentSummary).toMatchObject({
@@ -395,18 +398,23 @@ describe('payments with different total amounts should hit different thresholds'
   it('if 2 thresholds under total amount are set both should be hit', async () => {
     // Also testing order irrelevance here.
     // Arrange
-    await setupPaymentApprovalTest([
-      {
-        thresholdAmount: 200, // 200 < 280, so should be hit
-        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_ADMIN!],
-      },
-      {
-        thresholdAmount: 0,
-        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!],
-      },
-    ]);
+    await setupPaymentApprovalTest({
+      registrations: registrationsPV,
+      thresholds: [
+        {
+          thresholdAmount: 200, // 200 < 280, so should be hit
+          approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_ADMIN!],
+        },
+        {
+          thresholdAmount: 0,
+          approverUsernames: [
+            env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!,
+          ],
+        },
+      ],
+    });
     // Act
-    const paymentSummary = await seedRegistrationsCreatePaymentAndGetSummary();
+    const paymentSummary = await createPaymentAndGetSummary();
 
     // Assert
     expect(paymentSummary).toMatchObject({
@@ -424,19 +432,24 @@ describe('payments with different total amounts should hit different thresholds'
 
   it('if 2nd threshold is over total amount it should not be hit', async () => {
     // Arrange
-    await setupPaymentApprovalTest([
-      {
-        thresholdAmount: 0,
-        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!],
-      },
-      {
-        thresholdAmount: 300, // Higher than 280 total amount, so should not be hit
-        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_ADMIN!],
-      },
-    ]);
+    await setupPaymentApprovalTest({
+      registrations: registrationsPV,
+      thresholds: [
+        {
+          thresholdAmount: 0,
+          approverUsernames: [
+            env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!,
+          ],
+        },
+        {
+          thresholdAmount: 300, // Higher than 280 total amount, so should not be hit
+          approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_ADMIN!],
+        },
+      ],
+    });
 
     // Act
-    const paymentSummary = await seedRegistrationsCreatePaymentAndGetSummary();
+    const paymentSummary = await createPaymentAndGetSummary();
 
     // Assert
     expect(paymentSummary).toMatchObject({
@@ -451,23 +464,28 @@ describe('payments with different total amounts should hit different thresholds'
 
   it('if 2nd threshold is under total amount and 3rd is over then only 1 and 2 should be hit', async () => {
     // Arrange
-    await setupPaymentApprovalTest([
-      {
-        thresholdAmount: 0,
-        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!],
-      },
-      {
-        thresholdAmount: 150, // < 280, so should be hit
-        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_ADMIN!],
-      },
-      {
-        thresholdAmount: 300, // > 280, so should not be hit
-        approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER!],
-      },
-    ]);
+    await setupPaymentApprovalTest({
+      registrations: registrationsPV,
+      thresholds: [
+        {
+          thresholdAmount: 0,
+          approverUsernames: [
+            env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!,
+          ],
+        },
+        {
+          thresholdAmount: 150, // < 280, so should be hit
+          approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_ADMIN!],
+        },
+        {
+          thresholdAmount: 300, // > 280, so should not be hit
+          approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER!],
+        },
+      ],
+    });
 
     // Act
-    const paymentSummary = await seedRegistrationsCreatePaymentAndGetSummary();
+    const paymentSummary = await createPaymentAndGetSummary();
 
     // Assert
     expect(paymentSummary).toMatchObject({
@@ -486,7 +504,7 @@ describe('payments with different total amounts should hit different thresholds'
 
 describe('do payment with <2 approval steps', () => {
   beforeEach(async () => {
-    await setupPaymentApprovalTest([]);
+    await setupPaymentApprovalTest({ thresholds: [] });
   });
 
   it('user who can create a payment is different from user approving payment and different from user starting payment', async () => {
@@ -663,15 +681,17 @@ describe('multiple approvers per approval step', () => {
   let paymentId: number;
 
   beforeAll(async () => {
-    await setupPaymentApprovalTest([
-      {
-        thresholdAmount: 0,
-        approverUsernames: [
-          env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!,
-          env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER!,
-        ],
-      },
-    ]);
+    await setupPaymentApprovalTest({
+      thresholds: [
+        {
+          thresholdAmount: 0,
+          approverUsernames: [
+            env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!,
+            env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER!,
+          ],
+        },
+      ],
+    });
   });
 
   beforeEach(async () => {
