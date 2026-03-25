@@ -1,7 +1,8 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, FindManyOptions, Like, Repository } from 'typeorm';
+import { Equal, FindManyOptions, Repository } from 'typeorm';
 
 import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attachments/program-attachment.entity';
+import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
 
 export class ProgramAttachmentRepository extends Repository<ProgramAttachmentEntity> {
   constructor(
@@ -20,13 +21,12 @@ export class ProgramAttachmentRepository extends Repository<ProgramAttachmentEnt
     scope: string;
     relations?: FindManyOptions<ProgramAttachmentEntity>['relations'];
   }): Promise<ProgramAttachmentEntity[]> {
-    return this.find({
-      where: [
-        { programId: Equal(programId), scope: Like(`${scope}%`) },
-        { programId: Equal(programId), program: { enableScope: false } },
-      ],
-      relations,
-    });
+    return this.find(
+      convertToScopedOptions<
+        ProgramAttachmentEntity,
+        FindManyOptions<ProgramAttachmentEntity>
+      >({ where: { programId: Equal(programId) }, relations }, [], scope),
+    );
   }
 
   public findOneScoped({
@@ -38,19 +38,15 @@ export class ProgramAttachmentRepository extends Repository<ProgramAttachmentEnt
     attachmentId: number;
     scope: string;
   }): Promise<ProgramAttachmentEntity | null> {
-    return this.findOne({
-      where: [
-        {
-          programId: Equal(programId),
-          id: Equal(attachmentId),
-          scope: Like(`${scope}%`),
-        },
-        {
-          programId: Equal(programId),
-          id: Equal(attachmentId),
-          program: { enableScope: false },
-        },
-      ],
-    });
+    return this.findOne(
+      convertToScopedOptions<
+        ProgramAttachmentEntity,
+        FindManyOptions<ProgramAttachmentEntity>
+      >(
+        { where: { programId: Equal(programId), id: Equal(attachmentId) } },
+        [],
+        scope,
+      ),
+    );
   }
 }
