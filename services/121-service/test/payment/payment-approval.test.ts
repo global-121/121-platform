@@ -27,6 +27,7 @@ import {
 import {
   programIdPV,
   registrationPV5,
+  registrationsPV,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 let adminAccessToken: string;
@@ -34,22 +35,6 @@ let accessTokenFinanceManager: string;
 let accessTokenCvaManager: string;
 const programId = programIdPV;
 const transferValue = 25;
-
-function createPaymentVoucherRegistration({
-  referenceId,
-  phoneNumber,
-}: {
-  referenceId: string;
-  phoneNumber: string;
-}) {
-  return {
-    ...registrationPV5,
-    referenceId,
-    phoneNumber,
-    whatsappPhoneNumber: phoneNumber,
-    fullName: `Registration ${referenceId}`,
-  };
-}
 
 async function setupPaymentApprovalTest(
   thresholds: {
@@ -357,18 +342,32 @@ describe('do payment with 2 approval steps', () => {
 });
 
 describe('payments with different total amounts should hit different thresholds', () => {
-  const aggregatedTransferValue = 17.5;
-  const registrationCount = 16;
-  // totalPaymentAmount = 16 * 17,5 = 280
-  const registrations = Array.from({ length: registrationCount }, (_, index) =>
-    createPaymentVoucherRegistration({
-      referenceId: `aggregated-threshold-${index + 1}`,
-      phoneNumber: '123',
-    }),
-  );
-  const referenceIds = registrations.map(
+  // totalPaymentAmount = 4 registrations × 70 = 280
+  const aggregatedTransferValue = 70;
+  const referenceIds = registrationsPV.map(
     (registration) => registration.referenceId,
   );
+
+  // Helper function to make tests cleaner.
+  async function seedRegistrationsCreatePaymentAndGetSummary() {
+    await seedIncludedRegistrations(
+      registrationsPV,
+      programId,
+      adminAccessToken,
+    );
+    const createPaymentResponse = await createPayment({
+      programId,
+      transferValue: aggregatedTransferValue,
+      referenceIds,
+      accessToken: adminAccessToken,
+    });
+    const { body } = await getPaymentSummary({
+      programId,
+      paymentId: createPaymentResponse.body.id,
+      accessToken: adminAccessToken,
+    });
+    return body;
+  }
 
   it('if 1 threshold is set that should be the only hit', async () => {
     // Arrange
@@ -378,22 +377,12 @@ describe('payments with different total amounts should hit different thresholds'
         approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!],
       },
     ]);
-    await seedIncludedRegistrations(registrations, programId, adminAccessToken);
+
     // Act
-    const createPaymentResponse = await createPayment({
-      programId,
-      transferValue: aggregatedTransferValue,
-      referenceIds,
-      accessToken: adminAccessToken,
-    });
+    const paymentSummary = await seedRegistrationsCreatePaymentAndGetSummary();
 
     // Assert
-    const paymentSummary = await getPaymentSummary({
-      programId,
-      paymentId: createPaymentResponse.body.id,
-      accessToken: adminAccessToken,
-    });
-    expect(paymentSummary.body).toMatchObject({
+    expect(paymentSummary).toMatchObject({
       approvalsRequired: 1,
       approvalStatus: [
         {
@@ -416,22 +405,11 @@ describe('payments with different total amounts should hit different thresholds'
         approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER!],
       },
     ]);
-    await seedIncludedRegistrations(registrations, programId, adminAccessToken);
     // Act
-    const createPaymentResponse = await createPayment({
-      programId,
-      transferValue: aggregatedTransferValue,
-      referenceIds,
-      accessToken: adminAccessToken,
-    });
+    const paymentSummary = await seedRegistrationsCreatePaymentAndGetSummary();
 
     // Assert
-    const paymentSummary = await getPaymentSummary({
-      programId,
-      paymentId: createPaymentResponse.body.id,
-      accessToken: adminAccessToken,
-    });
-    expect(paymentSummary.body).toMatchObject({
+    expect(paymentSummary).toMatchObject({
       approvalsRequired: 2,
       approvalStatus: [
         {
@@ -456,22 +434,12 @@ describe('payments with different total amounts should hit different thresholds'
         approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_ADMIN!],
       },
     ]);
-    await seedIncludedRegistrations(registrations, programId, adminAccessToken);
+
     // Act
-    const createPaymentResponse = await createPayment({
-      programId,
-      transferValue: aggregatedTransferValue,
-      referenceIds,
-      accessToken: adminAccessToken,
-    });
+    const paymentSummary = await seedRegistrationsCreatePaymentAndGetSummary();
 
     // Assert
-    const paymentSummary = await getPaymentSummary({
-      programId,
-      paymentId: createPaymentResponse.body.id,
-      accessToken: adminAccessToken,
-    });
-    expect(paymentSummary.body).toMatchObject({
+    expect(paymentSummary).toMatchObject({
       approvalsRequired: 1,
       approvalStatus: [
         {
@@ -497,22 +465,12 @@ describe('payments with different total amounts should hit different thresholds'
         approverUsernames: [env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER!],
       },
     ]);
-    await seedIncludedRegistrations(registrations, programId, adminAccessToken);
+
     // Act
-    const createPaymentResponse = await createPayment({
-      programId,
-      transferValue: aggregatedTransferValue,
-      referenceIds,
-      accessToken: adminAccessToken,
-    });
+    const paymentSummary = await seedRegistrationsCreatePaymentAndGetSummary();
 
     // Assert
-    const paymentSummary = await getPaymentSummary({
-      programId,
-      paymentId: createPaymentResponse.body.id,
-      accessToken: adminAccessToken,
-    });
-    expect(paymentSummary.body).toMatchObject({
+    expect(paymentSummary).toMatchObject({
       approvalsRequired: 2,
       approvalStatus: [
         {
