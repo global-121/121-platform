@@ -15,14 +15,17 @@ export class ProgramApprovalThresholdRepository extends Repository<ProgramApprov
     );
   }
 
-  public async getThresholdsForPaymentAmount(
-    programId: number,
-    paymentAmount: number,
-  ): Promise<ProgramApprovalThresholdEntity[]> {
+  public async getThresholdsForPaymentAmount({
+    programId,
+    totalPaymentAmount,
+  }: {
+    programId: number;
+    totalPaymentAmount: number;
+  }): Promise<ProgramApprovalThresholdEntity[]> {
     return await this.find({
       where: {
         programId: Equal(programId),
-        thresholdAmount: LessThanOrEqual(paymentAmount),
+        thresholdAmount: LessThanOrEqual(totalPaymentAmount),
       },
       relations: ['approverAssignments'],
       order: { thresholdAmount: 'ASC' },
