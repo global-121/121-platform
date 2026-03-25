@@ -9,7 +9,6 @@ import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp
 import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 
@@ -42,19 +41,12 @@ export class CooperativeBankOfOromiaAccountManagementService {
     programId: number;
   }): Promise<number> {
     const queryBuilder =
-      this.registrationViewScopedRepository.getQueryBuilderFilterByFsp({
-        programId,
-        fspNames: [Fsps.cooperativeBankOfOromia],
-      });
-    queryBuilder.andWhere(
-      '(registration.status NOT IN (:...excludedStatuses) OR registration.status IS NULL)',
-      {
-        excludedStatuses: [
-          RegistrationStatusEnum.completed,
-          RegistrationStatusEnum.declined,
-        ],
-      },
-    );
+      this.registrationViewScopedRepository.getQueryBuilderForAccountValidation(
+        {
+          programId,
+          fspName: Fsps.cooperativeBankOfOromia,
+        },
+      );
     const registrationsWithCoopBank =
       await this.registrationsPaginationService.getRegistrationViewsNoLimit({
         programId,

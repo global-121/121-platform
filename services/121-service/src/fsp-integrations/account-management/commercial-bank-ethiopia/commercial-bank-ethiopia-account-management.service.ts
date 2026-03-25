@@ -11,7 +11,6 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { RequiredUsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/required-username-password.interface';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
@@ -166,19 +165,11 @@ export class CommercialBankEthiopiaAccountManagementService {
   public async getAllRegistrationData(
     programId: number,
   ): Promise<CommercialBankEthiopiaValidationData[]> {
-    const queryBuilderCbeRegistrations =
-      this.registrationViewScopedRepository.getQueryBuilderFilterByFsp({
-        programId,
-        fspNames: [Fsps.commercialBankEthiopia],
-      });
-    const queryBuilderReportRegistrations =
-      queryBuilderCbeRegistrations.andWhere(
-        '(registration.status NOT IN (:...excludedStatuses) OR registration.status IS NULL)',
+    const queryBuilder =
+      this.registrationViewScopedRepository.getQueryBuilderForAccountValidation(
         {
-          excludedStatuses: [
-            RegistrationStatusEnum.completed,
-            RegistrationStatusEnum.declined,
-          ],
+          programId,
+          fspName: Fsps.commercialBankEthiopia,
         },
       );
     const registrationsWithCBE =
@@ -192,7 +183,7 @@ export class CommercialBankEthiopiaAccountManagementService {
             FspAttributes.bankAccountNumber,
           ],
         },
-        queryBuilder: queryBuilderReportRegistrations,
+        queryBuilder,
       });
 
     return registrationsWithCBE.map((registration) => ({

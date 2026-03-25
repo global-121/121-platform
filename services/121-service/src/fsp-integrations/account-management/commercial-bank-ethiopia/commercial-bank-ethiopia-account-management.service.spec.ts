@@ -81,7 +81,7 @@ describe('CommercialBankEthiopiaAccountManagementService', () => {
         {
           provide: RegistrationViewScopedRepository,
           useValue: {
-            getQueryBuilderFilterByFsp: jest.fn(),
+            getQueryBuilderForAccountValidation: jest.fn(),
           },
         },
         {
