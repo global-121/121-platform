@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, Repository } from 'typeorm';
+import { Equal, In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { KoboWebhookIncomingSubmission } from '@121-service/src/kobo/dtos/kobo-webhook-incoming-submission.dto';
@@ -9,7 +9,7 @@ import { KoboSubmissionMapper } from '@121-service/src/kobo/mappers/kobo-submiss
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
 import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
-import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import {
   MAX_IMPORT_RECORDS,
   RegistrationsCreationService,
@@ -19,12 +19,13 @@ import {
 export class KoboSubmissionService {
   @InjectRepository(KoboEntity)
   private readonly koboRepository: Repository<KoboEntity>;
+  @InjectRepository(RegistrationEntity)
+  private readonly registrationRepository: Repository<RegistrationEntity>;
 
   constructor(
     private readonly koboApiService: KoboApiService,
     private readonly koboService: KoboService,
     private readonly registrationsCreationService: RegistrationsCreationService,
-    private readonly registrationScopedRepository: RegistrationScopedRepository,
   ) {}
 
   public async processKoboWebhookCall(
@@ -44,12 +45,7 @@ export class KoboSubmissionService {
       },
       relations: { program: true },
     });
-    if (!koboIntegration) {
-      throw new HttpException(
-        'Kobo integration not found for this program',
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    this.assertKoboIntegrationExistsOrThrow(koboIntegration);
 
     await this.updateProgramToNewVersionIfApplicable({
       currentVersion: koboIntegration.versionId,
@@ -97,12 +93,7 @@ export class KoboSubmissionService {
       },
       relations: { program: true },
     });
-    if (!koboIntegration) {
-      throw new HttpException(
-        'Kobo integration not found for this program',
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    this.assertKoboIntegrationExistsOrThrow(koboIntegration);
 
     const { submissions, count } =
       await this.koboApiService.getSubmissionsUpToLimit({
@@ -114,10 +105,7 @@ export class KoboSubmissionService {
     const submissionUuids = submissions.map((s) => s._uuid);
 
     const existingReferenceIds =
-      await this.registrationScopedRepository.getExistingReferenceIds({
-        programId,
-        referenceIds: submissionUuids,
-      });
+      await this.getExistingReferenceIds(submissionUuids);
 
     const newSubmissions = submissions.filter(
       (submission) => !existingReferenceIds.has(submission._uuid),
@@ -141,6 +129,30 @@ export class KoboSubmissionService {
       program: koboIntegration.program,
       userId,
     });
+  }
+
+  private async getExistingReferenceIds(
+    referenceIds: string[],
+  ): Promise<Set<string>> {
+    if (referenceIds.length === 0) {
+      return new Set();
+    }
+    const registrations = await this.registrationRepository.find({
+      where: { referenceId: In(referenceIds) },
+      select: { referenceId: true },
+    });
+    return new Set(registrations.map((r) => r.referenceId));
+  }
+
+  private assertKoboIntegrationExistsOrThrow<T extends Partial<KoboEntity>>(
+    koboIntegration: T | null,
+  ): asserts koboIntegration is T {
+    if (!koboIntegration) {
+      throw new HttpException(
+        'Kobo integration not found for this program',
+        HttpStatus.NOT_FOUND,
+      );
+    }
   }
 
   private async updateProgramToNewVersionIfApplicable({

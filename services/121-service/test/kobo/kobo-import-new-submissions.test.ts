@@ -1,52 +1,105 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { env } from '@121-service/src/env';
-import { CreateKoboDto } from '@121-service/src/kobo/dtos/create-kobo.dto';
+import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
+import { FspAttributes } from '@121-service/src/fsp-integrations/shared/enum/fsp-attributes.enum';
+import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enum';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
+import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { KoboMockSubmissionUuids } from '@121-service/test/fixtures/kobo-mock-submission-uuids';
 import {
   patchKoboSubmissions,
-  postKoboToProgram,
+  setupProgramWithKoboIntegration,
 } from '@121-service/test/helpers/kobo.helper';
+import { postMessageTemplate } from '@121-service/test/helpers/program.helper';
 import { searchRegistrationByReferenceId } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
-// The safaricomProgram seed creates program ID 1 with fullName, nationalId,
-// phoneNumber attributes and a Safaricom FSP configuration — everything the
-// mock Kobo submission data requires.
-const programId = 1;
-const assetUid = 'import-test-asset';
-const expectedReferenceId = `${KoboMockSubmissionUuids.success}-${assetUid}`;
+const createProgramFspConfigurationSafaricomDto: CreateProgramFspConfigurationDto =
+  {
+    name: 'Safaricom',
+    label: {
+      en: 'Safaricom',
+    },
+    fspName: Fsps.safaricom,
+    properties: [],
+  };
+
+const requiredProgramRegistrationAttributesForSafaricom = [
+  {
+    name: FspAttributes.nationalId,
+    label: {
+      en: 'National ID',
+    },
+    type: RegistrationAttributeTypes.text,
+    options: [],
+  },
+];
+
+const baseProgram: Partial<CreateProgramDto> = {
+  currency: CurrencyCode.EUR,
+  enableMaxPayments: true,
+  fixedTransferValue: 20,
+  programRegistrationAttributes:
+    requiredProgramRegistrationAttributesForSafaricom,
+};
 
 describe('Import new Kobo submissions via PATCH endpoint', () => {
   let accessToken: string;
 
-  beforeEach(async () => {
-    await resetDB(SeedScript.safaricomProgram, __filename);
+  beforeAll(async () => {
+    await resetDB(SeedScript.productionInitialState, __filename);
     accessToken = await getAccessToken();
   });
 
-  async function linkKoboToProgram(): Promise<void> {
-    const koboLinkDto: CreateKoboDto = {
-      token: 'mock-token',
-      assetUid,
-      url: `${env.MOCK_SERVICE_URL}/api/kobo`,
-    };
+  async function setup(assetUid: string): Promise<{
+    programId: number;
+    assetUid: string;
+  }> {
+    const program: CreateProgramDto = {
+      ...baseProgram,
+      titlePortal: {
+        en: 'Program with Kobo integration for import testing',
+      },
+      languages: [
+        RegistrationPreferredLanguage.en,
+        RegistrationPreferredLanguage.nl,
+      ],
+    } as CreateProgramDto;
 
-    await postKoboToProgram({
-      programId,
-      body: koboLinkDto,
+    const { programId, assetUid: uid } = await setupProgramWithKoboIntegration({
+      assetUid,
+      program,
+      fspConfiguration: createProgramFspConfigurationSafaricomDto,
       accessToken,
-      dryRun: false,
     });
+
+    await postMessageTemplate(
+      programId,
+      {
+        type: MessageContentType.new,
+        language: RegistrationPreferredLanguage.en,
+        label: { en: 'New registration' },
+        message: 'Welcome to our program.',
+        isSendMessageTemplate: false,
+      },
+      accessToken,
+    );
+
+    return { programId, assetUid: uid };
   }
 
   it('should import new submissions and create registrations', async () => {
     // Arrange
-    await linkKoboToProgram();
+    const assetUid = 'import-happy-flow';
+    const expectedReferenceId = `${KoboMockSubmissionUuids.success}-${assetUid}`;
+    const { programId } = await setup(assetUid);
 
     // Act
     const response = await patchKoboSubmissions({ programId, accessToken });
@@ -71,7 +124,10 @@ describe('Import new Kobo submissions via PATCH endpoint', () => {
 
   it('should not import submissions that already exist', async () => {
     // Arrange
-    await linkKoboToProgram();
+    const assetUid = 'import-duplicate';
+    const expectedReferenceId = `${KoboMockSubmissionUuids.success}-${assetUid}`;
+    const { programId } = await setup(assetUid);
+
     const firstResponse = await patchKoboSubmissions({
       programId,
       accessToken,

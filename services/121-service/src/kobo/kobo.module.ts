@@ -12,12 +12,13 @@ import { KoboSubmissionService } from '@121-service/src/kobo/services/kobo-submi
 import { KoboSurveyProcessorService } from '@121-service/src/kobo/services/kobo-survey-processor.service';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([KoboEntity]),
+    TypeOrmModule.forFeature([KoboEntity, RegistrationEntity]),
     ProgramModule,
     ProgramFspConfigurationsModule,
     HttpModule,

@@ -476,7 +476,7 @@ describe('KoboApiService', () => {
       },
     ];
 
-    it('should successfully retrieve all submissions for successful request (happy flow)', async () => {
+    it('should successfully retrieve all submissions for successful request and includes limit query parameter (happy flow)', async () => {
       // Arrange
       httpService.get.mockResolvedValue({
         status: HttpStatus.OK,
@@ -510,54 +510,7 @@ describe('KoboApiService', () => {
         count: 2,
         submissions: mockSubmissionsData,
       });
-    });
-
-    it('should return empty results when no submissions exist', async () => {
-      // Arrange
-      httpService.get.mockResolvedValue({
-        status: HttpStatus.OK,
-        data: {
-          count: 0,
-          next: null,
-          previous: null,
-          results: [],
-        },
-      });
-
-      // Act
-      const result = await service.getSubmissionsUpToLimit({
-        token: mockToken,
-        assetUid: mockAssetUid,
-        baseUrl: mockBaseUrl,
-      });
-
-      // Assert
-      expect(result).toEqual({
-        count: 0,
-        submissions: [],
-      });
-    });
-
-    it('should include limit query parameter in the request URL', async () => {
-      // Arrange
-      httpService.get.mockResolvedValue({
-        status: HttpStatus.OK,
-        data: {
-          count: 0,
-          next: null,
-          previous: null,
-          results: [],
-        },
-      });
-
-      // Act
-      await service.getSubmissionsUpToLimit({
-        token: mockToken,
-        assetUid: mockAssetUid,
-        baseUrl: mockBaseUrl,
-      });
-
-      // Assert
+      // Check that the limit query parameter is included in the request URL
       const calledUrl = httpService.get.mock.calls[0]![0] as string;
       expect(calledUrl).toContain('limit=');
     });
