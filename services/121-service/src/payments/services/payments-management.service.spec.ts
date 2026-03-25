@@ -224,6 +224,81 @@ describe('PaymentsManagementService', () => {
     ).toHaveBeenCalledWith(basePaymentParams.programId);
   });
 
+  describe('private getPaymentDryRunDetailsOrThrow', () => {
+    it('should correctly calculate thresholds based on total payment amount', async () => {
+      // This is done inside of a private function, so we call createPayment and
+      // see if _it_ calls another function with the correct thresholds based on
+      // the total payment amount calculated from the registrations and transfer
+      // value.
+
+      // Arrange
+      const transferValue = 50;
+      const registrations = [
+        {
+          referenceId: 'ref1',
+          paymentAmountMultiplier: 2,
+          programFspConfigurationName: 'fspA',
+        },
+        {
+          referenceId: 'ref2',
+          paymentAmountMultiplier: 3,
+          programFspConfigurationName: 'fspA',
+        },
+      ];
+      // totalPaymentAmount = (2 + 3) * 50 = 250
+      const expectedTotalPaymentAmount = 250;
+
+      (
+        registrationsBulkService.getBulkActionResult as jest.Mock
+      ).mockResolvedValue({});
+      jest
+        .spyOn(
+          registrationsPaginationService as any,
+          'getRegistrationViewsNoLimit',
+        )
+        .mockResolvedValue(registrations);
+      jest
+        .spyOn(paymentsHelperService as any, 'checkFspConfigurationsOrThrow')
+        .mockResolvedValue(undefined);
+      const getThresholdsSpy = jest
+        .spyOn(
+          programApprovalThresholdRepository as any,
+          'getThresholdsForPaymentAmount',
+        )
+        .mockResolvedValue([
+          { id: 1, thresholdAmount: 0, approverAssignments: [] },
+        ]);
+      (
+        transactionsService.createTransactionsAndEvents as jest.Mock
+      ).mockResolvedValue(undefined);
+      jest
+        .spyOn(
+          registrationsPaginationService as any,
+          'getRegistrationViewsByReferenceIds',
+        )
+        .mockResolvedValue(
+          registrations.map((r, i) => ({
+            id: i + 1,
+            paymentAmountMultiplier: r.paymentAmountMultiplier,
+            programFspConfigurationId: 1,
+          })),
+        );
+
+      // Act
+      await service.createPayment({
+        ...basePaymentParams,
+        transferValue,
+        dryRun: false,
+      });
+
+      // Assert
+      expect(getThresholdsSpy).toHaveBeenCalledWith({
+        programId: basePaymentParams.programId,
+        totalPaymentAmount: expectedTotalPaymentAmount,
+      });
+    });
+  });
+
   describe('createPaymentAndEventsEntities', () => {
     it('should assign correct rank based on thresholdAmount in createPaymentAndEventsEntities', async () => {
       // Arrange
