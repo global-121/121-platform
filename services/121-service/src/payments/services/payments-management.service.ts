@@ -188,7 +188,11 @@ export class PaymentsManagementService {
         totalMultiplierSum + registration.paymentAmountMultiplier;
     }
 
-    const totalPaymentAmount = totalMultiplierSum * transferValue;
+    let totalPaymentAmount = totalMultiplierSum * transferValue;
+    // Round to 2 decimals, thresholds are stored with 2 decimals, we want to
+    // hit the thresholds correctly.
+    totalPaymentAmount = Math.round(totalPaymentAmount * 100) / 100;
+
     const thresholds =
       await this.programApprovalThresholdRepository.getThresholdsForPaymentAmount(
         { programId, totalPaymentAmount },
