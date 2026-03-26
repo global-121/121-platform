@@ -11,7 +11,6 @@ import { Fsps } from '@121-service/src/fsp-integrations/shared/enum/fsp-name.enu
 import { RequiredUsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/required-username-password.interface';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
@@ -74,27 +73,22 @@ export class CommercialBankEthiopiaAccountManagementService {
     console.time(logMessageProgram);
 
     for (const registration of registrationsWithCbe) {
-      await this.retrieveAndUpsertAccountEnqueryPerRegistration({
+      await this.retrieveAndUpsertAccountEnquiryPerRegistration({
         registration,
         credentials,
-        programId,
       });
     }
     console.timeEnd(logMessageProgram);
     return registrationsWithCbe.length;
   }
 
-  private async retrieveAndUpsertAccountEnqueryPerRegistration({
+  private async retrieveAndUpsertAccountEnquiryPerRegistration({
     registration,
     credentials,
-    programId,
   }: {
     registration: CommercialBankEthiopiaValidationData;
     credentials: RequiredUsernamePasswordInterface;
-    programId: number;
   }) {
-    const logMessageRegistration = `CBE Reconciliation - Program: ${programId} - getValidationStatus for Registration: ${registration.id}`;
-    console.time(logMessageRegistration);
     let validationResult;
     try {
       validationResult =
@@ -108,10 +102,8 @@ export class CommercialBankEthiopiaAccountManagementService {
         `Error fetching validation status for Registration ID ${registration.id} with account number ${registration.bankAccountNumber}:`,
         error,
       );
-      console.timeEnd(logMessageRegistration);
       return;
     }
-    console.timeEnd(logMessageRegistration);
 
     const result = new CommercialBankEthiopiaAccountEnquiriesEntity();
     result.registrationId = registration?.id;
@@ -173,16 +165,11 @@ export class CommercialBankEthiopiaAccountManagementService {
   public async getAllRegistrationData(
     programId: number,
   ): Promise<CommercialBankEthiopiaValidationData[]> {
-    const queryBuilderCbeRegistrations =
-      this.registrationViewScopedRepository.getQueryBuilderFilterByFsp({
-        programId,
-        fspNames: [Fsps.commercialBankEthiopia],
-      });
-    const queryBuilderReportRegistrations =
-      queryBuilderCbeRegistrations.andWhere(
-        'registration.status IS DISTINCT FROM :pausedStatus',
+    const queryBuilder =
+      this.registrationViewScopedRepository.getQueryBuilderForAccountValidation(
         {
-          pausedStatus: RegistrationStatusEnum.paused, // The NOT-operator does not work with null values so we use IS DISTINCT FROM
+          programId,
+          fspName: Fsps.commercialBankEthiopia,
         },
       );
     const registrationsWithCBE =
@@ -196,7 +183,7 @@ export class CommercialBankEthiopiaAccountManagementService {
             FspAttributes.bankAccountNumber,
           ],
         },
-        queryBuilder: queryBuilderReportRegistrations,
+        queryBuilder,
       });
 
     return registrationsWithCBE.map((registration) => ({

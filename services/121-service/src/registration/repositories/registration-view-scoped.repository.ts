@@ -380,4 +380,25 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
       .andWhere('registration.programId = :programId', { programId })
       .andWhere('registration."fspName" IN (:...fspNames)', { fspNames });
   }
+
+  public getQueryBuilderForAccountValidation({
+    programId,
+    fspName,
+  }: {
+    programId: number;
+    fspName: Fsps;
+  }): ScopedQueryBuilder<RegistrationViewEntity> {
+    return this.getQueryBuilderFilterByFsp({
+      programId,
+      fspNames: [fspName],
+    }).andWhere(
+      '(registration.status NOT IN (:...excludedStatuses) OR registration.status IS NULL)',
+      {
+        excludedStatuses: [
+          RegistrationStatusEnum.completed,
+          RegistrationStatusEnum.declined,
+        ],
+      },
+    );
+  }
 }

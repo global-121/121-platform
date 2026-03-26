@@ -41,10 +41,12 @@ export class CooperativeBankOfOromiaAccountManagementService {
     programId: number;
   }): Promise<number> {
     const queryBuilder =
-      this.registrationViewScopedRepository.getQueryBuilderFilterByFsp({
-        programId,
-        fspNames: [Fsps.cooperativeBankOfOromia],
-      });
+      this.registrationViewScopedRepository.getQueryBuilderForAccountValidation(
+        {
+          programId,
+          fspName: Fsps.cooperativeBankOfOromia,
+        },
+      );
     const registrationsWithCoopBank =
       await this.registrationsPaginationService.getRegistrationViewsNoLimit({
         programId,
