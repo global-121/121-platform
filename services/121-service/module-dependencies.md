@@ -167,6 +167,7 @@ graph LR
   TransactionJobsModule-->IntersolveVoucherModule
   TransactionJobsModule-->MessageQueuesModule
   TransactionJobsModule-->MessageTemplateModule
+  TransactionJobsModule-->MtnModule
   TransactionJobsModule-->NedbankModule
   TransactionJobsModule-->OnafriqModule
   TransactionJobsModule-->ProgramFspConfigurationsModule
