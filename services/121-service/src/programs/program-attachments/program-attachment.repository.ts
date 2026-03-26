@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, FindManyOptions, Repository } from 'typeorm';
+import { Equal, FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 
 import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attachments/program-attachment.entity';
 import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
@@ -41,7 +41,7 @@ export class ProgramAttachmentRepository extends Repository<ProgramAttachmentEnt
     return this.findOne(
       convertToScopedOptions<
         ProgramAttachmentEntity,
-        FindManyOptions<ProgramAttachmentEntity>
+        FindOneOptions<ProgramAttachmentEntity>
       >(
         { where: { programId: Equal(programId), id: Equal(attachmentId) } },
         [],
