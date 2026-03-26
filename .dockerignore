@@ -1,0 +1,27 @@
+# See docs: https://docs.docker.com/build/concepts/context/#dockerignore-files
+# The Docker Compose' build-context is "the repository root", because we want to access the shared "packages" folder inside each service.
+# So we exclude all the files that are not needed for building the image, to speed up the build process.
+
+.git
+.env*
+.dockerignore
+Dockerfile
+
+# Dependencies
+node_modules
+
+# Generated files
+coverage
+dist
+www
+.angular
+.nyc_output
+.swc
+
+# Logs
+logs
+*.log
+
+# IDE / OS
+.vscode
+.DS_Store

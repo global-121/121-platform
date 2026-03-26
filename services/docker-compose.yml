@@ -34,7 +34,8 @@ services:
   mock-service:
     container_name: mock-service
     build:
-      context: ..
+      # To be able to access shared packages, this is considered from the repository root-folder
+      context: ../
       dockerfile: services/mock-service/Dockerfile
       target: production
     init: true
@@ -50,7 +51,8 @@ services:
   121-service:
     container_name: 121-service
     build:
-      context: ..
+      # To be able to access shared packages, this is considered from the repository root-folder
+      context: ../
       dockerfile: services/121-service/Dockerfile
       target: production
     init: true
