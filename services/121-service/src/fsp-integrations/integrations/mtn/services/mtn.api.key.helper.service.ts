@@ -5,6 +5,7 @@ import { v4 as createUuid } from 'uuid';
 import { env } from '@121-service/src/env';
 import { MtnApiCreateApiKeyResponse } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/create-api-key-response-mtn-api.dto';
 import { MtnApiCreateApiUserRequestBody } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/create-api-user-request-body-mtn-api.dto';
+import { MtnApiCreateTokenResponse } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/create-token-response-mtn-api.dto';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
@@ -13,12 +14,21 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
 export class MtnApiKeyHelperService {
   public constructor(private readonly httpService: CustomHttpService) {}
 
-  public async getApiKey(): Promise<string> {
+  public async getAccessToken(): Promise<{
+    accessToken: string;
+    referenceId: string;
+    apiKey: string;
+  }> {
     const referenceId = await this.createApiUser();
-    return await this.createApiKey({ referenceId });
+    const apiKey = await this.createApiKey({ referenceId });
+    const accessToken = await this.createAccessToken({
+      referenceId,
+      apiKey,
+    });
+    return { accessToken, referenceId, apiKey };
   }
 
-  private getBaseUrl(): URL {
+  public async getBaseUrl(): Promise<URL> {
     if (env.MTN_MODE === FspMode.mock) {
       return new URL('api/fsp/mtn/', env.MOCK_SERVICE_URL);
     }
@@ -28,7 +38,7 @@ export class MtnApiKeyHelperService {
     return new URL(env.MTN_API_URL);
   }
 
-  private getSubscriptionKeyOrThrow(): string {
+  public async getSubscriptionKeyOrThrow(): Promise<string> {
     if (!env.MTN_SUBSCRIPTION_KEY) {
       throw new MtnApiError('MTN_SUBSCRIPTION_KEY is not set');
     }
@@ -37,13 +47,16 @@ export class MtnApiKeyHelperService {
 
   private async createApiUser(): Promise<string> {
     const referenceId = createUuid();
-    const url = new URL('v1_0/apiuser', this.getBaseUrl());
+    const url = new URL('v1_0/apiuser', await this.getBaseUrl());
 
     const headers = new Headers();
     headers.set('X-Reference-Id', referenceId);
     headers.set('Content-Type', 'application/json');
     headers.set('Cache-Control', 'no-cache');
-    headers.set('Ocp-Apim-Subscription-Key', this.getSubscriptionKeyOrThrow());
+    headers.set(
+      'Ocp-Apim-Subscription-Key',
+      await this.getSubscriptionKeyOrThrow(),
+    );
 
     const payload: MtnApiCreateApiUserRequestBody = {
       providerCallbackHost: env.MTN_PROVIDER_CALLBACK_HOST ?? '',
@@ -71,12 +84,15 @@ export class MtnApiKeyHelperService {
   }): Promise<string> {
     const url = new URL(
       `v1_0/apiuser/${referenceId}/apikey`,
-      this.getBaseUrl(),
+      await this.getBaseUrl(),
     );
 
     const headers = new Headers();
     headers.set('Cache-Control', 'no-cache');
-    headers.set('Ocp-Apim-Subscription-Key', this.getSubscriptionKeyOrThrow());
+    headers.set(
+      'Ocp-Apim-Subscription-Key',
+      await this.getSubscriptionKeyOrThrow(),
+    );
 
     const response = await this.httpService.post<
       AxiosResponse<MtnApiCreateApiKeyResponse>
@@ -89,5 +105,40 @@ export class MtnApiKeyHelperService {
     }
 
     return response.data.apiKey;
+  }
+
+  private async createAccessToken({
+    referenceId,
+    apiKey,
+  }: {
+    referenceId: string;
+    apiKey: string;
+  }): Promise<string> {
+    const url = new URL('disbursement/token/', await this.getBaseUrl());
+
+    const basicAuth = Buffer.from(`${referenceId}:${apiKey}`).toString(
+      'base64',
+    );
+
+    const headers = new Headers();
+    headers.set('Authorization', `Basic ${basicAuth}`);
+    headers.set('Content-Type', 'application/json');
+    headers.set('Cache-Control', 'no-cache');
+    headers.set(
+      'Ocp-Apim-Subscription-Key',
+      await this.getSubscriptionKeyOrThrow(),
+    );
+
+    const response = await this.httpService.post<
+      AxiosResponse<MtnApiCreateTokenResponse>
+    >(url.toString(), {}, headers);
+
+    if (!response?.data?.access_token) {
+      throw new MtnApiError(
+        `Failed to create access token. Status: ${response?.status ?? 'unknown'}, StatusText: ${response?.statusText ?? 'unknown'}`,
+      );
+    }
+
+    return response.data.access_token;
   }
 }
