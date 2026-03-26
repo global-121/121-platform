@@ -1,14 +1,13 @@
 import eslint from '@eslint/js';
 import pluginQuery from '@tanstack/eslint-plugin-query';
 import angularEslint from 'angular-eslint';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import eslintConfig121Platform from 'eslint-config-121-platform';
 import eslintPluginBetterTailwindcss from 'eslint-plugin-better-tailwindcss';
 import eslintPluginNoRelativePaths from 'eslint-plugin-no-relative-import-paths';
 import eslintPluginPerfectionist from 'eslint-plugin-perfectionist';
 import eslintPluginRegexp from 'eslint-plugin-regexp';
-import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
 import eslintSortClassMembers from 'eslint-plugin-sort-class-members';
-import { defineConfig, globalIgnores } from 'eslint/config';
 import tsEslint from 'typescript-eslint';
 
 import noFormControlUndefinedValue from './eslint-rules/no-form-control-undefined-value.mjs';
@@ -54,6 +53,9 @@ export default defineConfig(
     plugins: {
       regexp: eslintPluginRegexp,
     },
+    rules: {
+      'perfectionist/sort-imports': ['off'], // Handled by `eslint-plugin-simple-import-sort` in the shared config
+    },
   },
   eslintConfig121Platform.configs.typescript,
   eslintConfig121Platform.configs.typescriptNext,
@@ -74,7 +76,6 @@ export default defineConfig(
       'no-relative-import-paths': eslintPluginNoRelativePaths,
       perfectionist: eslintPluginPerfectionist,
       regexp: eslintPluginRegexp,
-      'simple-import-sort': eslintPluginSimpleSort,
     },
     processor: angularEslint.processInlineTemplates,
     rules: {
@@ -125,24 +126,6 @@ export default defineConfig(
       'perfectionist/sort-enums': ['error'],
       'perfectionist/sort-intersection-types': ['error'],
       'perfectionist/sort-union-types': ['error'],
-      'simple-import-sort/exports': 'error',
-      'simple-import-sort/imports': [
-        'error',
-        {
-          groups: [
-            // Angular packages.
-            ['^@angular'],
-            // Packages.
-            // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
-            ['^@?\\w'],
-            // Alias imports
-            ['^@121-service'],
-            // Local imports
-            // Anything that starts with a tilde.
-            ['^~'],
-          ],
-        },
-      ],
     },
   },
   {

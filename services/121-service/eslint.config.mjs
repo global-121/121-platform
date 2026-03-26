@@ -2,7 +2,6 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import eslintConfig121Platform from 'eslint-config-121-platform';
 import eslintPluginJest from 'eslint-plugin-jest';
 import eslintPluginNoRelativePaths from 'eslint-plugin-no-relative-import-paths';
-import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
 import tsEslint from 'typescript-eslint';
 
 import controllerAuthenticatedUser from './eslint-custom-rules/controller-authenticated-user.mjs';
@@ -50,7 +49,6 @@ export default defineConfig(
     extends: [tsEslint.configs.recommended, tsEslint.configs.stylistic],
     plugins: {
       'no-relative-import-paths': eslintPluginNoRelativePaths,
-      'simple-import-sort': eslintPluginSimpleSort,
     },
     rules: {
       '@typescript-eslint/explicit-function-return-type': 'off',
@@ -99,22 +97,6 @@ export default defineConfig(
       ],
       // 'promise/prefer-await-to-callbacks': 'warn', // TODO: Enable (locally only) to see if there is something to refactor.
       // 'promise/prefer-await-to-then': 'warn', // TODO: Enable (locally only) to see if there is something to refactor.
-      'simple-import-sort/exports': 'error',
-      'simple-import-sort/imports': [
-        'error',
-        {
-          groups: [
-            // Packages.
-            // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
-            ['^@?\\w'],
-            // Alias imports
-            ['^@121-service'],
-            // Relative imports.
-            // Anything that starts with a dot.
-            ['^\\.'],
-          ],
-        },
-      ],
     },
   },
   {

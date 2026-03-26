@@ -1,7 +1,6 @@
 import { defineConfig, globalIgnores } from 'eslint/config';
-import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
-import tsEslint from 'typescript-eslint';
 import eslintConfig121Platform from 'eslint-config-121-platform';
+import tsEslint from 'typescript-eslint';
 
 export default defineConfig(
   globalIgnores(['test-results/**', 'playwright-report/**']),
@@ -20,29 +19,6 @@ export default defineConfig(
       tsEslint.configs.recommended,
       tsEslint.configs.stylisticTypeChecked,
     ],
-    plugins: {
-      'simple-import-sort': eslintPluginSimpleSort,
-    },
-    rules: {
-      'simple-import-sort/exports': 'error',
-      'simple-import-sort/imports': [
-        'error',
-        {
-          groups: [
-            // Packages.
-            // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
-            ['^@?\\w'],
-            // Alias imports
-            ['^@121-portal', '^@121-service'],
-            // Local imports
-            ['^@121-e2e'],
-            // Relative imports.
-            // Anything that starts with a dot.
-            ['^\\.'],
-          ],
-        },
-      ],
-    },
   },
   eslintConfig121Platform.configs.final, // NOTE: This needs to be last! It configures Prettier, to make sure auto-formatting works.
 );
