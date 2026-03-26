@@ -7,6 +7,7 @@ import { CooperativeBankOfOromiaModule } from '@121-service/src/fsp-integrations
 import { ExcelModule } from '@121-service/src/fsp-integrations/integrations/excel/excel.module';
 import { IntersolveVisaModule } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/intersolve-visa.module';
 import { IntersolveVoucherModule } from '@121-service/src/fsp-integrations/integrations/intersolve-voucher/intersolve-voucher.module';
+import { MtnModule } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.module';
 import { NedbankModule } from '@121-service/src/fsp-integrations/integrations/nedbank/nedbank.module';
 import { OnafriqTransactionEntity } from '@121-service/src/fsp-integrations/integrations/onafriq/entities/onafriq-transaction.entity';
 import { OnafriqModule } from '@121-service/src/fsp-integrations/integrations/onafriq/onafriq.module';
@@ -53,6 +54,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     SafaricomModule,
     AirtelModule,
     CooperativeBankOfOromiaModule,
+    MtnModule,
     NedbankModule,
     ProgramFspConfigurationsModule,
     OnafriqModule,
