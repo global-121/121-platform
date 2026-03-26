@@ -1,9 +1,17 @@
-import { Column, Entity, JoinColumn, ManyToOne, Relation } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  Relation,
+} from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
+@Index('IDX_program_attachment_programId_scope', ['programId', 'scope'])
 @Entity('program_attachment')
 export class ProgramAttachmentEntity extends Base121Entity {
   @ManyToOne((_type) => ProgramEntity, (program) => program.attachments, {
