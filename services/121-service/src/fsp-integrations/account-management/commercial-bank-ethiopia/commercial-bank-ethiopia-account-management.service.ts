@@ -73,7 +73,7 @@ export class CommercialBankEthiopiaAccountManagementService {
     console.time(logMessageProgram);
 
     for (const registration of registrationsWithCbe) {
-      await this.retrieveAndUpsertAccountEnqueryPerRegistration({
+      await this.retrieveAndUpsertAccountEnquiryPerRegistration({
         registration,
         credentials,
       });
@@ -82,7 +82,7 @@ export class CommercialBankEthiopiaAccountManagementService {
     return registrationsWithCbe.length;
   }
 
-  private async retrieveAndUpsertAccountEnqueryPerRegistration({
+  private async retrieveAndUpsertAccountEnquiryPerRegistration({
     registration,
     credentials,
   }: {
