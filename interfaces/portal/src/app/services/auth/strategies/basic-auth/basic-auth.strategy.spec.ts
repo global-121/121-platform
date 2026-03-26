@@ -1,47 +1,53 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { UserApiService } from '~/domains/user/user.api.service';
 import { BasicAuthStrategy } from '~/services/auth/strategies/basic-auth/basic-auth.strategy';
-import { createLocalStorageMock } from '~/test-utils';
 import {
   LOCAL_STORAGE_AUTH_USER_KEY,
   LocalStorageUser,
 } from '~/utils/local-storage';
 
 describe('BasicAuthStrategy - getTimeUntilExpiration', () => {
+  const getItemSpy = vi.spyOn(Storage.prototype, 'getItem');
+
   let strategy: BasicAuthStrategy;
-  let localStorageMock: ReturnType<typeof createLocalStorageMock>;
 
   const setLocalStorageUser = (user: null | Partial<LocalStorageUser>) => {
     if (user === null) {
-      localStorageMock.getItem.and.returnValue(null);
+      getItemSpy.mockReturnValue(null);
     } else {
-      localStorageMock.getItem
-        .withArgs(LOCAL_STORAGE_AUTH_USER_KEY)
-        .and.returnValue(JSON.stringify(user));
+      getItemSpy.mockImplementation((key: string) =>
+        key === LOCAL_STORAGE_AUTH_USER_KEY ? JSON.stringify(user) : null,
+      );
     }
   };
 
   beforeEach(() => {
+    getItemSpy.mockClear();
+    localStorage.clear();
+
     TestBed.configureTestingModule({
       providers: [
         BasicAuthStrategy,
         {
           provide: Router,
-          useValue: jasmine.createSpyObj<Router>('Router', ['navigate']),
+          useValue: vi.mocked({
+            navigate: vi.fn(),
+          } as unknown as Router),
         },
         {
           provide: UserApiService,
-          useValue: jasmine.createSpyObj<UserApiService>('UserApiService', [
-            'login',
-          ]),
+          useValue: vi.mocked({
+            login: vi.fn(),
+          } as unknown as UserApiService),
         },
       ],
     });
 
     strategy = TestBed.inject(BasicAuthStrategy);
-    localStorageMock = createLocalStorageMock();
   });
 
   it('should return Infinity when no user is in localStorage', () => {
