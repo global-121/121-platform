@@ -104,15 +104,16 @@ export class KoboSubmissionService {
         baseUrl: koboIntegration.url,
       });
 
-    const submissionWithNewVersion = submissions.find(
+    const submissionWithDifferentVersion = submissions.find(
       (s) => s.__version__ !== koboIntegration.versionId,
     );
 
-    if (submissionWithNewVersion) {
+    if (submissionWithDifferentVersion) {
       await this.updateProgramToNewVersionIfApplicable({
         currentVersion: koboIntegration.versionId,
         currentVersionDateDeployed: koboIntegration.dateDeployed,
-        formVersionFromIncomingSubmission: submissionWithNewVersion.__version__,
+        formVersionFromIncomingSubmission:
+          submissionWithDifferentVersion.__version__,
         assetUid: koboIntegration.assetUid,
         token: koboIntegration.token,
         url: koboIntegration.url,
