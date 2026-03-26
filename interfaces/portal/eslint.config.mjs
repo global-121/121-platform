@@ -36,7 +36,7 @@ export default defineConfig(
   globalIgnores(['dist/**', 'www/**', '.angular/**', 'coverage/**']),
   {
     name: 'Specific Config file exceptions ONLY',
-    files: ['karma.conf.js', 'knip.config.js'],
+    files: ['knip.config.js'],
     // These exceptions should be minimal, until all these config-files can be converted to be ESM.
     extends: [eslintConfig121Platform.configs.legacyNode],
   },
