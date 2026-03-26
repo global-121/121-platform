@@ -15,6 +15,9 @@ HEALTHCHECK \
   --timeout=300s \
   CMD curl --fail http://0.0.0.0:${PORT_MOCK_SERVICE}/api/instance/version || exit 1
 
+# The path-references here are considered from the repository-root, NOT the current folder!
+# See: ../docker-compose(.development).yml
+
 # Include source-code of shared packages
 COPY packages /home/packages
 
