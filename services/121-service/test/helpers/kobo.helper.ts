@@ -11,7 +11,7 @@ import {
   getServer,
 } from '@121-service/test/helpers/utility.helper';
 
-export async function postKoboToProgram({
+export async function upsertKoboToProgram({
   programId,
   body,
   accessToken,
@@ -25,7 +25,7 @@ export async function postKoboToProgram({
   const queryParams = { dryRun };
 
   return await getServer()
-    .post(`/programs/${programId}/kobo`)
+    .put(`/programs/${programId}/kobo`)
     .set('Cookie', [accessToken])
     .query(queryParams)
     .send(body);
@@ -95,7 +95,7 @@ export async function setupProgramWithKoboIntegration({
     url: `${env.MOCK_SERVICE_URL}/api/kobo`,
   };
 
-  await postKoboToProgram({
+  await upsertKoboToProgram({
     programId,
     body: koboLinkDto,
     accessToken,

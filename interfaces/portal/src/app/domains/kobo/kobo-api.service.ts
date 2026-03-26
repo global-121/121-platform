@@ -35,7 +35,7 @@ export class KoboApiService extends DomainApiService {
     });
   }
 
-  createKoboIntegration({
+  upsertKoboIntegration({
     programId,
     integration,
     dryRun,
@@ -47,7 +47,7 @@ export class KoboApiService extends DomainApiService {
     return this.httpWrapperService.perform121ServiceRequest<
       Dto<KoboIntegrationResultDto>
     >({
-      method: 'POST',
+      method: 'PUT',
       endpoint: this.pathToQueryKey([...BASE_ENDPOINT(programId)]).join('/'),
       body: integration,
       httpParams: {

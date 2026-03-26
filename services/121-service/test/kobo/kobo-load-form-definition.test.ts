@@ -13,7 +13,7 @@ import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/regi
 import { KoboMockAssetUids } from '@121-service/test/fixtures/kobo-mock-asset-uids';
 import {
   getKoboFromProgram,
-  postKoboToProgram,
+  upsertKoboToProgram,
 } from '@121-service/test/helpers/kobo.helper';
 import {
   getProgram,
@@ -91,7 +91,7 @@ describe('Import a Kobo form definition', () => {
       url: `${env.MOCK_SERVICE_URL}/api/kobo`,
     };
 
-    const linkKoboResponse = await postKoboToProgram({
+    const linkKoboResponse = await upsertKoboToProgram({
       programId,
       body: koboLinkDto,
       accessToken,
@@ -213,7 +213,7 @@ describe('Import a Kobo form definition', () => {
       url: `${env.MOCK_SERVICE_URL}/api/kobo`,
     };
 
-    const linkKoboResponse = await postKoboToProgram({
+    const linkKoboResponse = await upsertKoboToProgram({
       programId,
       body: koboLinkDto,
       accessToken,
@@ -263,7 +263,7 @@ describe('Import a Kobo form definition', () => {
     };
 
     // Act
-    const linkKoboResponse = await postKoboToProgram({
+    const linkKoboResponse = await upsertKoboToProgram({
       programId,
       body: koboLinkDto,
       accessToken,
@@ -322,7 +322,7 @@ describe('Import a Kobo form definition', () => {
       url: `${env.MOCK_SERVICE_URL}/api/kobo`,
     };
 
-    await postKoboToProgram({
+    await upsertKoboToProgram({
       programId,
       body: koboLinkDto,
       accessToken,
@@ -336,7 +336,7 @@ describe('Import a Kobo form definition', () => {
       assetUid: KoboMockAssetUids.happyFlowWithChanges,
     };
 
-    await postKoboToProgram({
+    await upsertKoboToProgram({
       programId,
       body: koboLinkDtoSecondImport,
       accessToken,
@@ -402,7 +402,7 @@ describe('Import a Kobo form definition', () => {
       url: `${env.MOCK_SERVICE_URL}/api/kobo`,
     };
 
-    const linkKoboResponse = await postKoboToProgram({
+    const linkKoboResponse = await upsertKoboToProgram({
       programId,
       body: koboLinkDto,
       accessToken,
@@ -443,7 +443,7 @@ describe('Import a Kobo form definition', () => {
     };
 
     // Act
-    const linkKoboResponse = await postKoboToProgram({
+    const linkKoboResponse = await upsertKoboToProgram({
       programId,
       body: koboLinkDto,
       accessToken,

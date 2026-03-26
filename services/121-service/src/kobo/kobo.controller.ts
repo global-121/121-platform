@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Put,
   Query,
   Req,
   Res,
@@ -100,7 +101,7 @@ export class KoboController {
     description: `When set to "true", validates the Kobo form integration without making any changes to the program. This allows you to check if the integration would succeed before executing it. Returns 200 if validation passes, or an appropriate error status if validation fails.`,
     example: false,
   })
-  @Post('programs/:programId/kobo')
+  @Put('programs/:programId/kobo')
   public async createKoboAsset(
     @Body()
     createKoboAssetData: CreateKoboDto,

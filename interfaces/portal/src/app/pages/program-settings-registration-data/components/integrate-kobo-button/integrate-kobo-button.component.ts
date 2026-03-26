@@ -105,7 +105,7 @@ export class IntegrateKoboButtonComponent {
     mutationFn: () => {
       const formRawValue = this.koboConfigurationFormGroup.getRawValue();
 
-      return this.koboApiService.createKoboIntegration({
+      return this.koboApiService.upsertKoboIntegration({
         programId: this.programId,
         integration: {
           url: formRawValue.serverUrl,
@@ -129,7 +129,7 @@ export class IntegrateKoboButtonComponent {
     mutationFn: () => {
       const formRawValue = this.koboConfigurationFormGroup.getRawValue();
 
-      return this.koboApiService.createKoboIntegration({
+      return this.koboApiService.upsertKoboIntegration({
         programId: this.programId,
         integration: {
           url: formRawValue.serverUrl,
