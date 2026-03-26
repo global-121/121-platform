@@ -208,25 +208,33 @@ describe('Program Attachments', () => {
   describe('Scoping', () => {
     it('should assign the uploading user scope to the attachment', async () => {
       // Arrange
-      const scopedAccessToken = await getAccessTokenScoped(DebugScope.Kisumu);
+      const kisumuAccessToken = await getAccessTokenScoped(DebugScope.Kisumu);
+      const turkanaAccessToken = await getAccessTokenScoped(DebugScope.Turkana);
 
       // Act
       const uploadResponse = await uploadAttachment({
         programId: programIdPV,
         filePath: testImagePath,
         filename: testImageFilename,
-        accessToken: scopedAccessToken,
+        accessToken: kisumuAccessToken,
       });
 
       // Assert - upload succeeds
       expect(uploadResponse.status).toBe(HttpStatus.CREATED);
 
-      // The admin (scope '') can see the attachment
-      const adminListResponse = await getAttachments({
+      // The uploading (Kisumu) user can see the attachment
+      const kisumuListResponse = await getAttachments({
         programId: programIdPV,
-        accessToken,
+        accessToken: kisumuAccessToken,
       });
-      expect(adminListResponse.body).toHaveLength(1);
+      expect(kisumuListResponse.body).toHaveLength(1);
+
+      // A different scoped (Turkana) user cannot see the attachment
+      const turkanaListResponse = await getAttachments({
+        programId: programIdPV,
+        accessToken: turkanaAccessToken,
+      });
+      expect(turkanaListResponse.body).toHaveLength(0);
     });
 
     it('should return only attachments within the user scope', async () => {
