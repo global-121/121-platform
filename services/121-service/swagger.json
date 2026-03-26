@@ -1099,6 +1099,11 @@
     "params": []
   },
   {
+    "method": "post",
+    "path": "/api/fsps/mtn/transfer",
+    "params": []
+  },
+  {
     "method": "get",
     "path": "/api/programs/{programId}/payments/excel-reconciliation/template",
     "params": [
