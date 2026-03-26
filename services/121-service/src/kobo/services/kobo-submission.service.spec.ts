@@ -41,6 +41,7 @@ describe('KoboSubmissionService', () => {
     id: 1,
     programId: 1,
     versionId: 'v1',
+    dateDeployed: new Date('2024-01-01'),
     token: 'mock-token',
     url: 'https://kobo.example.com',
     assetUid,
@@ -375,6 +376,62 @@ describe('KoboSubmissionService', () => {
       expect(error.message).toMatchInlineSnapshot(
         `"The Kobo form has 1001 total submissions, which exceeds the maximum of 1000 that can be fetched at once. Not all submissions could be retrieved, so some new ones may be missing. Please use the CSV import instead and split the data into smaller batches."`,
       );
+    });
+
+    it('should update program when submissions contain a new form version', async () => {
+      // Arrange
+      const newerVersionId = 'v2';
+      const newerDateDeployed = new Date('2025-06-01');
+      koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
+      koboApiService.getSubmissionsUpToLimit.mockResolvedValue({
+        count: 1,
+        submissions: [{ ...mockSubmission, __version__: newerVersionId }],
+      });
+      registrationRepository.find.mockResolvedValue([]);
+      koboService.getFormDefinitionOrThrow.mockResolvedValue({
+        name: 'Test Form',
+        survey: [],
+        languages: ['English (en)'],
+        dateDeployed: newerDateDeployed,
+        versionId: newerVersionId,
+      });
+      koboService.validateFormAndUpdateProgram.mockResolvedValue(undefined);
+      registrationsCreationService.importRegistrations.mockResolvedValue({
+        aggregateImportResult: { countImported: 1 },
+      });
+
+      // Act
+      await service.importNewSubmissions({ programId: 1, userId: 42 });
+
+      // Assert
+      expect(koboService.validateFormAndUpdateProgram).toHaveBeenCalledWith({
+        formDefinition: expect.objectContaining({ versionId: newerVersionId }),
+        programId: mockProgram.id,
+      });
+      expect(koboRepository.update).toHaveBeenCalledWith(
+        { versionId: mockKoboEntity.versionId },
+        { versionId: newerVersionId, dateDeployed: newerDateDeployed },
+      );
+    });
+
+    it('should not update program when all submissions have the current form version', async () => {
+      // Arrange
+      koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
+      koboApiService.getSubmissionsUpToLimit.mockResolvedValue({
+        count: 1,
+        submissions: [mockSubmission], // __version__: 'v1' matches stored versionId: 'v1'
+      });
+      registrationRepository.find.mockResolvedValue([]);
+      registrationsCreationService.importRegistrations.mockResolvedValue({
+        aggregateImportResult: { countImported: 0 },
+      });
+
+      // Act
+      await service.importNewSubmissions({ programId: 1, userId: 42 });
+
+      // Assert
+      expect(koboService.getFormDefinitionOrThrow).not.toHaveBeenCalled();
+      expect(koboService.validateFormAndUpdateProgram).not.toHaveBeenCalled();
     });
 
     it('should filter out already existing registrations', async () => {
