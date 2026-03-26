@@ -2,7 +2,6 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import eslintConfig121Platform from 'eslint-config-121-platform';
 import eslintPluginNoRelativePaths from 'eslint-plugin-no-relative-import-paths';
 import eslintPluginRegexp from 'eslint-plugin-regexp';
-import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
 import tsEslint from 'typescript-eslint';
 
 export default defineConfig(
@@ -31,7 +30,6 @@ export default defineConfig(
     plugins: {
       'no-relative-import-paths': eslintPluginNoRelativePaths,
       regexp: eslintPluginRegexp,
-      'simple-import-sort': eslintPluginSimpleSort,
     },
     rules: {
       '@typescript-eslint/explicit-function-return-type': [
@@ -59,22 +57,6 @@ export default defineConfig(
               importNames: ['env'],
               message: 'Import ENV-variables from env.ts only.',
             },
-          ],
-        },
-      ],
-      'simple-import-sort/exports': 'error',
-      'simple-import-sort/imports': [
-        'error',
-        {
-          groups: [
-            // Packages.
-            // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
-            ['^@?\\w'],
-            // Alias imports
-            ['^@mock-service'],
-            // Relative imports.
-            // Anything that starts with a dot.
-            ['^\\.'],
           ],
         },
       ],

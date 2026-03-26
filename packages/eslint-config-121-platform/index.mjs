@@ -1,9 +1,10 @@
-import { defineConfig } from 'eslint/config';
-import eslint from '@eslint/js';
 import eslintPluginComments from '@eslint-community/eslint-plugin-eslint-comments/configs';
+import eslint from '@eslint/js';
 import eslintPluginN from 'eslint-plugin-n';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import eslintPluginPromise from 'eslint-plugin-promise';
+import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
+import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 
 /**
@@ -89,6 +90,9 @@ export default {
         sourceType: 'module',
         globals: globals.nodeBuiltin,
       },
+      plugins: {
+        'simple-import-sort': eslintPluginSimpleSort,
+      },
       extends: [eslintPluginPromise.configs['flat/recommended']],
       rules: {
         'object-shorthand': 'error',
@@ -100,6 +104,26 @@ export default {
         'promise/no-promise-in-callback': 'error',
         'promise/no-return-in-finally': 'error',
         'promise/valid-params': 'error',
+        'simple-import-sort/exports': 'error',
+        'simple-import-sort/imports': [
+          'error',
+          {
+            groups: [
+              // Angular packages. (Only relevant for the Portal)
+              ['^@angular'],
+              // Other Packages. (Things that start with a letter (or digit or underscore), or `@` followed by a letter, or contain a "/")
+              ['^@?[\\w/]'],
+              // Alias imports
+              ['^@121-portal', '^@121-service', '^@mock-service'],
+              ['^@121-e2e'],
+              // Relative imports.
+              // Anything that starts with a dot.
+              ['^\\.'],
+              // Anything that starts with a tilde. (Only relevant for the Portal)
+              ['^~'],
+            ],
+          },
+        ],
       },
     }),
     recommendedNext: defineConfig({
