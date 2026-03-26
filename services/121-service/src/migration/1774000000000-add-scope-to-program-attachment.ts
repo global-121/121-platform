@@ -13,6 +13,6 @@ export class AddScopeToProgramAttachment1774000000000 implements MigrationInterf
   }
 
   public async down(_queryRunner: QueryRunner): Promise<void> {
-    "we don't go down";
+    //we don't go down
   }
 }
