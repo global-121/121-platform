@@ -295,11 +295,10 @@ export class TwilioService {
     // before creating the message entity in the db.
     setTimeout(() => {
       const httpService = new HttpService();
-      lastValueFrom(httpService.post(url, request))
-        // eslint-disable-next-line promise/prefer-await-to-callbacks, promise/prefer-await-to-then -- Quickfix; Using catch only for error-logging
-        .catch((error) =>
-          console.log('TWILIO MOCK: Error sending status response: ', error),
-        );
+      // eslint-disable-next-line promise/prefer-await-to-callbacks, promise/prefer-await-to-then -- Using catch only for error-logging (inside this non-async scope)
+      lastValueFrom(httpService.post(url, request)).catch((error) =>
+        console.log('TWILIO MOCK: Error sending status response: ', error),
+      );
     }, 250);
   }
 
@@ -335,15 +334,13 @@ export class TwilioService {
       // before creating the message entity in the db.
       setTimeout(() => {
         const httpService = new HttpService();
-
-        lastValueFrom(httpService.post(url, request))
-          // eslint-disable-next-line promise/prefer-await-to-callbacks, promise/prefer-await-to-then -- Quickfix; Using catch only for error-logging
-          .catch((error) =>
-            console.error(
-              'TWILIO MOCK: Error sending incoming WhatsApp-message',
-              error,
-            ),
-          );
+        // eslint-disable-next-line promise/prefer-await-to-callbacks, promise/prefer-await-to-then -- Using catch only for error-logging (inside this non-async scope)
+        lastValueFrom(httpService.post(url, request)).catch((error) =>
+          console.error(
+            'TWILIO MOCK: Error sending incoming WhatsApp-message',
+            error,
+          ),
+        );
       }, 1000);
     }
   }
