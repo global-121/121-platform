@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["es2024"],
+    "module": "nodenext",
+    "moduleResolution": "node16",
+    "outDir": "./dist",
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "es2024"
+  },
+  "exclude": ["node_modules"],
+  "include": ["**/*.ts", "**/*.mjs"]
+}
