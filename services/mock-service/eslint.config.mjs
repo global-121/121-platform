@@ -12,6 +12,12 @@ export default defineConfig(
   eslintConfig121Platform.configs.node,
   eslintConfig121Platform.configs.javascript,
   {
+    name: 'Nest.js entry point (CommonJS) file',
+    files: ['index.js'],
+    // This file is the entry point for the service, and needs to be CommonJS for now, to be able to load ts-node/register.
+    extends: [eslintConfig121Platform.configs.legacyNode],
+  },
+  {
     name: 'JavaScript files (ESM)',
     files: ['**/*.js', '**/*.mjs'],
     extends: [eslintPluginRegexp.configs['flat/recommended']],
