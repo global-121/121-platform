@@ -4,14 +4,14 @@ import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios
 import { env } from '@121-service/src/env';
 import { MtnApiCreateTransferRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-create-transfer-request-body.dto';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
-import { MtnApiKeyHelperService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.key.helper';
+import { MtnApiHelper } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.helper';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
 export class MtnService {
   public constructor(
     private readonly httpService: CustomHttpService,
-    private readonly mtnApiKeyHelperService: MtnApiKeyHelperService,
+    private readonly mtnApiHelper: MtnApiHelper,
   ) {}
 
   public async createTransfer(): Promise<void> {
@@ -23,10 +23,10 @@ export class MtnService {
     }
     const url = new URL(
       'disbursement/v1_0/transfer',
-      await this.mtnApiKeyHelperService.getBaseUrl(),
+      await this.mtnApiHelper.getBaseUrl(),
     );
 
-    const headers = await this.mtnApiKeyHelperService.createCommonHeaders();
+    const headers = await this.mtnApiHelper.createCommonHeaders();
     headers.set('Authorization', `Bearer ${env.MTN_ACCESS_TOKEN}`);
     headers.set('X-Reference-Id', env.MTN_REFERENCE_ID);
     headers.set('X-Target-Environment', 'sandbox');
