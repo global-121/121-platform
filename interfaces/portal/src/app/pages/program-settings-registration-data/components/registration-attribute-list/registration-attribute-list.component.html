@@ -1,0 +1,119 @@
+<p-card class="[&_.p-card]:border-grey-300 [&_.p-card]:border">
+  <form (ngSubmit)="onFormSubmit()">
+    <div class="flex min-h-12 items-center gap-x-2">
+      <h2 i18n>Registration attributes</h2>
+      @if (canEdit()) {
+        <div class="ms-auto space-x-2">
+          @if (!isEditing()) {
+            <p-button
+              text
+              plain
+              icon="pi pi-pencil"
+              [iconPos]="rtlHelper.createPosition('start')()"
+              (click)="isEditing.set(true)"
+              title="Edit registration attribute labels"
+              i18n-title
+              ariaLabel="Edit registration attribute labels"
+              i18n-ariaLabel
+            />
+          } @else {
+            <p-button
+              label="Cancel"
+              i18n-label="@@generic-cancel"
+              (click)="isEditing.set(false)"
+              icon="pi pi-times"
+              [iconPos]="rtlHelper.createPosition('start')()"
+              outlined
+              rounded
+              severity="contrast"
+              [disabled]="saveLabelsMutation.isPending()"
+            />
+            <p-button
+              type="submit"
+              label="Save"
+              i18n-label
+              icon="pi pi-check"
+              [iconPos]="rtlHelper.createPosition('start')()"
+              rounded
+              [loading]="saveLabelsMutation.isPending()"
+            />
+          }
+        </div>
+      }
+    </div>
+
+    @if (saveLabelsMutation.isError()) {
+      <div class="my-4">
+        <app-form-error [error]="saveLabelsMutation.failureReason()?.message" />
+      </div>
+    }
+
+    @if (isEditing()) {
+      <p class="mb-4">
+        <strong i18n>Editing in {{ currentUILanguageName }}.</strong><br />
+        <span i18n
+          >Save and switch language to translate relevant details.</span
+        >
+      </p>
+    }
+
+    @if (program.isPending()) {
+      <app-skeleton-inline />
+    } @else {
+      @let attributes = registrationAttributes();
+
+      @if (attributes.length === 0) {
+        <p i18n>No registration attributes configured for this program.</p>
+      } @else {
+        <p-table [value]="attributes">
+          <ng-template #header>
+            <tr>
+              <th
+                i18n
+                class="txt-body-s text-grey-700 w-1/3 font-semibold uppercase"
+              >
+                Attribute name
+              </th>
+              <th
+                i18n
+                class="txt-body-s text-grey-700 font-semibold uppercase"
+              >
+                Label
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template
+            #body
+            let-attribute
+          >
+            <tr>
+              <td class="w-1/3 align-top">
+                <code>{{ attribute.name }}</code>
+              </td>
+              <td>
+                @if (!isEditing()) {
+                  {{ attribute.label | translatableString }}
+                } @else {
+                  @let control = getLabelControl(attribute.name);
+                  <input
+                    pInputText
+                    class="w-full"
+                    [formControl]="control"
+                    [attr.aria-label]="attribute.name"
+                  />
+                  @if (control.invalid && control.touched) {
+                    <small
+                      class="text-red-500"
+                      i18n
+                      >Label is required</small
+                    >
+                  }
+                }
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      }
+    }
+  </form>
+</p-card>
