@@ -1095,11 +1095,6 @@
   },
   {
     "method": "post",
-    "path": "/api/fsps/mtn/api-key",
-    "params": []
-  },
-  {
-    "method": "post",
     "path": "/api/fsps/mtn/transfer",
     "params": []
   },

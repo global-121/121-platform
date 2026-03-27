@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { MtnApiKeyHelperService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.key.helper';
 import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.service';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
@@ -16,29 +15,7 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 @ApiTags('fsps/mtn')
 @Controller()
 export class MtnController {
-  public constructor(
-    private readonly mtnApiKeyHelperService: MtnApiKeyHelperService,
-    private readonly mtnService: MtnService,
-  ) {}
-
-  @AuthenticatedUser({
-    isAdmin: true,
-  })
-  @ApiOperation({
-    summary:
-      'Create an MTN API user and generate an API key. This calls POST /apiuser followed by POST /apiuser/{referenceId}/apikey on the MTN MoMo API.',
-  })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'API key created successfully',
-  })
-  @Post('fsps/mtn/api-key')
-  public async createApiKey(): Promise<{
-    accessToken: string;
-    referenceId: string;
-  }> {
-    return await this.mtnApiKeyHelperService.getAccessToken();
-  }
+  public constructor(private readonly mtnService: MtnService) {}
 
   @AuthenticatedUser({
     isAdmin: true,
