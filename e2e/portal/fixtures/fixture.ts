@@ -41,7 +41,7 @@ type TestRegistration = Partial<RegistrationEntity> & {
   testProperties?: Record<string, string | number | boolean>;
 };
 
-type Fixtures = {
+interface Fixtures {
   resetDBAndSeedRegistrations: (params: {
     seedScript: SeedScript;
     skipSeedRegistrations?: boolean;
@@ -74,7 +74,7 @@ type Fixtures = {
   registrationPersonalInformationPage: RegistrationPersonalInformationPage;
   registrationsPage: RegistrationsPage;
   usersPage: UsersPage;
-};
+}
 
 /**
  * Resets the database to some known state.
@@ -224,6 +224,7 @@ export const customSharedFixture = base.extend<Fixtures>({
    *
    * Can be used in beforeAll and beforeEach as it does not use page.
    */
+  // eslint-disable-next-line no-empty-pattern -- The page-object is not needed in this fixture, but is required by the fixture function signature.
   onlyResetAndSeedRegistrations: async ({}, use, testInfo: TestInfo) => {
     const fn = async (params) => {
       await resetDatabase({

@@ -42,8 +42,8 @@ export class ImportRegistrationsMenuComponent {
 
   private authService = inject(AuthService);
 
-  readonly importNewRegistrationsDialogVisible = model<boolean>(false);
-  readonly updateExistingRegistrationsDialogVisible = model<boolean>(false);
+  readonly importNewRegistrationsDialogVisible = model(false);
+  readonly updateExistingRegistrationsDialogVisible = model(false);
 
   readonly updateSelectedRegistrationsActionData = signal<
     ActionDataWithPaginateQuery<Registration> | undefined

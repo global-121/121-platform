@@ -132,7 +132,7 @@ describe('TransactionJobsAirtelService', () => {
   });
 
   describe('processAirtelTransactionJob - unhappy path', () => {
-    it("should call saveTransactionProcessingProgress with certain arguments when attemptOrCheckDisbursement throws an AirtelError that\'s AirtelDisbursementResultEnum.ambiguous", async () => {
+    it("should call saveTransactionProcessingProgress with certain arguments when attemptOrCheckDisbursement throws an AirtelError that's AirtelDisbursementResultEnum.ambiguous", async () => {
       // Arrange
       (airtelService.attemptOrCheckDisbursement as jest.Mock).mockRejectedValue(
         new AirtelError(

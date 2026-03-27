@@ -44,7 +44,7 @@ export class ImportReconciliationDataComponent {
   private paymentApiService = inject(PaymentApiService);
   private toastService = inject(ToastService);
 
-  readonly dialogVisible = model<boolean>(false);
+  readonly dialogVisible = model(false);
 
   readonly canImportReconciliationData = computed(() =>
     this.authService.hasAllPermissions({

@@ -36,7 +36,7 @@ export class FileUploadControlComponent implements ControlValueAccessor {
   readonly clearFiles = output();
 
   readonly fileInputInternalModel = model<File | null>(null);
-  readonly fileInputDisabled = model<boolean>(false);
+  readonly fileInputDisabled = model(false);
 
   readonly fileInputFiles = computed(() => {
     const file = this.fileInputInternalModel();

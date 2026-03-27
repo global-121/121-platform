@@ -27,7 +27,7 @@ declare global {
 
 global.queueCallbacks = {};
 
-async function bootstrap(): Promise<void> {
+const bootstrap = async (): Promise<void> => {
   console.log(`Bootstrapping ${APP_TITLE} - ${APP_VERSION}`);
 
   const app = await NestFactory.create(ApplicationModule);
@@ -96,5 +96,6 @@ async function bootstrap(): Promise<void> {
     }),
   );
   await app.listen(env.PORT_MOCK_SERVICE);
-}
+};
+
 void bootstrap();

@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /**
  * See the "Deployment"-section of the interfaces/README.md-file for more information.
  */
@@ -8,8 +6,8 @@ import { doesNotMatch, match, ok } from 'node:assert/strict';
 import { test } from 'node:test';
 import { parseArgs } from 'node:util';
 
-import { shouldBeEnabled } from './_env.utils.mjs';
-import { parseMatomoConnectionString } from './_matomo.utils.mjs';
+import { shouldBeEnabled } from './lib/env.utils.mjs';
+import { parseMatomoConnectionString } from './lib/matomo.utils.mjs';
 
 const config = parseArgs({
   options: {

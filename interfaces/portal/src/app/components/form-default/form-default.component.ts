@@ -19,7 +19,7 @@ export class FormDefaultComponent<T extends FormGroup> {
   readonly mutation =
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- couldn't find a way to avoid any here
     input.required<CreateMutationResult<any, Error, any, any>>();
-  readonly submitButtonText = input<string>($localize`Submit`);
+  readonly submitButtonText = input($localize`Submit`);
 
   onFormSubmit(): void {
     this.formGroup().markAllAsTouched();

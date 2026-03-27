@@ -58,7 +58,7 @@ export class ProgramFormBudgetComponent {
         validators: [Validators.min(0)],
       },
     ),
-    currency: new FormControl<CurrencyCode>(CurrencyCode.EUR, {
+    currency: new FormControl(CurrencyCode.EUR, {
       nonNullable: true,
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],

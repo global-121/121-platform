@@ -87,9 +87,9 @@ export class ChangeStatusDialogComponent implements IActionDataHandler<Registrat
   readonly actionData = signal<
     ActionDataWithPaginateQuery<Registration> | undefined
   >(undefined);
-  readonly dialogVisible = model<boolean>(false);
-  readonly dryRunFailureDialogVisible = model<boolean>(false);
-  readonly enableSendMessage = model<boolean>(false);
+  readonly dialogVisible = model(false);
+  readonly dryRunFailureDialogVisible = model(false);
+  readonly enableSendMessage = model(false);
   readonly customMessage = model<string>();
   readonly status = signal<RegistrationStatusEnum | undefined>(undefined);
 

@@ -126,7 +126,7 @@ jobs:
 
       - name: Wait for Portal
         run: |
-          timeout 90s sh -c 'until curl http://localhost:8088 -I; do echo "Waiting for Portal to be running..."; sleep 1; done'
+          timeout 90s sh -c 'until curl http://localhost:8088 --head --silent; do echo "Waiting for Portal to be running..."; sleep 1; done'
 
       - name: Run E2E-Tests with Playwright
         working-directory: ${{ env.e2eTestsPath }}

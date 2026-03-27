@@ -51,7 +51,7 @@ export class RetryTransactionsDialogComponent {
   );
 
   readonly referenceIdsForRetryTransactions = signal<string[] | undefined>([]);
-  readonly transactionCount = signal<number>(0);
+  readonly transactionCount = signal(0);
 
   readonly confirmationDialog =
     viewChild.required<FormDialogComponent>('confirmationDialog');

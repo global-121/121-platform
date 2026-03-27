@@ -1,7 +1,7 @@
 import { inject, Injectable, isDevMode } from '@angular/core';
 
-import { parseMatomoConnectionString } from '_matomo.utils.mjs';
 import { MatomoTracker, provideMatomo, withRouter } from 'ngx-matomo-client';
+import { parseMatomoConnectionString } from 'scripts/lib/matomo.utils.mjs';
 
 import { AppRoutes } from '~/app.routes';
 import { PrivacyCopyNoTrackingComponent } from '~/components/privacy/privacy-copy-no-tracking.component';

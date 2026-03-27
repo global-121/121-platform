@@ -25,6 +25,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     private seedHelper: SeedHelperService,
   ) {}
 
+  // NOTE: This method overrides the run method from the InterfaceScript, but it has  different parameters + types, only defined here.
   public async run({
     isApiTests = false,
     powerNrRegistrationsString,
@@ -44,7 +45,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     mockPv?: boolean;
     mockOcw?: boolean;
     seedConfig?: SeedConfigurationDto;
-    approverMode: ApproverSeedMode;
+    approverMode?: ApproverSeedMode;
   }): Promise<void> {
     if (env.INTERSOLVE_MODE !== FspMode.mock || !env.MOCK_TWILIO) {
       throw new HttpException(
@@ -63,7 +64,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     await this.seedHelper.seedData({
       seedConfig: seedConfig!,
       isApiTests,
-      approverMode,
+      approverMode: approverMode ?? ApproverSeedMode.none,
     });
 
     // 1. Set up 1 registration with 1 payment and 1 message via the API for each program

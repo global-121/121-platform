@@ -43,15 +43,5 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
 export class ScriptsModule {}
 
 export interface InterfaceScript {
-  run({
-    isApiTests,
-    squareString,
-    nrPaymentsString,
-    squareNumberBulkMessageString,
-  }: {
-    isApiTests?: boolean;
-    squareString?: string;
-    nrPaymentsString?: string;
-    squareNumberBulkMessageString?: string;
-  }): Promise<void>;
+  run: ({ isApiTests }: { isApiTests?: boolean }) => Promise<void>;
 }

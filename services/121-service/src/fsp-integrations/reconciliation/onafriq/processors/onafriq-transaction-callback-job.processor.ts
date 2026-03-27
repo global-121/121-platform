@@ -26,8 +26,6 @@ export class TransactionCallbackJobProcessorOnafriq {
       await this.onafriqReconciliationService.processOnafriqTransactionCallbackJob(
         job.data,
       );
-    } catch (error) {
-      throw error;
     } finally {
       await this.redisClient.srem(getRedisSetName(job.data.programId), job.id);
     }

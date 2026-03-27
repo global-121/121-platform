@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   meta: {
     type: 'problem',
     docs: {
@@ -9,7 +9,7 @@ module.exports = {
     },
     schema: [], // no options
   },
-  create: function (context) {
+  create(context) {
     return {
       MethodDefinition(node) {
         if (node.decorators) {

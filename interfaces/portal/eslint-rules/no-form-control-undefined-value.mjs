@@ -18,8 +18,8 @@
  *
  * Reference: https://github.com/angular/angular/issues/40608
  */
-
-module.exports = {
+/** @type {import('eslint').Rule.RuleModule} */
+export default {
   create(context) {
     return {
       NewExpression(node) {
@@ -52,7 +52,6 @@ module.exports = {
       description:
         'Disallow undefined as the first argument to FormControl constructor',
     },
-    fixable: null,
     messages: {
       noUndefinedValue:
         'Do not pass undefined as the first argument to FormControl. Use the second argument format instead: new FormControl({ value: undefined, disabled: false }, options)',

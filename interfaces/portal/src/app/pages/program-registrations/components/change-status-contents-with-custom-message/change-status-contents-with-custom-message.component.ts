@@ -39,7 +39,7 @@ export class ChangeStatusContentsWithCustomMessageComponent implements OnInit {
   readonly programId = input.required<string>();
   readonly previewRegistration = input.required<Registration | undefined>();
   readonly enableSendMessage = input.required<boolean>();
-  readonly isMutating = input<boolean>(false);
+  readonly isMutating = input(false);
   readonly cancelChangeStatus = output();
   readonly customMessageUpdated = output<string>();
 

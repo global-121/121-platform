@@ -21,6 +21,7 @@ export class ScriptsService {
   public async loadSeedScenario({
     seedScript,
     isApiTests,
+    approverMode,
     powerNrRegistrationsString,
     includeRegistrationEvents = false,
     nrPaymentsString,
@@ -28,18 +29,17 @@ export class ScriptsService {
     mockPv = true,
     mockOcw = true,
     resetIdentifier,
-    approverMode,
   }: {
+    resetIdentifier: string;
     seedScript: string;
     isApiTests: boolean;
+    approverMode: ApproverSeedMode;
     powerNrRegistrationsString?: string;
     includeRegistrationEvents?: boolean;
     nrPaymentsString?: string;
     powerNrMessagesString?: string;
     mockPv?: boolean;
     mockOcw?: boolean;
-    resetIdentifier?: string;
-    approverMode: ApproverSeedMode;
   }) {
     console.log(
       `DB reset - Seed: ${seedScript} - Identifier: ${resetIdentifier}`,
