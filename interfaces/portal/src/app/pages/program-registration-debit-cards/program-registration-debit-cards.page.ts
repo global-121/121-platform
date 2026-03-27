@@ -34,8 +34,11 @@ import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { LinkCardDialogComponent } from '~/pages/program-registration-debit-cards/components/link-card-on-site-dialog/link-card-dialog.component';
 import { CreditCardNumberPipe } from '~/pipes/credit-card-number.pipe';
+import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
+
+import { PermissionEnum } from '../../../../../../services/121-service/src/user/enum/permission.enum';
 
 @Component({
   selector: 'app-program-registration-debit-cards',
@@ -70,6 +73,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
     FspConfigurationApiService,
   );
   private readonly creditCardNumberPipe = inject(CreditCardNumberPipe);
+  private readonly authService = inject(AuthService);
 
   readonly linkCardDialogVisible = model(false);
 
@@ -293,4 +297,17 @@ export class ProgramRegistrationDebitCardsPageComponent {
   }));
 
   readonly currencyCode = computed(() => this.program.data()?.currency);
+
+  readonly canCreateCard = computed(() => {
+    if (
+      !this.authService.hasPermission({
+        programId: this.programId(),
+        requiredPermission: PermissionEnum.FspDebitCardCREATE,
+      })
+    ) {
+      return false;
+    }
+
+    return true;
+  });
 }
