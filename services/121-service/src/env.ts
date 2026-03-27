@@ -155,6 +155,9 @@ export const mtnEnvVariablesSchema = {
     .optional(),
   MTN_PROVIDER_CALLBACK_HOST: z.string().optional(),
   MTN_SUBSCRIPTION_KEY: z.string().optional(),
+  MTN_ACCESS_TOKEN: z.string().optional(),
+  MTN_REFERENCE_ID: z.string().optional(),
+  MTN_API_KEY: z.string().optional(),
 };
 
 export const safaricomEnvVariablesSchema = {

@@ -3,9 +3,9 @@ import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios
 import { v4 as createUuid } from 'uuid';
 
 import { env } from '@121-service/src/env';
-import { MtnApiCreateApiKeyResponse } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/create-api-key-response-mtn-api.dto';
-import { MtnApiCreateApiUserRequestBody } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/create-api-user-request-body-mtn-api.dto';
-import { MtnApiCreateTokenResponse } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/create-token-response-mtn-api.dto';
+import { MtnApiCreateApiKeyResponseDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-create-api-key-response.dto';
+import { MtnApiCreateApiUserRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-create-api-user-request-body.dto';
+import { MtnApiCreateTokenResponseDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-create-token-response.dto';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
 import { FspMode } from '@121-service/src/fsp-integrations/shared/enum/fsp-mode.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
@@ -19,8 +19,15 @@ export class MtnApiKeyHelperService {
     referenceId: string;
     apiKey: string;
   }> {
-    const referenceId = await this.createApiUser();
-    const apiKey = await this.createApiKey({ referenceId });
+    if (!env.MTN_REFERENCE_ID) {
+      throw new MtnApiError('MTN_REFERENCE_ID is not set');
+    }
+    if (!env.MTN_API_KEY) {
+      throw new MtnApiError('MTN_API_KEY is not set');
+    }
+
+    const referenceId = env.MTN_REFERENCE_ID;
+    const apiKey = env.MTN_API_KEY;
     const accessToken = await this.createAccessToken({
       referenceId,
       apiKey,
@@ -45,20 +52,22 @@ export class MtnApiKeyHelperService {
     return env.MTN_SUBSCRIPTION_KEY;
   }
 
+  public async createCommonHeaders(): Promise<Headers> {
+    return new Headers({
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache',
+      'Ocp-Apim-Subscription-Key': await this.getSubscriptionKeyOrThrow(),
+    });
+  }
+
   private async createApiUser(): Promise<string> {
     const referenceId = createUuid();
     const url = new URL('v1_0/apiuser', await this.getBaseUrl());
 
-    const headers = new Headers();
+    const headers = await this.createCommonHeaders();
     headers.set('X-Reference-Id', referenceId);
-    headers.set('Content-Type', 'application/json');
-    headers.set('Cache-Control', 'no-cache');
-    headers.set(
-      'Ocp-Apim-Subscription-Key',
-      await this.getSubscriptionKeyOrThrow(),
-    );
 
-    const payload: MtnApiCreateApiUserRequestBody = {
+    const payload: MtnApiCreateApiUserRequestBodyDto = {
       providerCallbackHost: env.MTN_PROVIDER_CALLBACK_HOST ?? '',
     };
 
@@ -87,15 +96,10 @@ export class MtnApiKeyHelperService {
       await this.getBaseUrl(),
     );
 
-    const headers = new Headers();
-    headers.set('Cache-Control', 'no-cache');
-    headers.set(
-      'Ocp-Apim-Subscription-Key',
-      await this.getSubscriptionKeyOrThrow(),
-    );
+    const headers = await this.createCommonHeaders();
 
     const response = await this.httpService.post<
-      AxiosResponse<MtnApiCreateApiKeyResponse>
+      AxiosResponse<MtnApiCreateApiKeyResponseDto>
     >(url.toString(), {}, headers);
 
     if (!response?.data?.apiKey) {
@@ -120,17 +124,11 @@ export class MtnApiKeyHelperService {
       'base64',
     );
 
-    const headers = new Headers();
+    const headers = await this.createCommonHeaders();
     headers.set('Authorization', `Basic ${basicAuth}`);
-    headers.set('Content-Type', 'application/json');
-    headers.set('Cache-Control', 'no-cache');
-    headers.set(
-      'Ocp-Apim-Subscription-Key',
-      await this.getSubscriptionKeyOrThrow(),
-    );
 
     const response = await this.httpService.post<
-      AxiosResponse<MtnApiCreateTokenResponse>
+      AxiosResponse<MtnApiCreateTokenResponseDto>
     >(url.toString(), {}, headers);
 
     if (!response?.data?.access_token) {
