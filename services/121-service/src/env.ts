@@ -146,7 +146,7 @@ export const onafriqEnvVariablesSchema = {
   ONAFRIQ_SFTP_USERNAME: z.string().optional(),
 };
 
-export const mtnEnvVariablesSchema = {
+const mtnEnvVariablesSchema = {
   MTN_MODE: FspModeSchema,
 
   MTN_API_URL: z
