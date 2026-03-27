@@ -205,10 +205,6 @@ export default {
         ],
       },
     }),
-    typescriptNext: defineConfig({
-      name: '121-platform/typescript-next',
-      files: ['**/*.ts'],
-    }),
     /**
      * Rules specific to all the 121-platform's services.
      *
