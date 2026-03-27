@@ -41,6 +41,36 @@
   </ng-container>
 </app-card-with-link>
 
+<p-dialog
+  [modal]="true"
+  [(visible)]="showImportResultDialog"
+  styleClass="max-w-[36rem]"
+>
+  <ng-template pTemplate="header">
+    <h3>
+      <i class="pi pi-check-circle me-2 text-green-500"></i>
+      <ng-container i18n>Kobo import result</ng-container>
+    </h3>
+  </ng-template>
+
+  @let result = importResult();
+  @if (result) {
+    <p i18n>
+      <strong>{{ result.aggregateImportResult.countImported }}</strong> existing
+      Kobo submission(s) have been imported as registrations.
+    </p>
+  }
+
+  <div class="flex justify-end pt-4">
+    <p-button
+      label="Close"
+      i18n-label="@@generic-close"
+      rounded
+      (click)="showImportResultDialog.set(false)"
+    />
+  </div>
+</p-dialog>
+
 <app-kobo-configuration-dialog
   #koboConfigurationDialog
   [programId]="programId()"
