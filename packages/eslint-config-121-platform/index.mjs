@@ -1,10 +1,11 @@
-import eslintPluginComments from '@eslint-community/eslint-plugin-eslint-comments/configs';
 import eslint from '@eslint/js';
+import eslintPluginComments from '@eslint-community/eslint-plugin-eslint-comments/configs';
+import { defineConfig } from 'eslint/config';
 import eslintPluginN from 'eslint-plugin-n';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+// @ts-ignore -- No types available for this package, yet. See: https://github.com/eslint-community/eslint-plugin-promise/issues/488
 import eslintPluginPromise from 'eslint-plugin-promise';
 import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
-import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 
 /**

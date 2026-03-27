@@ -1,27 +1,21 @@
-import eslint from '@eslint/js';
 import { defineConfig } from 'eslint/config';
-import eslintPluginComments from '@eslint-community/eslint-plugin-eslint-comments/configs';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
-import globals from 'globals';
+import tsEslint from 'typescript-eslint';
+
+import eslintConfig121Platform from './index.mjs';
 
 export default defineConfig(
+  eslintConfig121Platform.configs.base,
+  eslintConfig121Platform.configs.node,
+  eslintConfig121Platform.configs.recommended,
+  eslintConfig121Platform.configs.recommendedNext,
   {
-    name: 'self',
-    languageOptions: {
-      globals: globals.node,
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-    linterOptions: {
-      reportUnusedInlineConfigs: 'error',
-      reportUnusedDisableDirectives: 'error',
-    },
-    extends: [eslint.configs.recommended, eslintPluginComments.recommended],
-    rules: {
-      '@eslint-community/eslint-comments/require-description': 'error',
-    },
+    name: 'TypeScript files',
+    files: ['**/*.ts'],
+    extends: [
+      tsEslint.configs.strictTypeChecked,
+      tsEslint.configs.stylisticTypeChecked,
+      eslintConfig121Platform.configs.typescript,
+    ],
   },
-  eslintPluginPrettierRecommended,
+  eslintConfig121Platform.configs.final,
 );
