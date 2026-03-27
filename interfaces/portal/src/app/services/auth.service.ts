@@ -1,7 +1,8 @@
-import { inject, Injectable, Injector } from '@angular/core';
+import { inject, Injectable, Injector, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { QueryClient } from '@tanstack/angular-query-experimental';
+import { Subscription } from 'rxjs';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
@@ -10,6 +11,7 @@ import { UserApiService } from '~/domains/user/user.api.service';
 import { IAuthStrategy } from '~/services/auth/auth-strategy.interface';
 import { BasicAuthStrategy } from '~/services/auth/strategies/basic-auth/basic-auth.strategy';
 import { MsalAuthStrategy } from '~/services/auth/strategies/msal-auth/msal-auth.strategy';
+import { startTokenExpirationMonitor } from '~/services/auth/token-expiration-monitor';
 import {
   getReturnUrlFromLocalStorage,
   getUserFromLocalStorage,
@@ -25,6 +27,7 @@ const AuthStrategy = environment.use_sso_azure_entra
   : BasicAuthStrategy;
 
 export const AUTH_ERROR_IN_STATE_KEY = 'AUTH_ERROR';
+export const SESSION_EXPIRED_IN_STATE_KEY = 'SESSION_EXPIRED';
 const VALID_PERMISSIONS = new Set(Object.values(PermissionEnum));
 
 @Injectable({
@@ -39,13 +42,52 @@ export class AuthService {
   private readonly queryClient = inject(QueryClient);
 
   private readonly authStrategy: IAuthStrategy;
+  private tokenExpirationMonitor?: Subscription;
+  private readonly CHECK_INTERVAL_MS = 3_000; // Check every 3 seconds
+  private readonly FORCE_LOGOUT_WHEN_EXP_IN_MS = 5_000; // Logout 5 seconds before expiry
+
+  public readonly showSessionExpiredDialog = signal(false);
+  public readonly sessionExpiredReturnUrl = signal<string | undefined>(
+    undefined,
+  );
 
   constructor() {
     this.authStrategy = this.injector.get<IAuthStrategy>(AuthStrategy);
   }
 
   initializeSubscriptions() {
-    return this.authStrategy.initializeSubscriptions();
+    const strategySubscriptions = this.authStrategy.initializeSubscriptions();
+    this.startTokenExpirationMonitor();
+    return [
+      ...strategySubscriptions,
+      ...(this.tokenExpirationMonitor ? [this.tokenExpirationMonitor] : []),
+    ];
+  }
+
+  private startTokenExpirationMonitor(): void {
+    this.tokenExpirationMonitor = startTokenExpirationMonitor({
+      checkIntervalMs: this.CHECK_INTERVAL_MS,
+      forceLogoutMs: this.FORCE_LOGOUT_WHEN_EXP_IN_MS,
+      getTimeUntilExpiration: () => this.authStrategy.getTimeUntilExpiration(),
+      onExpired: () => void this.handleTokenExpiration(),
+    });
+  }
+
+  /**
+   * Handles token expiration by logging out and preserving the current URL
+   * for redirect after re-authentication.
+   *
+   * @private
+   */
+  private async handleTokenExpiration(): Promise<void> {
+    if (this.showSessionExpiredDialog()) {
+      return;
+    }
+    const currentUrl = this.router.url;
+
+    this.showSessionExpiredDialog.set(true);
+    await this.clearSession();
+    this.sessionExpiredReturnUrl.set(currentUrl);
   }
 
   public get isLoggedIn(): boolean {
@@ -72,20 +114,15 @@ export class AuthService {
     const user = getUserFromLocalStorage();
 
     if (!user?.username) {
-      console.info('AuthService: No (valid) user');
       return null;
     }
 
     if (this.authStrategy.isUserExpired(user)) {
-      console.warn('AuthService: Expired token');
       return null;
     }
 
     // If user has deprecated permissions (e.g. after a deploy), force to re-login
     if (this.hasDeprecatedPermissions(user)) {
-      console.warn(
-        'AuthService: Deprecated permission found. Forcing re-login',
-      );
       // Because the user is still "validly logged in", we have to actively use logout, to force a refresh of the permissions from login.
       void this.logout(user);
       return null;
@@ -108,17 +145,23 @@ export class AuthService {
     return this.router.navigate(['/', AppRoutes.authCallback]);
   }
 
-  public async logout(user?: LocalStorageUser | null) {
+  private async clearSession(user?: LocalStorageUser | null): Promise<void> {
     try {
       await this.authStrategy.logout(user ?? this.user);
-    } catch (error) {
-      console.error('AuthService: Error logging out', error);
+    } catch {
+      // ignore logout errors
     }
-
-    // Cleanup local state, to leave no trace of the user.
     localStorage.removeItem(LOCAL_STORAGE_AUTH_USER_KEY);
+  }
 
-    await this.router.navigate(['/', AppRoutes.login]);
+  public async logout(user?: LocalStorageUser | null, returnUrl?: string) {
+    await this.clearSession(user);
+
+    const navigationExtras = returnUrl
+      ? { queryParams: { returnUrl } }
+      : undefined;
+
+    await this.router.navigate(['/', AppRoutes.login], navigationExtras);
   }
 
   public async changePassword({
@@ -163,11 +206,6 @@ export class AuthService {
     user?: LocalStorageUser | null;
   }): boolean {
     user = user ?? this.user;
-    // During development: Use this to simulate a user not having a certain permission
-    // user!.permissions[programId] = user!.permissions[programId].filter(
-    //   (p) => p !== PermissionEnum.RegistrationNotificationREAD,
-    // );
-
     return (
       !!user?.permissions &&
       this.isAssignedToProgram({ programId, user }) &&
