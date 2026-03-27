@@ -58,7 +58,6 @@ export default defineConfig(
     },
   },
   eslintConfig121Platform.configs.typescript,
-  eslintConfig121Platform.configs.typescriptNext,
   {
     name: 'TypeScript files',
     files: ['**/*.ts'],

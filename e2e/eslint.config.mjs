@@ -10,7 +10,6 @@ export default defineConfig(
   eslintConfig121Platform.configs.node,
   eslintConfig121Platform.configs.javascript,
   eslintConfig121Platform.configs.typescript,
-  eslintConfig121Platform.configs.typescriptNext,
   eslintConfig121Platform.configs.services,
   {
     name: 'TypeScript files',
