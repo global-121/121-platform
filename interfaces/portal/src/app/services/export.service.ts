@@ -1,5 +1,5 @@
 import { HttpParamsOptions, HttpStatusCode } from '@angular/common/http';
-import { inject, Injectable, Signal } from '@angular/core';
+import { inject, Injectable, LOCALE_ID, Signal } from '@angular/core';
 
 import {
   CreateMutationOptions,
@@ -25,6 +25,7 @@ import { ToastService } from '~/services/toast.service';
 import { dateToIsoString } from '~/utils/date';
 import { Dto } from '~/utils/dto-type';
 import { isErrorWithStatusCode } from '~/utils/is-error-with-status-code.helper';
+import { getUILanguageFromLocale, Locale } from '~/utils/locale';
 
 @Injectable({
   providedIn: 'root',
@@ -44,6 +45,12 @@ export class ExportService {
   private paymentApiService = inject(PaymentApiService);
   private programApiService = inject(ProgramApiService);
 
+  private locale = inject<Locale>(LOCALE_ID);
+
+  private getExportLanguage(): string {
+    return getUILanguageFromLocale(this.locale);
+  }
+
   private generateExportParams({
     format,
     paginateQuery,
@@ -59,6 +66,7 @@ export class ExportService {
   }) {
     const exportParams: HttpParamsOptions['fromObject'] = {
       format: format === 'csv' ? 'json' : format,
+      language: this.getExportLanguage(),
     };
 
     if (fromDate) {
