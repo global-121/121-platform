@@ -33,11 +33,12 @@ import { AUTH_ERROR_IN_STATE_KEY, AuthService } from '~/services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPageComponent {
+  readonly AppRoutes = AppRoutes;
+
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
-  AppRoutes = AppRoutes;
   LoginComponent = this.authService.LoginComponent;
 
   readonly returnUrl = computed(() => {
