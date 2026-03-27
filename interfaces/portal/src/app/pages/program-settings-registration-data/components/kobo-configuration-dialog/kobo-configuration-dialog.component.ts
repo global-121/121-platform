@@ -1,11 +1,9 @@
-import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   inject,
   input,
-  model,
+  signal,
   viewChild,
 } from '@angular/core';
 import {
@@ -15,19 +13,12 @@ import {
   Validators,
 } from '@angular/forms';
 
-import {
-  injectMutation,
-  injectQuery,
-} from '@tanstack/angular-query-experimental';
-import { MenuItem } from 'primeng/api';
+import { injectMutation } from '@tanstack/angular-query-experimental';
 import { InputTextModule } from 'primeng/inputtext';
 
-import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
-import { EllipsisMenuComponent } from '~/components/ellipsis-menu/ellipsis-menu.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ManualLinkComponent } from '~/components/manual-link/manual-link.component';
-import { isKoboIntegrated } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
@@ -35,29 +26,26 @@ import { generateFieldErrors } from '~/utils/form-validation';
 const KOBO_URL_FORMS_PREFIX = 'forms';
 
 @Component({
-  selector: 'app-integrate-kobo-button',
+  selector: 'app-kobo-configuration-dialog',
   imports: [
     FormDialogComponent,
     FormFieldWrapperComponent,
     InputTextModule,
     ReactiveFormsModule,
-    CardWithLinkComponent,
     ManualLinkComponent,
-    EllipsisMenuComponent,
-    DatePipe,
   ],
   providers: [ToastService],
-  templateUrl: './integrate-kobo-button.component.html',
+  templateUrl: './kobo-configuration-dialog.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class IntegrateKoboButtonComponent {
+export class KoboConfigurationDialogComponent {
   readonly programId = input.required<number | string>();
 
-  readonly koboApiService = inject(KoboApiService);
-  readonly toastService = inject(ToastService);
+  private readonly koboApiService = inject(KoboApiService);
+  private readonly toastService = inject(ToastService);
 
-  readonly koboFormName = model<null | string>();
+  readonly koboFormName = signal<string | undefined>(undefined);
 
   readonly koboConfigurationDialog = viewChild.required<FormDialogComponent>(
     'koboConfigurationDialog',
@@ -156,45 +144,6 @@ export class IntegrateKoboButtonComponent {
     },
   }));
 
-  readonly koboIntegration = injectQuery(() => ({
-    ...this.koboApiService.getKoboIntegration(this.programId)(),
-    enabled: !!this.programId(),
-  }));
-
-  readonly isKoboIntegrated = computed<boolean>(() =>
-    isKoboIntegrated(this.koboIntegration),
-  );
-
-  readonly titleColoredChipLabel = computed(() =>
-    this.isKoboIntegrated() ? $localize`Linked` : undefined,
-  );
-
-  readonly cardSubtitle = computed(() =>
-    this.isKoboIntegrated() ? '' : $localize`Click to integrate`,
-  );
-
-  readonly externalFormUrl = computed<null | string>(() => {
-    if (!this.isKoboIntegrated()) {
-      return null;
-    }
-    const koboIntegrationData = this.koboIntegration.data();
-    if (!koboIntegrationData) {
-      return null;
-    }
-    // See: https://support.kobotoolbox.org/api.html#retrieving-your-project-asset-uid
-    return `${koboIntegrationData.url}/#/${KOBO_URL_FORMS_PREFIX}/${koboIntegrationData.assetUid}/summary`;
-  });
-
-  readonly menuItems = computed<MenuItem[]>(() => [
-    {
-      label: $localize`Reconfigure`,
-      icon: 'pi pi-pencil',
-      command: () => {
-        this.koboConfigurationDialog().show();
-      },
-    },
-  ]);
-
   extractServerAndAssetIdFromUrl = (
     rawUrl: string,
   ): { serverUrl?: string; assetId?: string } => {
@@ -222,7 +171,6 @@ export class IntegrateKoboButtonComponent {
 
     return {};
   };
-
   onFormUrlUpdate = ($event: Event) => {
     const input = $event.target as HTMLInputElement;
     const rawUrl = input.value.trim();
@@ -243,4 +191,7 @@ export class IntegrateKoboButtonComponent {
         ?.setErrors({ invalid: true });
     }
   };
+  show() {
+    this.koboConfigurationDialog().show();
+  }
 }
