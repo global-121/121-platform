@@ -10,8 +10,7 @@
   },
   "private": true,
   "scripts": {
-    "preinstall": "npm install --prefix=../packages/eslint-config-121-platform",
-    "postinstall": "npm run install:dependencies-for-portal --prefix=../services/121-service",
+    "prepare": "npm run install:dependencies-for-portal --prefix=../services/121-service/",
     "setup": "npm install && npx playwright install",
     "typecheck": "npx tsc --noEmit",
     "prelint": "npm run typecheck",
