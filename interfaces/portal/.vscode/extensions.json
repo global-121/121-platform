@@ -13,7 +13,6 @@
     "dotiful.dotfiles-syntax-highlighting",
     "editorconfig.editorconfig",
     "esbenp.prettier-vscode",
-    "lucono.karma-test-explorer",
     "mechatroner.rainbow-csv",
     "meganrogge.template-string-converter",
     "mikestead.dotenv",
@@ -25,6 +24,7 @@
     "sburg.vscode-javascript-booster",
     "sysoev.vscode-open-in-github",
     "tombonnike.vscode-status-bar-format-toggle",
+    "vitest.explorer",
     "whtouche.vscode-js-console-utils"
   ]
 }

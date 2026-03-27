@@ -11,8 +11,8 @@ Based Assistance programs. Another name for this frontend is "the portal".
 - **Framework**: Angular with TypeScript
 - **UI Library**: PrimeNG components
 - **Styling**: Tailwind CSS utility classes
-- **State Management**: angular services and tanstack-query
-- **Testing**: Angular CLI `ng test` with Jasmine/Karma for unit and component tests; Playwright for E2E
+- **State Management**: Angular services and TanStack Query
+- **Testing**: Angular CLI `ng test` with Vitest for unit and component tests; Playwright for E2E
 - **Build**: Angular CLI with production optimizations
 
 ## Code Style & Standards
@@ -101,7 +101,7 @@ export class UserProfileComponent implements OnInit {
 ### State Management
 
 - Use Angular services for shared state
-- Use tanstack-query for state management and data fetching
+- Use TanStack Query for state management and data fetching
 - Handle loading states and error conditions
 
 ### Internationalization (i18n)
