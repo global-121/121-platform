@@ -1,4 +1,4 @@
-export interface MtnApiCreateTransferRequestBody {
+export interface MtnApiCreateTransferRequestBodyDto {
   readonly amount: string;
   readonly currency: string;
   readonly externalId: string;
