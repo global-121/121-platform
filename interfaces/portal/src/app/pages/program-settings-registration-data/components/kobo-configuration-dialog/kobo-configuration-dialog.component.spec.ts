@@ -8,7 +8,7 @@ import { MessageService } from 'primeng/api';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
-import { IntegrateKoboButtonComponent } from '~/pages/program-settings-registration-data/components/integrate-kobo-button/integrate-kobo-button.component';
+import { KoboConfigurationDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-configuration-dialog/kobo-configuration-dialog.component';
 import { ToastService } from '~/services/toast.service';
 import { TrackingService } from '~/services/tracking.service';
 
@@ -16,13 +16,13 @@ class TrackingServiceStub {
   trackEvent = vi.fn();
 }
 
-describe('IntegrateKoboButtonComponent', () => {
-  let component: IntegrateKoboButtonComponent;
-  let fixture: ComponentFixture<IntegrateKoboButtonComponent>;
+describe('KoboConfigurationDialogComponent', () => {
+  let component: KoboConfigurationDialogComponent;
+  let fixture: ComponentFixture<KoboConfigurationDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [IntegrateKoboButtonComponent],
+      imports: [KoboConfigurationDialogComponent],
       providers: [
         {
           provide: KoboApiService,
@@ -47,7 +47,7 @@ describe('IntegrateKoboButtonComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(IntegrateKoboButtonComponent);
+    fixture = TestBed.createComponent(KoboConfigurationDialogComponent);
     component = fixture.componentInstance;
   });
 
