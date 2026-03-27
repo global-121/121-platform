@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 
-import { MtnApiCreateTransferRequestBody } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/create-transfer-request-body-mtn-api.dto';
+import { env } from '@121-service/src/env';
+import { MtnApiCreateTransferRequestBodyDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/mtn-api/mtn-api-create-transfer-request-body.dto';
 import { MtnApiError } from '@121-service/src/fsp-integrations/integrations/mtn/errors/mtn-api.error';
-import { MtnApiKeyHelperService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.key.helper.service';
+import { MtnApiKeyHelperService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.api.key.helper';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
@@ -14,26 +15,23 @@ export class MtnService {
   ) {}
 
   public async createTransfer(): Promise<void> {
-    const { accessToken, referenceId } =
-      await this.mtnApiKeyHelperService.getAccessToken();
-
+    if (!env.MTN_REFERENCE_ID) {
+      throw new MtnApiError('MTN_REFERENCE_ID is not set');
+    }
+    if (!env.MTN_ACCESS_TOKEN) {
+      throw new MtnApiError('MTN_ACCESS_TOKEN is not set');
+    }
     const url = new URL(
       'disbursement/v1_0/transfer',
       await this.mtnApiKeyHelperService.getBaseUrl(),
     );
 
-    const headers = new Headers();
-    headers.set('Authorization', `Bearer ${accessToken}`);
-    headers.set('X-Reference-Id', referenceId);
+    const headers = await this.mtnApiKeyHelperService.createCommonHeaders();
+    headers.set('Authorization', `Bearer ${env.MTN_ACCESS_TOKEN}`);
+    headers.set('X-Reference-Id', env.MTN_REFERENCE_ID);
     headers.set('X-Target-Environment', 'sandbox');
-    headers.set('Content-Type', 'application/json');
-    headers.set('Cache-Control', 'no-cache');
-    headers.set(
-      'Ocp-Apim-Subscription-Key',
-      await this.mtnApiKeyHelperService.getSubscriptionKeyOrThrow(),
-    );
 
-    const payload: MtnApiCreateTransferRequestBody = {
+    const payload: MtnApiCreateTransferRequestBodyDto = {
       amount: '140',
       currency: 'EUR',
       externalId: 'CTOMPAY212268VFR',
