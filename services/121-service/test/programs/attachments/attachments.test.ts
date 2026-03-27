@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   deleteAttachment,
@@ -10,9 +11,13 @@ import {
 } from '@121-service/test/helpers/program-attachments.helper';
 import {
   getAccessToken,
+  getAccessTokenScoped,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
+import {
+  programIdOCW,
+  programIdPV,
+} from '@121-service/test/registrations/pagination/pagination-data';
 
 const testImagePath = './test-attachment-data/sample.jpg';
 const testImageFilename = 'Test Image';
@@ -198,5 +203,121 @@ describe('Program Attachments', () => {
 
     // Assert
     expect(response.status).toBe(HttpStatus.NOT_FOUND);
+  });
+
+  describe('Scoping', () => {
+    it('should assign the uploading user scope to the attachment', async () => {
+      // Arrange
+      const kisumuAccessToken = await getAccessTokenScoped(DebugScope.Kisumu);
+      const turkanaAccessToken = await getAccessTokenScoped(DebugScope.Turkana);
+
+      // Act
+      const uploadResponse = await uploadAttachment({
+        programId: programIdPV,
+        filePath: testImagePath,
+        filename: testImageFilename,
+        accessToken: kisumuAccessToken,
+      });
+
+      // Assert - upload succeeds
+      expect(uploadResponse.status).toBe(HttpStatus.CREATED);
+
+      // The uploading (Kisumu) user can see the attachment
+      const kisumuListResponse = await getAttachments({
+        programId: programIdPV,
+        accessToken: kisumuAccessToken,
+      });
+      expect(kisumuListResponse.body).toHaveLength(1);
+
+      // A different scoped (Turkana) user cannot see the attachment
+      const turkanaListResponse = await getAttachments({
+        programId: programIdPV,
+        accessToken: turkanaAccessToken,
+      });
+      expect(turkanaListResponse.body).toHaveLength(0);
+    });
+
+    it('should return only attachments within the user scope', async () => {
+      // Arrange - upload one attachment with Kisumu scope and one with Turkana scope
+      const kisumuAccessToken = await getAccessTokenScoped(DebugScope.Kisumu);
+      const turkanaAccessToken = await getAccessTokenScoped(DebugScope.Turkana);
+
+      await uploadAttachment({
+        programId: programIdPV,
+        filePath: testImagePath,
+        filename: 'Kisumu Attachment',
+        accessToken: kisumuAccessToken,
+      });
+      await uploadAttachment({
+        programId: programIdPV,
+        filePath: testImagePath,
+        filename: 'Turkana Attachment',
+        accessToken: turkanaAccessToken,
+      });
+
+      // Act - Kisumu user lists attachments
+      const kisumuListResponse = await getAttachments({
+        programId: programIdPV,
+        accessToken: kisumuAccessToken,
+      });
+
+      // Assert - Kisumu user only sees their own attachment
+      expect(kisumuListResponse.status).toBe(HttpStatus.OK);
+      expect(kisumuListResponse.body).toHaveLength(1);
+      expect(kisumuListResponse.body[0].filename).toContain('Kisumu');
+    });
+
+    it('should not allow a scoped user to download an attachment outside their scope', async () => {
+      // Arrange - upload attachment as Turkana user, try to download as Kisumu user
+      const kisumuAccessToken = await getAccessTokenScoped(DebugScope.Kisumu);
+      const turkanaAccessToken = await getAccessTokenScoped(DebugScope.Turkana);
+
+      const uploadResponse = await uploadAttachment({
+        programId: programIdPV,
+        filePath: testImagePath,
+        filename: testImageFilename,
+        accessToken: turkanaAccessToken,
+      });
+      const attachmentId = uploadResponse.body.id;
+
+      // Act
+      const response = await getAttachment({
+        programId: programIdPV,
+        attachmentId,
+        accessToken: kisumuAccessToken,
+      });
+
+      // Assert
+      expect(response.status).toBe(HttpStatus.NOT_FOUND);
+    });
+
+    it('should return all attachments regardless of scope when enableScope is false', async () => {
+      // Arrange - OCW program has enableScope: false
+      const kisumuAccessToken = await getAccessTokenScoped(DebugScope.Kisumu);
+      const turkanaAccessToken = await getAccessTokenScoped(DebugScope.Turkana);
+
+      await uploadAttachment({
+        programId: programIdOCW,
+        filePath: testImagePath,
+        filename: 'Kisumu OCW Attachment',
+        accessToken: kisumuAccessToken,
+      });
+      await uploadAttachment({
+        programId: programIdOCW,
+        filePath: testImagePath,
+        filename: 'Turkana OCW Attachment',
+        accessToken: turkanaAccessToken,
+      });
+
+      // Act - Kisumu user lists attachments on a non-scoped program
+      const listResponse = await getAttachments({
+        programId: programIdOCW,
+        accessToken: kisumuAccessToken,
+      });
+
+      // Assert - all attachments visible because enableScope is false
+      expect(listResponse.status).toBe(HttpStatus.OK);
+      expect(listResponse.body).toHaveLength(2);
+    });
   });
 });
