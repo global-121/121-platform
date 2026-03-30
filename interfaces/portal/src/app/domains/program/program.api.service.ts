@@ -456,6 +456,22 @@ export class ProgramApiService extends DomainApiService {
     });
   }
 
+  updateProgramRegistrationAttribute({
+    programId,
+    attributeName,
+    label,
+  }: {
+    programId: Signal<number | string>;
+    attributeName: string;
+    label: Record<string, string>;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'PATCH',
+      endpoint: `${BASE_ENDPOINT}/${programId().toString()}/registration-attributes/${attributeName}`,
+      body: { label },
+    });
+  }
+
   getAssignedPrograms() {
     return () => {
       const programIds = this.authService.getAssignedProgramIds();
