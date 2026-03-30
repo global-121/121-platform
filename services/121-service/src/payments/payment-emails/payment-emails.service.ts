@@ -4,7 +4,6 @@ import { format } from 'date-fns';
 import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/emails.const';
 import { EmailsService } from '@121-service/src/emails/emails.service';
 import { env } from '@121-service/src/env';
-import { PaymentEmailType } from '@121-service/src/payments/payment-emails/enum/payment-email-type.enum';
 import { buildTemplateApprovalConfirmation } from '@121-service/src/payments/payment-emails/templates/approval-confirmation.template';
 import { buildTemplateApprovalRequest } from '@121-service/src/payments/payment-emails/templates/approval-request.template';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
@@ -30,16 +29,12 @@ export class PaymentEmailsService {
     for (const approver of approvers) {
       try {
         await this.emailsService.sendFromTemplate({
-          templateBuilders: {
-            [PaymentEmailType.approvalRequestToNextApprovers]:
-              buildTemplateApprovalRequest,
-          },
+          templateBuilder: buildTemplateApprovalRequest,
           input: {
             email: approver.emailAddress,
             recipientName: approver.recipientName ?? DEFAULT_DISPLAY_NAME,
             paymentUrl,
           },
-          type: PaymentEmailType.approvalRequestToNextApprovers,
         });
       } catch (error) {
         this.azureLogService.logError(
@@ -67,17 +62,13 @@ export class PaymentEmailsService {
 
     try {
       await this.emailsService.sendFromTemplate({
-        templateBuilders: {
-          [PaymentEmailType.approvalConfirmationToCreator]:
-            buildTemplateApprovalConfirmation,
-        },
+        templateBuilder: buildTemplateApprovalConfirmation,
         input: {
           email: paymentCreator.emailAddress,
           recipientName: paymentCreator.recipientName ?? DEFAULT_DISPLAY_NAME,
           paymentUrl,
           paymentCreatedAt: formattedCreationDate,
         },
-        type: PaymentEmailType.approvalConfirmationToCreator,
       });
     } catch (error) {
       this.azureLogService.logError(

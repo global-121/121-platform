@@ -26,8 +26,6 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
-import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
-import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
 @Injectable()
 export class PaymentsManagementService {
@@ -44,7 +42,6 @@ export class PaymentsManagementService {
     private readonly paymentApprovalRepository: PaymentApprovalRepository,
     private readonly programApprovalThresholdRepository: ProgramApprovalThresholdRepository,
     private readonly paymentEmailsService: PaymentEmailsService,
-    private readonly azureLogService: AzureLogService,
   ) {}
 
   public async createPayment({
@@ -573,22 +570,11 @@ export class PaymentsManagementService {
     paymentId: number;
     programId: number;
   }): Promise<void> {
-    let paymentCreator: UserEntity;
+    const paymentCreator =
+      await this.paymentEventsService.getCreatorOrThrow(paymentId);
 
-    try {
-      paymentCreator =
-        await this.paymentEventsService.getCreatorOrThrow(paymentId);
-
-      if (!paymentCreator.username) {
-        throw new Error('Payment creator does not have an email address');
-      }
-    } catch (error) {
-      this.azureLogService.logError(
-        new Error('Failed to send approval confirmmation email', {
-          cause: error,
-        }),
-        true,
-      );
+    if (!paymentCreator.username) {
+      // Creator has no email address, skip sending confirmation
       return;
     }
 

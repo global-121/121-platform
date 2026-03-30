@@ -2,7 +2,6 @@ import { TestBed } from '@automock/jest';
 
 import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/emails.const';
 import { EmailsService } from '@121-service/src/emails/emails.service';
-import { PaymentEmailType } from '@121-service/src/payments/payment-emails/enum/payment-email-type.enum';
 import { PaymentEmailsService } from '@121-service/src/payments/payment-emails/payment-emails.service';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
@@ -105,7 +104,6 @@ describe('PaymentEmailsService', () => {
       expect(emailsService.sendFromTemplate).toHaveBeenCalledTimes(2);
       expect(emailsService.sendFromTemplate).toHaveBeenCalledWith(
         expect.objectContaining({
-          type: PaymentEmailType.approvalRequestToNextApprovers,
           input: expect.objectContaining({ email: 'approver2@example.org' }),
         }),
       );

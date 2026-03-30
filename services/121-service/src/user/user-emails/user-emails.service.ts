@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
 import { EmailsService } from '@121-service/src/emails/emails.service';
-import { UserEmailType } from '@121-service/src/user/user-emails/enum/user-email-type.enum';
 import { AccountCreatedEmailInput } from '@121-service/src/user/user-emails/interfaces/account-created-email-input.interface';
 import { AccountCreatedSsoEmailInput } from '@121-service/src/user/user-emails/interfaces/account-created-sso-email-input.interface';
 import { PasswordResetEmailInput } from '@121-service/src/user/user-emails/interfaces/password-reset-email-input.interface';
@@ -17,11 +16,8 @@ export class UserEmailsService {
     input: AccountCreatedEmailInput,
   ): Promise<void> {
     await this.emailsService.sendFromTemplate({
-      templateBuilders: {
-        [UserEmailType.accountCreated]: buildTemplateAccountCreated,
-      },
+      templateBuilder: buildTemplateAccountCreated,
       input,
-      type: UserEmailType.accountCreated,
     });
   }
 
@@ -29,11 +25,8 @@ export class UserEmailsService {
     input: AccountCreatedSsoEmailInput,
   ): Promise<void> {
     await this.emailsService.sendFromTemplate({
-      templateBuilders: {
-        [UserEmailType.accountCreatedForSSO]: buildTemplateAccountCreatedSSO,
-      },
+      templateBuilder: buildTemplateAccountCreatedSSO,
       input,
-      type: UserEmailType.accountCreatedForSSO,
     });
   }
 
@@ -41,11 +34,8 @@ export class UserEmailsService {
     input: PasswordResetEmailInput,
   ): Promise<void> {
     await this.emailsService.sendFromTemplate({
-      templateBuilders: {
-        [UserEmailType.passwordReset]: buildTemplatePasswordReset,
-      },
+      templateBuilder: buildTemplatePasswordReset,
       input,
-      type: UserEmailType.passwordReset,
     });
   }
 }

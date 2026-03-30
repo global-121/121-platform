@@ -12,17 +12,14 @@ export class EmailsService {
   public constructor(private readonly httpService: CustomHttpService) {}
 
   public async sendFromTemplate<
-    TType extends string,
     TInput extends { email: string; recipientName: string },
   >({
-    templateBuilders,
+    templateBuilder,
     input,
-    type,
     attachment,
   }: {
-    templateBuilders: Record<TType, (input: TInput) => EmailTemplate>;
+    templateBuilder: (input: TInput) => EmailTemplate;
     input: TInput;
-    type: TType;
     attachment?: EmailData['attachment'];
   }): Promise<void> {
     const sanitizedInput = {
@@ -30,7 +27,7 @@ export class EmailsService {
       recipientName: stripHtmlTags(input.recipientName),
     };
 
-    const template = templateBuilders[type](sanitizedInput);
+    const template = templateBuilder(sanitizedInput);
 
     await this.sendEmail({
       email: sanitizedInput.email,
