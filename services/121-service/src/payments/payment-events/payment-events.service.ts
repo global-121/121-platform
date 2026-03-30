@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
@@ -7,6 +7,7 @@ import { PaymentEventEntity } from '@121-service/src/payments/payment-events/ent
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventAttributeKey } from '@121-service/src/payments/payment-events/enums/payment-event-attribute-key.enum';
 import { PaymentEventsMapper } from '@121-service/src/payments/payment-events/mappers/payment-events.mapper';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
 @Injectable()
 export class PaymentEventsService {
@@ -102,5 +103,19 @@ export class PaymentEventsService {
         },
       ],
     });
+  }
+
+  public async getCreatorOrThrow(paymentId: number): Promise<UserEntity> {
+    const createdEvent = await this.paymentEventRepository.findOne({
+      where: { paymentId: Equal(paymentId), type: Equal(PaymentEvent.created) },
+      relations: { user: true },
+    });
+    if (!createdEvent?.user) {
+      throw new HttpException(
+        'No creator found for payment',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return createdEvent.user;
   }
 }

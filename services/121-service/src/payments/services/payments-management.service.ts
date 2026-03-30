@@ -6,6 +6,7 @@ import { Equal, Repository } from 'typeorm';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
+import { PaymentEmailsService } from '@121-service/src/payments/payment-emails/payment-emails.service';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentApprovalRepository } from '@121-service/src/payments/repositories/payment-approval.repository';
@@ -40,6 +41,7 @@ export class PaymentsManagementService {
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentApprovalRepository: PaymentApprovalRepository,
     private readonly programApprovalThresholdRepository: ProgramApprovalThresholdRepository,
+    private readonly paymentEmailsService: PaymentEmailsService,
   ) {}
 
   public async createPayment({
@@ -115,6 +117,8 @@ export class PaymentsManagementService {
         paymentId,
         userId,
       });
+
+      await this.sendPendingApprovalEmails({ paymentId, programId });
 
       return bulkActionResultPaymentDto;
     } finally {
@@ -399,6 +403,9 @@ export class PaymentsManagementService {
         paymentId,
         programId,
       });
+      await this.sendApprovalConfirmationToCreator({ paymentId, programId });
+    } else {
+      await this.sendPendingApprovalEmails({ paymentId, programId });
     }
   }
 
@@ -524,5 +531,65 @@ export class PaymentsManagementService {
         programFspConfigurationId,
       });
     }
+  }
+
+  private async sendPendingApprovalEmails({
+    paymentId,
+    programId,
+  }: {
+    paymentId: number;
+    programId: number;
+  }): Promise<void> {
+    const currentApprovalStep =
+      await this.paymentApprovalRepository.getCurrentApprovalStep({
+        paymentId,
+      });
+
+    if (!currentApprovalStep) {
+      return;
+    }
+
+    const approvers = currentApprovalStep.approverAssignments
+      .filter((assignment) => !!assignment.user.username)
+      .map((assignment) => ({
+        emailAddress: assignment.user.username!,
+        recipientName: assignment.user.displayName,
+      }));
+
+    await this.paymentEmailsService.sendApprovalRequestToNextApprovers({
+      paymentId,
+      programId,
+      approvers,
+    });
+  }
+
+  private async sendApprovalConfirmationToCreator({
+    paymentId,
+    programId,
+  }: {
+    paymentId: number;
+    programId: number;
+  }): Promise<void> {
+    const paymentCreator =
+      await this.paymentEventsService.getCreatorOrThrow(paymentId);
+
+    if (!paymentCreator.username) {
+      // Creator has no email address, skip sending confirmation
+      return;
+    }
+
+    const payment = await this.paymentRepository.findOneOrFail({
+      where: { id: Equal(paymentId) },
+    });
+
+    await this.paymentEmailsService.sendApprovalConfirmationToCreator({
+      programId,
+      paymentId,
+      paymentCreator: {
+        emailAddress: paymentCreator.username,
+        recipientName: paymentCreator.displayName,
+      },
+      paymentCreatedAt: payment.created,
+    });
   }
 }

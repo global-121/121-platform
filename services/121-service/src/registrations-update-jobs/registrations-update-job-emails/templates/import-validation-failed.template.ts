@@ -1,18 +1,17 @@
-import { SUPPORT_EMAIL } from '@121-service/src/emails/email-constants';
-import { wrapWithEmailLayout } from '@121-service/src/emails/email-layout';
+import { SUPPORT_EMAIL } from '@121-service/src/emails/emails.const';
 import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
-import { UpdateJobEmailInput } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/interfaces/update-job-email-input.interface';
+import { ImportValidationFailedEmailInput } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/interfaces/import-validation-failed-email-input.interface';
 
 /**
  * Create e-mail message for failed validations during registration import.
  */
 export const buildTemplateImportValidationFailed = (
-  updateJobEmailInput: UpdateJobEmailInput,
+  updateJobEmailInput: ImportValidationFailedEmailInput,
 ): EmailTemplate => {
   const subject = 'Registration Import - Validation Failed';
 
-  const body = wrapWithEmailLayout(`
-    <p>Dear ${updateJobEmailInput.displayName},</p>
+  const body = `
+    <p>Dear ${updateJobEmailInput.recipientName},</p>
     <p>
       During your recent registration import, some registrations could not be validated.
     </p>
@@ -28,7 +27,7 @@ export const buildTemplateImportValidationFailed = (
       Best regards,<br>
       121 Support Team
     </p>
-  `);
+  `;
 
   return {
     subject,

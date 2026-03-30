@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Payment email templates should render approval confirmation template 1`] = `
+{
+  "body": "
+    <p>Dear John Approver,</p>
+    <p>
+      The payment you created 15/03/2026, 14:30 has been approved and is now ready to be initiated.
+    </p>
+    <p>Please follow the link below or log into the 121 portal to start the payment.</p>
+    <p><a href="https://portal.example.org/program/1/payments/42">https://portal.example.org/program/1/payments/42</a></p>
+    <p>Please note, the payment does not start automatically. Make sure to communicate with your team.</p>
+    <p>
+      For assistance, please contact: <a href="mailto:support@121.global">support@121.global</a>
+    </p>
+    <p>
+      Best regards,<br>
+      121 Support Team
+    </p>
+  ",
+  "subject": "121 portal: Payment approved",
+}
+`;
+
+exports[`Payment email templates should render approval request template 1`] = `
+{
+  "body": "
+    <p>Dear John Approver,</p>
+    <p>A new payment was created that requires your financial approval.</p>
+    <p>Please follow the link below or log into the 121 portal, review the payment and approve.</p>
+    <p><a href="https://portal.example.org/program/1/payments/42">https://portal.example.org/program/1/payments/42</a></p>
+    <p>Please note, the payment will be ready to start after the final approval. Make sure to communicate with your team.</p>
+    <p>
+      For assistance, please contact: <a href="mailto:support@121.global">support@121.global</a>
+    </p>
+    <p>
+      Best regards,<br>
+      121 Support Team
+    </p>
+  ",
+  "subject": "121 portal: Payment approval",
+}
+`;

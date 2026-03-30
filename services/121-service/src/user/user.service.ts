@@ -8,7 +8,7 @@ import crypto from 'node:crypto';
 import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
-import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/email-constants';
+import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/emails.const';
 import { env } from '@121-service/src/env';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramAidworkerAssignmentRepository } from '@121-service/src/programs/program-aidworker-assignments/program-aidworker-assignment.repository';
@@ -46,8 +46,6 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
-import { UserEmailType } from '@121-service/src/user/user-emails/enum/user-email-type.enum';
-import { UserEmailInput } from '@121-service/src/user/user-emails/interfaces/user-email-input.interface';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 const tokenExpirationDays = 14;
@@ -279,20 +277,18 @@ export class UserService {
         throw new Error('username is missing');
       }
 
-      const userEmailInput: UserEmailInput = {
-        email: userEntity.username,
-        displayName: userEntity.displayName ?? DEFAULT_DISPLAY_NAME,
-        password,
-      };
-
-      const userEmailType: UserEmailType = env.USE_SSO_AZURE_ENTRA
-        ? UserEmailType.accountCreatedForSSO
-        : UserEmailType.accountCreated;
-
-      await this.userEmailsService.send({
-        userEmailInput,
-        userEmailType,
-      });
+      if (env.USE_SSO_AZURE_ENTRA) {
+        await this.userEmailsService.sendAccountCreatedForSSO({
+          email: userEntity.username,
+          recipientName: userEntity.displayName ?? DEFAULT_DISPLAY_NAME,
+        });
+      } else {
+        await this.userEmailsService.sendAccountCreated({
+          email: userEntity.username,
+          recipientName: userEntity.displayName ?? DEFAULT_DISPLAY_NAME,
+          password,
+        });
+      }
     }
   }
 
@@ -965,15 +961,10 @@ export class UserService {
     user.password = this.hashPassword(password, user.salt);
     await this.userRepository.save(user);
 
-    const userEmailInput: UserEmailInput = {
+    await this.userEmailsService.sendPasswordReset({
       email: user.username,
-      displayName: user.displayName ?? DEFAULT_DISPLAY_NAME,
+      recipientName: user.displayName ?? DEFAULT_DISPLAY_NAME,
       password,
-    };
-
-    await this.userEmailsService.send({
-      userEmailInput,
-      userEmailType: UserEmailType.passwordReset,
     });
   }
 

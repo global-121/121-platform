@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Registration update job email templates should render import validation failed template 1`] = `
+{
+  "body": "
+    <p>Dear Owner User,</p>
+    <p>
+      During your recent registration import, some registrations could not be validated.
+    </p>
+    <p>
+      The registrations associated with invalid values are listed in the attachment included with this email.<br>
+      Please review the attached file, correct the invalid values, and try importing again.<br>
+      Note however that valid registrations have already been imported successfully.
+    </p>
+    <p>
+      If you need assistance, please contact us at: <a href="mailto:support@121.global">support@121.global</a>
+    </p>
+    <p>
+      Best regards,<br>
+      121 Support Team
+    </p>
+  ",
+  "subject": "Registration Import - Validation Failed",
+}
+`;
