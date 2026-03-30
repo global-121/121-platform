@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(git -C /Users/ywilmering/Projects/121/121-platform diff main...HEAD --stat)",
-      "Bash(git:*)"
-    ]
-  }
-}

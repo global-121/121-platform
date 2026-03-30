@@ -437,6 +437,9 @@ describe('PaymentsManagementService', () => {
       const processFinalApprovalSpy = jest
         .spyOn(service as any, 'processFinalApproval')
         .mockResolvedValue(undefined);
+      jest
+        .spyOn(service as any, 'sendApprovalConfirmationToCreator')
+        .mockResolvedValue(undefined);
 
       // Act
       await service.approvePayment({ userId: 1, programId: 2, paymentId: 3 });
