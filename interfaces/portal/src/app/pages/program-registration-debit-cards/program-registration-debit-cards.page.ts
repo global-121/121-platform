@@ -297,7 +297,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
 
   readonly currencyCode = computed(() => this.program.data()?.currency);
 
-  readonly canCreateCard = computed(() =>
+  readonly canReplaceCard = computed(() =>
     this.authService.hasPermission({
       programId: this.programId(),
       requiredPermission: PermissionEnum.FspDebitCardCREATE,
