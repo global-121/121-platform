@@ -19,6 +19,7 @@ import { CardModule } from 'primeng/card';
 import { VisaCardAction } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-action.enum';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { FspConfigurationProperty } from '@121-service/src/fsp-integrations/shared/interfaces/fsp-configuration-property.interface';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { getChipDataByVisaCardStatus } from '~/components/colored-chip/colored-chip.helper';
@@ -34,6 +35,7 @@ import { ProgramApiService } from '~/domains/program/program.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { LinkCardDialogComponent } from '~/pages/program-registration-debit-cards/components/link-card-on-site-dialog/link-card-dialog.component';
 import { CreditCardNumberPipe } from '~/pipes/credit-card-number.pipe';
+import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
@@ -70,6 +72,7 @@ export class ProgramRegistrationDebitCardsPageComponent {
     FspConfigurationApiService,
   );
   private readonly creditCardNumberPipe = inject(CreditCardNumberPipe);
+  private readonly authService = inject(AuthService);
 
   readonly linkCardDialogVisible = model(false);
 
@@ -293,4 +296,25 @@ export class ProgramRegistrationDebitCardsPageComponent {
   }));
 
   readonly currencyCode = computed(() => this.program.data()?.currency);
+
+  readonly canReplaceCard = computed(() =>
+    this.authService.hasPermission({
+      programId: this.programId(),
+      requiredPermission: PermissionEnum.FspDebitCardCREATE,
+    }),
+  );
+
+  readonly canPauseCard = computed(() =>
+    this.authService.hasPermission({
+      programId: this.programId(),
+      requiredPermission: PermissionEnum.FspDebitCardBLOCK,
+    }),
+  );
+
+  readonly canUnpauseCard = computed(() =>
+    this.authService.hasPermission({
+      programId: this.programId(),
+      requiredPermission: PermissionEnum.FspDebitCardUNBLOCK,
+    }),
+  );
 }
