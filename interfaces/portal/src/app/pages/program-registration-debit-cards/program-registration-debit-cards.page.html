@@ -5,7 +5,7 @@
   <div class="px-2">
     @if (currentCard()) {
       <div class="my-auto ms-auto flex">
-        @if (currentCardHasAction()('pause')) {
+        @if (canPauseCard() && currentCardHasAction()('pause')) {
           <p-button
             label="Pause card"
             i18n-label="@@debit-card-actions-pause-card"
@@ -17,7 +17,7 @@
             (click)="pauseConfirmationDialog.show()"
           />
         }
-        @if (currentCardHasAction()('unpause')) {
+        @if (canUnpauseCard() && currentCardHasAction()('unpause')) {
           <p-button
             label="Unpause card"
             i18n-label="@@debit-card-actions-unpause-card"

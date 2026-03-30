@@ -303,4 +303,18 @@ export class ProgramRegistrationDebitCardsPageComponent {
       requiredPermission: PermissionEnum.FspDebitCardCREATE,
     }),
   );
+
+  readonly canPauseCard = computed(() =>
+    this.authService.hasPermission({
+      programId: this.programId(),
+      requiredPermission: PermissionEnum.FspDebitCardBLOCK,
+    }),
+  );
+
+  readonly canUnpauseCard = computed(() =>
+    this.authService.hasPermission({
+      programId: this.programId(),
+      requiredPermission: PermissionEnum.FspDebitCardUNBLOCK,
+    }),
+  );
 }
