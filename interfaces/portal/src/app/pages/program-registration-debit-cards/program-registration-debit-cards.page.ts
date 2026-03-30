@@ -19,6 +19,7 @@ import { CardModule } from 'primeng/card';
 import { VisaCardAction } from '@121-service/src/fsp-integrations/integrations/intersolve-visa/enums/intersolve-visa-card-action.enum';
 import { FspConfigurationProperties } from '@121-service/src/fsp-integrations/shared/enum/fsp-configuration-properties.enum';
 import { FspConfigurationProperty } from '@121-service/src/fsp-integrations/shared/interfaces/fsp-configuration-property.interface';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { getChipDataByVisaCardStatus } from '~/components/colored-chip/colored-chip.helper';
@@ -37,8 +38,6 @@ import { CreditCardNumberPipe } from '~/pipes/credit-card-number.pipe';
 import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
-
-import { PermissionEnum } from '../../../../../../services/121-service/src/user/enum/permission.enum';
 
 @Component({
   selector: 'app-program-registration-debit-cards',
@@ -298,16 +297,10 @@ export class ProgramRegistrationDebitCardsPageComponent {
 
   readonly currencyCode = computed(() => this.program.data()?.currency);
 
-  readonly canCreateCard = computed(() => {
-    if (
-      !this.authService.hasPermission({
-        programId: this.programId(),
-        requiredPermission: PermissionEnum.FspDebitCardCREATE,
-      })
-    ) {
-      return false;
-    }
-
-    return true;
-  });
+  readonly canCreateCard = computed(() =>
+    this.authService.hasPermission({
+      programId: this.programId(),
+      requiredPermission: PermissionEnum.FspDebitCardCREATE,
+    }),
+  );
 }
