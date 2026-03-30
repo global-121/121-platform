@@ -41,8 +41,8 @@ test('User is redirected to login when token expires', async ({ page }) => {
   await page.waitForURL((url) => url.pathname.startsWith('/en-GB/login'));
   await expect(page).toHaveURL(/.*\/en-GB\/login/);
 
-  // Verify the session expired message is shown on the login page
-  const sessionExpiredMessage = page.getByTestId('session-expired-message');
-  await expect(sessionExpiredMessage).toBeVisible();
-  await expect(sessionExpiredMessage).toContainText('Session expired');
+  // Verify the session expired toast is shown on the login page
+  const sessionExpiredToast = page.locator('.p-toast-message');
+  await expect(sessionExpiredToast).toBeVisible();
+  await expect(sessionExpiredToast).toContainText('Session expired');
 });

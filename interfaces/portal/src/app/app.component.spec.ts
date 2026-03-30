@@ -7,6 +7,7 @@ import {
   QueryClient,
 } from '@tanstack/angular-query-experimental';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { MessageService } from 'primeng/api';
 
 import { AppComponent } from '~/app.component';
 import { getAppConfig } from '~/app.config';
@@ -19,6 +20,7 @@ describe('AppComponent', () => {
       imports: [AppComponent, RouterModule.forRoot([])],
       providers: [
         provideHttpClient(),
+        MessageService,
         provideTanStackQuery(
           new QueryClient({
             defaultOptions: {

@@ -9,7 +9,6 @@ import {
 import { Router, RouterOutlet } from '@angular/router';
 
 import KonamiCode from 'konami-code-js';
-import { MessageService } from 'primeng/api';
 import { ToastModule, ToastPositionType } from 'primeng/toast';
 import { Subscription } from 'rxjs';
 
@@ -24,9 +23,6 @@ import { environment } from '~environment';
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, ToastModule, SessionExpiredDialogComponent],
-  providers: [
-    MessageService, // Needed by the ToastModule
-  ],
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
