@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
@@ -105,17 +105,14 @@ export class PaymentEventsService {
     });
   }
 
-  public async getCreatorOrThrow(paymentId: number): Promise<UserEntity> {
-    const createdEvent = await this.paymentEventRepository.findOne({
+  public async getPaymentCreator(
+    paymentId: number,
+  ): Promise<UserEntity | undefined> {
+    const createdEvent = await this.paymentEventRepository.findOneOrFail({
       where: { paymentId: Equal(paymentId), type: Equal(PaymentEvent.created) },
       relations: { user: true },
     });
-    if (!createdEvent?.user) {
-      throw new HttpException(
-        'No creator found for payment',
-        HttpStatus.NOT_FOUND,
-      );
-    }
+
     return createdEvent.user;
   }
 }

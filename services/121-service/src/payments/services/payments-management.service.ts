@@ -26,6 +26,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Injectable()
 export class PaymentsManagementService {
@@ -42,6 +43,7 @@ export class PaymentsManagementService {
     private readonly paymentApprovalRepository: PaymentApprovalRepository,
     private readonly programApprovalThresholdRepository: ProgramApprovalThresholdRepository,
     private readonly paymentEmailsService: PaymentEmailsService,
+    private readonly azureLogService: AzureLogService,
   ) {}
 
   public async createPayment({
@@ -403,7 +405,10 @@ export class PaymentsManagementService {
         paymentId,
         programId,
       });
-      await this.sendApprovalConfirmationToCreator({ paymentId, programId });
+      await this.sendApprovalConfirmationToPaymentCreator({
+        paymentId,
+        programId,
+      });
     } else {
       await this.sendPendingApprovalEmails({ paymentId, programId });
     }
@@ -563,7 +568,7 @@ export class PaymentsManagementService {
     });
   }
 
-  private async sendApprovalConfirmationToCreator({
+  private async sendApprovalConfirmationToPaymentCreator({
     paymentId,
     programId,
   }: {
@@ -571,11 +576,21 @@ export class PaymentsManagementService {
     programId: number;
   }): Promise<void> {
     const paymentCreator =
-      await this.paymentEventsService.getCreatorOrThrow(paymentId);
+      await this.paymentEventsService.getPaymentCreator(paymentId);
 
-    if (!paymentCreator.username) {
-      // Creator has no email address, skip sending confirmation
+    if (!paymentCreator) {
+      this.azureLogService.logError(
+        new Error(
+          `Payment creator not found for paymentId: ${paymentId}. The user might have been deleted before the payment was approved.`,
+        ),
+        true,
+      );
       return;
+    }
+
+    // TODO: Refactor ideally username should not be nullable, but for now have a typeguard to prevent crashes
+    if (!paymentCreator.username) {
+      throw new Error('Payment creator does not have an email address');
     }
 
     const payment = await this.paymentRepository.findOneOrFail({

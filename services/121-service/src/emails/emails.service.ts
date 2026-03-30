@@ -38,7 +38,19 @@ export class EmailsService {
   }
 
   public async sendEmail(emailData: EmailData): Promise<void> {
-    await this.httpService.post<unknown>(env.AZURE_EMAIL_API_URL, emailData);
+    const response = await this.httpService.post<{
+      status: number;
+      statusText?: string;
+    }>(env.AZURE_EMAIL_API_URL, emailData);
+    const isSuccess =
+      typeof response.status === 'number' &&
+      response.status >= 200 &&
+      response.status < 300;
+    if (!isSuccess) {
+      throw new Error(
+        `Failed to send email: HTTP ${response.status} ${response.statusText ?? ''}`.trim(),
+      );
+    }
   }
 
   private wrapWithEmailLayout(content: string): string {
