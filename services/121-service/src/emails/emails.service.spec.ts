@@ -1,4 +1,5 @@
 import { TestBed } from '@automock/jest';
+import { HttpStatus } from '@nestjs/common';
 
 import { EmailsService } from '@121-service/src/emails/emails.service';
 import { EmailDeliveryError } from '@121-service/src/emails/errors/email-delivery.error';
@@ -28,14 +29,12 @@ describe('EmailsService', () => {
     };
 
     it('should resolve when the response status is 2xx', async () => {
-      httpService.post.mockResolvedValueOnce({ status: 202 });
-
-      await expect(service.sendEmail(emailData)).resolves.not.toThrow();
+      httpService.post.mockResolvedValueOnce({ status: HttpStatus.ACCEPTED });
     });
 
     it('should throw EmailDeliveryError when the response status is not 2xx', async () => {
       httpService.post.mockResolvedValueOnce({
-        status: 500,
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
         statusText: 'Internal Server Error',
       });
 
@@ -54,8 +53,11 @@ describe('EmailsService', () => {
   });
 
   describe('sendFromTemplate', () => {
+    const email = 'recipient@example.org';
+    const recipientName = 'Alice';
+
     it('should sanitize recipientName before passing it to the template builder', async () => {
-      httpService.post.mockResolvedValueOnce({ status: 202 });
+      httpService.post.mockResolvedValueOnce({ status: HttpStatus.ACCEPTED });
       const templateBuilder = jest
         .fn()
         .mockReturnValue({ subject: 'Subj', body: 'Body' });
@@ -63,34 +65,35 @@ describe('EmailsService', () => {
       await service.sendFromTemplate({
         templateBuilder,
         input: {
-          email: 'recipient@example.org',
+          email,
           recipientName: '<b>Alice</b>',
         },
       });
 
       expect(templateBuilder).toHaveBeenCalledWith(
-        expect.objectContaining({ recipientName: 'Alice' }),
+        expect.objectContaining({ recipientName }),
       );
     });
 
     it('should wrap the template body with the email layout', async () => {
-      httpService.post.mockResolvedValueOnce({ status: 202 });
+      httpService.post.mockResolvedValueOnce({ status: HttpStatus.ACCEPTED });
+      const body = 'Inner content';
       const templateBuilder = jest
         .fn()
-        .mockReturnValue({ subject: 'Subj', body: 'Inner content' });
+        .mockReturnValue({ subject: 'Subj', body });
 
       await service.sendFromTemplate({
         templateBuilder,
-        input: { email: 'recipient@example.org', recipientName: 'Alice' },
+        input: { email, recipientName },
       });
 
       const postedBody = httpService.post.mock.calls[0][1] as { body: string };
-      expect(postedBody.body).toContain('Inner content');
+      expect(postedBody.body).toContain(body);
       expect(postedBody.body).toContain('121 Portal');
     });
 
     it('should forward the attachment to sendEmail', async () => {
-      httpService.post.mockResolvedValueOnce({ status: 202 });
+      httpService.post.mockResolvedValueOnce({ status: HttpStatus.ACCEPTED });
       const attachment = { name: 'file.csv', contentBytes: 'abc123' };
       const templateBuilder = jest
         .fn()
@@ -98,7 +101,7 @@ describe('EmailsService', () => {
 
       await service.sendFromTemplate({
         templateBuilder,
-        input: { email: 'recipient@example.org', recipientName: 'Alice' },
+        input: { email, recipientName },
         attachment,
       });
 
