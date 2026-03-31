@@ -13,4 +13,10 @@ export class KoboIntegrationResultDto {
     nullable: true,
   })
   public readonly name: string | null;
+
+  @ApiProperty({
+    example: 42,
+    description: 'The current number of submissions in the Kobo form',
+  })
+  public readonly submissionCount: number;
 }

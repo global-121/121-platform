@@ -7,7 +7,6 @@ import { KoboAssetDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset.dto
 import { KoboAssetResponseDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-asset-response.dto';
 import { KoboSubmissionDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-submission.dto';
 import { KoboSubmissionsResponseDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-submissions-response.dto';
-import { MAX_IMPORT_RECORDS } from '@121-service/src/registration/services/registrations-creation.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
@@ -198,19 +197,21 @@ export class KoboApiService {
     });
   }
 
-  public async getSubmissionsUpToLimit({
+  public async getSubmissions({
     token,
     assetUid,
     baseUrl,
+    limit,
   }: {
     token: string;
     assetUid: string;
     baseUrl: string;
+    limit: number;
   }): Promise<{ count: number; submissions: KoboSubmissionDto[] }> {
     const apiUrl = new URL(
       joinURL(baseUrl, 'api/v2/assets', assetUid, 'data/'),
     );
-    apiUrl.searchParams.set('limit', String(MAX_IMPORT_RECORDS));
+    apiUrl.searchParams.set('limit', String(limit));
 
     const headers = new Headers({ Authorization: `Token ${token}` });
 

@@ -92,6 +92,9 @@ describe('KoboService', () => {
             getDeployedAssetOrThrow: jest.fn(),
             getExistingKoboWebhooks: jest.fn(),
             createKoboWebhook: jest.fn(),
+            getSubmissions: jest
+              .fn()
+              .mockResolvedValue({ count: 0, submissions: [] }),
           },
         },
         {
@@ -230,6 +233,7 @@ describe('KoboService', () => {
       message: 'Kobo form integrated successfully',
       name: 'Test Form',
       dryRun: false,
+      submissionCount: 0,
     });
   });
 
@@ -473,6 +477,7 @@ describe('KoboService', () => {
         message: 'Kobo form integrated successfully',
         name: 'Test Form',
         dryRun: false,
+        submissionCount: 0,
       });
     });
   });

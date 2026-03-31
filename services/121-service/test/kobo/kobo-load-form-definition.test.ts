@@ -136,6 +136,7 @@ describe('Import a Kobo form definition', () => {
      {
        "message": "Kobo form integrated successfully",
        "name": "25042025 Prototype Sprint",
+       "submissionCount": 1,
      }
     `);
     expect(linkKoboResponse.status).toBe(HttpStatus.CREATED);
@@ -275,6 +276,7 @@ describe('Import a Kobo form definition', () => {
     expect(linkKoboResponse.body.message).toEqual(
       'Dry run successful - validation passed',
     );
+    expect(linkKoboResponse.body.submissionCount).toBe(1);
 
     // Verify program registration attributes were NOT updated
     const getProgramResponseAfter = await getProgram(programId, accessToken);

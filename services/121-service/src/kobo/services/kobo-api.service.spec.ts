@@ -460,7 +460,7 @@ describe('KoboApiService', () => {
     });
   });
 
-  describe('getAllSubmissions', () => {
+  describe('getSubmissions', () => {
     const mockSubmissionsData = [
       {
         _id: 1,
@@ -489,10 +489,11 @@ describe('KoboApiService', () => {
       });
 
       // Act
-      const result = await service.getSubmissionsUpToLimit({
+      const result = await service.getSubmissions({
         token: mockToken,
         assetUid: mockAssetUid,
         baseUrl: mockBaseUrl,
+        limit: 1000,
       });
 
       // Assert
@@ -512,7 +513,7 @@ describe('KoboApiService', () => {
       });
       // Check that the limit query parameter is included in the request URL
       const calledUrl = httpService.get.mock.calls[0]![0] as string;
-      expect(calledUrl).toContain('limit=');
+      expect(calledUrl).toContain('limit=1000');
     });
 
     // Not all error scenarios are covered here as most of the error handling is delegated in a private function which is tested via other public methods
@@ -526,10 +527,11 @@ describe('KoboApiService', () => {
       });
 
       // Act
-      const promise = service.getSubmissionsUpToLimit({
+      const promise = service.getSubmissions({
         token: mockToken,
         assetUid: mockAssetUid,
         baseUrl: mockBaseUrl,
+        limit: 1000,
       });
 
       // Assert

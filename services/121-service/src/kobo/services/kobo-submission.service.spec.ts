@@ -87,7 +87,7 @@ describe('KoboSubmissionService', () => {
           provide: KoboApiService,
           useValue: {
             getSubmission: jest.fn(),
-            getSubmissionsUpToLimit: jest.fn(),
+            getSubmissions: jest.fn(),
           },
         },
         {
@@ -308,7 +308,7 @@ describe('KoboSubmissionService', () => {
     it('should successfully import new submissions (happy flow)', async () => {
       // Arrange
       koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
-      koboApiService.getSubmissionsUpToLimit.mockResolvedValue({
+      koboApiService.getSubmissions.mockResolvedValue({
         count: 2,
         submissions: [mockSubmission, mockSubmission2],
       });
@@ -357,7 +357,7 @@ describe('KoboSubmissionService', () => {
     it('should throw HttpException when there are too many submissions to import', async () => {
       // Arrange
       koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
-      koboApiService.getSubmissionsUpToLimit.mockResolvedValue({
+      koboApiService.getSubmissions.mockResolvedValue({
         count: 1001,
         submissions: [],
       });
@@ -383,7 +383,7 @@ describe('KoboSubmissionService', () => {
       const newerVersionId = 'v2';
       const newerDateDeployed = new Date('2025-06-01');
       koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
-      koboApiService.getSubmissionsUpToLimit.mockResolvedValue({
+      koboApiService.getSubmissions.mockResolvedValue({
         count: 1,
         submissions: [{ ...mockSubmission, __version__: newerVersionId }],
       });
@@ -417,7 +417,7 @@ describe('KoboSubmissionService', () => {
     it('should not update program when all submissions have the current form version', async () => {
       // Arrange
       koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
-      koboApiService.getSubmissionsUpToLimit.mockResolvedValue({
+      koboApiService.getSubmissions.mockResolvedValue({
         count: 1,
         submissions: [mockSubmission], // __version__: 'v1' matches stored versionId: 'v1'
       });
@@ -437,7 +437,7 @@ describe('KoboSubmissionService', () => {
     it('should filter out already existing registrations', async () => {
       // Arrange
       koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
-      koboApiService.getSubmissionsUpToLimit.mockResolvedValue({
+      koboApiService.getSubmissions.mockResolvedValue({
         count: 2,
         submissions: [mockSubmission, mockSubmission2],
       });

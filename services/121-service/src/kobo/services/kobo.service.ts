@@ -65,6 +65,7 @@ export class KoboService {
     message: string;
     dryRun: boolean;
     name: string | null;
+    submissionCount: number;
   }> {
     await this.programService.findProgramOrThrow(programId);
     const fspConfigs = await this.programFspConfigurationRepository.count({
@@ -102,11 +103,21 @@ export class KoboService {
       programId,
     });
 
+    const { count: submissionCount } = await this.koboApiService.getSubmissions(
+      {
+        token,
+        assetUid,
+        baseUrl: url,
+        limit: 0,
+      },
+    );
+
     if (dryRun) {
       return {
         message: 'Dry run successful - validation passed',
         name: formDefinition.name,
         dryRun: true,
+        submissionCount,
       };
     }
 
@@ -141,6 +152,7 @@ export class KoboService {
       message: 'Kobo form integrated successfully',
       name: formDefinition.name,
       dryRun: false,
+      submissionCount,
     };
   }
 

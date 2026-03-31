@@ -97,12 +97,12 @@ export class KoboSubmissionService {
     });
     this.assertKoboIntegrationExistsOrThrow(koboIntegration);
 
-    const { submissions, count } =
-      await this.koboApiService.getSubmissionsUpToLimit({
-        token: koboIntegration.token,
-        assetUid: koboIntegration.assetUid,
-        baseUrl: koboIntegration.url,
-      });
+    const { submissions, count } = await this.koboApiService.getSubmissions({
+      token: koboIntegration.token,
+      assetUid: koboIntegration.assetUid,
+      baseUrl: koboIntegration.url,
+      limit: MAX_IMPORT_RECORDS,
+    });
 
     const submissionWithDifferentVersion = submissions.find(
       (s) => s.__version__ !== koboIntegration.versionId,
