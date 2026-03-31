@@ -14,7 +14,12 @@ import { FormErrorComponent } from '~/components/form-error/form-error.component
 import { LocaleSwitcherComponent } from '~/components/locale-switcher/locale-switcher.component';
 import { LogoComponent } from '~/components/logo/logo.component';
 import { CookieBannerComponent } from '~/pages/login/components/cookie-banner/cookie-banner.component';
-import { AUTH_ERROR_IN_STATE_KEY, AuthService } from '~/services/auth.service';
+import {
+  AUTH_ERROR_IN_STATE_KEY,
+  AuthService,
+  SESSION_EXPIRED_IN_STATE_KEY,
+} from '~/services/auth.service';
+import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -36,7 +41,7 @@ export class LoginPageComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-
+  private toastService = inject(ToastService);
   AppRoutes = AppRoutes;
   LoginComponent = this.authService.LoginComponent;
 
@@ -59,4 +64,19 @@ export class LoginPageComponent {
 
     return undefined;
   });
+
+  constructor() {
+    const state = history.state as Record<string, unknown> | undefined;
+    if (state?.[SESSION_EXPIRED_IN_STATE_KEY]) {
+      history.replaceState(
+        { ...state, [SESSION_EXPIRED_IN_STATE_KEY]: undefined },
+        '',
+      );
+      this.toastService.showToast({
+        severity: 'info',
+        summary: $localize`:@@session-expired-title:Session expired`,
+        detail: $localize`:@@session-expired-body:For security reasons, you've been logged out. After logging in, you'll return to where you left off.`,
+      });
+    }
+  }
 }

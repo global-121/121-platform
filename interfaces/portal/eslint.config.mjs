@@ -178,6 +178,7 @@ export default defineConfig(
             'appendTo',
             'inputId',
             'input[inputmode]',
+            'maskStyleClass',
             'queryParamsHandling',
             'styleClass',
             'severity',

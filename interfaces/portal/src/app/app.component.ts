@@ -9,11 +9,11 @@ import {
 import { Router, RouterOutlet } from '@angular/router';
 
 import KonamiCode from 'konami-code-js';
-import { MessageService } from 'primeng/api';
 import { ToastModule, ToastPositionType } from 'primeng/toast';
 import { Subscription } from 'rxjs';
 
 import { AppRoutes } from '~/app.routes';
+import { SessionExpiredDialogComponent } from '~/components/session-expired-dialog/session-expired-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import { LogService } from '~/services/log.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
@@ -22,10 +22,7 @@ import { environment } from '~environment';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ToastModule],
-  providers: [
-    MessageService, // Needed by the ToastModule
-  ],
+  imports: [RouterOutlet, ToastModule, SessionExpiredDialogComponent],
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -39,6 +36,9 @@ export class AppComponent implements OnInit, OnDestroy {
   readonly toastKey = ToastService.TOAST_KEY;
   readonly toastPosition = ('top-' +
     this.rtlHelper.createPosition('end')()) as ToastPositionType;
+
+  readonly showSessionExpiredDialog = this.authService.showSessionExpiredDialog;
+  readonly sessionExpiredReturnUrl = this.authService.sessionExpiredReturnUrl;
 
   private readonly logService = inject(LogService);
 

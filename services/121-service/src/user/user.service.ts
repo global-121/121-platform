@@ -48,8 +48,8 @@ import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
-const tokenExpirationDays = 14;
-
+const tokenExpirationHours = 33; // We picked a 33 hour window because it's 1 day + 8 hour working day + 1 hour buffer, to minimize the chance of a token expiring during a working day.
+const MS_PER_HOUR = 3_600_000;
 @Injectable({ scope: Scope.REQUEST })
 export class UserService {
   @InjectRepository(UserEntity)
@@ -593,7 +593,7 @@ export class UserService {
   public generateJWT(user: UserEntity): string {
     const today = new Date();
     const exp = new Date(today);
-    exp.setDate(today.getDate() + tokenExpirationDays);
+    exp.setTime(today.getTime() + tokenExpirationHours * MS_PER_HOUR);
 
     const roles = {};
     if (user.programAssignments && user.programAssignments[0]) {
@@ -699,7 +699,7 @@ export class UserService {
       sameSite,
       secure,
       httpOnly,
-      expires: new Date(Date.now() + tokenExpirationDays * 24 * 3600000),
+      expires: new Date(Date.now() + tokenExpirationHours * MS_PER_HOUR),
     };
   }
 

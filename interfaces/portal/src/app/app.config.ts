@@ -22,6 +22,7 @@ import {
   QueryClient,
 } from '@tanstack/angular-query-experimental';
 import { provideAngularSvgIcon } from 'angular-svg-icon';
+import { MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 
 import { routes } from '~/app.routes';
@@ -104,5 +105,6 @@ export const getAppConfig = (locale: Locale): ApplicationConfig => ({
     { provide: TitleStrategy, useClass: CustomPageTitleStrategy },
     { provide: LOCALE_ID, useValue: locale },
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'XXX' },
+    MessageService,
   ],
 });

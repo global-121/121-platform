@@ -3,3 +3,7 @@
   [key]="toastKey"
   [position]="toastPosition"
 ></p-toast>
+<app-session-expired-dialog
+  [(dialogVisible)]="showSessionExpiredDialog"
+  [returnUrl]="sessionExpiredReturnUrl()"
+/>
