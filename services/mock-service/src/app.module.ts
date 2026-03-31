@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 
+import { EmailMockModule } from '@mock-service/src/email/email.mock.module';
 import { ExchangeRatesMockModule } from '@mock-service/src/exchange-rates/exchange-rates-mock.module';
 import { AirtelMockModule } from '@mock-service/src/fsp-integration/airtel/airtel.mock.module';
 import { CommercialBankEthiopiaMockModule } from '@mock-service/src/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.mock.module';
@@ -27,6 +28,7 @@ import { TwilioModule } from '@mock-service/src/twilio/twilio.module';
     NedbankMockModule,
     CommercialBankEthiopiaMockModule,
     KoboMockModule,
+    EmailMockModule,
   ],
   controllers: [],
   providers: [],

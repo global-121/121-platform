@@ -4,7 +4,7 @@ import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { RegistrationsUpdateJobDto } from '@121-service/src/registrations-update-jobs/dto/registrations-update-job.dto';
 import { ErrorRecord } from '@121-service/src/registrations-update-jobs/interfaces/error-record.interface';
-import { UpdateJobEmailInput } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/interfaces/update-job-email-input.interface';
+import { ImportValidationFailedEmailInput } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/interfaces/import-validation-failed-email-input.interface';
 import { RegistrationsUpdateJobEmailsService } from '@121-service/src/registrations-update-jobs/registrations-update-job-emails/registrations-update-job-emails.service';
 import { UserService } from '@121-service/src/user/user.service';
 import { arrayToXlsx } from '@121-service/src/utils/send-xlsx-response';
@@ -80,12 +80,14 @@ export class RegistrationsUpdateJobsService {
       'base64',
     );
 
-    const templateInput: UpdateJobEmailInput = {
+    const templateInput: ImportValidationFailedEmailInput = {
       email: user.username,
-      displayName: user.displayName,
+      recipientName: user.displayName,
       attachment: { name: 'failed-validations.csv', contentBytes },
     };
 
-    await this.registrationsUpdateJobEmailsService.send(templateInput);
+    await this.registrationsUpdateJobEmailsService.sendImportValidationFailed(
+      templateInput,
+    );
   }
 }

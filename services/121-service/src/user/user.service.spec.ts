@@ -12,7 +12,6 @@ import { PermissionEntity } from '@121-service/src/user/entities/permissions.ent
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { UserService } from '@121-service/src/user/user.service';
-import { UserEmailType } from '@121-service/src/user/user-emails/enum/user-email-type.enum';
 import { UserEmailsService } from '@121-service/src/user/user-emails/user-emails.service';
 
 describe('UserService', () => {
@@ -61,6 +60,7 @@ describe('UserService', () => {
           provide: UserEmailsService,
           useValue: {
             send: jest.fn(),
+            sendPasswordReset: jest.fn(),
           },
         },
       ],
@@ -790,7 +790,7 @@ describe('UserService', () => {
 
     beforeEach(() => {
       jest.spyOn(userRepository, 'save').mockClear();
-      jest.spyOn(userEmailsService, 'send').mockClear();
+      jest.spyOn(userEmailsService, 'sendPasswordReset').mockClear();
     });
 
     it('should throw HttpException when user is not found', async () => {
@@ -805,7 +805,7 @@ describe('UserService', () => {
       );
 
       expect(userRepository.save).not.toHaveBeenCalled();
-      expect(userEmailsService.send).not.toHaveBeenCalled();
+      expect(userEmailsService.sendPasswordReset).not.toHaveBeenCalled();
     });
 
     it('should throw HttpException when user has no username', async () => {
@@ -823,7 +823,7 @@ describe('UserService', () => {
       );
 
       expect(userRepository.save).not.toHaveBeenCalled();
-      expect(userEmailsService.send).not.toHaveBeenCalled();
+      expect(userEmailsService.sendPasswordReset).not.toHaveBeenCalled();
     });
 
     it('should successfully change password and send email when user exists', async () => {
@@ -839,7 +839,7 @@ describe('UserService', () => {
       jest
         .spyOn(userRepository, 'save')
         .mockResolvedValue(expectedUpdatedUser as UserEntity);
-      jest.spyOn(userEmailsService, 'send').mockResolvedValue();
+      jest.spyOn(userEmailsService, 'sendPasswordReset').mockResolvedValue();
 
       // Act
       await service.changePasswordWithoutCurrentPassword(mockChangePasswordDto);
@@ -853,7 +853,7 @@ describe('UserService', () => {
           password: expect.any(String),
         }),
       );
-      expect(userEmailsService.send).toHaveBeenCalled();
+      expect(userEmailsService.sendPasswordReset).toHaveBeenCalled();
     });
 
     it('should send password reset email with correct data', async () => {
@@ -864,19 +864,16 @@ describe('UserService', () => {
       jest
         .spyOn(userRepository, 'save')
         .mockResolvedValue(mockUser as UserEntity);
-      jest.spyOn(userEmailsService, 'send').mockResolvedValue();
+      jest.spyOn(userEmailsService, 'sendPasswordReset').mockResolvedValue();
 
       // Act
       await service.changePasswordWithoutCurrentPassword(mockChangePasswordDto);
 
       // Assert
-      expect(userEmailsService.send).toHaveBeenCalledWith({
-        userEmailInput: {
-          email: 'test@example.com',
-          displayName: 'Test User',
-          password: expect.any(String),
-        },
-        userEmailType: UserEmailType.passwordReset,
+      expect(userEmailsService.sendPasswordReset).toHaveBeenCalledWith({
+        email: 'test@example.com',
+        recipientName: 'Test User',
+        password: expect.any(String),
       });
     });
 
@@ -889,19 +886,16 @@ describe('UserService', () => {
       jest
         .spyOn(userRepository, 'save')
         .mockResolvedValue(userWithoutDisplayName as unknown as UserEntity);
-      jest.spyOn(userEmailsService, 'send').mockResolvedValue();
+      jest.spyOn(userEmailsService, 'sendPasswordReset').mockResolvedValue();
 
       // Act
       await service.changePasswordWithoutCurrentPassword(mockChangePasswordDto);
 
       // Assert
-      expect(userEmailsService.send).toHaveBeenCalledWith({
-        userEmailInput: {
-          email: 'test@example.com',
-          displayName: 'Madam/Sir',
-          password: expect.any(String),
-        },
-        userEmailType: UserEmailType.passwordReset,
+      expect(userEmailsService.sendPasswordReset).toHaveBeenCalledWith({
+        email: 'test@example.com',
+        recipientName: 'Madam/Sir',
+        password: expect.any(String),
       });
     });
 
@@ -919,7 +913,7 @@ describe('UserService', () => {
       ).rejects.toThrow('Database save error');
 
       expect(userRepository.save).toHaveBeenCalled();
-      expect(userEmailsService.send).not.toHaveBeenCalled();
+      expect(userEmailsService.sendPasswordReset).not.toHaveBeenCalled();
     });
 
     it('should handle email service errors', async () => {
@@ -931,7 +925,9 @@ describe('UserService', () => {
         .spyOn(userRepository, 'save')
         .mockResolvedValue(mockUser as UserEntity);
       const emailError = new Error('Email service error');
-      jest.spyOn(userEmailsService, 'send').mockRejectedValue(emailError);
+      jest
+        .spyOn(userEmailsService, 'sendPasswordReset')
+        .mockRejectedValue(emailError);
 
       // Act & Assert
       await expect(
@@ -939,7 +935,7 @@ describe('UserService', () => {
       ).rejects.toThrow('Email service error');
 
       expect(userRepository.save).toHaveBeenCalled();
-      expect(userEmailsService.send).toHaveBeenCalled();
+      expect(userEmailsService.sendPasswordReset).toHaveBeenCalled();
     });
   });
 });

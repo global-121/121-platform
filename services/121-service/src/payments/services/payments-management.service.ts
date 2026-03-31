@@ -6,6 +6,7 @@ import { Equal, Repository } from 'typeorm';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentApprovalEntity } from '@121-service/src/payments/entities/payment-approval.entity';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
+import { PaymentEmailsService } from '@121-service/src/payments/payment-emails/payment-emails.service';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentApprovalRepository } from '@121-service/src/payments/repositories/payment-approval.repository';
@@ -25,6 +26,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Injectable()
 export class PaymentsManagementService {
@@ -40,6 +42,8 @@ export class PaymentsManagementService {
     private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentApprovalRepository: PaymentApprovalRepository,
     private readonly programApprovalThresholdRepository: ProgramApprovalThresholdRepository,
+    private readonly paymentEmailsService: PaymentEmailsService,
+    private readonly azureLogService: AzureLogService,
   ) {}
 
   public async createPayment({
@@ -115,6 +119,8 @@ export class PaymentsManagementService {
         paymentId,
         userId,
       });
+
+      await this.sendPendingApprovalEmails({ paymentId, programId });
 
       return bulkActionResultPaymentDto;
     } finally {
@@ -399,6 +405,12 @@ export class PaymentsManagementService {
         paymentId,
         programId,
       });
+      await this.sendApprovalConfirmationToPaymentCreator({
+        paymentId,
+        programId,
+      });
+    } else {
+      await this.sendPendingApprovalEmails({ paymentId, programId });
     }
   }
 
@@ -524,5 +536,75 @@ export class PaymentsManagementService {
         programFspConfigurationId,
       });
     }
+  }
+
+  private async sendPendingApprovalEmails({
+    paymentId,
+    programId,
+  }: {
+    paymentId: number;
+    programId: number;
+  }): Promise<void> {
+    const currentApprovalStep =
+      await this.paymentApprovalRepository.getCurrentApprovalStep({
+        paymentId,
+      });
+
+    if (!currentApprovalStep) {
+      return;
+    }
+
+    const approvers = currentApprovalStep.approverAssignments
+      .filter((assignment) => !!assignment.user.username)
+      .map((assignment) => ({
+        emailAddress: assignment.user.username!,
+        recipientName: assignment.user.displayName,
+      }));
+
+    await this.paymentEmailsService.sendApprovalRequestToNextApprovers({
+      paymentId,
+      programId,
+      approvers,
+    });
+  }
+
+  private async sendApprovalConfirmationToPaymentCreator({
+    paymentId,
+    programId,
+  }: {
+    paymentId: number;
+    programId: number;
+  }): Promise<void> {
+    const paymentCreator =
+      await this.paymentEventsService.getPaymentCreator(paymentId);
+
+    if (!paymentCreator) {
+      this.azureLogService.logError(
+        new Error(
+          `Payment creator not found for paymentId: ${paymentId}. The user might have been deleted before the payment was approved.`,
+        ),
+        true,
+      );
+      return;
+    }
+
+    // TODO: Refactor ideally username should not be nullable, but for now have a typeguard to prevent crashes
+    if (!paymentCreator.username) {
+      throw new Error('Payment creator does not have an email address');
+    }
+
+    const payment = await this.paymentRepository.findOneOrFail({
+      where: { id: Equal(paymentId) },
+    });
+
+    await this.paymentEmailsService.sendApprovalConfirmationToCreator({
+      programId,
+      paymentId,
+      paymentCreator: {
+        emailAddress: paymentCreator.username,
+        recipientName: paymentCreator.displayName,
+      },
+      paymentCreatedAt: payment.created,
+    });
   }
 }

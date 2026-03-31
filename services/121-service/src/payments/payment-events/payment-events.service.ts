@@ -7,6 +7,7 @@ import { PaymentEventEntity } from '@121-service/src/payments/payment-events/ent
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventAttributeKey } from '@121-service/src/payments/payment-events/enums/payment-event-attribute-key.enum';
 import { PaymentEventsMapper } from '@121-service/src/payments/payment-events/mappers/payment-events.mapper';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
 @Injectable()
 export class PaymentEventsService {
@@ -102,5 +103,16 @@ export class PaymentEventsService {
         },
       ],
     });
+  }
+
+  public async getPaymentCreator(
+    paymentId: number,
+  ): Promise<UserEntity | undefined> {
+    const createdEvent = await this.paymentEventRepository.findOneOrFail({
+      where: { paymentId: Equal(paymentId), type: Equal(PaymentEvent.created) },
+      relations: { user: true },
+    });
+
+    return createdEvent.user;
   }
 }

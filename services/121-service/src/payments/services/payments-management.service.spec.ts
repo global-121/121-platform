@@ -12,6 +12,7 @@ import { ProgramApprovalThresholdEntity } from '@121-service/src/programs/progra
 import { ProgramApprovalThresholdRepository } from '@121-service/src/programs/program-approval-thresholds/program-approval-threshold.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 import '@121-service/src/utils/test-helpers/matchers/httpExceptionMatcher';
 
@@ -25,6 +26,7 @@ describe('PaymentsManagementService', () => {
   let registrationsPaginationService: RegistrationsPaginationService;
   let programApprovalThresholdRepository: ProgramApprovalThresholdRepository;
   let transactionViewScopedRepository: TransactionViewScopedRepository;
+  let azureLogService: AzureLogService;
 
   const basePaymentParams = {
     userId: 1,
@@ -54,6 +56,7 @@ describe('PaymentsManagementService', () => {
     transactionViewScopedRepository = unitRef.get(
       TransactionViewScopedRepository,
     );
+    azureLogService = unitRef.get(AzureLogService);
     (service as any).paymentRepository = {
       save: jest.fn().mockImplementation((entity) => {
         return Promise.resolve({ ...entity, id: 123 });
@@ -388,7 +391,15 @@ describe('PaymentsManagementService', () => {
         id: 1,
         approved: false,
         rank: 1,
-        approverAssignments: [{ userId: 1 }],
+        approverAssignments: [
+          {
+            userId: 1,
+            user: {
+              username: 'approver@example.org',
+              displayName: 'Test Approver',
+            },
+          },
+        ],
       };
       paymentApprovalRepository.getCurrentApprovalStep.mockResolvedValue(
         currentStep,
@@ -429,12 +440,58 @@ describe('PaymentsManagementService', () => {
       const processFinalApprovalSpy = jest
         .spyOn(service as any, 'processFinalApproval')
         .mockResolvedValue(undefined);
+      jest
+        .spyOn(service as any, 'sendApprovalConfirmationToPaymentCreator')
+        .mockResolvedValue(undefined);
 
       // Act
       await service.approvePayment({ userId: 1, programId: 2, paymentId: 3 });
 
       // Assert
       expect(processFinalApprovalSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('sendApprovalConfirmationToPaymentCreator', () => {
+    it('should log error and not send confirmation email when payment creator is not found', async () => {
+      // Arrange
+      jest
+        .spyOn(paymentEventsService, 'getPaymentCreator')
+        .mockResolvedValue(undefined);
+      const logErrorSpy = jest
+        .spyOn(azureLogService, 'logError')
+        .mockImplementation(() => undefined);
+
+      // Act
+      await (service as any).sendApprovalConfirmationToPaymentCreator({
+        paymentId: 3,
+        programId: 2,
+      });
+
+      // Assert
+      expect(logErrorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: expect.stringContaining('Payment creator not found'),
+        }),
+        true,
+      );
+    });
+
+    it('should throw when payment creator has no email address', async () => {
+      // Arrange
+      jest.spyOn(paymentEventsService, 'getPaymentCreator').mockResolvedValue({
+        id: 1,
+        username: null,
+        displayName: 'No Email',
+      } as any);
+
+      // Act & Assert
+      await expect(
+        (service as any).sendApprovalConfirmationToPaymentCreator({
+          paymentId: 3,
+          programId: 2,
+        }),
+      ).rejects.toThrow('Payment creator does not have an email address');
     });
   });
 
