@@ -42,6 +42,6 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
 })
 export class ScriptsModule {}
 
-export interface InterfaceScript {
-  run: ({ isApiTests }: { isApiTests?: boolean }) => Promise<void>;
+export interface InterfaceScript<TRunParams extends { isApiTests?: boolean } = { isApiTests?: boolean }> {
+  run: (params: TRunParams) => Promise<void>;
 }
