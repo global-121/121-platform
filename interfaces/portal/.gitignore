@@ -26,6 +26,7 @@ yarn-error.log
 !.vscode/tailwind.json
 
 # Miscellaneous
+.eslintcache
 /.angular/cache
 .sass-cache/
 /connect.lock

@@ -9,3 +9,6 @@ downloads/
 # Playwright screenshots
 screenshots/
 .DS_Store
+
+# Generated assets / caches
+.eslintcache
