@@ -1,7 +1,10 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
+import { postProgram } from '@121-service/test/helpers/program.helper';
 import {
   deleteAttachment,
   getAttachment,
@@ -9,15 +12,13 @@ import {
   renameAttachment,
   uploadAttachment,
 } from '@121-service/test/helpers/program-attachments.helper';
+import { getAllUsers } from '@121-service/test/helpers/user.helper';
 import {
+  assignUserToProgram,
   getAccessToken,
   getAccessTokenScoped,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import {
-  programIdOCW,
-  programIdPV,
-} from '@121-service/test/registrations/pagination/pagination-data';
 
 const testImagePath = './test-attachment-data/sample.jpg';
 const testImageFilename = 'Test Image';
@@ -26,20 +27,61 @@ const testImageExtension = 'jpg';
 
 const testCsvPath = './test-registration-data/test-registrations-OCW.csv';
 
+const baseProgram = {
+  titlePortal: { en: 'Attachments Test Program' },
+  currency: CurrencyCode.EUR,
+};
+
 describe('Program Attachments', () => {
   let accessToken: string;
+  let kisumuUserId: number;
+  let turkanaUserId: number;
 
   beforeEach(async () => {
     await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
+
+    const allUsersResponse = await getAllUsers(accessToken);
+    const users = allUsersResponse.body as { id: number; username: string }[];
+    const userByUsername = new Map(users.map((u) => [u.username, u.id]));
+    kisumuUserId = userByUsername.get(`${DebugScope.Kisumu}@example.org`)!;
+    turkanaUserId = userByUsername.get(`${DebugScope.Turkana}@example.org`)!;
   });
+
+  async function setup({
+    enableScope = true,
+  }: { enableScope?: boolean } = {}): Promise<number> {
+    const response = await postProgram(
+      { ...baseProgram, enableScope },
+      accessToken,
+    );
+    const programId = response.body.id;
+
+    await assignUserToProgram({
+      programId,
+      userId: kisumuUserId,
+      roles: [DefaultUserRole.CvaManager],
+      scope: DebugScope.Kisumu,
+      adminAccessToken: accessToken,
+    });
+    await assignUserToProgram({
+      programId,
+      userId: turkanaUserId,
+      roles: [DefaultUserRole.CvaManager],
+      scope: DebugScope.Turkana,
+      adminAccessToken: accessToken,
+    });
+
+    return programId;
+  }
 
   it('should upload a document attachment to a program', async () => {
     // Arrange
+    const programId = await setup();
 
     // Act
     const response = await uploadAttachment({
-      programId: programIdPV,
+      programId,
       filePath: testImagePath,
       filename: testImageFilename,
       accessToken,
@@ -51,9 +93,10 @@ describe('Program Attachments', () => {
   });
 
   it('should rename an attachment in a program', async () => {
-    // Arrange - Upload a test attachment first
+    // Arrange
+    const programId = await setup();
     const uploadResponse = await uploadAttachment({
-      programId: programIdPV,
+      programId,
       filePath: testImagePath,
       filename: testImageFilename,
       accessToken,
@@ -63,7 +106,7 @@ describe('Program Attachments', () => {
     const newFilename = 'Renamed Test Image';
     // Act
     const renameResponse = await renameAttachment({
-      programId: programIdPV,
+      programId,
       attachmentId,
       newFilename,
       accessToken,
@@ -72,7 +115,7 @@ describe('Program Attachments', () => {
     expect(renameResponse.status).toBe(HttpStatus.OK);
 
     const getAttachmentResponse = await getAttachment({
-      programId: programIdPV,
+      programId,
       attachmentId,
       accessToken,
     });
@@ -86,9 +129,10 @@ describe('Program Attachments', () => {
   });
 
   it('should list all attachments for a program', async () => {
-    // Arrange - Upload a test attachment first
+    // Arrange
+    const programId = await setup();
     await uploadAttachment({
-      programId: programIdPV,
+      programId,
       filePath: testImagePath,
       filename: testImageFilename,
       accessToken,
@@ -96,26 +140,30 @@ describe('Program Attachments', () => {
 
     // Act
     const response = await getAttachments({
-      programId: programIdPV,
+      programId,
       accessToken,
     });
 
     // Assert
     expect(response.status).toBe(HttpStatus.OK);
     expect(Array.isArray(response.body)).toBe(true);
-    expect(response.body).toHaveLength(1); // Should return the uploaded attachment
+    expect(response.body).toHaveLength(1);
 
     const attachment = response.body[0];
     expect(attachment).toMatchSnapshot({
+      id: expect.any(Number),
+      programId: expect.any(Number),
       created: expect.any(String),
       updated: expect.any(String),
+      user: expect.objectContaining({ id: expect.any(Number) }),
     });
   });
 
   it('should download a specific attachment', async () => {
-    // Arrange - Upload a test attachment first
+    // Arrange
+    const programId = await setup();
     const uploadResponse = await uploadAttachment({
-      programId: programIdPV,
+      programId,
       filePath: testImagePath,
       filename: testImageFilename,
       accessToken,
@@ -125,7 +173,7 @@ describe('Program Attachments', () => {
 
     // Act
     const response = await getAttachment({
-      programId: programIdPV,
+      programId,
       attachmentId,
       accessToken,
     })
@@ -151,8 +199,10 @@ describe('Program Attachments', () => {
   });
 
   it('should delete a specific attachment', async () => {
+    // Arrange
+    const programId = await setup();
     const uploadResponse = await uploadAttachment({
-      programId: programIdPV,
+      programId,
       filePath: testImagePath,
       filename: testImageFilename,
       accessToken,
@@ -162,7 +212,7 @@ describe('Program Attachments', () => {
 
     // Act
     const deleteResponse = await deleteAttachment({
-      programId: programIdPV,
+      programId,
       attachmentId,
       accessToken,
     });
@@ -172,7 +222,7 @@ describe('Program Attachments', () => {
 
     // Verify the attachment is no longer retrievable
     const getResponse = await getAttachment({
-      programId: programIdPV,
+      programId,
       attachmentId,
       accessToken,
     });
@@ -181,9 +231,12 @@ describe('Program Attachments', () => {
   });
 
   it('should reject files with invalid mime types', async () => {
+    // Arrange
+    const programId = await setup();
+
     // Act
     const response = await uploadAttachment({
-      programId: programIdPV,
+      programId,
       filePath: testCsvPath,
       filename: 'Test CSV',
       accessToken,
@@ -194,9 +247,12 @@ describe('Program Attachments', () => {
   });
 
   it('should handle attachment not found', async () => {
+    // Arrange
+    const programId = await setup();
+
     // Act
     const response = await getAttachment({
-      programId: programIdPV,
+      programId,
       attachmentId: 999999,
       accessToken,
     });
@@ -208,12 +264,13 @@ describe('Program Attachments', () => {
   describe('Scoping', () => {
     it('should assign the uploading user scope to the attachment', async () => {
       // Arrange
+      const programId = await setup({ enableScope: true });
       const kisumuAccessToken = await getAccessTokenScoped(DebugScope.Kisumu);
       const turkanaAccessToken = await getAccessTokenScoped(DebugScope.Turkana);
 
       // Act
       const uploadResponse = await uploadAttachment({
-        programId: programIdPV,
+        programId,
         filePath: testImagePath,
         filename: testImageFilename,
         accessToken: kisumuAccessToken,
@@ -224,32 +281,33 @@ describe('Program Attachments', () => {
 
       // The uploading (Kisumu) user can see the attachment
       const kisumuListResponse = await getAttachments({
-        programId: programIdPV,
+        programId,
         accessToken: kisumuAccessToken,
       });
       expect(kisumuListResponse.body).toHaveLength(1);
 
       // A different scoped (Turkana) user cannot see the attachment
       const turkanaListResponse = await getAttachments({
-        programId: programIdPV,
+        programId,
         accessToken: turkanaAccessToken,
       });
       expect(turkanaListResponse.body).toHaveLength(0);
     });
 
     it('should return only attachments within the user scope', async () => {
-      // Arrange - upload one attachment with Kisumu scope and one with Turkana scope
+      // Arrange
+      const programId = await setup({ enableScope: true });
       const kisumuAccessToken = await getAccessTokenScoped(DebugScope.Kisumu);
       const turkanaAccessToken = await getAccessTokenScoped(DebugScope.Turkana);
 
       await uploadAttachment({
-        programId: programIdPV,
+        programId,
         filePath: testImagePath,
         filename: 'Kisumu Attachment',
         accessToken: kisumuAccessToken,
       });
       await uploadAttachment({
-        programId: programIdPV,
+        programId,
         filePath: testImagePath,
         filename: 'Turkana Attachment',
         accessToken: turkanaAccessToken,
@@ -257,7 +315,7 @@ describe('Program Attachments', () => {
 
       // Act - Kisumu user lists attachments
       const kisumuListResponse = await getAttachments({
-        programId: programIdPV,
+        programId,
         accessToken: kisumuAccessToken,
       });
 
@@ -268,12 +326,13 @@ describe('Program Attachments', () => {
     });
 
     it('should not allow a scoped user to download an attachment outside their scope', async () => {
-      // Arrange - upload attachment as Turkana user, try to download as Kisumu user
+      // Arrange
+      const programId = await setup({ enableScope: true });
       const kisumuAccessToken = await getAccessTokenScoped(DebugScope.Kisumu);
       const turkanaAccessToken = await getAccessTokenScoped(DebugScope.Turkana);
 
       const uploadResponse = await uploadAttachment({
-        programId: programIdPV,
+        programId,
         filePath: testImagePath,
         filename: testImageFilename,
         accessToken: turkanaAccessToken,
@@ -282,7 +341,7 @@ describe('Program Attachments', () => {
 
       // Act
       const response = await getAttachment({
-        programId: programIdPV,
+        programId,
         attachmentId,
         accessToken: kisumuAccessToken,
       });
@@ -292,18 +351,19 @@ describe('Program Attachments', () => {
     });
 
     it('should return all attachments regardless of scope when enableScope is false', async () => {
-      // Arrange - OCW program has enableScope: false
+      // Arrange
+      const programId = await setup({ enableScope: false });
       const kisumuAccessToken = await getAccessTokenScoped(DebugScope.Kisumu);
       const turkanaAccessToken = await getAccessTokenScoped(DebugScope.Turkana);
 
       await uploadAttachment({
-        programId: programIdOCW,
+        programId,
         filePath: testImagePath,
         filename: 'Kisumu OCW Attachment',
         accessToken: kisumuAccessToken,
       });
       await uploadAttachment({
-        programId: programIdOCW,
+        programId,
         filePath: testImagePath,
         filename: 'Turkana OCW Attachment',
         accessToken: turkanaAccessToken,
@@ -311,7 +371,7 @@ describe('Program Attachments', () => {
 
       // Act - Kisumu user lists attachments on a non-scoped program
       const listResponse = await getAttachments({
-        programId: programIdOCW,
+        programId,
         accessToken: kisumuAccessToken,
       });
 

@@ -20,10 +20,7 @@ export class RequestHelper {
     const userScope = req.user?.scope;
 
     if (userScope === undefined) {
-      throw new HttpException(
-        'User scope is not defined',
-        HttpStatus.UNAUTHORIZED,
-      );
+      throw new Error('User scope is not defined');
     }
 
     return userScope;
