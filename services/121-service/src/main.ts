@@ -112,7 +112,7 @@ function generateSwaggerSummaryJson(app: INestApplication<any>): void {
   }
 
   const document = JSON.stringify(summaryDocument, null, 2);
-  writeFileSync('swagger.json', document);
+  writeFileSync('swagger.json', document + '\n', { flag: 'w' }); // Add a newline to ensure Prettier doesn't complain.
 }
 
 async function bootstrap(): Promise<void> {
