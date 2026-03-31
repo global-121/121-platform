@@ -8,6 +8,7 @@ import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/program
 import { getAllUsers } from '@121-service/test/helpers/user.helper';
 import {
   createUser,
+  generateUniqueTestId,
   getAccessToken,
   getServer,
 } from '@121-service/test/helpers/utility.helper';
@@ -76,9 +77,7 @@ export async function createOrReplaceProgramApprovalThresholdsWithNewUser({
 }): Promise<request.Response> {
   const adminAccessToken = await getAccessToken();
 
-  const timestamp = Date.now();
-  const randomSuffix = Math.random().toString(36).substring(7);
-  const username = `threshold_admin_${timestamp}_${randomSuffix}@example.org`;
+  const username = `threshold_admin_${generateUniqueTestId()}@example.org`;
 
   await createUser({
     username,
@@ -86,7 +85,7 @@ export async function createOrReplaceProgramApprovalThresholdsWithNewUser({
     adminAccessToken,
   });
 
-  // Find the newly created user's ID
+  // Find the newly created user because we need their ID to assign them to the program and promote them to org admin
   const allUsersResponse = await getAllUsers(adminAccessToken);
   const thresholdAdminUser = allUsersResponse.body.find(
     (u: { username: string }) => u.username === username,

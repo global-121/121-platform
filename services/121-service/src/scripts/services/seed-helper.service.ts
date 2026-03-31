@@ -328,7 +328,9 @@ export class SeedHelperService {
       {
         programId,
         thresholds,
-        currentUserId: 0, // in seed the user does not matter
+        // we are using userId 0 for seeding, because the userId is not relevant in this context as this happens for none production seed scenario's only
+        // This is to prevent issues with self-assignment when the approver includes the main admin user, because the main admin user is also used to assign the approval threshold to the program
+        currentUserId: 0,
       },
     );
   }
