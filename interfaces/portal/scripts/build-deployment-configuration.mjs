@@ -3,7 +3,6 @@
  */
 
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { EOL } from 'node:os';
 import { join } from 'node:path';
 
 import { shouldBeEnabled } from './lib/env.utils.mjs';
@@ -164,6 +163,6 @@ swaConfig.globalHeaders['Content-Security-Policy'] = contentSecurityPolicyValue;
 
 // Write result
 const swaConfigFile = JSON.stringify(swaConfig, null, 2);
-writeFileSync(targetPath, swaConfigFile + EOL, { flag: 'w' }); // Add a newline to ensure Prettier doesn't complain.
+writeFileSync(targetPath, swaConfigFile + '\n', { flag: 'w' }); // Add a newline to ensure Prettier doesn't complain.
 console.info(`✅ Deployment configuration written at: ${targetPath}`);
 console.log(swaConfigFile);
