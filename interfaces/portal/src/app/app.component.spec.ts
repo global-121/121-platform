@@ -6,8 +6,8 @@ import {
   provideTanStackQuery,
   QueryClient,
 } from '@tanstack/angular-query-experimental';
-import { beforeEach, describe, expect, it } from 'vitest';
 import { MessageService } from 'primeng/api';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { AppComponent } from '~/app.component';
 import { getAppConfig } from '~/app.config';
