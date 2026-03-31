@@ -15,21 +15,23 @@ HEALTHCHECK \
   --timeout=300s \
   CMD curl --fail http://0.0.0.0:${PORT_121_SERVICE}/api/health/health || exit 1
 
+# The path-references here are considered from the repository-root, NOT the current folder!
+# See: ../docker-compose(.development).yml
+
+# Include source-code of shared packages
+COPY packages /home/packages
+
+# Include source-code of the service itself
+COPY services/121-service /home/node/app
+
 FROM base AS production
 
-COPY ./package*.json ./
-COPY ./.npmrc ./
-
 RUN npm ci
-
-COPY . .
 
 RUN npm run build
 
 CMD ["npm", "start"]
 
 FROM base AS development
-
-COPY . .
 
 CMD ["npm", "run", "start:dev"]

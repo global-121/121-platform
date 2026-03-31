@@ -23,7 +23,6 @@ export const getLinguonym = ({
     // Calling this method with invalid input will produce a RangeError.
     // We catch this and fall back to the original language code, ex: 'et_AM'.
     possibleLinguonym = names.of(languageToDisplayNameOf);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Error variable not needed.
   } catch (_) {
     // do nothing
   }

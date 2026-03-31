@@ -41,7 +41,7 @@ export class HealthController {
     return {
       schemaVersion: 1,
       label: 'build',
-      message: !!version ? version.trim() : 'n/a',
+      message: version ? version.trim() : 'n/a',
       isError: !version,
     };
   }

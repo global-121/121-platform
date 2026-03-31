@@ -100,7 +100,7 @@ export class CommercialBankEthiopiaApiService {
     // Modify the elements within cber:RMTFundtransfer
     rmtFundtransfer.elements.forEach((element) => {
       switch (element.name) {
-        case 'WebRequestCommon':
+        case 'WebRequestCommon': {
           const passwordElement = element.elements.find(
             (el) => el.name === 'password',
           );
@@ -110,7 +110,8 @@ export class CommercialBankEthiopiaApiService {
           passwordElement.elements[0].text = credentials.password;
           userNameElement.elements[0].text = credentials.username;
           break;
-        case 'FUNDSTRANSFERCBEREMITANCEType':
+        }
+        case 'FUNDSTRANSFERCBEREMITANCEType': {
           const debitAmountElement = element.elements.find(
             (el) => el.name === 'fun:DEBITAMOUNT',
           );
@@ -143,6 +144,7 @@ export class CommercialBankEthiopiaApiService {
 
           // You can modify other elements similarly
           break;
+        }
         // Handle other elements if needed
       }
     });
@@ -213,7 +215,7 @@ export class CommercialBankEthiopiaApiService {
     // Modify the elements within cber:CBERemitanceTransactionStatus
     rmtFundtransfer.elements.forEach((element) => {
       switch (element.name) {
-        case 'WebRequestCommon':
+        case 'WebRequestCommon': {
           const passwordElement = element.elements.find(
             (el) => el.name === 'password',
           );
@@ -223,7 +225,8 @@ export class CommercialBankEthiopiaApiService {
           passwordElement.elements[0].text = credentials.password;
           userNameElement.elements[0].text = credentials.username;
           break;
-        case 'ETXNSTATUSCBEREMITANCEType':
+        }
+        case 'ETXNSTATUSCBEREMITANCEType': {
           const enquiryInputElement = element.elements.find(
             (el) => el.name === 'enquiryInputCollection',
           );
@@ -237,6 +240,7 @@ export class CommercialBankEthiopiaApiService {
           criteriaValueElement.elements[0].text = payment.debitTheirRef;
           // You can modify other elements similarly
           break;
+        }
         // Handle other elements if needed
       }
     });
@@ -307,7 +311,7 @@ export class CommercialBankEthiopiaApiService {
     // Modify the elements within cber:AccountEnquiry
     rmtFundtransfer.elements.forEach((element) => {
       switch (element.name) {
-        case 'WebRequestCommon':
+        case 'WebRequestCommon': {
           const passwordElement = element.elements.find(
             (el) => el.name === 'password',
           );
@@ -317,7 +321,8 @@ export class CommercialBankEthiopiaApiService {
           passwordElement.elements[0].text = credentials.password;
           userNameElement.elements[0].text = credentials.username;
           break;
-        case 'EACCOUNTCBEREMITANCEType':
+        }
+        case 'EACCOUNTCBEREMITANCEType': {
           const enquiryInputElement = element.elements.find(
             (el) => el.name === 'enquiryInputCollection',
           );
@@ -331,6 +336,7 @@ export class CommercialBankEthiopiaApiService {
           criteriaValueElement.elements[0].text = bankAccountNumber;
           // You can modify other elements similarly
           break;
+        }
         // Handle other elements if needed
       }
     });

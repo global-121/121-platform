@@ -218,20 +218,18 @@ export class AirtelMockService {
     const generateErrorResponse = ({
       message,
       response_code,
-    }): [HttpStatus, object] => {
-      return [
-        200,
-        {
-          status: {
-            code: HttpStatus.BAD_REQUEST,
-            message,
-            response_code,
-            result_code: '521050',
-            success: false,
-          },
+    }): [HttpStatus, object] => [
+      200,
+      {
+        status: {
+          code: HttpStatus.BAD_REQUEST,
+          message,
+          response_code,
+          result_code: '521050',
+          success: false,
         },
-      ];
-    };
+      },
+    ];
 
     if (
       AirtelMockPhoneNumber.failDuplicateTransactionId ===

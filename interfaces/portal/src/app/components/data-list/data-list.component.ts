@@ -100,8 +100,8 @@ export type DataListItem = {
 export class DataListComponent {
   readonly data = input.required<DataListItem[]>();
   readonly hideBottomBorder = input<boolean>();
-  readonly dataTestId = input<string>('data-list');
-  readonly forceOneColumn = input<boolean>(false);
+  readonly dataTestId = input('data-list');
+  readonly forceOneColumn = input(false);
 
   readonly translatableStringService = inject(TranslatableStringService);
 

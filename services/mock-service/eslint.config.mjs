@@ -1,67 +1,40 @@
-import eslint from '@eslint/js';
-import eslintPluginComments from 'eslint-plugin-eslint-comments';
-import eslintPluginN from 'eslint-plugin-n';
+import { defineConfig, globalIgnores } from 'eslint/config';
+import eslintConfig121Platform from 'eslint-config-121-platform';
 import eslintPluginNoRelativePaths from 'eslint-plugin-no-relative-import-paths';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import eslintPluginRegexp from 'eslint-plugin-regexp';
-import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
-import globals from 'globals';
 import tsEslint from 'typescript-eslint';
 
-export default tsEslint.config(
+export default defineConfig(
+  globalIgnores(['dist/**', 'tmp/**', 'coverage/**']),
+  eslintConfig121Platform.configs.base,
+  eslintConfig121Platform.configs.recommended,
+  eslintConfig121Platform.configs.recommendedNext,
+  eslintConfig121Platform.configs.node,
+  eslintConfig121Platform.configs.javascript,
   {
-    languageOptions: {
-      globals: globals.node,
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-    name: 'Root config',
+    name: 'Nest.js entry point (CommonJS) file',
+    files: ['index.js'],
+    // This file is the entry point for the service, and needs to be CommonJS for now, to be able to load ts-node/register.
+    extends: [eslintConfig121Platform.configs.legacyNode],
   },
   {
-    extends: [
-      eslint.configs.recommended,
-      eslintPluginN.configs['flat/recommended'],
-      eslintPluginRegexp.configs['flat/recommended'],
-      eslintPluginPrettierRecommended,
-    ],
-    files: ['**/*.js', '**/*.mjs'],
     name: 'JavaScript files (ESM)',
-    languageOptions: {
-      ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
-      sourceType: 'module',
-    },
-    plugins: {
-      'eslint-comments': eslintPluginComments,
-    },
-    rules: {
-      'eslint-comments/no-unused-disable': 'error',
-      'eslint-comments/require-description': 'error',
-    },
+    files: ['**/*.js', '**/*.mjs'],
+    extends: [eslintPluginRegexp.configs['flat/recommended']],
   },
+  eslintConfig121Platform.configs.services,
+  eslintConfig121Platform.configs.typescript, // Needs to be AFTER `*.configs.node`; It needs to override some rules!
   {
-    name: 'JavaScript files (old, pre-ESM)',
-    files: ['**/*.js'],
-    languageOptions: {
-      sourceType: 'script',
-    },
-  },
-  {
-    extends: [
-      ...tsEslint.configs.recommended,
-      ...tsEslint.configs.stylistic,
-      eslintPluginN.configs['flat/recommended'],
-      eslintPluginRegexp.configs['flat/recommended'],
-      eslintPluginPrettierRecommended,
-    ],
-    files: ['**/*.ts'],
     name: 'TypeScript files',
+    files: ['**/*.ts'],
+    extends: [
+      tsEslint.configs.recommended,
+      tsEslint.configs.stylistic,
+      eslintPluginRegexp.configs['flat/recommended'],
+    ],
     plugins: {
-      'eslint-comments': eslintPluginComments,
       'no-relative-import-paths': eslintPluginNoRelativePaths,
       regexp: eslintPluginRegexp,
-      'simple-import-sort': eslintPluginSimpleSort,
     },
     rules: {
       '@typescript-eslint/explicit-function-return-type': [
@@ -72,23 +45,7 @@ export default tsEslint.config(
       ],
       '@typescript-eslint/interface-name-prefix': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-floating-promises': 'error',
-      '@typescript-eslint/no-misused-promises': 'error',
       '@typescript-eslint/no-parameter-properties': 'off',
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        {
-          argsIgnorePattern: '^_',
-          caughtErrors: 'none',
-          varsIgnorePattern: '^_',
-        },
-      ],
-      'eslint-comments/no-unused-disable': 'error',
-      'eslint-comments/require-description': 'error',
-      'n/no-extraneous-import': 'off', // Managed by TS
-      'n/no-missing-import': 'off', // Disabled to allow for path-aliases via tsconfig.json
-      'n/no-process-env': 'error',
-      'n/prefer-node-protocol': 'error',
       'no-relative-import-paths/no-relative-import-paths': [
         'warn',
         {
@@ -105,24 +62,6 @@ export default tsEslint.config(
               importNames: ['env'],
               message: 'Import ENV-variables from env.ts only.',
             },
-          ],
-        },
-      ],
-      'object-shorthand': 'error',
-      'prettier/prettier': ['error', { endOfLine: 'auto' }],
-      'simple-import-sort/exports': 'error',
-      'simple-import-sort/imports': [
-        'error',
-        {
-          groups: [
-            // Packages.
-            // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
-            ['^@?\\w'],
-            // Alias imports
-            ['^@mock-service'],
-            // Relative imports.
-            // Anything that starts with a dot.
-            ['^\\.'],
           ],
         },
       ],

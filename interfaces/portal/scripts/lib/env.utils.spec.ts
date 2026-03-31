@@ -1,4 +1,4 @@
-import { shouldBeEnabled } from '_env.utils.mjs';
+import { shouldBeEnabled } from 'scripts/lib/env.utils.mjs';
 import { describe, expect, it } from 'vitest';
 
 describe('Utils: shouldBeEnabled', () => {

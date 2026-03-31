@@ -46,10 +46,8 @@ export class LinkCardDialogComponent {
   readonly dialogVisible = model.required<boolean>();
 
   readonly tokenCode = model('');
-  readonly showTokenCodeInvalidWarning = signal<boolean>(false);
-  readonly linkCardDialogState = signal<LinkCardDialogStates>(
-    LinkCardDialogStates.linking,
-  );
+  readonly showTokenCodeInvalidWarning = signal(false);
+  readonly linkCardDialogState = signal(LinkCardDialogStates.linking);
 
   readonly linkCardDialogStates = LinkCardDialogStates;
 

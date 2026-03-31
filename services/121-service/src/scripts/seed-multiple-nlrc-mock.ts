@@ -17,8 +17,20 @@ import {
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
+interface SeedMultipleNLRCRunParams {
+  isApiTests: boolean;
+  powerNrRegistrationsString?: string;
+  nrPaymentsString?: string;
+  powerNrMessagesString?: string;
+  includeRegistrationEvents: boolean;
+  mockPv: boolean;
+  mockOcw: boolean;
+  seedConfig: SeedConfigurationDto;
+  approverMode: ApproverSeedMode;
+}
+
 @Injectable()
-export class SeedMultipleNLRCMockData implements InterfaceScript {
+export class SeedMultipleNLRCMockData implements InterfaceScript<SeedMultipleNLRCRunParams> {
   public constructor(
     private readonly seedMockHelper: SeedMockHelperService,
     private axiosCallsService: AxiosCallsService,
@@ -35,17 +47,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     mockOcw = true,
     seedConfig,
     approverMode,
-  }: {
-    isApiTests?: boolean;
-    powerNrRegistrationsString?: string;
-    nrPaymentsString?: string;
-    powerNrMessagesString?: string;
-    includeRegistrationEvents?: boolean;
-    mockPv?: boolean;
-    mockOcw?: boolean;
-    seedConfig?: SeedConfigurationDto;
-    approverMode: ApproverSeedMode;
-  }): Promise<void> {
+  }: SeedMultipleNLRCRunParams): Promise<void> {
     if (env.INTERSOLVE_MODE !== FspMode.mock || !env.MOCK_TWILIO) {
       throw new HttpException(
         `INTERSOLVE_MODE is not MOCK or MOCK_TWILIO is not set to true`,
@@ -63,7 +65,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     await this.seedHelper.seedData({
       seedConfig: seedConfig!,
       isApiTests,
-      approverMode,
+      approverMode: approverMode ?? ApproverSeedMode.none,
     });
 
     // 1. Set up 1 registration with 1 payment and 1 message via the API for each program

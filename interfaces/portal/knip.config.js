@@ -6,6 +6,7 @@ module.exports = {
     'primeicons',
     // Known issues with "Unused devDependencies":
     'autoprefixer',
+    'eslint-config-121-platform', // Shared config, used in eslint.config.mjs
     // Known issues with "Unlisted dependencies":
     '@angular-eslint/builder',
   ],

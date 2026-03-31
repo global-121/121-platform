@@ -64,7 +64,7 @@ export class QueryTableGlobalSearchComponent {
   readonly trackingService = inject(TrackingService);
 
   readonly globalFilterValue = input<string | undefined>();
-  readonly globalFilterVisible = model<boolean>(false);
+  readonly globalFilterVisible = model(false);
   readonly filterChange = output<string | undefined>();
 
   readonly globalFilterContainer = viewChild.required<

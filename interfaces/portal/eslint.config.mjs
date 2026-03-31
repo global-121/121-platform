@@ -1,60 +1,80 @@
 import eslint from '@eslint/js';
 import pluginQuery from '@tanstack/eslint-plugin-query';
 import angularEslint from 'angular-eslint';
+import { defineConfig, globalIgnores } from 'eslint/config';
+import eslintConfig121Platform from 'eslint-config-121-platform';
 import eslintPluginBetterTailwindcss from 'eslint-plugin-better-tailwindcss';
-import eslintPluginComments from 'eslint-plugin-eslint-comments';
 import eslintPluginNoRelativePaths from 'eslint-plugin-no-relative-import-paths';
 import eslintPluginPerfectionist from 'eslint-plugin-perfectionist';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import eslintPluginRegexp from 'eslint-plugin-regexp';
-import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
 import eslintSortClassMembers from 'eslint-plugin-sort-class-members';
-import globals from 'globals';
 import tsEslint from 'typescript-eslint';
 
-// Import custom rule
-import noFormControlUndefinedValue from './eslint-rules/no-form-control-undefined-value.js';
-import tanstackNoManualCacheInvalidation from './eslint-rules/tanstack-no-manual-cache-invalidation.js';
+import noFormControlUndefinedValue from './eslint-rules/no-form-control-undefined-value.mjs';
+import tanstackNoManualCacheInvalidation from './eslint-rules/tanstack-no-manual-cache-invalidation.mjs';
 
-// Custom rules plugin
+/** @type {import('eslint').ESLint.Plugin} */
 const customRulesPlugin = {
   rules: {
     'no-form-control-undefined-value': noFormControlUndefinedValue,
     'tanstack-no-manual-cache-invalidation': tanstackNoManualCacheInvalidation,
   },
 };
-
-export default tsEslint.config(
-  {
-    languageOptions: {
-      globals: globals.browser,
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-    name: 'Root config',
+const customRulesConfig = defineConfig({
+  plugins: {
+    'custom-rules': customRulesPlugin,
   },
+  rules: {
+    'custom-rules/no-form-control-undefined-value': 'error',
+    'custom-rules/tanstack-no-manual-cache-invalidation': 'error',
+  },
+});
+
+/* eslint-disable perfectionist/sort-objects -- Keep the config readable, by NOT sorting alphabetically automatically. */
+export default defineConfig(
+  globalIgnores(['dist/**', 'www/**', '.angular/**', 'coverage/**']),
   {
+    name: 'Specific Config file exceptions ONLY',
+    files: ['knip.config.js'],
+    // These exceptions should be minimal, until all these config-files can be converted to be ESM.
+    extends: [eslintConfig121Platform.configs.legacyNode],
+  },
+  eslintConfig121Platform.configs.base,
+  eslintConfig121Platform.configs.recommended,
+  eslintConfig121Platform.configs.recommendedNext,
+  eslintConfig121Platform.configs.javascript,
+  {
+    name: 'Build- or Config JavaScript files',
+    files: ['**/*.mjs'],
     extends: [
-      eslint.configs.recommended,
-      ...tsEslint.configs.strictTypeChecked,
-      ...tsEslint.configs.stylisticTypeChecked,
-      ...angularEslint.configs.tsRecommended,
-      ...pluginQuery.configs['flat/recommended'],
+      eslintPluginRegexp.configs['flat/recommended'],
+      eslintPluginPerfectionist.configs['recommended-natural'],
+    ],
+    plugins: {
+      regexp: eslintPluginRegexp,
+    },
+    rules: {
+      'perfectionist/sort-imports': ['off'], // Handled by `eslint-plugin-simple-import-sort` in the shared config
+    },
+  },
+  eslintConfig121Platform.configs.typescript,
+  {
+    name: 'TypeScript files',
+    files: ['**/*.ts'],
+    extends: [
+      eslintConfig121Platform.configs.browser,
+      customRulesConfig,
+      tsEslint.configs.strictTypeChecked,
+      tsEslint.configs.stylisticTypeChecked,
+      angularEslint.configs.tsRecommended,
+      pluginQuery.configs['flat/recommended'],
       eslintPluginRegexp.configs['flat/recommended'],
       eslintSortClassMembers.configs['flat/recommended'],
-      eslintPluginPrettierRecommended,
     ],
-    files: ['**/*.ts'],
-    name: 'TypeScript files',
     plugins: {
-      'custom-rules': customRulesPlugin,
-      'eslint-comments': eslintPluginComments,
       'no-relative-import-paths': eslintPluginNoRelativePaths,
       perfectionist: eslintPluginPerfectionist,
       regexp: eslintPluginRegexp,
-      'simple-import-sort': eslintPluginSimpleSort,
     },
     processor: angularEslint.processInlineTemplates,
     rules: {
@@ -79,7 +99,6 @@ export default tsEslint.config(
         },
       ],
       '@angular-eslint/no-async-lifecycle-method': ['error'],
-      '@angular-eslint/no-conflicting-lifecycle': ['error'],
       '@angular-eslint/prefer-on-push-component-change-detection': ['error'],
       '@angular-eslint/prefer-output-readonly': ['error'],
       '@angular-eslint/prefer-signals': ['error'],
@@ -87,20 +106,14 @@ export default tsEslint.config(
       '@angular-eslint/sort-lifecycle-methods': ['error'],
       '@angular-eslint/use-component-selector': ['error'],
       '@angular-eslint/use-lifecycle-interface': ['error'],
-      '@typescript-eslint/method-signature-style': 'error',
       '@typescript-eslint/no-extraneous-class': [
         'error',
         {
           allowWithDecorator: true,
         },
       ],
-      'arrow-body-style': 'error',
-      'custom-rules/no-form-control-undefined-value': 'error',
-      'custom-rules/tanstack-no-manual-cache-invalidation': 'error',
-      'eslint-comments/require-description': 'error',
-      'func-style': 'error',
+      'n/no-unsupported-features/node-builtins': ['off'], // These files are for browsers, we don't want false-positives on not-yet-supported-in-Node.js features already covered by `configs.browser`.
       'max-params': ['error', 2],
-      'no-inner-declarations': 'error',
       'no-relative-import-paths/no-relative-import-paths': [
         'error',
         {
@@ -108,41 +121,15 @@ export default tsEslint.config(
           rootDir: './src/app',
         },
       ],
-      'object-shorthand': 'error',
       'perfectionist/sort-array-includes': ['error'],
       'perfectionist/sort-enums': ['error'],
       'perfectionist/sort-intersection-types': ['error'],
       'perfectionist/sort-union-types': ['error'],
-      'prefer-arrow-callback': 'error',
-      'simple-import-sort/exports': 'error',
-      'simple-import-sort/imports': [
-        'error',
-        {
-          groups: [
-            // Angular packages.
-            ['^@angular'],
-            // Packages.
-            // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
-            ['^@?\\w'],
-            // Alias imports
-            ['^@121-service'],
-            // Local imports
-            // Anything that starts with a tilde.
-            ['^~'],
-          ],
-        },
-      ],
     },
   },
   {
-    files: ['**/app.config.ts'],
-    rules: {
-      'custom-rules/tanstack-no-manual-cache-invalidation': 'off',
-    },
-  },
-  {
-    files: ['**/*.spec.ts'],
     name: '(Unit-)test files',
+    files: ['**/*.spec.ts'],
     rules: {
       // This rule triggers for spy objects where the spied-upon method uses
       // `this`. In that case the underlying method is just not called so the
@@ -151,13 +138,12 @@ export default tsEslint.config(
     },
   },
   {
+    name: 'Component templates (HTML)',
+    files: ['src/app/**/*.html'],
     extends: [
       ...angularEslint.configs.templateRecommended,
       ...angularEslint.configs.templateAccessibility,
-      eslintPluginPrettierRecommended,
     ],
-    files: ['src/app/**/*.html'],
-    name: 'Component templates (HTML)',
     plugins: {
       'better-tailwindcss': eslintPluginBetterTailwindcss,
     },
@@ -212,6 +198,31 @@ export default tsEslint.config(
           ],
         },
       ],
+      '@angular-eslint/template/label-has-associated-control': [
+        'error',
+        {
+          controlComponents: [
+            'p-toggleSwitch',
+            'p-checkbox',
+            'p-radioButton',
+            'ng-content',
+            'app-form-error',
+          ],
+          labelComponents: [
+            {
+              inputs: [
+                'for',
+                'htmlFor',
+                'id',
+                'inputId',
+                'input-id',
+                'formControlName',
+              ],
+              selector: 'label',
+            },
+          ],
+        },
+      ],
       'better-tailwindcss/enforce-consistent-class-order': 'off', // handled by Prettier
       'better-tailwindcss/enforce-consistent-important-position': 'error',
       'better-tailwindcss/enforce-consistent-line-wrapping': 'off', // handled by Prettier
@@ -246,33 +257,14 @@ export default tsEslint.config(
     },
   },
   {
+    name: 'Browser-only JavaScript files',
+    files: ['src/**/*.js', 'src/**/*.mjs'],
     extends: [
+      eslintConfig121Platform.configs.browser,
       eslint.configs.recommended,
-      eslintPluginRegexp.configs['flat/recommended'],
-      eslintPluginPerfectionist.configs['recommended-natural'],
-      eslintPluginPrettierRecommended,
     ],
-    files: ['**/*.js', '**/*.mjs'],
-    languageOptions: {
-      ecmaVersion: 2022, // NOTE: Align with Node.js version from: `.node-version`-file
-      globals: {
-        module: 'readonly',
-        process: 'readonly',
-        require: 'readonly',
-      },
-    },
-    name: 'JavaScript files',
-    plugins: {
-      'eslint-comments': eslintPluginComments,
-      regexp: eslintPluginRegexp,
-    },
-    rules: {
-      'arrow-body-style': 'error',
-      'eslint-comments/require-description': 'error',
-      'func-style': 'error',
-      'no-inner-declarations': 'error',
-      'object-shorthand': 'error',
-      'prefer-arrow-callback': 'error',
-    },
   },
+
+  eslintConfig121Platform.configs.final, // NOTE: This needs to be last! It configures Prettier, to make sure auto-formatting works.
 );
+/* eslint-enable perfectionist/sort-objects -- Only the configs-collection needs manual sorting. */

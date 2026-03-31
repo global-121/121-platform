@@ -74,7 +74,6 @@ export class RegistrationsTableColumnService {
   getColumns(programId: Signal<number | string>) {
     return () =>
       queryOptions<QueryTableColumn<Registration>[]>({
-        // eslint-disable-next-line @tanstack/query/exhaustive-deps -- eslint is complaining about missing programId for some reason but it's wrong
         queryKey: ['RegistrationsTableColumns', programId().toString()],
         queryFn: async () => {
           const program = await this.queryClient.fetchQuery(

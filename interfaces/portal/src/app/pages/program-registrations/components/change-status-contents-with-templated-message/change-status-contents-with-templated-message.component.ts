@@ -28,7 +28,7 @@ export class ChangeStatusContentsWithTemplatedMessageComponent {
   readonly messageData = input.required<Partial<MessageInputData>>();
   readonly previewRegistration = input.required<Registration | undefined>();
   readonly enableSendMessage = input.required<boolean>();
-  readonly isMutating = input<boolean>(false);
+  readonly isMutating = input(false);
   readonly cancelChangeStatus = output();
 
   cancelClick() {

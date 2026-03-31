@@ -294,7 +294,7 @@ export class SeedHelperService {
           userIds: [adminUser.id],
         });
         break;
-      case ApproverSeedMode.demo:
+      case ApproverSeedMode.demo: {
         const approverUser = await userRepository.findOneOrFail({
           where: {
             username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_APPROVER!),
@@ -322,6 +322,7 @@ export class SeedHelperService {
           },
         );
         break;
+      }
     }
 
     await this.programApprovalThresholdsService.createOrReplaceProgramApprovalThresholds(

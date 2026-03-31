@@ -9,7 +9,7 @@ export class AzureLoggerMiddleware implements NestMiddleware {
   defaultClient: TelemetryClient;
 
   constructor() {
-    if (!!env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+    if (env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
       this.defaultClient = defaultClient;
     }
   }

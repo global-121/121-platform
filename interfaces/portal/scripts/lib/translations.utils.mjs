@@ -1,4 +1,4 @@
-import { ALL_AVAILABLE_LOCALES } from './_all_available-locales.mjs';
+import { ALL_AVAILABLE_LOCALES } from '../../_all_available-locales.mjs';
 
 /**
  * @returns {string[]} - Required language-codes

@@ -8,7 +8,8 @@
  *
  * Reference: https://tkdodo.eu/blog/automatic-query-invalidation-after-mutations
  */
-module.exports = {
+/** @type {import('eslint').Rule.RuleModule} */
+export default {
   create(context) {
     return {
       CallExpression(node) {
@@ -20,8 +21,7 @@ module.exports = {
             node.callee.property.name === 'invalidateQueries')
         ) {
           context.report({
-            message:
-              "Don't allow manual cache invalidation when using TanStack Query - rely on automatic cache management in MutationCache.",
+            messageId: 'manualInvalidation',
             node,
           });
         }
@@ -34,6 +34,10 @@ module.exports = {
       description:
         "Don't allow manual cache invalidation when using TanStack Query",
       recommended: false,
+    },
+    messages: {
+      manualInvalidation:
+        "Don't allow manual cache invalidation when using TanStack Query - rely on automatic cache management in MutationCache.",
     },
     schema: [],
     type: 'problem',

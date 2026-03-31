@@ -34,12 +34,12 @@ import { generateFieldErrors } from '~/utils/form-validation';
 })
 export class ChangeStatusContentsWithoutMessageComponent {
   readonly showAreYouSureCheckbox = input.required<boolean>();
-  readonly isMutating = input<boolean>(false);
+  readonly isMutating = input(false);
   readonly cancelChangeStatus = output();
   readonly confirmChangeStatus = output();
 
   formGroup = new FormGroup({
-    confirmAction: new FormControl<boolean>(false, {
+    confirmAction: new FormControl(false, {
       nonNullable: true,
     }),
   });

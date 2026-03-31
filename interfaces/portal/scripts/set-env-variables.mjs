@@ -1,10 +1,8 @@
-#!/usr/bin/env node
-
 import { writeFile } from 'node:fs';
 import { parseArgs } from 'node:util';
 
-import { shouldBeEnabled } from './_env.utils.mjs';
-import configFileTemplate from './src/environments/environment.ts.template.mjs';
+import configFileTemplate from '../src/environments/environment.ts.template.mjs';
+import { shouldBeEnabled } from './lib/env.utils.mjs';
 
 let targetEnv = 'production';
 

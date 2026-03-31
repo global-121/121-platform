@@ -40,7 +40,6 @@
   >
   <div class="mb-4 space-y-2">
     @for (format of ['xlsx', 'csv']; track $index) {
-      <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
       <label class="flex cursor-pointer items-center">
         <p-radioButton
           [value]="format"

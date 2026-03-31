@@ -47,10 +47,10 @@ export class MonitoringUploadFileDialogComponent {
   readonly rtlHelper = inject(RtlHelperService);
   readonly toastService = inject(ToastService);
 
-  readonly dialogVisible = model<boolean>(false);
+  readonly dialogVisible = model(false);
 
   uploadFileFormGroup = new FormGroup({
-    filename: new FormControl<string>('', {
+    filename: new FormControl('', {
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
       nonNullable: true,

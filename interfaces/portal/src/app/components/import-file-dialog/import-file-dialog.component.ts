@@ -47,7 +47,7 @@ export class ImportFileDialogComponent {
     input.required<CreateMutationResult<any, Error, any, any>>();
   readonly accept = input.required<string>();
   readonly header = input.required<string>();
-  readonly dialogVisible = model<boolean>(false);
+  readonly dialogVisible = model(false);
   readonly additionalFormGroups = input<FormGroup[]>([]);
 
   formGroup = new FormGroup({

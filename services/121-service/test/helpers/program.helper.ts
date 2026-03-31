@@ -452,9 +452,9 @@ function jsonArrayToCsv(json: object[]): string {
   const replacer = function (_key, value): string | number {
     return value === null ? '' : value;
   };
-  const csv = json.map(function (row): string {
+  const csv = json.map((row): string => {
     return columnHeaders
-      .map(function (fieldName): string {
+      .map((fieldName): string => {
         return JSON.stringify(row[fieldName], replacer);
       })
       .join(',');

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any -- this utility file was copied from SO and I couldn't figure out how to refactor away the any */
-
 /**
  * This file contains a utility to convert a DTO type from a service controller method
  * to a type that can be used in the frontend.
@@ -11,6 +9,7 @@
  * See the bottom of the file for custom utility types.
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any -- this utility file was copied from SO and I couldn't figure out how to refactor away the any */
 type IsOptional<T> = Extract<T, null | undefined> extends never ? false : true;
 type Func = (...args: any[]) => any;
 type IsFunction<T> = T extends Func ? true : false;
@@ -27,6 +26,7 @@ type IsValueType<T> = T extends
   | undefined
   ? true
   : false;
+/* eslint-enable @typescript-eslint/no-explicit-any -- Exception not required for rest of the file */
 
 type ReplaceDate<T> = T extends Date ? string : T;
 type ReplaceSet<T> = T extends Set<infer X> ? X[] : T;

@@ -60,9 +60,9 @@ export class SafaricomMockService {
       ResponseDescription: 'Accept the service request successfully.',
     };
 
-    this.sendStatusCallback(transferDto, transferResponse, mockScenario).catch(
-      (error) => console.log(error),
-    );
+    this.sendStatusCallback(transferDto, transferResponse, mockScenario)
+      // eslint-disable-next-line promise/prefer-await-to-callbacks, promise/prefer-await-to-then -- We want to log errors from the callback but not fail the main request
+      .catch((error) => console.log(error));
 
     if (mockScenario === MockScenario.callbackTooEarly) {
       await setTimeout(1000);

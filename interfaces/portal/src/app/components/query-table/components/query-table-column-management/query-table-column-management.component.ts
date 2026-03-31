@@ -54,7 +54,7 @@ export class QueryTableColumnManagementComponent<
   readonly selectedColumnsStateKey = input<string>();
   readonly resetColumnVisibility = output();
 
-  readonly formVisible = model<boolean>(false);
+  readonly formVisible = model(false);
   readonly formError = signal<string | undefined>(undefined);
 
   formGroup = new FormGroup({
