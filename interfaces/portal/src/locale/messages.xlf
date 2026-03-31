@@ -2241,6 +2241,30 @@
       <trans-unit id="641865702986102945" datatype="html">
         <source>Are you sure you want to delete this payment? This action cannot be undone.</source>
       </trans-unit>
+      <trans-unit id="1872549287181572098" datatype="html">
+        <source>Import existing registrations from your Kobo form.</source>
+      </trans-unit>
+      <trans-unit id="2715649015521712980" datatype="html">
+        <source><x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ result.aggregateImportResult.countImported }}" id="INTERPOLATION"/><x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> existing Kobo submission(s) have been imported as registrations.</source>
+      </trans-unit>
+      <trans-unit id="3984263169146923093" datatype="html">
+        <source>Error importing Kobo submissions</source>
+      </trans-unit>
+      <trans-unit id="4513666009026562086" datatype="html">
+        <source>Import existing reg.</source>
+      </trans-unit>
+      <trans-unit id="4680756702302858333" datatype="html">
+        <source>Import registrations</source>
+      </trans-unit>
+      <trans-unit id="6245136461829083125" datatype="html">
+        <source>Import existing registrations</source>
+      </trans-unit>
+      <trans-unit id="6513397897196690860" datatype="html">
+        <source>Kobo import result</source>
+      </trans-unit>
+      <trans-unit id="7722004090421135730" datatype="html">
+        <source>The system will create registrations with the status <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>New<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
