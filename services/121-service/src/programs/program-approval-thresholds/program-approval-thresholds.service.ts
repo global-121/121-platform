@@ -17,10 +17,15 @@ export class ProgramApprovalThresholdsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  public async createOrReplaceProgramApprovalThresholds(
-    programId: number,
-    thresholds: CreateProgramApprovalThresholdDto[],
-  ): Promise<GetProgramApprovalThresholdResponseDto[]> {
+  public async createOrReplaceProgramApprovalThresholds({
+    programId,
+    thresholds,
+    currentUserId,
+  }: {
+    programId: number;
+    thresholds: CreateProgramApprovalThresholdDto[];
+    currentUserId: number;
+  }): Promise<GetProgramApprovalThresholdResponseDto[]> {
     const aidworkerAssignments: ProgramAidworkerAssignmentEntity[] =
       await this.programAidworkerAssignmentRepository.find({
         where: {
@@ -28,7 +33,11 @@ export class ProgramApprovalThresholdsService {
         },
       });
 
-    await this.validateThresholds({ thresholds, aidworkerAssignments });
+    await this.validateThresholds({
+      thresholds,
+      aidworkerAssignments,
+      currentUserId,
+    });
 
     await this.dataSource.transaction(async (manager) => {
       await this.removeProgramApprovalThresholdConfiguration({
@@ -49,16 +58,32 @@ export class ProgramApprovalThresholdsService {
   private async validateThresholds({
     thresholds,
     aidworkerAssignments,
+    currentUserId,
   }: {
     thresholds: CreateProgramApprovalThresholdDto[];
     aidworkerAssignments: ProgramAidworkerAssignmentEntity[];
+    currentUserId: number;
   }): Promise<void> {
+    this.validateNoSelfApprovalAssign(thresholds, currentUserId);
     this.validateFirstThresholdIsZero(thresholds);
     this.validateUniqueThresholdAmounts(thresholds);
     this.validateThresholdsHaveApprovers(thresholds);
     this.validateUniqueApproverUserIds(thresholds);
     this.validateApproverUserIdsExist(thresholds, aidworkerAssignments);
     this.validateApproversHaveNoScope(thresholds, aidworkerAssignments);
+  }
+
+  private validateNoSelfApprovalAssign(
+    thresholds: CreateProgramApprovalThresholdDto[],
+    currentUserId: number,
+  ): void {
+    const allUserIds = thresholds.flatMap((t) => t.userIds);
+    if (allUserIds.includes(currentUserId)) {
+      throw new HttpException(
+        'You cannot assign yourself as an approver',
+        HttpStatus.FORBIDDEN,
+      );
+    }
   }
 
   private validateFirstThresholdIsZero(

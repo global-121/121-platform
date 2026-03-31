@@ -325,8 +325,11 @@ export class SeedHelperService {
     }
 
     await this.programApprovalThresholdsService.createOrReplaceProgramApprovalThresholds(
-      programId,
-      thresholds,
+      {
+        programId,
+        thresholds,
+        currentUserId: 0, // in seed the user does not matter
+      },
     );
   }
 
