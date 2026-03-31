@@ -4,6 +4,7 @@ import { Injectable, Signal } from '@angular/core';
 import { CreateKoboDto } from '@121-service/src/kobo/dtos/create-kobo.dto';
 import { KoboIntegrationResultDto } from '@121-service/src/kobo/dtos/kobo-integration-result.dto';
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
+import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import { Dto } from '~/utils/dto-type';
@@ -32,6 +33,16 @@ export class KoboApiService extends DomainApiService {
         }
         return failureCount < 3;
       },
+    });
+  }
+
+  importKoboSubmissions(programId: Signal<number | string>) {
+    return this.httpWrapperService.perform121ServiceRequest<ImportResult>({
+      method: 'PATCH',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(programId),
+        'submissions',
+      ]).join('/'),
     });
   }
 

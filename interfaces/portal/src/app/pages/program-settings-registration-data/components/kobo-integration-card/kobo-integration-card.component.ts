@@ -5,20 +5,30 @@ import {
   computed,
   inject,
   input,
+  signal,
   viewChild,
 } from '@angular/core';
 
-import { injectQuery } from '@tanstack/angular-query-experimental';
+import {
+  injectMutation,
+  injectQuery,
+} from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+
+import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { EllipsisMenuComponent } from '~/components/ellipsis-menu/ellipsis-menu.component';
+import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import {
   buildKoboFormUrl,
   isKoboIntegrated,
 } from '~/domains/kobo/kobo.helpers';
 import { KoboApiService } from '~/domains/kobo/kobo-api.service';
 import { KoboConfigurationDialogComponent } from '~/pages/program-settings-registration-data/components/kobo-configuration-dialog/kobo-configuration-dialog.component';
+import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-kobo-integration-card',
@@ -26,8 +36,12 @@ import { KoboConfigurationDialogComponent } from '~/pages/program-settings-regis
     CardWithLinkComponent,
     EllipsisMenuComponent,
     DatePipe,
+    FormDialogComponent,
     KoboConfigurationDialogComponent,
+    DialogModule,
+    ButtonModule,
   ],
+  providers: [ToastService],
   templateUrl: './kobo-integration-card.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,11 +50,16 @@ export class KoboIntegrationCardComponent {
   readonly programId = input.required<number | string>();
 
   private readonly koboApiService = inject(KoboApiService);
+  private readonly toastService = inject(ToastService);
 
   readonly koboConfigurationDialog =
     viewChild.required<KoboConfigurationDialogComponent>(
       'koboConfigurationDialog',
     );
+
+  readonly importConfirmationDialog = viewChild.required<FormDialogComponent>(
+    'importConfirmationDialog',
+  );
 
   readonly koboIntegration = injectQuery(() => ({
     ...this.koboApiService.getKoboIntegration(this.programId)(),
@@ -73,12 +92,36 @@ export class KoboIntegrationCardComponent {
     });
   });
 
+  readonly importResult = signal<ImportResult | null>(null);
+  readonly showImportResultDialog = signal(false);
+
+  readonly importExistingSubmissionsMutation = injectMutation(() => ({
+    mutationFn: () => this.koboApiService.importKoboSubmissions(this.programId),
+    onSuccess: (result) => {
+      this.importResult.set(result);
+      this.showImportResultDialog.set(true);
+    },
+    onError: () => {
+      this.toastService.showToast({
+        severity: 'error',
+        detail: $localize`Error importing Kobo submissions`,
+      });
+    },
+  }));
+
   readonly menuItems = computed<MenuItem[]>(() => [
     {
       label: $localize`Reconfigure`,
       icon: 'pi pi-pencil',
       command: () => {
         this.koboConfigurationDialog().show();
+      },
+    },
+    {
+      label: $localize`Import existing reg.`,
+      icon: 'pi pi-download',
+      command: () => {
+        this.importConfirmationDialog().show();
       },
     },
   ]);
