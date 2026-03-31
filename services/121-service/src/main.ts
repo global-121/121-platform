@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import { Request, Response } from 'express';
 import { SpelunkerModule } from 'nestjs-spelunker';
 import fs, { writeFileSync } from 'node:fs';
+import { EOL } from 'node:os';
 
 import { ApplicationModule } from '@121-service/src/app.module';
 import {
@@ -112,7 +113,7 @@ function generateSwaggerSummaryJson(app: INestApplication<any>): void {
   }
 
   const document = JSON.stringify(summaryDocument, null, 2);
-  writeFileSync('swagger.json', document);
+  writeFileSync('swagger.json', document + EOL, { flag: 'w' }); // Add a newline to ensure Prettier doesn't complain.
 }
 
 async function bootstrap(): Promise<void> {
