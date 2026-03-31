@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 
 import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/emails.const';
 import { EmailsService } from '@121-service/src/emails/emails.service';
+import { EmailDeliveryError } from '@121-service/src/emails/errors/email-delivery.error';
 import { env } from '@121-service/src/env';
 import { buildTemplateApprovalConfirmation } from '@121-service/src/payments/payment-emails/templates/approval-confirmation.template';
 import { buildTemplateApprovalRequest } from '@121-service/src/payments/payment-emails/templates/approval-request.template';
@@ -37,6 +38,9 @@ export class PaymentEmailsService {
           },
         });
       } catch (error) {
+        if (!(error instanceof EmailDeliveryError)) {
+          throw error;
+        }
         this.azureLogService.logError(
           new Error('Failed to send approval request email', { cause: error }),
           true,
@@ -71,6 +75,9 @@ export class PaymentEmailsService {
         },
       });
     } catch (error) {
+      if (!(error instanceof EmailDeliveryError)) {
+        throw error;
+      }
       this.azureLogService.logError(
         new Error('Failed to send approval confirmation email', {
           cause: error,

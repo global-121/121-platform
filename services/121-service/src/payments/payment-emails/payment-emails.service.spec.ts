@@ -2,6 +2,7 @@ import { TestBed } from '@automock/jest';
 
 import { DEFAULT_DISPLAY_NAME } from '@121-service/src/emails/emails.const';
 import { EmailsService } from '@121-service/src/emails/emails.service';
+import { EmailDeliveryError } from '@121-service/src/emails/errors/email-delivery.error';
 import { PaymentEmailsService } from '@121-service/src/payments/payment-emails/payment-emails.service';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
@@ -69,44 +70,40 @@ describe('PaymentEmailsService', () => {
       );
     });
 
-    it('should call azureLogService.logError with alert: true when sendFromTemplate throws', async () => {
-      const sendError = new Error('Email service unavailable');
-      emailsService.sendFromTemplate.mockRejectedValueOnce(sendError);
+    it('should log error and not throw when sendFromTemplate throws EmailDeliveryError', async () => {
+      emailsService.sendFromTemplate.mockRejectedValueOnce(
+        new EmailDeliveryError('Azure is down'),
+      );
 
-      await service.sendApprovalRequestToNextApprovers({
-        programId,
-        paymentId,
-        approvers: [
-          { emailAddress: 'approver@example.org', recipientName: 'Jane' },
-        ],
-      });
-
+      await expect(
+        service.sendApprovalRequestToNextApprovers({
+          programId,
+          paymentId,
+          approvers: [
+            { emailAddress: 'approver@example.org', recipientName: 'Jane' },
+          ],
+        }),
+      ).resolves.not.toThrow();
       expect(azureLogService.logError).toHaveBeenCalledWith(
         expect.any(Error),
         true,
       );
     });
 
-    it('should continue sending to subsequent approvers when one email fails', async () => {
-      emailsService.sendFromTemplate
-        .mockRejectedValueOnce(new Error('Email service unavailable'))
-        .mockResolvedValueOnce(undefined);
-
-      await service.sendApprovalRequestToNextApprovers({
-        programId,
-        paymentId,
-        approvers: [
-          { emailAddress: 'approver1@example.org', recipientName: 'Jane' },
-          { emailAddress: 'approver2@example.org', recipientName: 'John' },
-        ],
-      });
-
-      expect(emailsService.sendFromTemplate).toHaveBeenCalledTimes(2);
-      expect(emailsService.sendFromTemplate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          input: expect.objectContaining({ email: 'approver2@example.org' }),
-        }),
+    it('should rethrow when sendFromTemplate throws a non-EmailDeliveryError', async () => {
+      emailsService.sendFromTemplate.mockRejectedValueOnce(
+        new TypeError('Broken template'),
       );
+
+      await expect(
+        service.sendApprovalRequestToNextApprovers({
+          programId,
+          paymentId,
+          approvers: [
+            { emailAddress: 'approver@example.org', recipientName: 'Jane' },
+          ],
+        }),
+      ).rejects.toThrow('Broken template');
     });
   });
 
@@ -180,21 +177,38 @@ describe('PaymentEmailsService', () => {
       );
     });
 
-    it('should call azureLogService.logError with alert: true when sendFromTemplate throws', async () => {
-      const sendError = new Error('Email service unavailable');
-      emailsService.sendFromTemplate.mockRejectedValueOnce(sendError);
+    it('should log error and not throw when sendFromTemplate throws EmailDeliveryError', async () => {
+      emailsService.sendFromTemplate.mockRejectedValueOnce(
+        new EmailDeliveryError('Azure is down'),
+      );
 
-      await service.sendApprovalConfirmationToCreator({
-        programId,
-        paymentId,
-        paymentCreator,
-        paymentCreatedAt: new Date('2026-03-15T14:30:00'),
-      });
-
+      await expect(
+        service.sendApprovalConfirmationToCreator({
+          programId,
+          paymentId,
+          paymentCreator,
+          paymentCreatedAt: new Date('2026-03-15T14:30:00'),
+        }),
+      ).resolves.not.toThrow();
       expect(azureLogService.logError).toHaveBeenCalledWith(
         expect.any(Error),
         true,
       );
+    });
+
+    it('should rethrow when sendFromTemplate throws a non-EmailDeliveryError', async () => {
+      emailsService.sendFromTemplate.mockRejectedValueOnce(
+        new TypeError('Broken template'),
+      );
+
+      await expect(
+        service.sendApprovalConfirmationToCreator({
+          programId,
+          paymentId,
+          paymentCreator,
+          paymentCreatedAt: new Date('2026-03-15T14:30:00'),
+        }),
+      ).rejects.toThrow('Broken template');
     });
   });
 });

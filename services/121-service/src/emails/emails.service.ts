@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { SUPPORT_EMAIL } from '@121-service/src/emails/emails.const';
+import { EmailDeliveryError } from '@121-service/src/emails/errors/email-delivery.error';
 import { EmailData } from '@121-service/src/emails/interfaces/email-data.interface';
 import { EmailTemplate } from '@121-service/src/emails/interfaces/email-template.interface';
 import { env } from '@121-service/src/env';
@@ -47,7 +48,7 @@ export class EmailsService {
       response.status >= 200 &&
       response.status < 300;
     if (!isSuccess) {
-      throw new Error(
+      throw new EmailDeliveryError(
         `Failed to send email: HTTP ${response.status} ${response.statusText ?? ''}`.trim(),
       );
     }
