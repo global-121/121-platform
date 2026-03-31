@@ -61,14 +61,14 @@ describe('Program Attachments', () => {
       programId,
       userId: kisumuUserId,
       roles: [DefaultUserRole.CvaManager],
-      scope: DebugScope.Kisumu,
+      scope: enableScope ? DebugScope.Kisumu : undefined,
       adminAccessToken: accessToken,
     });
     await assignUserToProgram({
       programId,
       userId: turkanaUserId,
       roles: [DefaultUserRole.CvaManager],
-      scope: DebugScope.Turkana,
+      scope: enableScope ? DebugScope.Turkana : undefined,
       adminAccessToken: accessToken,
     });
 
@@ -262,39 +262,7 @@ describe('Program Attachments', () => {
   });
 
   describe('Scoping', () => {
-    it('should assign the uploading user scope to the attachment', async () => {
-      // Arrange
-      const programId = await setup({ enableScope: true });
-      const kisumuAccessToken = await getAccessTokenScoped(DebugScope.Kisumu);
-      const turkanaAccessToken = await getAccessTokenScoped(DebugScope.Turkana);
-
-      // Act
-      const uploadResponse = await uploadAttachment({
-        programId,
-        filePath: testImagePath,
-        filename: testImageFilename,
-        accessToken: kisumuAccessToken,
-      });
-
-      // Assert - upload succeeds
-      expect(uploadResponse.status).toBe(HttpStatus.CREATED);
-
-      // The uploading (Kisumu) user can see the attachment
-      const kisumuListResponse = await getAttachments({
-        programId,
-        accessToken: kisumuAccessToken,
-      });
-      expect(kisumuListResponse.body).toHaveLength(1);
-
-      // A different scoped (Turkana) user cannot see the attachment
-      const turkanaListResponse = await getAttachments({
-        programId,
-        accessToken: turkanaAccessToken,
-      });
-      expect(turkanaListResponse.body).toHaveLength(0);
-    });
-
-    it('should return only attachments within the user scope', async () => {
+    it('should only list attachments that are accessible for the user scope', async () => {
       // Arrange
       const programId = await setup({ enableScope: true });
       const kisumuAccessToken = await getAccessTokenScoped(DebugScope.Kisumu);
@@ -313,19 +281,27 @@ describe('Program Attachments', () => {
         accessToken: turkanaAccessToken,
       });
 
-      // Act - Kisumu user lists attachments
+      // Act
       const kisumuListResponse = await getAttachments({
         programId,
         accessToken: kisumuAccessToken,
       });
+      const turkanaListResponse = await getAttachments({
+        programId,
+        accessToken: turkanaAccessToken,
+      });
 
-      // Assert - Kisumu user only sees their own attachment
+      // Assert
       expect(kisumuListResponse.status).toBe(HttpStatus.OK);
       expect(kisumuListResponse.body).toHaveLength(1);
       expect(kisumuListResponse.body[0].filename).toContain('Kisumu');
+
+      expect(turkanaListResponse.status).toBe(HttpStatus.OK);
+      expect(turkanaListResponse.body).toHaveLength(1);
+      expect(turkanaListResponse.body[0].filename).toContain('Turkana');
     });
 
-    it('should not allow a scoped user to download an attachment outside their scope', async () => {
+    it('should only download attachments that are accessible for the user scope', async () => {
       // Arrange
       const programId = await setup({ enableScope: true });
       const kisumuAccessToken = await getAccessTokenScoped(DebugScope.Kisumu);
@@ -340,14 +316,84 @@ describe('Program Attachments', () => {
       const attachmentId = uploadResponse.body.id;
 
       // Act
-      const response = await getAttachment({
+      const inScopeResponse = await getAttachment({
+        programId,
+        attachmentId,
+        accessToken: turkanaAccessToken,
+      });
+      const outOfScopeResponse = await getAttachment({
         programId,
         attachmentId,
         accessToken: kisumuAccessToken,
       });
 
       // Assert
-      expect(response.status).toBe(HttpStatus.NOT_FOUND);
+      expect(inScopeResponse.status).toBe(HttpStatus.OK);
+      expect(outOfScopeResponse.status).toBe(HttpStatus.NOT_FOUND);
+    });
+
+    it('should only rename attachments that are accessible for the user scope', async () => {
+      // Arrange
+      const programId = await setup({ enableScope: true });
+      const kisumuAccessToken = await getAccessTokenScoped(DebugScope.Kisumu);
+      const turkanaAccessToken = await getAccessTokenScoped(DebugScope.Turkana);
+
+      const uploadResponse = await uploadAttachment({
+        programId,
+        filePath: testImagePath,
+        filename: testImageFilename,
+        accessToken: turkanaAccessToken,
+      });
+      const attachmentId = uploadResponse.body.id;
+
+      // Act
+      const inScopeResponse = await renameAttachment({
+        programId,
+        attachmentId,
+        newFilename: 'Renamed by Turkana',
+        accessToken: turkanaAccessToken,
+      });
+      const outOfScopeResponse = await renameAttachment({
+        programId,
+        attachmentId,
+        newFilename: 'Renamed by Kisumu',
+        accessToken: kisumuAccessToken,
+      });
+
+      // Assert
+      expect(inScopeResponse.status).toBe(HttpStatus.OK);
+      expect(outOfScopeResponse.status).toBe(HttpStatus.NOT_FOUND);
+    });
+
+    it('should only delete attachments that are accessible for the user scope', async () => {
+      // Arrange
+      const programId = await setup({ enableScope: true });
+      const kisumuAccessToken = await getAccessTokenScoped(DebugScope.Kisumu);
+      const turkanaAccessToken = await getAccessTokenScoped(DebugScope.Turkana);
+
+      const uploadResponse = await uploadAttachment({
+        programId,
+        filePath: testImagePath,
+        filename: testImageFilename,
+        accessToken: turkanaAccessToken,
+      });
+      const attachmentId = uploadResponse.body.id;
+
+      // Act
+      const outOfScopeResponse = await deleteAttachment({
+        programId,
+        attachmentId,
+        accessToken: kisumuAccessToken,
+      });
+      const inScopeResponse = await deleteAttachment({
+        programId,
+        attachmentId,
+        accessToken: turkanaAccessToken,
+      });
+
+      // Assert
+      expect(outOfScopeResponse.status).toBe(HttpStatus.NOT_FOUND);
+      expect(inScopeResponse.status).toBe(HttpStatus.NO_CONTENT);
     });
 
     it('should return all attachments regardless of scope when enableScope is false', async () => {
@@ -359,25 +405,25 @@ describe('Program Attachments', () => {
       await uploadAttachment({
         programId,
         filePath: testImagePath,
-        filename: 'Kisumu OCW Attachment',
+        filename: 'Kisumu Attachment',
         accessToken: kisumuAccessToken,
       });
       await uploadAttachment({
         programId,
         filePath: testImagePath,
-        filename: 'Turkana OCW Attachment',
+        filename: 'Turkana Attachment',
         accessToken: turkanaAccessToken,
       });
 
-      // Act - Kisumu user lists attachments on a non-scoped program
-      const listResponse = await getAttachments({
+      // Act
+      const kisumuListResponse = await getAttachments({
         programId,
         accessToken: kisumuAccessToken,
       });
 
-      // Assert - all attachments visible because enableScope is false
-      expect(listResponse.status).toBe(HttpStatus.OK);
-      expect(listResponse.body).toHaveLength(2);
+      // Assert
+      expect(kisumuListResponse.status).toBe(HttpStatus.OK);
+      expect(kisumuListResponse.body).toHaveLength(2);
     });
   });
 });
