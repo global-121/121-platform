@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   HttpCode,
   HttpStatus,
@@ -7,7 +8,8 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/services/mtn.service';
+import { CreateTransferDto } from '@121-service/src/fsp-integrations/integrations/mtn/dtos/create-transfer.dto';
+import { MtnService } from '@121-service/src/fsp-integrations/integrations/mtn/mtn.service';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 
@@ -21,8 +23,7 @@ export class MtnController {
     isAdmin: true,
   })
   @ApiOperation({
-    summary:
-      'Create a disbursement transfer via the MTN MoMo API. Uses a hardcoded payload for mock/testing purposes.',
+    summary: 'Create a disbursement transfer via the MTN MoMo API.',
   })
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
@@ -30,7 +31,9 @@ export class MtnController {
   })
   @HttpCode(HttpStatus.ACCEPTED)
   @Post('fsps/mtn/transfer')
-  public async createTransfer(): Promise<void> {
-    await this.mtnService.createTransfer();
+  public async createTransfer(
+    @Body() createTransferDto: CreateTransferDto,
+  ): Promise<void> {
+    await this.mtnService.createTransfer(createTransferDto);
   }
 }

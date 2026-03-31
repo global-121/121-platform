@@ -4,6 +4,7 @@ import { COOPERATIVE_BANK_OF_OROMIA_ENV_VARIABLE_SETTINGS } from '@121-service/s
 import { EXCEL_ENV_VARIABLE_SETTINGS } from '@121-service/src/fsp-integrations/settings/excel/excel-env-variable-settings.const';
 import { INTERSOLVE_VISA_ENV_VARIABLE_SETTINGS } from '@121-service/src/fsp-integrations/settings/intersolve-visa/intersolve-visa-env-variable-settings.const';
 import { INTERSOLVE_VOUCHER_ENV_VARIABLE_SETTINGS } from '@121-service/src/fsp-integrations/settings/intersolve-voucher/intersolve-voucher-env-variable-settings.const';
+import { MTN_ENV_VARIABLE_SETTINGS } from '@121-service/src/fsp-integrations/settings/mtn/mtn-env-variable-settings.const';
 import { NEDBANK_ENV_VARIABLE_SETTINGS } from '@121-service/src/fsp-integrations/settings/nedbank/nedbank-env-variable-settings.const';
 import { ONAFRIQ_ENV_VARIABLE_SETTINGS } from '@121-service/src/fsp-integrations/settings/onafriq/onafriq-env-variable-settings.const';
 import { SAFARICOM_ENV_VARIABLE_SETTINGS } from '@121-service/src/fsp-integrations/settings/safaricom/safaricom-env-variable-settings.const';
@@ -39,4 +40,5 @@ export const FSP_ENV_VARIABLE_SETTINGS: FspEnvVariableSettingsRecord = {
   [Fsps.nedbank]: NEDBANK_ENV_VARIABLE_SETTINGS,
   [Fsps.onafriq]: ONAFRIQ_ENV_VARIABLE_SETTINGS,
   [Fsps.safaricom]: SAFARICOM_ENV_VARIABLE_SETTINGS,
+  [Fsps.mtn]: MTN_ENV_VARIABLE_SETTINGS,
 };
