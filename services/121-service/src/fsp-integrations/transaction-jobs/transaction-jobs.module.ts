@@ -20,6 +20,7 @@ import { TransactionJobsExcelService } from '@121-service/src/fsp-integrations/t
 import { TransactionJobsHelperService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-helper.service';
 import { TransactionJobsIntersolveVisaService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-intersolve-visa.service';
 import { TransactionJobsIntersolveVoucherService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-intersolve-voucher.service';
+import { TransactionJobsMtnService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-mtn.service';
 import { TransactionJobsNedbankService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-nedbank.service';
 import { TransactionJobsOnafriqService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-onafriq.service';
 import { TransactionJobsSafaricomService } from '@121-service/src/fsp-integrations/transaction-jobs/services/transaction-jobs-safaricom.service';
@@ -85,6 +86,7 @@ const transactionJobProcessors = [
     TransactionJobsIntersolveVoucherService,
     TransactionJobsOnafriqService,
     TransactionJobsCommercialBankEthiopiaService,
+    TransactionJobsMtnService,
     TransactionJobsExcelService,
     createScopedRepositoryProvider(OnafriqTransactionEntity),
     TransactionEventsScopedRepository,
