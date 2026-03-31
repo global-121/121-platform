@@ -169,6 +169,7 @@ describe('QueryTableComponent', () => {
     getItemSpy.mockClear();
     setItemSpy.mockClear();
     localStorage.clear();
+    // NOTE: Necessary to `await` the compilation of the QueryTableComponent(s), as there is a `@defer`-block in the template
     await TestBed.configureTestingModule({
       imports: [
         QueryTableComponent,

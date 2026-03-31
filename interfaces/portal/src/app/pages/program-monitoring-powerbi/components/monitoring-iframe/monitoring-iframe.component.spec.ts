@@ -21,10 +21,10 @@ describe('DashboardIframeComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
   let testHost: TestHostComponent;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [DashboardIframeComponent, TestHostComponent],
-    });
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);
     testHost = fixture.componentInstance;
