@@ -99,7 +99,6 @@ updates:
           - '@angular*'
           - 'primeng'
           - 'typescript'
-          - 'zone.js'
           - '*eslint*'
           - '*prettier*'
       AzureMSAL:
@@ -112,7 +111,6 @@ updates:
           - '@angular*'
           - 'primeng'
           - 'typescript'
-          - 'zone.js'
           - '@azure/msal*'
           - '*eslint*'
           - '*prettier*'
