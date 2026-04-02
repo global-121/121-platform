@@ -101,7 +101,7 @@ describe('Payment in progress', () => {
   );
 
   beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB(SeedScript.nlrcMultiple);
 
     accessToken = await getAccessToken();
 

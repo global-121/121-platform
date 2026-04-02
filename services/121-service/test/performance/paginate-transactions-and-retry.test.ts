@@ -39,7 +39,7 @@ describe('Retry payment for 100k registrations with Safaricom within expected ra
     registration.phoneNumber = '254000000000'; // Fail number to force retry
 
     // Arrange
-    await resetDB(SeedScript.safaricomProgram, __filename);
+    await resetDB(SeedScript.safaricomProgram);
     accessToken = await getAccessToken();
     // Upload registration
     const paymentId = await seedPaidRegistrations({

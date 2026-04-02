@@ -24,7 +24,7 @@ describe('Delete payment', () => {
   let accessToken: string;
 
   beforeAll(async () => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
     await seedIncludedRegistrations([registrationPV5], programId, accessToken);
   });

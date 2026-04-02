@@ -64,7 +64,7 @@ describe('Process incoming Kobo submission via webhook', () => {
   let accessToken: string;
 
   beforeAll(async () => {
-    await resetDB(SeedScript.productionInitialState, __filename);
+    await resetDB(SeedScript.productionInitialState);
     accessToken = await getAccessToken();
   });
 

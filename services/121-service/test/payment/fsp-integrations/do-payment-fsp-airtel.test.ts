@@ -24,7 +24,7 @@ const transferValue = 200;
 describe('Do payment with FSP: Airtel', () => {
   let accessToken: string;
   beforeAll(async () => {
-    await resetDB(SeedScript.airtelProgram, __filename);
+    await resetDB(SeedScript.airtelProgram);
     accessToken = await getAccessToken();
   });
 

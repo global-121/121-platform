@@ -31,7 +31,6 @@ describe('Mock registrations', () => {
     const includeRegistrationEvents = true;
     await resetDB(
       SeedScript.nlrcMultipleMock,
-      __filename,
       includeRegistrationEvents,
     );
     accessToken = await getAccessToken();

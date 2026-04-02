@@ -37,7 +37,7 @@ describe('Programs / Users / Roles', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.testMultiple, __filename);
+    await resetDB(SeedScript.testMultiple);
     accessToken = await getAccessToken();
   });
 

@@ -22,7 +22,6 @@ describe('Seed with different approverMode options', () => {
     // Act
     await resetDB(
       SeedScript.nlrcMultiple,
-      __filename,
       undefined,
       ApproverSeedMode.admin,
     );
@@ -44,7 +43,6 @@ describe('Seed with different approverMode options', () => {
     // Act
     await resetDB(
       SeedScript.nlrcMultiple,
-      __filename,
       undefined,
       ApproverSeedMode.none,
     );
@@ -63,7 +61,6 @@ describe('Seed with different approverMode options', () => {
     // Act
     await resetDB(
       SeedScript.nlrcMultiple,
-      __filename,
       undefined,
       ApproverSeedMode.demo,
     );
@@ -87,7 +84,7 @@ describe('Seed with different approverMode options', () => {
 
   it('should default to admin approvers (on development) if no mode is provided', async () => {
     // Act
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB(SeedScript.nlrcMultiple);
 
     // Assert
     for (const programId of [programIdOCW, programIdPV]) {

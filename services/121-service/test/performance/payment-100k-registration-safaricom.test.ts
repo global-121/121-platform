@@ -46,7 +46,7 @@ describe('Do payment for 100k registrations with Safaricom within expected range
   it('Setup and do payment', async () => {
     // Arrange
     const startTime = Date.now();
-    await resetDB(SeedScript.safaricomProgram, __filename);
+    await resetDB(SeedScript.safaricomProgram);
     accessToken = await getAccessToken();
     // Upload registration
     const importRegistrationResponse = await importRegistrations(

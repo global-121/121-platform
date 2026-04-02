@@ -33,7 +33,7 @@ describe('Get registration events', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
 
     await importRegistrations(

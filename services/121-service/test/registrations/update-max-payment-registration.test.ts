@@ -24,7 +24,7 @@ describe('Update maxPayments of PA', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
 
     const registration = Object.assign(

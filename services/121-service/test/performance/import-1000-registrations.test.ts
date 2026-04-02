@@ -33,7 +33,7 @@ describe(`Import ${registrationCount} registrations`, () => {
 
   it(`Should import ${registrationCount} registrations with successful status`, async () => {
     // Arrange
-    await resetDB(SeedScript.testMultiple, __filename);
+    await resetDB(SeedScript.testMultiple);
     accessToken = await getAccessToken();
 
     let importPath = csvFilePath;

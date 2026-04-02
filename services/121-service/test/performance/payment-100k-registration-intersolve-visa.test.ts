@@ -44,7 +44,7 @@ describe('Do payment for 100k registrations with Intersolve within expected rang
   it('Setup and do payment', async () => {
     // Arrange
     const startTime = Date.now();
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
     // Upload registration
     const importRegistrationResponse = await importRegistrations(

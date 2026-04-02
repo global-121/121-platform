@@ -35,7 +35,7 @@ describe('Get paginated registrations events', () => {
     /////////////
     // Arrange //
     /////////////
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
 
     // Import 1 registration

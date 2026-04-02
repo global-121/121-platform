@@ -50,7 +50,7 @@ describe('Do payment retry', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(seedScript, __filename);
+    await resetDB(seedScript);
     accessToken = await getAccessToken();
   });
 

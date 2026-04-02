@@ -35,7 +35,7 @@ describe('Find duplicates in 100k registrations within expected range', () => {
   it('Should find duplicates within time threshold', async () => {
     // Arrange
     const startTime = Date.now();
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
     // Upload registration
     const importRegistrationResponse = await importRegistrations(

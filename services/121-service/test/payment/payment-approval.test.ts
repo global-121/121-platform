@@ -48,7 +48,6 @@ async function setupPaymentApprovalTest({
 }): Promise<void> {
   await resetDB(
     SeedScript.nlrcMultiple,
-    __filename,
     false,
     ApproverSeedMode.none,
   );

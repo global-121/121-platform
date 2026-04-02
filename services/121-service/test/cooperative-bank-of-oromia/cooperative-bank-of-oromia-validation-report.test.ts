@@ -44,7 +44,7 @@ describe('Validate cooperative bank of oromia accounts', () => {
   };
 
   beforeAll(async () => {
-    await resetDB(SeedScript.cooperativeBankOfOromiaProgram, __filename);
+    await resetDB(SeedScript.cooperativeBankOfOromiaProgram);
     accessToken = await getAccessToken();
   });
 

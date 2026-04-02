@@ -24,7 +24,7 @@ describe('Export transactions', () => {
   const transferValue = 15;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.safaricomProgram, __filename);
+    await resetDB(SeedScript.safaricomProgram);
     accessToken = await getAccessToken();
   });
 

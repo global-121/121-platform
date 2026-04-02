@@ -28,7 +28,6 @@ describe('Program Approval Thresholds', () => {
   beforeAll(async () => {
     await resetDB(
       SeedScript.nlrcMultiple,
-      __filename,
       false,
       ApproverSeedMode.none,
     );

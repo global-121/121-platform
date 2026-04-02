@@ -27,9 +27,16 @@ export function getMockServer(): TestAgent<request.Test> {
   return request.agent(`${env.MOCK_SERVICE_URL}/api`);
 }
 
+function getCallerFilePath(): string {
+  const stack = new Error().stack ?? '';
+  // Stack: [0] Error, [1] getCallerFilePath, [2] caller of this function, [3] actual caller we want
+  const callerLine = stack.split('\n')[3];
+  const match = callerLine?.match(/\((.+?):\d+:\d+\)/);
+  return match ? match[1] : 'unknown';
+}
+
 export function resetDB(
   seedScript: SeedScript,
-  resetIdentifier: string,
   includeRegistrationEvents = false,
   approverMode?: ApproverSeedMode,
 ): Promise<request.Response> {
@@ -39,7 +46,7 @@ export function resetDB(
       script: seedScript,
       isApiTests: true,
       includeRegistrationEvents,
-      resetIdentifier,
+      resetIdentifier: getCallerFilePath(),
       approverMode,
     })
     .send({

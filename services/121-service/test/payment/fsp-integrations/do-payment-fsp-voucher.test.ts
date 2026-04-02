@@ -43,7 +43,7 @@ describe('Do payment to 1 PA', () => {
 
   describe('with FSP: Intersolve Voucher WhatsApp', () => {
     beforeEach(async () => {
-      await resetDB(SeedScript.nlrcMultiple, __filename);
+      await resetDB(SeedScript.nlrcMultiple);
       accessToken = await getAccessToken();
       registrationAhCopy = { ...registrationAh };
     });

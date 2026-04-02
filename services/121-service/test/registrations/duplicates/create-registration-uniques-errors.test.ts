@@ -25,7 +25,7 @@ describe('Unsuccessfully mark registrations as unique from each other', () => {
   let accessToken: string;
 
   beforeAll(async () => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
     registration1.phoneNumber = '1234567890';
     registration2.phoneNumber = '1234567890';

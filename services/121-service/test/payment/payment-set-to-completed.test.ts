@@ -25,7 +25,7 @@ describe('Set registration to completed after payment', () => {
   const transferValue = 25;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
   });
 

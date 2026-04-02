@@ -36,7 +36,7 @@ describe('Measure performance during payment', () => {
   it('Setup and do payment', async () => {
     // Arrange
     const startTime = Date.now();
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
     // Upload registration
     const importRegistrationResponse = await seedRegistrationsWithStatus(

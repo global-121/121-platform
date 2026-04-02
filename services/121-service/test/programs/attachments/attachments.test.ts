@@ -25,7 +25,7 @@ describe('Program Attachments', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB(SeedScript.nlrcMultiple);
     accessToken = await getAccessToken();
   });
 

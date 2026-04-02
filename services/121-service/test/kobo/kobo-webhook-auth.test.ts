@@ -45,7 +45,7 @@ describe('Kobo webhook Basic auth guard', () => {
   let accessToken: string;
 
   beforeAll(async () => {
-    await resetDB(SeedScript.productionInitialState, __filename);
+    await resetDB(SeedScript.productionInitialState);
     accessToken = await getAccessToken();
   });
 

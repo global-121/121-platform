@@ -31,7 +31,7 @@ let accessToken: string;
 
 it('Export 100K+ registrations', async () => {
   // Arrange
-  await resetDB(SeedScript.nlrcMultiple, __filename);
+  await resetDB(SeedScript.nlrcMultiple);
   accessToken = await getAccessToken();
   // Upload registration
   const importRegistrationResponse = await importRegistrations(
