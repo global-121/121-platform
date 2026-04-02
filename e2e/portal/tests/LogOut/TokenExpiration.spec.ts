@@ -6,7 +6,9 @@ import { resetDB } from '@121-service/test/helpers/utility.helper';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 
 test.beforeEach(async () => {
-  await resetDB(SeedScript.testMultiple, __filename);
+  await resetDB({
+    seedScript: SeedScript.testMultiple,
+  });
 });
 
 test('User is redirected to login when token expires', async ({ page }) => {

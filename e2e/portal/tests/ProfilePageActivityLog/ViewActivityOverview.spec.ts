@@ -40,7 +40,9 @@ let accessTokenAdmin: string;
 
 // Arrange
 test.beforeEach(async () => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
+  await resetDB({
+    seedScript: SeedScript.nlrcMultiple,
+  });
 
   accessTokenAdmin = await getAccessToken();
   await seedPaidRegistrations({

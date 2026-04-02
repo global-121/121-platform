@@ -58,7 +58,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
     await waitFor(2_000);
   });

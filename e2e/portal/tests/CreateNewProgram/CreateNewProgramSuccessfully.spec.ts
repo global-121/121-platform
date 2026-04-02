@@ -28,7 +28,9 @@ const programInfo = {
 };
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.testMultiple, __filename);
+  await resetDB({
+    seedScript: SeedScript.testMultiple,
+  });
 
   // Login
   const loginPage = new LoginPage(page);

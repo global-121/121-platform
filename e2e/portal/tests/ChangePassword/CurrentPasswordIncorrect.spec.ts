@@ -9,7 +9,9 @@ import HomePage from '@121-e2e/portal/pages/HomePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.testMultiple, __filename);
+  await resetDB({
+    seedScript: SeedScript.testMultiple,
+  });
 
   // Login
   const loginPage = new LoginPage(page);

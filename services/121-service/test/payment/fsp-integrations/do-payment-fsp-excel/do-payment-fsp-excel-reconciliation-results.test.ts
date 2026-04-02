@@ -42,7 +42,7 @@ describe('Do payment with Excel FSP', () => {
 
   const matchColumn = FspAttributes.phoneNumber;
   beforeEach(async () => {
-    await resetDB(SeedScript.testMultiple, __filename);
+    await resetDB({ seedScript: SeedScript.testMultiple });
     accessToken = await getAccessToken();
   });
 

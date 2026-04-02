@@ -33,7 +33,7 @@ describe('Metric export list', () => {
   let adminAccessToken: string;
 
   beforeAll(async () => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
 
     adminAccessToken = await getAccessToken();
     await importRegistrations(programIdOCW, registrationsOCW, adminAccessToken);

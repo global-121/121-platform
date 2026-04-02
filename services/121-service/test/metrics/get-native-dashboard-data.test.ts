@@ -61,7 +61,7 @@ const seedPayment = async () => {
 };
 
 beforeEach(async () => {
-  await resetDB(SeedScript.nlrcMultiple, __filename); // beforeEach to ensure no payments exist before each test
+  await resetDB({ seedScript: SeedScript.nlrcMultiple }); // beforeEach to ensure no payments exist before each test
   accessToken = await getAccessToken();
 });
 

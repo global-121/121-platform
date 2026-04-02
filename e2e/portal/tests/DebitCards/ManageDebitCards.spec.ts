@@ -23,7 +23,9 @@ const programId = 3;
 let registrationId: number;
 let accessToken: string;
 test.beforeEach(async () => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
+  await resetDB({
+    seedScript: SeedScript.nlrcMultiple,
+  });
 
   accessToken = await getAccessToken();
 });

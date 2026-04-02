@@ -22,7 +22,7 @@ describe('Update registration data of registration with visa customer', () => {
   beforeEach(async () => {
     registrationVisaCopy = { ...registrationVisa };
     registrationVisaCopy.referenceId = `test-reg-${Date.now()}`; // Make sure referenceId is unique for each test run this is useful when testing with the intersolve acceptance server. So running the tests with INTERSOLVE_MODE=EXTERNAL
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
     await waitFor(2_000);
   });

@@ -27,7 +27,7 @@ describe('Reconciliate excel FSP data', () => {
 
   // No need to reset DB before each test
   beforeAll(async () => {
-    await resetDB(SeedScript.testMultiple, __filename);
+    await resetDB({ seedScript: SeedScript.testMultiple });
 
     await seedPaidRegistrations({
       registrations: registrationsWesteros,

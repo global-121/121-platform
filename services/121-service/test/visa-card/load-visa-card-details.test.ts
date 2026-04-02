@@ -31,7 +31,7 @@ describe('Load Visa debit cards and details', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
     await waitFor(2_000);
   });

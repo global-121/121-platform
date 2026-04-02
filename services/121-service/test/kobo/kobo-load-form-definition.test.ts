@@ -59,7 +59,7 @@ describe('Import a Kobo form definition', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.productionInitialState, __filename);
+    await resetDB({ seedScript: SeedScript.productionInitialState });
     accessToken = await getAccessToken();
   });
 

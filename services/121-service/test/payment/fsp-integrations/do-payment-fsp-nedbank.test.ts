@@ -48,7 +48,7 @@ describe('Do payment', () => {
     let accessToken: string;
 
     beforeEach(async () => {
-      await resetDB(SeedScript.nedbankProgram, __filename);
+      await resetDB({ seedScript: SeedScript.nedbankProgram });
       accessToken = await getAccessToken();
     });
 

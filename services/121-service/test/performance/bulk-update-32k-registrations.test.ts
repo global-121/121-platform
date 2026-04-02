@@ -33,7 +33,7 @@ describe('Bulk update 32k registrations', () => {
 
   it('Should import 32k registrations within time threshold', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
     // Upload registration
     const importRegistrationResponse = await importRegistrations(

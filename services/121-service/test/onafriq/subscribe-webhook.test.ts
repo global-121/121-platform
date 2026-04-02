@@ -13,7 +13,7 @@ describe('Subscribe webhook', () => {
 
   it('should successfully subscribe webhook', async () => {
     // Arrange
-    await resetDB(SeedScript.onafriqProgram, __filename);
+    await resetDB({ seedScript: SeedScript.onafriqProgram });
     accessToken = await getAccessToken();
 
     // Act
@@ -27,7 +27,7 @@ describe('Subscribe webhook', () => {
   it('should fail when no onafriq program fsp config properties are found', async () => {
     // Arrange
     // Simulate this by loading another program
-    await resetDB(SeedScript.safaricomProgram, __filename);
+    await resetDB({ seedScript: SeedScript.safaricomProgram });
     accessToken = await getAccessToken();
 
     // Act

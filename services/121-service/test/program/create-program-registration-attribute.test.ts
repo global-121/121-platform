@@ -34,7 +34,7 @@ describe('Create program', () => {
   };
 
   beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
   });
 

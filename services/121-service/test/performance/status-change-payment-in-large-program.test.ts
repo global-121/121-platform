@@ -44,7 +44,7 @@ describe('Status Change Payment In Large Program', () => {
 
   it('Should create program with many attributes update registration status and do payment', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
     // Add 50 attributes to generate bigger load
     for (let i = 0; i < 50; i++) {

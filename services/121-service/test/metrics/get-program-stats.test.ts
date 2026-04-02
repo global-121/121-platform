@@ -24,7 +24,7 @@ describe('Get program stats', () => {
   const transferValue = 50;
 
   beforeAll(async () => {
-    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
   });
 
