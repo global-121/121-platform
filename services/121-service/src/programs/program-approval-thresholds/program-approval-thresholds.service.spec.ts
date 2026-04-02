@@ -36,6 +36,25 @@ describe('ProgramApprovalThresholdsService', () => {
   });
 
   describe('createOrReplaceProgramApprovalThresholds', () => {
+    const currentUserId = 99;
+
+    it('should throw when the current user assigns themselves as approver', async () => {
+      // Arrange
+      const thresholds: CreateProgramApprovalThresholdDto[] = [
+        { thresholdAmount: 0, userIds: [1, currentUserId] },
+        { thresholdAmount: 100, userIds: [2] },
+      ];
+
+      // Act & Assert
+      await expect(
+        service.createOrReplaceProgramApprovalThresholds({
+          programId,
+          thresholds,
+          currentUserId,
+        }),
+      ).rejects.toBeHttpExceptionWithStatus(HttpStatus.FORBIDDEN);
+    });
+
     it('should throw when no threshold with amount 0 is provided', async () => {
       // Arrange
       const thresholds: CreateProgramApprovalThresholdDto[] = [
@@ -45,7 +64,11 @@ describe('ProgramApprovalThresholdsService', () => {
 
       // Act & Assert
       await expect(
-        service.createOrReplaceProgramApprovalThresholds(programId, thresholds),
+        service.createOrReplaceProgramApprovalThresholds({
+          programId,
+          thresholds,
+          currentUserId,
+        }),
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
     });
 
@@ -58,7 +81,11 @@ describe('ProgramApprovalThresholdsService', () => {
 
       // Act & Assert
       await expect(
-        service.createOrReplaceProgramApprovalThresholds(programId, thresholds),
+        service.createOrReplaceProgramApprovalThresholds({
+          programId,
+          thresholds,
+          currentUserId,
+        }),
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
     });
 
@@ -71,7 +98,11 @@ describe('ProgramApprovalThresholdsService', () => {
 
       // Act & Assert
       await expect(
-        service.createOrReplaceProgramApprovalThresholds(programId, thresholds),
+        service.createOrReplaceProgramApprovalThresholds({
+          programId,
+          thresholds,
+          currentUserId,
+        }),
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
     });
 
@@ -84,7 +115,11 @@ describe('ProgramApprovalThresholdsService', () => {
 
       // Act & Assert
       await expect(
-        service.createOrReplaceProgramApprovalThresholds(programId, thresholds),
+        service.createOrReplaceProgramApprovalThresholds({
+          programId,
+          thresholds,
+          currentUserId,
+        }),
       ).rejects.toBeHttpExceptionWithStatus(HttpStatus.BAD_REQUEST);
     });
   });

@@ -4,7 +4,7 @@ import { env } from '@121-service/src/env';
 import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mode.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
-import { createOrReplaceProgramApprovalThresholds } from '@121-service/test/helpers/program-approval-threshold.helper';
+import { createOrReplaceProgramApprovalThresholdsWithNewUser } from '@121-service/test/helpers/program-approval-threshold.helper';
 import { getAllUsersByProgramId } from '@121-service/test/helpers/user.helper';
 import {
   getAccessToken,
@@ -76,7 +76,7 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
     throw new Error('Required user assignments not found');
   }
 
-  await createOrReplaceProgramApprovalThresholds({
+  await createOrReplaceProgramApprovalThresholdsWithNewUser({
     programId: programIdOCW,
     thresholds: [
       {
@@ -88,7 +88,6 @@ test.beforeEach(async ({ resetDBAndSeedRegistrations }) => {
         userIds: [approverRoleUser.id, subApproverRoleUser.id],
       },
     ],
-    accessToken,
   });
 });
 

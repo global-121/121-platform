@@ -5,6 +5,7 @@ import { ApproverSeedMode } from '@121-service/src/scripts/enum/approval-seed-mo
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   createOrReplaceProgramApprovalThresholds,
+  createOrReplaceProgramApprovalThresholdsWithNewUser,
   getProgramApprovalThresholds,
 } from '@121-service/test/helpers/program-approval-threshold.helper';
 import {
@@ -67,11 +68,11 @@ describe('Program Approval Thresholds', () => {
       ];
 
       // Act
-      const response = await createOrReplaceProgramApprovalThresholds({
-        programId,
-        thresholds,
-        accessToken,
-      });
+      const response =
+        await createOrReplaceProgramApprovalThresholdsWithNewUser({
+          programId,
+          thresholds,
+        });
 
       // Assert
       expect(response.status).toBe(HttpStatus.CREATED);
@@ -90,11 +91,11 @@ describe('Program Approval Thresholds', () => {
         { thresholdAmount: 0, userIds: [adminUserId] },
         { thresholdAmount: 50, userIds: [userId2] },
       ];
-      const initialResponse = await createOrReplaceProgramApprovalThresholds({
-        programId,
-        thresholds: initialThresholds,
-        accessToken,
-      });
+      const initialResponse =
+        await createOrReplaceProgramApprovalThresholdsWithNewUser({
+          programId,
+          thresholds: initialThresholds,
+        });
 
       // Act: Replace with new thresholds
       const newThresholdAmounts = [0, 100, 200];
@@ -104,11 +105,11 @@ describe('Program Approval Thresholds', () => {
         { thresholdAmount: 200, userIds: [userId3] },
       ];
 
-      const replaceResponse = await createOrReplaceProgramApprovalThresholds({
-        programId,
-        thresholds: newThresholds,
-        accessToken,
-      });
+      const replaceResponse =
+        await createOrReplaceProgramApprovalThresholdsWithNewUser({
+          programId,
+          thresholds: newThresholds,
+        });
 
       // Assert: Old thresholds should be replaced
       expect(initialResponse.status).toBe(HttpStatus.CREATED);

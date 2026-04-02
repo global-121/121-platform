@@ -15,7 +15,7 @@ import {
   startPayment,
   waitForPaymentAndTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
-import { createOrReplaceProgramApprovalThresholds } from '@121-service/test/helpers/program-approval-threshold.helper';
+import { createOrReplaceProgramApprovalThresholdsWithNewUser } from '@121-service/test/helpers/program-approval-threshold.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -85,10 +85,9 @@ async function setupThresholds(
     }),
   );
 
-  await createOrReplaceProgramApprovalThresholds({
+  await createOrReplaceProgramApprovalThresholdsWithNewUser({
     programId,
     thresholds: thresholdDtos,
-    accessToken: adminAccessToken,
   });
 }
 

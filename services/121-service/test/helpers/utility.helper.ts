@@ -15,6 +15,12 @@ import { UserRoleResponseDTO } from '@121-service/src/user/dto/userrole-response
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 
+export function generateUniqueTestId(): string {
+  const timestamp = Date.now();
+  const randomSuffix = Math.random().toString(36).substring(7);
+  return `${timestamp}_${randomSuffix}`;
+}
+
 export function getHostname(): string {
   return `${env.EXTERNAL_121_SERVICE_URL}/api`;
 }
@@ -325,15 +331,14 @@ export async function createUserWithPermissions({
   scope?: string;
 }): Promise<string> {
   // Generate unique identifiers
-  const timestamp = Date.now();
-  const randomSuffix = Math.random().toString(36).substring(7);
-  const roleName = `test_role_${timestamp}_${randomSuffix}`;
-  const username = `test_user_${timestamp}_${randomSuffix}@example.org`;
-  const displayName = `Test User ${timestamp}`;
+  const uniqueId = generateUniqueTestId();
+  const roleName = `test_role_${uniqueId}`;
+  const username = `test_user_${uniqueId}@example.org`;
+  const displayName = `Test User ${uniqueId.split('_')[0]}`;
 
   await createRole({
     roleName,
-    label: `Test Role ${timestamp}`,
+    label: `Test Role ${uniqueId}`,
     description: `Automatically created test role with permissions: ${permissions.join(', ')}`,
     permissions,
     adminAccessToken,

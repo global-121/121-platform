@@ -8,6 +8,7 @@ import {
   ParseArrayPipe,
   ParseIntPipe,
   Put,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -23,6 +24,8 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/get-program-approval-threshold-response.dto';
 import { ProgramApprovalThresholdsService } from '@121-service/src/programs/program-approval-thresholds/program-approval-thresholds.service';
+import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs/approval-thresholds')
@@ -50,10 +53,15 @@ export class ProgramApprovalThresholdsController {
     @Param('programId', ParseIntPipe) programId: number,
     @Body(new ParseArrayPipe({ items: CreateProgramApprovalThresholdDto }))
     thresholds: CreateProgramApprovalThresholdDto[],
+    @Req() req: ScopedUserRequest,
   ): Promise<GetProgramApprovalThresholdResponseDto[]> {
+    const currentUserId = RequestHelper.getUserId(req);
     return await this.programApprovalThresholdsService.createOrReplaceProgramApprovalThresholds(
-      programId,
-      thresholds,
+      {
+        programId,
+        thresholds,
+        currentUserId,
+      },
     );
   }
 
