@@ -31,7 +31,8 @@
     "eslint-config-121-platform": "file:../packages/eslint-config-121-platform/",
     "prettier": "^3.8.1",
     "supertest": "^7.1.4",
-    "typescript-eslint": "^8.57.0"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.58.0"
   },
   "dependencies": {
     "date-fns": "^4.1.0",

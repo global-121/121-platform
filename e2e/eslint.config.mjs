@@ -3,7 +3,7 @@ import eslintConfig121Platform from 'eslint-config-121-platform';
 import tsEslint from 'typescript-eslint';
 
 export default defineConfig(
-  globalIgnores(['test-results/**', 'playwright-report/**']),
+  globalIgnores(['dist/**', 'test-results/**', 'playwright-report/**']),
   eslintConfig121Platform.configs.base,
   eslintConfig121Platform.configs.recommended,
   eslintConfig121Platform.configs.recommendedNext,
