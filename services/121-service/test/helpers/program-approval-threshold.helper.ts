@@ -5,9 +5,9 @@ import { env } from '@121-service/src/env';
 import { ApproverInThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/approver-in-threshold-response.dto';
 import { CreateProgramApprovalThresholdDto } from '@121-service/src/programs/program-approval-thresholds/dtos/create-program-approval-threshold.dto';
 import { GetProgramApprovalThresholdResponseDto } from '@121-service/src/programs/program-approval-thresholds/dtos/get-program-approval-threshold-response.dto';
-import { getAllUsers } from '@121-service/test/helpers/user.helper';
 import {
   createUser,
+  findUserByUsername,
   generateUniqueTestId,
   getAccessToken,
   getServer,
@@ -86,17 +86,15 @@ export async function createOrReplaceProgramApprovalThresholdsWithNewUser({
   });
 
   // Find the newly created user because we need their ID to assign them to the program and promote them to org admin
-  const allUsersResponse = await getAllUsers(adminAccessToken);
-  const thresholdAdminUser = allUsersResponse.body.find(
-    (u: { username: string }) => u.username === username,
-  );
-  if (!thresholdAdminUser) {
-    throw new Error('Failed to find newly created threshold admin user');
-  }
+  const thresholdAdminUserId = await findUserByUsername({
+    programId,
+    username,
+    adminAccessToken,
+  });
 
   // Promote to organization admin so they can manage approval thresholds
   const promoteResponse = await getServer()
-    .patch(`/users/${thresholdAdminUser.id}`)
+    .patch(`/users/${thresholdAdminUserId}`)
     .set('Cookie', [adminAccessToken])
     .send({ isOrganizationAdmin: true });
 
