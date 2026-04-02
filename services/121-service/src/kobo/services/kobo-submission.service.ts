@@ -88,6 +88,8 @@ export class KoboSubmissionService {
       select: {
         id: true,
         assetUid: true,
+        versionId: true,
+        dateDeployed: true,
         token: true,
         url: true,
       },
@@ -101,6 +103,23 @@ export class KoboSubmissionService {
         assetUid: koboIntegration.assetUid,
         baseUrl: koboIntegration.url,
       });
+
+    const submissionWithDifferentVersion = submissions.find(
+      (s) => s.__version__ !== koboIntegration.versionId,
+    );
+
+    if (submissionWithDifferentVersion) {
+      await this.updateProgramToNewVersionIfApplicable({
+        currentVersion: koboIntegration.versionId,
+        currentVersionDateDeployed: koboIntegration.dateDeployed,
+        formVersionFromIncomingSubmission:
+          submissionWithDifferentVersion.__version__,
+        assetUid: koboIntegration.assetUid,
+        token: koboIntegration.token,
+        url: koboIntegration.url,
+        programId: koboIntegration.program.id,
+      });
+    }
 
     const submissionUuids = submissions.map((s) => s._uuid);
 
