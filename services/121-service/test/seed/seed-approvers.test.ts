@@ -20,11 +20,10 @@ describe('Seed with different approverMode options', () => {
 
   it('should configure admin-user as approver if mode=admin', async () => {
     // Act
-    await resetDB(
-      SeedScript.nlrcMultiple,
-      undefined,
-      ApproverSeedMode.admin,
-    );
+    await resetDB({
+      seedScript: SeedScript.nlrcMultiple,
+      approverMode: ApproverSeedMode.admin,
+    });
 
     // Assert
     for (const programId of [programIdOCW, programIdPV]) {
@@ -41,11 +40,10 @@ describe('Seed with different approverMode options', () => {
 
   it('should configure no approvers if mode=none', async () => {
     // Act
-    await resetDB(
-      SeedScript.nlrcMultiple,
-      undefined,
-      ApproverSeedMode.none,
-    );
+    await resetDB({
+      seedScript: SeedScript.nlrcMultiple,
+      approverMode: ApproverSeedMode.none,
+    });
 
     // Assert
     for (const programId of [programIdOCW, programIdPV]) {
@@ -59,11 +57,10 @@ describe('Seed with different approverMode options', () => {
 
   it('should configure demo-user as approver if mode=demo', async () => {
     // Act
-    await resetDB(
-      SeedScript.nlrcMultiple,
-      undefined,
-      ApproverSeedMode.demo,
-    );
+    await resetDB({
+      seedScript: SeedScript.nlrcMultiple,
+      approverMode: ApproverSeedMode.demo,
+    });
 
     // Assert
     for (const programId of [programIdOCW, programIdPV]) {
@@ -84,7 +81,7 @@ describe('Seed with different approverMode options', () => {
 
   it('should default to admin approvers (on development) if no mode is provided', async () => {
     // Act
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
 
     // Assert
     for (const programId of [programIdOCW, programIdPV]) {

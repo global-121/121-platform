@@ -27,7 +27,7 @@ describe('(Un)Block visa debit card', () => {
   let accessToken: string;
 
   beforeAll(async () => {
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
   });
 

@@ -29,7 +29,7 @@ const appendUuidToBaseId = (base: string) => {
 describe('Do payment with FSP: CooperativeBankOfOromia', () => {
   let accessToken: string;
   beforeAll(async () => {
-    await resetDB(SeedScript.cooperativeBankOfOromiaProgram);
+    await resetDB({ seedScript: SeedScript.cooperativeBankOfOromiaProgram });
     accessToken = await getAccessToken();
   });
 

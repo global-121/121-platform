@@ -9,7 +9,7 @@ import { resetDB } from '@121-service/test/helpers/utility.helper';
 
 describe('Test Controller - Indirect Relations Validation', () => {
   beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
   });
 
   // This test checks if indirectRelationConfig (in scoped.repository.ts) is exhaustive, as it is hard to maintain this manually over time.

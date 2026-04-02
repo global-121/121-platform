@@ -29,7 +29,7 @@ describe('Delete program', () => {
 
   it('should delete nlrc programs', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
 
     // Create some test data which should be cascaded deleted
@@ -68,7 +68,7 @@ describe('Delete program', () => {
 
   it('should delete CBE programs', async () => {
     const programIdCbe = 1;
-    await resetDB(SeedScript.cbeProgram);
+    await resetDB({ seedScript: SeedScript.cbeProgram });
     accessToken = await getAccessToken();
 
     await seedPaidRegistrations({
@@ -92,7 +92,7 @@ describe('Delete program', () => {
 
   it('should delete a program with attachments', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
 
     const testImagePath = './test-attachment-data/sample.jpg';

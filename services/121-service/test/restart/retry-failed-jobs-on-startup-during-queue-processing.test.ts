@@ -40,7 +40,7 @@ describe('Retry Failed Jobs On Startup During Queue Processing', () => {
 
   it('Setup, do payment, kill service and restart', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
     // Upload registration
     const importRegistrationResponse = await importRegistrations(

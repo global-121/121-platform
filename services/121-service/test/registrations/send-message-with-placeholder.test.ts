@@ -31,7 +31,7 @@ describe('Send custom message with placeholders', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
 
     await importRegistrations(programId, [registrationAh], accessToken);

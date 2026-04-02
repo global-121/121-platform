@@ -28,7 +28,7 @@ describe('Get Intersolve voucher balance', () => {
 
   beforeEach(async () => {
     await waitFor(1_000);
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
     await waitFor(3_000);
   });

@@ -29,7 +29,7 @@ describe('Set/calculate payment amount multiplier', () => {
 
   it('should automatically calculate payment amount based on formula', async () => {
     // Arrange
-    await resetDB(SeedScript.testMultiple);
+    await resetDB({ seedScript: SeedScript.testMultiple });
     const nrOfDragons = 2.5; // We are using half a dragon here to ensure decimal calculations also work
     const transferValue = 10;
     const registrationWesterosCopy = { ...registrationWesteros1 };
@@ -75,7 +75,7 @@ describe('Set/calculate payment amount multiplier', () => {
   });
 
   it('should error if paymentAmountMultiplier is set while program has a formula', async () => {
-    await resetDB(SeedScript.testMultiple);
+    await resetDB({ seedScript: SeedScript.testMultiple });
     // Arrange
     const registrationWesterosCopy = {
       ...registrationWesteros1,
@@ -101,7 +101,7 @@ describe('Set/calculate payment amount multiplier', () => {
 
   it('should set paymentAmountMultiplier to 1 if program has no formula and paymentAmountMultiplier in import is not set', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     const registrationPvCopy = {
       ...registrationPV5,
     };
@@ -127,7 +127,7 @@ describe('Set/calculate payment amount multiplier', () => {
 
   it('should set paymentAmountMultiplier based paymentAmountMultiplier if program has no formula', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     const paymentAmountMultiplier = 3;
     const registrationPvCopy = {
       ...registrationPV5,

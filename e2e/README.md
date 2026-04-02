@@ -186,7 +186,7 @@ import { registrationsOCW } from '@121-service/test/registrations/pagination/pag
 import { test } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
+  await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
   const OcwProgramId = programIdOCW;
 

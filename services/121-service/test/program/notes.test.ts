@@ -16,7 +16,7 @@ describe('Notes', () => {
   const noteText = 'test note';
 
   beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
     await importRegistrations(programId, [registrationOCW1], accessToken);
   });

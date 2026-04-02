@@ -33,7 +33,7 @@ describe('Intersolve Voucher Controller', () => {
 
   beforeEach(async () => {
     await waitFor(1_000);
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
   });
 

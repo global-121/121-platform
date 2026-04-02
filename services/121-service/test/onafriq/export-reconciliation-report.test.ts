@@ -33,7 +33,7 @@ describe('Export reconciliation report', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.onafriqProgram);
+    await resetDB({ seedScript: SeedScript.onafriqProgram });
     accessToken = await getAccessToken();
     registrationOnafriq = { ...baseRegistrationOnafriq };
   });

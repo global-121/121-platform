@@ -41,7 +41,7 @@ describe('Sending templated message', () => {
   let messageTemplates: MessageTemplateEntity[];
 
   beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
 
     await importRegistrations(programId, [registrationAh], accessToken);

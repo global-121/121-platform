@@ -26,11 +26,10 @@ describe('Program Approval Thresholds', () => {
   const userId3 = 3;
 
   beforeAll(async () => {
-    await resetDB(
-      SeedScript.nlrcMultiple,
-      false,
-      ApproverSeedMode.none,
-    );
+    await resetDB({
+      seedScript: SeedScript.nlrcMultiple,
+      approverMode: ApproverSeedMode.none,
+    });
     accessToken = await getAccessToken();
 
     // Get admin user ID

@@ -46,11 +46,10 @@ async function setupPaymentApprovalTest({
   }[];
   registrations?: typeof registrationsPV;
 }): Promise<void> {
-  await resetDB(
-    SeedScript.nlrcMultiple,
-    false,
-    ApproverSeedMode.none,
-  );
+  await resetDB({
+    seedScript: SeedScript.nlrcMultiple,
+    approverMode: ApproverSeedMode.none,
+  });
 
   [adminAccessToken, accessTokenFinanceManager, accessTokenCvaManager] =
     await Promise.all([

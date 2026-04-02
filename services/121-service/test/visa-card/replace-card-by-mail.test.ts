@@ -34,7 +34,7 @@ describe('Replace Visa debit card by mail', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
     await waitFor(2_000);
   });

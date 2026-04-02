@@ -54,7 +54,7 @@ describe('Import new Kobo submissions via PATCH endpoint', () => {
   let accessToken: string;
 
   beforeAll(async () => {
-    await resetDB(SeedScript.productionInitialState);
+    await resetDB({ seedScript: SeedScript.productionInitialState });
     accessToken = await getAccessToken();
   });
 

@@ -28,7 +28,7 @@ describe('Get program with many attributes within time threshold of 30 seconds',
 
   it('Should get program with many attributes within time threshold', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessToken = await getAccessToken();
     // Add 50 attributes
     for (let i = 0; i < 50; i++) {

@@ -42,7 +42,7 @@ describe('Registrations - [Scoped]', () => {
   );
 
   beforeAll(async () => {
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     accessTokenAdmin = await getAccessToken();
 
     await importRegistrations(OcwProgramId, registrationsOCW, accessTokenAdmin);

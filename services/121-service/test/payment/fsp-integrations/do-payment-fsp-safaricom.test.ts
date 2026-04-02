@@ -44,7 +44,7 @@ describe('Do payment to 1 PA', () => {
     let accessToken: string;
 
     beforeEach(async () => {
-      await resetDB(SeedScript.safaricomProgram);
+      await resetDB({ seedScript: SeedScript.safaricomProgram });
       accessToken = await getAccessToken();
     });
 

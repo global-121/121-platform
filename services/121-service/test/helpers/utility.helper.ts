@@ -31,22 +31,45 @@ function getCallerFilePath(): string {
   const stack = new Error().stack ?? '';
   // Stack: [0] Error, [1] getCallerFilePath, [2] caller of this function, [3] actual caller we want
   const callerLine = stack.split('\n')[3];
-  const match = callerLine?.match(/\((.+?):\d+:\d+\)/);
-  return match ? match[1] : 'unknown';
+
+  if (!callerLine) {
+    return 'unknown';
+  }
+
+  // Try format with parentheses: "at Object.<anonymous> (/path/to/file.ts:42:10)"
+  const matchWithParens = callerLine.match(/\((.+?):\d+:\d+\)/);
+  if (matchWithParens) {
+    return matchWithParens[1];
+  }
+
+  // Try format without parentheses: "at /path/to/file.ts:42:10"
+  const matchWithoutParens = callerLine.match(/at\s+(.+?):\d+:\d+/);
+  if (matchWithoutParens) {
+    return matchWithoutParens[1];
+  }
+
+  return 'unknown';
 }
 
-export function resetDB(
-  seedScript: SeedScript,
+export function resetDB({
+  seedScript,
   includeRegistrationEvents = false,
-  approverMode?: ApproverSeedMode,
-): Promise<request.Response> {
+  approverMode,
+  // In most cases we can dynamically determine this.
+  resetIdentifier = getCallerFilePath(),
+}: {
+  seedScript: SeedScript;
+  includeRegistrationEvents?: boolean;
+  approverMode?: ApproverSeedMode;
+  resetIdentifier?: string;
+}): Promise<request.Response> {
   return getServer()
     .post('/scripts/reset')
     .query({
       script: seedScript,
       isApiTests: true,
       includeRegistrationEvents,
-      resetIdentifier: getCallerFilePath(),
+      resetIdentifier,
       approverMode,
     })
     .send({

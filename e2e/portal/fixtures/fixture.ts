@@ -94,12 +94,12 @@ const resetDatabase = async ({
   nameOfFileContainingTest: string;
 }) => {
   // Logic to reset the database and seed registrations
-  await resetDB(
+  await resetDB({
     seedScript,
-    nameOfFileContainingTest,
-    includeRegistrationEvents ?? false,
+    includeRegistrationEvents: includeRegistrationEvents ?? false,
     approverMode,
-  );
+    resetIdentifier: nameOfFileContainingTest,
+  });
 };
 
 /**

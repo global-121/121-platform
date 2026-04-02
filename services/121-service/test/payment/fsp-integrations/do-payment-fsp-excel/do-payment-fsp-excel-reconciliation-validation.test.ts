@@ -59,7 +59,7 @@ describe('Reconciliate excel FSP data', () => {
 
   // No need to reset DB before each test, as we will only import reconciliation files unsuccessfully
   beforeAll(async () => {
-    await resetDB(SeedScript.testMultiple);
+    await resetDB({ seedScript: SeedScript.testMultiple });
     accessToken = await getAccessToken();
 
     await seedPaidRegistrations({

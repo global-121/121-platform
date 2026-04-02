@@ -29,7 +29,7 @@ describe('Registrations - [Scoped]', () => {
   let paymentIdPv: number;
 
   beforeAll(async () => {
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB({ seedScript: SeedScript.nlrcMultiple });
     await seedPaidRegistrations({
       registrations: registrationsOCW,
       programId: OcwProgramId,
