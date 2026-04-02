@@ -9,6 +9,7 @@ node_modules
 .config/configstore
 
 # Generated assets / caches
+.eslintcache
 .npm
 dist
 coverage
