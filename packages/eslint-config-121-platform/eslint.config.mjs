@@ -1,9 +1,10 @@
-import { defineConfig } from 'eslint/config';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import tsEslint from 'typescript-eslint';
 
 import eslintConfig121Platform from './index.mjs';
 
 export default defineConfig(
+  globalIgnores(['dist/**']),
   eslintConfig121Platform.configs.base,
   eslintConfig121Platform.configs.node,
   eslintConfig121Platform.configs.recommended,
