@@ -52,6 +52,9 @@ export class QueuesRegistryService implements OnModuleInit {
     @InjectQueue(QueueNames.paymentCallbackSafaricomTimeout)
     public safaricomTimeoutCallbackQueue: Queue,
 
+    @InjectQueue(QueueNames.paymentCallbackMtnTransfer)
+    public mtnTransferCallbackQueue: Queue,
+
     @InjectQueue(QueueNames.paymentCallbackOnafriq)
     public onafriqCallbackQueue: Queue,
 
@@ -98,6 +101,7 @@ export class QueuesRegistryService implements OnModuleInit {
         this.safaricomTransferCallbackQueue,
       [QueueNames.paymentCallbackSafaricomTimeout]:
         this.safaricomTimeoutCallbackQueue,
+      [QueueNames.paymentCallbackMtnTransfer]: this.mtnTransferCallbackQueue,
       [QueueNames.paymentCallbackOnafriq]: this.onafriqCallbackQueue,
       [QueueNames.createMessageReplyOnIncoming]:
         this.createMessageReplyOnIncomingQueue,

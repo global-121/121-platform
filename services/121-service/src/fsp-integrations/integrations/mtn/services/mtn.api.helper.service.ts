@@ -39,12 +39,13 @@ export class MtnApiHelperService {
     };
   }
 
-  public createTransferHeaders(): Headers {
+  public createTransferHeaders({
+    referenceId,
+  }: {
+    referenceId: string;
+  }): Headers {
     if (!env.MTN_ACCESS_TOKEN) {
       throw new MtnApiError('MTN_ACCESS_TOKEN is not set');
-    }
-    if (!env.MTN_REFERENCE_ID) {
-      throw new MtnApiError('MTN_REFERENCE_ID is not set');
     }
     if (!env.MTN_TARGET_ENVIRONMENT) {
       throw new MtnApiError('MTN_TARGET_ENVIRONMENT is not set');
@@ -52,7 +53,29 @@ export class MtnApiHelperService {
 
     const headers = this.createCommonHeaders();
     headers.set('Authorization', `Bearer ${env.MTN_ACCESS_TOKEN}`);
-    headers.set('X-Reference-Id', env.MTN_REFERENCE_ID);
+    headers.set('X-Reference-Id', referenceId);
+    headers.set('X-Target-Environment', env.MTN_TARGET_ENVIRONMENT);
+
+    if (env.MTN_PROVIDER_CALLBACK_HOST) {
+      headers.set(
+        'X-Callback-Url',
+        `${env.MTN_PROVIDER_CALLBACK_HOST}/fsps/mtn/transfer-callback`,
+      );
+    }
+
+    return headers;
+  }
+
+  public createGetTransferStatusHeaders(): Headers {
+    if (!env.MTN_ACCESS_TOKEN) {
+      throw new MtnApiError('MTN_ACCESS_TOKEN is not set');
+    }
+    if (!env.MTN_TARGET_ENVIRONMENT) {
+      throw new MtnApiError('MTN_TARGET_ENVIRONMENT is not set');
+    }
+
+    const headers = this.createCommonHeaders();
+    headers.set('Authorization', `Bearer ${env.MTN_ACCESS_TOKEN}`);
     headers.set('X-Target-Environment', env.MTN_TARGET_ENVIRONMENT);
 
     return headers;

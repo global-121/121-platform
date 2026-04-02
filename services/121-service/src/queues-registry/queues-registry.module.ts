@@ -109,6 +109,19 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
         duration: 1000, // per duration in milliseconds
       },
     }),
+    // MTN Callback Queue
+    BullModule.registerQueue({
+      name: QueueNames.paymentCallbackMtnTransfer,
+      processors: [
+        {
+          path: 'src/fsp-integrations/reconciliation/mtn/processors/mtn-transfer-callback-job.processor.ts',
+        },
+      ],
+      limiter: {
+        max: 20, // Max number of jobs processed
+        duration: 1000, // per duration in milliseconds
+      },
+    }),
     // Onafriq Callback Queue
     BullModule.registerQueue({
       name: QueueNames.paymentCallbackOnafriq,

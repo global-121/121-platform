@@ -15,6 +15,11 @@ export class PayeeDto {
 }
 
 export class CreateTransferDto {
+  @ApiProperty({ example: '3d767552-bca7-40d9-97f7-8216eb5126c2' })
+  @IsNotEmpty()
+  @IsString()
+  public readonly referenceId: string;
+
   @ApiProperty({ example: '140' })
   @IsNotEmpty()
   @IsString()

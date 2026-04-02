@@ -1,4 +1,5 @@
 export interface CreateTransferParams {
+  readonly referenceId: string;
   readonly amount: string;
   readonly currency: string;
   readonly externalId: string;
