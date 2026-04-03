@@ -162,11 +162,9 @@ class FspSettingsPage extends BasePage {
         }
       }
       await this.integrateFspButton.waitFor({ state: 'visible' });
-      // Wait for any open multiselect overlay to close before clicking
       await this.page
         .locator('.p-multiselect-overlay')
-        .waitFor({ state: 'hidden' })
-        .catch(() => void 0); // overlay may already be gone
+        .waitFor({ state: 'hidden' });
       await this.integrateFspButton.click();
     }
   }
