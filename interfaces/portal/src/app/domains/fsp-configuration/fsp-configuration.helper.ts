@@ -32,4 +32,5 @@ export const FSP_IMAGE_URLS: Record<Fsps, string> = {
   [Fsps.nedbank]: 'assets/fsps/nedbank.png',
   [Fsps.onafriq]: 'assets/fsps/onafriq.jpg',
   [Fsps.cooperativeBankOfOromia]: 'assets/fsps/cbo.png',
+  [Fsps.mtn]: 'assets/fsps/mtn.png',
 };

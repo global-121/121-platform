@@ -99,6 +99,15 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
     ],
   },
   {
+    name: SeedScript.mtnProgram,
+    programs: [
+      {
+        program: 'program-mtn.json',
+        messageTemplate: messageTemplateGeneric,
+      },
+    ],
+  },
+  {
     name: SeedScript.demoPrograms,
     programs: [
       {

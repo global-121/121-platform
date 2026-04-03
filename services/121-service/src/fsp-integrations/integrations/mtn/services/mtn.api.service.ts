@@ -38,7 +38,8 @@ export class MtnApiService {
       payerMessage,
       payeeNote,
     });
-    
+    console.log('payload: ', payload);
+
     await this.makeTransferCall({ payload, referenceId });
   }
 
