@@ -9,6 +9,7 @@ import { CooperativeBankOfOromiaTransactionJobDto } from '@121-service/src/fsp-i
 import { ExcelTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/excel-transaction-job.dto';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { IntersolveVoucherTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/intersolve-voucher-transaction-job.dto';
+import { MtnTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/mtn-transaction-job.dto';
 import { NedbankTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/nedbank-transaction-job.dto';
 import { OnafriqTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/onafriq-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/safaricom-transaction-job.dto';
@@ -121,6 +122,14 @@ export class TransactionJobsCreationService {
         });
       case Fsps.excel:
         return await this.createAndAddExcelTransactionJobs({
+          transactionJobDetails,
+          programId,
+          userId,
+          isRetry,
+          fspName,
+        });
+      case Fsps.mtn:
+        return await this.createAndAddMtnTransactionJobs({
           transactionJobDetails,
           programId,
           userId,
@@ -603,6 +612,41 @@ export class TransactionJobsCreationService {
     await this.transactionQueuesService.addCommercialBankOfEthiopiaTransactionJobs(
       cbeTransferJobs,
     );
+  }
+
+  private async createAndAddMtnTransactionJobs({
+    transactionJobDetails,
+    programId,
+    userId,
+    isRetry,
+    fspName,
+  }: {
+    transactionJobDetails: TransactionJobDetails[];
+    programId: number;
+    userId: number;
+    isRetry: boolean;
+    fspName: Fsps;
+  }): Promise<void> {
+    const { registrationViews, sharedJobsByReferenceId } =
+      await this.createSharedJobs({
+        transactionJobDetails,
+        programId,
+        userId,
+        isRetry,
+        fspName,
+      });
+
+    const mtnTransferJobs: MtnTransactionJobDto[] = registrationViews.map(
+      (registrationView): MtnTransactionJobDto => {
+        const base = sharedJobsByReferenceId.get(registrationView.referenceId);
+        return {
+          ...base!,
+          // FSP-specific additions:
+          phoneNumber: registrationView[FspAttributes.phoneNumber]!,
+        };
+      },
+    );
+    await this.transactionQueuesService.addMtnTransactionJobs(mtnTransferJobs);
   }
 
   /**

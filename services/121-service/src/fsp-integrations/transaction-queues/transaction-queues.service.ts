@@ -7,6 +7,7 @@ import { CooperativeBankOfOromiaTransactionJobDto } from '@121-service/src/fsp-i
 import { ExcelTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/excel-transaction-job.dto';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { IntersolveVoucherTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/intersolve-voucher-transaction-job.dto';
+import { MtnTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/mtn-transaction-job.dto';
 import { NedbankTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/nedbank-transaction-job.dto';
 import { OnafriqTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/onafriq-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/fsp-integrations/transaction-queues/dto/safaricom-transaction-job.dto';
@@ -132,6 +133,18 @@ export class TransactionQueuesService {
       const job = await this.queuesService.transactionJobExcelQueue.add(
         JobNames.default,
         excelTransactionJob,
+      );
+      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+    }
+  }
+
+  public async addMtnTransactionJobs(
+    mtnTransactionJobs: MtnTransactionJobDto[],
+  ): Promise<void> {
+    for (const mtnTransactionJob of mtnTransactionJobs) {
+      const job = await this.queuesService.transactionJobMtnQueue.add(
+        JobNames.default,
+        mtnTransactionJob,
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
     }

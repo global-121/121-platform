@@ -39,8 +39,8 @@ export class MtnApiService {
       payeeNote,
     });
     console.log('payload: ', payload);
-
-    await this.makeTransferCall({ payload, referenceId });
+    const response = await this.makeTransferCall({ payload, referenceId });
+    console.log('response: ', response);
   }
 
   public async getTransferStatus({
@@ -93,6 +93,8 @@ export class MtnApiService {
         payload,
         headers,
       );
+      console.log(response.status);
+      console.log(response.data);
 
       if (response?.status === HTTP_STATUS_CONFLICT) {
         throw new MtnApiDuplicateError(
