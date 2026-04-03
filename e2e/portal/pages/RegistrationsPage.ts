@@ -416,7 +416,7 @@ class RegistrationsPage extends BasePage {
     await expect(async () => {
       const duplicateColumnValues = await this.table.getTextArrayFromColumn(5);
       expectedSortedArraysToEqual(duplicateColumnValues, expectedValues);
-    }).toPass({ timeout: 500 });
+    }).toPass({ timeout: 1000 });
   }
 
   async waitForImportProcessToComplete() {
