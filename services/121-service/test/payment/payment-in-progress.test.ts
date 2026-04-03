@@ -22,6 +22,7 @@ import {
   retryPayment,
   startPayment,
   waitForPaymentAndTransactionsToComplete,
+  waitForPaymentInProgress,
 } from '@121-service/test/helpers/program.helper';
 import {
   doPaymentAndWaitForCompletion,
@@ -87,7 +88,6 @@ const getPaymentProgressStatusForMultipleEndpoints = async ({
   };
 };
 
-// 5 registration for PV
 const registrationsPV = [
   registrationNotScopedPv,
   registrationScopedTurkanaNorthPv,
@@ -376,6 +376,11 @@ describe('Payment in progress', () => {
       accessToken,
     });
     const paymentIdPv = doPaymentResponse.body.id;
+
+    await waitForPaymentInProgress({
+      programId: programIdPV,
+      accessToken,
+    });
 
     const getProgramPaymentsPvResult = (
       await getProgramPaymentsStatus(programIdPV, accessToken)

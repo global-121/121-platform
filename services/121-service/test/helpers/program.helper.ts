@@ -309,6 +309,33 @@ export async function waitForPaymentNotInProgress({
   }
 }
 
+export async function waitForPaymentInProgress({
+  programId,
+  accessToken,
+  maxWaitTimeMs = 10000,
+  pollIntervalMs = 20,
+}: {
+  programId: number;
+  accessToken: string;
+  maxWaitTimeMs?: number;
+  pollIntervalMs?: number;
+}): Promise<void> {
+  const startTime = Date.now();
+  while (true) {
+    const result = (await getProgramPaymentsStatus(programId, accessToken))
+      .body;
+    if (result.inProgress === true) {
+      return;
+    }
+    if (Date.now() - startTime > maxWaitTimeMs) {
+      throw new Error(
+        `Timeout: Payment not in progress after ${maxWaitTimeMs}ms`,
+      );
+    }
+    await waitFor(pollIntervalMs);
+  }
+}
+
 export async function getTransactionsByPaymentIdPaginated({
   programId,
   paymentId,
