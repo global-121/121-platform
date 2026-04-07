@@ -22,9 +22,10 @@ import {
 } from '~/utils/local-storage';
 import { environment } from '~environment';
 
-const AuthStrategy = environment.use_sso_azure_entra
-  ? MsalAuthStrategy
-  : BasicAuthStrategy;
+// Lazy resolver to avoid circular dependency:
+// auth.service.ts → basic-auth.strategy.ts → basic-auth.change-password.component.ts → auth.service.ts
+const getAuthStrategy = () =>
+  environment.use_sso_azure_entra ? MsalAuthStrategy : BasicAuthStrategy;
 
 export const AUTH_ERROR_IN_STATE_KEY = 'AUTH_ERROR';
 export const SESSION_EXPIRED_IN_STATE_KEY = 'SESSION_EXPIRED';
@@ -34,7 +35,9 @@ const VALID_PERMISSIONS = new Set(Object.values(PermissionEnum));
   providedIn: 'root',
 })
 export class AuthService {
-  public static APP_PROVIDERS = AuthStrategy.APP_PROVIDERS;
+  static get APP_PROVIDERS() {
+    return getAuthStrategy().APP_PROVIDERS;
+  }
 
   private readonly injector = inject(Injector);
   private readonly router = inject(Router);
@@ -52,7 +55,7 @@ export class AuthService {
   );
 
   constructor() {
-    this.authStrategy = this.injector.get<IAuthStrategy>(AuthStrategy);
+    this.authStrategy = this.injector.get<IAuthStrategy>(getAuthStrategy());
   }
 
   initializeSubscriptions() {
