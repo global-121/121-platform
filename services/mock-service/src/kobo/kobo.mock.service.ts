@@ -459,11 +459,11 @@ export class KoboMockService {
     results: Record<string, any>[];
   } {
     const asset = this.getAssetDeployment(uid_asset);
-    const submissionUuid = `${KoboMockSubmissionUuids.success}-${uid_asset}`;
-    const results = [
+    const successSubmissionUuid = `${KoboMockSubmissionUuids.success}-${uid_asset}`;
+    const results: Record<string, any>[] = [
       {
         _id: 1,
-        _uuid: submissionUuid,
+        _uuid: successSubmissionUuid,
         _xform_id_string: uid_asset,
         _submission_time: '2025-04-30T15:30:00.000Z',
         _status: 'submitted_via_web',
@@ -489,6 +489,27 @@ export class KoboMockService {
         __version__: asset.version_id,
       },
     ];
+
+    if (uid_asset.includes('with-failure')) {
+      const failureSubmissionUuid = `${KoboMockSubmissionUuids.failure}-${uid_asset}`;
+      results.push({
+        _id: 2,
+        _uuid: failureSubmissionUuid,
+        _xform_id_string: uid_asset,
+        _submission_time: '2025-04-30T16:00:00.000Z',
+        _status: 'submitted_via_web',
+        start: '2025-04-30T15:59:00.000Z',
+        end: '2025-04-30T16:00:00.000Z',
+        // This should trigger an error in our processing because the FSP is not a valid one
+        // In a real scenario this could have happended if submission were created with an older version of the form
+        fsp: 'Invalid-FSP',
+        'group_ad8jk55/fullName': 'Jane Doe',
+        nationalId: '987654321',
+        phoneNumber: '+31687654321',
+        __version__: asset.version_id,
+      });
+    }
+
     return { count: results.length, next: null, previous: null, results };
   }
 

@@ -12,6 +12,7 @@ import { KoboSubmissionService } from '@121-service/src/kobo/services/kobo-submi
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationsCreationService } from '@121-service/src/registration/services/registrations-creation.service';
+import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
 
 import '@121-service/src/utils/test-helpers/matchers/httpExceptionMatcher';
 
@@ -21,6 +22,7 @@ describe('KoboSubmissionService', () => {
   let koboApiService: jest.Mocked<KoboApiService>;
   let koboService: jest.Mocked<KoboService>;
   let registrationsCreationService: jest.Mocked<RegistrationsCreationService>;
+  let registrationsInputValidator: jest.Mocked<RegistrationsInputValidator>;
   let registrationRepository: jest.Mocked<Repository<RegistrationEntity>>;
 
   const successSubmissionUuid = 'success-submission-uuid';
@@ -101,6 +103,13 @@ describe('KoboSubmissionService', () => {
           provide: RegistrationsCreationService,
           useValue: {
             importRegistrations: jest.fn(),
+            importValidatedRegistrations: jest.fn(),
+          },
+        },
+        {
+          provide: RegistrationsInputValidator,
+          useValue: {
+            validateAndCleanInput: jest.fn(),
           },
         },
         {
@@ -117,6 +126,7 @@ describe('KoboSubmissionService', () => {
     koboApiService = module.get(KoboApiService);
     koboService = module.get(KoboService);
     registrationsCreationService = module.get(RegistrationsCreationService);
+    registrationsInputValidator = module.get(RegistrationsInputValidator);
     registrationRepository = module.get(getRepositoryToken(RegistrationEntity));
   });
 
@@ -315,9 +325,15 @@ describe('KoboSubmissionService', () => {
       registrationRepository.find.mockResolvedValue([
         { referenceId: successSubmissionUuid } as RegistrationEntity,
       ]);
-      registrationsCreationService.importRegistrations.mockResolvedValue({
-        aggregateImportResult: { countImported: 1 },
+      registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
+        validRegistrations: [],
+        errors: [],
       });
+      registrationsCreationService.importValidatedRegistrations.mockResolvedValue(
+        {
+          aggregateImportResult: { countImported: 1 },
+        },
+      );
 
       // Act
       const result = await service.importNewSubmissions({
@@ -328,9 +344,11 @@ describe('KoboSubmissionService', () => {
       // Assert
       expect(result).toMatchInlineSnapshot(`
         {
-          "aggregateImportResult": {
-            "countImported": 1,
-          },
+          "numberOfSubmissionsFailed": 0,
+          "numberOfSubmissionsImported": 1,
+          "numberOfSubmissionsOnForm": 2,
+          "numberOfSubmissionsSkipped": 1,
+          "validationErrorsPerSubmission": {},
         }
       `);
     });
@@ -396,9 +414,15 @@ describe('KoboSubmissionService', () => {
         versionId: newerVersionId,
       });
       koboService.validateFormAndUpdateProgram.mockResolvedValue(undefined);
-      registrationsCreationService.importRegistrations.mockResolvedValue({
-        aggregateImportResult: { countImported: 1 },
+      registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
+        validRegistrations: [],
+        errors: [],
       });
+      registrationsCreationService.importValidatedRegistrations.mockResolvedValue(
+        {
+          aggregateImportResult: { countImported: 1 },
+        },
+      );
 
       // Act
       await service.importNewSubmissions({ programId: 1, userId: 42 });
@@ -422,9 +446,15 @@ describe('KoboSubmissionService', () => {
         submissions: [mockSubmission], // __version__: 'v1' matches stored versionId: 'v1'
       });
       registrationRepository.find.mockResolvedValue([]);
-      registrationsCreationService.importRegistrations.mockResolvedValue({
-        aggregateImportResult: { countImported: 0 },
+      registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
+        validRegistrations: [],
+        errors: [],
       });
+      registrationsCreationService.importValidatedRegistrations.mockResolvedValue(
+        {
+          aggregateImportResult: { countImported: 0 },
+        },
+      );
 
       // Act
       await service.importNewSubmissions({ programId: 1, userId: 42 });
@@ -446,21 +476,107 @@ describe('KoboSubmissionService', () => {
         { referenceId: successSubmissionUuid } as RegistrationEntity,
         { referenceId: 'new-submission-uuid' } as RegistrationEntity,
       ]);
-      registrationsCreationService.importRegistrations.mockResolvedValue({
-        aggregateImportResult: { countImported: 0 },
+      registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
+        validRegistrations: [],
+        errors: [],
       });
+      registrationsCreationService.importValidatedRegistrations.mockResolvedValue(
+        {
+          aggregateImportResult: { countImported: 0 },
+        },
+      );
 
       // Act
       await service.importNewSubmissions({ programId: 1, userId: 42 });
 
       // Assert
       expect(
-        registrationsCreationService.importRegistrations,
+        registrationsInputValidator.validateAndCleanInput,
       ).toHaveBeenCalledWith({
-        inputRegistrations: [],
-        program: mockProgram,
+        registrationInputArray: [],
+        programId: mockProgram.id,
+        userId: 42,
+        typeOfInput: 'create',
+        validationConfig: {
+          validateUniqueReferenceId: true,
+          validateExistingReferenceId: true,
+        },
+      });
+    });
+
+    it('should populate validationErrorsPerSubmission when a submission fails validation', async () => {
+      // Arrange
+      koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
+      koboApiService.getSubmissionsUpToLimit.mockResolvedValue({
+        count: 1,
+        submissions: [mockSubmission],
+      });
+      registrationRepository.find.mockResolvedValue([]);
+      registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
+        validRegistrations: [],
+        errors: [
+          {
+            index: 0,
+            column: 'programFspConfigurationName',
+            error: 'FspConfigurationName Invalid-FSP not found in program.',
+            value: 'Invalid-FSP',
+          },
+        ],
+      });
+      registrationsCreationService.importValidatedRegistrations.mockResolvedValue(
+        { aggregateImportResult: { countImported: 0 } },
+      );
+
+      // Act
+      const result = await service.importNewSubmissions({
+        programId: 1,
         userId: 42,
       });
+
+      // Assert
+      expect(result.validationErrorsPerSubmission).toEqual({
+        [successSubmissionUuid]: [
+          {
+            column: 'programFspConfigurationName',
+            error: 'FspConfigurationName Invalid-FSP not found in program.',
+          },
+        ],
+      });
+    });
+
+    it('should exclude failed submissions from numberOfSubmissionsImported and count them in numberOfSubmissionsFailed', async () => {
+      // Arrange
+      koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
+      koboApiService.getSubmissionsUpToLimit.mockResolvedValue({
+        count: 2,
+        submissions: [mockSubmission, mockSubmission2],
+      });
+      registrationRepository.find.mockResolvedValue([]);
+      registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
+        validRegistrations: [],
+        errors: [
+          {
+            index: 0,
+            column: 'programFspConfigurationName',
+            error: 'FspConfigurationName Invalid-FSP not found in program.',
+            value: 'Invalid-FSP',
+          },
+        ],
+      });
+      registrationsCreationService.importValidatedRegistrations.mockResolvedValue(
+        { aggregateImportResult: { countImported: 1 } },
+      );
+
+      // Act
+      const result = await service.importNewSubmissions({
+        programId: 1,
+        userId: 42,
+      });
+
+      // Assert
+      expect(result.numberOfSubmissionsImported).toBe(1);
+      expect(result.numberOfSubmissionsFailed).toBe(1);
+      expect(result.numberOfSubmissionsOnForm).toBe(2);
     });
   });
 });

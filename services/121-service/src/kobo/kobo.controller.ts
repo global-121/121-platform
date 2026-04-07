@@ -30,13 +30,13 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { NoUserAuthenticationEndpoint } from '@121-service/src/guards/no-user-authentication.decorator';
 import { CreateKoboDto } from '@121-service/src/kobo/dtos/create-kobo.dto';
+import { ImportExistingSubmissionsResultDto } from '@121-service/src/kobo/dtos/import-existing-submissions-result.dto';
 import { KoboIntegrationResultDto } from '@121-service/src/kobo/dtos/kobo-integration-result.dto';
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
 import { KoboWebhookIncomingSubmission } from '@121-service/src/kobo/dtos/kobo-webhook-incoming-submission.dto';
 import { KoboWebhookBasicAuthGuard } from '@121-service/src/kobo/guards/kobo-webhook-basic-auth.guard';
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboSubmissionService } from '@121-service/src/kobo/services/kobo-submission.service';
-import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 import { MAX_IMPORT_RECORDS } from '@121-service/src/registration/services/registrations-creation.service';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
@@ -184,7 +184,7 @@ export class KoboController {
     status: HttpStatus.OK,
     description:
       'New submissions have been successfully imported as registrations',
-    type: ImportResult,
+    type: ImportExistingSubmissionsResultDto,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -200,7 +200,7 @@ export class KoboController {
     @Param('programId', ParseIntPipe)
     programId: number,
     @Req() req: ScopedUserRequest,
-  ): Promise<ImportResult> {
+  ): Promise<ImportExistingSubmissionsResultDto> {
     const userId = RequestHelper.getUserId(req);
     return this.koboSubmissionService.importNewSubmissions({
       programId,
