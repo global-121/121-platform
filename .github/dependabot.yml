@@ -3,11 +3,13 @@ version: 2
 
 updates:
   - directory: '/'
+    prefix: '[github-actions] '
     package-ecosystem: 'github-actions'
     schedule:
       interval: 'monthly'
 
   - directory: '/'
+    prefix: '[root] '
     package-ecosystem: 'npm'
     schedule:
       interval: 'monthly'
@@ -15,6 +17,7 @@ updates:
     versioning-strategy: increase
 
   - directory: '/packages/eslint-config-121-platform/'
+    prefix: '[eslint-config] '
     package-ecosystem: 'npm'
     schedule:
       interval: 'monthly'
@@ -34,6 +37,7 @@ updates:
         update-types: ['version-update:semver-major']
 
   - directory: '/services/121-service'
+    prefix: '[121-service] '
     package-ecosystem: npm
     schedule:
       interval: monthly
@@ -64,6 +68,7 @@ updates:
         update-types: ['version-update:semver-major']
 
   - directory: '/services/mock-service'
+    prefix: '[mock-service] '
     package-ecosystem: npm
     schedule:
       interval: monthly
@@ -89,6 +94,7 @@ updates:
         update-types: ['version-update:semver-major']
 
   - directory: '/interfaces/portal'
+    prefix: '[portal] '
     package-ecosystem: npm
     schedule:
       interval: monthly
@@ -138,6 +144,7 @@ updates:
         update-types: ['version-update:semver-major']
 
   - directory: '/e2e'
+    prefix: '[e2e] '
     package-ecosystem: npm
     schedule:
       interval: monthly
