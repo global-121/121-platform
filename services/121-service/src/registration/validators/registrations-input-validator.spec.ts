@@ -1,4 +1,3 @@
-import { HttpException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -186,7 +185,7 @@ describe('RegistrationsInputValidator', () => {
       },
     ];
 
-    const result = await validator.validateAndCleanInput({
+    const { validRegistrations } = await validator.validateAndCleanInput({
       registrationInputArray: csvArray,
       programId,
       userId,
@@ -197,24 +196,24 @@ describe('RegistrationsInputValidator', () => {
       },
     });
 
-    expect(result).toBeInstanceOf(Array);
-    expect(result.length).toBe(1);
-    expect(result[0]).toHaveProperty(
+    expect(validRegistrations).toBeInstanceOf(Array);
+    expect(validRegistrations.length).toBe(1);
+    expect(validRegistrations[0]).toHaveProperty(
       'referenceId',
       '00dc9451-1273-484c-b2e8-ae21b51a96ab',
     );
-    expect(result[0]).toHaveProperty(
+    expect(validRegistrations[0]).toHaveProperty(
       'programFspConfigurationName',
       Fsps.intersolveVoucherWhatsapp,
     );
-    expect(result[0]).toHaveProperty('paymentAmountMultiplier', 2);
-    expect(result[0]).toHaveProperty(
+    expect(validRegistrations[0]).toHaveProperty('paymentAmountMultiplier', 2);
+    expect(validRegistrations[0]).toHaveProperty(
       'preferredLanguage',
       RegistrationPreferredLanguage.en,
     );
   });
 
-  it('should throw an error for invalid reference ID format', async () => {
+  it('should return errors for invalid reference ID format', async () => {
     const csvArray = [
       {
         referenceId: '!@#$',
@@ -231,8 +230,8 @@ describe('RegistrationsInputValidator', () => {
       },
     ];
 
-    await expect(
-      validator.validateAndCleanInput({
+    const { errors, validRegistrations } =
+      await validator.validateAndCleanInput({
         registrationInputArray: csvArray,
         programId,
         userId,
@@ -241,8 +240,10 @@ describe('RegistrationsInputValidator', () => {
           validateUniqueReferenceId: true,
           validateExistingReferenceId: true,
         },
-      }),
-    ).rejects.toThrow(HttpException);
+      });
+
+    expect(errors.length).toBeGreaterThan(0);
+    expect(validRegistrations.length).toBe(0);
   });
 
   it('should report errors for rows missing mandatory fields on import', async () => {
@@ -255,8 +256,8 @@ describe('RegistrationsInputValidator', () => {
     const programId = 1;
     const userId = 1;
 
-    await expect(
-      validator.validateAndCleanInput({
+    const { errors, validRegistrations } =
+      await validator.validateAndCleanInput({
         registrationInputArray: csvArray,
         programId,
         userId,
@@ -265,11 +266,13 @@ describe('RegistrationsInputValidator', () => {
           validateUniqueReferenceId: true,
           validateExistingReferenceId: true,
         },
-      }),
-    ).rejects.toThrow(HttpException);
+      });
+
+    expect(errors.length).toBeGreaterThan(0);
+    expect(validRegistrations.length).toBe(0);
   });
 
-  it('should not report errors for rows missing mandatory fields on bulk update', async () => {
+  it('should report errors for rows missing mandatory fields on bulk update', async () => {
     const csvArray = [
       {
         programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
@@ -277,8 +280,8 @@ describe('RegistrationsInputValidator', () => {
       },
     ];
 
-    await expect(
-      validator.validateAndCleanInput({
+    const { errors, validRegistrations } =
+      await validator.validateAndCleanInput({
         registrationInputArray: csvArray,
         programId,
         userId,
@@ -287,8 +290,10 @@ describe('RegistrationsInputValidator', () => {
           validateExistingReferenceId: false,
           validateUniqueReferenceId: false,
         },
-      }),
-    ).rejects.toThrow(HttpException);
+      });
+
+    expect(errors.length).toBeGreaterThan(0);
+    expect(validRegistrations.length).toBe(0);
   });
 
   it('should report errors for a missing phonenumber when it is not allowed', async () => {
@@ -305,26 +310,28 @@ describe('RegistrationsInputValidator', () => {
       },
     ];
 
-    await expect(
-      validator.validateAndCleanInput({
-        registrationInputArray: csvArray,
-        programId,
-        userId,
-        typeOfInput: RegistrationValidationInputType.create,
-        validationConfig: {
-          validateExistingReferenceId: true,
-          validateUniqueReferenceId: true,
-        },
-      }),
-    ).rejects.toHaveProperty('response', [
-      {
-        lineNumber: 1,
-        column: GenericRegistrationAttributes.phoneNumber,
-        value: undefined,
-        error:
-          'PhoneNumber is required when creating a new registration for this program. Set allowEmptyPhoneNumber to true in the program settings to allow empty phone numbers',
+    const { errors } = await validator.validateAndCleanInput({
+      registrationInputArray: csvArray,
+      programId,
+      userId,
+      typeOfInput: RegistrationValidationInputType.create,
+      validationConfig: {
+        validateExistingReferenceId: true,
+        validateUniqueReferenceId: true,
       },
-    ]);
+    });
+
+    expect(errors).toEqual(
+      expect.arrayContaining([
+        {
+          index: 0,
+          column: GenericRegistrationAttributes.phoneNumber,
+          value: undefined,
+          error:
+            'PhoneNumber is required when creating a new registration for this program. Set allowEmptyPhoneNumber to true in the program settings to allow empty phone numbers',
+        },
+      ]),
+    );
   });
 
   it('should add max payment when its null', async () => {
@@ -334,7 +341,7 @@ describe('RegistrationsInputValidator', () => {
       },
     ];
 
-    const result = await validator.validateAndCleanInput({
+    const { validRegistrations } = await validator.validateAndCleanInput({
       registrationInputArray: csvArray,
       programId,
       userId,
@@ -345,8 +352,8 @@ describe('RegistrationsInputValidator', () => {
       },
     });
 
-    expect(result[0]).toHaveProperty('maxPayments');
-    expect(result[0].maxPayments).toBe(null);
+    expect(validRegistrations[0]).toHaveProperty('maxPayments');
+    expect(validRegistrations[0].maxPayments).toBe(null);
   });
 
   // When columns are left empty in a csv they are read as empty string
@@ -377,7 +384,7 @@ describe('RegistrationsInputValidator', () => {
       },
     ];
 
-    const result = await validator.validateAndCleanInput({
+    const { validRegistrations } = await validator.validateAndCleanInput({
       registrationInputArray: csvArray,
       programId,
       userId,
@@ -404,7 +411,7 @@ describe('RegistrationsInputValidator', () => {
       programFspConfigurationName: 'Excel',
     };
 
-    expect(result[0]).toEqual(expected);
+    expect(validRegistrations[0]).toEqual(expected);
   });
 
   it('should only return the value you try to validate', async () => {
@@ -414,7 +421,7 @@ describe('RegistrationsInputValidator', () => {
         fullName,
       },
     ];
-    const result = await validator.validateAndCleanInput({
+    const { validRegistrations } = await validator.validateAndCleanInput({
       registrationInputArray: csvArray,
       programId,
       userId,
@@ -429,7 +436,7 @@ describe('RegistrationsInputValidator', () => {
         fullName,
       },
     };
-    expect(result[0]).toEqual(expectedResult);
+    expect(validRegistrations[0]).toEqual(expectedResult);
   });
 
   it.each([
@@ -449,9 +456,9 @@ describe('RegistrationsInputValidator', () => {
         },
       ];
 
-      // Act & Assert
-      await expect(
-        validator.validateAndCleanInput({
+      // Act
+      const { errors, validRegistrations } =
+        await validator.validateAndCleanInput({
           registrationInputArray: csvArray,
           programId,
           userId: null,
@@ -460,8 +467,11 @@ describe('RegistrationsInputValidator', () => {
             validateUniqueReferenceId: true,
             validateExistingReferenceId: true,
           },
-        }),
-      ).resolves.not.toThrow();
+        });
+
+      // Assert
+      expect(errors.length).toBe(0);
+      expect(validRegistrations.length).toBe(1);
     },
   );
 });

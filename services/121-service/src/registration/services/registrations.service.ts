@@ -344,52 +344,29 @@ export class RegistrationsService {
       ...updateRegistrationDto.data,
     };
 
-    let validateRegistrationPatchData;
-    try {
-      validateRegistrationPatchData =
-        await this.registrationsInputValidator.validateAndCleanInput({
-          registrationInputArray: [updateDataWithReferenceId],
-          programId,
-          userId,
-          typeOfInput: RegistrationValidationInputType.update,
-          validationConfig,
-        });
-    } catch (error) {
-      if (error instanceof HttpException) {
-        this.processHttpExceptionOnRegistrationUpdate(error);
-      } else {
-        throw error;
-      }
+    const { validRegistrations, errors } =
+      await this.registrationsInputValidator.validateAndCleanInput({
+        registrationInputArray: [updateDataWithReferenceId],
+        programId,
+        userId,
+        typeOfInput: RegistrationValidationInputType.update,
+        validationConfig,
+      });
+
+    if (errors.length > 0) {
+      const errorMessage = errors
+        .map((err) => `${err.column}: ${err.error}`)
+        .join(', ');
+      throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
     // if all valid, process update
     return await this.updateRegistration({
       programId,
       referenceId,
-      validatedRegistrationInput: validateRegistrationPatchData[0],
+      validatedRegistrationInput: validRegistrations[0],
       reason: updateRegistrationDto.reason,
     });
-  }
-
-  // TODO: Refactor this, it works around the fact that registrationsInputValidator throws Http exception with line numbers and columns names
-  // May be better to solve this in the registrationsInputValidator depending on the type of validation
-  private processHttpExceptionOnRegistrationUpdate(
-    error: HttpException,
-  ): never {
-    if (error.getStatus() === 400) {
-      const errorResponse = error.getResponse();
-      let errorMessage: object | string = '';
-      if (Array.isArray(errorResponse)) {
-        errorMessage = errorResponse
-          .map((err) => `${err.column}: ${err.error}`)
-          .join(', ');
-      } else {
-        errorMessage = errorResponse;
-      }
-      throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);
-    } else {
-      throw error; // Re-throw the error if it's not an HttpException with status 400
-    }
   }
 
   public async updateRegistration({

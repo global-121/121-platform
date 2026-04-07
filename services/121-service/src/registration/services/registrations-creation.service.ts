@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import chunk from 'lodash/chunk';
 import { Equal, Repository } from 'typeorm';
@@ -23,6 +23,7 @@ import {
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationValidationInputType } from '@121-service/src/registration/enum/registration-validation-input-type.enum';
 import { ValidationRegistrationConfig } from '@121-service/src/registration/interfaces/validate-registration-config.interface';
+import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
 import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
@@ -417,34 +418,49 @@ export class RegistrationsCreationService {
       validateUniqueReferenceId: true,
       validateExistingReferenceId: true,
     };
-    const data = await this.registrationsInputValidator.validateAndCleanInput({
-      registrationInputArray: registrationInputToValidate,
-      programId,
-      userId,
-      typeOfInput: RegistrationValidationInputType.create,
-      validationConfig,
-    });
-    return data;
+    const { validRegistrations, errors } =
+      await this.registrationsInputValidator.validateAndCleanInput({
+        registrationInputArray: registrationInputToValidate,
+        programId,
+        userId,
+        typeOfInput: RegistrationValidationInputType.create,
+        validationConfig,
+      });
+    this.throwIfValidationErrors(errors);
+    return validRegistrations;
   }
 
   private async validateBulkUpdateInput(
     csvArray: any[],
     programId: number,
     userId: number,
-  ): Promise<ValidatedRegistrationInput[]> {
+  ): Promise<void> {
     const validationConfig: ValidationRegistrationConfig = {
       validateExistingReferenceId: false,
       validateUniqueReferenceId: false,
     };
-    const result = await this.registrationsInputValidator.validateAndCleanInput(
-      {
+    const { errors } =
+      await this.registrationsInputValidator.validateAndCleanInput({
         registrationInputArray: csvArray,
         programId,
         userId,
         typeOfInput: RegistrationValidationInputType.bulkUpdate,
         validationConfig,
-      },
-    );
-    return result;
+      });
+    this.throwIfValidationErrors(errors);
+  }
+
+  private throwIfValidationErrors(
+    errors: ValidateRegistrationErrorObject[],
+  ): void {
+    if (errors.length > 0) {
+      throw new HttpException(
+        errors.map(({ index, ...rest }) => ({
+          ...rest,
+          lineNumber: index + 1,
+        })),
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }
