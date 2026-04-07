@@ -63,8 +63,5 @@
   "engines": {
     "node": ">=24",
     "npm": ">=11"
-  },
-  "dependencies": {
-    "date-fns": "^4.1.0"
   }
 }
