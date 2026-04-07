@@ -5,7 +5,7 @@ import { TableSelectAllChangeEvent } from 'primeng/table';
 import {
   QueryTableColumn,
   QueryTableSelectionEvent,
-} from '~/components/query-table/query-table.component';
+} from '~/components/query-table/query-table.types';
 import {
   PaginateQuery,
   PaginateQueryService,

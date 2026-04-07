@@ -6,7 +6,7 @@ import { ColumnFilter } from 'primeng/table';
 import {
   QueryTableColumn,
   QueryTableColumnType,
-} from '~/components/query-table/query-table.component';
+} from '~/components/query-table/query-table.types';
 import { QueryTableCellService } from '~/components/query-table/services/query-table-cell.service';
 import {
   TrackingAction,
