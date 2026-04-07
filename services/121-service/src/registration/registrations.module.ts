@@ -102,6 +102,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     RegistrationsCreationService,
     RegistrationScopedRepository,
     RegistrationViewScopedRepository,
+    RegistrationsInputValidator,
   ],
 })
 export class RegistrationsModule {}
