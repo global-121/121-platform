@@ -207,10 +207,11 @@ export class ProgramMonitoringFilesPageComponent {
           // Should never happen, but keeps TS happy
           return;
         }
-
-        this.editFileFormGroup.reset();
         this.editFileDialog().show({
           resetMutation: true,
+        });
+        this.editFileFormGroup.reset({
+          updateFileName: this.selectedFilenameWithoutExtension() ?? '',
         });
       },
       visible: this.authService.hasPermission({
