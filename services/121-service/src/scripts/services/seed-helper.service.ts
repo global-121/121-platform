@@ -244,7 +244,7 @@ export class SeedHelperService {
         const scopedUser = await this.getOrSaveUser({
           type: 'debugScopedUser',
           username: `${debugScopeUser}@example.org`,
-          password: env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
+          password: env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
         });
         if (scopedUser) {
           await this.assignAidworker(
