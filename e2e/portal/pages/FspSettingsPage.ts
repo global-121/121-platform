@@ -142,7 +142,7 @@ class FspSettingsPage extends BasePage {
             .getByLabel('Full Name')
             .nth(i + 1)
             .click();
-          await this.page.getByText('Display name').click(); // Click outside to close
+          await this.page.keyboard.press('Escape'); // Close dropdown
         }
       } else {
         for (let i = 1; i < inputCount; i++) {
@@ -162,9 +162,6 @@ class FspSettingsPage extends BasePage {
         }
       }
       await this.integrateFspButton.waitFor({ state: 'visible' });
-      await this.page
-        .locator('.p-multiselect-overlay')
-        .waitFor({ state: 'hidden' });
       await this.integrateFspButton.click();
     }
   }
