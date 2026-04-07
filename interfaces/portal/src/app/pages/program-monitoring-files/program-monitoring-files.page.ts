@@ -176,6 +176,10 @@ export class ProgramMonitoringFilesPageComponent {
       displayAsChip: true,
     },
     {
+      field: 'scope',
+      header: $localize`Scope`,
+    },
+    {
       field: 'created',
       header: $localize`Date and time`,
       type: QueryTableColumnType.DATE,

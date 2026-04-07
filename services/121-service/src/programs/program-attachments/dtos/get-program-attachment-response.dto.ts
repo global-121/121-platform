@@ -25,4 +25,7 @@ export class GetProgramAttachmentResponseDto {
 
   @ApiProperty({ example: 'image/png', type: 'string' })
   public readonly mimetype: string;
+
+  @ApiProperty({ example: 'amsterdam.west', type: 'string' })
+  public readonly scope: string;
 }
