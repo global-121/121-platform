@@ -157,7 +157,7 @@ export class ProgramMonitoringFilesPageComponent {
   }));
 
   readonly columns = computed(() => {
-    const scopeColumn: QueryTableColumn<ProgramAttachment>[] = [
+    const scopeColumns: QueryTableColumn<ProgramAttachment>[] = [
       {
         field: 'scope',
         header: $localize`Scope`,
@@ -186,6 +186,7 @@ export class ProgramMonitoringFilesPageComponent {
         options: getUniqueUserOptions(this.programAttachments.data() ?? []),
         displayAsChip: true,
       },
+
       {
         field: 'created',
         header: $localize`Date and time`,
@@ -194,7 +195,7 @@ export class ProgramMonitoringFilesPageComponent {
     ];
 
     if (this.enableScope()) {
-      return [...baseColumns, ...scopeColumn];
+      return [...baseColumns, ...scopeColumns];
     }
 
     return baseColumns;

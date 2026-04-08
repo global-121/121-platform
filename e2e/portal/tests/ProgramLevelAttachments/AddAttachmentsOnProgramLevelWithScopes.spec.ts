@@ -15,7 +15,7 @@ const jpgFilePath = path.resolve(
 
 const scopes = [DebugScope.KisumuCentral, DebugScope.KisumuEast];
 
-const uploadImageAttatchment = async ({ programMonitoringPage }) => {
+const uploadImageAttachment = async ({ programMonitoringPage }) => {
   await programMonitoringPage.uploadAttachment({
     filePath: jpgFilePath,
     filename: `Test ${path.basename(jpgFilePath, path.extname(jpgFilePath)).toUpperCase()} file upload`,
@@ -51,7 +51,7 @@ test.describe('Attachments on Program Level with Scope', () => {
           scope,
         });
         await page.goto(`/en-GB/program/${programIdPV}/monitoring/files`);
-        await uploadImageAttatchment({ programMonitoringPage });
+        await uploadImageAttachment({ programMonitoringPage });
       });
 
       await test.step('Validate uploaded files', async () => {
