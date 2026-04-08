@@ -7,6 +7,10 @@ on:
     types: [opened, reopened, edited, labeled, unlabeled]
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
