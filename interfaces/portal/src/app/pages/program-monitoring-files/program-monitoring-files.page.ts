@@ -88,7 +88,9 @@ export class ProgramMonitoringFilesPageComponent {
     if (!filename) {
       return undefined;
     }
-    return filename.substring(0, filename.lastIndexOf('.')) || filename;
+    const lastDotIndex = filename.lastIndexOf('.');
+    // If there's no dot in the filename, return the whole filename, otherwise return the filename without the extension
+    return lastDotIndex >= 0 ? filename.substring(0, lastDotIndex) : filename;
   });
 
   readonly deleteFileConfirmationDialog =
