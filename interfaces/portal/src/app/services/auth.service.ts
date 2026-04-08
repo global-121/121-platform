@@ -1,4 +1,11 @@
-import { inject, Injectable, Injector, signal } from '@angular/core';
+import {
+  EnvironmentProviders,
+  inject,
+  Injectable,
+  Injector,
+  Provider,
+  signal,
+} from '@angular/core';
 import { Router } from '@angular/router';
 
 import { QueryClient } from '@tanstack/angular-query-experimental';
@@ -24,7 +31,7 @@ import { environment } from '~environment';
 
 // Lazy resolver to avoid circular dependency chain
 // In practice this will not change at runtime; but in tests it needs to be checked independently every time
-const getAuthStrategy = () =>
+const getAuthStrategy = (): typeof IAuthStrategy =>
   environment.use_sso_azure_entra ? MsalAuthStrategy : BasicAuthStrategy;
 
 export const AUTH_ERROR_IN_STATE_KEY = 'AUTH_ERROR';
@@ -35,7 +42,7 @@ const VALID_PERMISSIONS = new Set(Object.values(PermissionEnum));
   providedIn: 'root',
 })
 export class AuthService {
-  static get APP_PROVIDERS() {
+  static get APP_PROVIDERS(): (EnvironmentProviders | Provider)[] {
     return getAuthStrategy().APP_PROVIDERS;
   }
 
