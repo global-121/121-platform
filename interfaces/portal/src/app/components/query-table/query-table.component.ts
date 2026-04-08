@@ -51,12 +51,6 @@ import {
 } from '~/services/tracking.service';
 import { Locale } from '~/utils/locale';
 
-export {
-  QueryTableColumn,
-  QueryTableColumnType,
-  QueryTableSelectionEvent,
-} from '~/components/query-table/query-table.types';
-
 /* eslint-disable sort-class-members/sort-class-members -- Disabling this rule in this file because the class members are grouped logically */
 @Component({
   selector: 'app-query-table',
