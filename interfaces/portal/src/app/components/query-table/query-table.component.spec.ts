@@ -12,10 +12,8 @@ import { MenuItem, MessageService } from 'primeng/api';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
-import {
-  QueryTableColumn,
-  QueryTableComponent,
-} from '~/components/query-table/query-table.component';
+import { QueryTableComponent } from '~/components/query-table/query-table.component';
+import { QueryTableColumn } from '~/components/query-table/query-table.types';
 import { QueryTableFilterService } from '~/components/query-table/services/query-table-filter.service';
 import { QueryTableRowExpansionService } from '~/components/query-table/services/query-table-row-expansion.service';
 import { QueryTableSelectionService } from '~/components/query-table/services/query-table-selection.service';

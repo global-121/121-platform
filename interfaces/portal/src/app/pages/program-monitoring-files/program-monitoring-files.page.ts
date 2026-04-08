@@ -29,11 +29,11 @@ import { FormDialogComponent } from '~/components/form-dialog/form-dialog.compon
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { PageLayoutMonitoringComponent } from '~/components/page-layout-monitoring/page-layout-monitoring.component';
+import { QueryTableComponent } from '~/components/query-table/query-table.component';
 import {
   QueryTableColumn,
   QueryTableColumnType,
-  QueryTableComponent,
-} from '~/components/query-table/query-table.component';
+} from '~/components/query-table/query-table.types';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import {
   PROGRAM_ATTACHMENT_FILE_TYPE_ICONS,

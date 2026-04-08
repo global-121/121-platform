@@ -26,11 +26,11 @@ import {
   getChipDataByTransactionStatus,
 } from '~/components/colored-chip/colored-chip.helper';
 import { PageLayoutPaymentComponent } from '~/components/page-layout-payment/page-layout-payment.component';
+import { QueryTableComponent } from '~/components/query-table/query-table.component';
 import {
   QueryTableColumn,
   QueryTableColumnType,
-  QueryTableComponent,
-} from '~/components/query-table/query-table.component';
+} from '~/components/query-table/query-table.types';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import {

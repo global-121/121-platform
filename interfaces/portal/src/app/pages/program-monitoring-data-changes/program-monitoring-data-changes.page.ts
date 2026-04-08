@@ -12,11 +12,11 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 
 import { PageLayoutMonitoringComponent } from '~/components/page-layout-monitoring/page-layout-monitoring.component';
+import { QueryTableComponent } from '~/components/query-table/query-table.component';
 import {
   QueryTableColumn,
   QueryTableColumnType,
-  QueryTableComponent,
-} from '~/components/query-table/query-table.component';
+} from '~/components/query-table/query-table.types';
 import { registrationLink } from '~/domains/registration/registration.helper';
 import { RegistrationEventApiService } from '~/domains/registration-event/registration-event.api.service';
 import { RegistrationEvent } from '~/domains/registration-event/registration-event.model';

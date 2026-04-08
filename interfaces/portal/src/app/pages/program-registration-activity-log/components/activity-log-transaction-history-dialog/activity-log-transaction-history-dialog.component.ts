@@ -14,11 +14,11 @@ import { DialogModule } from 'primeng/dialog';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { SkeletonModule } from 'primeng/skeleton';
 
+import { QueryTableComponent } from '~/components/query-table/query-table.component';
 import {
   QueryTableColumn,
   QueryTableColumnType,
-  QueryTableComponent,
-} from '~/components/query-table/query-table.component';
+} from '~/components/query-table/query-table.types';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { TransactionEvent } from '~/domains/transaction/transaction.model';
 import { TableCellTransactionHistoryOverviewComponent } from '~/pages/program-registration-activity-log/components/activity-log-transaction-history-dialog/components/table-cell-transaction-history-overview.component';
