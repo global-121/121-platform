@@ -74,7 +74,7 @@ jobs:
           oidc: true
           add-prefix: ${{ env.interfacePath }}
           tag: portal
-          files: ${{ env.interfacePath }}/coverage/lcov.info
+          files: ${{ env.interfacePath }}/coverage/portal/lcov.info
 
       - name: 'Check translations output-file'
         working-directory: ${{ env.interfacePath }}
