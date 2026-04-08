@@ -33,7 +33,7 @@
     "@nestjs/platform-express": "^11.1.18",
     "@nestjs/swagger": "^11.2.6",
     "@nestjs/testing": "^11.1.18",
-    "@t3-oss/env-core": "^0.13.10",
+    "@t3-oss/env-core": "^0.13.11",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "tsconfig-paths": "^4.2.0",
