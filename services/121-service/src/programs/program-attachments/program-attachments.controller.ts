@@ -91,12 +91,14 @@ export class ProgramAttachmentsController {
     }
 
     const userId = RequestHelper.getUserId(req);
+    const scope = RequestHelper.getUserScope(req);
 
     return await this.programAttachmentsService.createProgramAttachment({
       programId,
       file,
       filename: body.filename,
       userId,
+      scope,
     });
   }
 
@@ -115,11 +117,14 @@ export class ProgramAttachmentsController {
     @Param('programId', ParseIntPipe) programId: number,
     @Param('attachmentId', ParseIntPipe) attachmentId: number,
     @Body() body: RenameProgramAttachmentDto,
+    @Req() req: ScopedUserRequest,
   ): Promise<void> {
+    const scope = RequestHelper.getUserScope(req);
     await this.programAttachmentsService.renameProgramAttachment({
       programId,
       attachmentId,
       filename: body.newFilename,
+      scope,
     });
   }
 
@@ -136,8 +141,13 @@ export class ProgramAttachmentsController {
   public async getProgramAttachments(
     @Param('programId', ParseIntPipe)
     programId: number,
+    @Req() req: ScopedUserRequest,
   ): Promise<GetProgramAttachmentResponseDto[]> {
-    return this.programAttachmentsService.getProgramAttachments(programId);
+    const scope = RequestHelper.getUserScope(req);
+    return this.programAttachmentsService.getProgramAttachments(
+      programId,
+      scope,
+    );
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramAttachmentsREAD] })
@@ -156,11 +166,14 @@ export class ProgramAttachmentsController {
     @Param('programId', ParseIntPipe) programId: number,
     @Param('attachmentId', ParseIntPipe) attachmentId: number,
     @Res() res: Response,
+    @Req() req: ScopedUserRequest,
   ): Promise<void> {
+    const scope = RequestHelper.getUserScope(req);
     const { stream, mimetype, filename } =
       await this.programAttachmentsService.getProgramAttachmentById(
         programId,
         attachmentId,
+        scope,
       );
 
     res.writeHead(HttpStatus.OK, {
@@ -187,10 +200,13 @@ export class ProgramAttachmentsController {
   public async deleteProgramAttachmentById(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('attachmentId', ParseIntPipe) attachmentId: number,
+    @Req() req: ScopedUserRequest,
   ): Promise<void> {
+    const scope = RequestHelper.getUserScope(req);
     await this.programAttachmentsService.deleteProgramAttachmentById(
       programId,
       attachmentId,
+      scope,
     );
   }
 }

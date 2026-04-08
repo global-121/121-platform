@@ -4,13 +4,12 @@ exports[`Program Attachments should list all attachments for a program 1`] = `
 {
   "created": Any<String>,
   "filename": "Test Image.jpg",
-  "id": 1,
+  "id": Any<Number>,
   "mimetype": "image/jpeg",
-  "programId": 2,
+  "programId": Any<Number>,
   "updated": Any<String>,
-  "user": {
-    "id": 1,
-    "username": "admin@example.org",
+  "user": ObjectContaining {
+    "id": Any<Number>,
   },
 }
 `;

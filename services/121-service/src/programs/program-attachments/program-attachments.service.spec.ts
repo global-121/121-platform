@@ -26,7 +26,7 @@ describe('ProgramAttachmentsService', () => {
       } as ProgramAttachmentEntity;
 
       jest
-        .spyOn(programAttachmentRepository, 'findOne')
+        .spyOn(programAttachmentRepository, 'findOneScoped')
         .mockResolvedValue(existingAttachment);
       jest
         .spyOn(programAttachmentRepository, 'save')
@@ -37,6 +37,7 @@ describe('ProgramAttachmentsService', () => {
         programId: 1,
         attachmentId: 42,
         filename: 'summary',
+        scope: 'test-scope',
       });
 
       // Assert
@@ -53,7 +54,7 @@ describe('ProgramAttachmentsService', () => {
       } as ProgramAttachmentEntity;
 
       jest
-        .spyOn(programAttachmentRepository, 'findOne')
+        .spyOn(programAttachmentRepository, 'findOneScoped')
         .mockResolvedValue(existingAttachment);
       jest
         .spyOn(programAttachmentRepository, 'save')
@@ -64,6 +65,7 @@ describe('ProgramAttachmentsService', () => {
         programId: 1,
         attachmentId: 43,
         filename: 'summary',
+        scope: 'test-scope',
       });
 
       // Assert
@@ -80,7 +82,7 @@ describe('ProgramAttachmentsService', () => {
       } as ProgramAttachmentEntity;
 
       jest
-        .spyOn(programAttachmentRepository, 'findOne')
+        .spyOn(programAttachmentRepository, 'findOneScoped')
         .mockResolvedValue(existingAttachment);
       jest
         .spyOn(programAttachmentRepository, 'save')
@@ -91,6 +93,7 @@ describe('ProgramAttachmentsService', () => {
         programId: 1,
         attachmentId: 44,
         filename: 'summary',
+        scope: 'test-scope',
       });
 
       // Assert
@@ -102,7 +105,7 @@ describe('ProgramAttachmentsService', () => {
     it('should throw a 404 when the attachment does not exist', async () => {
       // Arrange
       jest
-        .spyOn(programAttachmentRepository, 'findOne')
+        .spyOn(programAttachmentRepository, 'findOneScoped')
         .mockResolvedValue(null);
 
       // Act & Assert
@@ -111,6 +114,7 @@ describe('ProgramAttachmentsService', () => {
           programId: 1,
           attachmentId: 99,
           filename: 'summary',
+          scope: 'test-scope',
         }),
       ).rejects.toThrow(
         new HttpException(
