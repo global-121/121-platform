@@ -34,10 +34,6 @@ import { environment } from '~environment';
 const getAuthStrategy = (): typeof IAuthStrategy =>
   environment.use_sso_azure_entra ? MsalAuthStrategy : BasicAuthStrategy;
 
-export {
-  AUTH_ERROR_IN_STATE_KEY,
-  SESSION_EXPIRED_IN_STATE_KEY,
-} from '~/services/auth/auth.constants';
 const VALID_PERMISSIONS = new Set(Object.values(PermissionEnum));
 
 @Injectable({

@@ -11,7 +11,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 
 import { AppRoutes } from '~/app.routes';
-import { SESSION_EXPIRED_IN_STATE_KEY } from '~/services/auth.service';
+import { SESSION_EXPIRED_IN_STATE_KEY } from '~/services/auth/auth.constants';
 
 @Component({
   selector: 'app-session-expired-dialog',

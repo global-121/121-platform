@@ -14,11 +14,11 @@ import { FormErrorComponent } from '~/components/form-error/form-error.component
 import { LocaleSwitcherComponent } from '~/components/locale-switcher/locale-switcher.component';
 import { LogoComponent } from '~/components/logo/logo.component';
 import { CookieBannerComponent } from '~/pages/login/components/cookie-banner/cookie-banner.component';
+import { AuthService } from '~/services/auth.service';
 import {
   AUTH_ERROR_IN_STATE_KEY,
-  AuthService,
   SESSION_EXPIRED_IN_STATE_KEY,
-} from '~/services/auth.service';
+} from '~/services/auth/auth.constants';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
