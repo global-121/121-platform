@@ -25,6 +25,9 @@ export class PaymentEntity extends Base121Entity {
   @Column()
   public programId: number;
 
+  @Column({ type: 'varchar' })
+  public name: string;
+
   @OneToMany(() => PaymentApprovalEntity, (approval) => approval.payment, {
     cascade: true,
   })

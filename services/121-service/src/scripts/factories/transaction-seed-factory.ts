@@ -125,9 +125,11 @@ export class TransactionSeedFactory extends BaseSeedFactory<TransactionEntity> {
 
   public async createPaymentForProgram(
     programId: number,
+    name: string,
   ): Promise<PaymentEntity> {
     const paymentData: DeepPartial<PaymentEntity> = {
       programId,
+      name,
     };
     return await this.paymentRepository.save(paymentData);
   }

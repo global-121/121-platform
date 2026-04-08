@@ -19,6 +19,7 @@ import { MessageSeedFactory } from '@121-service/src/scripts/factories/message-s
 import { RegistrationEventSeedFactory } from '@121-service/src/scripts/factories/registration-event-seed-factory';
 import { RegistrationSeedFactory } from '@121-service/src/scripts/factories/registration-seed-factory';
 import { TransactionSeedFactory } from '@121-service/src/scripts/factories/transaction-seed-factory';
+import { formatDateIntl } from '@121-service/src/utils/formatDate';
 
 const readSqlFile = (filepath: string): string => {
   return fs
@@ -148,8 +149,10 @@ export class MockSeedFactoryService {
       console.log(
         `Creating payment ${i + 1} of ${nrPayments} for program ${programId}`,
       );
-      const payment =
-        await this.transactionFactory.createPaymentForProgram(programId);
+      const payment = await this.transactionFactory.createPaymentForProgram(
+        programId,
+        `Payment ${formatDateIntl(new Date())}`,
+      );
 
       console.log(
         `Extending transactions for payment ${i + 1} of ${nrPayments} to all registrations for program ${programId}`,

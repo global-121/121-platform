@@ -16,6 +16,7 @@ import {
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
+import { formatDateIntl } from '@121-service/src/utils/formatDate';
 
 interface SeedMultipleNLRCRunParams {
   isApiTests: boolean;
@@ -144,6 +145,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript<SeedMultipleNLR
       transferValue: transferValueVisa,
       referenceIds: [registration.referenceId],
       accessToken,
+      name: `Payment ${formatDateIntl(new Date())}`,
     });
     const paymentId = createPaymentResponse.data.id;
     await this.seedMockHelper.approvePayment({

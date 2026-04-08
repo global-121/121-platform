@@ -9,3 +9,14 @@ export function formatDateYYMMDD(date: Date): string {
     padTo2Digits(date.getDate()),
   ].join('');
 }
+
+export function formatDateIntl(date: Date): string {
+  return new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false, // Forces 24-hour time (12:51 instead of 12:51 PM)
+  }).format(date);
+}
