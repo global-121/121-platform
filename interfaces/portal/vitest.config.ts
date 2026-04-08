@@ -6,7 +6,7 @@ export default defineConfig({
   test: {
     browser: {
       provider: playwright(),
-      instances: [{ browser: 'chromium' }],
+      screenshotFailures: false,
     },
     coverage: {
       reporter: ['lcov', 'text-summary'],
