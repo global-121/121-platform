@@ -8,6 +8,7 @@ import { KoboController } from '@121-service/src/kobo/kobo.controller';
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboValidationService } from '@121-service/src/kobo/services/kobo.validation.service';
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
+import { KoboSubmissionHelperService } from '@121-service/src/kobo/services/kobo-submission.helper.service';
 import { KoboSubmissionService } from '@121-service/src/kobo/services/kobo-submission.service';
 import { KoboSurveyProcessorService } from '@121-service/src/kobo/services/kobo-survey-processor.service';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
@@ -31,6 +32,7 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
     CustomHttpService,
     KoboSurveyProcessorService,
     KoboSubmissionService,
+    KoboSubmissionHelperService,
     KoboWebhookBasicAuthGuard,
   ],
   controllers: [KoboController],
