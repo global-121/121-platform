@@ -1,9 +1,9 @@
-import { Type } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import type { Type } from '@angular/core';
+import type { RouterLink } from '@angular/router';
 
-import { ChipData } from '~/components/colored-chip/colored-chip.helper';
-import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
-import { Leaves } from '~/utils/leaves';
+import type { ChipData } from '~/components/colored-chip/colored-chip.helper';
+import type { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
+import type { Leaves } from '~/utils/leaves';
 
 export enum QueryTableColumnType {
   DATE = 'date',
