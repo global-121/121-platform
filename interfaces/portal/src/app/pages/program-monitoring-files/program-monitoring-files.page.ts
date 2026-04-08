@@ -77,6 +77,9 @@ export class ProgramMonitoringFilesPageComponent {
   readonly programApiService = inject(ProgramApiService);
   readonly toastService = inject(ToastService);
 
+  program = injectQuery(this.programApiService.getProgram(this.programId));
+  readonly enableScope = computed(() => this.program.data()?.enableScope);
+
   programAttachments = injectQuery(
     this.programApiService.getProgramAttachments(this.programId),
   );
@@ -153,38 +156,49 @@ export class ProgramMonitoringFilesPageComponent {
     },
   }));
 
-  readonly columns = computed<QueryTableColumn<ProgramAttachment>[]>(() => [
-    {
-      field: 'fileType',
-      header: $localize`File type`,
-      type: QueryTableColumnType.MULTISELECT,
-      options: Object.values(ProgramAttachmentFileType).map((type) => ({
-        label: PROGRAM_ATTACHMENT_FILE_TYPE_LABELS[type],
-        value: type,
-        icon: PROGRAM_ATTACHMENT_FILE_TYPE_ICONS[type],
-      })),
-    },
-    {
-      field: 'filename',
-      header: $localize`File name`,
-    },
-    {
-      field: 'user.username',
-      header: $localize`Imported by`,
-      type: QueryTableColumnType.MULTISELECT,
-      options: getUniqueUserOptions(this.programAttachments.data() ?? []),
-      displayAsChip: true,
-    },
-    {
-      field: 'scope',
-      header: $localize`Scope`,
-    },
-    {
-      field: 'created',
-      header: $localize`Date and time`,
-      type: QueryTableColumnType.DATE,
-    },
-  ]);
+  readonly columns = computed(() => {
+    const scopeColumn: QueryTableColumn<ProgramAttachment>[] = [
+      {
+        field: 'scope',
+        header: $localize`Scope`,
+      },
+    ];
+
+    const baseColumns: QueryTableColumn<ProgramAttachment>[] = [
+      {
+        field: 'fileType',
+        header: $localize`File type`,
+        type: QueryTableColumnType.MULTISELECT,
+        options: Object.values(ProgramAttachmentFileType).map((type) => ({
+          label: PROGRAM_ATTACHMENT_FILE_TYPE_LABELS[type],
+          value: type,
+          icon: PROGRAM_ATTACHMENT_FILE_TYPE_ICONS[type],
+        })),
+      },
+      {
+        field: 'filename',
+        header: $localize`File name`,
+      },
+      {
+        field: 'user.username',
+        header: $localize`Imported by`,
+        type: QueryTableColumnType.MULTISELECT,
+        options: getUniqueUserOptions(this.programAttachments.data() ?? []),
+        displayAsChip: true,
+      },
+      {
+        field: 'created',
+        header: $localize`Date and time`,
+        type: QueryTableColumnType.DATE,
+      },
+    ];
+
+    if (this.enableScope()) {
+      return [...baseColumns, ...scopeColumn];
+    }
+
+    return baseColumns;
+  });
 
   downloadAttachmentMutation = injectMutation(() => ({
     mutationFn: (file: ProgramAttachment) =>
