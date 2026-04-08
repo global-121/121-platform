@@ -14,9 +14,9 @@ export enum QueryTableColumnType {
 
 export type QueryTableColumn<TData, TField = Leaves<TData> & string> = {
   header: string;
-  field: 'COMPUTED_FIELD' | TField; // 'COMPUTED_FIELD' is a special value that is used to indicate that the field is computed and should not be used for filtering or sorting
-  fieldForSort?: TField; // defaults to field
-  fieldForFilter?: TField; // defaults to field
+  field: 'COMPUTED_FIELD' | TField; // 'COMPUTED_FIELD' is a special value that is used to indicate that the field should not be used for filtering or sorting
+  fieldForSort?: TField; // Defaults to type of `field`
+  fieldForFilter?: TField; // Defaults to type of `field`
   defaultHidden?: boolean;
   disableSorting?: boolean;
   disableFiltering?: boolean;

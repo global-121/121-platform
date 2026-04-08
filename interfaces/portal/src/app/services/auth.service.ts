@@ -23,7 +23,7 @@ import {
 import { environment } from '~environment';
 
 // Lazy resolver to avoid circular dependency chain
-// In practice this will not change at runtime; But in tests it needs to be checked independently every time
+// In practice this will not change at runtime; but in tests it needs to be checked independently every time
 const getAuthStrategy = () =>
   environment.use_sso_azure_entra ? MsalAuthStrategy : BasicAuthStrategy;
 

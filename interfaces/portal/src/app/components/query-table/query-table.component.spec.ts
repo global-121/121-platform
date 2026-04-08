@@ -24,8 +24,9 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
 import { TrackingService } from '~/services/tracking.service';
 import { Locale } from '~/utils/locale';
 
-// https://rebeccamdeprey.com/blog/mock-windowmatchmedia-in-vitest
-//this is needed in order to make tests concerning PrimeNG ContextMenu work
+// To make the tests concerning PrimeNG ContextMenu work.
+// See: https://rebeccamdeprey.com/blog/mock-windowmatchmedia-in-vitest
+// See: https://vitest.dev/api/vi.html#vi-hoisted
 vi.hoisted(() => {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
