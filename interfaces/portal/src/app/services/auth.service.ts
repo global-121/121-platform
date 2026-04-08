@@ -15,6 +15,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
 import { UserApiService } from '~/domains/user/user.api.service';
+import { VALID_PERMISSIONS } from '~/services/auth/auth.constants';
 import { IAuthStrategy } from '~/services/auth/auth-strategy.interface';
 import { BasicAuthStrategy } from '~/services/auth/strategies/basic-auth/basic-auth.strategy';
 import { MsalAuthStrategy } from '~/services/auth/strategies/msal-auth/msal-auth.strategy';
@@ -33,8 +34,6 @@ import { environment } from '~environment';
 // In practice this will not change at runtime; but in tests it needs to be checked independently every time
 const getAuthStrategy = (): typeof IAuthStrategy =>
   environment.use_sso_azure_entra ? MsalAuthStrategy : BasicAuthStrategy;
-
-const VALID_PERMISSIONS = new Set(Object.values(PermissionEnum));
 
 @Injectable({
   providedIn: 'root',
