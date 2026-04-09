@@ -392,4 +392,27 @@ export class IntersolveVisaAccountManagementService {
       );
     }
   }
+
+  public blockClard({
+    referenceId,
+    programId,
+    tokenCode,
+  }: {
+    referenceId: string;
+    programId: number;
+    tokenCode: string;
+  }) {
+    console.log(
+      '🚀 ~ IntersolveVisaAccountManagementService ~ blockClard ~ tokenCode:',
+      tokenCode,
+    );
+    console.log(
+      '🚀 ~ IntersolveVisaAccountManagementService ~ blockClard ~ programId:',
+      programId,
+    );
+    console.log(
+      '🚀 ~ IntersolveVisaAccountManagementService ~ blockClard ~ referenceId:',
+      referenceId,
+    );
+  }
 }

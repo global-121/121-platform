@@ -251,4 +251,31 @@ export class IntersolveVisaAccountManagementController {
       tokenCode,
     });
   }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardBLOCK] })
+  @ApiOperation({
+    summary: 'Block a debit card for a registration',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiBody({ type: TokenCodeDto })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Card blocked',
+  })
+  @Post(
+    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/wallet/cards/block',
+  )
+  public async blockCard(
+    @Body() body: TokenCodeDto,
+    @Param('programId', ParseIntPipe) programId: number,
+    @Param('referenceId') referenceId: string,
+  ): Promise<void> {
+    const tokenCode = body.tokenCode;
+    await this.intersolveVisaAccountManagementService.blockClard({
+      referenceId,
+      programId,
+      tokenCode,
+    });
+  }
 }
