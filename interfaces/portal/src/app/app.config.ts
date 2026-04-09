@@ -21,7 +21,6 @@ import {
   provideTanStackQuery,
   QueryClient,
 } from '@tanstack/angular-query-experimental';
-import { withDevtools } from '@tanstack/angular-query-experimental/devtools';
 import { provideAngularSvgIcon } from 'angular-svg-icon';
 import { MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
@@ -100,10 +99,7 @@ export const getAppConfig = (locale: Locale): ApplicationConfig => ({
         clear: $localize`:@@generic-clear:Clear`,
       },
     }),
-    provideTanStackQuery(
-      queryClient,
-      withDevtools(() => ({ loadDevtools: false })),
-    ),
+    provideTanStackQuery(queryClient),
     ...AuthService.APP_PROVIDERS,
     ...TrackingService.APP_PROVIDERS,
     { provide: TitleStrategy, useClass: CustomPageTitleStrategy },
