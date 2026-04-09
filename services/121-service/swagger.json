@@ -1187,6 +1187,14 @@
     ]
   },
   {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/block",
+    "params": [
+      "programId",
+      "referenceId"
+    ]
+  },
+  {
     "method": "put",
     "path": "/api/programs/{programId}/kobo",
     "params": [
