@@ -206,6 +206,7 @@ export class PaymentsController {
       transferValue: data.transferValue,
       query,
       dryRun: dryRunBoolean,
+      name: data.name,
       note: data.note,
     });
 

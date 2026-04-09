@@ -270,12 +270,14 @@ export class SeedMockHelperService {
     referenceIds,
     accessToken,
     filter,
+    name,
   }: {
     programId: number;
     transferValue: number;
     referenceIds: string[];
     accessToken: string;
     filter?: Record<string, string>;
+    name: string;
   }): Promise<any> {
     let queryParams = '';
     if (filter) {
@@ -295,6 +297,7 @@ export class SeedMockHelperService {
     const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
     const body = {
       transferValue,
+      name,
     };
 
     return await this.httpService.post(url, body, headers);

@@ -104,6 +104,7 @@ export async function createPayment({
   accessToken,
   filter = {},
   note,
+  name = 'Test Payment',
 }: {
   programId: number;
   transferValue: number;
@@ -111,6 +112,7 @@ export async function createPayment({
   accessToken: string;
   filter?: Record<string, string>;
   note?: string;
+  name?: string;
 }): Promise<request.Response> {
   const queryParams = {};
   if (filter) {
@@ -130,6 +132,7 @@ export async function createPayment({
     .send({
       transferValue,
       note,
+      name,
     });
 }
 
@@ -186,6 +189,7 @@ export async function doPayment({
   accessToken,
   filter = {},
   note,
+  name = 'Test Payment',
 }: {
   programId: number;
   transferValue: number;
@@ -193,6 +197,7 @@ export async function doPayment({
   accessToken: string;
   filter?: Record<string, string>;
   note?: string;
+  name?: string;
 }): Promise<request.Response> {
   const createResult = await createPayment({
     programId,
@@ -201,6 +206,7 @@ export async function doPayment({
     accessToken,
     filter,
     note,
+    name,
   });
   if (createResult.status !== HttpStatus.CREATED) {
     return createResult;

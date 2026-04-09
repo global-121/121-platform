@@ -34,6 +34,7 @@ describe('PaymentsManagementService', () => {
     transferValue: 100,
     query: { path: 'test' },
     dryRun: false,
+    name: 'Payment 1',
     note: 'test',
   };
 

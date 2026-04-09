@@ -16,6 +16,7 @@ import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
+import { format } from 'date-fns';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -231,6 +232,7 @@ export class CreatePaymentComponent {
         paymentData: {
           transferValue: this.transferValue(),
           note: this.paymentFormGroup.value.note,
+          name: `Payment ${format(new Date(), 'dd/MM/yy, HH:mm')}`,
         },
         dryRun,
       });

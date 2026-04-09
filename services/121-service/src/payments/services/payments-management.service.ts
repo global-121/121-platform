@@ -53,12 +53,14 @@ export class PaymentsManagementService {
     query,
     dryRun,
     note,
+    name,
   }: {
     userId: number;
     programId: number;
     transferValue: number | undefined;
     query: PaginateQuery;
     dryRun: boolean;
+    name: string;
     note?: string;
   }): Promise<BulkActionResultPaymentDto> {
     if (dryRun) {
@@ -101,6 +103,7 @@ export class PaymentsManagementService {
         programId,
         note,
         thresholds,
+        name,
       });
       bulkActionResultPaymentDto.id = paymentId;
 
@@ -238,17 +241,20 @@ export class PaymentsManagementService {
     programId,
     note,
     thresholds,
+    name,
   }: {
     userId: number;
     programId: number;
     note?: string;
     thresholds: ProgramApprovalThresholdEntity[];
+    name: string;
   }): Promise<number> {
     const sortedThresholds: ProgramApprovalThresholdEntity[] = thresholds
       .slice()
       .sort((a, b) => a.thresholdAmount - b.thresholdAmount);
     const paymentEntity = new PaymentEntity();
     paymentEntity.programId = programId;
+    paymentEntity.name = name;
     paymentEntity.approvals = this.createPaymentApprovals({
       thresholds: sortedThresholds,
     });
