@@ -1,7 +1,7 @@
 # See docs: https://docs.docker.com/build/concepts/context/#dockerignore-files
 # The Docker Compose' build-context is "the repository root", because we want to access the shared "packages" folder inside each service.
-# So we exclude all the files that are not needed for building the image, to speed up the build process.
-# Only `packages/` and `services/` are needed by the Dockerfiles.
+# So we exclude files and directories that are not needed for building the image, to speed up the build process.
+# The Dockerfiles primarily need content from `packages/` and `services/`, so we ignore several known-unneeded paths instead of using a strict allowlist.
 
 .git
 .env*
