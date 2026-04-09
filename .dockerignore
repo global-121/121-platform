@@ -37,6 +37,5 @@ logs
 .DS_Store
 
 # Root-level config files not needed inside containers
-*.md
-*.mjs
-lint-staged.config.mjs
+/*.md
+/*.mjs
