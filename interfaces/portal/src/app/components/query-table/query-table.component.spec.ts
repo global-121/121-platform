@@ -12,10 +12,8 @@ import { MenuItem, MessageService } from 'primeng/api';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
-import {
-  QueryTableColumn,
-  QueryTableComponent,
-} from '~/components/query-table/query-table.component';
+import { QueryTableComponent } from '~/components/query-table/query-table.component';
+import { QueryTableColumn } from '~/components/query-table/query-table.types';
 import { QueryTableFilterService } from '~/components/query-table/services/query-table-filter.service';
 import { QueryTableRowExpansionService } from '~/components/query-table/services/query-table-row-expansion.service';
 import { QueryTableSelectionService } from '~/components/query-table/services/query-table-selection.service';
@@ -23,6 +21,26 @@ import { ActionDataWithPaginateQuery } from '~/services/paginate-query.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { TrackingService } from '~/services/tracking.service';
 import { Locale } from '~/utils/locale';
+
+// To make the tests concerning PrimeNG ContextMenu work.
+// See: https://rebeccamdeprey.com/blog/mock-windowmatchmedia-in-vitest
+// See: https://vitest.dev/api/vi.html#vi-hoisted
+vi.hoisted(() => {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    enumerable: true,
+    value: vi.fn().mockImplementation((query: unknown) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(), // deprecated
+      removeListener: vi.fn(), // deprecated
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  });
+});
 
 interface TestRow {
   id: number;
@@ -107,6 +125,7 @@ class TrackingServiceStub {
 describe('QueryTableComponent', () => {
   const getItemSpy = vi.spyOn(Storage.prototype, 'getItem');
   const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
+
   const DEFAULT_ITEMS: TestRow[] = [
     {
       id: 1,
@@ -145,25 +164,6 @@ describe('QueryTableComponent', () => {
   }
 
   let fixture: ComponentFixture<QueryTableComponent<TestRow, TestContext>>;
-
-  // https://rebeccamdeprey.com/blog/mock-windowmatchmedia-in-vitest
-  //this is needed in order to make tests concerning PrimeNG ContextMenu work
-  vi.hoisted(() => {
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      enumerable: true,
-      value: vi.fn().mockImplementation((query: unknown) => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: vi.fn(), // deprecated
-        removeListener: vi.fn(), // deprecated
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-      })),
-    });
-  });
 
   beforeEach(async () => {
     getItemSpy.mockClear();

@@ -14,6 +14,10 @@ on:
       - '**.yml'
       - '**.scss'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   HUSKY: 0
 

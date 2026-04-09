@@ -20,6 +20,10 @@ on:
       - '.github/actions/build-service/action.yml'
       - 'services/mock-service/**'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   workingDirectory: 'services/mock-service'
 

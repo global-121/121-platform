@@ -19,6 +19,10 @@ on:
       - interfaces/portal/**
       - services/121-service/** # 121-service's code is imported/used
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 # This is needed for qlty to authenticate with OIDC
 # https://docs.qlty.sh/coverage/quickstart#github-actions
 permissions:
@@ -74,7 +78,7 @@ jobs:
           oidc: true
           add-prefix: ${{ env.interfacePath }}
           tag: portal
-          files: ${{ env.interfacePath }}/coverage/lcov.info
+          files: ${{ env.interfacePath }}/coverage/portal/lcov.info
 
       - name: 'Check translations output-file'
         working-directory: ${{ env.interfacePath }}

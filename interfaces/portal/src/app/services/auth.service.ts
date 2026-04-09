@@ -1,4 +1,11 @@
-import { inject, Injectable, Injector, signal } from '@angular/core';
+import {
+  EnvironmentProviders,
+  inject,
+  Injectable,
+  Injector,
+  Provider,
+  signal,
+} from '@angular/core';
 import { Router } from '@angular/router';
 
 import { QueryClient } from '@tanstack/angular-query-experimental';
@@ -8,6 +15,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
 import { UserApiService } from '~/domains/user/user.api.service';
+import { VALID_PERMISSIONS } from '~/services/auth/auth.constants';
 import { IAuthStrategy } from '~/services/auth/auth-strategy.interface';
 import { BasicAuthStrategy } from '~/services/auth/strategies/basic-auth/basic-auth.strategy';
 import { MsalAuthStrategy } from '~/services/auth/strategies/msal-auth/msal-auth.strategy';
@@ -22,19 +30,18 @@ import {
 } from '~/utils/local-storage';
 import { environment } from '~environment';
 
-const AuthStrategy = environment.use_sso_azure_entra
-  ? MsalAuthStrategy
-  : BasicAuthStrategy;
-
-export const AUTH_ERROR_IN_STATE_KEY = 'AUTH_ERROR';
-export const SESSION_EXPIRED_IN_STATE_KEY = 'SESSION_EXPIRED';
-const VALID_PERMISSIONS = new Set(Object.values(PermissionEnum));
+// Lazy resolver to avoid circular dependency chain
+// In practice this will not change at runtime; but in tests it needs to be checked independently every time
+const getAuthStrategy = (): typeof IAuthStrategy =>
+  environment.use_sso_azure_entra ? MsalAuthStrategy : BasicAuthStrategy;
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  public static APP_PROVIDERS = AuthStrategy.APP_PROVIDERS;
+  static get APP_PROVIDERS(): (EnvironmentProviders | Provider)[] {
+    return getAuthStrategy().APP_PROVIDERS;
+  }
 
   private readonly injector = inject(Injector);
   private readonly router = inject(Router);
@@ -52,7 +59,7 @@ export class AuthService {
   );
 
   constructor() {
-    this.authStrategy = this.injector.get<IAuthStrategy>(AuthStrategy);
+    this.authStrategy = this.injector.get<IAuthStrategy>(getAuthStrategy());
   }
 
   initializeSubscriptions() {
