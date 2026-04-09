@@ -1,11 +1,21 @@
 # See docs: https://docs.docker.com/build/concepts/context/#dockerignore-files
 # The Docker Compose' build-context is "the repository root", because we want to access the shared "packages" folder inside each service.
 # So we exclude all the files that are not needed for building the image, to speed up the build process.
+# Only `packages/` and `services/` are needed by the Dockerfiles.
 
 .git
 .env*
 .dockerignore
 Dockerfile
+
+# Directories not needed for Docker builds
+interfaces/
+e2e/
+k6/
+tools/
+docs/
+downloads/
+resources/
 
 # Dependencies
 node_modules
@@ -25,3 +35,8 @@ logs
 # IDE / OS
 .vscode
 .DS_Store
+
+# Root-level config files not needed inside containers
+*.md
+*.mjs
+lint-staged.config.mjs
