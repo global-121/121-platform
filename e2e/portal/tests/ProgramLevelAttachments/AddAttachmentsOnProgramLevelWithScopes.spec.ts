@@ -62,8 +62,9 @@ test.describe('Attachments on Program Level with Scope', () => {
 
         const scopeColumnIndex =
           await tableComponent.getColumnIndexByHeaderText('Scope');
-        const attachmentScopeName =
-          await tableComponent.getTextArrayFromColumn(scopeColumnIndex);
+        const attachmentScopeName = await tableComponent.getTextArrayFromColumn(
+          scopeColumnIndex + 1,
+        ); // Adding 1 to the column index to get the correct column as the table component is 1-based index
 
         expect(attachmentScopeName[0]).toContain(scope);
       });
@@ -92,8 +93,9 @@ test.describe('Attachments on Program Level with Scope', () => {
 
       const scopeColumnIndex =
         await tableComponent.getColumnIndexByHeaderText('Scope');
-      const scopeNamesArray =
-        await tableComponent.getTextArrayFromColumn(scopeColumnIndex);
+      const scopeNamesArray = await tableComponent.getTextArrayFromColumn(
+        scopeColumnIndex + 1,
+      ); // Adding 1 to the column index to get the correct column as the table component is 1-based index
 
       expect(scopeNamesArray).toContain(DebugScope.KisumuCentral);
       expect(scopeNamesArray).toContain(DebugScope.KisumuEast);
