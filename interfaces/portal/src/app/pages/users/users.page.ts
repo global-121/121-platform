@@ -17,11 +17,11 @@ import { CardModule } from 'primeng/card';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
+import { QueryTableComponent } from '~/components/query-table/query-table.component';
 import {
   QueryTableColumn,
   QueryTableColumnType,
-  QueryTableComponent,
-} from '~/components/query-table/query-table.component';
+} from '~/components/query-table/query-table.types';
 import { UserApiService } from '~/domains/user/user.api.service';
 import { User } from '~/domains/user/user.model';
 import { AddUserDialogComponent } from '~/pages/users/components/add-user-dialog/add-user-dialog.component';

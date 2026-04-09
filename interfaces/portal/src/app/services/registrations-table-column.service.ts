@@ -16,7 +16,7 @@ import {
 import {
   QueryTableColumn,
   QueryTableColumnType,
-} from '~/components/query-table/query-table.component';
+} from '~/components/query-table/query-table.types';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { Program } from '~/domains/program/program.model';
 import {

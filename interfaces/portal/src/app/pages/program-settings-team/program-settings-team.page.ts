@@ -21,10 +21,8 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { PageLayoutProgramSettingsComponent } from '~/components/page-layout-program-settings/page-layout-program-settings.component';
-import {
-  QueryTableColumn,
-  QueryTableComponent,
-} from '~/components/query-table/query-table.component';
+import { QueryTableComponent } from '~/components/query-table/query-table.component';
+import { QueryTableColumn } from '~/components/query-table/query-table.types';
 import { ProgramApiService } from '~/domains/program/program.api.service';
 import { ProgramUserWithRolesLabel } from '~/domains/program/program.model';
 import { AddProgramTeamUserDialogComponent } from '~/pages/program-settings-team/components/add-program-team-user-dialog/add-program-team-user-dialog.component';

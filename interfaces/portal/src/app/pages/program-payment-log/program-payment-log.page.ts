@@ -17,11 +17,11 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 
 import { PageLayoutPaymentComponent } from '~/components/page-layout-payment/page-layout-payment.component';
+import { QueryTableComponent } from '~/components/query-table/query-table.component';
 import {
   QueryTableColumn,
   QueryTableColumnType,
-  QueryTableComponent,
-} from '~/components/query-table/query-table.component';
+} from '~/components/query-table/query-table.types';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import {
   PAYMENT_EVENT_LOG_ITEM_TYPE_ICONS,

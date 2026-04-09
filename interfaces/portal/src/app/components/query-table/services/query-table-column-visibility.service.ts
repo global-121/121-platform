@@ -1,6 +1,6 @@
 import { effect, signal, WritableSignal } from '@angular/core';
 
-import { QueryTableColumn } from '~/components/query-table/query-table.component';
+import { QueryTableColumn } from '~/components/query-table/query-table.types';
 
 export class QueryTableColumnVisibilityService<TData> {
   readonly visibleColumns: WritableSignal<QueryTableColumn<TData>[]> = signal(

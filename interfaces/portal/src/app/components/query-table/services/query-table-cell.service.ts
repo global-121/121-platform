@@ -7,7 +7,7 @@ import { ChipData } from '~/components/colored-chip/colored-chip.helper';
 import {
   QueryTableColumn,
   QueryTableColumnType,
-} from '~/components/query-table/query-table.component';
+} from '~/components/query-table/query-table.types';
 import { Locale } from '~/utils/locale';
 
 export class QueryTableCellService<TData> {

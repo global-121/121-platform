@@ -7,7 +7,7 @@ import { TableLazyLoadEvent } from 'primeng/table';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
-import { QueryTableSelectionEvent } from '~/components/query-table/query-table.component';
+import { QueryTableSelectionEvent } from '~/components/query-table/query-table.types';
 import { localTimeToUtcTime } from '~/utils/local-time-to-utc-time';
 
 export enum FilterOperator {

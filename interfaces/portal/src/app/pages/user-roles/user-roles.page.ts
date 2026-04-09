@@ -9,10 +9,8 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
-import {
-  QueryTableColumn,
-  QueryTableComponent,
-} from '~/components/query-table/query-table.component';
+import { QueryTableComponent } from '~/components/query-table/query-table.component';
+import { QueryTableColumn } from '~/components/query-table/query-table.types';
 import { RoleApiService } from '~/domains/role/role.api.service';
 import { Role } from '~/domains/role/role.model';
 

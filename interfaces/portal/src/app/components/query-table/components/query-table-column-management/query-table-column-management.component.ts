@@ -20,7 +20,7 @@ import { DrawerModule } from 'primeng/drawer';
 import { FocusTrapModule } from 'primeng/focustrap';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
-import { QueryTableColumn } from '~/components/query-table/query-table.component';
+import { QueryTableColumn } from '~/components/query-table/query-table.types';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import {
   TrackingAction,
