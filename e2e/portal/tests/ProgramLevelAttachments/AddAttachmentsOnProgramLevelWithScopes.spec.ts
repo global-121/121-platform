@@ -60,8 +60,10 @@ test.describe('Attachments on Program Level with Scope', () => {
           expectedRowCount: 1,
         });
 
+        const scopeColumnIndex =
+          await tableComponent.getColumnIndexByHeaderText('Scope');
         const attachmentScopeName =
-          await tableComponent.getTextArrayFromColumn(4); // Column 4 is the 'Scope' column
+          await tableComponent.getTextArrayFromColumn(scopeColumnIndex);
 
         expect(attachmentScopeName[0]).toContain(scope);
       });
@@ -88,7 +90,10 @@ test.describe('Attachments on Program Level with Scope', () => {
         expectedRowCount: 2, // Expected row count is 2 as admin user should see both files uploaded by scoped users
       });
 
-      const scopeNamesArray = await tableComponent.getTextArrayFromColumn(4); // Column 4 is the 'Scope' column
+      const scopeColumnIndex =
+        await tableComponent.getColumnIndexByHeaderText('Scope');
+      const scopeNamesArray =
+        await tableComponent.getTextArrayFromColumn(scopeColumnIndex);
 
       expect(scopeNamesArray).toContain(DebugScope.KisumuCentral);
       expect(scopeNamesArray).toContain(DebugScope.KisumuEast);
