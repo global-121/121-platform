@@ -191,7 +191,7 @@ export class KoboSubmissionService {
     // The Kobo error DTO does not include validator-only fields such as index.
     // Map the validator errors to only the fields returned in the response.
     const validationErrorDtos = validationErrors.map((validationError) => ({
-      referenceId: validationError.referenceId ?? '',
+      referenceId: validationError.referenceId,
       column: validationError.column,
       error: validationError.error,
     }));

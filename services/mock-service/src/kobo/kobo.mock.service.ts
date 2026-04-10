@@ -500,7 +500,7 @@ export class KoboMockService {
         _status: 'submitted_via_web',
         start: '2025-04-30T15:59:00.000Z',
         end: '2025-04-30T16:00:00.000Z',
-        // This should trigger an error in our processing because the FSP is not a valid one
+        // This should trigger an error in our processing because the FSP is missing
         // In a real scenario, this could have happened if the submission was created with an older version of the form
         'group_ad8jk55/fullName': 'Jane Doe',
         nationalId: '987654321',

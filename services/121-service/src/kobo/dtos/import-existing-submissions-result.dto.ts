@@ -5,7 +5,7 @@ class SubmissionValidationError {
     description: 'The reference ID of the submission that failed validation',
     example: 'abc-123-def',
   })
-  public readonly referenceId: string;
+  public readonly referenceId?: string;
 
   @ApiProperty({
     description: 'The column that failed validation',
