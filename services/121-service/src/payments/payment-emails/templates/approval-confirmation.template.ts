@@ -7,7 +7,7 @@ export const buildTemplateApprovalConfirmation = (
 ): EmailTemplate => {
   const { recipientName, paymentUrl, paymentCreatedAt } = paymentEmailInput;
 
-  const subject = '121 portal: Payment approved';
+  const subject = '121 Portal: Payment approved';
   const body = `
     <p>Dear ${recipientName},</p>
     <p>

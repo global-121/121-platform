@@ -8,7 +8,7 @@ import { ImportValidationFailedEmailInput } from '@121-service/src/registrations
 export const buildTemplateImportValidationFailed = (
   updateJobEmailInput: ImportValidationFailedEmailInput,
 ): EmailTemplate => {
-  const subject = 'Registration Import - Validation Failed';
+  const subject = '121 Portal: Registration Import - Validation Failed';
 
   const body = `
     <p>Dear ${updateJobEmailInput.recipientName},</p>

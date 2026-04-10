@@ -18,7 +18,7 @@ exports[`Payment email templates should render approval confirmation template 1`
       121 Support Team
     </p>
   ",
-  "subject": "121 portal: Payment approved",
+  "subject": "121 Portal: Payment approved",
 }
 `;
 
@@ -38,6 +38,6 @@ exports[`Payment email templates should render approval request template 1`] = `
       121 Support Team
     </p>
   ",
-  "subject": "121 portal: Payment approval",
+  "subject": "121 Portal: Payment approval",
 }
 `;
