@@ -22,6 +22,7 @@ services:
     volumes:
       - '../packages:/home/packages'
       - './mock-service:/home/node/app'
+      - node_modules_mock-service:/home/node/app/node_modules
     restart: unless-stopped
 
   121-service:
@@ -34,5 +35,10 @@ services:
     volumes:
       - '../packages:/home/packages'
       - './121-service:/home/node/app'
+      - node_modules_121-service:/home/node/app/node_modules
     command: 'npm run start:dev${COVERAGE_DEV_STARTUP_SUFFIX}'
     restart: unless-stopped
+
+volumes:
+  node_modules_121-service:
+  node_modules_mock-service:

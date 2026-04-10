@@ -10,6 +10,7 @@
   "private": true,
   "scripts": {
     "start": "echo 'See README.md#getting-started \\n\\n'",
+    "setup:dev-environment": "docker volume rm -f $(docker volume ls -q --filter name=services_node_modules_) 2>/dev/null || true && npm install --prefix=packages/eslint-config-121-platform/ && npm install --prefix=services/121-service/ && npm install --prefix=services/mock-service/",
     "start:all": "npx npm-run-all --npm-path npm --print-label --parallel start:services start:portal",
     "logs:services": "cd services/ && docker compose logs --follow",
     "start:services": "cd services/ && docker compose --file=docker-compose.yml --file=docker-compose.development.yml up --build",
