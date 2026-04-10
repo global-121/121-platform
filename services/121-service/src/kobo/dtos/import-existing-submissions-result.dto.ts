@@ -1,9 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export interface SubmissionValidationError {
-  readonly column: string;
-  readonly error: string;
-}
+import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
 
 export class ImportExistingSubmissionsResultDto {
   @ApiProperty({
@@ -39,6 +36,6 @@ export class ImportExistingSubmissionsResultDto {
   })
   public validationErrorsPerSubmission: Record<
     string,
-    SubmissionValidationError[]
+    ValidateRegistrationErrorObject[]
   >;
 }

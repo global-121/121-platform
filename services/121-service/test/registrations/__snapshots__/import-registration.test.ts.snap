@@ -18,33 +18,24 @@ exports[`Import a registration should give me a CSV template when I request it 1
 `;
 
 exports[`Import a registration should throw an error when a required fsp attribute is missing 1`] = `
-[
-  {
-    "column": "whatsappPhoneNumber",
-    "error": "Cannot update 'whatsappPhoneNumber' is required for the FSP: 'Intersolve-voucher-whatsapp'",
-    "lineNumber": 1,
-  },
-]
+{
+  "column": "whatsappPhoneNumber",
+  "error": "Cannot update 'whatsappPhoneNumber' is required for the FSP: 'Intersolve-voucher-whatsapp'",
+}
 `;
 
 exports[`Import a registration should throw an error with a dropdown registration atribute set to null 1`] = `
-[
-  {
-    "column": "house",
-    "error": "Value 'null' is not in the allowed options: 'lannister, stark, greyjoy' for attribute 'house'",
-    "lineNumber": 1,
-    "value": null,
-  },
-]
+{
+  "column": "house",
+  "error": "Value 'null' is not in the allowed options: 'lannister, stark, greyjoy' for attribute 'house'",
+  "value": null,
+}
 `;
 
 exports[`Import a registration should throw an error with a numeric registration atribute set to null 1`] = `
-[
-  {
-    "column": "addressHouseNumber",
-    "error": "Cannot update/set addressHouseNumber with a nullable value as it is required for the FSP: Intersolve-visa",
-    "lineNumber": 1,
-    "value": null,
-  },
-]
+{
+  "column": "addressHouseNumber",
+  "error": "Cannot update/set addressHouseNumber with a nullable value as it is required for the FSP: Intersolve-visa",
+  "value": null,
+}
 `;

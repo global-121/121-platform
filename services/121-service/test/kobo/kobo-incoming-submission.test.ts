@@ -178,7 +178,7 @@ describe('Process incoming Kobo submission via webhook', () => {
     // Kobo user would be able to see this error in the Kobo Rest service logs, which can be used for troubleshooting
     // The mock service returns the error it receives from 121-service, so we can test that the 121-service returns the correct error
     expect(triggerSubmissionResponse.status).toBe(HttpStatus.BAD_REQUEST);
-    expect(triggerSubmissionResponse.body[0].error).toMatchInlineSnapshot(
+    expect(triggerSubmissionResponse.body[0].errors[0].error).toMatchInlineSnapshot(
       `"FspConfigurationName Invalid-FSP not found in program. Allowed values: Safaricom"`,
     );
 
@@ -235,7 +235,7 @@ describe('Process incoming Kobo submission via webhook', () => {
     });
 
     expect(secondResponse.status).toBe(HttpStatus.BAD_REQUEST);
-    expect(secondResponse.body[0].error).toMatchInlineSnapshot(
+    expect(secondResponse.body[0].errors[0].error).toMatchInlineSnapshot(
       `"referenceId already exists in database"`,
     );
 

@@ -225,7 +225,7 @@ describe('Import a registration', () => {
     );
 
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
-    expect(response.body).toMatchSnapshot();
+    expect(response.body[0].errors[0]).toMatchSnapshot();
 
     const result = await searchRegistrationByReferenceId(
       registrationVisaCopy.referenceId,
@@ -254,7 +254,7 @@ describe('Import a registration', () => {
     );
 
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
-    expect(response.body).toMatchSnapshot();
+    expect(response.body[0].errors[0]).toMatchSnapshot();
 
     const result = await searchRegistrationByReferenceId(
       registrationWesteros1Copy.referenceId,
@@ -289,7 +289,7 @@ describe('Import a registration', () => {
     );
 
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
-    expect(response.body).toMatchSnapshot();
+    expect(response.body[0].errors[0]).toMatchSnapshot();
 
     const result = await searchRegistrationByReferenceId(
       registrationWesteros1Copy.referenceId,
@@ -321,7 +321,7 @@ describe('Import a registration', () => {
     );
 
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
-    expect(response.body[0].error).toContain(
+    expect(response.body[0].errors[0].error).toContain(
       registrationWesteros1Copy.programFspConfigurationName,
     );
 
