@@ -19,6 +19,7 @@ import { RegistrationValidationInputType } from '@121-service/src/registration/e
 import { ValidationRegistrationConfig } from '@121-service/src/registration/interfaces/validate-registration-config.interface';
 import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
 import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
+import { ValidationResult } from '@121-service/src/registration/interfaces/validation-result.interface';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationPreferredLanguage } from '@121-service/src/shared/enum/registration-preferred-language.enum';
 import { UserService } from '@121-service/src/user/user.service';
@@ -51,7 +52,7 @@ export class RegistrationsInputValidator {
     userId: MessageSenderUserId;
     typeOfInput: RegistrationValidationInputType;
     validationConfig: ValidationRegistrationConfig;
-  }): Promise<ValidatedRegistrationInput[]> {
+  }): Promise<ValidationResult> {
     // empty map
     let originalRegistrationsMap = new Map<
       string,
@@ -69,7 +70,6 @@ export class RegistrationsInputValidator {
       );
     }
 
-    const errors: ValidateRegistrationErrorObject[] = [];
     const phoneNumberLookupResults: Record<string, string | undefined> = {};
 
     // If the registration was not created by the user we assume a scope that can access anything (like on a new kobo submission) therefore a ''
@@ -81,10 +81,6 @@ export class RegistrationsInputValidator {
       );
     }
 
-    if (validationConfig.validateUniqueReferenceId) {
-      this.validateUniqueReferenceIds(registrationInputArray);
-    }
-
     const program = await this.programRepository.findOneOrFail({
       where: { id: Equal(programId) },
       relations: ['programFspConfigurations', 'programRegistrationAttributes'],
@@ -94,7 +90,8 @@ export class RegistrationsInputValidator {
       program.languages as unknown as string[],
     );
 
-    const validatedArray: any = [];
+    const validRegistrations: ValidatedRegistrationInput[] = [];
+    const allErrors: ValidateRegistrationErrorObject[] = [];
 
     for (const [i, row] of registrationInputArray.entries()) {
       const originalRegistration = [
@@ -107,6 +104,8 @@ export class RegistrationsInputValidator {
       const validatedRegistrationInput: ValidatedRegistrationInput = {
         data: {},
       };
+
+      const rowErrors: ValidateRegistrationErrorObject[] = [];
 
       /*
        * =============================================================
@@ -124,7 +123,7 @@ export class RegistrationsInputValidator {
           i,
         });
         if (errorObjPaymentAmountMultiplier) {
-          errors.push(errorObjPaymentAmountMultiplier);
+          rowErrors.push(errorObjPaymentAmountMultiplier);
         } else {
           validatedRegistrationInput.paymentAmountMultiplier =
             validatedPaymentAmountMultiplier;
@@ -139,7 +138,7 @@ export class RegistrationsInputValidator {
             i,
           });
         if (errorObjMaxPayments) {
-          errors.push(errorObjMaxPayments);
+          rowErrors.push(errorObjMaxPayments);
         } else {
           validatedRegistrationInput.maxPayments = validatedMaxPayments;
         }
@@ -158,7 +157,7 @@ export class RegistrationsInputValidator {
           typeOfInput,
         });
         if (errorObjScope) {
-          errors.push(errorObjScope);
+          rowErrors.push(errorObjScope);
         } else if (program.enableScope) {
           validatedRegistrationInput.scope = String(
             row[AdditionalAttributes.scope] ?? '',
@@ -176,7 +175,7 @@ export class RegistrationsInputValidator {
         typeOfInput,
       });
       if (errorObjLanguage) {
-        errors.push(errorObjLanguage);
+        rowErrors.push(errorObjLanguage);
       }
       if (preferredLanguage) {
         validatedRegistrationInput.preferredLanguage = preferredLanguage;
@@ -188,7 +187,7 @@ export class RegistrationsInputValidator {
         validationConfig,
       });
       if (errorObjReferenceId) {
-        errors.push(errorObjReferenceId);
+        rowErrors.push(errorObjReferenceId);
       } else if (row.referenceId != null) {
         validatedRegistrationInput.referenceId = row.referenceId as string;
       }
@@ -200,7 +199,7 @@ export class RegistrationsInputValidator {
         typeOfInput,
       });
       if (errorObjValidatePhoneNr) {
-        errors.push(errorObjValidatePhoneNr);
+        rowErrors.push(errorObjValidatePhoneNr);
       } else if (row.phoneNumber !== undefined) {
         validatedRegistrationInput.phoneNumber = row.phoneNumber
           ? String(row.phoneNumber)
@@ -220,7 +219,7 @@ export class RegistrationsInputValidator {
         typeOfInput,
       });
       if (errorObjFspConfig) {
-        errors.push(errorObjFspConfig);
+        rowErrors.push(errorObjFspConfig);
       } else if (
         row[AdditionalAttributes.programFspConfigurationName] as string
       ) {
@@ -237,7 +236,7 @@ export class RegistrationsInputValidator {
           i,
         },
       );
-      errors.push(...errorObjsFspRequiredAttributes);
+      rowErrors.push(...errorObjsFspRequiredAttributes);
 
       /*
        * =============================================
@@ -289,7 +288,7 @@ export class RegistrationsInputValidator {
                   phoneNumberLookupResults,
                 });
               if (errorObj) {
-                errors.push(errorObj);
+                rowErrors.push(errorObj);
               } else if (row[att.name]) {
                 // we can assume here that the original value is a string else it would not have returned an error object
                 phoneNumberLookupResults[row[att.name] as string] = sanitized;
@@ -322,12 +321,12 @@ export class RegistrationsInputValidator {
                 ? optionNames.join(', ')
                 : 'No options available';
             const errorObj = {
-              lineNumber: i + 1,
+              index: i,
               column: att.name,
               value: row[att.name],
               error: `Value '${row[att.name]}' is not in the allowed options: '${optionNamesErrorString}' for attribute '${att.name}'`,
             };
-            errors.push(errorObj);
+            rowErrors.push(errorObj);
 
             return;
           }
@@ -348,7 +347,7 @@ export class RegistrationsInputValidator {
             i,
           });
           if (errorObj && Object.keys(row).includes(att.name)) {
-            errors.push(errorObj);
+            rowErrors.push(errorObj);
           } else if (row[att.name] !== undefined) {
             validatedRegistrationInput.data[att.name] = row[att.name] as
               | string
@@ -359,8 +358,9 @@ export class RegistrationsInputValidator {
       );
 
       // Break the loop and stop processing if file has too many errors
-      if (errors.length >= 5000) {
-        throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+      if (allErrors.length + rowErrors.length >= 5000) {
+        allErrors.push(...rowErrors);
+        return { validRegistrations, errors: allErrors };
       }
 
       const result = await validate(
@@ -374,26 +374,25 @@ export class RegistrationsInputValidator {
         }
 
         const errorObj = {
-          lineNumber: i + 1,
+          index: i,
           column: result[0].property,
           value: result[0].value,
           error,
         };
-        errors.push(errorObj);
+        rowErrors.push(errorObj);
       }
 
-      validatedArray.push(validatedRegistrationInput);
+      if (rowErrors.length > 0) {
+        allErrors.push(...rowErrors);
+      } else {
+        validRegistrations.push(validatedRegistrationInput);
+      }
     }
 
-    // Throw the errors at once
-    if (errors.length > 0) {
-      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
-    }
-
-    return validatedArray;
+    return { validRegistrations, errors: allErrors };
   }
 
-  private validateUniqueReferenceIds(
+  public validateUniqueReferenceIds(
     csvArray: Record<string, InputAttributeType>[],
   ): void {
     const allReferenceIds = csvArray
@@ -425,9 +424,10 @@ export class RegistrationsInputValidator {
         languageAbbr.substring(0, 2),
       );
       if (!fullNameLanguage) {
-        throw new HttpException(
+        // We throw an error here because we do not expect this to happen as cash-im team is at this point responsible for setting the program languages
+        // We don't want to throw a bad request because this would only confuse our users, while an error triggers a monitoring error to the dev team
+        throw new Error(
           `Language ${languageAbbr} not found in createLanguageMapping`,
-          HttpStatus.BAD_REQUEST,
         );
       }
       const cleanedFullNameLanguage = fullNameLanguage.trim().toLowerCase();
@@ -465,7 +465,7 @@ export class RegistrationsInputValidator {
       )
     ) {
       return {
-        lineNumber: i,
+        index: i,
         value: programFspName,
         column: AdditionalAttributes.programFspConfigurationName,
         error: `FspConfigurationName ${programFspName} not found in program. Allowed values: ${programFspConfigurations
@@ -539,7 +539,7 @@ export class RegistrationsInputValidator {
       )
     ) {
       return {
-        lineNumber: i + 1,
+        index: i,
         column: AdditionalAttributes.preferredLanguage,
         value: preferredLanguage,
         error: `Language error: Allowed values of this program for ${AdditionalAttributes.preferredLanguage}: ${Object.values(
@@ -589,7 +589,7 @@ export class RegistrationsInputValidator {
     });
     if (!correctScope) {
       return {
-        lineNumber: i + 1,
+        index: i,
         column: AdditionalAttributes.scope,
         value: row[AdditionalAttributes.scope],
         error: `User has program scope ${userScope} and does not have access to registration scope ${
@@ -646,7 +646,7 @@ export class RegistrationsInputValidator {
     }
     if (typeof row.referenceId !== 'string') {
       return {
-        lineNumber: i + 1,
+        index: i,
         column: GenericRegistrationAttributes.referenceId,
         value: row.referenceId,
         error: 'referenceId must be a string',
@@ -655,7 +655,7 @@ export class RegistrationsInputValidator {
 
     if (row.referenceId.includes('$')) {
       return {
-        lineNumber: i + 1,
+        index: i,
         column: GenericRegistrationAttributes.referenceId,
         value: row.referenceId,
         error: `${GenericRegistrationAttributes.referenceId} contains a $ character`,
@@ -664,7 +664,7 @@ export class RegistrationsInputValidator {
 
     if (row.referenceId.length < 5 || row.referenceId.length > 200) {
       return {
-        lineNumber: i + 1,
+        index: i,
         column: GenericRegistrationAttributes.referenceId,
         value: row.referenceId,
         error: 'referenceId must be between 5 and 200 characters',
@@ -676,7 +676,7 @@ export class RegistrationsInputValidator {
       });
       if (registration) {
         return {
-          lineNumber: i + 1,
+          index: i,
           column: GenericRegistrationAttributes.referenceId,
           value: row.referenceId,
           error: 'referenceId already exists in database',
@@ -705,7 +705,7 @@ export class RegistrationsInputValidator {
       !row.phoneNumber
     ) {
       return {
-        lineNumber: i + 1,
+        index: i,
         column: GenericRegistrationAttributes.phoneNumber,
         value: undefined,
         error:
@@ -719,7 +719,7 @@ export class RegistrationsInputValidator {
     ) {
       // on an update phonenumber can be empty if it is not being updated
       return {
-        lineNumber: i + 1,
+        index: i,
         column: GenericRegistrationAttributes.phoneNumber,
         value: row.phoneNumber,
         error:
@@ -749,7 +749,7 @@ export class RegistrationsInputValidator {
     }
     if (!sanitized && !!value) {
       const errorObj: ValidateRegistrationErrorObject = {
-        lineNumber: i + 1,
+        index: i,
         column: 'phoneNumber',
         value,
         error:
@@ -794,7 +794,7 @@ export class RegistrationsInputValidator {
       if (Object.prototype.hasOwnProperty.call(row, attribute)) {
         if (row[attribute] == null || row[attribute] === '') {
           errors.push({
-            lineNumber: i + 1,
+            index: i,
             column: attribute,
             value: row[attribute],
             error: `Cannot update/set ${attribute} with a nullable value as it is required for the FSP: ${relevantFspConfigName}`,
@@ -812,7 +812,7 @@ export class RegistrationsInputValidator {
           !this.isRequiredAttributeInObject(attribute, originalRegistration)
         ) {
           errors.push({
-            lineNumber: i + 1,
+            index: i,
             column: attribute,
             value: undefined,
             error: `Cannot update '${attribute}' is required for the FSP: '${relevantFspConfigName}'`,
@@ -912,7 +912,7 @@ export class RegistrationsInputValidator {
     }
     if (!isValid) {
       return {
-        lineNumber: i + 1,
+        index: i,
         column: attribute,
         value: Array.isArray(value) ? value.toString() : value,
         error: message
@@ -967,7 +967,7 @@ export class RegistrationsInputValidator {
     if (programPaymentAmountMultiplierFormula && value != null) {
       return {
         errorOjb: {
-          lineNumber: i + 1,
+          index: i,
           column: GenericRegistrationAttributes.paymentAmountMultiplier,
           value,
           error:
@@ -984,7 +984,7 @@ export class RegistrationsInputValidator {
     if (isNaN(+value) || +value <= 0) {
       return {
         errorOjb: {
-          lineNumber: i + 1,
+          index: i,
           column: GenericRegistrationAttributes.paymentAmountMultiplier,
           value,
           error: 'this field must be a positive number',
@@ -1014,7 +1014,7 @@ export class RegistrationsInputValidator {
     if (isNaN(+value) || +value <= 0) {
       return {
         errorObj: {
-          lineNumber: i + 1,
+          index: i,
           column: GenericRegistrationAttributes.maxPayments,
           value,
           error: 'MaxPayments must be a positive number or left empty',
@@ -1024,7 +1024,7 @@ export class RegistrationsInputValidator {
     if (originalRegistration && +value < originalRegistration.paymentCount) {
       return {
         errorObj: {
-          lineNumber: i + 1,
+          index: i,
           column: GenericRegistrationAttributes.maxPayments,
           value,
           error: `MaxPayments cannot be lower than the current paymentCount (${originalRegistration.paymentCount})`,

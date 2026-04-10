@@ -186,35 +186,34 @@ describe('RegistrationsInputValidator', () => {
       },
     ];
 
-    const result = await validator.validateAndCleanInput({
+    const { validRegistrations } = await validator.validateAndCleanInput({
       registrationInputArray: csvArray,
       programId,
       userId,
       typeOfInput: RegistrationValidationInputType.create,
       validationConfig: {
-        validateUniqueReferenceId: true,
         validateExistingReferenceId: true,
       },
     });
 
-    expect(result).toBeInstanceOf(Array);
-    expect(result.length).toBe(1);
-    expect(result[0]).toHaveProperty(
+    expect(validRegistrations).toBeInstanceOf(Array);
+    expect(validRegistrations.length).toBe(1);
+    expect(validRegistrations[0]).toHaveProperty(
       'referenceId',
       '00dc9451-1273-484c-b2e8-ae21b51a96ab',
     );
-    expect(result[0]).toHaveProperty(
+    expect(validRegistrations[0]).toHaveProperty(
       'programFspConfigurationName',
       Fsps.intersolveVoucherWhatsapp,
     );
-    expect(result[0]).toHaveProperty('paymentAmountMultiplier', 2);
-    expect(result[0]).toHaveProperty(
+    expect(validRegistrations[0]).toHaveProperty('paymentAmountMultiplier', 2);
+    expect(validRegistrations[0]).toHaveProperty(
       'preferredLanguage',
       RegistrationPreferredLanguage.en,
     );
   });
 
-  it('should throw an error for invalid reference ID format', async () => {
+  it('should return errors for invalid reference ID format', async () => {
     const csvArray = [
       {
         referenceId: '!@#$',
@@ -231,18 +230,19 @@ describe('RegistrationsInputValidator', () => {
       },
     ];
 
-    await expect(
-      validator.validateAndCleanInput({
+    const { errors, validRegistrations } =
+      await validator.validateAndCleanInput({
         registrationInputArray: csvArray,
         programId,
         userId,
         typeOfInput: RegistrationValidationInputType.create,
         validationConfig: {
-          validateUniqueReferenceId: true,
           validateExistingReferenceId: true,
         },
-      }),
-    ).rejects.toThrow(HttpException);
+      });
+
+    expect(errors.length).toBeGreaterThan(0);
+    expect(validRegistrations.length).toBe(0);
   });
 
   it('should report errors for rows missing mandatory fields on import', async () => {
@@ -255,21 +255,22 @@ describe('RegistrationsInputValidator', () => {
     const programId = 1;
     const userId = 1;
 
-    await expect(
-      validator.validateAndCleanInput({
+    const { errors, validRegistrations } =
+      await validator.validateAndCleanInput({
         registrationInputArray: csvArray,
         programId,
         userId,
         typeOfInput: RegistrationValidationInputType.create,
         validationConfig: {
-          validateUniqueReferenceId: true,
           validateExistingReferenceId: true,
         },
-      }),
-    ).rejects.toThrow(HttpException);
+      });
+
+    expect(errors.length).toBeGreaterThan(0);
+    expect(validRegistrations.length).toBe(0);
   });
 
-  it('should not report errors for rows missing mandatory fields on bulk update', async () => {
+  it('should report errors for rows missing mandatory fields on update', async () => {
     const csvArray = [
       {
         programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
@@ -277,18 +278,19 @@ describe('RegistrationsInputValidator', () => {
       },
     ];
 
-    await expect(
-      validator.validateAndCleanInput({
+    const { errors, validRegistrations } =
+      await validator.validateAndCleanInput({
         registrationInputArray: csvArray,
         programId,
         userId,
         typeOfInput: RegistrationValidationInputType.update,
         validationConfig: {
           validateExistingReferenceId: false,
-          validateUniqueReferenceId: false,
         },
-      }),
-    ).rejects.toThrow(HttpException);
+      });
+
+    expect(errors.length).toBeGreaterThan(0);
+    expect(validRegistrations.length).toBe(0);
   });
 
   it('should report errors for a missing phonenumber when it is not allowed', async () => {
@@ -305,26 +307,27 @@ describe('RegistrationsInputValidator', () => {
       },
     ];
 
-    await expect(
-      validator.validateAndCleanInput({
-        registrationInputArray: csvArray,
-        programId,
-        userId,
-        typeOfInput: RegistrationValidationInputType.create,
-        validationConfig: {
-          validateExistingReferenceId: true,
-          validateUniqueReferenceId: true,
-        },
-      }),
-    ).rejects.toHaveProperty('response', [
-      {
-        lineNumber: 1,
-        column: GenericRegistrationAttributes.phoneNumber,
-        value: undefined,
-        error:
-          'PhoneNumber is required when creating a new registration for this program. Set allowEmptyPhoneNumber to true in the program settings to allow empty phone numbers',
+    const { errors } = await validator.validateAndCleanInput({
+      registrationInputArray: csvArray,
+      programId,
+      userId,
+      typeOfInput: RegistrationValidationInputType.create,
+      validationConfig: {
+        validateExistingReferenceId: true,
       },
-    ]);
+    });
+
+    expect(errors).toEqual(
+      expect.arrayContaining([
+        {
+          index: 0,
+          column: GenericRegistrationAttributes.phoneNumber,
+          value: undefined,
+          error:
+            'PhoneNumber is required when creating a new registration for this program. Set allowEmptyPhoneNumber to true in the program settings to allow empty phone numbers',
+        },
+      ]),
+    );
   });
 
   it('should add max payment when its null', async () => {
@@ -334,19 +337,18 @@ describe('RegistrationsInputValidator', () => {
       },
     ];
 
-    const result = await validator.validateAndCleanInput({
+    const { validRegistrations } = await validator.validateAndCleanInput({
       registrationInputArray: csvArray,
       programId,
       userId,
       typeOfInput: RegistrationValidationInputType.update,
       validationConfig: {
         validateExistingReferenceId: true,
-        validateUniqueReferenceId: true,
       },
     });
 
-    expect(result[0]).toHaveProperty('maxPayments');
-    expect(result[0].maxPayments).toBe(null);
+    expect(validRegistrations[0]).toHaveProperty('maxPayments');
+    expect(validRegistrations[0].maxPayments).toBe(null);
   });
 
   // When columns are left empty in a csv they are read as empty string
@@ -377,13 +379,12 @@ describe('RegistrationsInputValidator', () => {
       },
     ];
 
-    const result = await validator.validateAndCleanInput({
+    const { validRegistrations } = await validator.validateAndCleanInput({
       registrationInputArray: csvArray,
       programId,
       userId,
       typeOfInput: RegistrationValidationInputType.create,
       validationConfig: {
-        validateUniqueReferenceId: true,
         validateExistingReferenceId: true,
       },
     });
@@ -404,7 +405,7 @@ describe('RegistrationsInputValidator', () => {
       programFspConfigurationName: 'Excel',
     };
 
-    expect(result[0]).toEqual(expected);
+    expect(validRegistrations[0]).toEqual(expected);
   });
 
   it('should only return the value you try to validate', async () => {
@@ -414,13 +415,12 @@ describe('RegistrationsInputValidator', () => {
         fullName,
       },
     ];
-    const result = await validator.validateAndCleanInput({
+    const { validRegistrations } = await validator.validateAndCleanInput({
       registrationInputArray: csvArray,
       programId,
       userId,
       typeOfInput: RegistrationValidationInputType.update,
       validationConfig: {
-        validateUniqueReferenceId: true,
         validateExistingReferenceId: true,
       },
     });
@@ -429,7 +429,7 @@ describe('RegistrationsInputValidator', () => {
         fullName,
       },
     };
-    expect(result[0]).toEqual(expectedResult);
+    expect(validRegistrations[0]).toEqual(expectedResult);
   });
 
   it.each([
@@ -449,19 +449,82 @@ describe('RegistrationsInputValidator', () => {
         },
       ];
 
-      // Act & Assert
-      await expect(
-        validator.validateAndCleanInput({
+      // Act
+      const { errors, validRegistrations } =
+        await validator.validateAndCleanInput({
           registrationInputArray: csvArray,
           programId,
           userId: null,
           typeOfInput: RegistrationValidationInputType.create,
           validationConfig: {
-            validateUniqueReferenceId: true,
             validateExistingReferenceId: true,
           },
-        }),
-      ).resolves.not.toThrow();
+        });
+
+      // Assert
+      expect(errors.length).toBe(0);
+      expect(validRegistrations.length).toBe(1);
     },
   );
+
+  it('should throw when the input contains duplicate referenceIds', async () => {
+    const duplicateReferenceId = '00dc9451-1273-484c-b2e8-ae21b51a96ab';
+    const csvArray = [
+      { referenceId: duplicateReferenceId },
+      { referenceId: duplicateReferenceId },
+    ];
+
+    expect(() => validator.validateUniqueReferenceIds(csvArray)).toThrow(
+      HttpException,
+    );
+  });
+
+  it('should stop processing and cap errors at 5000', async () => {
+    const csvArray = [
+      { fullName: 'Alice' }, // valid row, should still appear in validRegistrations
+      ...Array.from({ length: 5001 }, () => ({ house: 'not-a-valid-house' })),
+    ];
+
+    const { errors, validRegistrations } =
+      await validator.validateAndCleanInput({
+        registrationInputArray: csvArray,
+        programId,
+        userId,
+        typeOfInput: RegistrationValidationInputType.update,
+        validationConfig: {
+          validateExistingReferenceId: false,
+        },
+      });
+
+    expect(errors.length).toBe(5000);
+    expect(validRegistrations.length).toBe(1);
+  });
+
+  it('should return an error when a referenceId already exists in the database', async () => {
+    const existingReferenceId = '00dc9451-1273-484c-b2e8-ae21b51a96ac';
+    mockRegistrationRepository.findOne = jest
+      .fn()
+      .mockResolvedValue({ referenceId: existingReferenceId });
+
+    const { errors, validRegistrations } =
+      await validator.validateAndCleanInput({
+        registrationInputArray: [{ referenceId: existingReferenceId }],
+        programId,
+        userId,
+        typeOfInput: RegistrationValidationInputType.create,
+        validationConfig: {
+          validateExistingReferenceId: true,
+        },
+      });
+
+    expect(errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          column: GenericRegistrationAttributes.referenceId,
+          error: 'referenceId already exists in database',
+        }),
+      ]),
+    );
+    expect(validRegistrations.length).toBe(0);
+  });
 });
