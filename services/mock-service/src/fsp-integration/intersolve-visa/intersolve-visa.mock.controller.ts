@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   UseInterceptors,
@@ -174,6 +175,17 @@ export class IntersolveVisaMockController {
       toToken,
       payload.quantity.value,
     );
+  }
+
+  @ApiOperation({ summary: 'Change card status' })
+  @Patch(
+    'payment-instrument-payment/v1/tokens/:tokenCode/change-status/:cardStatus',
+  )
+  public changeCardStatus(
+    @Param('tokenCode') tokenCode: string,
+    @Param('cardStatus') _cardStatus: string,
+  ): IntersolveVisaMockResponseDto {
+    return this.intersolveVisaMockService.changeCardStatusMock({ tokenCode });
   }
 
   @ApiOperation({ summary: 'Substitute token' })
