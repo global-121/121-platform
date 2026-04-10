@@ -1,3 +1,4 @@
+import { HttpException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -474,4 +475,76 @@ describe('RegistrationsInputValidator', () => {
       expect(validRegistrations.length).toBe(1);
     },
   );
+
+  it('should throw when the input contains duplicate referenceIds', async () => {
+    const duplicateReferenceId = '00dc9451-1273-484c-b2e8-ae21b51a96ab';
+    const csvArray = [
+      { referenceId: duplicateReferenceId },
+      { referenceId: duplicateReferenceId },
+    ];
+
+    await expect(
+      validator.validateAndCleanInput({
+        registrationInputArray: csvArray,
+        programId,
+        userId,
+        typeOfInput: RegistrationValidationInputType.create,
+        validationConfig: {
+          validateUniqueReferenceId: true,
+          validateExistingReferenceId: false,
+        },
+      }),
+    ).rejects.toThrow(HttpException);
+  });
+
+  it('should stop processing and cap errors at 5000', async () => {
+    const csvArray = [
+      { fullName: 'Alice' }, // valid row, should still appear in validRegistrations
+      ...Array.from({ length: 5001 }, () => ({ house: 'not-a-valid-house' })),
+    ];
+
+    const { errors, validRegistrations } =
+      await validator.validateAndCleanInput({
+        registrationInputArray: csvArray,
+        programId,
+        userId,
+        typeOfInput: RegistrationValidationInputType.update,
+        validationConfig: {
+          validateUniqueReferenceId: false,
+          validateExistingReferenceId: false,
+        },
+      });
+
+    expect(errors.length).toBe(5000);
+    expect(validRegistrations.length).toBe(1);
+  });
+
+  it('should return an error when a referenceId already exists in the database', async () => {
+    const existingReferenceId = '00dc9451-1273-484c-b2e8-ae21b51a96ac';
+    mockRegistrationRepository.findOne = jest
+      .fn()
+      .mockResolvedValue({ referenceId: existingReferenceId });
+
+    const { errors, validRegistrations } =
+      await validator.validateAndCleanInput({
+        registrationInputArray: [{ referenceId: existingReferenceId }],
+        programId,
+        userId,
+        typeOfInput: RegistrationValidationInputType.create,
+        validationConfig: {
+          validateUniqueReferenceId: false,
+          validateExistingReferenceId: true,
+        },
+      });
+
+    expect(errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          column: GenericRegistrationAttributes.referenceId,
+          error: 'referenceId already exists in database',
+        }),
+      ]),
+    );
+    expect(validRegistrations.length).toBe(0);
+  });
 });
