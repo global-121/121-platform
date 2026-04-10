@@ -657,6 +657,38 @@ export function replaceVisaCardOnSite({
     .send({ tokenCode });
 }
 
+export function closeVisaCard({
+  programId,
+  referenceId,
+  tokenCode,
+  accessToken,
+}: {
+  programId: number;
+  referenceId: string;
+  tokenCode: string;
+  accessToken: string;
+}): Promise<request.Response> {
+  return getServer()
+    .post(
+      `/programs/${programId}/registrations/${referenceId}/fsps/intersolve-visa/wallet/cards/${tokenCode}/close`,
+    )
+    .set('Cookie', [accessToken])
+    .send();
+}
+
+export function getVisaWalletClosuresExport({
+  programId,
+  accessToken,
+}: {
+  programId: number;
+  accessToken: string;
+}): Promise<request.Response> {
+  return getServer()
+    .get(`/programs/${programId}/fsps/intersolve-visa/wallet-closures`)
+    .set('Cookie', [accessToken])
+    .send();
+}
+
 export async function getMessageHistory(
   programId: number,
   referenceId: string,
