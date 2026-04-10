@@ -79,6 +79,13 @@ Now, make sure to run the following in the root folder to install the necessary 
 npm install
 ```
 
+Optionally, an additional `post-checkout`-hook can be enabled by running:
+
+    cp .husky/.local.post-checkout.example .husky/.local.post-checkout
+
+This will ensure all local (development-)dependencies will be installed every time you switch branches.  
+You can remove the `.local.*`-script file again to disable this behavior.
+
 ## Setup Services
 
 Copy the centralized `.env`-file
@@ -237,10 +244,6 @@ If the Swagger-UI is not accessible after installing Docker and setting up the s
 
 1. `docker compose ps` to list running containers and their status
 2. `docker compose logs -f <container-name>` to check their logs/console output (or leave out the `<container-name>` to get ALL output)
-
-### Docker related issues
-
-If there are issues with Docker commands, it could be due to permissions. Prefix your commands with `sudo docker....`
 
 ### Database related errors
 

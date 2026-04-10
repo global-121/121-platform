@@ -24,5 +24,8 @@ downloads
 # This is where Azurite stores its data when running in development mode.
 services/azurite_data
 
+# Local (opt-in) git hooks
+.husky/post-checkout
+
 # Claude Code
 .claude

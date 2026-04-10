@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+#
+# Optional git post-checkout hook: auto-installs local dependencies after a branch switch.
+#
+# To enable:
+#   cp .husky/.local.post-checkout.example .husky/post-checkout
+#
+# To disable:
+#   rm .husky/post-checkout
+#
+# See: https://git-scm.com/docs/githooks#_post_checkout
+#
+
+# Only run on branch checkout, not file checkout
+# $3 is "1" for branch checkout, "0" for file checkout
+if [ "$3" != "1" ]; then
+  exit 0
+fi
+
+ORANGE='\033[0;33m'
+NC='\033[0m'
+log() {
+  printf "${ORANGE}[post-checkout]${NC} %s\n" "$1"
+}
+
+log "Installing local dependencies..."
+npm run install:local:all &
+wait
+log "Done."
