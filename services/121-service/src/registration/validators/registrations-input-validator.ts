@@ -352,7 +352,10 @@ export class RegistrationsInputValidator {
       );
 
       // Break the loop and stop processing if file has too many errors
-      if (invalidRegistrations.length >= 5000) {
+      const totalErrorCount =
+        invalidRegistrations.reduce((sum, registration) => sum + registration.errors.length, 0) +
+        rowErrors.length;
+      if (totalErrorCount >= 5000) {
         return { validRegistrations, invalidRegistrations };
       }
 
