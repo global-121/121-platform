@@ -81,12 +81,6 @@ export class RegistrationsInputValidator {
       );
     }
 
-    // Always throws rather than returning errors: duplicate referenceIds in a
-    // single import file is a structural error, not a per-row validation failure.
-    if (validationConfig.validateUniqueReferenceId) {
-      this.validateUniqueReferenceIds(registrationInputArray);
-    }
-
     const program = await this.programRepository.findOneOrFail({
       where: { id: Equal(programId) },
       relations: ['programFspConfigurations', 'programRegistrationAttributes'],
@@ -398,7 +392,7 @@ export class RegistrationsInputValidator {
     return { validRegistrations, errors: allErrors };
   }
 
-  private validateUniqueReferenceIds(
+  public validateUniqueReferenceIds(
     csvArray: Record<string, InputAttributeType>[],
   ): void {
     const allReferenceIds = csvArray
@@ -430,9 +424,10 @@ export class RegistrationsInputValidator {
         languageAbbr.substring(0, 2),
       );
       if (!fullNameLanguage) {
-        throw new HttpException(
+        // We throw an error here because we do not expect this to happen as cash-im team is at this point responsible for setting the program languages
+        // We don't want to throw a bad request because this would only confuse our users, while an error triggers a monitoring error to the dev team
+        throw new Error(
           `Language ${languageAbbr} not found in createLanguageMapping`,
-          HttpStatus.BAD_REQUEST,
         );
       }
       const cleanedFullNameLanguage = fullNameLanguage.trim().toLowerCase();

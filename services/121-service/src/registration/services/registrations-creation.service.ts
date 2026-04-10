@@ -415,9 +415,11 @@ export class RegistrationsCreationService {
     userId: MessageSenderUserId,
   ): Promise<ValidatedRegistrationInput[]> {
     const validationConfig: ValidationRegistrationConfig = {
-      validateUniqueReferenceId: true,
       validateExistingReferenceId: true,
     };
+    this.registrationsInputValidator.validateUniqueReferenceIds(
+      registrationInputToValidate,
+    );
     const { validRegistrations, errors } =
       await this.registrationsInputValidator.validateAndCleanInput({
         registrationInputArray: registrationInputToValidate,
@@ -437,7 +439,6 @@ export class RegistrationsCreationService {
   ): Promise<void> {
     const validationConfig: ValidationRegistrationConfig = {
       validateExistingReferenceId: false,
-      validateUniqueReferenceId: false,
     };
     const { errors } =
       await this.registrationsInputValidator.validateAndCleanInput({

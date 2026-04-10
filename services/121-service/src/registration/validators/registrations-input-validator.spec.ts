@@ -192,7 +192,6 @@ describe('RegistrationsInputValidator', () => {
       userId,
       typeOfInput: RegistrationValidationInputType.create,
       validationConfig: {
-        validateUniqueReferenceId: true,
         validateExistingReferenceId: true,
       },
     });
@@ -238,7 +237,6 @@ describe('RegistrationsInputValidator', () => {
         userId,
         typeOfInput: RegistrationValidationInputType.create,
         validationConfig: {
-          validateUniqueReferenceId: true,
           validateExistingReferenceId: true,
         },
       });
@@ -264,7 +262,6 @@ describe('RegistrationsInputValidator', () => {
         userId,
         typeOfInput: RegistrationValidationInputType.create,
         validationConfig: {
-          validateUniqueReferenceId: true,
           validateExistingReferenceId: true,
         },
       });
@@ -289,7 +286,6 @@ describe('RegistrationsInputValidator', () => {
         typeOfInput: RegistrationValidationInputType.update,
         validationConfig: {
           validateExistingReferenceId: false,
-          validateUniqueReferenceId: false,
         },
       });
 
@@ -318,7 +314,6 @@ describe('RegistrationsInputValidator', () => {
       typeOfInput: RegistrationValidationInputType.create,
       validationConfig: {
         validateExistingReferenceId: true,
-        validateUniqueReferenceId: true,
       },
     });
 
@@ -349,7 +344,6 @@ describe('RegistrationsInputValidator', () => {
       typeOfInput: RegistrationValidationInputType.update,
       validationConfig: {
         validateExistingReferenceId: true,
-        validateUniqueReferenceId: true,
       },
     });
 
@@ -391,7 +385,6 @@ describe('RegistrationsInputValidator', () => {
       userId,
       typeOfInput: RegistrationValidationInputType.create,
       validationConfig: {
-        validateUniqueReferenceId: true,
         validateExistingReferenceId: true,
       },
     });
@@ -428,7 +421,6 @@ describe('RegistrationsInputValidator', () => {
       userId,
       typeOfInput: RegistrationValidationInputType.update,
       validationConfig: {
-        validateUniqueReferenceId: true,
         validateExistingReferenceId: true,
       },
     });
@@ -465,7 +457,6 @@ describe('RegistrationsInputValidator', () => {
           userId: null,
           typeOfInput: RegistrationValidationInputType.create,
           validationConfig: {
-            validateUniqueReferenceId: true,
             validateExistingReferenceId: true,
           },
         });
@@ -483,18 +474,9 @@ describe('RegistrationsInputValidator', () => {
       { referenceId: duplicateReferenceId },
     ];
 
-    await expect(
-      validator.validateAndCleanInput({
-        registrationInputArray: csvArray,
-        programId,
-        userId,
-        typeOfInput: RegistrationValidationInputType.create,
-        validationConfig: {
-          validateUniqueReferenceId: true,
-          validateExistingReferenceId: false,
-        },
-      }),
-    ).rejects.toThrow(HttpException);
+    expect(() => validator.validateUniqueReferenceIds(csvArray)).toThrow(
+      HttpException,
+    );
   });
 
   it('should stop processing and cap errors at 5000', async () => {
@@ -510,7 +492,6 @@ describe('RegistrationsInputValidator', () => {
         userId,
         typeOfInput: RegistrationValidationInputType.update,
         validationConfig: {
-          validateUniqueReferenceId: false,
           validateExistingReferenceId: false,
         },
       });
@@ -532,7 +513,6 @@ describe('RegistrationsInputValidator', () => {
         userId,
         typeOfInput: RegistrationValidationInputType.create,
         validationConfig: {
-          validateUniqueReferenceId: false,
           validateExistingReferenceId: true,
         },
       });

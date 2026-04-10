@@ -336,7 +336,6 @@ export class RegistrationsService {
     userId: number;
   }): Promise<MappedPaginatedRegistrationDto | undefined> {
     const validationConfig: ValidationRegistrationConfig = {
-      validateUniqueReferenceId: false,
       validateExistingReferenceId: false,
     };
     const updateDataWithReferenceId = {
