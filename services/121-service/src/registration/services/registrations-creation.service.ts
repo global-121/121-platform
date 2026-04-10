@@ -22,8 +22,8 @@ import {
 } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationValidationInputType } from '@121-service/src/registration/enum/registration-validation-input-type.enum';
+import { InvalidRegistration } from '@121-service/src/registration/interfaces/invalid-registration.interface';
 import { ValidationRegistrationConfig } from '@121-service/src/registration/interfaces/validate-registration-config.interface';
-import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
 import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
@@ -418,7 +418,7 @@ export class RegistrationsCreationService {
       validateUniqueReferenceId: true,
       validateExistingReferenceId: true,
     };
-    const { validRegistrations, errors } =
+    const { validRegistrations, invalidRegistrations } =
       await this.registrationsInputValidator.validateAndCleanInput({
         registrationInputArray: registrationInputToValidate,
         programId,
@@ -426,7 +426,7 @@ export class RegistrationsCreationService {
         typeOfInput: RegistrationValidationInputType.create,
         validationConfig,
       });
-    this.throwIfValidationErrors(errors);
+    this.throwIfValidationErrors(invalidRegistrations);
     return validRegistrations;
   }
 
@@ -439,7 +439,7 @@ export class RegistrationsCreationService {
       validateExistingReferenceId: false,
       validateUniqueReferenceId: false,
     };
-    const { errors } =
+    const { invalidRegistrations } =
       await this.registrationsInputValidator.validateAndCleanInput({
         registrationInputArray: csvArray,
         programId,
@@ -447,18 +447,15 @@ export class RegistrationsCreationService {
         typeOfInput: RegistrationValidationInputType.bulkUpdate,
         validationConfig,
       });
-    this.throwIfValidationErrors(errors);
+    this.throwIfValidationErrors(invalidRegistrations);
   }
 
   private throwIfValidationErrors(
-    errors: ValidateRegistrationErrorObject[],
+    invalidRegistrations: InvalidRegistration[],
   ): void {
-    if (errors.length > 0) {
+    if (invalidRegistrations.length > 0) {
       throw new HttpException(
-        errors.map(({ index, ...rest }) => ({
-          ...rest,
-          lineNumber: index + 1,
-        })),
+        invalidRegistrations,
         HttpStatus.BAD_REQUEST,
       );
     }

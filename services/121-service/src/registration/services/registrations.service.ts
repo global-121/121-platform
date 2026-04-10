@@ -344,7 +344,7 @@ export class RegistrationsService {
       ...updateRegistrationDto.data,
     };
 
-    const { validRegistrations, errors } =
+    const { validRegistrations, invalidRegistrations } =
       await this.registrationsInputValidator.validateAndCleanInput({
         registrationInputArray: [updateDataWithReferenceId],
         programId,
@@ -353,8 +353,8 @@ export class RegistrationsService {
         validationConfig,
       });
 
-    if (errors.length > 0) {
-      const errorMessage = errors
+    if (invalidRegistrations.length > 0) {
+      const errorMessage = invalidRegistrations[0].errors
         .map((err) => `${err.column}: ${err.error}`)
         .join(', ');
       throw new HttpException(errorMessage, HttpStatus.BAD_REQUEST);

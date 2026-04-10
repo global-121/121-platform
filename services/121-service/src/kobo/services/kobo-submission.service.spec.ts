@@ -327,7 +327,7 @@ describe('KoboSubmissionService', () => {
       ]);
       registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
         validRegistrations: [],
-        errors: [],
+        invalidRegistrations: [],
       });
       registrationsCreationService.importValidatedRegistrations.mockResolvedValue(
         {
@@ -416,7 +416,7 @@ describe('KoboSubmissionService', () => {
       koboService.validateFormAndUpdateProgram.mockResolvedValue(undefined);
       registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
         validRegistrations: [],
-        errors: [],
+        invalidRegistrations: [],
       });
       registrationsCreationService.importValidatedRegistrations.mockResolvedValue(
         {
@@ -448,7 +448,7 @@ describe('KoboSubmissionService', () => {
       registrationRepository.find.mockResolvedValue([]);
       registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
         validRegistrations: [],
-        errors: [],
+        invalidRegistrations: [],
       });
       registrationsCreationService.importValidatedRegistrations.mockResolvedValue(
         {
@@ -478,7 +478,7 @@ describe('KoboSubmissionService', () => {
       ]);
       registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
         validRegistrations: [],
-        errors: [],
+        invalidRegistrations: [],
       });
       registrationsCreationService.importValidatedRegistrations.mockResolvedValue(
         {
@@ -514,12 +514,16 @@ describe('KoboSubmissionService', () => {
       registrationRepository.find.mockResolvedValue([]);
       registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
         validRegistrations: [],
-        errors: [
+        invalidRegistrations: [
           {
-            index: 0,
-            column: 'programFspConfigurationName',
-            error: 'FspConfigurationName Invalid-FSP not found in program.',
-            value: 'Invalid-FSP',
+            identifier: successSubmissionUuid,
+            errors: [
+              {
+                column: 'programFspConfigurationName',
+                error: 'FspConfigurationName Invalid-FSP not found in program.',
+                value: 'Invalid-FSP',
+              },
+            ],
           },
         ],
       });
@@ -554,13 +558,17 @@ describe('KoboSubmissionService', () => {
       registrationRepository.find.mockResolvedValue([]);
       registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
         validRegistrations: [],
-        errors: [
+        invalidRegistrations: [
           {
-            index: 0,
-            column: 'programFspConfigurationName',
-            error: 'FspConfigurationName Invalid-FSP not found in program.',
-            value: 'Invalid-FSP',
-          },
+            identifier: successSubmissionUuid,
+            errors: [
+              {
+                column: 'programFspConfigurationName',
+                error: 'FspConfigurationName Invalid-FSP not found in program.',
+                value: 'Invalid-FSP',
+              },
+            ]
+          }
         ],
       });
       registrationsCreationService.importValidatedRegistrations.mockResolvedValue(

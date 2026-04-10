@@ -5,7 +5,6 @@ import { Equal, In, Repository } from 'typeorm';
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import {
   ImportExistingSubmissionsResultDto,
-  SubmissionValidationError,
 } from '@121-service/src/kobo/dtos/import-existing-submissions-result.dto';
 import { KoboWebhookIncomingSubmission } from '@121-service/src/kobo/dtos/kobo-webhook-incoming-submission.dto';
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
@@ -173,7 +172,7 @@ export class KoboSubmissionService {
     numberOfSubmissionsOnForm: number;
     numberOfSubmissionsSkipped: number;
   }): Promise<ImportExistingSubmissionsResultDto> {
-    const { validRegistrations, errors: validationErrors } =
+    const { validRegistrations, invalidRegistrations } =
       await this.registrationsInputValidator.validateAndCleanInput({
         registrationInputArray: registrationDataArray,
         programId: program.id,
@@ -192,42 +191,17 @@ export class KoboSubmissionService {
         userId,
       });
 
-    const validationErrorsPerSubmission = this.groupErrorsBySubmissionId({
-      validationErrors,
-      registrationDataArray,
-    });
+    const validationErrorsPerSubmission = Object.fromEntries(
+      invalidRegistrations.map(({ identifier, errors }) => [identifier, errors]),
+    );
 
     return {
       numberOfSubmissionsOnForm,
       numberOfSubmissionsImported: aggregateImportResult.countImported,
       numberOfSubmissionsSkipped,
-      numberOfSubmissionsFailed: Object.keys(validationErrorsPerSubmission)
-        .length,
+      numberOfSubmissionsFailed: invalidRegistrations.length,
       validationErrorsPerSubmission,
     };
-  }
-
-  private groupErrorsBySubmissionId({
-    validationErrors,
-    registrationDataArray,
-  }: {
-    validationErrors: { index: number; column: string; error: string }[];
-    registrationDataArray: KoboRegistrationInput[];
-  }): Record<string, SubmissionValidationError[]> {
-    const resultingErrors: Record<string, SubmissionValidationError[]> = {};
-    for (const validationError of validationErrors) {
-      const { referenceId } = registrationDataArray[validationError.index];
-
-      // If there are no errors recorded for this referenceId yet, initialize an empty array
-      if (!resultingErrors[referenceId]) {
-        resultingErrors[referenceId] = [];
-      }
-      resultingErrors[referenceId].push({
-        column: validationError.column,
-        error: validationError.error,
-      });
-    }
-    return resultingErrors;
   }
 
   private async getExistingReferenceIds(

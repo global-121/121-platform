@@ -16,6 +16,7 @@ import {
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationValidationInputType } from '@121-service/src/registration/enum/registration-validation-input-type.enum';
+import { InvalidRegistration } from '@121-service/src/registration/interfaces/invalid-registration.interface';
 import { ValidationRegistrationConfig } from '@121-service/src/registration/interfaces/validate-registration-config.interface';
 import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
 import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
@@ -95,14 +96,17 @@ export class RegistrationsInputValidator {
     );
 
     const validRegistrations: ValidatedRegistrationInput[] = [];
-    const allErrors: ValidateRegistrationErrorObject[] = [];
+    const invalidRegistrations: InvalidRegistration[] = [];
 
     for (const [i, row] of registrationInputArray.entries()) {
+      const identifier: string | number =
+        row.referenceId != null ? String(row.referenceId) : i + 1;
+
       const originalRegistration = [
         RegistrationValidationInputType.update,
         RegistrationValidationInputType.bulkUpdate,
       ].includes(typeOfInput)
-        ? originalRegistrationsMap.get(row.referenceId as string)
+        ? originalRegistrationsMap.get(String(row.referenceId))
         : undefined;
 
       const validatedRegistrationInput: ValidatedRegistrationInput = {
@@ -124,7 +128,6 @@ export class RegistrationsInputValidator {
           value: row.paymentAmountMultiplier,
           programPaymentAmountMultiplierFormula:
             program.paymentAmountMultiplierFormula,
-          i,
         });
         if (errorObjPaymentAmountMultiplier) {
           rowErrors.push(errorObjPaymentAmountMultiplier);
@@ -139,7 +142,6 @@ export class RegistrationsInputValidator {
           this.validateMaxPayments({
             value: row.maxPayments,
             originalRegistration,
-            i,
           });
         if (errorObjMaxPayments) {
           rowErrors.push(errorObjMaxPayments);
@@ -157,7 +159,6 @@ export class RegistrationsInputValidator {
         const errorObjScope = this.validateRowScope({
           row,
           userScope,
-          i,
           typeOfInput,
         });
         if (errorObjScope) {
@@ -175,7 +176,6 @@ export class RegistrationsInputValidator {
       } = this.validatePreferredLanguage({
         preferredLanguage: row.preferredLanguage,
         languageMapping,
-        i,
         typeOfInput,
       });
       if (errorObjLanguage) {
@@ -187,7 +187,6 @@ export class RegistrationsInputValidator {
 
       const errorObjReferenceId = await this.validateReferenceId({
         row,
-        i,
         validationConfig,
       });
       if (errorObjReferenceId) {
@@ -198,7 +197,6 @@ export class RegistrationsInputValidator {
 
       const errorObjValidatePhoneNr = this.validatePhoneNumberEmpty({
         row,
-        i,
         program,
         typeOfInput,
       });
@@ -219,7 +217,6 @@ export class RegistrationsInputValidator {
         programFspConfigurationName:
           row[AdditionalAttributes.programFspConfigurationName],
         programFspConfigurations: program.programFspConfigurations,
-        i,
         typeOfInput,
       });
       if (errorObjFspConfig) {
@@ -237,7 +234,6 @@ export class RegistrationsInputValidator {
           row,
           originalRegistration,
           programFspConfigurations: program.programFspConfigurations,
-          i,
         },
       );
       rowErrors.push(...errorObjsFspRequiredAttributes);
@@ -288,7 +284,6 @@ export class RegistrationsInputValidator {
               const { errorObj, sanitized } =
                 await this.validateLookupPhoneNumber({
                   value: row[att.name],
-                  i,
                   phoneNumberLookupResults,
                 });
               if (errorObj) {
@@ -325,7 +320,6 @@ export class RegistrationsInputValidator {
                 ? optionNames.join(', ')
                 : 'No options available';
             const errorObj = {
-              index: i,
               column: att.name,
               value: row[att.name],
               error: `Value '${row[att.name]}' is not in the allowed options: '${optionNamesErrorString}' for attribute '${att.name}'`,
@@ -348,7 +342,6 @@ export class RegistrationsInputValidator {
             value: row[att.name],
             type: att.type,
             attribute: att.name,
-            i,
           });
           if (errorObj && Object.keys(row).includes(att.name)) {
             rowErrors.push(errorObj);
@@ -362,9 +355,8 @@ export class RegistrationsInputValidator {
       );
 
       // Break the loop and stop processing if file has too many errors
-      if (allErrors.length + rowErrors.length >= 5000) {
-        allErrors.push(...rowErrors);
-        return { validRegistrations, errors: allErrors };
+      if (invalidRegistrations.length >= 5000) {
+        return { validRegistrations, invalidRegistrations };
       }
 
       const result = await validate(
@@ -378,7 +370,6 @@ export class RegistrationsInputValidator {
         }
 
         const errorObj = {
-          index: i,
           column: result[0].property,
           value: result[0].value,
           error,
@@ -387,13 +378,13 @@ export class RegistrationsInputValidator {
       }
 
       if (rowErrors.length > 0) {
-        allErrors.push(...rowErrors);
+        invalidRegistrations.push({ identifier, errors: rowErrors });
       } else {
         validRegistrations.push(validatedRegistrationInput);
       }
     }
 
-    return { validRegistrations, errors: allErrors };
+    return { validRegistrations, invalidRegistrations };
   }
 
   private validateUniqueReferenceIds(
@@ -442,12 +433,10 @@ export class RegistrationsInputValidator {
   private validateProgramFspConfigurationName({
     programFspConfigurationName: programFspName,
     programFspConfigurations: programFspConfigurations,
-    i,
     typeOfInput,
   }: {
     programFspConfigurationName: InputAttributeType;
     programFspConfigurations: ProgramFspConfigurationEntity[];
-    i: number;
     typeOfInput: RegistrationValidationInputType;
   }): ValidateRegistrationErrorObject | undefined {
     // The registration is being patched, and the programFspConfigurationName is not being updated so the validation can be skipped
@@ -468,7 +457,6 @@ export class RegistrationsInputValidator {
       )
     ) {
       return {
-        index: i,
         value: programFspName,
         column: AdditionalAttributes.programFspConfigurationName,
         error: `FspConfigurationName ${programFspName} not found in program. Allowed values: ${programFspConfigurations
@@ -481,12 +469,10 @@ export class RegistrationsInputValidator {
   private validatePreferredLanguage({
     preferredLanguage,
     languageMapping,
-    i,
     typeOfInput,
   }: {
     preferredLanguage: InputAttributeType;
     languageMapping: any;
-    i: number;
     typeOfInput: RegistrationValidationInputType;
   }): {
     errorObj: ValidateRegistrationErrorObject | undefined;
@@ -495,7 +481,6 @@ export class RegistrationsInputValidator {
     const errorObj = this.checkLanguage({
       preferredLanguage,
       languageMapping,
-      i,
       typeOfInput,
     });
 
@@ -516,12 +501,10 @@ export class RegistrationsInputValidator {
   private checkLanguage({
     preferredLanguage,
     languageMapping,
-    i,
     typeOfInput,
   }: {
     preferredLanguage: InputAttributeType;
     languageMapping: object;
-    i: number;
     typeOfInput: RegistrationValidationInputType;
   }): ValidateRegistrationErrorObject | undefined {
     if (
@@ -542,7 +525,6 @@ export class RegistrationsInputValidator {
       )
     ) {
       return {
-        index: i,
         column: AdditionalAttributes.preferredLanguage,
         value: preferredLanguage,
         error: `Language error: Allowed values of this program for ${AdditionalAttributes.preferredLanguage}: ${Object.values(
@@ -577,12 +559,10 @@ export class RegistrationsInputValidator {
   private validateRowScope({
     row,
     userScope,
-    i,
     typeOfInput,
   }: {
     row: Record<string, InputAttributeType>;
     userScope: string;
-    i: number;
     typeOfInput: RegistrationValidationInputType;
   }): ValidateRegistrationErrorObject | undefined {
     const correctScope = this.rowHasAllowedScope({
@@ -592,7 +572,6 @@ export class RegistrationsInputValidator {
     });
     if (!correctScope) {
       return {
-        index: i,
         column: AdditionalAttributes.scope,
         value: row[AdditionalAttributes.scope],
         error: `User has program scope ${userScope} and does not have access to registration scope ${
@@ -637,11 +616,9 @@ export class RegistrationsInputValidator {
 
   private async validateReferenceId({
     row,
-    i,
     validationConfig,
   }: {
     row: Record<string, InputAttributeType>;
-    i: number;
     validationConfig: ValidationRegistrationConfig;
   }): Promise<ValidateRegistrationErrorObject | undefined> {
     if (!row.referenceId) {
@@ -649,7 +626,6 @@ export class RegistrationsInputValidator {
     }
     if (typeof row.referenceId !== 'string') {
       return {
-        index: i,
         column: GenericRegistrationAttributes.referenceId,
         value: row.referenceId,
         error: 'referenceId must be a string',
@@ -658,7 +634,6 @@ export class RegistrationsInputValidator {
 
     if (row.referenceId.includes('$')) {
       return {
-        index: i,
         column: GenericRegistrationAttributes.referenceId,
         value: row.referenceId,
         error: `${GenericRegistrationAttributes.referenceId} contains a $ character`,
@@ -667,7 +642,6 @@ export class RegistrationsInputValidator {
 
     if (row.referenceId.length < 5 || row.referenceId.length > 200) {
       return {
-        index: i,
         column: GenericRegistrationAttributes.referenceId,
         value: row.referenceId,
         error: 'referenceId must be between 5 and 200 characters',
@@ -679,7 +653,6 @@ export class RegistrationsInputValidator {
       });
       if (registration) {
         return {
-          index: i,
           column: GenericRegistrationAttributes.referenceId,
           value: row.referenceId,
           error: 'referenceId already exists in database',
@@ -690,12 +663,10 @@ export class RegistrationsInputValidator {
 
   private validatePhoneNumberEmpty({
     row,
-    i,
     program,
     typeOfInput,
   }: {
     row: any;
-    i: number;
     program: ProgramEntity;
     typeOfInput: RegistrationValidationInputType;
   }): ValidateRegistrationErrorObject | undefined {
@@ -708,7 +679,6 @@ export class RegistrationsInputValidator {
       !row.phoneNumber
     ) {
       return {
-        index: i,
         column: GenericRegistrationAttributes.phoneNumber,
         value: undefined,
         error:
@@ -722,7 +692,6 @@ export class RegistrationsInputValidator {
     ) {
       // on an update phonenumber can be empty if it is not being updated
       return {
-        index: i,
         column: GenericRegistrationAttributes.phoneNumber,
         value: row.phoneNumber,
         error:
@@ -733,11 +702,9 @@ export class RegistrationsInputValidator {
 
   private async validateLookupPhoneNumber({
     value,
-    i,
     phoneNumberLookupResults,
   }: {
     value: InputAttributeType;
-    i: number;
     phoneNumberLookupResults: Record<string, string | undefined>;
   }): Promise<{
     errorObj?: ValidateRegistrationErrorObject;
@@ -752,7 +719,6 @@ export class RegistrationsInputValidator {
     }
     if (!sanitized && !!value) {
       const errorObj: ValidateRegistrationErrorObject = {
-        index: i,
         column: 'phoneNumber',
         value,
         error:
@@ -767,12 +733,10 @@ export class RegistrationsInputValidator {
     row,
     originalRegistration,
     programFspConfigurations: programFspConfigurations,
-    i,
   }: {
     row: object;
     originalRegistration: MappedPaginatedRegistrationDto | undefined;
     programFspConfigurations: ProgramFspConfigurationEntity[];
-    i: number;
   }): ValidateRegistrationErrorObject[] {
     // Decide which required attributes to check
     // If the updated row has a value a new fsp configuration name, check the required attributes for that fsp
@@ -797,7 +761,6 @@ export class RegistrationsInputValidator {
       if (Object.prototype.hasOwnProperty.call(row, attribute)) {
         if (row[attribute] == null || row[attribute] === '') {
           errors.push({
-            index: i,
             column: attribute,
             value: row[attribute],
             error: `Cannot update/set ${attribute} with a nullable value as it is required for the FSP: ${relevantFspConfigName}`,
@@ -815,7 +778,6 @@ export class RegistrationsInputValidator {
           !this.isRequiredAttributeInObject(attribute, originalRegistration)
         ) {
           errors.push({
-            index: i,
             column: attribute,
             value: undefined,
             error: `Cannot update '${attribute}' is required for the FSP: '${relevantFspConfigName}'`,
@@ -889,12 +851,10 @@ export class RegistrationsInputValidator {
     value,
     type,
     attribute,
-    i,
   }: {
     value: string[] | string | number | boolean | undefined | null;
     type: string;
     attribute: string;
-    i: number;
   }): ValidateRegistrationErrorObject | undefined {
     let isValid: boolean | null = false;
     let message = '';
@@ -915,7 +875,6 @@ export class RegistrationsInputValidator {
     }
     if (!isValid) {
       return {
-        index: i,
         column: attribute,
         value: Array.isArray(value) ? value.toString() : value,
         error: message
@@ -958,11 +917,9 @@ export class RegistrationsInputValidator {
   private validatePaymentAmountMultiplier({
     value,
     programPaymentAmountMultiplierFormula,
-    i,
   }: {
     value: InputAttributeType;
     programPaymentAmountMultiplierFormula: string | null;
-    i: number;
   }): {
     errorOjb?: ValidateRegistrationErrorObject | undefined;
     validatedPaymentAmountMultiplier?: number | undefined;
@@ -970,7 +927,6 @@ export class RegistrationsInputValidator {
     if (programPaymentAmountMultiplierFormula && value != null) {
       return {
         errorOjb: {
-          index: i,
           column: GenericRegistrationAttributes.paymentAmountMultiplier,
           value,
           error:
@@ -987,7 +943,6 @@ export class RegistrationsInputValidator {
     if (isNaN(+value) || +value <= 0) {
       return {
         errorOjb: {
-          index: i,
           column: GenericRegistrationAttributes.paymentAmountMultiplier,
           value,
           error: 'this field must be a positive number',
@@ -1000,11 +955,9 @@ export class RegistrationsInputValidator {
   private validateMaxPayments({
     value,
     originalRegistration,
-    i,
   }: {
     value: InputAttributeType;
     originalRegistration: MappedPaginatedRegistrationDto | undefined;
-    i: number;
   }): {
     errorObj?: ValidateRegistrationErrorObject | undefined;
     validatedMaxPayments?: number | undefined | null;
@@ -1017,7 +970,6 @@ export class RegistrationsInputValidator {
     if (isNaN(+value) || +value <= 0) {
       return {
         errorObj: {
-          index: i,
           column: GenericRegistrationAttributes.maxPayments,
           value,
           error: 'MaxPayments must be a positive number or left empty',
@@ -1027,7 +979,6 @@ export class RegistrationsInputValidator {
     if (originalRegistration && +value < originalRegistration.paymentCount) {
       return {
         errorObj: {
-          index: i,
           column: GenericRegistrationAttributes.maxPayments,
           value,
           error: `MaxPayments cannot be lower than the current paymentCount (${originalRegistration.paymentCount})`,

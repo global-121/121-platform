@@ -230,7 +230,7 @@ describe('RegistrationsInputValidator', () => {
       },
     ];
 
-    const { errors, validRegistrations } =
+    const { invalidRegistrations, validRegistrations } =
       await validator.validateAndCleanInput({
         registrationInputArray: csvArray,
         programId,
@@ -242,7 +242,7 @@ describe('RegistrationsInputValidator', () => {
         },
       });
 
-    expect(errors.length).toBeGreaterThan(0);
+    expect(invalidRegistrations.length).toBeGreaterThan(0);
     expect(validRegistrations.length).toBe(0);
   });
 
@@ -256,7 +256,7 @@ describe('RegistrationsInputValidator', () => {
     const programId = 1;
     const userId = 1;
 
-    const { errors, validRegistrations } =
+    const { invalidRegistrations, validRegistrations } =
       await validator.validateAndCleanInput({
         registrationInputArray: csvArray,
         programId,
@@ -268,7 +268,7 @@ describe('RegistrationsInputValidator', () => {
         },
       });
 
-    expect(errors.length).toBeGreaterThan(0);
+    expect(invalidRegistrations.length).toBeGreaterThan(0);
     expect(validRegistrations.length).toBe(0);
   });
 
@@ -280,7 +280,7 @@ describe('RegistrationsInputValidator', () => {
       },
     ];
 
-    const { errors, validRegistrations } =
+    const { invalidRegistrations, validRegistrations } =
       await validator.validateAndCleanInput({
         registrationInputArray: csvArray,
         programId,
@@ -292,7 +292,7 @@ describe('RegistrationsInputValidator', () => {
         },
       });
 
-    expect(errors.length).toBeGreaterThan(0);
+    expect(invalidRegistrations.length).toBeGreaterThan(0);
     expect(validRegistrations.length).toBe(0);
   });
 
@@ -310,7 +310,7 @@ describe('RegistrationsInputValidator', () => {
       },
     ];
 
-    const { errors } = await validator.validateAndCleanInput({
+    const { invalidRegistrations } = await validator.validateAndCleanInput({
       registrationInputArray: csvArray,
       programId,
       userId,
@@ -321,15 +321,18 @@ describe('RegistrationsInputValidator', () => {
       },
     });
 
-    expect(errors).toEqual(
+    expect(invalidRegistrations).toEqual(
       expect.arrayContaining([
-        {
-          index: 0,
-          column: GenericRegistrationAttributes.phoneNumber,
-          value: undefined,
-          error:
-            'PhoneNumber is required when creating a new registration for this program. Set allowEmptyPhoneNumber to true in the program settings to allow empty phone numbers',
-        },
+        expect.objectContaining({
+          errors: expect.arrayContaining([
+            {
+              column: GenericRegistrationAttributes.phoneNumber,
+              value: undefined,
+              error:
+                'PhoneNumber is required when creating a new registration for this program. Set allowEmptyPhoneNumber to true in the program settings to allow empty phone numbers',
+            },
+          ]),
+        }),
       ]),
     );
   });
@@ -457,7 +460,7 @@ describe('RegistrationsInputValidator', () => {
       ];
 
       // Act
-      const { errors, validRegistrations } =
+      const { invalidRegistrations, validRegistrations } =
         await validator.validateAndCleanInput({
           registrationInputArray: csvArray,
           programId,
@@ -470,7 +473,7 @@ describe('RegistrationsInputValidator', () => {
         });
 
       // Assert
-      expect(errors.length).toBe(0);
+      expect(invalidRegistrations.length).toBe(0);
       expect(validRegistrations.length).toBe(1);
     },
   );
