@@ -498,7 +498,6 @@ describe('KoboSubmissionService', () => {
         userId: 42,
         typeOfInput: 'create',
         validationConfig: {
-          validateUniqueReferenceId: true,
           validateExistingReferenceId: true,
         },
       });

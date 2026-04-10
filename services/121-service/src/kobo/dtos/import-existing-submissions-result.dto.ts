@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class SubmissionValidationError {
+class SubmissionValidationError {
   @ApiProperty({
     description: 'The reference ID of the submission that failed validation',
     example: 'abc-123-def',
