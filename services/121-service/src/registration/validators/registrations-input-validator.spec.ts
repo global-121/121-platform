@@ -321,6 +321,7 @@ describe('RegistrationsInputValidator', () => {
       expect.arrayContaining([
         {
           index: 0,
+          referenceId: undefined,
           column: GenericRegistrationAttributes.phoneNumber,
           value: undefined,
           error:

@@ -1,8 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export interface SubmissionValidationError {
-  readonly column: string;
-  readonly error: string;
+export class SubmissionValidationError {
+  @ApiProperty({
+    description: 'The reference ID of the submission that failed validation',
+    example: 'abc-123-def',
+  })
+  public readonly referenceId: string;
+
+  @ApiProperty({
+    description: 'The column that failed validation',
+    example: 'phoneNumber',
+  })
+  public readonly column: string;
+
+  @ApiProperty({
+    description: 'The error message describing the validation failure',
+    example: 'Value is not valid',
+  })
+  public readonly error: string;
 }
 
 export class ImportExistingSubmissionsResultDto {
@@ -28,17 +43,9 @@ export class ImportExistingSubmissionsResultDto {
   public numberOfSubmissionsFailed: number;
 
   @ApiProperty({
+    type: [SubmissionValidationError],
     description:
-      'Validation errors grouped by submission identifier (Kobo UUID). Each key is a submission UUID, and the value is an array of validation errors for that submission.',
-    example: {
-      'abc-123-def': [
-        { column: 'phoneNumber', error: 'Value is not valid' },
-        { column: 'fullName', error: 'Value is required' },
-      ],
-    },
+      'Flat list of validation errors. Each entry includes the submission referenceId, the column that failed, and the error message.',
   })
-  public validationErrorsPerSubmission: Record<
-    string,
-    SubmissionValidationError[]
-  >;
+  public validationErrors: SubmissionValidationError[];
 }

@@ -3,10 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
-import {
-  ImportExistingSubmissionsResultDto,
-  SubmissionValidationError,
-} from '@121-service/src/kobo/dtos/import-existing-submissions-result.dto';
+import { ImportExistingSubmissionsResultDto } from '@121-service/src/kobo/dtos/import-existing-submissions-result.dto';
 import { KoboWebhookIncomingSubmission } from '@121-service/src/kobo/dtos/kobo-webhook-incoming-submission.dto';
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
 import { KoboRegistrationInput } from '@121-service/src/kobo/interfaces/kobo-registration-input.interface';
@@ -180,7 +177,6 @@ export class KoboSubmissionService {
         userId,
         typeOfInput: RegistrationValidationInputType.create,
         validationConfig: {
-          validateUniqueReferenceId: true,
           validateExistingReferenceId: true,
         },
       });
@@ -192,42 +188,25 @@ export class KoboSubmissionService {
         userId,
       });
 
-    const validationErrorsPerSubmission = this.groupErrorsBySubmissionId({
-      validationErrors,
-      registrationDataArray,
-    });
+    // The Kobo error DTO does not include validator-only fields such as index.
+    // Map the validator errors to only the fields returned in the response.
+    const validationErrorDtos = validationErrors.map((validationError) => ({
+      referenceId: validationError.referenceId ?? '',
+      column: validationError.column,
+      error: validationError.error,
+    }));
+
+    const failedReferenceIds = new Set(
+      validationErrorDtos.map((e) => e.referenceId),
+    );
 
     return {
       numberOfSubmissionsOnForm,
       numberOfSubmissionsImported: aggregateImportResult.countImported,
       numberOfSubmissionsSkipped,
-      numberOfSubmissionsFailed: Object.keys(validationErrorsPerSubmission)
-        .length,
-      validationErrorsPerSubmission,
+      numberOfSubmissionsFailed: failedReferenceIds.size,
+      validationErrors: validationErrorDtos,
     };
-  }
-
-  private groupErrorsBySubmissionId({
-    validationErrors,
-    registrationDataArray,
-  }: {
-    validationErrors: { index: number; column: string; error: string }[];
-    registrationDataArray: KoboRegistrationInput[];
-  }): Record<string, SubmissionValidationError[]> {
-    const resultingErrors: Record<string, SubmissionValidationError[]> = {};
-    for (const validationError of validationErrors) {
-      const { referenceId } = registrationDataArray[validationError.index];
-
-      // If there are no errors recorded for this referenceId yet, initialize an empty array
-      if (!resultingErrors[referenceId]) {
-        resultingErrors[referenceId] = [];
-      }
-      resultingErrors[referenceId].push({
-        column: validationError.column,
-        error: validationError.error,
-      });
-    }
-    return resultingErrors;
   }
 
   private async getExistingReferenceIds(

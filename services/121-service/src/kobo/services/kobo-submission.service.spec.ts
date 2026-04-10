@@ -348,7 +348,7 @@ describe('KoboSubmissionService', () => {
           "numberOfSubmissionsImported": 1,
           "numberOfSubmissionsOnForm": 2,
           "numberOfSubmissionsSkipped": 1,
-          "validationErrorsPerSubmission": {},
+          "validationErrors": [],
         }
       `);
     });
@@ -504,7 +504,7 @@ describe('KoboSubmissionService', () => {
       });
     });
 
-    it('should populate validationErrorsPerSubmission when a submission fails validation', async () => {
+    it('should populate validationErrors when a submission fails validation', async () => {
       // Arrange
       koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
       koboApiService.getSubmissionsUpToLimit.mockResolvedValue({
@@ -517,6 +517,7 @@ describe('KoboSubmissionService', () => {
         errors: [
           {
             index: 0,
+            referenceId: successSubmissionUuid,
             column: 'programFspConfigurationName',
             error: 'FspConfigurationName Invalid-FSP not found in program.',
             value: 'Invalid-FSP',
@@ -534,14 +535,13 @@ describe('KoboSubmissionService', () => {
       });
 
       // Assert
-      expect(result.validationErrorsPerSubmission).toEqual({
-        [successSubmissionUuid]: [
-          {
-            column: 'programFspConfigurationName',
-            error: 'FspConfigurationName Invalid-FSP not found in program.',
-          },
-        ],
-      });
+      expect(result.validationErrors).toEqual([
+        {
+          referenceId: successSubmissionUuid,
+          column: 'programFspConfigurationName',
+          error: 'FspConfigurationName Invalid-FSP not found in program.',
+        },
+      ]);
     });
 
     it('should exclude failed submissions from numberOfSubmissionsImported and count them in numberOfSubmissionsFailed', async () => {
@@ -557,6 +557,7 @@ describe('KoboSubmissionService', () => {
         errors: [
           {
             index: 0,
+            referenceId: successSubmissionUuid,
             column: 'programFspConfigurationName',
             error: 'FspConfigurationName Invalid-FSP not found in program.',
             value: 'Invalid-FSP',

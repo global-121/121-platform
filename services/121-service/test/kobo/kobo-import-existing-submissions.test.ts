@@ -111,7 +111,7 @@ describe('Import new Kobo submissions via PATCH endpoint', () => {
       numberOfSubmissionsImported: 1,
       numberOfSubmissionsSkipped: 0,
       numberOfSubmissionsFailed: 0,
-      validationErrorsPerSubmission: {},
+      validationErrors: [],
     });
 
     const searchResponse = await searchRegistrationByReferenceId(
@@ -144,7 +144,7 @@ describe('Import new Kobo submissions via PATCH endpoint', () => {
       numberOfSubmissionsImported: 1,
       numberOfSubmissionsSkipped: 0,
       numberOfSubmissionsFailed: 0,
-      validationErrorsPerSubmission: {},
+      validationErrors: [],
     });
 
     // Act: Import a second time — the same submission already exists
@@ -160,7 +160,7 @@ describe('Import new Kobo submissions via PATCH endpoint', () => {
       numberOfSubmissionsImported: 0,
       numberOfSubmissionsSkipped: 1,
       numberOfSubmissionsFailed: 0,
-      validationErrorsPerSubmission: {},
+      validationErrors: [],
     });
 
     const searchResponse = await searchRegistrationByReferenceId(
@@ -189,14 +189,19 @@ describe('Import new Kobo submissions via PATCH endpoint', () => {
       numberOfSubmissionsSkipped: 0,
       numberOfSubmissionsFailed: 1,
     });
-    const failureErrors =
-      response.body.validationErrorsPerSubmission[expectedFailureReferenceId];
+    const failureErrors = response.body.validationErrors.filter(
+      (e: { referenceId: string }) =>
+        e.referenceId === expectedFailureReferenceId,
+    );
     expect(failureErrors).toBeArrayOfSize(1);
     expect(failureErrors[0]).toMatchObject({
       column: 'programFspConfigurationName',
     });
-    expect(response.body.validationErrorsPerSubmission).not.toHaveProperty(
-      expectedSuccessReferenceId,
-    );
+    expect(
+      response.body.validationErrors.some(
+        (e: { referenceId: string }) =>
+          e.referenceId === expectedSuccessReferenceId,
+      ),
+    ).toBe(false);
   });
 });
