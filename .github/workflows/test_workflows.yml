@@ -28,7 +28,7 @@ jobs:
           node-version-file: '.node-version'
 
       - name: Lint GitHub Action workflows
-        uses: raven-actions/actionlint@v2
+        uses: raven-actions/actionlint@205b530c5d9fa8f44ae9ed59f341a0db994aa6f8
         with:
           group-result: false
           shellcheck: true
@@ -36,7 +36,7 @@ jobs:
           flags: '-ignore SC2086'
 
       - name: Lint .env files
-        uses: dotenv-linter/action-dotenv-linter@v3
+        uses: dotenv-linter/action-dotenv-linter@afde61cfda2ecffe7bea35837b6f20b956c88689
         with:
           reporter: github-code-suggestions
           dotenv_linter_flags: --ignore-checks UnorderedKey
