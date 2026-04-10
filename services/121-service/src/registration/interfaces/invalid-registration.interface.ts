@@ -2,6 +2,6 @@ import { ValidateRegistrationErrorObject } from '@121-service/src/registration/i
 
 export interface InvalidRegistration {
   readonly referenceId: string | undefined;
-  readonly index: number;
+  readonly lineNumber: number;
   readonly errors: ValidateRegistrationErrorObject[];
 }

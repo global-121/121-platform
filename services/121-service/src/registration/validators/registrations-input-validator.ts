@@ -377,7 +377,7 @@ export class RegistrationsInputValidator {
       if (rowErrors.length > 0) {
         invalidRegistrations.push({
           referenceId: row.referenceId as string | undefined,
-          index,
+          lineNumber: index + 1,
           errors: rowErrors,
         });
       } else {

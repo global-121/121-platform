@@ -517,7 +517,7 @@ describe('KoboSubmissionService', () => {
         invalidRegistrations: [
           {
             referenceId: successSubmissionUuid,
-            index: 0,
+            lineNumber: 0,
             errors: [
               {
                 column: 'programFspConfigurationName',
@@ -562,7 +562,7 @@ describe('KoboSubmissionService', () => {
         invalidRegistrations: [
           {
             referenceId: successSubmissionUuid,
-            index: 0,
+            lineNumber: 0,
             errors: [
               {
                 column: 'programFspConfigurationName',
