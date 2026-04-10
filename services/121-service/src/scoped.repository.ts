@@ -50,6 +50,12 @@ export const indirectRelationConfig: EntityRelations = {
     'intersolveVisaCustomer',
     'registration',
   ],
+  IntersolveVisaWalletClosureEntity: [
+    'intersolveVisaChildWallet',
+    'intersolveVisaParentWallet',
+    'intersolveVisaCustomer',
+    'registration',
+  ],
   IntersolveVisaParentWalletEntity: ['intersolveVisaCustomer', 'registration'],
   SafaricomTransferEntity: ['transaction', 'registration'],
   IntersolveVoucherEntity: ['image', 'registration'],

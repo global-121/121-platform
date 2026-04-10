@@ -176,6 +176,15 @@ export class IntersolveVisaMockController {
     );
   }
 
+  @ApiOperation({ summary: 'Change card status' })
+  @Post('payment-instrument-payment/v1/tokens/:tokenCode/change-status')
+  public changeCardStatus(
+    @Param('tokenCode') tokenCode: string,
+    @Body() _payload: Record<string, string>,
+  ): IntersolveVisaMockResponseDto {
+    return this.intersolveVisaMockService.changeCardStatusMock({ tokenCode });
+  }
+
   @ApiOperation({ summary: 'Substitute token' })
   @Post('wallet/v1/tokens/:oldTokenCode/substitute-token')
   public substituteToken(
