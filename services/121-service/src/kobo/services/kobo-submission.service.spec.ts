@@ -578,5 +578,34 @@ describe('KoboSubmissionService', () => {
       expect(result.numberOfSubmissionsFailed).toBe(1);
       expect(result.numberOfSubmissionsOnForm).toBe(2);
     });
+
+    it('should throw when a validation error has no referenceId', async () => {
+      // Arrange
+      koboRepository.findOne.mockResolvedValue(mockKoboEntity as KoboEntity);
+      koboApiService.getSubmissionsUpToLimit.mockResolvedValue({
+        count: 1,
+        submissions: [mockSubmission],
+      });
+      registrationRepository.find.mockResolvedValue([]);
+      registrationsInputValidator.validateAndCleanInput.mockResolvedValue({
+        validRegistrations: [],
+        errors: [
+          {
+            index: 0,
+            referenceId: undefined,
+            column: 'phoneNumber',
+            error: 'Value is not valid',
+            value: 'invalid',
+          },
+        ],
+      });
+
+      // Act & Assert
+      await expect(
+        service.importNewSubmissions({ programId: 1, userId: 42 }),
+      ).rejects.toThrow(
+        "Expected referenceId on all Kobo validation errors, but column 'phoneNumber' had none",
+      );
+    });
   });
 });

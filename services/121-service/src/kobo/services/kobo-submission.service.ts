@@ -13,6 +13,7 @@ import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service'
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationValidationInputType } from '@121-service/src/registration/enum/registration-validation-input-type.enum';
+import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
 import {
   MAX_IMPORT_RECORDS,
   RegistrationsCreationService,
@@ -181,6 +182,12 @@ export class KoboSubmissionService {
         },
       });
 
+    // Kobo submissions always have a referenceId (derived from the Kobo _uuid).
+    // The shared validator types it as optional because other callers (e.g. CSV
+    // import) may not provide one. This assertion narrows the type so downstream
+    // code can rely on referenceId being present.
+    this.assertErrorsHaveReferenceId(validationErrors);
+
     const { aggregateImportResult } =
       await this.registrationsCreationService.importValidatedRegistrations({
         validatedImportRecords: validRegistrations,
@@ -188,8 +195,6 @@ export class KoboSubmissionService {
         userId,
       });
 
-    // The Kobo error DTO does not include validator-only fields such as index.
-    // Map the validator errors to only the fields returned in the response.
     const validationErrorDtos = validationErrors.map((validationError) => ({
       referenceId: validationError.referenceId,
       column: validationError.column,
@@ -220,6 +225,19 @@ export class KoboSubmissionService {
       select: { referenceId: true },
     });
     return new Set(registrations.map((r) => r.referenceId));
+  }
+
+  private assertErrorsHaveReferenceId(
+    errors: ValidateRegistrationErrorObject[],
+  ): asserts errors is (ValidateRegistrationErrorObject & {
+    referenceId: string;
+  })[] {
+    const missing = errors.find((e) => e.referenceId == null);
+    if (missing) {
+      throw new Error(
+        `Expected referenceId on all Kobo validation errors, but column '${missing.column}' had none`,
+      );
+    }
   }
 
   private assertKoboIntegrationExistsOrThrow<T extends Partial<KoboEntity>>(
