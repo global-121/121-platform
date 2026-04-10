@@ -516,7 +516,8 @@ describe('KoboSubmissionService', () => {
         validRegistrations: [],
         invalidRegistrations: [
           {
-            identifier: successSubmissionUuid,
+            referenceId: successSubmissionUuid,
+            index: 0,
             errors: [
               {
                 column: 'programFspConfigurationName',
@@ -560,7 +561,8 @@ describe('KoboSubmissionService', () => {
         validRegistrations: [],
         invalidRegistrations: [
           {
-            identifier: successSubmissionUuid,
+            referenceId: successSubmissionUuid,
+            index: 0,
             errors: [
               {
                 column: 'programFspConfigurationName',

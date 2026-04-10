@@ -98,10 +98,7 @@ export class RegistrationsInputValidator {
     const validRegistrations: ValidatedRegistrationInput[] = [];
     const invalidRegistrations: InvalidRegistration[] = [];
 
-    for (const [i, row] of registrationInputArray.entries()) {
-      const identifier: string | number =
-        row.referenceId != null ? String(row.referenceId) : i + 1;
-
+    for (const [index, row] of registrationInputArray.entries()) {
       const originalRegistration = [
         RegistrationValidationInputType.update,
         RegistrationValidationInputType.bulkUpdate,
@@ -378,7 +375,11 @@ export class RegistrationsInputValidator {
       }
 
       if (rowErrors.length > 0) {
-        invalidRegistrations.push({ identifier, errors: rowErrors });
+        invalidRegistrations.push({
+          referenceId: row.referenceId as string | undefined,
+          index,
+          errors: rowErrors,
+        });
       } else {
         validRegistrations.push(validatedRegistrationInput);
       }

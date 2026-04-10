@@ -192,7 +192,9 @@ export class KoboSubmissionService {
       });
 
     const validationErrorsPerSubmission = Object.fromEntries(
-      invalidRegistrations.map(({ identifier, errors }) => [identifier, errors]),
+      invalidRegistrations
+        .filter(({ referenceId }) => referenceId !== undefined)
+        .map(({ referenceId, errors }) => [referenceId, errors]),
     );
 
     return {
