@@ -29,6 +29,7 @@
 **/.nyc_output
 **/.swc
 **/.angular
+**/www
 **/.eslintcache
 **/*.tsbuildinfo
 
