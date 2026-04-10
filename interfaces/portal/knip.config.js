@@ -6,15 +6,18 @@ module.exports = {
     'primeicons',
     // Known issues with "Unused devDependencies":
     'autoprefixer',
-    'eslint-config-121-platform', // Shared config, used in eslint.config.mjs
     // Known issues with "Unlisted dependencies":
     '@angular-eslint/builder',
   ],
+  ignoreFiles: [
+    'lint-staged.config.mjs', // Exception for 'global' lint-staged use
+  ],
   includeEntryExports: true,
+  entry: [
+    'src/logout/logout.js', // Specific "manual override"/escape-hatch to log-out
+  ],
   project: [
-    'src/**/*.ts', // All Angular app/source files
-    '**/_*.{mjs,js,ts}', // All non-Angular utility scripts
-    'src/environments/environment.ts.template.mjs', // Specific workaround-file for ENV-variable loading
+    '**/*.{mjs,js,ts}', // All is in-scope to check
   ],
   rules: {
     binaries: 'error',
