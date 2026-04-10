@@ -270,7 +270,7 @@ describe('RegistrationsInputValidator', () => {
     expect(validRegistrations.length).toBe(0);
   });
 
-  it('should report errors for rows missing mandatory fields on bulk update', async () => {
+  it('should report errors for rows missing mandatory fields on update', async () => {
     const csvArray = [
       {
         programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
