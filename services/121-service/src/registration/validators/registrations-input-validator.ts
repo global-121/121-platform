@@ -81,6 +81,8 @@ export class RegistrationsInputValidator {
       );
     }
 
+    // Always throws rather than returning errors: duplicate referenceIds in a
+    // single import file is a structural error, not a per-row validation failure.
     if (validationConfig.validateUniqueReferenceId) {
       this.validateUniqueReferenceIds(registrationInputArray);
     }
