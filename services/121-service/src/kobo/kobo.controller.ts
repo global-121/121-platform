@@ -202,7 +202,7 @@ export class KoboController {
     @Req() req: ScopedUserRequest,
   ): Promise<ImportExistingSubmissionsResultDto> {
     const userId = RequestHelper.getUserId(req);
-    return this.koboSubmissionService.importNewSubmissions({
+    return this.koboSubmissionService.importExistingSubmissions({
       programId,
       userId,
     });

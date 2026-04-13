@@ -493,6 +493,7 @@ describe('KoboApiService', () => {
         token: mockToken,
         assetUid: mockAssetUid,
         baseUrl: mockBaseUrl,
+        limit: 1000,
       });
 
       // Assert
@@ -530,6 +531,7 @@ describe('KoboApiService', () => {
         token: mockToken,
         assetUid: mockAssetUid,
         baseUrl: mockBaseUrl,
+        limit: 1000,
       });
 
       // Assert

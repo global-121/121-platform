@@ -82,7 +82,7 @@ export class KoboSubmissionService {
     });
   }
 
-  public async importNewSubmissions({
+  public async importExistingSubmissions({
     programId,
     userId,
   }: {
@@ -108,6 +108,7 @@ export class KoboSubmissionService {
         token: koboIntegration.token,
         assetUid: koboIntegration.assetUid,
         baseUrl: koboIntegration.url,
+        limit: MAX_IMPORT_RECORDS,
       });
 
     if (count > MAX_IMPORT_RECORDS) {

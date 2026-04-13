@@ -305,7 +305,7 @@ describe('KoboSubmissionService', () => {
     });
   });
 
-  describe('importNewSubmissions', () => {
+  describe('import existing submissions', () => {
     const mockSubmission2 = {
       ...mockSubmission,
       _id: 2,
@@ -336,7 +336,7 @@ describe('KoboSubmissionService', () => {
       );
 
       // Act
-      const result = await service.importNewSubmissions({
+      const result = await service.importExistingSubmissions({
         programId: 1,
         userId: 42,
       });
@@ -360,7 +360,7 @@ describe('KoboSubmissionService', () => {
       // Act
       let error: any;
       try {
-        await service.importNewSubmissions({ programId: 1, userId: 42 });
+        await service.importExistingSubmissions({ programId: 1, userId: 42 });
       } catch (e) {
         error = e;
       }
@@ -384,7 +384,7 @@ describe('KoboSubmissionService', () => {
       // Act
       let error: any;
       try {
-        await service.importNewSubmissions({ programId: 1, userId: 42 });
+        await service.importExistingSubmissions({ programId: 1, userId: 42 });
       } catch (e) {
         error = e;
       }
@@ -425,7 +425,7 @@ describe('KoboSubmissionService', () => {
       );
 
       // Act
-      await service.importNewSubmissions({ programId: 1, userId: 42 });
+      await service.importExistingSubmissions({ programId: 1, userId: 42 });
 
       // Assert
       expect(koboService.validateFormAndUpdateProgram).toHaveBeenCalledWith({
@@ -457,7 +457,7 @@ describe('KoboSubmissionService', () => {
       );
 
       // Act
-      await service.importNewSubmissions({ programId: 1, userId: 42 });
+      await service.importExistingSubmissions({ programId: 1, userId: 42 });
 
       // Assert
       expect(koboService.getFormDefinitionOrThrow).not.toHaveBeenCalled();
@@ -487,7 +487,7 @@ describe('KoboSubmissionService', () => {
       );
 
       // Act
-      await service.importNewSubmissions({ programId: 1, userId: 42 });
+      await service.importExistingSubmissions({ programId: 1, userId: 42 });
 
       // Assert
       expect(
@@ -528,7 +528,7 @@ describe('KoboSubmissionService', () => {
       );
 
       // Act
-      const result = await service.importNewSubmissions({
+      const result = await service.importExistingSubmissions({
         programId: 1,
         userId: 42,
       });
@@ -568,7 +568,7 @@ describe('KoboSubmissionService', () => {
       );
 
       // Act
-      const result = await service.importNewSubmissions({
+      const result = await service.importExistingSubmissions({
         programId: 1,
         userId: 42,
       });
@@ -602,7 +602,7 @@ describe('KoboSubmissionService', () => {
 
       // Act & Assert
       await expect(
-        service.importNewSubmissions({ programId: 1, userId: 42 }),
+        service.importExistingSubmissions({ programId: 1, userId: 42 }),
       ).rejects.toThrow(
         "Expected referenceId on all Kobo validation errors, but column 'phoneNumber' had none",
       );
