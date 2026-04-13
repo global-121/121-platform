@@ -169,7 +169,7 @@ jobs:
       # Coverage reports will be merged automatically by QLTY
       # See: https://docs.qlty.sh/coverage/merging#client-side-merging
       - name: Upload all coverage reports to QLTY
-        uses: qltysh/qlty-action/coverage@3bb7beb615879bb26aa12c9540889f9ef6cb1c85
+        uses: qltysh/qlty-action/coverage@141b881236146435192435eb7b0e06ea0b70b4d9
         with:
           command: publish
           oidc: true
