@@ -24,6 +24,7 @@ export class ProgramAttachmentMapper {
       },
       filename: entity.filename,
       mimetype: entity.mimetype,
+      scope: entity.scope,
     };
   }
 }

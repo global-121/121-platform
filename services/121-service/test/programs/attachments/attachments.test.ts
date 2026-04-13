@@ -156,6 +156,7 @@ describe('Program Attachments', () => {
       created: expect.any(String),
       updated: expect.any(String),
       user: expect.objectContaining({ id: expect.any(Number) }),
+      scope: expect.any(String),
     });
   });
 
