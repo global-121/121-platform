@@ -196,7 +196,7 @@ export class KoboController {
       'Too many new submissions to import. Use CSV import and split the data into smaller batches.',
   })
   @Patch('programs/:programId/kobo/submissions')
-  public async importNewKoboSubmissions(
+  public async importExistingSubmissions(
     @Param('programId', ParseIntPipe)
     programId: number,
     @Req() req: ScopedUserRequest,
