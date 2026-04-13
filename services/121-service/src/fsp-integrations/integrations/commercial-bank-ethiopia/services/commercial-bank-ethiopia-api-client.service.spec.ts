@@ -75,9 +75,21 @@ describe('CommercialBankEthiopiaApiClientService', () => {
       new CommercialBankEthiopiaApiClientService(httpService);
 
       // Assert
+      // Unfortunately we can't directly check the creation of the default https.Agent since it's private and
+      // we therefore have to test the internal working of this method to see if createHttpsAgentWithWeakSelfSignedCertificateOnly is called or not
       expect(
         httpService.createHttpsAgentWithWeakSelfSignedCertificateOnly,
-      ).toHaveBeenCalledWith(certificatePath, { keepAlive: true }); // Unfortunately we can't directly check the creation of the default https.Agent since it's private and we therefore have to test the internal working of this method to see if createHttpsAgentWithWeakSelfSignedCertificateOnly is called or not
+      ).toHaveBeenCalledWith(certificatePath, {
+        keepAlive: true,
+        checkServerIdentity: expect.any(Function),
+      });
+
+      const [, options] = (
+        httpService.createHttpsAgentWithWeakSelfSignedCertificateOnly as jest.Mock
+      ).mock.calls[0];
+      expect(
+        options.checkServerIdentity('any-host.example.test', {} as unknown),
+      ).toBeUndefined();
     });
 
     it('should create a default HTTPS agent when mode is external but certificate path is not provided', () => {

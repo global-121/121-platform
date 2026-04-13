@@ -46,7 +46,13 @@ export class CommercialBankEthiopiaApiClientService implements OnModuleDestroy {
     ) {
       return this.httpService.createHttpsAgentWithWeakSelfSignedCertificateOnly(
         env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH,
-        cbeConnectionConfig,
+        {
+          ...cbeConnectionConfig,
+          //
+          // NOTE: By NEVER returning _any_ error, we 'skip' hostname verification. As its certificate's name does not match its API's hostname.
+          // This is (unfortunately) required. However, since we are ALSO using a VPN-tunnel directly with CBE, this risk is acceptable.
+          checkServerIdentity: () => undefined,
+        },
       );
     }
     // Use a 'default' https agent for Mock mode and for CBE Acceptance environment, without certificate
