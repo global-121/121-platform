@@ -116,7 +116,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Add Deployment URL to PR Description
-        uses: nefrob/pr-description@v1.2.0
+        uses: nefrob/pr-description@4dcc9f3ad5ec06b2a197c5f8f93db5e69d2fdca7
         with:
           content: ${{ needs.test.outputs.preview_url }}
           regex: '<!-- start deployment url -->.*?<!-- end deployment url -->'

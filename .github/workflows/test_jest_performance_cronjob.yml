@@ -98,7 +98,7 @@ jobs:
 
       - name: Docker logs
         if: always()
-        uses: jwalton/gh-docker-logs@v2
+        uses: jwalton/gh-docker-logs@2741064ab9d7af54b0b1ffb6076cf64c16f0220e
 
   performance-test-shard-resolution:
     runs-on: ubuntu-latest
@@ -120,7 +120,7 @@ jobs:
 
       - name: Microsoft Teams Notification
         if: always()
-        uses: tlolkema/simple-teams-message@main
+        uses: tlolkema/simple-teams-message@18ffc37b4253de8243ff28318ac51abccdacd024
         env:
           JOB_STATUS_WITH_NICE_EMOJI: ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}
         with:

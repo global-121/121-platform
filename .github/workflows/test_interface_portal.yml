@@ -73,7 +73,8 @@ jobs:
         working-directory: ${{ env.interfacePath }}
         run: 'npm run test:coverage'
 
-      - uses: qltysh/qlty-action/coverage@v2
+      - name: 'Upload coverage report to QLTY'
+        uses: qltysh/qlty-action/coverage@3bb7beb615879bb26aa12c9540889f9ef6cb1c85
         with:
           oidc: true
           add-prefix: ${{ env.interfacePath }}

@@ -87,7 +87,9 @@ jobs:
       - name: Generate Coverage-report from 121-service
         working-directory: ${{ env.workingDirectory }}
         run: |
-          curl --data '{"secret":"${{ env.RESET_SECRET }}"}' --header "Content-Type: application/json" --request POST '${{ env.EXTERNAL_121_SERVICE_URL }}/api/test/kill-service' || true
+          curl --data "{\"secret\":\"$RESET_SECRET\"}" \
+               --header "Content-Type: application/json" \
+               --request POST "$EXTERNAL_121_SERVICE_URL/api/test/kill-service" || true
           docker compose exec 121-service npm run coverage:report:integration
 
       - uses: actions/upload-artifact@v7
@@ -98,7 +100,7 @@ jobs:
 
       - name: Docker logs
         if: always()
-        uses: jwalton/gh-docker-logs@v2
+        uses: jwalton/gh-docker-logs@2741064ab9d7af54b0b1ffb6076cf64c16f0220e
 
   test:
     runs-on: ubuntu-latest
@@ -167,7 +169,7 @@ jobs:
       # Coverage reports will be merged automatically by QLTY
       # See: https://docs.qlty.sh/coverage/merging#client-side-merging
       - name: Upload all coverage reports to QLTY
-        uses: qltysh/qlty-action/coverage@v2
+        uses: qltysh/qlty-action/coverage@3bb7beb615879bb26aa12c9540889f9ef6cb1c85
         with:
           command: publish
           oidc: true
