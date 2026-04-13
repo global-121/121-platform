@@ -30,13 +30,13 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { NoUserAuthenticationEndpoint } from '@121-service/src/guards/no-user-authentication.decorator';
 import { CreateKoboDto } from '@121-service/src/kobo/dtos/create-kobo.dto';
+import { ImportExistingSubmissionsResultDto } from '@121-service/src/kobo/dtos/import-existing-submissions-result.dto';
 import { KoboIntegrationResultDto } from '@121-service/src/kobo/dtos/kobo-integration-result.dto';
 import { KoboResponseDto } from '@121-service/src/kobo/dtos/kobo-response.dto';
 import { KoboWebhookIncomingSubmission } from '@121-service/src/kobo/dtos/kobo-webhook-incoming-submission.dto';
 import { KoboWebhookBasicAuthGuard } from '@121-service/src/kobo/guards/kobo-webhook-basic-auth.guard';
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboSubmissionService } from '@121-service/src/kobo/services/kobo-submission.service';
-import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 import { MAX_IMPORT_RECORDS } from '@121-service/src/registration/services/registrations-creation.service';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
@@ -170,8 +170,8 @@ export class KoboController {
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
-    summary: 'Import new Kobo submissions as registrations',
-    description: `Fetches all submissions from the linked Kobo form, filters out submissions that have already been imported (by matching Kobo submission UUID against registration referenceId), and imports the remaining new submissions as registrations. Returns an error if the total number of submissions on the form exceeds the maximum fetch limit (${MAX_IMPORT_RECORDS}).`,
+    summary: 'Import existing Kobo submissions as registrations',
+    description: `Fetches all submissions from the linked Kobo form, filters out submissions that have already been imported (by matching Kobo submission UUID against registration referenceId), and imports the remaining existing submissions as registrations. Returns an error if the total number of submissions on the form exceeds the maximum fetch limit (${MAX_IMPORT_RECORDS}).`,
   })
   @ApiParam({
     name: 'programId',
@@ -183,8 +183,8 @@ export class KoboController {
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'New submissions have been successfully imported as registrations',
-    type: ImportResult,
+      'Existing submissions have been successfully imported as registrations',
+    type: ImportExistingSubmissionsResultDto,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -193,16 +193,16 @@ export class KoboController {
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description:
-      'Too many new submissions to import. Use CSV import and split the data into smaller batches.',
+      'Too many submissions to import. Use CSV import and split the data into smaller batches.',
   })
   @Patch('programs/:programId/kobo/submissions')
-  public async importNewKoboSubmissions(
+  public async importExistingSubmissions(
     @Param('programId', ParseIntPipe)
     programId: number,
     @Req() req: ScopedUserRequest,
-  ): Promise<ImportResult> {
+  ): Promise<ImportExistingSubmissionsResultDto> {
     const userId = RequestHelper.getUserId(req);
-    return this.koboSubmissionService.importNewSubmissions({
+    return this.koboSubmissionService.importExistingSubmissions({
       programId,
       userId,
     });

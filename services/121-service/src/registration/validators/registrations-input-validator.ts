@@ -357,9 +357,12 @@ export class RegistrationsInputValidator {
         }),
       );
 
+      const referenceId =
+        typeof row.referenceId === 'string' ? row.referenceId : undefined;
+
       // Break the loop and stop processing if file has too many errors
       if (allErrors.length + rowErrors.length >= 5000) {
-        allErrors.push(...rowErrors);
+        allErrors.push(...rowErrors.map((e) => ({ ...e, referenceId })));
         return { validRegistrations, errors: allErrors };
       }
 
@@ -383,7 +386,7 @@ export class RegistrationsInputValidator {
       }
 
       if (rowErrors.length > 0) {
-        allErrors.push(...rowErrors);
+        allErrors.push(...rowErrors.map((e) => ({ ...e, referenceId })));
       } else {
         validRegistrations.push(validatedRegistrationInput);
       }

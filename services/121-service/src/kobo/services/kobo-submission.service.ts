@@ -3,17 +3,22 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
+import { ImportExistingSubmissionsResultDto } from '@121-service/src/kobo/dtos/import-existing-submissions-result.dto';
 import { KoboWebhookIncomingSubmission } from '@121-service/src/kobo/dtos/kobo-webhook-incoming-submission.dto';
 import { KoboEntity } from '@121-service/src/kobo/entities/kobo.entity';
+import { KoboRegistrationInput } from '@121-service/src/kobo/interfaces/kobo-registration-input.interface';
 import { KoboSubmissionMapper } from '@121-service/src/kobo/mappers/kobo-submission.mapper';
 import { KoboService } from '@121-service/src/kobo/services/kobo.service';
 import { KoboApiService } from '@121-service/src/kobo/services/kobo-api.service';
-import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
+import { RegistrationValidationInputType } from '@121-service/src/registration/enum/registration-validation-input-type.enum';
+import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
 import {
   MAX_IMPORT_RECORDS,
   RegistrationsCreationService,
 } from '@121-service/src/registration/services/registrations-creation.service';
+import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
 
 @Injectable()
 export class KoboSubmissionService {
@@ -26,6 +31,7 @@ export class KoboSubmissionService {
     private readonly koboApiService: KoboApiService,
     private readonly koboService: KoboService,
     private readonly registrationsCreationService: RegistrationsCreationService,
+    private readonly registrationsInputValidator: RegistrationsInputValidator,
   ) {}
 
   public async processKoboWebhookCall(
@@ -76,13 +82,13 @@ export class KoboSubmissionService {
     });
   }
 
-  public async importNewSubmissions({
+  public async importExistingSubmissions({
     programId,
     userId,
   }: {
     programId: number;
     userId: number;
-  }): Promise<ImportResult> {
+  }): Promise<ImportExistingSubmissionsResultDto> {
     const koboIntegration = await this.koboRepository.findOne({
       where: { programId: Equal(programId) },
       select: {
@@ -102,7 +108,15 @@ export class KoboSubmissionService {
         token: koboIntegration.token,
         assetUid: koboIntegration.assetUid,
         baseUrl: koboIntegration.url,
+        limit: MAX_IMPORT_RECORDS,
       });
+
+    if (count > MAX_IMPORT_RECORDS) {
+      throw new HttpException(
+        `The Kobo form has ${count} total submissions, which exceeds the maximum of ${MAX_IMPORT_RECORDS} that can be fetched at once. Not all submissions could be retrieved, so some new ones may be missing. Please use the CSV import instead and split the data into smaller batches.`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     const submissionWithDifferentVersion = submissions.find(
       (s) => s.__version__ !== koboIntegration.versionId,
@@ -130,24 +144,75 @@ export class KoboSubmissionService {
       (submission) => !existingReferenceIds.has(submission._uuid),
     );
 
-    if (count > MAX_IMPORT_RECORDS) {
-      throw new HttpException(
-        `The Kobo form has ${count} total submissions, which exceeds the maximum of ${MAX_IMPORT_RECORDS} that can be fetched at once. Not all submissions could be retrieved, so some new ones may be missing. Please use the CSV import instead and split the data into smaller batches.`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
     const registrationDataArray = newSubmissions.map((submission) =>
       KoboSubmissionMapper.mapSubmissionToRegistrationData({
         koboSubmission: submission,
       }),
     );
 
-    return this.registrationsCreationService.importRegistrations({
-      inputRegistrations: registrationDataArray,
+    return this.validateImportAndBuildResult({
+      registrationDataArray,
       program: koboIntegration.program,
       userId,
+      numberOfSubmissionsOnForm: count,
+      numberOfSubmissionsSkipped: existingReferenceIds.size,
     });
+  }
+
+  private async validateImportAndBuildResult({
+    registrationDataArray,
+    program,
+    userId,
+    numberOfSubmissionsOnForm,
+    numberOfSubmissionsSkipped,
+  }: {
+    registrationDataArray: KoboRegistrationInput[];
+    program: ProgramEntity;
+    userId: number;
+    numberOfSubmissionsOnForm: number;
+    numberOfSubmissionsSkipped: number;
+  }): Promise<ImportExistingSubmissionsResultDto> {
+    const { validRegistrations, errors: validationErrors } =
+      await this.registrationsInputValidator.validateAndCleanInput({
+        registrationInputArray: registrationDataArray,
+        programId: program.id,
+        userId,
+        typeOfInput: RegistrationValidationInputType.create,
+        validationConfig: {
+          validateExistingReferenceId: true,
+        },
+      });
+
+    // Kobo submissions always have a referenceId (derived from the Kobo _uuid).
+    // The shared validator types it as optional because other callers (e.g. CSV
+    // import) may not provide one. This assertion narrows the type so downstream
+    // code can rely on referenceId being present.
+    this.assertErrorsHaveReferenceId(validationErrors);
+
+    const { aggregateImportResult } =
+      await this.registrationsCreationService.importValidatedRegistrations({
+        validatedImportRecords: validRegistrations,
+        program,
+        userId,
+      });
+
+    const validationErrorDtos = validationErrors.map((validationError) => ({
+      referenceId: validationError.referenceId,
+      column: validationError.column,
+      error: validationError.error,
+    }));
+
+    const failedReferenceIds = new Set(
+      validationErrorDtos.map((e) => e.referenceId),
+    );
+
+    return {
+      numberOfSubmissionsOnForm,
+      numberOfSubmissionsImported: aggregateImportResult.countImported,
+      numberOfSubmissionsSkipped,
+      numberOfSubmissionsFailed: failedReferenceIds.size,
+      validationErrors: validationErrorDtos,
+    };
   }
 
   private async getExistingReferenceIds(
@@ -161,6 +226,19 @@ export class KoboSubmissionService {
       select: { referenceId: true },
     });
     return new Set(registrations.map((r) => r.referenceId));
+  }
+
+  private assertErrorsHaveReferenceId(
+    errors: ValidateRegistrationErrorObject[],
+  ): asserts errors is (ValidateRegistrationErrorObject & {
+    referenceId: string;
+  })[] {
+    const missing = errors.find((e) => e.referenceId == null);
+    if (missing) {
+      throw new Error(
+        `Expected referenceId on all Kobo validation errors, but column '${missing.column}' had none`,
+      );
+    }
   }
 
   private assertKoboIntegrationExistsOrThrow<T extends Partial<KoboEntity>>(

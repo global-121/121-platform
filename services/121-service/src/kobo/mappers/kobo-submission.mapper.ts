@@ -1,5 +1,6 @@
 import { KoboAttachmentDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-attachment.dto';
 import { KoboSubmissionDto } from '@121-service/src/kobo/dtos/kobo-api/kobo-submission.dto';
+import { KoboRegistrationInput } from '@121-service/src/kobo/interfaces/kobo-registration-input.interface';
 import { KoboFormDefinitionMapper } from '@121-service/src/kobo/mappers/kobo-form-definition.mapper';
 import { fspQuestionName } from '@121-service/src/kobo/services/kobo.service';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
@@ -9,8 +10,10 @@ export class KoboSubmissionMapper {
     koboSubmission,
   }: {
     koboSubmission: KoboSubmissionDto;
-  }): Record<string, string | boolean | number> {
-    const registrationData: Record<string, string | boolean | number> = {};
+  }): KoboRegistrationInput {
+    const registrationData: KoboRegistrationInput = {
+      referenceId: koboSubmission._uuid,
+    };
     const attachments = koboSubmission._attachments ?? [];
 
     Object.entries(koboSubmission).forEach(([key, value]) => {

@@ -106,7 +106,13 @@ describe('Import new Kobo submissions via PATCH endpoint', () => {
 
     // Assert
     expect(response.status).toBe(HttpStatus.OK);
-    expect(response.body.aggregateImportResult.countImported).toBe(1);
+    expect(response.body).toMatchObject({
+      numberOfSubmissionsOnForm: 1,
+      numberOfSubmissionsImported: 1,
+      numberOfSubmissionsSkipped: 0,
+      numberOfSubmissionsFailed: 0,
+      validationErrors: [],
+    });
 
     const searchResponse = await searchRegistrationByReferenceId(
       expectedReferenceId,
@@ -133,7 +139,13 @@ describe('Import new Kobo submissions via PATCH endpoint', () => {
       accessToken,
     });
     expect(firstResponse.status).toBe(HttpStatus.OK);
-    expect(firstResponse.body.aggregateImportResult.countImported).toBe(1);
+    expect(firstResponse.body).toMatchObject({
+      numberOfSubmissionsOnForm: 1,
+      numberOfSubmissionsImported: 1,
+      numberOfSubmissionsSkipped: 0,
+      numberOfSubmissionsFailed: 0,
+      validationErrors: [],
+    });
 
     // Act: Import a second time — the same submission already exists
     const secondResponse = await patchKoboSubmissions({
@@ -143,7 +155,13 @@ describe('Import new Kobo submissions via PATCH endpoint', () => {
 
     // Assert
     expect(secondResponse.status).toBe(HttpStatus.OK);
-    expect(secondResponse.body.aggregateImportResult.countImported).toBe(0);
+    expect(secondResponse.body).toMatchObject({
+      numberOfSubmissionsOnForm: 1,
+      numberOfSubmissionsImported: 0,
+      numberOfSubmissionsSkipped: 1,
+      numberOfSubmissionsFailed: 0,
+      validationErrors: [],
+    });
 
     const searchResponse = await searchRegistrationByReferenceId(
       expectedReferenceId,
@@ -151,5 +169,39 @@ describe('Import new Kobo submissions via PATCH endpoint', () => {
       accessToken,
     );
     expect(searchResponse.body.data).toBeArrayOfSize(1);
+  });
+
+  it('should report failed submissions with error messages when a submission fails validation', async () => {
+    // Arrange
+    const assetUid = 'import-with-failure';
+    const expectedSuccessReferenceId = `${KoboMockSubmissionUuids.success}-${assetUid}`;
+    const expectedFailureReferenceId = `${KoboMockSubmissionUuids.failure}-${assetUid}`;
+    const { programId } = await setup(assetUid);
+
+    // Act
+    const response = await patchKoboSubmissions({ programId, accessToken });
+
+    // Assert
+    expect(response.status).toBe(HttpStatus.OK);
+    expect(response.body).toMatchObject({
+      numberOfSubmissionsOnForm: 2,
+      numberOfSubmissionsImported: 1,
+      numberOfSubmissionsSkipped: 0,
+      numberOfSubmissionsFailed: 1,
+    });
+    const failureErrors = response.body.validationErrors.filter(
+      (e: { referenceId: string }) =>
+        e.referenceId === expectedFailureReferenceId,
+    );
+    expect(failureErrors).toBeArrayOfSize(1);
+    expect(failureErrors[0]).toMatchObject({
+      column: 'programFspConfigurationName',
+    });
+    expect(
+      response.body.validationErrors.some(
+        (e: { referenceId: string }) =>
+          e.referenceId === expectedSuccessReferenceId,
+      ),
+    ).toBe(false);
   });
 });

@@ -23,6 +23,7 @@ exports[`Import a registration should throw an error when a required fsp attribu
     "column": "whatsappPhoneNumber",
     "error": "Cannot update 'whatsappPhoneNumber' is required for the FSP: 'Intersolve-voucher-whatsapp'",
     "lineNumber": 1,
+    "referenceId": "westeros123456789",
   },
 ]
 `;
@@ -33,6 +34,7 @@ exports[`Import a registration should throw an error with a dropdown registratio
     "column": "house",
     "error": "Value 'null' is not in the allowed options: 'lannister, stark, greyjoy' for attribute 'house'",
     "lineNumber": 1,
+    "referenceId": "westeros123456789",
     "value": null,
   },
 ]
@@ -44,6 +46,7 @@ exports[`Import a registration should throw an error with a numeric registration
     "column": "addressHouseNumber",
     "error": "Cannot update/set addressHouseNumber with a nullable value as it is required for the FSP: Intersolve-visa",
     "lineNumber": 1,
+    "referenceId": "registration-visa-1",
     "value": null,
   },
 ]
