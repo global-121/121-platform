@@ -42,19 +42,6 @@ import {
 
 const transferValue = 25;
 
-// Use file-local reference IDs to avoid conflicts with parallel test files
-// that seed the same registrations from the shared fixture.
-const registrationsPV = [
-  {
-    ...registrationNotScopedPv,
-    referenceId: 'payment-in-progress-not-scoped-pv',
-  },
-  {
-    ...registrationScopedTurkanaNorthPv,
-    referenceId: 'payment-in-progress-scoped-turkana-north-pv',
-  },
-];
-
 // const function to validate whether payement are in progress for multiple endpoints
 const getPaymentProgressStatusForMultipleEndpoints = async ({
   programId,
@@ -100,6 +87,11 @@ const getPaymentProgressStatusForMultipleEndpoints = async ({
     retryPaymentBlocked: is4xxStatus(retryPaymentResponse.status),
   };
 };
+
+const registrationsPV = [
+  registrationNotScopedPv,
+  registrationScopedTurkanaNorthPv,
+];
 
 describe('Payment in progress', () => {
   let accessToken: string;
@@ -397,22 +389,19 @@ describe('Payment in progress', () => {
       await getProgramPaymentsStatus(programIdOCW, accessToken)
     ).body;
 
-    // Check blocked endpoints while the payment is still in progress,
-    // before doing the OCW payment (which takes multiple async calls and
-    // would give the PV payment time to complete).
-    const multiEndpointPaymentProgressPv =
-      await getPaymentProgressStatusForMultipleEndpoints({
-        programId: programIdPV,
-        accessToken,
-        paymentId: paymentIdPv,
-      });
-
     const doPaymentOcwResultPaymentNext = await doPayment({
       programId: programIdOCW,
       transferValue,
       referenceIds: [],
       accessToken,
     });
+
+    const multiEndpointPaymentProgressPv =
+      await getPaymentProgressStatusForMultipleEndpoints({
+        programId: programIdPV,
+        accessToken,
+        paymentId: paymentIdPv,
+      });
 
     // Assert
     expect(getProgramPaymentsPvResult.inProgress).toBe(true);
