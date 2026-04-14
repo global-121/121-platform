@@ -3,6 +3,7 @@
 **/.vscode/*
 !**/.vscode/extensions.json
 !**/.vscode/settings.json
+.idea
 
 # Potential sensitive information
 .env
