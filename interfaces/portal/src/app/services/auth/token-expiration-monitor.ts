@@ -23,11 +23,13 @@ export const startTokenExpirationMonitor = ({
   forceLogoutMs,
   getTimeUntilExpiration,
   onExpired,
+  onValid,
 }: {
   checkIntervalMs: number;
   forceLogoutMs: number;
   getTimeUntilExpiration: () => number;
   onExpired: () => void;
+  onValid: () => void;
 }): Subscription =>
   interval(checkIntervalMs).subscribe(() => {
     const timeUntilExpiry = getTimeUntilExpiration();
@@ -39,5 +41,7 @@ export const startTokenExpirationMonitor = ({
 
     if (timeUntilExpiry <= forceLogoutMs) {
       onExpired();
+    } else {
+      onValid();
     }
   });

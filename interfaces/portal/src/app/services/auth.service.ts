@@ -53,6 +53,16 @@ export class AuthService {
   private readonly CHECK_INTERVAL_MS = 3_000; // Check every 3 seconds
   private readonly FORCE_LOGOUT_WHEN_EXP_IN_MS = 5_000; // Logout 5 seconds before expiry
 
+  /**
+   * Tracks whether the session was active at any point during the current browser session.
+   * Intentionally NOT stored in localStorage/sessionStorage so it resets on page refresh/new tab.
+   * Set to `true` by the token expiration monitor whenever it detects a valid token.
+   * Used in `handleTokenExpiration` to distinguish between:
+   * - Token expired mid-use (sessionWasActive=true) → show "Session expired" popup
+   * - Token was already expired on app start (sessionWasActive=false) → silent redirect to login
+   */
+  private sessionWasActive = false;
+
   public readonly showSessionExpiredDialog = signal(false);
   public readonly sessionExpiredReturnUrl = signal<string | undefined>(
     undefined,
@@ -77,12 +87,28 @@ export class AuthService {
       forceLogoutMs: this.FORCE_LOGOUT_WHEN_EXP_IN_MS,
       getTimeUntilExpiration: () => this.authStrategy.getTimeUntilExpiration(),
       onExpired: () => void this.handleTokenExpiration(),
+      onValid: () => {
+        this.markSessionActive();
+      },
     });
+  }
+
+  // Called by the token expiration monitor on each tick where the token is still valid.
+  // This is the mechanism that sets sessionWasActive to true: after login()
+  // stores the user, or when a page refresh/tab reopen finds a still-valid token,
+  // the next monitor tick detects it and marks the session as active so that a
+  // later expiration correctly shows the "Session expired" dialog.
+  private markSessionActive(): void {
+    this.sessionWasActive = true;
   }
 
   /**
    * Handles token expiration by logging out and preserving the current URL
    * for redirect after re-authentication.
+   *
+   * Shows the "Session expired" dialog only when the session was active during
+   * the current browser session (i.e. the token transitioned from valid → expired).
+   * When the token was already expired on app start, redirects silently to login.
    *
    * @private
    */
@@ -90,6 +116,15 @@ export class AuthService {
     if (this.showSessionExpiredDialog()) {
       return;
     }
+
+    if (!this.sessionWasActive) {
+      // Token was already expired when the app started — skip the popup and
+      // redirect silently so the user is not confused by a stale "session expired" message.
+      await this.clearSession();
+      await this.router.navigate(['/', AppRoutes.login]);
+      return;
+    }
+
     const currentUrl = this.router.url;
 
     this.showSessionExpiredDialog.set(true);
