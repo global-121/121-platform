@@ -58,16 +58,35 @@ export class MtnApiService {
         AxiosResponse<MtnTransferStatusResponse>
       >(url.toString(), headers);
 
+      if (!response || response.status < 200 || response.status >= 300) {
+        throw new MtnApiError(
+          `Failed to get transfer status. Status: ${response?.status ?? 'unknown'}, StatusText: ${response?.statusText ?? 'unknown'}, Body: ${this.stringifyResponseData(response?.data)}`,
+        );
+      }
+
       return response.data;
     } catch (error) {
       if (error instanceof MtnApiError) {
         throw error;
       }
       console.error('Failed to get MTN transfer status', error);
-      throw new MtnApiError(`Error getting transfer status: ${error.message}`);
+      throw new MtnApiError(
+        `Error getting transfer status: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
+  private stringifyResponseData(data: unknown): string {
+    if (data === undefined || data === null) {
+      return 'empty';
+    }
+
+    try {
+      return JSON.stringify(data);
+    } catch {
+      return '[unserializable body]';
+    }
+  }
   private async makeTransferCall({
     payload,
     referenceId,
